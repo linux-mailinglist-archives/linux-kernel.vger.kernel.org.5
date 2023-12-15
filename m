@@ -1,123 +1,148 @@
-Return-Path: <linux-kernel+bounces-609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CAF481437B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:22:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 008ED814380
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:23:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E49282844CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:22:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAB76284378
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0559E18E26;
-	Fri, 15 Dec 2023 08:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52A114F6D;
+	Fri, 15 Dec 2023 08:22:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OFu3vEQG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="isEi4w8s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC088182B5
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399181A713
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40c41b43e1eso4677325e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:21:49 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5527ee1b5c3so2376733a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:22:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702628508; x=1703233308; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TuJawO4SusZv8/FICQYIvQK4zSxUomciGjXfeupkpPM=;
-        b=OFu3vEQGw3noi41QwdOnUqkSZ2qQl2fXzpgSdp1zAMqZTciVFG+iB372kFP2cl2syd
-         vfG7GgZGLw+LhH523fGGh/zvoaCuWfk9MeNXfhMLuO4U4np/geKJkgaEN6c26vcZL6cv
-         7IIFuIE/5Ugs5MxPq5U8P2gyztzq8Ul9NwDTfVOtNm+MkRa9J3YzvfykmQ3vQBtY13oV
-         stW/CE9+3j1c21SM8eQJkDgpHuCgvWbkc10vL/IJD0pH/1nh12sPPyFo345JwC4B6YfP
-         Y4SIDZvb34Zq9cqdcMiQYS0YpLD+V0hhaKiiennmWm8vPujPCbFs6PNuHtafxOk4FVF/
-         lsiA==
+        d=linaro.org; s=google; t=1702628552; x=1703233352; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ErSPpkKKFAjMcXdmmaCZA2SpqYGJcA4cXAU/CRTyJxQ=;
+        b=isEi4w8slWcGZ/2EqXjsAVTFaqL8KLDbOg00vPnuLD3NQ2NxaZdNQ3keEgaZWNzqPi
+         Uk+Xj5iv6ysQzVINsG9o2PB+OTc1JYnG7ur6WoJ5pd1bBOM5Hcl3TJawHUdAetAAxNyQ
+         KQnajjwExaz0QYKs3K/0L1QcAGwawJe4CC50NseZ5Lt9mo4HEl8XBwkFpgyZrmFlYSOp
+         ouVuOsa+OH6F8v0BMHHyIxc/drhfMiF0O5q374yev1Y3HRQ9v1do3iFHstUgDbtd7dve
+         LGfxCDkaNJrsrbfiOGIdJwl1uKzKg+AHikqKE4R71VBjqmLOld3UFUM+yHZ4KzJknhX0
+         5gew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702628508; x=1703233308;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TuJawO4SusZv8/FICQYIvQK4zSxUomciGjXfeupkpPM=;
-        b=wkeg5vo36kzcry/EZ4qUBLB7CgrxFVZOO5odiOqcJQ9eRv78hMN/9QasbgBOa+ahc3
-         0ta6bb3++JPqFgjHfQFCwgxqdSqJJQLbd+cqCztJqRglu8HuI3L5nWhZFMze2X7mx+qo
-         KzikTL+PEv76DVgRWfXzhdT6viG4Dw4Hvv31C18vh1Zqm0PUFO8LHXGp2KJNuF/IfVWL
-         DqKPAVEzWJ10E1iya43cic18dn/G6GGMEeivwRqce+B6KXPPUyWXBUq8XlfsNXkSJh0M
-         WXUC5KPMPX9xkUCAi4uhIVn6/TecAfUS7XcU8pXTl4/XBLxPU7tXd/to9uAJSf1oB9EE
-         mfpA==
-X-Gm-Message-State: AOJu0Yzx1W2a3X/rZPEpZs8uQOLY51qzKDFnH13irkAcR5fU21l1fjVI
-	p2PMb5HmmdoiN8zzzaTB3M4aSw==
-X-Google-Smtp-Source: AGHT+IEbe2QkPEqCtjPj/fi/n5kO4uAzZ+iTCV7x1AVruE2cmQ2PU5UDSwoezU/9v/C8IO+qTKl4vg==
-X-Received: by 2002:a05:600c:292:b0:40c:260e:1bf6 with SMTP id 18-20020a05600c029200b0040c260e1bf6mr4922669wmk.192.1702628508089;
-        Fri, 15 Dec 2023 00:21:48 -0800 (PST)
-Received: from 1.. ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id p1-20020a05600c1d8100b0040b47c69d08sm30365570wms.18.2023.12.15.00.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 00:21:47 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com
-Cc: richard@nod.at,
-	jaimeliao@mxic.com.tw,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH 4/4] mtd: spi-nor: drop superfluous debug prints
-Date: Fri, 15 Dec 2023 10:21:38 +0200
-Message-Id: <20231215082138.16063-5-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231215082138.16063-1-tudor.ambarus@linaro.org>
-References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
+        d=1e100.net; s=20230601; t=1702628552; x=1703233352;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ErSPpkKKFAjMcXdmmaCZA2SpqYGJcA4cXAU/CRTyJxQ=;
+        b=r0CAIC/YnzlhBnp1MNnSTcARYN0SDOOVWYPtxRCFDhVB2DYjDlZ5F/F//D/OUsRGcE
+         e7oiHyzNUfKaAJPBEj8RG7k5XBmf7djD+DuxJMsOYLMva+rfiYX4WIWpjy81EyolUzhQ
+         +ScYq2aKrLe34eviuc1+vXW9b+bglcIT1BbgupX27xen3W6ZGIpM5OpUCjtGVbeplbZe
+         14aPWHR5Yr5jg4HnMBsYlToTWpN/19dhMw+nJhJmvbIYgzDxaHUukzlqaiijU+7YcuC+
+         GbXbXNro7c6f87ZGRLTURS4ML70zpuk8n8v17Ikqutyb+u/ElYH1kPQwRCO1ZyyZ9VF8
+         dQGw==
+X-Gm-Message-State: AOJu0YyEyj7+3mY70CJigYyarXFEuUnq6aV9UgiLEKxWd5eULjD7cy56
+	ejTpJZrhwG3bEwAPXpC305Q6OQ==
+X-Google-Smtp-Source: AGHT+IEzCTseGZABorq3FoUt1Q5O2QtsC9AknikOzVMggKVq1ZKYXHm8ojXM9/4LWH+m7s688emSkQ==
+X-Received: by 2002:a17:906:fe4c:b0:a1c:4eee:3521 with SMTP id wz12-20020a170906fe4c00b00a1c4eee3521mr13916195ejb.56.1702628552522;
+        Fri, 15 Dec 2023 00:22:32 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id ry9-20020a1709068d8900b009adc77fe164sm10493875ejc.66.2023.12.15.00.22.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 00:22:32 -0800 (PST)
+Message-ID: <bdfba8a7-9197-4aae-a7f9-6075a375f60b@linaro.org>
+Date: Fri, 15 Dec 2023 09:22:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1327; i=tudor.ambarus@linaro.org; h=from:subject; bh=g4bufmfMS6w03D11CI2uGLsvxqA3io9spWS2c3zko/k=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlfAySTlx2lf9cwP4qqsgz/vxDdsVq7T1ap/JJI BpGZZFzFMiJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZXwMkgAKCRBLVU9HpY0U 6Te1B/0RAVmyu2FL3aavzo1rPOrgqcXWHparU1NyB6HBFb6+5q5BQ2Sglzlrm7fsREvIdcQni3f k/SwZgWKcJ8caUR4mZJJnTTwuV9e+Y3hPkLUNlK74SBOzxZ3UuvugVxykGAvUYjT1vhUixxKLnH p17ELt0f8QR9bxPhHZ8rn/S25uX/36CcDFIrtOK/bdvW6Sbv2q3wZPXfnNlMfZzi2e12t+ok4Mj lMkdls5z5E54mrtjOfxS+isLi1qEOaro8jjw9i4RvgZA9fl1AH5/xssRUE4oCrV7uZYivrvG/nu /e7opM8CRO2jk2kLLEp/XqNtuIuWWYgomUXVDUeeWabi/K4T
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
+ properties
+Content-Language: en-US
+To: Luo Jie <quic_luoj@quicinc.com>, andrew@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
+ p.zabel@pengutronix.de, f.fainelli@gmail.com
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20231215074005.26976-1-quic_luoj@quicinc.com>
+ <20231215074005.26976-15-quic_luoj@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231215074005.26976-15-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The mtd data hall be obtained with the mtd ioctls or with new debugs
-entries if one cares. Drop the debug prints.
+On 15/12/2023 08:40, Luo Jie wrote:
+> The following properties are added for qca8084 PHY.
+> 
+> 1. add the compatible string "ethernet-phy-id004d.d180" since
+>    the PHY device is not accessible during MDIO bus register.
+> 2. add property "qcom,phy-addr-fixup" for customizing MDIO address.
+> 3. add property "qcom,phy-work-mode" for specifying qca8084 PHY
+>    work mode.
+> 4. add the initial clocks and resets.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/core.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+All my previous comments (sent one minute before this patchset :) )
+apply. Please respond to them or implement them in v5 (not earlier than
+after 24h).
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ca5bd93d1f17..a708c3448809 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3561,22 +3561,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	dev_dbg(dev, "Manufacturer and device ID: %*phN\n",
- 		SPI_NOR_MAX_ID_LEN, nor->id);
- 
--	dev_dbg(dev,
--		"mtd .name = %s, .size = 0x%llx (%lldMiB), "
--		".erasesize = 0x%.8x (%uKiB) .numeraseregions = %d\n",
--		mtd->name, (long long)mtd->size, (long long)(mtd->size >> 20),
--		mtd->erasesize, mtd->erasesize / 1024, mtd->numeraseregions);
--
--	if (mtd->numeraseregions)
--		for (i = 0; i < mtd->numeraseregions; i++)
--			dev_dbg(dev,
--				"mtd.eraseregions[%d] = { .offset = 0x%llx, "
--				".erasesize = 0x%.8x (%uKiB), "
--				".numblocks = %d }\n",
--				i, (long long)mtd->eraseregions[i].offset,
--				mtd->eraseregions[i].erasesize,
--				mtd->eraseregions[i].erasesize / 1024,
--				mtd->eraseregions[i].numblocks);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(spi_nor_scan);
--- 
-2.34.1
+
+Best regards,
+Krzysztof
 
 
