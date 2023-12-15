@@ -1,313 +1,162 @@
-Return-Path: <linux-kernel+bounces-1825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FB8881548F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:32:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78F42815493
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:33:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB6E284640
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:32:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D790928584B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D419D1DDF1;
-	Fri, 15 Dec 2023 23:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE741CA9D;
+	Fri, 15 Dec 2023 23:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="gwz+pYhN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HHwb3tb0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4685048CD9;
-	Fri, 15 Dec 2023 23:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
-Received: from [10.0.0.200] (unknown [10.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id 3FF25162D3F;
-	Sat, 16 Dec 2023 00:32:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1702683131;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ElzvIEehOe2/hH4JuDtY9mqYy+h20zjv7jvoQyP7RQU=;
-	b=gwz+pYhNktEttX2XjSBSMTTCBsrqsRpYhSajNabzebjQRn3h7XM3Q4ukBvL+RvgZKp7moZ
-	DhVuhUmk/nlzv2iuBsDg9Jm/X3FsXVsMSv/IJDCAUHZMYrbx3uSTAxJTj0u9nXfJXCLpy/
-	fJMZ8QAGzD6TILV1UHZ7uv5jNm+CRSM=
-Message-ID: <7416d373-15c0-44d6-9008-d5d093ba8752@ixit.cz>
-Date: Sat, 16 Dec 2023 00:32:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59A4495C9;
+	Fri, 15 Dec 2023 23:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b9e2a014e8so981724b6e.2;
+        Fri, 15 Dec 2023 15:33:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702683221; x=1703288021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+hMnTlRGS/PXAXBP5TPslgIi8w7BTIAAQCZQIaoU8eQ=;
+        b=HHwb3tb01uNXh/jLi3nQLIRLGs9CYcAsNVX393SALLkkbB3COBASkv9Y+bhd7BePJh
+         dGNr+v1CkuapkAEHcSzcOi+QnPaWVQzq3HyFNX3nVppEZVqGGmDoT+tGM6oHap8XJdIo
+         NV1WODxhJbmf8Pu6TmEYfkVnImHUfaqlax8OCeBIGSwGxZMwwD2K2/6KPz800c/OFhOA
+         GrLN1mja+Q62SEtWpv4EEg3dXPQA/etDI6JEplsThOxndz5UrrCq3VC1sfqlb1Xn5ym8
+         cVvpeNpiyq+K94qB27gsoJrvKfzNlYcpUcEzYFq1xSVnpYCwS5Fx1CQja3SEUIhPVdvH
+         XUlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702683221; x=1703288021;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+hMnTlRGS/PXAXBP5TPslgIi8w7BTIAAQCZQIaoU8eQ=;
+        b=ZdsaPK11xeq2pZb1owqgC68A3YK+vHPPVUZqktp0XNIljMnsvGpA/aPqfNJaiA5kcp
+         94u+hiHTT+wdxf4Wb456LVMTXUC5UMI7K5xXdu4E4f9FCjgbtNtDvUwmyr/zMV2v/SSm
+         jBdqOhIUgjdoVAfAdq9Tq7T+FQ4SbDyDuH9LlEvSE7IDaf34OCTSswmKnIyVnuj76YtJ
+         s/XVEi8nUDWM4iMH/F/HKiG3pHAVhGuDJTqzD7A4KO1tDK6EptqJ4rplfoNdGhLtd2+4
+         jIPFCGtjNVPcvj+4Ov4hO9aQFQd7oyzh8GF1+KeFAimYS1TAQVxFOindmcx1FafH98N0
+         qc3g==
+X-Gm-Message-State: AOJu0YzAAEIok3dlbD1wKdRSqxn+YEz1H/ZcrPcb+9MN49JyXxE6K+Qk
+	jnX0Mh/bSRIGWRJTFzjTnAVGeUxYIKY=
+X-Google-Smtp-Source: AGHT+IFt6HYJ/TQPfxqy8q2sMFCyk3omOehMQg5P3QqDOGTONmqpvsXvJNqg8cv6+Quv718plUhXwA==
+X-Received: by 2002:a05:6808:6494:b0:3ba:10b1:7a1e with SMTP id fh20-20020a056808649400b003ba10b17a1emr10299294oib.5.1702683221569;
+        Fri, 15 Dec 2023 15:33:41 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id jw20-20020a170903279400b001d36df58ba2sm3463505plb.308.2023.12.15.15.33.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 15:33:41 -0800 (PST)
+Date: Sat, 16 Dec 2023 07:33:37 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl,
+	linus.walleij@linaro.org
+Subject: Re: [PATCH v3 1/5] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+Message-ID: <ZXziUYicXaENTDk_@rigel>
+References: <20231215023805.63289-1-warthog618@gmail.com>
+ <20231215023805.63289-2-warthog618@gmail.com>
+ <ZXyAQq7tVaOFI2Vs@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v3] dt-bindings: iommu: Convert msm,iommu-v0 to yaml
-To: Rob Herring <robh@kernel.org>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson
- <bjorn.andersson@linaro.org>, ~okias/devicetree@lists.sr.ht,
- iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20220108184143.69479-1-david@ixit.cz>
- <Yd44NhcBWh1c4vuV@robh.at.kernel.org>
-Content-Language: en-US
-From: David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- xsFNBF5v1x4BEADS3EddwsNsvVAI1XF8uQKbdYPY/GhjaSLziwVnbwv5BGwqB1tfXoHnccoA
- 9kTgKAbiXG/CiZFhD6l4WCIskQDKzyQN3JhCUIxh16Xyw0lECI7iqoW9LmMoN1dNKcUmCO9g
- lZxQaOl+1bY/7ttd7DapLh9rmBXJ2lKiMEaIpUwb/Nw0d7Enp4Jy2TpkhPywIpUn8CoJCv3/
- 61qbvI9y5utB/UhfMAUXsaAgwEJyGPAqHlC0YZjaTwOu+YQUE3AFzhCbksq95CwDz4U4gdls
- dmv9tkATfu2OmzERZQ6vJTehK0Pu4l5KmCAzYg42I9Dy4E6b17x6NncKbcByQFOXMtG0qVUk
- F1yeeOQUHwu+8t3ZDMBUhCkRL/juuoqLmyDWKMc0hKNNeZ9BNXgB8fXkRLWEUfgDXsFyEkKp
- NxUy5bDRlivf6XfExnikk5kj9l2gGlNQwqROti/46bfbmlmc/a2GM4k8ZyalHNEAdwtXYSpP
- 8JJmlbQ7hNTLkc3HQLRsIocN5th/ur7pPMz1Beyp0gbE9GcOceqmdZQB80vJ01XDyCAihf6l
- AMnzwpXZsjqIqH9r7T7tM6tVEVbPSwPt4eZYXSoJijEBC/43TBbmxDX+5+3txRaSCRQrG9dY
- k3mMGM3xJLCps2KnaqMcgUnvb1KdTgEFUZQaItw7HyRd6RppewARAQABzSBEYXZpZCBIZWlk
- ZWxiZXJnIDxkYXZpZEBpeGl0LmN6PsLBlAQTAQgAPhYhBNd6Cc/u3Cu9U6cEdGACP8TTSSBy
- BQJeb9ceAhsDBQkHhM4ABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEGACP8TTSSByFucP
- /iu03BSrScw/FnyMjDHoQ6fOLNLbMoDFSBZJA5eZl3Fv0M9wcdTjQQrOVl1qDzcO1HeOS8Gz
- 3KFtT49lgvNHYIm1p75Eng4BBBzQ0wxzLL9haSdJlxDGY2VEvDHQ4h8FqhKhPyWUVya741yB
- o/jUSkdqiBvrEVqwK9U7lR/C2B6Yotwhp8i1QdG6qSFZNWDuofMhtMQcYpdEUyC6dteOcRDb
- u1ktBLuYNjUvFSl5/NLzpNNo+bJ/hD4htvpQD0jLg0rtc6TMoP22mzC1zH6e6wITPqyLBvPf
- fAXc31i98DPCRu4vKhQBkHNbxVquDASMepTZUF5Gthzt3mBw/+MkxlR3tCwdx1L+CxCGxjsk
- /GjW3beY/Z77FhOss4fB6AlD/Dq+wxOQlaZr5C8SX7a8FgqRVaIjeoLcRaVfOnLGfZAEGcxe
- ahdUMr1LkVRWuUZxhOJk01JVYp2GzgdGdcvJ8dXfyhMKRhE9VuB/VykEtOlfc41mrCZ6rz3G
- ep4TPTHtClYAohGYNunjoImYYp0ScvlHbtRz8UvRCCRGYMBh5rBhilF2gqLcjaRProon/KVv
- 52kAsTHUqw8Ldf5tPJwPLhV6aFI5DkU9cRoFr8ib3ZGDva5LxZUf1fuiGRyDNXMJmsW5/9Dp
- 3Dt7FUMvZvcrSmPIsZXIQ2QD/mUeuXftINQVzsFNBF5v1x4BEADnlrbta2WL87BlEOotZUh0
- zXANMrNV15WxexsirLetfqbs0AGCaTRNj+uWlTUDJRXOVIwzmF76Us3I2796+Od2ocNpLheZ
- 7EIkq8budtLVd1c06qJ+GMraz51zfgSIazVInNMPk9T6fz0lembji5yEcNPNNBA4sHiFmXfo
- IhepHFOBApjS0CiOPqowYxSTPe/DLcJ/LDwWpTi37doKPhBwlHev1BwVCbrLEIFjY0MLM0aT
- jiBBlyLJaTqvE48gblonu2SGaNmGtkC3VoQUQFcVYDXtlL9CVbNo7BAt5gwPcNqEqkUL60Jh
- FtvVSKyQh6gn7HHsyMtgltjZ3NKjv8S3yQd7zxvCn79tCKwoeNevsvoMq/bzlKxc9QiKaRPO
- aDj3FtW7R/3XoKJBY8Hckyug6uc2qYWRpnuXc0as6S0wfek6gauExUttBKrtSbPPHiuTeNHt
- NsT4+dyvaJtQKPBTbPHkXpTO8e1+YAg7kPj3aKFToE/dakIh8iqUHLNxywDAamRVn8Ha67WO
- AEAA3iklJ49QQk2ZyS1RJ2Ul28ePFDZ3QSr9LoJiOBZv9XkbhXS164iRB7rBZk6ZRVgCz3V6
- hhhjkipYvpJ/fpjXNsVL8jvel1mYNf0a46T4QQDQx4KQj0zXJbC2fFikAtu1AULktF4iEXEI
- rSjFoqhd4euZ+QARAQABwsF8BBgBCAAmFiEE13oJz+7cK71TpwR0YAI/xNNJIHIFAl5v1x4C
- GwwFCQeEzgAACgkQYAI/xNNJIHJTZg/+NqA4kGauw0qAR1bm2VVaDJjajjJerDLr/uMEgBCo
- DXiDu0obZ3XwMDe2ohXxV4L875B7q/lzgWR/YrJNU3CkMFknPZl++gVhkBZ0xQhMs0HsIEgD
- TKgX3bKCIy7niHVMq6S8tYs2eTnK6NEQFWr2Vq6fAT8NjYMhaAbIMvZfz/hCkwzWD5QTejZi
- ulP6Cl4AVa4mun6FzMpHAcXk/NdSgWYO0f7AtW+KzIKKrcT2HcDBGM2OaPuEajHFX/1lyyRO
- LiGcgz9E/5WfzvaBrqWy6CdIzJWtGsOKWMyjry5227UOwqPTqIWAs10XgaYsevES0ljDDA0y
- wX/adCrlOaNQaBcB/bIKjrrsHg+5XnanET7PbB75cDmd0AT0DNeCs/AZXDn2O7gKmPq3GokU
- zCw7l/b5I49Zp1zybEwVy+TYC0e/d05geyjQN7e2i0RcElGaHQ+82iRIJD3cvDfrk4+HPzeE
- 8udw5/rKxFMHhti1wgtklyJBc64JK2vgB6xJz9Zc4WoNnifc8QjyhsQ7K0UI9jykBXrb1ZZO
- DYlcrAqh9Sx4vNTmdi6pJWSsrhDtfmDIw81GIW5pc0QpZPqGeKMi5xEU8se5fQ21DuE5LRKF
- Zd4Uq64igWvLAgHIcJHgNbc5BruuZm9p1+S5SfQGfnOYxJM1PkY/E32H52iV/Babj30=
-In-Reply-To: <Yd44NhcBWh1c4vuV@robh.at.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXyAQq7tVaOFI2Vs@smile.fi.intel.com>
 
-Thank you, sent V4.
-David
-
-On 12/01/2022 03:08, Rob Herring wrote:
-> On Sat, Jan 08, 2022 at 07:41:42PM +0100, David Heidelberg wrote:
->> Convert Qualcomm IOMMU v0 implementation to yaml format.
->>
->> Signed-off-by: David Heidelberg <david@ixit.cz>
->> ---
->> v2:
->>   - fix wrong path in binding $id
->>   - comment qcom,mdp4 node example (we don't want to validate it yet)
->>
->> v3:
->>   - I kept the name as -v0, since we have other binding -v1 and it look
->>     good, I can change thou in v4 if requested.
-> The preference is to use compatible strings for filenames. There's
-> little reason not to do that here.
+On Fri, Dec 15, 2023 at 06:35:14PM +0200, Andy Shevchenko wrote:
+> On Fri, Dec 15, 2023 at 10:38:01AM +0800, Kent Gibson wrote:
+> > Store the debounce period for a requested line locally, rather than in
+> > the debounce_period_us field in the gpiolib struct gpio_desc.
+> >
+> > Add a global tree of lines containing supplemental line information
+> > to make the debounce period available to be reported by the
+> > GPIO_V2_GET_LINEINFO_IOCTL and the line change notifier.
 >
->>   - dropped non-existent smmu_clk part (and adjusted example, which was
->>     using it)
->>   - dropped iommu description
->>   - moved iommu-cells description to the property #iommu-cells
->> Signed-off-by: David Heidelberg <david@ixit.cz>
->> ---
->>   .../bindings/iommu/msm,iommu-v0.txt           | 64 -------------
->>   .../bindings/iommu/qcom,iommu-v0.yaml         | 91 +++++++++++++++++++
->>   2 files changed, 91 insertions(+), 64 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
->>   create mode 100644 Documentation/devicetree/bindings/iommu/qcom,iommu-v0.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt b/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
->> deleted file mode 100644
->> index 20236385f26e..000000000000
->> --- a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
->> +++ /dev/null
->> @@ -1,64 +0,0 @@
->> -* QCOM IOMMU
->> -
->> -The MSM IOMMU is an implementation compatible with the ARM VMSA short
->> -descriptor page tables. It provides address translation for bus masters outside
->> -of the CPU, each connected to the IOMMU through a port called micro-TLB.
->> -
->> -Required Properties:
->> -
->> -  - compatible: Must contain "qcom,apq8064-iommu".
->> -  - reg: Base address and size of the IOMMU registers.
->> -  - interrupts: Specifiers for the MMU fault interrupts. For instances that
->> -    support secure mode two interrupts must be specified, for non-secure and
->> -    secure mode, in that order. For instances that don't support secure mode a
->> -    single interrupt must be specified.
->> -  - #iommu-cells: The number of cells needed to specify the stream id. This
->> -		  is always 1.
->> -  - qcom,ncb:	  The total number of context banks in the IOMMU.
->> -  - clocks	: List of clocks to be used during SMMU register access. See
->> -		  Documentation/devicetree/bindings/clock/clock-bindings.txt
->> -		  for information about the format. For each clock specified
->> -		  here, there must be a corresponding entry in clock-names
->> -		  (see below).
->> -
->> -  - clock-names	: List of clock names corresponding to the clocks specified in
->> -		  the "clocks" property (above).
->> -		  Should be "smmu_pclk" for specifying the interface clock
->> -		  required for iommu's register accesses.
->> -		  Should be "smmu_clk" for specifying the functional clock
->> -		  required by iommu for bus accesses.
->> -
->> -Each bus master connected to an IOMMU must reference the IOMMU in its device
->> -node with the following property:
->> -
->> -  - iommus: A reference to the IOMMU in multiple cells. The first cell is a
->> -	    phandle to the IOMMU and the second cell is the stream id.
->> -	    A single master device can be connected to more than one iommu
->> -	    and multiple contexts in each of the iommu. So multiple entries
->> -	    are required to list all the iommus and the stream ids that the
->> -	    master is connected to.
->> -
->> -Example: mdp iommu and its bus master
->> -
->> -                mdp_port0: iommu@7500000 {
->> -			compatible = "qcom,apq8064-iommu";
->> -			#iommu-cells = <1>;
->> -			clock-names =
->> -			    "smmu_pclk",
->> -			    "smmu_clk";
->> -			clocks =
->> -			    <&mmcc SMMU_AHB_CLK>,
->> -			    <&mmcc MDP_AXI_CLK>;
->> -			reg = <0x07500000 0x100000>;
->> -			interrupts =
->> -			    <GIC_SPI 63 0>,
->> -			    <GIC_SPI 64 0>;
->> -			qcom,ncb = <2>;
->> -		};
->> -
->> -		mdp: qcom,mdp@5100000 {
->> -			compatible = "qcom,mdp";
->> -			...
->> -			iommus = <&mdp_port0 0
->> -				  &mdp_port0 2>;
->> -		};
->> diff --git a/Documentation/devicetree/bindings/iommu/qcom,iommu-v0.yaml b/Documentation/devicetree/bindings/iommu/qcom,iommu-v0.yaml
->> new file mode 100644
->> index 000000000000..a506e8ad8902
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/iommu/qcom,iommu-v0.yaml
->> @@ -0,0 +1,91 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +
->> +$id: "http://devicetree.org/schemas/iommu/qcom,iommu-v0.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: Qualcomm IOMMU for APQ8064
->> +
->> +maintainers:
->> +  - Will Deacon <will@kernel.org>
->> +
->> +description: >
->> +  The MSM IOMMU is an implementation compatible with the ARM VMSA short
->> +  descriptor page tables. It provides address translation for bus masters
->> +  outside of the CPU, each connected to the IOMMU through a port called micro-TLB.
->> +
->> +properties:
->> +  compatible:
->> +    const: qcom,apq8064-iommu
->> +
->> +  clocks:
->> +    items:
->> +      - description: interface clock for register accesses
->> +      - description: functional clock for bus accesses
->> +
->> +  clock-names:
->> +    items:
->> +      - const: smmu_pclk
->> +      - const: iommu_clk
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    description: Specifiers for the MMU fault interrupts.
->> +    minItems: 1
->> +    items:
->> +      - description: non-secure mode interrupt
->> +      - description: secure mode interrupt (for instances which supports it)
->> +
->> +  "#iommu-cells":
->> +    const: 1
->> +    description: |
->> +      The first cell is a phandle to the IOMMU and
->> +      the second cell is the stream id.
->> +      A single master device can be connected to more than one iommu
->> +      and multiple contexts in each of the iommu.
->> +      So multiple entries are required to list all the iommus and
->> +      the stream ids that the master is connected to.
->> +
->> +  qcom,ncb:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: The total number of context banks in the IOMMU.
->> +
->> +required:
->> +  - clocks
->> +  - clock-names
->> +  - reg
->> +  - interrupts
->> +  - qcom,ncb
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/qcom,mmcc-msm8960.h>
->> +
->> +    mdp_port0: iommu@7500000 {
->> +            compatible = "qcom,apq8064-iommu";
->> +            #iommu-cells = <1>;
->> +            clock-names =
->> +                "smmu_pclk",
->> +                "iommu_clk";
->> +            clocks =
->> +                <&clk SMMU_AHB_CLK>,
->> +                <&clk MDP_AXI_CLK>;
->> +            reg = <0x07500000 0x100000>;
->> +            interrupts =
->> +                <0 63 0>,
->> +                <0 64 0>;
->> +            qcom,ncb = <2>;
->> +    };
->> +
->> +    /* mdp: mdp@5100000 {
->> +            compatible = "qcom,mdp4";
->> +            ...
->> +
->> +            iommus = <&mdp_port0 0
->> +                      &mdp_port0 2>;
->> +    };*/
->> -- 
->> 2.34.1
->>
->>
--- 
-David Heidelberg
+> LGTM, a few minor comments below.
+>
+> ...
+>
+> > +/*
+>
+> (now you can have a kernel doc :-)
+>
 
+Maybe you can, but I can't.
+
+> > + * a rbtree of the struct lines containing supplemental info.
+> > + * Used to populate gpio_v2_line_info with cdev specific fields not contained
+> > + * in the struct gpio_desc.
+> > + * A line is determined to contain supplemental information by
+> > + * line_is_supplemental().
+> > + */
+> > +static struct rb_root supinfo_tree = RB_ROOT;
+> > +/* covers supinfo_tree */
+> > +DEFINE_SPINLOCK(supinfo_lock);
+>
+> Shouldn't this also be static?
+>
+
+Indeed.
+
+> ...
+>
+> > +	guard(spinlock)(&supinfo_lock);
+>
+> + cleanup.h ?
+>
+
+Bah, I could've sworn I added that in, but it isn't evident in any of
+the patches all the way back to v1, so apparently not.
+
+> ...
+>
+> > +static void supinfo_to_lineinfo(struct gpio_desc *desc,
+> > +				struct gpio_v2_line_info *info)
+> > +{
+> > +	struct gpio_v2_line_attribute *attr;
+> > +	struct line *line;
+> > +
+> > +	guard(spinlock)(&supinfo_lock);
+> > +
+> > +	line = supinfo_find(desc);
+> > +	if (line) {
+>
+> 	if (!line)
+> 		return;
+>
+> ?
+
+Will do.
+
+>
+> > +		attr = &info->attrs[info->num_attrs];
+> > +		attr->id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
+> > +		attr->debounce_period_us = READ_ONCE(line->debounce_period_us);
+> > +		info->num_attrs++;
+> > +	}
+> > +}
+>
+
+Cheers,
+Kent.
+
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
