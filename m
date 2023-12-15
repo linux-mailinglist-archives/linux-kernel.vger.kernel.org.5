@@ -1,183 +1,597 @@
-Return-Path: <linux-kernel+bounces-342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26590813FB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:27:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E6A4813FBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:28:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A9CEB21846
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:27:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E43BE1C22119
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763025692;
-	Fri, 15 Dec 2023 02:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A0BD271;
+	Fri, 15 Dec 2023 02:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MfmYIxjU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NI7jLaYV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC38566C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:27:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702607253; x=1734143253;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=w40oMiM8HvxOsbD7iatE1wVOY0HtTP2Fue7xs+msWrk=;
-  b=MfmYIxjUovWG70vLr86sKBAO0n+9zhcuyHWUQRDHK+cjYuN5JS7eIN/W
-   55gQgj3vTk3ScRstQrcdynPxfnjPc+fuy0ob1QaYPdz+RDOi8VDDZgZyQ
-   A4ZSMf1Zkde+y2hRKe1yI9+RE5dSqIioQnn/HiAVAk1LKtPpNGHewoKqW
-   QyBTZgqJ3DCfhFo4IsuNOpVhwl5cXjJjtUMHxH+XhX0dtAsxq8/VWlrrf
-   XDK9Dva04ZQurqYOh4cpUcLZ1XZRcLUK/g550bND3kGfm3TsKwwQwzFcz
-   p1SmAEAdryQ0MmVk+Y4OP/FRHQo3O44mzoL0LlZ77ewqnjgBQP9KAiK6b
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="392396246"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="392396246"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 18:27:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1021784952"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="1021784952"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Dec 2023 18:27:28 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 18:27:28 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 18:27:27 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Dec 2023 18:27:27 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Dec 2023 18:27:25 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SyONV3pJ6g8GdoNBdKGuDTgC0ntOh8P7cknmk0/v7VGApmdfD7ipW6S0xVSF5HYU8wVuEdlw/Z2E9kgzjDZrrlQXTiHKC+q+r/0O2MiRB1rI7d/XWzieN3JwjlyfdHd2Kxc1AujxmRgspgGINcyXj9D3X6ys6HtSi1QIQIXt4/b2/uuAROfB2LZAGEnvQcsdilUtCoU9zyAGvWRVkY0mGRbYHJczz2Pqa3Xm+XnbE8OJ2FdHmXSi+eN+tq+h2FIuOvYjDppYgZpOAJ+kdwauh/JVdnSSje9a6gFchz18pGk98EfxzQgrNH6gBR5Nku0x5/5CjVcV1q1cQiBhpxnh2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pNVBU0M5h30ljDTcWRScfWgLj65SUItsu3gOavCi2E4=;
- b=eJY19hp1/c+5SQYzeBuppCmZg800VWTN0k6kMAfCxEmq9xXAYJal599ks5VdHdY//fqYi8ac15QtPj0erb9vb915+lkQ0DYSBztvUz9xSDlsJyZpMIaqAT6UF84UZIMeviYqRWdDSwNH4WCT2RTzgF7oepAnMr0qs19QAUethIriF9PGAqDkVcK/G1ZJsHuD3jzzkKJNSaIapfJ5RpBdPlmW274LKRAk521RgnTDbD0lbAwJjgzaaM5hup2Erb79XASxO4iiI0ZXtVf23DZZLlsQh6KmqLDPMlDBO0eXRpWnElHwLF494pggEO1Z9jxqNj/byKNizmEvHnBZ5LX6hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by SN7PR11MB7017.namprd11.prod.outlook.com (2603:10b6:806:2ac::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
- 2023 02:27:18 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::3d83:82ce:9f3b:7e20]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::3d83:82ce:9f3b:7e20%5]) with mapi id 15.20.7091.028; Fri, 15 Dec 2023
- 02:27:18 +0000
-Message-ID: <3bc7d3b5-7b15-4b14-ab2b-20968249818a@intel.com>
-Date: Fri, 15 Dec 2023 10:27:15 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 15/39] mm/huge_memory: batch rmap operations in
- __split_huge_pmd_locked()
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, <linux-kernel@vger.kernel.org>
-CC: <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, "Matthew
- Wilcox (Oracle)" <willy@infradead.org>, Hugh Dickins <hughd@google.com>, Ryan
- Roberts <ryan.roberts@arm.com>, Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>, Peter Xu <peterx@redhat.com>
-References: <20231211155652.131054-1-david@redhat.com>
- <20231211155652.131054-16-david@redhat.com>
-From: "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <20231211155652.131054-16-david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0043.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::19) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716FDD27A
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:28:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D716C433C8;
+	Fri, 15 Dec 2023 02:27:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702607280;
+	bh=LKhZmhK8dxpQVXI4g/E2whYdI4eYyBYI9DOepnwP4Kc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NI7jLaYVjBmS/7UNQHlgttPWjC+228ZuALuwWVtWFjANc8AxTYyWDjfwWFcS5GpNG
+	 4DXfa4kSiMoz/WZ6uxinifkWhrYo67m9Xa4nsr5mlR2VxNWIzMZC2vlEG3H/CbQhw4
+	 cDAASvNWV016cz+EDTe7rrN6xME6ccoRI3/jJ6QIuHlbuyryqh7eIfB20IqrMvP87R
+	 J/1/ZVlrzrHpf8TMSoXCezWL/ovo53WWq+JaI2lK7prtRz22hLgzyiK+a0OMq2/qB6
+	 hymb9R/h1NBxL4vO1Nbfpc4xWStZ+8/7R3FQAaI2TQ88QbxqRNyp0iq2d2AFw9Pd9w
+	 RbKJ0d21Gq2+Q==
+Message-ID: <6a133254-b086-4557-be2a-65fe1637efd3@kernel.org>
+Date: Fri, 15 Dec 2023 10:27:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|SN7PR11MB7017:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99f97810-6d92-443c-c7e7-08dbfd155c11
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vd87UX7fq2RjroYFqd5VGOlwCFTjCB7EmyoXP2/R0eyPqRoDzV4gGJHxJFWOd5vpW9AAJEYqLJeuuWSycPVZ/sdzaXa5LJsVeoFy+YsabjWZHa3+RT+OfnFtOkIXZG8j9QVTAQ7FpuqZKMu0Zi2qqaubEJSQYzp1SzTCV8gPQOBFWimlY2L+Irzbbhsek2pyP8QS3MGy/a+dU5DlVqwe4ANHcbwqBxxYqZIrTRAMobORLwRjs30PABgT9qRVtmOHBVmPCtsXCYd8AZT/g6TrGekPtNDHlxTfv2+VF0dIdk0qIHZImqtQnwyFux+fDFgIRU2AuyaFKvIwAlWxwWsuOdsy29Ru5SQEae86ax4OVGBqRlRzU2cruBR1WctzjQoSzwBDkTk+L7ax3XTjCNKL2X7kDU7Fnil26GRcyr9kyNSIIYTXcwlPgfcbvc8Ylov90oqCArK2zQ+EdDgCuYadH6JStgdJP69umGqgQbUmUQRS/BE1G/qFykzFFlUCVdQuxU/4E4JCjHQDFoyqTChM+pTwZySGaR4PwjCYzcSrQ4KoGSWwWGBi9pgI/NV7F4Wzi61h+Xo7uA95z+cBpsA7YpDnr9zg4cyvix39keqQRvqQgjY0Q48OiIMLILCE0wopU7H43IbN5rnBWCv1csK+VrHpCZ70HwdZ7bo3acVk3uo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(396003)(346002)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(54906003)(478600001)(6486002)(6506007)(7416002)(5660300002)(2616005)(26005)(66946007)(66476007)(66556008)(6512007)(6666004)(31686004)(53546011)(316002)(8676002)(8936002)(4326008)(2906002)(86362001)(31696002)(41300700001)(82960400001)(4744005)(38100700002)(36756003)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R3NoS3FPejdDWWZ2MTJGdkI2ajYxTkN4VHF5QldPSTBqMnRrNG14dTFFS1g1?=
- =?utf-8?B?VVZibndRY1ZuS3cxNDR0SjZkekRhWHhxcDFoMTVOTWYxYjJ1OG9EdmdZekkw?=
- =?utf-8?B?OWMycGZQTzF0aG5laGEwemdpb0FtSDMrL0Z1K3ZmZ3BSd285WmNqQ1JIS0Iw?=
- =?utf-8?B?MUNCbnRFejBkek51dFFiOFpPRnFzclNHNUxOcHU3by9OY2Ewa3JXcGJValdZ?=
- =?utf-8?B?MGhPbWV6WEZ0Q3l3YzE1eXBTRFpKWXhGbkl2Y1V6b3JLdC9XSWRxaFdEdnZv?=
- =?utf-8?B?blZ4RUEyRzZLRGhhMVVaZkcxVmFqNFdxVmhiRGZTc1lEWXB4Rjk0QTJaRUVE?=
- =?utf-8?B?ZzB2cVY1SU1Xa0lMMU5Za0dram55UVlQYVZpdzNHNHd0S0JkTG1xS0dKMm8x?=
- =?utf-8?B?S3dFNDRLOFdOQ2lLRFYxNHU3OFdMR0xTUGZMR3hFN0I3akdiZDB0S2lFNDRK?=
- =?utf-8?B?aEdMYjBSSHFzYjVpMEgrSW5sYWhvREozUk1rWHpJN0xyM2E2bU12c1VSZnVE?=
- =?utf-8?B?V0tlZ2lqYkRUcWtUUGR1S01IdkRzRlNEOStUT2YvL0gxVFlCOWJDRVdmMVh4?=
- =?utf-8?B?WENkVlRJanhIVDlRNy9JbzcweFcyZGZOeEJLSTJCZmJ5QUozZkY5Yjhhc09U?=
- =?utf-8?B?dlkrbjMyY05LWFVuYjk3NWtXcHVGWnRyb0ZDV1E0YnhIazRTdE9iYUhxcE5o?=
- =?utf-8?B?Z3lXaHhVTGZvMERsOTNvckRXRVk5M25nVGZaMElqOTVhSXNzR0hiMkFUdCt0?=
- =?utf-8?B?b0xPemFueEl1di9YaHVWb01XNmxzREF6eEZuZzNaTEFJTlRCUnhMOTlSNGpl?=
- =?utf-8?B?S2VqTm1ldkZmdWlTK252RHJucVlhdVJxS1k5cmpPL0FYSTdnczhxZkZGRVJI?=
- =?utf-8?B?c3Y0VlJndDZDT3VRbFFhM3FlTkxmTDA5Q1BHNTB0MmluUkkya1RaYnp3WXY2?=
- =?utf-8?B?R3BSUHM0c2VOMzg0S0NrYXRXY2FZYWRjdUxYM0hoeElJaUQ1MjNTOTBXeTc3?=
- =?utf-8?B?YngzR1FmQmpRd3l1SHlzMzY5Q1dCeUVFUm1xOWFyWGwwc095Ym5XVldhSmsr?=
- =?utf-8?B?djJyYy93eG13OXQvUTZZaUR0Q2FETWNvTWlXMHpMYlJCK1BZam5lbFAvR2Uz?=
- =?utf-8?B?c1Y3cERXTjdBazVXV0dTRlZod3FBVGRENHZta2NsZ3E4RjJJWmZYQm9wVENN?=
- =?utf-8?B?U1AzUmMwWjR6bTRnY3Y5YUNQaS9HM2JYdFdFVldyWUpMa0NHV2Z2YTJSV24z?=
- =?utf-8?B?RnRLRXVZM0RscmRvaVVnb01wNDFhbGZYM3RLbUJpelhFTjQ2b0pmU3FYUlhZ?=
- =?utf-8?B?VkVXVnU4djgxejArREJFTFV2d2h1MVNFWGRiR1ZnTEoxSzVUNDNjb01naitR?=
- =?utf-8?B?T1RHdkRjZ2U2TnUwUVNBKzI5N0FoMlBzZ0pWSld1SVJnTnBLNW50UFFzbjkv?=
- =?utf-8?B?UktPY3lKdG9BdGYrVGpDcnBVbHJvdVoydmdobEJGSFpENytnRlhwZ2FJQmNv?=
- =?utf-8?B?bmtQdGsycTRKQmU0Z1ZkaXIwN2NhSnNseG94a0dtUmZpc1VEelg2OTRVblMr?=
- =?utf-8?B?ZG1WMG5RM1dOaElGM1Zqa0NtV2E3NnI3bEZwMmR1M2dBL0NudjVLdEduN0ps?=
- =?utf-8?B?UloyQmk3Zk5hU2VXSjdvQ2lXalFqOW1lV0dSVVRXVFFUSnJsUXFwb1BlQzA1?=
- =?utf-8?B?MHFPcVhXdnYrOEd0TkRMVTN2ckVTVmU3ZS9aQnZOYlIxeDNzNUlXR2piL09V?=
- =?utf-8?B?V3FGeXlaczJRUGtMbHFxKzBmWU0xY2ZJdjZkR21ENEFOcHNYY3ZTWEN1MzFS?=
- =?utf-8?B?QWlYcjJheGVWajFjSHRyUU9HbVlCQkhuLzBBOHBFa3JwRUVWNHIxYlcrRzJ6?=
- =?utf-8?B?OGdITDcwdFhXSHdUUlRYK2FaMVhVWlpXeWRwZHljUmQyYWZkaGJyaGMyOTRN?=
- =?utf-8?B?WVd2QVRJTDBPY1JCcGErQ1c1Z0VBUlhrZ2NnckN0bTNSNUczWGdtOFdpWU1P?=
- =?utf-8?B?T0VrWkZlQVZoQnNZNEtZdTRORkJVMW9aendYajFqS0p6bWQ2enBUb2k3RVVu?=
- =?utf-8?B?UFpYY0FKK1hTcHhieFBiL3VabDdHSHRtK3EyS003ZWlvNnZYbVdaNzE3NHU0?=
- =?utf-8?Q?vWopvejxGUcBUn3Cp21kCbT6E?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99f97810-6d92-443c-c7e7-08dbfd155c11
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 02:27:18.6410
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QXa/vpR9M4W3jnxVvM0pE+ceSxCNVuNvNnbaI83XXqXCYhUjIqTho5FDbI8GR73s95tYWsNVmC+gwXwRpDITQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7017
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] f2fs: unify the error handling of
+ f2fs_is_valid_blkaddr
+Content-Language: en-US
+To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ niuzhiguo84@gmail.com, ke.wang@unisoc.com
+References: <1702358603-26270-1-git-send-email-zhiguo.niu@unisoc.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <1702358603-26270-1-git-send-email-zhiguo.niu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2023/12/12 13:23, Zhiguo Niu wrote:
+> unify the error handling of ERROR_INVALID_BLKADDR in f2fs_is_valid_blkaddr
+> and remove some redundant codes in f2fs_cache_compressed_page.
+> 
+> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> ---
+> changes of v2: improve patch according Chao's suggestions.
+> ---
+> ---
+>   fs/f2fs/checkpoint.c   | 43 +++++++++++++++++++++++--------------------
+>   fs/f2fs/compress.c     |  4 ----
+>   fs/f2fs/data.c         | 24 ++++--------------------
+>   fs/f2fs/extent_cache.c |  7 ++-----
+>   fs/f2fs/f2fs.h         |  5 ++---
+>   fs/f2fs/file.c         | 17 +++++------------
+>   fs/f2fs/gc.c           |  2 --
+>   fs/f2fs/inode.c        |  5 ++---
+>   fs/f2fs/node.c         |  2 +-
+>   fs/f2fs/recovery.c     | 13 ++++++-------
+>   fs/f2fs/segment.c      |  2 --
+>   11 files changed, 45 insertions(+), 79 deletions(-)
+> 
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index b0597a5..d8ff056 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -154,19 +154,17 @@ static bool __is_bitmap_valid(struct f2fs_sb_info *sbi, block_t blkaddr,
+>   	if (unlikely(f2fs_cp_error(sbi)))
+>   		return exist;
+>   
+> -	if (exist && type == DATA_GENERIC_ENHANCE_UPDATE) {
+> -		f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
+> -			 blkaddr, exist);
+> -		set_sbi_flag(sbi, SBI_NEED_FSCK);
+> -		return exist;
+> -	}
+> +	if ((exist && type == DATA_GENERIC_ENHANCE_UPDATE) ||
+> +			(!exist && type == DATA_GENERIC_ENHANCE))
+> +		goto err;
+>   
+> -	if (!exist && type == DATA_GENERIC_ENHANCE) {
+> -		f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
+> -			 blkaddr, exist);
+> -		set_sbi_flag(sbi, SBI_NEED_FSCK);
+> -		dump_stack();
+> -	}
+> +	return exist;
+> +err:
+> +	f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
+> +		blkaddr, exist);
+> +	set_sbi_flag(sbi, SBI_NEED_FSCK);
+> +	dump_stack();
+> +	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   	return exist;
+>   }
+>   
+> @@ -174,29 +172,29 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+>   					block_t blkaddr, int type)
+>   {
+>   	if (time_to_inject(sbi, FAULT_BLKADDR))
+> -		return false;
+> +		goto err;
+>   
+>   	switch (type) {
+>   	case META_NAT:
+>   		break;
+>   	case META_SIT:
+>   		if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
+> -			return false;
+> +			goto err;
+>   		break;
+>   	case META_SSA:
+>   		if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
+>   			blkaddr < SM_I(sbi)->ssa_blkaddr))
+> -			return false;
+> +			goto err;
+>   		break;
+>   	case META_CP:
+>   		if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
+>   			blkaddr < __start_cp_addr(sbi)))
+> -			return false;
+> +			goto err;
+>   		break;
+>   	case META_POR:
+>   		if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
+>   			blkaddr < MAIN_BLKADDR(sbi)))
+> -			return false;
+> +			goto err;
+>   		break;
+>   	case DATA_GENERIC:
+>   	case DATA_GENERIC_ENHANCE:
+> @@ -213,7 +211,7 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+>   				  blkaddr);
+>   			set_sbi_flag(sbi, SBI_NEED_FSCK);
+>   			dump_stack();
+> -			return false;
+> +			goto err;
+>   		} else {
+>   			return __is_bitmap_valid(sbi, blkaddr, type);
+>   		}
+> @@ -221,13 +219,16 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+>   	case META_GENERIC:
+>   		if (unlikely(blkaddr < SEG0_BLKADDR(sbi) ||
+>   			blkaddr >= MAIN_BLKADDR(sbi)))
+> -			return false;
+> +			goto err;
+>   		break;
+>   	default:
+>   		BUG();
+>   	}
+>   
+>   	return true;
+> +err:
+> +	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+> +	return false;
+>   }
+>   
+>   /*
+> @@ -256,8 +257,10 @@ int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
+>   	blk_start_plug(&plug);
+>   	for (; nrpages-- > 0; blkno++) {
+>   
+> -		if (!f2fs_is_valid_blkaddr(sbi, blkno, type))
+> +		if (!f2fs_is_valid_blkaddr(sbi, blkno, type)) {
+> +			err = -EFSCORRUPTED;
+>   			goto out;
+> +		}
+>   
+>   		switch (type) {
+>   		case META_NAT:
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 36e5dab..bd5acb5 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -1878,12 +1878,8 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>   
+>   	set_page_private_data(cpage, ino);
+>   
+> -	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> -		goto out;
+> -
+>   	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+>   	SetPageUptodate(cpage);
+> -out:
+>   	f2fs_put_page(cpage, 1);
+>   }
+>   
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 4e42b5f..14b6ea2 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -740,10 +740,8 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
+>   
+>   	if (!f2fs_is_valid_blkaddr(fio->sbi, fio->new_blkaddr,
+>   			fio->is_por ? META_POR : (__is_meta_io(fio) ?
+> -			META_GENERIC : DATA_GENERIC_ENHANCE))) {
+> -		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
+> +			META_GENERIC : DATA_GENERIC_ENHANCE)))
+>   		return -EFSCORRUPTED;
+> -	}
+>   
+>   	trace_f2fs_submit_page_bio(page, fio);
+>   
+> @@ -948,10 +946,8 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+>   			fio->encrypted_page : fio->page;
+>   
+>   	if (!f2fs_is_valid_blkaddr(fio->sbi, fio->new_blkaddr,
+> -			__is_meta_io(fio) ? META_GENERIC : DATA_GENERIC)) {
+> -		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
+> +			__is_meta_io(fio) ? META_GENERIC : DATA_GENERIC))
+>   		return -EFSCORRUPTED;
+> -	}
+>   
+>   	trace_f2fs_submit_page_bio(page, fio);
+>   
+> @@ -1293,8 +1289,6 @@ struct page *f2fs_get_read_data_page(struct inode *inode, pgoff_t index,
+>   		if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), dn.data_blkaddr,
+>   						DATA_GENERIC_ENHANCE_READ)) {
+>   			err = -EFSCORRUPTED;
+> -			f2fs_handle_error(F2FS_I_SB(inode),
+> -						ERROR_INVALID_BLKADDR);
+>   			goto put_err;
+>   		}
+>   		goto got_it;
+> @@ -1320,8 +1314,6 @@ struct page *f2fs_get_read_data_page(struct inode *inode, pgoff_t index,
+>   						dn.data_blkaddr,
+>   						DATA_GENERIC_ENHANCE)) {
+>   		err = -EFSCORRUPTED;
+> -		f2fs_handle_error(F2FS_I_SB(inode),
+> -					ERROR_INVALID_BLKADDR);
+>   		goto put_err;
+>   	}
+>   got_it:
+> @@ -1651,7 +1643,6 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+>   	if (!is_hole &&
+>   	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE)) {
+>   		err = -EFSCORRUPTED;
+> -		f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   		goto sync_out;
+>   	}
+>   
+> @@ -2175,8 +2166,6 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
+>   		if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), block_nr,
+>   						DATA_GENERIC_ENHANCE_READ)) {
+>   			ret = -EFSCORRUPTED;
+> -			f2fs_handle_error(F2FS_I_SB(inode),
+> -						ERROR_INVALID_BLKADDR);
+>   			goto out;
+>   		}
+>   	} else {
+> @@ -2309,7 +2298,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>   			break;
+>   
+>   		if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC)) {
+> -			ret = -EFAULT;
+> +			ret = -EFSCORRUPTED;
+>   			goto out_put_dnode;
+>   		}
+>   		cc->nr_cpages++;
+> @@ -2719,11 +2708,8 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
+>   	    f2fs_lookup_read_extent_cache_block(inode, page->index,
+>   						&fio->old_blkaddr)) {
+>   		if (!f2fs_is_valid_blkaddr(fio->sbi, fio->old_blkaddr,
+> -						DATA_GENERIC_ENHANCE)) {
+> -			f2fs_handle_error(fio->sbi,
+> -						ERROR_INVALID_BLKADDR);
+> +						DATA_GENERIC_ENHANCE))
+>   			return -EFSCORRUPTED;
+> -		}
+>   
+>   		ipu_force = true;
+>   		fio->need_lock = LOCK_DONE;
+> @@ -2751,7 +2737,6 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
+>   		!f2fs_is_valid_blkaddr(fio->sbi, fio->old_blkaddr,
+>   						DATA_GENERIC_ENHANCE)) {
+>   		err = -EFSCORRUPTED;
+> -		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
+>   		goto out_writepage;
+>   	}
+>   
+> @@ -3718,7 +3703,6 @@ static int f2fs_write_begin(struct file *file, struct address_space *mapping,
+>   		if (!f2fs_is_valid_blkaddr(sbi, blkaddr,
+>   				DATA_GENERIC_ENHANCE_READ)) {
+>   			err = -EFSCORRUPTED;
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   			goto fail;
+>   		}
+>   		err = f2fs_submit_page_read(use_cow ?
+> diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
+> index ad8dfac7..99d0442 100644
+> --- a/fs/f2fs/extent_cache.c
+> +++ b/fs/f2fs/extent_cache.c
+> @@ -43,7 +43,6 @@ bool sanity_check_extent_cache(struct inode *inode)
+>   	if (!f2fs_is_valid_blkaddr(sbi, ei->blk, DATA_GENERIC_ENHANCE) ||
+>   	    !f2fs_is_valid_blkaddr(sbi, ei->blk + ei->len - 1,
+>   					DATA_GENERIC_ENHANCE)) {
+> -		set_sbi_flag(sbi, SBI_NEED_FSCK);
+>   		f2fs_warn(sbi, "%s: inode (ino=%lx) extent info [%u, %u, %u] is incorrect, run fsck to fix",
+>   			  __func__, inode->i_ino,
+>   			  ei->blk, ei->fofs, ei->len);
+> @@ -856,10 +855,8 @@ static int __get_new_block_age(struct inode *inode, struct extent_info *ei,
+>   		goto out;
+>   
+>   	if (__is_valid_data_blkaddr(blkaddr) &&
+> -	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE)) {
+> -		f2fs_bug_on(sbi, 1);
+> -		return -EINVAL;
+> -	}
+> +	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
+> +		return -EFSCORRUPTED;
+>   out:
+>   	/*
+>   	 * init block age with zero, this can happen when the block age extent
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 9043ced..e36630c 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -3454,14 +3454,13 @@ static inline int get_inline_xattr_addrs(struct inode *inode)
+>   
+>   bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+>   					block_t blkaddr, int type);
+> +
+>   static inline void verify_blkaddr(struct f2fs_sb_info *sbi,
+>   					block_t blkaddr, int type)
+>   {
+> -	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, type)) {
+> +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, type))
+>   		f2fs_err(sbi, "invalid blkaddr: %u, type: %d, run fsck to fix.",
+>   			 blkaddr, type);
+> -		f2fs_bug_on(sbi, 1);
 
+It looks like an impossible case, how about keeping this f2fs_bug_on()?
 
-On 12/11/2023 11:56 PM, David Hildenbrand wrote:
-> Let's use folio_add_anon_rmap_ptes(), batching the rmap operations.
-> 
-> While at it, use more folio operations (but only in the code branch we're
-> touching), use VM_WARN_ON_FOLIO(), and pass RMAP_EXCLUSIVE instead of
-> manually setting PageAnonExclusive.
-> 
-> We should never see non-anon pages on that branch: otherwise, the
-> existing page_add_anon_rmap() call would have been flawed already.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+> -	}
+>   }
+>   
+>   static inline bool __is_valid_data_blkaddr(block_t blkaddr)
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index e503635..3d193a3 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -416,7 +416,7 @@ static loff_t f2fs_seek_block(struct file *file, loff_t offset, int whence)
+>   	pgoff_t pgofs, end_offset;
+>   	loff_t data_ofs = offset;
+>   	loff_t isize;
+> -	int err = 0;
+> +	int err = -ENXIO;
+>   
+>   	inode_lock(inode);
+>   
+> @@ -466,6 +466,7 @@ static loff_t f2fs_seek_block(struct file *file, loff_t offset, int whence)
+>   				!f2fs_is_valid_blkaddr(F2FS_I_SB(inode),
+>   					blkaddr, DATA_GENERIC_ENHANCE)) {
+>   				f2fs_put_dnode(&dn);
+> +				err = -EFSCORRUPTED;
+>   				goto fail;
+>   			}
+>   
+> @@ -487,7 +488,7 @@ static loff_t f2fs_seek_block(struct file *file, loff_t offset, int whence)
+>   	return vfs_setpos(file, data_ofs, maxbytes);
+>   fail:
+>   	inode_unlock(inode);
+> -	return -ENXIO;
+> +	return err;
+
+Can you please check all 'goto found' and 'goto fail' cases?
+
+>   }
+>   
+>   static loff_t f2fs_llseek(struct file *file, loff_t offset, int whence)
+> @@ -1197,7 +1198,6 @@ static int __read_out_blkaddrs(struct inode *inode, block_t *blkaddr,
+>   			!f2fs_is_valid_blkaddr(sbi, *blkaddr,
+>   					DATA_GENERIC_ENHANCE)) {
+>   			f2fs_put_dnode(&dn);
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   			return -EFSCORRUPTED;
+>   		}
+>   
+> @@ -1482,7 +1482,6 @@ static int f2fs_do_zero_range(struct dnode_of_data *dn, pgoff_t start,
+>   		if (!f2fs_is_valid_blkaddr(sbi, dn->data_blkaddr,
+>   					DATA_GENERIC_ENHANCE)) {
+>   			ret = -EFSCORRUPTED;
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   			break;
+>   		}
+>   
+> @@ -3438,10 +3437,8 @@ static int release_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+>   		if (!__is_valid_data_blkaddr(blkaddr))
+>   			continue;
+>   		if (unlikely(!f2fs_is_valid_blkaddr(sbi, blkaddr,
+> -					DATA_GENERIC_ENHANCE))) {
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+> +					DATA_GENERIC_ENHANCE)))
+>   			return -EFSCORRUPTED;
+> -		}
+>   	}
+>   
+>   	while (count) {
+> @@ -3604,10 +3601,8 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+>   		if (!__is_valid_data_blkaddr(blkaddr))
+>   			continue;
+>   		if (unlikely(!f2fs_is_valid_blkaddr(sbi, blkaddr,
+> -					DATA_GENERIC_ENHANCE))) {
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+> +					DATA_GENERIC_ENHANCE)))
+>   			return -EFSCORRUPTED;
+> -		}
+>   	}
+>   
+>   	while (count) {
+> @@ -3879,8 +3874,6 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+>   						DATA_GENERIC_ENHANCE)) {
+>   				ret = -EFSCORRUPTED;
+>   				f2fs_put_dnode(&dn);
+> -				f2fs_handle_error(sbi,
+> -						ERROR_INVALID_BLKADDR);
+>   				goto out;
+>   			}
+>   
+> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> index f550cde..2f16f7a 100644
+> --- a/fs/f2fs/gc.c
+> +++ b/fs/f2fs/gc.c
+> @@ -1197,7 +1197,6 @@ static int ra_data_block(struct inode *inode, pgoff_t index)
+>   		if (unlikely(!f2fs_is_valid_blkaddr(sbi, dn.data_blkaddr,
+>   						DATA_GENERIC_ENHANCE_READ))) {
+>   			err = -EFSCORRUPTED;
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   			goto put_page;
+>   		}
+>   		goto got_it;
+> @@ -1216,7 +1215,6 @@ static int ra_data_block(struct inode *inode, pgoff_t index)
+>   	if (unlikely(!f2fs_is_valid_blkaddr(sbi, dn.data_blkaddr,
+>   						DATA_GENERIC_ENHANCE))) {
+>   		err = -EFSCORRUPTED;
+> -		f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   		goto put_page;
+>   	}
+>   got_it:
+> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+> index 560bfca..05bfb36 100644
+> --- a/fs/f2fs/inode.c
+> +++ b/fs/f2fs/inode.c
+> @@ -83,10 +83,9 @@ static int __written_first_block(struct f2fs_sb_info *sbi,
+>   
+>   	if (!__is_valid_data_blkaddr(addr))
+>   		return 1;
+> -	if (!f2fs_is_valid_blkaddr(sbi, addr, DATA_GENERIC_ENHANCE)) {
+> -		f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+> +	if (!f2fs_is_valid_blkaddr(sbi, addr, DATA_GENERIC_ENHANCE))
+>   		return -EFSCORRUPTED;
+> -	}
+> +
+>   	return 0;
+
+This function was removed by a53936361330 ("f2fs: delete obsolete
+FI_FIRST_BLOCK_WRITTEN"), can you please rebase code to last dev-test
+branch?
+
+>   }
+>   
+> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> index 6c7f6a6..f6c9cef 100644
+> --- a/fs/f2fs/node.c
+> +++ b/fs/f2fs/node.c
+> @@ -612,7 +612,7 @@ int f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
+>   	blkaddr = le32_to_cpu(ne.block_addr);
+>   	if (__is_valid_data_blkaddr(blkaddr) &&
+>   		!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
+> -		return -EFAULT;
+> +		return -EFSCORRUPTED;
+>   
+>   	/* cache nat entry */
+>   	cache_nat_entry(sbi, nid, &ne);
+> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+> index b56d0f1..1a322bb 100644
+> --- a/fs/f2fs/recovery.c
+> +++ b/fs/f2fs/recovery.c
+> @@ -374,7 +374,7 @@ static int sanity_check_node_chain(struct f2fs_sb_info *sbi, block_t blkaddr,
+>   	for (i = 0; i < 2; i++) {
+>   		if (!f2fs_is_valid_blkaddr(sbi, *blkaddr_fast, META_POR)) {
+
+What about introduce DATA_POR and use it here?
+
+And in f2fs_is_valid_blkaddr(), we can handle this case as:
+
+	case META_POR:
+	case DATA_POR:
+		if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
+			blkaddr < MAIN_BLKADDR(sbi)))
+			return false;
+		break;
+
+>   			*is_detecting = false;
+> -			return 0;
+> +			return -EFSCORRUPTED;
+
+I guess we should not return EFSCORRUPTED, because blkaddr_fast can be
+invalid as we expect.
+
+>   		}
+>   
+>   		page = f2fs_get_tmp_page(sbi, *blkaddr_fast);
+> @@ -399,6 +399,7 @@ static int sanity_check_node_chain(struct f2fs_sb_info *sbi, block_t blkaddr,
+>   	if (*blkaddr_fast == blkaddr) {
+>   		f2fs_notice(sbi, "%s: Detect looped node chain on blkaddr:%u."
+>   				" Run fsck to fix it.", __func__, blkaddr);
+> +		set_sbi_flag(sbi, SBI_NEED_FSCK);
+
+It's not needed, because there will be no checkpoint to persist the flag.
+
+>   		return -EINVAL;
+>   	}
+>   	return 0;
+> @@ -422,7 +423,7 @@ static int find_fsync_dnodes(struct f2fs_sb_info *sbi, struct list_head *head,
+>   		struct fsync_inode_entry *entry;
+>   
+>   		if (!f2fs_is_valid_blkaddr(sbi, blkaddr, META_POR))
+> -			return 0;
+> +			return -EFSCORRUPTED;
+
+Ditto,
+
+>   
+>   		page = f2fs_get_tmp_page(sbi, blkaddr);
+>   		if (IS_ERR(page)) {
+> @@ -680,14 +681,12 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+>   		if (__is_valid_data_blkaddr(src) &&
+>   			!f2fs_is_valid_blkaddr(sbi, src, META_POR)) {
+>   			err = -EFSCORRUPTED;
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   			goto err;
+>   		}
+>   
+>   		if (__is_valid_data_blkaddr(dest) &&
+>   			!f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
+>   			err = -EFSCORRUPTED;
+> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>   			goto err;
+>   		}
+>   
+> @@ -745,8 +744,6 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+>   				f2fs_err(sbi, "Inconsistent dest blkaddr:%u, ino:%lu, ofs:%u",
+>   					dest, inode->i_ino, dn.ofs_in_node);
+>   				err = -EFSCORRUPTED;
+> -				f2fs_handle_error(sbi,
+> -						ERROR_INVALID_BLKADDR);
+>   				goto err;
+>   			}
+>   
+> @@ -786,8 +783,10 @@ static int recover_data(struct f2fs_sb_info *sbi, struct list_head *inode_list,
+>   	while (1) {
+>   		struct fsync_inode_entry *entry;
+>   
+> -		if (!f2fs_is_valid_blkaddr(sbi, blkaddr, META_POR))
+> +		if (!f2fs_is_valid_blkaddr(sbi, blkaddr, META_POR)) {
+> +			err = -EFSCORRUPTED;
+
+I guess we should not return EFSCORRUPTED, because blkaddr can be
+invalid as we expect.
+
+Thanks,
+
+>   			break;
+> +		}
+>   
+>   		page = f2fs_get_tmp_page(sbi, blkaddr);
+>   		if (IS_ERR(page)) {
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 727d016..e427c3c 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -334,8 +334,6 @@ static int __f2fs_commit_atomic_write(struct inode *inode)
+>   					DATA_GENERIC_ENHANCE)) {
+>   				f2fs_put_dnode(&dn);
+>   				ret = -EFSCORRUPTED;
+> -				f2fs_handle_error(sbi,
+> -						ERROR_INVALID_BLKADDR);
+>   				goto out;
+>   			}
+>   
 
