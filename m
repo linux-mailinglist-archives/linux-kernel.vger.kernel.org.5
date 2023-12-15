@@ -1,209 +1,146 @@
-Return-Path: <linux-kernel+bounces-1205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65BA0814BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:20:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E070814BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88D811C212A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:20:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7433C1F2360E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69533381C8;
-	Fri, 15 Dec 2023 15:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC5F364DA;
+	Fri, 15 Dec 2023 15:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pde2aIGI"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N7MnxExP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FDB374D2
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2ca03103155so8450531fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:20:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5383714C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a1f653e3c3dso104563566b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:21:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702653615; x=1703258415; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hmyST/XrGHFNC+XNE6mnVIuH8tC17821dmJgq7RAt7M=;
-        b=pde2aIGImpukFp6qLv3idtH09uJrjySQmEC5EeeYrUqBs4NG3mn53HxltTmkp977bM
-         S7JyyGP4AYAXVW6m7RodsOxUqxJ4eYtZU9EesN3oEJgcCvXfTuIUwwWp5kM841SW8LFX
-         QG1JyFoDvyjWzu4DW1o/+WjZ+paMtH2PIl9GY=
+        d=linaro.org; s=google; t=1702653713; x=1703258513; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nezvh8hPtz5l73mKgyOQA8Qv6NuzMEz41RxNqU6gR6A=;
+        b=N7MnxExP+5uSYW8yeJyVj8VWw8uQ4J3nE9qGeUVKwh1Gw/2riOxFo2qaabTSGb8VGS
+         qPMihVq+7ThVQKRsSMAdQbDoomPhvwHx/AVXjnpZkAp6wfFBxSqqu0b0zFh18BfWkpYC
+         3cUuELAwfpPxFS6UjTF7jrnt7agpHXdwR49BLun9K+xjW2Q9bFgLnQ/8sH47Mbn+7Xor
+         t2x2TII8VPKN9koLx5DCuPtWzwJSBxPojvPDNL9pFcLmCtMb/kw1NGB17bdEhsDEdw4H
+         2J1qGcXbQsiKlrQZ+1ObWcKHGotM58P4uV7jsX5nD7GIgh9rqB3nbb1vNptTGhkX4wsr
+         WW2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702653615; x=1703258415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hmyST/XrGHFNC+XNE6mnVIuH8tC17821dmJgq7RAt7M=;
-        b=dulsqiStrPNRVKIy69qreWv87/qzEZxwedIKnrO5q1LZjEZFrNXwvHCM8/XnVAg56q
-         FN5ZB350SWwCtJlRvOX/qw/e7mHxzJ7lwtEuxEsYVVu5dQi4aKP5Zjthq3oXAGVm92UQ
-         kr9SOFXg1Tb+hvAMZdonUpHjRyiDuUqhOW+d7I37tm5hGBjEFrw2H3ro+MuSMN4OyHEk
-         ZdhjOUiKZj1ncaTs3hqyUUyGYcNcWetND4DWuV/dKWVhDBNFumIn6B2G+vpdeWOxixBQ
-         MtOLsy6I4yABMhPw+SsdO2TujSEW2xDgA6j2uMcZGk35OD7TrieDjdyUd0rCj1fUYlFH
-         DUPQ==
-X-Gm-Message-State: AOJu0Yy0Urq+a+6KExnphaFCbdITRIneqEJtnTBeZ4qF6toDSmYoo3VR
-	dQ0x9KAT7yQuxXVJiFRLONLea7jqrVX8JvKLhqN85Q==
-X-Google-Smtp-Source: AGHT+IHGzTVf/MkzNYE3KUJWVaOjTuqnRhV8YfrMGuKmVCSWI+OeZn5gjO0Sw2hniyy0Cu8uzW8era/J832E6Hh8DoE=
-X-Received: by 2002:a2e:a588:0:b0:2cb:3169:b348 with SMTP id
- m8-20020a2ea588000000b002cb3169b348mr3145402ljp.96.1702653614855; Fri, 15 Dec
- 2023 07:20:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702653713; x=1703258513;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nezvh8hPtz5l73mKgyOQA8Qv6NuzMEz41RxNqU6gR6A=;
+        b=gx3T3YE8F/zK4f9AN5kXJxJJmJYmJqSxr1QQWvkQoSZKHR4/fX096ifB9kuPOw/hR8
+         gt1p/u5z1ThQkqff0fn/YaYkrRM5b8BvtCg7xNzB/I2K0UaSJaSoJOcWR+2U2fH6uBaP
+         ZRmtTt3kPS158jRsWFg8shLDJRpzvoMk8LiJi0WppMLjVOLlJv/9Xb9v/AmwWSw58yAs
+         L5iyf4NNvxW/jvvs3MQyCL7gIWPhgxOKNlbOKpnzfjNG13niIZ1aRaOq47pErIA6soy+
+         aQtHr+26kpd5R9lwjkjGSO1fEL07VfQcd7pNiCN8WjzH89BnPt5dvSPsU4WGgIRbNGok
+         jytQ==
+X-Gm-Message-State: AOJu0YxuwSuA2r/svrwxroIqoOahEWquCcy4j3jkxY6qLhmdHu3xznqu
+	XvP4Pq6yGJtZiKSJM82rRfV2PA==
+X-Google-Smtp-Source: AGHT+IFDwmtTu6fom2hTry2CjrImVu8byZ8jVJtxu7JlkNRbDTpH/4xOT0vXWP1fnMl4XVEfvuAIiw==
+X-Received: by 2002:a17:907:c2a:b0:a1c:695d:c936 with SMTP id ga42-20020a1709070c2a00b00a1c695dc936mr3717661ejc.73.1702653713095;
+        Fri, 15 Dec 2023 07:21:53 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id ig8-20020a1709072e0800b00a1d754b30a9sm10758631ejc.86.2023.12.15.07.21.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 07:21:52 -0800 (PST)
+Message-ID: <58f5c7c6-a8c5-4612-97a7-d798a7a51b33@linaro.org>
+Date: Fri, 15 Dec 2023 16:21:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <ZXsvl7mabUuNkWcY@google.com> <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
- <ZXth7hu7jaHbJZnj@google.com>
-In-Reply-To: <ZXth7hu7jaHbJZnj@google.com>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Fri, 15 Dec 2023 10:20:03 -0500
-Message-ID: <CAEXW_YTfgemRBKRv2UNjsOLhokxvvmHbVVj1JLtVmhywKtqeHA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
-To: Sean Christopherson <seanjc@google.com>
-Cc: Vineeth Remanan Pillai <vineeth@bitbyteword.org>, Ben Segall <bsegall@google.com>, 
-	Borislav Petkov <bp@alien8.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, 
-	Mel Gorman <mgorman@suse.de>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 1/3] dt-bindings: reset: Add reset controller bindings
+ for Unisoc's ums512
+Content-Language: en-US
+To: Zhifeng Tang <zhifeng.tang@unisoc.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Chunyan Zhang <zhang.lyra@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Zhifeng Tang <zhifeng.tang23@gmail.com>,
+ Wenming Wu <wenming.wu@unisoc.com>
+References: <20231215115914.11588-1-zhifeng.tang@unisoc.com>
+ <20231215115914.11588-2-zhifeng.tang@unisoc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231215115914.11588-2-zhifeng.tang@unisoc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Sean,
-Nice to see your quick response to the RFC, thanks. I wanted to
-clarify some points below:
+On 15/12/2023 12:59, Zhifeng Tang wrote:
+> From: "zhifeng.tang" <zhifeng.tang@unisoc.com>
+> 
+> Add reset controller bindings to clock bindings for Unisoc's ums512.
+> 
+> Signed-off-by: zhifeng.tang <zhifeng.tang@unisoc.com>
+> ---
 
-On Thu, Dec 14, 2023 at 3:13=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Thu, Dec 14, 2023, Vineeth Remanan Pillai wrote:
-> > On Thu, Dec 14, 2023 at 11:38=E2=80=AFAM Sean Christopherson <seanjc@go=
-ogle.com> wrote:
-> > Now when I think about it, the implementation seems to
-> > suggest that we are putting policies in kvm. Ideally, the goal is:
-> > - guest scheduler communicates the priority requirements of the workloa=
-d
-> > - kvm applies the priority to the vcpu task.
->
-> Why?  Tasks are tasks, why does KVM need to get involved?  E.g. if the pr=
-oblem
-> is that userspace doesn't have the right knobs to adjust the priority of =
-a task
-> quickly and efficiently, then wouldn't it be better to solve that problem=
- in a
-> generic way?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-No, it is not only about tasks. We are boosting anything RT or above
-such as softirq, irq etc as well. Could you please see the other
-patches? Also, Vineeth please make this clear in the next revision.
+Best regards,
+Krzysztof
 
-> > > Pushing the scheduling policies to host userspace would allow for far=
- more control
-> > > and flexibility.  E.g. a heavily paravirtualized environment where ho=
-st userspace
-> > > knows *exactly* what workloads are being run could have wildly differ=
-ent policies
-> > > than an environment where the guest is a fairly vanilla Linux VM that=
- has received
-> > > a small amount of enlightment.
-> > >
-> > > Lastly, if the concern/argument is that userspace doesn't have the ri=
-ght knobs
-> > > to (quickly) boost vCPU tasks, then the proposed sched_ext functional=
-ity seems
-> > > tailor made for the problems you are trying to solve.
-> > >
-> > > https://lkml.kernel.org/r/20231111024835.2164816-1-tj%40kernel.org
-> > >
-> > You are right, sched_ext is a good choice to have policies
-> > implemented. In our case, we would need a communication mechanism as
-> > well and hence we thought kvm would work best to be a medium between
-> > the guest and the host.
->
-> Making KVM be the medium may be convenient and the quickest way to get a =
-PoC
-> out the door, but effectively making KVM a middle-man is going to be a hu=
-ge net
-> negative in the long term.  Userspace can communicate with the guest just=
- as
-> easily as KVM, and if you make KVM the middle-man, then you effectively *=
-must*
-> define a relatively rigid guest/host ABI.
-
-At the moment, the only ABI is a shared memory structure and a custom
-MSR. This is no different from the existing steal time accounting
-where a shared structure is similarly shared between host and guest,
-we could perhaps augment that structure with other fields instead of
-adding a new one? On the ABI point, we have deliberately tried to keep
-it simple (for example, a few months ago we had hypercalls and we went
-to great lengths to eliminate those).
-
-> If instead the contract is between host userspace and the guest, the ABI =
-can be
-> much more fluid, e.g. if you (or any setup) can control at least some amo=
-unt of
-> code that runs in the guest
-
-I see your point of view. One way to achieve this is to have a BPF
-program run to implement the boosting part, in the VMEXIT path. KVM
-then just calls a hook. Would that alleviate some of your concerns?
-
-> then the contract between the guest and host doesn't
-> even need to be formally defined, it could simply be a matter of bundling=
- host
-> and guest code appropriately.
->
-> If you want to land support for a given contract in upstream repositories=
-, e.g.
-> to broadly enable paravirt scheduling support across a variety of usersep=
-ace VMMs
-> and/or guests, then yeah, you'll need a formal ABI.  But that's still not=
- a good
-> reason to have KVM define the ABI.  Doing it in KVM might be a wee bit ea=
-sier because
-> it's largely just a matter of writing code, and LKML provides a centraliz=
-ed channel
-> for getting buyin from all parties.  But defining an ABI that's independe=
-nt of the
-> kernel is absolutely doable, e.g. see the many virtio specs.
->
-> I'm not saying KVM can't help, e.g. if there is information that is known=
- only
-> to KVM, but the vast majority of the contract doesn't need to be defined =
-by KVM.
-
-The key to making this working of the patch is VMEXIT path, that is
-only available to KVM. If we do anything later, then it might be too
-late. We have to intervene *before* the scheduler takes the vCPU
-thread off the CPU. Similarly, in the case of an interrupt injected
-into the guest, we have to boost the vCPU before the "vCPU run" stage
--- anything later might be too late.
-
-Also you mentioned something about the tick path in the other email,
-we have no control over the host tick preempting the vCPU thread. The
-guest *will VMEXIT* on the host tick. On ChromeOS, we run multiple VMs
-and overcommitting is very common especially on devices with smaller
-number of CPUs.
-
-Just to clarify, this isn't a "quick POC". We have been working on
-this for many months and it was hard to get working correctly and
-handle all corner cases. We are finally at a point where - it just
-works (TM) and is roughly half the code size of when we initially
-started.
-
-thanks,
-
- - Joel
 
