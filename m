@@ -1,92 +1,177 @@
-Return-Path: <linux-kernel+bounces-513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6605A81424E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE35814254
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 988431C21558
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:24:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF2D71C20DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:25:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCE9D2EE;
-	Fri, 15 Dec 2023 07:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C64D2F1;
+	Fri, 15 Dec 2023 07:25:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F84710949;
-	Fri, 15 Dec 2023 07:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-28b0a265f92so253245a91.3;
-        Thu, 14 Dec 2023 23:24:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702625053; x=1703229853;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jNpC7NFbJjbEn49G0H7MyhYXJbT+qig1neudpuf1zUA=;
-        b=VnqUZCQsBDbypHu0ziEhP63x/u4Fgx8O6ZM0iwOwxw3oN16RXVerqb2/dtaQVKOBxs
-         hnrRpBZqtypG9QzpcxY+hLx0JJ1GoY7znmmD5pviwH20qmYrXXujmkL/unLZNcOOrmsw
-         N9n6hKRz6Gf/KGaWYveKvSHVGKd6tNpQAcAtfQanjvoSYI0IU2OXdj9gbHudx6t2K3uF
-         xKndR33nCw1lQCQecf/Tw5G8Zug/yz+68rNtwycTgPXqKjALMErjEIrP4Ba0t5COEy5A
-         Fn+hWc1DyOjaEl2oK9s7cic6BboSOfSgYjSj4acfZHKMr26lUIFtMdSfXrT98QLq9/mX
-         kI1Q==
-X-Gm-Message-State: AOJu0Yy2nQQtKsJSiFM8LGzLd3atCKGH9zEZXTpxIFUr8qStHQ9FT6m1
-	W/Fq7mD3SlWX8TdwOJeTSfRuCUhE1jznlA==
-X-Google-Smtp-Source: AGHT+IE2GSUOcnc8CjzGsfrsEfmISwc8i0DZ/GUQE9BbbHhbu2/MUPr4aOlBN2D6ECmKIqOXhn1NQA==
-X-Received: by 2002:a17:90a:990f:b0:286:6cc1:3f1b with SMTP id b15-20020a17090a990f00b002866cc13f1bmr8637604pjp.82.1702625052825;
-        Thu, 14 Dec 2023 23:24:12 -0800 (PST)
-Received: from kylin-ThinkBook-15-G2-ITL.. ([111.48.58.12])
-        by smtp.gmail.com with ESMTPSA id in18-20020a17090b439200b0028b041cbef3sm2888719pjb.22.2023.12.14.23.24.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 23:24:12 -0800 (PST)
-From: xueqin Luo <luoxueqin@kylinos.cn>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	xueqin Luo <luoxueqin@kylinos.cn>
-Subject: [PATCH -next] ACPICA: Replace strncpy() with strscpy_pad() for dest
-Date: Fri, 15 Dec 2023 15:24:05 +0800
-Message-Id: <20231215072405.65887-1-luoxueqin@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA46D16418;
+	Fri, 15 Dec 2023 07:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id D06EC7FE2;
+	Fri, 15 Dec 2023 15:25:36 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Dec
+ 2023 15:25:36 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Dec
+ 2023 15:25:32 +0800
+From: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To: <krzysztof.kozlowski@linaro.org>
+CC: <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
+	<jisheng.teoh@starfivetech.com>, <krzysztof.kozlowski+dt@linaro.org>,
+	<leyfoon.tan@starfivetech.com>, <linux-kernel@vger.kernel.org>,
+	<linux-watchdog@vger.kernel.org>, <linux@roeck-us.net>, <robh+dt@kernel.org>,
+	<samin.guo@starfivetech.com>, <wim@linux-watchdog.org>,
+	<xingyu.wu@starfivetech.com>
+Subject: Re: [PATCH v3 1/1] dt-bindings: watchdog: starfive,jh7100-wdt: Add compatible for JH8100
+Date: Fri, 15 Dec 2023 15:25:08 +0800
+Message-ID: <20231215072508.3498476-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <40b5d1a8-37d2-4c68-8d16-33c92c3e5716@linaro.org>
+References: <40b5d1a8-37d2-4c68-8d16-33c92c3e5716@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
 
-While it is safe to use strncpy in this case, the advice is to move to
-strscpy_pad[1].
+On Thu, 14 Dec 2023 08:39:46 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Link: https://www.kernel.org/doc/html/latest/process/deprec:qated.html#strncpy-on-nul-terminated-strings [1]
-Signed-off-by: xueqin Luo <luoxueqin@kylinos.cn>
----
- drivers/acpi/acpica/utnonansi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> On 14/12/2023 04:30, Ji Sheng Teoh wrote:
+> > Add "starfive,jh8100-wdt" compatible string for StarFive's JH8100
+> > watchdog.
+> > Since JH8100 watchdog only has 1 reset signal, update binding
+> > document to support one reset for "starfive,jh8100-wdt" compatible.
+> >=20
+> > Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> > ---
+> >  .../watchdog/starfive,jh7100-wdt.yaml         | 48
+> > ++++++++++++++++--- 1 file changed, 42 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git
+> > a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
+> > b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
+> > index 68f3f6fd08a6..79082c5f9971 100644 ---
+> > a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
+> > +++
+> > b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
+> > @@ -19,14 +19,17 @@ description: isn't cleared, the watchdog will
+> > reset the system unless the watchdog reset is disabled. -allOf:
+> > -  - $ref: watchdog.yaml#
+> > -
+> >  properties:
+> >    compatible:
+> > -    enum:
+> > -      - starfive,jh7100-wdt
+> > -      - starfive,jh7110-wdt
+> > +    oneOf:
+> > +      - items: =20
+>=20
+> Drop items, it wasn't here in the first place.
 
-diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnonansi.c
-index ff0802ace19b..3a7952be6545 100644
---- a/drivers/acpi/acpica/utnonansi.c
-+++ b/drivers/acpi/acpica/utnonansi.c
-@@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, acpi_size dest_size)
- {
- 	/* Always terminate destination string */
- 
--	strncpy(dest, source, dest_size);
--	dest[dest_size - 1] = 0;
-+	strscpy_pad(dest, source, dest_size);
- }
- 
- #endif
--- 
-2.34.1
+Ok, will drop.
+>=20
+> > +          - enum:
+> > +              - starfive,jh7100-wdt
+> > +              - starfive,jh7110-wdt
+> > +      - items:
+> > +          - enum:
+> > +              - starfive,jh8100-wdt
+> > +          - const: starfive,jh7110-wdt
+> > =20
+> >    reg:
+> >      maxItems: 1
+> > @@ -45,10 +48,33 @@ properties:
+> >        - const: core
+> > =20
+> >    resets:
+> > +    minItems: 1
+> >      items:
+> >        - description: APB reset
+> >        - description: Core reset =20
+>=20
+> This is not valid for jh8100. Move it to else: part. Here maxItems: 2.
+>
+Sure, will replace with maxItems.
+=20
+> > =20
+> > +allOf: =20
+>=20
+> allOf goes after required:, see example-schema
+>=20
+Ok, will move it after required.
+
+> > +  - $ref: watchdog.yaml#
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - starfive,jh8100-wdt
+> > +    then:
+> > +      properties:
+> > +        resets:
+> > +          description: |
+> > +            Must contain Core reset entry.
+> > +          maxItems: 1 =20
+>=20
+> Instead of both, items: with description.
+>=20
+Sure, will use items instead.
+
+> > +    else:
+> > +      properties:
+> > +        resets:
+> > +          description: |
+> > +            Must contain APB reset and Core reset entry.
+> > +          minItems: 2
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+> > @@ -69,3 +95,13 @@ examples:
+> >          resets =3D <&rst 99>,
+> >                   <&rst 100>;
+> >      };
+> > +
+> > +  - |
+> > +    watchdog@12270000 {
+> > +        compatible =3D "starfive,jh8100-wdt", "starfive,jh7110-wdt";
+> > +        reg =3D <0x12270000 0x10000>;
+> > +        clocks =3D <&clk 78>,
+> > +                 <&clk 79>; =20
+>=20
+> No need for new example with difference in one property.
+
+Ok, will drop the new example. Thanks
+>=20
+> Best regards,
+> Krzysztof
+>=20
 
 
