@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C3438145C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:36:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B09AE8145C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:38:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6DCB1F2188F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:36:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6862D2856AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561981A704;
-	Fri, 15 Dec 2023 10:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAA61A719;
+	Fri, 15 Dec 2023 10:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EYTocbUf"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qAtWmTdo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3383119BA8
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FB7208BD
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a1f5cb80a91so66451466b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:36:30 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so55889766b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:37:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702636589; x=1703241389; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702636664; x=1703241464; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=XM/h5D6gBvqTs8m/c7l58VuMUUS/k6RzHzb8GrlZLN8=;
-        b=EYTocbUf0SBlMNBZWRRjwqE/jZcyZxHVHhyAynZUWODD+YlGRbieHA81Fv8XNmTyqc
-         3AYXUzAgNzwLM9VBCuZWnVPcGzDMEK3FED+CM3chRWSglIfUc08B+QiOniZiQ3s2xF5m
-         B0sgN2MsZCXe2UVW/iw3sFNOF9uKbJmPr1YGe07zE+/VBr0wwTq7FL4Ho+L3MU3HdGr4
-         q+k5avqyHq6emiURKkgDo1avxjteH6BaDW7CzQe9rIUJTwJcEzl8El8tU8vbC4TsIE7e
-         3giIJU+3mmiwxKbBMhvmy58Cx9dMf1XglQcWR8xDqoSblgRx7baPp7WcWr9bBKLUpan3
-         vhYg==
+        bh=FOEqVWJVpSy9N2ArSwGmVo1SJSdM7tswNoDNHh6RJ8E=;
+        b=qAtWmTdo12DJS4qEMn+74eaNaFDJKqU2+ykHGni+7RTHrsYv4OPAE5DhKTJoMkXEKi
+         /C16RBIESfK38x5jMF2sY7blOgX/D6NVTezgYy40er6fyxY564rkyoTJXyThCzifxmpS
+         JViVIZxS5S0M3rTYAF0t2rUmbuH9L8mmKeP6SHTQ9gCerdx5GZJDOHVCUMBKng5m0wT3
+         chqIvnOc3HNk/44q2+NaVPojfLR3LJdMWpKnT54jDTRUHd7uiZ9F6Oo7b8Yu66bcEv7y
+         OkoXX6piCnBF/KFXCXdLaMWuTmXbQ/wqGAEiGKEN5yY1sK/rnztIdI06ilj2cRrdyE5L
+         h25w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702636589; x=1703241389;
+        d=1e100.net; s=20230601; t=1702636664; x=1703241464;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XM/h5D6gBvqTs8m/c7l58VuMUUS/k6RzHzb8GrlZLN8=;
-        b=WGx88+k64lhY4VGjttgHmCkZrtRZP7jJId6zx5+KZzm+SvDbMwjM7sdZqO10QenlKx
-         bb2esyEF18jFcNraKziAKc3FxD1ttCgdDgMzyQV54m6g0C/mz5xal/SzW4+/i+Mh6GAt
-         wv0YW/j7GdPMHn64u3mxkJ/dneiqVxLgXT9pROhu9j9Detq38TaZcXq9bTNaU6rGySHi
-         LcvpmVCN6tOcI7okwJ3WlFZITPw8hV5pddxFJXt28+0Xrpus+x6vk6p+kD8oG/pf/v35
-         mBM6EmINqc0r6AcCvxDhJyx7zGs1Bsi8AhIlDIZ6XQr3qFpUKxC5d73v07MSTyZjNMba
-         OxJQ==
-X-Gm-Message-State: AOJu0YxGGj/CEqSwae3EN/jWUnHUYkknS2EWCMgRUKIlfh1kbC0Pduxk
-	W5zoB2v1KcE3lkMtw2hSk5F1vg==
-X-Google-Smtp-Source: AGHT+IH5+5UExpjnXu4WHaG/O5c85FR9Z2nEPgFBk8HttT2B/DQKYXvSpIzxZxOydndMd0T5leZZWQ==
-X-Received: by 2002:a17:907:7f94:b0:9e5:ee70:5da1 with SMTP id qk20-20020a1709077f9400b009e5ee705da1mr4229160ejc.53.1702636588816;
-        Fri, 15 Dec 2023 02:36:28 -0800 (PST)
+        bh=FOEqVWJVpSy9N2ArSwGmVo1SJSdM7tswNoDNHh6RJ8E=;
+        b=ltaB7GSIVYezExpIxWc2ntpRykrLULQeLY6UWuOlIvF/jNdYPqVdX5EvJxMThbZy4Q
+         nxo8vxFzoQ/no8TYdI0WuE5fJtkofkHJdherZ+Cmw3ioUXCxw+gsQzY5qxelk5oighUp
+         SL+ZM2adp0gNfVS2UBB6wuj8ULY9b/G6pm4B5Oa2pnG6b8WsunsKQ89HnReADsrq5Z2F
+         fWIeOUZdLTKYNXAJZmpIyrFh1r3JTqibH+jtnNnI8H1KR1OcE9I2AQDXPJQ4N9Nv01fR
+         Ilms/2Tk0le+8+6pVwe3VFSkb+FNV0n/rzi5UqPl+febgRArqoc+3qizTxncE5fYQ3Jv
+         IrdQ==
+X-Gm-Message-State: AOJu0YwBDWUpbbqWc4FWgh5wFMnTITGjgIzkOUiKAlz3S68rLx4NW39R
+	j8NxkK/evVgqzHv9t2UgYIUfWw==
+X-Google-Smtp-Source: AGHT+IFsCpnOSyj5+C+USMbYubUI7q4wBP6EDuB6lR5iG5voG1vpAEJqsCye0hyosU4XhvCQkEpxjw==
+X-Received: by 2002:a17:907:96a7:b0:a02:9700:bf53 with SMTP id hd39-20020a17090796a700b00a029700bf53mr6812764ejc.46.1702636664004;
+        Fri, 15 Dec 2023 02:37:44 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a1c522990ccsm10584022ejc.85.2023.12.15.02.36.27
+        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a1c522990ccsm10584022ejc.85.2023.12.15.02.37.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 02:36:28 -0800 (PST)
-Message-ID: <fd927698-6aa3-4a6b-988c-fc82663235ca@linaro.org>
-Date: Fri, 15 Dec 2023 11:36:25 +0100
+        Fri, 15 Dec 2023 02:37:43 -0800 (PST)
+Message-ID: <2e77e3b1-00b6-46b9-bfed-7cae3ffa15e9@linaro.org>
+Date: Fri, 15 Dec 2023 11:37:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,18 +66,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: sprd: Add support for Unisoc's UMS9620
+Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
 Content-Language: en-US
-To: Chunyan Zhang <chunyan.zhang@unisoc.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Lee Jones <lee@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
- Baolin Wang <baolin.wang@linux.alibaba.com>, Orson Zhai
- <orsonzhai@gmail.com>, Chunyan Zhang <zhang.lyra@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20231215085630.984892-1-chunyan.zhang@unisoc.com>
- <20231215085630.984892-5-chunyan.zhang@unisoc.com>
+To: Jie Luo <quic_luoj@quicinc.com>, Conor Dooley <conor@kernel.org>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+ linux@armlinux.org.uk, robert.marko@sartura.hr,
+ linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ quic_srichara@quicinc.com
+References: <20231212115151.20016-1-quic_luoj@quicinc.com>
+ <20231212115151.20016-6-quic_luoj@quicinc.com>
+ <20231212-caution-improvise-ed3cc6a1d305@spud>
+ <11ffc985-3f2b-46b9-ae0b-911f7abe98d1@quicinc.com>
+ <20231214-outshine-shush-8a11c68607cd@spud>
+ <c5123ce7-6fdc-43c7-ac07-251c39196e66@quicinc.com>
+ <a1e5ffec-a20d-4389-83f9-ee09bd9d733d@linaro.org>
+ <a84a36af-69f8-46af-967e-b06d028597a3@quicinc.com>
+ <26c8b0b1-5ea9-45cc-adf3-0d0b03a1284d@linaro.org>
+ <4b9c56b8-3b29-4861-a3d5-2da26fbc14b4@quicinc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,73 +133,61 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231215085630.984892-5-chunyan.zhang@unisoc.com>
+In-Reply-To: <4b9c56b8-3b29-4861-a3d5-2da26fbc14b4@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 15/12/2023 09:56, Chunyan Zhang wrote:
-> Add basic support for Unisoc's UMS9620, with this patch,
-> the board ums9620-2h10 can run into console.
+On 15/12/2023 11:33, Jie Luo wrote:
+>>>>>>>>> +  cmn-reference-clock:
+>>>>>>>>> +    oneOf:
+>>>>>>>>> +      - items:
+>>>>>>>>> +          - enum:
+>>>>>>>>> +              - 0   # CMN PLL reference internal 48MHZ
+>>>>>>>>> +              - 1   # CMN PLL reference external 25MHZ
+>>>>>>>>> +              - 2   # CMN PLL reference external 31250KHZ
+>>>>>>>>> +              - 3   # CMN PLL reference external 40MHZ
+>>>>>>>>> +              - 4   # CMN PLL reference external 48MHZ
+>>>>>>>>> +              - 5   # CMN PLL reference external 50MHZ
+>>>>>>>>> +              - 6   # CMN PLL reference internal 96MHZ
+>>>>>>>>
+>>>>>>>> Why is this not represented by an element of the clocks property?
+>>>>>>>
+>>>>>>> This property is for the reference clock source selection of CMN PLL,
+>>>>>>> CMN PLL generates the different clock rates for the different Ethernet
+>>>>>>> blocks, this CMN PLL configuration is not located in the GCC, so the
+>>>>>>> clock framework can't be used, which is the general hardware register
+>>>>>>> instead of RCG register for GCC.
+>>>>>>
+>>>>>> I don't see how the clock being provided by the "GCC" (whatever that is)
+>>>>>> or by some other clock controller or fixed clock makes a difference.
+>>>>>> Why can't the other clock provider be represented in the devicetree?
+>>>>>>
+>>>>>
+>>>>> cmn-reference-clock is for selecting the reference clock source for the
+>>>>> whole Ethernet block, which is just the standalone configure register.
+>>>>
+>>>> Sure, you are aware though that all clocks are just configure registers?
+>>>>
+>>>> Which clocks are these mentioned in the property? From where do they come?
+>>>>
+>>>> Anyway, property is in existing form is not correct - this is not a
+>>>> generic property.
+>>>>
+>>>
+>>> This property cmn-reference-clock is just the hardware register
+>>> configuration, since the different IPQ platform needs to select
+>>> the different reference clock source for the CMN PLL block that
+>>> provides the various clock outputs to the all kinds of Ethernet
+>>> devices, which is not from GCC provider.
+>>
+>> AGAIN: where do the clocks come from? Which device generates them?
 > 
+> Oh, OK, the reference clock is from wifi that provides 48MHZ to
+> Ethernet block.
 
-...
+Then WiFi should be providing you the clock and this device should be
+clock consumer, right?
 
-> +
-> +	soc: soc {
-
-Are you sure you do not have here W=1 warnings?
-
-> +		compatible = "simple-bus";
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		gic: interrupt-controller@12000000 {
-> +			compatible = "arm,gic-v3";
-> +			reg = <0x0 0x12000000 0 0x20000>,	/* GICD */
-> +			      <0x0 0x12040000 0 0x100000>;	/* GICR */
-> +			#interrupt-cells = <3>;
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			ranges;
-
-Put ranges after reg, if they are needed. Are they needed, BTW?
-
-> +			redistributor-stride = <0x0 0x20000>;	/* 128KB stride */
-> +			#redistributor-regions = <1>;
-> +			interrupt-controller;
-> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
-> +
-> +		apb@20200000 {
-> +			compatible = "simple-bus";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			ranges = <0 0 0x20200000 0x100000>;
-
-ranges is after reg, which is after compatible, so here it is the second
-property.
-
-> +
-> +			uart0: serial@0 {
-> +				compatible = "sprd,ums9620-uart",
-> +					     "sprd,sc9836-uart";
-> +				reg = <0 0x100>;
-> +				interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&ext_26m>;
-> +				status = "disabled";
-> +			};
-> +
-> +			uart1: serial@10000 {
-> +				compatible = "sprd,ums9620-uart",
-> +					     "sprd,sc9836-uart";
-> +				reg = <0x10000 0x100>;
-> +				interrupts = <GIC_SPI 195 IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&ext_26m>;
-> +				status = "disabled";
-> +			};
-> +		};
-> +	};
 
 
 Best regards,
