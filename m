@@ -1,121 +1,101 @@
-Return-Path: <linux-kernel+bounces-949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769A5814866
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:48:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73F7281486E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88C31C234EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:48:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28FEA1F245B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E47E2C6B9;
-	Fri, 15 Dec 2023 12:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9192C6B8;
+	Fri, 15 Dec 2023 12:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGAGxiS3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Shn0gYuo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB8D2C6A3;
-	Fri, 15 Dec 2023 12:48:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00FCDC433C7;
-	Fri, 15 Dec 2023 12:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702644481;
-	bh=KmFWeYKbRRsOcz7786bdIgRCmbbEy4sqix2mUbhzS80=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GGAGxiS3ZCe4EXhYSpVHvqYTkOw3Z386azCItWPdkTjxFrzm8ZqPY9UjfzvCeinuz
-	 6jmYiIIQqHLE40yIO4N1DYTARwzirmk10jykV2FqlnzKNu+t9iqdE+Bvu83vyKQew3
-	 L+8aJElN9JCebXatAwB6QXwulLd2YRSkhDsIy3C8H7S5aZ4caFU/94H/arFWIlNkNG
-	 InG2ZBszprtTaM/bwJKSEtVyZpOTivoZdu7zmfoLoUBrlmXOjB0hwEgGCh7JOvAVQi
-	 OEL67H3rMdcIkxOmUyQL7MOp/PBz5dAcRtKqnVpfsNFuo4IvfwuZwaN5OlBUotz0Z0
-	 QkdqOpp0AaYyw==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: Miguel Ojeda <ojeda@kernel.org>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Alex Gaynor <alex.gaynor@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	Jonathan Corbet <corbet@lwn.net>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-doc@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] docs: rust: remove `CC=clang` mentions
-Date: Fri, 15 Dec 2023 13:47:51 +0100
-Message-ID: <20231215124751.175191-1-ojeda@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114502DB75
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702644685; x=1734180685;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Qitsnoe4czQzS8dI93mK8gLEVhXQMpYmjWDPRKPtpOY=;
+  b=Shn0gYuoiFgZ2NdcWGqkz9WPeqGAUIH8Ffw2UvmHaOUAfyziGK5RM8cr
+   zvl01Ewt/Y/opARDQEaesLQaNWkVNxZJkGPaCivhiV7UqM/xf2wKo+/WZ
+   7VQDcdo3cRrj74f6piIdxcnmeHh5hb6i5DyF90W9/5fGgnjHan5AOw5Z0
+   bi04srLHzR8ykUEfSZLkaYRCpsU31TYLi/sa31jdU8PBLTAzzXtxNlsL6
+   F4dPGKfj+tu5D9iiNOhEjn3oYbMGIduxQb+BwpHalFvfyuTIkbXU5rauo
+   wxyl/CdWmqu1KY0icaC3q+bwXH06HnNJhx6EVm8NE68ddgSekyETp9I8t
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="380266703"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="380266703"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 04:51:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="898128676"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="898128676"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 15 Dec 2023 04:51:23 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rE7ey-0000DQ-2s;
+	Fri, 15 Dec 2023 12:51:20 +0000
+Date: Fri, 15 Dec 2023 20:50:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Will Deacon <will@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol
+ '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be
+ static?
+Message-ID: <202312152025.1qeAzjCU-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Nowadays all architectures except s390 recommend using `LLVM=1` instead of
-`CC=clang`, and since commit a3c6bfba4429 ("Documentation/llvm: refresh
-docs") the Kbuild LLVM documentation makes `LLVM=1` the way to go:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
+commit: 5c8b0cbd9d6bac5f40943b5a7d8eac8cb86cbe7f arm64: Pull in task_stack_page() to Spectre-v4 mitigation code
+date:   3 years, 3 months ago
+config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231215/202312152025.1qeAzjCU-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231215/202312152025.1qeAzjCU-lkp@intel.com/reproduce)
 
-    We want to encourage the use of ``LLVM=1`` rather than just
-    ``CC=clang``. Make that suggestion "above the fold" and "front and
-    center" in our docs.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312152025.1qeAzjCU-lkp@intel.com/
 
-In particular, that commit removes the examples with `CC=clang`.
+sparse warnings: (new ones prefixed by >>)
+>> arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be static?
 
-Thus do the same in the Rust Quick Start guide, i.e. remove the `CC=clang`
-mentions, especially since the architectures that have had their Rust
-support upstreamed (or soon to be upstreamed) are all `LLVM=1` ones
-anyway. And perhaps by the time Rust is supported for s390 (or new
-architectures), it may have moved to `LLVM=1` anyway. Otherwise,
-this can be added back if needed (or perhaps an extra link to
-Documentation/kbuild/llvm.rst).
+vim +/__pcpu_scope_arm64_ssbd_callback_required +353 arch/arm64/kernel/proton-pack.c
 
-This should also help avoiding potential confusion around `CC=clang` [1].
+c28762070ca651 Will Deacon 2020-09-18  351  
+c28762070ca651 Will Deacon 2020-09-18  352  /* This is the per-cpu state tracking whether we need to talk to firmware */
+c28762070ca651 Will Deacon 2020-09-18 @353  DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
+c28762070ca651 Will Deacon 2020-09-18  354  
 
-Link: https://lore.kernel.org/rust-for-linux/6df6e8e5-8d5b-4d3d-91b5-bc0e90c424ea@nvidia.com/ [1]
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
----
- Documentation/rust/quick-start.rst | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+:::::: The code at line 353 was first introduced by commit
+:::::: c28762070ca651fe7a981b8f31d972c9b7d2c386 arm64: Rewrite Spectre-v4 mitigation code
 
-diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quick-start.rst
-index f382914f4191..75faa987079a 100644
---- a/Documentation/rust/quick-start.rst
-+++ b/Documentation/rust/quick-start.rst
-@@ -76,7 +76,7 @@ libclang
- 
- ``libclang`` (part of LLVM) is used by ``bindgen`` to understand the C code
- in the kernel, which means LLVM needs to be installed; like when the kernel
--is compiled with ``CC=clang`` or ``LLVM=1``.
-+is compiled with ``LLVM=1``.
- 
- Linux distributions are likely to have a suitable one available, so it is
- best to check that first.
-@@ -229,10 +229,6 @@ at the moment. That is::
- 
- 	make LLVM=1
- 
--For architectures that do not support a full LLVM toolchain, use::
--
--	make CC=clang
--
- Using GCC also works for some configurations, but it is very experimental at
- the moment.
- 
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
 
-base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
