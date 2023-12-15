@@ -1,94 +1,115 @@
-Return-Path: <linux-kernel+bounces-1015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4485181493E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:30:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C61681494C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C95AAB23889
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:30:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD2EA286813
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D3E2DF9C;
-	Fri, 15 Dec 2023 13:29:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B01B2E3FE;
+	Fri, 15 Dec 2023 13:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JXsLTunK"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="ZOF0Y6Oz";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="L+tc9AV7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBA72DB75;
-	Fri, 15 Dec 2023 13:29:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0408EC433C7;
-	Fri, 15 Dec 2023 13:29:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702646980;
-	bh=rpyS4v8W+CuN4+EjjXEahB1+6g1qTTqMvB9+ugujzJg=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=JXsLTunKMBBISI4ECLjoovakgd/auY72meweT5jEaGxWUmWWMPpUZ0/zdNwREoc2g
-	 2aS2ZNCm1VcCgKfG9UUbi1WD7ytS5cCUCgEypqXTrz2rzw7bDJr566wVPY4/Pny+JZ
-	 9e+Ey7VpBE4EOB0iIPpVVjiFfWnmnA44lv/DdIN36uMLpGqTXCll4jaanDarSgmOP2
-	 ZKcszw82ho2s3UYGfr7Wgo8tVp1rJ/hNwk1umGZv2WpM+73haNqFR0Rz01Xs04Y/af
-	 xJEUIKZhkdybjvF/4OYAtLELSFBU4uAHRvGWHL0FUfH+95hDrJL/ICpWFM3DS5YP2S
-	 sCWwwaOTG5JxQ==
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E5231A68;
+	Fri, 15 Dec 2023 13:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id 05FD3C023; Fri, 15 Dec 2023 14:30:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1702647009; bh=b20vpyg00WVKyH6ybuqsHsgOXZgJ2nb71oRe/G0ycJk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZOF0Y6OzwY77P+4OK/bRx/LrA92E+Ewqg7UEcUTXhlBz8WRRzkOsyWJsKm9lxRTtw
+	 xtoPSv6O9oxvJpuYguK9xY1uPTJXr5NOHCCZ3kbcQEzGdY/Kq9KpKIuO3NDqlKgGud
+	 Aa/7f/fAGOuveFvNH08lFTZqK6znaj71tk3Wbc3Wt90uEINykdavQ7zyd9dEfOnuOn
+	 Z1PlzvWTFz9HUtDsPMNqv0OC7r1zw6rrA0ZvUKg6sP5xpVeJNHQtNc82xrdQxMSQ4D
+	 Q69/KGCAz9V7u1p8dyz2oTi4YMj8SYbIX/256qZJEKxGq6iQXgGtwx5tJrh+QtXvPb
+	 dDAehFNnM+a7w==
+X-Spam-Level: 
+Received: from gaia (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id 4FAF9C009;
+	Fri, 15 Dec 2023 14:30:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1702647008; bh=b20vpyg00WVKyH6ybuqsHsgOXZgJ2nb71oRe/G0ycJk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L+tc9AV77ZtJkbnBcyJo/SQdJxBCl8J00AjfEfjPJmuB3W7CjYkI69XJqbf38qbVT
+	 iN+BVGUZw1IYvZhn1OkWsRzzuwmEc7GnlsnkX4mCFTRmV6WY6RBx7G5X6Vfhpk3XWX
+	 wBNxZF1klac/LiiNCkqMeYfLQsZz1fiAjDDp+YL/ln7seybyTXVhRQdhKNBhbPDqtD
+	 kQrnngf4YY5S7T1KSuB565s8Mj6l7wUDoBCP9f/DxD8OojN/sRJRPVDJTiNwnqRgAP
+	 XW+EhZXAuxEGyJR4xoprwR5o8PgJeUaAxnDl+jDKDdW2/e0t2NfYEWTLP2bGT8gWku
+	 LoIkI9axCVNMA==
+Received: from localhost (gaia [local])
+	by gaia (OpenSMTPD) with ESMTPA id 6ce99df9;
+	Fri, 15 Dec 2023 13:29:58 +0000 (UTC)
+Date: Fri, 15 Dec 2023 22:29:43 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
+	David Howells <dhowells@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>, linux-cachefs@redhat.com,
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/39] netfs, afs, 9p: Delegate high-level I/O to
+ netfslib
+Message-ID: <ZXxUx_nh4HNTaDJx@codewreck.org>
+References: <20231213152350.431591-1-dhowells@redhat.com>
+ <20231215-einziehen-landen-94a63dd17637@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2][wireless-next/for-next] wifi: mt76: mt7996: Use
- DECLARE_FLEX_ARRAY() and fix -Warray-bounds warnings
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <ZXiU9ayVCslt3qiI@work>
-References: <ZXiU9ayVCslt3qiI@work>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>,
- Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>,
- Sean Wang <sean.wang@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170264697580.1759617.6397953788753678096.kvalo@kernel.org>
-Date: Fri, 15 Dec 2023 13:29:37 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231215-einziehen-landen-94a63dd17637@brauner>
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+Christian Brauner wrote on Fri, Dec 15, 2023 at 01:03:14PM +0100:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> branch: vfs.netfs
 
-> Transform zero-length arrays `rate`, `adm_stat` and `msdu_cnt` into
-> proper flexible-array members in anonymous union in `struct
-> mt7996_mcu_all_sta_info_event` via the DECLARE_FLEX_ARRAY()
-> helper; and fix multiple -Warray-bounds warnings:
-> 
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:544:61: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:551:58: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:553:58: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:530:61: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:538:66: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:540:66: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:520:57: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> 
-> This results in no differences in binary output, helps with the ongoing
-> efforts to globally enable -Warray-bounds.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+This doesn't seem to build:
+-------
+  CC [M]  fs/netfs/buffered_write.o
+fs/netfs/buffered_write.c: In function ‘netfs_kill_pages’:
+fs/netfs/buffered_write.c:569:17: error: implicit declaration of function ‘generic_error_remove_folio’; did you mean ‘generic_error_remove_page’? [-Werror=implicit-function-declaration]
+  569 |                 generic_error_remove_folio(mapping, folio);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                 generic_error_remove_page
+cc1: some warnings being treated as errors
+-------
 
-I'll take this directly wireless-next, ok?
+This helper is present in -next as commit af7628d6ec19 ("fs: convert
+error_remove_page to error_remove_folio") (as of now's next), apparently
+from akpm's mm-stable:
+git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm mm-stable
 
+(which obviously have some conflict in afs when trying to merge...)
+
+
+I'll go back to dhowell's tree to finally test 9p a bit,
+sorry for lack of involvement just low on time all around.
+
+
+Good luck (?),
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/ZXiU9ayVCslt3qiI@work/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Dominique Martinet | Asmadeus
 
