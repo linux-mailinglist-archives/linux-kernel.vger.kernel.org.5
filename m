@@ -1,160 +1,117 @@
-Return-Path: <linux-kernel+bounces-1344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58971814DBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:01:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC2CE814DA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DE4D1C23D98
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:01:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95AE62845A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C403EA73;
-	Fri, 15 Dec 2023 17:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067093EA92;
+	Fri, 15 Dec 2023 16:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="UGfEXITT"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Z6jxuPbS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2033EA74
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id EBR6rmv31emNIEBR6rInmB; Fri, 15 Dec 2023 17:53:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1702659197;
-	bh=yYjHwcm5ONKKp2t/E2nQ5jgkSu+ukJ4Ae0Z81VV/l5U=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=UGfEXITTxE+pPRmAIu4Gbf5iCKKwO9WC9yJDTyvNy1c8Trpi3n/Cod/yWv3CZLx0q
-	 AJ9N0QRSrW3JAN8Az4HbSI8H+WFAyOFgjdR0gbuVHiiul17M/98TmXDgIidX+z4zF/
-	 TP2t0gk7J/JKSUsoehFD+MMQsDwCgz/tNH0TzCoAiKzVxGz6ClX4wKa3iRINQEjgK4
-	 OudbrKVOcg58kNynTqM/Wy97jwahCKZapZHCn/LyqYct+orJM8NRM5ew+ndtvD4MRv
-	 8/rf6AuYeDSctx7feQC0fi0/Ob7Y1JyY+nct8hOpX+yitz4oklMvQAHutxVc4E+aZt
-	 /KPbT6UKIzqJQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 15 Dec 2023 17:53:17 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <66e9fe7a-927b-465f-aafe-8aea0e5998a4@wanadoo.fr>
-Date: Fri, 15 Dec 2023 17:53:16 +0100
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3B43EA69;
+	Fri, 15 Dec 2023 16:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=+PVeYh/iTAy0TD4XWRLYPHR1++BtvN7+emQiyKeSGnE=; b=Z6jxuPbSIKcX2/MUaMkU27ths5
+	nu8me4ipMjapFn5PoBkOThifLqS9RvwtMFR5RP3FzR1VyOgfLKyq9TSNlVfgOiFx1qiL4dROUVQ0u
+	hpSm7gyOvURjhX/xj2XLYUKJ7ZjYL71/HZlzdHLY2z0k9q5sSGLPFtPtpJTT/MmFRCF6kCPsDc7ys
+	6aVSbz3535TDuEpLoRS4/8i/xCbeTUW/Ys4kguCoZJQACevf0NcdrvlDuzFb1D7aJMPGOMuYfdR9p
+	As1u56CFgfGGaTIyfqCrOn0rwpCX3d4mxIoBy26UjlbIlT3Xxo0zLfn62sVRmuC1vi3ciaDtnkrhh
+	hkvph7Sg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40980)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rEBRI-0002vl-22;
+	Fri, 15 Dec 2023 16:53:28 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rEBRI-0003mr-4I; Fri, 15 Dec 2023 16:53:28 +0000
+Date: Fri, 15 Dec 2023 16:53:28 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>
+Subject: Re: [PATCH RFC v3 13/21] ACPICA: Add new MADT GICC flags fields
+Message-ID: <ZXyEiHLFBsoUkfNI@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOgs-00Dvko-6t@rmk-PC.armlinux.org.uk>
+ <20231215162322.00007391@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] iio: adc: ad7380: new driver for AD7380 ADCs
-To: dlechner@baylibre.com
-Cc: broonie@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org,
- jic23@kernel.org, krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, michael.hennerich@analog.com, nuno.sa@analog.com,
- robh+dt@kernel.org, stefan.popa@analog.com
-References: <20231215-ad7380-mainline-v3-0-7a11ebf642b9@baylibre.com>
- <20231215-ad7380-mainline-v3-3-7a11ebf642b9@baylibre.com>
-Content-Language: fr
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20231215-ad7380-mainline-v3-3-7a11ebf642b9@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215162322.00007391@Huawei.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Le 15/12/2023 à 11:32, David Lechner a écrit :
-> This adds a new driver for the AD7380 family ADCs.
+On Fri, Dec 15, 2023 at 04:23:22PM +0000, Jonathan Cameron wrote:
+> On Wed, 13 Dec 2023 12:50:18 +0000
+> Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 > 
-> The driver currently implements basic support for the AD7380, AD7381,
-> AD7383, and AD7384 2-channel differential ADCs. Support for additional
-> single-ended and 4-channel chips that use the same register map as well
-> as additional features of the chip will be added in future patches.
+> > From: James Morse <james.morse@arm.com>
+> > 
+> > Add the new flag field to the MADT's GICC structure.
+> > 
+> > 'Online Capable' indicates a disabled CPU can be enabled later. See
+> > ACPI specification 6.5 Tabel 5.37: GICC CPU Interface Flags.
+> > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > 
-> Co-developed-by: Stefan Popa <stefan.popa-OyLXuOCK7orQT0dZR+AlfA@public.gmane.org>
-> Signed-off-by: Stefan Popa <stefan.popa-OyLXuOCK7orQT0dZR+AlfA@public.gmane.org>
-> Reviewed-by: Nuno Sa <nuno.sa-OyLXuOCK7orQT0dZR+AlfA@public.gmane.org>
-> Signed-off-by: David Lechner <dlechner-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>
-> ---
+> I see there is an acpica pull request including this bit but with a different name
+> For reference.
+> https://github.com/acpica/acpica/pull/914/commits/453a5f67567786522021d5f6913f561f8b3cabf6
+> 
+> +CC Lorenzo who submitted that.
 
-...
+> > +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)	/* 03: CPU is online capable */
+> 
+> ACPI_MADT_GICC_ONLINE_CAPABLE
 
-> +static void ad7380_regulator_disable(void *p)
-> +{
-> +	regulator_disable(p);
-> +}
-> +
-> +static int ad7380_probe(struct spi_device *spi)
-> +{
-> +	struct iio_dev *indio_dev;
-> +	struct ad7380_state *st;
-> +	int ret;
-> +
-> +	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	st = iio_priv(indio_dev);
-> +	st->spi = spi;
-> +	st->chip_info = spi_get_device_match_data(spi);
-> +	if (!st->chip_info)
-> +		return dev_err_probe(&spi->dev, -EINVAL, "missing match data\n");
-> +
-> +	st->vref = devm_regulator_get_optional(&spi->dev, "refio");
+It's somewhat disappointing, but no big deal. It's easy enough to change
+"irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs"
+to use Lorenzo's name when that patch hits - and it becomes one less
+patch in this patch set when Lorenzo's change eventually hits mainline.
 
-Hi,
+Does anyone know how long it may take for Lorenzo's change to get into
+mainline? Would it be by the 6.8 merge window or the following one?
 
-devm_regulator_get_enable_optional()?
-to save some LoC below and ad7380_regulator_disable()
+Thanks.
 
-CJ
-
-> +	if (IS_ERR(st->vref)) {
-> +		/*
-> +		 * If there is no REFIO supply, then it means that we are using
-> +		 * the internal 2.5V reference.
-> +		 */
-> +		if (PTR_ERR(st->vref) == -ENODEV)
-> +			st->vref = NULL;
-> +		else
-> +			return dev_err_probe(&spi->dev, PTR_ERR(st->vref),
-> +					     "Failed to get refio regulator\n");
-> +	}
-> +
-> +	if (st->vref) {
-> +		ret = regulator_enable(st->vref);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = devm_add_action_or_reset(&spi->dev, ad7380_regulator_disable,
-> +					       st->vref);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	st->regmap = devm_regmap_init(&spi->dev, NULL, st, &ad7380_regmap_config);
-> +	if (IS_ERR(st->regmap))
-> +		return dev_err_probe(&spi->dev, PTR_ERR(st->regmap),
-> +				     "failed to allocate register map\n");
-> +
-> +	indio_dev->channels = st->chip_info->channels;
-> +	indio_dev->num_channels = st->chip_info->num_channels;
-> +	indio_dev->name = st->chip_info->name;
-> +	indio_dev->info = &ad7380_info;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +	indio_dev->available_scan_masks = ad7380_2_channel_scan_masks;
-> +
-> +	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
-> +					      iio_pollfunc_store_time,
-> +					      ad7380_trigger_handler, NULL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = ad7380_init(st);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_iio_device_register(&spi->dev, indio_dev);
-> +}
-
-...
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
