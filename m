@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 008ED814380
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1B1E814385
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAB76284378
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:23:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E29C2841F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52A114F6D;
-	Fri, 15 Dec 2023 08:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3111512E51;
+	Fri, 15 Dec 2023 08:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="isEi4w8s"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IaXUyP1V"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399181A713
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9DB125CF
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5527ee1b5c3so2376733a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:22:33 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c580ba223so4965635e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:24:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702628552; x=1703233352; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1702628684; x=1703233484; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ErSPpkKKFAjMcXdmmaCZA2SpqYGJcA4cXAU/CRTyJxQ=;
-        b=isEi4w8slWcGZ/2EqXjsAVTFaqL8KLDbOg00vPnuLD3NQ2NxaZdNQ3keEgaZWNzqPi
-         Uk+Xj5iv6ysQzVINsG9o2PB+OTc1JYnG7ur6WoJ5pd1bBOM5Hcl3TJawHUdAetAAxNyQ
-         KQnajjwExaz0QYKs3K/0L1QcAGwawJe4CC50NseZ5Lt9mo4HEl8XBwkFpgyZrmFlYSOp
-         ouVuOsa+OH6F8v0BMHHyIxc/drhfMiF0O5q374yev1Y3HRQ9v1do3iFHstUgDbtd7dve
-         LGfxCDkaNJrsrbfiOGIdJwl1uKzKg+AHikqKE4R71VBjqmLOld3UFUM+yHZ4KzJknhX0
-         5gew==
+        bh=Sll+9qWsACg9WSZZSvDuRd5P7YLwP0CwcrFN2KVP0h4=;
+        b=IaXUyP1VA5H5nrsQ0pqyW5AZHt3CtTGXED6BWicfF79d10box3Z4bGwYRqxpbHq8Tf
+         rkj1Q5p3xI+r18z3ARIj10kn+8xJa53SPHAQks9OoaFYw0d9Vs/XCndLxhTuLSNOpSBD
+         zvkQBhsGqwYsbh8RRVVZohE/j9gQn4OSbyMh+tdpwBqoqCo1U8Xt1+awxmcIrOCk5Q8q
+         jwVIooPiKPqKwH/HUUpXPJo18rsgJ5+TrFm3Qe2B37WB0oECwwuzVbq3l5/Gt9+mFDSr
+         W+VZVi5EB+w5Br66uKHWUZEmlKrbcEeZINz/+ISFsxSrGoWkVWck8jeoXhJ35oXSoZFE
+         PF4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702628552; x=1703233352;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702628684; x=1703233484;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ErSPpkKKFAjMcXdmmaCZA2SpqYGJcA4cXAU/CRTyJxQ=;
-        b=r0CAIC/YnzlhBnp1MNnSTcARYN0SDOOVWYPtxRCFDhVB2DYjDlZ5F/F//D/OUsRGcE
-         e7oiHyzNUfKaAJPBEj8RG7k5XBmf7djD+DuxJMsOYLMva+rfiYX4WIWpjy81EyolUzhQ
-         +ScYq2aKrLe34eviuc1+vXW9b+bglcIT1BbgupX27xen3W6ZGIpM5OpUCjtGVbeplbZe
-         14aPWHR5Yr5jg4HnMBsYlToTWpN/19dhMw+nJhJmvbIYgzDxaHUukzlqaiijU+7YcuC+
-         GbXbXNro7c6f87ZGRLTURS4ML70zpuk8n8v17Ikqutyb+u/ElYH1kPQwRCO1ZyyZ9VF8
-         dQGw==
-X-Gm-Message-State: AOJu0YyEyj7+3mY70CJigYyarXFEuUnq6aV9UgiLEKxWd5eULjD7cy56
-	ejTpJZrhwG3bEwAPXpC305Q6OQ==
-X-Google-Smtp-Source: AGHT+IEzCTseGZABorq3FoUt1Q5O2QtsC9AknikOzVMggKVq1ZKYXHm8ojXM9/4LWH+m7s688emSkQ==
-X-Received: by 2002:a17:906:fe4c:b0:a1c:4eee:3521 with SMTP id wz12-20020a170906fe4c00b00a1c4eee3521mr13916195ejb.56.1702628552522;
-        Fri, 15 Dec 2023 00:22:32 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id ry9-20020a1709068d8900b009adc77fe164sm10493875ejc.66.2023.12.15.00.22.30
+        bh=Sll+9qWsACg9WSZZSvDuRd5P7YLwP0CwcrFN2KVP0h4=;
+        b=thuy52iDkZ1cp8vBxuPRmJIINQIjQsDvK4x2K+unIv/FLBSVb2Vwb1UBu0iEywAwJj
+         zQPhy8tPpDaJ7jFIvjB5AhzZ3r+BWxqNVzhzJvv73Zm03rKbzlWH3QyvHL8wGmx5NMqh
+         Oj/hBRLXxyTmiBQHsAqSon+fP8gi7nspVHEicqqpapUrolRRSkiCCTTPKbl1ryDTE/CY
+         HkYCYqSgGpML9hj9UxrR5PbgQgN1/oKtN/C1Kvgh6AuFJ9YR9NKUcr2R9QlWYdVK5zjg
+         krSRlBGQ0lEMeLUyJj+rIhMK2eO1D6Xd0EtpM9cKWWxgjuDD5n7/tzo1BwpyilpszeV4
+         wUQg==
+X-Gm-Message-State: AOJu0YyQ1Y8r9TxfX7l2YTj5PXHs+USp+S1affiznKuP8sBDD+gWAtXz
+	gSxBp2G6+VDdisFORJV6hA9i7Q==
+X-Google-Smtp-Source: AGHT+IFC8/hzB5AHQqnVCaSLspwYNhdYIQ/9XR47KJueX6t6Iyz+C59Le/39vFUnmejukr2l5BqFTQ==
+X-Received: by 2002:a05:600c:1e0a:b0:40c:6c79:2a43 with SMTP id ay10-20020a05600c1e0a00b0040c6c792a43mr159046wmb.108.1702628684547;
+        Fri, 15 Dec 2023 00:24:44 -0800 (PST)
+Received: from [192.168.2.173] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id t9-20020a05600c198900b0040c490db950sm17872657wmq.47.2023.12.15.00.24.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 00:22:32 -0800 (PST)
-Message-ID: <bdfba8a7-9197-4aae-a7f9-6075a375f60b@linaro.org>
-Date: Fri, 15 Dec 2023 09:22:30 +0100
+        Fri, 15 Dec 2023 00:24:44 -0800 (PST)
+Message-ID: <120bf090-0c07-4971-a18a-a1b326f1b139@linaro.org>
+Date: Fri, 15 Dec 2023 10:24:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,83 +66,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
+Subject: Re: [PATCH 4/4] mtd: spi-nor: drop superfluous debug prints
 Content-Language: en-US
-To: Luo Jie <quic_luoj@quicinc.com>, andrew@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
- p.zabel@pengutronix.de, f.fainelli@gmail.com
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231215074005.26976-1-quic_luoj@quicinc.com>
- <20231215074005.26976-15-quic_luoj@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231215074005.26976-15-quic_luoj@quicinc.com>
+To: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com
+Cc: richard@nod.at, jaimeliao@mxic.com.tw, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
+ <20231215082138.16063-5-tudor.ambarus@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20231215082138.16063-5-tudor.ambarus@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 15/12/2023 08:40, Luo Jie wrote:
-> The following properties are added for qca8084 PHY.
-> 
-> 1. add the compatible string "ethernet-phy-id004d.d180" since
->    the PHY device is not accessible during MDIO bus register.
-> 2. add property "qcom,phy-addr-fixup" for customizing MDIO address.
-> 3. add property "qcom,phy-work-mode" for specifying qca8084 PHY
->    work mode.
-> 4. add the initial clocks and resets.
+I missed to drop some unused variables. Will drop them if everything
+else is fine.
 
-All my previous comments (sent one minute before this patchset :) )
-apply. Please respond to them or implement them in v5 (not earlier than
-after 24h).
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index a708c3448809..92c992eb73d5 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3492,9 +3492,7 @@ int spi_nor_scan(struct spi_nor *nor, const char
+*name,
+ {
+        const struct flash_info *info;
+        struct device *dev = nor->dev;
+-       struct mtd_info *mtd = &nor->mtd;
+        int ret;
+-       int i;
 
-
-Best regards,
-Krzysztof
-
+        ret = spi_nor_check(nor);
+        if (ret)
 
