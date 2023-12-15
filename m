@@ -1,90 +1,166 @@
-Return-Path: <linux-kernel+bounces-1314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE25E814D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:39:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F9E5814D47
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70EB3B209C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:39:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0D7B1F24D7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DE13DB9D;
-	Fri, 15 Dec 2023 16:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nxVe3Ua5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A703E489;
+	Fri, 15 Dec 2023 16:38:42 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6E63EA69
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702658330; x=1734194330;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=/NEhk85/oz6l+9+O5DDdZG3ZrGSSP2UHhluxajnZXgo=;
-  b=nxVe3Ua5BG8o6w6kporpvoKQov1kNnnKJtDqKKbAc5/YIMmPtc6w5B/s
-   vQaFOqqYk6veoIqoH4KEeckrzrX3QuG717HY5QFJ5MaFvCttbKjDjuO+u
-   EpDPnhWhzpbQMAkAfqyq9Z6jshh9tpHG/i7JTbRKADwyc2HGCorEpcwCG
-   TIAHDz9r9OIwhUwnST+0mDAm7YfihegjAf7uWdug8NnBfzdlfiqqCPvTN
-   AwOKC84iw4Lo/95wSt7mnz/N66rRcpbjT5zTDXLMQ3EMbEaj/ZYkHmi3y
-   5ggQWWZWoaBf+SbSuomlPned8QDwE3R6BXh5UlV32nMnP8f6HeHx1+Gl9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="380294573"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="380294573"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:38:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="803765538"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="803765538"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 15 Dec 2023 08:38:48 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEBD3-0000T4-0q;
-	Fri, 15 Dec 2023 16:38:45 +0000
-Date: Sat, 16 Dec 2023 00:38:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Petlozu Pravareshwar <petlozup@nvidia.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
-	Stefan Kristiansson <stefank@nvidia.com>
-Subject: scripts/kernel-doc: drivers/soc/tegra/pmc.c:467: warning: Function
- parameter or struct member 'syscore' not described in 'tegra_pmc'
-Message-ID: <202312160052.KMv3CVOg-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641613D396;
+	Fri, 15 Dec 2023 16:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsFGt2jlqz67LyQ;
+	Sat, 16 Dec 2023 00:36:38 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3075A1400D4;
+	Sat, 16 Dec 2023 00:38:37 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
+ 2023 16:38:36 +0000
+Date: Fri, 15 Dec 2023 16:38:35 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 15/21] irqchip/gic-v3: Add support for ACPI's
+ disabled but 'online capable' CPUs
+Message-ID: <20231215163835.00005d02@Huawei.com>
+In-Reply-To: <E1rDOh2-00Dvl1-H6@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOh2-00Dvl1-H6@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
-commit: 1ddb8f6d44ff482c9953a06f800453bc372cfead soc/tegra: pmc: Fix dual edge triggered wakes
-date:   1 year, 1 month ago
-config: arm-randconfig-003-20231215 (https://download.01.org/0day-ci/archive/20231216/202312160052.KMv3CVOg-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312160052.KMv3CVOg-lkp@intel.com/reproduce)
+On Wed, 13 Dec 2023 12:50:28 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312160052.KMv3CVOg-lkp@intel.com/
+> From: James Morse <james.morse@arm.com>
+> 
+> To support virtual CPU hotplug, ACPI has added an 'online capable' bit
+> to the MADT GICC entries. This indicates a disabled CPU entry may not
+> be possible to online via PSCI until firmware has set enabled bit in
+> _STA.
+> 
+> What about the redistributor in the GICC entry? ACPI doesn't want to say.
+> Assume the worst: When a redistributor is described in the GICC entry,
+> but the entry is marked as disabled at boot, assume the redistributor
+> is inaccessible.
+> 
+> The GICv3 driver doesn't support late online of redistributors, so this
+> means the corresponding CPU can't be brought online either. Clear the
+> possible and present bits.
+> 
+> Systems that want CPU hotplug in a VM can ensure their redistributors
+> are always-on, and describe them that way with a GICR entry in the MADT.
+> 
+> When mapping redistributors found via GICC entries, handle the case
+> where the arch code believes the CPU is present and possible, but it
+> does not have an accessible redistributor. Print a warning and clear
+> the present and possible bits.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-All warnings (new ones prefixed by >>):
+Seems resonable, but this contains the blob that makes the change I called
+out in the previous patch relevant. With a forwards reference in that patch.
 
->> scripts/kernel-doc: drivers/soc/tegra/pmc.c:467: warning: Function parameter or struct member 'syscore' not described in 'tegra_pmc'
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ----
+> Disabled but online-capable CPUs cause this message to be printed
+> if their redistributors are described via GICC:
+> | GICv3: CPU 3's redistributor is inaccessible: this CPU can't be brought online
+> 
+> If ACPI's _STA tries to make the cpu present later, this message is printed:
+> | Changing CPU present bit is not supported
+> 
+> Changes since RFC v2:
+>  * use gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_CPU_CAPABLE)
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 14 ++++++++++++++
+>  include/linux/acpi.h         |  2 +-
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index ebecd4546830..6d0f98d3540e 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -2370,11 +2370,25 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
+>  				(struct acpi_madt_generic_interrupt *)header;
+>  	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
+>  	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
+> +	int cpu = get_cpu_for_acpi_id(gicc->uid);
+>  	void __iomem *redist_base;
+>  
+>  	if (!acpi_gicc_is_usable(gicc))
+>  		return 0;
+>  
+> +	/*
+> +	 * Capable but disabled CPUs can be brought online later. What about
+> +	 * the redistributor? ACPI doesn't want to say!
+> +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
+> +	 * Otherwise, prevent such CPUs from being brought online.
+> +	 */
+> +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
+> +		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
+> +		set_cpu_present(cpu, false);
+> +		set_cpu_possible(cpu, false);
+> +		return 0;
+> +	}
+> +
+>  	redist_base = ioremap(gicc->gicr_base_address, size);
+>  	if (!redist_base)
+>  		return -ENOMEM;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 19d009ca9e7a..00be66683505 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -238,7 +238,7 @@ void acpi_table_print_madt_entry (struct acpi_subtable_header *madt);
+>  
+>  static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
+>  {
+> -	return gicc->flags & ACPI_MADT_ENABLED;
+> +	return gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_CPU_CAPABLE);
+
+This is where the change is made that broke the code path in
+the previous patch.  No problem with splitting that across patches but maybe call out
+why in the patch intro for previous patch.
+
+>  }
+>  
+>  /* the following numa functions are architecture-dependent */
+
 
