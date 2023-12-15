@@ -1,146 +1,162 @@
-Return-Path: <linux-kernel+bounces-450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2019C814141
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:29:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9573181414D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:35:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 077741C2247C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:29:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F149284445
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B6A63D0;
-	Fri, 15 Dec 2023 05:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA9C6AD9;
+	Fri, 15 Dec 2023 05:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SbtJkMQp"
+	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="o3fE8TcR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD9F63A6
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=eGH+77gu0FXXkUseAHfipZghMBnS03gjwpqhBgPZoHQ=; b=SbtJkMQpZoAzWjW62w/zxVm9rA
-	PvWTcYFvUfgvpqPMUgSC+yl2UHjaQu/0Z80DbHySmZUfRngkvxrQmymhJEgN/Tv6oj2B+CTlgNUI3
-	ytoxCa+RiLdbCN5KIdGf6FoVNnxtXY5xoPZTpmkz8jzy2dPSUiQ22CUr8da2kAln4xWDNjdilBN6a
-	H96q8sgG/9UWfBOjC6xSTvXia1klmJMe4z0ivXxpZk/3rtdK0du6+3sXDBQqOOyZf19LqMg2Alszm
-	lHRPVppTyI/esklYIIchIpyHWNNS1b2WHAXbyIbntos55U/x9r8Iqh+Nd8qZSAhFDCxuV1I+WOlEa
-	cukB6akg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE0lE-00244d-0e;
-	Fri, 15 Dec 2023 05:29:20 +0000
-Message-ID: <5a58e510-e5b4-42ae-95a3-257ca802212a@infradead.org>
-Date: Thu, 14 Dec 2023 21:29:19 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C7F63A6;
+	Fri, 15 Dec 2023 05:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.trvn.ru (Postfix) with ESMTPSA id EF824403BF;
+	Fri, 15 Dec 2023 10:29:22 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+	t=1702618164; bh=wJhGZlFfjScpdy3VQmLDEEdsC0w0gtsbyZa72g/IvsY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=o3fE8TcRvkhGpHFeYdMIue4Mt4Kudw+bq2DbbqgM7ZhrtJqW+H7RIx4T0uuhp+X53
+	 NAEbsqOJ6AGxLt7Rk+zbNR18lceA04szHgpiSXNGo3qpkjtacX1Z5qoKQ3FgMGAmFK
+	 ZbMOWI9CiVYcEKla9G9w6WDc5kgaBR89pQfbderarbz9C1Cn9hsvhXTf9I/JZw/wLy
+	 +sVXB+w1ZHDcF4W4Ck3cPm3AVlquMGrzczT+ELzy9wR+pn/vLFqVyXTgPunOQOLFsJ
+	 QwQPJO8T+cPDeoTWieDsysBljdx1OCBep3ZvzIlvFQ+WIhMHWmVyL0AuzumCvtCtBT
+	 4QvoIXfXN4iQA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] gpu: drm: amd: fixed typos
-Content-Language: en-US
-To: Ghanshyam Agrawal <ghanshyam1898@gmail.com>, alexander.deucher@amd.com,
- christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
- daniel@ffwll.ch, Hawking.Zhang@amd.com, candice.li@amd.com, Le.Ma@amd.com,
- lijo.lazar@amd.com
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20231215052033.550509-1-ghanshyam1898@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231215052033.550509-1-ghanshyam1898@gmail.com>
+Date: Fri, 15 Dec 2023 10:29:22 +0500
+From: Nikita Travkin <nikita@trvn.ru>
+To: Rob Herring <robh@kernel.org>
+Cc: Sebastian Reichel <sre@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>, Bjorn
+ Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: supply: Add Acer Aspire 1 EC
+In-Reply-To: <20231214220210.GA988134-robh@kernel.org>
+References: <20231212-aspire1-ec-v2-0-ca495ea0a7ac@trvn.ru>
+ <20231212-aspire1-ec-v2-1-ca495ea0a7ac@trvn.ru>
+ <20231214220210.GA988134-robh@kernel.org>
+Message-ID: <207edefe4e8eac9679cd8966d28820cd@trvn.ru>
+X-Sender: nikita@trvn.ru
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi--
-
-On 12/14/23 21:20, Ghanshyam Agrawal wrote:
-> Fixed multiple typos in atomfirmware.h
+Rob Herring писал(а) 15.12.2023 03:02:
+> On Tue, Dec 12, 2023 at 05:49:09PM +0500, Nikita Travkin wrote:
+>> Add binding for the EC found in the Acer Aspire 1 laptop.
+>>
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+>>  .../bindings/power/supply/acer,aspire1-ec.yaml     | 67 ++++++++++++++++++++++
+>>  1 file changed, 67 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml
+>> new file mode 100644
+>> index 000000000000..1fbf1272a00f
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml
+>> @@ -0,0 +1,67 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/power/supply/acer,aspire1-ec.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Acer Aspire 1 Embedded Controller
+>> +
+>> +maintainers:
+>> +  - Nikita Travkin <nikita@trvn.ru>
+>> +
+>> +description:
+>> +  The Acer Aspire 1 laptop uses an embedded controller to control battery
+>> +  and charging as well as to provide a set of misc features such as the
+>> +  laptop lid status and HPD events for the USB Type-C DP alt mode.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: acer,aspire1-ec
+>> +
+>> +  reg:
+>> +    const: 0x76
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  acer,media-keys-on-top:
+>> +    description: Configure the keyboard layout to use media features of
+>> +      the fn row when the fn key is not pressed. The firmware may choose
+>> +      to add this property when user selects the fn mode in the firmware
+>> +      setup utility.
+>> +    type: boolean
 > 
-> Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-> ---
->  drivers/gpu/drm/amd/include/atomfirmware.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Besides the naming, this isn't really a property of the EC, but really 
+> part of the keyboard layout. It seems you just stuck it here because 
+> this is part of the specific device.
 > 
-> diff --git a/drivers/gpu/drm/amd/include/atomfirmware.h b/drivers/gpu/drm/amd/include/atomfirmware.h
-> index fa7d6ced786f..41d553921adf 100644
-> --- a/drivers/gpu/drm/amd/include/atomfirmware.h
-> +++ b/drivers/gpu/drm/amd/include/atomfirmware.h
-> @@ -210,7 +210,7 @@ atom_bios_string          = "ATOM"
->  };
->  */
->  
-> -#pragma pack(1)                          /* BIOS data must use byte aligment*/
-> +#pragma pack(1)                          /* BIOS data must use byte alignment */
->  
->  enum atombios_image_offset{
->    OFFSET_TO_ATOM_ROM_HEADER_POINTER          = 0x00000048,
-> @@ -452,7 +452,7 @@ struct atom_dtd_format
->    uint8_t   refreshrate;
->  };
->  
-> -/* atom_dtd_format.modemiscinfo defintion */
-> +/* atom_dtd_format.modemiscinfo definition */
->  enum atom_dtd_format_modemiscinfo{
->    ATOM_HSYNC_POLARITY    = 0x0002,
->    ATOM_VSYNC_POLARITY    = 0x0004,
-> @@ -645,7 +645,7 @@ struct lcd_info_v2_1
->    uint32_t reserved1[8];
->  };
->  
-> -/* lcd_info_v2_1.panel_misc defintion */
-> +/* lcd_info_v2_1.panel_misc definition */
->  enum atom_lcd_info_panel_misc{
->    ATOM_PANEL_MISC_FPDI            =0x0002,
->  };
-> @@ -683,7 +683,7 @@ enum atom_gpio_pin_assignment_gpio_id {
->    /* gpio_id pre-define id for multiple usage */
->    /* GPIO use to control PCIE_VDDC in certain SLT board */
->    PCIE_VDDC_CONTROL_GPIO_PINID = 56,
-> -  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC swithing feature is enable */
-> +  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC switching feature is enable */
 
-s/enable/enabled/
+The EC on this device is also a keyboard controller, but the keyboard
+part has a dedicated i2c bus with hid-over-i2c. Since this is the
+"management" bus of the same device, I decided that it fits here.
 
->    PP_AC_DC_SWITCH_GPIO_PINID = 60,
->    /* VDDC_REGULATOR_VRHOT_GPIO_PINID in Gpio_Pin_LutTable, VRHot feature is enable */
+> It is also hardly a feature unique to this device. I'm typing this from 
+> a device with the exact same thing (M1 Macbook Pro). Actually, all 3 
+> laptops I have in front of me have the same thing. The other 2 have 
+> a Fnlock (Fn+ESC) though.  On the M1, it's just a module param which I 
+> set as persistent. Though I now wonder if the Fnlock could be 
+> implemented on it too. Being able to switch whenever I want would be 
+> nice. That would probably have to be in Linux where as these other 
+> laptops probably implement this in their EC/firmware?
+> 
+> What I'm getting at is controlling changing this in firmware is not a 
+> great experience and this should all be common.
+> 
 
-Ditto.
-There may be a few more that need this same treatment.
+You may be right, however my goal here is to support the original
+firmware feature that is lost when we use DT.
 
->    VDDC_VRHOT_GPIO_PINID = 61,
+This is a WoA laptop with UEFI/ACPI and, as usual for "Windows"
+machines, there is a setting in the firmware setup utility ("bios") to
+set the fn behavior. But it works by setting an ACPI value, and for
+Snapdragon devices we can't use that now.
 
-The other changes look good as far as they go, but codespell reports
-a few more misspellings to consider:
+Long term I want to have a EFI driver that would automatically
+detect/load DT and my plan is to handle things like this (and i.e. mac
+address, different touchpad vendor, etc) there. Thus I'm adding this
+property already, as an equivalent of that weird acpi bit that original
+firmware sets.
 
-atomfirmware.h:213: aligment ==> alignment
-atomfirmware.h:257: Offest ==> Offset
-atomfirmware.h:258: Offest ==> Offset
-atomfirmware.h:390: Offest ==> Offset
-atomfirmware.h:455: defintion ==> definition
-atomfirmware.h:648: defintion ==> definition
-atomfirmware.h:686: swithing ==> switching
-atomfirmware.h:704: calcualted ==> calculated
-atomfirmware.h:967: compability ==> compatibility
-atomfirmware.h:981: intenal ==> internal
-atomfirmware.h:993: intenal ==> internal
-atomfirmware.h:3469: sequece ==> sequence
-atomfirmware.h:3507: indiate ==> indicate
-atomfirmware.h:4429: stucture ==> structure
-atomfirmware.h:4430: stucture ==> structure
-atomfirmware.h:4462: regiser ==> register
+If we only provide a module param, the "intended by OEM" way of setting
+the fn mode will be broken, and one would need to know how to write a
+magic special config file to set a kernel module param. I think it's not
+the best UX. (and just adds to the silly "arm/dt bad, x86/uefi/acpi
+"just works"" argument many people sadly have)
 
+If you think I shouldn't use DT to pass this info, feel free to say so.
+I will drop this property and see if there is something else I can do
+to still support this without relying on Linux cooperation.
 
-thanks.
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+Looking forward to your opinion,
+Nikita
+
+> Rob
 
