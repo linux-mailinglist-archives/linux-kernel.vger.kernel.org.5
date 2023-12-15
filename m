@@ -1,86 +1,149 @@
-Return-Path: <linux-kernel+bounces-1649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F56815183
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:02:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D13A681518F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE3DE28631B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:02:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CA96B22A15
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583C647793;
-	Fri, 15 Dec 2023 21:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA0547F54;
+	Fri, 15 Dec 2023 21:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MGySH0OO"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Fs/HaoOn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC9447772
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 21:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5e266e8d39eso10385147b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702674135; x=1703278935; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MTDZCEFmSpT07ZfLz7vZkizeT1MqLax9S/t8QTl1d0Y=;
-        b=MGySH0OOMUNqrEQTGPCH+XoWVEmJdxkS8rLTZ6L2p/hOhN1bwyZqChJfpZhdJZ7s/H
-         3LY8bpnXViu521lOEVFvQWnN1sllD7upoTCwM+DYbmtz6I1W08RraW6y4rJg0wdtyjWF
-         bKv5+HcBa5OtL+9c027CsEh7ijhbO09o5QhSc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702674135; x=1703278935;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MTDZCEFmSpT07ZfLz7vZkizeT1MqLax9S/t8QTl1d0Y=;
-        b=YFX7znyomS8SAPR8qmQ0VV1+l8WfOf+/l9AvXhLV5vgYZ34YypCTDim7X7Az2IhLhe
-         9LzK0QjhvtvbGDi81EztjXnSdA5jZKhx5WGJ0ZjlEVCeKyPwVL9DLVMzCioD/jn9pPr0
-         ZbpeqHiBnva5tz8rF06mmWB+/o2yTca1tXjFzdhSuSqHitqIXfo+Mf3L8kvsPGTSv0KI
-         7CNx1c3xP7YPu6PzM3VAYGCUbs0DGhKC0OGHyH1DbU0+ue/hIYUNp1cCsAF8zJb3SFYi
-         i+cyFTrhGSKJ69Gq/QX2PAJ2qhe0hKMlNPcecr4YJIgMX/4rA/JGsDycEUo3D8xuNNYS
-         7W9g==
-X-Gm-Message-State: AOJu0YyKG4tmdwshYV9zPijs3wtdR47TlWLxiV7CLit/GY9gDh6VMVOp
-	5fUlK9wCmNC8OO8Agr1QOiXl9ZxUhTrkxGmSD10ORA==
-X-Google-Smtp-Source: AGHT+IHG2yNMC71GN34CM/K6BzT74ojShGEa/vHULoEqCZj+Bn5WMfiAAqFWcB/K1Avy+6c5B8HyegKE+eg87hEaAPQ=
-X-Received: by 2002:a0d:c482:0:b0:5d7:1941:2c3c with SMTP id
- g124-20020a0dc482000000b005d719412c3cmr8885843ywd.105.1702674135254; Fri, 15
- Dec 2023 13:02:15 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039FB30132;
+	Fri, 15 Dec 2023 21:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1702674207;
+	bh=fWUcyTSvl9HkzhbEm2R9p6yElA555rA8toz5mjYvtR8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Fs/HaoOn6SjZTGGcdUHfgvof1ag/gLuno1cJmOXOX8v2Mr/oGxLTYh8xd4Ju11DlS
+	 07D2Y6ZaCj9MasIAmOM5lRGp7y1k1osx5lCBzcihDN0lI0oD6WYloE6Ah132R2CDwN
+	 ExwWYzVW6REs3ogTVC7ys8oxbR+B8Wq5LhBmWRqHVdkU29ZkHwm6U1JwIkIwZEFiDB
+	 0mHdZeUJsAv5xtXJO89pm1Xu3lRCb8332T86FidfU/XlTkDU/jcVul2g9PScZVabG8
+	 xL3yhH+JzwcZOxVKRCi+CDz1pkSzJxElChYxhgcaPDo4hO/LLydHjz0sPzX3gEc7mk
+	 P4XKIW1PNHMlQ==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 354E83781FD5;
+	Fri, 15 Dec 2023 21:03:25 +0000 (UTC)
+Message-ID: <6c62e3b2-acde-4580-9b67-56683289e45e@collabora.com>
+Date: Fri, 15 Dec 2023 23:03:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
- <20231213110009.v1.6.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid> <ZXpx9esFooSgq11q@google.com>
-In-Reply-To: <ZXpx9esFooSgq11q@google.com>
-From: Mark Hasemeyer <markhas@chromium.org>
-Date: Fri, 15 Dec 2023 14:02:04 -0700
-Message-ID: <CANg-bXApLtwuk+B3=F4b0M_xJ06x6kn2Owbb0RC6Rdpcma4_Ow@mail.gmail.com>
-Subject: Re: [PATCH v1 6/6] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
-To: Tzung-Bi Shih <tzungbi@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Raul Rangel <rrangel@chromium.org>, 
-	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
-	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
-	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
-	chrome-platform@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/9] dt-bindings: net: starfive,jh7110-dwmac: Add
+ JH7100 SoC compatible
+Content-Language: en-US
+To: Samuel Holland <samuel.holland@sifive.com>,
+ Jessica Clarke <jrtc27@jrtc27.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
+ Samin Guo <samin.guo@starfivetech.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Hal Feng <hal.feng@starfivetech.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>, netdev@vger.kernel.org,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>, linux-clk@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20231215204050.2296404-1-cristian.ciocaltea@collabora.com>
+ <20231215204050.2296404-3-cristian.ciocaltea@collabora.com>
+ <A7C96942-07CB-40FD-AAAA-4A8947DEE7CA@jrtc27.com>
+ <65fd52f1-6861-42b0-9148-266766d054b1@sifive.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <65fd52f1-6861-42b0-9148-266766d054b1@sifive.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> It looks to me the patch combines multiple changes.  Please separate them into
-> smaller pieces for reviewing easier.
+On 12/15/23 22:59, Samuel Holland wrote:
+> On 2023-12-15 2:47 PM, Jessica Clarke wrote:
+>> On 15 Dec 2023, at 20:40, Cristian Ciocaltea <cristian.ciocaltea@collabora.com> wrote:
+>>>
+>>> The Synopsys DesignWare MAC found on StarFive JH7100 SoC is mostly
+>>> similar to the newer JH7110, but it requires only two interrupts and a
+>>> single reset line, which is 'ahb' instead of the commonly used
+>>> 'stmmaceth'.
+>>>
+>>> Since the common binding 'snps,dwmac' allows selecting 'ahb' only in
+>>> conjunction with 'stmmaceth', extend the logic to also permit exclusive
+>>> usage of the 'ahb' reset name.  This ensures the following use cases are
+>>> supported:
+>>>
+>>>  JH7110: reset-names = "stmmaceth", "ahb";
+>>>  JH7100: reset-names = "ahb";
+>>>  other:  reset-names = "stmmaceth";
+>>>
+>>> Also note the need to use a different dwmac fallback, as v5.20 applies
+>>> to JH7110 only, while JH7100 relies on v3.7x.
+>>>
+>>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>>> ---
+>>> .../devicetree/bindings/net/snps,dwmac.yaml   |  3 +-
+>>> .../bindings/net/starfive,jh7110-dwmac.yaml   | 74 +++++++++++++------
+>>> 2 files changed, 55 insertions(+), 22 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>> index 5c2769dc689a..c1380ff1c054 100644
+>>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>> @@ -95,6 +95,7 @@ properties:
+>>>         - snps,dwmac-5.20
+>>>         - snps,dwxgmac
+>>>         - snps,dwxgmac-2.10
+>>> +        - starfive,jh7100-dwmac
+>>>         - starfive,jh7110-dwmac
+>>>
+>>>   reg:
+>>> @@ -146,7 +147,7 @@ properties:
+>>>   reset-names:
+>>>     minItems: 1
+>>>     items:
+>>> -      - const: stmmaceth
+>>> +      - enum: [stmmaceth, ahb]
+>>>       - const: ahb
+>>
+>> I’m not so well-versed in the YAML bindings, but would this not allow
+>> reset-names = "ahb", "ahb"?
+> 
+> Yes, it would. You need something like:
+> 
+> reset-names:
+>   oneOf:
+>     - enum: [stmmaceth, ahb]
+>     - items:
+>         - const: stmmaceth
+>         - const: ahb
 
-Unfortunately, I don't see an easy way to break up this commit without
-breaking EC wake functionality along the way.
+Oh yes, I always forget about the "oneOf" thing. Thanks!
 
-> Another confusing about the patch subject: "6/6"?  Is it a series?  I don't
-> see the cover letter.
-
-Sorry about that! I'll make sure to add a cover letter and CC you on
-the next series version.
+> Regards,
+> Samuel
+> 
 
