@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A018143F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:49:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08E2D8143F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80A092845B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:49:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 810D81F22F62
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E976E182B5;
-	Fri, 15 Dec 2023 08:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20050171AC;
+	Fri, 15 Dec 2023 08:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UL8Trqhx"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TIiwaVsV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A255171C1
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE1916404
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a1c8512349dso49652266b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:49:11 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-551437d5344so477675a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:49:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702630150; x=1703234950; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702630185; x=1703234985; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rmPZopLp1++Fu8/5PPoWPz1sw6zA3SEqgZMteHGwlIs=;
-        b=UL8Trqhxw7WA88vPcn+eLMJZYQgqaiRLWJ5SIql1nauPaBrjHYFj3pMbM6xxv5hRKE
-         5dIZi+WbZFmrI7Vwz1D7ruKc41OlILtHeeq7PkacBRNARB29RlfbzatKkjY/LyoiQ4oL
-         ddUMcrgGee3NgrKlBLxVKCqFVqDPgI4kfnVhQs6GDGoI6s7dTA/qrtQ/UfTMQtm8dsCo
-         paieFbO9LSBgZXJ1vbXFeEs17ivsqPNVWK7wRRB5paChZpZ1d9fW5AoO7aCgU6whxkgH
-         DrERY5V/bcBj1loIom5vPlv2P4V/TlMCzgq2FIqZVpi6jCiH62psyEJburhyncl0M4YI
-         G6dQ==
+        bh=WnR1+hD8CRiuBtXrZdhqIxielhfB26flvM64rWZB+bk=;
+        b=TIiwaVsVY0CyJMO2uYuyzs/nqLCjdL2kQshRw9qxg8ETR1FKpO8JPpgNIVB98ykzai
+         ftaYFUnVZHRCjjEHnwBkcoNHo4hAoRCUO1dmIaczoEJz06QadOvHvlam2Jv/sy5sTV0h
+         fixZHARilGD0LAOuK9G6qBcFRor2t2YE2ETIFMAT7FUAn67QMp1+TqwBsR2/o940qCWk
+         Txqk0EZggtWFG7+sOSbAf8pJcItBnGuaqfnp4nk5mklQ8LTpAPdZEeHF3/q0uOOzUJF1
+         zPqq63cl88xvu3tnjy2Fduc6lVXUf7ZxgoGwvM/oOaug1Njz+3Z0JcXKznVvUtwym4tD
+         Avrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702630150; x=1703234950;
+        d=1e100.net; s=20230601; t=1702630185; x=1703234985;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rmPZopLp1++Fu8/5PPoWPz1sw6zA3SEqgZMteHGwlIs=;
-        b=j5eQEmtDL3lng3QA28x6Ahwkyk3f6VXsjk6fkBi1vbJ2/sm3cdyRib903vLnmQ977f
-         a9BTbXyZ3yHcJIS+78TaaNQyxE+Cp4evmKd6VLFl/n/Bwh3kFoWbl6DitFKKIWCZ1ssL
-         S4f+YKuwlMig+LYeUWOGpdgtSBy5FI3NeGgViX0Z4Z5jpJMhphYlPCH4Am8oxfJQdFOW
-         4W31ZLdlvDDbea0XBBbe1BYvYoJ196NbOc3LcGGctwBAwBat4/PihA1HhjgW3wN7uBU8
-         dIX6Teva2TFkJSd4JDUhyyZ2WBu8JEBesCNHXzidT1R6AiFIDV8b2L8UBmdqYZB9CAIX
-         7Pew==
-X-Gm-Message-State: AOJu0YxCprr3vgP6htXvf0Q4agao1HiZpio6z/Ama0HVX+9DJZcqjLby
-	ZdiF59ckPojDf7RiVM45006o0A==
-X-Google-Smtp-Source: AGHT+IFV0JnInXAlsUNiCDcFhf5xUzsbQSFxni3aRldKCeC7xCKos71J3EyLtYJFtKS3aWpihTcfnA==
-X-Received: by 2002:a17:906:5308:b0:a1f:b39f:192 with SMTP id h8-20020a170906530800b00a1fb39f0192mr3968388ejo.107.1702630149892;
-        Fri, 15 Dec 2023 00:49:09 -0800 (PST)
+        bh=WnR1+hD8CRiuBtXrZdhqIxielhfB26flvM64rWZB+bk=;
+        b=DgJuWOsQwCZVNcfIbeAQRP5F0pJ19Sa4UXZJO5tdEvjmbekVSGkU/HTvYUiu1eSDPr
+         orUVVAT4sfTFjoqnhiMjV0d4M6Ff+fDfHf7eAbXJk1PHQUeRQIMQpyMJMYeayVIVfZJa
+         L7Qq8qN798GsHVpr4LQSAQzjAhxxLsWXrUpIa9g0qvfXw9kbn2T8mww9KNJZA7pky04r
+         gZ3Fjc1opu/5PdA0f+K6ORR+zy16KxFdoeupBGOTYpvZPSdQtZEHD7dpen42tjL2bxid
+         QiLhD06Ut0+N6euz02fYP0gTJtJqKZK6ytuYo+lGZH7UWhJinI86+IJgAZWMIx8AxT0u
+         7iiA==
+X-Gm-Message-State: AOJu0Yxvjhc6mXERkuoS+N2IREjzhrNu4joXYO+iAjAu3OvQMJc5x3p2
+	LjzTF5Lob9IevHItr+rn6oo1Nw==
+X-Google-Smtp-Source: AGHT+IFleqWwkEcz3GhyaoVFjr7aII6NAHaUYPTS22y4mdbCyVwYHk0TR6crjv+Mih8Rwky5W73ppA==
+X-Received: by 2002:a17:906:1091:b0:a18:bb79:9a0 with SMTP id u17-20020a170906109100b00a18bb7909a0mr4317292eju.58.1702630185160;
+        Fri, 15 Dec 2023 00:49:45 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id tx27-20020a1709078e9b00b00a1c85124b08sm10633350ejc.94.2023.12.15.00.49.08
+        by smtp.gmail.com with ESMTPSA id tx27-20020a1709078e9b00b00a1c85124b08sm10633350ejc.94.2023.12.15.00.49.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 00:49:09 -0800 (PST)
-Message-ID: <45f57657-03c6-40c1-a5d6-0a01eb442cf0@linaro.org>
-Date: Fri, 15 Dec 2023 09:49:08 +0100
+        Fri, 15 Dec 2023 00:49:44 -0800 (PST)
+Message-ID: <43c3f6cb-aeb2-40c8-a79d-c2222414b49c@linaro.org>
+Date: Fri, 15 Dec 2023 09:49:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,18 +66,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: usb: qcom,dwc3: Add X1E80100 binding
+Subject: Re: [PATCH 2/3] bindings: hwmon: Add adi,adaq4224_temp as compatible
+ string
 Content-Language: en-US
-To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To: Daniel Matyas <daniel.matyas@analog.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231214-x1e80100-usb-v1-1-c22be5c0109e@linaro.org>
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20231214143648.175336-1-daniel.matyas@analog.com>
+ <20231214143648.175336-2-daniel.matyas@analog.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,20 +123,38 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231214-x1e80100-usb-v1-1-c22be5c0109e@linaro.org>
+In-Reply-To: <20231214143648.175336-2-daniel.matyas@analog.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 14/12/2023 18:06, Abel Vesa wrote:
-> Add X1E80100 to the DT schema.
+On 14/12/2023 15:36, Daniel Matyas wrote:
+> In the device ada4224 the max31827 temperature sensor will be used, so
+> the default values corresponding to adaq4224_temp are the same for
+> max31827.
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+> Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
+
+> ---
+>  Documentation/devicetree/bindings/hwmon/adi,max31827.yaml | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+> index f60e06ab7d0a..9f3b0839aa46 100644
+> --- a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+> +++ b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+> @@ -20,6 +20,7 @@ properties:
+>        - const: adi,max31827
+>        - items:
+>            - enum:
+> +              - adi,adaq4224_temp
+
+Underscores are not allowed
+
+
 
 Best regards,
 Krzysztof
