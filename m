@@ -1,96 +1,119 @@
-Return-Path: <linux-kernel+bounces-1628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E6C1815119
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:31:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F37D781511C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743B91C24053
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:31:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E984281E3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB01D3FB28;
-	Fri, 15 Dec 2023 20:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09164597D;
+	Fri, 15 Dec 2023 20:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0hNfw9Ot";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ULDG6o8E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPdDuZbB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0853846D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 20:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702672302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AV8Deyj9TYdQdy5CajmLnDhaRNnCKxjQ1PqdBdJ4EJM=;
-	b=0hNfw9OtAvMznhuvLMPm+94+DO74/skheTC/tno/6JVctZ0WK77V+5A1m8S5py5upF0cIt
-	KBS8rf+SVEjMoDPMoeRlJ1z8S8Zkpbf6NRXsA+/Y/dUjOZzdQRLZnmuxQeivJg2uH6Rn2Q
-	01DiEilLbhQC2eVbS1ImREN/hsDihC3d82aBVgiWBRweQLqf6K6Po7Wi/GGnhAP7RM0c06
-	tUuIV0blJIw3p7XnD0AeBARMCOHMdRuCxIupM+yZknRGFvFzcD3L6yBm1SwiLQOxF6lbIR
-	endMrhsYIsk5paFFfScn5+Oe2QzbtgynfJ5WwwjYPnM8kOXeYugLMRb1wnrumQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702672302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AV8Deyj9TYdQdy5CajmLnDhaRNnCKxjQ1PqdBdJ4EJM=;
-	b=ULDG6o8EI1Dh6y7rb57F+9UbIcho+XrRpbO0WRNsthm0sQ6dtmhbcGIPZmbaHmhrhdqDcv
-	VlRFeqFtPdCJkBCA==
-To: James Morse <james.morse@arm.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Fenghua Yu <fenghua.yu@intel.com>, Reinette Chatre
- <reinette.chatre@intel.com>, Ingo Molnar <mingo@redhat.com>, Borislav
- Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>, Babu Moger
- <Babu.Moger@amd.com>, James Morse <james.morse@arm.com>,
- shameerali.kolothum.thodi@huawei.com, D Scott Phillips OS
- <scott@os.amperecomputing.com>, carl@os.amperecomputing.com,
- lcherian@marvell.com, bobo.shaobowang@huawei.com,
- tan.shaopeng@fujitsu.com, baolin.wang@linux.alibaba.com, Jamie Iles
- <quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
- peternewman@google.com, dfustini@baylibre.com, amitsinght@marvell.com,
- Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v8 01/24] tick/nohz: Move tick_nohz_full_mask
- declaration outside the #ifdef
-In-Reply-To: <20231215174343.13872-2-james.morse@arm.com>
-References: <20231215174343.13872-1-james.morse@arm.com>
- <20231215174343.13872-2-james.morse@arm.com>
-Date: Fri, 15 Dec 2023 21:31:42 +0100
-Message-ID: <874jgjmclt.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15FD846D;
+	Fri, 15 Dec 2023 20:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e4fb170827so2672707b3.3;
+        Fri, 15 Dec 2023 12:33:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702672436; x=1703277236; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TTFSO440Asq/ZjEa0Sv01HBm7pivdxHwzbg+GM27vSQ=;
+        b=jPdDuZbB8tQrKheAcYjiqPy2NmdhrVnhxnbX/xJr9zINb9QyCfi8Ii13HlZfbFjqqQ
+         dyEa8EMfFlbiU8UllAuxU0DZruv16IIfcfnuOF76PKFBmHXG2GMRuppnjM8oQIIxW+dl
+         BdMiNPtVP0DGHATH37b2Plf+dNpgsTvFXTss4hmIHhaq+pDLc2MG1k30O9eMUzBZlbqj
+         NMgvRoZTPI8u8PJCUPPhWv3pTW/5+e24tXkLhFq9bpca2KLNHEENuw5lLIRwR6hJabH0
+         IRno+2JQhyJXRNWzocM0dIbYWEovEuiomckhF6ZcorswnaJheTHJJlf8uNIoDLfWUA1J
+         XMRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702672436; x=1703277236;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TTFSO440Asq/ZjEa0Sv01HBm7pivdxHwzbg+GM27vSQ=;
+        b=CbbhY/0H21MkKVgWwP9Jb5ThZHx7B9o72QUDCynvzSjDj8KuzrF7nP8ll2hTskCwxK
+         OWeQnwgfsa80i530gqPkhI82hGl/dfc+GYIEjunQdjsu9+zcoOVPX1qHuM+hq/C3Vp2X
+         nSkVYLWhMMc9BEH0bluNYWQK+32VFy7epaCDDTVMA2gdwVGRbVeyM5XJbQxWRr/Gb5m3
+         1l3seFgt3GfmF1zL+vhg/xZhsZnEdWA3+FwUSsAccLK15mdJpRwFirNVuVMBY2tybjR7
+         T355i0NtdwmMbNSD/MkA5p48ws0yQa5tVmKcNRVNxD/HPcDLfulyRixhwHB957VDfvBz
+         dB6A==
+X-Gm-Message-State: AOJu0Yzj3kfBgGSsNJhiHu/bUv7j2I/eMVIcoIuPYo+X7WFfys+Mbz+M
+	4L7ZYEpGeXZBNsHuKfAIxFU=
+X-Google-Smtp-Source: AGHT+IEBPSB43oMFVuBjkdcP0BLnp1ab8c+UPrSfZdbiIJxP2j2MUdZbyUdTw+0ZiM9NRGRVjNEdPw==
+X-Received: by 2002:a81:df03:0:b0:5ca:c025:3e12 with SMTP id c3-20020a81df03000000b005cac0253e12mr9683230ywn.47.1702672436421;
+        Fri, 15 Dec 2023 12:33:56 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:ffe6:85e9:752c:601b])
+        by smtp.gmail.com with ESMTPSA id i16-20020a81d510000000b005d8ce4ca469sm6532718ywj.99.2023.12.15.12.33.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 12:33:55 -0800 (PST)
+From: Yury Norov <yury.norov@gmail.com>
+To: "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH] net: mana: select PAGE_POOL
+Date: Fri, 15 Dec 2023 12:33:53 -0800
+Message-Id: <20231215203353.635379-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 15 2023 at 17:43, James Morse wrote:
-> tick_nohz_full_mask lists the CPUs that are nohz_full. This is only
-> needed when CONFIG_NO_HZ_FULL is defined. tick_nohz_full_cpu() allows
-> a specific CPU to be tested against the mask, and evaluates to false
-> when CONFIG_NO_HZ_FULL is not defined.
->
-> The resctrl code needs to pick a CPU to run some work on, a new helper
-> prefers housekeeping CPUs by examining the tick_nohz_full_mask. Hiding
-> the declaration behind #ifdef CONFIG_NO_HZ_FULL forces all the users to
-> be behind an ifdef too.
->
-> Move the tick_nohz_full_mask declaration, this lets callers drop the
-> ifdef, and guard access to tick_nohz_full_mask with IS_ENABLED() or
-> something like tick_nohz_full_cpu().
->
-> The definition does not need to be moved as any callers should be
-> removed at compile time unless CONFIG_NO_HZ_FULL is defined.
+Mana uses PAGE_POOL API. x86_64 defconfig doesn't select it:
 
-I can pick that up separately, but I'm fine when it goes with the
-resctrl lot. For that case:
+ld: vmlinux.o: in function `mana_create_page_pool.isra.0':
+mana_en.c:(.text+0x9ae36f): undefined reference to `page_pool_create'
+ld: vmlinux.o: in function `mana_get_rxfrag':
+mana_en.c:(.text+0x9afed1): undefined reference to `page_pool_alloc_pages'
+make[3]: *** [/home/yury/work/linux/scripts/Makefile.vmlinux:37: vmlinux] Error 1
+make[2]: *** [/home/yury/work/linux/Makefile:1154: vmlinux] Error 2
+make[1]: *** [/home/yury/work/linux/Makefile:234: __sub-make] Error 2
+make[1]: Leaving directory '/home/yury/work/build-linux-x86_64'
+make: *** [Makefile:234: __sub-make] Error 2
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+So we need to select it explicitly.
+
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ drivers/net/ethernet/microsoft/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/microsoft/Kconfig b/drivers/net/ethernet/microsoft/Kconfig
+index 090e6b983243..01eb7445ead9 100644
+--- a/drivers/net/ethernet/microsoft/Kconfig
++++ b/drivers/net/ethernet/microsoft/Kconfig
+@@ -20,6 +20,7 @@ config MICROSOFT_MANA
+ 	depends on PCI_MSI && X86_64
+ 	depends on PCI_HYPERV
+ 	select AUXILIARY_BUS
++	select PAGE_POOL
+ 	help
+ 	  This driver supports Microsoft Azure Network Adapter (MANA).
+ 	  So far, the driver is only supported on X86_64.
+-- 
+2.40.1
+
 
