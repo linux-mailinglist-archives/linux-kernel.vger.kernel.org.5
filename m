@@ -1,91 +1,90 @@
-Return-Path: <linux-kernel+bounces-724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A351B81452F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:10:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 286FB814531
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:10:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57FF21F23CB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:10:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB2CF1F23B16
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E81318E2B;
-	Fri, 15 Dec 2023 10:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504981A700;
+	Fri, 15 Dec 2023 10:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+9D8p19"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2Oj9f15Z";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NJXfuCHH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C9618C19;
-	Fri, 15 Dec 2023 10:10:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B13EC433C8;
-	Fri, 15 Dec 2023 10:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702635020;
-	bh=+IMN7z6g0qShOLd7JcJytNXZiHwmS0VJRsZHt710esw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m+9D8p19mbxf3P4K+cVu7TGd58XZW4cSBfa0UMFmNj0ZbLfzDFvbz7YJmhWovgD1v
-	 iVuLvZo9uJ/7K1Ie75G6FKXP3CW5kEpWLhrnRppmukD9l8fA9Qa1WyKmrxR+cReG83
-	 EhY5DdE1Gg/Xl3lQgxOT4rYqEamS6daiSkVydzfx0vaML5olCe2/dbr5prX767MHCg
-	 VM9Y3FPxhedwr7gKTjGSK2kUR4AckQ0VKpb+BcFsnMPsiPehVD/YOPmmx9+KJqMsxc
-	 wKnVOzp4qTPQU5PBxQ5/MHpDer92ucS1MczoX/LiJusTKU8w+M3Bh8BnCHoxfJgp34
-	 bVsypLfswEIxg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rE595-0007cv-02;
-	Fri, 15 Dec 2023 11:10:15 +0100
-Date: Fri, 15 Dec 2023 11:10:15 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Stan Bertrand <stanislasbertrand@gmail.com>
-Cc: linux-usb@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: ftdi_sio: add ftdi serial to gpiochip label
-Message-ID: <ZXwmBxvQlxca8aNv@hovoldconsulting.com>
-References: <20231003001135.2713961-1-sbertrand@witekio.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239FC1A709
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702635047;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xLcj+WCoV6v2wxVqrp02AYuWJfk9YmNWkzYMdewgi9A=;
+	b=2Oj9f15ZJDGBaAJDH02RVe0CrzsbQ36RZZO2ynhWtUZ4hATEomnuSbe2JmyhzhF8ZhoIlV
+	BeBahhECh9XGQvq/O9dQVGeETf6u/hZZX3+AO4vmuV/wgiSzCk9BH796udjmqusG+iRfgK
+	1lVB+KLp22BjFnnmDjM4RWH4ipkQSZv/ZQdZLrrBdUOZkHyi+Bc+gbxgHgkhGRFQodIL9q
+	gLUtYTeioF03J6hbT8xJBLLvuM+5s8/Gwh3OKadRogprjIVk+b6R728y6b4eAQFEdQkknq
+	sTs71ve5MIEIEoINCURrNsYL6P/mszgE+JW7aO1zBHnKPQNGB9v4O1+xr1JXUg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702635047;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xLcj+WCoV6v2wxVqrp02AYuWJfk9YmNWkzYMdewgi9A=;
+	b=NJXfuCHHojqVL90VT014f6niOblxHL1b9ed+iAoKNECyDDguUl60mVgXnojpmtmLj/CbyQ
+	cppzVYBR5A69DPAg==
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky
+ <senozhatsky@chromium.org>, Steven Rostedt <rostedt@goodmis.org>, Thomas
+ Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Francesco
+ Dolcini <francesco@dolcini.it>, kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH printk v3 02/14] printk: Adjust mapping for 32bit seq
+ macros
+In-Reply-To: <20231215095526.ZA8Q-45e@linutronix.de>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
+ <20231214214201.499426-3-john.ogness@linutronix.de>
+ <20231215095526.ZA8Q-45e@linutronix.de>
+Date: Fri, 15 Dec 2023 11:16:44 +0106
+Message-ID: <8734w3hj2z.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003001135.2713961-1-sbertrand@witekio.com>
+Content-Type: text/plain
 
-On Mon, Oct 02, 2023 at 05:11:35PM -0700, Stan Bertrand wrote:
-> From: Stanislas Bertrand <stanislasbertrand@gmail.com>
-> 
-> Use ftdi serial number on gpiochip label.
-> Allows to interface with gpiod utils using the serial number:
-> 
-> $ gpiodetect
-> gpiochip5 [ftdi-cbus-FTRelay2] (4 lines)
-> gpiochip6 [ftdi-cbus] (4 lines)
-> gpiochip7 [ftdi-cbus-A106TPEC] (4 lines)
-> 
-> $ gpioget ftdi-cbus-FTRelay2 2
-> 0
+On 2023-12-15, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+> On 2023-12-14 22:47:49 [+0106], John Ogness wrote:
+>> Note: This change only applies to 32bit architectures. On 64bit
+>>       architectures the macros are NOPs.
+>
+> You lost my authorship.
 
-I don't think this is a good idea, for example, as not all devices have
-a unique serial string.
+OK. Thanks for speaking up. (And thanks for doing the heavy lifting
+researching the needed change.)
 
-Looks like the naming of gpiochips are all over the place, and ideally
-this should not have been something that was left up to individual
-driver to decide.
+> But serious matter: Is this bug already present in the current printk
+> tree or is this code just not used and enabled later? Patch #1 from
+> this series moves the sequence around so is this problem introduced in
+> the previous patch and fixed here?
 
-I see several drivers using the name of the corresponding platform
-device as label, which works in most cases, but not always either. The
-only unique and always available identifier is the gpiochip's place in
-the device tree itself.
+No, it is not a bug at this point. As the commit message writes:
 
-For USB, we already encode the bus topology in the USB device names
-(e.g. 1-11.5.1) and we could possibly consider using that. But we
-already have USB serial devices with multiple GPIO chips so also that
-would require some further thought (e.g. using the interface name
-instead).
+"Until now this mapping has been correct for all call sites."
 
-Johan
+But if the mapping is not changed here, it will become a bug after
+applying patch 3 of this series.
+
+John
 
