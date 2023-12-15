@@ -1,78 +1,99 @@
-Return-Path: <linux-kernel+bounces-297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0F5F813EE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:58:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0152C813EE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:00:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 001DE1C21F68
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:58:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88028B21C82
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7E4808;
-	Fri, 15 Dec 2023 00:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEC97E4;
+	Fri, 15 Dec 2023 01:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sAJgrFuq"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Wc4WOIZC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA43363;
-	Fri, 15 Dec 2023 00:58:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2EF8C433C7;
-	Fri, 15 Dec 2023 00:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702601912;
-	bh=q56iNOgi3CDlqut6FMHVRVsKl4pDRDcxfCKmS0z4LCg=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-	b=sAJgrFuquMte/MZ0qR0ZkZ+lMGS95RuQWoOi+dieylTdd1TPtM++RpJi/l1SB03XL
-	 ZJgfdBDOItBWes52UfJ4zGswO1imr/fwpZFToZCpokAiVlXA7SRECdTSkYCuDIyGkG
-	 +J9TsKqb4aad/CELeliVvX8xr+8f9YkVzx4O9aeeXjEMP8vk6cVYvp2H/By2K2ZNdO
-	 IZ7Rje+t5V/+tPjmNOOAkvzl0TXQOYVgGHee1cBciw+ZaynCTGx0amwbDeLPf/cRDr
-	 UhI3eZXNfSLFTSpMqNkFQPwnMX9BkejN4n2v8uv7A04x8Ci1p28wNQ9iElzTpk1+X2
-	 bYVuLZsAVX1dA==
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-202ffc46e15so69627fac.1;
-        Thu, 14 Dec 2023 16:58:32 -0800 (PST)
-X-Gm-Message-State: AOJu0YxHBGoHbQG7sx9WzMI9KvgTG1DNf4gf/CngLxWHpsvDLa1Kgx5z
-	L+wAyP9zNQgPPgPqlr5RbDwS4DdwQbe+q0WKNxY=
-X-Google-Smtp-Source: AGHT+IElLcw7GHVk+pThxMVyLR3DLJO3KFmq13E+jiAW6K+c6UnopC14Z5fxnwypmim0a9tLv3P0P/hOXSZju/K/t4M=
-X-Received: by 2002:a05:6871:691:b0:203:23ff:589b with SMTP id
- l17-20020a056871069100b0020323ff589bmr2654657oao.63.1702601911967; Thu, 14
- Dec 2023 16:58:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF7317E3
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 01:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-58d06bfadf8so143629eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 17:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702602009; x=1703206809; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=trQkv00mtfGAqfYN2kxyaymJn3A93RCw6IDqXYBNgGw=;
+        b=Wc4WOIZCFo6jTOFDnqrhGeKUCKyVlhkBMYlMZ+E/7DBUHpY7zXnt097/5w3mH1MZG5
+         k4iUdqOCQ/q8O1/z56mStQTiCeyEcGaE/iXP6c6AtUbPKUDWRfhg3wVz8m5UCxL/Sd/C
+         hJ6NhJ5iO2w6QiET0sL289GlC/diwxfGNtNbc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702602009; x=1703206809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=trQkv00mtfGAqfYN2kxyaymJn3A93RCw6IDqXYBNgGw=;
+        b=pf1Cr0mwS/mXi6rUcG5pBAtlaY1cFsa/vQ0uEZpUycM+kE4dO2UTfxRjwWAP8fajAU
+         bkjB1D5+BAW0yKlG5obS1alNyZEUsAFb20TO/ky+jL2F4Inq++9XBCUEUl8K5FQF8wFt
+         /D5RnylvSGu66ZZp2ae592V+Wybhhwa3yTCQlm2WZoukx3VJH4suC7bvb+8R02I2+My6
+         z5g4VTZ7wbkNeLxvTXkH4TpvXvIk9cdeI+Xnsx8L6SOLNgAtxpsDh0BbXmPAubLuD8kB
+         AAw+tPsEttTNGrNen0pZIS9QKoMtyTZpOa96GCCz4+LzBgAJoZsiUn+kY5gkN8z4Lk+d
+         pSJA==
+X-Gm-Message-State: AOJu0YwI744iQkhK0SNoniJZTKJ8ci/Sxa/EHpXPJaBv35fwPbKAeyTy
+	vizaNFJ1cCkFEz+ZcHi7+tIcTg==
+X-Google-Smtp-Source: AGHT+IH1iYwOvtkU1tCwxzK2MoeKckHqrYHL/1xyI36wn6QKPTJ8lEz/wgjo+Db3jReJOhtWvRhY+Q==
+X-Received: by 2002:a05:6358:6f14:b0:170:5b7c:26ac with SMTP id r20-20020a0563586f1400b001705b7c26acmr15172894rwn.59.1702602009087;
+        Thu, 14 Dec 2023 17:00:09 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id pb7-20020a17090b3c0700b0028aea6c24bcsm2537pjb.53.2023.12.14.17.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 17:00:08 -0800 (PST)
+Date: Thu, 14 Dec 2023 17:00:07 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Matthew Wilcox <willy@infradead.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scripts: kernel-doc: Disambiguate origin of warnings
+Message-ID: <202312141659.56017364EA@keescook>
+References: <20231215001535.work.434-kees@kernel.org>
+ <6d8d2001-ea9e-4e3d-9e6d-8192064556a5@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Received: by 2002:ac9:7f88:0:b0:507:5de0:116e with HTTP; Thu, 14 Dec 2023
- 16:58:31 -0800 (PST)
-In-Reply-To: <f9d067e773f1cb3e9d4af19f18e80d7d35a71153.1702587034.git.christophe.jaillet@wanadoo.fr>
-References: <f9d067e773f1cb3e9d4af19f18e80d7d35a71153.1702587034.git.christophe.jaillet@wanadoo.fr>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Fri, 15 Dec 2023 09:58:31 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9YiYZBcJNRBJVBoCW3Ase+3zzEhYcDmuDG0mgu=smRww@mail.gmail.com>
-Message-ID: <CAKYAXd9YiYZBcJNRBJVBoCW3Ase+3zzEhYcDmuDG0mgu=smRww@mail.gmail.com>
-Subject: Re: [PATCH] ksmbd: Remove usage of the deprecated ida_simple_xx() API
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Steve French <sfrench@samba.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Tom Talpey <tom@talpey.com>, linux-kernel@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-cifs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6d8d2001-ea9e-4e3d-9e6d-8192064556a5@infradead.org>
 
-2023-12-15 5:50 GMT+09:00, Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
->
-> This is less verbose.
->
-> Note that the upper limit of ida_simple_get() is exclusive, but the one of
-> ida_alloc_range() is inclusive. So change a 0xFFFFFFFF into a 0xFFFFFFFE in
-> order to keep the same behavior.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Namjae Jeon <linkinjeon@kernel.org>
-Applied it to #ksmbd-for-next-next.
-Thanks for your patch!
+On Thu, Dec 14, 2023 at 04:19:34PM -0800, Randy Dunlap wrote:
+> 
+> 
+> On 12/14/23 16:15, Kees Cook wrote:
+> > There's no prefix to warnings and errors reported by scripts/kernel-doc
+> > which makes it frustrating to isolate errors reported from CI systems.
+> > Add a "$0: " prefix to all the STDERR output.
+> > 
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: linux-doc@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Matthew's reply to my patch with similar functionality, which I agree with:
+> 
+> https://lore.kernel.org/linux-doc/ZQke26HX9Am3k2sh@casper.infradead.org/
+
+I guess that's true, but it's really confusing to figure out if it's
+kernel-doc or Sphinx reporting errors. Ah well! I can live without it.
+
+-Kees
+
+-- 
+Kees Cook
 
