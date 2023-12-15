@@ -1,163 +1,164 @@
-Return-Path: <linux-kernel+bounces-896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C71EE8147AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F8BF8147AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C0B41F22A23
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:07:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40A741F2414E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:08:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594B728E28;
-	Fri, 15 Dec 2023 12:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="XkpuXcRT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E5C28E0E;
+	Fri, 15 Dec 2023 12:08:18 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2070.outbound.protection.outlook.com [40.107.9.70])
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222C2288D5
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:07:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KzxoICiFG99XQMBtOFAbuWd9JZjlx7ATJ5opshmT6huKnplKZirRF2HLG6Xl9THiw8PdoUPUQm3kqBhiV25sIm7qxQmbdIbz8ds6NO+9nOTaebdBRLEHLjmxS3F+1pA2bDkuagohYeSaXWxgpz0g/vwwwO9TVefzZaQL2uymaeQr3hgp7voIP/vkV/JcEyVgsrlMb8bgFSClvPmF+wzNUMFk9YxOYMjWHilkoYDKZ5Agcmf1XpPBd8JgB6sAlxxiGvqxIAOpzg3LLs4ON9YkzHYO4i0IZtjWM3YxZqKWAMJHswbcvzmiB084aJyrKcFPx/otNi1VgbMQ/L9e6/GiQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hIX4cvoa5VE43nUgCVeGaiTPJwdLti4UvogSiBUkBMA=;
- b=lj6Iya/4/H9pWQCfikplRlsutEh7yPIdzNsrQy92Q7ISOl6B+nUCisu3UyNLWaOZKY5ZtCF+WUzKISjgi6+uVFY72Yc9VISCQcCnGGYIN9UwJNMFV4LHkqAAn+pOV5YS4XUYZRAr3gGtgsBATyqczczu0aSp8shWH9lB6t6fQ/DVFVxxvMyZkQW6wTdSjGlLk3TMmO1JsrCjXB4CdbXKo7D4pco55TIEEgNBiOE9bnd/Ih92R13nJB9Spf0rFZLxRub6ITQyHAS5gK+G13F01Oo7jJfRE5bvQwkqEavQtbfL1FN4J7qtAAVeo5iNPyfwGOE0qfn73u/oZ5L3/kzXUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hIX4cvoa5VE43nUgCVeGaiTPJwdLti4UvogSiBUkBMA=;
- b=XkpuXcRThuIQzMTK2MyIYEe11gzQ5d1TCkehc1V15qS/0A7O3EP77AWCS5qYAOkNAwfQdZJ3lPVV0biFc7QIjyL6PD2yRYXddHyekuAO2KYiF4wXCgg7pJy71YBDIlbm4FnNYtfNqzUcbxgX7GwcgE1kNLm0OLXOt1aEO+FEfJ/zhINMUIBzF+EIAx57E6Ud57akduWQFrbyXTN9Em5gTjLG8uFVXPkYP6A4UUy8O4rJU0h6QHjj/XsliDe6HHY5Hi4hroc5ymOh5JPx0rp7oYl26oIAmiUsWRvfEezMxmTeKPPWzFBBROsv2PIcQVZF0FD2u3A6Y5t6z3HwcQHxCQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MRZP264MB3194.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 12:07:12 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.030; Fri, 15 Dec 2023
- 12:07:09 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Ghanshyam Agrawal <ghanshyam1898@gmail.com>, "mahesh@linux.ibm.com"
-	<mahesh@linux.ibm.com>, "oohall@gmail.com" <oohall@gmail.com>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>, "npiggin@gmail.com"
-	<npiggin@gmail.com>
-CC: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arch: powerpc: kernel: fixed some typos
-Thread-Topic: [PATCH] arch: powerpc: kernel: fixed some typos
-Thread-Index: AQHaL04iawrAU6R7KkKQWOo3NM6M97CqP9iA
-Date: Fri, 15 Dec 2023 12:07:09 +0000
-Message-ID: <b688b690-3500-48a7-a687-e9c6e42a6438@csgroup.eu>
-References: <20231215115857.575697-1-ghanshyam1898@gmail.com>
-In-Reply-To: <20231215115857.575697-1-ghanshyam1898@gmail.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB3194:EE_
-x-ms-office365-filtering-correlation-id: 7a4c12da-035f-4144-05d9-08dbfd665d4e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- DiC87O08W7RXVAOmUD1fDCVLU1U+rS8rynk1gMivhx1wdik8WyUh08MkTm5xjIaGBDmI7Czl7foTrlPEHAfn98cxNVTZLtmAIL8NCkAAtmErUcC9z6uyzhUaW4rgsDDP27jEIK5SrpmrFmkKdQf23nNuQ3uzbn+xQI2yUmwpO7Gx5B4XUP7zDguE4UrCqDS1RbIhI98w+bpSU5pnovqrvXFjXp1upMilsAHEVMtFSjcnuajZlMb8lJZ9OrVcvkz79bPkxlSE8yHKkZ+nUO0LQS0u6KxnSFGEj2IFjpmwv/7WG1aiVQJ3gPunsjVVnxXUQmaUQTnQ1JqsSZqy83knEzrO+v3CSdfM/Vbq9B7EXp6VmwE9zKgXwbG+HDsACGocXtJdGpK5INH9q19nsca2T0pE/ztgHV8HcR8PiTlNyLqpwKvYDcS9d7+2GAolYnvqX56O/JQCKpYjFkBHJZLQqIZL0WePo/bdHOn7zhd8qJK10gJ8fxxhLYEDSATOM2VjxBJ8rjIAA8ITq9ee8Jo53SZPOrWh2C+v21yaIQEZPd+D3YQmVf9S1tve6USQc0MEVKmENxbGXkDDk7VCY9hSdw4pm2SNx/hXCNpp5HXTUfeJ9zE0bgOZ+BQyT/tK5H6c/zE7A/1Fwpnp0UUfYdxw9AAvSXbC8NHI9Kh4W+8Wy3REGJkbWSV7ey28qvkQqJu6
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(346002)(136003)(39850400004)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(122000001)(38100700002)(2616005)(83380400001)(26005)(71200400001)(66574015)(36756003)(31696002)(86362001)(31686004)(38070700009)(6506007)(6512007)(478600001)(316002)(110136005)(66946007)(66556008)(66476007)(66446008)(64756008)(54906003)(91956017)(76116006)(2906002)(8936002)(4326008)(44832011)(8676002)(5660300002)(41300700001)(966005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?R3RhalJzRGluNUg5aml5cGd4eDhuYTdITGxXME52SUd3cWt0Q3p4L04weWRq?=
- =?utf-8?B?Q3ZraDdVdllFQ0FETDJXQWpnUENWRklxbVo3bFRVaVVtZVNpY1kwbE9TMnIz?=
- =?utf-8?B?UzBXOG9zMEE3NkdjNmZjdmlJQTlNSHhLeDdueStLaVVaMmZJOWtKZHE1RkUr?=
- =?utf-8?B?cURCQ1dNUGZnaVVtMm5IUTBGRU1vTU0vc1FHUEVOQkZOdENMYlpUdEtkNkhJ?=
- =?utf-8?B?OHdFSHF6SVVxMVFpSUxhZUVTMCs3QjlHZS9zdE9QYVJwekdTa0FKS0tqbzQ0?=
- =?utf-8?B?UklaUGU5VzkxU0o3WG1Hc0FTUUV4WWd2ZGhWaDRlSzNjUDV1bGEzeTFaNVBp?=
- =?utf-8?B?VXNIL3h3VnZPczJaSzUxQmtjd3I5M0Jmenh3MFdLK09ZTDdxcE8xY0FKclY5?=
- =?utf-8?B?czBDWXdJMkxCdndyMmFLa3N0WXFxb1Z0Q0Z2MXlmWWVCOTRjZE1jd2NJTEo4?=
- =?utf-8?B?L2UrK0VkNGZSTEp4K1NVQWRKY1JBR1dJd3RqejVKNUVKR0dXRXllTkVkOXQv?=
- =?utf-8?B?d21oSk0yZ2R6WnJxQW43U3lkOTN0RzY1RVJNaWlub3hqWWkyem5Sa3RKVk9G?=
- =?utf-8?B?dnpyOTg1TTJveVRvNkQ3OXIxM3llYzI3ckZPNm1xYU1zaXlNdFkvNDFjV0Nq?=
- =?utf-8?B?Ly80WHprYU9pSjNOemU5dXIwV1E2cVRybC9pUUc5ZG16ZUU2cFlhbVhXSHdK?=
- =?utf-8?B?UCtBYkIrVGN1WDhoUXp1Zk1oUnl3WmVCR0F2a3lSVnpDbGw4Z2I1MWk3bzVR?=
- =?utf-8?B?TmNubDRxUXhobEdQTXFMbTN4Z1puSGNXK2JnQ3VUZm5tRlNTcUFObXdIekpZ?=
- =?utf-8?B?ZkQwcjNBTHNoSU1xeUM4Q0szd1ZrcGZVT3hoRlA3UXltSmF6WGJDL1B5YmM0?=
- =?utf-8?B?QlZWS1c5REIwOHB6bzgzUmVhTk8rMHVUSHJ0R1A0c09qRkpQTnZDTVhTUUZT?=
- =?utf-8?B?blhGUGR4QVdhRFNhdFpzZnVzbytDV3hqamVEKzQvSURZQVprM3prTURaR2dS?=
- =?utf-8?B?OTdVTGFCZFlFVmQrN05IK1ZITXdaVU1wcG5oZXI5NTRkWXl1WjRVcTNibmht?=
- =?utf-8?B?dGpaOWlFRUM3aGQ4aVNQcFNWVFV0Q0RQMmJjYmtKZlloVnR0SVRlL3BaMGRH?=
- =?utf-8?B?aGlNS3c4T09ySHZmOFpJUHJ3S1FTYVgxaG5rcHoxSkNMdFQxb0NORGdHNldr?=
- =?utf-8?B?Y1F5ai9TKzVjSDFGN2I4RFc3Q3MxR1NqbDg2WTdQNnRRQlkxaCtFL05meEFp?=
- =?utf-8?B?TXRlNEQybHdnRXVTYmRiaUtpTDZOSG5LRXo0NVpNQUFrSUViTEFmclBpVjll?=
- =?utf-8?B?UnBPRnRKcVBpdVpYSWJWR2grK3VJUkJKWDlqUzhEMXUrMWlPekF1YVhwQldt?=
- =?utf-8?B?Skpabi94SWRMNllpWkZSVEZJU3d4OWdTUTg4N1ZzYTFjZG9pNHVrZkNyNHJM?=
- =?utf-8?B?eWN6bTFUZjZsL21FUE1WL2Iwcm5TYkhWYjRvWklMdDN3NkFwTmtrZk9OL1RR?=
- =?utf-8?B?NDNkd0ZMU0dWWkt1Ymt3bVo4UFFhVnhjWWJycmxNZElxeVdDVnp3WWFLSDVK?=
- =?utf-8?B?UGRLMUVIQldCK2dkZTVXV2pXeU51VU1jc1J3NDdoNWMvTXFCV2p0OTQ4N3Yv?=
- =?utf-8?B?Z2tqVG5WWE9TTE5oSDl3Zm9CcXZkVzE0NmpQMWszSFc3M0labmhDd09ieEVx?=
- =?utf-8?B?OWo5RTJLQm00eUcvRFRLaHJ2R2Q2Tk50U0hWb1JDMGhVM0VhWmFPOGEvcHFv?=
- =?utf-8?B?QW9iL1p2V0RLcTVPLy9ZQXFVTFpRbkpQREhHRVZDRkR5TThyYnhvbHE2aG05?=
- =?utf-8?B?RFErUTBab1ZiQm9HVDR1clUweFoyRDVsTnlrajB1NldUS0VsZExCVVJKVTFY?=
- =?utf-8?B?WVRBeng5Z3d3bjdLZklTMDFaai9MbWs4Q2xmQjZ6cE9rNkVJVEowMlI3TCtQ?=
- =?utf-8?B?VWtWb2tJRmNkOUZ2OFd2YWNqUGY3b2gyTEljRzVzY0VNSkpVMGFVenZhYy9r?=
- =?utf-8?B?NlJWclcxTEJCNmlqUzZ0c2syWHIyRmpWeG1Sd3RybjYrazUyS3RCbFFtSVE2?=
- =?utf-8?B?N3RuV0tKZnU3dDlKR3FzeitJVXJibXBWRTRTT09Dc0VlUzJCRC9Xa0ttR29E?=
- =?utf-8?Q?20ln2WwlcvzE3VcvpuA3xlFU1?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <09E2F02193F78642AA1217F4C1C1EF28@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3619D1A705
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VyXjgdG_1702642084;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VyXjgdG_1702642084)
+          by smtp.aliyun-inc.com;
+          Fri, 15 Dec 2023 20:08:05 +0800
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+To: akpm@linux-foundation.org
+Cc: david@redhat.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com,
+	xuyu@linux.alibaba.com,
+	baolin.wang@linux.alibaba.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: migrate: fix getting incorrect page mapping during page migration
+Date: Fri, 15 Dec 2023 20:07:52 +0800
+Message-Id: <e60b17a88afc38cb32f84c3e30837ec70b343d2b.1702641709.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a4c12da-035f-4144-05d9-08dbfd665d4e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 12:07:09.6730
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2BFREY5IgGW1DJUnoSng7nUUj4HvCsaCcG2U7a2AHM5CUXJIsK9Dh6/mq6IklzwJoTTLUfa8lmWtNC9Vrod2FESwGCn3mAPrmgwZ+TfXBy0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB3194
+Content-Transfer-Encoding: 8bit
 
-DQoNCkxlIDE1LzEyLzIwMjMgw6AgMTI6NTgsIEdoYW5zaHlhbSBBZ3Jhd2FsIGEgw6ljcml0wqA6
-DQo+IFtWb3VzIG5lIHJlY2V2ZXogcGFzIHNvdXZlbnQgZGUgY291cnJpZXJzIGRlIGdoYW5zaHlh
-bTE4OThAZ21haWwuY29tLiBEw6ljb3V2cmV6IHBvdXJxdW9pIGNlY2kgZXN0IGltcG9ydGFudCDD
-oCBodHRwczovL2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24gXQ0KPiANCj4g
-Rml4ZWQgc29tZSB0eXBvcw0KDQpUaGlzIGtpbmQgb2YgY2hhbmdlIGlzIGEgd2Fpc3Qgb2YgdGlt
-ZSBmb3IgdXMgYW5kIGEgd2Fpc3Qgb2YgdGltZSBmb3IgeW91Lg0KDQpQbGVhc2UgZml4IHRob3Nl
-IHR5cGUgd2hlbiB5b3UgZG8gcmVhbCBjaGFuZ2VzIHRvIHRoZSBmaWxlLCBvdGhlcndpc2UgDQp0
-aGUgY2hhbmdlcyBhcmUgcG9pbnRsZXNzLCBldmVyeW9uZSBpcyBhYmxlIHRvIHVuZGVyc3RhbmQg
-dGhlIGNvbW1lbnRzIA0KZXZlbiB3aXRoIHRoZSB0eXBvLg0KDQpDaHJpc3RvcGhlDQoNCj4gDQo+
-IFNpZ25lZC1vZmYtYnk6IEdoYW5zaHlhbSBBZ3Jhd2FsIDxnaGFuc2h5YW0xODk4QGdtYWlsLmNv
-bT4NCj4gLS0tDQo+ICAgYXJjaC9wb3dlcnBjL2tlcm5lbC9lZWhfcGUuYyB8IDYgKysrLS0tDQo+
-ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+
-IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMva2VybmVsL2VlaF9wZS5jIGIvYXJjaC9wb3dlcnBj
-L2tlcm5lbC9lZWhfcGUuYw0KPiBpbmRleCBlMGNlODEyNzk2MjQuLjhlMGMxYThiODY0MSAxMDA2
-NDQNCj4gLS0tIGEvYXJjaC9wb3dlcnBjL2tlcm5lbC9lZWhfcGUuYw0KPiArKysgYi9hcmNoL3Bv
-d2VycGMva2VybmVsL2VlaF9wZS5jDQo+IEBAIC0yNCwxMCArMjQsMTAgQEAgc3RhdGljIGludCBl
-ZWhfcGVfYXV4X3NpemUgPSAwOw0KPiAgIHN0YXRpYyBMSVNUX0hFQUQoZWVoX3BoYl9wZSk7DQo+
-IA0KPiAgIC8qKg0KPiAtICogZWVoX3NldF9wZV9hdXhfc2l6ZSAtIFNldCBQRSBhdXhpbGxhcnkg
-ZGF0YSBzaXplDQo+IC0gKiBAc2l6ZTogUEUgYXV4aWxsYXJ5IGRhdGEgc2l6ZQ0KPiArICogZWVo
-X3NldF9wZV9hdXhfc2l6ZSAtIFNldCBQRSBhdXhpbGlhcnkgZGF0YSBzaXplDQo+ICsgKiBAc2l6
-ZTogUEUgYXV4aWxpYXJ5IGRhdGEgc2l6ZQ0KPiAgICAqDQo+IC0gKiBTZXQgUEUgYXV4aWxsYXJ5
-IGRhdGEgc2l6ZQ0KPiArICogU2V0IFBFIGF1eGlsaWFyeSBkYXRhIHNpemUNCj4gICAgKi8NCj4g
-ICB2b2lkIGVlaF9zZXRfcGVfYXV4X3NpemUoaW50IHNpemUpDQo+ICAgew0KPiAtLQ0KPiAyLjI1
-LjENCj4gDQo=
+When running stress-ng testing, we found below kernel crash after a few hours:
+
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+pc : dentry_name+0xd8/0x224
+lr : pointer+0x22c/0x370
+sp : ffff800025f134c0
+......
+Call trace:
+  dentry_name+0xd8/0x224
+  pointer+0x22c/0x370
+  vsnprintf+0x1ec/0x730
+  vscnprintf+0x2c/0x60
+  vprintk_store+0x70/0x234
+  vprintk_emit+0xe0/0x24c
+  vprintk_default+0x3c/0x44
+  vprintk_func+0x84/0x2d0
+  printk+0x64/0x88
+  __dump_page+0x52c/0x530
+  dump_page+0x14/0x20
+  set_migratetype_isolate+0x110/0x224
+  start_isolate_page_range+0xc4/0x20c
+  offline_pages+0x124/0x474
+  memory_block_offline+0x44/0xf4
+  memory_subsys_offline+0x3c/0x70
+  device_offline+0xf0/0x120
+  ......
+
+After analyzing the vmcore, I found this issue is caused by page migration.
+The scenario is that, one thread is doing page migration, and we will use the
+target page's ->mapping field to save 'anon_vma' pointer between page unmap and
+page move, and now the target page is locked and refcount is 1.
+
+Currently, there is another stress-ng thread performing memory hotplug,
+attempting to offline the target page that is being migrated. It discovers that
+the refcount of this target page is 1, preventing the offline operation, thus
+proceeding to dump the page. However, page_mapping() of the target page may
+return an incorrect file mapping to crash the system in dump_mapping(), since
+the target page->mapping only saves 'anon_vma' pointer without setting
+PAGE_MAPPING_ANON flag.
+
+There are seveval ways to fix this issue:
+(1) Setting the PAGE_MAPPING_ANON flag for target page's ->mapping when saving
+'anon_vma', but this can confuse PageAnon() for PFN walkers, since the target
+page has not built mappings yet.
+(2) Getting the page lock to call page_mapping() in __dump_page() to avoid crashing
+the system, however, there are still some PFN walkers that call page_mapping()
+without holding the page lock, such as compaction.
+(3) Using target page->private field to save the 'anon_vma' pointer and 2 bits
+page state, just as page->mapping records an anonymous page, which can remove
+the page_mapping() impact for PFN walkers and also seems a simple way.
+
+So I choose option 3 to fix this issue, and this can also fix other potential
+issues for PFN walkers, such as compaction.
+
+Fixes: 64c8902ed441 ("migrate_pages: split unmap_and_move() to _unmap() and _move()")
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ mm/migrate.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 397f2a6e34cb..bad3039d165e 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1025,38 +1025,31 @@ static int move_to_new_folio(struct folio *dst, struct folio *src,
+ }
+ 
+ /*
+- * To record some information during migration, we use some unused
+- * fields (mapping and private) of struct folio of the newly allocated
+- * destination folio.  This is safe because nobody is using them
+- * except us.
++ * To record some information during migration, we use unused private
++ * field of struct folio of the newly allocated destination folio.
++ * This is safe because nobody is using it except us.
+  */
+-union migration_ptr {
+-	struct anon_vma *anon_vma;
+-	struct address_space *mapping;
+-};
+-
+ enum {
+ 	PAGE_WAS_MAPPED = BIT(0),
+ 	PAGE_WAS_MLOCKED = BIT(1),
++	PAGE_OLD_STATES = PAGE_WAS_MAPPED | PAGE_WAS_MLOCKED,
+ };
+ 
+ static void __migrate_folio_record(struct folio *dst,
+-				   unsigned long old_page_state,
++				   int old_page_state,
+ 				   struct anon_vma *anon_vma)
+ {
+-	union migration_ptr ptr = { .anon_vma = anon_vma };
+-	dst->mapping = ptr.mapping;
+-	dst->private = (void *)old_page_state;
++	dst->private = (void *)anon_vma + old_page_state;
+ }
+ 
+ static void __migrate_folio_extract(struct folio *dst,
+ 				   int *old_page_state,
+ 				   struct anon_vma **anon_vmap)
+ {
+-	union migration_ptr ptr = { .mapping = dst->mapping };
+-	*anon_vmap = ptr.anon_vma;
+-	*old_page_state = (unsigned long)dst->private;
+-	dst->mapping = NULL;
++	unsigned long private = (unsigned long)dst->private;
++
++	*anon_vmap = (struct anon_vma *)(private & ~PAGE_OLD_STATES);
++	*old_page_state = private & PAGE_OLD_STATES;
+ 	dst->private = NULL;
+ }
+ 
+-- 
+2.39.3
+
 
