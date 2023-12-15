@@ -1,133 +1,128 @@
-Return-Path: <linux-kernel+bounces-1503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8BD3814F7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:08:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D45814F7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:10:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B6C7283FD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:08:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38DB61F2199B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0367D3C46D;
-	Fri, 15 Dec 2023 18:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF32830137;
+	Fri, 15 Dec 2023 18:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dluC6H4z"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1TzQ1dA8";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yt5bl1GU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526CC30112;
-	Fri, 15 Dec 2023 18:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c2c65e6aaso11061305e9.2;
-        Fri, 15 Dec 2023 10:08:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702663699; x=1703268499; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HJzjGTcIrONlR8W+k0d0BBT1pQzf5R27kgsHXzhdVcE=;
-        b=dluC6H4zA96yZ3rhuDskew9H0hjBXp5XtYv2cwFmBSfxVG3MKJ1Q6DR2rHKT2ihjfJ
-         ZY4guTXRbCwhHG1cEtbgahe4ZKgY79rBwA5NBPB3lVql7Z6X57fJcSwWQbJXwisOz2bu
-         LTTA+0FDzguRu0z2g/QZpbiO7JqIEh5qAj0Cb+m+f2+oqsttqOzPnO1POpBj+1qikj2t
-         qOrnkT2ZFQAU9y0/sH34pM1xIrjCQcMSuwgNvZvgunDmnelMQHz82Re6wLz7B0FsFNwS
-         5XfZ6Mf9a2qw/LtMwJr1y+UIO1Hp7WGVAZuUwqhNTpe5qfhqeyUfdFFpxWb6nCAsoBUf
-         kBVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702663699; x=1703268499;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HJzjGTcIrONlR8W+k0d0BBT1pQzf5R27kgsHXzhdVcE=;
-        b=V9a8T9no8KSasZ1ulFZ4oZNJ/8BM9tjt4pCjnAdydxjnrIAm9nUWCYDfkWNT2qyx85
-         Ih2Cb05ObHex+KR0J1N8HsZAFR+jp+WEgfV4yJ+na13vGQcSQsli8Mp3H8c23P1R49x4
-         lqo6L7o1pCKoMUK9K8UOMSZvtff8dn39B1uM4MF5ktrdUtpyIJ7W06eTqJuT/UJs7FNs
-         NFEL4TlEJPeUjeaOTzHNNxYv5Oy1A+Tah3vwBtjyJwWRLmIGPoAWDn9ryqWJoQal/hvI
-         YQo+vGoUqln9jDpQeLg1WRFKRMukvhKUntFslBlxiS3ZhIMg6wMVYtdh1M1y/Umlds13
-         0mBA==
-X-Gm-Message-State: AOJu0YwRbXawXCzT2OnxbqW/+h6SbAndXwnMC43Bpa53vcAs56BGwN6O
-	+fQ3rpgp4nPiGrI1x2fetQAAAfmgZdZtrW/4qzE=
-X-Google-Smtp-Source: AGHT+IGvvnGfZGv5SJaUaOgnZ9sTbQP2OjQ1se/V40z8eE9Imf9WIhhxLL4a7njEkKaOHOTEtUIXrwxyOWPfMMBnKrA=
-X-Received: by 2002:a05:600c:3d8b:b0:40b:5e4a:406b with SMTP id
- bi11-20020a05600c3d8b00b0040b5e4a406bmr5879590wmb.139.1702663699355; Fri, 15
- Dec 2023 10:08:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EB630129;
+	Fri, 15 Dec 2023 18:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 15 Dec 2023 18:09:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702663799;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=g6WxWSr9My4EqInVfw9NRhqNdCjVoy5l5OLWMaXqDD4=;
+	b=1TzQ1dA85+4kXIccjiUhT2CD2sLuibuO8rAnwABdyM5uGkYyvDDPQ7UsOJgBiiV83y81yu
+	MfN5XqzzIG6vpd/n6QqMk7Fz+xJ8vuwuLRjCtGWY7S3QGk/mLA+mx2ri1Pcibiw6i1GtDb
+	flh7brcXNIGJ50Zzk72nq095hGBM1HcTdxovGeaQj3fwAWPhuz85qQXoKlo78sYjXMy8qJ
+	2oEnDKFp8LyALbK4rf2FFK8V4STh/ATvQQGdydXewMY1XGeUxsJVB6nuYmwY9eplamKteR
+	Efu5CReik8e2lgMlhH3voWIEnwZ+ivs5lweM5uncpS93K+oR+mVr+s+ZAgcWTA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702663799;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=g6WxWSr9My4EqInVfw9NRhqNdCjVoy5l5OLWMaXqDD4=;
+	b=yt5bl1GUlWg7Ua7cgwSDwh7sHBFs6smKzoMyxuY2fhBnrI/3qGMxr850jjS29FUDe/j7UH
+	6o2TLcZTHw7axXDQ==
+From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/mm] x86/percpu: Use %RIP-relative address in untagged_addr()
+Cc: Uros Bizjak <ubizjak@gmail.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradaed.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
- <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de> <20231215-golfanlage-beirren-f304f9dafaca@brauner>
- <61b39199-022d-4fd8-a7bf-158ee37b3c08@aisec.fraunhofer.de> <20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner>
-In-Reply-To: <20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 15 Dec 2023 10:08:08 -0800
-Message-ID: <CAADnVQKeUmV88OfQOfiX04HjKbXq7Wfcv+N3O=5kdL4vic6qrw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
- non-initial userns
-To: Christian Brauner <brauner@kernel.org>
-Cc: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>, 
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Paul Moore <paul@paul-moore.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, gyroidos@aisec.fraunhofer.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <170266379864.398.7891451489965815897.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 15, 2023 at 6:15=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> On Fri, Dec 15, 2023 at 02:26:53PM +0100, Michael Wei=C3=9F wrote:
-> > On 15.12.23 13:31, Christian Brauner wrote:
-> > > On Wed, Dec 13, 2023 at 03:38:13PM +0100, Michael Wei=C3=9F wrote:
-> > >> devguard is a simple LSM to allow CAP_MKNOD in non-initial user
-> > >> namespace in cooperation of an attached cgroup device program. We
-> > >> just need to implement the security_inode_mknod() hook for this.
-> > >> In the hook, we check if the current task is guarded by a device
-> > >> cgroup using the lately introduced cgroup_bpf_current_enabled()
-> > >> helper. If so, we strip out SB_I_NODEV from the super block.
-> > >>
-> > >> Access decisions to those device nodes are then guarded by existing
-> > >> device cgroups mechanism.
-> > >>
-> > >> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
-> > >> ---
-> > >
-> > > I think you misunderstood me... My point was that I believe you don't
-> > > need an additional LSM at all and no additional LSM hook. But I might=
- be
-> > > wrong. Only a POC would show.
-> >
-> > Yeah sorry, I got your point now.
->
-> I think I might have had a misconception about how this works.
-> A bpf LSM program can't easily alter a kernel object such as struct
-> super_block I've been told.
+The following commit has been merged into the x86/mm branch of tip:
 
-Right. bpf cannot change arbitrary kernel objects,
-but we can add a kfunc that will change a specific bit in a specific
-data structure.
-Adding a new lsm hook that does:
-    rc =3D call_int_hook(sb_device_access, 0, sb);
-    switch (rc) {
-    case 0: do X
-    case 1: do Y
+Commit-ID:     91c17d7b04498ffb52939a18eb7e28fd23c9b654
+Gitweb:        https://git.kernel.org/tip/91c17d7b04498ffb52939a18eb7e28fd23c9b654
+Author:        Uros Bizjak <ubizjak@gmail.com>
+AuthorDate:    Wed, 13 Dec 2023 16:03:15 +01:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Fri, 15 Dec 2023 09:50:14 -08:00
 
-is the same thing, but uglier, since return code will be used
-to do this action.
-The 'do X' can be one kfunc
-and 'do Y' can be another.
-If later we find out that 'do X' is not a good idea we can remove
-that kfunc.
+x86/percpu: Use %RIP-relative address in untagged_addr()
+
+%RIP-relative addresses are nowadays correctly handled in alternative
+instructions, so remove misleading comment and improve assembly to
+use %RIP-relative address.
+
+Also, explicitly using %gs: prefix will segfault for non-SMP builds.
+Use macros from percpu.h which will DTRT with segment prefix register
+as far as SMP/non-SMP builds are concerned.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradaed.org>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lore.kernel.org/all/20231213150357.5942-1-ubizjak%40gmail.com
+---
+ arch/x86/include/asm/uaccess_64.h | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
+index f2c02e4..01455c0 100644
+--- a/arch/x86/include/asm/uaccess_64.h
++++ b/arch/x86/include/asm/uaccess_64.h
+@@ -11,6 +11,7 @@
+ #include <asm/alternative.h>
+ #include <asm/cpufeatures.h>
+ #include <asm/page.h>
++#include <asm/percpu.h>
+ 
+ #ifdef CONFIG_ADDRESS_MASKING
+ /*
+@@ -18,14 +19,10 @@
+  */
+ static inline unsigned long __untagged_addr(unsigned long addr)
+ {
+-	/*
+-	 * Refer tlbstate_untag_mask directly to avoid RIP-relative relocation
+-	 * in alternative instructions. The relocation gets wrong when gets
+-	 * copied to the target place.
+-	 */
+ 	asm (ALTERNATIVE("",
+-			 "and %%gs:tlbstate_untag_mask, %[addr]\n\t", X86_FEATURE_LAM)
+-	     : [addr] "+r" (addr) : "m" (tlbstate_untag_mask));
++			 "and " __percpu_arg([mask]) ", %[addr]", X86_FEATURE_LAM)
++	     : [addr] "+r" (addr)
++	     : [mask] "m" (__my_cpu_var(tlbstate_untag_mask)));
+ 
+ 	return addr;
+ }
 
