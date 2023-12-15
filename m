@@ -1,175 +1,151 @@
-Return-Path: <linux-kernel+bounces-584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4549814346
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:07:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1BF81434A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B4081F2315B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:07:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFF951C22590
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C803111B4;
-	Fri, 15 Dec 2023 08:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B12311CBE;
+	Fri, 15 Dec 2023 08:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IkuL8gdH"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="Wmme0D5q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867C6134A2
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-54c846da5e9so295829a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:07:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DA311196
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7c47dd348f2so117581241.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:08:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702627660; x=1703232460; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IxD/VahC2ClQ2iwWPMIUIAj7e4n1LQ8i/xcl4ceScZo=;
-        b=IkuL8gdHsOo1ykReLEththA0/6QdJYv2FQ3Vh0EpOYL2CJbiqIe7xIFHVa5CgtVkjo
-         yl8ha9Kf+XLzj/7lcPR0ezFH8XfobYwyboPL0UthyW0ITd+dgJXa9BRukjVeZCOLI0SB
-         hS9e7rQ8oGPQh0NcyZQQo9G6dv/OjSLD5kO+KbFG3ZxWnJeBNBZISS6ICFYeftiBB/np
-         yNMUv2vgW5cNPXTBvHwVbY5i4CQv5/ux5667GS8h9z6Q7UR3U3jfeZQChgaE1Le989Kl
-         AdS+/MrU8gviCRvhV+TQU9CsGZSwsrov/8TXbkL26S4ECLD+5uQb/yZ2/8a20U17Uan4
-         K5Gw==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702627679; x=1703232479; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0uiOQSE45YrsMt2KVUIc8OGdSe9niHAgFRBdIZwdjhM=;
+        b=Wmme0D5q1nC+/bgUmFXO/37vEf+t0F2vY7vSr0B/aiTk86UdaI0aX2mCbgGIvePv9J
+         3ppCAT0qOx1XYtKdYjnqr3+ClyMvWeQy46kK08YO3uddLjX2MmJCMlU0Zjz/Z0I2aJYS
+         eUONRcGpic+Q+iIs4jBzn+Vvl8/QeKEMv7Hwpj3FIAeAFxdvEUJzQolBZRSSBPw2CZQS
+         wlUdlJ27oGwMUxdM75P3HhZPfYlx0Q7PrHW8c7+T3qZ0buHhLpgzyjP6wjJlVrgNuWu3
+         dwWy/l9mm+t1IBMjlg8jRmQPCEbpqiwexrtAEQRwxtSP47kikOWyuHFbFz2qTjTXFl0e
+         iBJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702627660; x=1703232460;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IxD/VahC2ClQ2iwWPMIUIAj7e4n1LQ8i/xcl4ceScZo=;
-        b=OYDnVmVpdxEpNcLMo36lUx1ahWVyk0KnMMtSGrSiD2+nx9Xs3rAbbLbh+SA9PXVYLc
-         WMyh58UAHWjmtnOt7WPflWHcC3jt8wfA9btLL9XwlUUVPKtQ04yqMSJ3PCyyhCWMu8mk
-         AqZ9S4oaWboHXfcKZXQVjJXejwuvFyH6T0x3SNxAiaTBM/CRBLy1FXXuLH0+mhcIEjmx
-         dzah/1jn25LwWd5QgxVHMPj1tE5Q8rooP0dQAGw49Brec5kcZoXM0EdbkYLMnvF+o/hf
-         n2soh+mWBSCeWd1lbTpA+OR5QjH0zsMTFwdOukyhxzG0DbTtSqd5v/p/pXVI7UB4UB/n
-         wuGQ==
-X-Gm-Message-State: AOJu0Yyc/sgCClyt/fPX00DkzbdaiksEJ6WO92yjYFhrYy/GqNfgYZcO
-	p7WVrcmf094gboKZWbipQP7aZA==
-X-Google-Smtp-Source: AGHT+IG9zEccBZFl5aP7IPpua8AKal9WySqOFWhLPSJEM7vjbmxr8qqS4iZT8fVNI6vEv60xIpQjmg==
-X-Received: by 2002:a50:d50b:0:b0:552:72cf:1cf6 with SMTP id u11-20020a50d50b000000b0055272cf1cf6mr1157693edi.27.1702627659874;
-        Fri, 15 Dec 2023 00:07:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id s28-20020a50ab1c000000b0054c6b50df3asm7881111edc.92.2023.12.15.00.07.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 00:07:39 -0800 (PST)
-Message-ID: <c9ea0e9f-05d8-4def-8c68-6604c22763b9@linaro.org>
-Date: Fri, 15 Dec 2023 09:07:36 +0100
+        d=1e100.net; s=20230601; t=1702627679; x=1703232479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0uiOQSE45YrsMt2KVUIc8OGdSe9niHAgFRBdIZwdjhM=;
+        b=pp5Pkoz9JqcP1TuRlQPn4X0ygogOisNTAxarkoWN8HF6jPde75ASK95MHKNsAGq5dB
+         Vay2gOobVDLLFcdMwvj3e9TjksHEHskDWDqzUC8zPZy2+EZnJXvLWbk4b1nP3yLp8lor
+         09bL9Po7zeRSvGzekagg47DQEuJF2lgVb84zxww4CYW/mFRL8YUBQsWM3+K8xuRYenCk
+         kSvf6i7gVXjVpXnGjRVRR+/hkZhpr+g55f54Cthgi4kglKdrDQQ9tBOKb45CVLJKb1HT
+         7ZYGCaRTMaxkOgmfhwHHWct98Gq8apJ9qQ8UvBJ38GvcXqKqvWVEQxEqGRy8PP9+w93v
+         Ahkw==
+X-Gm-Message-State: AOJu0YwM2jxv/lbzAd6/55XqNuX7GP+YxoWcSE7g4uX5sVMC/R2fWRPf
+	XG0nxuqE1HILHMRZaNikwa94L9S5iAgX6sgAoRzV1FEWyDfCwKXTWGE=
+X-Google-Smtp-Source: AGHT+IEIqDaidt6c6oUTWeM1ZB0w5dbsENV6n6ufHVg8DOM+TS6CWMDUE4h/tcqcmJeb5zSXvj1OUPtNDY4oQr0i8lo=
+X-Received: by 2002:a05:6102:509e:b0:462:8a7b:8d28 with SMTP id
+ bl30-20020a056102509e00b004628a7b8d28mr7856589vsb.1.1702627678978; Fri, 15
+ Dec 2023 00:07:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/13] arm64: dts: exynos: gs101: enable eeprom on
- gs101-oriole
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>,
- Tudor Ambarus <tudor.ambarus@linaro.org>, krzysztof.kozlowski+dt@linaro.org
-Cc: peter.griffin@linaro.org, robh+dt@kernel.org, mturquette@baylibre.com,
- sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
- alim.akhtar@samsung.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
- catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
- andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-serial@vger.kernel.org
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-12-tudor.ambarus@linaro.org>
- <CAPLW+4nTgam4jZ+s5m5E05jWO_kfSy=fMS0Ywp3yQEEn-UESbg@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAPLW+4nTgam4jZ+s5m5E05jWO_kfSy=fMS0Ywp3yQEEn-UESbg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231214095814.132400-1-warthog618@gmail.com> <20231214095814.132400-3-warthog618@gmail.com>
+ <ZXsZJ9z7iln8uMf8@smile.fi.intel.com> <ZXsajZoQRw7HgHl1@smile.fi.intel.com>
+ <ZXsp8QjxsUMPlZIR@rigel> <ZXswRCsT0OYwHe3N@smile.fi.intel.com>
+ <CAMRc=Md55pSWwbKqxO-eHJyn1+vtLMuWmD0d1_iqFT4h7dJ4Yg@mail.gmail.com> <ZXumIX39JRpbYrbw@rigel>
+In-Reply-To: <ZXumIX39JRpbYrbw@rigel>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 15 Dec 2023 09:07:48 +0100
+Message-ID: <CAMRc=MfRs79kkXLV5KiH7ehDYq4BRR=eTNh+WNcCvsu8mg_J+Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+To: Kent Gibson <warthog618@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14/12/2023 16:55, Sam Protsenko wrote:
-> On Thu, Dec 14, 2023 at 4:53 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->>
->> Enable the eeprom found on the battery connector.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->>  .../boot/dts/exynos/google/gs101-oriole.dts    | 18 ++++++++++++++++++
->>  1 file changed, 18 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
->> index 4a71f752200d..11b299d21c5d 100644
->> --- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
->> +++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
->> @@ -63,6 +63,19 @@ &ext_200m {
->>         clock-frequency = <200000000>;
->>  };
->>
->> +&hsi2c_8 {
->> +       pinctrl-names = "default";
->> +       pinctrl-0 = <&hsi2c8_bus>;
->> +       #address-cells = <1>;
->> +       #size-cells = <0>;
-> 
-> Not sure if those 4 above properties belong in board's dts or in SoC's
-> dtsi. Krzysztof, what do you think?
+On Fri, Dec 15, 2023 at 2:04=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
+wrote:
+>
+> On Thu, Dec 14, 2023 at 10:06:14PM +0100, Bartosz Golaszewski wrote:
+> > On Thu, Dec 14, 2023 at 5:41=E2=80=AFPM Andy Shevchenko <andy@kernel.or=
+g> wrote:
+> > >
+> > > On Fri, Dec 15, 2023 at 12:14:41AM +0800, Kent Gibson wrote:
+> > > > On Thu, Dec 14, 2023 at 05:09:01PM +0200, Andy Shevchenko wrote:
+> > > > > On Thu, Dec 14, 2023 at 05:03:03PM +0200, Andy Shevchenko wrote:
+> > > > > > On Thu, Dec 14, 2023 at 05:58:11PM +0800, Kent Gibson wrote:
+> > >
+> > > ...
+> > >
+> > > > > > > +static void supinfo_init(void)
+> > > > > > > +{
+> > > > > > > +       supinfo.tree =3D RB_ROOT;
+> > > > > > > +       spin_lock_init(&supinfo.lock);
+> > > > > > > +}
+> > > > > >
+> > > > > > Can it be done statically?
+> > > > > >
+> > > > > > supinfo =3D {
+> > > > > >   .tree =3D RB_ROOT,
+> > > > > >   .lock =3D __SPIN_LOCK_UNLOCKED(supinfo.lock),
+> >
+> > Double underscore typically means it's private and shouldn't be used.
+> >
+>
+> You mean like __assign_bit(), __set_bit(), __clear_bit() and __free() -
+> all used in gpiolib.c?
+>
 
-The cells should be in DTSI, because you cannot have an enabled i2c bus
-without nodes in normal cases. The not-normal case is incomplete
-description, which does not happen here.
+Touch=C3=A9. But this is just lack of strict naming conventions. :( Another
+common use of leading underscores are "unlocked" (or in this case:
+non-atomic) variants of functions.
 
-The pinctrls I guess as well in DTSI, because you do not customize the
-pins in the DTS. IOW, if the pinctrl nodes are coming from shared
-pinctrl.DTSI, then pinctrl-0/names stay in DTSI as well.
+> > > > >
+> > > > > I even checked the current tree, we have 32 users of this pattern=
+ in drivers/.
+> > > >
 
+As opposed to ~1200 uses of DEFINE_SPINLOCK if you really want to go there.=
+ :)
 
-Best regards,
-Krzysztof
+> > > > Ah, that is what you meant.  Yeah sure can - the supinfo_init() is
+> > > > another hangover from when I was trying to create the supinfo per c=
+hip,
+> > > > but now it is a global a static initialiser makes sense.
+> > >
+> > > Yep, the DEFINE_MUTEX() / DEFINE_SPINLOCK() / etc looks better natura=
+lly
+> > > than above.
+> >
+> > Yeah, so maybe we should use non-struct, global variables after all.
+> >
+>
+> Despite the 32 cases cited that already use that pattern?
+> 9 of which use __SPIN_LOCK_UNLOCKED().
+> Sounds like a pretty convincing argument to use the struct ;-).
+>
+> But lets keep it as kosher as possible and split out the struct :-(.
+>
 
+I'll leave it for you to decide, I don't have a strong opinion and the
+entire file is your code so you should pick.
+
+Bart
+
+> Cheers,
+> Kent.
+>
 
