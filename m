@@ -1,110 +1,102 @@
-Return-Path: <linux-kernel+bounces-838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E1CB8146E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:28:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8858146E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:28:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99E59B22177
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:28:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02DF51F233DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250CC24B47;
-	Fri, 15 Dec 2023 11:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7549C24B57;
+	Fri, 15 Dec 2023 11:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gOwWQGOf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC66625564;
-	Fri, 15 Dec 2023 11:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
-Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
-	by server.atrad.com.au (8.17.2/8.17.2) with ESMTPS id 3BFBRhN8018278
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Fri, 15 Dec 2023 21:57:44 +1030
-Date: Fri, 15 Dec 2023 21:57:43 +1030
-From: Jonathan Woithe <jwoithe@just42.net>
-To: Igor Mammedov <imammedo@redhat.com>
-Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Regression] Commit 40613da52b13 ("PCI: acpiphp: Reassign
- resources on bridge if necessary")
-Message-ID: <ZXw4Ly/csFgl76Lj@marvin.atrad.com.au>
-References: <ZXpaNCLiDM+Kv38H@marvin.atrad.com.au>
- <20231214143205.4ba0e11a@imammedo.users.ipa.redhat.com>
- <ZXt+BxvmG6ru63qJ@marvin.atrad.com.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A27F2C681;
+	Fri, 15 Dec 2023 11:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40c55872d80so9638915e9.1;
+        Fri, 15 Dec 2023 03:27:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702639668; x=1703244468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yeQwlKBI2SF/Ztq9EJVcE7+HTMb8ecHbVMx3S5Ftdmo=;
+        b=gOwWQGOfP9E2xP/aDHVGN0s0hV7sXd3geYrgM/fXt8iWa/EEE+dLgl6jtD0gQfWGNy
+         7vOEuA9HnyuJRl+7Yxn23hQp6rZLy6wPWPNdIvMscsZVrbhvmd8t7wFR/6mklEHbYoe+
+         YcY2TmkQy+bhrsZPlkKluQcHxZtrVVwt1Zk2uhgTTPb/geyz+4vMx4x6YU5xDLPayxVY
+         6qlTKtK+ZKAvc90MvDc4zZgaqN4HF5QBo44o27rpkHzOt5BnIymkpskco9MDhHNiN9az
+         5LN/ay4FGQuVHAALON2OtBJ3bOMZP1njlmXOM8//Ukn5EZIGxMFgoP99NLJNC38HWE1R
+         EmGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702639668; x=1703244468;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yeQwlKBI2SF/Ztq9EJVcE7+HTMb8ecHbVMx3S5Ftdmo=;
+        b=MMP1UPsZiQVXrUKZZ9fC5/VbTmoYXHiBbXVqJXOpKVY++YrnG/4AqUzXa0IRSAY1db
+         YygkVSgVvJNKG03AaK/pueMGd4+LPZ5UntI6RWFFzTQXps+mPYC2wpE1WV3/cDs07XYP
+         3O+G4m50XRUryF+K6GllPxF1jhn8xF97615nTLMs37VJ02W9f7DOz2jTI6EdAJL7Ab9r
+         06XXS3pUp7l8ErYa/6FAKFdb/TD3gyEMfTnQutKuzcgqSes7XXXKYaj8DIWftBWCWfI/
+         THXDYN58KuLh9LuSuC7k1WsJrJivd7zOofHEYQnNUi5Qjscrs5NmGD9XlpWZouFUYlck
+         YpKA==
+X-Gm-Message-State: AOJu0Yy55HQICDAoFCJpGpRngt5K7Ohq6YfQg2NnMgHSJyz7Y9VN487H
+	iYTCA1ujCHEQ829A61HPJtKtZH7thUXrSA==
+X-Google-Smtp-Source: AGHT+IFYcOWPBrbaJdOtLFfNHfilk3y+Se26A0GqU9cninD9SdsjcKfZkMPovTzZNFMPhwyNYpbWZQ==
+X-Received: by 2002:a05:600c:4749:b0:40b:5e4a:233f with SMTP id w9-20020a05600c474900b0040b5e4a233fmr5497697wmo.65.1702639668195;
+        Fri, 15 Dec 2023 03:27:48 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id bi11-20020a05600c3d8b00b0040c2963e5f3sm28532074wmb.38.2023.12.15.03.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 03:27:47 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Henry Shi <henryshi2018@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	platform-driver-x86@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] platform/x86: silicom-platform: Fix spelling mistake "platfomr" -> "platform"
+Date: Fri, 15 Dec 2023 11:27:46 +0000
+Message-Id: <20231215112746.13752-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXt+BxvmG6ru63qJ@marvin.atrad.com.au>
-X-MIMEDefang-action: accept
-X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 15, 2023 at 08:43:29AM +1030, Jonathan Woithe wrote:
-> On Thu, Dec 14, 2023 at 02:32:05PM +0100, Igor Mammedov wrote:
-> > On Thu, 14 Dec 2023 11:58:20 +1030 Jonathan Woithe wrote:
-> > > 
-> > > Following an update from 5.15.72 to 5.15.139 on one of my machines, the
-> > 
-> > looks like you are running downstream kernel, can you file bug report
-> > with distro that you use (with a link posed here as well).
-> 
-> I am running Slackware64 15.0.  The kernels supplied by that distribution
-> are unmodified kernel.org kernels.
-> 
-> > For now offending patches are being reverted, so downstream bug will help
-> > with tracking it and reverting it there. 
-> 
-> The patches will be reverted in Slackware as a matter of course when a
-> kernel.org "-stable" kernel with the fix is adopted.  Slackware does not
-> apply any patches to kernel.org kernels.  Nevertheless, I will raise a post
-> in the forum, hopefully later today.
+There is a spelling mistake in a literal string. Fix it.
 
-This has now been done:
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/platform/x86/silicom-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  https://www.linuxquestions.org/questions/slackware-14/heads-up-pci-regression-introduced-in-or-around-5-15-129-commit-40613da52b13-4175731828/#post6470559
+diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
+index 84b92b3f9f4b..6ce43ccb3112 100644
+--- a/drivers/platform/x86/silicom-platform.c
++++ b/drivers/platform/x86/silicom-platform.c
+@@ -866,7 +866,7 @@ static int silicom_fan_control_read_labels(struct device *dev,
+ {
+ 	switch (type) {
+ 	case hwmon_fan:
+-		*str = "Silicom_platfomr: Fan Speed";
++		*str = "Silicom_platform: Fan Speed";
+ 		return 0;
+ 	case hwmon_temp:
+ 		*str = "Silicom_platform: Thermostat Sensor";
+-- 
+2.39.2
 
-> > > The output of lspci is given at the end of this post[1].  The CPU is an
-> > > "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz" which is not overclocked.  Please
-> > > let me know if you'd like more information about the affected machine.  I
-> > > can also perform additional tests if required, although for various reasons
-> > > these can only be done on Thursdays at present.
-> > > 
-> > > The kernel configuration file can easily be supplied if that would be
-> > > useful.
-> > 
-> > full dmesg log and used config might help down the road (preferably with current
-> > upstream kernel), as I will be looking into fixing related issues.
-> > 
-> > Perhaps a better way for taking this issue and collecting logs, will be
-> > opening a separate bug at https://bugzilla.kernel.org (pls CC me as well)
-> 
-> Sure, will do.  I'll be able to get the dmesg log from my earlier tests and
-> config easily enough.  Testing with another kernel will have to wait until
-> next Thursday as that is when I'll next have physical access to the machine.
-
-A bug has been opened at bugzilla.kernel.org as requested.  The logs, kernel
-configuration and the "lspci -tv" output (requested in a subsequent email)
-have been added.  The logs and kernel configuration are from the kernel.org
-5.15.139 kernel.  You have been added to the bug's CC.  The bug number is
-218268:
-
-  https://bugzilla.kernel.org/show_bug.cgi?id=218268
-
-As mentioned, testing another kernel can only happen next Thursday.  If
-you would like other tests done let me know and I'll do them at the same
-time.  I have remote access to the machine, so it's possible to retrieve
-information from it at any time.
-
-Let me know if there's anything else I can do to assist.
-
-Regards
-  jonathan
 
