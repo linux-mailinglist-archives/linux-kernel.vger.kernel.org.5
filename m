@@ -1,113 +1,122 @@
-Return-Path: <linux-kernel+bounces-1795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47BF08153FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:50:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23511815382
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 481111C243FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:50:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD34C1F24EC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE58618EC2;
-	Fri, 15 Dec 2023 22:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD7518EA9;
+	Fri, 15 Dec 2023 22:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="WtED4umQ"
+	dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b="bB+xsgXP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sonic312-30.consmr.mail.ne1.yahoo.com (sonic312-30.consmr.mail.ne1.yahoo.com [66.163.191.211])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E00E18EAE
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680603; bh=rBrX20RKGA/fq/6ZpKrjQGgBq3YXTniSXMxOJWRHlHg=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=WtED4umQ89i9DP+27JOtPJGe9d3NXsKNgLFfejji1w7wZu4mfkW9h+tvy/py22+meL6gIkQ0SHRhPBq/3S6aEl0QxSDLQQq2gPmClnCWI0qnUNpsndo0u4sVtD6OLu099nzTjBdGlWM9Q7G8H7AI68trm0kasNN0K3KUb48GK+FLyqJdJA1Bj/P4Djh9De4c9pU+PowMERuYXR+dOwGXKctAHsHWKLyTsDT7ajLgdZU5cASK2jcEO9k3TcTSsDvvcTIssjqK476xPhld5X37GiUQ0033yjWkLtyPToLt7TezKC1fk239wmUeHhQL7mBT080HRUokKw/O/VkNEoYgIw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680603; bh=cCXPVLJVjTpxa8aQ8l1NNDtJgIgas1pHPmm6wKmj16L=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=BxocgvuEZnoLKRLBuHCyqVkixWK5K4RA1y4IawGw0dRulFGlndVqEJhTCfMIlpcWIxhn6IPbqb8iCXoSTHD3rGm61+klPEuPSkLtFS1DwNUSKIBvVF7FUEXWbsXprESZgf+QKqlaRwIU9ZvgyfISn6VvACd+fWPGzi8UuJgsGKeGf/xEZf2HhF32Nesk/WAHvm1KBzwgVK1kX/IrjCLa9Hae8UMCrvOM3B2hnIU+cHPPFpjr9yuAyxXJD2/JeSUfERUFwqgkksPZr9xhwFkAxfEyh7y3zPO2Ijfnn4Tz9+Aqr2S9C6V5CbI4BJCULz3qCxELbMViE8GNESNvClWvXg==
-X-YMail-OSG: kmcwAAYVM1nyQRivV3hBA0khhAbEdFHCub.rsza7.P7rdz2eFCPoeeJ4sx8HNB_
- ku3LC9CjjwgqvSFLFScjonwVruLtk4qOcs8YpZx2z2Wf25ffB93qtqjls0lE_._dtovZPgHEJ2cN
- A5xJI9FxePac8BaphtEcNRoRyqs9y1Vzuc220jbqtYo4z4q.15Q78p6qfNUPUkepwEKjnHg3VlrA
- rasZDFgO7yHhVwCcwQl7x2MtDFLIBxzCZcPhWksxwzRH5I3qUXMsFkVzpNYloUg9o2TbiUxN17Ab
- y1F2N.TjpalA6cOK9qVIfV.ETVR..fBnQQLmKadcUOS0OUp7dKaTGtSfYTzL66Bqu2loQHySAfqN
- lBmBQeaYFB0rK.lX1rjXa0WL2osGdsEH4pioNWY043ZKBwL7DQj1sl8r0K8GalAde1_LYvN.uo6M
- LBhZVVCKCs3wrn1vuSqXr9B40Rf1r6XOoa_v_ICZbrqcyxIpc0DWLDkABws3Ru2fTLX1gtwGOZ4e
- Jd8reFczWzTIHxVuDOXoew3i83YzUAqzVGL0tEA9ZhDPM5w4yTeELdzfta0AeBuC6eIcgY2R0LKA
- NH8FLlc9MIashQmPwCPzmKqDl1ekuV7hmT7bnlovkIlDE0Nf_5rPw3oaFQcRDZp36MR6rpH.Hbzn
- _MQveONfTIytn8k3k6qadPJUrg3.cbJD1b_kPS.fpgk29kxV4gGUgVLhDSg.Zyswb3tnICgzMkdB
- eyd2OZX5US6LgWnnROjZhzCE6EkM.kpW7S2CjD6K6zkbgaYOGQM78ynzlhGIVAj0FhIcgosEgsIA
- D_0oGrzvsdHLxec15pFxbSXqHzKPe04VdJ9Bdb_uFMnWmwDF9hHZ4Dgp0OIDLogB3Ud0jys1ziSH
- IuJErvGSg7u1bY_Z_lz7sKRsqlKtab.gJcZiCyI1SRF.rJx1gtTBeKGmTv.862ZBNk2d7bago_4r
- z9pc4lpkFwvLmJK7oGHUbZ0.SeuVhXyk5HjoNiCp6GOnCModc91R1cI4VJmU1WmpjgJMw8o_.yws
- 1BZUwGn1xmMeJt3Ft3Bj3JuAKM2ucrQmtcuXA98STc0_XeQBX6Mnoq04NwClxDVCu_jYV8AXjlvI
- BG5U4zkuYRR0dTPxQtdvXCgkf49leWgsurk_r36WcdM2M_AalvKg9IvApnKgA2O09KL.AYtjIMLb
- fQR.wTbkPY2LJyP2qgNhyrMw3A75VI7aOIC.EcbnlvAZdoY_Z9WIaLby0K604uQr22Dpd5nk_0Gb
- eJ7TQEG0VMKpa1NqXIQlbse_mDMeWwrRsh5GNAWDHK8RwTAJnMLOJTIUVqQx2E_Z1udTScFGiogP
- 24xYuWNv8mS4BcIT33BScQJ2AbgQwoeQX05vGXr2L5sF1DW5fKnGZrdsp0A.rP9PVrOvxqshzwWs
- Im.mxm2C.uZT1aCiQd_PTHvSfQuIOiIED9nDwP_MMvh6bBXVGPSHbh1ZYAFIYhWFgH.nV.HbGV33
- jnyRbB6nzaMi1iBcBaw6MuTkybOrkSHQ.Dddcc08aEs2FXg_k4B5uwhKvjLU43KcaY0ZLAG0l8gj
- UAKIca5LJxfJRBMQEULYQYZtY5uHVoT7KBYcwIQVEKBp2oay_CYHnJCryQPa5qOMCdo2YKywwue0
- sMGfeNMgT8oKKRSEDKge2_t4KvTgk5LsL73.XAlULL7QmakMaFqnHiaIzb3GjGo61MS7tWkXyeOs
- uJp.jGROc2JS3wLW6cKiEsCz4.ALOEeVqhhgTq144iNAAb1BaOtP4hc3KcdfE.f8pZ0XO6tAaJrb
- 7n0pDb0y9LlAHZYePNodyQUMAOK4aeQiOs51lPzJGbB3e14qHMrmoR4683bipgDPU85B2cilzfgp
- KSjMn9r9cLJC.MI10dVS9VDz.Vpq28FHTq_7ofAOpZo4Jq5f4ekIr50Jz8O52UTGgu_yMAAfqrs9
- brj3w1rdO1VOXU8f5FU91M.y4caQlQCHnCoQmPLQObA8HZHlAElv9aiVwHdSrm53adPgdrZa.ypk
- xZJwXdiuE6gtHqUpB.RWRtmwg9GL3jF35EJlZwdseOAHFGNBlLITtjErih.nT4iWV9k3vBGO27gh
- eR0FTskk9VEMs__zRR1Wq7g62CcQ5xOSeaPFh1LntoscJf_THYk8QZt4hfJTO9dsaQCukTSoULJ_
- WjLgn9507MdbhZKMmGBd_lLqgwAar9irq6VVCMR2mfN8z6hT7ej6c.YYKIyFz_dx.yxWe3SpINVV
- Tx9YdrLMwBcWPWVscNT5HCvWEZceWPRzc2YRc1LPl3xYhDFaPPgIAU4kfbVZk7yy3FYAYr18MXpk
- dIN7rgjLJJheLtXegbHmrh5YWISbh
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 2be22b4b-e59a-4cd7-b2d9-37a846ad2914
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Dec 2023 22:50:03 +0000
-Received: by hermes--production-gq1-6949d6d8f9-pmzmd (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID bab51986ed5b5f266b6ddd6db4744dbe;
-          Fri, 15 Dec 2023 22:50:00 +0000 (UTC)
-From: Casey Schaufler <casey@schaufler-ca.com>
-To: casey@schaufler-ca.com,
-	paul@paul-moore.com,
-	linux-security-module@vger.kernel.org
-Cc: jmorris@namei.org,
-	serge@hallyn.com,
-	keescook@chromium.org,
-	john.johansen@canonical.com,
-	penguin-kernel@i-love.sakura.ne.jp,
-	stephen.smalley.work@gmail.com,
-	linux-kernel@vger.kernel.org,
-	mic@digikod.net
-Subject: [PATCH v39 42/42] Smack: Remove LSM_FLAG_EXCLUSIVE
-Date: Fri, 15 Dec 2023 14:16:36 -0800
-Message-ID: <20231215221636.105680-43-casey@schaufler-ca.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231215221636.105680-1-casey@schaufler-ca.com>
-References: <20231215221636.105680-1-casey@schaufler-ca.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DFE18EB0
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=hefring.com
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-77f380d8f6aso75447885a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:22:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1702678973; x=1703283773; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7TFw7xg7w2M+8qc28EqEusL4T4Plz+lf2upO0JPQgw0=;
+        b=bB+xsgXP0L1K1L4YdX4qXnsrdPX7OO9PVPR6hlKNra+DrFBmkHOVrtSxG791xmZB+X
+         UfRkdwJJyNB0bZ6stenzFN+0piMYgor2JnZv4mrnSRd5Ce9LtdDClD5INfjXOV3w4x+T
+         2lrC5+H67cppQ6NAwuEOO4/1JHkdYAfuDb860q3qUQTeVSBDu8SN9bgYrtMGMyHxnKDq
+         eesA+I3ZSRvAsTUX7YUGUG9GEMSgHM/MNkqme8Adw1chfUy6BkvqSYo0DZvgtauiJxt/
+         5Sh2H1bSFtHvh7nN1VaZdZ8IrpYGATZrOa3ED9pMLFIpDWNxAlQoAtpSif+kHyLEH93W
+         53uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702678973; x=1703283773;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7TFw7xg7w2M+8qc28EqEusL4T4Plz+lf2upO0JPQgw0=;
+        b=uj+f0MH2sAHNGfzpYgToOuO6HQ8WMVYQ7mRRxa0Wi2vDvaoUBoCAQN1hjrcTj/2fv+
+         Un9pO5gBPvtpN0+wQQu8tTLJssPylndr1mYl9ZrlbTVR2ubEk/3abh2Wjj/XDesO4wTo
+         GGYEL2R2iGrhhwrs2vkUV6t6se5THqVLgfv26ydMWPKA7+7zJRrpgakdDMu9PNMUV+oP
+         vPTTg+JCDRPnwQvaFfpR6KTupUDrLYgIE8EHjwg/IiCBOUgUwW329leZXVzqhAZVAF4F
+         acy17Q04D2vM1S73vIB3tg/cef6355F5GoehJ8yzHTEpfjeuP5tmFS3gVeeNcNpd2Pl+
+         0q1A==
+X-Gm-Message-State: AOJu0YziqVbkNieCwV9IAfF12Zf9Y5SMFxPHIvavaE+C4fVGmzUkp2Lj
+	jSdNwPGKftWCOtFg7hfziXOUow==
+X-Google-Smtp-Source: AGHT+IEJekFwo4r+H8PtOrZH0hYzvRpj9POtATtBQr7tyBiNEDTS/FAF2UzeUfuDf/WaBoIwrOUJ3A==
+X-Received: by 2002:a05:620a:146d:b0:77f:878:b58 with SMTP id j13-20020a05620a146d00b0077f08780b58mr14261801qkl.153.1702678973632;
+        Fri, 15 Dec 2023 14:22:53 -0800 (PST)
+Received: from dell-precision-5540 ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id m1-20020ae9e701000000b007759a81d88esm6333130qka.50.2023.12.15.14.22.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 14:22:53 -0800 (PST)
+Date: Fri, 15 Dec 2023 17:22:03 -0500
+From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>
+Subject: Re: [PATCH] spi: stm32: use runtime PM to enable/disable controller
+Message-ID: <ZXzRi_h2AMqEhMVw@dell-precision-5540>
+References: <20231204202055.2895125-1-ben.wolsieffer@hefring.com>
+ <58897511-3187-4583-bf29-11871dd4d136@sirena.org.uk>
+ <20231215182739.GA96945@gnbcxd0016.gnb.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215182739.GA96945@gnbcxd0016.gnb.st.com>
 
-Smack no longer has any behaviors that require LSM_FLAG_EXCLUSIVE.
+On Fri, Dec 15, 2023 at 07:27:39PM +0100, Alain Volmat wrote:
+> Hi,
+> 
+> sorry for the delay.
+> 
+> On Thu, Dec 14, 2023 at 10:58:54AM +0000, Mark Brown wrote:
+> > On Mon, Dec 04, 2023 at 03:20:55PM -0500, Ben Wolsieffer wrote:
+> > > Instead of disabling the SPI controller between each message, do it
+> > > as part of runtime PM.
+> > 
+> > This doesn't apply against current code, please check and resend.
+> 
+> I rapidly gave a try on this patch on top of the spi/for-next branch
+> (manually fixing the conflict due to the MASTER->HOST renaming).
+> It turns out that with that applied, transfers on the MP13
+> (compatible: st,stm32h7-spi) are not working anymore while simply
+> removing it back it works again.
+> (test is simply doing loopback spidev_test)
 
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
----
- security/smack/smack_lsm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That's unfortunate; I was worried about something like this because I
+only have an STM32F7 to test. If you can't easily determine what's going
+wrong, it would be interesting to know if the original version of this
+patch has the same problem:
+https://lore.kernel.org/lkml/ZWpoKEcM0ZeYAsBa@dell-precision-5540/T/
 
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 9f5a37a5b47e..7bf2a3fabf33 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -5325,7 +5325,7 @@ static __init int smack_init(void)
-  */
- DEFINE_LSM(smack) = {
- 	.name = "smack",
--	.flags = LSM_FLAG_LEGACY_MAJOR | LSM_FLAG_EXCLUSIVE,
-+	.flags = LSM_FLAG_LEGACY_MAJOR,
- 	.blobs = &smack_blob_sizes,
- 	.init = smack_init,
- };
--- 
-2.41.0
-
+> 
+> spi mode: 0x0
+> bits per word: 8
+> max speed: 500000 Hz (500 kHz)
+> TX | 8D D6 73 8B 9D 8B 1C 7D 8D 80 EC 32 F9 0D BA AD 9F 88 A5 9B 3F AA 48 8C 21 35 0D C1 C8 E5 6A 81  |..s....}...2........?.H.!5....j.|
+> RX | 8D 00 00 00 D6 00 73 00 8B 00 00 00 9D 00 00 8B 1C 00 00 00 7D 00 00 8D F9 00 00 00 BA 00 00 00  |......s.............}...........|
+> 
+> The RX data contains lots of 00 between each byte.  Moreover it seems
+> that with this patch applied non-dma transfer (when there is no dmas
+> properties within the node) are now failing.
+> 
+> I'll check that and give more details but could you avoid applying this
+> patch for the time being ?
+> 
+> Thanks.
+> Alain
 
