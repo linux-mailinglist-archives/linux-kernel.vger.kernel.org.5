@@ -1,83 +1,87 @@
-Return-Path: <linux-kernel+bounces-400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28304814092
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:20:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6770D814096
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32EF01C220F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:20:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A8511F22F79
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5AE46A0;
-	Fri, 15 Dec 2023 03:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575B863CB;
+	Fri, 15 Dec 2023 03:20:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WIdHTHTd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2EFC5382
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b77e8eec3aso32998239f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:20:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702610404; x=1703215204;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AQyEELprIDEbtTkUwA4nnT0Wu1uDLHkRLspT1Fn6XJU=;
-        b=w0SLdcdEgCJSlWa4yKsJfwodoSN2sUGYcdO3mYADZzfr3HsYFqd2Lx5XSilG3BysXR
-         f9wRLaWD9iTHiK/Y0Q78WtAbjSyVPgzBGwCFwnmxTSQRN9OLEpYaI5ReVgGx3dge7pZb
-         LI/RgVXfIR2G/bWtFFUETTersJrzPF29HZ84M/FzsIwuCMxXws0LwJgN41j43f6qi2Wb
-         f8jyKoAuoAR5JpXybsglzqmrw4pM9GsApG4nr9lhCRj2JuB0sn3KetH714gL1W4z2xHR
-         psR8a4qG1rKlxzBI+jXeElQaXz9638t/U5fB/dBad5z+2b3Ws5JirRT116fTLLwOPJ77
-         +GbA==
-X-Gm-Message-State: AOJu0YyGVmbNY3/UZlhunOdlLyXFKJ38QcZfc5pTYUCAy36pPw3asvXP
-	YU+le45rQBWhY1/B+1aKtYfewwX3CNTQxWkBoRZRW48JuxWR
-X-Google-Smtp-Source: AGHT+IFSmETvZ2PGKq7WWyYsYOvKShW8hfRpSuc2mR/bEUzi09+1SVucE9q4C1zxr0q4t9qCRzcJUHC049ncKK4A2KARey/PGRpF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A47A63B8;
+	Fri, 15 Dec 2023 03:20:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 54737C433C9;
+	Fri, 15 Dec 2023 03:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702610424;
+	bh=tmWdNB9hZsZGW4LzMyDRaX1WA5hh8PQ2ljdQx4iYZkg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=WIdHTHTdc6va3NW41pfmybuglFuuBA5cvOHGOyRnopCk5xK718xQFFssfdvYPs8x4
+	 jnW6j2KornMb68CaldEVmODfAJeVlR7Zs/Rnoqxiiva77qMsAJiR3aYDISsIrfMhor
+	 Dqv+FcQQNMVFEePAHbUfpkiVLN1iAadjyeVH2VUNwoZi0yyMVQdMN4yEsFnp2uy2S8
+	 Fiw4Vh6sgxpLN4KEuZ0LF93dQUcKOaDWAqzVOHVHGPAF2My1nQlWQMRLdbt+LF11mH
+	 hqRUPB5lK5ic1fy/1YFrdVtatkkxi3ORQy4mkagzec7tpjJvZZRXlC7jssg5tyNxTH
+	 0H2Rh4H6Fy5Dw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3B2A3DD4EFC;
+	Fri, 15 Dec 2023 03:20:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2720:b0:468:fbcd:15a9 with SMTP id
- m32-20020a056638272000b00468fbcd15a9mr184105jav.1.1702610404132; Thu, 14 Dec
- 2023 19:20:04 -0800 (PST)
-Date: Thu, 14 Dec 2023 19:20:04 -0800
-In-Reply-To: <0000000000004f4579060c68431b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000544e17060c83e034@google.com>
-Subject: Re: [syzbot] [mptcp?] WARNING in mptcp_check_listen_stop
-From: syzbot <syzbot+5a01c3a666e726bc8752@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martineau@kernel.org, 
-	matthieu.baerts@tessares.net, matttbe@kernel.org, mptcp@lists.linux.dev, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/3] Various BPF exception improvements
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170261042423.8096.11497491721460220225.git-patchwork-notify@kernel.org>
+Date: Fri, 15 Dec 2023 03:20:24 +0000
+References: <cover.1702594357.git.dxu@dxuuu.xyz>
+In-Reply-To: <cover.1702594357.git.dxu@dxuuu.xyz>
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, memxor@gmail.com
 
-syzbot has bisected this issue to:
+Hello:
 
-commit 57fc0f1ceaa4016354cf6f88533e20b56190e41a
-Author: Paolo Abeni <pabeni@redhat.com>
-Date:   Tue Jun 20 16:24:23 2023 +0000
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-    mptcp: ensure listener is unhashed before updating the sk status
+On Thu, 14 Dec 2023 15:56:24 -0700 you wrote:
+> Two small improves to BPF exceptions in this patchset:
+> 
+> 1. Allow throwing exceptions in XDP progs
+> 2. Add some macros to help release references before throwing exceptions
+> 
+> Note the macros are intended to be temporary, at least until BPF
+> exception infra is able to automatically release acquired resources.
+> 
+> [...]
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1279cb71e80000
-start commit:   2513974cc3e1 Merge branch 'stmmac-bug-fixes'
-git tree:       net
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1179cb71e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1679cb71e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b50bd31249191be8
-dashboard link: https://syzkaller.appspot.com/bug?extid=5a01c3a666e726bc8752
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1119061ee80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=110ca006e80000
+Here is the summary with links:
+  - [bpf-next,1/3] bpf: xdp: Register generic_kfunc_set with XDP programs
+    https://git.kernel.org/bpf/bpf-next/c/7489723c2e26
+  - [bpf-next,2/3] bpf: selftests: Add bpf_assert_if() and bpf_assert_with_if() macros
+    (no matching commit)
+  - [bpf-next,3/3] bpf: selftests: Test bpf_assert_if() and bpf_assert_with_if()
+    (no matching commit)
 
-Reported-by: syzbot+5a01c3a666e726bc8752@syzkaller.appspotmail.com
-Fixes: 57fc0f1ceaa4 ("mptcp: ensure listener is unhashed before updating the sk status")
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
 
