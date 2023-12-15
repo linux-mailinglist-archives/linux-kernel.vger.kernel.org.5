@@ -1,93 +1,119 @@
-Return-Path: <linux-kernel+bounces-1529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A41814FB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:29:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE38A814FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:28:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9122C285EB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:29:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E02A21C230E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6FA3EA92;
-	Fri, 15 Dec 2023 18:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E35F3013E;
+	Fri, 15 Dec 2023 18:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="xVG+9PPM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4188430135
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 18:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-102-dwHkrF_VMcKZTSA8qp3ypQ-1; Fri, 15 Dec 2023 18:27:37 +0000
-X-MC-Unique: dwHkrF_VMcKZTSA8qp3ypQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 15 Dec
- 2023 18:27:22 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 15 Dec 2023 18:27:22 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'NeilBrown' <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>
-CC: Chuck Lever <chuck.lever@oracle.com>, Christian Brauner
-	<brauner@kernel.org>, Jens Axboe <axboe@kernel.dk>, Oleg Nesterov
-	<oleg@redhat.com>, Jeff Layton <jlayton@kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
-Subject: RE: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
- files.
-Thread-Topic: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
- files.
-Thread-Index: AQHaLVs+Da4cBTiba0eOmEq6cWLvM7Cqq/GA
-Date: Fri, 15 Dec 2023 18:27:22 +0000
-Message-ID: <ac74bdb82e114d71b26864fe51f6433b@AcuMS.aculab.com>
-References: <20231208033006.5546-1-neilb@suse.de>,
- <20231208033006.5546-2-neilb@suse.de>,
- <ZXMv4psmTWw4mlCd@tissot.1015granger.net>,
- <170224845504.12910.16483736613606611138@noble.neil.brown.name>,
- <20231211191117.GD1674809@ZenIV>,
- <170233343177.12910.2316815312951521227@noble.neil.brown.name>,
- <20231211231330.GE1674809@ZenIV>, <20231211232135.GF1674809@ZenIV>
- <170242728484.12910.12134295135043081177@noble.neil.brown.name>
-In-Reply-To: <170242728484.12910.12134295135043081177@noble.neil.brown.name>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7337845BE0;
+	Fri, 15 Dec 2023 18:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BFFOjxN006697;
+	Fri, 15 Dec 2023 19:27:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=selector1; bh=BjOqj4pPwqHC177zwB45U
+	ceMHy2woG5K27cvATFEIgQ=; b=xVG+9PPMP/NNfvHzLlg8bFX0nUwQRQagg6eHK
+	EymLJP1VCsqopbltlFV9CW89DE9+PN0LQyuUIBrgxYUe/5y/CCIm5Z3a+4OrKd42
+	uhy4bOUH3+/MzhXqUvF+GEpfUaP0fMaIkuOeUnSG+jUk5I/75fpc3+qMlkb3hZn3
+	EXAQoAhjalrA+V86WAV7vCKCkJoYCR2nH/g+lhBQDjCZ1v6ozi9VXkhi94PuLjFT
+	eUgb4pmOG0xrbxYzun2xw2fUZcPAPkYpz0j114FdGbZJmwkVQdjR1Q2MWPxJx/Qu
+	++NcfFYImtxked1Z++nhgr2Fr2lif4O/I8xlAjwlJvaT7o2sg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvg0hapcu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 19:27:46 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 624B0100052;
+	Fri, 15 Dec 2023 19:27:45 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5928424C433;
+	Fri, 15 Dec 2023 19:27:45 +0100 (CET)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Dec
+ 2023 19:27:45 +0100
+Date: Fri, 15 Dec 2023 19:27:39 +0100
+From: Alain Volmat <alain.volmat@foss.st.com>
+To: Mark Brown <broonie@kernel.org>
+CC: Ben Wolsieffer <ben.wolsieffer@hefring.com>, <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>
+Subject: Re: [PATCH] spi: stm32: use runtime PM to enable/disable controller
+Message-ID: <20231215182739.GA96945@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Mark Brown <broonie@kernel.org>,
+	Ben Wolsieffer <ben.wolsieffer@hefring.com>,
+	linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>
+References: <20231204202055.2895125-1-ben.wolsieffer@hefring.com>
+ <58897511-3187-4583-bf29-11871dd4d136@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <58897511-3187-4583-bf29-11871dd4d136@sirena.org.uk>
+X-Disclaimer: ce message est personnel / this message is private
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-15_10,2023-12-14_01,2023-05-22_02
 
-Li4uDQo+ID4gUFM6IHB1dCBpdCB0aGF0IHdheSAtIEkgY2FuIGJ1eSAibmZzZCBpcyBkb2luZyB0
-aGF0IG9ubHkgdG8gcmVndWxhcg0KPiA+IGZpbGVzIGFuZCBub3Qgb24gYW4gYXJiaXRyYXJ5IGZp
-bGVzeXN0ZW0sIGF0IHRoYXQ7IGhhdmluZyB0aGUgdGhyZWFkDQo+ID4gd2FpdCBvbiB0aGF0IHN1
-Y2tlciBpcyBub3QgZ29pbmcgdG8gY2F1c2UgdG9vIG11Y2ggdHJvdWJsZSI7IEkgZG8gKm5vdCoN
-Cj4gPiBidXkgdHVybmluZyBpdCBpbnRvIGEgdGhpbmcgdXNhYmxlIG91dHNpZGUgb2YgYSB2ZXJ5
-IG5hcnJvdyBzZXQgb2YNCj4gPiBjaXJjdW1zdGFuY2VzLg0KPiA+DQo+IA0KPiBDYW4geW91IHNh
-eSBtb3JlIGFib3V0ICJub3Qgb24gYW4gYXJiaXRyYXJ5IGZpbGVzeXN0ZW0iID8NCj4gSSBndWVz
-cyB5b3UgbWVhbnMgdGhhdCBwcm9jZnMgYW5kL29yIHN5c2ZzIG1pZ2h0IGJlIHByb2JsZW1hdGlj
-IGFzIG1heQ0KPiBzaW1pbGFyIHZpcnR1YWwgZmlsZXN5c3RlbXMgKG5mc2QgbWF5YmUpLg0KDQpD
-YW4gbmZzIGV4cG9ydCBhbiBleHQ0IGZzIHRoYXQgaXMgb24gYSBsb29wYmFjayBtb3VudCBvbiBh
-IGZpbGUNCnRoYXQgaXMgcmVtb3RlbHkgbmZzIChvciBvdGhlcikgbW91bnRlZD8NCg0KQXMgc29v
-biBhcyB5b3UgZ2V0IGxvb3BzIGxpa2UgdGhhdCB5b3UgbWlnaHQgZmluZCB0aGF0IGZwdXQoKSBz
-dGFydHMNCmJlaW5nIHByb2JsZW1hdGljLg0KDQpJJ20gYWxzbyBzdXJlIEkgcmVtZW1iZXIgdGhh
-dCBuZnMgd2Fzbid0IHN1cHBvc2VkIHRvIHJlc3BvbmQgdG8gYSB3cml0ZQ0KdW50aWwgaXQgaGFk
-IGlzc3VlZCB0aGUgYWN0dWFsIGRpc2sgd3JpdGUgLSBidXQgbWF5YmUgbm8gb25lIGRvIHRoYXQN
-CmFueSBtb3JlIGJlY2F1c2UgaXQgcmVhbGx5IGlzIHRvbyBzbG93Lg0KKEVzcGVjaWFsbHkgaWYg
-dGhlICdkaXNrJyBpcyBhIFVTQiBzdGljay4pDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFk
-ZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywg
-TUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+Hi,
 
+sorry for the delay.
+
+On Thu, Dec 14, 2023 at 10:58:54AM +0000, Mark Brown wrote:
+> On Mon, Dec 04, 2023 at 03:20:55PM -0500, Ben Wolsieffer wrote:
+> > Instead of disabling the SPI controller between each message, do it
+> > as part of runtime PM.
+> 
+> This doesn't apply against current code, please check and resend.
+
+I rapidly gave a try on this patch on top of the spi/for-next branch
+(manually fixing the conflict due to the MASTER->HOST renaming).
+It turns out that with that applied, transfers on the MP13
+(compatible: st,stm32h7-spi) are not working anymore while simply
+removing it back it works again.
+(test is simply doing loopback spidev_test)
+
+spi mode: 0x0
+bits per word: 8
+max speed: 500000 Hz (500 kHz)
+TX | 8D D6 73 8B 9D 8B 1C 7D 8D 80 EC 32 F9 0D BA AD 9F 88 A5 9B 3F AA 48 8C 21 35 0D C1 C8 E5 6A 81  |..s....}...2........?.H.!5....j.|
+RX | 8D 00 00 00 D6 00 73 00 8B 00 00 00 9D 00 00 8B 1C 00 00 00 7D 00 00 8D F9 00 00 00 BA 00 00 00  |......s.............}...........|
+
+The RX data contains lots of 00 between each byte.  Moreover it seems
+that with this patch applied non-dma transfer (when there is no dmas
+properties within the node) are now failing.
+
+I'll check that and give more details but could you avoid applying this
+patch for the time being ?
+
+Thanks.
+Alain
 
