@@ -1,112 +1,159 @@
-Return-Path: <linux-kernel+bounces-1020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC88814950
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:32:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31C8814959
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DCE3B23DC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:32:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D502F1C23C12
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03C62DB8E;
-	Fri, 15 Dec 2023 13:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4BF2DB91;
+	Fri, 15 Dec 2023 13:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="xbHp58+g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJcTttLW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205CB2DB7E;
-	Fri, 15 Dec 2023 13:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=zcGhs/MR386LURyyPrPAXA8pXRQ9HDSgaEfMslprAcM=; b=xbHp58+graqC9tBpU0Op9Qo4iO
-	tccIY15VinrpgENUDgmioCuVXP+RDvoX/PZ2z4Aq5hpGdb4CGgZQFcsZA2bYg8+ZvMaWGu0BCHbJm
-	mV6xl79t+iVlPSfNX40rJk1Mhf+g6H8fevB7Xt+h7/hkQZg4ApOa6okdiBkx7URoPCmI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rE8HZ-0031fG-0t; Fri, 15 Dec 2023 14:31:13 +0100
-Date: Fri, 15 Dec 2023 14:31:13 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
-	p.zabel@pengutronix.de, f.fainelli@gmail.com,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Message-ID: <f5c5cbce-c36e-498a-97e2-35f06d927d74@lunn.ch>
-References: <20231215074005.26976-1-quic_luoj@quicinc.com>
- <20231215074005.26976-15-quic_luoj@quicinc.com>
- <60b9081c-76fa-4122-b7ae-5c3dcf7229f9@lunn.ch>
- <a65ad12d-b990-4439-b196-903f4a5f096a@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4490B2DB71;
+	Fri, 15 Dec 2023 13:33:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44711C433C7;
+	Fri, 15 Dec 2023 13:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702647194;
+	bh=tGUhZ8a1wsbx0GalNAANJzpCwpQC3QW2iHSYADKeSd0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BJcTttLW46h1AIr8fYhPxXp/T5lrnGXfSuuj1cYQJ8Vp3lwBUMrFQ/RFMGzBVoHRl
+	 XQEItc18liqK+qYbS2F+dntRyrr3ZwLueXZTw33eYCOIG7WrKiTs7XBDORhUYF5dn0
+	 4dDOSP2CxoXqCAyAN3XJ3X15F7RkwLrcvLY5WObqXn+zvG53DTpV+58W1oUkT3B+mB
+	 czKFhXsk4126nHSzSxrRd8yCS3V8JygX/BwifVKxD2D1gbt1LDkU/d8Cg60y9l3qyI
+	 p5MRLg3p95hkUVScbzuNXtOur0zq/Qr578Jr3MsvB0ZJqvbRZnlXg0cPVwRHeSQF3v
+	 gJ6z1AliF5MIA==
+Date: Fri, 15 Dec 2023 14:33:12 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>, 
+	Donald Robson <donald.robson@imgtec.com>, Matt Coster <matt.coster@imgtec.com>, 
+	Adam Ford <aford173@gmail.com>, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
+	Paul Cercueil <paul@crapouillou.net>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+Message-ID: <oobcl2kfsuph27er7rflfqvt3lu6athufomxv5chf3uctx4emh@x6rzjtlskhbf>
+References: <20231204182245.33683-1-afd@ti.com>
+ <20231204182245.33683-2-afd@ti.com>
+ <23livt5mcc64bb6lkeec2uxp5cyn4wfekwaj6wzrjnrkndvwgj@6tveqglqpr4v>
+ <B3A1B8A7-0363-4ECB-AFBF-576FECA569FA@goldelico.com>
+ <vawv2mwhonuyvgmp7uox4rfgdcjwg5fa7hmbcfgl3wiase6e4p@tyavpclppfvu>
+ <6BC60156-89E2-4734-BD00-B49A9A6C1D7A@goldelico.com>
+ <6gpehpoz54f5lxhmvirqbfwmq7dpgiroy27cljpvu66wtn7aqy@lgrh7wysyxnp>
+ <D8AB6CC4-DCA5-40DD-A311-94A16FF59254@goldelico.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jgmzzpd4kephm2k6"
+Content-Disposition: inline
+In-Reply-To: <D8AB6CC4-DCA5-40DD-A311-94A16FF59254@goldelico.com>
+
+
+--jgmzzpd4kephm2k6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a65ad12d-b990-4439-b196-903f4a5f096a@quicinc.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 08:33:00PM +0800, Jie Luo wrote:
-> 
-> 
-> On 12/15/2023 8:12 PM, Andrew Lunn wrote:
-> > > +  clocks:
-> > > +    items:
-> > > +      - description: APB bridge clock
-> > > +      - description: AHB clock
-> > > +      - description: Security control clock
-> > > +      - description: TLMM clock
-> > > +      - description: TLMM AHB clock
-> > > +      - description: CNOC AHB clock
-> > > +      - description: MDIO AHB clock
-> > > +      - description: MDIO master AHB clock
-> > > +      - description: PCS0 system clock
-> > > +      - description: PCS1 system clock
-> > > +      - description: EPHY0 system clock
-> > > +      - description: EPHY1 system clock
-> > > +      - description: EPHY2 system clock
-> > > +      - description: EPHY3 system clock
+On Thu, Dec 07, 2023 at 11:33:53AM +0100, H. Nikolaus Schaller wrote:
+> Hi Maxime,
+>=20
+> > Am 07.12.2023 um 10:20 schrieb Maxime Ripard <mripard@kernel.org>:
+> >=20
+> > On Tue, Dec 05, 2023 at 02:50:08PM +0100, H. Nikolaus Schaller wrote:
+> >> Hi,
+> >>=20
+> >>> Am 05.12.2023 um 14:29 schrieb Maxime Ripard <mripard@kernel.org>:
+> >>>=20
+> >>> Hi,
+> >>>=20
+> >>> On Tue, Dec 05, 2023 at 09:18:58AM +0100, H. Nikolaus Schaller wrote:
+> >>>>> Am 05.12.2023 um 07:57 schrieb Maxime Ripard <mripard@kernel.org>:
+> >>>>>=20
+> >>>>> On Mon, Dec 04, 2023 at 12:22:36PM -0600, Andrew Davis wrote:
+> >>>>>> The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs =
+=66rom
+> >>>>>> multiple vendors. Describe how the SGX GPU is integrated in these =
+SoC,
+> >>>>>> including register space and interrupts. Clocks, reset, and power =
+domain
+> >>>>>> information is SoC specific.
+> >>>>>>=20
+> >>>>>> Signed-off-by: Andrew Davis <afd@ti.com>
+> >>>>>> ---
+> >>>>>> .../devicetree/bindings/gpu/img,powervr.yaml  | 69 +++++++++++++++=
+++--
+> >>>>>> 1 file changed, 63 insertions(+), 6 deletions(-)
+> >>>>>=20
+> >>>>> I think it would be best to have a separate file for this, img,sgx.=
+yaml
+> >>>>> maybe?
+> >>>>=20
+> >>>> Why?
+> >>>=20
+> >>> Because it's more convenient?
+> >>=20
+> >> Is it?
+> >=20
+> > It's for a separate architecture, with a separate driver, maintained out
+> > of tree by a separate community, with a separate set of requirements as
+> > evidenced by the other thread. And that's all fine in itself, but
+> > there's very little reason to put these two bindings in the same file.
+> >=20
+> > We could also turn this around, why is it important that it's in the
+> > same file?
+>=20
+> Same vendor. And enough similarity in architectures, even a logical seque=
+nce
+> of development of versions (SGX =3D Version 5, Rogue =3D Version 6+) behi=
+nd.
+> (SGX and Rogue seem to be just trade names for their architecture develop=
+ment).
 
-> Hi Andrew,
-> These clocks are for the whole PHY package including quad PHYs, since
-> these clocks & resets need to be initialized at one point, i put it
-> the previous MDIO driver code, these clocks & resets are configured
-> after GPIO hardware reset, after these clocks and resets sequences
-> configured, each PHY capabilities can be acquired correctly in the PHY
-> probe function.
+Again, none of that matters for *where* the binding is stored.
 
-I really expect the hardware is hierarchical. Its unlikely that EPHY0
-is connected to all four PHYs in the package. Its specific to one
-PHY. So it should be in the DT properties for that one specific PHY. I
-expect the resets are the same. It seems there is a soft and hard
-reset per PHY, so i would expect these to be in the node for one PHY.
+> AFAIK bindings should describe hardware and not communities or drivers
+> or who is currently maintaining it. The latter can change, the first not.
 
-Do the two PCS instances take up two MDIO address? They can be
-considered devices on the bus, so could have a DT node, and hence you
-can place the PCS clocks on that node?
+Bindings are supposed to describe hardware indeed. Nothing was ever said
+about where those bindings are supposed to be located.
 
-What exactly do the two MDIO clocks do? I assume these are not for the
-MDIO bus master, but the MDIO slave block within the PHY package?
-There is one MDIO slave block shared by the four PHYs. So these are
-package properties and should be in the package node in DT.
+There's hundreds of other YAML bindings describing devices of the same
+vendors and different devices from the same generation. If anything
+it'll make it easier for you. I'm really not sure why it is
+controversial and you're fighting this so hard.
 
-Look at all the other clocks and decide, are they package clocks, or
-specific to one block on the MDIO bus? Do the properties go in the
-package node, or the per PHY node?
+Maxime
 
-	Andrew
+--jgmzzpd4kephm2k6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXxVmAAKCRDj7w1vZxhR
+xVw8AP41gJoEr4Iyn/S1Hezu3iKztXGS3daC3u3QCuAGL/pTzwD9HOO3pcwNEL/E
+pFq4wYajjL/ypoQuClzjpZ6kW6ckSgs=
+=YYGh
+-----END PGP SIGNATURE-----
+
+--jgmzzpd4kephm2k6--
 
