@@ -1,83 +1,50 @@
-Return-Path: <linux-kernel+bounces-639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5F78143F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:50:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A67618143F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:51:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36B78283CA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:50:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03F35B225EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594B8168B9;
-	Fri, 15 Dec 2023 08:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LRSPraK2";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LRSPraK2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD77179B1;
+	Fri, 15 Dec 2023 08:50:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.65.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF08E171BB;
-	Fri, 15 Dec 2023 08:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0E7351F824;
-	Fri, 15 Dec 2023 08:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702630211; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=McsMtbDm05lM4zhgzbK/C+1NH2Bzs0Vl9JYrVkxmnLk=;
-	b=LRSPraK2OCLpToxyONL0SdyNenyouJL/gdv9/0WXVjh7HrNmlhXPF8omNwwwpCJehIuisr
-	rekj1bECE8d8eVUP/i3BQeFxgNNqEP8yd75CAV9nv6IPwobQzNNjhAL/CEkGv8vjhDKFEd
-	3rCEOdzSkZCDfbgr8oVcw4UC5ZAJxIE=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702630211; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=McsMtbDm05lM4zhgzbK/C+1NH2Bzs0Vl9JYrVkxmnLk=;
-	b=LRSPraK2OCLpToxyONL0SdyNenyouJL/gdv9/0WXVjh7HrNmlhXPF8omNwwwpCJehIuisr
-	rekj1bECE8d8eVUP/i3BQeFxgNNqEP8yd75CAV9nv6IPwobQzNNjhAL/CEkGv8vjhDKFEd
-	3rCEOdzSkZCDfbgr8oVcw4UC5ZAJxIE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DC382137D4;
-	Fri, 15 Dec 2023 08:50:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bANZM0ITfGWCQwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 15 Dec 2023 08:50:10 +0000
-Date: Fri, 15 Dec 2023 09:50:04 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZXwTPAUn27ShARMG@tiehlicka>
-References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
- <20231213013807.897742-3-schatzberg.dan@gmail.com>
- <ZXq_H4St_NSEFkcD@tiehlicka>
- <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FA217981
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp81t1702630218thfsx9pm
+Received: from HX09040029.powercore.com.cn ( [58.34.117.194])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 15 Dec 2023 16:50:08 +0800 (CST)
+X-QQ-SSF: 01400000000000402000000A0000000
+X-QQ-FEAT: ceHWIenCpmDuhrSrhvNLjSeriLEySCYhA7RcdCsZagNjgKO6tixTcenj4mA5g
+	OofENfpRkwA7602PJI3HdlCm1qKusu8tjy5JzvoTmk4ga7dLuYR7kxmQjbApLOeT6mr61Pb
+	rZy6+y4YwT3R2Qym5ciyn1eTpbexZsRdxnETeU3vRJfYOBU9TEcy3R3SlHIehLf+jIlyxod
+	84NUUjBMnLKYXiPivNpeUqIKIoQz7V+EuAsRZICwZ0ayQnj8gDD2JvGiG9ya8IKmOHFBLEt
+	RwlCLQoKqGfeVZIvWfiCKOcKUd2k1eeHCWccpsgBmDMcPk2qZA5D+/MnBf90lI2BKXn/up0
+	j8x19IH2aiEB/9OS+dGVp0uTTo29kngaJdIC46MGByG2Yymj1eWBCVKXQr9XMkVG620xjCT
+	QOgfLTjgVl0=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 2766933889210276903
+Date: Fri, 15 Dec 2023 16:50:08 +0800
+From: Luming Yu <luming.yu@shingroup.cn>
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	npiggin@gmail.com, christophe.leroy@csgroup.eu, luming.yu@gmail.com,
+	ke.zhao@shingroup.cn, dawei.li@shingroup.cn,
+	shenghui.qu@shingroup.cn
+Subject: Re: [PATCH 1/2] powerpc/locking: implement this_cpu_cmpxchg local API
+Message-ID: <6A256ED30D339626+ZXwTQL1lMXhQ_inW@HX09040029.powercore.com.cn>
+References: <0EFBD0242622180B+20231204022303.528-1-luming.yu@shingroup.cn>
+ <87jzpldl1l.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,61 +53,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
-X-Spam-Score: 0.36
-X-Spam-Flag: NO
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [1.57 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.33)[75.99%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhyf994aoi9gdt4d63rk4ux49)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,kernel.org,bytedance.com,lwn.net,linux-foundation.org,redhat.com,infradead.org,huawei.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: *
-X-Spam-Score: 1.57
-Authentication-Results: smtp-out2.suse.de;
-	none
+In-Reply-To: <87jzpldl1l.fsf@mail.lhotse>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Thu 14-12-23 13:22:29, Dan Schatzberg wrote:
-> On Thu, Dec 14, 2023 at 09:38:55AM +0100, Michal Hocko wrote:
-[...]
-> > While the review can point those out it is quite easy to break and you
-> > will only learn about that very indirectly. I think it would be easier
-> > to review and maintain if you go with a pointer that would fallback to
-> > mem_cgroup_swappiness() if NULL which will be the case for every
-> > existing reclaimer except memory.reclaim with swappiness value.
+On Mon, Dec 11, 2023 at 10:40:38PM +1100, Michael Ellerman wrote:
+> Hi Luming Yu,
 > 
-> I agree. My initial implementation used a pointer for this
-> reason. I'll switch this back. Just to be clear - I still need to
-> initialize scan_control.swappiness in all these other places right?
+> Luming Yu <luming.yu@shingroup.cn> writes:
+> > ppc appears to have already supported cmpxchg-local atomic semantics
+> > that is defined by the kernel convention of the feature.
+> > Add this_cpu_cmpxchg ppc local for the performance benefit of arch
+> > sepcific implementation than asm-generic c verison of the locking API.
+> 
+> Implementing this has been suggested before but it wasn't clear that it
+> was actually going to perform better than the generic version.
+Thanks for the info. To me, it is a news. : -)
+I will check if any web search engine could serve me well to find it out. 
+> 
+> On 64-bit we have interrupt soft masking, so disabling interrupts is
+> relatively cheap. So the generic this_cpu_cmpxhg using irq disable just
+> becomes a few loads & stores, no atomic ops required.
 
-No. They will just get initialized to 0. All you need to make sure is
-that the swappiness is used consistently. I would propose something like
-scan_control_swappiness() (or sc_swappiness) which would actually do
+something like this just popped up in my first try with a p8 test kvm on
+a c1000 powernv8 platform?
 
-	if (sc->swappiness)
-		return sc->swappiness;
-	return mem_cgroup_swappiness(sc->target_mem_cgroup);
+I'm not sure the soft lockup is relevant to the interrupt soft masking,
+but I will find it out for sure. : -)
 
-and then make sure that mem_cgroup_swappiness is never used directly.
+[  460.217669] watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [swapper/0:1]
+[  460.217742] Modules linked in:
+[  460.217828] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W    L   N 6.7.0-rc5+ #5
+[  460.217915] Hardware name: IBM pSeries (emulated by qemu) POWER9 (raw) 0x4e1200 0xf000005 of:SLOF,git-6b6c16 pSeries
+[  460.217999] NIP:  c00000000003e0ec LR: c00000000003e414 CTR: 0000000000000000
+[  460.218074] REGS: c000000004797788 TRAP: 0900   Tainted: G        W    L   N  (6.7.0-rc5+)
+[  460.218151] MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24042442  XER: 00000000
+[  460.218342] CFAR: 0000000000000000 IRQMASK: 0
+[  460.218342] GPR00: c00000000003e414 c000000004797760 c000000001583b00 c000000004797758
+[  460.218342] GPR04: 0000000000000000 0000000000000004 c000000004ccf51c c00000000224e510
+[  460.218342] GPR08: 4000000000000002 0000000000000049 c00000000457b280 0015000b00170038
+[  460.218342] GPR12: 00340030003a0010 c000000002f40000 0000000000000008 c000000004ccf4fc
+[  460.218342] GPR16: 0000000000007586 c0000000040f45c0 c000000004ddd080 c0000000040f45c0
+[  460.218342] GPR20: 0000000000000008 0000000000000024 0000000000000004 c000000004ccf4fc
+[  460.218342] GPR24: 000000000000003f 0000000000000001 0000000000000001 c000000004cc6e7e
+[  460.218342] GPR28: fcffffffffffffff 0000000000000002 fcffffffffffffff 0000000000000003
+[  460.219187] NIP [c00000000003e0ec] __replay_soft_interrupts+0x3c/0x160
+[  460.219286] LR [c00000000003e414] arch_local_irq_restore+0x174/0x1a0
+[  460.219365] Call Trace:
+[  460.219400] [c000000004797760] [c00000000003e150] __replay_soft_interrupts+0xa0/0x160 (unreliable)
+[  460.219515] [c000000004797910] [c00000000003e414] arch_local_irq_restore+0x174/0x1a0
+[  460.219612] [c000000004797950] [c000000000a155c4] get_random_u32+0xb4/0x140
+[  460.219699] [c0000000047979a0] [c0000000008b1ae0] get_rcw_we+0x138/0x274
+[  460.219781] [c000000004797a30] [c00000000208d4bc] test_rslib_init+0x8b8/0xb70
+[  460.219877] [c000000004797c40] [c00000000000fb80] do_one_initcall+0x60/0x390
+[  460.219965] [c000000004797d10] [c000000002004a18] kernel_init_freeable+0x32c/0x3dc
+[  460.220059] [c000000004797de0] [c0000000000102a4] kernel_init+0x34/0x1b0
+[  460.220141] [c000000004797e50] [c00000000000cf14] ret_from_kernel_user_thread+0x14/0x1c
+[  460.220229] --- interrupt: 0 at 0x0
+[  460.220291] Code: 60000000 7c0802a6 f8010010 f821fe51 e92d0c78 f92101a8 39200000 38610028 892d0933 61290040 992d0933 48043a3d <60000000> 39200000 e9410130 f9210160
+[  460.955369] Testing (23,15)_64 code...
 
--- 
-Michal Hocko
-SUSE Labs
+> 
+> In contrast implementing it using __cmpxchg_local() will use
+> ldarx/stdcx etc. which will be more expensive.
+> 
+> Have you done any performance measurements?
+Yes, I'm looking for resource to track the perf changes (positive or negative)
+in this corner for this patch set being proposed again.
+
+> 
+> It probably is a bit fishy that we don't mask PMU interrupts vs
+> this_cpu_cmpxchg() etc., but I don't think it's actually a bug given the
+> few places using this_cpu_cmpxchg(). Though I could be wrong about that.
+I will try to understand the concern and will try to come up with a patch update,
+iff the performance number from the change could look reasonable and promising.
+> 
+> > diff --git a/arch/powerpc/include/asm/percpu.h b/arch/powerpc/include/asm/percpu.h
+> > index 8e5b7d0b851c..ceab5df6e7ab 100644
+> > --- a/arch/powerpc/include/asm/percpu.h
+> > +++ b/arch/powerpc/include/asm/percpu.h
+> > @@ -18,5 +18,22 @@
+> >  #include <asm-generic/percpu.h>
+> >  
+> >  #include <asm/paca.h>
+> > +#include <asm/cmpxchg.h>
+> > +#ifdef this_cpu_cmpxchg_1
+> > +#undef this_cpu_cmpxchg_1
+>  
+> If we need to undef then I think something has gone wrong with the
+> header inclusion order, the model should be that the arch defines what
+> it has and the generic code provides fallbacks if the arch didn't define
+> anything.
+> 
+> > +#define this_cpu_cmpxchg_1(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 1)
+> 
+> I think this is unsafe vs preemption. The raw_cpu_ptr() can generate the
+> per-cpu address, but then the task can be preempted and moved to a
+> different CPU before the ldarx/stdcx do the cmpxchg.
+> 
+> The arm64 implementation had the same bug until they fixed it.
+Thanks for the review, I will look deeper into this spot. I suppose, for per cpu api down to this level,
+it is safe to assume it's safe in terms of being preemption-disabled. But, things could be mis-understood
+and I can be wrong as well as linux kernel has been rapidly changing so much.:-(
+> 
+> > +#endif 
+> > +#ifdef this_cpu_cmpxchg_2
+> > +#undef this_cpu_cmpxchg_2
+> > +#define this_cpu_cmpxchg_2(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 2)
+> > +#endif
+> > +#ifdef this_cpu_cmpxchg_4
+> > +#undef this_cpu_cmpxchg_4
+> > +#define this_cpu_cmpxchg_4(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 4)
+> > +#endif
+> > +#ifdef this_cpu_cmpxchg_8
+> > +#undef this_cpu_cmpxchg_8
+> > +#define this_cpu_cmpxchg_8(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 8)
+> > +#endif
+> >  
+> >  #endif /* _ASM_POWERPC_PERCPU_H_ */
+> 
+> cheers
+> 
+best regards
+
 
