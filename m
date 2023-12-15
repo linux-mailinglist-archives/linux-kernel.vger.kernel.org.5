@@ -1,72 +1,70 @@
-Return-Path: <linux-kernel+bounces-1767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E052A8153B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:34:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98CD28153C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95E82286BC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E690287437
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 328C645C0E;
-	Fri, 15 Dec 2023 22:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96E520EC;
+	Fri, 15 Dec 2023 22:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="eGskcSB/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iXFuaSqL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F6C3FE58
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-35d3846fac9so4441835ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:34:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702679664; x=1703284464; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BSrXYwHfJZ+IcxeBuu1Bbb4/ovX7+ju+MTg9H3SUSYc=;
-        b=eGskcSB/6y1Iu7p6jkIzZo3iKE4pZ9Z98JxuIi51UJ+A1p5k3cv6fvc0Y17rTiHTZF
-         3XzMrFeVpX5ZFhF6d5sG0HyxlzPXihopcXn6IFcxGH2NjA5GmtHtMFfEKogRhxLJIgoD
-         2+/iL4oQ6QoeomJIeRzp9W/cg2xFSkXa3ihHOU33lxMBuTQJrEHd7BkSCWgRtfoI1B0R
-         Hqj9rjPoMMVe+A2eMWLbimiyKfPFR8rBgi81DAwEHLDRImpvYy7yGNezncJUlrqwhdQU
-         0yCaKUT3VXsyzRevpNEXWMuQhFH8hRqcxyCvlDC8Rv9c0QVK8qzCJ+ysAj74RpB08DRQ
-         MPmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702679664; x=1703284464;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BSrXYwHfJZ+IcxeBuu1Bbb4/ovX7+ju+MTg9H3SUSYc=;
-        b=bF3Y91YRW5aIlN6sMLdKxNdCHW6rXOELlx9Ws848gaNPiefFjgelyyYHKPMPlzgdht
-         TCSUDdVqkffe3v8G+9RKbhqd+4tiFkWCaFraJTbDUsFylP4NhnWa8GaDCEa08KU+HQmn
-         8UT5ZC93NEOpog4yuzErIqvrc9hxlNHEbjpGCLxVKxuJ0LQaVbq63IfXNVmJ2XT/Cqs6
-         PBvqOOcj+pHgK7tyb0mw0H1gv3aodsn5hP838H1cVzpXJaSU2yk1iIPQc09xKu8S56kW
-         kiGB1GjgeA2fXLXcrWy18AOpBdL4FMAdidpWm4AJqno/91M+jonFwpTi0NjObWHo1GpP
-         a1PQ==
-X-Gm-Message-State: AOJu0YzBe9YHRjfJKp9l+/GwJkcSkSehMKSqsQvhS0otMKmiO7CQC7Yi
-	oNF5r5QaphZYwzZkS/YPMyB+Pw==
-X-Google-Smtp-Source: AGHT+IFtx84X6gNszU4kSOLh8mxXgB8OVmieQxRy1pgvQE4NY6CM1WiqREAIvEllICpeAQSqQtttGQ==
-X-Received: by 2002:a05:6e02:180c:b0:35f:7585:e322 with SMTP id a12-20020a056e02180c00b0035f7585e322mr7344225ilv.56.1702679664016;
-        Fri, 15 Dec 2023 14:34:24 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id l2-20020a6542c2000000b005c621e0de25sm11916724pgp.71.2023.12.15.14.34.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 14:34:23 -0800 (PST)
-Date: Fri, 15 Dec 2023 14:34:21 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Zong Li <zong.li@sifive.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -fixes v2] riscv: Check if the code to patch lies in the
- exit section
-Message-ID: <ZXzUbRSQYUmHHh1V@ghost>
-References: <20231214091926.203439-1-alexghiti@rivosinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDF318EBF;
+	Fri, 15 Dec 2023 22:36:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702679794; x=1734215794;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=81ICkebormZ0Z0Ct1dTYfN2Re+TIgDgSB9gIT28pAKg=;
+  b=iXFuaSqLd1s2hyXfHgq8AZegeGD8JmnE0qmwz0D3pG4LbVSp/mirfLUB
+   qeZlfp+1j5xWa+KRmfawDFlkIq5MDuQL8DTBXeIwyooDQEVLZhWbOAg0D
+   odrNwhcpqa8tqAYzH+VVgiZt8N+wkCGbqd5oYT8akdzsRcOsEyQ8RaJ9K
+   WYvzvENJN6EJmhuCcdkQOrFs7Sf0ntPZdHS4LNRFIuRKKxrKl/T3TGhx9
+   2YR713Rtb3BYsLErOnwr+XzuhzZIF2f76Z5NE2SR8wQFSolcwJNpPZK5S
+   P9zoldvuqldRX6YPEE1C3FcDg+krJieNnzqRhCi3Ovvgl+XlHQpatLCqr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="16891900"
+X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
+   d="scan'208";a="16891900"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 14:36:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="768144404"
+X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
+   d="scan'208";a="768144404"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 15 Dec 2023 14:36:26 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEGnA-0000r2-15;
+	Fri, 15 Dec 2023 22:36:24 +0000
+Date: Sat, 16 Dec 2023 06:35:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Elad Nachman <enachman@marvell.com>, wim@linux-watchdog.org,
+	linux@roeck-us.net, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	gregory.clement@bootlin.com, chris.packham@alliedtelesis.co.nz,
+	andrew@lunn.ch, fu.wei@linaro.org, Suravee.Suthikulpanit@amd.com,
+	al.stone@linaro.org, timur@codeaurora.org,
+	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	enachman@marvell.com, cyuval@marvell.com
+Subject: Re: [PATCH 3/3] watchdog: sbsa_gwdt: add support for Marvell ac5
+Message-ID: <202312160648.h1CrZxtx-lkp@intel.com>
+References: <20231214150414.1849058-4-enachman@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,116 +73,203 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231214091926.203439-1-alexghiti@rivosinc.com>
+In-Reply-To: <20231214150414.1849058-4-enachman@marvell.com>
 
-On Thu, Dec 14, 2023 at 10:19:26AM +0100, Alexandre Ghiti wrote:
-> Otherwise we fall through to vmalloc_to_page() which panics since the
-> address does not lie in the vmalloc region.
-> 
-> Fixes: 043cb41a85de ("riscv: introduce interfaces to patch kernel code")
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
-> 
-> Changes in v2:
-> - Fix XIP rv32 build failure
-> 
->  arch/riscv/include/asm/sections.h   |  1 +
->  arch/riscv/kernel/patch.c           | 11 ++++++++++-
->  arch/riscv/kernel/vmlinux-xip.lds.S |  2 ++
->  arch/riscv/kernel/vmlinux.lds.S     |  2 ++
->  4 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-> index 32336e8a17cb..a393d5035c54 100644
-> --- a/arch/riscv/include/asm/sections.h
-> +++ b/arch/riscv/include/asm/sections.h
-> @@ -13,6 +13,7 @@ extern char _start_kernel[];
->  extern char __init_data_begin[], __init_data_end[];
->  extern char __init_text_begin[], __init_text_end[];
->  extern char __alt_start[], __alt_end[];
-> +extern char __exittext_begin[], __exittext_end[];
->  
->  static inline bool is_va_kernel_text(uintptr_t va)
->  {
-> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> index 13ee7bf589a1..37e87fdcf6a0 100644
-> --- a/arch/riscv/kernel/patch.c
-> +++ b/arch/riscv/kernel/patch.c
-> @@ -14,6 +14,7 @@
->  #include <asm/fixmap.h>
->  #include <asm/ftrace.h>
->  #include <asm/patch.h>
-> +#include <asm/sections.h>
->  
->  struct patch_insn {
->  	void *addr;
-> @@ -25,6 +26,14 @@ struct patch_insn {
->  int riscv_patch_in_stop_machine = false;
->  
->  #ifdef CONFIG_MMU
-> +
-> +static inline bool is_kernel_exittext(uintptr_t addr)
-> +{
-> +	return system_state < SYSTEM_RUNNING &&
-> +		addr >= (uintptr_t)__exittext_begin &&
-> +		addr < (uintptr_t)__exittext_end;
-> +}
-> +
->  /*
->   * The fix_to_virt(, idx) needs a const value (not a dynamic variable of
->   * reg-a0) or BUILD_BUG_ON failed with "idx >= __end_of_fixed_addresses".
-> @@ -35,7 +44,7 @@ static __always_inline void *patch_map(void *addr, const unsigned int fixmap)
->  	uintptr_t uintaddr = (uintptr_t) addr;
->  	struct page *page;
->  
-> -	if (core_kernel_text(uintaddr))
-> +	if (core_kernel_text(uintaddr) || is_kernel_exittext(uintaddr))
->  		page = phys_to_page(__pa_symbol(addr));
->  	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
->  		page = vmalloc_to_page(addr);
-> diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
-> index 50767647fbc6..8c3daa1b0531 100644
-> --- a/arch/riscv/kernel/vmlinux-xip.lds.S
-> +++ b/arch/riscv/kernel/vmlinux-xip.lds.S
-> @@ -29,10 +29,12 @@ SECTIONS
->  	HEAD_TEXT_SECTION
->  	INIT_TEXT_SECTION(PAGE_SIZE)
->  	/* we have to discard exit text and such at runtime, not link time */
-> +	__exittext_begin = .;
->  	.exit.text :
->  	{
->  		EXIT_TEXT
->  	}
-> +	__exittext_end = .;
->  
->  	.text : {
->  		_text = .;
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index 492dd4b8f3d6..002ca58dd998 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -69,10 +69,12 @@ SECTIONS
->  		__soc_builtin_dtb_table_end = .;
->  	}
->  	/* we have to discard exit text and such at runtime, not link time */
-> +	__exittext_begin = .;
->  	.exit.text :
->  	{
->  		EXIT_TEXT
->  	}
-> +	__exittext_end = .;
->  
->  	__init_text_end = .;
->  	. = ALIGN(SECTION_ALIGN);
-> -- 
-> 2.39.2
+Hi Elad,
 
-Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
+kernel test robot noticed the following build errors:
 
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on groeck-staging/hwmon-next linus/master v6.7-rc5 next-20231215]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Elad-Nachman/dt-bindings-watchdog-add-Marvell-AC5-watchdog/20231214-230812
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20231214150414.1849058-4-enachman%40marvell.com
+patch subject: [PATCH 3/3] watchdog: sbsa_gwdt: add support for Marvell ac5
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231216/202312160648.h1CrZxtx-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312160648.h1CrZxtx-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312160648.h1CrZxtx-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/watchdog/sbsa_gwdt.c:434:11: error: incompatible integer to pointer conversion assigning to 'void *' from 'resource_size_t' (aka 'unsigned long long') [-Wint-conversion]
+     434 |                 cf_base = res->start;
+         |                         ^ ~~~~~~~~~~
+   drivers/watchdog/sbsa_gwdt.c:439:11: error: incompatible integer to pointer conversion assigning to 'void *' from 'resource_size_t' (aka 'unsigned long long') [-Wint-conversion]
+     439 |                 rf_base = res->start;
+         |                         ^ ~~~~~~~~~~
+   drivers/watchdog/sbsa_gwdt.c:444:17: error: incompatible integer to pointer conversion assigning to 'void *' from 'resource_size_t' (aka 'unsigned long long') [-Wint-conversion]
+     444 |                 cpu_ctrl_base = res->start;
+         |                               ^ ~~~~~~~~~~
+   3 errors generated.
+
+
+vim +434 drivers/watchdog/sbsa_gwdt.c
+
+   408	
+   409	static int sbsa_gwdt_probe(struct platform_device *pdev)
+   410	{
+   411		void __iomem *rf_base, *cf_base;
+   412		void __iomem *cpu_ctrl_base = NULL, *mng_base = NULL,
+   413			     *rst_ctrl_base = NULL;
+   414		struct device *dev = &pdev->dev;
+   415		struct device_node *np = pdev->dev.of_node;
+   416		struct watchdog_device *wdd;
+   417		struct sbsa_gwdt *gwdt;
+   418		struct resource *res;
+   419		int ret, irq;
+   420		bool marvell = false;
+   421		u32 status, id, val;
+   422	
+   423		gwdt = devm_kzalloc(dev, sizeof(*gwdt), GFP_KERNEL);
+   424		if (!gwdt)
+   425			return -ENOMEM;
+   426		platform_set_drvdata(pdev, gwdt);
+   427	
+   428		if (of_device_is_compatible(np, "marvell,ac5-wd")) {
+   429			marvell = true;
+   430			gwdt->soc_reg_ops = &smc_reg_ops;
+   431			res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+   432			if (IS_ERR(res))
+   433				return PTR_ERR(res);
+ > 434			cf_base = res->start;
+   435	
+   436			res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+   437			if (IS_ERR(res))
+   438				return PTR_ERR(res);
+   439			rf_base = res->start;
+   440	
+   441			res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
+   442			if (IS_ERR(res))
+   443				return PTR_ERR(res);
+   444			cpu_ctrl_base = res->start;
+   445			mng_base = devm_platform_ioremap_resource(pdev, 3);
+   446			if (IS_ERR(mng_base))
+   447				return PTR_ERR(mng_base);
+   448			rst_ctrl_base = devm_platform_ioremap_resource(pdev, 4);
+   449			if (IS_ERR(rst_ctrl_base))
+   450				return PTR_ERR(rst_ctrl_base);
+   451		} else {
+   452			gwdt->soc_reg_ops = &direct_reg_ops;
+   453			cf_base = devm_platform_ioremap_resource(pdev, 0);
+   454			if (IS_ERR(cf_base))
+   455				return PTR_ERR(cf_base);
+   456	
+   457			rf_base = devm_platform_ioremap_resource(pdev, 1);
+   458			if (IS_ERR(rf_base))
+   459				return PTR_ERR(rf_base);
+   460		}
+   461	
+   462		/*
+   463		 * Get the frequency of system counter from the cp15 interface of ARM
+   464		 * Generic timer. We don't need to check it, because if it returns "0",
+   465		 * system would panic in very early stage.
+   466		 */
+   467		gwdt->clk = arch_timer_get_cntfrq();
+   468		gwdt->refresh_base = rf_base;
+   469		gwdt->control_base = cf_base;
+   470	
+   471		wdd = &gwdt->wdd;
+   472		wdd->parent = dev;
+   473		wdd->info = &sbsa_gwdt_info;
+   474		wdd->ops = &sbsa_gwdt_ops;
+   475		wdd->min_timeout = 1;
+   476		wdd->timeout = DEFAULT_TIMEOUT;
+   477		watchdog_set_drvdata(wdd, gwdt);
+   478		watchdog_set_nowayout(wdd, nowayout);
+   479		sbsa_gwdt_get_version(wdd);
+   480		if (gwdt->version == 0)
+   481			wdd->max_hw_heartbeat_ms = U32_MAX / gwdt->clk * 1000;
+   482		else
+   483			wdd->max_hw_heartbeat_ms = GENMASK_ULL(47, 0) / gwdt->clk * 1000;
+   484	
+   485		status = gwdt->soc_reg_ops->reg_read32(cf_base + SBSA_GWDT_WCS);
+   486		if (status & SBSA_GWDT_WCS_WS1) {
+   487			dev_warn(dev, "System reset by WDT.\n");
+   488			wdd->bootstatus |= WDIOF_CARDRESET;
+   489		}
+   490		if (status & SBSA_GWDT_WCS_EN)
+   491			set_bit(WDOG_HW_RUNNING, &wdd->status);
+   492	
+   493		if (action) {
+   494			irq = platform_get_irq(pdev, 0);
+   495			if (irq < 0) {
+   496				action = 0;
+   497				dev_warn(dev, "unable to get ws0 interrupt.\n");
+   498			} else {
+   499				/*
+   500				 * In case there is a pending ws0 interrupt, just ping
+   501				 * the watchdog before registering the interrupt routine
+   502				 */
+   503				gwdt->soc_reg_ops->reg_write32(0, rf_base + SBSA_GWDT_WRR);
+   504				if (devm_request_irq(dev, irq, sbsa_gwdt_interrupt, 0,
+   505						     pdev->name, gwdt)) {
+   506					action = 0;
+   507					dev_warn(dev, "unable to request IRQ %d.\n",
+   508						 irq);
+   509				}
+   510			}
+   511			if (!action)
+   512				dev_warn(dev, "falling back to single stage mode.\n");
+   513		}
+   514		/*
+   515		 * In the single stage mode, The first signal (WS0) is ignored,
+   516		 * the timeout is (WOR * 2), so the maximum timeout should be doubled.
+   517		 */
+   518		if (!action)
+   519			wdd->max_hw_heartbeat_ms *= 2;
+   520	
+   521		watchdog_init_timeout(wdd, timeout, dev);
+   522		/*
+   523		 * Update timeout to WOR.
+   524		 * Because of the explicit watchdog refresh mechanism,
+   525		 * it's also a ping, if watchdog is enabled.
+   526		 */
+   527		sbsa_gwdt_set_timeout(wdd, wdd->timeout);
+   528	
+   529		watchdog_stop_on_reboot(wdd);
+   530		ret = devm_watchdog_register_device(dev, wdd);
+   531		if (ret)
+   532			return ret;
+   533		/*
+   534		 * Marvell AC5/X/IM: need to configure the watchdog
+   535		 * HW to trigger reset on WS1 (Watchdog Signal 1):
+   536		 *
+   537		 * 1. Configure the watchdog signal enable (routing)
+   538		 *    according to configuration
+   539		 * 2. Unmask the wd_rst input signal to the reset unit
+   540		 */
+   541		if (marvell) {
+   542			gwdt->soc_reg_ops->reg_write32(reset, cpu_ctrl_base +
+   543						       SBSA_GWDT_MARVELL_CPU_WD_RST_EN_REG);
+   544			id = readl(mng_base + SBSA_GWDT_MARVELL_MNG_ID_REG) &
+   545				   SBSA_GWDT_MARVELL_ID_MASK;
+   546	
+   547			if (id == SBSA_GWDT_MARVELL_AC5_ID)
+   548				val = SBSA_GWDT_MARVELL_AC5_RST_UNIT_WD_BIT;
+   549			else
+   550				val = SBSA_GWDT_MARVELL_IRONMAN_RST_UNIT_WD_BIT;
+   551	
+   552			writel(readl(rst_ctrl_base + SBSA_GWDT_MARVELL_RST_CTRL_REG) & ~val,
+   553			       rst_ctrl_base + SBSA_GWDT_MARVELL_RST_CTRL_REG);
+   554		}
+   555		dev_info(dev, "Initialized with %ds timeout @ %u Hz, action=%d.%s\n",
+   556			 wdd->timeout, gwdt->clk, action,
+   557			 status & SBSA_GWDT_WCS_EN ? " [enabled]" : "");
+   558	
+   559		return 0;
+   560	}
+   561	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
