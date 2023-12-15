@@ -1,119 +1,88 @@
-Return-Path: <linux-kernel+bounces-925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C44081481E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:32:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96A5E81481F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:32:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4862F285E48
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C25871C2351F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C7A2C6A2;
-	Fri, 15 Dec 2023 12:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6741C2C69F;
+	Fri, 15 Dec 2023 12:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fLWeqMrI"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2EGeuSHv"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21832D033;
-	Fri, 15 Dec 2023 12:31:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BDD1C433C7;
-	Fri, 15 Dec 2023 12:31:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702643502;
-	bh=F2ajDU7FVMvzLFF89TySlMLk6Wm17ybM4bb/3tTycL4=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976DD2C684;
+	Fri, 15 Dec 2023 12:32:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B155AC433C8;
+	Fri, 15 Dec 2023 12:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702643565;
+	bh=Y8hbSRWRPFhwGIby9Bq2cIIBOU9rk6sYVOTuyf1oNcY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fLWeqMrINDuf4fclsBa9vwJ3LVwgD8gZwJUzNMZAmMQw0OOq62kwBKytqminKjUPv
-	 KHUBcwnCONHfYXZBuIVONjo30VQ7p9m5QUGAdAdzxUlcV7bdkrk55xGQDf65yfJw6Z
-	 jcKABEYcIBxT+Ljw10Uu7TYsgEGhak+uvJ2Npicett7hvPGCgmVPn3TG/l5BIs8/mS
-	 3qGXDoJQ/AdnwPaa5YYTa3giFDmQIutX5qUAXNlddr6ZvrelenQCJhScNBCfIhB5Go
-	 5zJ1pFj3aGRJEejS61H6JkxF+vRaXFpUBwpdBXEge9czkeLn/alaLXqLxcbNuxtVHv
-	 W07Vz7GBxR7AQ==
-Date: Fri, 15 Dec 2023 13:31:32 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
-Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Paul Moore <paul@paul-moore.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, gyroidos@aisec.fraunhofer.de
-Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
- non-initial userns
-Message-ID: <20231215-golfanlage-beirren-f304f9dafaca@brauner>
-References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
- <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
+	b=2EGeuSHvFyQjpJxhGREeC4dd2W5E9NmIQYtEdcf2/2uOcgw7WYqkobz2pZ//0EN21
+	 yQaVRx1ZrBbnrC0FZB8lE4RmhkG2cXyQj4RjqLl+o6kIe7Z8tta3B/BaTaArxHd0wi
+	 FdxmPQaXYt5XHlisD7+9rA53QyiLx1dXoKTXV5Yk=
+Date: Fri, 15 Dec 2023 13:32:42 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ryan England <rcengland@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	outreachy@lists.linux.dev
+Subject: Re: [PATCH] staging: rtl8712: remove unnecessary parentheses
+Message-ID: <2023121508-limeade-gander-d777@gregkh>
+References: <ZXn/JjyrLGQzS9zD@kernel.ryanengland.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <ZXn/JjyrLGQzS9zD@kernel.ryanengland.xyz>
 
-On Wed, Dec 13, 2023 at 03:38:13PM +0100, Michael Weiß wrote:
-> devguard is a simple LSM to allow CAP_MKNOD in non-initial user
-> namespace in cooperation of an attached cgroup device program. We
-> just need to implement the security_inode_mknod() hook for this.
-> In the hook, we check if the current task is guarded by a device
-> cgroup using the lately introduced cgroup_bpf_current_enabled()
-> helper. If so, we strip out SB_I_NODEV from the super block.
+On Wed, Dec 13, 2023 at 06:59:50PM +0000, Ryan England wrote:
+> Adhere to Linux kernel coding style.
 > 
-> Access decisions to those device nodes are then guarded by existing
-> device cgroups mechanism.
+> Reported by checkpatch:
 > 
-> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
-> ---
+> CHECK: Unnecessary parentheses
+> 
+> Signed-off-by: Ryan England <rcengland@gmail.com>
 
-I think you misunderstood me... My point was that I believe you don't
-need an additional LSM at all and no additional LSM hook. But I might be
-wrong. Only a POC would show.
 
-Just write a bpf lsm program that strips SB_I_NODEV in the existing
-security_sb_set_mnt_opts() call which is guranteed to be called when a
-new superblock is created.
+Hi,
 
-Store your device access rules in a bpf map or in the sb->s_security
-blob (This is where I'm fuzzy and could use a bpf LSM expert's input.).
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Then make that bpf lsm program kick in everytime a
-security_inode_mknod() and security_file_open() is called and do device
-access management in there. Actually, you might need to add one hook
-when the actual device that's about to be opened is know. 
-This should be where today the device access hooks are called.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-And then you should already be done with this. The only thing that you
-need is the capable check patch.
+- You sent a patch that has been sent multiple times in the past and is
+  identical to ones that have been rejected.  Please always look at the
+  mailing list traffic to determine if you are duplicating other
+  people's work.
 
-You don't need that cgroup_bpf_current_enabled() per se. Device
-management could now be done per superblock, and not per task. IOW, you
-allowlist a bunch of devices that can be created and opened. Any task
-that passes basic permission checks and that passes the bpf lsm program
-may create device nodes.
 
-That's a way more natural device management model than making this a per
-cgroup thing. Though that could be implemented as well with this.
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
-I would try to write a bpf lsm program that does device access
-management with your capable() sysctl patch applied and see how far I
-get.
+thanks,
 
-I don't have the time otherwise I'd do it.
+greg k-h's patch email bot
 
