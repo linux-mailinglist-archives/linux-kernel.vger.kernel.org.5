@@ -1,69 +1,84 @@
-Return-Path: <linux-kernel+bounces-1574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37C96815050
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:42:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D756C815052
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:42:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E563B2828BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:42:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 160431C2386B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828D341863;
-	Fri, 15 Dec 2023 19:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9548D41863;
+	Fri, 15 Dec 2023 19:42:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lRBkB8ZS"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v23INxCz";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wnOZiLcV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C034041843;
-	Fri, 15 Dec 2023 19:42:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1473C433C7;
-	Fri, 15 Dec 2023 19:42:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702669334;
-	bh=RHN6Ed0fgIKVWx3mi/jQi+t/oJQO9mY686auJYDuwOU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lRBkB8ZScW6ebe5uPWkKzHERuHCqWCsK/wQCvSrHSRvtrExjKLuvzgJk8EflWyiff
-	 5xyRJkWjLSOTpeAwj7KyKmodXnWJFXvK911U55pDY4IRqeIvcTB+3qGbNj0hBSX9ww
-	 rQ9Uc+2Sl4Qe8Otw4kW8QJ4o9IK60WHB8v+83oQKgL3DHb4zzNyVlMAajUYHatyXbw
-	 Ux16teJFEtotfFT6wWEdfQ+0+GoMnFiAGhAzWmhM+w40OYIY6dL7tCJQcVrfEtyGCM
-	 n8FL5BJ/T6DaRR0asFgsIg70bQSfweQTLDGBtzwNo06ccu5BwEq1vt5RTY2nu/Z6P2
-	 oSDLdMM3APNIA==
-Received: (nullmailer pid 271794 invoked by uid 1000);
-	Fri, 15 Dec 2023 19:42:10 -0000
-Date: Fri, 15 Dec 2023 13:42:10 -0600
-From: Rob Herring <robh@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: will@kernel.org, jirislaby@kernel.org, alim.akhtar@samsung.com, arnd@arndb.de, peter.griffin@linaro.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, s.nawrocki@samsung.com, andi.shyti@kernel.org, linux-serial@vger.kernel.org, saravanak@google.com, sboyd@kernel.org, cw00.choi@samsung.com, linux-i2c@vger.kernel.org, andre.draszik@linaro.org, robh+dt@kernel.org, willmcvicker@google.com, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, tomasz.figa@gmail.com, conor+dt@kernel.org, catalin.marinas@arm.com, linux-samsung-soc@vger.kernel.org, gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, semen.protsenko@linaro.org
-Subject: Re: [PATCH 03/13] dt-bindings: i2c: exynos5: add google,gs101-hsi2c
- compatible
-Message-ID: <170266933016.271733.6481546184634336779.robh@kernel.org>
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-4-tudor.ambarus@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE0241843
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702669363;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vVG4NAqs9+dZcw0p2Y4JWS8E4Fl5VogUKIs4fswV0n0=;
+	b=v23INxCzP7f8XjZg1ESoi8+tgmRBXtpGO83HN81UJ4EZRlNmgsOhbu0eGJN0TWm22pkpyS
+	vWC/Q8Z838O5BDF3oVul+/tlZqhsQ1iQv1QpNC8YbSz4A62HRTh4M38W5mbMzx/UBZ8NoT
+	c1KRX4D0/t0IvDVVE2K8RUCWRqqnLI09F1plpBCfmCJvspVIPpAU7h2pxFYZIdPtt88JKA
+	ZAApJAkT+EUx5pAKq4Uk6tLvNQAIvg/G3OnxpkV/VLc63mvFVHKZOOstNP91wSgE0gQWU/
+	9jfspKyIjDVB0Jc842EQnnkO+uFXWp204D0pA3DeC2U80yIan5AJWUrMHZOg9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702669363;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vVG4NAqs9+dZcw0p2Y4JWS8E4Fl5VogUKIs4fswV0n0=;
+	b=wnOZiLcVGhXbSAXYZzTmdnQxbG6KkYq7hY2XWQKN3QNM4tg/pQuNbXqGkjkIKnZK71Lv5o
+	daNzynO5B9OqgSCw==
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Elena Reshetova <elena.reshetova@intel.com>, Jun Nakajima
+ <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, Tom
+ Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
+ <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>, "Huang,
+ Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+ kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+ linux-kernel@vger.kernel.org, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCHv4 03/14] cpu/hotplug: Add support for declaring CPU
+ offlining not supported
+In-Reply-To: <20231205004510.27164-4-kirill.shutemov@linux.intel.com>
+References: <20231205004510.27164-1-kirill.shutemov@linux.intel.com>
+ <20231205004510.27164-4-kirill.shutemov@linux.intel.com>
+Date: Fri, 15 Dec 2023 20:42:42 +0100
+Message-ID: <87il4zmevh.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214105243.3707730-4-tudor.ambarus@linaro.org>
+Content-Type: text/plain
 
+On Tue, Dec 05 2023 at 03:44, Kirill A. Shutemov wrote:
+>  
+> +static bool cpu_hotplug_offline_disabled;
 
-On Thu, 14 Dec 2023 10:52:33 +0000, Tudor Ambarus wrote:
-> Add google,gs101-hsi2c dedicated compatible for representing
-> I2C of Google GS101 SoC.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+__ro_after_init?
 
-Acked-by: Rob Herring <robh@kernel.org>
+Other than that:
 
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
