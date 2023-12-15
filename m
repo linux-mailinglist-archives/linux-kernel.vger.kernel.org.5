@@ -1,198 +1,79 @@
-Return-Path: <linux-kernel+bounces-488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 824168141E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:43:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1110D8141E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C2F11F22A5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:43:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 924BAB221EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:44:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E636D267;
-	Fri, 15 Dec 2023 06:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B630D266;
+	Fri, 15 Dec 2023 06:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OUS8xTWE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I9qfQm4r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3505E101F4;
-	Fri, 15 Dec 2023 06:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E97ADDA6;
+	Fri, 15 Dec 2023 06:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702622578; x=1734158578;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=vt+1DwgW+rzaz0jNrx2kPMTsg3reh+AyiCKnuS2Fk7I=;
-  b=OUS8xTWEsHuq7meWFJq/1LCzksDqMIUB/bePlqkSQMmlfm9rIaVzIOM9
-   G17hQauOzVMTRKMv7ATGUTXly54F8fGa3hkSST1bJYyzr2erj6UkuBl5u
-   jJldyRIcShQgcgTrRFZnP/OTCsfkT2epQCDKBjWZp+WZC+Rl/f/B2Pdr9
-   eB4wIETFde9uy+B23rys9aLJisxLDuRMtY96tP5kxmkyrQ7oHu5ptgWQg
-   3MREZ2zsWrfH8wtDeWBEeVf9NIrf/sVfZP33yNiPhdqrOcSzQ4AzyQx3/
-   jo7uj3M0izMV1rhpEACUbqpkw42iS7ut8m1htKprhDdYfGb+sVkP/gzyW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2058154"
+  t=1702622663; x=1734158663;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=63EgPcBRFaJVMnMAE03v+S8ALEccu0QFpneLzykEYp0=;
+  b=I9qfQm4rA5TBElwi+ephzaPsj/ay/+PRZJTW7oib2r34vON2ollTR7Lr
+   iyNIv3d3dBqEmtrAXOsz27n+1c9Xm6iLqGo11GYhN5jCF5l2IIpOLdNLE
+   N1MYXwEYs9rijdBKr9fNumbbSC7G12FFaDWjzBCGV7o/uWh4xl1TrueLk
+   0BA2r2oUbSMGDoSg88Mig9+U8fm38JVuI/wGvdvpef8DjCBhDI8yQGaYn
+   u3gPMm//GA/29GgZUBfNNH889e7GfzElWKd5bYj8NM7uAHm66Ci2ZItg6
+   8MvMoJQoLmRDUflHZq4UUiFjiznSMWq78LOMev04ZocDLfxqTpb19RCya
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2090602"
 X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="2058154"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 22:42:57 -0800
+   d="scan'208";a="2090602"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 22:44:21 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="767868433"
 X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="17739889"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.32.93])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 22:42:52 -0800
-From: Adrian Hunter <adrian.hunter@intel.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Hendrik Brueckner <brueckner@linux.ibm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>,
-	coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Will Deacon <will@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH RFC V3 4/4] coresight: Have a stab at support for pause / resume
-Date: Fri, 15 Dec 2023 08:42:42 +0200
-Message-Id: <20231215064242.36251-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231208172449.35444-5-adrian.hunter@intel.com>
-References: <20231208172449.35444-5-adrian.hunter@intel.com>
+   d="scan'208";a="767868433"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 14 Dec 2023 22:44:19 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id E664F3A3; Fri, 15 Dec 2023 08:44:17 +0200 (EET)
+Date: Fri, 15 Dec 2023 08:44:17 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Raag Jadav <raag.jadav@intel.com>, linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v1 1/1] pinctrl: intel: Add Intel Meteor Point pin
+ controller and GPIO support
+Message-ID: <20231215064417.GV1074920@black.fi.intel.com>
+References: <20231214154653.1087747-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231214154653.1087747-1-andriy.shevchenko@linux.intel.com>
 
-For discussion only, un-tested...
+On Thu, Dec 14, 2023 at 05:46:53PM +0200, Andy Shevchenko wrote:
+> This driver supports pinctrl/GPIO hardware found on Intel Meteor Point
+> (a Meteor Lake PCH) providing users a pinctrl and GPIO interfaces
+> including GPIO interrupts.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
-
-
-Changes in V3:
-
-	'mode' -> 'flags' so it at least compiles
-
-
- .../hwtracing/coresight/coresight-etm-perf.c  | 29 ++++++++++++++++---
- 1 file changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 5ca6278baff4..7a69e6417ed4 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -45,6 +45,7 @@ static bool etm_perf_up;
- struct etm_ctxt {
- 	struct perf_output_handle handle;
- 	struct etm_event_data *event_data;
-+	int pr_allowed;
- };
- 
- static DEFINE_PER_CPU(struct etm_ctxt, etm_ctxt);
-@@ -452,6 +453,13 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	struct list_head *path;
- 	u64 hw_id;
- 
-+	if (flags & PERF_EF_RESUME) {
-+		if (!READ_ONCE(ctxt->pr_allowed))
-+			return;
-+	} else if (READ_ONCE(event->aux_paused)) {
-+		goto out_pr_allowed;
-+	}
-+
- 	if (!csdev)
- 		goto fail;
- 
-@@ -514,6 +522,8 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	event->hw.state = 0;
- 	/* Save the event_data for this ETM */
- 	ctxt->event_data = event_data;
-+out_pr_allowed:
-+	WRITE_ONCE(ctxt->pr_allowed, 1);
- 	return;
- 
- fail_disable_path:
-@@ -530,6 +540,7 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	}
- fail:
- 	event->hw.state = PERF_HES_STOPPED;
-+	WRITE_ONCE(ctxt->pr_allowed, 0);
- 	return;
- }
- 
-@@ -543,6 +554,11 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	struct etm_event_data *event_data;
- 	struct list_head *path;
- 
-+	if (mode & PERF_EF_PAUSE && !READ_ONCE(ctxt->pr_allowed))
-+		return;
-+
-+	WRITE_ONCE(ctxt->pr_allowed, 0);
-+
- 	/*
- 	 * If we still have access to the event_data via handle,
- 	 * confirm that we haven't messed up the tracking.
-@@ -556,7 +572,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	ctxt->event_data = NULL;
- 
- 	if (event->hw.state == PERF_HES_STOPPED)
--		return;
-+		goto out_pr_allowed;
- 
- 	/* We must have a valid event_data for a running event */
- 	if (WARN_ON(!event_data))
-@@ -627,6 +643,10 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 
- 	/* Disabling the path make its elements available to other sessions */
- 	coresight_disable_path(path);
-+
-+out_pr_allowed:
-+	if (mode & PERF_EF_PAUSE)
-+		WRITE_ONCE(ctxt->pr_allowed, 1);
- }
- 
- static int etm_event_add(struct perf_event *event, int mode)
-@@ -634,7 +654,7 @@ static int etm_event_add(struct perf_event *event, int mode)
- 	int ret = 0;
- 	struct hw_perf_event *hwc = &event->hw;
- 
--	if (mode & PERF_EF_START) {
-+	if (mode & PERF_EF_START && !READ_ONCE(event->aux_paused)) {
- 		etm_event_start(event, 0);
- 		if (hwc->state & PERF_HES_STOPPED)
- 			ret = -EINVAL;
-@@ -886,8 +906,9 @@ int __init etm_perf_init(void)
- {
- 	int ret;
- 
--	etm_pmu.capabilities		= (PERF_PMU_CAP_EXCLUSIVE |
--					   PERF_PMU_CAP_ITRACE);
-+	etm_pmu.capabilities		= PERF_PMU_CAP_EXCLUSIVE |
-+					  PERF_PMU_CAP_ITRACE |
-+					  PERF_PMU_CAP_AUX_PAUSE;
- 
- 	etm_pmu.attr_groups		= etm_pmu_attr_groups;
- 	etm_pmu.task_ctx_nr		= perf_sw_context;
--- 
-2.34.1
-
+This is driver for Meteor Lake-S and related, correct? Why it cannot use
+pinctrl-meteorlake.c instead? Same way we do for other desktop CPUs
+whose PCHs have the GPIO/pinctrl block.
 
