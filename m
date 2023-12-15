@@ -1,54 +1,64 @@
-Return-Path: <linux-kernel+bounces-620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F25CC8143A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:29:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D0C8143AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CD771C2272A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:29:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C7BF1C225D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD7A15488;
-	Fri, 15 Dec 2023 08:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1ED115488;
+	Fri, 15 Dec 2023 08:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iqycjsbN"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cXhuCC7m"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AFD17737;
-	Fri, 15 Dec 2023 08:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF4LZ3s008727;
-	Fri, 15 Dec 2023 08:28:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ZvFvm2RMVDk1gOvLljHKDP3vNZgohfYhNfcqEPvL5PE=; b=iq
-	ycjsbNSbc8gVeEAxjH6GfgD5fstN5LqWs5ZpQgdcv/Opi9lMAEutKDjw4OSOMXTo
-	/SYz0Hy7ifBFpeQP4S4TKcMJy1vcR03/dqp8jcgZfAvQfiPaqdC4HiWYEHVf8uSO
-	gIdqobO9CfA4urpl2/gXAPZee3LNyhkAJonVNG2pXnUI44GMJV7i9DxlNyvXk+oR
-	X5CaMtX49B1+mNmvCjamEz/BWNh+yzsUz2tcMHfHMsF1hONF6p+b21tFbFnQ4OB9
-	QS/dp5CDu6+8DpyQ+v0WLplyuA24Zs6yJ6/7Ol46l9aFtOqVySc/YAioyHW6EQb8
-	vwq4yGU3CruWY9VhONPA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v07c62dga-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 08:28:57 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BF8SufU019021
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 08:28:56 GMT
-Received: from [10.253.13.71] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 00:28:51 -0800
-Message-ID: <3c8e33b4-6ebc-476f-a00f-15cc8a1ad9e4@quicinc.com>
-Date: Fri, 15 Dec 2023 16:28:48 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E1EC8F5
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-551c03ae050so386576a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:31:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702629068; x=1703233868; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S/VHrDXjE8ArwAdQn1IvokNpm8/NuKC38VUGI1HTeeM=;
+        b=cXhuCC7mgcBtEQS98n/+ueLLISANGxryEkq2qFYaTvj82k92tSaEpQ3R5kCCpOcekc
+         p+9csETM+0JqiOCey9XNrSTm5StnMEU8jvBKzgNPquFnyO4bh0dc3eCoWu49kXrcmsbC
+         jxirwOJaZ/Bs1RKjhSyHaB7NTgMQcYOeejF4waBO9ooMrGfSSFJdQF6bYbvuJfzNKFQ1
+         w8uRqHeHD98aT3S2KSqX8SSz3r+Z0kKGj+MQVW8MmCZD8DnjZ8cIBec1Maa04Kz4rm8m
+         hLzFmqqGOr1veC7PKNaYw1Qb1CNfLQ1+C0Mn93E5YzZ05FbTc2LGJF/cCX5KAR897UKD
+         sd9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702629068; x=1703233868;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S/VHrDXjE8ArwAdQn1IvokNpm8/NuKC38VUGI1HTeeM=;
+        b=LcOQ2g1GlwgZrS/PUu1QHzilhaQFO8ZvCvKywwHnb79ZDxQ9p5AeYFvmUYiS24Awk6
+         y/vNgo5h3wpS/JaLQ+wgeIDDUGNfjbo7C7TcP1wU8lxVF2D0KMmZL/S07wUnZldNnkLA
+         fATWBsbn2LJx2ATUF3d0ISKw6gUSoRcY8/jOa/btgMUB3Vuyo9mXP+RjNOJEonnwrPFB
+         9YaJuM3/k1zSk+lvcmSPMy1vFbtY7ThslbiodNtYapE335y+taTqFtrsX6WkHcTJrzp9
+         PKIeR2+pDvlbPToytFtWPqjHu0HnBkKG20R+P9Teh2+uyyMgJDn6+C16WpyiM9MwvnKo
+         pF8w==
+X-Gm-Message-State: AOJu0YxMsHrMLjK8ZPeeGSJN6DV1u06QlshgNo/7vu5tX6kWSo1yYxtQ
+	Sxls/z+o/ijF78pQ1qGjREuH2w==
+X-Google-Smtp-Source: AGHT+IFxogtkGNkNyekbXZYz+76lK+ayuc9eput/RFVQ4EizYhc44pFmoxfBr9gfbbOjeTExBzlt7w==
+X-Received: by 2002:a17:906:1084:b0:a22:faec:7d2e with SMTP id u4-20020a170906108400b00a22faec7d2emr1844688eju.113.1702629068426;
+        Fri, 15 Dec 2023 00:31:08 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id bn2-20020a170906c0c200b00a23152a543dsm997827ejb.202.2023.12.15.00.31.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 00:31:08 -0800 (PST)
+Message-ID: <c685ca4e-3992-4deb-adfb-da3bbcb59685@linaro.org>
+Date: Fri, 15 Dec 2023 09:31:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,252 +66,192 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
+Subject: Re: [PATCH 05/10] dt-bindings: phy: qcom,uniphy-pcie: Add ipq5332
+ bindings
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <robert.marko@sartura.hr>
-CC: <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231214090304.16884-1-quic_luoj@quicinc.com>
- <20231214090304.16884-6-quic_luoj@quicinc.com>
- <1e4c55c8-8ed6-4f2e-8328-8a173f09b62f@linaro.org>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <1e4c55c8-8ed6-4f2e-8328-8a173f09b62f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
+ andersson@kernel.org, konrad.dybcio@linaro.org, mturquette@baylibre.com,
+ sboyd@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, bhelgaas@google.com, lpieralisi@kernel.org,
+ kw@linux.com, vkoul@kernel.org, kishon@kernel.org, mani@kernel.org,
+ quic_nsekar@quicinc.com, quic_srichara@quicinc.com,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-phy@lists.infradead.org
+Cc: quic_varada@quicinc.com, quic_devipriy@quicinc.com,
+ quic_kathirav@quicinc.com, quic_anusha@quicinc.com
+References: <20231214062847.2215542-1-quic_ipkumar@quicinc.com>
+ <20231214062847.2215542-6-quic_ipkumar@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231214062847.2215542-6-quic_ipkumar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7pkE3Y91s6H1h_kW-7JTAlQtPyxRanGc
-X-Proofpoint-ORIG-GUID: 7pkE3Y91s6H1h_kW-7JTAlQtPyxRanGc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- mlxscore=0 priorityscore=1501 malwarescore=0 suspectscore=0 bulkscore=0
- spamscore=0 phishscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312150055
 
-
-
-On 12/15/2023 3:27 PM, Krzysztof Kozlowski wrote:
-> On 14/12/2023 10:03, Luo Jie wrote:
->> Update the yaml file for the new DTS properties.
->>
->> 1. cmn-reference-clock for the CMN PLL source clock select.
->> 2. clock-frequency for MDIO clock frequency config.
->> 3. add uniphy AHB & SYS GCC clocks.
->> 4. add reset-gpios for MDIO bus level reset.
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
->>   .../bindings/net/qcom,ipq4019-mdio.yaml       | 143 +++++++++++++++++-
->>   1 file changed, 139 insertions(+), 4 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->> index 3407e909e8a7..79f8513739e7 100644
->> --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->> +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->> @@ -20,6 +20,8 @@ properties:
->>             - enum:
->>                 - qcom,ipq6018-mdio
->>                 - qcom,ipq8074-mdio
->> +              - qcom,ipq9574-mdio
->> +              - qcom,ipq5332-mdio
->>             - const: qcom,ipq4019-mdio
->>   
->>     "#address-cells":
->> @@ -30,19 +32,77 @@ properties:
->>   
->>     reg:
->>       minItems: 1
->> -    maxItems: 2
->> +    maxItems: 5
->>       description:
->> -      the first Address and length of the register set for the MDIO controller.
->> -      the second Address and length of the register for ethernet LDO, this second
->> -      address range is only required by the platform IPQ50xx.
->> +      the first Address and length of the register set for the MDIO controller,
->> +      the optional second, third and fourth address and length of the register
->> +      for ethernet LDO, these three address range are required by the platform
->> +      IPQ50xx/IPQ5332, the last address and length is for the CMN clock to
->> +      select the reference clock.
->> +
->> +  reg-names:
->> +    minItems: 1
->> +    maxItems: 5
->>   
->>     clocks:
->> +    minItems: 1
->>       items:
->>         - description: MDIO clock source frequency fixed to 100MHZ
->> +      - description: UNIPHY0 AHB clock source frequency fixed to 100MHZ
->> +      - description: UNIPHY1 AHB clock source frequency fixed to 100MHZ
->> +      - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
->> +      - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
->>   
->>     clock-names:
->> +    minItems: 1
->>       items:
->>         - const: gcc_mdio_ahb_clk
->> +      - const: uniphy0_ahb
->> +      - const: uniphy1_ahb
->> +      - const: uniphy0_sys
->> +      - const: uniphy1_sys
->> +
->> +  cmn-reference-clock:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
+On 14/12/2023 07:28, Praveenkumar I wrote:
+> Qualcomm IPQ5332 has single-lane and dual-lane PCIe UNIPHY
+> with Gen 3 support. This UNIPHY is similar to the one found
+> on Qualcomm IPQ5018. Hence add the bindings in qcom,uniphy-pcie.
 > 
-> Nothing improved here
+> Clocks and resets are different for IPQ5332. Update the
+> bindings to support both IPQ5018 and IPQ5332.
+> 
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+> ---
+> This patch depends on the below series which adds PCIe support in
+> Qualcomm IPQ5018
+> https://lore.kernel.org/all/20231003120846.28626-1-quic_nsekar@quicinc.com/
+> 
+>  .../bindings/phy/qcom,uniphy-pcie-28lp.yaml   | 65 +++++++++++++++++--
+>  1 file changed, 58 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml b/Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml
+> index 6b2574f9532e..205eaec2291e 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml
+> @@ -20,19 +20,20 @@ properties:
+>      maxItems: 1
+>  
+>    clocks:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 4
+>  
+>    clock-names:
+> -    items:
+> -      - const: pipe_clk
+> +    minItems: 1
+> +    maxItems: 4
+>  
+>    resets:
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 3
+>  
+>    reset-names:
+> -    items:
+> -      - const: phy
+> -      - const: phy_phy
+> +    minItems: 2
+> +    maxItems: 3
+>  
+>    "#phy-cells":
+>      const: 0
+> @@ -54,6 +55,56 @@ required:
+>    - "#clock-cells"
+>    - clock-output-names
+>  
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq5018-uniphy-pcie-gen2x1
+> +              - qcom,ipq5018-uniphy-pcie-gen2x2
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 1
 
-With this change, the warning is not reported when i run
-dt_binding_check, looks the new added property needs
-the type ref to avoid the warning reported.
+Drop
 
-> 
->> +    oneOf:
->> +      - items:
-> 
-> So it is enum or not?
+> +          maxItems: 1
+> +        clock-names:
+> +          items:
+> +            - const: pipe_clk
+> +        resets:
+> +          minItems: 2
 
-it's enum, i will remove the "oneOf: - items:" in the next patch set.
+Drop
 
-> 
->> +          - enum:
->> +              - 0   # CMN PLL reference internal 48MHZ
->> +              - 1   # CMN PLL reference external 25MHZ
->> +              - 2   # CMN PLL reference external 31250KHZ
->> +              - 3   # CMN PLL reference external 40MHZ
->> +              - 4   # CMN PLL reference external 48MHZ
->> +              - 5   # CMN PLL reference external 50MHZ
->> +              - 6   # CMN PLL reference internal 96MHZ
->> +
->> +  clock-frequency:
->> +    oneOf:
->> +      - items:
-> 
-> Same questions
+> +          maxItems: 2
+> +        reset-name:
 
-it's enum.
+Typo
 
-> 
->> +          - enum:
->> +              - 12500000
->> +              - 6250000
->> +              - 3125000
->> +              - 1562500
->> +              - 781250
->> +              - 390625
->> +    description:
->> +      The MDIO bus clock that must be output by the MDIO bus hardware,
->> +      only the listed frequencies above can be supported, other frequency
->> +      will cause malfunction. If absent, the default hardware value 0xff
->> +      is used, which means the default MDIO clock frequency 390625HZ, The
->> +      MDIO clock frequency is MDIO_SYS_CLK/(MDIO_CLK_DIV + 1), the SoC
->> +      MDIO_SYS_CLK is fixed to 100MHZ, the MDIO_CLK_DIV is from MDIO control
->> +      register, there is higher clock frequency requirement on the normal
->> +      working case where the MDIO slave devices support high clock frequency.
->> +
->> +  reset-gpios:
->> +    maxItems: 1
->> +
->> +  reset-assert-us:
->> +    maxItems: 1
-> 
-> This does not look related to ipq5332.
+> +          items:
+> +            - const: phy
+> +            - const: phy_phy
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq5332-uniphy-pcie-gen3x1
+> +              - qcom,ipq5332-uniphy-pcie-gen3x2
 
-The reset gpio properties are needed on ipq5332, since qca8084 phy is
-connected, which uses the MDIO bus level gpio reset.
+There are no such compatibles.
 
-Without declaring these gpio properties, the warning will be reported
-by dt_binding_check.
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 4
+> +          maxItems: 4
+> +        clock-names:
+> +          items:
+> +            - const: pipe
+> +            - const: lane_m
+> +            - const: lane_s
+> +            - const: phy_ahb
+> +        resets:
+> +          minItems: 2
+> +          maxItems: 2
 
-> 
->> +
->> +  reset-deassert-us:
->> +    maxItems: 1
-> 
-> Neither this.
+So where are three items?
 
-same as above.
 
-> 
->>   
->>   required:
->>     - compatible
->> @@ -61,6 +121,8 @@ allOf:
->>                 - qcom,ipq5018-mdio
->>                 - qcom,ipq6018-mdio
->>                 - qcom,ipq8074-mdio
->> +              - qcom,ipq5332-mdio
->> +              - qcom,ipq9574-mdio
->>       then:
->>         required:
->>           - clocks
->> @@ -70,6 +132,20 @@ allOf:
->>           clocks: false
->>           clock-names: false
->>   
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,ipq5332-mdio
->> +    then:
->> +      properties:
->> +        clocks:
->> +          minItems: 5
->> +          maxItems: 5
->> +        reg-names:
->> +          minItems: 4
->> +
->>   unevaluatedProperties: false
->>   
->>   examples:
->> @@ -100,3 +176,62 @@ examples:
->>           reg = <4>;
->>         };
->>       };
->> +
->> +  - |
->> +    #include <dt-bindings/clock/qcom,ipq5332-gcc.h>
->> +    #include <dt-bindings/gpio/gpio.h>
->> +
->> +    mdio@90000 {
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +      compatible = "qcom,ipq5332-mdio",
->> +                   "qcom,ipq4019-mdio";
->> +      cmn-reference-clock = <0>;
->> +      clock-frequency = <6250000>;
->> +
->> +      reset-gpios = <&tlmm 51 GPIO_ACTIVE_LOW>;
->> +      reset-assert-us = <100000>;
->> +      reset-deassert-us = <100000>;
->> +
->> +      reg = <0x90000 0x64>,
->> +            <0x9B000 0x800>,
->> +            <0x7A00610 0x4>,
->> +            <0x7A10610 0x4>;
-> 
-> Lowercase hex, wrong order of properties. Align it with coding style.
+> +        reset-name:
 
-will correct it in the next patch set, thanks.
+Typo
 
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+This patch is so confusing, it looks like it does not make any sense.
+
+Best regards,
+Krzysztof
+
 
