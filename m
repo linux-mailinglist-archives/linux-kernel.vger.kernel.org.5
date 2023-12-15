@@ -1,181 +1,143 @@
-Return-Path: <linux-kernel+bounces-692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CE6C81449A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:37:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58E8E8144D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:47:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710671C2284B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:37:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC9B1B22BE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3C5182CA;
-	Fri, 15 Dec 2023 09:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C2A18AF9;
+	Fri, 15 Dec 2023 09:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="AQ/Y4H9v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNPKVf7v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.avm.de (mail.avm.de [212.42.244.120])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816A318AF8;
-	Fri, 15 Dec 2023 09:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Fri, 15 Dec 2023 10:29:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1702632573; bh=SVfcatZDjI4tKNtOwP+bScaWGS92iMBU3r/Y+xnXlE8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AQ/Y4H9vLz4ek8Mm0S1niwIg4YZcp5ijojlBycMiOqNSaAOJpIb7H0kt5cQGLxxqQ
-	 /LvjLBEQ2w82q6RAwOqjT5SJmXaspZfOIoxKDUp6/4IQCJsX7bh4i234MbU2E7iPPW
-	 paXNPbHP6QorTJ6zVmqeyA743kWef0XkKqc+jbDo=
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id A774F80693;
-	Fri, 15 Dec 2023 10:29:33 +0100 (CET)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-	id 9B293180E3C; Fri, 15 Dec 2023 10:29:33 +0100 (CET)
-Date: Fri, 15 Dec 2023 10:29:30 +0100
-From: Nicolas Schier <n.schier@avm.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: resolve symlinks for O= properly
-Message-ID: <ZXwcfSsuhzJYNAQh@buildd.core.avm.de>
-Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kbuild@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-kernel@vger.kernel.org
-References: <20231214140305.531963-1-masahiroy@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021021A27A;
+	Fri, 15 Dec 2023 09:47:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 685EEC433C8;
+	Fri, 15 Dec 2023 09:47:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702633637;
+	bh=UplJWH4Q/tqUK9lL0NeQ0i3KjWIEOgUf4v3sM9Fc79Q=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=lNPKVf7v2cnu27ZcpyO4bQM6FKX7jw9BMpAZorhmoXzAaSEXvTqMjXysELQs4tKGF
+	 EVEjrNJ2bcHxLNK9PhBPSXHDVD2AcxVLgajBlj5LJsnLJ03/e/jDdLqn/T8bJKDUQ6
+	 ByaPiISZPWI1fz0I2L9mkPxfD6shTR4mO4Y6qnJP/CRosOBUrD1463aynQ6Wg2P4Sz
+	 iZRmLWULYk9YGyYgzdPbzVwf3fQOSG90KwcHPdGdkJTN1YCpu/UULJFnq6QsQ4XulZ
+	 pXoOMIqrr7ZkTBpxLPpfc1FS3n76My/oyuk4EKSZm1nm3fE++7CCSaT6vhcJuoca7A
+	 xP6fZKPQdIvLQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4744EC4167B;
+	Fri, 15 Dec 2023 09:47:17 +0000 (UTC)
+From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
+Date: Fri, 15 Dec 2023 17:33:32 +0800
+Subject: [PATCH v3] arm64: dts: qcom: qcs6490-idp: Add definition for three
+ LEDs.
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SGxVEl732S1u5+et"
-Content-Disposition: inline
-In-Reply-To: <20231214140305.531963-1-masahiroy@kernel.org>
-Organization: AVM GmbH
-X-purgate-ID: 149429::1702632573-03B3ADFE-30E86D20/0/0
-X-purgate-type: clean
-X-purgate-size: 4125
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231215-lpg-v3-1-4e2db0c6df5f@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAHAdfGUC/0XMQQ6CMBCF4auQWTuGaUGNK+9hjBnaASYBCq0SE
+ 8Ldbdy4/JL/vQ2SRJUE12KDKKsmDVOGPRTgep46QfXZYEpjyVCNw9xhxey9PVcXIoZczlFa/fx
+ e7o/sNoYRX30U/m+JSlxcGJ+D+ISrQULr2FPbNO5U8215q9PJHXMC+/4FmQQtqJgAAAA=
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702633636; l=1646;
+ i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
+ bh=jkgKPcTHB0LvObnOdM+JMFH2yGRqbzzTL1fwXf6UZho=;
+ b=8cRQyf8GFCz6G7Lm8RUia1YB/uRkxLY/eTLY+R57RE12nYTwiZcxIu40k7vqcqHeR5rBPK33r
+ b4+KOeOABaKCoioDKb2XNu2GP83ffvmeGQobZ0KgCb0vzcXQ2u/SMUz
+X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
+ pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
+X-Endpoint-Received:
+ by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
+X-Original-From: Hui Liu <quic_huliu@quicinc.com>
+Reply-To: <quic_huliu@quicinc.com>
 
+From: Hui Liu <quic_huliu@quicinc.com>
 
---SGxVEl732S1u5+et
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 15 Dec 2023 10:29:30 +0100
-From: Nicolas Schier <n.schier@avm.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: resolve symlinks for O= properly
+Add definition for three LEDs to make sure they can
+be enabled base on QCOM LPG LED driver.
 
-On Thu, Dec 14, 2023 at 11:03:05PM +0900, Masahiro Yamada wrote:
-> Currently, Kbuild follows the logical chain of directories for the O=3D
-> option, just like 'cd' (or 'realpath --logical') does.
->=20
-> Example:
->=20
->     $ mkdir -p /tmp/a /tmp/x/y
->     $ ln -s /tmp/x/y /tmp/a/b
->     $ realpath /tmp/a/b/..
->     /tmp/x
->     $ realpath --logical /tmp/a/b/..
->     /tmp/a
->     $ make O=3D/tmp/a/b/.. defconfig
->     make[1]: Entering directory '/tmp/a'
->       [snip]
->     make[1]: Leaving directory '/tmp/a'
->=20
-> 'make O=3D/tmp/a/b/.. defconfig' creates the kernel configuration in
-> /tmp/a instead of /tmp/x despite the directory path /tmp/a/b/..
-> resolves to the physical directory path /tmp/x.
->=20
-> This is because Kbuild internally uses the 'cd ... && pwd' for the
-> path resolution, but this behavior is not predictable for users.
-> Additionally, it is not consistent with how the Kbuild handles the
-> M=3D option or GNU Make works with 'make -C /tmp/a/b/..'.
->=20
-> Using the physical directory structure for the O=3D option seems more
-> reasonable.
->=20
-> The comment says "expand a shell special character '~'", but it has
-> already been expanded to the home directory in the command line.
+Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+---
+Changes in v3:
+- Rephrased commit text and updated the nodes to qcm6490-idp board file.
+- Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
 
-I minor change in behaviour is that 'make O=3D"~/..."' (=3Dquoted '~) will
-not work any more.  But I think this actually the way it should be.
-Thanks!
+Changes in v2:
+- Rephrased commit text and updated the nodes to board file.
+- Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
+---
+ arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+index 37c91fdf3ab9..f801144a1556 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+@@ -5,6 +5,7 @@
+ 
+ /dts-v1/;
+ 
++#include <dt-bindings/leds/common.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sc7280.dtsi"
+ #include "pm7325.dtsi"
+@@ -414,6 +415,30 @@ vreg_bob_3p296: bob {
+ 	};
+ };
+ 
++&pm8350c_pwm {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	led@1 {
++		reg = <1>;
++		color = <LED_COLOR_ID_RED>;
++		label = "red";
++	};
++
++	led@2 {
++		reg = <2>;
++		color = <LED_COLOR_ID_GREEN>;
++		label = "green";
++	};
++
++	led@3 {
++		reg = <3>;
++		color = <LED_COLOR_ID_BLUE>;
++		label = "blue";
++	};
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
 
+---
+base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
+change-id: 20231215-lpg-4aadd374811a
 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->=20
->  Makefile | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
->=20
-> diff --git a/Makefile b/Makefile
-> index 24fac1889997..a05f0f7c99e0 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -190,14 +190,11 @@ ifeq ("$(origin O)", "command line")
->  endif
-> =20
->  ifneq ($(KBUILD_OUTPUT),)
-> -# Make's built-in functions such as $(abspath ...), $(realpath ...) cann=
-ot
-> -# expand a shell special character '~'. We use a somewhat tedious way he=
-re.
-> -abs_objtree :=3D $(shell mkdir -p $(KBUILD_OUTPUT) && cd $(KBUILD_OUTPUT=
-) && pwd)
-> -$(if $(abs_objtree),, \
-> -     $(error failed to create output directory "$(KBUILD_OUTPUT)"))
-> -
-> +# $(realpath ...) gets empty if the path does not exist. Run 'mkdir -p' =
-first.
-> +$(shell mkdir -p $(KBUILD_OUTPUT))
->  # $(realpath ...) resolves symlinks
-> -abs_objtree :=3D $(realpath $(abs_objtree))
-> +abs_objtree :=3D $(realpath $(KBUILD_OUTPUT))
-> +$(if $(abs_objtree),,$(error failed to create output directory "$(KBUILD=
-_OUTPUT)"))
->  endif # ifneq ($(KBUILD_OUTPUT),)
-> =20
->  ifneq ($(words $(subst :, ,$(abs_srctree))), 1)
-> --=20
-> 2.40.1
->=20
+Best regards,
+-- 
+Hui Liu <quic_huliu@quicinc.com>
 
---SGxVEl732S1u5+et
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEDv+Fiet06YHnC6RpiMa8nIiabbgFAmV8HHoACgkQiMa8nIia
-bbjsNxAAnGBY21SiDOFDbMwlI4WDHTkl2Uc55xDeXhDRfO8icGU3AAyuJUE3p8x0
-qCQ2rLFcfgOWqKb72jL5GQRcrqnOPHFLic96///UHNktu+Zu2lnQM3Zyh+XbTagI
-AmlfCm46m0JfCrxQFThRv1wnTIh0OzJKiCRUplYoL6abci4h+cv3/e3A7UCdFUuO
-qkifCfrXJlf6Kc1w26uPNPc4MPdiDLR0nJ30UGRgWvlw/ETkzGpCZU2zOB6We+P8
-YSY+RfU+OwD6nhy8XZQYe5cvwW0pXVLI9qMlF5u7P2b2tDKc1DmKKkDccojFBP98
-LqQBt0S4lGVbJCanQG3Rrc65Nb+G1VMGKjZChUZpdtrtbRCi1Kbd8Qh+lFVQ4tPJ
-OY6K3a5BUgFjmsYit0NihEEFeKX4Oy45y8p3Pz95wPeNt8XF6ebuk2PzkDwWUAXM
-6784bDCTbGu033QR0Ecp3Ll/2ip5HOgQXejqJAY8gmu4t3ri3+btF8+ky/mTet19
-zPhQHe5nWXNYV2HHTqCi4RqAxIzpdj8uHspx5u13Cz6KREp5fFbUbh+jFBFDnf0t
-HzvJqdv94Qw5y9PRMIxufJBQpn9X50InwkVklCg6j/xwhaEll3Sdc/MDDGkzUsgx
-SVbKw47tV51YcA9dPuW9SlFDcSFG3PjmmywJrrDTg5K13a/ZktI=
-=/i4F
------END PGP SIGNATURE-----
-
---SGxVEl732S1u5+et--
 
