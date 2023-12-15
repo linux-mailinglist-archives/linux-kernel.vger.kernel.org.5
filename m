@@ -1,189 +1,123 @@
-Return-Path: <linux-kernel+bounces-346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D102D813FC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:29:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9502813FC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:28:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2A931C209F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:29:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 550E51F22DC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E7F111D;
-	Fri, 15 Dec 2023 02:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8601AA3F;
+	Fri, 15 Dec 2023 02:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="h1dTzdee"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZucbDrmT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2051.outbound.protection.outlook.com [40.107.102.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 666EE5677;
-	Fri, 15 Dec 2023 02:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UOGESuB72tf/ws5D0yhdmJvO8B+WxQpJySMyeTHqPnqywinVxEoLJ2fRKvnGiQwywpQzDSey1x0UCunXRe5xEMIEGAtgPP4sxuMj91IkM74p7Z3yf1NsQBFT4iMbpiaBNt1l8lFhiEFc9Vv973+02DKinAMop0eH0ycCSzw8Ows4lI/hRLShRz6d5jR2vJolQY7gR4o+9nZXuRutmS5qvE6PFfD66Z5KDEiNZ72zUcfHESipVk4RIX6ZNdXgPwJlqcOjzlPE+lsjd87aMw4x5tx8weL6D6dYRw5KW2LtF4JfMUrefACkQDJwAbvT7L1Ul+/jkGxwxH34D0HhsQmlPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DXJx2X7/7VnCZmUPtiFwmo3ijKCHE3OHxjfOVVOhuz0=;
- b=DKE8/8DvJT3EGnfACK4A0dBXC8VGxPCG+BAb2h9nK5ZFLejoMux4Ib6FvT8R2inq4VzvaEi22Kv7D9HLDtHGTYcvDR694QDessZH3z7i8qKjPGjdNI8E1lclPSm3RmpBWlMG+0y852oJnBydmsVgVZrvUmn7P+HU7tc4JM+tU/zHLK//ny/Qt8VpUQ7maegV/S7ZTe8etpVtj+r/f7eheUelaqAen/ZJVxi+/IEiiCMFV2DI1REENiYtfw3F3WY75ngMETWwv1hx2Mk53dAOQHtEy9YNtZiR0RXHkuCRRiZfe28DDLmTBVeGTuVOJjSH60bqTiTImMnLod4y6bxjtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DXJx2X7/7VnCZmUPtiFwmo3ijKCHE3OHxjfOVVOhuz0=;
- b=h1dTzdeeKQyQ+jxzgF64CS3PccsBrFzgkpoaEjB6z2XwZ7Tx4xCxjm2bmNURYqryPxGhxJfctG1jJA7IXSiYRk8kJivakAnCYHbCTicUZ7X2fKBy0mWbXKGyFHeSr94FSQFLuRb8Mk579rU34YRovBV7y3ZNk8WIvAnrBJgFbnFtQ6fPS98IU8ddV7A8mASS/kNvuHatS+jza8Ru69eVR+ngB/6V9BNN8Ze6Y2riWtcZfMWuvdaJdXUg4xwHDy4a1RfSJ+MxtgZw8urYzlCYwjCwM/J2mnVqhM2IcIJatjaAFT/jxcT4wcKMrZPWb7JM8uh0Yy5INy9m3t0tlZ1H9A==
-Received: from SA9PR03CA0023.namprd03.prod.outlook.com (2603:10b6:806:20::28)
- by CY8PR12MB7337.namprd12.prod.outlook.com (2603:10b6:930:53::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 02:28:42 +0000
-Received: from SN1PEPF000252A4.namprd05.prod.outlook.com
- (2603:10b6:806:20:cafe::2) by SA9PR03CA0023.outlook.office365.com
- (2603:10b6:806:20::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28 via Frontend
- Transport; Fri, 15 Dec 2023 02:28:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF000252A4.mail.protection.outlook.com (10.167.242.11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.26 via Frontend Transport; Fri, 15 Dec 2023 02:28:42 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 14 Dec
- 2023 18:28:23 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 14 Dec
- 2023 18:28:23 -0800
-Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.129.68.8)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Thu, 14 Dec 2023 18:28:20 -0800
-Date: Thu, 14 Dec 2023 18:28:18 -0800
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-CC: "Liu, Yi L" <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, "jgg@nvidia.com"
-	<jgg@nvidia.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>, "cohuck@redhat.com"
-	<cohuck@redhat.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
-	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
-	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
-	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>
-Subject: Re: [PATCH v7 1/3] iommufd: Add data structure for Intel VT-d
- stage-1 cache invalidation
-Message-ID: <ZXu5whlIGfiq16wF@Asurada-Nvidia>
-References: <20231117131816.24359-1-yi.l.liu@intel.com>
- <20231117131816.24359-2-yi.l.liu@intel.com>
- <c967e716-9112-4d1a-b6f7-9a005e28202d@intel.com>
- <BN9PR11MB5276D14D2A7FF60B41A6A7B48C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7592346A3;
+	Fri, 15 Dec 2023 02:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40c2c5a8150so2000425e9.2;
+        Thu, 14 Dec 2023 18:28:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702607303; x=1703212103; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bfCIH8OrwYmA18Eh0tXMCerfrbYnCxrLNDSChId0XbU=;
+        b=ZucbDrmTP35LGCv/2uUIInlRrjMjndtQ7PIPrNZlW37kfqn0r+/LjBreZFkW7nXxg1
+         2/h3JenQs8GMZQL3ZrYGH2fl/qiZxtQ5h23WvYgrW+Q9FAJyXl0i1jzWImHrsFBukFm4
+         qBhQ7Fq6kiYodmtmq31hw7NBln7JGd+U6Wh+Zmh2QtuU/CLQC+8NDMCeHjokZ2WZjuvv
+         FHM8aJeTKVt/+1bKqzCbCL+cWvPrV69PdT2HSW03PV22tCbQDdL1nD68qs71Q57JXttn
+         k+pxjkJZZd2AikH5xERMYM+jLp6qaIJ2/XsecQuIvhpQCKW+YPr3ayzZgIWqe4JSUY0r
+         9QNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702607303; x=1703212103;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bfCIH8OrwYmA18Eh0tXMCerfrbYnCxrLNDSChId0XbU=;
+        b=wTLbdQh9RiMOH3aL57jBF8eog1RwY/ohmvJTCY0lo/7UErwH6UMQ+8jH27z5AGd1Yf
+         eHGUkXZUaB8Fxc9UTjJbY3ys0M21/0Y13ivq8BdmyudRpWEJZ0eFn3YUhVeiHFNnbbDL
+         +I/tQTPKgtO09fFg0KL6qq0Oqv8sKSNUpcqDFKnb7ckkFL45LoGZJPSLpZ416BgYW9BR
+         H6IkZB3JilB0Kd9MzOH4cf3McEeSUydFfaQ7VD0WCi2BUUkB677nC//5ndo2Yjj0Xt/n
+         S96jRQSdthhrb75VFMoNaonevlSrefQJEFA6rzbyddcN5hDLjYR25B483iT22wtdqbP/
+         yRIg==
+X-Gm-Message-State: AOJu0YyYoMOrZ+i66bEkOU8LkXAKZuTT2l6l/8thkaEXLfip3piiJV6D
+	fY3nfuv5RdJ/PO1tX7ypkI4=
+X-Google-Smtp-Source: AGHT+IGUKfUxOtZevuTSNI6CD2DIM36FApc26PTEPn8gLTLn/CiI7+Mvp7farsvRB3TbmQjS1TscPA==
+X-Received: by 2002:a05:600c:2b0f:b0:40c:33be:d166 with SMTP id y15-20020a05600c2b0f00b0040c33bed166mr5538514wme.87.1702607303383;
+        Thu, 14 Dec 2023 18:28:23 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id o5-20020a05600c510500b0040c1d2c6331sm27072969wms.32.2023.12.14.18.28.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 18:28:22 -0800 (PST)
+Message-ID: <66b2a6c45045c207d8452ad3b5786a9dc0082d79.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Hao Sun
+ <sunhao.th@gmail.com>,  Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf
+ <bpf@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>
+Date: Fri, 15 Dec 2023 04:28:20 +0200
+In-Reply-To: <CAADnVQ+RVT1pO1hTzMawdkfc9B0xAxas2XmSk6+_EiqX9Xy9Ug@mail.gmail.com>
+References: 
+	<CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+	 <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+	 <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+	 <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+	 <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+	 <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+	 <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
+	 <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
+	 <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com>
+	 <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
+	 <CAADnVQ+RVT1pO1hTzMawdkfc9B0xAxas2XmSk6+_EiqX9Xy9Ug@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276D14D2A7FF60B41A6A7B48C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A4:EE_|CY8PR12MB7337:EE_
-X-MS-Office365-Filtering-Correlation-Id: cd61511f-5548-4b3c-9a38-08dbfd158dfb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	HUOlvk6Okm8+UBPG+WRaV1WjBGWg7XAKXupDSAPhNp/N9+eo/FOsuqlN/zmynKuZoFfd/GYEiuC23I/XqOMMFVkhPYk40yELyOko88SABD8/YgfrnNX+BmvUrHKKVsjEt7S9hyZxGiAGZE/5rTVsuC4Px/+pGjZmHLYUqb+itIsJwfvnlDSDVOgcueOUofDNMbb3SnFrRYtWINU/ch4QG1SGOqtd2Di44syAOHDPZrODeCvibMt8wPhB+ay73HjS1JsDWQbFzmmhXTdBB34g5KMkD3EgJaqVgfdha1DiTL1PfJnqUkphQ7Zn/HZCw87nCuZED0iN4ChCEhY9nDXluEwbppLyDtgxeD2plo/9bB50AqYxt0lwZ/jJAuVxbMyFlv7ZHry0ayBJSRuHlw8VUP+WH7gvEVteaKhIYMD1fmn0g9lCq87wsMI7f/NFnBEoi1h7udZAUX10wcimIPuzYEeylWbaRK8DuHanT+YYPR20QhRbpP4uZciIozfMKuiBj1Sz5m6cZbRf/SJqlxvF+Ka9jLpCWE8MGSgqlcq4ApCEB7Yv3iZSyUQwxSt0hGn6rcRSaKhVyAET2HnotaIacr1WXC934S4IFrZtJj923tq8aUe88MihQ5IUINFQDrigwucuQ59QSxOboJZFG26ajlJw3RiY0iiR8Vad2prdlI+Bu0H2G84c8w9MXi5dxJfpOL+DefiapbM+AI3Wfshvgjm/6wK9D392kiV7fL+QpfW994J9MgJMqXW5iuA0P//7
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(1800799012)(451199024)(186009)(82310400011)(64100799003)(36840700001)(46966006)(40470700004)(5660300002)(9686003)(7416002)(86362001)(33716001)(336012)(426003)(478600001)(36860700001)(47076005)(82740400003)(356005)(83380400001)(7636003)(41300700001)(54906003)(70206006)(70586007)(316002)(2906002)(26005)(6916009)(4326008)(8936002)(8676002)(55016003)(40480700001)(40460700003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 02:28:42.0024
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd61511f-5548-4b3c-9a38-08dbfd158dfb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF000252A4.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7337
 
-On Fri, Dec 15, 2023 at 01:50:07AM +0000, Tian, Kevin wrote:
-> > From: Liu, Yi L <yi.l.liu@intel.com>
-> > Sent: Thursday, December 14, 2023 7:27 PM
-> >
-> > On 2023/11/17 21:18, Yi Liu wrote:> This adds the data structure for
-> > flushing iotlb for the nested domain
-> >
-> > +struct iommu_hwpt_vtd_s1_invalidate {
-> > +     __aligned_u64 addr;
-> > +     __aligned_u64 npages;
-> > +     __u32 flags;
-> > +     __u32 __reserved;
-> > +     __u32 error;
-> > +     __u32 dev_id;
-> > +};
-> >
-> > dev_id is used to report the failed device, userspace should be able to map
-> > it to a vRID, and inject it to VM as part of ITE/ICE error.
-> >
-> > However, I got a problem when trying to get dev_id in cache invalidation
-> > path, since this is filled in intel iommu driver. Seems like there is no
-> > good way for it. I've below alternatives to move forward, wish you have
-> > a look.
+On Thu, 2023-12-14 at 18:16 -0800, Alexei Starovoitov wrote:
+[...]
+> > E.g. for the test-case at hand:
+> >=20
+> >   0: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+> >   1: (bf) r7 =3D r0                       ; R0=3Dscalar(id=3D1) R7_w=3D=
+scalar(id=3D1)
+> >   2: (bf) r8 =3D r0                       ; R0=3Dscalar(id=3D1) R8_w=3D=
+scalar(id=3D1)
+> >   3: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+> >   --- checkpoint #1 r7.id =3D 1, r8.id =3D 1 ---
+> >   4: (25) if r0 > 0x1 goto pc+0         ; R0=3Dscalar(smin=3Dsmin32=3D0=
+,smax=3Dumax=3Dsmax32=3Dumax32=3D1,...)
+> >   --- checkpoint #2 r7.id =3D 1, r8.id =3D 1 ---
+> >   5: (3d) if r8 >=3D r0 goto pc+3         ; R0=3D1 R8=3D0 | record r8.i=
+d=3D1 in jump history
+> >   6: (0f) r8 +=3D r8                      ; R8=3D0
+>=20
+> can we detect that any register link is broken and force checkpoint here?
 
-> >
-> > - Reuse Nicolin's vRID->pRID mapping. If thevRID->pRID mapping is
-> > maintained, then intel iommu can report a vRID back to user. But intel
-> > iommu driver does not have viommu context, no place to hold the vRID-
-> > >pRID
-> > mapping. TBH. It may require other reasons to introduce it other than the
-> > error reporting need. Anyhow, this requires more thinking and also has
-> > dependency even if it is doable in intel side.
-> 
-> this sounds like a cleaner way to inject knowledge which iommu driver
-> requires to find out the user tag. but yes it's a bit weird to introduce
-> viommu awareness in intel iommu driver when there is no such thing
-> in real hardware.
+Should be possible. I'll try this in the morning and check veristat results=
+.
 
-I think a viommu is defined more like a software object representing
-the virtual IOMMU in a VM. Since VT-d has a vIOMMU in a nesting case,
-there could be an object for it too?
-
-> and for this error reporting case what we actually require is the
-> reverse map i.e. pRID->vRID. Not sure whether we can leverage the
-> same RID mapping uAPI as for ARM/AMD but ignore viommu_id
-> and then store vRID under device_domain_info. a bit tricky on
-> life cycle management and also incompatible with SIOV...
-
-One thing that I am not very clear here: since both vRID and dev_id
-are given by the VMM, shouldn't it already know the mapping if the
-point is to translate (pRID->)dev_id->vRID?
-
-Thanks
-Nicolin
+By the way, I added some stats collection for find_equal_scalars() and see
+the following results when run on ./test_progs:
+- maximal number of registers with same id per call: 3
+- average number of registers with same id per call: 1.4
 
