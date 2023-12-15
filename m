@@ -1,104 +1,83 @@
-Return-Path: <linux-kernel+bounces-567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CAC1814303
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 997D1814307
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0210C1F22687
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:56:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B4D21F21536
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3FC1094A;
-	Fri, 15 Dec 2023 07:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8753510A17;
+	Fri, 15 Dec 2023 07:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="HNR/1eHL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dxl+4YOA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F278A12E49;
-	Fri, 15 Dec 2023 07:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702626974;
-	bh=mAzpZ2f4BJM5eR5FSSU8TV6Mxhh8Z/aAMsRv8jD1bRc=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=HNR/1eHLnd0viOV+aHNDzc5a5U78Wf9gw9Icr/gmxIVPhttHLtgIvzp7opGestxOG
-	 e7mk87G1bvLJS+zRHnZnv0sB+u+hJ0XHbdwSU7jPqYGfouz4XYqJJhl5dAcCM5++vK
-	 7hYPE1b25KDIovETWldP0/Mp8wFrumdO1uKfZnYVx5lA6CeIBmP746k7NmR9VYrOMc
-	 Z6hkSGq2LZTpncvoPdeYtIuqPeoS5tvGS5HGrFkvi+z3OiDDos90/H6hfPCGEaMl++
-	 N66XufmXLvrvr9aB4IvUIQfzZRudt641+hmkvnsxWrV38wKksLp3tjnnGNGd4wOXfU
-	 A1nb09D5Hu2VQ==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6CE0C3781433;
-	Fri, 15 Dec 2023 07:56:11 +0000 (UTC)
-Message-ID: <90939a1f-8519-4645-b869-5c1f8e701a3c@collabora.com>
-Date: Fri, 15 Dec 2023 12:56:08 +0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D7D10952;
+	Fri, 15 Dec 2023 07:56:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CF52C433C7;
+	Fri, 15 Dec 2023 07:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702627015;
+	bh=GQzlbYxdmN/odCSG1aUf4K3A+XwEp54m5ZTi8W6hKww=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Dxl+4YOAjJwEgsD7CL5xrmBDvcB8dbRWGz+RglwQZ/0y8rtTGZpJXQ57IjutzE7K9
+	 hMBLdQT3Q7CxkGNYVC9/82HAAt1sRkQmJtOhIooFsJwOqiQhp0F3KVu+0T1NxoE7n1
+	 g28OEuxcYsXTRv6aSAXsXgpThnH1MlB+r5YrrcyiE/O8d4TfQB4dm7WrX351ramkBT
+	 9zA6WrFonH57rRZ6T/YivdDBcXimr60ztmDi8gQg//x2uNXE0ZpbQv1xGMIzj4Hnxm
+	 GNZKjS8uQfJwepXkRDyLflFKaUZ0NgyPkgpfGQnl1+V4JkOmg2f4jTrXytl8j3suOD
+	 8WRBAQUje3fRQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rE33y-0004mT-2B;
+	Fri, 15 Dec 2023 08:56:50 +0100
+Date: Fri, 15 Dec 2023 08:56:50 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Slark Xiao <slark_xiao@163.com>
+Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: option: add Foxconn T99W265 with new
+ baseline
+Message-ID: <ZXwGwknjavRzn9C5@hovoldconsulting.com>
+References: <20231201020950.34770-1-slark_xiao@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Shuah Khan <shuah@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- kernel@collabora.com, "kernelci.org bot" <bot@kernelci.org>,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: secretmem: Floor the memory size to the
- multiple of page_size
-To: Andrew Morton <akpm@linux-foundation.org>
-References: <20231214101931.1155586-1-usama.anjum@collabora.com>
- <20231214114056.ec687939a411961db10e73df@linux-foundation.org>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231214114056.ec687939a411961db10e73df@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201020950.34770-1-slark_xiao@163.com>
 
-Hi Andrew,
+On Fri, Dec 01, 2023 at 10:09:50AM +0800, Slark Xiao wrote:
+> This ID was added based on latest SDX12 code base line, and we
+> made some changes with previous 0489:e0db.
+> 
+> Test evidence as below:
+> T:  Bus=02 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=5000 MxCh= 0
+> D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  2
+> P:  Vendor=0489 ProdID=e0da Rev=05.04
+> S:  Manufacturer=Qualcomm
+> S:  Product=Qualcomm Snapdragon X12
+> S:  SerialNumber=2bda65fb
+> C:  #Ifs= 6 Cfg#= 2 Atr=a0 MxPwr=896mA
+> I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+> I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+> I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+> I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+> I:  If#=0x5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
+> 
+> 0&1: MBIM, 2: Modem, 3:GNSS, 4:Diag, 5:ADB
+> 
+> Signed-off-by: Slark Xiao <slark_xiao@163.com>
 
-On 12/15/23 12:40 AM, Andrew Morton wrote:
-> On Thu, 14 Dec 2023 15:19:30 +0500 Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
-> 
->> The "locked-in-memory size" limit per process can be non-multiple of
->> page_size. The mmap() fails if we try to allocate locked-in-memory
->> with same size as the allowed limit if it isn't multiple of the
->> page_size because mmap() rounds off the memory size to be allocated
->> to next multiple of page_size.
->>
->> Fix this by flooring the length to be allocated with mmap() to the
->> previous multiple of the page_size.
-> 
-> I'd like to understand how this was noticed, what the ongoing effect
-> might be, etc.  To help decide which kernel version(s) need the patch.
-This was getting triggered on KernelCI regularly because of different
-ulimit settings which wasn't multiple of the page_size. Find logs here:
-https://linux.kernelci.org/test/plan/id/657654bd8e81e654fae13532/ The bug
-in was present from the time test was first added.
-> 
->> Fixes: 76fe17ef588a ("secretmem: test: add basic selftest for memfd_secret(2)")
->> Reported-by: "kernelci.org bot" <bot@kernelci.org>
-> 
-> Which is one of the reasons we're now placing a Closes: tag after a
-> Reported-by:.
-I was looking for email report from KernelCI. But I didn't find it. Not
-sure if we can do something like following:
-Closes: https://linux.kernelci.org/test/plan/id/657654bd8e81e654fae13532/
+Now applied, thanks.
 
-> 
-> 
-
--- 
-BR,
-Muhammad Usama Anjum
+Johan
 
