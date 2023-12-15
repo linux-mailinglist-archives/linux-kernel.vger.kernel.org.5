@@ -1,207 +1,115 @@
-Return-Path: <linux-kernel+bounces-2192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33D1815929
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3A8A815990
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:48:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7248E2832BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:02:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB968281810
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:48:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C91A24A03;
-	Sat, 16 Dec 2023 13:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12B02D7A9;
+	Sat, 16 Dec 2023 13:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eVQ/C5/L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37028219F7
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 13:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7399e0707so195984239f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 05:02:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705D114005;
+	Sat, 16 Dec 2023 13:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso1305161a12.3;
+        Sat, 16 Dec 2023 05:48:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702734517; x=1703339317; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cMdekASZxZHVFfSc7wnHzY7Tv4MkxPQPmvOEgSf0s3A=;
+        b=eVQ/C5/L7F6aWeK9bkdZz1UcYVzMSLhEOHnu2Wn7lC6pTSljN6t2tkkFUBCG6QaH1r
+         xnrKA/WiOi8NlD5ZVUZwcEf75U/UDaN8oLdZi+2TSWE05kNX6pmRRPPuPHASedCtG1qj
+         JP2CZ3RDLVLK816pyoDszZapyxFEvPdepAAwX/ZdXJWKRHzaeYW8Jrsr3YAqhFNzJqDL
+         WlvEqCcWZo6krcvmlFWUuN6IC2OnQvrwV9PktzZId4Eg9QyetlcLZmb/41dZEEtpCQb7
+         3KyyZZixYgyrOUiSC1W8g9ATAugvFfGMoE14XTcYcmeqLMDC/KCXsIAbNBIgN7W5yjqF
+         PBow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702731739; x=1703336539;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1702734517; x=1703339317;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WbR8Fsh2M5lB952Po3IbpA8nnTS73zmHgvg5Bdyi2aQ=;
-        b=CDrGao/RUTGaR/g6Sw6zttwmzMtbOn2mj6jK8EMvXcYktO4ZkcFp4DcEEmcNr1hBMj
-         HQ3QtrcPhznNkFIYbCibV+8Jdscid3gRdIKuFbAROWHMArumGaQedw8yVUzA8L/tHat4
-         9m2N6f+cDg+RO/RQXzeOO4DN4lk2RV8A0YkQgOp/12ULBwKqIb5degNGedYUi3HB2qXS
-         DBJyLfF012ql10b4f7Zzsl0rM//UFJHOLpDDhVPJnpvs4HafNmWdi4aV3It5gZObY10b
-         zW5cI4DW0bvsIlgFPPjAEZvGHqHWgqjL3xCg6S/e/oapAguZU9bCmfPif5Eo+V8Lvums
-         lsrw==
-X-Gm-Message-State: AOJu0Yx5qWK2+N8JOC8xvfbCXMeCKTtyXKS8OSpIaAeGoDrQPkpGt/Dp
-	Dv4ykVt6chpzi86Wd6Ofouq4vohKWaS+3kMmhKuNS/UDlf4ZpOw=
-X-Google-Smtp-Source: AGHT+IG342q/fct2QbJy//JLAQuUEJ6Oz9FyS7Ikz9JhDznLLzQpzv10K88nWUJERm4FCggnsFny2DT/1tcmAbV7SeXf1HhKQIaa
+        bh=cMdekASZxZHVFfSc7wnHzY7Tv4MkxPQPmvOEgSf0s3A=;
+        b=lt2sLJjhxwbpc/8wZoc+Sls3K2W3ei1yxH4rVjK5MuAI6lvM7pH5Ue1b1HgV4d3z9D
+         +WEHReFRiZhwxQJKgttm/Y4MlbYxuhuTrlo69vUFqHRBISu2WTpaqOKpN/wii/1JW6vs
+         tZZmOg4ZLl1xNO/RME2OnYhnaymKnH82v99t2sCn+P6QOAsMqs3mGUpAfeYB/g5gdzbM
+         hDpe6uNeCHmdQfGwxBwDyGqmPLXvViGmMlGJU8v3y77GiLVXc5SZbzpNM1ZJ13fxrXXW
+         D3y0O46RGfhr0jXdMj9d1kPJ/a2/rVpp2dKr3Wn+EemIHyBAfIp7SGsLBkCfP7gjhBcI
+         5SDw==
+X-Gm-Message-State: AOJu0YwdG3BwerjMrRvNcJYSCtBzbMmuaflIbO8RDvIwn+/Vd5F5+oIM
+	/OZEy7gDBcM1s+3N5c1y1SqotmBHzh8=
+X-Google-Smtp-Source: AGHT+IGMRI0tGh2WrcuWUWqrhXsQO6lqjkNVpRGJgVO1U3NtRTPQ1rpt6nhXUonl7sYzoRdwErziMQ==
+X-Received: by 2002:a05:6a20:54a9:b0:190:1c0:1c25 with SMTP id i41-20020a056a2054a900b0019001c01c25mr17316135pzk.91.1702734516764;
+        Sat, 16 Dec 2023 05:48:36 -0800 (PST)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id u17-20020aa78491000000b006cb98a269f1sm15142081pfn.125.2023.12.16.05.48.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Dec 2023 05:48:36 -0800 (PST)
+Message-ID: <2f92ca77-703b-403d-9dc9-b45d2d8d86a1@gmail.com>
+Date: Fri, 15 Dec 2023 13:34:35 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a44:b0:35d:3b19:73b4 with SMTP id
- u4-20020a056e021a4400b0035d3b1973b4mr525407ilv.1.1702731739435; Sat, 16 Dec
- 2023 05:02:19 -0800 (PST)
-Date: Sat, 16 Dec 2023 05:02:19 -0800
-In-Reply-To: <000000000000098af2060b5ff161@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a1cfe060ca020d3@google.com>
-Subject: Re: [syzbot] [block?] INFO: task hung in bdev_release
-From: syzbot <syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs: rust: remove `CC=clang` mentions
+To: Miguel Ojeda <ojeda@kernel.org>, Wedson Almeida Filho
+ <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+ Jonathan Corbet <corbet@lwn.net>, Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ linux-doc@vger.kernel.org, llvm@lists.linux.dev
+References: <20231215124751.175191-1-ojeda@kernel.org>
+Content-Language: en-US
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20231215124751.175191-1-ojeda@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
-
-***
-
-Subject: [block?] INFO: task hung in bdev_release
-Author: eadavis@qq.com
-
-please test task hung in bdev_release
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  8c9660f65153
-
-diff --git a/block/bdev.c b/block/bdev.c
-index 6f73b02d549c..9fdf2dbc450e 100644
---- a/block/bdev.c
-+++ b/block/bdev.c
-@@ -130,12 +130,14 @@ static void set_init_blocksize(struct block_device *bdev)
- 	unsigned int bsize = bdev_logical_block_size(bdev);
- 	loff_t size = i_size_read(bdev->bd_inode);
- 
-+	printk("s: %llu, %s\n", size, __func__);
- 	while (bsize < PAGE_SIZE) {
- 		if (size & bsize)
- 			break;
- 		bsize <<= 1;
- 	}
- 	bdev->bd_inode->i_blkbits = blksize_bits(bsize);
-+	printk("out s: %llu, %s\n", size, __func__);
- }
- 
- int set_blocksize(struct block_device *bdev, int size)
-@@ -870,6 +872,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
- 	if (ret)
- 		goto put_module;
- 	bdev_claim_write_access(bdev, mode);
-+	printk("%p, h: %p, %s\n", bdev, holder, __func__);
- 	if (holder) {
- 		bd_finish_claiming(bdev, holder, hops);
- 
-@@ -887,6 +890,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
- 		}
- 	}
- 	mutex_unlock(&disk->open_mutex);
-+	printk("out om, b: %p, disk: %p, %s\n", bdev, disk, __func__);
- 
- 	if (unblock_events)
- 		disk_unblock_events(disk);
-@@ -900,6 +904,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
- 	if (holder)
- 		bd_abort_claiming(bdev, holder);
- 	mutex_unlock(&disk->open_mutex);
-+	printk("out om, b: %p, %s\n", bdev, __func__);
- 	disk_unblock_events(disk);
- put_blkdev:
- 	blkdev_put_no_open(bdev);
-@@ -964,6 +969,7 @@ void bdev_release(struct bdev_handle *handle)
- 	if (atomic_read(&bdev->bd_openers) == 1)
- 		sync_blockdev(bdev);
- 
-+	printk("nxt om, b: %p, dk: %p, %s\n", bdev, disk, __func__);
- 	mutex_lock(&disk->open_mutex);
- 	bdev_yield_write_access(bdev, handle->mode);
- 
-@@ -982,6 +988,7 @@ void bdev_release(struct bdev_handle *handle)
- 	else
- 		blkdev_put_whole(bdev);
- 	mutex_unlock(&disk->open_mutex);
-+	printk("out om, b: %p, dk: %p, %s\n", bdev, disk, __func__);
- 
- 	module_put(disk->fops->owner);
- 	blkdev_put_no_open(bdev);
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index f47ffcfdfcec..e48c26513f4d 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -698,6 +698,7 @@ int bdev_disk_changed(struct gendisk *disk, bool invalidate)
- 
- 	if (get_capacity(disk)) {
- 		ret = blk_add_partitions(disk);
-+		printk("r: %d, disk: %p, %s\n", ret, disk, __func__);
- 		if (ret == -EAGAIN)
- 			goto rescan;
- 	} else if (invalidate) {
-@@ -708,6 +709,7 @@ int bdev_disk_changed(struct gendisk *disk, bool invalidate)
- 		kobject_uevent(&disk_to_dev(disk)->kobj, KOBJ_CHANGE);
- 	}
- 
-+	printk("disk: %p, %s\n", disk, __func__);
- 	return ret;
- }
- /*
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index b6414e1e645b..090cdef5899d 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1137,6 +1137,7 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
- 	int err;
- 
- 	/* Arg will be cast to int, check it to avoid overflow */
-+	printk("arg: %d, nbd: %p, %s\n", arg, nbd, __func__);
- 	if (arg > INT_MAX)
- 		return -EINVAL;
- 	sock = nbd_get_socket(nbd, arg, &err);
-@@ -1188,10 +1189,12 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
- 	socks[config->num_connections++] = nsock;
- 	atomic_inc(&config->live_connections);
- 	blk_mq_unfreeze_queue(nbd->disk->queue);
-+	printk("arg: %d, nbd: %p, nd: %p, nc: %d, %s\n", arg, nbd, nbd->disk, config->num_connections, __func__);
- 
- 	return 0;
- 
- put_socket:
-+	printk("nbd: %p, %s\n", nbd, __func__);
- 	blk_mq_unfreeze_queue(nbd->disk->queue);
- 	sockfd_put(sock);
- 	return err;
-@@ -1372,6 +1375,7 @@ static int nbd_start_device(struct nbd_device *nbd)
- 	int num_connections = config->num_connections;
- 	int error = 0, i;
- 
-+	printk("dev: %p, nc: %d, pid: %d, socks: %p, %s\n", nbd, num_connections, nbd->pid, config->socks, __func__);
- 	if (nbd->pid)
- 		return -EBUSY;
- 	if (!config->socks)
-@@ -1425,6 +1429,7 @@ static int nbd_start_device(struct nbd_device *nbd)
- 		args->index = i;
- 		queue_work(nbd->recv_workq, &args->work);
- 	}
-+	printk("bs: %lld, blks: %lld, %s\n", config->bytesize, nbd_blksize(config), __func__);
- 	return nbd_set_size(nbd, config->bytesize, nbd_blksize(config));
- }
- 
-@@ -1596,6 +1601,7 @@ static int nbd_open(struct gendisk *disk, blk_mode_t mode)
- 	struct nbd_config *config;
- 	int ret = 0;
- 
-+	printk("d: %p, %s\n", disk, __func__);
- 	mutex_lock(&nbd_index_mutex);
- 	nbd = disk->private_data;
- 	if (!nbd) {
-@@ -1629,6 +1635,7 @@ static int nbd_open(struct gendisk *disk, blk_mode_t mode)
- 			set_bit(GD_NEED_PART_SCAN, &disk->state);
- 	}
- out:
-+	printk("ret: %d, out, d: %p, %s\n", ret, disk, __func__);
- 	mutex_unlock(&nbd_index_mutex);
- 	return ret;
- }
-
+On 12/15/23 09:47, Miguel Ojeda wrote:
+> Nowadays all architectures except s390 recommend using `LLVM=1` instead of
+> `CC=clang`, and since commit a3c6bfba4429 ("Documentation/llvm: refresh
+> docs") the Kbuild LLVM documentation makes `LLVM=1` the way to go:
+> 
+>      We want to encourage the use of ``LLVM=1`` rather than just
+>      ``CC=clang``. Make that suggestion "above the fold" and "front and
+>      center" in our docs.
+> 
+> In particular, that commit removes the examples with `CC=clang`.
+> 
+> Thus do the same in the Rust Quick Start guide, i.e. remove the `CC=clang`
+> mentions, especially since the architectures that have had their Rust
+> support upstreamed (or soon to be upstreamed) are all `LLVM=1` ones
+> anyway. And perhaps by the time Rust is supported for s390 (or new
+> architectures), it may have moved to `LLVM=1` anyway. Otherwise,
+> this can be added back if needed (or perhaps an extra link to
+> Documentation/kbuild/llvm.rst).
+> 
+> This should also help avoiding potential confusion around `CC=clang` [1].
+> 
+> Link: https://lore.kernel.org/rust-for-linux/6df6e8e5-8d5b-4d3d-91b5-bc0e90c424ea@nvidia.com/ [1]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+> [...]
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 
