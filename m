@@ -1,258 +1,96 @@
-Return-Path: <linux-kernel+bounces-1823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1E0815486
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:30:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6D1D81548A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:31:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22D6B1F2335B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:30:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14C201C23AB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B89730138;
-	Fri, 15 Dec 2023 23:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1851A30138;
+	Fri, 15 Dec 2023 23:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="R3v0C4JB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="svkCN4ao"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E160918ED6;
-	Fri, 15 Dec 2023 23:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
-Received: from newone.lan (unknown [10.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id BBD32162DE0;
-	Sat, 16 Dec 2023 00:30:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1702683036;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=0Kqx9+WPjKXzEMY9cZQaAajTufst8d0OTezCU/dHeiA=;
-	b=R3v0C4JB1UXChVIKibeBXj4h6LRv1UXFX+arHuuoH0uxXSi14ffpNbJ5grhDp5nl9gHT8n
-	fj0XcFuA4+lWVfgy8RB0ju8kl9MGGJGXyPMw5nD8pvA2tKOF5PLmkvh4MDZ620q8IwZZ7p
-	sCIaHIzi9lD11eI4N2PzIokBX+4Lw84=
-From: David Heidelberg <david@ixit.cz>
-To: Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: David Heidelberg <david@ixit.cz>,
-	iommu@lists.linux.dev,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: [PATCH v4] dt-bindings: iommu: Convert msm,iommu-v0 to yaml
-Date: Sat, 16 Dec 2023 00:30:18 +0100
-Message-ID: <20231215233034.95789-1-david@ixit.cz>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654202C699;
+	Fri, 15 Dec 2023 23:31:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAEEBC433C8;
+	Fri, 15 Dec 2023 23:31:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702683077;
+	bh=8vuBe28Hp3dJiXwpDuxt10walGUsS6E6bLz5BamOg38=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=svkCN4aoTr0Nau1NuvvW1ehkW4tGbbX58IKkV3kMRark4x2lk1FX57a2IBN4nx/7i
+	 qJEF1xSsKnm2pzQEVN8HcI/P9ihiEtUzpjBv0VnwKGCqFBxuTII9p6IMSQkwAaUKlW
+	 KXT3dwT9jZQdEBbr0rBVcVl4BtjEZ63ZF/sntsSATN850a0+Wzo/UT/mcmf8Eo0zl5
+	 WsrFIfLiucJVFDvHgW/ZVO9Vb/wgaKhj1FApySVVGxUHuXnEcv6P09bgy51YAi9YGl
+	 LxoWb76ykMR03r0gys2L5N5SMaUL1qUoIpktuHZ/cBsc4MlgPYES3wnXPgUMMAq53g
+	 p9h024NCJrOjg==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50bdec453c8so1359924e87.3;
+        Fri, 15 Dec 2023 15:31:17 -0800 (PST)
+X-Gm-Message-State: AOJu0YxYNKIxZdcKgQ+rPhoB56YwKA9M1dQxSGq7PLy0kJu/0rBEOo7c
+	utqWLOzTPcdauqDmNNPMtJIjfkFy10EAbHs0d3E=
+X-Google-Smtp-Source: AGHT+IGvN1Aom7Bvl1CDgcH/Hk02HUZayJ54ctvNg7jL/MLayG/FUhxNCVMQTCy6+9FWVxEsCetyxQpbfTgrxMe6SSw=
+X-Received: by 2002:ac2:419a:0:b0:50d:13f5:9bca with SMTP id
+ z26-20020ac2419a000000b0050d13f59bcamr5327104lfh.63.1702683076075; Fri, 15
+ Dec 2023 15:31:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231214151458.28970-1-gouhao@uniontech.com>
+In-Reply-To: <20231214151458.28970-1-gouhao@uniontech.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 15 Dec 2023 15:31:04 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5Oj67XR6EhndSXCkd52h8P4nAXipxrhG31fy7YNOZg6g@mail.gmail.com>
+Message-ID: <CAPhsuW5Oj67XR6EhndSXCkd52h8P4nAXipxrhG31fy7YNOZg6g@mail.gmail.com>
+Subject: Re: [PATCH] md/raid1: remove unnecessary null checking
+To: Gou Hao <gouhao@uniontech.com>
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	gouhaojake@163.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Convert Qualcomm IOMMU v0 implementation to yaml format.
+On Thu, Dec 14, 2023 at 7:15=E2=80=AFAM Gou Hao <gouhao@uniontech.com> wrot=
+e:
+>
+> If %__GFP_DIRECT_RECLAIM is set then bio_alloc_bioset will always
+> be able to allocate a bio. See comment of bio_alloc_bioset.
+>
+> Signed-off-by: Gou Hao <gouhao@uniontech.com>
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v4:
- - renamed to qcom,apq8064-iommu as Rob requested
- - changed title to Qualcomm APQ8064 IOMMU
- - dropped quotes around URLs
- - dropped mdp node
- - dropped unused mdp_port0 label
+Applied to md-next. Thanks!
 
-v3:
- - I kept the name as -v0, since we have other binding -v1 and it look
-   good, I can change thou in v4 if requested.
- - dropped non-existent smmu_clk part (and adjusted example, which was
-   using it)
- - dropped iommu description
- - moved iommu-cells description to the property #iommu-cells
+Song
 
-v2:
- - fix wrong path in binding $id
- - comment qcom,mdp4 node example (we don't want to validate it yet)
-
- .../bindings/iommu/msm,iommu-v0.txt           | 64 --------------
- .../bindings/iommu/qcom,apq8064-iommu.yaml    | 83 +++++++++++++++++++
- 2 files changed, 83 insertions(+), 64 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
- create mode 100644 Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
-
-diff --git a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt b/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
-deleted file mode 100644
-index 20236385f26e..000000000000
---- a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
-+++ /dev/null
-@@ -1,64 +0,0 @@
--* QCOM IOMMU
--
--The MSM IOMMU is an implementation compatible with the ARM VMSA short
--descriptor page tables. It provides address translation for bus masters outside
--of the CPU, each connected to the IOMMU through a port called micro-TLB.
--
--Required Properties:
--
--  - compatible: Must contain "qcom,apq8064-iommu".
--  - reg: Base address and size of the IOMMU registers.
--  - interrupts: Specifiers for the MMU fault interrupts. For instances that
--    support secure mode two interrupts must be specified, for non-secure and
--    secure mode, in that order. For instances that don't support secure mode a
--    single interrupt must be specified.
--  - #iommu-cells: The number of cells needed to specify the stream id. This
--		  is always 1.
--  - qcom,ncb:	  The total number of context banks in the IOMMU.
--  - clocks	: List of clocks to be used during SMMU register access. See
--		  Documentation/devicetree/bindings/clock/clock-bindings.txt
--		  for information about the format. For each clock specified
--		  here, there must be a corresponding entry in clock-names
--		  (see below).
--
--  - clock-names	: List of clock names corresponding to the clocks specified in
--		  the "clocks" property (above).
--		  Should be "smmu_pclk" for specifying the interface clock
--		  required for iommu's register accesses.
--		  Should be "smmu_clk" for specifying the functional clock
--		  required by iommu for bus accesses.
--
--Each bus master connected to an IOMMU must reference the IOMMU in its device
--node with the following property:
--
--  - iommus: A reference to the IOMMU in multiple cells. The first cell is a
--	    phandle to the IOMMU and the second cell is the stream id.
--	    A single master device can be connected to more than one iommu
--	    and multiple contexts in each of the iommu. So multiple entries
--	    are required to list all the iommus and the stream ids that the
--	    master is connected to.
--
--Example: mdp iommu and its bus master
--
--                mdp_port0: iommu@7500000 {
--			compatible = "qcom,apq8064-iommu";
--			#iommu-cells = <1>;
--			clock-names =
--			    "smmu_pclk",
--			    "smmu_clk";
--			clocks =
--			    <&mmcc SMMU_AHB_CLK>,
--			    <&mmcc MDP_AXI_CLK>;
--			reg = <0x07500000 0x100000>;
--			interrupts =
--			    <GIC_SPI 63 0>,
--			    <GIC_SPI 64 0>;
--			qcom,ncb = <2>;
--		};
--
--		mdp: qcom,mdp@5100000 {
--			compatible = "qcom,mdp";
--			...
--			iommus = <&mdp_port0 0
--				  &mdp_port0 2>;
--		};
-diff --git a/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml b/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
-new file mode 100644
-index 000000000000..eef40d25d91c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+
-+$id: http://devicetree.org/schemas/iommu/qcom,apq8064-iommu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm APQ8064 IOMMU
-+
-+maintainers:
-+  - Will Deacon <will@kernel.org>
-+
-+description: >
-+  The MSM IOMMU is an implementation compatible with the ARM VMSA short
-+  descriptor page tables. It provides address translation for bus masters
-+  outside of the CPU, each connected to the IOMMU through a port called micro-TLB.
-+
-+properties:
-+  compatible:
-+    const: qcom,apq8064-iommu
-+
-+  clocks:
-+    items:
-+      - description: interface clock for register accesses
-+      - description: functional clock for bus accesses
-+
-+  clock-names:
-+    items:
-+      - const: smmu_pclk
-+      - const: iommu_clk
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    description: Specifiers for the MMU fault interrupts.
-+    minItems: 1
-+    items:
-+      - description: non-secure mode interrupt
-+      - description: secure mode interrupt (for instances which supports it)
-+
-+  "#iommu-cells":
-+    const: 1
-+    description: |
-+      The first cell is a phandle to the IOMMU and
-+      the second cell is the stream id.
-+      A single master device can be connected to more than one iommu
-+      and multiple contexts in each of the iommu.
-+      So multiple entries are required to list all the iommus and
-+      the stream ids that the master is connected to.
-+
-+  qcom,ncb:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: The total number of context banks in the IOMMU.
-+
-+required:
-+  - clocks
-+  - clock-names
-+  - reg
-+  - interrupts
-+  - qcom,ncb
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,mmcc-msm8960.h>
-+
-+    iommu@7500000 {
-+            compatible = "qcom,apq8064-iommu";
-+            #iommu-cells = <1>;
-+            clock-names =
-+                "smmu_pclk",
-+                "iommu_clk";
-+            clocks =
-+                <&clk SMMU_AHB_CLK>,
-+                <&clk MDP_AXI_CLK>;
-+            reg = <0x07500000 0x100000>;
-+            interrupts =
-+                <0 63 0>,
-+                <0 64 0>;
-+            qcom,ncb = <2>;
-+    };
--- 
-2.43.0
-
+> ---
+>  drivers/md/raid1.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index 35d12948e0a9..e77dc95d4a75 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -1126,8 +1126,6 @@ static void alloc_behind_master_bio(struct r1bio *r=
+1_bio,
+>
+>         behind_bio =3D bio_alloc_bioset(NULL, vcnt, 0, GFP_NOIO,
+>                                       &r1_bio->mddev->bio_set);
+> -       if (!behind_bio)
+> -               return;
+>
+>         /* discard op, we don't support writezero/writesame yet */
+>         if (!bio_has_data(bio)) {
+> --
+> 2.34.1
+>
+>
 
