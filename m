@@ -1,96 +1,321 @@
-Return-Path: <linux-kernel+bounces-1387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 213DB814E55
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:19:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C97CD814E68
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCF18283C31
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:19:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8092728652F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6893FE40;
-	Fri, 15 Dec 2023 17:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369B84777D;
+	Fri, 15 Dec 2023 17:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t1DMIykG"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GsxhrFTr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988CC3FB33;
-	Fri, 15 Dec 2023 17:11:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0666BC433C7;
-	Fri, 15 Dec 2023 17:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702660270;
-	bh=bb71eNv5ykDDBLYAbeoMWkUlxEzXqAvnDeM0adtsavQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=t1DMIykGAqdba93fDOiQwMt4uLI8Dj9nxIoyY4HAKpCngLHZgcKqdhxXm4AqYZi3b
-	 3NpY8FliGO05yfRJloLMK5+Jd6Tf/3LXq8tQEKMSaGzZ7XLWRqmSrzRVyPrLtT6DGw
-	 EtznZx1ncexJEObHBMsZDtLajcs2nhlW25G4nfuz9HaOxCmgkGE2DyeRUawvsIibEP
-	 ayE5WrmLKW41bB32xPvKNenSrgTWi8zjJGTW2NIIP6ZF/L85qA0etOrknZDOpoGKVb
-	 h1FKSgXW5TXBrIv+n0dl9RKBt0h5Ik3I1oLn55Jm3kgeW81o/ZllBnEKGUfG9nbO52
-	 2DJmAyr1CDYLQ==
-From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>, 
- Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Gergo Koteles <soyer@irl.hu>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 
- stable@vger.kernel.org
-In-Reply-To: <523780155bfdca9bc0acd39efc79ed039454818d.1702591356.git.soyer@irl.hu>
-References: <523780155bfdca9bc0acd39efc79ed039454818d.1702591356.git.soyer@irl.hu>
-Subject: Re: [PATCH] ASoC: tas2781: check the validity of prm_no/cfg_no
-Message-Id: <170266026773.89698.17924199920946310411.b4-ty@kernel.org>
-Date: Fri, 15 Dec 2023 17:11:07 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF05446DA;
+	Fri, 15 Dec 2023 17:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DF2B9C0002;
+	Fri, 15 Dec 2023 17:12:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702660360;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xekBtYrzEfeddVkt5T9IKlymKf8ZyjRogSe1ZvmnuGg=;
+	b=GsxhrFTr6YBTjpyd1T4DAoYvUrXV4W5tPMgSU8RxDu9GUqiZnVL2PQSK1M5kVSXZfO2kAK
+	6CqorskmU7E95I+JWTl+tb6m70n3LL5/CSKQgu+JEsg7z0gDTib4NJRhysJnXB+i6DOXk0
+	qz+hBN6q0Buv2G4MwnoaIJQvZhREFQYu5SrIlwp1sykoI2uDyjCLLb1YwQBLnUgetv1u6y
+	rTe2bOxpjQiciTorImkMZCZjxUA5MLj7wEJbbUjIigZyKqk4urj5d+YL7uHFS6jVobZVD9
+	Tx0UN5DjQfPEp3DvqZIFVfvpq5vCG4dHle7gABWOPZWwDPJ3OBguZi/C62laAQ==
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: davem@davemloft.net
+Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com,
+	Andrew Lunn <andrew@lunn.ch>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	=?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>
+Subject: [PATCH net-next v4 00/13] Introduce PHY listing and link_topology tracking
+Date: Fri, 15 Dec 2023 18:12:22 +0100
+Message-ID: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Thu, 14 Dec 2023 23:04:44 +0100, Gergo Koteles wrote:
-> Add additional checks for program/config numbers to avoid loading from
-> invalid addresses.
-> 
-> If prm_no/cfg_no is negative, skip uploading program/config.
-> 
-> The tas2781-hda driver caused a NULL pointer dereference after loading
-> module, and before first runtime_suspend.
-> 
-> [...]
+Hello everyone,
 
-Applied to
+Here's a V4 of the multi-PHY support series. This is mostly bugfixes to
+allow building without phylib, but I also removed the RFC flag.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+The blurb bellow is a full description of the series, however I realised
+that I failed to mentionned why this is called "phy_link_topology". The
+end-goal of this struct is not only to track the phy_devices but also
+the different front-facing ports across the topology. I'm picking a
+pretty generic name to convey the fact that this should be strictly
+related to PHYs.
 
-Thanks!
+As a remainder, this ongoing work aims ultimately at supporting complex
+link topologies that involve multiplexing multiple PHYs/SFPs on a single
+netdevice. As a first step, it's required that we are able to enumerate the
+PHYs on a given ethernet interface.
 
-[1/1] ASoC: tas2781: check the validity of prm_no/cfg_no
-      commit: f32c80d34249e1cfb2e647ab3c8ef38a460c787f
+By just doing so, we also improve already-existing use-cases, namely the
+copper SFP modules support when a media-converter is used (as we have 2
+PHYs on the link, but only one is referenced by net_device.phydev, which
+is used on a variety of netlink commands).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+The series is architectured as follows :
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+- The first patch adds the notion of phy_link_topology, which tracks
+all PHYs attached to a netdevice.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+- Patches 2, 3 and 4 adds some plumbing into SFP and phylib to be able
+  to connect the dots when building the topology tree, to know which PHY
+  is connected to which SFP bus, trying not to be too invasive on phylib.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+- Patch 5 allows passing a PHY_INDEX to ethnl commands. I'm uncertain about
+  this, as there are at least 4 netlink commands ( 5 with the one introduced
+  in patch 7 ) that targets PHYs directly or indirectly, which to me makes
+  it worth-it to have a generic way to pass a PHY index to commands, however
+  the approach taken may be too generic.
 
-Thanks,
-Mark
+- Patch 6 is the netlink spec update + ethtool-user.c|h autogenerated code
+update (the autogenerated code triggers checkpatch warning though)
+
+- Patch 7 introduces a new netlink command set to list PHYs on a netdevice.
+It implements a custom DUMP and GET operation to allow filtered dumps,
+that lists all PHYs on a given netdevice. I couldn't use most of ethnl's
+plumbing though.
+
+- Patch 8 is the netlink spec update + ethtool-user.c|h update for that
+new command
+
+- Patch 8,9,10 and 11 updates the PLCA, strset, cable-test and pse netlink
+commands to use the user-provided PHY instead of net_device.phydev.
+
+- Finally patch 12 adds some documentation for this whole work.
+
+Examples
+========
+
+Here's a short overview of the kind of operations you can have regarding
+the PHY topology. These tests were performed on a MacchiatoBin, which
+has 3 interfaces :
+
+eth0 and eth1 have the following layout:
+
+MAC - PHY - SFP
+
+eth2 has this more classic topology :
+
+MAC - PHY - RJ45
+
+finally eth3 has the following topology :
+
+MAC - SFP
+
+When performing a dump with all interfaces down, we don't get any
+result, as no PHY has been attached to their respective net_device :
+
+# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml --dump phy-get
+None
+
+The following output is with eth0, eth2 and eth3 up, but no SFP module
+inserted in none of the interfaces :
+
+# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml --dump phy-get
+[{'downstream-sfp-name': 'sfp-eth0',
+  'drvname': 'mv88x3310',
+  'header': {'dev-index': 2, 'dev-name': 'eth0'},
+  'id': 0,
+  'index': 1,
+  'name': 'f212a600.mdio-mii:00',
+  'upstream-type': 'mac'},
+ {'drvname': 'Marvell 88E1510',
+  'header': {'dev-index': 4, 'dev-name': 'eth2'},
+  'id': 21040593,
+  'index': 1,
+  'name': 'f212a200.mdio-mii:00',
+  'upstream-type': 'mac'}]
+
+
+And now is a dump operation with a copper SFP in the eth0 port :
+
+# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml --dump phy-get
+[{'downstream-sfp-name': 'sfp-eth0',
+  'drvname': 'mv88x3310',
+  'header': {'dev-index': 2, 'dev-name': 'eth0'},
+  'id': 0,
+  'index': 1,
+  'name': 'f212a600.mdio-mii:00',
+  'upstream-type': 'mac'},
+ {'drvname': 'Marvell 88E1111',
+  'header': {'dev-index': 2, 'dev-name': 'eth0'},
+  'id': 21040322,
+  'index': 2,
+  'name': 'i2c:sfp-eth0:16',
+  'upstream': {'index': 1, 'sfp-name': 'sfp-eth0'},
+  'upstream-type': 'phy'},
+ {'drvname': 'Marvell 88E1510',
+  'header': {'dev-index': 4, 'dev-name': 'eth2'},
+  'id': 21040593,
+  'index': 1,
+  'name': 'f212a200.mdio-mii:00',
+  'upstream-type': 'mac'}]
+
+ -- Note that this shouldn't actually work as the 88x3310 PHY doesn't allow
+a 1G SFP to be connected to its SFP interface, and I don't have a 10G copper SFP,
+so for the sake of the demo I applied the following modification, which
+of courses gives a non-functionnal link, but the PHY attach still works,
+which is what I want to demonstrate :
+
+@@ -488,7 +488,7 @@ static int mv3310_sfp_insert(void *upstream, const struct sfp_eeprom_id *id)
+
+        if (iface != PHY_INTERFACE_MODE_10GBASER) {
+                dev_err(&phydev->mdio.dev, "incompatible SFP module inserted\n");
+-               return -EINVAL;
++               //return -EINVAL;
+        }
+        return 0;
+ }
+
+Finally an example of the filtered DUMP operation that Jakub suggested
+in V1 :
+
+# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml \
+# --dump phy-get --json '{"header" : {"dev-name" : "eth0"}}'
+
+[{'downstream-sfp-name': 'sfp-eth0',
+  'drvname': 'mv88x3310',
+  'header': {'dev-index': 2, 'dev-name': 'eth0'},
+  'id': 0,
+  'index': 1,
+  'name': 'f212a600.mdio-mii:00',
+  'upstream-type': 'mac'},
+ {'drvname': 'Marvell 88E1111',
+  'header': {'dev-index': 2, 'dev-name': 'eth0'},
+  'id': 21040322,
+  'index': 2,
+  'name': 'i2c:sfp-eth0:16',
+  'upstream': {'index': 1, 'sfp-name': 'sfp-eth0'},
+  'upstream-type': 'phy'}]
+
+And a classic GET operation allows querying a single PHY's info :
+
+# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml \
+# --do phy-get --json '{"header" : {"dev-name" : "eth0", "phy-index" : 2}}'
+
+{'drvname': 'Marvell 88E1111',
+ 'header': {'dev-index': 2, 'dev-name': 'eth0'},
+ 'id': 21040322,
+ 'index': 2,
+ 'name': 'i2c:sfp-eth0:16',
+ 'upstream': {'index': 1, 'sfp-name': 'sfp-eth0'},
+ 'upstream-type': 'phy'}
+
+Changes in V4:
+- Dropped the RFC flag
+- Made the net_device integration independent to having phylib enabled
+- Removed the autogenerated ethtool-user code for the YNL specs
+
+Changes in V3:
+- Added RTNL assertions where needed
+- Fixed issues in the DUMP code for PHY_GET, which crashed when running it
+  twice in a row
+- Added the documentation, and moved in-source docs around
+- renamed link_topology to phy_link_topology
+
+Changes in V2:
+- Added the DUMP operation
+- Added much more information in the reported data, to be able to reconstruct
+  precisely the topology tree
+- renamed phy_list to link_topology
+
+
+
+Maxime Chevallier (13):
+  net: phy: Introduce ethernet link topology representation
+  net: sfp: pass the phy_device when disconnecting an sfp module's PHY
+  net: phy: add helpers to handle sfp phy connect/disconnect
+  net: sfp: Add helper to return the SFP bus name
+  net: ethtool: Allow passing a phy index for some commands
+  netlink: specs: add phy-index as a header parameter
+  net: ethtool: Introduce a command to list PHYs on an interface
+  netlink: specs: add ethnl PHY_GET command set
+  net: ethtool: plca: Target the command to the requested PHY
+  net: ethtool: pse-pd: Target the command to the requested PHY
+  net: ethtool: cable-test: Target the command to the requested PHY
+  net: ethtool: strset: Allow querying phy stats by index
+  Documentation: networking: document phy_link_topology
+
+ Documentation/netlink/specs/ethtool.yaml      |  68 ++++
+ Documentation/networking/ethtool-netlink.rst  |  51 +++
+ Documentation/networking/index.rst            |   1 +
+ .../networking/phy-link-topology.rst          | 121 +++++++
+ MAINTAINERS                                   |   2 +
+ drivers/net/phy/Makefile                      |   2 +-
+ drivers/net/phy/at803x.c                      |   2 +
+ drivers/net/phy/marvell-88x2222.c             |   2 +
+ drivers/net/phy/marvell.c                     |   2 +
+ drivers/net/phy/marvell10g.c                  |   2 +
+ drivers/net/phy/phy_device.c                  |  55 ++++
+ drivers/net/phy/phy_link_topology.c           |  79 +++++
+ drivers/net/phy/phylink.c                     |   3 +-
+ drivers/net/phy/sfp-bus.c                     |  15 +-
+ include/linux/netdevice.h                     |   4 +-
+ include/linux/phy.h                           |   6 +
+ include/linux/phy_link_topology.h             |  64 ++++
+ include/linux/phy_link_topology_core.h        |  19 ++
+ include/linux/sfp.h                           |   8 +-
+ include/uapi/linux/ethtool.h                  |  16 +
+ include/uapi/linux/ethtool_netlink.h          |  30 ++
+ net/core/dev.c                                |   3 +
+ net/ethtool/Makefile                          |   2 +-
+ net/ethtool/cabletest.c                       |  12 +-
+ net/ethtool/netlink.c                         |  33 ++
+ net/ethtool/netlink.h                         |  12 +-
+ net/ethtool/phy.c                             | 306 ++++++++++++++++++
+ net/ethtool/plca.c                            |  13 +-
+ net/ethtool/pse-pd.c                          |  14 +-
+ net/ethtool/strset.c                          |  15 +-
+ 30 files changed, 922 insertions(+), 40 deletions(-)
+ create mode 100644 Documentation/networking/phy-link-topology.rst
+ create mode 100644 drivers/net/phy/phy_link_topology.c
+ create mode 100644 include/linux/phy_link_topology.h
+ create mode 100644 include/linux/phy_link_topology_core.h
+ create mode 100644 net/ethtool/phy.c
+
+-- 
+2.43.0
 
 
