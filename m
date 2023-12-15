@@ -1,236 +1,224 @@
-Return-Path: <linux-kernel+bounces-1405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C72F814E84
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:25:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 267B5814E89
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE5D91F24A0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:25:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7533BB2421D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BADF30127;
-	Fri, 15 Dec 2023 17:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E5C82EDA;
+	Fri, 15 Dec 2023 17:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="oVsbcofg"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="fwWY7QMm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995893011A;
-	Fri, 15 Dec 2023 17:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 87698C000D;
-	Fri, 15 Dec 2023 17:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702660378;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LfIk6jrsbwO3TLKZXiaKaSazRpes+uS9mpSSHSKb1MY=;
-	b=oVsbcofgcjHMs9jJ1JyR+cxJ1jRk5kvr+suHLsjfEqtSsvuiJ4++YLg1CLMEqIUBa/8BV2
-	OFuQOn/kgBAaumbxBaUCK6zUlfXFNfH4EXUTTMFiXriu/Njs0CwtRnlhjLwUzrOX182Ett
-	vDd8adYQhrYOoaNEeZlKc5Juh+x/RcDoC2H+KH1sKCNb64JHTdnkWBTzZ23zHrUWS9CIrw
-	yZzUXWI8C+Gd/bkmIrIjne9jsPmaErIoTghpnuZOt9qZuvWphhxpAhL7MJ0tsARNJgPo9t
-	CafG4a8pybrQy8zswaXy7BFw74V6nali01GIUnS2f4gaMgkuf0jqiotWgnc/WQ==
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: davem@davemloft.net
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>
-Subject: [PATCH net-next v4 13/13] Documentation: networking: document phy_link_topology
-Date: Fri, 15 Dec 2023 18:12:35 +0100
-Message-ID: <20231215171237.1152563-14-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
-References: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0890A82EC9;
+	Fri, 15 Dec 2023 17:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BFEfQZm028431;
+	Fri, 15 Dec 2023 18:13:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=EmFNRv3LoVGaci59g9h+fN2FkreeIA99LXaRAwQkDis=; b=fw
+	WY7QMm9y2J9BqlZgw1Gjtb+o+dYxNk+k6LUcHD2rb6emZrVf8VKPuuCVpdYheO7e
+	+Am366SCNznJJ8AwW84KBgnd4IU9J9KAF5FS99iPkqDXveQo5MYzy4j1aUdhu0oJ
+	C+Fl5TncBsTXJRrK3pB+IEbsLL+RtNC7/oaxlrLZZcL4omd1Rh8GXoojLht/6mgH
+	r1r4wcZDi7HNxj5dWKNJcMyIsIjEqZFFZl30vdCluRgPvlf/C3HaB0q8I8cVyEEW
+	iEGG7j9eftlHB5c3kqLKpJyd8VhCTmjGArGaqp1Hp7wcSXLZPzJ32rquIgHKyfzk
+	x/0DMfPfilFvHpq9eBZg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvehmu8pg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 18:13:53 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1BE69100052;
+	Fri, 15 Dec 2023 18:13:53 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 11CD823BE1E;
+	Fri, 15 Dec 2023 18:13:53 +0100 (CET)
+Received: from [10.201.20.59] (10.201.20.59) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Dec
+ 2023 18:13:52 +0100
+Message-ID: <997c056e-c4e1-4bd8-9fcd-9f1b4bd45929@foss.st.com>
+Date: Fri, 15 Dec 2023 18:13:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/6] counter: stm32-timer-cnt: populate capture
+ channels and check encoder
+Content-Language: en-US
+To: William Breathitt Gray <william.gray@linaro.org>
+CC: <lee@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230922143920.3144249-1-fabrice.gasnier@foss.st.com>
+ <20230922143920.3144249-6-fabrice.gasnier@foss.st.com>
+ <ZSnJR2yfYsBNHu/4@fedora>
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+In-Reply-To: <ZSnJR2yfYsBNHu/4@fedora>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-15_10,2023-12-14_01,2023-05-22_02
 
-The newly introduced phy_link_topology tracks all ethernet PHYs that are
-attached to a netdevice. Document the base principle, internal and
-external APIs. As the phy_link_topology is expected to be extended, this
-documentation will hold any further improvements and additions made
-relative to topology handling.
+On 10/14/23 00:48, William Breathitt Gray wrote:
+> On Fri, Sep 22, 2023 at 04:39:19PM +0200, Fabrice Gasnier wrote:
+>> This is a precursor patch to support capture channels on all possible
+>> channels and stm32 timer types. Original driver was intended to be used
+>> only as quadrature encoder and simple counter on internal clock.
+>>
+>> So, add ch3 and ch4 definition. Also add a check on encoder capability,
+>> so the driver may be probed for timer instances without encoder feature.
+>> This way, all timers may be used as simple counter on internal clock,
+>> starting from here.
+> 
+> Hi Fabrice,
+> 
+> Let's split the encoder capability probing code, detect number of
+> channels code, and channel introduction code to their own patches in
+> order to simplify things.
+> 
+>> Encoder capability is retrieved by using the timer index (originally in
+>> stm32-timer-trigger driver and dt-bindings). The need to keep backward
+>> compatibility with existing device tree lead to parse aside trigger node.
+>> Add diversity as STM32 timers with capture feature may have either 4, 2,
+>> 1 or no cc (capture/compare) channels.
+>>
+>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> 
+> I think this patch is more complicated than it needs to be.
+> 
+>> @@ -400,13 +558,47 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+>>  	priv->clk = ddata->clk;
+>>  	priv->max_arr = ddata->max_arr;
+>>  
+>> +	ret = stm32_timer_cnt_probe_encoder(pdev, priv);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	stm32_timer_cnt_detect_channels(pdev, priv);
+>> +
+>>  	counter->name = dev_name(dev);
+>>  	counter->parent = dev;
+>>  	counter->ops = &stm32_timer_cnt_ops;
+>> -	counter->counts = &stm32_counts;
+>>  	counter->num_counts = 1;
+>> -	counter->signals = stm32_signals;
+>> -	counter->num_signals = ARRAY_SIZE(stm32_signals);
+> 
+> Keep this the same.
+> 
+>> +
+>> +	/*
+>> +	 * Handle diversity for stm32 timers features. For now encoder is found with
+>> +	 * advanced timers or gp timers with 4 channels. Timers with less channels
+>> +	 * doesn't support encoder.
+>> +	 */
+>> +	switch (priv->nchannels) {
+>> +	case 4:
+>> +		if (priv->has_encoder)
+>> +			counter->counts = &stm32_counts_enc_4ch;
+>> +		else
+>> +			counter->counts = &stm32_counts_4ch;
+>> +		counter->signals = stm32_signals;
+>> +		counter->num_signals = ARRAY_SIZE(stm32_signals);
+>> +		break;
+>> +	case 2:
+>> +		counter->counts = &stm32_counts_2ch;
+>> +		counter->signals = stm32_signals;
+>> +		counter->num_signals = 3; /* clock, ch1 and ch2 */
+>> +		break;
+>> +	case 1:
+>> +		counter->counts = &stm32_counts_1ch;
+>> +		counter->signals = stm32_signals;
+>> +		counter->num_signals = 2; /* clock, ch1 */
+>> +		break;
+>> +	default:
+>> +		counter->counts = &stm32_counts;
+>> +		counter->signals = stm32_signals;
+>> +		counter->num_signals = 1; /* clock */
+>> +		break;
+>> +	}
+> 
+> Rather than adjusting the number of counts and signals, keep the
+> configuration static and use a single stm32_counts array. The reason is
+> that in the Counter subsystem paradigm Signals do not necessary
+> correlate to specific hardware signals but are rather an abstract
+> representation of the device behavior at a high level. In other words, a
+> Synapse with an action mode set to COUNTER_SYNAPSE_ACTION_NONE can be
+> viewed as representing a Signal that does not affect the Count (i.e. in
+> this case equivalent to an unconnected line).
+> 
+> What you'll need to do instead is check priv->nchannels during
+> stm32_action_read and stm32_count_function_read calls in order to return
+> the correct synapse action and count function for the particular
+> channels configuration you have. In stm32_count_function_write you would
+> return an -EINVAL (maybe -EOPNOTSUPP would be better?) when the channels
+> configuration does not support a particular count function.
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
-V4: No changes
-V3: New patch
+Hi William,
 
- Documentation/networking/index.rst            |   1 +
- .../networking/phy-link-topology.rst          | 121 ++++++++++++++++++
- 2 files changed, 122 insertions(+)
- create mode 100644 Documentation/networking/phy-link-topology.rst
+Sorry for the long delay to address your comments here. Many thanks for
+these guidelines.
 
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index 69f3d6dcd9fd..a2c45a75a4a6 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -88,6 +88,7 @@ Contents:
-    operstates
-    packet_mmap
-    phonet
-+   phy-link-topology
-    pktgen
-    plip
-    ppp_generic
-diff --git a/Documentation/networking/phy-link-topology.rst b/Documentation/networking/phy-link-topology.rst
-new file mode 100644
-index 000000000000..d66ee9711ac1
---- /dev/null
-+++ b/Documentation/networking/phy-link-topology.rst
-@@ -0,0 +1,121 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=================
-+PHY link topology
-+=================
-+
-+Overview
-+========
-+
-+The PHY link topology representation in the networking stack aims at representing
-+the hardware layout for any given Ethernet link.
-+
-+An Ethernet Interface from userspace's poing of view is nothing but a
-+:c:type:`struct net_device <net_device>`, which exposes configuration options
-+trough the legacy ioctls and the ethool netlink commands. The base assumption
-+when designing these configuration channels were that the link looked
-+something like this ::
-+
-+  +-----------------------+        +----------+      +--------------+
-+  | Ethernet Controller / |        | Ethernet |      | Connector /  |
-+  |       MAC             | ------ |   PHY    | ---- |    Port      | ---... to LP
-+  +-----------------------+        +----------+      +--------------+
-+  struct net_device               struct phy_device
-+
-+Commands that needs to configure the PHY will go through the net_device.phydev
-+field to reach the PHY and perform the relevant configuration.
-+
-+This assumption falls appart in more complex topologies that can arise when,
-+for example, using SFP transceivers (although that's not the only specific case).
-+
-+Here, we have 2 basic scenarios. Either the MAC is able to output a serialized
-+interface, that can directly be fed to an SFP cage, such as SGMII, 1000BaseX,
-+10GBaseR, etc.
-+
-+The link topology then looks like this (when an SFP module is inserted) ::
-+
-+  +-----+  SGMII  +------------+
-+  | MAC | ------- | SFP Module |
-+  +-----+         +------------+
-+
-+Knowing that some modules embed a PHY, the actual link is more like ::
-+
-+  +-----+  SGMII   +--------------+
-+  | MAC | -------- | PHY (on SFP) |
-+  +-----+          +--------------+
-+
-+In this case, the SFP PHY is handled by phylib, and registered by phylink through
-+its SFP upstream ops.
-+
-+Now some Ethernet controllers aren't able to output a serialized interface, so
-+we can't directly connect them to an SFP cage. However, some PHYs can be used
-+as media-converters, to translate the non-serialized MAC MII interface to a
-+serialized MII interface fed to the SFP ::
-+
-+  +-----+  RGMII  +-----------------------+  SGMII  +--------------+
-+  | MAC | ------- | PHY (media converter) | ------- | PHY (on SFP) |
-+  +-----+         +-----------------------+         +--------------+
-+
-+This is where the model of having a single net_device.phydev pointer shows its
-+limitations, as we now have 2 PHYs on the link.
-+
-+The phy_link topology framework aims at providing a way to keep track of every
-+PHY on the link, for use by both kernel drivers and subsystems, but also to
-+report the topology to userspace, allowing to target individual PHYs in configuration
-+commands.
-+
-+API
-+===
-+
-+The :c:type:`struct phy_link_topology <phy_link_topology>` is a per-netdevice
-+resource, that gets initialized at netdevice creation. Once it's initialized,
-+it is then possible to register PHYs to the topology through :
-+
-+:c:func:`phy_link_topo_add_phy`
-+
-+Besides registering the PHY to the topology, this call will also assign a unique
-+index to the PHY, which can then be reported to userspace to refer to this PHY
-+(akin to the ifindex). This index is a u32, ranging from 1 to U32_MAX. The value
-+0 is reserved to indicate the PHY doesn't belong to any topology yet.
-+
-+The PHY can then be removed from the topology through
-+
-+:c:func:`phy_link_topo_del_phy`
-+
-+These function are already hooked into the phylib subsystem, so all PHYs that
-+are linked to a net_device through :c:func:`phy_attach_direct` will automatically
-+join the netdev's topology.
-+
-+PHYs that are on a SFP module will also be automatically registered IF the SFP
-+upstream is phylink (so, no media-converter).
-+
-+PHY drivers that can be used as SFP upstream need to call :c:func:`phy_sfp_attach_phy`
-+and :c:func:`phy_sfp_detach_phy`, which can be used as a
-+.attach_phy / .detach_phy implementation for the
-+:c:type:`struct sfp_upstream_ops <sfp_upstream_ops>`.
-+
-+UAPI
-+====
-+
-+There exist a set of netlink commands to query the link topology from userspace,
-+see ``Documentation/networking/ethtool-netlink.rst``.
-+
-+The whole point of having a topology representation is to assign the phyindex
-+field in :c:type:`struct phy_device <phy_device>`. This index is reported to
-+userspace using the ``ETHTOOL_MSG_PHY_GET`` ethtnl command. Performing a DUMP operation
-+will result in all PHYs from all net_device being listed. The DUMP command
-+accepts either a ``ETHTOOL_A_HEADER_DEV_INDEX`` or ``ETHTOOL_A_HEADER_DEV_NAME``
-+to be passed in the request to filter the DUMP to a single net_device.
-+
-+The retrieved index can then be passed as a request parameter using the
-+``ETHTOOL_A_HEADER_PHY_INDEX`` field in the following ethnl commands :
-+
-+* ``ETHTOOL_MSG_STRSET_GET`` to get the stats strig set from a given PHY
-+* ``ETHTOOL_MSG_CABLE_TEST_ACT`` and ``ETHTOOL_MSG_CABLE_TEST_ACT``, to perform
-+  cable testing on a given PHY on the link (most likely the outermost PHY)
-+* ``ETHTOOL_MSG_PSE_SET`` and ``ETHTOOL_MSG_PSE_GET`` for PHY-controlled PoE and PSE settings
-+* ``ETHTOOL_MSG_PLCA_GET_CFG``, ``ETHTOOL_MSG_PLCA_SET_CFG`` and ``ETHTOOL_MSG_PLCA_GET_STATUS``
-+  to set the PLCA (Physical Layer Collision Avoidance) parameters
-+
-+Note that the PHY index can be passed to other requests, which will silently
-+ignore it if present and irrelevant.
--- 
-2.43.0
+I'm preparing a v3, to address these. I'll probably send it soon, so we
+can start to review also the capture part of it. Still there are few
+things here I'm wondering about (as an anticipation task).
 
+Basically, removing all the diversity here means the most featured timer
+model will be represented here (with all possible signals).
+When I wrote the various configuration arrays, I'd have been tempted to
+allocate them dynamically upon probing to avoid having all these
+variants described as const arrays. This may have eased other signals
+additions later. But that's not the direction. So, this simplifies the
+description here, clearly, to describe the full-featured timer/counter,
+and handle the ("unconnected") variants by returning errors.
+
+I still have in mind the replacement of the last IIO_COUNT device [1]
+(not addressed in this series), e.g. in
+drivers/iio/trigger/stm32-timer-trigger.c. Here, there are
+"valids_table" that are used to cascade two timers (one timer output
+being the input to another timer). With this table currently, an IIO
+user knows the name of the signal it selects (then the driver looks up
+the 'valids' table to set SMCR / TS bits, e.g. trigger select). Each
+individual timer has a different input mapping, so called peripheral
+interconnect in STM32.
+What bothers me here is: with an abstracted full-featured timer, without
+any diversity on the signal names, I fear the userland has no clue on
+which signal would be used. Abstracting the timer this way would mean
+the user only knows it selects "Internal Trigger 0" for example, without
+knowing which internal signal in the SoC it has selected.
+
+Even if this is out of scope for this series, would you have some clue
+so I can anticipate it ? Or if we stick with abstract names? In which
+case the userland may need to be aware of the signals mapping (where
+currently in IIO_COUNT driver, the signal names are privided). I'd be
+glad to get some direction here.
+
+Please advise,
+Best Regards,
+Fabrice
+
+[1] https://lore.kernel.org/linux-arm-kernel/Y0vzlOmFrVCQVXMq@fedora/
+
+> 
+> William Breathitt Gray
 
