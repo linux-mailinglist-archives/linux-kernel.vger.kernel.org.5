@@ -1,84 +1,85 @@
-Return-Path: <linux-kernel+bounces-789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53F81814607
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:58:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02F4E81460A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:59:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E74A61F234E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:58:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A46712858EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:59:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8691CAA4;
-	Fri, 15 Dec 2023 10:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0251C2BD;
+	Fri, 15 Dec 2023 10:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hAWMFIsQ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VWxsUaDG"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kPsg7CVA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B922C1BDDC
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 15 Dec 2023 11:58:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702637914;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 920ED18C2F
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6908D240003;
+	Fri, 15 Dec 2023 10:59:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702637957;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=emw64z31Kkb7/qbx35G2LbmcOdKvaq/JLuZQeZftAZo=;
-	b=hAWMFIsQXgUBb6MHtY7bbf81SbgDom1QqlHy9TC+TPT2Qx2sH0YMqehBfFdIRasV1LCN95
-	I8eX6+ADOzW0/Ef8xgaHuUZzdhFJuzB+IhKrn0nOuZ49OxQmBA+/KxaNUUma5HFwBXNxE+
-	1aAO5u9O2y5A1dj9OD63n5lbES+gR5DVnNc5w0TmmNlm0KDOcfWHVBhFASW8qO9M1lYASw
-	9gOVOt7uuIULjGFnCqrcA/EYigeHvVfX+eFzs/Lv63H6QB3Cubu0wpQT9nmD4TXrHaCV/4
-	z+9UPPdzjQ+pfWwZjS7dFDX/8q5nRSvTYdgOLICPM3iEotHxB0BAOgUHJ6magw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702637914;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=emw64z31Kkb7/qbx35G2LbmcOdKvaq/JLuZQeZftAZo=;
-	b=VWxsUaDGm8q85XnUB0OHDdVqJSvRQxNTI5omn6FQ1Vltdzvj4UMnR2Ex2dn8Ex/EYAgFCr
-	hIFCTV4Wju+skDDA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Francesco Dolcini <francesco@dolcini.it>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH printk v3 02/14] printk: Adjust mapping for 32bit seq
- macros
-Message-ID: <20231215105833.aIn3h90O@linutronix.de>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-3-john.ogness@linutronix.de>
- <20231215095526.ZA8Q-45e@linutronix.de>
- <8734w3hj2z.fsf@jogness.linutronix.de>
+	bh=A8qtfB12y+BeC7a00boq7oM6tyk44zmBIpG8B8Z9lcg=;
+	b=kPsg7CVAb2Q0DGiyKr7KZ1X5RvOk72SNcxZN6OIxuFygn/HGlDV7aDNIkKykzAwKXDTmhZ
+	vRZwX8oGjo+/IV3stGRHDYvtJzpRPZdUbC15bknYGHaDI/Amq0W9UVm8wyrRu2T7MP2qU2
+	Y8Gy4yMzZKoidog827Nd4aBFUQ4/IzM+IeVkSBHauQ87QlIhmmH2wKdWQI+N0X122kfdVt
+	GYQuJQ4CubWn+/SwQuKZR+2u3ahyFvpfuEqkxBmrs8+Odf0EnN+0ubtHRWV7z8LLq8iyBB
+	DcYheDr8uBh1li+aUw2y4Y/sTjMKdio00GSxDjlh4i4gjkKXkLcxhGayjenv3A==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: diskonchip: fix a potential double free in doc_probe
+Date: Fri, 15 Dec 2023 11:59:14 +0100
+Message-Id: <20231215105914.499203-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231214072946.10285-1-dinghao.liu@zju.edu.cn>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8734w3hj2z.fsf@jogness.linutronix.de>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'2b8aa4c3e6a5d41b10b53da2017852f647d0345b'
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On 2023-12-15 11:16:44 [+0106], John Ogness wrote:
-> No, it is not a bug at this point. As the commit message writes:
+On Thu, 2023-12-14 at 07:29:43 UTC, Dinghao Liu wrote:
+> When nand_scan() fails, it has cleaned up related resources
+> in its error paths. Therefore, the following nand_cleanup()
+> may lead to a double-free. One possible trace is:
 > 
-> "Until now this mapping has been correct for all call sites."
+> doc_probe
+>   |-> nand_scan
+>   |     |-> nand_scan_with_ids
+>   |           |-> nand_scan_tail
+>   |                 |-> kfree(chip->data_buf) [First free]
+>   |
+>   |-> nand_cleanup
+>         |-> kfree(chip->data_buf) [Double free here]
 > 
-> But if the mapping is not changed here, it will become a bug after
-> applying patch 3 of this series.
+> Fix this by removing nand_cleanup() on failure of
+> nand_scan().
+> 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-Okay. Thank you clarifying this.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-> John
-
-Sebastian
+Miquel
 
