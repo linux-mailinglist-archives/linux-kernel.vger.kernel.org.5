@@ -1,728 +1,662 @@
-Return-Path: <linux-kernel+bounces-1716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ACA68152F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:03:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DEE481532B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:07:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BD471F2156B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:03:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0761D284EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9700137258;
-	Fri, 15 Dec 2023 21:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142235D8EF;
+	Fri, 15 Dec 2023 21:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CB96qy+6"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="ZrmDA3tU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic306-28.consmr.mail.ne1.yahoo.com (sonic306-28.consmr.mail.ne1.yahoo.com [66.163.189.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421E283B08;
-	Fri, 15 Dec 2023 21:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFICYkV016956;
-	Fri, 15 Dec 2023 21:50:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=ixhtTOGnX7P4tTWs6onH
-	ajKULSzgWNdIoPOGbkKKvDM=; b=CB96qy+6QdI+R2qwJeHsfRX8phdoe6Tmi9Cc
-	Fy9X/DAIhmMxphOcUeguM9GIqsOs2RrnF/8Lw2rsUNzzopZiIvhKLEW30Zu4nPFC
-	PVHWJ7IAJ6x51sdfEOuw4tjn5y5vsPELh25Lrcys3/bWRzwkAkrAulREXIo9xW13
-	pnso/npSZo51WoHkCNap/limJ7tPsuFQvD3uHeN7E5YuwwIwPKNPyL2QKzqRzP3d
-	FJ117jcAQxIi0TfGFcYuELVCC4RSlnuTqRT9c9GKlt/U6cQFCfUvdRJipdaG2HpT
-	VF0/SydCqIM4P84TmnS3i2aJG3Ryk+++CJeojYXSyNBE6LEnCA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0up20gjg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 21:50:19 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFLoIE1012397
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 21:50:18 GMT
-Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Dec 2023 13:50:18 -0800
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>,
-        <andersson@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <konrad.dybcio@linaro.org>, <Thinh.Nguyen@synopsys.com>,
-        <broonie@kernel.org>, <bgoswami@quicinc.com>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>, <agross@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v10 41/41] ASoC: doc: Add documentation for SOC USB
-Date: Fri, 15 Dec 2023 13:49:55 -0800
-Message-ID: <20231215214955.12110-42-quic_wcheng@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231215214955.12110-1-quic_wcheng@quicinc.com>
-References: <20231215214955.12110-1-quic_wcheng@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E659563A5
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 21:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702677297; bh=ZDBaVqEmMMmd+UePX4elRzvHyFvY3QWYqChvMKrk0h4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=ZrmDA3tU8L9XT6EepLIetNCdF0X5PLWvR9UIuyXzQlY0IptzZECGCfjKDPUy61aJj+E76YjS2uokNunXqlodRBAbvLi9RgjyHuPRLff6CtYXQlQWmuaW9eLoFBUoi3zK8/NGWw1a03VR27QymIQRfMUSvAQlJht8Zo9HvrGSQX/KdUDkvq3N/jVT/la2W4RgC+brW5K2Oq6M/fGkaIfWul8QoOf+1ToKGG+J2oGU0ap5wC58AFVCVn8ZOPgcjEXIa3VZvUDrKY9XQEJ9C5LdY9/iEOLj2dCi3g5iNGjoqtJ2XLfanNsr3MdPz01JPzI/AYFeGtPRwlWurFvF6NZiqA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702677297; bh=c6V0tfmgj8IhN2M2KiM2CKM9dV14JG2Oxhsfem/UAMp=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=WD9lXj0+54jh9LXcQGNDRFml7MetNfCK+5KtqKQVVvQml6DFMC9M8eg1bUqsHwXXna+guZSpDWkpVMTXdtDyzjCzhsuJXDBDqk3Ihen7jqEN5xGaP1l76MhsUcfnit4eISQhE6f61/Q5ochpc9/QBssr4U1nWTlvxtrn3rNjVe5csISfbeFuOhvMdk+anB2NxjvuYj2hS2fZtASpWA69GjmbwOohiAdayTp6cxpCrSH8wFF9PcRIbiWgiru7YfLGw/YvLlDbn3ZW3+QwB9cv66J6eiTooY32rnSJ5mGPlqTDp5XS1alNqAuUeP8mM2hy5XFjz1NHft0LaWFsoDbTmQ==
+X-YMail-OSG: OuJJ018VM1nIBTNa98RagZ0KjHV3CZqxbR3AKXtCbHuvDK86zGUQLOlcCuCAsMf
+ 62W1aBa4PwmNErLCfZMY3DVzvwET6UC7D7OqOF99NanpBOtTC3xGIXShcqKAQvN14ZzlP0.gUtiK
+ OaBC9v39Sq1ZWACVBnNuUq1fSrReJL27PZmg7UV7icZlT7jotD_ie7ryzI9zvmLuF43jC6LtcaEm
+ chp5LuHwRWNpGM7m7JBpT6R1HXMIq79vWGHxd6sdAeGnc7MDg5SD1bK2_TpBjzbyL450QGP8GLrn
+ j_ZOOSEpABIYnfoHct7F35Eor3vuqpLTlKjaszi_BwqxajmIrL5QodXvrsWFeXQDhqgNfvHQDBUS
+ YECWrnmIClm7R_iLuMfRR9MPYr8D.e2TY4e6ewySgyJN_9y5B.Q7A4O7XketYaH.p6rah0IuSxGI
+ unpVzrYq_1L2tJPNm1DZR1FakWOQt35kQMQuJbCp8WCveqV3PyCC43hZDDBa59WSTg5YSxEHlnwS
+ 7VEbkekKxM96uB3.s7gHYwBe3ktpBdr1QxFzaZVqIFQKkBX7z3PmPggtGnFohnEdVjHLhYnrKqZ9
+ t1sh20PcuipTjHiA78rwXFSntOtrf8RCiokNoA7ff7QRy_fUdA3Oz9bI5A7maDdx2._e1UX7ZO59
+ QNBbk23hNYeUEd.MBL8nEPV44wIqWd81dEMKxLB2IJWtUypaNVSpulGzDfysplLuBkDdxzEr_aOH
+ Vt.XW35jvIZlrZ5jDUXgyjD_f8oH1Qym3WwUK_Y61CeOd_6DkbENmsvRNdz5TqkJ3nxGGrX5LDOB
+ 9CzwJQKYBApaqEINqlr_P6mgRGf4n7s7l03RckfcPVZ3ceiBQixkEdSaozPgIfUuI13fRSkzAmn4
+ dEOYWcXNHNEXYlvH0ttlx0swQOKBxkAl7OYrhMxJgU3yLabGViJyeT3Ayr_L9GVHNq9Hv8.RLCX8
+ InuH_Hd.fBxcQayRUrr4pPOhpvHpPn8GvslUF0a0EY_ZyLSCeDg_fpWEWdZuUQnHj5vaY5oyua.C
+ CMcxEZVXlNYxMMWf1tnwRc5ZTgNW_hnZCdUdM0QzqhloxF2bf8VDX3B0MtgPBNfO0L2Hebio0nae
+ aTH2N2pFXdN3WlUrxwCEzE9NZbMVTwCloWmVKC_u.GfJD8bO9hzMpV6MoqUBpYfou6bsOAjvLO53
+ 1CXGPPhMrcfARNQvkQx8GkKr_xAKrAyTjNuXW2ZmWsDqBjyAL5hlSWDz1tNXUQdVa_Gb0I.QvV_m
+ 2Fxk8F5CRze6Wv9uSKe6Z4LwPwN8xFV1x7FYjU5yOGUzYLuojsBZ8khZcWLJ32sBemR37ATDec8X
+ dGT.SEWpIHwPSHDRuOAPtsXNIAuxQY4coy3PsiZ1UhV1XO1264mJtIG8DNWQlwADsz_VFQbCbvfc
+ HStKxoR_0MU_mOLyt3nV8XjF6.aCMCRSKs37SBHNbzccaovk_tIK76G5MFxDWOYzu3w7DBVdAnpP
+ Hq04QN0F_GOCwqL7SkBZP7OAYXUh8IEnO2.jsYI1CF1fqCouhlWCkO8FlERd0Iilpgm24RY7NIvX
+ IesvP2eZqN_SIdqRc2hw_msxUxBGSzsIYGblH63jUEG4WStSqmetAK2DwwV4wr9QDQ1FM6MCV7lI
+ doFRsmr3OEysLyPit6vZomNI5QiMmgvfWUjNOzSiVqPbLtVoyu091o001KJBNTT0W9HYRqcJn6Uu
+ 8pv.5LW4W65DrFNifytGsEzSUkwiLbCJ_U7Hjk.rhY7.pCtuTRk.MeeEVORVdVMcw264BoCN.beW
+ tC2c3SVZG8T1i696_P7Nl.a0aB0tEhWcva5oMq346yVyLmolxYpKaHvuQGjSixwli9D9f5ZRquAP
+ mp.whJg8YPGiKG5CLSKTPIwvh94FkYs6xy9tI7NRRalrBiEa1vNKZaajZ.mozaWjaVtw3sMJVcS.
+ npq_R7O.yT2xrKK3h8FxCqX852flV5W38fy0AigCroWbrtKAkxxMlOYi8xNrxsi.KiGOXP9eQBSa
+ WkFhlIm9WvsbcmjKnOpguOLHWEXq2vtl2fIZEW_mlYZcYDc96YyCsx.1e0TtXNZGDI6w9uo9hMLr
+ AHsJWIpUgiCj1QXb5vwZXltxhE.uQybS2N72yps16Pm0GYQjxcWQySVfmFKiJIPdRr_Kz_oKwjPz
+ 8yrUnLi69z.RMQAI_o1zMeJTfd9SSlRs4Rmebnup8kW0iElDdAlKMl0ewfsTN1AdRdxqzLfTRZQe
+ WK09iq2i795Eo7DO.Pia5Qcq6Vzb.OfXn6b_pFCfaLvdUSy4FXvtCaOR6NB091YLpR4fr
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 3dff4b64-0b75-4d7a-bd1e-048eef27f32b
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Dec 2023 21:54:57 +0000
+Received: by hermes--production-gq1-6949d6d8f9-nsbdm (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 06296db93d4f494494b6d1b8f668b838;
+          Fri, 15 Dec 2023 21:54:52 +0000 (UTC)
+Message-ID: <5b72f32b-fdf7-4cb5-8bc4-f51940c9bf41@schaufler-ca.com>
+Date: Fri, 15 Dec 2023 13:54:51 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qPPuy8Kx2dMgPmXSLSeDnVipLiZrkzYc
-X-Proofpoint-ORIG-GUID: qPPuy8Kx2dMgPmXSLSeDnVipLiZrkzYc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- mlxscore=0 phishscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- impostorscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312150152
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 21/24] evm: Move to LSM infrastructure
+Content-Language: en-US
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+ neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+ zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, dhowells@redhat.com,
+ jarkko@kernel.org, stephen.smalley.work@gmail.com, eparis@parisplace.org,
+ shuah@kernel.org, mic@digikod.net
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+ selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
+ <20231214170834.3324559-22-roberto.sassu@huaweicloud.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231214170834.3324559-22-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21952 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-With the introduction of the soc-usb driver, add documentation highlighting
-details on how to utilize the new driver and how it interacts with
-different components in USB SND and ASoC.  It provides examples on how to
-implement the drivers that will need to be introduced in order to enable
-USB audio offloading.
+On 12/14/2023 9:08 AM, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> As for IMA, move hardcoded EVM function calls from various places in the
+> kernel to the LSM infrastructure, by introducing a new LSM named 'evm'
+> (last and always enabled like 'ima'). The order in the Makefile ensures
+> that 'evm' hooks are executed after 'ima' ones.
+>
+> Make EVM functions as static (except for evm_inode_init_security(), which
+> is exported), and register them as hook implementations in init_evm_lsm().
+>
+> Unlike before (see commit to move IMA to the LSM infrastructure),
+> evm_inode_post_setattr(), evm_inode_post_set_acl(),
+> evm_inode_post_remove_acl(), and evm_inode_post_removexattr() are not
+> executed for private inodes.
+>
+> Finally, add the LSM_ID_EVM case in lsm_list_modules_test.c
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
----
- Documentation/sound/soc/index.rst |   1 +
- Documentation/sound/soc/usb.rst   | 611 ++++++++++++++++++++++++++++++
- 2 files changed, 612 insertions(+)
- create mode 100644 Documentation/sound/soc/usb.rst
+Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
 
-diff --git a/Documentation/sound/soc/index.rst b/Documentation/sound/soc/index.rst
-index e57df2dab2fd..8bed8f8f48da 100644
---- a/Documentation/sound/soc/index.rst
-+++ b/Documentation/sound/soc/index.rst
-@@ -18,3 +18,4 @@ The documentation is spilt into the following sections:-
-    jack
-    dpcm
-    codec-to-codec
-+   usb
-diff --git a/Documentation/sound/soc/usb.rst b/Documentation/sound/soc/usb.rst
-new file mode 100644
-index 000000000000..ecff0b221d86
---- /dev/null
-+++ b/Documentation/sound/soc/usb.rst
-@@ -0,0 +1,611 @@
-+================
-+ASoC USB support
-+================
-+
-+Overview
-+========
-+In order to leverage the existing USB sound device support in ALSA, the
-+introduction of the ASoC USB APIs, allow for the entities to communicate
-+with one another.
-+
-+One potential use case would be to support USB audio offloading, which is
-+an implementation that allows for an external DSP on the SoC to handle the
-+transfer of audio data over the USB bus.  This would let the main
-+processor to stay in lower power modes for longer durations.  The following
-+is an example design of how the ASoC and ALSA pieces can be connected
-+together to achieve this:
-+
-+::
-+
-+               USB                   |            ASoC
-+                                     |  _________________________
-+                                     | |   ASoC Platform card    |
-+                                     | |_________________________|
-+                                     |         |           |
-+                                     |      ___V____   ____V____
-+                                     |     |ASoC BE | |ASoC FE  |
-+                                     |     |DAI LNK | |DAI LNK  |
-+                                     |     |________| |_________|
-+                                     |         ^  ^        ^
-+                                     |         |  |________|
-+                                     |      ___V____    |
-+                                     |     |SOC-USB |   |
-+     ________       ________               |        |   |
-+    |USB SND |<--->|USBSND  |<------------>|________|   |
-+    |(card.c)|     |offld   |<----------                |
-+    |________|     |________|___     | |                |
-+        ^               ^       |    | |    ____________V_________
-+        |               |       |    | |   |IPC                   |
-+     __ V_______________V_____  |    | |   |______________________|
-+    |USB SND (endpoint.c)     | |    | |              ^
-+    |_________________________| |    | |              |
-+                ^               |    | |   ___________V___________
-+                |               |    | |->|audio DSP              |
-+     ___________V_____________  |    |    |_______________________|
-+    |XHCI HCD                 |<-    |
-+    |_________________________|      |
-+
-+
-+SOC USB driver
-+==============
-+Structures
-+----------
-+``struct snd_soc_usb``
-+
-+  - ``list``: list head for SND SOC struct list
-+  - ``dev``: USB backend device reference
-+  - ``component``: reference to ASoC component
-+  - ``active_list``: active sessions
-+  - ``num_supported_streams``: number of supported concurrent sessions
-+  - ``connection_status_cb``: callback to notify connection events
-+  - ``put_offload_dev``: callback to select USB sound card/PCM device
-+  - ``get_offload_dev``: callback to fetch selected USB sound card/PCM device
-+  - ``priv_data``: driver data
-+
-+The snd_soc_usb structure can be referenced using the ASoC platform card
-+device, or a USB device (udev->dev).  This is created by the ASoC BE DAI
-+link, and the USB sound entity will be able to pass information to the
-+ASoC BE DAI link using this structure.
-+
-+``struct snd_soc_usb_device``
-+
-+  - ``card_idx``: sound card index associated with USB device
-+  - ``chip_idx``: USB sound chip array index
-+  - ``num_playback``: number of playback streams
-+  - ``num_capture``: number of capture streams
-+
-+The struct snd_soc_usb_device is created by the USB sound offload driver.
-+This will carry basic parameters/limitations that will be used to
-+determine the possible offloading paths for this USB audio device.
-+
-+``struct snd_soc_usb_session``
-+
-+  - ``active_card_idx``: active offloaded sound card
-+  - ``active_pcm_idx``: active offloaded PCM device
-+  - ``state``: USB BE DAI link PCM state
-+
-+The struct snd_soc_usb_session tracks the current offloading state for a
-+particular card and PCM combination.  This structure is carried/saved as
-+part of the active_list within struct snd_soc_usb.
-+
-+The number of entities in the active list corresponds to the number of
-+snd_soc_usb_session structures that are allocated.  This is controlled
-+by the num_supported_streams that is reported as part of the SOC USB
-+structure creation.
-+
-+Functions
-+---------
-+.. code-block:: rst
-+
-+	const char *snd_soc_usb_get_components_tag(bool playback);
-+..
-+
-+  - ``playback``: direction of audio stream
-+
-+**snd_soc_usb_get_components_tag()** returns the tag used for describing if USB
-+offloading is supported for appending to the ASoC platform card's components
-+string.
-+
-+Returns a tag based on the direction of the audio stream.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
-+			int direction)
-+..
-+
-+  - ``card_idx``: the index into the USB sound chip array.
-+  - ``params``: Requested PCM parameters from the USB DPCM BE DAI link
-+  - ``direction``: capture or playback
-+
-+**snd_soc_usb_find_format()** ensures that the requested audio profile being
-+requested by the external DSP is supported by the USB device.
-+
-+Returns 0 on success, and -EOPNOTSUPP on failure.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev)
-+..
-+
-+  - ``usbdev``: the usb device that was discovered
-+  - ``sdev``: capabilities of the device
-+
-+**snd_soc_usb_connect()** notifies the ASoC USB DCPM BE DAI link of a USB
-+audio device detection.  This can be utilized in the BE DAI
-+driver to keep track of available USB audio devices.  This is intended
-+to be called by the USB offload driver residing in USB SND.
-+
-+Returns 0 on success, negative error code on failure.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev)
-+..
-+
-+  - ``usbdev``: the usb device that was removed
-+  - ``sdev``: capabilities to free
-+
-+**snd_soc_usb_disconnect()** notifies the ASoC USB DCPM BE DAI link of a USB
-+audio device removal.  This is intended to be called by the USB offload
-+driver that resides in USB SND.
-+
-+.. code-block:: rst
-+
-+	void *snd_soc_usb_find_priv_data(struct device *usbdev)
-+..
-+
-+  - ``usbdev``: the usb device to reference to find private data
-+
-+**snd_soc_usb_find_priv_data()** fetches the private data saved to the SOC USB
-+device.
-+
-+Returns pointer to priv_data on success, NULL on failure.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_device_offload_available(struct device *dev)
-+..
-+
-+  - ``dev``: the device to find in SOC USB
-+
-+**snd_soc_usb_device_offload_available()** fetch the sound card number associated
-+to the USB BE DAI link.
-+
-+Returns a valid sound card index on success, negative on failure.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_prepare_session(struct snd_soc_usb *usb, int card_idx, int pcm_idx);
-+..
-+
-+  - ``usb``: SOC USB device
-+  - ``card_idx``: USB sound card index
-+  - ``pcm_idx``: USB PCM device index
-+
-+**snd_soc_usb_prepare_session()** populates active_list with a 'struct
-+snd_soc_usb_session.'  This will move the session into the SND_SOC_USB_PREPARED
-+state.  State updates will always start here.
-+
-+Returns index to active_list on success, -EBUSY on failure.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_shutdown_session(struct snd_soc_usb *usb, int session_id);
-+..
-+
-+  - ``usb``: SOC USB device
-+  - ``session_id``: session id returned by **snd_soc_usb_prepare_session()**
-+
-+**snd_soc_usb_shutdown_session()** frees up a slot in active_list, which signals
-+that there is no longer an active offloading device.  This allows for another
-+session to be started.
-+
-+Returns 0 on success, -EINVAL if session index is invalid.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_set_session_state(struct snd_soc_usb *usb, int session_id,
-+						enum snd_soc_usb_dai_state state);
-+..
-+
-+  - ``usb``: SOC USB device
-+  - ``session_id``: session id returned by **snd_soc_usb_prepare_session()**
-+  - ``state``: state to move into
-+
-+**snd_soc_usb_set_session_state()** moves an offloading session to the desired
-+state.
-+
-+.. code-block:: rst
-+
-+int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
-+					struct snd_soc_jack *jack)
-+..
-+
-+  - ``component``: ASoC component to add the jack
-+  - ``jack``: ASoC sound jack to add
-+
-+**snd_soc_usb_setup_offload_jack()** is a helper to add a sound jack control to
-+the platform sound card.  This will allow for consistent naming to be used on
-+designs that support USB audio offloading.
-+
-+Returns 0 on success, negative otherwise.
-+
-+.. code-block:: rst
-+
-+	struct snd_soc_usb *snd_soc_usb_allocate_port(struct snd_soc_component *component,
-+			int num_supported_streams, void *data);
-+..
-+
-+  - ``component``: DPCM BE DAI link component
-+  - ``num_supported_streams``: number of active streams supported by external DSP
-+  - ``data``: private data
-+
-+**snd_soc_usb_allocate_port()** allocates a SOC USB device and populates standard
-+parameters that is used for further operations.
-+
-+Returns a pointer to struct soc_usb on success, negative on error.
-+
-+.. code-block:: rst
-+
-+	void snd_soc_usb_free_port(struct snd_soc_usb *usb);
-+..
-+
-+  - ``usb``: SOC USB device to free
-+
-+**snd_soc_usb_free_port()** frees a SOC USB device.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_add_port(struct snd_soc_usb *usb);
-+..
-+
-+  - ``usb``: SOC USB device to add
-+
-+**snd_soc_usb_add_port()** add an allocated SOC USB device to the SOC USB framework.
-+Once added, this device can be referenced by further operations.
-+
-+.. code-block:: rst
-+
-+	int snd_soc_usb_remove_port(struct snd_soc_usb *usb);
-+..
-+
-+  - ``usb``: SOC USB device to remove
-+
-+**snd_soc_usb_remove_port()** removes a SOC USB device from the SOC USB framework.
-+After removing a device, any SOC USB operations would not be able to reference the
-+device removed.
-+
-+How to Register to SOC USB
-+--------------------------
-+The ASoC DPCM USB BE DAI link is the entity responsible for allocating and
-+registering the SOC USB device on the component bind.  Likewise, it will
-+also be responsible for freeing the allocated resources.  An example can
-+be shown below:
-+
-+.. code-block:: rst
-+
-+	static int q6usb_component_probe(struct snd_soc_component *component)
-+	{
-+		...
-+		data->usb = snd_soc_usb_allocate_port(component, 1, &data->priv);
-+		if (!data->usb)
-+			return -ENOMEM;
-+
-+		usb->connection_status_cb = q6usb_alsa_connection_cb;
-+
-+		ret = snd_soc_usb_add_port(usb);
-+		if (ret < 0) {
-+			dev_err(component->dev, "failed to add usb port\n");
-+			goto free_usb;
-+		}
-+		...
-+	}
-+
-+	static void q6usb_component_remove(struct snd_soc_component *component)
-+	{
-+		...
-+		snd_soc_usb_remove_port(data->usb);
-+		snd_soc_usb_free_port(data->usb);
-+	}
-+
-+	static const struct snd_soc_component_driver q6usb_dai_component = {
-+		.probe = q6usb_component_probe,
-+		.remove = q6usb_component_remove,
-+		.name = "q6usb-dai-component",
-+		...
-+	};
-+..
-+
-+BE DAI links can pass along vendor specific information as part of the
-+call to allocate the SOC USB device.  This will allow any BE DAI link
-+parameters or settings to be accessed by the USB offload driver that
-+resides in USB SND.
-+
-+USB Audio Device Connection Flow
-+--------------------------------
-+USB devices can be hotplugged into the USB root hub at any point in time.
-+The BE DAI link should be aware of the current state of the physical USB
-+port, i.e. if there are any USB devices with audio interface(s) connected.
-+The following callback can be used to notify the BE DAI link of any change:
-+
-+	**connection_status_cb()**
-+
-+This is called whenever there is a USB SND interface bind or remove event,
-+using snd_soc_usb_connect() or snd_soc_usb_disconnect():
-+
-+.. code-block:: rst
-+
-+	static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
-+	{
-+		...
-+		snd_soc_usb_connect(usb_get_usb_backend(udev), sdev);
-+		...
-+	}
-+
-+	static void qc_usb_audio_offload_disconnect(struct snd_usb_audio *chip)
-+	{
-+		...
-+		snd_soc_usb_disconnect(usb_get_usb_backend(chip->dev), dev->sdev);
-+		...
-+	}
-+..
-+
-+In order to account for conditions where driver or device existence is
-+not guaranteed, USB SND exposes snd_usb_rediscover_devices() to resend the
-+connect events for any identified USB audio interfaces.  Consider the
-+the following situtation:
-+
-+	**usb_audio_probe()**
-+	  | --> USB audio streams allocated and saved to usb_chip[]
-+	  | --> Propagate connect event to USB offload driver in USB SND
-+	  | --> **snd_soc_usb_connect()** exits as USB BE DAI link is not ready
-+
-+	BE DAI link component probe
-+	  | --> DAI link is probed and SOC USB port is allocated
-+	  | --> The USB audio device connect event is missed
-+
-+To ensure connection events are not missed, **snd_usb_rediscover_devices()**
-+is executed when the SOC USB device is registered.  Now, when the BE DAI
-+link component probe occurs, the following highlights the sequence:
-+
-+	BE DAI link component probe
-+	  | --> DAI link is probed and SOC USB port is allocated
-+	  | --> SOC USB device added, and **snd_usb_rediscover_devices()** runs
-+
-+	**snd_usb_rediscover_devices()**
-+	  | --> Traverses through usb_chip[] and for non-NULL entries issue
-+	  |     **connection_status_cb()**
-+
-+In the case where the USB offload driver is unbounded, while USB SND is
-+ready, the **snd_usb_rediscover_devices()** is called during module init.
-+This allows for the offloading path to also be enabled with the following
-+flow:
-+
-+	**usb_audio_probe()**
-+	  | --> USB audio streams allocated and saved to usb_chip[]
-+	  | --> Propagate connect event to USB offload driver in USB SND
-+	  | --> USB offload driver **NOT** ready!
-+
-+	BE DAI link component probe
-+	  | --> DAI link is probed and SOC USB port is allocated
-+	  | --> No USB connect event due to missing USB offload driver
-+
-+	USB offload driver probe
-+	  | --> **qc_usb_audio_offload_init()**
-+	  | --> Calls **snd_usb_rediscover_devices()** to notify of devices
-+
-+Advertising USB Audio Offload Capability
-+----------------------------------------
-+As the USB audio offloading can potentially reside within the platform ASoC based
-+sound card, depending on if there is a USB DPCM backend DAI link existing in the
-+platform card definition, then users can utilize the sound card's components string,
-+in order to signal that USB offloading is supported by this sound card.
-+
-+The sound core exposes:
-+
-+	**snd_ctl_card_info()**
-+
-+This allows for userspace applications, i.e. amixer, to fetch the components string
-+that was created as part of the ASoC platform sound card creation routine.  The
-+possible tags that can be seen are:
-+
-+	- **usbplybkoffld: 1**
-+	- **usbcapoffld: 1**
-+
-+**usbplybkoffld** translates to usb offload playback supported, and **usbcapoffld**
-+translates to USB offload capture supported.  Applications can then query the sound
-+card for further offload status parameters.
-+
-+SOC USB and USB Sound Kcontrols
-+===============================
-+Details
-+-------
-+SOC USB and USB sound expose a set of SND kcontrols for applications to select
-+and fetch the current offloading status for the ASoC platform sound card. Kcontrols
-+are split between two layers:
-+
-+	- USB sound - Notifies the sound card number for the ASoC platform sound
-+	  card that it is registered to for supporting audio offload.
-+
-+	- SOC USB - Maintains the current status of the offload path, and device
-+	  (USB sound card and PCM device) information.  This would be the main
-+	  card that applications can read to determine offloading capabilities.
-+
-+Implementation
-+--------------
-+
-+**Example:**
-+
-+  **Sound Cards**:
-+
-+	::
-+
-+	  0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
-+                     SM8250-MTP-WCD9380-WSA8810-VA-DMIC
-+	  1 [C320M          ]: USB-Audio - Plantronics C320-M
-+                     Plantronics Plantronics C320-M at usb-xhci-hcd.1.auto-1, full speed
-+
-+
-+  **Platform Sound Card** - card#0:
-+
-+	::
-+
-+	  SNDUSB OFFLD status                     -1, -1 (range -1->32)
-+	  SNDUSB OFFLD device select              1, 0 (range -1->32)
-+
-+
-+  **USB Sound Card** - card#1:
-+
-+	::
-+
-+	  SNDUSB OFFLD playback available         0 (range -1->32)
-+
-+
-+The platform sound card(card#0) kcontrols are created as part of adding the SOC
-+USB device using **snd_soc_usb_add_port()**.  The following kcontrols are defined
-+as:
-+
-+  - ``SNDUSB OFFLD status`` **(R)**: USB sound card and PCM device index pair that
-+    defines which USB SND resources are currently offloaded.  If -1, -1 is seen,
-+    it signifies that offload is not active.
-+  - ``SNDUSB OFFLD device select`` **(R/W)**: USB sound card and PCM device index
-+    pair which selects the USB device to initiate offloading on.  If no value is
-+    written to the kcontrol, then the last USB device discovered will be chosen.
-+
-+The USB sound card(card#1) kcontrols are created as USB audio devices are plugged
-+into the physical USB port and enumerated.  The kcontrols are defined as:
-+
-+  - ``SNDUSB OFFLD playback available`` **(R)**: Provides the sound card
-+    number/index that supports USB offloading.  Further/follow up queries about
-+    the current offload state can be handled by reading the offload status
-+    kcontrol exposed by the platform card.
-+
-+SNDUSB OFFLD device select Kcontrol
-+-----------------------------------
-+In order to allow for vendor specific implementations on audio offloading device
-+selection, the SOC USB layer exposes the following:
-+
-+.. code-block:: rst
-+
-+	int (*put_offload_dev)(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol);
-+	int (*get_offload_dev)(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol);
-+..
-+
-+These are specific for the **SNDUSB OFFLD device select** kcontrol.
-+
-+When users issue get/put calls to the kcontrol, the registered SOC USB callbacks
-+will execute the registered function calls to the DPCM BE DAI link.
-+
-+**Callback Registration:**
-+
-+.. code-block:: rst
-+
-+	static int q6usb_component_probe(struct snd_soc_component *component)
-+	{
-+	...
-+	usb = snd_soc_usb_allocate_port(component, 1, &data->priv);
-+	if (IS_ERR(usb))
-+		return -ENOMEM;
-+
-+	usb->connection_status_cb = q6usb_alsa_connection_cb;
-+	usb->put_offload_dev = q6usb_put_offload_dev;
-+	usb->get_offload_dev = q6usb_get_offload_dev;
-+
-+	ret = snd_soc_usb_add_port(usb);
-+..
-+
-+**PUT Callback:**
-+
-+Can be used to track current device selection, and to issue any external DSP
-+commands that might be required for enabling audio offloading.
-+
-+.. code-block:: rst
-+
-+	static int q6usb_put_offload_dev(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+	{
-+	...
-+	if ((cardidx >= 0 && test_bit(cardidx, &data->available_card_slot))) {
-+		data->sel_card_idx = cardidx;
-+		changed = 1;
-+	}
-+
-+	if ((pcmidx >= 0 && pcmidx < data->status[cardidx].sdev->num_playback)) {
-+		data->sel_pcm_idx = pcmidx;
-+		changed = 1;
-+	}
-+..
-+
-+The above is an example of keeping track of what the userspace entity is
-+selecting as the playback device.  This can be later used to pass the information
-+along to the external DSP.
-+
-+
-+SNDUSB OFFLD status
-+-------------------
-+SOC USB exposes APIs for keeping track of the offloading state, and expects this
-+to be maintained by the BE DAI link that created/added the SOC USB device.
-+
-+**SOC USB State Flow Example**
-+
-+::
-+
-+     PCM Core              |      BE USB DAI Link      |     SOC USB
-+                           |                           |
-+  snd_pcm_hw_params --------> dai_link->ops->hw_params --> snd_soc_usb_prepare_session
-+                           |                           |   |--> state = SND_SOC_USB_PREPARED
-+  ...                      |                           |   |--> slot[0] now active
-+                           |                           |
-+                           |                           |
-+  snd_pcm_do_prepare--------> dai_link->ops->prepare ---> snd_soc_usb_set_session_state
-+                           |                           |   |--> state = SND_SOC_USB_RUNNING
-+  ...                      |                           |
-+                           |                           |
-+  snd_pcm_release_substream-> dai_link->ops->shutdown---> snd_soc_usb_shutdown_session
-+                           |                           |   |--> state = SND_SOC_USB_IDLE
-+                           |                           |   |--> slot[0] now idle
-+
-+
-+When executing the kcontrol get callback, it will loop across the active_list array
-+and report to the application for active USB sound card and USB PCM device indexes.
-+
-+SNDUSB OFFLD playback available
-+-------------------------------
-+USB sound also creates a kcontrol for applications to help determine which platform
-+sound card USB offloading is linked to.  This will allow applications to further
-+query the platform sound card for specific information about the current USB offload
-+status.
-+
-+This is added as a separate mixer driver:
-+  - mixer_usb_offload.c
-+  - kcontrol: snd_usb_offload_available_ctl
-+
-+**snd_usb_offload_available_get()** fetches the associated sound card by utilizing
-+the **snd_soc_usb_device_offload_available()** API.
-+
-+Mixer Examples
-+--------------
-+
-+	::
-+
-+	  tinymix -D 0 set 'SNDUSB OFFLD device select' 2 0
-+
-+
-+	::
-+
-+	  tinymix -D 0 get 'SNDUSB OFFLD device select'
-+	  --> 2, 0 (range 0->32)
-+
-+	::
-+
-+	  tinymix -D 0 get 'SNDUSB OFFLD status'
-+	  --> 2, 0 (range -1->32)   [OFFLD active]
-+	  --> -1, -1 (range -1->32) [OFFLD idle]
-+
-+	::
-+
-+	  tinymix -D 0 get 'SNDUSB OFFLD playback available'
-+	  --> 0 (range 0->32)
+> ---
+>  fs/attr.c                                     |   2 -
+>  fs/posix_acl.c                                |   3 -
+>  fs/xattr.c                                    |   2 -
+>  include/linux/evm.h                           | 107 ----------------
+>  include/uapi/linux/lsm.h                      |   1 +
+>  security/integrity/evm/evm_main.c             | 115 +++++++++++++++---
+>  security/security.c                           |  41 ++-----
+>  .../selftests/lsm/lsm_list_modules_test.c     |   3 +
+>  8 files changed, 113 insertions(+), 161 deletions(-)
+>
+> diff --git a/fs/attr.c b/fs/attr.c
+> index 38841f3ebbcb..b51bd7c9b4a7 100644
+> --- a/fs/attr.c
+> +++ b/fs/attr.c
+> @@ -16,7 +16,6 @@
+>  #include <linux/fcntl.h>
+>  #include <linux/filelock.h>
+>  #include <linux/security.h>
+> -#include <linux/evm.h>
+>  
+>  #include "internal.h"
+>  
+> @@ -502,7 +501,6 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	if (!error) {
+>  		fsnotify_change(dentry, ia_valid);
+>  		security_inode_post_setattr(idmap, dentry, ia_valid);
+> -		evm_inode_post_setattr(idmap, dentry, ia_valid);
+>  	}
+>  
+>  	return error;
+> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> index e3fbe1a9f3f5..ae67479cd2b6 100644
+> --- a/fs/posix_acl.c
+> +++ b/fs/posix_acl.c
+> @@ -26,7 +26,6 @@
+>  #include <linux/mnt_idmapping.h>
+>  #include <linux/iversion.h>
+>  #include <linux/security.h>
+> -#include <linux/evm.h>
+>  #include <linux/fsnotify.h>
+>  #include <linux/filelock.h>
+>  
+> @@ -1138,7 +1137,6 @@ int vfs_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	if (!error) {
+>  		fsnotify_xattr(dentry);
+>  		security_inode_post_set_acl(dentry, acl_name, kacl);
+> -		evm_inode_post_set_acl(dentry, acl_name, kacl);
+>  	}
+>  
+>  out_inode_unlock:
+> @@ -1247,7 +1245,6 @@ int vfs_remove_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	if (!error) {
+>  		fsnotify_xattr(dentry);
+>  		security_inode_post_remove_acl(idmap, dentry, acl_name);
+> -		evm_inode_post_remove_acl(idmap, dentry, acl_name);
+>  	}
+>  
+>  out_inode_unlock:
+> diff --git a/fs/xattr.c b/fs/xattr.c
+> index f891c260a971..f8b643f91a98 100644
+> --- a/fs/xattr.c
+> +++ b/fs/xattr.c
+> @@ -16,7 +16,6 @@
+>  #include <linux/mount.h>
+>  #include <linux/namei.h>
+>  #include <linux/security.h>
+> -#include <linux/evm.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/export.h>
+>  #include <linux/fsnotify.h>
+> @@ -557,7 +556,6 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
+>  
+>  	fsnotify_xattr(dentry);
+>  	security_inode_post_removexattr(dentry, name);
+> -	evm_inode_post_removexattr(dentry, name);
+>  
+>  out:
+>  	return error;
+> diff --git a/include/linux/evm.h b/include/linux/evm.h
+> index 437d4076a3b3..cb481eccc967 100644
+> --- a/include/linux/evm.h
+> +++ b/include/linux/evm.h
+> @@ -21,44 +21,6 @@ extern enum integrity_status evm_verifyxattr(struct dentry *dentry,
+>  					     void *xattr_value,
+>  					     size_t xattr_value_len,
+>  					     struct integrity_iint_cache *iint);
+> -extern int evm_inode_setattr(struct mnt_idmap *idmap,
+> -			     struct dentry *dentry, struct iattr *attr);
+> -extern void evm_inode_post_setattr(struct mnt_idmap *idmap,
+> -				   struct dentry *dentry, int ia_valid);
+> -extern int evm_inode_setxattr(struct mnt_idmap *idmap,
+> -			      struct dentry *dentry, const char *name,
+> -			      const void *value, size_t size, int flags);
+> -extern void evm_inode_post_setxattr(struct dentry *dentry,
+> -				    const char *xattr_name,
+> -				    const void *xattr_value,
+> -				    size_t xattr_value_len,
+> -				    int flags);
+> -extern int evm_inode_removexattr(struct mnt_idmap *idmap,
+> -				 struct dentry *dentry, const char *xattr_name);
+> -extern void evm_inode_post_removexattr(struct dentry *dentry,
+> -				       const char *xattr_name);
+> -static inline void evm_inode_post_remove_acl(struct mnt_idmap *idmap,
+> -					     struct dentry *dentry,
+> -					     const char *acl_name)
+> -{
+> -	evm_inode_post_removexattr(dentry, acl_name);
+> -}
+> -extern int evm_inode_set_acl(struct mnt_idmap *idmap,
+> -			     struct dentry *dentry, const char *acl_name,
+> -			     struct posix_acl *kacl);
+> -static inline int evm_inode_remove_acl(struct mnt_idmap *idmap,
+> -				       struct dentry *dentry,
+> -				       const char *acl_name)
+> -{
+> -	return evm_inode_set_acl(idmap, dentry, acl_name, NULL);
+> -}
+> -static inline void evm_inode_post_set_acl(struct dentry *dentry,
+> -					  const char *acl_name,
+> -					  struct posix_acl *kacl)
+> -{
+> -	return evm_inode_post_setxattr(dentry, acl_name, NULL, 0, 0);
+> -}
+> -
+>  int evm_inode_init_security(struct inode *inode, struct inode *dir,
+>  			    const struct qstr *qstr, struct xattr *xattrs,
+>  			    int *xattr_count);
+> @@ -93,75 +55,6 @@ static inline enum integrity_status evm_verifyxattr(struct dentry *dentry,
+>  }
+>  #endif
+>  
+> -static inline int evm_inode_setattr(struct mnt_idmap *idmap,
+> -				    struct dentry *dentry, struct iattr *attr)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline void evm_inode_post_setattr(struct mnt_idmap *idmap,
+> -					  struct dentry *dentry, int ia_valid)
+> -{
+> -	return;
+> -}
+> -
+> -static inline int evm_inode_setxattr(struct mnt_idmap *idmap,
+> -				     struct dentry *dentry, const char *name,
+> -				     const void *value, size_t size, int flags)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline void evm_inode_post_setxattr(struct dentry *dentry,
+> -					   const char *xattr_name,
+> -					   const void *xattr_value,
+> -					   size_t xattr_value_len,
+> -					   int flags)
+> -{
+> -	return;
+> -}
+> -
+> -static inline int evm_inode_removexattr(struct mnt_idmap *idmap,
+> -					struct dentry *dentry,
+> -					const char *xattr_name)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline void evm_inode_post_removexattr(struct dentry *dentry,
+> -					      const char *xattr_name)
+> -{
+> -	return;
+> -}
+> -
+> -static inline void evm_inode_post_remove_acl(struct mnt_idmap *idmap,
+> -					     struct dentry *dentry,
+> -					     const char *acl_name)
+> -{
+> -	return;
+> -}
+> -
+> -static inline int evm_inode_set_acl(struct mnt_idmap *idmap,
+> -				    struct dentry *dentry, const char *acl_name,
+> -				    struct posix_acl *kacl)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int evm_inode_remove_acl(struct mnt_idmap *idmap,
+> -				       struct dentry *dentry,
+> -				       const char *acl_name)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline void evm_inode_post_set_acl(struct dentry *dentry,
+> -					  const char *acl_name,
+> -					  struct posix_acl *kacl)
+> -{
+> -	return;
+> -}
+> -
+>  static inline int evm_inode_init_security(struct inode *inode, struct inode *dir,
+>  					  const struct qstr *qstr,
+>  					  struct xattr *xattrs,
+> diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
+> index ee7d034255a9..825339bcd580 100644
+> --- a/include/uapi/linux/lsm.h
+> +++ b/include/uapi/linux/lsm.h
+> @@ -62,6 +62,7 @@ struct lsm_ctx {
+>  #define LSM_ID_BPF		109
+>  #define LSM_ID_LANDLOCK		110
+>  #define LSM_ID_IMA		111
+> +#define LSM_ID_EVM		112
+>  
+>  /*
+>   * LSM_ATTR_XXX definitions identify different LSM attributes
+> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+> index ea84a6f835ff..0cd014bfc093 100644
+> --- a/security/integrity/evm/evm_main.c
+> +++ b/security/integrity/evm/evm_main.c
+> @@ -566,9 +566,9 @@ static int evm_protect_xattr(struct mnt_idmap *idmap,
+>   * userspace from writing HMAC value.  Writing 'security.evm' requires
+>   * requires CAP_SYS_ADMIN privileges.
+>   */
+> -int evm_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> -		       const char *xattr_name, const void *xattr_value,
+> -		       size_t xattr_value_len, int flags)
+> +static int evm_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			      const char *xattr_name, const void *xattr_value,
+> +			      size_t xattr_value_len, int flags)
+>  {
+>  	const struct evm_ima_xattr_data *xattr_data = xattr_value;
+>  
+> @@ -598,8 +598,8 @@ int evm_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+>   * Removing 'security.evm' requires CAP_SYS_ADMIN privileges and that
+>   * the current value is valid.
+>   */
+> -int evm_inode_removexattr(struct mnt_idmap *idmap,
+> -			  struct dentry *dentry, const char *xattr_name)
+> +static int evm_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				 const char *xattr_name)
+>  {
+>  	/* Policy permits modification of the protected xattrs even though
+>  	 * there's no HMAC key loaded
+> @@ -649,9 +649,11 @@ static inline int evm_inode_set_acl_change(struct mnt_idmap *idmap,
+>   * Prevent modifying posix acls causing the EVM HMAC to be re-calculated
+>   * and 'security.evm' xattr updated, unless the existing 'security.evm' is
+>   * valid.
+> + *
+> + * Return: zero on success, -EPERM on failure.
+>   */
+> -int evm_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+> -		      const char *acl_name, struct posix_acl *kacl)
+> +static int evm_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			     const char *acl_name, struct posix_acl *kacl)
+>  {
+>  	enum integrity_status evm_status;
+>  
+> @@ -690,6 +692,24 @@ int evm_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	return -EPERM;
+>  }
+>  
+> +/**
+> + * evm_inode_remove_acl - Protect the EVM extended attribute from posix acls
+> + * @idmap: idmap of the mount
+> + * @dentry: pointer to the affected dentry
+> + * @acl_name: name of the posix acl
+> + *
+> + * Prevent removing posix acls causing the EVM HMAC to be re-calculated
+> + * and 'security.evm' xattr updated, unless the existing 'security.evm' is
+> + * valid.
+> + *
+> + * Return: zero on success, -EPERM on failure.
+> + */
+> +static int evm_inode_remove_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				const char *acl_name)
+> +{
+> +	return evm_inode_set_acl(idmap, dentry, acl_name, NULL);
+> +}
+> +
+>  static void evm_reset_status(struct inode *inode)
+>  {
+>  	struct integrity_iint_cache *iint;
+> @@ -738,9 +758,11 @@ bool evm_revalidate_status(const char *xattr_name)
+>   * __vfs_setxattr_noperm().  The caller of which has taken the inode's
+>   * i_mutex lock.
+>   */
+> -void evm_inode_post_setxattr(struct dentry *dentry, const char *xattr_name,
+> -			     const void *xattr_value, size_t xattr_value_len,
+> -			     int flags)
+> +static void evm_inode_post_setxattr(struct dentry *dentry,
+> +				    const char *xattr_name,
+> +				    const void *xattr_value,
+> +				    size_t xattr_value_len,
+> +				    int flags)
+>  {
+>  	if (!evm_revalidate_status(xattr_name))
+>  		return;
+> @@ -756,6 +778,21 @@ void evm_inode_post_setxattr(struct dentry *dentry, const char *xattr_name,
+>  	evm_update_evmxattr(dentry, xattr_name, xattr_value, xattr_value_len);
+>  }
+>  
+> +/**
+> + * evm_inode_post_set_acl - Update the EVM extended attribute from posix acls
+> + * @dentry: pointer to the affected dentry
+> + * @acl_name: name of the posix acl
+> + * @kacl: pointer to the posix acls
+> + *
+> + * Update the 'security.evm' xattr with the EVM HMAC re-calculated after setting
+> + * posix acls.
+> + */
+> +static void evm_inode_post_set_acl(struct dentry *dentry, const char *acl_name,
+> +				   struct posix_acl *kacl)
+> +{
+> +	return evm_inode_post_setxattr(dentry, acl_name, NULL, 0, 0);
+> +}
+> +
+>  /**
+>   * evm_inode_post_removexattr - update 'security.evm' after removing the xattr
+>   * @dentry: pointer to the affected dentry
+> @@ -766,7 +803,8 @@ void evm_inode_post_setxattr(struct dentry *dentry, const char *xattr_name,
+>   * No need to take the i_mutex lock here, as this function is called from
+>   * vfs_removexattr() which takes the i_mutex.
+>   */
+> -void evm_inode_post_removexattr(struct dentry *dentry, const char *xattr_name)
+> +static void evm_inode_post_removexattr(struct dentry *dentry,
+> +				       const char *xattr_name)
+>  {
+>  	if (!evm_revalidate_status(xattr_name))
+>  		return;
+> @@ -782,6 +820,22 @@ void evm_inode_post_removexattr(struct dentry *dentry, const char *xattr_name)
+>  	evm_update_evmxattr(dentry, xattr_name, NULL, 0);
+>  }
+>  
+> +/**
+> + * evm_inode_post_remove_acl - Update the EVM extended attribute from posix acls
+> + * @idmap: idmap of the mount
+> + * @dentry: pointer to the affected dentry
+> + * @acl_name: name of the posix acl
+> + *
+> + * Update the 'security.evm' xattr with the EVM HMAC re-calculated after
+> + * removing posix acls.
+> + */
+> +static inline void evm_inode_post_remove_acl(struct mnt_idmap *idmap,
+> +					     struct dentry *dentry,
+> +					     const char *acl_name)
+> +{
+> +	evm_inode_post_removexattr(dentry, acl_name);
+> +}
+> +
+>  static int evm_attr_change(struct mnt_idmap *idmap,
+>  			   struct dentry *dentry, struct iattr *attr)
+>  {
+> @@ -805,8 +859,8 @@ static int evm_attr_change(struct mnt_idmap *idmap,
+>   * Permit update of file attributes when files have a valid EVM signature,
+>   * except in the case of them having an immutable portable signature.
+>   */
+> -int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> -		      struct iattr *attr)
+> +static int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			     struct iattr *attr)
+>  {
+>  	unsigned int ia_valid = attr->ia_valid;
+>  	enum integrity_status evm_status;
+> @@ -853,8 +907,8 @@ int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+>   * This function is called from notify_change(), which expects the caller
+>   * to lock the inode's i_mutex.
+>   */
+> -void evm_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> -			    int ia_valid)
+> +static void evm_inode_post_setattr(struct mnt_idmap *idmap,
+> +				   struct dentry *dentry, int ia_valid)
+>  {
+>  	if (!evm_revalidate_status(NULL))
+>  		return;
+> @@ -964,4 +1018,35 @@ static int __init init_evm(void)
+>  	return error;
+>  }
+>  
+> +static struct security_hook_list evm_hooks[] __ro_after_init = {
+> +	LSM_HOOK_INIT(inode_setattr, evm_inode_setattr),
+> +	LSM_HOOK_INIT(inode_post_setattr, evm_inode_post_setattr),
+> +	LSM_HOOK_INIT(inode_setxattr, evm_inode_setxattr),
+> +	LSM_HOOK_INIT(inode_set_acl, evm_inode_set_acl),
+> +	LSM_HOOK_INIT(inode_post_set_acl, evm_inode_post_set_acl),
+> +	LSM_HOOK_INIT(inode_remove_acl, evm_inode_remove_acl),
+> +	LSM_HOOK_INIT(inode_post_remove_acl, evm_inode_post_remove_acl),
+> +	LSM_HOOK_INIT(inode_post_setxattr, evm_inode_post_setxattr),
+> +	LSM_HOOK_INIT(inode_removexattr, evm_inode_removexattr),
+> +	LSM_HOOK_INIT(inode_post_removexattr, evm_inode_post_removexattr),
+> +	LSM_HOOK_INIT(inode_init_security, evm_inode_init_security),
+> +};
+> +
+> +static const struct lsm_id evm_lsmid = {
+> +	.name = "evm",
+> +	.id = LSM_ID_EVM,
+> +};
+> +
+> +static int __init init_evm_lsm(void)
+> +{
+> +	security_add_hooks(evm_hooks, ARRAY_SIZE(evm_hooks), &evm_lsmid);
+> +	return 0;
+> +}
+> +
+> +DEFINE_LSM(evm) = {
+> +	.name = "evm",
+> +	.init = init_evm_lsm,
+> +	.order = LSM_ORDER_LAST,
+> +};
+> +
+>  late_initcall(init_evm);
+> diff --git a/security/security.c b/security/security.c
+> index d4ead59fb91f..18a70aa707ad 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -20,13 +20,13 @@
+>  #include <linux/kernel_read_file.h>
+>  #include <linux/lsm_hooks.h>
+>  #include <linux/integrity.h>
+> -#include <linux/evm.h>
+>  #include <linux/fsnotify.h>
+>  #include <linux/mman.h>
+>  #include <linux/mount.h>
+>  #include <linux/personality.h>
+>  #include <linux/backing-dev.h>
+>  #include <linux/string.h>
+> +#include <linux/xattr.h>
+>  #include <linux/msg.h>
+>  #include <net/flow.h>
+>  
+> @@ -50,7 +50,8 @@
+>  	(IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) ? 1 : 0) + \
+>  	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
+>  	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0) + \
+> -	(IS_ENABLED(CONFIG_IMA) ? 1 : 0))
+> +	(IS_ENABLED(CONFIG_IMA) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_EVM) ? 1 : 0))
+>  
+>  /*
+>   * These are descriptions of the reasons that can be passed to the
+> @@ -1740,10 +1741,6 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
+>  	if (!xattr_count)
+>  		goto out;
+>  
+> -	ret = evm_inode_init_security(inode, dir, qstr, new_xattrs,
+> -				      &xattr_count);
+> -	if (ret)
+> -		goto out;
+>  	ret = initxattrs(inode, new_xattrs, fs_data);
+>  out:
+>  	for (; xattr_count > 0; xattr_count--)
+> @@ -2235,14 +2232,9 @@ int security_inode_permission(struct inode *inode, int mask)
+>  int security_inode_setattr(struct mnt_idmap *idmap,
+>  			   struct dentry *dentry, struct iattr *attr)
+>  {
+> -	int ret;
+> -
+>  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return 0;
+> -	ret = call_int_hook(inode_setattr, 0, idmap, dentry, attr);
+> -	if (ret)
+> -		return ret;
+> -	return evm_inode_setattr(idmap, dentry, attr);
+> +	return call_int_hook(inode_setattr, 0, idmap, dentry, attr);
+>  }
+>  EXPORT_SYMBOL_GPL(security_inode_setattr);
+>  
+> @@ -2307,9 +2299,7 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
+>  
+>  	if (ret == 1)
+>  		ret = cap_inode_setxattr(dentry, name, value, size, flags);
+> -	if (ret)
+> -		return ret;
+> -	return evm_inode_setxattr(idmap, dentry, name, value, size, flags);
+> +	return ret;
+>  }
+>  
+>  /**
+> @@ -2328,15 +2318,10 @@ int security_inode_set_acl(struct mnt_idmap *idmap,
+>  			   struct dentry *dentry, const char *acl_name,
+>  			   struct posix_acl *kacl)
+>  {
+> -	int ret;
+> -
+>  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return 0;
+> -	ret = call_int_hook(inode_set_acl, 0, idmap, dentry, acl_name,
+> -			    kacl);
+> -	if (ret)
+> -		return ret;
+> -	return evm_inode_set_acl(idmap, dentry, acl_name, kacl);
+> +	return call_int_hook(inode_set_acl, 0, idmap, dentry, acl_name,
+> +			     kacl);
+>  }
+>  
+>  /**
+> @@ -2389,14 +2374,9 @@ int security_inode_get_acl(struct mnt_idmap *idmap,
+>  int security_inode_remove_acl(struct mnt_idmap *idmap,
+>  			      struct dentry *dentry, const char *acl_name)
+>  {
+> -	int ret;
+> -
+>  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return 0;
+> -	ret = call_int_hook(inode_remove_acl, 0, idmap, dentry, acl_name);
+> -	if (ret)
+> -		return ret;
+> -	return evm_inode_remove_acl(idmap, dentry, acl_name);
+> +	return call_int_hook(inode_remove_acl, 0, idmap, dentry, acl_name);
+>  }
+>  
+>  /**
+> @@ -2432,7 +2412,6 @@ void security_inode_post_setxattr(struct dentry *dentry, const char *name,
+>  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return;
+>  	call_void_hook(inode_post_setxattr, dentry, name, value, size, flags);
+> -	evm_inode_post_setxattr(dentry, name, value, size, flags);
+>  }
+>  
+>  /**
+> @@ -2493,9 +2472,7 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
+>  	ret = call_int_hook(inode_removexattr, 1, idmap, dentry, name);
+>  	if (ret == 1)
+>  		ret = cap_inode_removexattr(idmap, dentry, name);
+> -	if (ret)
+> -		return ret;
+> -	return evm_inode_removexattr(idmap, dentry, name);
+> +	return ret;
+>  }
+>  
+>  /**
+> diff --git a/tools/testing/selftests/lsm/lsm_list_modules_test.c b/tools/testing/selftests/lsm/lsm_list_modules_test.c
+> index 17333787cb2f..4d5d4cee2586 100644
+> --- a/tools/testing/selftests/lsm/lsm_list_modules_test.c
+> +++ b/tools/testing/selftests/lsm/lsm_list_modules_test.c
+> @@ -125,6 +125,9 @@ TEST(correct_lsm_list_modules)
+>  		case LSM_ID_IMA:
+>  			name = "ima";
+>  			break;
+> +		case LSM_ID_EVM:
+> +			name = "evm";
+> +			break;
+>  		default:
+>  			name = "INVALID";
+>  			break;
 
