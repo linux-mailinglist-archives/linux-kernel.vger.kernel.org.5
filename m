@@ -1,126 +1,71 @@
-Return-Path: <linux-kernel+bounces-308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97149813F15
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:17:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21599813F18
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E79E1F22C5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:17:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 546681C220E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC7A808;
-	Fri, 15 Dec 2023 01:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403057EA;
+	Fri, 15 Dec 2023 01:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F0QOP/2g"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from irl.hu (irl.hu [95.85.9.111])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC037E4
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 01:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from [192.168.2.4] (51b687c3.dsl.pool.telekom.hu [::ffff:81.182.135.195])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000716A8.00000000657BA90E.0012D020; Fri, 15 Dec 2023 02:17:02 +0100
-Message-ID: <9a2b85a8a19e002093e2471a97850d26e335900f.camel@irl.hu>
-Subject: Re: [PATCH 03/16] ASoC: tas2781: disable regmap regcache
-From: Gergo Koteles <soyer@irl.hu>
-To: Mark Brown <broonie@kernel.org>
-Cc: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
-  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Date: Fri, 15 Dec 2023 02:17:01 +0100
-In-Reply-To: <bf24488f-e4e1-4d3e-a67e-fe74c05acda4@sirena.org.uk>
-References: <cover.1701906455.git.soyer@irl.hu>
-	 <21a183b5a08cb23b193af78d4b1114cc59419272.1701906455.git.soyer@irl.hu>
-	 <0b836c10-b21b-4275-8dd0-254dd5467497@sirena.org.uk>
-	 <47097f19398808b64f4cc87c2a3c7cc462fb2416.camel@irl.hu>
-	 <5f3f0306-799f-4f3b-9e05-fbd300c59d5d@sirena.org.uk>
-	 <b0ab21657f2e4f0825579de97ca012e294d1e743.camel@irl.hu>
-	 <bf24488f-e4e1-4d3e-a67e-fe74c05acda4@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872E9EBB;
+	Fri, 15 Dec 2023 01:17:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 178EDC433C8;
+	Fri, 15 Dec 2023 01:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702603079;
+	bh=dD66Jrb9XlDMZE7mqoPH5BHLtFeEhaaoDCDeFOFfhu4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=F0QOP/2gxMB6y+ZL4g6M17CLFuJe7fDYOHWeVrbmheJzBuZBGcj4nAAyJ4T1LmHJt
+	 xIgCrXVVq0ubNzTmCpUwQ2W8xfOtmsPGKpTEjFXOOq+WieCgql2SU4e+ajbf/Zb8oQ
+	 8BV7hF7SahO4b22pskxuiM4t4ZKzACVqmNc3S9newEz3gykRxjL+8m7hga+lTdJNrU
+	 cWkZFSA6S2R5KF0av+j8tDKhlsXEuk8a8JgDGmyzT/RgLpNTz+GSsVml2MLsHRB7Wd
+	 VDrEI7cmO93YsYljrfShNydScUUMFkV8j0FT0f7iAg4wFUW+r8+JdpBWVjU055kwHy
+	 CUEYSk/MqJ+3A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F037ADD4EFA;
+	Fri, 15 Dec 2023 01:17:58 +0000 (UTC)
+Subject: Re: [GIT PULL] platform-drivers-x86 for v6.7-4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cdf76a$lddk7@smtpauth.intel.com>
+References: <cdf76a$lddk7@smtpauth.intel.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cdf76a$lddk7@smtpauth.intel.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.7-4
+X-PR-Tracked-Commit-Id: 7bcd032370f88fd4022b6926d101403e96a86309
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 976600c6da56c488776c9ee2a5733ae9736e2a75
+Message-Id: <170260307897.9073.1342024765550824813.pr-tracker-bot@kernel.org>
+Date: Fri, 15 Dec 2023 01:17:58 +0000
+To: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, PDx86 <platform-driver-x86@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy Shevchenko <andy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
 
-On Thu, 2023-12-07 at 22:39 +0000, Mark Brown wrote:
-> On Thu, Dec 07, 2023 at 10:12:13PM +0100, Gergo Koteles wrote:
-> > On Thu, 2023-12-07 at 20:36 +0000, Mark Brown wrote:
->=20
-> > > > And only one, because tasdevice_change_chn_book directly changes th=
-e
-> > > > address of i2c_client, so the unlucky one gets invalid values in it=
-s
-> > > > actual book from regcache_sync.
->=20
-> > > The code creates the impression that writing to one tas2781 writes to
-> > > all of them, is that not the case?
->=20
-> > Yes, the tasdevice_* functions, but the regcache_sync doesn't know
-> > this.
->=20
-> So this syncing is done in software not hardware?  My understanding was
-> that this was a hardware thing.
+The pull request you sent on Thu, 14 Dec 2023 17:59:36 +0200:
 
-If you mean that the amplifier does not know that there are several
-programs or configurations or profiles, but only runs the current one,
-yes.
+> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.7-4
 
->=20
-> > > How would the devices get their configuration restored?
->=20
-> > tasdevice_tuning_switch calls tasdevice_select_tuningprm_cfg which
-> > checks whether the devices needs a new program or configuration.
->=20
-> > the runtime_suspend and system resume set the devices cur_prog,
-> > cur_conf to -1.
->=20
-> ...
->=20
-> > The tas2781_hda_playback_hook calls the tasdevice_tuning_switch
->=20
-> And there are no registers other than these programs?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/976600c6da56c488776c9ee2a5733ae9736e2a75
 
-The tas2781-hda writes 4 things:
+Thank you!
 
-1. Profiles from RCA file
-eg. INT8866RCA2.bin has 4 profile:
-Music degree 0
-calibration
-voice call
-earpiece spk2 bypass
-
-The profiles contain pre-power-up and pre-shutdown register+value
-sequences for each amplifier.
-
-2. Programs from DSP firmware.
-eg. TAS2XXX3870.bin has 1 program:
-Tuning Mode
-
-3. Configurations from the DSP firmware.
-eg. TAS2XXX3870.bin has 2 configurations:
-configuration_Normal_Tuning Mode_48 KHz_s2_0
-calibration_Tuning Mode_48 KHz_s2_0
-
-Programs and configurations contain blocks with addresses where they
-should be written.
-
-4. Calibration data from EFI variables.
-R0, INV_R0, R0LOW, POWER, TLIM,
-Based on the chip, they should be written to 5 registers.
-
-The code restores all of these in playback_hook, runtime_resume,
-system_resume functions without regmap_cache_sync.
-
-
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
