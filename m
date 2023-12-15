@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B0348145BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:35:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C3438145C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AAF4B22BBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:35:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6DCB1F2188F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04841C2A9;
-	Fri, 15 Dec 2023 10:34:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561981A704;
+	Fri, 15 Dec 2023 10:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Su18MySc"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EYTocbUf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A6024A14
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3383119BA8
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-54c5d041c23so514146a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:34:33 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a1f5cb80a91so66451466b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:36:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702636472; x=1703241272; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702636589; x=1703241389; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=LlOsU9VBV99o91FTCfcNrA5gtK5LyJG3B6lny+h8GtI=;
-        b=Su18MyScOlq5XDFLL+C91gvG7BE1S5yXiCWWUFZphUGaheQd6cWCiRgjikWzx2L4QD
-         TQMUpatMWtnrWoEWqoJLjUL1U8gjH/2I673q7PdtXY8opUGbAaQIkHbBnDStaMtKrMF9
-         s+P9TsDHABkULkq5w7/oEMGpaIb5Wy3UMhURefaF4pDyYBLe1T64IBZ3sjuFhot94Ohj
-         LZo7vVoS9RIS4h2xlQ1aRKEmCKWh1tQsOyk5moZyHdtxu0tikU8cytboPvqz49j/AYoo
-         bga4QCDwgF7m64nXzwAh+VhbJXGTl+fG/0CsW0rA466B2YsqLfUl+kjmZIYix0zDVMO1
-         R9tA==
+        bh=XM/h5D6gBvqTs8m/c7l58VuMUUS/k6RzHzb8GrlZLN8=;
+        b=EYTocbUf0SBlMNBZWRRjwqE/jZcyZxHVHhyAynZUWODD+YlGRbieHA81Fv8XNmTyqc
+         3AYXUzAgNzwLM9VBCuZWnVPcGzDMEK3FED+CM3chRWSglIfUc08B+QiOniZiQ3s2xF5m
+         B0sgN2MsZCXe2UVW/iw3sFNOF9uKbJmPr1YGe07zE+/VBr0wwTq7FL4Ho+L3MU3HdGr4
+         q+k5avqyHq6emiURKkgDo1avxjteH6BaDW7CzQe9rIUJTwJcEzl8El8tU8vbC4TsIE7e
+         3giIJU+3mmiwxKbBMhvmy58Cx9dMf1XglQcWR8xDqoSblgRx7baPp7WcWr9bBKLUpan3
+         vhYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702636472; x=1703241272;
+        d=1e100.net; s=20230601; t=1702636589; x=1703241389;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LlOsU9VBV99o91FTCfcNrA5gtK5LyJG3B6lny+h8GtI=;
-        b=FAXkDbYLMjN/z3TaLEu5yzx97mrhFsfT5sosZMzDqSJynFUGB8iIsv0vgLnJWlg88u
-         nvJuYAJiygdy3mFrdlpcIjrEGOVGgAvpEW0OfNPeUNlXuWs63gcbtnylIQHUjW8Bmp3c
-         GX/rhmCmWIeWXjlV30bp/9vAk5W1q8uWb9q7EBo8SOqc/Q2/zR7w+6ADUwsfN3IY/hqt
-         cA98uVcOx/AJ+9jJvYA5k8zpG1VoFfIxMG/MB8afV+2aWriM2PM+aK/cLF68mj7vSbvN
-         H5Kx7lQve6VFot5gnftiSX70qSklrJGYDwE9Mk3WzLXqi8PpWoANFpXbawZ3nUshcGn+
-         3FLg==
-X-Gm-Message-State: AOJu0Yw6SDJrpvehB29K6e61B1j+vlSIEuZVtb2gBrDm+E5s9Sz+09OH
-	xNITldMs1dYfMONZuzTtH0MozQ==
-X-Google-Smtp-Source: AGHT+IFPNtnXPUD3E9WA3d7JS3n7LNlQwBmst7Ex8GgiPbUznuxbd7MT+s9p4ZQb3/TPBpLjcrcPbw==
-X-Received: by 2002:a17:906:739a:b0:a1f:a0f1:ec58 with SMTP id f26-20020a170906739a00b00a1fa0f1ec58mr2279482ejl.51.1702636471936;
-        Fri, 15 Dec 2023 02:34:31 -0800 (PST)
+        bh=XM/h5D6gBvqTs8m/c7l58VuMUUS/k6RzHzb8GrlZLN8=;
+        b=WGx88+k64lhY4VGjttgHmCkZrtRZP7jJId6zx5+KZzm+SvDbMwjM7sdZqO10QenlKx
+         bb2esyEF18jFcNraKziAKc3FxD1ttCgdDgMzyQV54m6g0C/mz5xal/SzW4+/i+Mh6GAt
+         wv0YW/j7GdPMHn64u3mxkJ/dneiqVxLgXT9pROhu9j9Detq38TaZcXq9bTNaU6rGySHi
+         LcvpmVCN6tOcI7okwJ3WlFZITPw8hV5pddxFJXt28+0Xrpus+x6vk6p+kD8oG/pf/v35
+         mBM6EmINqc0r6AcCvxDhJyx7zGs1Bsi8AhIlDIZ6XQr3qFpUKxC5d73v07MSTyZjNMba
+         OxJQ==
+X-Gm-Message-State: AOJu0YxGGj/CEqSwae3EN/jWUnHUYkknS2EWCMgRUKIlfh1kbC0Pduxk
+	W5zoB2v1KcE3lkMtw2hSk5F1vg==
+X-Google-Smtp-Source: AGHT+IH5+5UExpjnXu4WHaG/O5c85FR9Z2nEPgFBk8HttT2B/DQKYXvSpIzxZxOydndMd0T5leZZWQ==
+X-Received: by 2002:a17:907:7f94:b0:9e5:ee70:5da1 with SMTP id qk20-20020a1709077f9400b009e5ee705da1mr4229160ejc.53.1702636588816;
+        Fri, 15 Dec 2023 02:36:28 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id un5-20020a170907cb8500b009ff77c2e1dasm10496826ejc.167.2023.12.15.02.34.30
+        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a1c522990ccsm10584022ejc.85.2023.12.15.02.36.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 02:34:31 -0800 (PST)
-Message-ID: <47cf8280-8b0c-4f9e-9bf2-8ba18e12feb3@linaro.org>
-Date: Fri, 15 Dec 2023 11:34:29 +0100
+        Fri, 15 Dec 2023 02:36:28 -0800 (PST)
+Message-ID: <fd927698-6aa3-4a6b-988c-fc82663235ca@linaro.org>
+Date: Fri, 15 Dec 2023 11:36:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] dt-bindings: serial: Add a new compatible string for
- UMS9620
+Subject: Re: [PATCH 4/4] arm64: dts: sprd: Add support for Unisoc's UMS9620
 Content-Language: en-US
 To: Chunyan Zhang <chunyan.zhang@unisoc.com>, Rob Herring
  <robh+dt@kernel.org>, Krzysztof Kozlowski
@@ -78,7 +77,7 @@ Cc: devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
  <orsonzhai@gmail.com>, Chunyan Zhang <zhang.lyra@gmail.com>,
  LKML <linux-kernel@vger.kernel.org>
 References: <20231215085630.984892-1-chunyan.zhang@unisoc.com>
- <20231215085630.984892-4-chunyan.zhang@unisoc.com>
+ <20231215085630.984892-5-chunyan.zhang@unisoc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,17 +123,74 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231215085630.984892-4-chunyan.zhang@unisoc.com>
+In-Reply-To: <20231215085630.984892-5-chunyan.zhang@unisoc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 15/12/2023 09:56, Chunyan Zhang wrote:
-> The UMS9620 also uses the same serial device with SC9836.
+> Add basic support for Unisoc's UMS9620, with this patch,
+> the board ums9620-2h10 can run into console.
 > 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> ---
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+...
+
+> +
+> +	soc: soc {
+
+Are you sure you do not have here W=1 warnings?
+
+> +		compatible = "simple-bus";
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		gic: interrupt-controller@12000000 {
+> +			compatible = "arm,gic-v3";
+> +			reg = <0x0 0x12000000 0 0x20000>,	/* GICD */
+> +			      <0x0 0x12040000 0 0x100000>;	/* GICR */
+> +			#interrupt-cells = <3>;
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			ranges;
+
+Put ranges after reg, if they are needed. Are they needed, BTW?
+
+> +			redistributor-stride = <0x0 0x20000>;	/* 128KB stride */
+> +			#redistributor-regions = <1>;
+> +			interrupt-controller;
+> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		apb@20200000 {
+> +			compatible = "simple-bus";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0 0 0x20200000 0x100000>;
+
+ranges is after reg, which is after compatible, so here it is the second
+property.
+
+> +
+> +			uart0: serial@0 {
+> +				compatible = "sprd,ums9620-uart",
+> +					     "sprd,sc9836-uart";
+> +				reg = <0 0x100>;
+> +				interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&ext_26m>;
+> +				status = "disabled";
+> +			};
+> +
+> +			uart1: serial@10000 {
+> +				compatible = "sprd,ums9620-uart",
+> +					     "sprd,sc9836-uart";
+> +				reg = <0x10000 0x100>;
+> +				interrupts = <GIC_SPI 195 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&ext_26m>;
+> +				status = "disabled";
+> +			};
+> +		};
+> +	};
+
 
 Best regards,
 Krzysztof
