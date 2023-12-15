@@ -1,200 +1,139 @@
-Return-Path: <linux-kernel+bounces-802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2002814663
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:09:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5328146C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:22:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69B571F24890
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:09:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 232EB1C23283
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:22:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD7725106;
-	Fri, 15 Dec 2023 11:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E96C25106;
+	Fri, 15 Dec 2023 11:22:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out187-6.us.a.mail.aliyun.com (out187-6.us.a.mail.aliyun.com [47.90.187.6])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A15A1C2BD
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047199;MF=henry.hj@antgroup.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---.Vl3NdoO_1702637605;
-Received: from localhost(mailfrom:henry.hj@antgroup.com fp:SMTPD_---.Vl3NdoO_1702637605)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Dec 2023 18:53:26 +0800
-From: "Henry Huang" <henry.hj@antgroup.com>
-To: yuzhao@google.com
-Cc:  <akpm@linux-foundation.org>,
-  "Henry Huang" <henry.hj@antgroup.com>,
-  "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
-   <linux-kernel@vger.kernel.org>,
-   <linux-mm@kvack.org>,
-  "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>
-Subject: Re: [RFC v2] mm: Multi-Gen LRU: fix use mm/page_idle/bitmap
-Date: Fri, 15 Dec 2023 18:53:18 +0800
-Message-ID: <20231215105324.41241-1-henry.hj@antgroup.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAOUHufaBfziNTwypP=dxZXYZi4nniT6aYQZiZxzyQjSa3Zmaow@mail.gmail.com>
-References: <CAOUHufaBfziNTwypP=dxZXYZi4nniT6aYQZiZxzyQjSa3Zmaow@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427D2249F2;
+	Fri, 15 Dec 2023 11:22:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ss5tj611Rz1fyXw;
+	Fri, 15 Dec 2023 19:03:41 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id DB759140113;
+	Fri, 15 Dec 2023 19:04:50 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
+ 2023 19:04:49 +0800
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
+ of struct page in API
+To: Shakeel Butt <shakeelb@google.com>, Mina Almasry <almasrymina@google.com>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
+	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, Shenwei
+ Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, NXP Linux
+ Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
+	<anthony.l.nguyen@intel.com>, Thomas Petazzoni
+	<thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Russell King
+	<linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, Geetha
+ sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
+	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin
+	<john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>, Mark Lee
+	<Mark-MC.Lee@mediatek.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu Vultur
+	<horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
+ Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
+	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
+	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
+	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
+	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
+ Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
+	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
+	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
+ Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
+	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
+	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
+	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
+	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
+	<willemdebruijn.kernel@gmail.com>
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-5-almasrymina@google.com>
+ <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+ <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+ <20231215021114.ipvdx2bwtxckrfdg@google.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <793eb1bd-29bd-3c66-4ed2-9297879dbaa0@huawei.com>
+Date: Fri, 15 Dec 2023 19:04:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20231215021114.ipvdx2bwtxckrfdg@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On Fri, Dec 15, 2023 at 14:46 PM Yu Zhao <yuzhao@google.com> wrote:
-> >
-> > Thanks for replying this RFC.
-> >
-> > > 1. page_idle/bitmap isn't a capable interface at all -- yes, Google
-> > > proposed the idea [1], but we don't really use it anymore because of
-> > > its poor scalability.
-> >
-> > In our environment, we use /sys/kernel/mm/page_idle/bitmap to check
-> > pages whether were accessed during a peroid of time.
->
-> Is it a production environment? If so, what's your
-> 1. scan interval
-> 2. memory size
+On 2023/12/15 10:11, Shakeel Butt wrote:
+> On Thu, Dec 14, 2023 at 08:27:55AM -0800, Mina Almasry wrote:
+>> On Thu, Dec 14, 2023 at 4:05 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>
+> [...]
+>>> I perfer the second one personally, as devmem means that it is not
+>>> readable from cpu.
+>>
+>> From my POV it has to be the first one. We want to abstract the memory
+>> type from the drivers as much as possible, not introduce N new memory
+>> types and ask the driver to implement new code for each of them
+>> separately.
 
-> I'm trying to understand why scalability isn't a problem for you. On
-> an average server, there are hundreds of millions of PFNs, so it'd be
-> very expensive to use that ABI even for a time interval of minutes.
+That was my initial thinking too:
+https://www.spinics.net/lists/netdev/msg949376.html
 
-Thanks for replying.
+But after discussion, it may make more sense to have two sets of API from the
+driver's piont of view if we want a complete safe type protection, so that
+compiler can check everything statically and devmem driver API have a clear
+semantic:
+1. devmem is not allowed to be called into mm subsystem.
+2. it will not provide a API like page_address().
 
-Our scan interval is 10 minutes and total memory size is 512GB.
-We perferred to reclaim pages which idle age > 1 hour at least.
-
-> > We manage all pages
-> > idle time in userspace. Then use a prediction algorithm to select pages
-> > to reclaim. These pages would more likely be idled for a long time.
-
-> "There is a system in place now that is based on a user-space process
-> that reads a bitmap stored in sysfs, but it has a high CPU and memory
-> overhead, so a new approach is being tried."
-> https://lwn.net/Articles/787611/
->
-> Could you elaborate how you solved this problem?
-
-In out environment, we found that we take average 0.4 core and 300MB memory
-to do scan, basic analyse and reclaim idle pages.
-
-For reducing cpu & memroy usage, we do: 
-1. We implement a ratelimiter to control rate of scan and reclaim.
-2. All pages info & idle age were stored in local DB file. Our prediction
-algorithm don't need all pages info in memory at the same time.
-
-In out environment, about 1/3 memory was attemped to allocate as THP,
-which may save some cpu usage of scan.
-
-> > We only need kernel to tell use whether a page is accessed, a boolean
-> > value in kernel is enough for our case.
->
-> How do you define "accessed"? I.e., through page tables or file
-> descriptors or both?
-
-both
-
-> > > 2. PG_idle/young, being a boolean value, has poor granularity. If
-> > > anyone must use page_idle/bitmap for some specific reason, I'd
-> > > recommend exporting generation numbers instead.
-> >
-> > Yes, at first time, we try using multi-gen LRU proactvie scan and
-> > exporting generation&refs number to do the same thing.
-> >
-> > But there are serveral problems:
-> >
-> > 1. multi-gen LRU only care about self-memcg pages. In our environment,
-> > it's likely to see that different memcg's process share pages.
->
-> This is related to my question above: are those pages mapped into
-> different memcgs or not?
-
-There is a case:
-There are two cgroup A, B (B is child cgroup of A)
-Process in A create a file and use mmap to read/write this file.
-Process in B mmap this file and usually read this file.
-
-> > We still have no ideas how to solve this problem.
-> >
-> > 2. We set swappiness 0, and use proactive scan to select cold pages
-> > & proactive reclaim to swap anon pages. But we can't control passive
-> > scan(can_swap = false), which would make anon pages cold/hot inversion
-> > in inc_min_seq.
->
-> There is an option to prevent the inversion, IIUC, the force_scan
-> option is what you are looking for.
-
-It seems that doesn't work now.
-
-static void inc_max_seq(struct lruvec *lruvec, bool can_swap, bool force_scan)
-{
-......
-    for (type = ANON_AND_FILE - 1; type >= 0; type--) {
-        if (get_nr_gens(lruvec, type) != MAX_NR_GENS)
-            continue;
-
-        VM_WARN_ON_ONCE(!force_scan && (type == LRU_GEN_FILE || can_swap));
-
-        if (inc_min_seq(lruvec, type, can_swap))
-            continue;
-
-        spin_unlock_irq(&lruvec->lru_lock);
-        cond_resched();
-        goto restart;
-    }
-.....
-}
-
-force_scan is not a parameter of inc_min_seq.
-In our environment, swappiness is 0, so can_swap would be false.
-
-static bool inc_min_seq(struct lruvec *lruvec, int type, bool can_swap)
-{
-    int zone;
-    int remaining = MAX_LRU_BATCH;
-    struct lru_gen_folio *lrugen = &lruvec->lrugen;
-    int new_gen, old_gen = lru_gen_from_seq(lrugen->min_seq[type]);
-
-    if (type == LRU_GEN_ANON && !can_swap)
-        goto done;
-......
-}
-
-If can_swap is false, would pass anon lru list.
-
-What's more, in passive scan, force_scan is also false.
-
-static long get_nr_to_scan(struct lruvec *lruvec, struct scan_control *sc, bool can_swap)
-{
-......
-    /* skip this lruvec as it's low on cold folios */
-    return try_to_inc_max_seq(lruvec, max_seq, sc, can_swap, false) ? -1 : 0;
-}
-
-Is it a good idea to include a global parameter no_inversion, and modify inc_min_seq
-like this:
-
-static bool inc_min_seq(struct lruvec *lruvec, int type, bool can_swap)
-{
-    int zone;
-    int remaining = MAX_LRU_BATCH;
-    struct lru_gen_folio *lrugen = &lruvec->lrugen;
-    int new_gen, old_gen = lru_gen_from_seq(lrugen->min_seq[type]);
-
--   if (type == LRU_GEN_ANON && !can_swap)
-+   if (type == LRU_GEN_ANON && !can_swap && !no_inversion)
-        goto done;
-......
-}
-
--- 
-2.43.0
-
+>>
+> 
+> Agree with Mina's point. Let's aim to decouple memory types from
+> drivers.
+> .
+> 
 
