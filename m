@@ -1,108 +1,76 @@
-Return-Path: <linux-kernel+bounces-1548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88FC1814FF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:06:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D622F814FF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:06:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49ED51C223B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:06:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040321C21A14
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C303012D;
-	Fri, 15 Dec 2023 19:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA7B3FB37;
+	Fri, 15 Dec 2023 19:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NibKwKnP"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DCgKKAs9";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="M/ib60cs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670503EA92
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5e3b9c14e46so8818437b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:05:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702667153; x=1703271953; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vVnFmJCCfR01LuehN8Co2lUqd4r5c+j4EtSCAiB9EBs=;
-        b=NibKwKnPH2SGw/HKkXSmnbmX2T8wUSDRgeQkzsLSmSUUclaWmOpFJC8cmeTubkjXXX
-         fQLnftudWApH7Juz/BJrKjT7gAOvByDg4Pp/BNJYAb8lljuEb5TjjvKBPsNWf9EzDlLF
-         lViOvN4zILb4B7Ylox8Jn015cFXvCBVhYnNv9gVZeVIz1A+5236+RlzadhUfifyKPWis
-         zuOClUj4ZuF2pZhgPNQdJDQBpXE1OxzZHzIUFHX6dnSovIIacKolVK3L/+n0RlDUY6Cm
-         Lo3IZgbhDL1jJDnyCt+wX9aqXHu4yDqy/hy7S85TnIo5FdENr/k00vNgS34C92N/QV2L
-         OeXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702667153; x=1703271953;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vVnFmJCCfR01LuehN8Co2lUqd4r5c+j4EtSCAiB9EBs=;
-        b=Axc0mRPMSTE3uuKysHTb7jScmaEituetY+FrL7DZQvhOwFzfbXwuYaY9163aonkBku
-         VdeFfxDWaoPovBoOtmLZCE9XDTfXCxTJLghx3wjFCgjZqK+HzjLd5fUL6s+Bsf1OKlb7
-         L3123kOP8W0SZtfNILn0ECTqeCmMO1VDebIPN1laUNmeGeIGnu4iTLi//9wQbQiKHLJR
-         WBTgVnbjHVNfXG6z/f1CFxgjpRrrw6HtVYXZcuVmhOugx4YdyxJKc8/AXilNH/PPlqIi
-         ou9w4kaz4K1OIe9F53BOeS5Y9YUNrQ/ASMRQrZy8mXFHYN/CYELJdtBzPxgyWsdJooAT
-         N0UA==
-X-Gm-Message-State: AOJu0YwqF2xqD3Y9J4SoZkz+QoAJZfWGMeZOPYTcfxISKqz2dKm0wsvT
-	KYidy8uLO2uFWUi1Ge7D/LeuI82WbPI=
-X-Google-Smtp-Source: AGHT+IFgT+FKQk/P+pqJo3/xjAUYmQTLrHH89Av00/vpemeDRbZ66bXPyOr4yVGO7EMb4U2cGPujaQ==
-X-Received: by 2002:a81:4807:0:b0:5e4:ac12:fc16 with SMTP id v7-20020a814807000000b005e4ac12fc16mr876480ywa.71.1702667153288;
-        Fri, 15 Dec 2023 11:05:53 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:ffe6:85e9:752c:601b])
-        by smtp.gmail.com with ESMTPSA id w135-20020a81498d000000b005e2f116e2f5sm109709ywa.32.2023.12.15.11.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 11:05:52 -0800 (PST)
-Date: Fri, 15 Dec 2023 11:05:51 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v1 2/2] bitmap-str: Add missing header(s)
-Message-ID: <ZXyjjzjFUzscO8ay@yury-ThinkPad>
-References: <20231215184218.2005611-1-andriy.shevchenko@linux.intel.com>
- <20231215184218.2005611-3-andriy.shevchenko@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7E73FB34
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702667161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I0hHN3RnKj4ClKstTe8LPIswNpLId53VLjBBZOC5iHs=;
+	b=DCgKKAs9oL7sERRcO8sIomMuOWsEMgeyqtxUPX9sx9sXSsABGqpSHt1MpK7pGPv6GydrZL
+	OyRUIn92ltypPaAqPNi9tMsPpMA9ZyuVW/4UX6lEhTyiwhaq1p6JN4Ac8qOhBeTtd9hGok
+	fLVX4MYPqWNZ3/4c7xRwgLiilEzjR+2JGKRrRZL/ixPVcwsKBRUtCOkha5Dk60IZBN81R2
+	bM8mGaKFTF5GxTgsiHGvZSgzogZpzIeJKk9+aCg30Kfyj7pukdplmkHYT84NhNtfkq+wGv
+	MTbDmKjgVVNrp02I4mYlqChmZOmE7FKaTBfITb1asjE+UWLLKwDyTbbdR/HszA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702667161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I0hHN3RnKj4ClKstTe8LPIswNpLId53VLjBBZOC5iHs=;
+	b=M/ib60csaRtPn3fF/G22mmT0S5E/sVbk0NqIHN4+WrCQjp6pfJM13TKqt8PHbI1KOM9qKx
+	els4oGs/fA2RVZDQ==
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski
+ <luto@kernel.org>, linux-kernel@vger.kernel.org, Heiko Carstens
+ <hca@linux.ibm.com>
+Subject: Re: [PATCH 0/3] entry: inline syscall enter/exit functions
+In-Reply-To: <yt9do7etw5se.fsf@linux.ibm.com>
+References: <20231205133015.752543-1-svens@linux.ibm.com>
+ <20231206110202.GD30174@noisy.programming.kicks-ass.net>
+ <yt9do7etw5se.fsf@linux.ibm.com>
+Date: Fri, 15 Dec 2023 20:06:00 +0100
+Message-ID: <87ttojmgkn.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215184218.2005611-3-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain
 
-On Fri, Dec 15, 2023 at 08:41:09PM +0200, Andy Shevchenko wrote:
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  include/linux/bitmap-str.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/bitmap-str.h b/include/linux/bitmap-str.h
-> index d758b4809a3a..53d3e1b32d3d 100644
-> --- a/include/linux/bitmap-str.h
-> +++ b/include/linux/bitmap-str.h
-> @@ -2,6 +2,8 @@
->  #ifndef __LINUX_BITMAP_STR_H
->  #define __LINUX_BITMAP_STR_H
->  
-> +#include <linux/types.h>
+On Thu, Dec 14 2023 at 09:24, Sven Schnelle wrote:
+> Peter Zijlstra <peterz@infradead.org> writes:
+>>> so the time required for one syscall dropped from 94.8ns to
+>>> 84.7ns, which is a drop of about 11%.
+>>
+>> That is obviously very nice, and I don't immediately see anything wrong
+>> with moving the lot to header based inlines.
+>>
+>> Thomas?
 
-There's no sense in including this header without bitmap.h, and the
-latter includes linux/types.h, so no need to include it here again.
-
-If you want to make it more rigorous, you can do like this:
-
-        #ifndef __LINUX_BITMAP_H
-        #error "Don't include separately from linux/bitmap.h"
-        #endif
-
->  int bitmap_parse_user(const char __user *ubuf, unsigned int ulen, unsigned long *dst, int nbits);
->  int bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp, int nmaskbits);
->  int bitmap_print_bitmask_to_buf(char *buf, const unsigned long *maskp, int nmaskbits,
-> -- 
-> 2.43.0.rc1.1.gbec44491f096
+No objections in principle. Let me look at the lot
 
