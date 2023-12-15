@@ -1,58 +1,62 @@
-Return-Path: <linux-kernel+bounces-1208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A4CF814BAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:23:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6010C814BB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C5E31C22682
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:23:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDC1DB214F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C01C3716A;
-	Fri, 15 Dec 2023 15:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4423237176;
+	Fri, 15 Dec 2023 15:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZP/OuKyj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LMBKxCGH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644AB37141
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=PsuBt3Vxcjvct1x6GswH9qrfO3gP89Oemg6DFIds43o=; b=ZP/OuKyjnrqJ1cfREu6NHWOPBP
-	byVZ318SPUj0MAHcz96U15upnAMKHUaELm3jrg1nO6Jw7HyVWIFS7hSLjr93uFnxfxtCKuso81Bh2
-	9jDseVlPNpAWFmVlOiXsyl9fVIhbTOc07FXswNGv3sLLSkop3AgpyauaunGpBk7g2bXXHTfYEsidc
-	tr3a3VO7GDxMddeihm8Hs3BpClkbV9H17WzsfFHxWJ/WwkVPn1RxPOUPLa0CiDIz2G6bGyz0EnD5s
-	tReWuuLLXsuSlcVz/OjJUTBlbs1LrzgAK9HsgqIYvl6qVrwt1Ou/A8Dp5sRB+mFaIPYgQSdZGPKUT
-	GMl+ifsQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEA1v-009xag-37;
-	Fri, 15 Dec 2023 15:23:12 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 9EA993005B2; Fri, 15 Dec 2023 16:23:11 +0100 (CET)
-Date: Fri, 15 Dec 2023 16:23:11 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-Cc: Ingo Molnar <mingo@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-	Josh Don <joshdon@google.com>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Xunlei Pang <xlpang@linux.alibaba.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] sched/fair: take into account scheduling domain in
- select_idle_core()
-Message-ID: <20231215152311.GL36716@noisy.programming.kicks-ass.net>
-References: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
- <20231214175551.629945-2-keisuke.nishimura@inria.fr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E546364D8
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702653893; x=1734189893;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=yH7pJArHhMyDIDxZ3CICiPrVXTkVYrLh/AfQlMjPxOk=;
+  b=LMBKxCGH1Cb0cR2qxpW3sVEeqG8Sso3SymkRcTmW43TkqsaMm4TDcwLP
+   eaPcF+qa28PnhkzdynG4FjnCcr5nt9FOETfmyKn2Ff7FSKhyDxkYzqfXE
+   aOzaDVeLBIJefKK+wyjVO5kPIyK6peM5Wz5QLq1ibQD2k+XyePCw/05kB
+   jst2MGlvlihbASzgTDFt7H6HPTq0TedSjsJEnYjnpw9Y1u1NdFwK263py
+   Ifc3Om/tJ7XI9Kv5AZJsDO6M9bXA5yfRwh3jVhkVFZ6KESgCMNVNHXprm
+   yNjXoQaMu1ywYW9K5TuOJopDpfSd1ZcZn5VOAh0o9Tb1HDVYrwPfpGXO3
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="8646433"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="8646433"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 07:24:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="840694242"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="840694242"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Dec 2023 07:24:43 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEA3M-0000Mc-2q;
+	Fri, 15 Dec 2023 15:24:40 +0000
+Date: Fri, 15 Dec 2023 23:24:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalesh Singh <kaleshsingh@google.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>, Fuad Tabba <tabba@google.com>
+Subject: arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol
+ '__pcpu_scope_overflow_stack' was not declared. Should it be static?
+Message-ID: <202312152318.irx4BVyi-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,51 +65,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231214175551.629945-2-keisuke.nishimura@inria.fr>
 
-On Thu, Dec 14, 2023 at 06:55:51PM +0100, Keisuke Nishimura wrote:
-> When picking out a CPU on a task wakeup, select_idle_smt() has to take
-> into account the scheduling domain where the function looks for the CPU.
-> This is because cpusets and isolcpus can remove CPUs from the domain
-> to isolate them from other SMT siblings.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
+commit: 548ec3336f323db56260b312c232ab37285f0284 KVM: arm64: On stack overflow switch to hyp overflow_stack
+date:   1 year, 5 months ago
+config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231215/202312152318.irx4BVyi-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231215/202312152318.irx4BVyi-lkp@intel.com/reproduce)
 
-Same question as before, when cpusets, the cpu should also be unset from
-p->cpus_ptr. So I'm thinking you're one of those isolcpus users I wish
-that would go away ;-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312152318.irx4BVyi-lkp@intel.com/
 
-> This change replaces the set of CPUs allowed to run the task from
-> p->cpus_ptr by the intersection of p->cpus_ptr and sched_domain_span(sd)
-> which is stored in the cpus argument provided by select_idle_cpu.
-> 
-> Fixes: 9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
-> Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-> ---
->  kernel/sched/fair.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 71306b48cf68..3b7d32632674 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7262,7 +7262,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
->  		if (!available_idle_cpu(cpu)) {
->  			idle = false;
->  			if (*idle_cpu == -1) {
-> -				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-> +				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, cpus)) {
->  					*idle_cpu = cpu;
->  					break;
->  				}
-> @@ -7270,7 +7270,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
->  			}
->  			break;
->  		}
-> -		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-> +		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, cpus))
->  			*idle_cpu = cpu;
->  	}
+sparse warnings: (new ones prefixed by >>)
+>> arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol '__pcpu_scope_overflow_stack' was not declared. Should it be static?
 
-Aside of that, the actual patch seems to be fine, just the rationale
-needs work.
+vim +/__pcpu_scope_overflow_stack +10 arch/arm64/kvm/hyp/nvhe/stacktrace.c
+
+     9	
+  > 10	DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
