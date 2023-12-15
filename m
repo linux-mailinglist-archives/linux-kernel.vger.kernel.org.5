@@ -1,135 +1,73 @@
-Return-Path: <linux-kernel+bounces-1268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79F89814C9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:12:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B8E814CA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:12:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA054288EDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:12:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 952EA1C23A55
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA93A3B2A2;
-	Fri, 15 Dec 2023 16:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="N62UDXB7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A623D38C;
+	Fri, 15 Dec 2023 16:12:05 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDD33A8FA;
-	Fri, 15 Dec 2023 16:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFFKRBS022046;
-	Fri, 15 Dec 2023 16:11:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=wmAUk/vTF+5Nn1KK9suFd2BGYlSFrE/EsVXvj0c5NBE=;
- b=N62UDXB7gU3t1z6zfhUskS5mDL0zXUYJ87ez/vQTGkUITGkZmYJWpinvO4DVnbQG3Kt2
- XkvqnfL1OPz5G9T/k0hRGudJTIn87UbbqgXe8wdLWCq2CRhn5K2bDAy2qpSg7Yh7+cSK
- 3Ygw0uHBdQpPFqVQ5pkDUpmumGa1CGxh9gYr/z4LOyzZ5k+khKZMq1jn4gaq+zpKw2fI
- XX+81dKWc4dM7p9qA3Nj7tGYr9dn6k8TXJjtlCnwQog6omV9vWAcgq8gURHGRMyInA65
- nS90UVJWK4aJgGYdbWEH4deMOdZ4iEdj1SYrRJwaYuVjAXhihszHUGYW4RqSG3Wz0Q/B 8A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0reku5qm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 16:11:32 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BFFlkiX010155;
-	Fri, 15 Dec 2023 16:11:32 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0reku5qb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 16:11:32 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFE9QRF012699;
-	Fri, 15 Dec 2023 16:11:31 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jph59y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 16:11:31 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BFGBSIL42140308
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Dec 2023 16:11:28 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2500020040;
-	Fri, 15 Dec 2023 16:11:28 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D884520043;
-	Fri, 15 Dec 2023 16:11:27 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 15 Dec 2023 16:11:27 +0000 (GMT)
-From: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-To: Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Nina Schoetterl-Glausch <nsg@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: s390: selftest: memop: Fix undefined behavior
-Date: Fri, 15 Dec 2023 17:11:25 +0100
-Message-Id: <20231215161125.943551-1-nsg@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389C93FB06;
+	Fri, 15 Dec 2023 16:12:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsDj95sm3z6JB1B;
+	Sat, 16 Dec 2023 00:10:53 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 805531400D4;
+	Sat, 16 Dec 2023 00:11:59 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
+ 2023 16:11:58 +0000
+Date: Fri, 15 Dec 2023 16:11:57 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 09/21] ACPI: convert acpi_processor_post_eject()
+ to use IS_ENABLED()
+Message-ID: <20231215161157.00000630@Huawei.com>
+In-Reply-To: <E1rDOgX-00DvkQ-Lg@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOgX-00DvkQ-Lg@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 7IcDHKpNCswVDGbXMLYTUO2nGCw_s9Ta
-X-Proofpoint-GUID: NSSmaOt_irSiAKvDhBsP_AhVSPfMJKHH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-15_10,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 suspectscore=0 bulkscore=0
- adultscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1011
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312150111
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-If an integer's type has x bits, shifting the integer left by x or more
-is undefined behavior.
-This can happen in the rotate function when attempting to do a rotation
-of the whole value by 0.
+On Wed, 13 Dec 2023 12:49:57 +0000
+"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk> wrote:
 
-Fixes: 0dd714bfd200 ("KVM: s390: selftest: memop: Add cmpxchg tests")
-Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
----
- tools/testing/selftests/kvm/s390x/memop.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> Rather than ifdef'ing acpi_processor_post_eject() and its use site, use
+> IS_ENABLED() to increase compile coverage.
+> 
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-diff --git a/tools/testing/selftests/kvm/s390x/memop.c b/tools/testing/selftests/kvm/s390x/memop.c
-index bb3ca9a5d731..2eba9575828e 100644
---- a/tools/testing/selftests/kvm/s390x/memop.c
-+++ b/tools/testing/selftests/kvm/s390x/memop.c
-@@ -485,11 +485,13 @@ static bool popcount_eq(__uint128_t a, __uint128_t b)
- 
- static __uint128_t rotate(int size, __uint128_t val, int amount)
- {
--	unsigned int bits = size * 8;
-+	unsigned int left, right, bits = size * 8;
- 
--	amount = (amount + bits) % bits;
-+	right = (amount + bits) % bits;
-+	/* % 128 prevents left shift UB if size == 16 && right == 0 */
-+	left = (bits - right) % 128;
- 	val = cut_to_size(size, val);
--	return (val << (bits - amount)) | (val >> amount);
-+	return (val << left) | (val >> right);
- }
- 
- const unsigned int max_block = 16;
-
-base-commit: 305230142ae0637213bf6e04f6d9f10bbcb74af8
--- 
-2.40.1
-
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
