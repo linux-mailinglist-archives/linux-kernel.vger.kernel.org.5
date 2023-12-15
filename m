@@ -1,108 +1,138 @@
-Return-Path: <linux-kernel+bounces-333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A967E813F98
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:10:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 119BD813F9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:11:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17066283F1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:10:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF7661C22184
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:11:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C8CEBF;
-	Fri, 15 Dec 2023 02:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6724BA48;
+	Fri, 15 Dec 2023 02:11:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="ISAgexRu"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S4ihFpEG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E20A3F
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=TwBE
-	iHEpUbhtrkorike2pkAY7DbUk61pqDisyiVmNIc=; b=ISAgexRuVWXqtud5L/8M
-	WuMqnXw9WppTZycTirMNJF47efuX+/YwQAPP/WknMvuqu2jC0qV7hA5znD/bCpm6
-	I//ObAk4sGby2IRK8Jxsxo8MiJqcrQ7WE557UL3AIkHtt2QsmFQAAa080CiohqXg
-	wHwPSy7wWg3cw2RcHcHdgqPq35noSVSPym9QFPTtv8c7vdRAkSofsEQYcTpOVjJx
-	V4+8UT7K0BEA0xrEVzC9QiQdMPt0v4lh9wjA4BHlV9hVKjrpcF6sdBqJFEcNHsUK
-	2BJTQFu+1asElcKejFtSGR4OkagABKXIYK5uUf8o2pmC2Vyzq6KTJT3v4vJl5zRh
-	Tw==
-Received: (qmail 1100441 invoked from network); 15 Dec 2023 03:10:31 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 15 Dec 2023 03:10:31 +0100
-X-UD-Smtp-Session: l3s3148p1@ED5t54IMYMMujnuR
-Date: Fri, 15 Dec 2023 03:10:28 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: linux-renesas-soc@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] i2c: rcar: add FastMode+ support for Gen4
-Message-ID: <ZXu1lMgg8dc40PVC@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	linux-renesas-soc@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-References: <20231214074358.8711-1-wsa+renesas@sang-engineering.com>
- <20231214074358.8711-3-wsa+renesas@sang-engineering.com>
- <20231214205449.x7bbu7i7m52ihibz@zenone.zhora.eu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D22D10EC
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:11:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--shakeelb.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1d36403e815so1926135ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 18:11:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702606276; x=1703211076; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hn2u3ohnyQZ77hNqSlm/EvFnLZDsF+Ox+1yQ+iYOeGU=;
+        b=S4ihFpEGaGASqDXTKfIcJabS3ty2QxSafop+BYrFlYS3RFOOEXc4/eKAaKZjzU4WWh
+         DRXxnvX7n3k/XvfTLWvDbDI7EuR8uo9fqmsBj1c8yy9c253JKQ6y5iHHgfx2WBSiVhqA
+         2KaQxhu0iAwy+KIml+CkrMRTA2GIVTgZvPP7BdOXDTLu9HND3PfxIVB0/V1suO6spBxu
+         w+ugljbilT8Xyj+wPr5aH1wcv+/1s6U3TWDxYLvRPl9zk0ug9BodKQROgmm6vOHwTIcs
+         r8iMGrzQdnS2SkDKDnKlkoTa1Io+H5bE4s67IUAtJ3FgiB0G2oYsfA9jZ4ClQJbAipA7
+         /6tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702606276; x=1703211076;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Hn2u3ohnyQZ77hNqSlm/EvFnLZDsF+Ox+1yQ+iYOeGU=;
+        b=OX0sc55xA9GFLuD0zOqTo5e8Cc9hcwl5nU6kdX010P/nbvMQgVEAKkRaQkJHj1otpR
+         LU6m/uDMqu5ksGa2Ac3rHKIZdh4KWhNXvllvfu9sUxv1EeumEFWMqJs/baa0rBLDdWRC
+         MT1GKA7gIGZ/R2K+x1t1aWkwGqZcpBCpHjxXhbdl6qBnX9KDAM3DCvmupbUjb3kN1r/h
+         uRZ8VnqDBCj7gQ62k8YJXwoqNk1YQYsIXtDEOn75nZ8zhX+CBS6bHQtuhUHgQDZwzWNH
+         UL0hzMbPWtOk0SZ0yAxsayDibFDIOjKaFDNn7wOajCHjfd8HHJQvRhcacLTZG7Nr59Ny
+         uiSg==
+X-Gm-Message-State: AOJu0YzpWxtVBk41kGX2xxAbMXldZoKniZL0aYljx0DHek0lUNvNljNU
+	ubPU4YV2b5HyQBuBHMNFZz8PxTI3QEa7jA==
+X-Google-Smtp-Source: AGHT+IFer5ptuGEEfLFmjy3FBazRTAHYraFtWH6cjZkWuSL5hJETliQbOEPas4rAqb9tpBNPAqzbmDmViSQbnQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a17:902:f690:b0:1d0:8be8:bb7c with SMTP
+ id l16-20020a170902f69000b001d08be8bb7cmr1969874plg.4.1702606275789; Thu, 14
+ Dec 2023 18:11:15 -0800 (PST)
+Date: Fri, 15 Dec 2023 02:11:14 +0000
+In-Reply-To: <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="A/YQQ/mR7JlW/8CY"
-Content-Disposition: inline
-In-Reply-To: <20231214205449.x7bbu7i7m52ihibz@zenone.zhora.eu>
+Mime-Version: 1.0
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+ <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+Message-ID: <20231215021114.ipvdx2bwtxckrfdg@google.com>
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
+ of struct page in API
+From: Shakeel Butt <shakeelb@google.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	"Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Michael Chan <michael.chan@broadcom.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
+	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
+	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
+	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
+	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
+	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
+	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
+	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
+	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
+	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
+	Stefano Stabellini <sstabellini@kernel.org>, 
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
+	"=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Dec 14, 2023 at 08:27:55AM -0800, Mina Almasry wrote:
+> On Thu, Dec 14, 2023 at 4:05=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.=
+com> wrote:
+> >
+[...]
+> > I perfer the second one personally, as devmem means that it is not
+> > readable from cpu.
+>=20
+> From my POV it has to be the first one. We want to abstract the memory
+> type from the drivers as much as possible, not introduce N new memory
+> types and ask the driver to implement new code for each of them
+> separately.
+>=20
 
---A/YQQ/mR7JlW/8CY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Andi,
-
-> as we were here we could have written the register values as
-> 0x%x, but it's also OK to keep the change with a minimal impact.
-
-I think it is OK like it is because the datasheet also uses decimal
-values in the formulas.
-
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-
-Thanks!
-
-   Wolfram
-
-
---A/YQQ/mR7JlW/8CY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmV7tZAACgkQFA3kzBSg
-KbY/NA//fvFqdNgWEsXUtKHDPd6njCRFknId5nlIWCwqK0IEyEW3F+7DvNViRWg4
-MW4fqfW2vFyXx62C2/hovPDfPwWy2ifJ2vvETPzmDnjJv3gOCOO5x7h43h21Fsg2
-zBFz6CodLgXX+pc0mvUw7tJy85UspGwZlTwiq0iIzLuwyo3m9HwJu3yWU/xBslKf
-2qVHOzJ9Xo1rAwx6B7AT5+7yTSiUYagJjG6JJjqn/VUJGcQoX0l5/PRoCVlsjz1C
-29WJU8S1HIa/LI+EtPo+5TvmSN7o12uTK8EVWzFajtSgsMdiO5eMRm+C0HOzGdAA
-t40tQIHS75BWkJAacsbY+BD7rP43Xoami+7ap36ww3b9KGTbHPiLAqcF+Di/5QBi
-n9tUWG5tW0uH2KjVH13ygGAo7O7awvT4HpoIyIPuamyFBgmLguzX5oxWZwWI0bog
-jNclfkv8zPGXUmVxnP1zygVp9p7Ec/eyF+GxbwsfejTYKRYLPKHFhrJ+/KQfkp1F
-CE7wh53pEL151QFdXPwuD1x/ID7M5BeKhMc3Oyi4MAwq+xz04aRoGA/xEIkLMP0M
-AUWhOAjjd0AoI7446crdb60TXsMxiRa0oi6/Ktcj3eG8EHFBHP1NCf0nYilV7r7X
-dM+sAiaiq538+Ljo9vHcr8d9Ajwi1WxGvhM7fk2OQRqN70H9HAs=
-=7mmp
------END PGP SIGNATURE-----
-
---A/YQQ/mR7JlW/8CY--
+Agree with Mina's point. Let's aim to decouple memory types from
+drivers.
 
