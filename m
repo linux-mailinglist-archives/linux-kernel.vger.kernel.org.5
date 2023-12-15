@@ -1,93 +1,106 @@
-Return-Path: <linux-kernel+bounces-1330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31FF6814D80
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:50:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 654C9814D7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:49:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E269F2844E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:50:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2371E1F2517B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE633DBB7;
-	Fri, 15 Dec 2023 16:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDBD3E473;
+	Fri, 15 Dec 2023 16:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KIj1LEp/"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GlwvFBbS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAC43EA82
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702659003; x=1734195003;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=vgZwlm3sVDXUzqdaqyONYJEGMEvvDJOC9JOXTv866Bc=;
-  b=KIj1LEp/0cxBm3Lwm8OP3as5cOMPEy4KRMqOzUQTzx+w6RKrUeXJC0vM
-   5uh9zgJOPZ6PSZIsZnXIJJLKMDgG35DfRml2PtpEVR6BF0grhoSHyZRpe
-   g+JeXQhEXqt9GesMW/JsiiFYDyNDK+gyzwzR0Js+PHN7Zia8b+CUMK1Av
-   rTEpkbeiLMCl0w90H3JTqj3tUJsCwm46PCeacqnj1Q/9NhQcqnJdJCA6a
-   kbrj5yhW7174GPg03muK/gQRrBSb0wPv6f+rqQEDKd3YfKZD/nHO1a/AB
-   mk06IQP+T/MGOKGDaHs0deIOruw1ZdsRzmdAB4u4FBKv4WNuHneN0sQcv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2468772"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="2468772"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:49:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="768040193"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="768040193"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 15 Dec 2023 08:49:48 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEBNi-0000Tw-0i;
-	Fri, 15 Dec 2023 16:49:46 +0000
-Date: Sat, 16 Dec 2023 00:48:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Peter Oberparleiter <oberpar@linux.ibm.com>
-Subject: scripts/kernel-doc: kernel/gcov/fs.c:103: warning: Excess struct
- member 'buffer' description in 'gcov_iterator'
-Message-ID: <202312160030.CV8MHmM8-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B5C25546;
+	Fri, 15 Dec 2023 16:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=56+Wae/xX9CIF/Rb17HxT31PTyujjzTbsxy+sp2Y1vA=; b=GlwvFBbSvLeKzj0bgyCL8gJ9SX
+	j6jK5r4uA2qjfS9oos86V7tLq6rmiL7blM7qk+kWqZTWOY3pnE+EqF0o4VN8IaiJxE5shdE9+wPwl
+	YXTort9mUAZBpvow1tPlpX4GXAFt/osQP+BJK1HjLyS6HCpJrpL5dAZUvdGueuOvOlZETt/vwzDwq
+	oS8tHmaWd/7EPyBd6kS1ynzNMV99Yfe5aTY1Y2s61y2Pz43ixo7rEOFT6zliPsFM18UQr2KJF2we5
+	27d1omiYQ8/UgXkhC0Bz/HHWWaHIz6YxCQXAy+mNo7QEccRBVeYfBVLLSbWPX6jnPaD8KITGQwPCq
+	nkZ6Le3A==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEBNa-003vcV-1c;
+	Fri, 15 Dec 2023 16:49:38 +0000
+Message-ID: <03c0b3bd-5798-4066-964e-a884485fe1d3@infradead.org>
+Date: Fri, 15 Dec 2023 08:49:37 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] kernel-doc: Aling quick help and the code
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+References: <20231215150341.1996720-1-andriy.shevchenko@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231215150341.1996720-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
-commit: fbd126f5a658b92c7f6af986a6d89cf5e5693268 gcov: annotate struct gcov_iterator with __counted_by
-date:   8 weeks ago
-config: arm-randconfig-002-20231215 (https://download.01.org/0day-ci/archive/20231216/202312160030.CV8MHmM8-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312160030.CV8MHmM8-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312160030.CV8MHmM8-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+On 12/15/23 07:03, Andy Shevchenko wrote:
+> The update to the quick help mentions -Wshort-description, but
+> code never supported for that. Align that with the code by allowing
+> both: -Wshort-description and -Wshort-desc.
+> 
+> Fixes: 56b0f453db74 ("kernel-doc: don't let V=1 change outcome")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
->> scripts/kernel-doc: kernel/gcov/fs.c:103: warning: Excess struct member 'buffer' description in 'gcov_iterator'
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+(Note: in Subject, s/Aling/Align/)
+
+> ---
+>  scripts/kernel-doc | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+> index 0a890fe4d22b..7d7ed3e43946 100755
+> --- a/scripts/kernel-doc
+> +++ b/scripts/kernel-doc
+> @@ -23,7 +23,7 @@ kernel-doc - Print formatted kernel documentation to stdout
+>  
+>  =head1 SYNOPSIS
+>  
+> - kernel-doc [-h] [-v] [-Werror] [-Wall] [-Wreturn] [-Wshort-description] [-Wcontents-before-sections]
+> + kernel-doc [-h] [-v] [-Werror] [-Wall] [-Wreturn] [-Wshort-desc[ription]] [-Wcontents-before-sections]
+>     [ -man |
+>       -rst [-sphinx-version VERSION] [-enable-lineno] |
+>       -none
+> @@ -328,7 +328,7 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
+>  	$Werror = 1;
+>      } elsif ($cmd eq "Wreturn") {
+>  	$Wreturn = 1;
+> -    } elsif ($cmd eq "Wshort-desc") {
+> +    } elsif ($cmd eq "Wshort-desc" or $cmd eq "Wshort-description") {
+>  	$Wshort_desc = 1;
+>      } elsif ($cmd eq "Wcontents-before-sections") {
+>  	$Wcontents_before_sections = 1;
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
