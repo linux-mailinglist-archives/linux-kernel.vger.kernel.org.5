@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-1749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23511815382
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:23:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB4928153B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD34C1F24EC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:23:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F173CB22F7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD7518EA9;
-	Fri, 15 Dec 2023 22:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCCC18EB8;
+	Fri, 15 Dec 2023 22:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b="bB+xsgXP"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="GJjZijPr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DFE18EB0
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=hefring.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-77f380d8f6aso75447885a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:22:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B89113AC6
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d9f879f784so902089a34.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:33:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1702678973; x=1703283773; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702679595; x=1703284395; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7TFw7xg7w2M+8qc28EqEusL4T4Plz+lf2upO0JPQgw0=;
-        b=bB+xsgXP0L1K1L4YdX4qXnsrdPX7OO9PVPR6hlKNra+DrFBmkHOVrtSxG791xmZB+X
-         UfRkdwJJyNB0bZ6stenzFN+0piMYgor2JnZv4mrnSRd5Ce9LtdDClD5INfjXOV3w4x+T
-         2lrC5+H67cppQ6NAwuEOO4/1JHkdYAfuDb860q3qUQTeVSBDu8SN9bgYrtMGMyHxnKDq
-         eesA+I3ZSRvAsTUX7YUGUG9GEMSgHM/MNkqme8Adw1chfUy6BkvqSYo0DZvgtauiJxt/
-         5Sh2H1bSFtHvh7nN1VaZdZ8IrpYGATZrOa3ED9pMLFIpDWNxAlQoAtpSif+kHyLEH93W
-         53uw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z6gE5MsrAaAORf3VjfmyHVqm+yqircqVcZWJ66dQBiE=;
+        b=GJjZijPrRZJtU65a1Wv+o9R0gpgwdTvlYlDeT4K0p1wUeXWyt71xbL+avcWDRoHYxF
+         nKC/Wt89SpZlxWY/uUpbi7oqaHlzS36LW2i2nxcUwu/p3rPsrPHxNmvD6OsJMlhNbQoh
+         0KVIKvdkVjptOjygVPKBUTNWf/9Ty3iaM+DV/DNiZg62fdKlMlb9D/kODBcrZ+CTqLJa
+         7hF5giyG6Pif95Z1LOTMQf9CWPRSUmyZVlm/fFkuG8ZycRY5uGoUfFcP5i4SMn/wIbu8
+         cxiXMDlip5FwBkXpJiigC/U4THsoam6eOw3tfi+HzUcTv9bbWKU0O02/TKEgixqgCyPJ
+         ql3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702678973; x=1703283773;
+        d=1e100.net; s=20230601; t=1702679595; x=1703284395;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7TFw7xg7w2M+8qc28EqEusL4T4Plz+lf2upO0JPQgw0=;
-        b=uj+f0MH2sAHNGfzpYgToOuO6HQ8WMVYQ7mRRxa0Wi2vDvaoUBoCAQN1hjrcTj/2fv+
-         Un9pO5gBPvtpN0+wQQu8tTLJssPylndr1mYl9ZrlbTVR2ubEk/3abh2Wjj/XDesO4wTo
-         GGYEL2R2iGrhhwrs2vkUV6t6se5THqVLgfv26ydMWPKA7+7zJRrpgakdDMu9PNMUV+oP
-         vPTTg+JCDRPnwQvaFfpR6KTupUDrLYgIE8EHjwg/IiCBOUgUwW329leZXVzqhAZVAF4F
-         acy17Q04D2vM1S73vIB3tg/cef6355F5GoehJ8yzHTEpfjeuP5tmFS3gVeeNcNpd2Pl+
-         0q1A==
-X-Gm-Message-State: AOJu0YziqVbkNieCwV9IAfF12Zf9Y5SMFxPHIvavaE+C4fVGmzUkp2Lj
-	jSdNwPGKftWCOtFg7hfziXOUow==
-X-Google-Smtp-Source: AGHT+IEJekFwo4r+H8PtOrZH0hYzvRpj9POtATtBQr7tyBiNEDTS/FAF2UzeUfuDf/WaBoIwrOUJ3A==
-X-Received: by 2002:a05:620a:146d:b0:77f:878:b58 with SMTP id j13-20020a05620a146d00b0077f08780b58mr14261801qkl.153.1702678973632;
-        Fri, 15 Dec 2023 14:22:53 -0800 (PST)
-Received: from dell-precision-5540 ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id m1-20020ae9e701000000b007759a81d88esm6333130qka.50.2023.12.15.14.22.52
+        bh=Z6gE5MsrAaAORf3VjfmyHVqm+yqircqVcZWJ66dQBiE=;
+        b=AoyVHNFbPHA4wlPvcohngSFjilzKRmDd8/Sn3JTh0BbJpDE5xDYtyvZyJgJ+7qJGE3
+         kqB/wlr4ddeSCgzVEVZnKkax5GNcl8nnfnr/apWBa1S1o/jNaKULGPqsdRGD7B5LCZQz
+         6rPwQ6xw5667dcy9SmhS6zDhCCd8O8gSGRgOk4Bm7c1DbTJQQCOR44jrQZ4a8wV06XFj
+         whUMfEEqOp1IKkONliIe21x5ALWXG2o8fV/STNjkP3Vx7BeVEDf07g6ZaMCNkwTuBKIq
+         l6hpaEgfM2IQBzCxVQv+IA47F2ufEokgITtNdUpW6ZxfWsb15ccRJGnWAMkS5rVRqNDC
+         7QJA==
+X-Gm-Message-State: AOJu0YyZRw7U1DZraBkq385AUa/+FZNwxMGoSTcdGtCYJOhgH6sCcRm6
+	SoIGwq7Qubgqn38O5zuZQKFwGg==
+X-Google-Smtp-Source: AGHT+IHAjy/n+9LSsWcF/6bO2PqjY1xvSOY9SLi18Nb1Y+tenM+ZEAVFDierCTE97UZVs23EOm4Viw==
+X-Received: by 2002:a9d:5603:0:b0:6d9:e8e6:d00c with SMTP id e3-20020a9d5603000000b006d9e8e6d00cmr10217426oti.40.1702679595243;
+        Fri, 15 Dec 2023 14:33:15 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id x11-20020aa793ab000000b006ce497add69sm14013700pff.103.2023.12.15.14.33.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 14:22:53 -0800 (PST)
-Date: Fri, 15 Dec 2023 17:22:03 -0500
-From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>
-Subject: Re: [PATCH] spi: stm32: use runtime PM to enable/disable controller
-Message-ID: <ZXzRi_h2AMqEhMVw@dell-precision-5540>
-References: <20231204202055.2895125-1-ben.wolsieffer@hefring.com>
- <58897511-3187-4583-bf29-11871dd4d136@sirena.org.uk>
- <20231215182739.GA96945@gnbcxd0016.gnb.st.com>
+        Fri, 15 Dec 2023 14:33:14 -0800 (PST)
+Date: Fri, 15 Dec 2023 14:33:12 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+afb726d49f84c8d95ee1@syzkaller.appspotmail.com
+Subject: Re: [PATCH -fixes v2] riscv: Fix wrong usage of lm_alias() when
+ splitting a huge linear mapping
+Message-ID: <ZXzUKD95hmTPDbaq@ghost>
+References: <20231212195400.128457-1-alexghiti@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,47 +76,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231215182739.GA96945@gnbcxd0016.gnb.st.com>
+In-Reply-To: <20231212195400.128457-1-alexghiti@rivosinc.com>
 
-On Fri, Dec 15, 2023 at 07:27:39PM +0100, Alain Volmat wrote:
-> Hi,
+On Tue, Dec 12, 2023 at 08:54:00PM +0100, Alexandre Ghiti wrote:
+> lm_alias() can only be used on kernel mappings since it explicitly uses
+> __pa_symbol(), so simply fix this by checking where the address belongs
+> to before.
 > 
-> sorry for the delay.
+> Fixes: 311cd2f6e253 ("riscv: Fix set_memory_XX() and set_direct_map_XX() by splitting huge linear mappings")
+> Reported-by: syzbot+afb726d49f84c8d95ee1@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/linux-riscv/000000000000620dd0060c02c5e1@google.com/
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
 > 
-> On Thu, Dec 14, 2023 at 10:58:54AM +0000, Mark Brown wrote:
-> > On Mon, Dec 04, 2023 at 03:20:55PM -0500, Ben Wolsieffer wrote:
-> > > Instead of disabling the SPI controller between each message, do it
-> > > as part of runtime PM.
-> > 
-> > This doesn't apply against current code, please check and resend.
+> Changes in v2:
+> - Fix llvm warning about unitialized return value
 > 
-> I rapidly gave a try on this patch on top of the spi/for-next branch
-> (manually fixing the conflict due to the MASTER->HOST renaming).
-> It turns out that with that applied, transfers on the MP13
-> (compatible: st,stm32h7-spi) are not working anymore while simply
-> removing it back it works again.
-> (test is simply doing loopback spidev_test)
+>  arch/riscv/mm/pageattr.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
+> index fc5fc4f785c4..96cbda683936 100644
+> --- a/arch/riscv/mm/pageattr.c
+> +++ b/arch/riscv/mm/pageattr.c
+> @@ -305,8 +305,13 @@ static int __set_memory(unsigned long addr, int numpages, pgprot_t set_mask,
+>  				goto unlock;
+>  		}
+>  	} else if (is_kernel_mapping(start) || is_linear_mapping(start)) {
+> -		lm_start = (unsigned long)lm_alias(start);
+> -		lm_end = (unsigned long)lm_alias(end);
+> +		if (is_kernel_mapping(start)) {
+> +			lm_start = (unsigned long)lm_alias(start);
+> +			lm_end = (unsigned long)lm_alias(end);
+> +		} else {
+> +			lm_start = start;
+> +			lm_end = end;
+> +		}
+>  
+>  		ret = split_linear_mapping(lm_start, lm_end);
+>  		if (ret)
+> -- 
+> 2.39.2
 
-That's unfortunate; I was worried about something like this because I
-only have an STM32F7 to test. If you can't easily determine what's going
-wrong, it would be interesting to know if the original version of this
-patch has the same problem:
-https://lore.kernel.org/lkml/ZWpoKEcM0ZeYAsBa@dell-precision-5540/T/
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
 
 > 
-> spi mode: 0x0
-> bits per word: 8
-> max speed: 500000 Hz (500 kHz)
-> TX | 8D D6 73 8B 9D 8B 1C 7D 8D 80 EC 32 F9 0D BA AD 9F 88 A5 9B 3F AA 48 8C 21 35 0D C1 C8 E5 6A 81  |..s....}...2........?.H.!5....j.|
-> RX | 8D 00 00 00 D6 00 73 00 8B 00 00 00 9D 00 00 8B 1C 00 00 00 7D 00 00 8D F9 00 00 00 BA 00 00 00  |......s.............}...........|
 > 
-> The RX data contains lots of 00 between each byte.  Moreover it seems
-> that with this patch applied non-dma transfer (when there is no dmas
-> properties within the node) are now failing.
-> 
-> I'll check that and give more details but could you avoid applying this
-> patch for the time being ?
-> 
-> Thanks.
-> Alain
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
