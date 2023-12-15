@@ -1,97 +1,98 @@
-Return-Path: <linux-kernel+bounces-969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C958148B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:04:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9416B8148B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:05:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C1A52853E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:04:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 197A7B2343B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 041502D056;
-	Fri, 15 Dec 2023 13:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526F62D61E;
+	Fri, 15 Dec 2023 13:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rlNUTVj1";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aCbWa5Az"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E972DB6A;
-	Fri, 15 Dec 2023 13:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41B5CC15;
-	Fri, 15 Dec 2023 05:05:25 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.45.203])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E7353F738;
-	Fri, 15 Dec 2023 05:04:37 -0800 (PST)
-Date: Fri, 15 Dec 2023 13:04:35 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc: jpoimboe@redhat.com, peterz@infradead.org, chenzhongjin@huawei.com,
-	broonie@kernel.org, nobuta.keiya@fujitsu.com,
-	sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-	jamorris@linux.microsoft.com, linux-arm-kernel@lists.infradead.org,
-	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: ARM64 Livepatch based on SFrame
-Message-ID: <ZXxO43Xwn5GHsrO8@FVFF77S0Q05N>
-References: <0337266cf19f4c98388e3f6d09f590d9de258dc7>
- <20230202074036.507249-1-madvenka@linux.microsoft.com>
- <ZByJmnc/XDcqQwoZ@FVFF77S0Q05N.cambridge.arm.com>
- <72364198-b031-4ecc-b337-d07db1b9d0c8@linux.microsoft.com>
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4B22DB7C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702645511;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=U2tDiKHKYr5BFBF9MXdN4euPv07ro9CC99NNHl3ihkg=;
+	b=rlNUTVj11k9F9xc53az5oRZhTvMk3vR94kDWFOfa7PKvXnflbuwCP1YKdtZGHxLpdRhcgg
+	fDm25g5wa4AfJJLPZK2dxPjsW2nBasLq4ivhyW54mNkGHLlGMcy46RAmGtr+8CtBkltUFP
+	a00rKENsxQjPdgL8Wuhu8eWz9LhHREfhMsEashAZZ9/I0vIvFrbEle23ziddTULY32XYKT
+	NURUrmnfZ/rMFgoT3TeGgb/Uoe4G7quDjS6FlR8LZFqtesbqjcADn2ZmTYx43LJZgjByGc
+	MUOIjFrFOXGNCvrdwoTMJpXW9qa+k85M5Ox2A7EhML7EYrK0JtetLNekGnRN6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702645511;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=U2tDiKHKYr5BFBF9MXdN4euPv07ro9CC99NNHl3ihkg=;
+	b=aCbWa5AznxUTz9+fLqfPxDsN2XeRkh9QsBGsRJ837u6cYvKn96zQhQAwbLWBVxvV1EGE+i
+	+rFPQBp4IS/u5cCw==
+To: linux-kernel@vger.kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] sched/idle: Prevent stopping the tick when there is no cpuidle driver
+Date: Fri, 15 Dec 2023 14:05:01 +0100
+Message-Id: <20231215130501.24542-1-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72364198-b031-4ecc-b337-d07db1b9d0c8@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 14, 2023 at 02:49:29PM -0600, Madhavan T. Venkataraman wrote:
-> Hi Mark,
+When there is no cpuidle driver, the system tries to stop the tick even if
+the system is fully loaded. But stopping the tick is not for free and it
+decreases performance on a fully loaded system. As there is no (cpuidle)
+framework which brings CPU in a power saving state when nothing needs to be
+done, there is also no power saving benefit when stopping the tick.
 
-Hi Madhavan,
+Therefore do not stop the tick when there is no cpuidle driver.
 
-> I attended your presentation in the LPC. You mentioned that you could use
-> some help with some pre-requisites for the Livepatch feature.
-> I would like to lend a hand.
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+---
+ kernel/sched/idle.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Cool!
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 565f8374ddbb..fd111686aaf3 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -165,8 +165,6 @@ static void cpuidle_idle_call(void)
+ 	 */
+ 
+ 	if (cpuidle_not_available(drv, dev)) {
+-		tick_nohz_idle_stop_tick();
+-
+ 		default_idle_call();
+ 		goto exit_idle;
+ 	}
+-- 
+2.39.2
 
-I've been meaning to send a mail round with a summary of the current state of
-things, and what needs to be done going forward, but I haven't had the time
-since LPC to put that together (as e.g. that requires learning some more about
-SFrame).  I'll be disappearing for the holiday shortly, and I intend to pick
-that up in the new year.
-
-> What would you like me to implement?
-
-I'm not currently sure exactly what we need/want to implement, and as above I
-think that needs to wait until the new year.
-
-However, one thing that you can do that would be very useful is to write up and
-report the GCC DWARF issues that you mentioned in:
-
-  https://lore.kernel.org/linux-arm-kernel/20230202074036.507249-1-madvenka@linux.microsoft.com/
-
-... as (depending on exactly what those are) those could also affect SFrame
-generation (and thus we'll need to get those fixed in GCC), and regardless it
-would be useful information to know.
-
-I understood that you planned to do that from:
-
-  https://lore.kernel.org/linux-arm-kernel/054ce0d6-70f0-b834-d4e5-1049c8df7492@linux.microsoft.com/
-
-... but I couldn't spot any relevant mails or issues in the GCC bugzilla, so
-either I'm failing to search hard enough, or did that get forgotten about?
-
-> I would also like to implement Unwind Hints for the feature. If you want a
-> specific format for the hints, let me know.
-
-I will get back to you on that in the new year; I think the specifics we want
-are going to depend on other details above we need to analyse first.
-
-Thanks,
-Mark.
 
