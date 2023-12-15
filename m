@@ -1,136 +1,186 @@
-Return-Path: <linux-kernel+bounces-1241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B7AE814C37
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:59:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66458814C39
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:59:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEF8BB221D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:59:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D36031F2446D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E6A39FD5;
-	Fri, 15 Dec 2023 15:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D67381D3;
+	Fri, 15 Dec 2023 15:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bYfocM7G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NEIKwrtH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8F836AE0;
-	Fri, 15 Dec 2023 15:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-20335dcec64so541010fac.3;
-        Fri, 15 Dec 2023 07:59:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702655961; x=1703260761; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MG9yAVm50lR8ICiHnRNf31I38rZ2htO3wSzdsU8ztZ4=;
-        b=bYfocM7GSsVJZf+EwNVkKSYt/oXyb8nGzid2gsTO2283SPe3R37/mMjljASE/+Rb9q
-         XvX3xL+W91GJraaTBWTpLe1x8lUgf0OzQOMur+vrCr17d9qRTOighCn7q7XmsTe9M0Wg
-         M6Xngw2hBRYjHYDSVZ2QtiBFHBuRghiuQX21on0ZpPh7zRxu/GcQxh/eV/32FeLmaAxq
-         AJSP3U/uX9DrMqJNPjPphQhp/y0NTdsYSn2gIQQfPXkmyKpy5XHByF29odBuRSqI7Xqj
-         HYzSzCcHx7mnfjiu2Sbb+0P8u1aDopCLsbx2GKaXBjpLB4aQtAQm5ZdDuUMPdM3qzBWY
-         s8LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702655961; x=1703260761;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MG9yAVm50lR8ICiHnRNf31I38rZ2htO3wSzdsU8ztZ4=;
-        b=JDefa4x2zHAypvm+VMptdNqEQuq6cJpvx0VoclmhB6TLTugDUNg40Rtg29mD0V99Yl
-         n39HtJIueoGdllDM4piGasJ9m/2VHWc1Z+HGivP2sPCi9CU0HgN1wZ9W1+pPJzIabOIk
-         X6VIjhUoJCIXE9mqFdb4CwXYY/Bm8J1wJnfR8PPxsJ5QOTB1RgSIkihPh/OicxrzMTsU
-         mMIPpE+UTdA6I2FCTuvJlAnr3LDAg9CiCYLqkBmR2aQaIi9ZOpdn83WvY5LiPxyl4JRE
-         8gs7XHUzyezoeTw5xafb/zUL2MnDx8E9lG3yvuCs1Ss2bVhoSKINmddTNDjnfAxfqyQI
-         hgFQ==
-X-Gm-Message-State: AOJu0YwLYKSEom2S2R9Gq1zcEqN11uilEkUc9fdtcGl0geLixr8Y3YzS
-	2wb7SgK8s7rBPz1gTfOgD2II7L1mlfyRMUH5wtoV+CI6GW7tzg==
-X-Google-Smtp-Source: AGHT+IGLoY1Nw1pfnxSccxTPPQGkI5sLz3dmiL9hVukMxvSLrc6SwWXCmZBocGOvbRO13ErKz7EtuQ8V4zYiAag9VFM=
-X-Received: by 2002:a05:6870:9383:b0:1f9:e6cb:7eb5 with SMTP id
- b3-20020a056870938300b001f9e6cb7eb5mr13635905oal.18.1702655961087; Fri, 15
- Dec 2023 07:59:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27E239FC3;
+	Fri, 15 Dec 2023 15:59:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 743BEC433C9;
+	Fri, 15 Dec 2023 15:59:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702655975;
+	bh=Ul+smwo2dUU4IZrKLKRFwWj5xD+FHTbxnNmHipSAyBQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:From;
+	b=NEIKwrtH2NhMdNisiRKJ+HvLoMwkQV1+Lku+ie5hsUTyMI7TswDhhgIcF4wPZWZJP
+	 b9b/yWOSe4PsCqwKH1ivoYXiFc7UQIlZyM5g0+Bd3XxZs0No7rMUDCHTh0o5HRzYjB
+	 /QSRzXIjcL/RqCxitj0UGIkUvjC3JK/4oYwO+m45Or5V6aVm1O6wCNOu6ukGyES+pX
+	 nCSiHoova0KrQDQXVI08FTlEdpnYYTLH8dXWcyQIGuPKRN3gVpmqm/ZXn4rSZCHuxz
+	 6IfNCzYBn4kiuqT4/LMut2DuZkN9uZ0FjFvIHnhKgvs5D5GvAmgYSmrHaTe92JcOju
+	 VnuxgAqtiWsig==
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d9f879f784so652682a34.2;
+        Fri, 15 Dec 2023 07:59:35 -0800 (PST)
+X-Gm-Message-State: AOJu0YwedA8jwvV+Z3Ze6P5teWMt60VpAfAZg6HQK8JAVhdseAYUuIls
+	WyFtE6wtzh56ecZOk2xdc1B1xj390XEU7z/i+eg=
+X-Google-Smtp-Source: AGHT+IE5Y0R+D3fyeRiluOxD4Qax8VQhuqPeQSHPhET/FIxGMbGGnNI0yH0v+xiiHyFkbQkK0b+1NS4JOdDA75dWa8M=
+X-Received: by 2002:a05:6870:c192:b0:1fb:75b:12f2 with SMTP id
+ h18-20020a056870c19200b001fb075b12f2mr15289404oad.68.1702655974794; Fri, 15
+ Dec 2023 07:59:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214173614.2820929-3-gnstark@salutedevices.com> <c16599b23afa853a44d13b906af5683027959a26.1702621174.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <c16599b23afa853a44d13b906af5683027959a26.1702621174.git.christophe.leroy@csgroup.eu>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 15 Dec 2023 17:58:44 +0200
-Message-ID: <CAHp75VfBcmTBXXtU6o1x0Ea24wG-_Qb46opkS0EXKQ1Ynh0Mcw@mail.gmail.com>
-Subject: Re: [PATCH RFC v4-bis] locking: introduce devm_mutex_init
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: pavel@ucw.cz, lee@kernel.org, vadimp@nvidia.com, mpe@ellerman.id.au, 
-	npiggin@gmail.com, hdegoede@redhat.com, mazziesaccount@gmail.com, 
-	peterz@infradead.org, mingo@redhat.com, will@kernel.org, longman@redhat.com, 
-	boqun.feng@gmail.com, nikitos.tr@gmail.com, 
-	George Stark <gnstark@salutedevices.com>, kernel@salutedevices.com, 
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	linux-leds@vger.kernel.org
+References: <20231214140305.531963-1-masahiroy@kernel.org> <ZXwcfSsuhzJYNAQh@buildd.core.avm.de>
+In-Reply-To: <ZXwcfSsuhzJYNAQh@buildd.core.avm.de>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 16 Dec 2023 00:58:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASQ121fDts9cCx744XANqQRX2xrbDLVsiHC2ht8X4Fwkw@mail.gmail.com>
+Message-ID: <CAK7LNASQ121fDts9cCx744XANqQRX2xrbDLVsiHC2ht8X4Fwkw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: resolve symlinks for O= properly
+To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 8:23=E2=80=AFAM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Fri, Dec 15, 2023 at 6:29=E2=80=AFPM Nicolas Schier <n.schier@avm.de> wr=
+ote:
 >
-> From: George Stark <gnstark@salutedevices.com>
+> On Thu, Dec 14, 2023 at 11:03:05PM +0900, Masahiro Yamada wrote:
+> > Currently, Kbuild follows the logical chain of directories for the O=3D
+> > option, just like 'cd' (or 'realpath --logical') does.
+> >
+> > Example:
+> >
+> >     $ mkdir -p /tmp/a /tmp/x/y
+> >     $ ln -s /tmp/x/y /tmp/a/b
+> >     $ realpath /tmp/a/b/..
+> >     /tmp/x
+> >     $ realpath --logical /tmp/a/b/..
+> >     /tmp/a
+> >     $ make O=3D/tmp/a/b/.. defconfig
+> >     make[1]: Entering directory '/tmp/a'
+> >       [snip]
+> >     make[1]: Leaving directory '/tmp/a'
+> >
+> > 'make O=3D/tmp/a/b/.. defconfig' creates the kernel configuration in
+> > /tmp/a instead of /tmp/x despite the directory path /tmp/a/b/..
+> > resolves to the physical directory path /tmp/x.
+> >
+> > This is because Kbuild internally uses the 'cd ... && pwd' for the
+> > path resolution, but this behavior is not predictable for users.
+> > Additionally, it is not consistent with how the Kbuild handles the
+> > M=3D option or GNU Make works with 'make -C /tmp/a/b/..'.
+> >
+> > Using the physical directory structure for the O=3D option seems more
+> > reasonable.
+> >
+> > The comment says "expand a shell special character '~'", but it has
+> > already been expanded to the home directory in the command line.
 >
-> Using of devm API leads to a certain order of releasing resources.
-> So all dependent resources which are not devm-wrapped should be deleted
-> with respect to devm-release order. Mutex is one of such objects that
-> often is bound to other resources and has no own devm wrapping.
-> Since mutex_destroy() actually does nothing in non-debug builds
-> frequently calling mutex_destroy() is just ignored which is safe for now
-> but wrong formally and can lead to a problem if mutex_destroy() will be
-> extended so introduce devm_mutex_init()
+> I minor change in behaviour is that 'make O=3D"~/..."' (=3Dquoted '~) wil=
+l
+> not work any more.  But I think this actually the way it should be.
+> Thanks!
 
-Missing period.
 
-...
+A good catch. This bug should be fixed by quoting $(KBUILD_OUTPUT).
 
->  } while (0)
->  #endif /* CONFIG_PREEMPT_RT */
 
-^^^ (1)
+-$(shell mkdir -p $(KBUILD_OUTPUT))
++$(shell mkdir -p "$(KBUILD_OUTPUT)")
 
-> +struct device;
-> +
-> +/*
-> + * devm_mutex_init() registers a function that calls mutex_destroy()
-> + * when the ressource is released.
-> + *
-> + * When mutex_destroy() is a not, there is no need to register that
-> + * function.
-> + */
-> +#ifdef CONFIG_DEBUG_MUTEXES
 
-Shouldn't this be
 
-#if defined(CONFIG_DEBUG_MUTEXES) && !defined(CONFIG_PREEMPT_RT)
+When ~ is quoted, it loses a special meaning.
 
-(see (1) as well)?
 
-> +void mutex_destroy(struct mutex *lock);
-> +int devm_mutex_init(struct device *dev, struct mutex *lock);
-> +#else
-> +static inline void mutex_destroy(struct mutex *lock) {}
-> +
-> +static inline int devm_mutex_init(struct device *dev, struct mutex *lock=
-)
-> +{
-> +       mutex_init(lock);
-> +       return 0;
-> +}
-> +#endif
+masahiro@zoe:~$ echo ~
+/home/masahiro
+masahiro@zoe:~$ echo "~"
+~
+
+
+
+So, the right behaviour of 'make O=3D"~/foo"' is
+to create "~/foo" under the current directory.
+
+
+If you try to test it, please be careful to
+not delete your home directory.
+
+(I did "rm -r ./~" just in case)
+
+
+
+
+
+
+
+
+
+
+
+> Reviewed-by: Nicolas Schier <n.schier@avm.de>
+>
+>
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  Makefile | 11 ++++-------
+> >  1 file changed, 4 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 24fac1889997..a05f0f7c99e0 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -190,14 +190,11 @@ ifeq ("$(origin O)", "command line")
+> >  endif
+> >
+> >  ifneq ($(KBUILD_OUTPUT),)
+> > -# Make's built-in functions such as $(abspath ...), $(realpath ...) ca=
+nnot
+> > -# expand a shell special character '~'. We use a somewhat tedious way =
+here.
+> > -abs_objtree :=3D $(shell mkdir -p $(KBUILD_OUTPUT) && cd $(KBUILD_OUTP=
+UT) && pwd)
+> > -$(if $(abs_objtree),, \
+> > -     $(error failed to create output directory "$(KBUILD_OUTPUT)"))
+> > -
+> > +# $(realpath ...) gets empty if the path does not exist. Run 'mkdir -p=
+' first.
+> > +$(shell mkdir -p $(KBUILD_OUTPUT))
+> >  # $(realpath ...) resolves symlinks
+> > -abs_objtree :=3D $(realpath $(abs_objtree))
+> > +abs_objtree :=3D $(realpath $(KBUILD_OUTPUT))
+> > +$(if $(abs_objtree),,$(error failed to create output directory "$(KBUI=
+LD_OUTPUT)"))
+> >  endif # ifneq ($(KBUILD_OUTPUT),)
+> >
+> >  ifneq ($(words $(subst :, ,$(abs_srctree))), 1)
+> > --
+> > 2.40.1
+> >
+
+
 
 --=20
-With Best Regards,
-Andy Shevchenko
+Best Regards
+Masahiro Yamada
 
