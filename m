@@ -1,80 +1,86 @@
-Return-Path: <linux-kernel+bounces-707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372D18144EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:55:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52AA98144EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:55:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA28D1F24231
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:55:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 855051C2276D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668D218B1D;
-	Fri, 15 Dec 2023 09:55:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CtRHBobu";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qxBVBcMW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C5D1A27A;
+	Fri, 15 Dec 2023 09:55:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFAC18AEE
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 09:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 15 Dec 2023 10:55:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702634128;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pIxoKqnBpZE5IFm9QJMHfMhfAhKDM7qManzO753GghA=;
-	b=CtRHBobuO9FREN0DTGa5eOpRxNp5OY6OE9NTDGxbOLBwX28m/V8PSOu3igwFkLbuq57iBi
-	cFmp0lRJt9ZlLddkasAAVRJhIP71EBFsSNIkR82SjCQdRhZ5mO05viNg/2RgEWOS0vRo88
-	i8BybdiZ84a1pPMg6EQG3hjLxC2MVxuCQrHTBB+dT/qN/jDK73ld7hHUwabJmzRNozXFPU
-	6xyX4EOvexXxRgE+9U9mRrimhYgKOrIt+6fVfs4cUn8/7mtjX7MwBr0WcGYkC8fynadtSr
-	BV9SuXg3lxtZAt31hbXRZNVn4I4p5XTSzdHK9YJSORAooVWNGXj8cUQF5js7xw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702634128;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pIxoKqnBpZE5IFm9QJMHfMhfAhKDM7qManzO753GghA=;
-	b=qxBVBcMWO6Xx0Qn//Hn03sxmfnEAdal1fBjYAkoebl3ZNQzbGirCLUAVeGtV+nhtA7xXC4
-	nhC7c99Oap3FzHDg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Francesco Dolcini <francesco@dolcini.it>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH printk v3 02/14] printk: Adjust mapping for 32bit seq
- macros
-Message-ID: <20231215095526.ZA8Q-45e@linutronix.de>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-3-john.ogness@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7156E199C5
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 09:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xfusion.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xfusion.com
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+	by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4Ss4JC5WFwzB1wtN;
+	Fri, 15 Dec 2023 17:52:11 +0800 (CST)
+Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 15 Dec
+ 2023 17:55:34 +0800
+Date: Fri, 15 Dec 2023 17:55:34 +0800
+From: Wang Jinchao <wangjinchao@xfusion.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+	<linux-kernel@vger.kernel.org>
+CC: <stone.xulei@xfusion.com>, <wangjinchao@xfusion.com>
+Subject: [PATCH] x86/setup: remove duplicated including
+Message-ID: <202312151755+0800-wangjinchao@xfusion.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231214214201.499426-3-john.ogness@linutronix.de>
+X-ClientProxiedBy: wuxshcsitd00602.xfusion.com (10.32.132.250) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
 
-On 2023-12-14 22:47:49 [+0106], John Ogness wrote:
-> Note: This change only applies to 32bit architectures. On 64bit
->       architectures the macros are NOPs.
+rm the second #include <asm/efi.h> in setup.c
+rm the second #include <asm/spec-ctrl.h> in smpboot.c
 
-You lost my authorship.
-But serious matter: Is this bug already present in the current printk
-tree or is this code just not used and enabled later? Patch #1 from this
-series moves the sequence around so is this problem introduced in the
-previous patch and fixed here?
+Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+---
+ arch/x86/kernel/setup.c   | 1 -
+ arch/x86/kernel/smpboot.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-Sebastian
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 1526747bedf2..f6152c6b139a 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -37,7 +37,6 @@
+ #include <asm/bugs.h>
+ #include <asm/cacheinfo.h>
+ #include <asm/cpu.h>
+-#include <asm/efi.h>
+ #include <asm/gart.h>
+ #include <asm/hypervisor.h>
+ #include <asm/io_apic.h>
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 2cc2aa120b4b..45057860e034 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -87,7 +87,6 @@
+ #include <asm/hw_irq.h>
+ #include <asm/stackprotector.h>
+ #include <asm/sev.h>
+-#include <asm/spec-ctrl.h>
+ 
+ /* representing HT siblings of each logical CPU */
+ DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
+-- 
+2.40.0
+
 
