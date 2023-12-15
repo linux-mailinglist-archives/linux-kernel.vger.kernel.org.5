@@ -1,135 +1,133 @@
-Return-Path: <linux-kernel+bounces-442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5BC881412F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:21:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC69C81412E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:21:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 085BD1C223C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:21:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 134FCB22187
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511E4CA6F;
-	Fri, 15 Dec 2023 05:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA15263D0;
+	Fri, 15 Dec 2023 05:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QabC6c2R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cmh6wVUV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551C9CA6B
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A112E5692;
+	Fri, 15 Dec 2023 05:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6cea2a38b48so244726b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:21:19 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55202565d48so216489a12.0;
+        Thu, 14 Dec 2023 21:20:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702617678; x=1703222478; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s+5lBSVYnqDcPFtwn8gCQhYwDjCzvbLiJIKd8Yzo52s=;
-        b=QabC6c2RpuvHsizgy4fYjZzA9v4vpeaD1eS0LlBx7bdMwFMX/JHDs1af2TX7QucMK0
-         MLqfM39sbjn1q2vz0AGm+uINktCCzGWWHfzZDjN8AecnSPZA3crSbQ9a/+UIQt09woim
-         v+ZpsTpVAtOvctbaG1fEOt6qqNidjV+grAvb6pDPcWWJzuw42Y2VtQX0f4ec7sKJQfjW
-         nMz+RfcW2p1CNGoV0COs7GP4R5hnpXBGwRMpnrIleAkEcE1jPhHxKp72lj0F81dp83mh
-         Bs6pamyCFeCAAXSO1r7a7cUgr0YOqIgNHcHOiS0+M782ASExnyF4h8oTO6K9kMQIfRmv
-         1auA==
+        d=gmail.com; s=20230601; t=1702617656; x=1703222456; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XUP5j6wCeeIzfoESCBV0oq3hZ+5SdsZawBwHzCrsEYM=;
+        b=Cmh6wVUVuYY+qDGogJGxZPALrxHrf0IVprXuwTRoG3IUJYtl+gA/xfvYaZFqom8tX/
+         pt8AbNSlSxtJQdh9rqA6U04KvMRdWFJt6NM967UU280TXuJq1oSCQzY29aneQ6BXvOWA
+         PjeBsBHy26MPmbfaUW5UOnSvIkhJ97pib6/yoajwZ7/sz1wVYGLHOdcPCFpUPfperb54
+         UvwM90nt3wxbEgnifU9Yy8FjUObKLGY+Hxatl+Cl6FApRzks/YtN1q6fKIgtDZrozUNb
+         p7DLMCqSCWZZhUy7c8H3Fz02Qj3VwdTbykx53p3rmzLb9A+QtsUCFCaJT38Fj2xTF4eP
+         0OEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702617678; x=1703222478;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s+5lBSVYnqDcPFtwn8gCQhYwDjCzvbLiJIKd8Yzo52s=;
-        b=L2xTI/l8edFq3ORl3GsokxYm//Nbf/ugLHa/3wxqzPMiKVWfCtkS75UAqAJpH9mYSy
-         2Ll3yxvLWCv0w2kJnnoVFBnbR2R4xRRsojh0iyJazZ7M14pGltPqVXakbTL73vkKvlWh
-         O9frsjsZvL1QpUwygm1gySKAit3l/dQLaChTfU64bGJfiVIInwGbdx8xXLnDS+7mH0Tn
-         Ux1Y2oIkKFKVa0BH4yoedEaefx9fyNES6vKk3dOfq15kEOQIoX528N9z/cJ/F/zTv5V3
-         VLGPgZ1QzP9BmRrr02I34nu3SXur1FNRkiMJIbQcM5b34r7CejKy6ciUej0BO7K8AZRn
-         8ZoA==
-X-Gm-Message-State: AOJu0Yy1keQ+0AtHwO+NL8BAOa/ZwvehkbJefhNc9qE5s6NdWT4T5sc0
-	hgeGfBuZtOGT1JfYesPssak=
-X-Google-Smtp-Source: AGHT+IFht6jswMwabNafHJ7W/vy2mXm7pcUSJHVjGcuN971hwNVXm68KGLw+XrOGkEqilBvD4XKa5Q==
-X-Received: by 2002:a05:6a00:2e10:b0:6d0:9913:3363 with SMTP id fc16-20020a056a002e1000b006d099133363mr8892948pfb.46.1702617678480;
-        Thu, 14 Dec 2023 21:21:18 -0800 (PST)
-Received: from localhost.localdomain ([202.137.218.19])
-        by smtp.gmail.com with ESMTPSA id y20-20020a056a00191400b00688435a9915sm12608593pfi.189.2023.12.14.21.21.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 21:21:18 -0800 (PST)
-From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-To: alexander.deucher@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	Hawking.Zhang@amd.com,
-	candice.li@amd.com,
-	Le.Ma@amd.com,
-	lijo.lazar@amd.com
-Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] gpu: drm: amd: fixed typos
-Date: Fri, 15 Dec 2023 10:50:33 +0530
-Message-Id: <20231215052033.550509-1-ghanshyam1898@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1702617656; x=1703222456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XUP5j6wCeeIzfoESCBV0oq3hZ+5SdsZawBwHzCrsEYM=;
+        b=EKIm6qK8cOdjsu3BWRAzEDg1uVtuE6ntht404WF61O5Uf4DldH30OmcYNXfmnL1guD
+         h2AZpQywdPFDpnPTeAxmG/DVr4/F95Z5NT20NThUELkrWChM7Hy2vVNNjvLuZIm0hyDC
+         uHgyCkdsxcM5bELAUiqNydOWtvlVRuYxW+bLB2kD/WvgsUuTynELT7et6w+SwXijZqAP
+         tRxikqXROS1YNdhoenOc8KVkt1C2qEPjZ2mdpL2ekSOD23WsuMss7JHudSRPjaJh6GDi
+         rjIUmbuvyUPWaZWFf6gAjdsCadYRxllcIYnB0cLxTh9d2wUpr2+ipAz9k3EX8C6QlLvW
+         O66w==
+X-Gm-Message-State: AOJu0YyKBg074S3qeOzacx9Bg/ono9RgEnNrQkd8kojYUJ4q9N7iN1OW
+	wO5oYfwYnCcM8uvAWiSScIKeoNm7RGZRo+shuZe7Le5c
+X-Google-Smtp-Source: AGHT+IFi0pVrV1d3NLr+UJkI7MyUyhr3HHj6SXh+gCq2GQbK0pvJUZqW6NcmK+t0cU8nWQqaMWICagygN8bli+44lZk=
+X-Received: by 2002:a50:a696:0:b0:552:9643:2951 with SMTP id
+ e22-20020a50a696000000b0055296432951mr543307edc.72.1702617655608; Thu, 14 Dec
+ 2023 21:20:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+ <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+ <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+ <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+ <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com> <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+ <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
+ <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
+ <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com>
+ <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
+ <CAADnVQ+RVT1pO1hTzMawdkfc9B0xAxas2XmSk6+_EiqX9Xy9Ug@mail.gmail.com> <66b2a6c45045c207d8452ad3b5786a9dc0082d79.camel@gmail.com>
+In-Reply-To: <66b2a6c45045c207d8452ad3b5786a9dc0082d79.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 14 Dec 2023 21:20:43 -0800
+Message-ID: <CAEf4BzaTTv7oP2vcfVYXjUnA958MqohkRDJ9J7qOCtGfpijROw@mail.gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Hao Sun <sunhao.th@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fixed multiple typos in atomfirmware.h
+On Thu, Dec 14, 2023 at 6:28=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Thu, 2023-12-14 at 18:16 -0800, Alexei Starovoitov wrote:
+> [...]
+> > > E.g. for the test-case at hand:
+> > >
+> > >   0: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+> > >   1: (bf) r7 =3D r0                       ; R0=3Dscalar(id=3D1) R7_w=
+=3Dscalar(id=3D1)
+> > >   2: (bf) r8 =3D r0                       ; R0=3Dscalar(id=3D1) R8_w=
+=3Dscalar(id=3D1)
+> > >   3: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+> > >   --- checkpoint #1 r7.id =3D 1, r8.id =3D 1 ---
+> > >   4: (25) if r0 > 0x1 goto pc+0         ; R0=3Dscalar(smin=3Dsmin32=
+=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D1,...)
+> > >   --- checkpoint #2 r7.id =3D 1, r8.id =3D 1 ---
+> > >   5: (3d) if r8 >=3D r0 goto pc+3         ; R0=3D1 R8=3D0 | record r8=
+.id=3D1 in jump history
+> > >   6: (0f) r8 +=3D r8                      ; R8=3D0
+> >
+> > can we detect that any register link is broken and force checkpoint her=
+e?
+>
+> Should be possible. I'll try this in the morning and check veristat resul=
+ts.
+>
+> By the way, I added some stats collection for find_equal_scalars() and se=
+e
+> the following results when run on ./test_progs:
+> - maximal number of registers with same id per call: 3
+> - average number of registers with same id per call: 1.4
 
-Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
----
- drivers/gpu/drm/amd/include/atomfirmware.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/include/atomfirmware.h b/drivers/gpu/drm/amd/include/atomfirmware.h
-index fa7d6ced786f..41d553921adf 100644
---- a/drivers/gpu/drm/amd/include/atomfirmware.h
-+++ b/drivers/gpu/drm/amd/include/atomfirmware.h
-@@ -210,7 +210,7 @@ atom_bios_string          = "ATOM"
- };
- */
- 
--#pragma pack(1)                          /* BIOS data must use byte aligment*/
-+#pragma pack(1)                          /* BIOS data must use byte alignment */
- 
- enum atombios_image_offset{
-   OFFSET_TO_ATOM_ROM_HEADER_POINTER          = 0x00000048,
-@@ -452,7 +452,7 @@ struct atom_dtd_format
-   uint8_t   refreshrate;
- };
- 
--/* atom_dtd_format.modemiscinfo defintion */
-+/* atom_dtd_format.modemiscinfo definition */
- enum atom_dtd_format_modemiscinfo{
-   ATOM_HSYNC_POLARITY    = 0x0002,
-   ATOM_VSYNC_POLARITY    = 0x0004,
-@@ -645,7 +645,7 @@ struct lcd_info_v2_1
-   uint32_t reserved1[8];
- };
- 
--/* lcd_info_v2_1.panel_misc defintion */
-+/* lcd_info_v2_1.panel_misc definition */
- enum atom_lcd_info_panel_misc{
-   ATOM_PANEL_MISC_FPDI            =0x0002,
- };
-@@ -683,7 +683,7 @@ enum atom_gpio_pin_assignment_gpio_id {
-   /* gpio_id pre-define id for multiple usage */
-   /* GPIO use to control PCIE_VDDC in certain SLT board */
-   PCIE_VDDC_CONTROL_GPIO_PINID = 56,
--  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC swithing feature is enable */
-+  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC switching feature is enable */
-   PP_AC_DC_SWITCH_GPIO_PINID = 60,
-   /* VDDC_REGULATOR_VRHOT_GPIO_PINID in Gpio_Pin_LutTable, VRHot feature is enable */
-   VDDC_VRHOT_GPIO_PINID = 61,
--- 
-2.25.1
+What if we keep 8 extra bytes in jump/instruction history and encode
+up to 8 linked registers/slots:
 
+1. 1 bit to mark whether it's a src_reg set, or dst_reg set
+2. 1 bit to mark whether it's a stack slot or register
+3. 6 bits (0..63 values) to record register or slot number
+
+If we ever need more than 8 linked registers, we can just forcefully
+some "links" by resetting some IDs?
+
+BTW, is it only conditional jumps that need to record this linked
+register sets? Did we previously discuss why we don't need this for
+any other operation?
 
