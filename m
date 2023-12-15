@@ -1,111 +1,166 @@
-Return-Path: <linux-kernel+bounces-283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110C5813EA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:21:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7FC813EB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:25:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA2131F22A2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:21:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 111E3283EC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FF062F;
-	Fri, 15 Dec 2023 00:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5CEEBD;
+	Fri, 15 Dec 2023 00:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="k66B4ZhT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gfir7HKR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175201C11;
-	Fri, 15 Dec 2023 00:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=xxhQ+xwa9s7UNFJzJpzsqjZYnGGzElD2a56jENA4R1Q=; b=k66B4ZhTh66U+fvx8hZaKWswcz
-	4O9Ms4ph7xH+izP3b7T7TEtbmFQjxrOAAzQwQuAXceSUXHHwhNvsP8XvD+M6vBakKCPkM0+qfLysq
-	elrHvdMXRRgAIBkCd481Acrmu0e1sPlUMIvkPN96V8xHLZ8VAkwV6TrX9OTsbU6OksrCqbBSdbHFO
-	TDtv1u7/esxIV9lAXroaVSqB/M/5y+CHX++CVsBvlxIH1zYDvw4mQ/Az4U6LnUcbSd/R9TH37JpZ2
-	E7Mby4sp+13Ob8xGTwVM1EaTKbG4UWTBhZB0bZwi28Qv/ez4GMzC792/2zJMbJKvTlsPAliDznf3f
-	0jqSjBhg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDvx7-001cxB-1c;
-	Fri, 15 Dec 2023 00:21:17 +0000
-Message-ID: <16d1510c-fa3e-4fa9-ba4d-c483a22f83a4@infradead.org>
-Date: Thu, 14 Dec 2023 16:21:17 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963DA7FC;
+	Fri, 15 Dec 2023 00:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702599890; x=1734135890;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EOXDnLezHvp+UiDY/7mkYoXNOd7E6rY6LHj0YTRlehI=;
+  b=Gfir7HKRuYrwlOocCePEdyOScasIgVEOmFDOehnhdwwPtoDZ4pEP2blP
+   4+JE7lN9ydq5qglT/qRItdq0ciu7laK7DQg/1YvucSAxT+rBMMJ7ps7eO
+   NSOXop0wGjZN2HjYdeLugBUWUZDCPSDBIG00J1fKpRknJTbfpMNlvlOgJ
+   Bx9qCW0VOosrsI7fz5nmkJy3UXToc/bb50N09xGYMvwGqAdPly8sV2MIU
+   SoLfGiABB+RtNzc+QrRlbgPlv1n+jWJSh/R1DkxWlxcvmYZ5NfJr8qqT0
+   DPyutxDRRpEj8h4Kz+u2RxaDhlCcH0r1Ye9cbcMR6gkChfI+Gp3UTwSyQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2366456"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="2366456"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 16:24:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="22629518"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 14 Dec 2023 16:24:45 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rDw0Q-000Mr3-1m;
+	Fri, 15 Dec 2023 00:24:42 +0000
+Date: Fri, 15 Dec 2023 08:23:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, thara.gopinath@gmail.com,
+	herbert@gondor.apana.org.au, davem@davemloft.net, agross@kernel.org,
+	andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+	linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+	quic_srichara@quicinc.com, quic_varada@quicinc.com
+Cc: oe-kbuild-all@lists.linux.dev, quic_mdalam@quicinc.com
+Subject: Re: [PATCH 02/11] crypto: qce - Add bam dma support for crypto
+ register r/w
+Message-ID: <202312150856.hFSqQCnr-lkp@intel.com>
+References: <20231214114239.2635325-3-quic_mdalam@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scripts: kernel-doc: Report excess struct member
- descriptions
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20231215001451.work.746-kees@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231215001451.work.746-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214114239.2635325-3-quic_mdalam@quicinc.com>
 
-Hi Kees,
+Hi Md,
 
-On 12/14/23 16:14, Kees Cook wrote:
-> While missing descriptions were already be reported, missing struct
-> members were not. For example, previously this output was empty, but now
-> produces:
-> 
-> $ ./scripts/kernel-doc -none ./drivers/leds/leds-mlxreg.c
-> ./drivers/leds/leds-mlxreg.c:42: warning: Excess struct member 'led_data' description in 'mlxreg_led_data'
+kernel test robot noticed the following build errors:
 
-I just made a patch with similar functionality last night:
+[auto build test ERROR on herbert-cryptodev-2.6/master]
+[also build test ERROR on vkoul-dmaengine/next linus/master v6.7-rc5 next-20231214]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-https://lore.kernel.org/linux-doc/20231214070200.24405-1-rdunlap@infradead.org/
+url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/crypto-qce-Add-support-for-crypto-address-read/20231214-194404
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20231214114239.2635325-3-quic_mdalam%40quicinc.com
+patch subject: [PATCH 02/11] crypto: qce - Add bam dma support for crypto register r/w
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20231215/202312150856.hFSqQCnr-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150856.hFSqQCnr-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312150856.hFSqQCnr-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from drivers/crypto/qce/dma.c:11:
+>> drivers/crypto/qce/core.h:32:31: error: field 'done_tasklet' has incomplete type
+      32 |         struct tasklet_struct done_tasklet;
+         |                               ^~~~~~~~~~~~
+   In file included from drivers/crypto/qce/dma.c:7:
+   drivers/crypto/qce/dma.c: In function 'qce_dma_prep_cmd_sg':
+>> drivers/crypto/qce/dma.c:44:38: warning: implicit conversion from 'enum dma_transfer_direction' to 'enum dma_data_direction' [-Wenum-conversion]
+      44 |                         qce_sgl_cnt, dir)) {
+         |                                      ^~~
+   include/linux/dma-mapping.h:419:58: note: in definition of macro 'dma_map_sg'
+     419 | #define dma_map_sg(d, s, n, r) dma_map_sg_attrs(d, s, n, r, 0)
+         |                                                          ^
+   drivers/crypto/qce/dma.c:53:66: warning: implicit conversion from 'enum dma_transfer_direction' to 'enum dma_data_direction' [-Wenum-conversion]
+      53 |                 dma_unmap_sg(qce->dev, qce_bam_sgl, qce_sgl_cnt, dir);
+         |                                                                  ^~~
+   include/linux/dma-mapping.h:420:62: note: in definition of macro 'dma_unmap_sg'
+     420 | #define dma_unmap_sg(d, s, n, r) dma_unmap_sg_attrs(d, s, n, r, 0)
+         |                                                              ^
 
 
-> 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  scripts/kernel-doc | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-> index 08a3e603db19..39e730ee1fef 100755
-> --- a/scripts/kernel-doc
-> +++ b/scripts/kernel-doc
-> @@ -1265,6 +1265,18 @@ sub dump_struct($$) {
->  		$declaration .= "\t" . $clause . "\n";
->  		$level++ if ($clause =~ m/(\{)/ && !($clause =~m/\}/));
->  	}
-> +
-> +	my %_members;
-> +	$_members{$_}++ for (@parameterlist);
-> +
-> +	while (my ($k, $v) = each %parameterdescs) {
-> +	    if (!exists($_members{$k})) {
-> +	        if (show_warnings("struct", $declaration_name)) {
-> +		     emit_warning("${file}:$.", "Excess struct member '$k' description in '$declaration_name'\n");
-> +		}
-> +	    }
-> +	}
-> +
->  	output_declaration($declaration_name,
->  			   'struct',
->  			   {'struct' => $declaration_name,
+vim +/done_tasklet +32 drivers/crypto/qce/core.h
+
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  10  
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  11  /**
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  12   * struct qce_device - crypto engine device structure
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  13   * @queue: crypto request queue
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  14   * @lock: the lock protects queue and req
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  15   * @done_tasklet: done tasklet object
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  16   * @req: current active request
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  17   * @result: result of current transform
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  18   * @base: virtual IO base
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  19   * @dev: pointer to device structure
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  20   * @core: core device clock
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  21   * @iface: interface clock
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  22   * @bus: bus clock
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  23   * @dma: pointer to dma data
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  24   * @burst_size: the crypto burst size
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  25   * @pipe_pair_id: which pipe pair id the device using
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  26   * @async_req_enqueue: invoked by every algorithm to enqueue a request
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  27   * @async_req_done: invoked by every algorithm to finish its request
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  28   */
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  29  struct qce_device {
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  30  	struct crypto_queue queue;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  31  	spinlock_t lock;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25 @32  	struct tasklet_struct done_tasklet;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  33  	struct crypto_async_request *req;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  34  	int result;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  35  	void __iomem *base;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  36  	struct device *dev;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  37  	struct clk *core, *iface, *bus;
+694ff00c9bb387 Thara Gopinath    2023-02-22  38  	struct icc_path *mem_path;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  39  	struct qce_dma_data dma;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  40  	int burst_size;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  41  	unsigned int pipe_pair_id;
+f666e78afa2c49 Md Sadre Alam     2023-12-14  42  	dma_addr_t base_dma;
+74826d774de8a8 Md Sadre Alam     2023-12-14  43  	__le32 *reg_read_buf;
+74826d774de8a8 Md Sadre Alam     2023-12-14  44  	dma_addr_t reg_buf_phys;
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  45  	int (*async_req_enqueue)(struct qce_device *qce,
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  46  				 struct crypto_async_request *req);
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  47  	void (*async_req_done)(struct qce_device *qce, int ret);
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  48  };
+ec8f5d8f6f76b9 Stanimir Varbanov 2014-06-25  49  
 
 -- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
