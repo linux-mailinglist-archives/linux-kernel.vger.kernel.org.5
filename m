@@ -1,76 +1,129 @@
-Return-Path: <linux-kernel+bounces-1549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D622F814FF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:06:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B75E8814FFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:08:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040321C21A14
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:06:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6268D287B4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:08:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA7B3FB37;
-	Fri, 15 Dec 2023 19:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5438D3FB21;
+	Fri, 15 Dec 2023 19:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DCgKKAs9";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="M/ib60cs"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="RROwbnbo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7E73FB34
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702667161;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I0hHN3RnKj4ClKstTe8LPIswNpLId53VLjBBZOC5iHs=;
-	b=DCgKKAs9oL7sERRcO8sIomMuOWsEMgeyqtxUPX9sx9sXSsABGqpSHt1MpK7pGPv6GydrZL
-	OyRUIn92ltypPaAqPNi9tMsPpMA9ZyuVW/4UX6lEhTyiwhaq1p6JN4Ac8qOhBeTtd9hGok
-	fLVX4MYPqWNZ3/4c7xRwgLiilEzjR+2JGKRrRZL/ixPVcwsKBRUtCOkha5Dk60IZBN81R2
-	bM8mGaKFTF5GxTgsiHGvZSgzogZpzIeJKk9+aCg30Kfyj7pukdplmkHYT84NhNtfkq+wGv
-	MTbDmKjgVVNrp02I4mYlqChmZOmE7FKaTBfITb1asjE+UWLLKwDyTbbdR/HszA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702667161;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I0hHN3RnKj4ClKstTe8LPIswNpLId53VLjBBZOC5iHs=;
-	b=M/ib60csaRtPn3fF/G22mmT0S5E/sVbk0NqIHN4+WrCQjp6pfJM13TKqt8PHbI1KOM9qKx
-	els4oGs/fA2RVZDQ==
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski
- <luto@kernel.org>, linux-kernel@vger.kernel.org, Heiko Carstens
- <hca@linux.ibm.com>
-Subject: Re: [PATCH 0/3] entry: inline syscall enter/exit functions
-In-Reply-To: <yt9do7etw5se.fsf@linux.ibm.com>
-References: <20231205133015.752543-1-svens@linux.ibm.com>
- <20231206110202.GD30174@noisy.programming.kicks-ass.net>
- <yt9do7etw5se.fsf@linux.ibm.com>
-Date: Fri, 15 Dec 2023 20:06:00 +0100
-Message-ID: <87ttojmgkn.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4D33010B;
+	Fri, 15 Dec 2023 19:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1702667320;
+	bh=UATp6Ljlid4diMibXymVZZ5Z3BZo2w0Vii6FCR1FX7I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RROwbnbo2Bn6bTL6jOB+lfQg4ood193tPYpXkK7B+8tHpGSYiueXxV7u0hZu95quY
+	 doJwFvj3s+NOV1T/5NbX5GWOkzp52/Cb5VUyBJx5Rh5V2fq7089hAfsmaPFunSmsMR
+	 LiyKYjJNz07AN7JJwHkmuamNYOrdq1W38oDAfzHkXZ52qpKRSYhbjIoyaq8fMXQbdA
+	 uDKq2VfXcOGxyjklyMJtesJwO6bT2He3bmzspfuY93vgsPdrymSBH8Fr0gbDqdqFFz
+	 pDe1PO53JQYv4mnkWQxBEd0mqASUKKF0KQR+vCRv36Twfjo2tUt6itA8e80q4LO4jQ
+	 DPUTAzZT47XxQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4SsJfJ36PXzH29;
+	Fri, 15 Dec 2023 14:08:40 -0500 (EST)
+Message-ID: <368d36b2-e5ea-46d4-b214-6d04cf20685a@efficios.com>
+Date: Fri, 15 Dec 2023 14:08:40 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing: Add disable-filter-buf option
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+References: <20231215102633.7a24cb77@rorschach.local.home>
+ <21936075-3858-446a-9391-a38e8d8968e7@efficios.com>
+ <20231215120417.567d5ea4@rorschach.local.home>
+ <fbf8991a-ce83-462c-b87a-b60c6635d223@efficios.com>
+ <20231215123458.63f57238@rorschach.local.home>
+ <f1a75239-341e-4611-a48d-88e10407dcd4@efficios.com>
+ <20231215134335.2388aba5@rorschach.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231215134335.2388aba5@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 14 2023 at 09:24, Sven Schnelle wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
->>> so the time required for one syscall dropped from 94.8ns to
->>> 84.7ns, which is a drop of about 11%.
+On 2023-12-15 13:43, Steven Rostedt wrote:
+> On Fri, 15 Dec 2023 13:25:07 -0500
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 >>
->> That is obviously very nice, and I don't immediately see anything wrong
->> with moving the lot to header based inlines.
->>
->> Thomas?
+>> I am not against exposing an ABI that allows userspace to alter the
+>> filter behavior. I disagree on the way you plan to expose the ABI.
+> 
+> These are no different than the knobs for sched_debug
 
-No objections in principle. Let me look at the lot
+These are very much different. The sched features are enabled at
+build-time by modifying kernel/sched/features.h. There is no userspace
+ABI involved.
+
+> 
+>>
+>> Exposing this option as an ABI in this way exposes too much internal
+>> ring buffer implementation details to userspace.
+> 
+> There's already lots of exposure using options. The options are just
+> knobs, nothing more.
+> 
+>>
+>> It exposes the following details which IMHO should be hidden or
+>> configurable in a way that allows moving to a whole new mechanism
+>> which will have significantly different characteristics in the
+>> future:
+>>
+>> It exposes that:
+>>
+>> - filtering uses a copy to a temporary buffer, and
+>> - that this copy is enabled by default.
+>>
+>> Once exposed, those design constraints become immutable due to ABI.
+> 
+> No it is not. There is no such thing as "immutable ABI". The rule is
+> "don't break user space" If this functionality in the kernel goes away,
+> the knob could become a nop, and I doubt any user space will break
+> because of it.
+> 
+> That is, the only burden is keeping this option exposed. But it could
+> be just like that light switch that has nothing connected to it. It's
+> still there, but does nothing if you switch it. This knob can act the
+> same way. This does not in anyway prevent future innovation.
+
+I am not comfortable with exposing internal ring buffer implementation
+details to userspace which may or may not be deprecated as no-ops
+in the future. This will lead to useless clutter.
+
+One approach that might be somewhat better would be to only expose
+those files when a new CONFIG_TRACING_DEBUG option is enabled. This
+way userspace cannot rely on having those files present as part
+of the ABI, but you would still be free to use them for selftests
+by skipping the specific selftests if the config option is not
+enabled.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
