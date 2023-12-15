@@ -1,72 +1,76 @@
-Return-Path: <linux-kernel+bounces-976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 972EB8148CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B63D8148ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:19:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318DB1F2496A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:13:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E00831F24A07
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E4C2DB6F;
-	Fri, 15 Dec 2023 13:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA412D7AD;
+	Fri, 15 Dec 2023 13:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kHCHb5AH"
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="eMxqBcfM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from aposti.net (aposti.net [89.234.176.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453FF2D056
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:13:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76811C433C8;
-	Fri, 15 Dec 2023 13:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702645987;
-	bh=tuoQDVEvOc4yYofLOsac9XvmYp1ao3T0xlTQ8AbQp/k=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=kHCHb5AH3+NMcS7GzCcQ6i5eMb8R4+mbVTuNYb6//iPDSHzMTaKTDfdlE6RWgnkXu
-	 fnwG/yuVs6dnGqG56LR81EJ9Kg3ZSeV700QJ7qkM/4rNvBA1YMrpZY+kMDqKTqI+Kt
-	 +4ezyU9PBP4ZSU5DFR/UnPelyeEYliBlGN4SNrVEyarjrK02gmGM4e4MCgDmFiHpsL
-	 MjB63cTsKJn2lAqLTc95QMx1F7Fph7ByU3sTprr42dduZvugZsEsmvI7yw7zKDL1WS
-	 hJHf2EK6mj4yL2Jm3+KiAYmugp7MwZqa6Vc9doz3Cg9Lu+JP0W79WLrXb1ekHpujit
-	 yvqP2FLT2uKFQ==
-From: Maxime Ripard <mripard@kernel.org>
-To: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Donald Robson <donald.robson@imgtec.com>
-Cc: frank.binns@imgtec.com, matt.coster@imgtec.com, 
- maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, airlied@gmail.com, 
- daniel@ffwll.ch
-In-Reply-To: <20231208163019.95913-1-donald.robson@imgtec.com>
-References: <20231208163019.95913-1-donald.robson@imgtec.com>
-Subject: Re: (subset) [PATCH] drm/imagination: Fixed oops when misusing
- ioctl CREATE_HWRT_DATASET
-Message-Id: <170264598499.449619.5534546786451480094.b4-ty@kernel.org>
-Date: Fri, 15 Dec 2023 14:13:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80CE2D79D;
+	Fri, 15 Dec 2023 13:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1702646029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lpAu/d+BadtNM8H50tJnl00JvfI119f25JB4NGpdWMc=;
+	b=eMxqBcfMP0DV0n+emq0JfrNQtly3RitIdhiUbi3fNOab3IS1rr2eZvlLQt+JaTiqwJCE89
+	yVj29eXlvSH551gHhZGLqUV3ZOA6uENM3WKO8mzm6CcF5zL9KVadKw/nmVL/VPyG5P3d30
+	fDSamI4ChwycsfSF0aSMbCC+ObqI9Z4=
+From: Paul Cercueil <paul@crapouillou.net>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+	=?UTF-8?q?Nuno=20S=C3=A1?= <noname.nuno@gmail.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH v2 0/5] axi-dmac: Add support for scatter-gather
+Date: Fri, 15 Dec 2023 14:13:08 +0100
+Message-ID: <20231215131313.23840-1-paul@crapouillou.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 
-On Fri, 08 Dec 2023 16:30:19 +0000, Donald Robson wrote:
-> While writing the matching IGT suite I discovered that it's possible to
-> cause a kernel oops when using DRM_IOCTL_PVR_CREATE_HWRT_DATASET when
-> the call to hwrt_init_common_fw_structure() fails.
-> 
-> Use an unwind-type error path to avoid cleaning up the object using the
-> the release function before it is fully resolved.
-> 
-> [...]
+Hi Vinod,
 
-Applied to drm/drm-misc (drm-misc-next-fixes).
+V2 of my patchset which introduces scatter-gather transfers support to
+the axi-dmac driver.
 
-Thanks!
-Maxime
+I updated patch [1/5] with your feedback. Patch [4/5] was updated as
+well, so that cyclic transfers are restarted properly in the EOT. This
+was a bug in my V1, but it was fixed here just for bisectability, as the
+new patch [5/5] will improve cyclic transfers by linking the last
+descriptor to the first one in a SG chain, which means that the EOT IRQ
+only needs to call the callback associated with the cyclic transfer, and
+the EOT IRQ can be masked if there is no callback associated with it.
+
+Cheers,
+-Paul
+
+ drivers/dma/dma-axi-dmac.c | 280 +++++++++++++++++++++++++------------
+ 1 file changed, 191 insertions(+), 89 deletions(-)
+
+-- 
+2.42.0
 
 
