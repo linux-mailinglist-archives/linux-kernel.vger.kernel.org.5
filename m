@@ -1,292 +1,142 @@
-Return-Path: <linux-kernel+bounces-382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9290181404B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:57:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA4F81402A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:45:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C0C21F22F01
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:57:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B44F288395
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09605111D;
-	Fri, 15 Dec 2023 02:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1A046B1;
+	Fri, 15 Dec 2023 02:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="faxRcA7U"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBFDEBB;
-	Fri, 15 Dec 2023 02:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SrtlG4XSLzWjsW;
-	Fri, 15 Dec 2023 10:41:30 +0800 (CST)
-Received: from kwepemm000004.china.huawei.com (unknown [7.193.23.18])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3B97C18006C;
-	Fri, 15 Dec 2023 10:41:42 +0800 (CST)
-Received: from [10.67.121.59] (10.67.121.59) by kwepemm000004.china.huawei.com
- (7.193.23.18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
- 2023 10:41:41 +0800
-Message-ID: <486f8563-42b7-a049-97a2-bc0b553926aa@huawei.com>
-Date: Fri, 15 Dec 2023 10:41:40 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6362C10FD
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3363aa1b7d2so139767f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 18:44:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702608273; x=1703213073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k9XDBQt8NyASWBhHRtYhXwFukuH9acGC67RiibDyL7E=;
+        b=faxRcA7UdzXClMiW76LNr0Y0o+QVJnLyY5T+ZP0gc/WrxA9JPmg3G/0cRO6aOYQhV9
+         d4FoCqbX5vmJg6yUJ9LRwQ29zeuSQn3QsH8a7mqentnWC70wpd1ZdhgHphTOEy2dDI6e
+         9tjg+4TXGqE9/2fbChqp+LU0fFpgx4Q3EvrgNbMYuCTfrx6kkXY7FS9GiOOBKgp8AalL
+         5exfrim2Ge+ww1vVd896aY398OvVIjloN7NRKhgkcFisIARajr02cdVtu9GUOqPgxsIZ
+         HLFMC+sMvrpfSH2E8mhuOoHCpt8i3ZfYlAyina5lnHE4BYivd2VTGhKi5uerJi1Q5dsa
+         +QaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702608273; x=1703213073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k9XDBQt8NyASWBhHRtYhXwFukuH9acGC67RiibDyL7E=;
+        b=lpMRxf4bOK0VEjU8jWAwntevHVQP9dIlv+muQ7BxvdAgIKHRLwss3TugRafmBqDn9E
+         kTWpdmYjQ33QNy7yH8cxxOS7kD9qF7uFv1qAbClhkzzU2m+DtK9sbZMIS7XbzOQLfTEc
+         HwPEXx6PxHTgaJxQ9YaEIlTwisl8CDPUvq/kKUnxWgSDF+VZth9ZkhB0Dq3/YL5Rj2iq
+         B7YQqVz6L4diMdmmH7zCx1f7sZrWROrQkaE0AxYlM9wnFiuTAQfOOzTxd5Eakob5/KW3
+         rpt0D6ute4NeT0rKT/SF7IYoTqg4RySyZdO/Sg2mRdgO06I9OQM4Qc6l+AWvFXjK7756
+         4hdQ==
+X-Gm-Message-State: AOJu0YywypFBJ5Mmrj96rVS/mI15pyvx+JoxDkpvJxMNdqYKZ+Lq7Ql1
+	vNqhb0iuvcP72p1AD+UaaAFvvkxW0VL1Jfa5yXUB2Q==
+X-Google-Smtp-Source: AGHT+IEHYFogUObtxR5bOjWEUZN9INgCImPWqK70oIiDi+VdLrk3rRhfc+3EQJvaALO54EkeT7OruMofARK/eN/0O5A=
+X-Received: by 2002:a05:6000:1d97:b0:336:26d3:8819 with SMTP id
+ bk23-20020a0560001d9700b0033626d38819mr2973326wrb.41.1702608273373; Thu, 14
+ Dec 2023 18:44:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
- from cpuinfo_cur_freq
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <beata.michalska@arm.com>,
-	<sumitg@nvidia.com>, <ionela.voinescu@arm.com>, <zengheng4@huawei.com>,
-	<yang@os.amperecomputing.com>, <will@kernel.org>, <sudeep.holla@arm.com>,
-	<liuyonglong@huawei.com>, <zhanjie9@hisilicon.com>
-References: <20231212072617.14756-1-lihuisong@huawei.com>
- <CAJZ5v0jwW0=8cNvC-Vu_o+pEHFpN9nrPD4LXCpmSTgQBTHODgg@mail.gmail.com>
-From: "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <CAJZ5v0jwW0=8cNvC-Vu_o+pEHFpN9nrPD4LXCpmSTgQBTHODgg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000004.china.huawei.com (7.193.23.18)
+References: <CAA0N8zYyGKraVW8v3roMNakuJxQJOo3ddsB=e0D_KaD+Ji=81A@mail.gmail.com>
+In-Reply-To: <CAA0N8zYyGKraVW8v3roMNakuJxQJOo3ddsB=e0D_KaD+Ji=81A@mail.gmail.com>
+From: Chris Koch <chrisko@google.com>
+Date: Thu, 14 Dec 2023 18:44:15 -0800
+Message-ID: <CAA0N8zaYjfxJ7eTWU-t0qGRN7rsU9_O8+7XPNW5iejtmr57s3A@mail.gmail.com>
+Subject: Re: The conflict between PHYSICAL_START and MIN_KERNEL_LOAD_ADDR
+To: x86@kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Cloud Hsu <cloudhsu@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Rafael,
+My apologies, I didn't realize x86@ wasn't a mailing list earlier.
+Adding the list.
 
-Thanks for your review.😁
-
-在 2023/12/15 3:31, Rafael J. Wysocki 写道:
-> On Tue, Dec 12, 2023 at 8:26 AM Huisong Li <lihuisong@huawei.com> wrote:
->> Many developers found that the cpu current frequency is greater than
->> the maximum frequency of the platform, please see [1], [2] and [3].
->>
->> In the scenarios with high memory access pressure, the patch [1] has
->> proved the significant latency of cpc_read() which is used to obtain
->> delivered and reference performance counter cause an absurd frequency.
->> The sampling interval for this counters is very critical and is expected
->> to be equal. However, the different latency of cpc_read() has a direct
->> impact on their sampling interval.
->>
->> This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
->> delivered and reference performance counter together. According to my
->> test[4], the discrepancy of cpu current frequency in the scenarios with
->> high memory access pressure is lower than 0.2% by stress-ng application.
->>
->> [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
->> [2] https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecomputing.com/
->> [3] https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
->>
->> [4] My local test:
->> The testing platform enable SMT and include 128 logical CPU in total,
->> and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
->> physical core on platform during the high memory access pressure from
->> stress-ng, and the output is as follows:
->>    0: 2699133     2: 2699942     4: 2698189     6: 2704347
->>    8: 2704009    10: 2696277    12: 2702016    14: 2701388
->>   16: 2700358    18: 2696741    20: 2700091    22: 2700122
->>   24: 2701713    26: 2702025    28: 2699816    30: 2700121
->>   32: 2700000    34: 2699788    36: 2698884    38: 2699109
->>   40: 2704494    42: 2698350    44: 2699997    46: 2701023
->>   48: 2703448    50: 2699501    52: 2700000    54: 2699999
->>   56: 2702645    58: 2696923    60: 2697718    62: 2700547
->>   64: 2700313    66: 2700000    68: 2699904    70: 2699259
->>   72: 2699511    74: 2700644    76: 2702201    78: 2700000
->>   80: 2700776    82: 2700364    84: 2702674    86: 2700255
->>   88: 2699886    90: 2700359    92: 2699662    94: 2696188
->>   96: 2705454    98: 2699260   100: 2701097   102: 2699630
->> 104: 2700463   106: 2698408   108: 2697766   110: 2701181
->> 112: 2699166   114: 2701804   116: 2701907   118: 2701973
->> 120: 2699584   122: 2700474   124: 2700768   126: 2701963
->>
->> Signed-off-by: Huisong Li <lihuisong@huawei.com>
-> First off, please Cc ACPI-related patches to linux-acpi.
-
-got it.
-
-+linux-acpi@vger.kernel.org
-
+On Thu, Dec 14, 2023 at 6:37=E2=80=AFPM Chris Koch <chrisko@google.com> wro=
+te:
 >
->> ---
->>   arch/arm64/kernel/topology.c | 43 ++++++++++++++++++++++++++++++++++--
->>   drivers/acpi/cppc_acpi.c     | 22 +++++++++++++++---
->>   include/acpi/cppc_acpi.h     |  5 +++++
->>   3 files changed, 65 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
->> index 7d37e458e2f5..c3122154d738 100644
->> --- a/arch/arm64/kernel/topology.c
->> +++ b/arch/arm64/kernel/topology.c
->> @@ -299,6 +299,11 @@ core_initcall(init_amu_fie);
->>   #ifdef CONFIG_ACPI_CPPC_LIB
->>   #include <acpi/cppc_acpi.h>
->>
->> +struct amu_counters {
->> +       u64 corecnt;
->> +       u64 constcnt;
->> +};
->> +
->>   static void cpu_read_corecnt(void *val)
->>   {
->>          /*
->> @@ -322,8 +327,27 @@ static void cpu_read_constcnt(void *val)
->>                        0UL : read_constcnt();
->>   }
->>
->> +static void cpu_read_amu_counters(void *data)
->> +{
->> +       struct amu_counters *cnt = (struct amu_counters *)data;
->> +
->> +       /*
->> +        * The running time of the this_cpu_has_cap() might have a couple of
->> +        * microseconds and is significantly increased to tens of microseconds.
->> +        * But AMU core and constant counter need to be read togeter without any
->> +        * time interval to reduce the calculation discrepancy using this counters.
->> +        */
->> +       if (this_cpu_has_cap(ARM64_WORKAROUND_2457168)) {
->> +               cnt->corecnt = read_corecnt();
-> This statement is present in both branches, so can it be moved before the if ()?
-Yes.
-Do you mean adding a blank line before if()?
+> Hi all,
 >
->> +               cnt->constcnt = 0;
->> +       } else {
->> +               cnt->corecnt = read_corecnt();
->> +               cnt->constcnt = read_constcnt();
->> +       }
->> +}
->> +
->>   static inline
->> -int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
->> +int counters_read_on_cpu(int cpu, smp_call_func_t func, void *data)
->>   {
->>          /*
->>           * Abort call on counterless CPU or when interrupts are
->> @@ -335,7 +359,7 @@ int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
->>          if (WARN_ON_ONCE(irqs_disabled()))
->>                  return -EPERM;
->>
->> -       smp_call_function_single(cpu, func, val, 1);
->> +       smp_call_function_single(cpu, func, data, 1);
->>
->>          return 0;
->>   }
->> @@ -364,6 +388,21 @@ bool cpc_ffh_supported(void)
->>          return true;
->>   }
->>
->> +int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference)
->> +{
->> +       struct amu_counters cnts = {0};
->> +       int ret;
->> +
->> +       ret = counters_read_on_cpu(cpu, cpu_read_amu_counters, &cnts);
->> +       if (ret)
->> +               return ret;
->> +
->> +       *delivered = cnts.corecnt;
->> +       *reference = cnts.constcnt;
->> +
->> +       return 0;
->> +}
->> +
->>   int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
->>   {
->>          int ret = -EOPNOTSUPP;
->> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
->> index 7ff269a78c20..f303fabd7cfe 100644
->> --- a/drivers/acpi/cppc_acpi.c
->> +++ b/drivers/acpi/cppc_acpi.c
->> @@ -1299,6 +1299,11 @@ bool cppc_perf_ctrs_in_pcc(void)
->>   }
->>   EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
->>
->> +int __weak cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference)
->> +{
->> +       return 0;
->> +}
->> +
->>   /**
->>    * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
->>    * @cpunum: CPU from which to read counters.
->> @@ -1313,7 +1318,8 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
->>                  *ref_perf_reg, *ctr_wrap_reg;
->>          int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
->>          struct cppc_pcc_data *pcc_ss_data = NULL;
->> -       u64 delivered, reference, ref_perf, ctr_wrap_time;
->> +       u64 delivered = 0, reference = 0;
->> +       u64 ref_perf, ctr_wrap_time;
->>          int ret = 0, regs_in_pcc = 0;
->>
->>          if (!cpc_desc) {
->> @@ -1350,8 +1356,18 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
->>                  }
->>          }
->>
->> -       cpc_read(cpunum, delivered_reg, &delivered);
->> -       cpc_read(cpunum, reference_reg, &reference);
->> +       if (cpc_ffh_supported()) {
->> +               ret = cpc_read_arch_counters_on_cpu(cpunum, &delivered, &reference);
->> +               if (ret) {
->> +                       pr_debug("read arch counters failed, ret=%d.\n", ret);
->> +                       ret = 0;
->> +               }
->> +       }
-> The above is surely not applicable to every platform using CPPC.  Also
-
-cpc_ffh_supported is aimed to control only the platform supported FFH to enter.
-cpc_read_arch_counters_on_cpu is also needed to implemented by each platform according to their require.
-Here just implement this interface for arm64.
-
-> it looks like in the ARM64_WORKAROUND_2457168 enabled case it is just
-> pointless overhead, because "reference" is always going to be 0 here
-> then.
-Right, it is always going to be 0 here for the ARM64_WORKAROUND_2457168 
-enabled case .
-But ARM64_WORKAROUND_2457168 is a macro releated to ARM.
-It seems that it is not appropriate for this macro to appear this common 
-place for all platform, right?
-
+> we ran into some memory clobbering on kernel boot, and there seems to
+> be a bit of a conflict between the documentation and reality, and
+> CONFIG_PHYSICAL_START (default 0x1 000 000) and MIN_KERNEL_LOAD_ADDR
+> (default 0x100 000).
 >
-> Please clean that up.
+> First observation: bzimage's pref_address is listed as "preferred" in
+> the boot documentation for relocatable kernels, but what is not
+> mentioned is that if the kernel is loaded below pref_address, it will
+> relocate itself there [1]. The default CONFIG_PHYSICAL_START seems to
+> be 0x1000000, and a review of bootloaders shows that in every case but
+> GRUB a kernel will get loaded below that, and then relocate itself
+> there. (ipxe 0x10000 or 0x100000 depending on config, kexec-tools
+> 0x100000, kexec_file 0x100000)
 >
->> +       if (!delivered || !reference) {
->> +               cpc_read(cpunum, delivered_reg, &delivered);
->> +               cpc_read(cpunum, reference_reg, &reference);
->> +       }
->> +
->>          cpc_read(cpunum, ref_perf_reg, &ref_perf);
->>
->>          /*
->> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
->> index 6126c977ece0..07d4fd82d499 100644
->> --- a/include/acpi/cppc_acpi.h
->> +++ b/include/acpi/cppc_acpi.h
->> @@ -152,6 +152,7 @@ extern bool cpc_ffh_supported(void);
->>   extern bool cpc_supported_by_cpu(void);
->>   extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
->>   extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
->> +extern int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference);
->>   extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
->>   extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
->>   extern int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps);
->> @@ -209,6 +210,10 @@ static inline int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
->>   {
->>          return -ENOTSUPP;
->>   }
->> +static inline int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference)
->> +{
->> +       return -EOPNOTSUPP;
->> +}
->>   static inline int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable)
->>   {
->>          return -ENOTSUPP;
->> --
-> .
+> This means in all default cases except GRUB, the kernel will relocate
+> itself and decompress in an area of memory it was not intended for,
+> and which may hold reserved data in the memory map. (This is what
+> happened in our case. It was clobbering reserved stuff.)
+>
+> This suggests the following:
+> 1) This pref_address behavior should be documented in boot.rst.
+> Something like "A relocatable kernel will relocate itself to
+> pref_address (which is equal to CONFIG_PHYSICAL_START) if it was
+> loaded below that address."
+>
+> 2) Documentation for PHYSICAL_START should be updated. It states
+>
+> > If kernel is a not relocatable (CONFIG_RELOCATABLE=3Dn) then
+> > bzImage will decompress itself to above physical address and
+> > run from there. Otherwise, bzImage will run from the address where
+> > it has been loaded by the boot loader and will ignore above physical
+> > address.
+>
+> 3) Some patches should be sent to ipxe, kexec-tools and kexec_file to
+> respect pref_address as a minimum address, not just a preferred
+> address.
+>
+> 4) The default values of MIN_KEXEC_LOAD_ADDR and CONFIG_PHYSICAL_START
+> should align to reduce the chances of this happening for users who
+> aren't messing with these values. Given what current boot loaders do,
+> should CONFIG_PHYSICAL_START be lowered to 0x100000, at least for
+> relocatable kernels? This might be the most controversial of the
+> changes.
+>
+> 5) Should PHYSICAL_START be ignored in relocatable kernels like its
+> documentation suggests? Is the relocation above that unnecessary?
+>
+> Regardless of which change we make for the future, existing boot
+> loaders & kernels conflict in their behavior for relocatable kernels.
+> What is most likely to fix this issue for users & prevent breakage of
+> existing workflows?
+>
+> If I see agreement on 1 to 3, I will start sending patches. Would love
+> to hear opinions on 4 & 5.
+>
+> Thanks,
+> Chris
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree=
+/arch/x86/boot/compressed/head_64.S?h=3Dlinux-6.6.y#n333
 
