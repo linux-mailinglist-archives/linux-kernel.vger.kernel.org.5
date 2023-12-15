@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-1435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A828E814EFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:41:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F26814EFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:41:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6058F2887B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:41:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 599671C24540
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9676030114;
-	Fri, 15 Dec 2023 17:41:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1A53010E;
+	Fri, 15 Dec 2023 17:41:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1071630115
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81BB830104
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72BEAC15;
-	Fri, 15 Dec 2023 09:41:47 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECDB9C15;
+	Fri, 15 Dec 2023 09:42:32 -0800 (PST)
 Received: from [10.57.4.221] (unknown [10.57.4.221])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF8873F5A1;
-	Fri, 15 Dec 2023 09:40:57 -0800 (PST)
-Message-ID: <6aed34de-99ab-4601-ba4b-0870992c5da1@arm.com>
-Date: Fri, 15 Dec 2023 17:40:55 +0000
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A5B7E3F5A1;
+	Fri, 15 Dec 2023 09:41:43 -0800 (PST)
+Message-ID: <bd8a64fa-86d3-4417-a570-36469330508f@arm.com>
+Date: Fri, 15 Dec 2023 17:41:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,8 +33,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 02/24] x86/resctrl: kfree() rmid_ptrs from
- rdtgroup_exit()
+Subject: Re: [PATCH v7 21/24] x86/resctrl: Allow overflow/limbo handlers to be
+ scheduled on any-but cpu
 Content-Language: en-US
 To: Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
  linux-kernel@vger.kernel.org
@@ -49,12 +49,10 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
  Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
  dfustini@baylibre.com, amitsinght@marvell.com
 References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-3-james.morse@arm.com>
- <208c3ade-a8c3-41cc-b136-4ab9b7e938e5@intel.com>
- <bd3afbfd-3372-cac9-600e-ace19ddd3199@arm.com>
- <cddbbbae-599b-42c0-abe1-4ca74d5ce36c@intel.com>
- <a5ef6b40-a9b3-5338-a12a-6a4540cda861@arm.com>
- <c53872e2-1d2e-44b3-80f1-e39fb0a7330d@intel.com>
+ <20231025180345.28061-22-james.morse@arm.com>
+ <9084cb79-22bd-4cb3-b48d-f0d8d71aa47c@intel.com>
+ <b077b38f-b42c-f679-1e08-70b55d116e17@arm.com>
+ <9a66b7f8-097b-45af-97b2-4c403c295301@intel.com>
 From: James Morse <james.morse@arm.com>
 Autocrypt: addr=james.morse@arm.com; keydata=
  xsFNBFwC5PsBEAC4E6msVKhzIiuq57RQRYpYl5mxN797KXNKjUA7fMa4PAIBiVLdzPp8JmPd
@@ -99,65 +97,91 @@ Autocrypt: addr=james.morse@arm.com; keydata=
  SrUVzFOO6bhEKmdJX9tUfCR1u6k7/Cv/J+sL5S5I+/bd7jlwdgMYgHs6uB+5FlPyw2JdXe3N
  Z6Z4YTWcwRdfKKY6RZX1mzTkLuJDuKMbA4xJ+2OgG9N4YLMPyxXm1V5/gu3tnM9QIgmDHeCr
  RCZNANToJ3eaUvYMW+f3CD0g7gDykJRvlNeIDl14zasM4C95vuRh3bTzXk/ScPs=
-In-Reply-To: <c53872e2-1d2e-44b3-80f1-e39fb0a7330d@intel.com>
+In-Reply-To: <9a66b7f8-097b-45af-97b2-4c403c295301@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi Reinette,
 
-On 12/14/23 19:06, Reinette Chatre wrote:
-> On 12/14/2023 10:28 AM, James Morse wrote:
->> On 13/12/2023 23:27, Reinette Chatre wrote:
->>> On 12/13/2023 10:03 AM, James Morse wrote:
->>>> On 09/11/2023 17:39, Reinette Chatre wrote:
->>>>> I expect cleanup to do the inverse of init. I do not know what was the
->>>>> motivation for the rdtgroup_exit() to follow cpuhp_remove_state()
->>>>
->>>> This will invoke the hotplug callbacks, making it look to resctrl like all CPUs are
->>>> offline. This means it is then impossible for rdtgroup_exit() to race with the hotplug
->>>> notifiers. (if you could run this code...)
->>
->>> hmmm ... if there is a risk of such a race would the init code not also be
->>> vulnerable to that with the notifiers up before rdtgroup_init()?
->>
->> Nope, because this array is allocated behind rdt_get_mon_l3_config(), which ultimately
->> comes from get_rdt_resources() in resctrl_late_init() - which calls cpuhp_setup_state()
->> after all this init work has been done.
->>
->> (cpu hp always gives me a headache1)
-> 
-> Right. My comment was actually and specifically about rdtgroup_init() and attempting to
-> understand your view of its races with the hotplug notifiers in response to your comment about
-> its (the hotplug notifiers) races with rdtgroup_exit().
-> 
-> The current order of state initialization you mention and hotplug notifiers needing the
-> state is sane and implies to expect an inverse order of teardown.
-> 
->>> The races you mention
->>> are not obvious to me. I see the filesystem and hotplug code protected against races via
->>> the mutex and static keys. Could you please elaborate on the flows of concern?
->>
->> Functions like __check_limbo() (calling __rmid_entry()) are called under the
->> rdtgroup_mutex, but they don't consider that rmid_ptrs[] may be NULL.
->>
->> But this could only happen if the limbo work ran after cpuhp_remove_state() - this can't
->> happen because the hotplug callbacks cancel the limbo work, and won't reschedule it if the
->> domain is going offline.
->>
->>
->> The only other path is via free_rmid(), I've not thought too much about this as
->> resctrl_exit() can't actually be invoked - this code is discarded by the linker.
->>
->> It could be run on MPAM, but only in response to an 'error interrupt' (which is optional)
->> - and all the MPAM error interrupts indicate a software bug.
-> 
-> This still just considers the resctrl state and hotplug notifiers.
-> 
-> I clearly am missing something. It is still not clear to me how this connects to your earlier
-> comment about races with the rdtgroup_exit() code ... how the hotplug notifiers races with the
-> filesystem register/unregister code.
+On 12/14/23 18:53, Reinette Chatre wrote:
+> On 12/14/2023 3:38 AM, James Morse wrote:
+>> On 09/11/2023 17:48, Reinette Chatre wrote:
+>>> On 10/25/2023 11:03 AM, James Morse wrote:
 
-I don't think there is a specific problem there, this was mostly about unexpected surprises because cpuhp/limbo_handler/overflow_handler all run asynchronously. I may also have added confusion because the code added here moves into rdtgroup_exit() which is renamed resctrl_exit() as part of dragging all this out to /fs/. (This is also why I tried to initially add it in its final location)
+>>>> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+>>>> index c4c1e1909058..f5fff2f0d866 100644
+>>>> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+>>>> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+>>>> @@ -61,19 +61,36 @@
+>>>>    * cpumask_any_housekeeping() - Choose any CPU in @mask, preferring those that
+>>>>    *			        aren't marked nohz_full
+>>>>    * @mask:	The mask to pick a CPU from.
+>>>> + * @exclude_cpu:The CPU to avoid picking.
+>>>>    *
+>>>> - * Returns a CPU in @mask. If there are housekeeping CPUs that don't use
+>>>> - * nohz_full, these are preferred.
+>>>> + * Returns a CPU from @mask, but not @exclude_cpu. If there are housekeeping
+>>>> + * CPUs that don't use nohz_full, these are preferred. Pass
+>>>> + * RESCTRL_PICK_ANY_CPU to avoid excluding any CPUs.
+>>>> + *
+>>>> + * When a CPU is excluded, returns >= nr_cpu_ids if no CPUs are available.
+>>>>    */
+>>>> -static inline unsigned int cpumask_any_housekeeping(const struct cpumask *mask)
+>>>> +static inline unsigned int
+>>>> +cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
+>>>>   {
+>>>>   	unsigned int cpu, hk_cpu;
+>>>>   
+>>>> -	cpu = cpumask_any(mask);
+>>>> -	if (!tick_nohz_full_cpu(cpu))
+>>>> +	if (exclude_cpu == RESCTRL_PICK_ANY_CPU)
+>>>> +		cpu = cpumask_any(mask);
+>>>> +	else
+>>>> +		cpu = cpumask_any_but(mask, exclude_cpu);
+>>>> +
+>>>> +	if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
+>>>> +		return cpu;
+>>>
+>>> It is not clear to me how cpumask_any_but() failure is handled.
+>>>
+>>> cpumask_any_but() returns ">= nr_cpu_ids if no cpus set" ...
+>>
+>> It wasn't a satisfiable request, there are no CPUs for this domain other than the one that
+>> was excluded. cpumask_any_but() also describes its errors as "returns >= nr_cpu_ids if no
+>> CPUs are available".
+>>
+>> The places this can happen in resctrl are:
+>> cqm_setup_limbo_handler(), where it causes the schedule_delayed_work_on() call to be skipped.
+>> mbm_setup_overflow_handler(), which does similar.
+>>
+>> These two cases are triggered from resctrl_offline_cpu() when the last CPU in a domain is
+>> going offline, and the domain is about to be free()d. This is how the limbo/overflow
+>> 'threads' stop.
+
+> Right ... yet this is a generic function, if there are any requirements on when/how it should
+> be called then it needs to be specified in the function comments. I do not expect this to
+> be the case for this function.
+
+There are no special requirements, like all the other cpumask_foo() helpers, you can feed it
+an empty bitmap and it will return '>= nr_cpu_ids' as an error.
+
+[...]
+
+>>> But that would have
+>>> code continue ... so maybe it needs explicit error check of
+>>> cpumask_any_but() failure with an earlier exit?
+>>
+>> I'm not sure what the problem you refer to here is.
+>> If 'cpu' is valid, and not marked nohz_full, nothing more needs doing.
+>> If 'cpu' is invalid or a CPU marked nohz_full, then a second attempt is made to find a
+>> housekeeping CPU into 'hk_cpu'. If the second attempt is valid, it's used in preference.
+> 
+> Considering that the second attempt can only be on the same or smaller set of CPUs,
+> how could the second attempt ever succeed if the first attempt failed? I do not see
+> why it is worth continuing.
+
+Its harmless, its not on a performance sensitive path and it would take extra logic in the
+more common cases to detect this and return early.
 
 
 Thanks,
