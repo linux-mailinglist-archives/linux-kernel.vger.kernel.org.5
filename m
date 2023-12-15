@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA76C814327
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB49E814329
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 768DB282665
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:02:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84063283433
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5159711717;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4D512E49;
 	Fri, 15 Dec 2023 08:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P6PIm06U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="loa187Lr"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F56D171BA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE65F10A28;
 	Fri, 15 Dec 2023 08:01:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 62412C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 730A5C433CA;
 	Fri, 15 Dec 2023 08:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1702627318;
-	bh=8uAsM3n6TCGakpnmtj6m+RXkjDCi7HZAZ82cuw4AZqo=;
+	bh=rGko7g/e7jaL+Mbo3OjmBgd3fdi67jcuNrQTX9QGUhw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=P6PIm06UzTXSz4oy0Kaeyd18Er3HIsme/3lySkqUaAQpQD6F4HgkUyQQnAhk9+OKB
-	 f/hi7sJZaukfVYPvf+DlUhWOv/COhgLNdsuBELqePM6e05qrc2CW/TaUdh75mhoezz
-	 WwUJwdUI/EG+EhC3Gp2qEZw4oPUhNWEu0xM1dcr8P0gjUj2nARWUqC3UXpPw9gxiGe
-	 OiUalihUXs/7t7EA7jt7rFNDzyNGktEHsmFMUBWso2BKS+PYX4KpUZJQjNc5GaBSc0
-	 +OZGdVrJR4ZQsP1H/Oexq7OMtHaaxcOiYOrcE7UQ8YmY22PfdDmQ6NBfB/kfIOwgRs
-	 SkHWfS38jhdaQ==
+	b=loa187LrAwEgvYhOHKsQXEWPmZlvo3fEzCE07/ZHZpNTnwwQ8m4/pNv57KPaWN/dZ
+	 ukenDLBsDlMkwDu3Eu8X7xI90CvF5+ES0soeJrg9fbmtJ8KBsvO8n6caRzCovFGFmR
+	 xwrq5mZ3aCsrwvM4Q13VYRRoWYeQqtLwo2BR33177Ip5180rPTKMQMUIQ2dcFvrsJt
+	 1TvB8HeKtwq6/N99JxCo+8KlbudYK3BFTqokUZoqhlJ4W8YsLV5Wn0ZmvmVz6XpFTs
+	 Cz2f/7K3ZCVGc9c/KtT2+u/iwZc+NCzXndHtyDjo2prXcf620fj880T+uaBFNBSLt+
+	 DeKJ+/xtawaLA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47414C4167B;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53C7AC46CC5;
 	Fri, 15 Dec 2023 08:01:58 +0000 (UTC)
 From: Fenglin Wu via B4 Relay <devnull+quic_fenglinw.quicinc.com@kernel.org>
-Date: Fri, 15 Dec 2023 16:01:45 +0800
-Subject: [PATCH v3 1/2] arm64: dts: qcom: sm8550-mtp: Add pm8010 regulators
+Date: Fri, 15 Dec 2023 16:01:46 +0800
+Subject: [PATCH v3 2/2] arm64: dts: qcom: sm8550-qrd: add PM8010 regulators
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,7 +46,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231215-pm8010-regulator-v3-1-1bfc4b7ee5ab@quicinc.com>
+Message-Id: <20231215-pm8010-regulator-v3-2-1bfc4b7ee5ab@quicinc.com>
 References: <20231215-pm8010-regulator-v3-0-1bfc4b7ee5ab@quicinc.com>
 In-Reply-To: <20231215-pm8010-regulator-v3-0-1bfc4b7ee5ab@quicinc.com>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
@@ -61,11 +61,11 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  quic_subbaram@quicinc.com, quic_jprakash@quicinc.com, 
  Fenglin Wu <quic_fenglinw@quicinc.com>
 X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702627316; l=4260;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702627317; l=4265;
  i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
- bh=Pl6rsx3JbPVYZOCnH4C+O9HbCyqDCL6cCDwhlR0Ts0s=;
- b=JsbDbAp+Bg8yVP1MbNYx+oK7Z7Z0e671aYoiA8QHEZekqw4R07jCgGesH/SWrTjkb+ksiSttm
- WSxdLikn9iYDOILT01Ld9Gcf5vjDOb2xoAn3T5qMN1VPveyhcn+R0/F
+ bh=CWUiGxnJ4SLz6vk8vxxSFV8erbPvd24GIEgmmiaDxH4=;
+ b=bTK9eDjnWBY9hAaZxZS0QMW5ozdF8C+jdU56AfovUogp87Ujv3F9WiYaBHdQ9Y3tqMDWZH3XY
+ 0Ya8XnRogy+D/boXosRzlxQxQhb0i5THUNMMrzsds3AW0sOsDkfQ+/U
 X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
  pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
 X-Endpoint-Received:
@@ -75,19 +75,19 @@ Reply-To: <quic_fenglinw@quicinc.com>
 
 From: Fenglin Wu <quic_fenglinw@quicinc.com>
 
-Add PM8010 regulator device nodes for sm8550-mtp board.
+Add PM8010 regulator device nodes for sm8550-qrd board.
 
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sm8550-mtp.dts | 120 ++++++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts | 120 ++++++++++++++++++++++++++++++++
  1 file changed, 120 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-index 9a70875028b7..8395d363d18d 100644
---- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-@@ -510,6 +510,126 @@ vreg_l3g_1p2: ldo3 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+index eef811def39b..7ca93c149215 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+@@ -527,6 +527,126 @@ vreg_l3g_1p2: ldo3 {
  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
  		};
  	};
@@ -96,10 +96,10 @@ index 9a70875028b7..8395d363d18d 100644
 +		compatible = "qcom,pm8010-rpmh-regulators";
 +		qcom,pmic-id = "m";
 +
-+		vdd-l1-l2-supply = <&vreg_s4g_1p3>;
++		vdd-l1-l2-supply = <&vreg_s4g_1p25>;
 +		vdd-l3-l4-supply = <&vreg_bob2>;
-+		vdd-l5-supply = <&vreg_s6g_1p8>;
-+		vdd-l6-supply = <&vreg_s6g_1p8>;
++		vdd-l5-supply = <&vreg_s6g_1p86>;
++		vdd-l6-supply = <&vreg_s6g_1p86>;
 +		vdd-l7-supply = <&vreg_bob1>;
 +
 +		vreg_l1m_1p056: ldo1 {
@@ -156,9 +156,9 @@ index 9a70875028b7..8395d363d18d 100644
 +		compatible = "qcom,pm8010-rpmh-regulators";
 +		qcom,pmic-id = "n";
 +
-+		vdd-l1-l2-supply = <&vreg_s4g_1p3>;
++		vdd-l1-l2-supply = <&vreg_s4g_1p25>;
 +		vdd-l3-l4-supply = <&vreg_bob2>;
-+		vdd-l5-supply = <&vreg_s6g_1p8>;
++		vdd-l5-supply = <&vreg_s6g_1p86>;
 +		vdd-l6-supply = <&vreg_bob1>;
 +		vdd-l7-supply = <&vreg_bob1>;
 +
