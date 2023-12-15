@@ -1,128 +1,195 @@
-Return-Path: <linux-kernel+bounces-478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB7E48141C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:21:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22C0E8141F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:50:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A53E1F22EC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:21:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B52CB22224
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592A9C8F5;
-	Fri, 15 Dec 2023 06:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CDRG6j6/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6343BDDD7;
+	Fri, 15 Dec 2023 06:50:09 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5147470
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=DaBm7yNqDy80Knldoq2N90xqNJQZ4RvVwAdVo/hC8ZM=; b=CDRG6j6/xIjPgvJvv8YcjQv1wg
-	RJYgnUg8FHAw2xne5lp8nzMED/5RwO2cAyJg6uRZ2iR2INWXRiaK4kydsmHdeEKb8a3ZA+8dwIFwK
-	iHTqepcy4yDVbl3WpjMeltbBLjVO3JzS+YBX3FEllrnUWGtSivj0Z4AcDLjhbRu5BV4pVLk6JewRa
-	zLrhDwg4NWUmup7Ikyd3zxdnuQp1ySJYJ9kl/vdRCRoCws9atX7OLzmve3NuXx+KAp0e/0bA0A44W
-	l8Ft4ZARKrXrZmiJAFRJcqnPuQwZrZygOuGqmvsXvCGBMq2GWqUx5hxwWdy25Ts3KLbXCVe74nbbb
-	deUpjOlw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE1ZO-002ApI-0X;
-	Fri, 15 Dec 2023 06:21:10 +0000
-Message-ID: <e9b028b3-20e6-4e74-a305-c4f18efc70e1@infradead.org>
-Date: Thu, 14 Dec 2023 22:21:09 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE798DDBA;
+	Fri, 15 Dec 2023 06:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4Srzfz2LKqz9tNC;
+	Fri, 15 Dec 2023 07:23:07 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id MrLiEn9V7Nq8; Fri, 15 Dec 2023 07:23:07 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4Srzfz1R30z9tMd;
+	Fri, 15 Dec 2023 07:23:07 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 2B2898B779;
+	Fri, 15 Dec 2023 07:23:07 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id 1waOS0s7MwND; Fri, 15 Dec 2023 07:23:07 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (PO24393.IDSI0.si.c-s.fr [192.168.232.43])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 43B508B767;
+	Fri, 15 Dec 2023 07:23:06 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: andy.shevchenko@gmail.com,
+	pavel@ucw.cz,
+	lee@kernel.org,
+	vadimp@nvidia.com,
+	mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	hdegoede@redhat.com,
+	mazziesaccount@gmail.com,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	will@kernel.org,
+	longman@redhat.com,
+	boqun.feng@gmail.com,
+	nikitos.tr@gmail.com,
+	George Stark <gnstark@salutedevices.com>
+Cc: kernel@salutedevices.com,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	linux-leds@vger.kernel.org
+Subject: [PATCH RFC v4-bis] locking: introduce devm_mutex_init
+Date: Fri, 15 Dec 2023 07:22:57 +0100
+Message-ID: <c16599b23afa853a44d13b906af5683027959a26.1702621174.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231214173614.2820929-3-gnstark@salutedevices.com>
+References: <20231214173614.2820929-3-gnstark@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] drivers: gpu: drm: vmwgfx: fixed typos
-Content-Language: en-US
-To: Ghanshyam Agrawal <ghanshyam1898@gmail.com>, zackr@vmware.com,
- linux-graphics-maintainer@vmware.com, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231215060159.555229-1-ghanshyam1898@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231215060159.555229-1-ghanshyam1898@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702621376; l=3497; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=knrBp746sRirj9OKdUXZaiSIemnmdrXDctpOz0/Uwjo=; b=+opv6gcWbrLeFdYYfVWPIrvouBaqSluxG3A/gtkg5iBiHt+lU0qsRcFaFbwopezLi3Az4FikW sty92y+bjXNA4nO2gBMv0UQcdmKg/7LcnOWvyLu+jdlkCo/JKXNtSMh
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-Hi--
+From: George Stark <gnstark@salutedevices.com>
 
-On 12/14/23 22:01, Ghanshyam Agrawal wrote:
-> Fixed multiple typos in vmwgfx_execbuf.c
-> 
-> Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-> ---
-> V2:
-> Fixed some more typos suggested by codespell
-> and the community.
-> 
-> V1:
-> Fixed multiple typos
-> 
->  drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-> index 36987ef3fc30..76aa72e8be73 100644
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-> @@ -127,7 +127,7 @@ struct vmw_ctx_validation_info {
->   * @func: Call-back to handle the command.
->   * @user_allow: Whether allowed from the execbuf ioctl.
->   * @gb_disable: Whether disabled if guest-backed objects are available.
-> - * @gb_enable: Whether enabled iff guest-backed objects are available.
-> + * @gb_enable: Whether enabled if guest-backed objects are available.
+Using of devm API leads to a certain order of releasing resources.
+So all dependent resources which are not devm-wrapped should be deleted
+with respect to devm-release order. Mutex is one of such objects that
+often is bound to other resources and has no own devm wrapping.
+Since mutex_destroy() actually does nothing in non-debug builds
+frequently calling mutex_destroy() is just ignored which is safe for now
+but wrong formally and can lead to a problem if mutex_destroy() will be
+extended so introduce devm_mutex_init()
 
-"iff" normally means "if and only if" and its use in the kernel sources is
-usually not a mistake. However, this one sounds dodgy to me (before your change),
-so it's OK IMO. Also, the line above it uses "if" for a similar comment.
+Signed-off-by: George Stark <gnstark@salutedevices.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ include/linux/mutex.h        | 28 ++++++++++++++++++++++------
+ kernel/locking/mutex-debug.c | 22 ++++++++++++++++++++++
+ 2 files changed, 44 insertions(+), 6 deletions(-)
 
-Maybe someone else knows better.
-
->   * @cmd_name: Name of the command.
->   */
->  struct vmw_cmd_entry {
-> @@ -621,10 +621,10 @@ static int vmw_resources_reserve(struct vmw_sw_context *sw_context)
->   * @sw_context: Pointer to the software context.
->   * @res_type: Resource type.
->   * @dirty: Whether to change dirty status.
-> - * @converter: User-space visisble type specific information.
-> + * @converter: User-space visible type specific information.
->   * @id_loc: Pointer to the location in the command buffer currently being parsed
->   * from where the user-space resource id handle is located.
-> - * @p_res: Pointer to pointer to resource validalidation node. Populated on
-> + * @p_res: Pointer to pointer to resource validation node. Populated on
->   * exit.
->   */
->  static int
-> @@ -1069,7 +1069,7 @@ static int vmw_query_bo_switch_prepare(struct vmw_private *dev_priv,
->   * object following that query wait has signaled, we are sure that all preceding
->   * queries have finished, and the old query buffer can be unpinned. However,
->   * since both the new query buffer and the old one are fenced with that fence,
-> - * we can do an asynchronus unpin now, and be sure that the old query buffer
-> + * we can do an asynchronous unpin now, and be sure that the old query buffer
->   * won't be moved until the fence has signaled.
->   *
->   * As mentioned above, both the new - and old query buffers need to be fenced
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-thanks.
-
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index a33aa9eb9fc3..db847220ef44 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -81,14 +81,10 @@ struct mutex {
+ #define __DEBUG_MUTEX_INITIALIZER(lockname)				\
+ 	, .magic = &lockname
+ 
+-extern void mutex_destroy(struct mutex *lock);
+-
+ #else
+ 
+ # define __DEBUG_MUTEX_INITIALIZER(lockname)
+ 
+-static inline void mutex_destroy(struct mutex *lock) {}
+-
+ #endif
+ 
+ /**
+@@ -153,8 +149,6 @@ extern void __mutex_rt_init(struct mutex *lock, const char *name,
+ 			    struct lock_class_key *key);
+ extern int mutex_trylock(struct mutex *lock);
+ 
+-static inline void mutex_destroy(struct mutex *lock) { }
+-
+ #define mutex_is_locked(l)	rt_mutex_base_is_locked(&(l)->rtmutex)
+ 
+ #define __mutex_init(mutex, name, key)			\
+@@ -171,6 +165,28 @@ do {							\
+ } while (0)
+ #endif /* CONFIG_PREEMPT_RT */
+ 
++struct device;
++
++/*
++ * devm_mutex_init() registers a function that calls mutex_destroy()
++ * when the ressource is released.
++ *
++ * When mutex_destroy() is a not, there is no need to register that
++ * function.
++ */
++#ifdef CONFIG_DEBUG_MUTEXES
++void mutex_destroy(struct mutex *lock);
++int devm_mutex_init(struct device *dev, struct mutex *lock);
++#else
++static inline void mutex_destroy(struct mutex *lock) {}
++
++static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
++{
++	mutex_init(lock);
++	return 0;
++}
++#endif
++
+ /*
+  * See kernel/locking/mutex.c for detailed documentation of these APIs.
+  * Also see Documentation/locking/mutex-design.rst.
+diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
+index bc8abb8549d2..c9efab1a8026 100644
+--- a/kernel/locking/mutex-debug.c
++++ b/kernel/locking/mutex-debug.c
+@@ -19,6 +19,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/interrupt.h>
+ #include <linux/debug_locks.h>
++#include <linux/device.h>
+ 
+ #include "mutex.h"
+ 
+@@ -104,3 +105,24 @@ void mutex_destroy(struct mutex *lock)
+ }
+ 
+ EXPORT_SYMBOL_GPL(mutex_destroy);
++
++static void devm_mutex_release(void *res)
++{
++	mutex_destroy(res);
++}
++
++/**
++ * devm_mutex_init - Resource-managed mutex initialization
++ * @dev:	Device which lifetime mutex is bound to
++ * @lock:	Pointer to a mutex
++ *
++ * Initialize mutex which is automatically destroyed when the driver is detached.
++ *
++ * Returns: 0 on success or a negative error code on failure.
++ */
++int devm_mutex_init(struct device *dev, struct mutex *lock)
++{
++	mutex_init(lock);
++	return devm_add_action_or_reset(dev, devm_mutex_release, lock);
++}
++EXPORT_SYMBOL_GPL(devm_mutex_init);
 -- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+2.41.0
+
 
