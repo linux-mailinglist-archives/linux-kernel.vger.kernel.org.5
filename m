@@ -1,235 +1,205 @@
-Return-Path: <linux-kernel+bounces-338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECE6813FA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:19:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F393A813FAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67A021C2217F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:19:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8099B1F22D46
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D80815;
-	Fri, 15 Dec 2023 02:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217CB1856;
+	Fri, 15 Dec 2023 02:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MTR3jTQQ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VSrv14Hc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8357E4;
-	Fri, 15 Dec 2023 02:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-35e70495835so1038005ab.3;
-        Thu, 14 Dec 2023 18:19:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702606757; x=1703211557; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B8gS/q427oPS6HKGW6tQx+fntDpi2+l983j1qfuY/o0=;
-        b=MTR3jTQQT4lhVkbHwfFhbJoN27Ao8Z/7LOQ6f5Vb96BOJTXokcynoJoy0eJowg7aEJ
-         96zflMPz2GNMARgyR/qFHDr/yW7F0KR/Y8RUBWukiQEDa/Fo6q7fuU5VUGA4zc5EK813
-         bq7d0VpoIsf/VybjTO32yemHyDwtK/BTVC++n59dFIbLbiMjRfdlG54fcGwRa8n+9nSe
-         KFYjidigE6+U0XZxS59tb9Daq+ilSLjQ05iQi9KhZc1qNEIBc+VldV44AHHOzHBno5df
-         LwVb0I396GjatvqaJA3kQ151540dvoVzxRkR61VzL0RcGTb6yequV2f787YeV8aArGR8
-         KqRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702606757; x=1703211557;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B8gS/q427oPS6HKGW6tQx+fntDpi2+l983j1qfuY/o0=;
-        b=e/McUk4BWbBClw9tADUgO9Js7g3zt/h/cSKdZyFrjw9iUDugfx3Vngg7sf4MKJe1Rb
-         oIJQBjk78SS/d7fJLVba24dgOqqfS3quhO2GS+HJ/jCSumGthh97PuWvAWJ8f2ygXSQa
-         OdT8qAebO5Mc82rXqgUUmB70sj5VKGVdG90sDQwGcGPzEtjghXhUivLwwqXssIqJ691a
-         KQQVWr2IQi/8z1ieRoWqq1WoRFz3jCf95Q7sOpeZ7MqSWKC0XY3GbOzkrdWYfB4QoUpd
-         gxzKmAR/4VA5kKTZzqhhs73DBRLzv2WJQYyoHwtrtC11FIPSbPU0gX7psT6oIfUeIKkP
-         XN3Q==
-X-Gm-Message-State: AOJu0Ywn7jIZHJjTZxp5j7T8ln92FNPoqi+GiXVudsQKTb0EXZ/cMFtu
-	wqhPM5zFA+ATv/R86B+yiTGd8glECrPnnDfzQsM=
-X-Google-Smtp-Source: AGHT+IG9KGChwrAb21xlqEK6g1rzWiKGGpdS0P+T0yaZowCVMAnp2upHHz6T9hUDQKZI/B0LedbnBo9mjXgr9ywQV6s=
-X-Received: by 2002:a05:6e02:1a2d:b0:35d:5995:1d5c with SMTP id
- g13-20020a056e021a2d00b0035d59951d5cmr16322485ile.33.1702606756802; Thu, 14
- Dec 2023 18:19:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA16A15A1;
+	Fri, 15 Dec 2023 02:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702606866; x=1734142866;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=7UGw352ofV5ZBbeKYqcjvo6Y62UrHT6D0IxWrmYdS/k=;
+  b=VSrv14HcR+0eW6hP1RqBuLoATlMnwQxYFTJ59L4pYzT7uDHqQW/izA3l
+   gkv1SWbIsTyxQxMGuPkxFP73mgj2lUxvtVT+dIh/JVCNxjeKtAWFSTbZI
+   XLuH3JG/D2DDMRMlf9kKVMLaEgNTHgZzfX5huKAOU0b+jWIZgSLYedpzi
+   cBxXu9snDNVDlaQdpQ0ziis1RlXGHPdmpv4XpPbarMsA38gOe3A6KY9o7
+   PSIFNJEQj50lQGHbWl4TvtAVq6ss7ioy1PYTHQeD6oA2tHlfgYzPC4rGt
+   oDz9rmk/tPWRPxDRujHVBvO0VrrZmFZmBj1pXzAv/efUL873yFcZPJ2tK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2039917"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="2039917"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 18:21:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="897974810"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="897974810"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Dec 2023 18:21:04 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Dec 2023 18:21:04 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Dec 2023 18:21:03 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 14 Dec 2023 18:21:03 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 14 Dec 2023 18:21:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iVsje1LI9OxsTgVpOhEkSEct3FUpq19RnICdgtvOM0+1ONhRHWw5qgyVrkbarCP8dU+x4jl1t/QI1/jFaUEeOtOTc6pXLiwNN/bPE+c95XrphCi0b9NYyxQ00mpFOnq869pqyB6gtiOtkX1KPmueWYNe4vjU70ocLGU96uucO/1ZqUbUYIsjpuKCoPdIccse3YjY3qHX64C1rUT9E7HtMCFiFDGRE26LtRLZm0JXK0W+GrFNRV8dp1zUk46jNZEts7/8o4JUMbUg5b/362468/WRxlHR+qGZ6Jy7geM5Arc+lihuPqRAv/aQqjV318Kssx+tvI3Krf8gtqEJ+6rlnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cxfKbh1JREyaikwn237/x0MGePtuRMW8cdVnwzeoU6U=;
+ b=IK7ZsnbjcW7Dbzr5buTCEbaoSAUnnBlV9SeK4VGXlLYB8FbudbxQDJj/lx3F7dIxWjMbcpEx0KrActTFB13xhxBqHQy7uiLVCkF1Y4wP9pckNIIWxEyzLYOPIuV4Br5/g99JUWCWvb6wPP35zIgizbdBIwK6mbZlkPhTqBf/z1RrpsOW5Nk6T8i8E9QiScuvIujcxsrPAgQWcf3uhGAiiwqu1sApXY4LNwAnIcRNNn4nBXPS1i2cZ2YvlZqumlRThu0Lv84+D/kDuvs0L3w9AspU1P2hIJ0GCDkRt8h+3qbDSNVkeV2YXjlB4UAH8rcLJcqSPlZgmPvCqcqigAamkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by IA1PR11MB7822.namprd11.prod.outlook.com (2603:10b6:208:3f2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
+ 2023 02:21:00 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7091.028; Fri, 15 Dec 2023
+ 02:21:00 +0000
+Message-ID: <70b27d47-fdd8-46e3-a5d8-6bd9c1ca95fe@intel.com>
+Date: Thu, 14 Dec 2023 18:20:56 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] x86/resctrl: Remove hard-coded memory bandwidth
+ limit
+Content-Language: en-US
+To: Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>, <fenghua.yu@intel.com>,
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>
+CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
+	<seanjc@google.com>, <kim.phillips@amd.com>, <jmattson@google.com>,
+	<ilpo.jarvinen@linux.intel.com>, <jithu.joseph@intel.com>,
+	<kan.liang@linux.intel.com>, <nikunj@amd.com>,
+	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
+	<rick.p.edgecombe@intel.com>, <rppt@kernel.org>,
+	<maciej.wieczor-retman@intel.com>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <eranian@google.com>,
+	<peternewman@google.com>, <dhagiani@amd.com>
+References: <20231201005720.235639-1-babu.moger@amd.com>
+ <170240413801.760665.7930294172146734221.stgit@bmoger-ubuntu>
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <170240413801.760665.7930294172146734221.stgit@bmoger-ubuntu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4P223CA0005.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:303:80::10) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
- <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
- <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
- <20231209034229.GA1001962@cmpxchg.org> <ZXeTb_ACou7TEVsa@google.com>
- <20231214171137.GA261942@cmpxchg.org> <CANeU7QnR+4Lgt8D9Z+Zo3Ydktx_7n45K0b=kVj+qSOzT=5GGQA@mail.gmail.com>
- <20231214221140.GA269753@cmpxchg.org> <CAF8kJuN=6CfU2mXP4VFgCkngRGz6Ni67SSHLps8_A+ZScDckUw@mail.gmail.com>
-In-Reply-To: <CAF8kJuN=6CfU2mXP4VFgCkngRGz6Ni67SSHLps8_A+ZScDckUw@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 14 Dec 2023 18:19:05 -0800
-Message-ID: <CAKEwX=PLW=oj2DmsgaynXhY_SYb0VOw9i64K=RrZxhGySxdtvQ@mail.gmail.com>
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-To: Chris Li <chrisl@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Minchan Kim <minchan@kernel.org>, akpm@linux-foundation.org, 
-	tj@kernel.org, lizefan.x@bytedance.com, cerasuolodomenico@gmail.com, 
-	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org, 
-	vitaly.wool@konsulko.com, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeelb@google.com, muchun.song@linux.dev, hughd@google.com, corbet@lwn.net, 
-	konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org, 
-	linux-mm@kvack.org, kernel-team@meta.com, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, david@ixit.cz, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|IA1PR11MB7822:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ebb4e2f-c992-48aa-a3f3-08dbfd147a77
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5Wv5SO4p2dplSVJM8G2Bbn7OOkx1PMW8Qfsm+tYyicLaJpT/Jzx5Ktgrkbr1F2D+2HqgyNr+UC42UR+D1gqlWCibB7g/G3FQD8+7gTGxz3fLSHcbBcJ1W74NRZQ1szNEafhf4Leox34AQBr1pXvPv/PblOO+ORYuhHZ7NIDxxa+ZpxgECLillQ8EmgzcnqjI0YlSBtyOil3CIdIPbIGpVa0Z9/VnPZSYWEgfCkr0ENnC486OjSC4tiy3eN0CK6GADd761NfCsp6V2mROdOwZD6Ioy8enKMLixo9Mvd81GuT+hKgKeMtCr0L2XYRvRBClmxeGM4zZLswYmGsIABdFchXjk8sNRJa48KA+Xnq5k9qIwmCp9nRDGFV+GS1L/cldGhfGS+cm+vrIXIJqTSwT95tOSx2gF1SB5pMgCC9CWpbbv6arbpqJYHR5/q0g4bu7EZye1BAl9pXAqjZRtGpMoJsnssfdNgLEVwICmqFd8cfLBobfckO2XIn9atMxnT/dL7X1pkSN4Wk0xQ7Y8L/oxHY7QDoioLsB9MC7iSTX6Lk9WrA4I1j3j6lVN/buJPxSp401s5PKrv/VwJeynJrOgfNd7LwIat6e/a1U1Sck1p2pqYeLLxzR1ZUznoVir7Z2OgUbNvtKDZaJEBAGI13gtg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(346002)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(31696002)(86362001)(36756003)(31686004)(82960400001)(41300700001)(6666004)(478600001)(6506007)(53546011)(66946007)(66556008)(66476007)(26005)(6512007)(38100700002)(83380400001)(7416002)(2616005)(4744005)(2906002)(966005)(6486002)(316002)(44832011)(5660300002)(8936002)(4326008)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Ync3T1Y0OHlGTFlxdFpBRkZBZVFNZzBSdWI1aE5MNHhRV2s0K1JoRmgvcWNB?=
+ =?utf-8?B?Y0x3ckpjTVVQYnVNM0JkNFZzTmlGek1pTDlhellsSExBM3JmY05jdVU4RnB5?=
+ =?utf-8?B?ZjEzcURGaDFXQWtUaDVrNGtOU0hPcGhpVEZJbkFXYlNqMlhldG5Hc1NyenR1?=
+ =?utf-8?B?ZFYzUkVqOGJSOWMzU0tpbmZZK2dGd1Q4bmwzL052ZGVvQzRmREM0elNFRXls?=
+ =?utf-8?B?TGhFcWttanNvb0FiT2dqTURWN0Z4VjBEVmYraUFUdE11Q3hPMmlmbUJJK2Jj?=
+ =?utf-8?B?emgybGszMVNoUlhTSEo5dnN3WFRFd043alJ6VWZmY3J0SlpuYlBhYklIZ2xr?=
+ =?utf-8?B?dTdjOE9La0RVdkNWNlgyZngreUtaemcrRWFwK1R6UjlCeHJwRjVZQldrZDNR?=
+ =?utf-8?B?M2o1VFhBSHVLdnZWM3pVZEdieFVjZFpNbmROaDd2RmJiYUlGWk1iR1UyYnBC?=
+ =?utf-8?B?ZVRtS2JRNmhGQm5BdHU3QmwzWUpyZkFuTHBKU2llbEE2OW1MUTB0RVFQdlNl?=
+ =?utf-8?B?dVpEdzZ6alIwYm5HMm9WR2Z3SE9lV3NNRFRFMDlENGFreHpQRDJYQkJyY05F?=
+ =?utf-8?B?TnZHaEJXVWxwN1lvUHFOdjBnc0hOSnh3YTNpTWYzTy9aMlQyOXdXR3dUaDA4?=
+ =?utf-8?B?NlRuektIMFMrRHRlaURsZFl1OGZBeWpmMUdMOUJ4WFRtOWZ3QzVlTUw4WkZV?=
+ =?utf-8?B?Z3owazhqS09PWHdPNWRLbDJPczhtUVBlYzRjc1QwYSthNkNrZmZubFVqSC9C?=
+ =?utf-8?B?V3F5bGZpWENUcUczb282b0pudUFVcHk5SjFJcXlta0k3b05YdnM1K1VuU2tJ?=
+ =?utf-8?B?SFZOV3k4VDd0OXRVUHcxRHNYZ2FqVkJDZ0ozRWlPTjczWTJNdlNpc0FGRzMx?=
+ =?utf-8?B?L29Ha1NJQVA2Mnh0WnRNOWVDdHN4NXdlUG1UVllRMjdDUHdNSUJPc2cwUUlG?=
+ =?utf-8?B?ZGpUd08rU3F4TUw4ZzN6WlRnNjhRaWhrNDV1bHRXK3lvVC9JNEhGZXhhb3RI?=
+ =?utf-8?B?OWhIYWV3QXJwcW12bDkvd2Q2QVlMbWNRVExFQXhJU01JTHB2M1JSbHJFdTBs?=
+ =?utf-8?B?QVJQeEhzQzRoZWs1aGdRZWRPakV4RE0wdk5QN1Z4ZkxXa1Q5UG1Tek5WUnh1?=
+ =?utf-8?B?ZHJmeGxwMitUem5nbVpqbU1FaEZhMUZLbUZKaU9id0UxUGlreW5VS0E2bXk4?=
+ =?utf-8?B?eTRIVlNSZ3hUd01JckJYOEV2Y3NFODY0YlhmRU9ob3VESnJ6cm1GU3krWFVl?=
+ =?utf-8?B?NEE1VjNxWnRSZ0RqTjI0SjlTa2NRMFYzNnR6K0ZJQlBtaEpkdFpYZWlJNlpj?=
+ =?utf-8?B?ZzRHWGJ2TlRpUTRaQ2tIRmRWazM0RDlVdGxGUmVjWityRXhhcnNmSUNWZERI?=
+ =?utf-8?B?Skw4bGVEWFpwZ3FJTittRHBtbVVMeldsdmlOZ2hTcGxMQjJKSTZMUVFHdUtY?=
+ =?utf-8?B?ZXBybk81d1pXS1JYak1DSmNWS0dkVjhwL2kyQms3RWtvTWpXVVF1TEpKRGk5?=
+ =?utf-8?B?dDM0SGdyaFMvNkY4M05udkZvdjNSM3lDZWMvS0o3eDdJQ2NKT1FwSHJmbThT?=
+ =?utf-8?B?RVdGdS9ucjBKaEdVZGxDeElRNHlJTXowTkNRR3hvcG54NHBSWHptZkNZc2Vi?=
+ =?utf-8?B?WUJic3c3WDNzcEJxdjR3cWt6MFp4c3VENXNselg3V1pLQTgzRVgyUDNTaFll?=
+ =?utf-8?B?dE1CdXBnS1JvNUpZK1dNN01wejRUUFVhVXJLaEhwVTd3dTluZ1NwNDBOT0Vu?=
+ =?utf-8?B?My9BNUJkbEY1R05yWDBVRGxaMCs2QzFWWHpnek5XVENoYTRTUTI5SnUrUlVN?=
+ =?utf-8?B?Y050cjlod2cwR0g5b2xLbkZEemw5RXYrSDVBSHl5T0tKNmpzc1d3MVN1NEZV?=
+ =?utf-8?B?b0FJbWJVYVE0d0ZFNEVNamdPWkZlbVExMUM2SHlnR1B0anNaL2ZUY1RSUVN3?=
+ =?utf-8?B?ek9ETmQ2Z0NNMHpHdXpPakc1Y1libmp5SXZWYmdZVGRQWE00dHVGQW5GUmxZ?=
+ =?utf-8?B?TmRwUWJtYmpSYVZxaUdmdGxVWHl1M2dIbS9KbHlmbUpuQkJvMXBXMUU3NnYv?=
+ =?utf-8?B?RXp0ZDdXbDcraXM1NnRoOGx3VVJTK0EwSy9HSEF2enFYMG5TbW1FY2J0NW5n?=
+ =?utf-8?B?dWhsZXRPM1BuRFozZTIvK1praWlmeVFLM0lEWDBjM0tJcHRHelJsSDdLbzJI?=
+ =?utf-8?B?bFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ebb4e2f-c992-48aa-a3f3-08dbfd147a77
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 02:21:00.0832
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rbO7UVqdZJ4Phtj83UjzDF2XK/y09hOWvuUhV+PFTd1s539+a6Xi+FQwu0Fr4JFGkH1tDbX59CnBF1ZVGgBhj7PU218FKcFQtY22Prxw1HU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7822
+X-OriginatorOrg: intel.com
 
-On Thu, Dec 14, 2023 at 2:55=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
->
-> On Thu, Dec 14, 2023 at 2:11=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.o=
-rg> wrote:
-> >
-> > On Thu, Dec 14, 2023 at 09:34:06AM -0800, Christopher Li wrote:
-> > > On Thu, Dec 14, 2023 at 9:11=E2=80=AFAM Johannes Weiner <hannes@cmpxc=
-hg.org> wrote:
-> > >
-> > > > > Hi Johannes,
-> > > > >
-> > > > > I haven't been following the thread closely, but I noticed the di=
-scussion
-> > > > > about potential use cases for zram with memcg.
-> > > > >
-> > > > > One interesting idea I have is to implement a swap controller per=
- cgroup.
-> > > > > This would allow us to tailor the zram swap behavior to the speci=
-fic needs of
-> > > > > different groups.
-> > > > >
-> > > > > For example, Group A, which is sensitive to swap latency, could u=
-se zram swap
-> > > > > with a fast compression setting, even if it sacrifices some compr=
-ession ratio.
-> > > > > This would prioritize quick access to swapped data, even if it ta=
-kes up more space.
-> > > > >
-> > > > > On the other hand, Group B, which can tolerate higher swap latenc=
-y, could benefit
-> > > > > from a slower compression setting that achieves a higher compress=
-ion ratio.
-> > > > > This would maximize memory efficiency at the cost of slightly slo=
-wer data access.
-> > > > >
-> > > > > This approach could provide a more nuanced and flexible way to ma=
-nage swap usage
-> > > > > within different cgroups.
-> > > >
-> > > > That makes sense to me.
-> > > >
-> > > > It sounds to me like per-cgroup swapfiles would be the easiest
-> > > > solution to this. Then you can create zram devices with different
-> > > > configurations and assign them to individual cgroups.
-> > >
-> > > Ideally you need zram then following swap file after the zram. That
-> > > would be a list of the swap files rather than just one swapfile per
-> > > cgroup.
-> > >
-> > > > This would also apply to Kairu's usecase: assign zrams and hdd back=
-ups
-> > > > as needed on a per-cgroup basis.
-> > >
-> > > Same there, Kairui's request involves ZRAM and at least one extra swa=
-p
-> > > file. In other words, you really need a per cgroup swap file list.
-> >
-> > Why is that a problem?
->
-> It is not a problem. It is the necessary infrastructure to support the
-> requirement. I am merely saying just having one swap file is not
-> enough.
->
-> >
-> > swapon(zram, cgroup=3Dfoo)
-> > swapon(hdd, cgroup=3Dfoo)
->
-> Interesting idea. I assume you want to use swapon/swapoff to turn on
-> off a device for a specific cgroup.
-> That seems to implite each cgroup will have a private copy of the swap
-> device list.
->
-> I have considered the memory.swap.tiers for the same thing, with one
-> minor optimization. The list is system wide maintained with a name.
-> The per cgroup just has a pointer to that named list. There shouldn't
-> be too many such lists of swap back end combinations on the system.
->
-> We are getting into the weeds. The bottom line is, we need to have per
-> cgroup a swap file list. That is the necessary evil we can't get away
-> with.
+Hi Babu,
 
-Highly agree. This is getting waaayyyy too deep into the weeds, and
-the conversation has practically spiralled out of the original
-intention of this patch - its purported problem and proposed solution.
+On 12/12/2023 10:02 AM, Babu Moger wrote:
+> The QOS Memory Bandwidth Enforcement Limit is reported by
+> CPUID_Fn80000020_EAX_x01 and CPUID_Fn80000020_EAX_x02.
+> Bits Description
+> 31:0 BW_LEN: Size of the QOS Memory Bandwidth Enforcement Limit.
+> 
+> Newer processors can support higher bandwidth limit than the current
+> hard-coded value. Remove the hard-coded value and detect using CPUID
+> command. Also update the register variables eax and edx to match the
+> AMD CPUID definition.
+> 
+> The CPUID details are documentation in the PPR listed below [1].
+> [1] Processor Programming Reference (PPR) Vol 1.1 for AMD Family 19h Model
+> 11h B1 - 55901 Rev 0.25.
+> 
+> Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> 
+> ---
 
-Not to say that none of this is useful, but I sense that we first need
-to do the following:
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-a) List out the requirements that the new interface has to support:
-the tiers made available to the cgroup, hierarchical structure (i.e do
-we want a tier list to have more than 1 non-zswap level? Maybe we
-won't need it after all, in which case the swapon solution is perhaps
-sufficient).
-b) Carefully evaluate the proposed candidates. It could be an altered
-memory.swap.tiers, or an extended swapon/swapoff.
-
-Perhaps we should organize a separate meeting or email thread to
-discuss this in detail, and write out proposed solutions for everyone
-to evaluate. In the meantime, I think that we should merge this new
-knob as-is.
-
->
-> >
-> > > > In addition, it would naturally solve scalability and isolation
-> > > > problems when multiple containers would otherwise be hammering on t=
-he
-> > > > same swap backends and locks.
-> > > >
-> > > > It would also only require one, relatively simple new interface, su=
-ch
-> > > > as a cgroup parameter to swapon().
-> > > >
-> > > > That's highly preferable over a complex configuration file like
-> > > > memory.swap.tiers that needs to solve all sorts of visibility and
-> > > > namespace issues and duplicate the full configuration interface of
-> > > > every backend in some new, custom syntax.
-> > >
-> > > If you don't like the syntax of memory.swap.tiers, I am open to
-> > > suggestions of your preferred syntax as well. The essicents of the
-> > > swap.tiers is a per cgroup list of the swap back ends. The names impl=
-y
-> > > that. I am not married to any given syntax of how to specify the list=
-.
-> > > Its goal matches the above requirement pretty well.
-> >
-> > Except Minchan said that he would also like different zram parameters
-> > depending on the cgroup.
->
-> Minchan's requirement is new. We will need to expand the original
-> "memory.swap.tiers" to support such usage.
->
-> > There is no way we'll add a memory.swap.tiers with a new configuration
-> > language for backend parameters.
-> >
->
-> I agree that we don't want a complicated configuration language for
-> "memory.swap.tiers".
->
-> Those backend parameters should be configured on the back end side.
-> The "memory.swap.tiers" just reference the already configured object.
-> Just brainstorming:
-> /dev/zram0 has compression algo1 for fast speed low compression ratio.
-> /dev/zram1 has compression algo2 for slow speed high compression ratio.
->
-> "memory.swap.tiers" point to zram0 or zram1 or a custom list has "zram0 +=
- hdd"
->
-> Chris
+Reinette
 
