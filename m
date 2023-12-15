@@ -1,130 +1,134 @@
-Return-Path: <linux-kernel+bounces-469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840228141A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:58:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0CF58141A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E449284411
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:58:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B2A21F22F7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41C2CA67;
-	Fri, 15 Dec 2023 05:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19830748A;
+	Fri, 15 Dec 2023 06:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KnP+0ffK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYP9NSbb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6336AB7;
-	Fri, 15 Dec 2023 05:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF2WU8S001366;
-	Fri, 15 Dec 2023 05:58:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=XFNIRz9sz5pLmm9sbk+725p0qlJMx3H0g4U9OyyUyXI=; b=Kn
-	P+0ffKh+cgcMC/a2uEjZrC6xF00GxWm2nQV2wqlw1Bnq0PkPHeqKz/laSWQ7uuSd
-	2uyz98ZiZytXbKzr9HhwlRC6a+8pxwpgXsLTxw01o50VMeuTi0KIHrfT+JC0tEnn
-	1jf0dG1HxhK8C8BEdFuH7/IRPsLybVejhMgZK2DjPNh9ltuA6yDR2Ih/G5F1Ol8t
-	WbkcrI+IFwfBY4nSMJWPlW5a0N9LXrbPTMxHJQ0FxQxP3tsaP/8kat3M3w054UDl
-	d65esYMAV1dY0AVuHRTRO9wD0R5GuC1aoafkoFn/Z8Xm1Fxn/kTbL1iA+bZ38f8m
-	81EngzMLoMViLFOSfzsg==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynjacesr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 05:58:35 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BF5wYHK015956
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 05:58:34 GMT
-Received: from [10.201.3.91] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
- 2023 21:58:27 -0800
-Message-ID: <ccb28d3c-8f48-47e1-a4e8-5f995c72ce77@quicinc.com>
-Date: Fri, 15 Dec 2023 11:28:24 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3984F6AB9
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d32c5ce32eso10948495ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:07:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702620422; x=1703225222; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sl/MGXp1U5MDFkgrPsmaeRMSAGD9eidIYfifMeLoKI8=;
+        b=EYP9NSbbuhAAnnNDNmAmah9wc+a33NwGIG7nbnV1yQtjLZPIWu5SlJ05T7QopnNBLs
+         KA3wJzNg7Ug5hRIWvxR2goFAcLK3g+ojj4MM0bt2MC7ww/IFcPYdTQfbfgDSddgGRKQ9
+         00VitWFgKhG9cnUsLY5yM3kJCOzOzmr0NwKz5XA12s4uRh4NzEY6mVcRkE5I0d/lAl7t
+         tGwW2+wLdTuc02y+FalVhlTbJiwXP1Km16y/FG4oc5ylNW9engLf0zqVFNtsIPkREYhM
+         Ivjl+XQsgzEL1xx+9qwMtzMhpiLBNfS9k6geX83Si7dQINXbAT239rNAYXAGQ5INm0CX
+         ssIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702620422; x=1703225222;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Sl/MGXp1U5MDFkgrPsmaeRMSAGD9eidIYfifMeLoKI8=;
+        b=GaTrXmYEIij170BoKTd/H3+Udyj//9jV0UvzJfx6V25UDXyeEC3/p33Qe67JQbC9DW
+         NkoLI42YA/zvGBqLB5CB4gFaNW3zSN/v2aJEOs9kwKv/QaM88/23bZi7hpvGM6CXa3Vu
+         Stcm1lQZhazxaAKEDz8LdAAjdWiSrM3XPtvSWtjc3pi+GDv4FoPHu+JHqeMES1FXVfYh
+         D+fJLT0UCS+zlNxyNpu7ApxYf9w8Cm6jajaBh7mtkYyKmxfFUKf3TRPETCQ0SH1RCNdT
+         Itx0mQcMkJO5Gi3CAy6hbuNFMXvo4il8vbA4JMf5wWtnmuxSVHzXMqiJNaCAhyEjJovj
+         53aA==
+X-Gm-Message-State: AOJu0YzsO98/wnzbM6V8S5obaYs2rngdFqTGpvZjTEJwVKHg0AlSHtq+
+	Aptknucs+pgLdpu7uxYpW/8=
+X-Google-Smtp-Source: AGHT+IGn5waI4kzFSgJWNCebQVQ9h6LycSBdt5bMWMtMhwDg52tEKqFTaUO4GtDyQQogiOrjRr5Rjw==
+X-Received: by 2002:a17:903:24e:b0:1d0:4759:bb60 with SMTP id j14-20020a170903024e00b001d04759bb60mr15725492plh.26.1702620422477;
+        Thu, 14 Dec 2023 22:07:02 -0800 (PST)
+Received: from localhost.localdomain ([202.137.218.19])
+        by smtp.gmail.com with ESMTPSA id d21-20020a170902c19500b001d368c778d1sm2344726pld.213.2023.12.14.22.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 22:07:02 -0800 (PST)
+From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+To: zackr@vmware.com,
+	linux-graphics-maintainer@vmware.com,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH V2] drivers: gpu: drm: vmwgfx: fixed typos
+Date: Fri, 15 Dec 2023 11:31:59 +0530
+Message-Id: <20231215060159.555229-1-ghanshyam1898@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/10] arm64: dts: qcom: ipq5332: Add separate entry for
- USB pipe clock
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <vkoul@kernel.org>, <kishon@kernel.org>, <mani@kernel.org>,
-        <quic_nsekar@quicinc.com>, <quic_srichara@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <quic_varada@quicinc.com>, <quic_devipriy@quicinc.com>,
-        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>
-References: <20231214062847.2215542-1-quic_ipkumar@quicinc.com>
- <20231214062847.2215542-4-quic_ipkumar@quicinc.com>
- <CAA8EJpqJ_7CPjTs2zykqnZpm9bQ31G7Q+1CA308OdS1BNqK6GA@mail.gmail.com>
-From: Praveenkumar I <quic_ipkumar@quicinc.com>
-In-Reply-To: <CAA8EJpqJ_7CPjTs2zykqnZpm9bQ31G7Q+1CA308OdS1BNqK6GA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: g4tTtgpDSSfl_LfOuPfo2tkjzGbS6V7X
-X-Proofpoint-ORIG-GUID: g4tTtgpDSSfl_LfOuPfo2tkjzGbS6V7X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 impostorscore=0 mlxscore=0 mlxlogscore=876 lowpriorityscore=0
- bulkscore=0 suspectscore=0 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312150034
+Content-Transfer-Encoding: 8bit
 
+Fixed multiple typos in vmwgfx_execbuf.c
 
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+---
+V2:
+Fixed some more typos suggested by codespell
+and the community.
 
-On 12/14/2023 12:51 PM, Dmitry Baryshkov wrote:
-> On Thu, 14 Dec 2023 at 08:29, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
->> Add separate entry in clock-controller for USB pipe clock.
-> In my opinion, there is no need to do that separately. Please squash
-> into patch 9.
-Sure will squash this change with patch 9.
->
->> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq5332.dtsi | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> index 42e2e48b2bc3..f0d92effb783 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> @@ -213,6 +213,7 @@ gcc: clock-controller@1800000 {
->>                                   <&sleep_clk>,
->>                                   <0>,
->>                                   <0>,
->> +                                <0>,
->>                                   <0>;
->>                  };
->>
->> --
->> 2.34.1
->>
->>
->
---
-Thanks,
-Praveenkumar
+V1:
+Fixed multiple typos
+
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+index 36987ef3fc30..76aa72e8be73 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+@@ -127,7 +127,7 @@ struct vmw_ctx_validation_info {
+  * @func: Call-back to handle the command.
+  * @user_allow: Whether allowed from the execbuf ioctl.
+  * @gb_disable: Whether disabled if guest-backed objects are available.
+- * @gb_enable: Whether enabled iff guest-backed objects are available.
++ * @gb_enable: Whether enabled if guest-backed objects are available.
+  * @cmd_name: Name of the command.
+  */
+ struct vmw_cmd_entry {
+@@ -621,10 +621,10 @@ static int vmw_resources_reserve(struct vmw_sw_context *sw_context)
+  * @sw_context: Pointer to the software context.
+  * @res_type: Resource type.
+  * @dirty: Whether to change dirty status.
+- * @converter: User-space visisble type specific information.
++ * @converter: User-space visible type specific information.
+  * @id_loc: Pointer to the location in the command buffer currently being parsed
+  * from where the user-space resource id handle is located.
+- * @p_res: Pointer to pointer to resource validalidation node. Populated on
++ * @p_res: Pointer to pointer to resource validation node. Populated on
+  * exit.
+  */
+ static int
+@@ -1069,7 +1069,7 @@ static int vmw_query_bo_switch_prepare(struct vmw_private *dev_priv,
+  * object following that query wait has signaled, we are sure that all preceding
+  * queries have finished, and the old query buffer can be unpinned. However,
+  * since both the new query buffer and the old one are fenced with that fence,
+- * we can do an asynchronus unpin now, and be sure that the old query buffer
++ * we can do an asynchronous unpin now, and be sure that the old query buffer
+  * won't be moved until the fence has signaled.
+  *
+  * As mentioned above, both the new - and old query buffers need to be fenced
+-- 
+2.25.1
+
 
