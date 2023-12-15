@@ -1,142 +1,273 @@
-Return-Path: <linux-kernel+bounces-972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D528D8148B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:06:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C12C8148DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:15:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13DB71C22F72
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:06:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89C7A1C238AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE462D05F;
-	Fri, 15 Dec 2023 13:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839B134558;
+	Fri, 15 Dec 2023 13:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="Sr2e804d"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC522D043;
-	Fri, 15 Dec 2023 13:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15839C433C8;
-	Fri, 15 Dec 2023 13:06:07 +0000 (UTC)
-Date: Fri, 15 Dec 2023 08:06:05 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Joel Fernandes <joel@joelfernandes.org>, Vincent Donnefort 
- <vdonnefort@google.com>, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] ring-buffer: Remove useless update to write_stamp in
- rb_try_to_discard()
-Message-ID: <20231215080605.122b3ead@rorschach.local.home>
-In-Reply-To: <20231215074151.447e14c2@rorschach.local.home>
-References: <20231215074151.447e14c2@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CABE34557
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5B2CE3F2B4
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1702645777;
+	bh=EhYwhx9WPqSQzkFYfTP87dU7WQuopKgMJSLCI/H3I+A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=Sr2e804dZPw6S7dXfO10Co4uJp1g0vZX7DIFMqek/kQms1FY+lDujYIlHPv3acGkM
+	 pWKBhgAFEaWs3X8sX4EZt/Np7niFVxfvXayuk+50oE4w14UwFeeTkaaqsH4yuLdcsk
+	 zcDgvO9r2JTDxEQa1jvc4ig5xMLg3na6WaE6b3hUOhDjomcvGO9E0MsHHWDkK9w4sd
+	 6tELh3nhbJEGabkrc9VZ/SbHhOFEqwOtX2Ss6Xb++ney5LQQstqFqimrRWs1kfkDyC
+	 yMhMESfaGRpBxaHQGrVBfNnQLbZGmMjikYIpRb7mavC/TthsgNRSpkSOpkbXcocCoK
+	 02Z5jwmZxHd+w==
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a1f99db3dd0so40080566b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:09:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702645777; x=1703250577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EhYwhx9WPqSQzkFYfTP87dU7WQuopKgMJSLCI/H3I+A=;
+        b=jheGJckW9QtRwVAiP+0dsMcGtZOQVrKMatqVdUkPqgRTC294EOYC3eOKe5u4O4njYo
+         f/WUJHvpP+v+PQFjfI2Nfgx1fqkg9QxQwmzy6gy2rBnAXHc2FmEs16vHRRB9NY4FN+a6
+         6D548W5NSwjpGQbWuT0Tg2QwkvTufHYvxkKAfJDtOI9xMlt6IMsV2rroW6sLtVjYu5Fh
+         nehkJszPucMTleFsmmK91dOyKl9IqIHpzAbfBEeFqbIFZi6oPYFnRiRTkzwk4rlaFxz2
+         xoz5wh1q1TthmA3QYoyVdBiYeUchKVL4DIY4xFr1IAI50x3JlbfYSDpFBogGDjFU+tHz
+         nDUQ==
+X-Gm-Message-State: AOJu0YwLaCNI7n9noLw3i/TSMn7wr++Hwkn5hSwYAeK3w7istctPvaFh
+	G24WOMd6gVk7evfffncp4/K1dEIeDqIEnVU7+TEtqXehscl8UQeHq+XZU2UR8id5sK3t6Woc4ON
+	GvOGCU983tgMiS4a5WTnC+3ct0IYcYvVTF3Q76DDS3A==
+X-Received: by 2002:a17:906:5448:b0:a19:287a:396a with SMTP id d8-20020a170906544800b00a19287a396amr5572109ejp.55.1702645777035;
+        Fri, 15 Dec 2023 05:09:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGPv7rt3lJwV7Mt6kQIKwyKBZKPkm1Iq7M0k8xQlTK2EHZn7S0RxToviR+OTIHcGsJtSiXCuA==
+X-Received: by 2002:a17:906:5448:b0:a19:287a:396a with SMTP id d8-20020a170906544800b00a19287a396amr5572099ejp.55.1702645776636;
+        Fri, 15 Dec 2023 05:09:36 -0800 (PST)
+Received: from amikhalitsyn.. ([2a02:8109:8624:a300:ee04:15a2:3442:11ee])
+        by smtp.gmail.com with ESMTPSA id tk7-20020a170907c28700b00a1d1ebc2206sm10738449ejc.72.2023.12.15.05.09.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 05:09:36 -0800 (PST)
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: brauner@kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Jan Kara <jack@suse.cz>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: fix doc comment typo fs tree wide
+Date: Fri, 15 Dec 2023 14:09:27 +0100
+Message-Id: <20231215130927.136917-1-aleksandr.mikhalitsyn@canonical.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 15 Dec 2023 07:41:51 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Do the replacement:
+s/simply passs @nop_mnt_idmap/simply passs @nop_mnt_idmap/
+in the fs/ tree.
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> When filtering is enabled, a temporary buffer is created to place the
-> content of the trace event output so that the filter logic can decide
-> from the trace event output if the trace event should be filtered out or
-> not. If it is to be filtered out, the content in the temporary buffer is
-> simply discarded, otherwise it is written into the trace buffer.
-> 
-> But if an interrupt were to come in while a previous event was using that
-> temporary buffer, the event written by the interrupt would actually go
-> into the ring buffer itself to prevent corrupting the data on the
-> temporary buffer. If the event is to be filtered out, the event in the
-> ring buffer is discarded, or if it fails to discard because another event
-> were to have already come in, it is turned into padding.
-> 
-> The update to the write_stamp in the rb_try_to_discard() happens after a
-> fix was made to force the next event after the discard to use an absolute
-> timestamp by setting the before_stamp to zero so it does not match the
-> write_stamp (which causes an event to use the absolute timestamp).
-> 
-> But there's an effort in rb_try_to_discard() to put back the write_stamp
-> to what it was before the event was added. But this is useless and
-> wasteful because nothing is going to be using that write_stamp for
-> calculations as it still will not match the before_stamp.
-> 
-> Remove this useless update, and in doing so, we remove another
-> cmpxchg64()!
+Found by chance while working on support for idmapped mounts in fuse.
 
-While debugging the timestamp issues, I found that the cmpxchg64 in the
-discard was actually useless after commit b2dd797543cf (in the fixes
-below). This removes the third of the 4 cmpxchg64 in the ring buffer
-code. The last one has:
+Cc: Jan Kara <jack@suse.cz>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+---
+ fs/attr.c      |  2 +-
+ fs/inode.c     |  2 +-
+ fs/namei.c     | 22 +++++++++++-----------
+ fs/posix_acl.c |  4 ++--
+ fs/stat.c      |  2 +-
+ 5 files changed, 16 insertions(+), 16 deletions(-)
 
-		u64 ts;
-		/* SLOW PATH - Interrupted between A and C */
-		rb_time_read(&cpu_buffer->write_stamp, &info->after);
-		ts = rb_time_stamp(cpu_buffer->buffer);
-		barrier();
- /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
-		    info->after < ts &&
-		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
-				    info->after, ts)) {
-			/* Nothing came after this event between C and E */
-			info->delta = ts - info->after;
-		} else {
+diff --git a/fs/attr.c b/fs/attr.c
+index bdf5deb06ea9..5a13f0c8495f 100644
+--- a/fs/attr.c
++++ b/fs/attr.c
+@@ -157,7 +157,7 @@ static bool chgrp_ok(struct mnt_idmap *idmap,
+  * the vfsmount must be passed through @idmap. This function will then
+  * take care to map the inode according to @idmap before checking
+  * permissions. On non-idmapped mounts or if permission checking is to be
+- * performed on the raw inode simply passs @nop_mnt_idmap.
++ * performed on the raw inode simply pass @nop_mnt_idmap.
+  *
+  * Should be called as the first thing in ->setattr implementations,
+  * possibly after taking additional locks.
+diff --git a/fs/inode.c b/fs/inode.c
+index edcd8a61975f..60d0667cbd27 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -2402,7 +2402,7 @@ EXPORT_SYMBOL(inode_init_owner);
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ bool inode_owner_or_capable(struct mnt_idmap *idmap,
+ 			    const struct inode *inode)
+diff --git a/fs/namei.c b/fs/namei.c
+index 71c13b2990b4..200eb919cdc0 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -289,7 +289,7 @@ EXPORT_SYMBOL(putname);
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ static int check_acl(struct mnt_idmap *idmap,
+ 		     struct inode *inode, int mask)
+@@ -334,7 +334,7 @@ static int check_acl(struct mnt_idmap *idmap,
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ static int acl_permission_check(struct mnt_idmap *idmap,
+ 				struct inode *inode, int mask)
+@@ -395,7 +395,7 @@ static int acl_permission_check(struct mnt_idmap *idmap,
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int generic_permission(struct mnt_idmap *idmap, struct inode *inode,
+ 		       int mask)
+@@ -3158,7 +3158,7 @@ static inline umode_t vfs_prepare_mode(struct mnt_idmap *idmap,
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int vfs_create(struct mnt_idmap *idmap, struct inode *dir,
+ 	       struct dentry *dentry, umode_t mode, bool want_excl)
+@@ -3646,7 +3646,7 @@ static int do_open(struct nameidata *nd,
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ static int vfs_tmpfile(struct mnt_idmap *idmap,
+ 		       const struct path *parentpath,
+@@ -3954,7 +3954,7 @@ EXPORT_SYMBOL(user_path_create);
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+ 	      struct dentry *dentry, umode_t mode, dev_t dev)
+@@ -4080,7 +4080,7 @@ SYSCALL_DEFINE3(mknod, const char __user *, filename, umode_t, mode, unsigned, d
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int vfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+ 	      struct dentry *dentry, umode_t mode)
+@@ -4161,7 +4161,7 @@ SYSCALL_DEFINE2(mkdir, const char __user *, pathname, umode_t, mode)
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
+ 		     struct dentry *dentry)
+@@ -4290,7 +4290,7 @@ SYSCALL_DEFINE1(rmdir, const char __user *, pathname)
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int vfs_unlink(struct mnt_idmap *idmap, struct inode *dir,
+ 	       struct dentry *dentry, struct inode **delegated_inode)
+@@ -4443,7 +4443,7 @@ SYSCALL_DEFINE1(unlink, const char __user *, pathname)
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int vfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 		struct dentry *dentry, const char *oldname)
+@@ -4535,7 +4535,7 @@ SYSCALL_DEFINE2(symlink, const char __user *, oldname, const char __user *, newn
+  * the vfsmount must be passed through @idmap. This function will then take
+  * care to map the inode according to @idmap before checking permissions.
+  * On non-idmapped mounts or if permission checking is to be performed on the
+- * raw inode simply passs @nop_mnt_idmap.
++ * raw inode simply pass @nop_mnt_idmap.
+  */
+ int vfs_link(struct dentry *old_dentry, struct mnt_idmap *idmap,
+ 	     struct inode *dir, struct dentry *new_dentry,
+diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+index a05fe94970ce..e1af20893ebe 100644
+--- a/fs/posix_acl.c
++++ b/fs/posix_acl.c
+@@ -600,7 +600,7 @@ EXPORT_SYMBOL(__posix_acl_chmod);
+  * the vfsmount must be passed through @idmap. This function will then
+  * take care to map the inode according to @idmap before checking
+  * permissions. On non-idmapped mounts or if permission checking is to be
+- * performed on the raw inode simply passs @nop_mnt_idmap.
++ * performed on the raw inode simply pass @nop_mnt_idmap.
+  */
+ int
+  posix_acl_chmod(struct mnt_idmap *idmap, struct dentry *dentry,
+@@ -700,7 +700,7 @@ EXPORT_SYMBOL_GPL(posix_acl_create);
+  * the vfsmount must be passed through @idmap. This function will then
+  * take care to map the inode according to @idmap before checking
+  * permissions. On non-idmapped mounts or if permission checking is to be
+- * performed on the raw inode simply passs @nop_mnt_idmap.
++ * performed on the raw inode simply pass @nop_mnt_idmap.
+  *
+  * Called from set_acl inode operations.
+  */
+diff --git a/fs/stat.c b/fs/stat.c
+index 24bb0209e459..0ab525f80a49 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -41,7 +41,7 @@
+  * the vfsmount must be passed through @idmap. This function will then
+  * take care to map the inode according to @idmap before filling in the
+  * uid and gid filds. On non-idmapped mounts or if permission checking is to be
+- * performed on the raw inode simply passs @nop_mnt_idmap.
++ * performed on the raw inode simply pass @nop_mnt_idmap.
+  */
+ void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
+ 		      struct inode *inode, struct kstat *stat)
+-- 
+2.34.1
 
-That could actually be changed to:
-
- /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
-		    info->after < ts && info->after == READ_ONCE(cpu_buffer->write_stamp)){
-			/* Nothing came after this event between C and E */
-			info->delta = ts - info->after;
-
-where the only difference is that the before_stamp and write_stamp will
-not match making the next event add an absolute_timestamp.
-
-This would get rid of all the cmpxchg64(). I could have:
-
-/*
- * Returns true if ts == old_ts, and if possible will update with new_ts,
- * but ts is not guaranteed to be updated even if this returns true
- */
-static bool rb_time_cmp_and_update(rb_time_t *ts, u64 old_ts, u64 new_ts)
-{
-#if HAVE_CMPXCHG64
-	return local64_cmpxchg(ts, old_ts, new_ts) == old_ts;
-#else
-	return old_ts == READ_ONCE(*ts);
-#endif
-}
-
- /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
-		    info->after < ts &&
-		    rb_time_cmp_and_update(&cpu_buffer->write_stamp, info->after, ts) {
-			/* Nothing came after this event between C and E */
-			info->delta = ts - info->after;
-
-
-And this way we don't even need any CMPXCHG64. And for those that do
-have it, it gets the benefit of not having to insert an absolute
-timestamp for the next event. That's just a nice-to-have and not
-critical for the logic.
-
--- Steve
-
-
-> 
-> Also update the comments to reflect this change as well as remove some
-> extra white space in another comment.
-> 
-> Fixes: b2dd797543cf ("ring-buffer: Force absolute timestamp on discard of event")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
 
