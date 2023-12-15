@@ -1,664 +1,198 @@
-Return-Path: <linux-kernel+bounces-1463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B41F814F2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:50:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7AB814F2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02DE61F21B53
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:50:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6DE2B23D47
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F2866AC7;
-	Fri, 15 Dec 2023 17:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B8B41870;
+	Fri, 15 Dec 2023 17:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XBKOoPM7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51DC45F868
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1B9F1650;
-	Fri, 15 Dec 2023 09:46:00 -0800 (PST)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C29203F5A1;
-	Fri, 15 Dec 2023 09:45:12 -0800 (PST)
-From: James Morse <james.morse@arm.com>
-To: x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>,
-	Babu Moger <Babu.Moger@amd.com>,
-	James Morse <james.morse@arm.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com,
-	lcherian@marvell.com,
-	bobo.shaobowang@huawei.com,
-	tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>,
-	peternewman@google.com,
-	dfustini@baylibre.com,
-	amitsinght@marvell.com,
-	Babu Moger <babu.moger@amd.com>
-Subject: [PATCH v8 24/24] x86/resctrl: Separate arch and fs resctrl locks
-Date: Fri, 15 Dec 2023 17:43:43 +0000
-Message-Id: <20231215174343.13872-25-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231215174343.13872-1-james.morse@arm.com>
-References: <20231215174343.13872-1-james.morse@arm.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F5E67212;
+	Fri, 15 Dec 2023 17:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702662335; x=1734198335;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=uV44txbjy3PPcg41NMY5C6yhycA/rODQXkLeRpZwKqM=;
+  b=XBKOoPM7X8oKGSblmFz58Uf6dmW4vYOlwT43E2erUnAixNLatrzqVJZy
+   gMbqK8wtS2rIKt2fwLMpmVlrkt1qrdi/ahsS7+roRKMwPN8d2buwR7jJH
+   eSvCSM4ZzJJ7Z5rWGhRhKfff6uaxQRersFxrpWsK0A1KsVfPAy7h+IZ6j
+   0Ar8mOOx/og6wnekbqlKgcgdBOjnjBCkSDI1LF1kfBFcxNI5gqWHICNrk
+   qyMuJrMBFhAYn/VUqancarSc1mYYfUjzG/7/BircI5nEAHPDd305dmMiS
+   jGCZAaQ0D+wXseKVpJSoOmnHq5cJVUX+kmvDr+gz7Xjct/qRgLi86+nm/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="2128942"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="2128942"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 09:45:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="918511791"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="918511791"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Dec 2023 09:45:26 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 15 Dec 2023 09:45:25 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 15 Dec 2023 09:45:25 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 15 Dec 2023 09:45:25 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QvewCdFn6MQTCI5rhwtLZQVOM5fHovJpt7sdQ9LEH6a3Pk7Wi0dC2/SW0f+k7s4msZ3B9DDCREVpsFGM1m+YLcrGsOPh8M99XqZISyzQtaKgLceZ+zdJ7e+yWdorQdum/l8s9rTTgVx/fLg6SQ/MfYRXw/8wtgOWzfWMYRWJ/HkpZsCOGaYnnKC9q/nO1jtO4AOujv+t8nLm08lxF3XfOD9z5XDgb/U8pcKJQi1qwIXz0gjkeHh6/IUeHKWk1pY90EESRTB2p8Fjenwjt7Nc9LlaL8IcA5g9E1jU93jCFZiAq9BNrOkopEdWJXVq5e7M9wgQLgOEsXKJpTxUTBi4Qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+pcgJXDVsa3B0UYEE4WcsbdIg4jIHsv+4jLsF0Ao/Ug=;
+ b=fiZOh+z2MPtwZau1RnRu1oWwciY4/z38OElg/iebgJX9Y4N5tptY5JKyFquGeQh555Wm/lMUONKC6lxyPvBpojgPhlXKGIPZMn1L0gfNiPVx/C0aGu0C1dPih1oR/SAw3Jz4GlhdV1DlioG45ly75B8BqVlpbRx5Cy/g3q6MPQaq/QiGzWczIyFCp09gc/at9wQTotA5rvdmF+IKPnrDJDyRfCKnxrFvddhg5GdfAXXuwenNyrRSRrUhkSAPtgvWWyAjwM2rxzp/BMFa4eZGwN9ivsPGAvKYsbHQ23rHfQWTSundzKpAqDaRHcXIOp/Ch5TJ/Le3sMZUGPZDuYxVqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by SJ0PR11MB5791.namprd11.prod.outlook.com (2603:10b6:a03:423::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
+ 2023 17:45:23 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7091.028; Fri, 15 Dec 2023
+ 17:45:23 +0000
+Message-ID: <056a2d2b-3b09-4a70-92b0-8634a24464b9@intel.com>
+Date: Fri, 15 Dec 2023 09:45:21 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/29] selftests/resctrl: CAT test improvements &
+ generalized test framework
+Content-Language: en-US
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	<linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>, "Shaopeng
+ Tan" <tan.shaopeng@jp.fujitsu.com>, =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?=
+	<maciej.wieczor-retman@intel.com>, Fenghua Yu <fenghua.yu@intel.com>
+CC: <linux-kernel@vger.kernel.org>
+References: <20231215150515.36983-1-ilpo.jarvinen@linux.intel.com>
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231215150515.36983-1-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR03CA0227.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::22) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SJ0PR11MB5791:EE_
+X-MS-Office365-Filtering-Correlation-Id: a3b78b0a-536e-42ce-f50f-08dbfd959d1e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gArScPikijcGIz4QgyPr48cZsEizzfkPfFMcD0paK0PidjWNAoIyZAdn31I6fcE09K511EVNmxlQarpSL9fedDdm5qejwsXJ652G6rVGAlw/63IYOOq9eGp0+bEPaVmCgAhp8j0QnlXbMCI3tXdbimIF+XMyzOPySb2+zR7OVzcHOw4RiD4cOqbXtl9R3DYrZYq3+02KmI2ctmBahDvOKwIqkqDBumer7CFcNwgNybxN8pybAU7CeLYsGMa8oZr1YVBwDJbRSb3SAQWjNqimyvDzjkY1YxdBIFM7e27Ehsyyxy78uDwZ5jn6kUuk1Ht+MYGK+7SATj88mJkmJEEAulYTVynmRSI7dNKw8vcz4R04467qXKbvssAgknzm87hrAuiPMQf88RsOrNmXO+wrhJ3mQ6AooSio4rHcC7VwmdJUJEeHQMkr5FhI0VvHRaSqi9RtsQCwsW3hCVA4uqurzGP3zHoYOJ8Vliuc68ZY/hHL+lKBfcB8Q+iUsUkO7qUWqX2dsIIHI1L2w4i65m3VyfvtX3OXg9I/NEv4LsWtkBrxkW7P3s8fgSLgwDt769x9bG6MtsJOnTGH2v6MWtvwkzG54VacUiT5dMqIkIldpQ8ejaZaSyDIswpROM21xcrLYhDmSn++Tm9aJGUrjWhkeA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(396003)(346002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(82960400001)(66574015)(31696002)(2906002)(26005)(2616005)(38100700002)(86362001)(41300700001)(316002)(66476007)(4326008)(6636002)(66946007)(110136005)(66556008)(83380400001)(36756003)(44832011)(8676002)(8936002)(5660300002)(6506007)(31686004)(53546011)(478600001)(6486002)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enFKd09lb1FyRURURWV5TEJ2SVRnUCtscU42UE9pbDdxMnYvQzV3VnIvaFN0?=
+ =?utf-8?B?ZjhoemNLTHplczVNMjQyVnlMWkdJc25hZXRVRm81dFo5ZTFqT3ZTY0s5WUhE?=
+ =?utf-8?B?cVdKQWhLZjZONGIyaTYvYmNWMUNyQ2hiK0xaT1lrbU4zRWcreHpqd0E2Unpv?=
+ =?utf-8?B?cDJVcGRLYlpGQ0c0YkY1d2dhZVhsUklXWSttanZXcGtwZDRDbkxpVnJXcGRu?=
+ =?utf-8?B?V3hiWUpRMDRtSm5UWERPcmZ0clliMFdlWnZTbENmaUVHYlJNOVZmU254M2lh?=
+ =?utf-8?B?N3ZDdHF6U0FMSThWdGxzVFVDYUl2eFh1eXRkbDdsdmRrNkVNV2NndWQ5VS9o?=
+ =?utf-8?B?eERzclZXV0d5R3k2b0FXS2dEQUxjZW5yMStoOWZ6YlhOQ2QreCtyaWhTa0NI?=
+ =?utf-8?B?SXVrRWcwNmJvYkFZNUc4Nkk1Y1daWVFaMEFTZy9mZ25jQzZyS0VINkVZc2cy?=
+ =?utf-8?B?WnIxbm4ybGNqSTdJVlJoNzEzLzY1WERrbnNOVyt6aGpibmxGTE1Fb2ZYY20x?=
+ =?utf-8?B?MlQ4MlkwV2dnZmlzNUlxTlZOamRGZmhCbmpQOGhSU216b1NPckRiNW9mMjJy?=
+ =?utf-8?B?d3diSXhWUnEwRGY4VlBOaFBKM1dObUFEeGtJQTAzMzVCdnNEZHk0cVJzSG42?=
+ =?utf-8?B?YUlWSGRydjJDNFl5WTdZS0RaVFZ3YUxVTmpMazF2SUlERmtyemkrb25WTXE1?=
+ =?utf-8?B?MTB4ajZCN3cxRmE5MVc5K0VxdkFOaVFwSFBFNGo3WU43eEYxMnMyQkVjbDlz?=
+ =?utf-8?B?MFhNazd0R2pVcERqNjNtbzZwaGxJMGxaNk4xWEZ4d3RpS1dweHRQNkY3SjJJ?=
+ =?utf-8?B?SUV6TEY4S1M2U2VHOG9NVERELzBWMFB5ZytHZ0M3dUZGQjdkVjYyd0FGbmsw?=
+ =?utf-8?B?UVNvT1c2Uk5obSs5YTNQR3dXVFBRNHJkS1loM3I3dm8ybjd6bWd0OE05eDEz?=
+ =?utf-8?B?dWxlYjNSQnlaSXFmc0R5S1ByQnNtaDdPTCsyWmtJTjZXcUlaKzBqaUJSdzhi?=
+ =?utf-8?B?b0tlcnQ1bmg1OGt6SDBhZVZSWTVuRlBWNjFEMFdKaitla3M0WE1kUjFZNUpK?=
+ =?utf-8?B?Z2E5d1NzZ3pZUEdSSXBZRmY0aGpUenBDMnM1d1kwUEVETWRJQXdDTjZUblgy?=
+ =?utf-8?B?c3BHR25tVFgzUXpwL3o5V1NkeHIrQ3ZKSGEycEY4Wm4yWVdFVHkvaFRqSkhk?=
+ =?utf-8?B?YkFaTVRRSFFKSDE0bTJqSkgrZ3kzbTg3aG5PM3VYb21CbWNrdWRYTkVpcThz?=
+ =?utf-8?B?UVF2aEpsV25rdXVnS0JWV1NqcEFhaGlqTkZXejNrSnA5bHc0bkVjMG5MWjhT?=
+ =?utf-8?B?cmNLc0VKWXFpbzRXZ01tR25obTA2K0JDNElKUzBrS1ljWERmTkJORTU2QUFT?=
+ =?utf-8?B?NDhtMHFKUFVlWXBMWCswOUh5QUlZVCthajk0Y0RqWkkwRWFMMFJsWXBMaWox?=
+ =?utf-8?B?YkZLVitnbkVXcFdVcUE0UVEyYnFpbWVYV1hvb3VlMHRBcGw4TkpaNTZWVmFo?=
+ =?utf-8?B?cEUyY0xROGExR2tsTnFJV0FlS2tpc0FrR2ZkeHpSVi9zK3c1dkRvQUhCcUJM?=
+ =?utf-8?B?WXEzWXVSbGM2MHRlZCttTEEvdFlLaGczVStyMlYzMVErK2tpSmZTUDhHTmls?=
+ =?utf-8?B?S1JmdGVEVzBZS1BDUmZ6MU0wMlcrYnFWQ1JvQTZyeDZ2ZFNodS9MU2JVS0tC?=
+ =?utf-8?B?QzRnQ3kvRyt5NGU5NFNObzc2azdvMGtTK3VtODVnVzNOZTF3RzhFeEg1RVpK?=
+ =?utf-8?B?aHVkeHJYZXkwWnlTNXRqSXdlY3hGWlFwMERVVHY0OWlORGR2aVo5RDlRRTZC?=
+ =?utf-8?B?L0l4TDNPVUd3ZlFPZVVQaVF4RXlxeldRcDBLVFIrclg3ZnNxWHpnbUN0SEpG?=
+ =?utf-8?B?NWQyN2QzTCtmdnR5N0dzSmk0U0NQTlRsSFlrc0huQlhUTFhoYTJmSExXRy8w?=
+ =?utf-8?B?RlRsdWpiTjdrZ1dqSVRBQTR2bG9maUZFb0dBdWIxWGFIQ1VESzFaZi93eWFZ?=
+ =?utf-8?B?anhPZ0VVc0IzNFhqRk9peGRDcEdLSE1HbEN1NGhjWmMwTzRhcGtRU1BDUzJP?=
+ =?utf-8?B?alMrMXBkUGdiN3NYOEtockQ4NWZ5dWZSYVY0YWhVR3NnbGJ6ZWN2ZDVEWXAw?=
+ =?utf-8?B?U0lxNE42VzRKRVpBSFNYN0E0SHJFd0xja05lVHhYYmpOcWxXSDJleDJqQ1RY?=
+ =?utf-8?B?Snc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3b78b0a-536e-42ce-f50f-08dbfd959d1e
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 17:45:23.2496
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GqFcS+MKilnmTbqXc0ekGz0LuNWruYQcDocbtvMX6c1AAyTM/W51JUwLp7O7+Xr8UZMPZPNCPjkMFFJdn5juDzGs08RSOLKBJOF+/sgW8Gw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5791
+X-OriginatorOrg: intel.com
 
-resctrl has one mutex that is taken by the architecture specific code,
-and the filesystem parts. The two interact via cpuhp, where the
-architecture code updates the domain list. Filesystem handlers that
-walk the domains list should not run concurrently with the cpuhp
-callback modifying the list.
+Hi Ilpo and Shuah,
 
-Exposing a lock from the filesystem code means the interface is not
-cleanly defined, and creates the possibility of cross-architecture
-lock ordering headaches. The interaction only exists so that certain
-filesystem paths are serialised against CPU hotplug. The CPU hotplug
-code already has a mechanism to do this using cpus_read_lock().
+On 12/15/2023 7:04 AM, Ilpo Järvinen wrote:
+> Here's v4 series to improve resctrl selftests with generalized test
+> framework and rewritten CAT test.
+> 
+> The series contains following improvements:
+> 
+> - Excludes shareable bits from CAT test allocation to avoid interference
+> - Replaces file "sink" with a volatile variable
+> - Alters read pattern to defeat HW prefetcher optimizations
+> - Rewrites CAT test to make the CAT test reliable and truly measure
+>   if CAT is working or not
+> - Introduces generalized test framework making easier to add new tests
+> - Lots of other cleanups & refactoring
+> 
+> This series has been tested across a large number of systems from
+> different generations.
 
-MPAM's monitors have an overflow interrupt, so it needs to be possible
-to walk the domains list in irq context. RCU is ideal for this,
-but some paths need to be able to sleep to allocate memory.
+Ilpo, thank you very much for this great cleanup and a creating a
+reliable CAT test. This work is focused on kernel health and greatly
+appreciated.
 
-Because resctrl_{on,off}line_cpu() take the rdtgroup_mutex as part
-of a cpuhp callback, cpus_read_lock() must always be taken first.
-rdtgroup_schemata_write() already does this.
-
-Most of the filesystem code's domain list walkers are currently
-protected by the rdtgroup_mutex taken in rdtgroup_kn_lock_live().
-The exceptions are rdt_bit_usage_show() and the mon_config helpers
-which take the lock directly.
-
-Make the domain list protected by RCU. An architecture-specific
-lock prevents concurrent writers. rdt_bit_usage_show() could
-walk the domain list using RCU, but to keep all the filesystem
-operations the same, this is changed to call cpus_read_lock().
-The mon_config helpers send multiple IPIs, take the cpus_read_lock()
-in these cases.
-
-The other filesystem list walkers need to be able to sleep.
-Add cpus_read_lock() to rdtgroup_kn_lock_live() so that the
-cpuhp callbacks can't be invoked when file system operations are
-occurring.
-
-Add lockdep_assert_cpus_held() in the cases where the
-rdtgroup_kn_lock_live() call isn't obvious.
-
-Resctrl's domain online/offline calls now need to take the
-rdtgroup_mutex themselves.
-
-Signed-off-by: James Morse <james.morse@arm.com>
-Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-Tested-by: Peter Newman <peternewman@google.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+All patches in this series should have my reviewed-by tag. For
+confirmation, for this whole series:
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Babu Moger <babu.moger@amd.com>
----
-Changes since v2:
- * Reworded a comment,
- * Added a lockdep assertion
- * Moved clear_closid_rmid() outside the locked region of cpu
-   online/offline
 
-Changes since v3:
- * Added a header include
+Shuah, could you please consider this series for inclusion at
+your convenience?
 
-Changes since v5:
- * Made rdt_bit_usage_show() take the cpus_read_lock() instead of using
-   RCU.
+Thank you very much.
 
-Changes since v6:
- * Added lockdep_is_cpus_held() to get_domain_from_cpu().
- * Added cpus_read_lock() around overflow and limbo handlers.
----
- arch/x86/kernel/cpu/resctrl/core.c        | 44 +++++++++++----
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 15 ++++-
- arch/x86/kernel/cpu/resctrl/monitor.c     |  8 +++
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  3 +
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 68 ++++++++++++++++++-----
- include/linux/resctrl.h                   |  2 +-
- 6 files changed, 112 insertions(+), 28 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index c943cb78b2a1..4a35369e2d3c 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -16,6 +16,7 @@
- 
- #define pr_fmt(fmt)	"resctrl: " fmt
- 
-+#include <linux/cpu.h>
- #include <linux/slab.h>
- #include <linux/err.h>
- #include <linux/cacheinfo.h>
-@@ -25,8 +26,15 @@
- #include <asm/resctrl.h>
- #include "internal.h"
- 
--/* Mutex to protect rdtgroup access. */
--DEFINE_MUTEX(rdtgroup_mutex);
-+/*
-+ * rdt_domain structures are kfree()d when their last CPU goes offline,
-+ * and allocated when the first CPU in a new domain comes online.
-+ * The rdt_resource's domain list is updated when this happens. Readers of
-+ * the domain list must either take cpus_read_lock(), or rely on an RCU
-+ * read-side critical section, to avoid observing concurrent modification.
-+ * All writers take this mutex:
-+ */
-+static DEFINE_MUTEX(domain_list_lock);
- 
- /*
-  * The cached resctrl_pqr_state is strictly per CPU and can never be
-@@ -356,6 +364,15 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
- {
- 	struct rdt_domain *d;
- 
-+	/*
-+	 * Walking r->domains, ensure it can't race with cpuhp.
-+	 * Because this is called via IPI by rdt_ctrl_update(), assertions
-+	 * about locks this thread holds will lead to false positives. Check
-+	 * someone is holding the CPUs lock.
-+	 */
-+	if (IS_ENABLED(CONFIG_LOCKDEP))
-+		lockdep_is_cpus_held();
-+
- 	list_for_each_entry(d, &r->domains, list) {
- 		/* Find the domain that contains this CPU */
- 		if (cpumask_test_cpu(cpu, &d->cpu_mask))
-@@ -512,6 +529,8 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
- 	struct rdt_domain *d;
- 	int err;
- 
-+	lockdep_assert_held(&domain_list_lock);
-+
- 	d = rdt_find_domain(r, id, &add_pos);
- 	if (IS_ERR(d)) {
- 		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-@@ -545,11 +564,12 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
- 		return;
- 	}
- 
--	list_add_tail(&d->list, add_pos);
-+	list_add_tail_rcu(&d->list, add_pos);
- 
- 	err = resctrl_online_domain(r, d);
- 	if (err) {
--		list_del(&d->list);
-+		list_del_rcu(&d->list);
-+		synchronize_rcu();
- 		domain_free(hw_dom);
- 	}
- }
-@@ -560,6 +580,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- 	struct rdt_hw_domain *hw_dom;
- 	struct rdt_domain *d;
- 
-+	lockdep_assert_held(&domain_list_lock);
-+
- 	d = rdt_find_domain(r, id, NULL);
- 	if (IS_ERR_OR_NULL(d)) {
- 		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
-@@ -570,7 +592,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- 	cpumask_clear_cpu(cpu, &d->cpu_mask);
- 	if (cpumask_empty(&d->cpu_mask)) {
- 		resctrl_offline_domain(r, d);
--		list_del(&d->list);
-+		list_del_rcu(&d->list);
-+		synchronize_rcu();
- 
- 		/*
- 		 * rdt_domain "d" is going to be freed below, so clear
-@@ -600,13 +623,13 @@ static int resctrl_arch_online_cpu(unsigned int cpu)
- {
- 	struct rdt_resource *r;
- 
--	mutex_lock(&rdtgroup_mutex);
-+	mutex_lock(&domain_list_lock);
- 	for_each_capable_rdt_resource(r)
- 		domain_add_cpu(cpu, r);
--	clear_closid_rmid(cpu);
-+	mutex_unlock(&domain_list_lock);
- 
-+	clear_closid_rmid(cpu);
- 	resctrl_online_cpu(cpu);
--	mutex_unlock(&rdtgroup_mutex);
- 
- 	return 0;
- }
-@@ -615,13 +638,14 @@ static int resctrl_arch_offline_cpu(unsigned int cpu)
- {
- 	struct rdt_resource *r;
- 
--	mutex_lock(&rdtgroup_mutex);
- 	resctrl_offline_cpu(cpu);
- 
-+	mutex_lock(&domain_list_lock);
- 	for_each_capable_rdt_resource(r)
- 		domain_remove_cpu(cpu, r);
-+	mutex_unlock(&domain_list_lock);
-+
- 	clear_closid_rmid(cpu);
--	mutex_unlock(&rdtgroup_mutex);
- 
- 	return 0;
- }
-diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index 64db51455df3..dc59643498bf 100644
---- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-+++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -212,6 +212,9 @@ static int parse_line(char *line, struct resctrl_schema *s,
- 	struct rdt_domain *d;
- 	unsigned long dom_id;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP &&
- 	    (r->rid == RDT_RESOURCE_MBA || r->rid == RDT_RESOURCE_SMBA)) {
- 		rdt_last_cmd_puts("Cannot pseudo-lock MBA resource\n");
-@@ -316,6 +319,9 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
- 	struct rdt_domain *d;
- 	u32 idx;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
- 		return -ENOMEM;
- 
-@@ -381,11 +387,9 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
- 		return -EINVAL;
- 	buf[nbytes - 1] = '\0';
- 
--	cpus_read_lock();
- 	rdtgrp = rdtgroup_kn_lock_live(of->kn);
- 	if (!rdtgrp) {
- 		rdtgroup_kn_unlock(of->kn);
--		cpus_read_unlock();
- 		return -ENOENT;
- 	}
- 	rdt_last_cmd_clear();
-@@ -447,7 +451,6 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
- out:
- 	rdt_staged_configs_clear();
- 	rdtgroup_kn_unlock(of->kn);
--	cpus_read_unlock();
- 	return ret ?: nbytes;
- }
- 
-@@ -467,6 +470,9 @@ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int clo
- 	bool sep = false;
- 	u32 ctrl_val;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	seq_printf(s, "%*s:", max_name_width, schema->name);
- 	list_for_each_entry(dom, &r->domains, list) {
- 		if (sep)
-@@ -537,6 +543,9 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
- {
- 	int cpu;
- 
-+	/* When picking a CPU from cpu_mask, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	/*
- 	 * Setup the parameters to pass to mon_event_count() to read the data.
- 	 */
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index c78b51eb1256..971ca45fc4e6 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -15,6 +15,7 @@
-  * Software Developer Manual June 2016, volume 3, section 17.17.
-  */
- 
-+#include <linux/cpu.h>
- #include <linux/module.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
-@@ -472,6 +473,9 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
- 
- 	lockdep_assert_held(&rdtgroup_mutex);
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	idx = resctrl_arch_rmid_idx_encode(entry->closid, entry->rmid);
- 
- 	entry->busy = 0;
-@@ -800,6 +804,7 @@ void cqm_handle_limbo(struct work_struct *work)
- 	unsigned long delay = msecs_to_jiffies(CQM_LIMBOCHECK_INTERVAL);
- 	struct rdt_domain *d;
- 
-+	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
- 
- 	d = container_of(work, struct rdt_domain, cqm_limbo.work);
-@@ -814,6 +819,7 @@ void cqm_handle_limbo(struct work_struct *work)
- 	}
- 
- 	mutex_unlock(&rdtgroup_mutex);
-+	cpus_read_unlock();
- }
- 
- /**
-@@ -845,6 +851,7 @@ void mbm_handle_overflow(struct work_struct *work)
- 	struct rdt_resource *r;
- 	struct rdt_domain *d;
- 
-+	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
- 
- 	/*
-@@ -878,6 +885,7 @@ void mbm_handle_overflow(struct work_struct *work)
- 
- out_unlock:
- 	mutex_unlock(&rdtgroup_mutex);
-+	cpus_read_unlock();
- }
- 
- /**
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index 8056bed033cc..884b88e25141 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -844,6 +844,9 @@ bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
- 	struct rdt_domain *d_i;
- 	bool ret = false;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	if (!zalloc_cpumask_var(&cpu_with_psl, GFP_KERNEL))
- 		return true;
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index f007c488fa31..39b807a28a55 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -35,6 +35,10 @@
- DEFINE_STATIC_KEY_FALSE(rdt_enable_key);
- DEFINE_STATIC_KEY_FALSE(rdt_mon_enable_key);
- DEFINE_STATIC_KEY_FALSE(rdt_alloc_enable_key);
-+
-+/* Mutex to protect rdtgroup access. */
-+DEFINE_MUTEX(rdtgroup_mutex);
-+
- static struct kernfs_root *rdt_root;
- struct rdtgroup rdtgroup_default;
- LIST_HEAD(rdt_all_groups);
-@@ -1014,6 +1018,7 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 	bool sep = false;
- 	u32 ctrl_val;
- 
-+	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
- 	hw_shareable = r->cache.shareable_bits;
- 	list_for_each_entry(dom, &r->domains, list) {
-@@ -1074,6 +1079,7 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 	}
- 	seq_putc(seq, '\n');
- 	mutex_unlock(&rdtgroup_mutex);
-+	cpus_read_unlock();
- 	return 0;
- }
- 
-@@ -1329,6 +1335,9 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
- 	struct rdt_domain *d;
- 	u32 ctrl;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	list_for_each_entry(s, &resctrl_schema_all, list) {
- 		r = s->res;
- 		if (r->rid == RDT_RESOURCE_MBA || r->rid == RDT_RESOURCE_SMBA)
-@@ -1593,6 +1602,7 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
- 	struct rdt_domain *dom;
- 	bool sep = false;
- 
-+	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
- 
- 	list_for_each_entry(dom, &r->domains, list) {
-@@ -1609,6 +1619,7 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
- 	seq_puts(s, "\n");
- 
- 	mutex_unlock(&rdtgroup_mutex);
-+	cpus_read_unlock();
- 
- 	return 0;
- }
-@@ -1700,6 +1711,9 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
- 	struct rdt_domain *d;
- 	int ret = 0;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- next:
- 	if (!tok || tok[0] == '\0')
- 		return 0;
-@@ -1741,6 +1755,7 @@ static ssize_t mbm_total_bytes_config_write(struct kernfs_open_file *of,
- 	if (nbytes == 0 || buf[nbytes - 1] != '\n')
- 		return -EINVAL;
- 
-+	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
- 
- 	rdt_last_cmd_clear();
-@@ -1750,6 +1765,7 @@ static ssize_t mbm_total_bytes_config_write(struct kernfs_open_file *of,
- 	ret = mon_config_write(r, buf, QOS_L3_MBM_TOTAL_EVENT_ID);
- 
- 	mutex_unlock(&rdtgroup_mutex);
-+	cpus_read_unlock();
- 
- 	return ret ?: nbytes;
- }
-@@ -1765,6 +1781,7 @@ static ssize_t mbm_local_bytes_config_write(struct kernfs_open_file *of,
- 	if (nbytes == 0 || buf[nbytes - 1] != '\n')
- 		return -EINVAL;
- 
-+	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
- 
- 	rdt_last_cmd_clear();
-@@ -1774,6 +1791,7 @@ static ssize_t mbm_local_bytes_config_write(struct kernfs_open_file *of,
- 	ret = mon_config_write(r, buf, QOS_L3_MBM_LOCAL_EVENT_ID);
- 
- 	mutex_unlock(&rdtgroup_mutex);
-+	cpus_read_unlock();
- 
- 	return ret ?: nbytes;
- }
-@@ -2250,6 +2268,9 @@ static int set_cache_qos_cfg(int level, bool enable)
- 	struct rdt_domain *d;
- 	int cpu;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	if (level == RDT_RESOURCE_L3)
- 		update = l3_qos_cfg_update;
- 	else if (level == RDT_RESOURCE_L2)
-@@ -2449,6 +2470,7 @@ struct rdtgroup *rdtgroup_kn_lock_live(struct kernfs_node *kn)
- 
- 	rdtgroup_kn_get(rdtgrp, kn);
- 
-+	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
- 
- 	/* Was this group deleted while we waited? */
-@@ -2466,6 +2488,8 @@ void rdtgroup_kn_unlock(struct kernfs_node *kn)
- 		return;
- 
- 	mutex_unlock(&rdtgroup_mutex);
-+	cpus_read_unlock();
-+
- 	rdtgroup_kn_put(rdtgrp, kn);
- }
- 
-@@ -2798,6 +2822,9 @@ static int reset_all_ctrls(struct rdt_resource *r)
- 	struct rdt_domain *d;
- 	int i;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
- 		return -ENOMEM;
- 
-@@ -3082,6 +3109,9 @@ static int mkdir_mondata_subdir_alldom(struct kernfs_node *parent_kn,
- 	struct rdt_domain *dom;
- 	int ret;
- 
-+	/* Walking r->domains, ensure it can't race with cpuhp */
-+	lockdep_assert_cpus_held();
-+
- 	list_for_each_entry(dom, &r->domains, list) {
- 		ret = mkdir_mondata_subdir(parent_kn, dom, r, prgrp);
- 		if (ret)
-@@ -3912,13 +3942,13 @@ static void domain_destroy_mon_state(struct rdt_domain *d)
- 
- void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
- {
--	lockdep_assert_held(&rdtgroup_mutex);
-+	mutex_lock(&rdtgroup_mutex);
- 
- 	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA)
- 		mba_sc_domain_destroy(r, d);
- 
- 	if (!r->mon_capable)
--		return;
-+		goto out_unlock;
- 
- 	/*
- 	 * If resctrl is mounted, remove all the
-@@ -3943,6 +3973,9 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
- 	}
- 
- 	domain_destroy_mon_state(d);
-+
-+out_unlock:
-+	mutex_unlock(&rdtgroup_mutex);
- }
- 
- static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
-@@ -3978,20 +4011,22 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
- 
- int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
- {
--	int err;
-+	int err = 0;
- 
--	lockdep_assert_held(&rdtgroup_mutex);
-+	mutex_lock(&rdtgroup_mutex);
- 
--	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA)
-+	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA) {
- 		/* RDT_RESOURCE_MBA is never mon_capable */
--		return mba_sc_domain_allocate(r, d);
-+		err = mba_sc_domain_allocate(r, d);
-+		goto out_unlock;
-+	}
- 
- 	if (!r->mon_capable)
--		return 0;
-+		goto out_unlock;
- 
- 	err = domain_setup_mon_state(r, d);
- 	if (err)
--		return err;
-+		goto out_unlock;
- 
- 	if (is_mbm_enabled()) {
- 		INIT_DELAYED_WORK(&d->mbm_over, mbm_handle_overflow);
-@@ -4011,15 +4046,18 @@ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
- 	if (resctrl_mounted && resctrl_arch_mon_capable())
- 		mkdir_mondata_subdir_allrdtgrp(r, d);
- 
--	return 0;
-+out_unlock:
-+	mutex_unlock(&rdtgroup_mutex);
-+
-+	return err;
- }
- 
- void resctrl_online_cpu(unsigned int cpu)
- {
--	lockdep_assert_held(&rdtgroup_mutex);
--
-+	mutex_lock(&rdtgroup_mutex);
- 	/* The CPU is set in default rdtgroup after online. */
- 	cpumask_set_cpu(cpu, &rdtgroup_default.cpu_mask);
-+	mutex_unlock(&rdtgroup_mutex);
- }
- 
- static void clear_childcpus(struct rdtgroup *r, unsigned int cpu)
-@@ -4038,8 +4076,7 @@ void resctrl_offline_cpu(unsigned int cpu)
- 	struct rdtgroup *rdtgrp;
- 	struct rdt_domain *d;
- 
--	lockdep_assert_held(&rdtgroup_mutex);
--
-+	mutex_lock(&rdtgroup_mutex);
- 	list_for_each_entry(rdtgrp, &rdt_all_groups, rdtgroup_list) {
- 		if (cpumask_test_and_clear_cpu(cpu, &rdtgrp->cpu_mask)) {
- 			clear_childcpus(rdtgrp, cpu);
-@@ -4048,7 +4085,7 @@ void resctrl_offline_cpu(unsigned int cpu)
- 	}
- 
- 	if (!l3->mon_capable)
--		return;
-+		goto out_unlock;
- 
- 	d = get_domain_from_cpu(cpu, l3);
- 	if (d) {
-@@ -4062,6 +4099,9 @@ void resctrl_offline_cpu(unsigned int cpu)
- 			cqm_setup_limbo_handler(d, 0, cpu);
- 		}
- 	}
-+
-+out_unlock:
-+	mutex_unlock(&rdtgroup_mutex);
- }
- 
- /*
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 270ff1d5c051..a365f67131ec 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -159,7 +159,7 @@ struct resctrl_schema;
-  * @cache_level:	Which cache level defines scope of this resource
-  * @cache:		Cache allocation related data
-  * @membw:		If the component has bandwidth controls, their properties.
-- * @domains:		All domains for this resource
-+ * @domains:		RCU list of all domains for this resource
-  * @name:		Name to use in "schemata" file.
-  * @data_width:		Character width of data when displaying
-  * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
--- 
-2.20.1
-
+Reinette
 
