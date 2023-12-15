@@ -1,163 +1,84 @@
-Return-Path: <linux-kernel+bounces-788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E0B814606
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:57:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53F81814607
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:58:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE861C23255
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:57:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E74A61F234E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021361C2B3;
-	Fri, 15 Dec 2023 10:57:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8691CAA4;
+	Fri, 15 Dec 2023 10:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="DX8WnWju"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hAWMFIsQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VWxsUaDG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9887724B22;
-	Fri, 15 Dec 2023 10:57:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702637856;
-	bh=EI12yaPkWm0eHYHNIsLb+3ZJ50dk+sRbBa6SPm5COJE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DX8WnWjuyfGHxff/9Tu5FrQinxye03okq+4IAPtRo8geLH+OWPTx6vtkpZQ+bD8E4
-	 QyubWDb3P9Uut8klFbQRPr5PE7xQgMH65E/gbdI4XIQmQs2bfY1PSnunJJ503VL02s
-	 u/55o3yYonOLRe5x+Ney1S4uHcCaZpIRyHee+iPcn4Wg2V2A8b5oGk2QzfzRrMVIa+
-	 T2BKF2A8LgvKMLleyu6hkMY0yvarD1gK6OeKJEvMXBAuOzW8e/a1X0fhArLUiScrd1
-	 CHkgwibHIJWnFSAA5XVpt46Mkq5swAODhAyrhCz2+klzF9igG5nRo1qPa0mfAQ+HrY
-	 UQfbDZsf0sBLA==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4D9F83781FD5;
-	Fri, 15 Dec 2023 10:57:35 +0000 (UTC)
-Message-ID: <f3d98291-0bf6-45b2-bf4f-b0268d13af63@collabora.com>
-Date: Fri, 15 Dec 2023 12:57:34 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B922C1BDDC
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 15 Dec 2023 11:58:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702637914;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=emw64z31Kkb7/qbx35G2LbmcOdKvaq/JLuZQeZftAZo=;
+	b=hAWMFIsQXgUBb6MHtY7bbf81SbgDom1QqlHy9TC+TPT2Qx2sH0YMqehBfFdIRasV1LCN95
+	I8eX6+ADOzW0/Ef8xgaHuUZzdhFJuzB+IhKrn0nOuZ49OxQmBA+/KxaNUUma5HFwBXNxE+
+	1aAO5u9O2y5A1dj9OD63n5lbES+gR5DVnNc5w0TmmNlm0KDOcfWHVBhFASW8qO9M1lYASw
+	9gOVOt7uuIULjGFnCqrcA/EYigeHvVfX+eFzs/Lv63H6QB3Cubu0wpQT9nmD4TXrHaCV/4
+	z+9UPPdzjQ+pfWwZjS7dFDX/8q5nRSvTYdgOLICPM3iEotHxB0BAOgUHJ6magw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702637914;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=emw64z31Kkb7/qbx35G2LbmcOdKvaq/JLuZQeZftAZo=;
+	b=VWxsUaDGm8q85XnUB0OHDdVqJSvRQxNTI5omn6FQ1Vltdzvj4UMnR2Ex2dn8Ex/EYAgFCr
+	hIFCTV4Wju+skDDA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Petr Mladek <pmladek@suse.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Francesco Dolcini <francesco@dolcini.it>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH printk v3 02/14] printk: Adjust mapping for 32bit seq
+ macros
+Message-ID: <20231215105833.aIn3h90O@linutronix.de>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
+ <20231214214201.499426-3-john.ogness@linutronix.de>
+ <20231215095526.ZA8Q-45e@linutronix.de>
+ <8734w3hj2z.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/11] ASoC: SOF: topology: Add new DAI type entry for
- SOF_DAI_AMD_BT
-Content-Language: en-US
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Alper Nebi Yasak <alpernebiyasak@gmail.com>,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Marian Postevca <posteuca@mutex.one>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- Mastan Katragadda <Mastan.Katragadda@amd.com>,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
- kernel@collabora.com
-References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
- <20231209205351.880797-12-cristian.ciocaltea@collabora.com>
- <fad8a055-eabb-4087-94d5-9e1de00933e4@amd.com>
- <aa830670-e544-43a2-9ba9-a64f1964a9f5@collabora.com>
- <318470ce-1631-4c46-b425-755c877dda65@amd.com>
- <421128f7-6a17-4be9-a72b-272ea4017fbd@collabora.com>
- <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
- <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
- <dea5fb18-5fdc-4be4-9981-a6876cf531eb@amd.com>
- <ca828ee1-93f7-432e-b95d-e67c35cdcdb5@collabora.com>
- <0de8f81b-e7d4-43f6-b011-eb6ee09cc7fe@amd.com>
- <913257d4-75dc-4887-97d6-0f206c401057@collabora.com>
- <188ee32a-a201-4210-a8bc-bf3ba04e2f2b@amd.com>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <188ee32a-a201-4210-a8bc-bf3ba04e2f2b@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <8734w3hj2z.fsf@jogness.linutronix.de>
 
-On 12/15/23 11:58, Venkata Prasad Potturu wrote:
+On 2023-12-15 11:16:44 [+0106], John Ogness wrote:
+> No, it is not a bug at this point. As the commit message writes:
 > 
-> On 12/14/23 22:12, Cristian Ciocaltea wrote:
->> On 12/14/23 15:15, Venkata Prasad Potturu wrote:
->>> On 12/14/23 17:53, Cristian Ciocaltea wrote:
->>>> On 12/11/23 07:58, Venkata Prasad Potturu wrote:
->>>>> On 12/10/23 21:20, Cristian Ciocaltea wrote:
->>>>>> On 12/10/23 16:01, Mark Brown wrote:
->>>>>>> On Sun, Dec 10, 2023 at 12:12:53PM +0200, Cristian Ciocaltea wrote:
->>>>>>>> On 12/10/23 11:51, Venkata Prasad Potturu wrote:
->>>>>>>>> This should send to SOF git repo for rewiew, once SOF reviewers
->>>>>>>>> approved
->>>>>>>>> this, again need to send to broonie git.
->>>>>>>>> All the changes in sound/soc/sof/ path should go to SOF git.
->>>>>>>> Unfortunately I'm not familiar with the SOF dev workflow. So
->>>>>>>> it's not
->>>>>>>> enough to have this patch cc-ed to
->>>>>>>> sound-open-firmware@alsa-project.org?
->>>>>>> The SOF people basically do their own thing in github at
->>>>>>>
->>>>>>>       https://github.com/thesofproject/linux
->>>>>>>
->>>>>>> with a github workflow and submit their patches upstream in
->>>>>>> batches a
->>>>>>> few times a release, however my understanding is that their
->>>>>>> workflow can
->>>>>>> cope with things going in directly upstream as well.
->>>>>> Thanks for clarifying, Mark!  That would greatly simplify and speedup
->>>>>> the whole process, at least for trivial patches like this one.
->>>>> Hi Cristian,
->>>>>
->>>>> We have created a Pull request in SOF git hub for I2S BT support.
->>>>> please hold v2 version SOF patches till below PR get's merged.
->>>>> PR:- https://github.com/thesofproject/linux/pull/4742
->>>> Hi Venkata,
->>>>
->>>> If this is going to be handled via the github workflow, this patch
->>>> should be removed from the series.  Since there is no dependency on it,
->>>> I cannot see a reason to put v2 on hold.
->>>>
->>>> Do I miss something?
->>> Non-sof driver related patches can directly send to broonie git ad v2
->>> series.
->>> SOF driver patches should send to SOF github to avoid merge conflicts
->>> as  per guidelines of SOF community.
->> Honestly, I don't really see a high risk of conflicts, the patches are
->> not that complex and can be simply cherry-picked when needed.  Moreover,
->> as we already had people reviewing this, splitting this up will only add
->> confusion and unnecessary burden.
->>
->> Are there any specific changes you are concerned about and cannot be
->> really handled here?
-> This is not the concern about this patch series,
-> Generally sof driver patches sends to SOF git hub as a PR, these are the
-> guidelines by SOF maintainers.
-> If you still want to send alsa devel list directly, please discuss with
-> SOF maintainers.
+> "Until now this mapping has been correct for all call sites."
+> 
+> But if the mapping is not changed here, it will become a bug after
+> applying patch 3 of this series.
 
-I think this series makes sense as a whole and it's best to be handled
-here, as it only provides trivial fixes to issues found on mainline.
+Okay. Thank you clarifying this.
 
-If the SOF workflow is unable to integrate fixes submitted upstream, I
-would perceive that as a significant drawback of adhering to that
-process.  It is hard to believe, though, that this is really the case.
+> John
 
-Hence, I kindly ask everyone here to shed some light and help move this
-forward.
-
-Thank you,
-Cristian
-
+Sebastian
 
