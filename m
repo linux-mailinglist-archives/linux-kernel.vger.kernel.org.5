@@ -1,397 +1,197 @@
-Return-Path: <linux-kernel+bounces-918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F00A81480E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:27:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00FE98147E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:19:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBC2C1F23999
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:27:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 245631C23418
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120822DB9F;
-	Fri, 15 Dec 2023 12:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AB42C683;
+	Fri, 15 Dec 2023 12:19:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PwbUOjoy";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/utvE8Cm";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PwbUOjoy";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/utvE8Cm"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b7OFAgPw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CC62C6B1;
-	Fri, 15 Dec 2023 12:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 911971F829;
-	Fri, 15 Dec 2023 12:26:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702643178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ionOnhVqbRQv5yJFH2KkaG5cDoE/rfCo3Lap5LRFeCQ=;
-	b=PwbUOjoydVNdPC49q1JsmoxCgf8nZ3vdiYzrlNb1/ZCY6ASMRxEYHPK73nGjjtsUMEdhuq
-	EnZlyjneCh23omNHtUB+un1qccKZquKI5jeCSLG7ZEIACknW8eJ7MXgYypYc21ciYyagVD
-	YQmpO5kbUSDkyqnCn8NE4bsnVrKtG2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702643178;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ionOnhVqbRQv5yJFH2KkaG5cDoE/rfCo3Lap5LRFeCQ=;
-	b=/utvE8CmGuI3thDXTy3J8aIeKraIgUqof+nluhrMGQT0jveIhLhr0yaGOjP2ta1iNv96DV
-	CIHfPlsAAX+uYfDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702643178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ionOnhVqbRQv5yJFH2KkaG5cDoE/rfCo3Lap5LRFeCQ=;
-	b=PwbUOjoydVNdPC49q1JsmoxCgf8nZ3vdiYzrlNb1/ZCY6ASMRxEYHPK73nGjjtsUMEdhuq
-	EnZlyjneCh23omNHtUB+un1qccKZquKI5jeCSLG7ZEIACknW8eJ7MXgYypYc21ciYyagVD
-	YQmpO5kbUSDkyqnCn8NE4bsnVrKtG2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702643178;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ionOnhVqbRQv5yJFH2KkaG5cDoE/rfCo3Lap5LRFeCQ=;
-	b=/utvE8CmGuI3thDXTy3J8aIeKraIgUqof+nluhrMGQT0jveIhLhr0yaGOjP2ta1iNv96DV
-	CIHfPlsAAX+uYfDg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0860713BA0;
-	Fri, 15 Dec 2023 12:26:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id mJTrAOpFfGVIRwAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Fri, 15 Dec 2023 12:26:18 +0000
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: ardb@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	bhelgaas@google.com,
-	arnd@arndb.de,
-	zohar@linux.ibm.com,
-	dmitry.kasatkin@gmail.com,
-	paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com,
-	javierm@redhat.com
-Cc: linux-arch@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v2 3/3] arch/x86: Do not include <asm/bootparam.h> in several header files
-Date: Fri, 15 Dec 2023 13:18:14 +0100
-Message-ID: <20231215122614.5481-4-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231215122614.5481-1-tzimmermann@suse.de>
-References: <20231215122614.5481-1-tzimmermann@suse.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE882C694
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:19:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-552d4483414so485972a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 04:19:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702642744; x=1703247544; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5CUwV9YzDjk7TETgRBF+vAn2dGINEGLjHwV0E2neeSk=;
+        b=b7OFAgPwC1hRpBwrda4kZUV64Dub4bkOfhdpW2Oo7AjC3W1rS6egwJZNNnXOG2Y72Z
+         XIjUMINrK+N25LiOF7bUOhKNsSQrt94PnflTvBe3i7rPzYTlzTIUQOiUVH4WRWwtuujZ
+         hlr838qx3mP5b9rMHDo/ron11CAAmX7uxleXvoIwybU9r1M6RFvdF6H1AYVdwrbUTZVq
+         Y4UscGODtCeUoIw3mH19wwvMqsBRLs+0Gib6rreVQrDG6edtksBU7XSiqQIjTLS/VWhL
+         htTZL9yP6nPO1wZS3xETwbC9rZMXAMDtqhw98HR5I6PXBYTWJKvmkqg3vc8rAGLYDauz
+         NObw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702642744; x=1703247544;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5CUwV9YzDjk7TETgRBF+vAn2dGINEGLjHwV0E2neeSk=;
+        b=QpprC9/r7WSecwFpDYJfqi71yvWFaseUlqauTbFVAPRRAfVe05OAs2RyFPs0EGAEH9
+         vO+5WmObKLvNUj1XtlBbT+e3G1LmBnvN6q6uoOrYgZMwVDP4fMF0WIIOi9umM8zdux7M
+         BhxJ0GaOJ91nLEr3w9Ml+7gRx81dXRk8p6HEXEv1nekhNmlz3iInhrk0FS5ngag4jZWO
+         RW7my7DTu/BVzkxXPwjjV3EmBTeyjXQx6ytTKqKDIM1JlcsX71gjo90fjg1jkO0NiQDr
+         TiNHjATD9AhXFjZ/Qt7OYb0bBPRvEY8M802u3e0B/1xAe+zUDNInszrd8VRSqnUeCOmG
+         FD4Q==
+X-Gm-Message-State: AOJu0YwdP1pjJ0OkLk2rWV+LuL61PlN3O5wZBoOWA+kH0kgXj5HAS0Gf
+	JwlEspPFLlk49bI17cOdUbBKIg==
+X-Google-Smtp-Source: AGHT+IGog3jaPmnLXma+JOhrfipO/UbvgnPSlbvmi52+7OecVpyJP+hC70VOo8PO7Kn+oY9Q7gCovQ==
+X-Received: by 2002:a17:907:2d8c:b0:a1e:7770:2c7c with SMTP id gt12-20020a1709072d8c00b00a1e77702c7cmr8060497ejc.100.1702642744447;
+        Fri, 15 Dec 2023 04:19:04 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id ry9-20020a1709068d8900b00a1f7470ba93sm9908234ejc.200.2023.12.15.04.19.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 04:19:03 -0800 (PST)
+Message-ID: <602759ce-c93d-4111-9272-1dce7e4a170a@linaro.org>
+Date: Fri, 15 Dec 2023 13:19:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: 3.40
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [3.40 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[99.99%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 R_MISSING_CHARSET(2.50)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLthqzz6q5hnubohss7ffybi86)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[22];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FREEMAIL_TO(0.00)[kernel.org,linutronix.de,redhat.com,alien8.de,linux.intel.com,zytor.com,google.com,arndb.de,linux.ibm.com,gmail.com,paul-moore.com,namei.org,hallyn.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: ***
-X-Spam-Score: 3.40
-Authentication-Results: smtp-out2.suse.de;
-	none
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+Content-Language: en-US
+To: Jie Luo <quic_luoj@quicinc.com>, Conor Dooley <conor@kernel.org>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+ linux@armlinux.org.uk, robert.marko@sartura.hr,
+ linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ quic_srichara@quicinc.com
+References: <20231212115151.20016-1-quic_luoj@quicinc.com>
+ <20231212115151.20016-6-quic_luoj@quicinc.com>
+ <20231212-caution-improvise-ed3cc6a1d305@spud>
+ <11ffc985-3f2b-46b9-ae0b-911f7abe98d1@quicinc.com>
+ <20231214-outshine-shush-8a11c68607cd@spud>
+ <c5123ce7-6fdc-43c7-ac07-251c39196e66@quicinc.com>
+ <a1e5ffec-a20d-4389-83f9-ee09bd9d733d@linaro.org>
+ <a84a36af-69f8-46af-967e-b06d028597a3@quicinc.com>
+ <26c8b0b1-5ea9-45cc-adf3-0d0b03a1284d@linaro.org>
+ <4b9c56b8-3b29-4861-a3d5-2da26fbc14b4@quicinc.com>
+ <2e77e3b1-00b6-46b9-bfed-7cae3ffa15e9@linaro.org>
+ <7bae46fd-63fd-4b86-9a56-73052cf0ea95@quicinc.com>
+ <5a8095e6-b6a6-4d11-b006-31519e8d8622@linaro.org>
+ <7466b655-2b7e-44f2-a510-6e0cc1b95248@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <7466b655-2b7e-44f2-a510-6e0cc1b95248@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Remove the include statement for <asm/bootparam.h> from several header
-files that don't require it. Limits the exposure of the boot parameters
-within the Linux kernel code. Update several source files that require
-code from bootparam.h.
+On 15/12/2023 12:42, Jie Luo wrote:
+>>>>>>>> Which clocks are these mentioned in the property? From where do they come?
+>>>>>>>>
+>>>>>>>> Anyway, property is in existing form is not correct - this is not a
+>>>>>>>> generic property.
+>>>>>>>>
+>>>>>>>
+>>>>>>> This property cmn-reference-clock is just the hardware register
+>>>>>>> configuration, since the different IPQ platform needs to select
+>>>>>>> the different reference clock source for the CMN PLL block that
+>>>>>>> provides the various clock outputs to the all kinds of Ethernet
+>>>>>>> devices, which is not from GCC provider.
+>>>>>>
+>>>>>> AGAIN: where do the clocks come from? Which device generates them?
+>>>>>
+>>>>> Oh, OK, the reference clock is from wifi that provides 48MHZ to
+>>>>> Ethernet block.
+>>>>
+>>>> Then WiFi should be providing you the clock and this device should be
+>>>> clock consumer, right?
+>>>
+>>> Yes, wifi provides 48MHz clock to CMM PLL block, there is no GCC
+>>> for this 48MHZ clock output, it is the hardware PIN connection.
+>>
+>> All clocks are some hardware pin connections.
+>>
+>> Best regards,
+>> Krzysztof
+>>
+> 
+> Yes, all reference clocks here are from hardware pin connection.
 
-v2:
-	* clean up misc.h and e820/types.h
-	* include bootparam.h in several source files
+You keep answering with short sentences without touching the root of the
+problem. I don't know exactly why, but I feel this discussion leads
+nowhere. After long discussion you finally admitted that clocks came
+from another device - Wifi. It took us like 6 emails?
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/boot/compressed/acpi.c       | 2 ++
- arch/x86/boot/compressed/cmdline.c    | 2 ++
- arch/x86/boot/compressed/efi.c        | 2 ++
- arch/x86/boot/compressed/misc.h       | 3 ++-
- arch/x86/boot/compressed/pgtable_64.c | 1 +
- arch/x86/boot/compressed/sev.c        | 1 +
- arch/x86/include/asm/e820/types.h     | 2 +-
- arch/x86/include/asm/kexec.h          | 1 -
- arch/x86/include/asm/mem_encrypt.h    | 2 +-
- arch/x86/include/asm/sev.h            | 3 ++-
- arch/x86/include/asm/x86_init.h       | 2 --
- arch/x86/kernel/crash.c               | 1 +
- arch/x86/kernel/sev-shared.c          | 2 ++
- arch/x86/platform/pvh/enlighten.c     | 1 +
- arch/x86/xen/enlighten_pvh.c          | 1 +
- arch/x86/xen/vga.c                    | 1 -
- 16 files changed, 19 insertions(+), 8 deletions(-)
+So last statement: if you have clock provider and clock consumer, you
+must represent it in the bindings or provide rationale why it should not
+or must not be represented in the bindings. So far I do not see any of
+such arguments.
 
-diff --git a/arch/x86/boot/compressed/acpi.c b/arch/x86/boot/compressed/acpi.c
-index 55c98fdd67d2..4db998a8d8f0 100644
---- a/arch/x86/boot/compressed/acpi.c
-+++ b/arch/x86/boot/compressed/acpi.c
-@@ -5,6 +5,8 @@
- #include "../string.h"
- #include "efi.h"
- 
-+#include <asm/bootparam.h>
-+
- #include <linux/numa.h>
- 
- /*
-diff --git a/arch/x86/boot/compressed/cmdline.c b/arch/x86/boot/compressed/cmdline.c
-index c1bb180973ea..e162d7f59cc5 100644
---- a/arch/x86/boot/compressed/cmdline.c
-+++ b/arch/x86/boot/compressed/cmdline.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include "misc.h"
- 
-+#include <asm/bootparam.h>
-+
- static unsigned long fs;
- static inline void set_fs(unsigned long seg)
- {
-diff --git a/arch/x86/boot/compressed/efi.c b/arch/x86/boot/compressed/efi.c
-index 6edd034b0b30..f2e50f9758e6 100644
---- a/arch/x86/boot/compressed/efi.c
-+++ b/arch/x86/boot/compressed/efi.c
-@@ -7,6 +7,8 @@
- 
- #include "misc.h"
- 
-+#include <asm/bootparam.h>
-+
- /**
-  * efi_get_type - Given a pointer to boot_params, determine the type of EFI environment.
-  *
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index c0d502bd8716..01c89c410efd 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -33,7 +33,6 @@
- #include <linux/elf.h>
- #include <asm/page.h>
- #include <asm/boot.h>
--#include <asm/bootparam.h>
- #include <asm/desc_defs.h>
- 
- #include "tdx.h"
-@@ -53,6 +52,8 @@
- #define memptr unsigned
- #endif
- 
-+struct boot_param;
-+
- /* boot/compressed/vmlinux start and end markers */
- extern char _head[], _end[];
- 
-diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-index 51f957b24ba7..c882e1f67af0 100644
---- a/arch/x86/boot/compressed/pgtable_64.c
-+++ b/arch/x86/boot/compressed/pgtable_64.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include "misc.h"
-+#include <asm/bootparam.h>
- #include <asm/e820/types.h>
- #include <asm/processor.h>
- #include "pgtable.h"
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index 454acd7a2daf..13beae767e48 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -12,6 +12,7 @@
-  */
- #include "misc.h"
- 
-+#include <asm/bootparam.h>
- #include <asm/pgtable_types.h>
- #include <asm/sev.h>
- #include <asm/trapnr.h>
-diff --git a/arch/x86/include/asm/e820/types.h b/arch/x86/include/asm/e820/types.h
-index 314f75d886d0..47695db18246 100644
---- a/arch/x86/include/asm/e820/types.h
-+++ b/arch/x86/include/asm/e820/types.h
-@@ -2,7 +2,7 @@
- #ifndef _ASM_E820_TYPES_H
- #define _ASM_E820_TYPES_H
- 
--#include <uapi/asm/bootparam.h>
-+#include <asm/setup_data.h>
- 
- /*
-  * These are the E820 types known to the kernel:
-diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
-index c9f6a6c5de3c..91ca9a9ee3a2 100644
---- a/arch/x86/include/asm/kexec.h
-+++ b/arch/x86/include/asm/kexec.h
-@@ -25,7 +25,6 @@
- 
- #include <asm/page.h>
- #include <asm/ptrace.h>
--#include <asm/bootparam.h>
- 
- struct kimage;
- 
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index 359ada486fa9..c1a8a3408c18 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -15,7 +15,7 @@
- #include <linux/init.h>
- #include <linux/cc_platform.h>
- 
--#include <asm/bootparam.h>
-+struct boot_params;
- 
- #ifdef CONFIG_X86_MEM_ENCRYPT
- void __init mem_encrypt_init(void);
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index 5b4a1ce3d368..8dad8b1613bf 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -13,7 +13,6 @@
- 
- #include <asm/insn.h>
- #include <asm/sev-common.h>
--#include <asm/bootparam.h>
- #include <asm/coco.h>
- 
- #define GHCB_PROTOCOL_MIN	1ULL
-@@ -22,6 +21,8 @@
- 
- #define	VMGEXIT()			{ asm volatile("rep; vmmcall\n\r"); }
- 
-+struct boot_params;
-+
- enum es_result {
- 	ES_OK,			/* All good */
- 	ES_UNSUPPORTED,		/* Requested operation not supported */
-diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
-index c878616a18b8..f062715578a0 100644
---- a/arch/x86/include/asm/x86_init.h
-+++ b/arch/x86/include/asm/x86_init.h
-@@ -2,8 +2,6 @@
- #ifndef _ASM_X86_PLATFORM_H
- #define _ASM_X86_PLATFORM_H
- 
--#include <asm/bootparam.h>
--
- struct ghcb;
- struct mpc_bus;
- struct mpc_cpu;
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index c92d88680dbf..564cff7ed33a 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -26,6 +26,7 @@
- #include <linux/vmalloc.h>
- #include <linux/memblock.h>
- 
-+#include <asm/bootparam.h>
- #include <asm/processor.h>
- #include <asm/hardirq.h>
- #include <asm/nmi.h>
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index ccb0915e84e1..4962ec42dc68 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -9,6 +9,8 @@
-  * and is included directly into both code-bases.
-  */
- 
-+#include <asm/setup_data.h>
-+
- #ifndef __BOOT_COMPRESSED
- #define error(v)	pr_err(v)
- #define has_cpuflag(f)	boot_cpu_has(f)
-diff --git a/arch/x86/platform/pvh/enlighten.c b/arch/x86/platform/pvh/enlighten.c
-index 00a92cb2c814..944e0290f2c0 100644
---- a/arch/x86/platform/pvh/enlighten.c
-+++ b/arch/x86/platform/pvh/enlighten.c
-@@ -3,6 +3,7 @@
- 
- #include <xen/hvc-console.h>
- 
-+#include <asm/bootparam.h>
- #include <asm/io_apic.h>
- #include <asm/hypervisor.h>
- #include <asm/e820/api.h>
-diff --git a/arch/x86/xen/enlighten_pvh.c b/arch/x86/xen/enlighten_pvh.c
-index ada3868c02c2..9e9db601bd52 100644
---- a/arch/x86/xen/enlighten_pvh.c
-+++ b/arch/x86/xen/enlighten_pvh.c
-@@ -4,6 +4,7 @@
- 
- #include <xen/hvc-console.h>
- 
-+#include <asm/bootparam.h>
- #include <asm/io_apic.h>
- #include <asm/hypervisor.h>
- #include <asm/e820/api.h>
-diff --git a/arch/x86/xen/vga.c b/arch/x86/xen/vga.c
-index d97adab8420f..f7547807b0bd 100644
---- a/arch/x86/xen/vga.c
-+++ b/arch/x86/xen/vga.c
-@@ -2,7 +2,6 @@
- #include <linux/screen_info.h>
- #include <linux/init.h>
- 
--#include <asm/bootparam.h>
- #include <asm/setup.h>
- 
- #include <xen/interface/xen.h>
--- 
-2.43.0
+If you use arguments like:
+"My driver....": sorry, bindings are not about drivers
+"I don't have clock driver for WiFi": sorry, it does not matter if you
+can write one, right?
+
+Please reach internally your colleagues to solve these problems and make
+review process smoother.
+
+Best regards,
+Krzysztof
 
 
