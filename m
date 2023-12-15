@@ -1,106 +1,89 @@
-Return-Path: <linux-kernel+bounces-1329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 654C9814D7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:49:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CA15814D89
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2371E1F2517B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:49:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247141C23D21
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDBD3E473;
-	Fri, 15 Dec 2023 16:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GlwvFBbS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B9B3EA9F;
+	Fri, 15 Dec 2023 16:50:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B5C25546;
-	Fri, 15 Dec 2023 16:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=56+Wae/xX9CIF/Rb17HxT31PTyujjzTbsxy+sp2Y1vA=; b=GlwvFBbSvLeKzj0bgyCL8gJ9SX
-	j6jK5r4uA2qjfS9oos86V7tLq6rmiL7blM7qk+kWqZTWOY3pnE+EqF0o4VN8IaiJxE5shdE9+wPwl
-	YXTort9mUAZBpvow1tPlpX4GXAFt/osQP+BJK1HjLyS6HCpJrpL5dAZUvdGueuOvOlZETt/vwzDwq
-	oS8tHmaWd/7EPyBd6kS1ynzNMV99Yfe5aTY1Y2s61y2Pz43ixo7rEOFT6zliPsFM18UQr2KJF2we5
-	27d1omiYQ8/UgXkhC0Bz/HHWWaHIz6YxCQXAy+mNo7QEccRBVeYfBVLLSbWPX6jnPaD8KITGQwPCq
-	nkZ6Le3A==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEBNa-003vcV-1c;
-	Fri, 15 Dec 2023 16:49:38 +0000
-Message-ID: <03c0b3bd-5798-4066-964e-a884485fe1d3@infradead.org>
-Date: Fri, 15 Dec 2023 08:49:37 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB50F3DBB5;
+	Fri, 15 Dec 2023 16:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsFXD2Z30z6K6hC;
+	Sat, 16 Dec 2023 00:48:12 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2D8D01400D4;
+	Sat, 16 Dec 2023 00:50:11 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
+ 2023 16:50:10 +0000
+Date: Fri, 15 Dec 2023 16:50:09 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 18/21] ACPI: processor: Only call
+ arch_unregister_cpu() if HOTPLUG_CPU is selected
+Message-ID: <20231215165009.000035f2@Huawei.com>
+In-Reply-To: <E1rDOhH-00DvlO-UP@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOhH-00DvlO-UP@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] kernel-doc: Aling quick help and the code
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
-References: <20231215150341.1996720-1-andriy.shevchenko@linux.intel.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231215150341.1996720-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Wed, 13 Dec 2023 12:50:43 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
-
-On 12/15/23 07:03, Andy Shevchenko wrote:
-> The update to the quick help mentions -Wshort-description, but
-> code never supported for that. Align that with the code by allowing
-> both: -Wshort-description and -Wshort-desc.
+> From: James Morse <james.morse@arm.com>
 > 
-> Fixes: 56b0f453db74 ("kernel-doc: don't let V=1 change outcome")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-(Note: in Subject, s/Aling/Align/)
-
+> The kbuild robot points out that configurations without HOTPLUG_CPU
+> selected can try to build acpi_processor_post_eject() without success
+> as arch_unregister_cpu() is not defined.
+> 
+> Check this explicitly. This will be merged into:
+> | ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+> for any subsequent posting.
+> 
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
 > ---
->  scripts/kernel-doc | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-> index 0a890fe4d22b..7d7ed3e43946 100755
-> --- a/scripts/kernel-doc
-> +++ b/scripts/kernel-doc
-> @@ -23,7 +23,7 @@ kernel-doc - Print formatted kernel documentation to stdout
->  
->  =head1 SYNOPSIS
->  
-> - kernel-doc [-h] [-v] [-Werror] [-Wall] [-Wreturn] [-Wshort-description] [-Wcontents-before-sections]
-> + kernel-doc [-h] [-v] [-Werror] [-Wall] [-Wreturn] [-Wshort-desc[ription]] [-Wcontents-before-sections]
->     [ -man |
->       -rst [-sphinx-version VERSION] [-enable-lineno] |
->       -none
-> @@ -328,7 +328,7 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
->  	$Werror = 1;
->      } elsif ($cmd eq "Wreturn") {
->  	$Wreturn = 1;
-> -    } elsif ($cmd eq "Wshort-desc") {
-> +    } elsif ($cmd eq "Wshort-desc" or $cmd eq "Wshort-description") {
->  	$Wshort_desc = 1;
->      } elsif ($cmd eq "Wcontents-before-sections") {
->  	$Wcontents_before_sections = 1;
+> This should probably be squashed into an earlier patch.
 
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+Agreed. If not
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+
 
