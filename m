@@ -1,119 +1,125 @@
-Return-Path: <linux-kernel+bounces-1224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C68814BFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:41:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E104E814C01
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 090FA1F225F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:41:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9692B284973
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E944381B9;
-	Fri, 15 Dec 2023 15:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8454374F2;
+	Fri, 15 Dec 2023 15:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XWAeZwBw"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="H0mwJ/iU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B7B37169;
-	Fri, 15 Dec 2023 15:41:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CB16C433C8;
-	Fri, 15 Dec 2023 15:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702654890;
-	bh=9eb/YXAxsUcPYKS4pAEAtfBhfAIyQkqe9AYM+SecHT4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XWAeZwBw01RQ5p8XwwCktMHqn1dhx41Rd+aTliosRr6XB6IzVjzhEl//DzG7rggci
-	 Xc6elGVBXYp6B0eJjqzM7hYwKyyVDxCs6YR6+0Tu8S7HXqbdwkEl1AncckNACpnZhV
-	 vF3oNXUwXww5/E1874zeWbU6XF20SoqqHyk+fGyQ84ibYQUlIn8zcJx9KUPSi//uEO
-	 0omLe0NazHtTyf8tqcCtqVhu0rBtLmo979JfU55vJIklehbJHA8Kev87w1BBkJ+8ot
-	 3ST7Anyrn+i/bU/lqXD/OuiDaYDc3xDO+YXouJ4j4ky0l2EzSpW7EUkQ0co46J8LuU
-	 1+8LcChbddzOA==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50be9e6427dso822168e87.1;
-        Fri, 15 Dec 2023 07:41:29 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy2skKqnvIqCC2XKsVbknYgYlzIFgJlRO7Io+dLKA0BdOpeCW0H
-	ZJ0Eq6BLDeSGxCv+b1htmp/qjUU8UMx3vw5Xew==
-X-Google-Smtp-Source: AGHT+IGnAJfnE/sQ4Y8/oGYmAjDUUeKmL8J99ab6q70z2JbHalypEIVNYp+q9/np/aq6YGsP/Vl1mwpFXcp2/gLTWg4=
-X-Received: by 2002:ac2:5b50:0:b0:50b:eca9:fa18 with SMTP id
- i16-20020ac25b50000000b0050beca9fa18mr5216683lfp.118.1702654888249; Fri, 15
- Dec 2023 07:41:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EB837163
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3b9dc3215d2so380364b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:44:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702655042; x=1703259842; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j7aJHSr2v0aXZU02xkacVR4ZEcIVwOeki7KFEoLbvYY=;
+        b=H0mwJ/iUmraKTz/xal39Z/DhCVEsKZ26v9lrokF2n3J8z0uQIAiPPEldQ65gEypC0b
+         dIRZFAWrPtpzNzw/BfJpW/brxHHlL8N/WvX9PJ7Y9KYW/LPj5Jg1xwG89O3TXvwGhk7j
+         iUDa+t0KHQFMIGJFiiJRmLvBh6OGUSq7dD8tF7ahVSvo/NXasa4SxokeMv6fCD0HSQFL
+         NLMWkWKL/uCRs3MShdKlHMZ+RB3cZW/VziZeLuwWVeUpQPVtnBVOhDNhUSoQklP7jtAT
+         juJda2ZT4o4T2wRHNY+wVo7CGdQX0osx14BEs4LN0DmZba5Qegumrq8ukvlrcQUFg+pe
+         LvWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702655042; x=1703259842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j7aJHSr2v0aXZU02xkacVR4ZEcIVwOeki7KFEoLbvYY=;
+        b=riI5YZszH9vRolvpV5iqxf9OPTetW8ICCQta9yVtvqTwhLRnJV9MjP9CqgzkXyKkGp
+         Nnf0OuV/9QHdel4aVG3XzTDCt2QIjXrHSLQo8NNJ+gjLlnV/WA1roPytxHby/6WH4aBN
+         pZoxx4zA2jgiI7ybCK6foRoNO+0kAZ0ttq7eNrHEu6y2dqGGWcTDRZSRlfiBqer2Tn/Q
+         V3RoLeAyd/ZKV0C5Jvvkj0k5NmFzWaRuTQa4twOxZo1qf5iQ9tkvlEww1mttvbBS01iN
+         /qtTyPrLQ48S2eO17N3IxvuY+ByjZaC7NyLQepGRG3vUbcl1zfbJkaAqJgBwkL8Eyj+B
+         Fsbw==
+X-Gm-Message-State: AOJu0Yy+eYZPvD1LyC3SrdNsgQcQJN0rABH/rS92CfItVXMdFOFh3wYU
+	QfMOzRQLiRt35o5jcbcwbfNrN+CdaxGgwaFtO6Nfeg==
+X-Google-Smtp-Source: AGHT+IFN1tbCZ18F6HzWn4m42IKz8p0WMXaWajidN/61VmChg/3Rs/7g12h23MCSJU/ilj4aibP5ErMbBe8sRh1jxN0=
+X-Received: by 2002:a05:6808:448c:b0:3b8:632e:a83c with SMTP id
+ eq12-20020a056808448c00b003b8632ea83cmr13794717oib.17.1702655042017; Fri, 15
+ Dec 2023 07:44:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213232455.2248056-1-robh@kernel.org> <20231214-buzz-playlist-2f75095ef2b0@spud>
- <CAL_JsqKaGFfQNwR3HqRnVs3K7SUtevpoG6tEDntM0SNfyyp6AQ@mail.gmail.com> <e59ff8c2-caa1-4072-b86f-0446120ac49b@lunn.ch>
-In-Reply-To: <e59ff8c2-caa1-4072-b86f-0446120ac49b@lunn.ch>
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 15 Dec 2023 09:41:15 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJwqQTCJmAfNpM7z+0BjusB33OwUgr7_7AxOpnQ-GwaLQ@mail.gmail.com>
-Message-ID: <CAL_JsqJwqQTCJmAfNpM7z+0BjusB33OwUgr7_7AxOpnQ-GwaLQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] dt-bindings: net: marvell,orion-mdio: Drop "reg"
- sizes schema
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Conor Dooley <conor@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20231212105501.16347-1-brgl@bgdev.pl>
+In-Reply-To: <20231212105501.16347-1-brgl@bgdev.pl>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 15 Dec 2023 16:43:50 +0100
+Message-ID: <CAMRc=McFJzZ0+WpnpfdoSRkUbc8AxskCTPD8igVMw4N5=hoi0A@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: allocate memory atomically with a spinlock held
+To: Linus Walleij <linus.walleij@linaro.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Kent Gibson <warthog618@gmail.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 4:18=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Thu, Dec 14, 2023 at 12:12:42PM -0600, Rob Herring wrote:
-> > On Thu, Dec 14, 2023 at 10:23=E2=80=AFAM Conor Dooley <conor@kernel.org=
+On Tue, Dec 12, 2023 at 11:55=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
 > wrote:
-> > >
-> > > On Wed, Dec 13, 2023 at 05:24:55PM -0600, Rob Herring wrote:
-> > > > Defining the size of register regions is not really in scope of wha=
-t
-> > > > bindings need to cover. The schema for this is also not completely =
-correct
-> > > > as a reg entry can be variable number of cells for the address and =
-size,
-> > > > but the schema assumes 1 cell.
-> > > >
-> > > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > >
-> > > Does this not also remove restrictions on what the number in the reg
-> > > entry is actually allowed to be?
-> >
-> > Yes, that's what I mean with the first sentence. We don't do this
-> > anywhere else with the exception of some I2C devices with fixed
-> > addresses. Keying off of the interrupt property also seems
-> > questionable. If the register size is different, that should be a
-> > different compatible.
 >
-> Reading the code, it appears the hardware always supported interrupts,
-> however the first version of the driver never used them. It seems like
-> some DT blobs had the register space cover just the needed registers
-> for polling, and excluded the interrupt control register. When
-> interrupt support was added, all in-tree DT files were updated with
-> the extended register space, but to allow backwards compatibility, the
-> driver checks the length of the register space and will not enable
-> interrupts if its too small.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 >
-> I'm guessing that since the hardware did not change, a new compatible
-> was not used when adding interrupt support. And the yaml is there to
-> help when old out of tree .dts files are merged into the tree and have
-> the old register space.
+> We will eventually switch to protecting the GPIO descriptors with a mutex
+> but until then, we need to allocate memory for the label copy atomically
+> while we're holding the global spinlock.
 >
-> This is and old driver, and its usage of DT is from long before many
-> of the current best practices where determined, or yaml was even an
-> idea. So i'm not surprised it has a few odd quirks.
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-gpio/62588146-eed6-42f7-ba26-160226=
+b109fe@moroto.mountain/T/#u
+> Fixes: f8d05e276b45 ("gpiolib: remove gpiochip_is_requested()")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/gpio/gpiolib.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 >
-> I don't see a reason not to remove these constraints, as i said, the
-> driver should do the right thing if the register space it too small
-> and YAML does not warn about it.
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 4e190be75dc2..6efe44570333 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -2399,7 +2399,15 @@ char *gpiochip_dup_line_label(struct gpio_chip *gc=
+, unsigned int offset)
+>         if (!test_bit(FLAG_REQUESTED, &desc->flags))
+>                 return NULL;
+>
+> -       label =3D kstrdup(desc->label, GFP_KERNEL);
+> +       /*
+> +        * FIXME: Once we mark gpiod_direction_input/output() and
+> +        * gpiod_get_direction() with might_sleep(), we'll be able to pro=
+tect
+> +        * the GPIO descriptors with mutex (while value setting operation=
+s will
+> +        * become lockless).
+> +        *
+> +        * Until this happens, this allocation needs to be atomic.
+> +        */
+> +       label =3D kstrdup(desc->label, GFP_ATOMIC);
+>         if (!label)
+>                 return ERR_PTR(-ENOMEM);
+>
+> --
+> 2.40.1
+>
 
-Is that an Ack? I almost read your double negative as a Nak and that's
-what the maintainers read because it is now "Rejected" in PW.
+Patch applied.
 
-Rob
+Bart
 
