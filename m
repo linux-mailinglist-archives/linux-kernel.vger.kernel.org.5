@@ -1,119 +1,106 @@
-Return-Path: <linux-kernel+bounces-831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593C48146CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78A498146D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:25:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EFF11F2321F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:25:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C9661F231C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:25:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A752250E6;
-	Fri, 15 Dec 2023 11:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62228250E4;
+	Fri, 15 Dec 2023 11:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H75SE11a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B47C24B39
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:24:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4849C15;
-	Fri, 15 Dec 2023 03:25:40 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A98DD3F738;
-	Fri, 15 Dec 2023 03:24:54 -0800 (PST)
-From: Mark Rutland <mark.rutland@arm.com>
-To: linux-kernel@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>
-Cc: lucas.demarchi@intel.com,
-	mark.rutland@arm.com,
-	pengfei.xu@intel.com
-Subject: [PATCH] perf: Fix perf_event_validate_size() lockdep splat
-Date: Fri, 15 Dec 2023 11:24:50 +0000
-Message-Id: <20231215112450.3972309-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.30.2
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A194625578;
+	Fri, 15 Dec 2023 11:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3333131e08dso487947f8f.2;
+        Fri, 15 Dec 2023 03:25:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702639498; x=1703244298; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=78QwY/yXp7SyEhpI3hXVRE/tZyrcCs2zsxYlhvSEhSw=;
+        b=H75SE11aOHp4MsZGHC1WeFjfX9x7PLQRMwdoTs2Y//jqKBg3fMvr39MlqgfCsFqYpD
+         4r4GfAGDh3jDKOWN2W/uKrfF1r0A2P5uxYtPCzkBkoH4SxO/ZnVsXCAH55xqqbeF4PO8
+         RcXLSQSEn+f9c2PWno5WH0YkQUbNurkQSD91b32fzNNhYufyYUjw4zpN4VBTDZIMfn52
+         m3LtwShSD1J7k5kHCi5zdbrtOtu2pJg39e6gYSIfChyRZ+1F/m8wrCRFYqAacaLf4v59
+         s/chXjNMHdSD9K9w+C8P0f5M/zhFN8ZNd56DHpVf2dxMBepkJ3gLe92OrPSr8eCexttH
+         VJHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702639498; x=1703244298;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=78QwY/yXp7SyEhpI3hXVRE/tZyrcCs2zsxYlhvSEhSw=;
+        b=eJ6HzvnaK1L4MExagZwUZo0CdagyvJpigdXwZkT91AvtZbxu/+ityGPGFr9tZ8puQl
+         SNFzxLsC2PBJ46qUYV1WahQ7oGDHDA9zffKrBTu2mgjE7t+X28WdtiMReyCGWx8ZtPPC
+         2t4M7Fegz4OA6D2olmG7WK56LZ/cMMj/3iX87XaG953ijeVaRDdukWYzQzymFAXjL5R1
+         2qUTipMyLAPI65QmvWiiY//5aXLaTACtR0p4JAsf+8xAVdLuiEDhZ0ATTknTK/mPgKEQ
+         rdnDfFTZ+Fij91DXDLKkDQUajnSQA//HD/K7Q8sGLt2EmiLIAevAMgKnfxRyUOSCrUeZ
+         KSgw==
+X-Gm-Message-State: AOJu0YzqsYkzBH+9ztHBo+qHoKZjIY/YZtqPQvMT/sUm3XtHAFl7r0Zq
+	fUDxt5dlH2GhfGtZkTmgsNk=
+X-Google-Smtp-Source: AGHT+IHbvlF50uwy5uxAGyjsXMY3E1oRBF1pOxK0P3BvjONqgzkK+7agL/9FjbSYjrZbPUgvJTYAew==
+X-Received: by 2002:adf:ed49:0:b0:336:4350:e2fb with SMTP id u9-20020adfed49000000b003364350e2fbmr2275153wro.76.1702639498352;
+        Fri, 15 Dec 2023 03:24:58 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id df5-20020a5d5b85000000b003364a0e6983sm3668181wrb.62.2023.12.15.03.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 03:24:57 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Shuah Khan <shuah@kernel.org>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kselftest@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] powerpc/selftests: Fix spelling mistake "EACCESS" -> "EACCES"
+Date: Fri, 15 Dec 2023 11:24:56 +0000
+Message-Id: <20231215112456.13554-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-When lockdep is enabled, the for_each_sibling_event(sibling, event)
-macro checks that event->ctx->mutex is held. When creating a new group
-leader event, we call perf_event_validate_size() on a partially
-initialized event where event->ctx is NULL, and so when
-for_each_sibling_event() attempts to check event->ctx->mutex, we get a
-splat, as reported by Lucas De Marchi:
+There is a spelling mistake of the EACCES error name, fix it.
 
-  WARNING: CPU: 8 PID: 1471 at kernel/events/core.c:1950 __do_sys_perf_event_open+0xf37/0x1080
-
-This only happens for a new event which is its own group_leader, and in
-this case there cannot be any sibling events. Thus it's safe to skip the
-check for siblings, which avoids having to make invasive and ugly
-changes to for_each_sibling_event().
-
-Avoid the splat by bailing out early when the new event is its own
-group_leader.
-
-Fixes: 382c27f4ed28f803 ("perf: Fix perf_event_validate_size()")
-Reported-by: Lucas De Marchi <lucas.demarchi@intel.com>
-Closes: https://lore.kernel.org/lkml/20231214000620.3081018-1-lucas.demarchi@intel.com/
-Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-Closes: https://lore.kernel.org/lkml/ZXpm6gQ%2Fd59jGsuW@xpf.sh.intel.com/
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- kernel/events/core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Ingo, Boris, Peter,
-
-I'm not sure who's still around and who has disappeared for the
-holidays, but I'm hoping at least one of you is able to queue this. I've
-tested the patch on arm64 with Syzkaller (and syz-repro); before this
-patch it hits the splat near-instantly, and after this patch all seems
-well.
-
-The broken commit was merged in v6.7-rc5 via:
-
-  https://lore.kernel.org/lkml/20231210105949.GAZXWaJe6DeHU9+ofl@fat_crate.local/
-
-... in merge commit:
-
-  537ccb5d28d6f398 ("Merge tag 'perf_urgent_for_v6.7_rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip")
-
-Mark.
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index c9d123e13b579..9efd0d7775e7c 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1947,6 +1947,16 @@ static bool perf_event_validate_size(struct perf_event *event)
- 				   group_leader->nr_siblings + 1) > 16*1024)
- 		return false;
+diff --git a/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c b/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c
+index d5436de5b8ed..f56c15a11e2f 100644
+--- a/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c
++++ b/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c
+@@ -177,7 +177,7 @@ static const struct sysparm_test sysparm_tests[] = {
+ 	},
+ 	{
+ 		.function = set_with_ro_fd,
+-		.description = "PAPR_IOC_SYSPARM_SET returns EACCESS on read-only fd",
++		.description = "PAPR_IOC_SYSPARM_SET returns EACCES on read-only fd",
+ 	},
+ };
  
-+	/*
-+	 * When creating a new group leader, group_leader->ctx is initialized
-+	 * after the size has been validated, but we cannot safely use
-+	 * for_each_sibling_event() until group_leader->ctx is set. A new group
-+	 * leader cannot have any siblings yet, so we can safely skip checking
-+	 * the non-existent siblings.
-+	 */
-+	if (event == group_leader)
-+		return true;
-+
- 	for_each_sibling_event(sibling, group_leader) {
- 		if (__perf_event_read_size(sibling->attr.read_format,
- 					   group_leader->nr_siblings + 1) > 16*1024)
 -- 
-2.30.2
+2.39.2
 
 
