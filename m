@@ -1,84 +1,167 @@
-Return-Path: <linux-kernel+bounces-1243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFAB8814C3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:00:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E7C4814C5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CDD72824C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:00:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE3BB1C22C60
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F96A3BB2E;
-	Fri, 15 Dec 2023 16:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF503A8C0;
+	Fri, 15 Dec 2023 16:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="KVLtk1/M"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EkTbs8Sv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FDF3BB25;
-	Fri, 15 Dec 2023 16:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id DE4B72ED;
-	Fri, 15 Dec 2023 16:00:04 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net DE4B72ED
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1702656005; bh=upxHaV1oFUKgMeun+mdP3PZ0LNp0u5W93SeOkY5xwms=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=KVLtk1/M/RquhI+/JDlI8AoU2l6tZZQ3VX12/Il2DpiQ8nE3sR4NEDCLbbGlwJWJE
-	 Bo2tjrq8q3Ruk/gpaBrYVc7MLRxDTBtJtpN+uZHRvlJxqLtpoPTHxfiKswZ4Kf1G7L
-	 AGz4INEQyLQCmS+JiQyd7MF0F1vWLN+gX1VW7k8vEpUg8kHiIOS+pkjTp0eDiHh9Jg
-	 L2CMRJ5ZAg17blVDTcr6ZW7mULkT86S7SbYkCxo7o++dz2i9SSDcw/lzCtY4dbJeFk
-	 C1IaSxnEVYox+oDNvr3RhXglFNQHDTucTL8N0AFOgc6WmlnihBqfE4K3Q2RUO42D+w
-	 CjVptWWBp4fJw==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Avadhut Naik <avadhut.naik@amd.com>
-Cc: linux-doc@vger.kernel.org, carlos.bilbao@amd.com,
- linux-kernel@vger.kernel.org, avadnaik@amd.com
-Subject: Re: [PATCH 0/4] Spanish translations and corrections
-In-Reply-To: <20231211023730.2026204-1-avadhut.naik@amd.com>
-References: <20231211023730.2026204-1-avadhut.naik@amd.com>
-Date: Fri, 15 Dec 2023 09:00:04 -0700
-Message-ID: <87il4zqwvv.fsf@meer.lwn.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E95F36AE0;
+	Fri, 15 Dec 2023 16:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702656142; x=1734192142;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=T9RSzfQqw97u35cP02echEw6kn4/I1wBERkazpCYse0=;
+  b=EkTbs8SvvR7AaB51QsNZO88wzFpbWK5raXEw/acUXUV3+d3DjA1jgrk+
+   rmgNV49L3O87SFWyKtzk4qdGELRTCc//CjlAMp3aHWOv0AObN3OWqfaPJ
+   uJF5lsNU7AmFdAxnYdh5PZciJyOhH3EwPSlieYLRCxBYRBeKvCEidN7wO
+   o48T3FvxoqVgxp+8W/clSVr4nNd0oJ7iyWos+NldW8PcK0rPdTkL8ebZR
+   88b0gEpP72/eOOWXCtA91DzGst29IB0DgtnkBO0YjwvhX6VaKRks8KakH
+   tmxmneJ2X4zKUb4nHMu7aaxOF6UkwBjeWmRzm5FRkzCwVCrVvVSjEUJrK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="13973685"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="13973685"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:02:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="948010121"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="948010121"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by orsmga005.jf.intel.com with ESMTP; 15 Dec 2023 08:02:20 -0800
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To: jikos@kernel.org,
+	jic23@kernel.org,
+	lars@metafoo.de,
+	Basavaraj.Natikar@amd.com
+Cc: linux-input@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+	stable@vger.kernel.org
+Subject: [PATCH] iio: light: hid-sensor-als: Avoid failure for chromaticity support
+Date: Fri, 15 Dec 2023 08:01:59 -0800
+Message-Id: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Avadhut Naik <avadhut.naik@amd.com> writes:
+With the commit ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity
+support"), there is an assumption that the every HID ALS descriptor has
+support of usage ids for chromaticity support. If they are not present,
+probe fails for the driver . This breaks ALS functionality on majority of
+platforms.
 
-> This patchset translates two documents into Spanish and also warns of or
-> fixes existing inconsistencies.
->
-> The first patch translates process/management-style into Spanish.
->
-> The second patch translates process/submit-checklist into Spanish
->
-> The third patch warns of some links in Spanish translation pointing to
-> English documentation.
->
-> The fourth patch moves howto.rst file into the process directory for
-> Spanish translation per the original English documentation.
+It is possible that chromaticity usage ids are not present. When not
+present, restrict number of IIO channels to not include support for
+chromaticity and continue.
 
-I've applied the series, thanks.  One little nit:
+Fixes: ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity support")
+Reported-by: Thomas Weißschuh <thomas@t-8ch.de>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218223
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/iio/light/hid-sensor-als.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-> Reviewed-By: Carlos Bilbao <carlos.bilbao@amd.com>
+diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
+index f17304b54468..9941b0b927c7 100644
+--- a/drivers/iio/light/hid-sensor-als.c
++++ b/drivers/iio/light/hid-sensor-als.c
+@@ -303,11 +303,14 @@ static int als_parse_report(struct platform_device *pdev,
+ 				struct hid_sensor_hub_device *hsdev,
+ 				struct iio_chan_spec *channels,
+ 				unsigned usage_id,
+-				struct als_state *st)
++				struct als_state *st,
++				int *max_channels)
+ {
+ 	int ret;
+ 	int i;
+ 
++	*max_channels = CHANNEL_SCAN_INDEX_MAX;
++
+ 	for (i = 0; i <= CHANNEL_SCAN_INDEX_ILLUM; ++i) {
+ 		ret = sensor_hub_input_get_attribute_info(hsdev,
+ 						HID_INPUT_REPORT,
+@@ -326,8 +329,12 @@ static int als_parse_report(struct platform_device *pdev,
+ 				usage_id,
+ 				HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE,
+ 				&st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP]);
+-	if (ret < 0)
+-		return ret;
++	if (ret < 0) {
++		*max_channels = CHANNEL_SCAN_INDEX_ILLUM;
++		ret = 0;
++		goto skip_color_chromaticity;
++	}
++
+ 	als_adjust_channel_bit_mask(channels, CHANNEL_SCAN_INDEX_COLOR_TEMP,
+ 				st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].size);
+ 
+@@ -354,6 +361,7 @@ static int als_parse_report(struct platform_device *pdev,
+ 			st->als[next_scan_index].report_id);
+ 	}
+ 
++skip_color_chromaticity:
+ 	st->scale_precision = hid_sensor_format_scale(usage_id,
+ 				&st->als[CHANNEL_SCAN_INDEX_INTENSITY],
+ 				&st->scale_pre_decml, &st->scale_post_decml);
+@@ -364,7 +372,7 @@ static int als_parse_report(struct platform_device *pdev,
+ /* Function to initialize the processing for usage id */
+ static int hid_als_probe(struct platform_device *pdev)
+ {
+-	int ret = 0;
++	int ret = 0, max_channels;
+ 	static const char *name = "als";
+ 	struct iio_dev *indio_dev;
+ 	struct als_state *als_state;
+@@ -398,15 +406,15 @@ static int hid_als_probe(struct platform_device *pdev)
+ 
+ 	ret = als_parse_report(pdev, hsdev,
+ 			       (struct iio_chan_spec *)indio_dev->channels,
+-			       hsdev->usage,
+-			       als_state);
++			       hsdev->usage, als_state, &max_channels);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to setup attributes\n");
+ 		return ret;
+ 	}
+ 
+-	indio_dev->num_channels =
+-				ARRAY_SIZE(als_channels);
++	/* +1 to include time stamp */
++	indio_dev->num_channels = max_channels + 1;
++
+ 	indio_dev->info = &als_info;
+ 	indio_dev->name = name;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+-- 
+2.25.1
 
-While there are 400 instances of Reviewed-By (capital "B") in the commit
-history, they are rather overshadowed by the over 250,000 instances of
-"Reviewed-by" (lower-case "b").  I think it's best to stick with the
-crowd here, so I changed those tags.
-
-Thanks,
-
-jon
 
