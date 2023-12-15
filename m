@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0C9481458C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:30:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FB681458F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:30:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2099B1C23028
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:30:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F9012851B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1A724A0F;
-	Fri, 15 Dec 2023 10:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6583424B50;
+	Fri, 15 Dec 2023 10:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dlDKy0Qx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNW/FWL+"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59DB208A0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539D6208D7;
 	Fri, 15 Dec 2023 10:30:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 49D8FC433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AB068C433CD;
 	Fri, 15 Dec 2023 10:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1702636224;
-	bh=03F3Xbn+qBzY9EYDhrw3WRnqK6/tNhnCJJHn+Zgaprs=;
+	bh=zUs38Qy9ljrIft3cFXjmCP9RlrZz941EopDb/Elva7k=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dlDKy0QxHrho1xQ73unyksu7JhKeAw4a4UnvfP4afjyeiiGAoT4H6sItvm1s/ULOc
-	 Gj2m9tqPAITy+h8jpjWDLaHPqBEKye1hzJ2TrWsSZ85sp1UKtR2ocMpx+aTlyajYuF
-	 /r/j43TKyzT/sERM5t1/Q0KjN+OEynI0GKxvSP5sE3MjggE2GHpfN9xHhrZVFd5QEV
-	 fo2DxkG4PSiRWXguxyFBxcDTF3H9bwceaA6hKCjkrySAjHiznwAvHWzvdw8ZAkx0/H
-	 o62OigqNs+h1Hp/8ZrOVkr3bJOLX2YjgDta9mlvkIIN8lzOx4Rxm4hJf73eD+rjE2g
-	 6FSGQ2Xq2jElQ==
+	b=HNW/FWL+3oF57oWSaXPYZVA58wYO5saeO1L5r7ygxBVFyiA7dcyPMK4EyZnkpIbdX
+	 I14R3LO3j+Ujr6H820AwI3m3qGdSlZATJnRgSsXgEiqSFkeMealVd2v6E+vQrBZ32d
+	 A6iD4vt2uXmKzEp60lWGbxESOmUBozkc9EndYNXQ+wbsp46OyWtjUAA65f70I1hMYB
+	 Oqgw6EgbscC4b5LWicVpLmiUTO4qPg24ZcZXxxhMEaog6IP/pUqZ+hLyzBxkqX+mEr
+	 ufUk93Dts+zv2QJKFJIeaJXZm/F9r67NojH4yv3iG7fF8zDpOKM+Zq7fRza5Wq/9Pg
+	 yFSS0vXYohnKA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 35901DD4EF5;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 943F5DD4EF5;
 	Fri, 15 Dec 2023 10:30:24 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -43,38 +43,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net PATCH] octeontx2-pf: Fix graceful exit during PFC configuration
- failure
+Subject: Re: [PATCH for-next v2] net: mana: add msix index sharing between EQs
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170263622421.29656.18263550245322394466.git-patchwork-notify@kernel.org>
+ <170263622459.29656.3858446025399076996.git-patchwork-notify@kernel.org>
 Date: Fri, 15 Dec 2023 10:30:24 +0000
-References: <20231213181044.103943-1-sumang@marvell.com>
-In-Reply-To: <20231213181044.103943-1-sumang@marvell.com>
-To: Suman Ghosh <sumang@marvell.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, sgoutham@marvell.com, sbhatta@marvell.com,
- jerinj@marvell.com, gakula@marvell.com, hkelam@marvell.com,
- lcherian@marvell.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1702461707-2692-1-git-send-email-kotaranov@linux.microsoft.com>
+In-Reply-To: <1702461707-2692-1-git-send-email-kotaranov@linux.microsoft.com>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+ wei.liu@kernel.org, kuba@kernel.org, leon@kernel.org, decui@microsoft.com,
+ edumazet@google.com, cai.huoqing@linux.dev, pabeni@redhat.com,
+ davem@davemloft.net, longli@microsoft.com, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This patch was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Wed, 13 Dec 2023 23:40:44 +0530 you wrote:
-> During PFC configuration failure the code was not handling a graceful
-> exit. This patch fixes the same and add proper code for a graceful exit.
+On Wed, 13 Dec 2023 02:01:47 -0800 you wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
-> Fixes: 99c969a83d82 ("octeontx2-pf: Add egress PFC support")
-> Signed-off-by: Suman Ghosh <sumang@marvell.com>
-> ---
->  .../ethernet/marvell/octeontx2/nic/otx2_dcbnl.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
+> This patch allows to assign and poll more than one EQ on the same
+> msix index.
+> It is achieved by introducing a list of attached EQs in each IRQ context.
+> It also removes the existing msix_index map that tried to ensure that there
+> is only one EQ at each msix_index.
+> This patch exports symbols for creating EQs from other MANA kernel modules.
+> 
+> [...]
 
 Here is the summary with links:
-  - [net] octeontx2-pf: Fix graceful exit during PFC configuration failure
-    https://git.kernel.org/netdev/net/c/8c97ab5448f2
+  - [for-next,v2] net: mana: add msix index sharing between EQs
+    https://git.kernel.org/netdev/net-next/c/02fed6d92bad
 
 You are awesome, thank you!
 -- 
