@@ -1,89 +1,93 @@
-Return-Path: <linux-kernel+bounces-1278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED87814CC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:17:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3372814CCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B6711C23AEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:17:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81D8E1F25189
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BD13C47B;
-	Fri, 15 Dec 2023 16:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vj6uDuZW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4333C062;
+	Fri, 15 Dec 2023 16:18:09 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C9D3C460
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702657063; x=1734193063;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Dryg73Lh7juDYIoh0VKY0VS11aUFe12BtdnUxm2iw4o=;
-  b=Vj6uDuZWR3WDt5ye3kLE3wKynuzJ4uJDLsMh8aV2bqQq5nGz0vjcOq1N
-   bNsUSc/7jqo9gV7x9l6ZYRk3RNbMzB5L/iJoUFj+iP8UY3HKYlySrssXg
-   JG/S0pIoyH8lnojoB3qd96eVmXL2qcv/ZyrfmkDEmElUnibCfVSLc0AJn
-   xkiqrvCBBHbm/NFCsGpFZm0WOR3QiF/VqShduP8WN7SmCEwiQPlVICW6a
-   H/j6r42rxW8ZKTOAeyPa4nymdM7B7tec8cVi9lyP4dzj3aCIxCKKsKmDi
-   fd/grKlzp5yRCkA9/jH55LZccBLqaxg+RWz/V223owF/3U9ltTk3JbHWU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="395035849"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="395035849"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:17:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="898190485"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="898190485"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.8.163])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:17:40 -0800
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- "Fabio M. De Francesco" <fabio.maria.de.francesco@intel.com>,
- Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH] mm/memory: Replace kmap() with kmap_local_page()
-Date: Fri, 15 Dec 2023 17:17:37 +0100
-Message-ID: <5113571.5fSG56mABF@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <3867181.PYKUYFuaPT@fdefranc-mobl3>
-References:
- <20231214081039.1919328-1-fabio.maria.de.francesco@linux.intel.com>
- <20231214114747.ddd42a1e567d2bd0f95f2095@linux-foundation.org>
- <3867181.PYKUYFuaPT@fdefranc-mobl3>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E50C3DB84;
+	Fri, 15 Dec 2023 16:18:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsDrC5nzSz6JB0q;
+	Sat, 16 Dec 2023 00:16:59 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7FBAC140133;
+	Sat, 16 Dec 2023 00:18:05 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
+ 2023 16:18:04 +0000
+Date: Fri, 15 Dec 2023 16:18:03 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 10/21] ACPI: Check _STA present bit before making
+ CPUs not present
+Message-ID: <20231215161803.00002d8c@Huawei.com>
+In-Reply-To: <E1rDOgc-00DvkW-PZ@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOgc-00DvkW-PZ@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Friday, 15 December 2023 09:40:33 CET Fabio M. De Francesco wrote:
-> On Thursday, 14 December 2023 20:47:47 CET Andrew Morton wrote:
-> >
-> > [skip]
-> >
-> > I tentatively rewrote your explicit From: to @linux.intel.com, which
-> > may have been unwelcome.  What can we do here?
+On Wed, 13 Dec 2023 12:50:02 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+
+> From: James Morse <james.morse@arm.com>
 > 
-Sorry, in my last message I asked you to discard this patch and sent another 
-one but I hadn't yet understood that you rewrote and accepted it. My English 
-is still not good enough. Thanks for rewriting it. I'm perfectly fine with your 
-decision to rewrite it to @linux.intel.com.
-
-Fabio
-
-
-
+> When called acpi_processor_post_eject() unconditionally make a CPU
+> not-present and unregisters it.
+> 
+> To add support for AML events where the CPU has become disabled, but
+> remains present, the _STA method should be checked before calling
+> acpi_processor_remove().
+> 
+> Rename acpi_processor_post_eject() acpi_processor_remove_possible(), and
+> check the _STA before calling.
+> 
+> Adding the function prototype for arch_unregister_cpu() allows the
+> preprocessor guards to be removed.
+> 
+> After this change CPUs will remain registered and visible to
+> user-space as offline if buggy firmware triggers an eject-request,
+> but doesn't clear the corresponding _STA bits after _EJ0 has been
+> called.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+LGTM
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
