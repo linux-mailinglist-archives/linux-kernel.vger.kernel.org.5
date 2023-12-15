@@ -1,143 +1,90 @@
-Return-Path: <linux-kernel+bounces-701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58E8E8144D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:47:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 546FE8144CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC9B1B22BE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:47:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FD95282BA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C2A18AF9;
-	Fri, 15 Dec 2023 09:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D97B18654;
+	Fri, 15 Dec 2023 09:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNPKVf7v"
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="JfA8lXMP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021021A27A;
-	Fri, 15 Dec 2023 09:47:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 685EEC433C8;
-	Fri, 15 Dec 2023 09:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702633637;
-	bh=UplJWH4Q/tqUK9lL0NeQ0i3KjWIEOgUf4v3sM9Fc79Q=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=lNPKVf7v2cnu27ZcpyO4bQM6FKX7jw9BMpAZorhmoXzAaSEXvTqMjXysELQs4tKGF
-	 EVEjrNJ2bcHxLNK9PhBPSXHDVD2AcxVLgajBlj5LJsnLJ03/e/jDdLqn/T8bJKDUQ6
-	 ByaPiISZPWI1fz0I2L9mkPxfD6shTR4mO4Y6qnJP/CRosOBUrD1463aynQ6Wg2P4Sz
-	 iZRmLWULYk9YGyYgzdPbzVwf3fQOSG90KwcHPdGdkJTN1YCpu/UULJFnq6QsQ4XulZ
-	 pXoOMIqrr7ZkTBpxLPpfc1FS3n76My/oyuk4EKSZm1nm3fE++7CCSaT6vhcJuoca7A
-	 xP6fZKPQdIvLQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4744EC4167B;
-	Fri, 15 Dec 2023 09:47:17 +0000 (UTC)
-From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
-Date: Fri, 15 Dec 2023 17:33:32 +0800
-Subject: [PATCH v3] arm64: dts: qcom: qcs6490-idp: Add definition for three
- LEDs.
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3C7618029;
+	Fri, 15 Dec 2023 09:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost.localdomain (unknown [46.242.8.170])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 6598540F1DC5;
+	Fri, 15 Dec 2023 09:34:11 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 6598540F1DC5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1702632851;
+	bh=ccZp27R6c7ZeC11LFGMLzR031473jv38nkI+1DlG12s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JfA8lXMPcs09R7jTJgYkxAHZzWmAGdt7d5I+s5lhruo3caq4xyvs64vuUx0iCks+8
+	 9oG9jWmNemVAgjdODNZjkiSCklUag4h9oKtkvK9G+kE/UPQBBT9q6TICKEhcplpKdJ
+	 VW7vFwzrpmYyBVD25+EeUcU0Xg6SJ57aHsXDc95M=
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Arto Merilainen <amerilainen@nvidia.com>,
+	Terje Bergstrom <tbergstrom@nvidia.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] drm/tegra: put drm_gem_object ref on error in tegra_fb_create
+Date: Fri, 15 Dec 2023 12:33:55 +0300
+Message-ID: <20231215093356.12067-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231215-lpg-v3-1-4e2db0c6df5f@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAHAdfGUC/0XMQQ6CMBCF4auQWTuGaUGNK+9hjBnaASYBCq0SE
- 8Ldbdy4/JL/vQ2SRJUE12KDKKsmDVOGPRTgep46QfXZYEpjyVCNw9xhxey9PVcXIoZczlFa/fx
- e7o/sNoYRX30U/m+JSlxcGJ+D+ISrQULr2FPbNO5U8215q9PJHXMC+/4FmQQtqJgAAAA=
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702633636; l=1646;
- i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
- bh=jkgKPcTHB0LvObnOdM+JMFH2yGRqbzzTL1fwXf6UZho=;
- b=8cRQyf8GFCz6G7Lm8RUia1YB/uRkxLY/eTLY+R57RE12nYTwiZcxIu40k7vqcqHeR5rBPK33r
- b4+KOeOABaKCoioDKb2XNu2GP83ffvmeGQobZ0KgCb0vzcXQ2u/SMUz
-X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
- pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
-X-Endpoint-Received:
- by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
-X-Original-From: Hui Liu <quic_huliu@quicinc.com>
-Reply-To: <quic_huliu@quicinc.com>
+Content-Transfer-Encoding: 8bit
 
-From: Hui Liu <quic_huliu@quicinc.com>
+Inside tegra_fb_create(), drm_gem_object_lookup() increments ref count of
+the found object. But if the following size check fails then the last
+found object's ref count should be put there as the unreferencing loop
+can't detect this situation.
 
-Add definition for three LEDs to make sure they can
-be enabled base on QCOM LPG LED driver.
+Found by Linux Verification Center (linuxtesting.org).
 
-Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+Fixes: de2ba664c30f ("gpu: host1x: drm: Add memory manager and fb")
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 ---
-Changes in v3:
-- Rephrased commit text and updated the nodes to qcm6490-idp board file.
-- Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
+ drivers/gpu/drm/tegra/fb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes in v2:
-- Rephrased commit text and updated the nodes to board file.
-- Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
----
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-index 37c91fdf3ab9..f801144a1556 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -5,6 +5,7 @@
+diff --git a/drivers/gpu/drm/tegra/fb.c b/drivers/gpu/drm/tegra/fb.c
+index a719af1dc9a5..46170753699d 100644
+--- a/drivers/gpu/drm/tegra/fb.c
++++ b/drivers/gpu/drm/tegra/fb.c
+@@ -159,6 +159,7 @@ struct drm_framebuffer *tegra_fb_create(struct drm_device *drm,
  
- /dts-v1/;
+ 		if (gem->size < size) {
+ 			err = -EINVAL;
++			drm_gem_object_put(gem);
+ 			goto unreference;
+ 		}
  
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sc7280.dtsi"
- #include "pm7325.dtsi"
-@@ -414,6 +415,30 @@ vreg_bob_3p296: bob {
- 	};
- };
- 
-+&pm8350c_pwm {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	led@1 {
-+		reg = <1>;
-+		color = <LED_COLOR_ID_RED>;
-+		label = "red";
-+	};
-+
-+	led@2 {
-+		reg = <2>;
-+		color = <LED_COLOR_ID_GREEN>;
-+		label = "green";
-+	};
-+
-+	led@3 {
-+		reg = <3>;
-+		color = <LED_COLOR_ID_BLUE>;
-+		label = "blue";
-+	};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-
----
-base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
-change-id: 20231215-lpg-4aadd374811a
-
-Best regards,
 -- 
-Hui Liu <quic_huliu@quicinc.com>
+2.43.0
 
 
