@@ -1,115 +1,93 @@
-Return-Path: <linux-kernel+bounces-315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96EA813F38
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:31:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CFAA813F33
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:30:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 171091C220C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAE891F22C6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B78111A;
-	Fri, 15 Dec 2023 01:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8783A44;
+	Fri, 15 Dec 2023 01:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XuJluONs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kUx7byr3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8536ED2;
-	Fri, 15 Dec 2023 01:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702603859; x=1734139859;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bo4CQbjDhFgPpZxFoaEvDAhRSz9PVVm5QEWsB3l+Hvk=;
-  b=XuJluONsDon84bZ/4wBMxn5QUNTntsBWx4gm1jbxm+wZHrbyY0LB6YkT
-   W73nuNOAj5hzJtHhBuQlriKvImG7sUXGW1UaV5zYtVHSwtc8d78D58g4s
-   MaErkP1PpDGJuhh+pFBRB1bj9DqIQHZInyVclEvLuctD2DSaOkWYYI+kk
-   V+dN5G+i00N64SGZCJB4IUzEJSDipmoYXIZtp2CF8Yte/NJ5jlMLRHikf
-   LGBKy+z0rZ8jG7GZzMBYAF5r4mePqD8Rcc8/2VautMPmCdw+CNKGt1yB3
-   u7ZhNyI4pbuIuiHhLTRFfwrfHcotwlrJwyXOhjSO3P3bGPsCJJdkajq/q
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="399050762"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="399050762"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 17:30:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="897960014"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="897960014"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 14 Dec 2023 17:30:50 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rDx2N-000Mwz-31;
-	Fri, 15 Dec 2023 01:30:47 +0000
-Date: Fri, 15 Dec 2023 09:30:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	x86@kernel.org, akpm@linux-foundation.org, arnd@arndb.de,
-	tglx@linutronix.de, luto@kernel.org, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, hpa@zytor.com, mhocko@kernel.org,
-	tj@kernel.org, ying.huang@intel.com, gregory.price@memverge.com,
-	corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com,
-	honggyu.kim@sk.com, vtavarespetr@micron.com, peterz@infradead.org,
-	jgroves@micron.com, ravis.opensrc@micron.com, sthanneeru@micron.com,
-	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com
-Subject: Re: [PATCH v3 09/11] mm/mempolicy: add get_mempolicy2 syscall
-Message-ID: <202312150958.WYyFWIdr-lkp@intel.com>
-References: <20231213224118.1949-10-gregory.price@memverge.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3235E36F;
+	Fri, 15 Dec 2023 01:30:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 96382C433C9;
+	Fri, 15 Dec 2023 01:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702603825;
+	bh=jtcofboF/4WRkBgEMaFOO3hoqYqlP2cYDQy7vfXOtb8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=kUx7byr3SsEs7Wq7NG9IdkE4P24QeqVM8UaxMNJ3Um/2ZdvgPDRJTkVijgaFP+6Cf
+	 CWbnMgzaPZLVUn/zXczIfIG6JSBab/BbR2NVbjev1y/KUAZSeZyqX8rJafM2mQxTCR
+	 ojn7f08mMdE3/Kw3gi0OIGY4mE9umTwFxFGaRjja2iIeSwT4EpePMm4nin19j6HQtc
+	 +sjAO54gLZaEwLENIhc14PMXWwK5QrMtEl4AmKSb8eW7sK/TTRxg0blO3/dWKgT+ZA
+	 IVLOQvPZGcXRPgyDoU+GRCFXJ4Wi7gyXHw5OYU0WTapy9u0sqreDyxPzC3qlLZ807d
+	 sg5TT3ADD3XoQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 78E95DD4EFA;
+	Fri, 15 Dec 2023 01:30:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213224118.1949-10-gregory.price@memverge.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v6 0/5] Add bpf_xdp_get_xfrm_state() kfunc
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170260382549.15017.6886623501178455100.git-patchwork-notify@kernel.org>
+Date: Fri, 15 Dec 2023 01:30:25 +0000
+References: <cover.1702593901.git.dxu@dxuuu.xyz>
+In-Reply-To: <cover.1702593901.git.dxu@dxuuu.xyz>
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ steffen.klassert@secunet.com, antony.antony@secunet.com,
+ alexei.starovoitov@gmail.com, yonghong.song@linux.dev, eddyz87@gmail.com,
+ eyal.birger@gmail.com, devel@linux-ipsec.org
 
-Hi Gregory,
+Hello:
 
-kernel test robot noticed the following build errors:
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on deller-parisc/for-next powerpc/next powerpc/fixes s390/features jcmvbkbc-xtensa/xtensa-for-next arnd-asm-generic/master linus/master v6.7-rc5]
-[cannot apply to geert-m68k/for-next geert-m68k/for-linus tip/x86/asm next-20231214]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Thu, 14 Dec 2023 15:49:01 -0700 you wrote:
+> This patchset adds two kfunc helpers, bpf_xdp_get_xfrm_state() and
+> bpf_xdp_xfrm_state_release() that wrap xfrm_state_lookup() and
+> xfrm_state_put(). The intent is to support software RSS (via XDP) for
+> the ongoing/upcoming ipsec pcpu work [0]. Recent experiments performed
+> on (hopefully) reproducible AWS testbeds indicate that single tunnel
+> pcpu ipsec can reach line rate on 100G ENA nics.
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-Price/mm-mempolicy-implement-the-sysfs-based-weighted_interleave-interface/20231214-064236
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231213224118.1949-10-gregory.price%40memverge.com
-patch subject: [PATCH v3 09/11] mm/mempolicy: add get_mempolicy2 syscall
-config: x86_64-randconfig-002-20231214 (https://download.01.org/0day-ci/archive/20231215/202312150958.WYyFWIdr-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150958.WYyFWIdr-lkp@intel.com/reproduce)
+Here is the summary with links:
+  - [bpf-next,v6,1/5] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+    https://git.kernel.org/bpf/bpf-next/c/8f0ec8c68175
+  - [bpf-next,v6,2/5] bpf: selftests: test_tunnel: Setup fresh topology for each subtest
+    https://git.kernel.org/bpf/bpf-next/c/77a7a8220f0d
+  - [bpf-next,v6,3/5] bpf: selftests: test_tunnel: Use vmlinux.h declarations
+    https://git.kernel.org/bpf/bpf-next/c/02b4e126e6a5
+  - [bpf-next,v6,4/5] bpf: selftests: Move xfrm tunnel test to test_progs
+    https://git.kernel.org/bpf/bpf-next/c/e7adc8291a9e
+  - [bpf-next,v6,5/5] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
+    https://git.kernel.org/bpf/bpf-next/c/2cd07b0eb08c
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312150958.WYyFWIdr-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> ld.lld: error: undefined symbol: __x64_sys_get_mempolicy2
-   >>> referenced by syscall_64.c
-   >>>               arch/x86/entry/syscall_64.o:(sys_call_table) in archive vmlinux.a
-   >>> did you mean: __x64_sys_get_mempolicy
-   >>> defined in: vmlinux.a(kernel/sys_ni.o)
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
