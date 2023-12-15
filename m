@@ -1,127 +1,139 @@
-Return-Path: <linux-kernel+bounces-1196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9CDF814B8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:18:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E56A814B8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7BA4B24508
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:18:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B6FE1C237D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC6E36AEA;
-	Fri, 15 Dec 2023 15:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B001036AF3;
+	Fri, 15 Dec 2023 15:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ZJmitctl"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fyOrI+jF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77DBA364D7;
-	Fri, 15 Dec 2023 15:15:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [192.168.4.26] (unknown [47.186.13.91])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 31E8020B3CC2;
-	Fri, 15 Dec 2023 07:15:53 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 31E8020B3CC2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1702653353;
-	bh=TbbdfdN9F0xN9xrOOIN9kgjBMXwWRzLs8wobMZJ5G9w=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZJmitctlicMc0n358JdynVujyRx8KAn3uE9xYYk/edA5anFQwi7Mk1mnplEaW6Dxo
-	 GyZNdp1Pqtq0FL20GrsS1CHIorRxueJdfaS7cPSyvY3nCdzlmkvZ4AKi74xlxMjrOP
-	 DndtXFw70MDLSdjfvoYF6c8lpW2s5GVkz7yPjv58=
-Message-ID: <8f3d6362-1513-45a9-9f56-f7ec4bff11a2@linux.microsoft.com>
-Date: Fri, 15 Dec 2023 09:15:52 -0600
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D145539FD5;
+	Fri, 15 Dec 2023 15:16:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41176C433C7;
+	Fri, 15 Dec 2023 15:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1702653365;
+	bh=EfTyLi3GnxThzOpoGpPm9B/IL1186AUJ8lO3cfsOnEs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=fyOrI+jFtCm8Si8oCHa9W0O8JWCi/njd1/bNEjqBluNUYV/12dwFlf6t6WcLC2yVa
+	 +owKpATub/G0QIYm67VEfU2qmwITh88A6vaY/4fMZN5ZBDieouml1AqE0xUc2e1JnD
+	 yF5hYSrRl9JzyhBVwN0lOksKmlPPWfKVNCvf9DKM=
+Date: Fri, 15 Dec 2023 07:16:04 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mm@kvack.org, mm-commits@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hotfixes for 6.7-rc6
+Message-Id: <20231215071604.946a433bbc05a6409faf5a33@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: ARM64 Livepatch based on SFrame
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: jpoimboe@redhat.com, peterz@infradead.org, chenzhongjin@huawei.com,
- broonie@kernel.org, nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
- catalin.marinas@arm.com, will@kernel.org, jamorris@linux.microsoft.com,
- linux-arm-kernel@lists.infradead.org, live-patching@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <0337266cf19f4c98388e3f6d09f590d9de258dc7>
- <20230202074036.507249-1-madvenka@linux.microsoft.com>
- <ZByJmnc/XDcqQwoZ@FVFF77S0Q05N.cambridge.arm.com>
- <72364198-b031-4ecc-b337-d07db1b9d0c8@linux.microsoft.com>
- <ZXxO43Xwn5GHsrO8@FVFF77S0Q05N>
-Content-Language: en-US
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-In-Reply-To: <ZXxO43Xwn5GHsrO8@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
 
+Linus, please merge this batch of MM, kexec and selftests hotfixes, thanks.
 
-On 12/15/23 07:04, Mark Rutland wrote:
-> On Thu, Dec 14, 2023 at 02:49:29PM -0600, Madhavan T. Venkataraman wrote:
->> Hi Mark,
-> 
-> Hi Madhavan,
-> 
->> I attended your presentation in the LPC. You mentioned that you could use
->> some help with some pre-requisites for the Livepatch feature.
->> I would like to lend a hand.
-> 
-> Cool!
-> 
-> I've been meaning to send a mail round with a summary of the current state of
-> things, and what needs to be done going forward, but I haven't had the time
-> since LPC to put that together (as e.g. that requires learning some more about
-> SFrame).  I'll be disappearing for the holiday shortly, and I intend to pick
-> that up in the new year.
-> 
->> What would you like me to implement?
-> 
-> I'm not currently sure exactly what we need/want to implement, and as above I
-> think that needs to wait until the new year.
-> 
 
-OK.
+The following changes since commit 0c92218f4e7d4b4a7245d32bea042fa6f9cc39d7:
 
-> However, one thing that you can do that would be very useful is to write up and
-> report the GCC DWARF issues that you mentioned in:
-> 
->   https://lore.kernel.org/linux-arm-kernel/20230202074036.507249-1-madvenka@linux.microsoft.com/
-> 
-> ... as (depending on exactly what those are) those could also affect SFrame
-> generation (and thus we'll need to get those fixed in GCC), and regardless it
-> would be useful information to know.
-> 
-> I understood that you planned to do that from:
-> 
->   https://lore.kernel.org/linux-arm-kernel/054ce0d6-70f0-b834-d4e5-1049c8df7492@linux.microsoft.com/
-> 
-> ... but I couldn't spot any relevant mails or issues in the GCC bugzilla, so
-> either I'm failing to search hard enough, or did that get forgotten about?
-> 
+  Merge branch 'master' into mm-hotfixes-stable (2023-12-06 17:03:50 -0800)
 
-Yeah. I had notes on that. But I seem to have lost them. I need to reproduce the
-problems and analyze them again which is not trivial. So, I have been procrastinating.
+are available in the Git repository at:
 
-I am also disappearing for the rest of this year. I will try to look at it in the
-new year.
+  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-12-15-07-11
 
->> I would also like to implement Unwind Hints for the feature. If you want a
->> specific format for the hints, let me know.
-> 
-> I will get back to you on that in the new year; I think the specifics we want
-> are going to depend on other details above we need to analyse first.
-> 
+for you to fetch changes up to 4376807bf2d5371c3e00080c972be568c3f8a7d1:
 
-OK.
+  mm/mglru: reclaim offlined memcgs harder (2023-12-12 17:20:20 -0800)
 
-For now, I will implement something and send it out just for reference. We can revisit
-this topic next year sometime.
+----------------------------------------------------------------
+17 hotfixes.  8 are cc:stable and the other 9 pertain to post-6.6 issues.
 
-Thanks.
+----------------------------------------------------------------
+Baoquan He (6):
+      riscv: fix VMALLOC_START definition
+      loongarch, kexec: change dependency of object files
+      m68k, kexec: fix the incorrect ifdeffery and build dependency of CONFIG_KEXEC
+      mips, kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
+      sh, kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
+      x86, kexec: fix the wrong ifdeffery CONFIG_KEXEC
 
-Madhavan
+David Hildenbrand (1):
+      selftests/mm: cow: print ksft header before printing anything else
+
+David Stevens (1):
+      mm/shmem: fix race in shmem_undo_range w/THP
+
+Ignat Korchagin (1):
+      kexec: drop dependency on ARCH_SUPPORTS_KEXEC from CRASH_DUMP
+
+John Hubbard (1):
+      Revert "selftests: error out if kernel header files are not yet built"
+
+Kefeng Wang (1):
+      mm: fix VMA heap bounds checking
+
+SeongJae Park (1):
+      mm/damon/core: make damon_start() waits until kdamond_fn() starts
+
+Yu Zhao (4):
+      mm/mglru: fix underprotected page cache
+      mm/mglru: try to stop at high watermarks
+      mm/mglru: respect min_ttl_ms with memcgs
+      mm/mglru: reclaim offlined memcgs harder
+
+Yuntao Wang (1):
+      crash_core: fix the check for whether crashkernel is from high memory
+
+ arch/loongarch/kernel/Makefile   |  2 +-
+ arch/m68k/include/asm/kexec.h    |  4 +-
+ arch/m68k/kernel/Makefile        |  2 +-
+ arch/mips/cavium-octeon/smp.c    |  4 +-
+ arch/mips/include/asm/kexec.h    |  2 +-
+ arch/mips/include/asm/smp-ops.h  |  2 +-
+ arch/mips/include/asm/smp.h      |  2 +-
+ arch/mips/kernel/Makefile        |  2 +-
+ arch/mips/kernel/smp-bmips.c     |  4 +-
+ arch/mips/kernel/smp-cps.c       | 10 ++---
+ arch/mips/loongson64/reset.c     |  4 +-
+ arch/mips/loongson64/smp.c       |  2 +-
+ arch/riscv/Kconfig               |  4 +-
+ arch/riscv/include/asm/pgtable.h |  2 +-
+ arch/riscv/kernel/crash_core.c   |  4 +-
+ arch/sh/include/asm/kexec.h      |  4 +-
+ arch/sh/kernel/Makefile          |  2 +-
+ arch/sh/kernel/reboot.c          |  4 +-
+ arch/sh/kernel/setup.c           |  2 +-
+ arch/x86/boot/compressed/acpi.c  |  2 +-
+ include/linux/damon.h            |  2 +
+ include/linux/mm.h               |  8 ++--
+ include/linux/mm_inline.h        | 23 ++++++----
+ include/linux/mmzone.h           | 34 ++++++++-------
+ kernel/Kconfig.kexec             |  1 -
+ kernel/crash_core.c              | 10 ++---
+ mm/damon/core.c                  |  6 +++
+ mm/shmem.c                       | 19 ++++++++-
+ mm/vmscan.c                      | 92 ++++++++++++++++++++++++++--------------
+ mm/workingset.c                  |  6 +--
+ tools/testing/selftests/Makefile | 21 +--------
+ tools/testing/selftests/lib.mk   | 40 ++---------------
+ tools/testing/selftests/mm/cow.c |  3 +-
+ 33 files changed, 171 insertions(+), 158 deletions(-)
+
 
