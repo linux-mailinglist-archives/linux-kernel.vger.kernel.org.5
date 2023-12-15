@@ -1,156 +1,93 @@
-Return-Path: <linux-kernel+bounces-1328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E8F7814D77
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:48:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31FF6814D80
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C35F1F24D52
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:48:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E269F2844E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416103EA6C;
-	Fri, 15 Dec 2023 16:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE633DBB7;
+	Fri, 15 Dec 2023 16:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bXSXDzSB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KIj1LEp/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AEDA3DBAC
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d394cd331aso23325ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:47:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702658879; x=1703263679; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pFF1dta+xlyg8MLdIwibfZN3TDA+ceWGZnTEl/bvSYQ=;
-        b=bXSXDzSBSErBYcDeSf04Oo/6R6KqHXIJ+J+UecNGsyyGc36MaoAYOxn8eNe4iyKOQF
-         wxqNrO3f/8yyOsPdjso8UbmhlJwHZFDy9N8ICOxKoPX/9W04NuTzJInOW7r9Z69ZTjX7
-         FbdVV80pAEbOx0wOznxquDjqLGoER5vNn6NFHuM2hmUvXlU/XA/gC6SniHJXjvJmURes
-         FhWjTvknjXByoEo7eWAzor1aGBToDmpanONBT3eCSkN6YHhRgRUKrMMDzkAuW+fZljUV
-         74P+kNT9M6eLqYz5PUmqEJRQUBHxiLyyNoG0lMRi4CRiz0x1NKtYB6fasW83xPFyMK+V
-         +xNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702658879; x=1703263679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pFF1dta+xlyg8MLdIwibfZN3TDA+ceWGZnTEl/bvSYQ=;
-        b=OdZiDKQ9QAXS2NJ6Y8Oz6eeCsNsRoYXe7zeMsmWYkF2iJ7dM6/51Yz3iqn45Z/337w
-         3HIaQD0usJPXzRmqHFHGo57nkjT2aE14Ek0tZD92fRv2omYpGKudNtwXpr+KhAUffH6J
-         uyMuRhyGNJScbtI7CzRdb8zxuLcDIKu792P1Rb6+729deDJBMJ5pyZohTzxZ/6P56dvu
-         CbRXv2vfFjFiOo9TS8VZBfBeyujrsBKJSxRlF8VgqgJ7vZGpuLxbmPjqmwAypJvj9KHn
-         HRQKmIZ8TBK3fBdgrI+li/hVnT6A9wKelkzbHWpViZc5/TR00YBmagKX95+6yPIFk5o8
-         CaXA==
-X-Gm-Message-State: AOJu0YzLkGOLJ2fNiFWK9yp5rZghRY/Cll1em+IiDPo6/1nhjRMWkOE7
-	UvsKJQ6Mn7Q06QnDQDQgmHIMTEca3+cHFrwAAmKDDQ==
-X-Google-Smtp-Source: AGHT+IEbjeJsIZp5rRAzjQJeOjn/ytdkm89roAe2N65CsvRTZlJkSLxF/eDtmABy6dq4nOdoTRoClIhD5j52IYQ8NPc=
-X-Received: by 2002:a17:903:1108:b0:1d3:40ea:bf5b with SMTP id
- n8-20020a170903110800b001d340eabf5bmr1147864plh.21.1702658878388; Fri, 15 Dec
- 2023 08:47:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAC43EA82
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702659003; x=1734195003;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=vgZwlm3sVDXUzqdaqyONYJEGMEvvDJOC9JOXTv866Bc=;
+  b=KIj1LEp/0cxBm3Lwm8OP3as5cOMPEy4KRMqOzUQTzx+w6RKrUeXJC0vM
+   5uh9zgJOPZ6PSZIsZnXIJJLKMDgG35DfRml2PtpEVR6BF0grhoSHyZRpe
+   g+JeXQhEXqt9GesMW/JsiiFYDyNDK+gyzwzR0Js+PHN7Zia8b+CUMK1Av
+   rTEpkbeiLMCl0w90H3JTqj3tUJsCwm46PCeacqnj1Q/9NhQcqnJdJCA6a
+   kbrj5yhW7174GPg03muK/gQRrBSb0wPv6f+rqQEDKd3YfKZD/nHO1a/AB
+   mk06IQP+T/MGOKGDaHs0deIOruw1ZdsRzmdAB4u4FBKv4WNuHneN0sQcv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2468772"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="2468772"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:49:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="768040193"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="768040193"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 15 Dec 2023 08:49:48 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEBNi-0000Tw-0i;
+	Fri, 15 Dec 2023 16:49:46 +0000
+Date: Sat, 16 Dec 2023 00:48:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Peter Oberparleiter <oberpar@linux.ibm.com>
+Subject: scripts/kernel-doc: kernel/gcov/fs.c:103: warning: Excess struct
+ member 'buffer' description in 'gcov_iterator'
+Message-ID: <202312160030.CV8MHmM8-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com> <793eb1bd-29bd-3c66-4ed2-9297879dbaa0@huawei.com>
-In-Reply-To: <793eb1bd-29bd-3c66-4ed2-9297879dbaa0@huawei.com>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Fri, 15 Dec 2023 08:47:46 -0800
-Message-ID: <CALvZod7-WsxLj8gdhu=FMfdunEDgBV+DwfOB2316NfXvf_K41g@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Mina Almasry <almasrymina@google.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Michael Chan <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
-	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
-	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
-	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
-	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
-	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
-	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
-	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
-	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
-	Stefano Stabellini <sstabellini@kernel.org>, 
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, Dec 15, 2023 at 3:04=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2023/12/15 10:11, Shakeel Butt wrote:
-> > On Thu, Dec 14, 2023 at 08:27:55AM -0800, Mina Almasry wrote:
-> >> On Thu, Dec 14, 2023 at 4:05=E2=80=AFAM Yunsheng Lin <linyunsheng@huaw=
-ei.com> wrote:
-> >>>
-> > [...]
-> >>> I perfer the second one personally, as devmem means that it is not
-> >>> readable from cpu.
-> >>
-> >> From my POV it has to be the first one. We want to abstract the memory
-> >> type from the drivers as much as possible, not introduce N new memory
-> >> types and ask the driver to implement new code for each of them
-> >> separately.
->
-> That was my initial thinking too:
-> https://www.spinics.net/lists/netdev/msg949376.html
->
-> But after discussion, it may make more sense to have two sets of API from=
- the
-> driver's piont of view if we want a complete safe type protection, so tha=
-t
-> compiler can check everything statically and devmem driver API have a cle=
-ar
-> semantic:
-> 1. devmem is not allowed to be called into mm subsystem.
-> 2. it will not provide a API like page_address().
->
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
+commit: fbd126f5a658b92c7f6af986a6d89cf5e5693268 gcov: annotate struct gcov_iterator with __counted_by
+date:   8 weeks ago
+config: arm-randconfig-002-20231215 (https://download.01.org/0day-ci/archive/20231216/202312160030.CV8MHmM8-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312160030.CV8MHmM8-lkp@intel.com/reproduce)
 
-I think all of us are on the same page that there will be two sets of
-APIs here but Mina's point was let's aim to not make that N set of
-APIs.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312160030.CV8MHmM8-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> scripts/kernel-doc: kernel/gcov/fs.c:103: warning: Excess struct member 'buffer' description in 'gcov_iterator'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
