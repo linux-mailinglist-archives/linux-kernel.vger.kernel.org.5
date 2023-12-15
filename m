@@ -1,71 +1,111 @@
-Return-Path: <linux-kernel+bounces-1569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E65E081503D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:39:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B9DE815040
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6E491C234F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:39:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE0AF285E3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F0D41851;
-	Fri, 15 Dec 2023 19:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBCA45BF2;
+	Fri, 15 Dec 2023 19:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NsVuoNaW"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wLzyA2Ai";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HZqTHUC7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF033FE4F;
-	Fri, 15 Dec 2023 19:39:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 73839C433C7;
-	Fri, 15 Dec 2023 19:39:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702669148;
-	bh=ojZFu3u2JD8wwHOvuAdwSBtt0KnHsqAa5vvrw4tljAU=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=NsVuoNaWUoUqe+obp0XMBmbUHUEhEhEFPECG0EIx9vU78rbCNolACd5DWcfGx02pw
-	 Yyie/kbx+YQoRFwcmu3U7ogFlZsioU076j/hQBSGb5EX2qmFS/JTgDhJitWjg/9Eol
-	 nU2PuctCTlXGVrKzX5JmpSUfRpzjN0lvAPkT9S9rtF0uOsw0Idz9eJLfKSaUw4ljBe
-	 SVvJ7lRLS8L4RhKWsds36/j2UDaqAAaR/6kYGpPF58t2xSk6mOmUPCuHRQDEPYNq12
-	 abc13dvOboiiE6SA6c3Dh563yzoXBuJxuAmdOLWBYVFRy+txox8fnLdy1aTnj+DQ4u
-	 XCodNfIG6I3mg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5E7B8C4166E;
-	Fri, 15 Dec 2023 19:39:08 +0000 (UTC)
-Subject: Re: [GIT PULL] sound fixes for 6.7-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <87edfoosas.wl-tiwai@suse.de>
-References: <87edfoosas.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87edfoosas.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.7-rc6
-X-PR-Tracked-Commit-Id: 315deab289924c83ab1ded50022e8db95d6e428b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 26e7a301419d2ef4696e581109c61b4e772e1fb8
-Message-Id: <170266914838.22768.1174929899636540765.pr-tracker-bot@kernel.org>
-Date: Fri, 15 Dec 2023 19:39:08 +0000
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A396945BE1
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702669188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CcyJTwzRD6ZFeNFzISSaZIcUm8lkKFqGiYWHcX6xjis=;
+	b=wLzyA2AigQbDtTqznVR9C0OEcdHnoVJ/+IHjKYttLOIMVoE06A2+qwqRkYgO4b1XHViqWy
+	2dJG39jxo+T1BC3NMg+aLhjlateaoQfxqUmOt+OaFfE7qaJ3LXEsbXGLHGq18JuFf/snwA
+	UmW9ndno71UMfIaw8DDg5g23mdmgyANhMiveHE/PFsZCsZwj+FJ2tAxAj91Gg+Jxrist+3
+	NUiXZV4vRPzLM8n5kWTAdA/WffaopU3Eaz6S3Wc6sfEiy9bA2m4b6wgaONzeKu144tmO99
+	OUSUf/egUkym0tywFEOOtSyee+DAMXCbgQElFx2xudqJ7z/OlZxlLh9NaQ64TQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702669188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CcyJTwzRD6ZFeNFzISSaZIcUm8lkKFqGiYWHcX6xjis=;
+	b=HZqTHUC71Oj38kp7+eZPHiuAKQ9G7Q95NThHnWfkU0/Gtqf/N6VLOUzGVJApINMQAAo+qk
+	SaDsfArhauICt5Dg==
+To: wangxiaoming321 <xiaoming.wang@intel.com>, peterz@infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: wangxiaoming321 <xiaoming.wang@intel.com>
+Subject: Re: [PATCH] kernel/cpu: The number of CPUHP_AP_ONLINE_DYN (30) is
+ too small that stops the new dynamic states hotplug.
+In-Reply-To: <20231212025235.775986-1-xiaoming.wang@intel.com>
+References: <20231212025235.775986-1-xiaoming.wang@intel.com>
+Date: Fri, 15 Dec 2023 20:39:47 +0100
+Message-ID: <87o7ermf0c.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 
-The pull request you sent on Fri, 15 Dec 2023 08:09:47 +0100:
+On Tue, Dec 12 2023 at 10:52, wangxiaoming321 wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.7-rc6
+The subject line has a two issues:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/26e7a301419d2ef4696e581109c61b4e772e1fb8
+    1) the prefix is wrong. See
+       https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#patch-subject
 
-Thank you!
+       You find further information about changelogs there and in other
+       parts of the documentation
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+    2) The sentence is too long and incomprehensible.
+
+> 144: perf/x86/cstate:online
+  ...
+> 195: online
+
+I have no idea what this number salad is trying to tell me. Changelogs
+need to explain the problem they are trying to solve. This listing of
+hotplug states is not an explanation and completely useless as it even
+contains an entry which do not exist:
+
+> 191: ia64/sep5:online
+
+Even if it would exist a ia64 hotplug callback is hardly relevant on x86,
+right?
+
+Also the fixed entries e.g. workqueue and RCU/tree are irrelevant for
+what you are trying to describe.
+
+So what you really want to say is something like this:
+
+   cpu/hotplug: Increase the number of dynamic states
+
+   The dynamically allocatable hotplug state space can be exhausted by
+   the existing drivers and infrastructure which install CPU hotplug
+   states dynamically. That prevents new drivers and infrastructure from
+   installing dynamically allocated states.
+
+   Increase the size of the CPUHP_AP_ONLINE_DYN state by 10 to make
+   room.
+
+At least that's what I oracled out of your "changelog". Hmm?
+
+Thanks,
+
+        tglx
+
+   
 
