@@ -1,111 +1,146 @@
-Return-Path: <linux-kernel+bounces-1465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60A24814F2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D7E7814F9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:20:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F08D61F24716
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:50:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB6731F23225
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24213671E5;
-	Fri, 15 Dec 2023 17:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECBB430135;
+	Fri, 15 Dec 2023 18:20:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDAC66AC1
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rECFt-00078x-RH; Fri, 15 Dec 2023 18:45:45 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rECFt-00G4sN-2I; Fri, 15 Dec 2023 18:45:45 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rECFs-003jeH-PP; Fri, 15 Dec 2023 18:45:44 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] driver core: Better advertise dev_err_probe()
-Date: Fri, 15 Dec 2023 18:45:41 +0100
-Message-ID: <20231215174540.2438601-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13F63011A
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 18:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in01.mta.xmission.com ([166.70.13.51]:41064)
+	by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1rECGj-00CCA6-Dn; Fri, 15 Dec 2023 10:46:37 -0700
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:50734 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1rECGi-00CJs3-Ex; Fri, 15 Dec 2023 10:46:37 -0700
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: linux-kernel@vger.kernel.org,  kexec@lists.infradead.org,
+  x86@kernel.org,  Andrew Morton <akpm@linux-foundation.org>,  Thomas
+ Gleixner <tglx@linutronix.de>,  Ingo Molnar <mingo@redhat.com>,  Borislav
+ Petkov <bp@alien8.de>,  Dave Hansen <dave.hansen@linux.intel.com>,  "H.
+ Peter Anvin" <hpa@zytor.com>,  Jonathan Corbet <corbet@lwn.net>
+References: <20231215080910.173338-1-ytcoode@gmail.com>
+	<20231215080910.173338-2-ytcoode@gmail.com>
+Date: Fri, 15 Dec 2023 11:46:28 -0600
+In-Reply-To: <20231215080910.173338-2-ytcoode@gmail.com> (Yuntao Wang's
+	message of "Fri, 15 Dec 2023 16:09:08 +0800")
+Message-ID: <87a5qb4avf.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1800; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=9nyC3qBbV3EnvPBE3VWr39wTOEdZ5bBIM7SZSN6E+Nc=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlfJDFtb2z0TS2epzNttDfkspZ9CB6UVzEyC7bO hY2NlaZb++JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXyQxQAKCRCPgPtYfRL+ ThrICACsNn0rrAtPsgnVcJ8gyfhCCMdsW63WMJMv3/s7rLcN/RUMbMudTA31KGvsc9Hr6L60kmj 52fVk+6gALEDEK9FREE5RysR6OQdS8BIne9D100cT2vFXMyMGzGPe8MNp2Csxs8u9FFvs32x72u 9HWwErAu8JfuTLjhHFKO+6fX8Q880SgKBpQwKeFizUhS3LS/FRqVHEVXZ52dqECxpPh2rGRL8Vl LcMfvkhbRzB/wI4AYE8lDyjEobmWt70YNhE0gN7il/QNsWYq1MwJ5OzhAto6ti4MzuhjSqWxz7Z PGPYnbrGkH92RZxli96w9k7u6C4Py4KSdXqJGqCrY5OvOV9q
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-XM-SPF: eid=1rECGi-00CJs3-Ex;;;mid=<87a5qb4avf.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX189yCEqcjYR5MZGxwEuoh60iLC+05tSlWI=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Level: ***
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+	*      [score: 0.5000]
+	*  0.7 XMSubLong Long Subject
+	*  1.5 XMNoVowels Alpha-numberic number with no vowels
+	*  0.5 XMGappySubj_01 Very gappy subject
+	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+	*  0.0 T_TooManySym_02 5+ unique symbols in subject
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	*  0.0 T_TooManySym_03 6+ unique symbols in subject
+	*  1.0 T_XMDrugObfuBody_00 obfuscated drug references
+	*  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Yuntao Wang <ytcoode@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 398 ms - load_scoreonly_sql: 0.10 (0.0%),
+	signal_user_changed: 12 (3.0%), b_tie_ro: 10 (2.5%), parse: 1.08
+	(0.3%), extract_message_metadata: 3.9 (1.0%), get_uri_detail_list:
+	1.33 (0.3%), tests_pri_-2000: 3.9 (1.0%), tests_pri_-1000: 2.9 (0.7%),
+	tests_pri_-950: 1.34 (0.3%), tests_pri_-900: 1.06 (0.3%),
+	tests_pri_-90: 91 (22.9%), check_bayes: 89 (22.3%), b_tokenize: 7
+	(1.7%), b_tok_get_all: 6 (1.5%), b_comp_prob: 2.3 (0.6%),
+	b_tok_touch_all: 69 (17.4%), b_finish: 1.54 (0.4%), tests_pri_0: 262
+	(65.8%), check_dkim_signature: 0.81 (0.2%), check_dkim_adsp: 2.9
+	(0.7%), poll_dns_idle: 0.58 (0.1%), tests_pri_10: 2.2 (0.5%),
+	tests_pri_500: 8 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/3] kexec_file: fix incorrect end value passed to
+ kimage_is_destination_range()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 
-Describing the usage of dev_err_probe() as being (only?) "deemed
-acceptable" has a bad connotation. In fact dev_err_probe() fulfills
-three tasks:
+Yuntao Wang <ytcoode@gmail.com> writes:
 
- - handling of EPROBE_DEFER (even more than degrading to dev_dbg())
- - symbolic output of the error code
- - return err for compact error code paths
+> The end parameter received by kimage_is_destination_range() should be the
+> last valid byte address of the target memory segment plus 1. However, in
+> the locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions,
+> the corresponding value passed to kimage_is_destination_range() is the last
+> valid byte address of the target memory segment, which is 1 less. Fix
+> it.
 
-Advertise these better and claim the usage to be "fine" to get rid of
-the bad connotation.
+If that is true we I think we should rather fix
+kimage_is_destination_range.
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Changes since (implicit) v1:
+Otherwise we run the risk of having areas whose end is not
+representable, epecially on 32bit.
 
- - Send it to a public mailing list (how embarrassing I failed to do
-   that for v1 already)
- - Fix a wrong word in the commit log
- - Add Rafael's Ack.
 
- drivers/base/core.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Eric
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 6736c1de3ba4..14d46af40f9a 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -4944,13 +4944,14 @@ define_dev_printk_level(_dev_info, KERN_INFO);
-  *
-  * 	return dev_err_probe(dev, err, ...);
-  *
-- * Note that it is deemed acceptable to use this function for error
-- * prints during probe even if the @err is known to never be -EPROBE_DEFER.
-+ * Using this helper in your probe function is totally fine even if @err is
-+ * known to never be -EPROBE_DEFER.
-  * The benefit compared to a normal dev_err() is the standardized format
-- * of the error code and the fact that the error code is returned.
-+ * of the error code, it being emitted symbolically (i.e. you get "EAGAIN"
-+ * instead of "-35") and the fact that the error code is returned which allows
-+ * more compact error paths.
-  *
-  * Returns @err.
-- *
-  */
- int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
- {
--- 
-2.42.0
 
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> ---
+>  kernel/kexec_file.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index f9a419cd22d4..26be070d3bdd 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -435,13 +435,12 @@ static int locate_mem_hole_top_down(unsigned long start, unsigned long end,
+>  		if (temp_start < start || temp_start < kbuf->buf_min)
+>  			return 0;
+>  
+> -		temp_end = temp_start + kbuf->memsz - 1;
+> -
+>  		/*
+>  		 * Make sure this does not conflict with any of existing
+>  		 * segments
+>  		 */
+> -		if (kimage_is_destination_range(image, temp_start, temp_end)) {
+> +		if (kimage_is_destination_range(image, temp_start,
+> +						temp_start + kbuf->memsz)) {
+>  			temp_start = temp_start - PAGE_SIZE;
+>  			continue;
+>  		}
+> @@ -475,7 +474,7 @@ static int locate_mem_hole_bottom_up(unsigned long start, unsigned long end,
+>  		 * Make sure this does not conflict with any of existing
+>  		 * segments
+>  		 */
+> -		if (kimage_is_destination_range(image, temp_start, temp_end)) {
+> +		if (kimage_is_destination_range(image, temp_start, temp_end + 1)) {
+>  			temp_start = temp_start + PAGE_SIZE;
+>  			continue;
+>  		}
 
