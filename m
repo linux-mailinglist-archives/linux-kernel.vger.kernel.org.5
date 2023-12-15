@@ -1,140 +1,130 @@
-Return-Path: <linux-kernel+bounces-468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D405981419D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:56:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840228141A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B0261C22458
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:56:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E449284411
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298D7748A;
-	Fri, 15 Dec 2023 05:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41C2CA67;
+	Fri, 15 Dec 2023 05:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="isdXMoLa"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KnP+0ffK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B339D275;
-	Fri, 15 Dec 2023 05:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=jobEC3jqWIpyDkINLFhovVaNZT5MWZEp2hewynNzNgs=; b=isdXMoLa/gQ7m5FXi3d/9OdoAg
-	XaeBzpytEaWOOM1Rv6L6Sb2AU08uyb+vJzSd5WO8o4IZ76wJduYkmLgYA4YVfdSgaBEYPwZOhSu1k
-	T18ZDxt4M5P2pDr/JqvW3DrRznqD3gcz8g92Hzl+tVjbHSHZ9CY+KSEPJ73NRQEPxHpProYcq5bHq
-	0Tw4uB3Po+aKjUzhKgdCJURXmEkHYxxCfjAQJY9LYGAVYomrNiqzkIa1+7rtZmOcFNABFW2fS41xV
-	GW2gV9vcxcoALFfII/YSkz/8Ghg4HUx9TdVvfsH5XQzCGM7NW2zzLWOY0bXu87XrmYDcCEGWORWAZ
-	CMjym3+Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rE1BU-00E4oM-QE; Fri, 15 Dec 2023 05:56:28 +0000
-Date: Fri, 15 Dec 2023 05:56:28 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Oscar Salvador <osalvador@suse.de>, linux-kernel@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Huang Ying <ying.huang@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mm@kvack.org,
-	Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v6 2/4] dax/bus: Use guard(device) in sysfs attribute
- helpers
-Message-ID: <ZXvqjIqvcGkumNXf@casper.infradead.org>
-References: <20231214-vv-dax_abi-v6-0-ad900d698438@intel.com>
- <20231214-vv-dax_abi-v6-2-ad900d698438@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6336AB7;
+	Fri, 15 Dec 2023 05:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF2WU8S001366;
+	Fri, 15 Dec 2023 05:58:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=XFNIRz9sz5pLmm9sbk+725p0qlJMx3H0g4U9OyyUyXI=; b=Kn
+	P+0ffKh+cgcMC/a2uEjZrC6xF00GxWm2nQV2wqlw1Bnq0PkPHeqKz/laSWQ7uuSd
+	2uyz98ZiZytXbKzr9HhwlRC6a+8pxwpgXsLTxw01o50VMeuTi0KIHrfT+JC0tEnn
+	1jf0dG1HxhK8C8BEdFuH7/IRPsLybVejhMgZK2DjPNh9ltuA6yDR2Ih/G5F1Ol8t
+	WbkcrI+IFwfBY4nSMJWPlW5a0N9LXrbPTMxHJQ0FxQxP3tsaP/8kat3M3w054UDl
+	d65esYMAV1dY0AVuHRTRO9wD0R5GuC1aoafkoFn/Z8Xm1Fxn/kTbL1iA+bZ38f8m
+	81EngzMLoMViLFOSfzsg==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynjacesr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 05:58:35 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BF5wYHK015956
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 05:58:34 GMT
+Received: from [10.201.3.91] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
+ 2023 21:58:27 -0800
+Message-ID: <ccb28d3c-8f48-47e1-a4e8-5f995c72ce77@quicinc.com>
+Date: Fri, 15 Dec 2023 11:28:24 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214-vv-dax_abi-v6-2-ad900d698438@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/10] arm64: dts: qcom: ipq5332: Add separate entry for
+ USB pipe clock
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <vkoul@kernel.org>, <kishon@kernel.org>, <mani@kernel.org>,
+        <quic_nsekar@quicinc.com>, <quic_srichara@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <quic_varada@quicinc.com>, <quic_devipriy@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>
+References: <20231214062847.2215542-1-quic_ipkumar@quicinc.com>
+ <20231214062847.2215542-4-quic_ipkumar@quicinc.com>
+ <CAA8EJpqJ_7CPjTs2zykqnZpm9bQ31G7Q+1CA308OdS1BNqK6GA@mail.gmail.com>
+From: Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <CAA8EJpqJ_7CPjTs2zykqnZpm9bQ31G7Q+1CA308OdS1BNqK6GA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: g4tTtgpDSSfl_LfOuPfo2tkjzGbS6V7X
+X-Proofpoint-ORIG-GUID: g4tTtgpDSSfl_LfOuPfo2tkjzGbS6V7X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 mlxlogscore=876 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312150034
 
-On Thu, Dec 14, 2023 at 10:25:27PM -0700, Vishal Verma wrote:
-> @@ -294,13 +294,10 @@ static ssize_t available_size_show(struct device *dev,
->  		struct device_attribute *attr, char *buf)
->  {
->  	struct dax_region *dax_region = dev_get_drvdata(dev);
-> -	unsigned long long size;
->  
-> -	device_lock(dev);
-> -	size = dax_region_avail_size(dax_region);
-> -	device_unlock(dev);
-> +	guard(device)(dev);
->  
-> -	return sprintf(buf, "%llu\n", size);
-> +	return sprintf(buf, "%llu\n", dax_region_avail_size(dax_region));
->  }
 
-Is this an appropriate use of guard()?  sprintf is not the fastest of
-functions, so we will end up holding the device_lock for longer than
-we used to.
 
-> @@ -908,9 +890,8 @@ static ssize_t size_show(struct device *dev,
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
->  	unsigned long long size;
->  
-> -	device_lock(dev);
-> +	guard(device)(dev);
->  	size = dev_dax_size(dev_dax);
-> -	device_unlock(dev);
->  
->  	return sprintf(buf, "%llu\n", size);
->  }
-
-If it is appropriate, then you can do without the 'size' variable here.
-
-> @@ -1137,21 +1117,20 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
->  	if (rc)
->  		return rc;
->  
-> -	rc = -ENXIO;
-> -	device_lock(dax_region->dev);
-> -	if (!dax_region->dev->driver) {
-> -		device_unlock(dax_region->dev);
-> -		return rc;
-> -	}
-> -	device_lock(dev);
-> +	guard(device)(dax_region->dev);
-> +	if (!dax_region->dev->driver)
-> +		return -ENXIO;
->  
-> +	guard(device)(dev);
->  	to_alloc = range_len(&r);
-> -	if (alloc_is_aligned(dev_dax, to_alloc))
-> -		rc = alloc_dev_dax_range(dev_dax, r.start, to_alloc);
-> -	device_unlock(dev);
-> -	device_unlock(dax_region->dev);
-> +	if (!alloc_is_aligned(dev_dax, to_alloc))
-> +		return -ENXIO;
->  
-> -	return rc == 0 ? len : rc;
-> +	rc = alloc_dev_dax_range(dev_dax, r.start, to_alloc);
-> +	if (rc)
-> +		return rc;
-> +
-> +	return len;
->  }
-
-Have I mentioned how much I hate the "rc" naming convention?  It tells
-you nothing useful about the contents of the variable.  If you called it
-'err', I'd know it was an error, and then the end of this function would
-make sense.
-
-	if (err)
-		return err;
-	return len;
-
+On 12/14/2023 12:51 PM, Dmitry Baryshkov wrote:
+> On Thu, 14 Dec 2023 at 08:29, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>> Add separate entry in clock-controller for USB pipe clock.
+> In my opinion, there is no need to do that separately. Please squash
+> into patch 9.
+Sure will squash this change with patch 9.
+>
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/ipq5332.dtsi | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>> index 42e2e48b2bc3..f0d92effb783 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>> @@ -213,6 +213,7 @@ gcc: clock-controller@1800000 {
+>>                                   <&sleep_clk>,
+>>                                   <0>,
+>>                                   <0>,
+>> +                                <0>,
+>>                                   <0>;
+>>                  };
+>>
+>> --
+>> 2.34.1
+>>
+>>
+>
+--
+Thanks,
+Praveenkumar
 
