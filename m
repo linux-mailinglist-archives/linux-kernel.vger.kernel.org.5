@@ -1,255 +1,123 @@
-Return-Path: <linux-kernel+bounces-1412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B3F814EA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:28:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CA57814EA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32DE71F2577B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:28:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD28A1C24387
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4DF5F1D0;
-	Fri, 15 Dec 2023 17:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDD141857;
+	Fri, 15 Dec 2023 17:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fRuOfuZo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0669A60BA7;
-	Fri, 15 Dec 2023 17:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsG9z4ZPHz6J9Zx;
-	Sat, 16 Dec 2023 01:17:27 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 71F951400DB;
-	Sat, 16 Dec 2023 01:18:33 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
- 2023 17:18:32 +0000
-Date: Fri, 15 Dec 2023 17:18:31 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 21/21] cpumask: Add enabled cpumask for present
- CPUs that can be brought online
-Message-ID: <20231215171831.00004a19@Huawei.com>
-In-Reply-To: <E1rDOhX-00Dvlg-Ci@rmk-PC.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<E1rDOhX-00Dvlg-Ci@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87064177F;
+	Fri, 15 Dec 2023 17:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BFHLCBp107022;
+	Fri, 15 Dec 2023 11:21:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1702660872;
+	bh=6yrAw4EhU4TedQWsadNLo1W9eYBDW8OQFUq/C6pXaeo=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=fRuOfuZoN3JrOXPfDMihnZmlQW9Ar297qdG1/Bpxnhm2ImvVZkPxJmxEiUZy0dvyV
+	 ph8IrgB9eikgv/Us6LKDgs1W3CL1VaYPdcyUZOK6c37jvkIMC6zCVHqqcKXAtc/HH7
+	 Q8oq2l9Xgf4KmE4yX/Hh/wUMzVIZPh8Mz+Bf3Nlk=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BFHLCmP007915
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 15 Dec 2023 11:21:12 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
+ Dec 2023 11:21:12 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 15 Dec 2023 11:21:12 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BFHLCJJ116403;
+	Fri, 15 Dec 2023 11:21:12 -0600
+From: Nishanth Menon <nm@ti.com>
+To: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Bhavya Kapoor <b-kapoor@ti.com>
+CC: Nishanth Menon <nm@ti.com>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <kristo@kernel.org>, <vigneshr@ti.com>
+Subject: Re: [PATCH 0/3] arm64: dts: ti: Add Itap Delay Value For High Speed DDR
+Date: Fri, 15 Dec 2023 11:21:09 -0600
+Message-ID: <170266085077.3490141.14935960940418963459.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231201082045.790478-1-b-kapoor@ti.com>
+References: <20231201082045.790478-1-b-kapoor@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, 13 Dec 2023 12:50:59 +0000
-Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+Hi Bhavya Kapoor,
 
-> From: James Morse <james.morse@arm.com>
+On Fri, 01 Dec 2023 13:50:42 +0530, Bhavya Kapoor wrote:
+> This Series adds Itap Delay Value for DDR52 speed mode for eMMC in
+> J7200 and for DDR50 speed mode for MMCSD in J721s2 and J784s4 SoC.
 > 
-> The 'offline' file in sysfs shows all offline CPUs, including those
-> that aren't present. User-space is expected to remove not-present CPUs
-> from this list to learn which CPUs could be brought online.
+> Rebased to next-20231201
 > 
-> CPUs can be present but not-enabled. These CPUs can't be brought online
-> until the firmware policy changes, which comes with an ACPI notification
-> that will register the CPUs.
+> Bhavya Kapoor (3):
+>   arm64: dts: ti: k3-j7200-main: Add Itap Delay Value For DDR52 speed
+>     mode
+>   arm64: dts: ti: k3-j721s2-main: Add Itap Delay Value For DDR50 speed
+>     mode
+>   arm64: dts: ti: k3-j784s4-main: Add Itap Delay Value For DDR50 speed
+>     mode
 > 
-> With only the offline and present files, user-space is unable to
-> determine which CPUs it can try to bring online. Add a new CPU mask
-> that shows this based on all the registered CPUs.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> ---
+> [...]
 
-Needs docs
-Documentation/ABI/testing/sysfs-devices-system-cpu
-seems to have the rest of the similar entries.
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-> Outstanding comment:
->  https://lore.kernel.org/r/20230914175443.000038f6@Huawei.com
-Very fussy reviewer. I'd ignore him on this :)
+[1/3] arm64: dts: ti: k3-j7200-main: Add Itap Delay Value For DDR52 speed mode
+      commit: 908999561b4340089896b89cef51dae07fc001cb
+[2/3] arm64: dts: ti: k3-j721s2-main: Add Itap Delay Value For DDR50 speed mode
+      commit: 4a52a8208568a85b0d51e5ca81be5925973ef108
+[3/3] arm64: dts: ti: k3-j784s4-main: Add Itap Delay Value For DDR50 speed mode
+      commit: 8bbe8a7dbaabb84d93321f116966af73ba6a7233
 
-Code is fine.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Thanks for taking this forwards.  Maybe the end of this saga is
-close!
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Jonathan
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> ---
->  drivers/base/cpu.c      | 10 ++++++++++
->  include/linux/cpumask.h | 25 +++++++++++++++++++++++++
->  kernel/cpu.c            |  3 +++
->  3 files changed, 38 insertions(+)
-> 
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index 13d052bf13f4..a6e96a0a92b7 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -95,6 +95,7 @@ void unregister_cpu(struct cpu *cpu)
->  {
->  	int logical_cpu = cpu->dev.id;
->  
-> +	set_cpu_enabled(logical_cpu, false);
->  	unregister_cpu_under_node(logical_cpu, cpu_to_node(logical_cpu));
->  
->  	device_unregister(&cpu->dev);
-> @@ -273,6 +274,13 @@ static ssize_t print_cpus_offline(struct device *dev,
->  }
->  static DEVICE_ATTR(offline, 0444, print_cpus_offline, NULL);
->  
-> +static ssize_t print_cpus_enabled(struct device *dev,
-> +				  struct device_attribute *attr, char *buf)
-> +{
-> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpu_enabled_mask));
-> +}
-> +static DEVICE_ATTR(enabled, 0444, print_cpus_enabled, NULL);
-> +
->  static ssize_t print_cpus_isolated(struct device *dev,
->  				  struct device_attribute *attr, char *buf)
->  {
-> @@ -413,6 +421,7 @@ int register_cpu(struct cpu *cpu, int num)
->  	register_cpu_under_node(num, cpu_to_node(num));
->  	dev_pm_qos_expose_latency_limit(&cpu->dev,
->  					PM_QOS_RESUME_LATENCY_NO_CONSTRAINT);
-> +	set_cpu_enabled(num, true);
->  
->  	return 0;
->  }
-> @@ -494,6 +503,7 @@ static struct attribute *cpu_root_attrs[] = {
->  	&cpu_attrs[2].attr.attr,
->  	&dev_attr_kernel_max.attr,
->  	&dev_attr_offline.attr,
-> +	&dev_attr_enabled.attr,
->  	&dev_attr_isolated.attr,
->  #ifdef CONFIG_NO_HZ_FULL
->  	&dev_attr_nohz_full.attr,
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index cfb545841a2c..cc72a0887f04 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -92,6 +92,7 @@ static inline void set_nr_cpu_ids(unsigned int nr)
->   *
->   *     cpu_possible_mask- has bit 'cpu' set iff cpu is populatable
->   *     cpu_present_mask - has bit 'cpu' set iff cpu is populated
-> + *     cpu_enabled_mask  - has bit 'cpu' set iff cpu can be brought online
->   *     cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
->   *     cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
->   *
-> @@ -124,11 +125,13 @@ static inline void set_nr_cpu_ids(unsigned int nr)
->  
->  extern struct cpumask __cpu_possible_mask;
->  extern struct cpumask __cpu_online_mask;
-> +extern struct cpumask __cpu_enabled_mask;
->  extern struct cpumask __cpu_present_mask;
->  extern struct cpumask __cpu_active_mask;
->  extern struct cpumask __cpu_dying_mask;
->  #define cpu_possible_mask ((const struct cpumask *)&__cpu_possible_mask)
->  #define cpu_online_mask   ((const struct cpumask *)&__cpu_online_mask)
-> +#define cpu_enabled_mask   ((const struct cpumask *)&__cpu_enabled_mask)
->  #define cpu_present_mask  ((const struct cpumask *)&__cpu_present_mask)
->  #define cpu_active_mask   ((const struct cpumask *)&__cpu_active_mask)
->  #define cpu_dying_mask    ((const struct cpumask *)&__cpu_dying_mask)
-> @@ -993,6 +996,7 @@ extern const DECLARE_BITMAP(cpu_all_bits, NR_CPUS);
->  #else
->  #define for_each_possible_cpu(cpu) for_each_cpu((cpu), cpu_possible_mask)
->  #define for_each_online_cpu(cpu)   for_each_cpu((cpu), cpu_online_mask)
-> +#define for_each_enabled_cpu(cpu)   for_each_cpu((cpu), cpu_enabled_mask)
->  #define for_each_present_cpu(cpu)  for_each_cpu((cpu), cpu_present_mask)
->  #endif
->  
-> @@ -1015,6 +1019,15 @@ set_cpu_possible(unsigned int cpu, bool possible)
->  		cpumask_clear_cpu(cpu, &__cpu_possible_mask);
->  }
->  
-> +static inline void
-> +set_cpu_enabled(unsigned int cpu, bool can_be_onlined)
-> +{
-> +	if (can_be_onlined)
-> +		cpumask_set_cpu(cpu, &__cpu_enabled_mask);
-> +	else
-> +		cpumask_clear_cpu(cpu, &__cpu_enabled_mask);
-> +}
-> +
->  static inline void
->  set_cpu_present(unsigned int cpu, bool present)
->  {
-> @@ -1096,6 +1109,7 @@ static __always_inline unsigned int num_online_cpus(void)
->  	return raw_atomic_read(&__num_online_cpus);
->  }
->  #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
-> +#define num_enabled_cpus()	cpumask_weight(cpu_enabled_mask)
->  #define num_present_cpus()	cpumask_weight(cpu_present_mask)
->  #define num_active_cpus()	cpumask_weight(cpu_active_mask)
->  
-> @@ -1104,6 +1118,11 @@ static inline bool cpu_online(unsigned int cpu)
->  	return cpumask_test_cpu(cpu, cpu_online_mask);
->  }
->  
-> +static inline bool cpu_enabled(unsigned int cpu)
-> +{
-> +	return cpumask_test_cpu(cpu, cpu_enabled_mask);
-> +}
-> +
->  static inline bool cpu_possible(unsigned int cpu)
->  {
->  	return cpumask_test_cpu(cpu, cpu_possible_mask);
-> @@ -1128,6 +1147,7 @@ static inline bool cpu_dying(unsigned int cpu)
->  
->  #define num_online_cpus()	1U
->  #define num_possible_cpus()	1U
-> +#define num_enabled_cpus()	1U
->  #define num_present_cpus()	1U
->  #define num_active_cpus()	1U
->  
-> @@ -1141,6 +1161,11 @@ static inline bool cpu_possible(unsigned int cpu)
->  	return cpu == 0;
->  }
->  
-> +static inline bool cpu_enabled(unsigned int cpu)
-> +{
-> +	return cpu == 0;
-> +}
-> +
->  static inline bool cpu_present(unsigned int cpu)
->  {
->  	return cpu == 0;
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index a86972a91991..fe0a5189f8ae 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -3122,6 +3122,9 @@ EXPORT_SYMBOL(__cpu_possible_mask);
->  struct cpumask __cpu_online_mask __read_mostly;
->  EXPORT_SYMBOL(__cpu_online_mask);
->  
-> +struct cpumask __cpu_enabled_mask __read_mostly;
-> +EXPORT_SYMBOL(__cpu_enabled_mask);
-> +
->  struct cpumask __cpu_present_mask __read_mostly;
->  EXPORT_SYMBOL(__cpu_present_mask);
->  
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
 
