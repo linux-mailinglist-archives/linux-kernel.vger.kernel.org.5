@@ -1,61 +1,98 @@
-Return-Path: <linux-kernel+bounces-434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBCBB814118
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F97C81411A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:01:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B455B21A0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:00:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6378B21FD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:01:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69F16AA7;
-	Fri, 15 Dec 2023 05:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B140D610D;
+	Fri, 15 Dec 2023 05:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ziRAvL7t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uFmXIMrX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE91863A6;
-	Fri, 15 Dec 2023 05:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=ziRAvL7tm9saMD5YTNoMZqW995
-	4WcupwVQxdLbzMpYJ+dpdJnggkpCAE8z12nqtPra8BAjqHUH2uncRjdjFMO5rDxQyrUbPtQg99TOS
-	bhF4FvyJEOk3kKvPN1F2IcwVtEeJlIXJdSPRsSQPw3Lt/BPjrxvkq93u+b2EebBuGxhS6tG22Ij3h
-	2h6lnoX1kRigY0jEBLqdvh6Id1IOVbq50DEegCq6tZPVPIpNsTvE6ukPw2kAxsUr33ubViFr7AYJz
-	U3NmQUmDKByOu1fTfOUpnarfv3ZV18ZRcZ4jI5qjAI+BrsiFP7TnjRYVJGf9T/ZxnJagaazTPVNOR
-	FKwBpnpw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE0J5-0021Zr-0c;
-	Fri, 15 Dec 2023 05:00:15 +0000
-Date: Thu, 14 Dec 2023 21:00:15 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Ye Bin <yebin10@huawei.com>
-Cc: jejb@linux.ibm.com, martin.petersen@oracle.com,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: core: add CMD_LAST flag for error handle scsi
- command
-Message-ID: <ZXvdX6lWbdG+uqz8@infradead.org>
-References: <20231214122919.985087-1-yebin10@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF0FA53A5
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:01:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D7AAC433C8;
+	Fri, 15 Dec 2023 05:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702616495;
+	bh=8RH/h1jakl0y7fPQ+kWUq85u6w9KslnUix/YJd0gqak=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=uFmXIMrXVkH0fn/PsKKyhCuvCCKR72ILItsqoCmKdvQicjHJTk+itW07h9q+uxgTx
+	 4S5Xy9zdMEROVAJXk2UlqHVCvs6I5971BZncNlgXD1hKoPgutrEHHlds3gysgQDnrX
+	 Ck3Z3aTsBWHh+UutJIO8B+GRu5Mn3FprvP/T20ycwjRfUjtOtmDguHYNFZIqK+7G9c
+	 61CedmmpQ9Do9oyZ2KJa2OG2XfyFt0vydvqaKpbMQs0oCFPDRXJ+CkS1Cl0T57D0/N
+	 R1XkIMdk+2ODC2zza+9UphvjUoBwYb1TzVDIQ2ksM2kYQDZkEfUZ8Nu/pPblV1piWq
+	 7RLuZxlrNt0dg==
+X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
+From: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, linux-kernel@vger.kernel.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rohan McLure <rmclure@linux.ibm.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	"ndesaulniers@google.com" <ndesaulniers@google.com>
+Subject: Re: [PATCH v5 1/5] powerpc/smp: Enable Asym packing for cores on
+ shared processor
+In-Reply-To: <20231214180720.310852-2-srikar@linux.vnet.ibm.com>
+References: <20231214180720.310852-1-srikar@linux.vnet.ibm.com>
+ <20231214180720.310852-2-srikar@linux.vnet.ibm.com>
+Date: Fri, 15 Dec 2023 10:31:26 +0530
+Message-ID: <87zfyct5y1.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214122919.985087-1-yebin10@huawei.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 
-Looks good:
+Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+> If there are shared processor LPARs, underlying Hypervisor can have more
+> virtual cores to handle than actual physical cores.
+>
+> Starting with Power 9, a big core (aka SMT8 core) has 2 nearly
+> independent thread groups. On a shared processors LPARs, it helps to
+> pack threads to lesser number of cores so that the overall system
+> performance and utilization improves. PowerVM schedules at a big core
+> level. Hence packing to fewer cores helps.
+>
+
+....
+
+> +/*
+> + * On shared processor LPARs scheduled on a big core (which has two or more
+> + * independent thread groups per core), prefer lower numbered CPUs, so
+> + * that workload consolidates to lesser number of cores.
+> + */
+> +static __ro_after_init DEFINE_STATIC_KEY_FALSE(splpar_asym_pack);
+
+
+DEFINE_STATIC_KEY_FALSE_RO ?
+
+> +
+>  /*
+>   * P9 has a slightly odd architecture where pairs of cores share an L2 cache.
+>   * This topology makes it *much* cheaper to migrate tasks between adjacent cores
+> @@ -1011,9 +1018,20 @@ static int powerpc_smt_flags(void)
+>   */
+
+-aneesh
 
