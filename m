@@ -1,227 +1,127 @@
-Return-Path: <linux-kernel+bounces-604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7F71814376
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:21:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5642981437A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E606B1C22623
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:21:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5671F24725
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F04B12E4E;
-	Fri, 15 Dec 2023 08:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931D718AF9;
+	Fri, 15 Dec 2023 08:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQDEfI4y"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L5DOu1fH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D68716418;
-	Fri, 15 Dec 2023 08:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-54f4b31494fso630746a12.1;
-        Fri, 15 Dec 2023 00:21:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F3117747
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:21:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40c517d0de5so4515065e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:21:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702628499; x=1703233299; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LiWcmWF3ECN1EHsWLphg963xq61PlotZ875/+bCwtkY=;
-        b=bQDEfI4ygoVZ2degyXgWnfnMXagCYM4mci4FsSwsxNCXi1C6308KCrZRDAlRopi/8f
-         yVLOWzjmEN7BCGTwSf+QydfNYGOPcxOEEhUemBOZMSQ317bvuz+JMYUYkuk8M9dnC8cd
-         MIQqkr0A4uc/UDa6VwEKy9Kti6ApJcHfCH76Z4nAaqBPW286HLuiWlqF+hSrA83tptzv
-         MEYhjfPAPDgIWvdIQ48RUYgXcBrU+YYY7PW4czRw7unT6AV/5wNQEypEuhQ9qC5EODNd
-         E0hRs0jEB5y6sgnbKjAnhdoYDRKoNwj+fTXxxSczVnWIL8OWd+Zrfag/OsmA6/9KPROd
-         Ec8g==
+        d=linaro.org; s=google; t=1702628506; x=1703233306; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NqNjncwqqjJXTlOOAiExi5LnEF+/WvA2Fq4G9Cr+svw=;
+        b=L5DOu1fHuPmbuD8K2wySR3lGQIKm8MTlpaNQdHPl3f9f9D++eJ36UBQyeAUq8lpoSw
+         FrvvkZ+KLKNKyYhqk1uMMCBkp8wTbETmWGFkG6dpFZtHcqS0Xbi8AcqzwcHn8/rzSqWC
+         05tRVpaW8Tt+FvzWrLr4a/9xZP/qYmbUcmDJvHnr5//sow/uJMlnb3Yw40BR2j1bfCua
+         73Z+/JEwG9kviVQquONYNzLq+RJsMOj/gfEAT9gW3kI2iAyBHUeqC3iQUnoSCx1u2Pe1
+         p/udT/xF+NsUzeA2bbWJdOd+NCpWx8cG97BirLVDaKK4mcgyU4mXMSWbtPqcIWrEhsP7
+         2/xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702628499; x=1703233299;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LiWcmWF3ECN1EHsWLphg963xq61PlotZ875/+bCwtkY=;
-        b=n7UCy/KVOqZOAoYu/fQe3TWHlSs4+z1pGVOJiPclJJXNwj2Rf0+cTZ7FD45M2ExQJ0
-         xlU6lcw8F95Ev19IDOlKGoPZ//EuXMuyXCAZwV6kd7A9tEc0I3gVC6QV0G9IXwSujpuJ
-         U8e7ohn4f8O3fzbtp0kAZ//tg1qrFiU4GEoUQ4ZfBdmg7wrv337qsKqAKi5MzAafdanH
-         WCD2QWF9NeeZfHq/p+Yt/k+fGbhEPfI2yjI0dDKezxA9vWXKf/E+nb5G+f4RnIS6oonv
-         oSsni3QDqfaVV5h/4soNczXQo2ZGU8YqjETJ7nD9VrpEDv7F9eT/bNgtGqoQMEzQ68bz
-         nEFA==
-X-Gm-Message-State: AOJu0YyOIZNbt1ScaVKzdytaQEnROBRxvFvun8Tk772/EmalE6NnIcE4
-	EqWL/5sDRG62RvU2QH+RcDg=
-X-Google-Smtp-Source: AGHT+IHuyIchFw4EB2nRZd5zCepUqx0SjHR4Q1uiqd7WZ1L4ag8QnK5EtQSeDxvk5A+zMJSCRxRV4g==
-X-Received: by 2002:a50:d7d4:0:b0:54c:542d:3afb with SMTP id m20-20020a50d7d4000000b0054c542d3afbmr12320236edj.36.1702628499242;
-        Fri, 15 Dec 2023 00:21:39 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation.station (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id m29-20020a50999d000000b0054cc903baadsm7911591edb.30.2023.12.15.00.21.38
+        d=1e100.net; s=20230601; t=1702628506; x=1703233306;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NqNjncwqqjJXTlOOAiExi5LnEF+/WvA2Fq4G9Cr+svw=;
+        b=d1aKEOsVVdqI7YAe6dbLitsmb/N38P6pjwWmr619xqX2LXmiqQV1tXVuKM06iG0/Ue
+         RjVK07vZ/OrU9/q/Q6dVj4/tHsheE0RaFJK+jnYjSXbfwoVww1eEP0itZLFJnbh6Z+Uv
+         YcOTCPWsDocd37FF3UU28VVVjx767CNySdCqASQUw1/1Lgz8zH1jpZH+IpcbZFy7PCOb
+         uzs1MErMc+Jk0OX4dfLtp8UZ8s56fgxen56mKxvNUsMOals5MWxusjio0l6zzUj/+zTO
+         kImtt11zCoi9nHx5dgmvouHb5zdUS642bW7NTgcySSbvHechfZVyNTAtkEzl0Bo6/ttE
+         aWxg==
+X-Gm-Message-State: AOJu0YzS5xgFffJFi+rlSBmseXRzBt4iO44FsY++tr1Cv+JlPO4oEHZQ
+	jh0A3V2mR1WbQHTR1eQZ7EbvYg==
+X-Google-Smtp-Source: AGHT+IEAprxPB8+tgE3JnpMosxNYTrH7hypu72LvvlwTtYzO4+cM2VZVHdoj8gUmTcXKKT9/DpKA0w==
+X-Received: by 2002:a05:600c:4384:b0:40b:2977:3d7a with SMTP id e4-20020a05600c438400b0040b29773d7amr6188952wmn.31.1702628506656;
+        Fri, 15 Dec 2023 00:21:46 -0800 (PST)
+Received: from 1.. ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id p1-20020a05600c1d8100b0040b47c69d08sm30365570wms.18.2023.12.15.00.21.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 00:21:38 -0800 (PST)
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: 
-Cc: linuxfancy@googlegroups.com,
-	sakari.ailus@linux.intel.com,
-	laurent.pinchart@ideasonboard.com,
-	tomm.merciai@gmail.com,
-	Martin Hecht <martin.hecht@avnet.eu>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] media: i2c: alvium: removal of dft_fr, min_fr and max_fr
-Date: Fri, 15 Dec 2023 09:21:36 +0100
-Message-Id: <20231215082136.1720379-1-tomm.merciai@gmail.com>
+        Fri, 15 Dec 2023 00:21:46 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com
+Cc: richard@nod.at,
+	jaimeliao@mxic.com.tw,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH 3/4] mtd: spi-nor: sysfs: hide the flash name if not set
+Date: Fri, 15 Dec 2023 10:21:37 +0200
+Message-Id: <20231215082138.16063-4-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231215082138.16063-1-tudor.ambarus@linaro.org>
+References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1557; i=tudor.ambarus@linaro.org; h=from:subject; bh=hQA5sORbw3xtkYv7YIEfdLni0OPdPoQur1BiyIea9wA=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlfAySzUrbRUhPFtUY+SLXVrH2ZVFiRqJ+XTJmx 6Y8ol5Q7c+JATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZXwMkgAKCRBLVU9HpY0U 6d0GB/9LEbjWhFVspZLCZOYxkhAWms2RGSpBdOGHiBozm1pTqpVVvwgUhHQOoexQ+ApAgD5n+qo QNAAdxWhNakleE9iq5tV8QmhYTzaplcyg+8RlsQbpS9fwMGwk98LmHE7Dt974gmuJNFR+IBYhIS iURU69hhL1D3pl2sjh2NaDHEgQuH4WFqIX8+0zP5WCzDyoFB8vjfwsJ99rO8kcR7fF0wwWTvXC8 YU6aEWiUELfKZkvsZwfO7Gru5IgDkqv1mUZumIF+IV/q8zpgf4phkuAwXNfNDfDaXyGWeYi00gE RW7HHx8c1LR/98xHAE3GF2eR9wF9LRM/x8dt/cPZV7u8YKWz
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 Content-Transfer-Encoding: 8bit
 
-Remove driver private data dft_fr, min_fr and max_fr.
-Those are used only in alvium_set_frame_interval function.
-Use local ones instead.
+From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+The flash name is not reliable as we saw flash ID collisions.
+Hide the flash name if not set.
+
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+[ta: update commit subject and description]
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/media/i2c/alvium-csi2.c | 45 +++++++++++++++------------------
- drivers/media/i2c/alvium-csi2.h |  3 ---
- 2 files changed, 21 insertions(+), 27 deletions(-)
+ Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor | 3 +++
+ drivers/mtd/spi-nor/sysfs.c                             | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-index 34ff7fad3877..c4b7851045a1 100644
---- a/drivers/media/i2c/alvium-csi2.c
-+++ b/drivers/media/i2c/alvium-csi2.c
-@@ -1170,40 +1170,36 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
- 	return 0;
- }
+diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+index c800621eff95..6d7be97bf7d1 100644
+--- a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
++++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+@@ -25,6 +25,9 @@ KernelVersion:	5.14
+ Contact:	linux-mtd@lists.infradead.org
+ Description:	(RO) Part name of the SPI NOR flash.
  
--static int alvium_get_frame_interval(struct alvium_dev *alvium)
-+static int alvium_get_frame_interval(struct alvium_dev *alvium,
-+				     u64 *dft_fr, u64 *min_fr, u64 *max_fr)
- {
--	u64 dft_fr, min_fr, max_fr;
- 	int ret = 0;
++		The attribute is not present if the jedec_id founded in
++		ID table but flash name didn't include in it.
++
  
- 	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
--		    &dft_fr, &ret);
-+		    dft_fr, &ret);
- 	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
--		    &min_fr, &ret);
-+		    min_fr, &ret);
- 	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
--		    &max_fr, &ret);
-+		    max_fr, &ret);
- 	if (ret)
- 		return ret;
+ What:		/sys/bus/spi/devices/.../spi-nor/sfdp
+ Date:		April 2021
+diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+index 2dfdc555a69f..96064e4babf0 100644
+--- a/drivers/mtd/spi-nor/sysfs.c
++++ b/drivers/mtd/spi-nor/sysfs.c
+@@ -78,6 +78,8 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
  
--	alvium->dft_fr = dft_fr;
--	alvium->min_fr = min_fr;
--	alvium->max_fr = max_fr;
--
- 	return 0;
- }
+ 	if (attr == &dev_attr_manufacturer.attr && !nor->manufacturer)
+ 		return 0;
++	if (attr == &dev_attr_partname.attr && !nor->info->name)
++		return 0;
+ 	if (attr == &dev_attr_jedec_id.attr && !nor->info->id && !nor->id)
+ 		return 0;
  
--static int alvium_set_frame_rate(struct alvium_dev *alvium)
-+static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
- {
- 	struct device *dev = &alvium->i2c_client->dev;
- 	int ret;
- 
- 	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
--				  alvium->fr);
-+				  fr);
- 	if (ret) {
- 		dev_err(dev, "Fail to set frame rate lanes reg\n");
- 		return ret;
- 	}
- 
--	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
-+	dev_dbg(dev, "set frame rate: %llu us\n", fr);
- 
- 	return 0;
- }
-@@ -1667,36 +1663,36 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
- }
- 
- static int alvium_set_frame_interval(struct alvium_dev *alvium,
--				     struct v4l2_subdev_frame_interval *fi)
-+				     struct v4l2_subdev *sd,
-+				     struct v4l2_subdev_state *sd_state,
-+				     struct v4l2_subdev_frame_interval *fi,
-+				     u64 *req_fr)
- {
- 	struct device *dev = &alvium->i2c_client->dev;
--	u64 req_fr, min_fr, max_fr;
-+	u64 dft_fr, min_fr, max_fr;
- 	int ret;
- 
- 	if (fi->interval.denominator == 0)
- 		return -EINVAL;
- 
--	ret = alvium_get_frame_interval(alvium);
-+	ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
- 	if (ret) {
- 		dev_err(dev, "Fail to get frame interval\n");
- 		return ret;
- 	}
- 
--	min_fr = alvium->min_fr;
--	max_fr = alvium->max_fr;
--
- 	dev_dbg(dev, "fi->interval.numerator = %d\n",
- 		fi->interval.numerator);
- 	dev_dbg(dev, "fi->interval.denominator = %d\n",
- 		fi->interval.denominator);
- 
--	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-+	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
- 		       fi->interval.numerator);
- 
--	if (req_fr >= max_fr && req_fr <= min_fr)
--		req_fr = alvium->dft_fr;
-+	if (*req_fr >= max_fr && *req_fr <= min_fr)
-+		*req_fr = dft_fr;
- 
--	alvium->fr = req_fr;
-+	alvium->fr = *req_fr;
- 	alvium->frame_interval.numerator = fi->interval.numerator;
- 	alvium->frame_interval.denominator = fi->interval.denominator;
- 
-@@ -1708,6 +1704,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
- 				   struct v4l2_subdev_frame_interval *fi)
- {
- 	struct alvium_dev *alvium = sd_to_alvium(sd);
-+	u64 req_fr;
- 	int ret;
- 
- 	/*
-@@ -1720,9 +1717,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
- 	if (alvium->streaming)
- 		return -EBUSY;
- 
--	ret = alvium_set_frame_interval(alvium, fi);
-+	ret = alvium_set_frame_interval(alvium, sd, sd_state, fi, &req_fr);
- 	if (!ret)
--		ret = alvium_set_frame_rate(alvium);
-+		ret = alvium_set_frame_rate(alvium, req_fr);
- 
- 	return ret;
- }
-diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-index 8b554bffdc39..a6529b28e7dd 100644
---- a/drivers/media/i2c/alvium-csi2.h
-+++ b/drivers/media/i2c/alvium-csi2.h
-@@ -443,9 +443,6 @@ struct alvium_dev {
- 
- 	struct alvium_mode mode;
- 	struct v4l2_fract frame_interval;
--	u64 dft_fr;
--	u64 min_fr;
--	u64 max_fr;
- 	u64 fr;
- 
- 	u8 h_sup_csi_lanes;
 -- 
 2.34.1
 
