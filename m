@@ -1,54 +1,64 @@
-Return-Path: <linux-kernel+bounces-720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FFA3814517
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:04:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3A6981451F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446B01C2299A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:04:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8942C1F232E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3FC18C3A;
-	Fri, 15 Dec 2023 10:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7609518C28;
+	Fri, 15 Dec 2023 10:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EqtSz8d0"
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="b058VRax"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889F918C09;
-	Fri, 15 Dec 2023 10:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF5F27t015003;
-	Fri, 15 Dec 2023 10:03:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=BRxgl//zknMrW5V/U7mkOhKeb9Q7bg36q8gBhzKKTVk=; b=Eq
-	tSz8d0JLOSAvfnZvIn5IINNlLksNUqgx+FmGfCtUHyG8gDuya26IjO2OqTVzuC8Z
-	V+tvnRSJ0/6tUxwzLwtWH7OOW94K9pWLznCriJRTRZGKVbNO6/9vW2ykGZ0vD9iq
-	28c9c9QD565f8IJROnmm5RDyx8xWIj6TUm60dX03n16qy08RRBb59op336D019or
-	U82/kJxhTUQYjElXb7+sCa3rCYfbZJXVxLyKMP9bYvuF14hcFkmZarv57ZUyhPq8
-	x1UunfxTsQNjmFGYxIKZrS8Y48Dq+AbM7+tRvsSJLaqMj9WnYQuqEMJ9PVR/AZAk
-	uyWGjXG4huYDYBh7p23g==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v05jqj068-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 10:03:42 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFA3fHc013778
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 10:03:41 GMT
-Received: from [10.253.13.71] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 02:03:36 -0800
-Message-ID: <3de98516-9a28-4f58-8951-2a7752621fee@quicinc.com>
-Date: Fri, 15 Dec 2023 18:03:33 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2387A18C18
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c4846847eso5228785e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:04:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1702634693; x=1703239493; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TzGSueYgjKpbem4qFtdP7rmchtFZgQq3JUglNkOvT3w=;
+        b=b058VRaxYdMSQpRbtrh0q3q5oZ4tKhQbn71OdKk9BWgTNVB9gguNmKiRj9g04VCP//
+         nj7tdGpe/yLGFfpODe0oGU4BSKPIpt5fFehHo7o6FxcwcygZEtkMukZSh9e6n51e1v43
+         AAtJ+JllomTSvQ9gO1d3/GiiDMeGDr5CIe3XsOR/IJTk/NIdQhZNxw0Nt9FbSWjOXEcT
+         Z3TMpT3iJxIkWFtCSVNmc7e44GH0SuDotCE8v5CV7KjA6A6E8x7jXWhxdkLQxVU74TCE
+         pxakNl+tMPl+GGa2c75uJ9Yqus6bzmRiCPW5VwC+oKi2/olmYAI/jQgmBnTWarFX4/A7
+         XwQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702634693; x=1703239493;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TzGSueYgjKpbem4qFtdP7rmchtFZgQq3JUglNkOvT3w=;
+        b=g7yaWkhdB5C3GMElTLgo97bma5Q/uaKW2wIIFsk/qbltYHh7aPA1daRGzB7tt/dwkj
+         oXTenKpAAlOdmvp3l9umPljmvW1WtsAYfLPmmbEm01AJv61k/HYvGanoofkmPDNfLWZn
+         EYwyiAzL3/dv07eDsRMlzWW6PaHTX6/9oh5pMu5ldsRoz4vuPrb9b2oblRID/ySHQLiM
+         xQpmuiXFqR0QD3tunzp0nn8AMsmjKN5LdEJG+GLfdw5Z11/nO8aKkMhL7HNh/c+nrFBV
+         Q9b+zt/Speu3DIRaE4sbttMjxaoUjdPkWFNdPzvfitR+guFVuaozZNFydrCTDORAs1p0
+         pkqg==
+X-Gm-Message-State: AOJu0YzcCA6MXsjzRklsGEMUtVBkmK0RcB/ylXXDAZmoEbKimrCuxXGE
+	5G9bllkmUYW3spNHdzAIeDinGA==
+X-Google-Smtp-Source: AGHT+IG23H+vbNwlWVjRO6JupU3b8UJgJiD5gNauO7Z+S0ticxIdE6x+9ZzaZ14GJJx4kxaE5DNpug==
+X-Received: by 2002:a7b:cd11:0:b0:40c:909:4402 with SMTP id f17-20020a7bcd11000000b0040c09094402mr5528160wmj.133.1702634693136;
+        Fri, 15 Dec 2023 02:04:53 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.103])
+        by smtp.gmail.com with ESMTPSA id i1-20020a05600c354100b0040c411da99csm22891968wmq.48.2023.12.15.02.04.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 02:04:52 -0800 (PST)
+Message-ID: <0b807496-f387-4aef-8650-a43a9249468f@tuxon.dev>
+Date: Fri, 15 Dec 2023 12:04:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,173 +66,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
+Subject: Re: [PATCH net 1/2] net: ravb: Wait for operation mode to be applied
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <robert.marko@sartura.hr>
-CC: <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231214090304.16884-1-quic_luoj@quicinc.com>
- <20231214090304.16884-6-quic_luoj@quicinc.com>
- <1e4c55c8-8ed6-4f2e-8328-8a173f09b62f@linaro.org>
- <3c8e33b4-6ebc-476f-a00f-15cc8a1ad9e4@quicinc.com>
- <b89abf8c-57f8-46a6-a071-b1591340fbdf@linaro.org>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <b89abf8c-57f8-46a6-a071-b1591340fbdf@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ claudiu.beznea.uj@bp.renesas.com, yoshihiro.shimoda.uh@renesas.com,
+ wsa+renesas@sang-engineering.com, niklas.soderlund+renesas@ragnatech.se,
+ biju.das.jz@bp.renesas.com, prabhakar.mahadev-lad.rj@bp.renesas.com,
+ mitsuhiro.kimura.kc@renesas.com, geert+renesas@glider.be
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214113137.2450292-2-claudiu.beznea.uj@bp.renesas.com>
+ <d08dbbd4-2e63-c436-6935-df68c291bf75@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <d08dbbd4-2e63-c436-6935-df68c291bf75@omp.ru>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: bxKaZEW4wPbab5whn79-T1BjlytsHqbD
-X-Proofpoint-GUID: bxKaZEW4wPbab5whn79-T1BjlytsHqbD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 adultscore=0 suspectscore=0 spamscore=0
- mlxscore=0 clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312150067
 
 
 
-On 12/15/2023 4:39 PM, Krzysztof Kozlowski wrote:
-> On 15/12/2023 09:28, Jie Luo wrote:
+On 14.12.2023 21:41, Sergey Shtylyov wrote:
+> resetOn 12/14/23 2:31 PM, Claudiu wrote:
+> 
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >>
+>> CSR.OPS bits specify the current operating mode and (according to
+>> documentation) they are updated when the operating mode change request
+>> is processed. Thus, check CSR.OPS before proceeding.
+> 
+>    The manuals I have indeed say we need to check CSR.OPS... But we only
+> need to wait iff we transfer from the operation mode to the config mode...
+
+RZ/G3S manual say about CSR.OPS "These bits are updated when an operating
+mode changes is processed". From this I get we need to check it for any mode.
+
+Also, on configuration procedure (of RZ/G3S) it say CSR.OPS need to be
+checked when switching from reset -> config.
+
+> 
+>> Fixes: 568b3ce7a8ef ("ravb: factor out register bit twiddling code")
+>> Fixes: 0184165b2f42 ("ravb: add sleep PM suspend/resume support")
+>> Fixes: 7e09a052dc4e ("ravb: Exclude gPTP feature support for RZ/G2L")
+>> Fixes: 3e3d647715d4 ("ravb: add wake-on-lan support via magic packet")
+>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> 
+>    Hm, that long list does look weird...
+
+OK, then I'll limit it to only c156633f1353 ("Renesas Ethernet AVB driver
+proper"). Niklas also suggested this.
+
+> 
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>  drivers/net/ethernet/renesas/ravb_main.c | 47 ++++++++++++++++++++----
+>>  1 file changed, 39 insertions(+), 8 deletions(-)
 >>
->> On 12/15/2023 3:27 PM, Krzysztof Kozlowski wrote:
->>> On 14/12/2023 10:03, Luo Jie wrote:
->>>> Update the yaml file for the new DTS properties.
->>>>
->>>> 1. cmn-reference-clock for the CMN PLL source clock select.
->>>> 2. clock-frequency for MDIO clock frequency config.
->>>> 3. add uniphy AHB & SYS GCC clocks.
->>>> 4. add reset-gpios for MDIO bus level reset.
->>>>
->>>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->>>> ---
->>>>    .../bindings/net/qcom,ipq4019-mdio.yaml       | 143 +++++++++++++++++-
->>>>    1 file changed, 139 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->>>> index 3407e909e8a7..79f8513739e7 100644
->>>> --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->>>> +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->>>> @@ -20,6 +20,8 @@ properties:
->>>>              - enum:
->>>>                  - qcom,ipq6018-mdio
->>>>                  - qcom,ipq8074-mdio
->>>> +              - qcom,ipq9574-mdio
->>>> +              - qcom,ipq5332-mdio
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index 9178f6d60e74..ce95eb5af354 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> @@ -683,8 +683,11 @@ static int ravb_dmac_init(struct net_device *ndev)
+>>  
+>>  	/* Setting the control will start the AVB-DMAC process. */
+>>  	ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_OPERATION);
+>> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_OPERATION);
+>> +	if (error)
+>> +		netdev_err(ndev, "failed to switch device to operation mode\n");
 > 
-> Why do you add entries to the end of the list? In reversed order?
+>    It doesn't look like ravb_wait() is needed here...
+>    And besides, this pattern seems repetitive and worth factoring out into
+> a single function.
 
-Thanks for pointing it out, i will move "- qcom,ipq5332-mdio" before
-"- qcom,ipq6018-mdio".
+In the final version of the driver proposed by RPM series it is gone. I
+tried to keep the fixes simple. I'll update it as Niklas also suggested this.
 
 > 
->>>>              - const: qcom,ipq4019-mdio
->>>>    
->>>>      "#address-cells":
->>>> @@ -30,19 +32,77 @@ properties:
->>>>    
->>>>      reg:
->>>>        minItems: 1
->>>> -    maxItems: 2
->>>> +    maxItems: 5
->>>>        description:
->>>> -      the first Address and length of the register set for the MDIO controller.
->>>> -      the second Address and length of the register for ethernet LDO, this second
->>>> -      address range is only required by the platform IPQ50xx.
->>>> +      the first Address and length of the register set for the MDIO controller,
->>>> +      the optional second, third and fourth address and length of the register
->>>> +      for ethernet LDO, these three address range are required by the platform
->>>> +      IPQ50xx/IPQ5332, the last address and length is for the CMN clock to
->>>> +      select the reference clock.
->>>> +
->>>> +  reg-names:
->>>> +    minItems: 1
->>>> +    maxItems: 5
->>>>    
->>>>      clocks:
->>>> +    minItems: 1
->>>>        items:
->>>>          - description: MDIO clock source frequency fixed to 100MHZ
->>>> +      - description: UNIPHY0 AHB clock source frequency fixed to 100MHZ
->>>> +      - description: UNIPHY1 AHB clock source frequency fixed to 100MHZ
->>>> +      - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
->>>> +      - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
->>>>    
->>>>      clock-names:
->>>> +    minItems: 1
->>>>        items:
->>>>          - const: gcc_mdio_ahb_clk
->>>> +      - const: uniphy0_ahb
->>>> +      - const: uniphy1_ahb
->>>> +      - const: uniphy0_sys
->>>> +      - const: uniphy1_sys
->>>> +
->>>> +  cmn-reference-clock:
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>
->>> Nothing improved here
->>
->> With this change, the warning is not reported when i run
->> dt_binding_check, looks the new added property needs
->> the type ref to avoid the warning reported.
+> [...]
+>> @@ -1744,6 +1747,18 @@ static inline int ravb_hook_irq(unsigned int irq, irq_handler_t handler,
+>>  	return error;
+>>  }
+>>  
+>> +static int ravb_set_reset_mode(struct net_device *ndev)
+>> +{
+>> +	int error;
+>> +
+>> +	ravb_write(ndev, CCC_OPC_RESET, CCC);
+>> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_RESET);
+>> +	if (error)
+>> +		netdev_err(ndev, "failed to switch device to reset mode\n");
+>> +
+>> +	return error;
+>> +}
+>> +
 > 
-> Nothing improved in the property name, nor its style, nor in the actual
-> contents/values.
+>    Again, ravb_wait() call doesn't seem necessary here...
 
-This property is for CMN PLL block reference clock configuration,
-so i use this property name.
-
-it will be appreciated if you can suggest a suitable name, thanks.
+Ok. I followed the guideline from the description of CSR.OPS. Let me know
+if you want to keep it or not. I think I haven't saw any issues w/o this.
 
 > 
-> ...
+> [...]
 > 
->>>> +  reset-gpios:
->>>> +    maxItems: 1
->>>> +
->>>> +  reset-assert-us:
->>>> +    maxItems: 1
->>>
->>> This does not look related to ipq5332.
->>
->> The reset gpio properties are needed on ipq5332, since qca8084 phy is
->> connected, which uses the MDIO bus level gpio reset.
-> 
-> I am talking about this property, not these properties.
-
-ok.
-
-> 
->>
->> Without declaring these gpio properties, the warning will be reported
->> by dt_binding_check.
-> 
-> How is it even possible to have warnings if there is no such node in
-> DTS? We do not care about warnings in your downstream code.
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-
-If i do not declare the property "reset-assert-us" and 
-"reset-deassert-us", the warning will be reported by "make 
-dt_binding_check" since i
-add a example in this file.
-
-
+> MBR, Sergey
 
