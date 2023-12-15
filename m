@@ -1,177 +1,135 @@
-Return-Path: <linux-kernel+bounces-1736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD2581535A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:14:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96F48815359
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:14:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E5C41C2309B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:14:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 903361C222B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EF118EB0;
-	Fri, 15 Dec 2023 22:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3966618EC2;
+	Fri, 15 Dec 2023 22:14:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EtNco/u7"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=linosanfilippo@gmx.de header.b="hXhOymDR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0717518EA9
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702678468; x=1734214468;
-  h=date:from:to:cc:subject:message-id;
-  bh=ZZAohyiDm9flxJ9DkJhHiTozgm7jEmruDKoc18NP2SU=;
-  b=EtNco/u7fra27GD/TMaM9cql2upk1zEWDF2uf+/8MJgKydVPHXYzC3Tw
-   Nh5RcIUFrXO8joYtM2uHVIzd1ht4hnZuwrIWewfKuKGra0J7tSqrG8EGe
-   8hIgo2Ia1fSvQXKqaoSL474Mi/QlVHYYZbeEL1JRcylMlZepeF2xw1bXp
-   dPSMNMRKwCNMBdZFEuvF6hLYB63BNroDOtVD8nxTL3ngkM6DkhPEtijCX
-   Cg4JzQmwg6ZljcRC76DiQPQ/6HZ6j+eirNuXL5KqaL8MTGOkQiyfTSurO
-   lM+zQumY3afu/e6Fjw46eVZtzfrt/DYhqzmgpMMu6DkNvABysLcriBXkp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="2502628"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="2502628"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 14:14:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="803851207"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="803851207"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 15 Dec 2023 14:14:25 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEGRr-0000oy-1S;
-	Fri, 15 Dec 2023 22:14:23 +0000
-Date: Sat, 16 Dec 2023 06:13:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- f1242ec0ad8f11c414da5bd56ba62ae8264df643
-Message-ID: <202312160624.WWAYKagW-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F5E18EC1;
+	Fri, 15 Dec 2023 22:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1702678425; x=1703283225; i=linosanfilippo@gmx.de;
+	bh=C06XXkJK7IZiZ0MT6MWFhD5Flfb1WACPBxOdMeCa4xw=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=hXhOymDR1W83ZjnKPjT5KlB+DYtmkxBITeBaeFrNw3mHr6qzH3Khl0+cqN8CKApY
+	 eICFT/Hfydvt+M1uJ3vEi7gBLY71ttn2QuglHIIjmcF6hX431d5a342M+79Sb1TF5
+	 CuiFiLq1jyobFh6a3pbM4oNPn13q9DUYGo2lxLfVfuAGNnI44den2Ixyk5UmNy/Fe
+	 Z3wRSvfdYM5xj6LNZPP9aE1SQDqZfXzOXU+pkj1JLQrspU/1dhhzOo4/86E1iLb+t
+	 2vr24ANbuDwTkJ6tVh6mU3PVCeF29Rfr8MZ2cDbLmtIcLcjS43ldAwUehhaIdKTRB
+	 jzmmtOPj+D92jfuG/w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.162.1.150]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0oBr-1rQRZ60MAH-00wlzn; Fri, 15
+ Dec 2023 23:13:45 +0100
+Message-ID: <1b0af20c-8a2c-46ba-ab2e-d598b65fd0c1@gmx.de>
+Date: Fri, 15 Dec 2023 23:13:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Content-Language: en-US
+To: Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+ Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Lukas Wunner <lukas@wunner.de>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ "brenda.streiff@ni.com" <brenda.streiff@ni.com>,
+ Tomas Paukrt <tomaspaukrt@email.cz>
+References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
+ <20231120151056.148450-2-linux@rasmusvillemoes.dk>
+ <20231122145344.GA18949@wunner.de>
+ <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
+ <ec66d25162de4cbc92720df1e7008fe8@dh-electronics.com>
+ <5c140498-69e3-4187-8703-db0c41e7ca89@gmx.de>
+ <fe28eb93-daa1-41af-a005-f21aa87e1984@gmx.de>
+ <ZXcJr4VS_uGr_6TV@smile.fi.intel.com>
+ <ZXrX4mQXPLum0jL3@moxa-ThinkCentre-M90t>
+ <b35730df8288469fbaf67b5ceae4eece@dh-electronics.com>
+ <ed087928-43ac-42bc-8e4d-d1632db451b9@gmx.de>
+ <cc59c5bb16574073ba8b2bf9bc59bc7c@dh-electronics.com>
+From: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <cc59c5bb16574073ba8b2bf9bc59bc7c@dh-electronics.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DPmv0J/k0HzTMbwTgxlSJfkOv4Ktn/RCfR7VD9yMFQAhDj2mM7o
+ uxQHhjhrdmjTZh75hXxE0RbAq9ucl7RIgehxEi6jO72FJUTlYyA/nHRfX3gshPGfjFdE0zl
+ RdO9rHODzl6delVvUFGVCVwZtTAygSdqXQCv4OnDp3K2RVrH5MfscljgRxE3StmFRzStyNZ
+ qtsuUKm0S1QJ2VQS7lhJQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:oiUTxF7LW/I=;01gP3CrURX/RACgl6u/hm4kcUjB
+ hahsEkwwPDj+bL+6RFpCqdSOUCMivMkVRTBxjBXCIpVDk1YnsY+Qjxcy//vsoC+Fuyuqjyg+v
+ qys9FiGDbQ89zVmGl1KNGvYJPEvh5RZg5vYP0H7Nsey1UEc1HlBBYjoS05d3ZdIc52hyElBcV
+ F5mFo2FWQrG46ObwtdsfjyLUIlrwH7TezyA571sUx9KGzIezsqUaA9YYjynVF1GyEI3YINU7b
+ AC6J9RN2XGw4VKmwucifG5nRw5f0UUrLD1hjxx4HSY+CsEhu2VNKzhM54ibNLHdLlGrrPhdKE
+ MRxNxhw2RbHzm+/AT6w6PpoqqMu7qXXdzbyCVm+R5SsrU8jQGtff3+YWXEPin8wk6oP3OlmcE
+ J4QesO1qu3rXpFfJrSiOLrQ5bCLwDFNdHQgpmCdJUQLHUCqolHoLVM1QdfJ0DABd6htQAu3cW
+ zhOxhcoPwIPTNIjmz/6xeAyN2z3l+m6DwalMwJOgPB+CBuToATIWQnX27UzTFssebTyZUjxx2
+ 16GkjF0VJoJd3xds1LamQOO2IsMBZbUzNNnSP+TG9p+WornZE4JROYNx5MmcnCZPfr9+TDV+U
+ irRGE0Fhnq7Wh0HzB/qBsTopr0QuD2TGrr4HMoLF5XLsciKf6HGfi0XOSo9nocpLhWPo99wwA
+ E/OpdfmVOv9lbVZXHCW6oqQuzJZEZGR/4YKDK+ey1m0pDCVwxEkc1bI8bp1y4mGHv/nAupOMJ
+ qx0Lh7VhUH6cdjXVj/v9+MBwCj4eiVJvX9OoNbNciq8YitBz9C2bIPVgAh8vCmzRAxPIKmGIu
+ nol3VT+rJrVGUJww/OC5nUxPZc14pR1ptI/0c/C8JXWSKHPv8LzElce8R/ZsivwvNbiQEQCty
+ 5lcomLZeIUOkfD1ESG549A9alZgv7lPHXJN0Qx86feWx88VXOIELXqVyGCE7HmWivFT4tTq0y
+ ji57uA==
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: f1242ec0ad8f11c414da5bd56ba62ae8264df643  doc: Update checklist.rst discussion of callback execution
+Hi Christoph,
 
-elapsed time: 1495m
+On 14.12.23 15:50, Christoph Niedermaier wrote:
 
-configs tested: 95
-configs skipped: 2
+>
+> I think we don't need to distinguish, because for a full duplex RS-485
+> transceiver also needs RTS control. For example look at the full duplex
+> RS-485 transceiver ADM3491E [1]. It's a full duplex transceiver (A/B and=
+ Z/Y)
+> that has DE (Driver enable) and DI (Driver Input) pins for controlling T=
+X. I
+> think the RS-485 master doesn't need it. The DE pin could also be set
+> permanently high. But if we have more than one RS-485 slaves it's needed=
+ to
+> avoid blocking of each other on the receiving wires of the RS-485 master=
+.
+>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks for the explanation. So while still needed for the slaves, in case =
+of the
+RS485 master the RTS control is not needed, right? Is this something that =
+userspace
+should be able to configure? It could be set by clearing both the RTS_ON_S=
+END and
+RTS_AFTER_SEND flag (only if the driver supports this special RS485 mode, =
+of course).
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231216   gcc  
-arc                   randconfig-002-20231216   gcc  
-arm                               allnoconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20231216   gcc  
-arm                   randconfig-002-20231216   gcc  
-arm                   randconfig-003-20231216   gcc  
-arm                   randconfig-004-20231216   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231216   gcc  
-arm64                 randconfig-002-20231216   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231216   gcc  
-csky                  randconfig-002-20231216   gcc  
-hexagon                           allnoconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231215   clang
-i386         buildonly-randconfig-002-20231215   clang
-i386         buildonly-randconfig-003-20231215   clang
-i386         buildonly-randconfig-004-20231215   clang
-i386         buildonly-randconfig-005-20231215   clang
-i386         buildonly-randconfig-006-20231215   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231215   clang
-i386                  randconfig-002-20231215   clang
-i386                  randconfig-003-20231215   clang
-i386                  randconfig-004-20231215   clang
-i386                  randconfig-005-20231215   clang
-i386                  randconfig-006-20231215   clang
-i386                  randconfig-011-20231215   gcc  
-i386                  randconfig-012-20231215   gcc  
-i386                  randconfig-013-20231215   gcc  
-i386                  randconfig-014-20231215   gcc  
-i386                  randconfig-015-20231215   gcc  
-i386                  randconfig-016-20231215   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                               defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+Regards,
+Lino
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
 
