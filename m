@@ -1,119 +1,101 @@
-Return-Path: <linux-kernel+bounces-1202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA34814B9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A88814BA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1EFC1C219A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:19:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21F631C219A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85A139FD4;
-	Fri, 15 Dec 2023 15:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D13F364A7;
+	Fri, 15 Dec 2023 15:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WDNrPDwl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3876736B17
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rE9xk-0003J2-Du; Fri, 15 Dec 2023 16:18:52 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rE9xj-00G3c1-Nm; Fri, 15 Dec 2023 16:18:51 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rE9xj-003enb-EM; Fri, 15 Dec 2023 16:18:51 +0100
-Date: Fri, 15 Dec 2023 16:18:51 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: James Clark <james.clark@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
-	linux-next@vger.kernel.org, will@kernel.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 1/2] arm: perf: Fix ARCH=arm build with GCC in
- armv8pmu_write_evtype()
-Message-ID: <20231215151851.24wwciobjy5ritoe@pengutronix.de>
-References: <20231215150040.3342183-1-james.clark@arm.com>
- <20231215150040.3342183-2-james.clark@arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D464E364CD
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-67f1ef1ef8eso2291116d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:20:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702653609; x=1703258409; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ec/IkJvxWOTEpNokLms/85Ff6vAF31dE3zXHdBgye0g=;
+        b=WDNrPDwl2Cuh10AceB46Qo867KT1bVO7xMcwEZDr8gtaxym1fWTX4vf79qXYbQZJPI
+         p6FPxOc4OFXbw7Arduem/0Jh0+CB0JWHsSrcZEEtJzEztaNPjfFIPXqzXaaxswC/MQ4F
+         RvK55rmo9pnZw6qP6iLJwF8QszJJKEhA3ssbtAtkHwcGmdAjP5zMuEkeo22eJBK7njS3
+         iP2S5Y4rwaojbn1w1UBS19iu/9C+Xe82Tow9k+Boj0KwMFurjAmv4ypyECECkDLe/5yz
+         apgwQA1IWh7TSL/qFl0KCPli4ipiBnWkEVLcBlBNi1Tew/nHR0O5hqiQ0b978ZFXtpTW
+         5SFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702653609; x=1703258409;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ec/IkJvxWOTEpNokLms/85Ff6vAF31dE3zXHdBgye0g=;
+        b=tJhEq75h2WpGjd1NDnpnNWT4A1YuyzP6bl5PwoPzdW+6hob0wYhxXFpu7oUVgzQklV
+         MBPJ9OxA1pQ5q6Wsj4dTn1T/IYSSSDUXsJmiQ/hemD2SUcPxyF1YXCK3Pl1JPhwkDqCW
+         d/jauWjELTgSn7Pe11RDKk3pVMZnGYQQMPubgpyx+CwK24Vp8WF8SQbdvBZ3V+AxDe/I
+         XrShb9CPCnnhuj8OWmxZrg5MENDlhActqEg8P4AWyIcw2wAnI3sjhpHx3ifOdtemHbTy
+         vvW+/33nWLjTV6tOY7fGrjUSugbbRTPW01kkzss4vCNmgSMS6FbgPL2610XoZP4Sbx0t
+         vIIQ==
+X-Gm-Message-State: AOJu0YwD1G+PgPkGWoK+8T/cvtcUo6vn7sUbU+gtETkFAb+P18kTtIAX
+	hgLVeN/rMtom/OUpk1eeaxo00UsnII99pLcD1gU9JA==
+X-Google-Smtp-Source: AGHT+IHDMCLAtnTkA4Lr18w0p1aGS/OoZZYewpgkL8h3vDpLLQUelxc7l/pRhtCSBfnrltjd1JTUF5nkjYWKUN1i7cY=
+X-Received: by 2002:a05:6214:8f1:b0:67a:4da4:e23c with SMTP id
+ dr17-20020a05621408f100b0067a4da4e23cmr11597856qvb.56.1702653609560; Fri, 15
+ Dec 2023 07:20:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vcdax2erkxxsbf2h"
-Content-Disposition: inline
-In-Reply-To: <20231215150040.3342183-2-james.clark@arm.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20231214110639.2294687-1-glider@google.com> <20231214110639.2294687-5-glider@google.com>
+ <ZXtircr4TllpqyeS@yury-ThinkPad>
+In-Reply-To: <ZXtircr4TllpqyeS@yury-ThinkPad>
+From: Alexander Potapenko <glider@google.com>
+Date: Fri, 15 Dec 2023 16:19:27 +0100
+Message-ID: <CAG_fn=WcrNqV4burBRPZZwoBLwgia7kerZ8g2vV5spzWF=houQ@mail.gmail.com>
+Subject: Re: [PATCH v10-mte 4/7] arm64: mte: implement CONFIG_ARM64_MTE_COMP
+To: Yury Norov <yury.norov@gmail.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, pcc@google.com, 
+	andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com, 
+	aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk, 
+	alexandru.elisei@arm.com, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, eugenis@google.com, 
+	syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 
+>
+> That looks weird... You're casting address of a 'data' to a bitmap
+> instead of 'data'. At the 1st glance it makes little sense because
+> 'data' is passed as parameter. Moreover, in mte_is_compressed()
+> you pass 'data', not '&data'. Can you please comment on your
+> intention?
 
---vcdax2erkxxsbf2h
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Although `data` is a void*, it actually contains 64 bits of compressed
+data, so we pass &data to mte_bitmap_read() to read its contents.
+Perhaps I'd better make `data` an unsigned long to avoid confusion.
 
-Hello,
+>
+> > +     max_ranges = MTE_MAX_RANGES;
+> > +     /* Skip the leading bit indicating the inline case. */
+> > +     mte_bitmap_read(bitmap, &bit_pos, 1);
+> > +     largest_idx =
+> > +             mte_bitmap_read(bitmap, &bit_pos, MTE_BITS_PER_LARGEST_IDX);
+>
+> Nit: really no need to split the line - we're OK with 100-chars per
+> line now.
 
-On Fri, Dec 15, 2023 at 03:00:38PM +0000, James Clark wrote:
-> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-> index 23fa6c5da82c..3ed2086cefc3 100644
-> --- a/drivers/perf/arm_pmuv3.c
-> +++ b/drivers/perf/arm_pmuv3.c
-> @@ -631,8 +631,9 @@ static void armv8pmu_write_evtype(int idx, unsigned l=
-ong val)
->  			     ARMV8_PMU_EXCLUDE_EL0 |
->  			     ARMV8_PMU_EXCLUDE_EL1;
-> =20
-> -	if (IS_ENABLED(CONFIG_ARM64))
-> -		mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
-> +#if IS_ENABLED(CONFIG_ARM64)
-> +	mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
-> +#endif
-
-maybe add a comment about why you used an #if here, to prevent the
-people sending patches that revert your change?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---vcdax2erkxxsbf2h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV8bloACgkQj4D7WH0S
-/k5b/wf+MEL3zkiZL0BMTR7yyXPKpsqbEG64vTZcxWV48jxm51wX+huoGcM3aSQj
-CbCT6/uFb6IrWF299Ed7zuLDV38aTvrB3PV9L7GBxhvAedqEMMaSrpBTxDlyTNNq
-4LFwOnj0h8Cl2l3GTwgrUgBkzc5rIOh4RGr9f/tsXzcjHQ2GUNxdJQfg0UvoGcxx
-0Qhlff3eZpuNcX6mWH3f5QGRaqGpV4pxYL3b2Ik9tSLA1tDqWlpv2CXCVAJk6ZLD
-hKd96oJY4DVjs7skS4ouBOiUtEvqtcs87iuLUbLNGBzpjPAQ78cNLoV761PkjEBT
-df7m1XwzDzVnjQrOkhjLOy3K4BV7Jw==
-=ojPK
------END PGP SIGNATURE-----
-
---vcdax2erkxxsbf2h--
+That's true, but I am relying on clang-format here (maybe we should
+extend the limit in .clang-format?)
 
