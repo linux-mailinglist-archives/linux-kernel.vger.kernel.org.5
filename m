@@ -1,389 +1,1658 @@
-Return-Path: <linux-kernel+bounces-1271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F065814CA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:13:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48575814CAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92C1D1C23A29
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:13:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E7671F236A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E843DBAB;
-	Fri, 15 Dec 2023 16:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45733C496;
+	Fri, 15 Dec 2023 16:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="E/v4ytAb";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="E/v4ytAb"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="W3DH24QC";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="V1wlmLzX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE2C3DB93
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1724D1F83F;
-	Fri, 15 Dec 2023 16:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702656758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yDBCRDrZr4+5hIuUyIxI8EGqZkT8EFZctCoZ2lc3E5M=;
-	b=E/v4ytAbqs0i+ubbNE6wWqKkQvNlS94y0hvgx2TEL0ZCNXcmU+746XyqVFdPeCamWCTaV3
-	N4QgP//AnfgVJ3YKF19ihkEjm2PoGZxHyLou75zJSHWbj7TAuivMDtfgFy0aemTmT/TrgW
-	FCkctzcr6fMnjCUjlUq63qU4zY6/Dbs=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702656758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yDBCRDrZr4+5hIuUyIxI8EGqZkT8EFZctCoZ2lc3E5M=;
-	b=E/v4ytAbqs0i+ubbNE6wWqKkQvNlS94y0hvgx2TEL0ZCNXcmU+746XyqVFdPeCamWCTaV3
-	N4QgP//AnfgVJ3YKF19ihkEjm2PoGZxHyLou75zJSHWbj7TAuivMDtfgFy0aemTmT/TrgW
-	FCkctzcr6fMnjCUjlUq63qU4zY6/Dbs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D423913726;
-	Fri, 15 Dec 2023 16:12:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9gmVMfV6fGXuZwAAD6G6ig
-	(envelope-from <jgross@suse.com>); Fri, 15 Dec 2023 16:12:37 +0000
-Message-ID: <b91dabec-8fde-4de1-abfe-1664f9607784@suse.com>
-Date: Fri, 15 Dec 2023 17:12:37 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B009E3C47B;
+	Fri, 15 Dec 2023 16:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 15 Dec 2023 17:13:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702656805;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=OaWXGcSiw4iLQdaoa2uzAfzlk/QEDXGhjweYSMndgv0=;
+	b=W3DH24QCxeZTtC0ETWl2t6HA8IxRxbwPoqjQKpuDDvjlTTHyB9ZYwoJldk1XDivz7Uy+0B
+	E1AboATV0TyHLDcTzUxAr556x/1R2E+KJfy4CVw7w+cy+n0OCG6iDsq5f3uOCUWoSsq5j8
+	rGIlLc7tLL8fx+8crlM/erUknSkNdhCf3dgdQm2vde/MFuILBWvdDLggDRuwNs45EJMZq2
+	OXyFZBN5DYOlbpwrOA+Di/CpZLNP0Yq37RZIfUznJFE2m112UfLK6SH1QX2E7G2oJM8MEm
+	87G5+mGDbeS2bBktJ+OIWi7HoXK7ngT/O7FRR02eZ1mY3USC6F8KX8EWDoEmEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702656805;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=OaWXGcSiw4iLQdaoa2uzAfzlk/QEDXGhjweYSMndgv0=;
+	b=V1wlmLzXoibd6eREqLA97oOsog3FWJz1WVvSLfonjAa8oaCswoXBO+XhlMgoDii3IWARQZ
+	ig8IsXJ7zYiTpUCA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v6.7-rc5-rt5
+Message-ID: <20231215161323.hasozaSP@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Crashes under Xen with Radeon graphics card
-Content-Language: en-US
-To: "Deucher, Alexander" <Alexander.Deucher@amd.com>,
- lkml <linux-kernel@vger.kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Cc: "Koenig, Christian" <Christian.Koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>
-References: <29ceab65-4790-4015-b83c-241c35dfff08@suse.com>
- <BL1PR12MB5144541AC4318F30D2F57F27F793A@BL1PR12MB5144.namprd12.prod.outlook.com>
-From: Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <BL1PR12MB5144541AC4318F30D2F57F27F793A@BL1PR12MB5144.namprd12.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------n5q47dhKenDHw0thuDhdOTXj"
-X-Spam-Level: *
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="E/v4ytAb"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.40 / 50.00];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 HAS_ATTACHMENT(0.00)[];
-	 MIME_BASE64_TEXT_BOGUS(1.00)[];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MIME_BASE64_TEXT(0.10)[];
-	 MX_GOOD(-0.01)[];
-	 SIGNED_PGP(-2.00)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MIME_UNKNOWN(0.10)[application/pgp-keys];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email,suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -5.40
-X-Rspamd-Queue-Id: 1724D1F83F
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------n5q47dhKenDHw0thuDhdOTXj
-Content-Type: multipart/mixed; boundary="------------uvwBTBvdMRe7VA7G0i8YDlJY";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: "Deucher, Alexander" <Alexander.Deucher@amd.com>,
- lkml <linux-kernel@vger.kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Cc: "Koenig, Christian" <Christian.Koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Message-ID: <b91dabec-8fde-4de1-abfe-1664f9607784@suse.com>
-Subject: Re: Crashes under Xen with Radeon graphics card
-References: <29ceab65-4790-4015-b83c-241c35dfff08@suse.com>
- <BL1PR12MB5144541AC4318F30D2F57F27F793A@BL1PR12MB5144.namprd12.prod.outlook.com>
-In-Reply-To: <BL1PR12MB5144541AC4318F30D2F57F27F793A@BL1PR12MB5144.namprd12.prod.outlook.com>
+Dear RT folks!
 
---------------uvwBTBvdMRe7VA7G0i8YDlJY
-Content-Type: multipart/mixed; boundary="------------kxPE0UWCVuBdTwBgE5WHt8yy"
+I'm pleased to announce the v6.7-rc5-rt5 patch set. 
 
---------------kxPE0UWCVuBdTwBgE5WHt8yy
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Changes since v6.7-rc5-rt4:
 
-T24gMTUuMTIuMjMgMTc6MDQsIERldWNoZXIsIEFsZXhhbmRlciB3cm90ZToNCj4gW1B1Ymxp
-Y10NCj4gDQo+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPj4gRnJvbTogSnVlcmdl
-biBHcm9zcyA8amdyb3NzQHN1c2UuY29tPg0KPj4gU2VudDogRnJpZGF5LCBEZWNlbWJlciAx
-NSwgMjAyMyA2OjU3IEFNDQo+PiBUbzogbGttbCA8bGludXgta2VybmVsQHZnZXIua2VybmVs
-Lm9yZz47IHhlbi1kZXZlbEBsaXN0cy54ZW5wcm9qZWN0Lm9yZzsgYW1kLQ0KPj4gZ2Z4QGxp
-c3RzLmZyZWVkZXNrdG9wLm9yZw0KPj4gQ2M6IERldWNoZXIsIEFsZXhhbmRlciA8QWxleGFu
-ZGVyLkRldWNoZXJAYW1kLmNvbT47IEtvZW5pZywgQ2hyaXN0aWFuDQo+PiA8Q2hyaXN0aWFu
-LktvZW5pZ0BhbWQuY29tPjsgUGFuLCBYaW5odWkgPFhpbmh1aS5QYW5AYW1kLmNvbT4NCj4+
-IFN1YmplY3Q6IENyYXNoZXMgdW5kZXIgWGVuIHdpdGggUmFkZW9uIGdyYXBoaWNzIGNhcmQN
-Cj4+DQo+PiBIaSwNCj4+DQo+PiBJIHJlY2VudGx5IHN0dW1ibGVkIG92ZXIgYSB0ZXN0IHN5
-c3RlbSB3aGljaCBzaG93ZWQgY3Jhc2hlcyBwcm9iYWJseQ0KPj4gcmVzdWx0aW5nIGZyb20g
-bWVtb3J5IGJlaW5nIG92ZXJ3cml0dGVuIHJhbmRvbWx5Lg0KPj4NCj4+IFRoZSBwcm9ibGVt
-IGlzIG9jY3VycmluZyBvbmx5IGluIERvbTAgd2hlbiBydW5uaW5nIHVuZGVyIFhlbi4gSXQg
-c2VlbXMgdG8NCj4+IGJlIHByZXNlbnQgc2luY2UgYXQgbGVhc3Qga2VybmVsIDYuMyAoSSBk
-aWRuJ3QgZ28gYmFjayBmdXJ0aGVyIHlldCksIGFuZCBpdCBzZWVtcw0KPj4gTk9UIHRvIGJl
-IHByZXNlbnQgaW4ga2VybmVsIDUuMTQuDQo+Pg0KPj4gSSB0cmFja2VkIHRoZSBwcm9ibGVt
-IGRvd24gdG8gdGhlIGluaXRpYWxpemF0aW9uIG9mIHRoZSBncmFwaGljcyBjYXJkICh0aGUN
-Cj4+IHByb2JsZW0gbWlnaHQgc3VyZmFjZSBvbmx5IGxhdGVyLCBidXQgYXQgbGVhc3QgYW4g
-ZWFybHkgaW5pdGlhbGl6YXRpb24gZmFpbHVyZSBtYWRlDQo+PiB0aGUgcHJvYmxlbSBnbyBh
-d2F5KS4NCj4+DQo+PiAjIGxzcGNpDQo+PiAwMTowMC4wIFZHQSBjb21wYXRpYmxlIGNvbnRy
-b2xsZXI6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRC9BVEldDQo+PiBDYWlj
-b3MgWFRYIFtSYWRlb24gSEQgODQ5MCAvIFI1IDIzNVggT0VNXQ0KPj4gMDE6MDAuMSBBdWRp
-byBkZXZpY2U6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRC9BVEldIENhaWNv
-cyBIRE1JDQo+PiBBdWRpbyBbUmFkZW9uIEhEIDY0NTAgLyA3NDUwLzg0NTAvODQ5MCBPRU0g
-LyBSNSAyMzAvMjM1LzIzNVggT0VNXQ0KPj4NCj4+IEkgaGFkIGEgd29ya2luZyAuY29uZmln
-IGFuZCBvbmUgd2hpY2ggZGlkIHByb2R1Y2UgdGhlIGNyYXNoZXMsIHNvIEkgbmFycm93ZWQN
-Cj4+IHRoZSBwcm9ibGVtIGRvd24gdG8gZGV0ZWN0IHRoYXQgdGhlIGltcG9ydGFudCBkaWZm
-ZXJlbmNlIHdhcyBpbiB0aGUgYXJlYSBvZg0KPj4gZmlybXdhcmUgbG9hZGluZyAodGhlIHdv
-cmtpbmcgLmNvbmZpZyBkaWRuJ3QgaGF2ZQ0KPj4gQ09ORklHX0ZXX0xPQURFUl9DT01QUkVT
-U19YWiBzZXQsIGNhdXNpbmcgZmlybXdhcmUgbG9hZGluZyBmb3IgdGhlDQo+PiBjYXJkIHRv
-IGZhaWwpLiBUaGlzIHdhcyBvZiBjb3Vyc2Ugbm90IHRoZSByZWFsIHByb2JsZW0sIGJ1dCBp
-dCBjYXVzZWQgdGhlIGNhcmQNCj4+IGluaXRpYWxpemF0aW9uIHRvIGZhaWwuDQo+Pg0KPj4g
-SSBtYW51YWxseSBkZWNvbXByZXNzZWQgdGhlIGZpcm13YXJlIGZpbGVzIG9uZSBieSBvbmUg
-dG8gc2VlIHdoZXRoZXIgdGhlDQo+PiBwcm9ibGVtIHdvdWxkIGJlIGluIHRoZSBkZWNvbXBy
-ZXNzb3Igb3IgcHJvYmFibHkgaW4gdGhlIGRyaXZlciBvZiB0aGUgY2FyZC4NCj4+DQo+PiBU
-aGUgbGFzdCBzdGVwIHdpdGhvdXQgY3Jhc2ggd2FzOg0KPj4NCj4+ICMgZG1lc2cgfCBncmVw
-IHJhZGVvbg0KPj4gWyAgIDEwLjEwNjQwNV0gW2RybV0gcmFkZW9uIGtlcm5lbCBtb2Rlc2V0
-dGluZyBlbmFibGVkLg0KPj4gWyAgIDEwLjEwNjQ1NV0gcmFkZW9uIDAwMDA6MDE6MDAuMDog
-dmdhYXJiOiBkZWFjdGl2YXRlIHZnYSBjb25zb2xlDQo+PiBbICAgMTAuMjIyOTQ0XSByYWRl
-b24gMDAwMDowMTowMC4wOiBWUkFNOiAxMDI0TSAweDAwMDAwMDAwMDAwMDAwMDANCj4+IC0N
-Cj4+IDB4MDAwMDAwMDAzRkZGRkZGRiAoMTAyNE0gdXNlZCkNCj4+IFsgICAxMC4yNTI5MjFd
-IHJhZGVvbiAwMDAwOjAxOjAwLjA6IEdUVDogMTAyNE0gMHgwMDAwMDAwMDQwMDAwMDAwIC0N
-Cj4+IDB4MDAwMDAwMDA3RkZGRkZGRg0KPj4gWyAgIDEwLjI3ODI1NV0gW2RybV0gcmFkZW9u
-OiAxMDI0TSBvZiBWUkFNIG1lbW9yeSByZWFkeQ0KPj4gWyAgIDEwLjI5NTgyOF0gW2RybV0g
-cmFkZW9uOiAxMDI0TSBvZiBHVFQgbWVtb3J5IHJlYWR5Lg0KPj4gWyAgIDEwLjI5NTg2N10g
-cmFkZW9uIDAwMDA6MDE6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yDQo+PiByYWRl
-b24vQ0FJQ09TX3BmcC5iaW4gc3VjY2VlZGVkDQo+PiBbICAgMTAuMzMwODQ2XSByYWRlb24g
-MDAwMDowMTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3INCj4+IHJhZGVvbi9DQUlD
-T1NfbWUuYmluIHN1Y2NlZWRlZA0KPj4gWyAgIDEwLjMzMDg1OF0gcmFkZW9uIDAwMDA6MDE6
-MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yDQo+PiByYWRlb24vQlRDX3JsYy5iaW4N
-Cj4+IHN1Y2NlZWRlZA0KPj4gWyAgIDEwLjMzMDg3MF0gcmFkZW9uIDAwMDA6MDE6MDAuMDog
-RGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yDQo+PiByYWRlb24vQ0FJQ09TX21jLmJpbiBmYWls
-ZWQgd2l0aCBlcnJvciAtMg0KPj4gWyAgIDEwLjM4MDk3OV0gbmlfY3A6IEZhaWxlZCB0byBs
-b2FkIGZpcm13YXJlICJyYWRlb24vQ0FJQ09TX21jLmJpbiINCj4+IFsgICAxMC4zODEwMDZd
-IFtkcm06ZXZlcmdyZWVuX2luaXQgW3JhZGVvbl1dICpFUlJPUiogRmFpbGVkIHRvIGxvYWQN
-Cj4+IGZpcm13YXJlIQ0KPj4gWyAgIDEwLjQwNTc2NV0gcmFkZW9uIDAwMDA6MDE6MDAuMDog
-RmF0YWwgZXJyb3IgZHVyaW5nIEdQVSBpbml0DQo+PiBbICAgMTAuNDMyMTA3XSBbZHJtXSBy
-YWRlb246IGZpbmlzaGluZyBkZXZpY2UuDQo+PiBbICAgMTAuNDM5MTc5XSBbZHJtXSByYWRl
-b246IHR0bSBmaW5hbGl6ZWQNCj4+IFsgICAxMC40NjMyMDNdIHJhZGVvbjogcHJvYmUgb2Yg
-MDAwMDowMTowMC4wIGZhaWxlZCB3aXRoIGVycm9yIC0yDQo+Pg0KPj4gQW5kIHdpdGggZGVj
-b21wcmVzc2luZyByYWRlb24vQ0FJQ09TX21jLmJpbiBJIGdvdDoNCj4+DQo+PiAjIGRtZXNn
-IHwgZ3JlcCByYWRlb24NCj4+IFsgICAxMC4yNjY0OTFdIFtkcm1dIHJhZGVvbiBrZXJuZWwg
-bW9kZXNldHRpbmcgZW5hYmxlZC4NCj4+IFsgICAxMC4yNjY1NTJdIHJhZGVvbiAwMDAwOjAx
-OjAwLjA6IHZnYWFyYjogZGVhY3RpdmF0ZSB2Z2EgY29uc29sZQ0KPj4gWyAgIDEwLjQ1NjA0
-N10gcmFkZW9uIDAwMDA6MDE6MDAuMDogVlJBTTogMTAyNE0gMHgwMDAwMDAwMDAwMDAwMDAw
-DQo+PiAtDQo+PiAweDAwMDAwMDAwM0ZGRkZGRkYgKDEwMjRNIHVzZWQpDQo+PiBbICAgMTAu
-NDcwMjcwXSByYWRlb24gMDAwMDowMTowMC4wOiBHVFQ6IDEwMjRNIDB4MDAwMDAwMDA0MDAw
-MDAwMCAtDQo+PiAweDAwMDAwMDAwN0ZGRkZGRkYNCj4+IFsgICAxMC41NjY5NDZdIFtkcm1d
-IHJhZGVvbjogMTAyNE0gb2YgVlJBTSBtZW1vcnkgcmVhZHkNCj4+IFsgICAxMC41NzY4OTFd
-IFtkcm1dIHJhZGVvbjogMTAyNE0gb2YgR1RUIG1lbW9yeSByZWFkeS4NCj4+IFsgICAxMC41
-ODY5NzFdIHJhZGVvbiAwMDAwOjAxOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcg0K
-Pj4gcmFkZW9uL0NBSUNPU19wZnAuYmluIHN1Y2NlZWRlZA0KPj4gWyAgIDEwLjYxMTg4Nl0g
-cmFkZW9uIDAwMDA6MDE6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yDQo+PiByYWRl
-b24vQ0FJQ09TX21lLmJpbiBzdWNjZWVkZWQNCj4+IFsgICAxMC42MTE5MDldIHJhZGVvbiAw
-MDAwOjAxOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcg0KPj4gcmFkZW9uL0JUQ19y
-bGMuYmluDQo+PiBzdWNjZWVkZWQNCj4+IFsgICAxMC42MTE5MzhdIHJhZGVvbiAwMDAwOjAx
-OjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcg0KPj4gcmFkZW9uL0NBSUNPU19tYy5i
-aW4gc3VjY2VlZGVkDQo+PiBbICAgMTAuNjYwNTk5XSByYWRlb24gMDAwMDowMTowMC4wOiBE
-aXJlY3QgZmlybXdhcmUgbG9hZCBmb3INCj4+IHJhZGVvbi9DQUlDT1Nfc21jLmJpbiBmYWls
-ZWQgd2l0aCBlcnJvciAtMg0KPj4gWyAgIDEwLjY2MDYwMV0gc21jOiBlcnJvciBsb2FkaW5n
-IGZpcm13YXJlICJyYWRlb24vQ0FJQ09TX3NtYy5iaW4iDQo+IA0KPiBZb3UgYWxzbyBuZWVk
-IHRvIG1ha2Ugc3VyZSBDQUlDT1Nfc21jLmJpbiBpcyBhdmFpbGFibGUuDQoNCk9mIGNvdXJz
-ZS4gQnV0IHdpdGggYWxsIGZpcm13YXJlIGZpbGVzIGxvYWRhYmxlIHRoZSBzeXN0ZW0gaXMg
-Y3Jhc2hpbmcsIHRvby4NCg0KSSB0aG91Z2h0IGl0IG1pZ2h0IGhlbHAgdG8gc2VlIGFmdGVy
-IHdoaWNoIGZpcm13YXJlIHRoZSBjcmFzaGVzIGFyZSBzdGFydGluZy4NCg0KPiANCj4+IFsg
-ICAxMC42NjE2NzZdIFtkcm1dIHJhZGVvbjogcG93ZXIgbWFuYWdlbWVudCBpbml0aWFsaXpl
-ZA0KPj4gWyAgIDEwLjcxMzY2Nl0gcmFkZW9uIDAwMDA6MDE6MDAuMDogRGlyZWN0IGZpcm13
-YXJlIGxvYWQgZm9yDQo+PiByYWRlb24vU1VNT191dmQuYmluDQo+PiBmYWlsZWQgd2l0aCBl
-cnJvciAtMg0KPj4gWyAgIDEwLjcxMzY2OF0gcmFkZW9uIDAwMDA6MDE6MDAuMDogcmFkZW9u
-X3V2ZDogQ2FuJ3QgbG9hZCBmaXJtd2FyZQ0KPj4gInJhZGVvbi9TVU1PX3V2ZC5iaW4iDQo+
-PiBbICAgMTAuNzEzNjY5XSByYWRlb24gMDAwMDowMTowMC4wOiBmYWlsZWQgVVZEICgtMikg
-aW5pdC4NCj4gDQo+IEFuZCBTVU1PX3V2ZC5iaW4uDQoNClN1cmUuDQoNCj4gDQo+PiBbICAg
-MTAuNzE0Nzg3XSBbZHJtXSBlbmFibGluZyBQQ0lFIGdlbiAyIGxpbmsgc3BlZWRzLCBkaXNh
-YmxlIHdpdGgNCj4+IHJhZGVvbi5wY2llX2dlbjI9MA0KPj4gWyAgIDEwLjgwOTIxM10gcmFk
-ZW9uIDAwMDA6MDE6MDAuMDogV0IgZW5hYmxlZA0KPj4gWyAgIDEwLjgxNzUyOF0gcmFkZW9u
-IDAwMDA6MDE6MDAuMDogZmVuY2UgZHJpdmVyIG9uIHJpbmcgMCB1c2UgZ3B1IGFkZHINCj4+
-IDB4MDAwMDAwMDA0MDAwMGMwMA0KPj4gWyAgIDEwLjgzMzc1NV0gcmFkZW9uIDAwMDA6MDE6
-MDAuMDogZmVuY2UgZHJpdmVyIG9uIHJpbmcgMyB1c2UgZ3B1IGFkZHINCj4+IDB4MDAwMDAw
-MDA0MDAwMGMwYw0KPj4gWyAgIDEwLjg1MDMzMF0gcmFkZW9uIDAwMDA6MDE6MDAuMDogcmFk
-ZW9uOiBNU0kgbGltaXRlZCB0byAzMi1iaXQNCj4+IFsgICAxMC44NjIxNTRdIHJhZGVvbiAw
-MDAwOjAxOjAwLjA6IHJhZGVvbjogdXNpbmcgTVNJLg0KPj4gWyAgIDEwLjg3MTkzMF0gW2Ry
-bV0gcmFkZW9uOiBpcnEgaW5pdGlhbGl6ZWQuDQo+PiBbICAgMTEuMDYyMDI4XSBbZHJtXSBJ
-bml0aWFsaXplZCByYWRlb24gMi41MC4wIDIwMDgwNTI4IGZvciAwMDAwOjAxOjAwLjAgb24N
-Cj4+IG1pbm9yIDANCj4+IFsgICAxMS4xMTk3MjNdIFtkcm06cmFkZW9uX2R2aV9kZXRlY3Qg
-W3JhZGVvbl1dICpFUlJPUiogRFZJLUktMTogcHJvYmVkIGENCj4+IG1vbml0b3IgYnV0IG5v
-fGludmFsaWQgRURJRA0KPj4gWyAgIDExLjQxMTM3MF0gZmJjb246IHJhZGVvbmRybWZiIChm
-YjApIGlzIHByaW1hcnkgZGV2aWNlDQo+PiBbICAgMTEuNTA3MjUyXSByYWRlb24gMDAwMDow
-MTowMC4wOiBbZHJtXSBmYjA6IHJhZGVvbmRybWZiIGZyYW1lIGJ1ZmZlcg0KPj4gZGV2aWNl
-DQo+PiBbICAgMTEuNjc0MDI4XSBbZHJtOnJhZGVvbl9kdmlfZGV0ZWN0IFtyYWRlb25dXSAq
-RVJST1IqIERWSS1JLTE6IHByb2JlZCBhDQo+PiBtb25pdG9yIGJ1dCBub3xpbnZhbGlkIEVE
-SUQNCj4+IFsgICAxMS44MzQzMTddIFtkcm06cmFkZW9uX2R2aV9kZXRlY3QgW3JhZGVvbl1d
-ICpFUlJPUiogRFZJLUktMTogcHJvYmVkIGENCj4+IG1vbml0b3IgYnV0IG5vfGludmFsaWQg
-RURJRA0KPj4gWyAgIDI4LjMxMzA0MV0gc25kX2hkYV9pbnRlbCAwMDAwOjAxOjAwLjE6IGJv
-dW5kIDAwMDA6MDE6MDAuMCAob3BzDQo+PiByYWRlb25fYXVkaW9fY29tcG9uZW50X2JpbmRf
-b3BzIFtyYWRlb25dKQ0KPj4gWyAgIDQ0LjM3MTk5MV0gW2RybTpyYWRlb25fZHZpX2RldGVj
-dCBbcmFkZW9uXV0gKkVSUk9SKiBEVkktSS0xOiBwcm9iZWQgYQ0KPj4gbW9uaXRvciBidXQg
-bm98aW52YWxpZCBFRElEDQo+PiBbICAgNDQuNDI4MDY4XSBbZHJtOnJhZGVvbl9kdmlfZGV0
-ZWN0IFtyYWRlb25dXSAqRVJST1IqIERWSS1JLTE6IHByb2JlZCBhDQo+PiBtb25pdG9yIGJ1
-dCBub3xpbnZhbGlkIEVESUQNCj4+DQo+PiBmb2xsb3dlZCBieSBhIGNyYXNoIHNvbWUgc2Vj
-b25kcyBhZnRlciB0aGUgc3lzdGVtIHdhcyB1cC4NCj4+DQo+PiBUaGUgY3Jhc2hlcyB2YXJ5
-LCBidXQgb2Z0ZW4gdGhlIGtlcm5lbCBhY2Nlc3NlcyBub24tY2Fub25pY2FsIGFkZHJlc3Nl
-cyBvcg0KPj4gdHJpZXMgdG8gbWFwIGlsbGVnYWwgcGh5c2ljYWwgYWRkcmVzc2VzLiBTb21l
-dGltZXMgdGhlIHN5c3RlbSBpcyBqdXN0IGhhbmdpbmcsDQo+PiBlaXRoZXIgd2l0aCBzb2Z0
-bG9ja3VwcyBvciB3aXRob3V0IGFueSBmdXJ0aGVyIHNpZ25zIG9mIGJlaW5nIGFsaXZlLg0K
-Pj4NCj4+IEkgY2FuIGVhc2lseSByZXByb2R1Y2UgdGhlIHByb2JsZW0sIHNvIGFueSBkZWJ1
-ZyBwYXRjaGVzIHRvIG5hcnJvdyBkb3duIHRoZQ0KPj4gcHJvYmxlbSBhcmUgd2VsY29tZS4N
-Cj4gDQo+IFRoZXJlIGFyZSBzdGlsbCBtaXNzaW5nIGZpcm13YXJlIHJlcXVpcmVkIGZvciBw
-cm9wZXIgb3BlcmF0aW9uLiAgUGxlYXNlIGZpeCB0aGVtIHVwLg0KDQpUaGF0IHdhcyB0aGUg
-c3RhcnRpbmcgcG9pbnQsIG9mIGNvdXJzZSENCg0KQlRXLCBtZWFud2hpbGUgSSBoYXZlIHRl
-c3RlZCBrZXJuZWwgNS4xOSwgd2hpY2ggaXMgd29ya2luZy4gSSBzdXNwZWN0ZWQgdGhhdA0K
-dGhlIHBhdGNoIHNlcmllcyBtZXJnaW5nIHN3aW90bGIgYW5kIHN3aW90bGIteGVuIGNvdWxk
-IGJlIHRvIGJsYW1lLCBidXQgdGhhdA0Kd2VudCBpbnRvIHY1LjE5Lg0KDQoNCkp1ZXJnZW4N
-Cg==
---------------kxPE0UWCVuBdTwBgE5WHt8yy
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+  - Update the printk code to the latest version which has been posted
+    upstream for review.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Known issues
+     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
+     hist" as trigger. It is not yet understood. The report is at
+	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
 
-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
-kt+z4drzFUyEjLM1vVvIMjkUoJs=3D
-=3DeeAB
------END PGP PUBLIC KEY BLOCK-----
+The delta patch against v6.7-rc5-rt4 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/incr/patch-6.7-rc5-rt4-rt5.patch.xz
 
---------------kxPE0UWCVuBdTwBgE5WHt8yy--
+You can get this release via the git tree at:
 
---------------uvwBTBvdMRe7VA7G0i8YDlJY--
+    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.7-rc5-rt5
 
---------------n5q47dhKenDHw0thuDhdOTXj
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+The RT patch against v6.7-rc5 can be found here:
 
------BEGIN PGP SIGNATURE-----
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patch-6.7-rc5-rt5.patch.xz
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmV8evUFAwAAAAAACgkQsN6d1ii/Ey8E
-2gf/VUYp5g3ZkxQF7r5l+iSuNyvgyRWtXAl46OHoyvTzgyLhSljPGoN8C9OWLg3TbBFcgy1v2mFX
-Ufg8Bher3kPuvC8+CHQMg7mh8auqHPjpgf1DeHtr21gVJ8sc923IFvJGvMAgMOk0w2BXBnMrDXdr
-T9GJvPs+c2mW3vXQtqSbmu3Lz9ZHmuQM5ZbW7a1YBmN/z1DUkfWlr9rOWw4siKmAH3uXrpP+JTwK
-9VYCs9tr1o2KqZ5gPepClzWpbQfLtdUxCRqib/bQLW8xcTefnSCJqeRoPSLDd3FG+oQJVEVAbrrw
-lesnI0ky3PEnHk09eiERnrjqxTCT5lg72Piuwezahg==
-=ejFs
------END PGP SIGNATURE-----
+The split quilt queue is available at:
 
---------------n5q47dhKenDHw0thuDhdOTXj--
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patches-6.7-rc5-rt5.tar.xz
+
+Sebastian
+
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
+index ba6de401c458e..6b89e9c2374a5 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -617,9 +617,18 @@ static bool univ8250_console_write_thread(struct console *co,
+ 	return serial8250_console_write_thread(up, wctxt);
+ }
+ 
+-static struct uart_port *univ8250_console_uart_port(struct console *con)
++static void univ8250_console_driver_enter(struct console *con, unsigned long *flags)
+ {
+-	return &serial8250_ports[con->index].port;
++	struct uart_port *up = &serial8250_ports[con->index].port;
++
++	__uart_port_lock_irqsave(up, flags);
++}
++
++static void univ8250_console_driver_exit(struct console *con, unsigned long flags)
++{
++	struct uart_port *up = &serial8250_ports[con->index].port;
++
++	__uart_port_unlock_irqrestore(up, flags);
+ }
+ #endif /* CONFIG_SERIAL_8250_LEGACY_CONSOLE */
+ 
+@@ -727,8 +736,9 @@ static struct console univ8250_console = {
+ #else
+ 	.write_atomic	= univ8250_console_write_atomic,
+ 	.write_thread	= univ8250_console_write_thread,
++	.driver_enter	= univ8250_console_driver_enter,
++	.driver_exit	= univ8250_console_driver_exit,
+ 	.flags		= CON_PRINTBUFFER | CON_ANYTIME | CON_NBCON,
+-	.uart_port	= univ8250_console_uart_port,
+ #endif
+ 	.device		= uart_console_device,
+ 	.setup		= univ8250_console_setup,
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index c8d15f659de98..3b26105f01570 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -3509,13 +3509,11 @@ bool serial8250_console_write_thread(struct uart_8250_port *up,
+ 	if (!nbcon_enter_unsafe(wctxt))
+ 		return false;
+ 
+-	/*
+-	 *	First save the IER then disable the interrupts
+-	 */
++	/* First save IER then disable the interrupts. */
+ 	ier = serial_port_in(port, UART_IER);
+ 	serial8250_clear_IER(up);
+ 
+-	/* check scratch reg to see if port powered off during system sleep */
++	/* Check scratch reg if port powered off during system sleep. */
+ 	if (up->canary && (up->canary != serial_port_in(port, UART_SCR))) {
+ 		serial8250_console_restore(up);
+ 		up->canary = 0;
+@@ -3563,30 +3561,25 @@ bool serial8250_console_write_thread(struct uart_8250_port *up,
+ 	while (!nbcon_enter_unsafe(wctxt))
+ 		nbcon_reacquire(wctxt);
+ 
+-	/*
+-	 *	Finally, wait for transmitter to become empty
+-	 *	and restore the IER
+-	 */
++	/* Finally, wait for transmitter to become empty and restore IER. */
+ 	wait_for_xmitr(up, UART_LSR_BOTH_EMPTY);
+-
+ 	if (em485) {
+ 		mdelay(port->rs485.delay_rts_after_send);
+ 		if (em485->tx_stopped)
+ 			up->rs485_stop_tx(up);
+ 	}
+-
+ 	serial_port_out(port, UART_IER, ier);
+ 
+ 	/*
+-	 *	The receive handling will happen properly because the
+-	 *	receive ready bit will still be set; it is not cleared
+-	 *	on read.  However, modem control will not, we must
+-	 *	call it if we have saved something in the saved flags
+-	 *	while processing with interrupts off.
++	 * The receive handling will happen properly because the receive ready
++	 * bit will still be set; it is not cleared on read.  However, modem
++	 * control will not, we must call it if we have saved something in the
++	 * saved flags while processing with interrupts off.
+ 	 */
+ 	if (up->msr_saved_flags)
+ 		serial8250_modem_status(up);
+ 
++	/* Success if no handover/takeover and message fully printed. */
+ 	return (nbcon_exit_unsafe(wctxt) && done);
+ }
+ 
+@@ -3606,12 +3599,14 @@ bool serial8250_console_write_atomic(struct uart_8250_port *up,
+ 		return false;
+ 
+ 	/*
+-	 *	First save the IER then disable the interrupts
++	 * First save IER then disable the interrupts. The special variant to
++	 * clear IER is used because atomic printing may occur without holding
++	 * the port lock.
+ 	 */
+ 	ier = serial_port_in(port, UART_IER);
+ 	__serial8250_clear_IER(up);
+ 
+-	/* check scratch reg to see if port powered off during system sleep */
++	/* Check scratch reg if port powered off during system sleep. */
+ 	if (up->canary && (up->canary != serial_port_in(port, UART_SCR))) {
+ 		serial8250_console_restore(up);
+ 		up->canary = 0;
+@@ -3621,14 +3616,11 @@ bool serial8250_console_write_atomic(struct uart_8250_port *up,
+ 		uart_console_write(port, "\n", 1, serial8250_console_putchar);
+ 	uart_console_write(port, wctxt->outbuf, wctxt->len, serial8250_console_putchar);
+ 
+-	/*
+-	 *	Finally, wait for transmitter to become empty
+-	 *	and restore the IER
+-	 */
++	/* Finally, wait for transmitter to become empty and restore IER. */
+ 	wait_for_xmitr(up, UART_LSR_BOTH_EMPTY);
+-
+ 	serial_port_out(port, UART_IER, ier);
+ 
++	/* Success if no handover/takeover. */
+ 	return nbcon_exit_unsafe(wctxt);
+ }
+ #endif /* CONFIG_SERIAL_8250_LEGACY_CONSOLE */
+diff --git a/include/linux/console.h b/include/linux/console.h
+index ac14ff49e86bb..79ef2fd2bd155 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -306,7 +306,8 @@ struct nbcon_write_context {
+  *
+  * @write_atomic:	Write callback for atomic context
+  * @write_thread:	Write callback for non-atomic context
+- * @uart_port:		Callback to provide the associated uart port
++ * @driver_enter:	Callback to begin synchronization with driver code
++ * @driver_exit:	Callback to finish synchronization with driver code
+  * @nbcon_state:	State for nbcon consoles
+  * @nbcon_seq:		Sequence number of the next record for nbcon to print
+  * @pbufs:		Pointer to nbcon private buffer
+@@ -339,7 +340,8 @@ struct console {
+ 						struct nbcon_write_context *wctxt);
+ 	bool			(*write_thread)(struct console *con,
+ 						struct nbcon_write_context *wctxt);
+-	struct uart_port *	(*uart_port)(struct console *con);
++	void			(*driver_enter)(struct console *con, unsigned long *flags);
++	void			(*driver_exit)(struct console *con, unsigned long flags);
+ 	atomic_t		__private nbcon_state;
+ 	atomic_long_t		__private nbcon_seq;
+ 	struct printk_buffers	*pbufs;
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 196a4cf3ccb76..7a942e987b165 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -197,8 +197,9 @@ void show_regs_print_info(const char *log_lvl);
+ extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
+ extern asmlinkage void dump_stack(void) __cold;
+ void printk_trigger_flush(void);
+-extern void nbcon_handle_port_lock(struct uart_port *up);
+-extern void nbcon_handle_port_unlock(struct uart_port *up);
++void printk_legacy_allow_panic_sync(void);
++extern void nbcon_acquire(struct uart_port *up);
++extern void nbcon_release(struct uart_port *up);
+ void nbcon_atomic_flush_unsafe(void);
+ #else
+ static inline __printf(1, 0)
+@@ -280,11 +281,15 @@ static inline void printk_trigger_flush(void)
+ {
+ }
+ 
+-static inline void nbcon_handle_port_lock(struct uart_port *up)
++static inline void printk_legacy_allow_panic_sync(void)
+ {
+ }
+ 
+-static inline void nbcon_handle_port_unlock(struct uart_port *up)
++static inline void nbcon_acquire(struct uart_port *up)
++{
++}
++
++static inline void nbcon_release(struct uart_port *up)
+ {
+ }
+ 
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index 198d8088a9984..a49ce4bf7fae8 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -595,7 +595,7 @@ struct uart_port {
+ static inline void uart_port_lock(struct uart_port *up)
+ {
+ 	spin_lock(&up->lock);
+-	nbcon_handle_port_lock(up);
++	nbcon_acquire(up);
+ }
+ 
+ /**
+@@ -605,7 +605,7 @@ static inline void uart_port_lock(struct uart_port *up)
+ static inline void uart_port_lock_irq(struct uart_port *up)
+ {
+ 	spin_lock_irq(&up->lock);
+-	nbcon_handle_port_lock(up);
++	nbcon_acquire(up);
+ }
+ 
+ /**
+@@ -616,7 +616,7 @@ static inline void uart_port_lock_irq(struct uart_port *up)
+ static inline void uart_port_lock_irqsave(struct uart_port *up, unsigned long *flags)
+ {
+ 	spin_lock_irqsave(&up->lock, *flags);
+-	nbcon_handle_port_lock(up);
++	nbcon_acquire(up);
+ }
+ 
+ /**
+@@ -630,7 +630,7 @@ static inline bool uart_port_trylock(struct uart_port *up)
+ 	if (!spin_trylock(&up->lock))
+ 		return false;
+ 
+-	nbcon_handle_port_lock(up);
++	nbcon_acquire(up);
+ 	return true;
+ }
+ 
+@@ -646,7 +646,7 @@ static inline bool uart_port_trylock_irqsave(struct uart_port *up, unsigned long
+ 	if (!spin_trylock_irqsave(&up->lock, *flags))
+ 		return false;
+ 
+-	nbcon_handle_port_lock(up);
++	nbcon_acquire(up);
+ 	return true;
+ }
+ 
+@@ -656,7 +656,7 @@ static inline bool uart_port_trylock_irqsave(struct uart_port *up, unsigned long
+  */
+ static inline void uart_port_unlock(struct uart_port *up)
+ {
+-	nbcon_handle_port_unlock(up);
++	nbcon_release(up);
+ 	spin_unlock(&up->lock);
+ }
+ 
+@@ -666,7 +666,7 @@ static inline void uart_port_unlock(struct uart_port *up)
+  */
+ static inline void uart_port_unlock_irq(struct uart_port *up)
+ {
+-	nbcon_handle_port_unlock(up);
++	nbcon_release(up);
+ 	spin_unlock_irq(&up->lock);
+ }
+ 
+@@ -677,7 +677,19 @@ static inline void uart_port_unlock_irq(struct uart_port *up)
+  */
+ static inline void uart_port_unlock_irqrestore(struct uart_port *up, unsigned long flags)
+ {
+-	nbcon_handle_port_unlock(up);
++	nbcon_release(up);
++	spin_unlock_irqrestore(&up->lock, flags);
++}
++
++/* Only for use in the console->driver_enter() callback. */
++static inline void __uart_port_lock_irqsave(struct uart_port *up, unsigned long *flags)
++{
++	spin_lock_irqsave(&up->lock, *flags);
++}
++
++/* Only for use in the console->driver_exit() callback. */
++static inline void __uart_port_unlock_irqrestore(struct uart_port *up, unsigned long flags)
++{
+ 	spin_unlock_irqrestore(&up->lock, flags);
+ }
+ 
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 88902355600f5..9fa44bc38f466 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -370,6 +370,8 @@ void panic(const char *fmt, ...)
+ 	 */
+ 	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
+ 
++	printk_legacy_allow_panic_sync();
++
+ 	panic_print_sys_info(false);
+ 
+ 	kmsg_dump(KMSG_DUMP_PANIC);
+@@ -447,6 +449,12 @@ void panic(const char *fmt, ...)
+ 	/* Do not scroll important messages printed above */
+ 	suppress_printk = 1;
+ 
++	/*
++	 * The final messages may not have been printed if in a context that
++	 * defers printing (such as NMI) and irq_work is not available.
++	 * Explicitly flush the kernel log buffer one last time.
++	 */
++	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
+ 	nbcon_atomic_flush_unsafe();
+ 
+ 	local_irq_enable();
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index a3ae0710346cd..7db6992c54f38 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -82,6 +82,8 @@ void defer_console_output(void);
+ 
+ u16 printk_parse_prefix(const char *text, int *level,
+ 			enum printk_info_flags *flags);
++void console_lock_spinning_enable(void);
++int console_lock_spinning_disable_and_check(int cookie);
+ 
+ u64 nbcon_seq_read(struct console *con);
+ void nbcon_seq_force(struct console *con, u64 seq);
+@@ -90,7 +92,7 @@ void nbcon_init(struct console *con);
+ void nbcon_free(struct console *con);
+ enum nbcon_prio nbcon_get_default_prio(void);
+ void nbcon_atomic_flush_all(void);
+-bool nbcon_atomic_emit_next_record(struct console *con);
++bool nbcon_atomic_emit_next_record(struct console *con, bool *handover, int cookie);
+ void nbcon_kthread_create(struct console *con);
+ void nbcon_wake_threads(void);
+ void nbcon_legacy_kthread_create(void);
+@@ -143,7 +145,7 @@ static inline void nbcon_kthread_wake(struct console *con)
+ 	 * Guarantee any new records can be seen by tasks preparing to wait
+ 	 * before this context checks if the rcuwait is empty.
+ 	 *
+-	 * The full memory barrier in rcuwait_wake_up()  pairs with the full
++	 * The full memory barrier in rcuwait_wake_up() pairs with the full
+ 	 * memory barrier within set_current_state() of
+ 	 * ___rcuwait_wait_event(), which is called after prepare_to_rcuwait()
+ 	 * adds the waiter but before it has checked the wait condition.
+@@ -180,9 +182,11 @@ static inline void nbcon_init(struct console *con) { }
+ static inline void nbcon_free(struct console *con) { }
+ static inline enum nbcon_prio nbcon_get_default_prio(void) { return NBCON_PRIO_NONE; }
+ static inline void nbcon_atomic_flush_all(void) { }
+-static bool nbcon_atomic_emit_next_record(struct console *con) { return false; }
++static inline bool nbcon_atomic_emit_next_record(struct console *con, bool *handover,
++						 int cookie) { return false; }
+ 
+-static inline bool console_is_usable(struct console *con, short flags, bool use_atomic) { return false; }
++static inline bool console_is_usable(struct console *con, short flags,
++				     bool use_atomic) { return false; }
+ 
+ #endif /* CONFIG_PRINTK */
+ 
+diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+index 0bd5ee1b5b282..1b1b585b1675b 100644
+--- a/kernel/printk/nbcon.c
++++ b/kernel/printk/nbcon.c
+@@ -144,39 +144,6 @@ static inline bool nbcon_state_try_cmpxchg(struct console *con, struct nbcon_sta
+ 	return atomic_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_state), &cur->atom, new->atom);
+ }
+ 
+-#ifdef CONFIG_64BIT
+-
+-#define __seq_to_nbcon_seq(seq) (seq)
+-#define __nbcon_seq_to_seq(seq) (seq)
+-
+-#else /* CONFIG_64BIT */
+-
+-#define __seq_to_nbcon_seq(seq) ((u32)seq)
+-
+-static inline u64 __nbcon_seq_to_seq(u32 nbcon_seq)
+-{
+-	u64 seq;
+-	u64 rb_next_seq;
+-
+-	/*
+-	 * The provided sequence is only the lower 32 bits of the ringbuffer
+-	 * sequence. It needs to be expanded to 64bit. Get the next sequence
+-	 * number from the ringbuffer and fold it.
+-	 *
+-	 * Having a 32bit representation in the console is sufficient.
+-	 * If a console ever gets more than 2^31 records behind
+-	 * the ringbuffer then this is the least of the problems.
+-	 *
+-	 * Also the access to the ring buffer is always safe.
+-	 */
+-	rb_next_seq = prb_next_seq(prb);
+-	seq = rb_next_seq - ((u32)rb_next_seq - nbcon_seq);
+-
+-	return seq;
+-}
+-
+-#endif /* CONFIG_64BIT */
+-
+ /**
+  * nbcon_seq_read - Read the current console sequence
+  * @con:	Console to read the sequence of
+@@ -187,7 +154,7 @@ u64 nbcon_seq_read(struct console *con)
+ {
+ 	unsigned long nbcon_seq = atomic_long_read(&ACCESS_PRIVATE(con, nbcon_seq));
+ 
+-	return __nbcon_seq_to_seq(nbcon_seq);
++	return __ulseq_to_u64seq(prb, nbcon_seq);
+ }
+ 
+ /**
+@@ -208,17 +175,12 @@ void nbcon_seq_force(struct console *con, u64 seq)
+ 	 */
+ 	u64 valid_seq = max_t(u64, seq, prb_first_valid_seq(prb));
+ 
+-	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __seq_to_nbcon_seq(valid_seq));
++	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __u64seq_to_ulseq(valid_seq));
+ 
+ 	/* Clear con->seq since nbcon consoles use con->nbcon_seq instead. */
+ 	con->seq = 0;
+ }
+ 
+-static void nbcon_context_seq_set(struct nbcon_context *ctxt)
+-{
+-	ctxt->seq = nbcon_seq_read(ctxt->console);
+-}
+-
+ /**
+  * nbcon_seq_try_update - Try to update the console sequence number
+  * @ctxt:	Pointer to an acquire context that contains
+@@ -232,11 +194,11 @@ static void nbcon_context_seq_set(struct nbcon_context *ctxt)
+  */
+ static void nbcon_seq_try_update(struct nbcon_context *ctxt, u64 new_seq)
+ {
+-	unsigned long nbcon_seq = __seq_to_nbcon_seq(ctxt->seq);
++	unsigned long nbcon_seq = __u64seq_to_ulseq(ctxt->seq);
+ 	struct console *con = ctxt->console;
+ 
+ 	if (atomic_long_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_seq), &nbcon_seq,
+-				    __seq_to_nbcon_seq(new_seq))) {
++				    __u64seq_to_ulseq(new_seq))) {
+ 		ctxt->seq = new_seq;
+ 	} else {
+ 		ctxt->seq = nbcon_seq_read(con);
+@@ -575,6 +537,7 @@ static struct printk_buffers panic_nbcon_pbufs;
+  * nbcon_context_try_acquire - Try to acquire nbcon console
+  * @ctxt:	The context of the caller
+  *
++ * Context:	Any context which could not be migrated to another CPU.
+  * Return:	True if the console was acquired. False otherwise.
+  *
+  * If the caller allowed an unsafe hostile takeover, on success the
+@@ -867,6 +830,22 @@ bool nbcon_exit_unsafe(struct nbcon_write_context *wctxt)
+ }
+ EXPORT_SYMBOL_GPL(nbcon_exit_unsafe);
+ 
++/**
++ * nbcon_reacquire - Reacquire a console after losing ownership
++ * @wctxt:	The write context that was handed to the write function
++ *
++ * Since ownership can be lost at any time due to handover or takeover, a
++ * printing context _should_ be prepared to back out immediately and
++ * carefully. However, there are many scenarios where the context _must_
++ * reacquire ownership in order to finalize or revert hardware changes.
++ *
++ * This function allows a context to reacquire ownership using the same
++ * priority as its previous ownership.
++ *
++ * Note that for printing contexts, after a successful reacquire the
++ * context will have no output buffer because that has been lost. This
++ * function cannot be used to resume printing.
++ */
+ void nbcon_reacquire(struct nbcon_write_context *wctxt)
+ {
+ 	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
+@@ -911,7 +890,7 @@ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt, bool use_a
+ 	unsigned long con_dropped;
+ 	struct nbcon_state cur;
+ 	unsigned long dropped;
+-	bool done;
++	bool done = false;
+ 
+ 	/*
+ 	 * The printk buffers are filled within an unsafe section. This
+@@ -959,16 +938,13 @@ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt, bool use_a
+ 		   con->kthread) {
+ 		WARN_ON_ONCE(con->kthread != current);
+ 		done = con->write_thread(con, wctxt);
+-
+-	} else {
+-		WARN_ON_ONCE(1);
+-		done = false;
+ 	}
+ 
+ 	if (!done) {
+ 		/*
+-		 * The emit was aborted. This may have been due to a loss
+-		 * of ownership. Explicitly release ownership to be sure.
++		 * The emit was aborted, probably due to a loss of ownership.
++		 * Ensure ownership was lost or released before reporting the
++		 * loss.
+ 		 */
+ 		nbcon_context_release(ctxt);
+ 		return false;
+@@ -1013,29 +989,23 @@ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt, bool use_a
+  */
+ static bool nbcon_kthread_should_wakeup(struct console *con, struct nbcon_context *ctxt)
+ {
+-	struct nbcon_state cur;
+ 	bool is_usable;
+ 	short flags;
+ 	int cookie;
+ 
+-	do {
+-		if (kthread_should_stop())
+-			return true;
++	if (kthread_should_stop())
++		return true;
+ 
+-		cookie = console_srcu_read_lock();
+-		flags = console_srcu_read_flags(con);
+-		is_usable = console_is_usable(con, flags, false);
+-		console_srcu_read_unlock(cookie);
++	cookie = console_srcu_read_lock();
++	flags = console_srcu_read_flags(con);
++	is_usable = console_is_usable(con, flags, false);
++	console_srcu_read_unlock(cookie);
+ 
+-		if (!is_usable)
+-			return false;
+-
+-		nbcon_state_read(con, &cur);
+-
+-	} while (cur.prio != NBCON_PRIO_NONE);
++	if (!is_usable)
++		return false;
+ 
+ 	/* Bring the sequence in @ctxt up to date */
+-	nbcon_context_seq_set(ctxt);
++	ctxt->seq = nbcon_seq_read(con);
+ 
+ 	return prb_read_valid(prb, ctxt->seq, NULL);
+ }
+@@ -1052,16 +1022,12 @@ static int nbcon_kthread_func(void *__console)
+ 		.ctxt.prio	= NBCON_PRIO_NORMAL,
+ 	};
+ 	struct nbcon_context *ctxt = &ACCESS_PRIVATE(&wctxt, ctxt);
+-	struct uart_port *port = NULL;
+ 	unsigned long flags;
+ 	short con_flags;
+ 	bool backlog;
+ 	int cookie;
+ 	int ret;
+ 
+-	if (con->uart_port)
+-		port = con->uart_port(con);
+-
+ wait_for_event:
+ 	/*
+ 	 * Guarantee this task is visible on the rcuwait before
+@@ -1092,14 +1058,13 @@ static int nbcon_kthread_func(void *__console)
+ 		con_flags = console_srcu_read_flags(con);
+ 
+ 		if (console_is_usable(con, con_flags, false)) {
++			con->driver_enter(con, &flags);
++
+ 			/*
+ 			 * Ensure this stays on the CPU to make handover and
+ 			 * takeover possible.
+ 			 */
+-			if (port)
+-				spin_lock_irqsave(&port->lock, flags);
+-			else
+-				migrate_disable();
++			cant_migrate();
+ 
+ 			if (nbcon_context_try_acquire(ctxt)) {
+ 				/*
+@@ -1112,16 +1077,11 @@ static int nbcon_kthread_func(void *__console)
+ 				}
+ 			}
+ 
+-			if (port)
+-				spin_unlock_irqrestore(&port->lock, flags);
+-			else
+-				migrate_enable();
++			con->driver_exit(con, flags);
+ 		}
+ 
+ 		console_srcu_read_unlock(cookie);
+ 
+-		cond_resched();
+-
+ 	} while (backlog);
+ 
+ 	goto wait_for_event;
+@@ -1207,9 +1167,9 @@ static __ref unsigned int *nbcon_get_cpu_emergency_nesting(void)
+ 
+ /**
+  * nbcon_atomic_emit_one - Print one record for an nbcon console using the
+- *					write_atomic() callback
+- * @wctxt:			An initialized write context struct to use
+- *				for this context
++ *				write_atomic() callback
++ * @wctxt:	An initialized write context struct to use
++ *		for this context
+  *
+  * Return:	False if the given console could not print a record or there
+  *		are no more records to print, otherwise true.
+@@ -1241,6 +1201,7 @@ static bool nbcon_atomic_emit_one(struct nbcon_write_context *wctxt)
+  * nbcon_get_default_prio - The appropriate nbcon priority to use for nbcon
+  *				printing on the current CPU
+  *
++ * Context:	Any context which could not be migrated to another CPU.
+  * Return:	The nbcon_prio to use for acquiring an nbcon console in this
+  *		context for printing.
+  */
+@@ -1262,51 +1223,51 @@ enum nbcon_prio nbcon_get_default_prio(void)
+  * nbcon_atomic_emit_next_record - Print one record for an nbcon console
+  *					using the write_atomic() callback
+  * @con:	The console to print on
++ * @handover:	Will be set to true if a printk waiter has taken over the
++ *		console_lock, in which case the caller is no longer holding
++ *		both the console_lock and the SRCU read lock. Otherwise it
++ *		is set to false.
++ * @cookie:	The cookie from the SRCU read lock.
+  *
+- * Return:	True if a record could be printed, otherwise false.
+  * Context:	Any context which could not be migrated to another CPU.
++ * Return:	True if a record could be printed, otherwise false.
+  *
+  * This function is meant to be called by console_flush_all() to print records
+  * on nbcon consoles using the write_atomic() callback. Essentially it is the
+  * nbcon version of console_emit_next_record().
+  */
+-bool nbcon_atomic_emit_next_record(struct console *con)
++bool nbcon_atomic_emit_next_record(struct console *con, bool *handover, int cookie)
+ {
+-	struct uart_port *port = con->uart_port(con);
+-	static DEFINE_SPINLOCK(shared_spinlock);
++	struct nbcon_write_context wctxt = { };
++	struct nbcon_context *ctxt = &ACCESS_PRIVATE(&wctxt, ctxt);
++	unsigned long driver_flags;
+ 	bool progress = false;
+-	enum nbcon_prio prio;
+ 	unsigned long flags;
+ 
+-	/*
+-	 * If there is no port lock available, fallback to a shared
+-	 * spinlock. This serves to provide the necessary type of
+-	 * migration/preemption disabling while printing.
+-	 */
+-	if (port)
+-		spin_lock_irqsave(&port->lock, flags);
+-	else
+-		spin_lock_irqsave(&shared_spinlock, flags);
++	*handover = false;
+ 
+-	/*
+-	 * Do not emit for EMERGENCY priority. The console will be
+-	 * explicitly flushed when exiting the emergency section.
+-	 */
+-	prio = nbcon_get_default_prio();
+-	if (prio != NBCON_PRIO_EMERGENCY) {
+-		struct nbcon_write_context wctxt = { };
+-		struct nbcon_context *ctxt = &ACCESS_PRIVATE(&wctxt, ctxt);
+-
+-		ctxt->console	= con;
+-		ctxt->prio	= prio;
+-
+-		progress = nbcon_atomic_emit_one(&wctxt);
++	/* Use the same locking order as console_emit_next_record(). */
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
++		printk_safe_enter_irqsave(flags);
++		console_lock_spinning_enable();
++		stop_critical_timings();
+ 	}
+ 
+-	if (port)
+-		spin_unlock_irqrestore(&port->lock, flags);
+-	else
+-		spin_unlock_irqrestore(&shared_spinlock, flags);
++	con->driver_enter(con, &driver_flags);
++	cant_migrate();
++
++	ctxt->console	= con;
++	ctxt->prio	= nbcon_get_default_prio();
++
++	progress = nbcon_atomic_emit_one(&wctxt);
++
++	con->driver_exit(con, driver_flags);
++
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
++		start_critical_timings();
++		*handover = console_lock_spinning_disable_and_check(cookie);
++		printk_safe_exit_irqrestore(flags);
++	}
+ 
+ 	return progress;
+ }
+@@ -1321,7 +1282,6 @@ static void __nbcon_atomic_flush_all(u64 stop_seq, bool allow_unsafe_takeover)
+ {
+ 	struct nbcon_write_context wctxt = { };
+ 	struct nbcon_context *ctxt = &ACCESS_PRIVATE(&wctxt, ctxt);
+-	enum nbcon_prio prio = nbcon_get_default_prio();
+ 	struct console *con;
+ 	bool any_progress;
+ 	int cookie;
+@@ -1332,6 +1292,7 @@ static void __nbcon_atomic_flush_all(u64 stop_seq, bool allow_unsafe_takeover)
+ 		cookie = console_srcu_read_lock();
+ 		for_each_console_srcu(con) {
+ 			short flags = console_srcu_read_flags(con);
++			unsigned long irq_flags;
+ 
+ 			if (!(flags & CON_NBCON))
+ 				continue;
+@@ -1345,10 +1306,26 @@ static void __nbcon_atomic_flush_all(u64 stop_seq, bool allow_unsafe_takeover)
+ 			memset(ctxt, 0, sizeof(*ctxt));
+ 			ctxt->console			= con;
+ 			ctxt->spinwait_max_us		= 2000;
+-			ctxt->prio			= prio;
+ 			ctxt->allow_unsafe_takeover	= allow_unsafe_takeover;
+ 
++			/*
++			 * Atomic flushing does not use console driver
++			 * synchronization (i.e. it does not hold the port
++			 * lock for uart consoles). Therefore IRQs must be
++			 * disabled to avoid being interrupted and then
++			 * calling into a driver that will deadlock trying
++			 * acquire console ownership.
++			 *
++			 * This also disables migration in order to get the
++			 * current CPU priority.
++			 */
++			local_irq_save(irq_flags);
++
++			ctxt->prio = nbcon_get_default_prio();
++
+ 			any_progress |= nbcon_atomic_emit_one(&wctxt);
++
++			local_irq_restore(irq_flags);
+ 		}
+ 		console_srcu_read_unlock(cookie);
+ 	} while (any_progress);
+@@ -1361,8 +1338,6 @@ static void __nbcon_atomic_flush_all(u64 stop_seq, bool allow_unsafe_takeover)
+  * Flush the backlog up through the currently newest record. Any new
+  * records added while flushing will not be flushed. This is to avoid
+  * one CPU printing unbounded because other CPUs continue to add records.
+- *
+- * Context:	Any context which could not be migrated to another CPU.
+  */
+ void nbcon_atomic_flush_all(void)
+ {
+@@ -1375,8 +1350,6 @@ void nbcon_atomic_flush_all(void)
+  *
+  * Flush the backlog up through the currently newest record. Unsafe hostile
+  * takeovers will be performed, if necessary.
+- *
+- * Context:	Any context which could not be migrated to another CPU.
+  */
+ void nbcon_atomic_flush_unsafe(void)
+ {
+@@ -1417,18 +1390,22 @@ void nbcon_cpu_emergency_enter(void)
+ void nbcon_cpu_emergency_exit(void)
+ {
+ 	unsigned int *cpu_emergency_nesting;
++	bool do_trigger_flush = false;
+ 
+ 	cpu_emergency_nesting = nbcon_get_cpu_emergency_nesting();
+ 
+ 	WARN_ON_ONCE(*cpu_emergency_nesting == 0);
+ 
+ 	if (*cpu_emergency_nesting == 1)
+-		printk_trigger_flush();
++		do_trigger_flush = true;
+ 
+ 	/* Undo the nesting count of nbcon_cpu_emergency_enter(). */
+ 	(*cpu_emergency_nesting)--;
+ 
+ 	preempt_enable();
++
++	if (do_trigger_flush)
++		printk_trigger_flush();
+ }
+ 
+ /**
+@@ -1589,7 +1566,7 @@ static inline bool uart_is_nbcon(struct uart_port *up)
+ }
+ 
+ /**
+- * nbcon_handle_port_lock - The second half of the port locking wrapper
++ * nbcon_acquire - The second half of the port locking wrapper
+  * @up:		The uart port whose @lock was locked
+  *
+  * The uart_port_lock() wrappers will first lock the spin_lock @up->lock.
+@@ -1601,7 +1578,7 @@ static inline bool uart_is_nbcon(struct uart_port *up)
+  * nbcon consoles acquired via the port lock wrapper always use priority
+  * NBCON_PRIO_NORMAL.
+  */
+-void nbcon_handle_port_lock(struct uart_port *up)
++void nbcon_acquire(struct uart_port *up)
+ {
+ 	struct console *con = up->cons;
+ 	struct nbcon_context ctxt;
+@@ -1622,10 +1599,10 @@ void nbcon_handle_port_lock(struct uart_port *up)
+ 
+ 	con->locked_port = true;
+ }
+-EXPORT_SYMBOL_GPL(nbcon_handle_port_lock);
++EXPORT_SYMBOL_GPL(nbcon_acquire);
+ 
+ /**
+- * nbcon_handle_port_unlock - The first half of the port unlocking wrapper
++ * nbcon_release - The first half of the port unlocking wrapper
+  * @up:		The uart port whose @lock is about to be unlocked
+  *
+  * The uart_port_unlock() wrappers will first call this function to implement
+@@ -1638,7 +1615,7 @@ EXPORT_SYMBOL_GPL(nbcon_handle_port_lock);
+  * nbcon consoles acquired via the port lock wrapper always use priority
+  * NBCON_PRIO_NORMAL.
+  */
+-void nbcon_handle_port_unlock(struct uart_port *up)
++void nbcon_release(struct uart_port *up)
+ {
+ 	struct console *con = up->cons;
+ 	struct nbcon_context ctxt = {
+@@ -1646,17 +1623,15 @@ void nbcon_handle_port_unlock(struct uart_port *up)
+ 		.prio		= NBCON_PRIO_NORMAL,
+ 	};
+ 
+-	if (!uart_is_nbcon(up))
++	if (!con->locked_port)
+ 		return;
+ 
+-	WARN_ON_ONCE(!con->locked_port);
+-
+ 	if (nbcon_context_exit_unsafe(&ctxt))
+ 		nbcon_context_release(&ctxt);
+ 
+ 	con->locked_port = false;
+ }
+-EXPORT_SYMBOL_GPL(nbcon_handle_port_unlock);
++EXPORT_SYMBOL_GPL(nbcon_release);
+ 
+ /**
+  * printk_kthread_shutdown - shutdown all threaded printers
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index ff02cb20ac35f..90e951bd02524 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -470,6 +470,13 @@ static DEFINE_MUTEX(syslog_lock);
+  */
+ bool have_legacy_console;
+ 
++/*
++ * Specifies if an nbcon console is registered. If nbcon consoles are present,
++ * synchronous printing of legacy consoles will not occur during panic until
++ * the backtrace has been stored to the ringbuffer.
++ */
++bool have_nbcon_console;
++
+ /*
+  * Specifies if a boot console is registered. If boot consoles are present,
+  * nbcon consoles cannot print simultaneously and must be synchronized by
+@@ -479,12 +486,6 @@ bool have_legacy_console;
+ bool have_boot_console;
+ 
+ #ifdef CONFIG_PRINTK
+-/*
+- * During panic, heavy printk by other CPUs can delay the
+- * panic and risk deadlock on console resources.
+- */
+-static int __read_mostly suppress_panic_printk;
+-
+ DECLARE_WAIT_QUEUE_HEAD(log_wait);
+ 
+ static DECLARE_WAIT_QUEUE_HEAD(legacy_wait);
+@@ -1887,7 +1888,7 @@ static bool console_waiter;
+  * there may be a waiter spinning (like a spinlock). Also it must be
+  * ready to hand over the lock at the end of the section.
+  */
+-static void console_lock_spinning_enable(void)
++void console_lock_spinning_enable(void)
+ {
+ 	/*
+ 	 * Do not use spinning in panic(). The panic CPU wants to keep the lock.
+@@ -1926,7 +1927,7 @@ static void console_lock_spinning_enable(void)
+  *
+  * Return: 1 if the lock rights were passed, 0 otherwise.
+  */
+-static int console_lock_spinning_disable_and_check(int cookie)
++int console_lock_spinning_disable_and_check(int cookie)
+ {
+ 	int waiter;
+ 
+@@ -2331,35 +2332,36 @@ int vprintk_store(int facility, int level,
+ 	return ret;
+ }
+ 
++static bool legacy_allow_panic_sync;
++
++/*
++ * This acts as a one-way switch to allow legacy consoles to print from
++ * the printk() caller context on a panic CPU.
++ */
++void printk_legacy_allow_panic_sync(void)
++{
++	legacy_allow_panic_sync = true;
++}
++
+ asmlinkage int vprintk_emit(int facility, int level,
+ 			    const struct dev_printk_info *dev_info,
+ 			    const char *fmt, va_list args)
+ {
+-	static atomic_t panic_noise_count = ATOMIC_INIT(0);
+-
+-	bool do_trylock_unlock = printing_via_unlock && !IS_ENABLED(CONFIG_PREEMPT_RT);
++	bool do_trylock_unlock = printing_via_unlock &&
++				 !IS_ENABLED(CONFIG_PREEMPT_RT);
+ 	int printed_len;
+ 
+ 	/* Suppress unimportant messages after panic happens */
+ 	if (unlikely(suppress_printk))
+ 		return 0;
+ 
+-	if (other_cpu_in_panic()) {
+-		if (unlikely(suppress_panic_printk))
+-			return 0;
+-
+-		/*
+-		 * The messages on the panic CPU are the most important. If
+-		 * non-panic CPUs are generating many messages, the panic
+-		 * messages could get lost. Limit the number of non-panic
+-		 * messages to approximately 1/4 of the ringbuffer.
+-		 */
+-		if (atomic_inc_return_relaxed(&panic_noise_count) >
+-		    (1 << (prb->desc_ring.count_bits - 2))) {
+-			suppress_panic_printk = 1;
+-			return 0;
+-		}
+-	}
++	/*
++	 * The messages on the panic CPU are the most important. If
++	 * non-panic CPUs are generating any messages, they will be
++	 * silently dropped.
++	 */
++	if (other_cpu_in_panic())
++		return 0;
+ 
+ 	if (level == LOGLEVEL_SCHED) {
+ 		level = LOGLEVEL_DEFAULT;
+@@ -2371,29 +2373,40 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 
+ 	printed_len = vprintk_store(facility, level, dev_info, fmt, args);
+ 
+-	/*
+-	 * There are 3 situations where nbcon atomic printing should happen in
+-	 * the printk() caller context:
+-	 *
+-	 * 1. When booting, before the printing threads have been started.
+-	 *
+-	 * 2. During shutdown, since the printing threads may not get a
+-	 *    chance to print the final messages.
+-	 *
+-	 * 3. When this CPU is in panic.
+-	 *
+-	 * Note that if boot consoles are registered (have_boot_console), the
+-	 * console_lock/console_unlock dance must be relied upon instead
+-	 * because nbcon consoles cannot print simultaneously with boot
+-	 * consoles.
+-	 */
+-	if (!have_boot_console) {
+-		if (!printk_threads_enabled ||
+-		    (system_state > SYSTEM_RUNNING) ||
+-		    this_cpu_in_panic()) {
+-			preempt_disable();
++	if (!have_boot_console && have_nbcon_console) {
++		bool is_panic_context = this_cpu_in_panic();
++
++		/*
++		 * In panic, the legacy consoles are not allowed to print from
++		 * the printk calling context unless explicitly allowed. This
++		 * gives the safe nbcon consoles a chance to print out all the
++		 * panic messages first. This restriction only applies if
++		 * there are nbcon consoles registered.
++		 */
++		if (is_panic_context)
++			do_trylock_unlock &= legacy_allow_panic_sync;
++
++		/*
++		 * There are situations where nbcon atomic printing should
++		 * happen in the printk() caller context:
++		 *
++		 * - When this CPU is in panic.
++		 *
++		 * - When booting, before the printing threads have been
++		 *   started.
++		 *
++		 * - During shutdown, since the printing threads may not get
++		 *   a chance to print the final messages.
++		 *
++		 * Note that if boot consoles are registered, the
++		 * console_lock/console_unlock dance must be relied upon
++		 * instead because nbcon consoles cannot print simultaneously
++		 * with boot consoles.
++		 */
++		if (is_panic_context ||
++		    !printk_threads_enabled ||
++		    (system_state > SYSTEM_RUNNING)) {
+ 			nbcon_atomic_flush_all();
+-			preempt_enable();
+ 		}
+ 	}
+ 
+@@ -2406,9 +2419,18 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 		 * printing of all remaining records to all consoles so that
+ 		 * this context can return as soon as possible. Hopefully
+ 		 * another printk() caller will take over the printing.
++		 *
++		 * Also, nbcon_get_default_prio() requires migration disabled.
+ 		 */
+ 		preempt_disable();
+-		if (nbcon_get_default_prio() != NBCON_PRIO_EMERGENCY) {
++
++		/*
++		 * Do not emit for EMERGENCY priority. The console will be
++		 * explicitly flushed when exiting the emergency section.
++		 */
++		if (nbcon_get_default_prio() == NBCON_PRIO_EMERGENCY) {
++			do_trylock_unlock = false;
++		} else {
+ 			/*
+ 			 * Try to acquire and then immediately release the
+ 			 * console semaphore. The release will print out
+@@ -2419,13 +2441,15 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 			if (console_trylock_spinning())
+ 				console_unlock();
+ 		}
+-		preempt_enable();
+ 
+-		wake_up_klogd();
+-	} else {
+-		defer_console_output();
++		preempt_enable();
+ 	}
+ 
++	if (do_trylock_unlock)
++		wake_up_klogd();
++	else
++		defer_console_output();
++
+ 	return printed_len;
+ }
+ EXPORT_SYMBOL(vprintk_emit);
+@@ -2472,6 +2496,7 @@ static u64 syslog_seq;
+ 
+ static bool pr_flush(int timeout_ms, bool reset_on_progress) { return true; }
+ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progress) { return true; }
++
+ static inline void nbcon_legacy_kthread_create(void) { }
+ static inline void wake_up_legacy_kthread(void) { }
+ #endif /* CONFIG_PRINTK */
+@@ -2711,7 +2736,6 @@ void resume_console(void)
+ 	 * Since this runs in task context, wake the threaded printers
+ 	 * directly rather than scheduling irq_work to do it.
+ 	 */
+-
+ 	cookie = console_srcu_read_lock();
+ 	for_each_console_srcu(con) {
+ 		flags = console_srcu_read_flags(con);
+@@ -2800,6 +2824,8 @@ static void __console_unlock(void)
+ 	up_console_sem();
+ }
+ 
++static DEFINE_WAIT_OVERRIDE_MAP(printk_legacy_map, LD_WAIT_SLEEP);
++
+ #ifdef CONFIG_PRINTK
+ 
+ /*
+@@ -2962,7 +2988,18 @@ static bool console_emit_next_record(struct console *con, bool *handover, int co
+ 		con->dropped = 0;
+ 	}
+ 
+-	if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
++	/* Write everything out to the hardware. */
++
++	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++		/*
++		 * On PREEMPT_RT this function is either in a thread or
++		 * panic context. So there is no need for concern about
++		 * printk reentrance, handovers, or lockdep complaints.
++		 */
++
++		con->write(con, outbuf, pmsg.outbuf_len);
++		con->seq = pmsg.seq + 1;
++	} else {
+ 		/*
+ 		 * While actively printing out messages, if another printk()
+ 		 * were to occur on another CPU, it may wait for this one to
+@@ -2978,20 +3015,16 @@ static bool console_emit_next_record(struct console *con, bool *handover, int co
+ 
+ 		/* Do not trace print latency. */
+ 		stop_critical_timings();
+-	}
+ 
+-	/* Write everything out to the hardware. */
+-	con->write(con, outbuf, pmsg.outbuf_len);
++		lock_map_acquire_try(&printk_legacy_map);
++		con->write(con, outbuf, pmsg.outbuf_len);
++		lock_map_release(&printk_legacy_map);
+ 
+-	con->seq = pmsg.seq + 1;
+-
+-	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+-		*handover = false;
+-	} else {
+ 		start_critical_timings();
+ 
+-		*handover = console_lock_spinning_disable_and_check(cookie);
++		con->seq = pmsg.seq + 1;
+ 
++		*handover = console_lock_spinning_disable_and_check(cookie);
+ 		printk_safe_exit_irqrestore(flags);
+ 	}
+ skip:
+@@ -3062,21 +3095,25 @@ static bool console_flush_all(bool do_cond_resched, u64 *next_seq, bool *handove
+ 			any_usable = true;
+ 
+ 			if (flags & CON_NBCON) {
+-				progress = nbcon_atomic_emit_next_record(con);
++
++				lock_map_acquire_try(&printk_legacy_map);
++				progress = nbcon_atomic_emit_next_record(con, handover, cookie);
++				lock_map_release(&printk_legacy_map);
++
+ 				printk_seq = nbcon_seq_read(con);
+ 			} else {
+ 				progress = console_emit_next_record(con, handover, cookie);
+ 
+-				/*
+-				 * If a handover has occurred, the SRCU read
+-				 * lock is already released.
+-				 */
+-				if (*handover)
+-					return false;
+-
+ 				printk_seq = con->seq;
+ 			}
+ 
++			/*
++			 * If a handover has occurred, the SRCU read lock
++			 * is already released.
++			 */
++			if (*handover)
++				return false;
++
+ 			/* Track the next of the highest seq flushed. */
+ 			if (printk_seq > *next_seq)
+ 				*next_seq = printk_seq;
+@@ -3102,7 +3139,7 @@ static bool console_flush_all(bool do_cond_resched, u64 *next_seq, bool *handove
+ 	return false;
+ }
+ 
+-static u64 console_flush_and_unlock(void)
++static void console_flush_and_unlock(void)
+ {
+ 	bool do_cond_resched;
+ 	bool handover;
+@@ -3145,8 +3182,6 @@ static u64 console_flush_and_unlock(void)
+ 		 * fails, another context is already handling the printing.
+ 		 */
+ 	} while (prb_read_valid(prb, next_seq, NULL) && console_trylock());
+-
+-	return next_seq;
+ }
+ 
+ /**
+@@ -3307,8 +3342,7 @@ void console_flush_on_panic(enum con_flush_mode mode)
+ 		console_srcu_read_unlock(cookie);
+ 	}
+ 
+-	if (!have_boot_console)
+-		nbcon_atomic_flush_all();
++	nbcon_atomic_flush_all();
+ 
+ 	if (printing_via_unlock)
+ 		console_flush_all(false, &next_seq, &handover);
+@@ -3392,7 +3426,7 @@ void console_start(struct console *console)
+ EXPORT_SYMBOL(console_start);
+ 
+ #ifdef CONFIG_PRINTK
+-static bool printer_should_wake(u64 seq)
++static bool printer_should_wake(void)
+ {
+ 	bool available = false;
+ 	struct console *con;
+@@ -3438,11 +3472,10 @@ static bool printer_should_wake(u64 seq)
+ 
+ static int nbcon_legacy_kthread_func(void *unused)
+ {
+-	u64 seq = 0;
+ 	int error;
+ 
+ 	for (;;) {
+-		error = wait_event_interruptible(legacy_wait, printer_should_wake(seq));
++		error = wait_event_interruptible(legacy_wait, printer_should_wake());
+ 
+ 		if (kthread_should_stop())
+ 			break;
+@@ -3451,8 +3484,9 @@ static int nbcon_legacy_kthread_func(void *unused)
+ 			continue;
+ 
+ 		console_lock();
+-		seq = console_flush_and_unlock();
++		console_flush_and_unlock();
+ 	}
++
+ 	return 0;
+ }
+ 
+@@ -3615,11 +3649,20 @@ static void console_init_seq(struct console *newcon, bool bootcon_registered)
+ 
+ 				newcon->seq = prb_next_seq(prb);
+ 				for_each_console(con) {
+-					if ((con->flags & CON_BOOT) &&
+-					    (con->flags & CON_ENABLED) &&
+-					    con->seq < newcon->seq) {
+-						newcon->seq = con->seq;
++					u64 seq;
++
++					if (!((con->flags & CON_BOOT) &&
++					      (con->flags & CON_ENABLED))) {
++						continue;
+ 					}
++
++					if (con->flags & CON_NBCON)
++						seq = nbcon_seq_read(con);
++					else
++						seq = con->seq;
++
++					if (seq < newcon->seq)
++						newcon->seq = seq;
+ 				}
+ 			}
+ 
+@@ -3737,6 +3780,7 @@ void register_console(struct console *newcon)
+ 	console_init_seq(newcon, bootcon_registered);
+ 
+ 	if (newcon->flags & CON_NBCON) {
++		have_nbcon_console = true;
+ 		nbcon_init(newcon);
+ 	} else {
+ 		have_legacy_console = true;
+@@ -3798,8 +3842,10 @@ EXPORT_SYMBOL(register_console);
+ /* Must be called under console_list_lock(). */
+ static int unregister_console_locked(struct console *console)
+ {
+-	bool is_legacy_con = !(console->flags & CON_NBCON);
+ 	bool is_boot_con = (console->flags & CON_BOOT);
++	bool found_legacy_con = false;
++	bool found_nbcon_con = false;
++	bool found_boot_con = false;
+ 	struct console *c;
+ 	int res;
+ 
+@@ -3849,24 +3895,24 @@ static int unregister_console_locked(struct console *console)
+ 		res = console->exit(console);
+ 
+ 	/*
+-	 * If this console was a boot and/or legacy console, the
+-	 * related global flags might need to be updated.
++	 * With this console gone, the global flags tracking registered
++	 * console types may have changed. Update them.
+ 	 */
+-	if (is_boot_con || is_legacy_con) {
+-		bool found_legacy_con = false;
+-		bool found_boot_con = false;
++	for_each_console(c) {
++		if (c->flags & CON_BOOT)
++			found_boot_con = true;
+ 
+-		for_each_console(c) {
+-			if (c->flags & CON_BOOT)
+-				found_boot_con = true;
+-			if (!(c->flags & CON_NBCON))
+-				found_legacy_con = true;
+-		}
+-		if (!found_boot_con)
+-			have_boot_console = false;
+-		if (!found_legacy_con)
+-			have_legacy_console = false;
++		if (c->flags & CON_NBCON)
++			found_nbcon_con = true;
++		else
++			found_legacy_con = true;
+ 	}
++	if (!found_boot_con)
++		have_boot_console = false;
++	if (!found_legacy_con)
++		have_legacy_console = false;
++	if (!found_nbcon_con)
++		have_nbcon_console = false;
+ 
+ 	/*
+ 	 * When the last boot console unregisters, start up the
+@@ -4240,22 +4286,8 @@ void defer_console_output(void)
+ 	__wake_up_klogd(val);
+ }
+ 
+-/**
+- * printk_trigger_flush() - Make sure that the consoles will get flushed
+- *
+- * Try to flush consoles when possible or queue flushing consoles like
+- * in the deferred printk.
+- *
+- * Context: Can be used in any context
+- */
+ void printk_trigger_flush(void)
+ {
+-	if (!have_boot_console) {
+-		preempt_disable();
+-		nbcon_atomic_flush_all();
+-		preempt_enable();
+-	}
+-
+ 	nbcon_wake_threads();
+ 	defer_console_output();
+ }
+diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+index 2b2a85222d19d..e7b808b829a04 100644
+--- a/kernel/printk/printk_ringbuffer.c
++++ b/kernel/printk/printk_ringbuffer.c
+@@ -1457,33 +1457,6 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
+ 	return false;
+ }
+ 
+-#ifdef CONFIG_64BIT
+-
+-#define __u64seq_to_ulseq(u64seq) (u64seq)
+-#define __ulseq_to_u64seq(ulseq) (ulseq)
+-
+-#else /* CONFIG_64BIT */
+-
+-static u64 prb_first_seq(struct printk_ringbuffer *rb);
+-
+-#define __u64seq_to_ulseq(u64seq) ((u32)u64seq)
+-static inline u64 __ulseq_to_u64seq(u32 ulseq)
+-{
+-	u64 rb_first_seq = prb_first_seq(prb);
+-	u64 seq;
+-
+-	/*
+-	 * The provided sequence is only the lower 32 bits of the ringbuffer
+-	 * sequence. It needs to be expanded to 64bit. Get the first sequence
+-	 * number from the ringbuffer and fold it.
+-	 */
+-	seq = rb_first_seq - ((s32)((u32)rb_first_seq - ulseq));
+-
+-	return seq;
+-}
+-
+-#endif /* CONFIG_64BIT */
+-
+ /*
+  * @last_finalized_seq value guarantees that all records up to and including
+  * this sequence number are finalized and can be read. The only exception are
+@@ -1501,8 +1474,9 @@ static inline u64 __ulseq_to_u64seq(u32 ulseq)
+  * directly print or trigger deferred printing of all available unprinted
+  * records, all printk() messages will get printed.
+  */
+-static u64 desc_last_finalized_seq(struct prb_desc_ring *desc_ring)
++static u64 desc_last_finalized_seq(struct printk_ringbuffer *rb)
+ {
++	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+ 	unsigned long ulseq;
+ 
+ 	/*
+@@ -1513,7 +1487,7 @@ static u64 desc_last_finalized_seq(struct prb_desc_ring *desc_ring)
+ 	ulseq = atomic_long_read_acquire(&desc_ring->last_finalized_seq
+ 					); /* LMM(desc_last_finalized_seq:A) */
+ 
+-	return __ulseq_to_u64seq(ulseq);
++	return __ulseq_to_u64seq(rb, ulseq);
+ }
+ 
+ static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
+@@ -1527,7 +1501,7 @@ static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
+ static void desc_update_last_finalized(struct printk_ringbuffer *rb)
+ {
+ 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+-	u64 old_seq = desc_last_finalized_seq(desc_ring);
++	u64 old_seq = desc_last_finalized_seq(rb);
+ 	unsigned long oldval;
+ 	unsigned long newval;
+ 	u64 finalized_seq;
+@@ -1576,7 +1550,7 @@ static void desc_update_last_finalized(struct printk_ringbuffer *rb)
+ 	 */
+ 	if (!atomic_long_try_cmpxchg_release(&desc_ring->last_finalized_seq,
+ 				&oldval, newval)) { /* LMM(desc_update_last_finalized:A) */
+-		old_seq = __ulseq_to_u64seq(oldval);
++		old_seq = __ulseq_to_u64seq(rb, oldval);
+ 		goto try_again;
+ 	}
+ }
+@@ -1883,6 +1857,8 @@ static bool copy_data(struct prb_data_ring *data_ring,
+  * descriptor. However, it also verifies that the record is finalized and has
+  * the sequence number @seq. On success, 0 is returned.
+  *
++ * For the panic CPU, committed descriptors are also considered finalized.
++ *
+  * Error return values:
+  * -EINVAL: A finalized record with sequence number @seq does not exist.
+  * -ENOENT: A finalized record with sequence number @seq exists, but its data
+@@ -1901,16 +1877,25 @@ static int desc_read_finalized_seq(struct prb_desc_ring *desc_ring,
+ 
+ 	/*
+ 	 * An unexpected @id (desc_miss) or @seq mismatch means the record
+-	 * does not exist. A descriptor in the reserved or committed state
+-	 * means the record does not yet exist for the reader.
++	 * does not exist. A descriptor in the reserved state means the
++	 * record does not yet exist for the reader.
+ 	 */
+ 	if (d_state == desc_miss ||
+ 	    d_state == desc_reserved ||
+-	    d_state == desc_committed ||
+ 	    s != seq) {
+ 		return -EINVAL;
+ 	}
+ 
++	/*
++	 * A descriptor in the committed state means the record does not yet
++	 * exist for the reader. However, for the panic CPU, committed
++	 * records are also handled as finalized records since they contain
++	 * message data in a consistent state and may contain additional
++	 * hints as to the cause of the panic.
++	 */
++	if (d_state == desc_committed && !this_cpu_in_panic())
++		return -EINVAL;
++
+ 	/*
+ 	 * A descriptor in the reusable state may no longer have its data
+ 	 * available; report it as existing but with lost data. Or the record
+@@ -1969,7 +1954,7 @@ static int prb_read(struct printk_ringbuffer *rb, u64 seq,
+ }
+ 
+ /* Get the sequence number of the tail descriptor. */
+-static u64 prb_first_seq(struct printk_ringbuffer *rb)
++u64 prb_first_seq(struct printk_ringbuffer *rb)
+ {
+ 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+ 	enum desc_state d_state;
+@@ -2047,7 +2032,7 @@ u64 prb_next_reserve_seq(struct printk_ringbuffer *rb)
+ 	 */
+ 
+ try_again:
+-	last_finalized_seq = desc_last_finalized_seq(desc_ring);
++	last_finalized_seq = desc_last_finalized_seq(rb);
+ 
+ 	/*
+ 	 * @head_id is loaded after @last_finalized_seq to ensure that it is
+@@ -2088,14 +2073,22 @@ u64 prb_next_reserve_seq(struct printk_ringbuffer *rb)
+ 			 * value. Probably no record has been finalized yet.
+ 			 * This means the ringbuffer is not yet full and the
+ 			 * @head_id value can be used directly (subtracting
+-			 * off its initial value).
+-			 *
++			 * off the id value corresponding to seq=0).
++			 */
++
++			/*
+ 			 * Because of hack#2 of the bootstrapping phase, the
+ 			 * @head_id initial value must be handled separately.
+ 			 */
+ 			if (head_id == DESC0_ID(desc_ring->count_bits))
+ 				return 0;
+ 
++			/*
++			 * The @head_id is initialized such that the first
++			 * increment will yield the first record (seq=0).
++			 * Therefore use the initial value +1 as the base to
++			 * subtract from @head_id.
++			 */
+ 			last_finalized_id = DESC0_ID(desc_ring->count_bits) + 1;
+ 		} else {
+ 			/* Record must have been overwritten. Try again. */
+@@ -2103,8 +2096,17 @@ u64 prb_next_reserve_seq(struct printk_ringbuffer *rb)
+ 		}
+ 	}
+ 
++	/*
++	 * @diff is the number of records beyond the last record available
++	 * to readers.
++	 */
+ 	diff = head_id - last_finalized_id;
+ 
++	/*
++	 * @head_id points to the most recently reserved record, but this
++	 * function returns the sequence number that will be assigned to the
++	 * next (not yet reserved) record. Thus +1 is needed.
++	 */
+ 	return (last_finalized_seq + diff + 1);
+ }
+ 
+@@ -2153,6 +2155,12 @@ static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
+ 			 * non-existent/non-finalized record unless it is
+ 			 * at or beyond the head, in which case it is not
+ 			 * possible to continue.
++			 *
++			 * Note that new messages printed on panic CPU are
++			 * finalized when we are here. The only exception
++			 * might be the last message without trailing newline.
++			 * But it would have the sequence number returned
++			 * by "prb_next_reserve_seq() - 1".
+ 			 */
+ 			if (this_cpu_in_panic() && ((*seq + 1) < prb_next_reserve_seq(rb)))
+ 				(*seq)++;
+@@ -2271,10 +2279,9 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
+  */
+ u64 prb_next_seq(struct printk_ringbuffer *rb)
+ {
+-	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+ 	u64 seq;
+ 
+-	seq = desc_last_finalized_seq(desc_ring);
++	seq = desc_last_finalized_seq(rb);
+ 
+ 	/*
+ 	 * Begin searching after the last finalized record.
+diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+index b48b44ecbe6da..52626d0f1fa37 100644
+--- a/kernel/printk/printk_ringbuffer.h
++++ b/kernel/printk/printk_ringbuffer.h
+@@ -392,8 +392,41 @@ bool prb_read_valid(struct printk_ringbuffer *rb, u64 seq,
+ bool prb_read_valid_info(struct printk_ringbuffer *rb, u64 seq,
+ 			 struct printk_info *info, unsigned int *line_count);
+ 
++u64 prb_first_seq(struct printk_ringbuffer *rb);
+ u64 prb_first_valid_seq(struct printk_ringbuffer *rb);
+ u64 prb_next_seq(struct printk_ringbuffer *rb);
+ u64 prb_next_reserve_seq(struct printk_ringbuffer *rb);
+ 
++#ifdef CONFIG_64BIT
++
++#define __u64seq_to_ulseq(u64seq) (u64seq)
++#define __ulseq_to_u64seq(rb, ulseq) (ulseq)
++
++#else /* CONFIG_64BIT */
++
++#define __u64seq_to_ulseq(u64seq) ((u32)u64seq)
++
++static inline u64 __ulseq_to_u64seq(struct printk_ringbuffer *rb, u32 ulseq)
++{
++	u64 rb_first_seq = prb_first_seq(rb);
++	u64 seq;
++
++	/*
++	 * The provided sequence is only the lower 32 bits of the ringbuffer
++	 * sequence. It needs to be expanded to 64bit. Get the first sequence
++	 * number from the ringbuffer and fold it.
++	 *
++	 * Having a 32bit representation in the console is sufficient.
++	 * If a console ever gets more than 2^31 records behind
++	 * the ringbuffer then this is the least of the problems.
++	 *
++	 * Also the access to the ring buffer is always safe.
++	 */
++	seq = rb_first_seq - (s32)((u32)rb_first_seq - ulseq);
++
++	return seq;
++}
++
++#endif /* CONFIG_64BIT */
++
+ #endif /* _KERNEL_PRINTK_RINGBUFFER_H */
+diff --git a/localversion-rt b/localversion-rt
+index ad3da1bcab7e8..0efe7ba1930e1 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt4
++-rt5
 
