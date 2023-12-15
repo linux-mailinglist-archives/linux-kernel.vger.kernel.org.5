@@ -1,182 +1,111 @@
-Return-Path: <linux-kernel+bounces-715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B2B814504
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:00:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 025F6814507
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 396731C227DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:00:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACC1C1F215C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:02:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34EDA18C25;
-	Fri, 15 Dec 2023 10:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1404A18C11;
+	Fri, 15 Dec 2023 10:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="DYTeMV8m"
+	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="MMsYH6Ei"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2057.outbound.protection.outlook.com [40.92.75.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F6618C01
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 09:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iOGl2IZ9AjoH/lgQdzwL07RmzjdcOTqgdmVLgKP3NtmAGneog2kl+fmlfFjr+tFK7sR9p6hlsoFiLJjqc47OvN3X3sRAlDMPeBUkaYdLZEPwzKz0Ibx8bAvP7VoRnYrr/tV0gi/FdmnSBTnBN/ZABJt+mCltpnYqCdp4KN+cRaf6bU+Q71T52dGVFi+FxgMYWAoIJW2cAmXJlZLO7cZODV4loujUQg5rCSXrzbKg0izvAKnT44TMTZYqvMsnAQeEDRiQjP3TuEzJjzuVcD8Bvrzt726ZoC3f7C9r+E2pQRdMediZYUY/oWWcwP+4/nsnsWkbwpH+HD09DUwk5BsurA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZiU73NIN1lvCWdMVrKnNstqLDp7/niE9mrXFSgWiniE=;
- b=TZ+hBCZrpGY6IJ6Dn9/5DDaOja9+K+5P0G64Bj5NIWk0CjVtMwQBehF652cQ1NLAGRDJ1dV/9aOI3dFXRr+mv7P/1d0n/tly+wLP5zbKUCGqEJqGZbG7+5t6lDQQ3CLjaiFDt5YCXlRRPH1ova5r26DaPxZ1PAdttUa2gatBqUQnOkJynh+uJU9qETboxMGG4VYMdzpxO1YvlOaedIJFeGlUEdISVq6tvJA4qnRnIqhHbRVdB7dO0XTpQm4RSCpl/Vmta8PAGGm3SWuGsQHGg/jiNMwgeVawAD+KCo51L+gfRmlWBr8sr/kwD0QnX4XhDJfEhhJAR8uhOyKiPPltlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZiU73NIN1lvCWdMVrKnNstqLDp7/niE9mrXFSgWiniE=;
- b=DYTeMV8mWsGJ8oaHGBYp/UAeGzBQZGKAgzYaAKe4/ryFIwt5i6RN5fuC05WBI3s0V8pIPpdA5CuZSvVoe78tkR+f0uhAUh7zYcsecB14a2PAsobD68ooY6PN/5l4miUlTsCajyoBx3KSqOeW0qrt6FIAOPN/ztmycCPQP6UIOBIb5HyGqQvN3XpPow76BhaZELcmFPzHIxH4psFWQSfs2Dr34q+vedTAadx2bg02h9oKmqTmk+xjSiPOPRZPjTYsFSJevCtK9SkM9Vqz0L0MKzFCy1moSltt+pgizZiytCMQZcwz/MCRFENVNtRjjq0gNcFdWcbJPv+wQMBGQfhejQ==
-Received: from DUZPR10MB8267.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:4ae::7)
- by DB9PR10MB6738.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:3d2::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
- 2023 09:59:56 +0000
-Received: from DUZPR10MB8267.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::651:ac68:2cdb:49f0]) by DUZPR10MB8267.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::651:ac68:2cdb:49f0%4]) with mapi id 15.20.7091.028; Fri, 15 Dec 2023
- 09:59:56 +0000
-Message-ID:
- <DUZPR10MB8267520A4F44DA38339969A78E93A@DUZPR10MB8267.EURPRD10.PROD.OUTLOOK.COM>
-Date: Fri, 15 Dec 2023 10:59:59 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Nouveau] Kernel problem with multiseat on one card - Wil be more
- than one window manager on one card
-To: Timur Tabi <ttabi@nvidia.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bagasdotme@gmail.com" <bagasdotme@gmail.com>
-References: <AM7PR10MB39235DD53D163910E88FDB938E82A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
- <AM7PR10MB3923E07D6024434077E95EBA8E82A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
- <ZWsuiq7zrYS-pDli@archie.me>
- <655a02097e9b49c2da7a2be60d7c154a48a916f4.camel@nvidia.com>
- <AM7PR10MB39235076485E2E3905F422508E86A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
- <e046050c7e9be5d4f816d33dd1a9dd50e2de3308.camel@nvidia.com>
-Content-Language: nl
-From: Gert Vanhaerents <gert.vanhaerents@hotmail.com>
-In-Reply-To: <e046050c7e9be5d4f816d33dd1a9dd50e2de3308.camel@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN: [Mpof9r8j6eSeeas/Y7h5pJyqXgLjdQ3d]
-X-ClientProxiedBy: AS4P190CA0018.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d0::11) To DUZPR10MB8267.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:4ae::7)
-X-Microsoft-Original-Message-ID:
- <d0e7f742-a980-4d3e-92f6-58700907ebb4@hotmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D8618B0E
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-28694702c18so303127a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:02:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vrull.eu; s=google; t=1702634533; x=1703239333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dXyJbk2cqyX20aohZjN0F4Xli2SubkR+gZdBJV7wcH8=;
+        b=MMsYH6EiyoMgpcinzucrjVT1TPrzYnfUMqhw/En0LGoqR0vcR4lFoBfLvPVaMH8Jwo
+         +kpqKqOnZ6fLQBuXRKNuGXaoNv8k+2cVxn2a1nxfj5NmueGiroYsksHvamwxMRsnLIWv
+         kcEfla3qqdDEZsvjiTEGySogR38B+w+CaCpHc7KRI3844DWP/oBJsoEJB81XiGscnc8q
+         VF7rTDQWbwvCeXlEp/ZRvY60NRVFFh+Er89QDhrvONUXLlfPuhqYA1NnQAeb/KtMeY2o
+         nlKrd2OplKZf3i8NlAT2cm1bOR2fhmBid94XVp+JtYHeEXyX5muA+/d3KBUxCu+PoRdk
+         34/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702634533; x=1703239333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dXyJbk2cqyX20aohZjN0F4Xli2SubkR+gZdBJV7wcH8=;
+        b=EjcqwhcPSfdH/TXpvd7Ap3yJbjK5/t9N9RCnCNhugPIk5NoTRJw3jD15m3KysX9Nor
+         65MFr1WVje+8Fy8GLR1Q5+lN8kjiBKcHQjCTbHHjpJUz2/GFZW1jQoPzF0S+MmnAP2+f
+         vghSOAFrXg+BsQKFu7QZNDXnak/ELOnppQz7EEnmTkTkK++vKGtb10Jj2kWn5GnREge+
+         37hTS7jUSF0KHTACaw+AVatbvn89xx+Zb7F91k4ZXmwDmvWXpARsrWsUGZwO+rytGuIm
+         hp1S78BT1YXZRpjn7FSTvLWvYPVVT8MtQv3tu2VHstrm03BeA+7TXribelsOkhCbW6nx
+         IzbA==
+X-Gm-Message-State: AOJu0Ywx1BhaQlxkeRY/T0RelkVfmhP/AUd9cU1cf7Xohj8boIpDPVBP
+	B2UhmtLB+JV+Er8/5L9Af2bDkxEOuMttIwSqxEVNGg==
+X-Google-Smtp-Source: AGHT+IHYA1xHp4lkOd1cCBALEFt0tY88icNCqMBZdHPqehqnfxzKl3xfuFkUXsO7UTy0nxhjaaNQsn4lPh3Pj50GGXU=
+X-Received: by 2002:a17:90b:2792:b0:285:8d5c:9114 with SMTP id
+ pw18-20020a17090b279200b002858d5c9114mr7926991pjb.19.1702634532837; Fri, 15
+ Dec 2023 02:02:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DUZPR10MB8267:EE_|DB9PR10MB6738:EE_
-X-MS-Office365-Filtering-Correlation-Id: 17e4f1ee-e102-44d4-5a14-08dbfd549703
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	sr/f25hLW2rxYoudzAdRbqIDdXlw9i6mSgn7daWrUsnOLLRCAUSKZQL8oI/VqXkeO3/fgv+P/0mAVMEyOIvoMjOBOLlppnUrUgW9dSFmEm0iUeAIjJSWH4yqjLr2t0hsYRuyGjcGoi7L8mQujHEme8N5ky0GljaFPPodsCnmvKSjaz9VzXwiEj18TN41zKqRZo2YQf2/iZt5LXdsT4ISRY0Wz1AAe5Sh9qfReam1godRjzYQczbvHuNPBY0kb2k0adyP2ETBrcO7TJ6Fhe+CWuvHz4eYhzOZ+k7MohaYsciie3CaA6+4LrzJLLJeyWjVSM2FKoekL8hNLLqLpqXcdebzWei0dT2GURbV4yNXC9B1XzQExYPqQ4BV6apu/0b/QC1jduvSoV5O00U1Si7TRou9FYndralDd55ikG0URG1esG3jWKzGixZz+BjVSpID5ufBuwHXzWvTSdm2XRpK8Bkr4GEN3HX6CgqFmijDRNiplWMhPuUQtKX4jywfU5Yl49PC/muDPes6gJB9AlSznEmL5Hz9CiUcoUqmOisFhKss6DSL5NvJhYB/WYGb+7BB
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NC9SMk42NTRDWG1XOHIyMUtSVU5GaFFxbGhUVzhsVEk2VnVjcFJpTFRFdXdh?=
- =?utf-8?B?OFlTRnFHS1JQWUs0bk1LZTJLdTdPUWFVMmx5bjNsSDRGQ3RYVlBiRHBiem5E?=
- =?utf-8?B?S0hiVktWZnN5eUYyZlZPdXF0aUJ3ZXdGVURnZVh3VWJpNkFYNXMvNFhVUDNr?=
- =?utf-8?B?VU41WTJZSkYyR2wwT1dPUHc2VWpTdFFqOHZKQ09tU3RRWml5dnpRQUdWblhX?=
- =?utf-8?B?MDYzNyt4WDRXandqcG1QdVRkUG0rRkFSajVCV0RUUGE0bGdkR1k3TVBKWmN0?=
- =?utf-8?B?N1MyclZNMFZyZC9sR1VWaExzcFdCRUVkcHhUQ0FEZm1GUzAxUjJ5L3NUNUlS?=
- =?utf-8?B?cmlDbEUyVFZkL0dKQ3lvZWlXMlFxN1pWTGFDd1VCZmZUaWNLY1FsTnlMUFFG?=
- =?utf-8?B?R0ZRUmh1VHVRanEzdnA2bGhJNERUVlBBRTlOZUY0L0V4SUhEZlh0U0RnVmg4?=
- =?utf-8?B?WW01cWRscmkyTTVaNDV1dm1NKy9tOVBiM1I5OXowYjA5aXJPWHFwbU44U0N6?=
- =?utf-8?B?eXpLNTZMMlZnQkVrbWd5VmJmdVJyL05CQUk3VDA1N0d6cjFYZnBLRGFIUjkw?=
- =?utf-8?B?RWJBdUNzSmR3cmlnWnZ4NFNZc05MVU1RcGRUeTkwV1dGVjl2dHdGZVVwemQ5?=
- =?utf-8?B?ei9zemM0WnpWc2QyMFUrbHlUd2NHQU5jM3k0QVduakMwSzRMdTZQc1diYXhu?=
- =?utf-8?B?d01SYnpNWE9CSTdUSlljeE00V21DSlIvVFF0QlJDRTBKVGtNV2w2ekxMTWRs?=
- =?utf-8?B?aVdXTWVzQ2dudzJZYTdBRU4zdUlYV3JHdXNPenlPQktRTnlXU0RiQjZBdHg1?=
- =?utf-8?B?NzZYWm1wT3dyaDc3Z0hrNWJEY3BOWU5RWHBqQ2c4WDZTZG1jcVFyczZHTGE1?=
- =?utf-8?B?NkRyRytJczdCekorWGhCNmI0MXpXYU4zQ3VlSmdlVnVzQ0dvTW1Mck5qMCtX?=
- =?utf-8?B?RE9XOVEveDRUdFhJR09QcVdEV1JITGFkOFdMM1BTY0JCRW1oaVMzdFU2SlEr?=
- =?utf-8?B?b1hDSnJSQjNZYis3Vy9ldW9nc0d5aVRRNHFSa2M2NWYrVzRBQ3Q5allzUnEw?=
- =?utf-8?B?UzRFOVNna1NlcjNFODl1MlFlQmpYWWluUVRrSWpWaVNXVi9RNjMwc3hFaFpj?=
- =?utf-8?B?SXhPKzQ0bVpPNVVXUGF0ekNjOTBuQjhmUk96TDlVNU05WGdTNUQrLzFTek9X?=
- =?utf-8?B?SWprTzYwY0hURHo3Z0FmWmhHMkptcExETnBDYnlza1FhbHRsR3M2a3ErWUph?=
- =?utf-8?B?RWtiL05ZQlYxMnFPd1NJb2tUaytrMU1ZdFVKSzZVUktMS0lsN2cxdVcvWE8r?=
- =?utf-8?B?SkVneElEM3RmY1krOW5GbWlockt1OFhEbUQra25QZkQrdm9aa3J1dW04UlZW?=
- =?utf-8?B?MExRS2xzTUV1Rkhxd0VRTzVxendQaWFDVXhuN3Y3Uk5zdUFGbEJqUlBQcERQ?=
- =?utf-8?B?MlJ0b0dyb2Mxdkh3c1FSNTAwQm03eVFGZHRWZHRDcklFV2oyQ2xvOS9IdXdE?=
- =?utf-8?B?eTl4eUlNTTNkcG9nY21ta1BoaGNIS3BIRUdKbjk0SWhIdklLVjR4SFVTOWFq?=
- =?utf-8?B?Wmk0bUhPK1YyaHUxNnE0MW5Jbnh0eGNKNlVLSWdDZFVyV2hpMm1weUMzeGlU?=
- =?utf-8?Q?H1Fz9ovoBMTkK6Sb6pDjrmQYtHVYelCYC2egaHtlkvFU=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17e4f1ee-e102-44d4-5a14-08dbfd549703
-X-MS-Exchange-CrossTenant-AuthSource: DUZPR10MB8267.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 09:59:55.9562
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB6738
+References: <20231123185821.2272504-1-christoph.muellner@vrull.eu> <20231124-3934c1b3c4b6dc3f076b0f9a@orel>
+In-Reply-To: <20231124-3934c1b3c4b6dc3f076b0f9a@orel>
+From: =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>
+Date: Fri, 15 Dec 2023 11:02:01 +0100
+Message-ID: <CAEg0e7hfM9Pb+CoUXQ_Hw_tkWv-XG9VwS-g74-rcva3j_wODrA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] tools: selftests: riscv: Fix compiler warnings
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Shuah Khan <shuah@kernel.org>, Philipp Tomsich <philipp.tomsich@vrull.eu>, 
+	Evan Green <evan@rivosinc.com>, Xiao Wang <xiao.w.wang@intel.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Andy Chiu <andy.chiu@sifive.com>, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	Charlie Jenkins <charlie@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Ping.
+It would be great to have these compiler warnings fixed before the release.
 
-Op 4/12/2023 om 15:11 schreef Timur Tabi:
-> On Mon, 2023-12-04 at 09:51 +0100, Gert Vanhaerents wrote:
->> OK  i will report it to nvidia. But with the nouveau drivers it's also not
->> working. Are you sure it's not a kernel problem?
->> Because according to systemd it would be a kernel problem.  (personaly i am
->> also thinking it's a driver problem)
-> Unfortunately, it's not easy for Nouveau to debug problems with GSP-RM.
-> However, if the problem exists in the proprietary driver, then Nvidia could
-> fix it.  That would then lead to a new version of OpenRM that Nouveau could
-> use.
-
-I have contacted Nvidia and now i can see the outputs such like this:
-
-─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0
-           │ [MASTER] drm:card0
-           │ 
-├─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-DVI-D-1
-           │ │ [MASTER] drm:card0-DVI-D-1
-           │ 
-├─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-HDMI-A-1
-           │ │ [MASTER] drm:card0-HDMI-A-1
-           │ 
-└─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-VGA-1
-           │   [MASTER] drm:card0-VGA-1
-
-But the problem is now the same of with the Nouveau driver. When you do 
-this:
-
-loginctl attach seat1 
-/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-VGA-1
-
-For the seat1 (the VGA d-sub output for seat1 and the other HDMI output 
-for seat0) and of course the mouse and keyboard.
-
-When you do this, all the graphics outputs are on the second seat 
-(seat1) and not anymore on the first seat. So i need to move only the 
-VGA output to seat1 and not all the outputs.
-
-
-The problem is that linux can not start 2 or more window managers on one 
-card (even if you don't need a multiseat, but use only one mouse and 
-keyboard).
-
-So how can i fix that i can use more than one window manager on one 
-physical graphics card? (without Xephyr or something because they are to 
-outdated and works not good).
-
-I have tried with: Linux Mint, Ubuntu and Debian all the same problem.
-
-
+On Fri, Nov 24, 2023 at 10:40=E2=80=AFAM Andrew Jones <ajones@ventanamicro.=
+com> wrote:
+>
+> On Thu, Nov 23, 2023 at 07:58:16PM +0100, Christoph Muellner wrote:
+> > From: Christoph M=C3=BCllner <christoph.muellner@vrull.eu>
+> >
+> > When building the RISC-V selftests with a riscv32 compiler I ran into
+> > a couple of compiler warnings. While riscv32 support for these tests is
+> > questionable, the fixes are so trivial that it is probably best to simp=
+ly
+> > apply them.
+> >
+> > Note that the missing-include patch and some format string warnings
+> > are also relevant for riscv64.
+>
+> I also posted [1] a couple days ago for the format warnings, but, as this
+> series also includes rv32 fixes, then we can drop [1] in favor of this.
+>
+> [1] https://lore.kernel.org/all/20231122171821.130854-2-ajones@ventanamic=
+ro.com/
+>
+> For the series,
+>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+>
+> Thanks,
+> drew
 
