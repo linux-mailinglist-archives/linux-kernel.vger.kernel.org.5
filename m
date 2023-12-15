@@ -1,132 +1,119 @@
-Return-Path: <linux-kernel+bounces-1201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059BF814B9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:19:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA34814B9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68630B2388E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:19:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1EFC1C219A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A3836AE9;
-	Fri, 15 Dec 2023 15:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85A139FD4;
+	Fri, 15 Dec 2023 15:19:13 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C4336B10;
-	Fri, 15 Dec 2023 15:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59052ab970eso805190eaf.1;
-        Fri, 15 Dec 2023 07:18:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702653523; x=1703258323;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Wx6tE9pQ+EepUECdpeIr7K3ALwmL7SjqzWxTPqRLfZI=;
-        b=VuhtT1m/FkmCKwUiVgZXeznSppjTKnqUbLYmYYCTv4ELhqWD7EXORvbxeRppO31e8d
-         vKEr2f6/BOryRAh0yrv7g/K46ENBxgBkbCFX5TP/u965lY61ygQDFTRudzI4YBzZhU95
-         iLEenH7wzzXPsHA+QhNcqguUjhPvLjfrqfL9rVcUvlKc07Dps6xn2R6GvblQsMeGwdV+
-         Tkhew3x5HqxdSo3kmgzxdrOlDCTTtMJBWOamMISZzPvovfRCLnOO83Px1M8fpoUC4GQT
-         f0UmJdxWM7ZhRRcKSaCP0Lwu7F3GgFkstXPc9ZDtZS+oYTgI/BW5iyEPiZ269YAitU+q
-         v+aw==
-X-Gm-Message-State: AOJu0YxA8loqqga0xFwQyGvg0iOcMD8GJW5IOUEJ/Peqg9N4x50x9JIO
-	4qif7m6c1BVnjVzHfckZ5g==
-X-Google-Smtp-Source: AGHT+IHjFeotZx/0jN0abAYahbn+a/d+puSMjYHpsS0vGkhglRT7juzY/+tJNJarXEhiwoEGbj3qJw==
-X-Received: by 2002:a05:6870:ec8b:b0:203:5ba2:895c with SMTP id eo11-20020a056870ec8b00b002035ba2895cmr891540oab.35.1702653522944;
-        Fri, 15 Dec 2023 07:18:42 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id lt14-20020a05687142ce00b00203297a24d7sm1393415oab.47.2023.12.15.07.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 07:18:42 -0800 (PST)
-Received: (nullmailer pid 3935630 invoked by uid 1000);
-	Fri, 15 Dec 2023 15:18:40 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3876736B17
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rE9xk-0003J2-Du; Fri, 15 Dec 2023 16:18:52 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rE9xj-00G3c1-Nm; Fri, 15 Dec 2023 16:18:51 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rE9xj-003enb-EM; Fri, 15 Dec 2023 16:18:51 +0100
+Date: Fri, 15 Dec 2023 16:18:51 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: James Clark <james.clark@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	linux-next@vger.kernel.org, will@kernel.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 1/2] arm: perf: Fix ARCH=arm build with GCC in
+ armv8pmu_write_evtype()
+Message-ID: <20231215151851.24wwciobjy5ritoe@pengutronix.de>
+References: <20231215150040.3342183-1-james.clark@arm.com>
+ <20231215150040.3342183-2-james.clark@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc: Mike Looijmans <mike.looijmans@topic.nl>, Conor Dooley <conor+dt@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, ChiaEn Wu <chiaen_wu@richtek.com>, andy@kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Walle <michael@walle.cc>, Andy Shevchenko <andy.shevchenko@gmail.com>, devicetree@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>, brgl@bgdev.pl, Hugo Villeneuve <hvilleneuve@dimonoff.com>, Arnd Bergmann <arnd@arndb.de>, =?utf-8?q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>, Haibo Chen <haibo.chen@nxp.com>, Ceclan Dumitru <dumitru.ceclan@analog.com>, linux-iio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>
-In-Reply-To: <20231215133512.28735-1-mitrutzceclan@gmail.com>
-References: <20231215133512.28735-1-mitrutzceclan@gmail.com>
-Message-Id: <170265352089.3935533.15346706462448721074.robh@kernel.org>
-Subject: Re: [PATCH v9 1/2] dt-bindings: adc: add AD7173
-Date: Fri, 15 Dec 2023 09:18:40 -0600
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vcdax2erkxxsbf2h"
+Content-Disposition: inline
+In-Reply-To: <20231215150040.3342183-2-james.clark@arm.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
-On Fri, 15 Dec 2023 15:34:57 +0200, Dumitru Ceclan wrote:
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel applications
-> or higher speed multiplexed applications. The Sigma-Delta ADC is intended
-> primarily for measurement of signals close to DC but also delivers
-> outstanding performance with input bandwidths out to ~10kHz.
-> 
-> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
-> ---
-> V8->v9
->  - Add gpio-controller and "#gpio-cells" properties
->  - Add missing avdd2 and iovdd supplies
->  - Add string type to reference-select
-> V7->V8
->  - include missing fix from V6
-> V6->V7 <no changes>
-> V5->V6
->  - Moved global required property to proper placement
-> V4 -> V5
->  - Use string enum instead of integers for "adi,reference-select"
->  - Fix conditional checking in regards to compatible
-> V3 -> V4
->  - include supply attributes
->  - add channel attribute for selecting conversion reference
-> V2 -> V3
->  - remove redundant descriptions
->  - use referenced 'bipolar' property
->  - remove newlines from example
-> V1 -> V2 <no changes>
-> 
->  .../bindings/iio/adc/adi,ad7173.yaml          | 184 ++++++++++++++++++
->  1 file changed, 184 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-> 
+--vcdax2erkxxsbf2h
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Hello,
 
-yamllint warnings/errors:
+On Fri, Dec 15, 2023 at 03:00:38PM +0000, James Clark wrote:
+> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> index 23fa6c5da82c..3ed2086cefc3 100644
+> --- a/drivers/perf/arm_pmuv3.c
+> +++ b/drivers/perf/arm_pmuv3.c
+> @@ -631,8 +631,9 @@ static void armv8pmu_write_evtype(int idx, unsigned l=
+ong val)
+>  			     ARMV8_PMU_EXCLUDE_EL0 |
+>  			     ARMV8_PMU_EXCLUDE_EL1;
+> =20
+> -	if (IS_ENABLED(CONFIG_ARM64))
+> -		mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
+> +#if IS_ENABLED(CONFIG_ARM64)
+> +	mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
+> +#endif
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml: patternProperties:^channel@[0-9a-f]$:properties:adi,reference-select:type: 'string' is not one of ['boolean', 'object']
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml: patternProperties:^channel@[0-9a-f]$:properties:adi,reference-select:type: 'boolean' was expected
-	hint: A vendor boolean property can use "type: boolean"
-	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/adi,ad7173.example.dtb: adc@0: '#gpio-cells' is a dependency of 'gpio-controller'
-	from schema $id: http://devicetree.org/schemas/gpio/gpio.yaml#
+maybe add a comment about why you used an #if here, to prevent the
+people sending patches that revert your change?
 
-doc reference errors (make refcheckdocs):
+Best regards
+Uwe
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231215133512.28735-1-mitrutzceclan@gmail.com
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+--vcdax2erkxxsbf2h
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+-----BEGIN PGP SIGNATURE-----
 
-pip3 install dtschema --upgrade
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV8bloACgkQj4D7WH0S
+/k5b/wf+MEL3zkiZL0BMTR7yyXPKpsqbEG64vTZcxWV48jxm51wX+huoGcM3aSQj
+CbCT6/uFb6IrWF299Ed7zuLDV38aTvrB3PV9L7GBxhvAedqEMMaSrpBTxDlyTNNq
+4LFwOnj0h8Cl2l3GTwgrUgBkzc5rIOh4RGr9f/tsXzcjHQ2GUNxdJQfg0UvoGcxx
+0Qhlff3eZpuNcX6mWH3f5QGRaqGpV4pxYL3b2Ik9tSLA1tDqWlpv2CXCVAJk6ZLD
+hKd96oJY4DVjs7skS4ouBOiUtEvqtcs87iuLUbLNGBzpjPAQ78cNLoV761PkjEBT
+df7m1XwzDzVnjQrOkhjLOy3K4BV7Jw==
+=ojPK
+-----END PGP SIGNATURE-----
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--vcdax2erkxxsbf2h--
 
