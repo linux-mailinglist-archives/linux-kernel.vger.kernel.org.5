@@ -1,64 +1,43 @@
-Return-Path: <linux-kernel+bounces-598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F97814364
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:13:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89542814365
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:14:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9F221C225B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB8E21C225E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E5211CBE;
-	Fri, 15 Dec 2023 08:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BF6111B4;
+	Fri, 15 Dec 2023 08:14:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wT195kW4"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="W/FgsE3G"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9514118AF4
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a1ef2f5ed01so51298466b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:13:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702627989; x=1703232789; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ILpb399KBc7xku4G86HO79HarvWPrsSYOqAB7Tb9moI=;
-        b=wT195kW49l9JbUtUGceYzrm7T4UYfScwA4+JHOBmZrPWTUqvQGjfTNtydqgjOBfFHD
-         i9q+aczzUAXj7Q2IvltmTSlQNf6x+oPEIEVtgAW64W/RljMYWc3nzAeMGu2EVP+ba35y
-         MLVFZ3YxjaJymDZdkD8DLrhtKq+FbepzDQoGnG5y0VYZ0GoMgvTuA/EEq1qcBONGmx/Y
-         XLGlJlFXNX5R6etDB0DZVa3uO5/AX9e2QzulQNiUruQGrF5jauwBjXTgHcwizcvJyd91
-         rELDMhxsMXOVkXmAdXHvAOyxvfJdqphbr/NbLr105UfhF73HBHXa8GoJUsV8FhzfSquX
-         REXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702627989; x=1703232789;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ILpb399KBc7xku4G86HO79HarvWPrsSYOqAB7Tb9moI=;
-        b=GDY4OjVyT0vBFdaxybnZnJ7I0ZSpL9dryxaJAznOZdvxfKcTlCuvQqOofh8KOyVx8M
-         dy2ktE1MhpXdnfIokrzxkBvvc1cxQ0H01aoq881JZ0szVzIscRV9+bFgtw7vpWEwPGar
-         /DpmrrvofrKZw6rbJeAC/2zK+6NisDkXo7IUPEACNqp2qbHxRz/frRSLo2OmWNt7Qzp5
-         hjp4YQPLsBISGXhNI2ijZyXzuJV22ElUDX8DqliLOcfxc9dvyRW07OmRmOXVzaufUDbr
-         C4Wjeb/R8QW+ucVCvs1wEtUsZVYDYbKmoYX7RUa6axL4gCLhrNDrD6j+UtS5WME0JRlY
-         TF+Q==
-X-Gm-Message-State: AOJu0YwfxzPlOVOickXgryY4TiDrMdBgWWPblO7OT26JFOF3evW4ql/V
-	/eLUYkW1bpYXeQV+jUHfEI+CoQ==
-X-Google-Smtp-Source: AGHT+IHcwknaM/Q732cnvsj1kKBQ0GT/Nn0G9d2fNgqvxggtfEusc3r4hih1+hWX4SWqCsZJWbzmmg==
-X-Received: by 2002:a17:906:24e:b0:a1c:d52f:e242 with SMTP id 14-20020a170906024e00b00a1cd52fe242mr2552499ejl.271.1702627989027;
-        Fri, 15 Dec 2023 00:13:09 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id ts4-20020a170907c5c400b00a1cc1be1158sm10462701ejc.165.2023.12.15.00.13.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 00:13:08 -0800 (PST)
-Message-ID: <050c3119-0431-4400-9052-7a9c0ec67918@linaro.org>
-Date: Fri, 15 Dec 2023 09:13:05 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA01D287;
+	Fri, 15 Dec 2023 08:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=iu4O73Xc0+NsCJpIRfRNkXbG4KZ0txkBhIcf/sjzikA=; b=W/FgsE3G2smGE2l3Te0EC0Z+1o
+	IieHpcs4pq5vaZELWAcZAKXauDKMyPx2lHssphRyrsjgGHT5ZHvhnGkLuBl2h6ehA8iub7OobVyf4
+	Ju9x2CiT1Mf/cajKS2jx+goVSF/i3JjYrON049uHQWavFyuFPR6ChlAF8Sf46m1nk6bK9Jwdyuyg3
+	4ZZuQx4lvw4A+Lva999OMdmnJftLssBrpAZ5+hCYDsO5RAAai1F8g5MEdRWdfU+yvkidgLNLIrgdb
+	x6BPIRolSEe1ple9dcCmz8MPxblIP3bXT/rIRLd9A9kUniWINwa7dC5JuCBKwZ/iNeVCoO0mxng/d
+	z7TZBBDA==;
+Received: from om126156224122.26.openmobile.ne.jp ([126.156.224.122] helo=[192.168.43.165])
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rE3Kc-009qUW-2a;
+	Fri, 15 Dec 2023 08:14:04 +0000
+Message-ID: <16ce5dbc-9a64-4197-a399-27828eb2d9db@infradead.org>
+Date: Fri, 15 Dec 2023 17:13:49 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,107 +45,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/13] dt-bindings: clock: google,gs101: fix CMU_TOP gate
- clock names
+Subject: Re: drivers/net/ethernet/toshiba/ps3_gelic_net.c:330:33: sparse:
+ sparse: incorrect type in assignment (different base types)
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Alexander Duyck <alexanderduyck@fb.com>
+References: <202312142250.7GMllD1E-lkp@intel.com>
 Content-Language: en-US
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
- andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
- s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com,
- arnd@arndb.de, semen.protsenko@linaro.org
-Cc: andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-serial@vger.kernel.org
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-2-tudor.ambarus@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231214105243.3707730-2-tudor.ambarus@linaro.org>
+From: Geoff Levand <geoff@infradead.org>
+In-Reply-To: <202312142250.7GMllD1E-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 14/12/2023 11:52, Tudor Ambarus wrote:
-> The gs101 clock names are derived from the clock register names under
-> some certain rules. In particular, for the gate clocks the following is
-> documented and expected in the gs101 clock driver:
+Hi,
+
+On 12/14/23 23:51, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+> commit: bebe933d35a63d4f042fbf4dce4f22e689ba0fcd net/ps3_gelic_net: Use dma_mapping_error
+> date:   9 months ago
+> config: powerpc64-randconfig-r122-20231213 (https://download.01.org/0day-ci/archive/20231214/202312142250.7GMllD1E-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20231214/202312142250.7GMllD1E-lkp@intel.com/reproduce)
 > 
->   Replace CLK_CON_GAT_CLKCMU      with CLK_GOUT_CMU and gout_cmu
->   Replace CLK_CON_GAT_GATE_CLKCMU with CLK_GOUT_CMU and gout_cmu
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312142250.7GMllD1E-lkp@intel.com/
 > 
->   For gates remove _UID _BLK _IPCLKPORT and _RSTNSYNC
-
-I don't understand what it has to do with the bindings.
-
+> sparse warnings: (new ones prefixed by >>)
+>>> drivers/net/ethernet/toshiba/ps3_gelic_net.c:330:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] bus_addr @@     got restricted __be32 [usertype] @@
+>    drivers/net/ethernet/toshiba/ps3_gelic_net.c:330:33: sparse:     expected unsigned long long [usertype] bus_addr
+>    drivers/net/ethernet/toshiba/ps3_gelic_net.c:330:33: sparse:     got restricted __be32 [usertype]
 > 
-> The CMU TOP gate clock names missed to include the required "CMU"
-> differentiator which will cause name collisions with the gate clock names
-> of other clock units. Fix the TOP gate clock names and include "CMU" in
-> their name.
-
-Neither here. Clock names are not related to defines.
-
+> vim +330 drivers/net/ethernet/toshiba/ps3_gelic_net.c
 > 
-> Fixes: 0a910f160638 ("dt-bindings: clock: Add Google gs101 clock management unit bindings")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  drivers/clk/samsung/clk-gs101.c          | 167 ++++++++++++-----------
->  include/dt-bindings/clock/google,gs101.h | 144 +++++++++----------
+>    295	
+>    296	/**
+>    297	 * gelic_card_init_chain - links descriptor chain
+>    298	 * @card: card structure
+>    299	 * @chain: address of chain
+>    300	 * @start_descr: address of descriptor array
+>    301	 * @no: number of descriptors
+>    302	 *
+>    303	 * we manage a circular list that mirrors the hardware structure,
+>    304	 * except that the hardware uses bus addresses.
+>    305	 *
+>    306	 * returns 0 on success, <0 on failure
+>    307	 */
+>    308	static int gelic_card_init_chain(struct gelic_card *card,
+>    309					 struct gelic_descr_chain *chain,
+>    310					 struct gelic_descr *start_descr, int no)
+>    311	{
+>    312		int i;
+>    313		struct gelic_descr *descr;
+>    314	
+>    315		descr = start_descr;
+>    316		memset(descr, 0, sizeof(*descr) * no);
+>    317	
+>    318		/* set up the hardware pointers in each descriptor */
+>    319		for (i = 0; i < no; i++, descr++) {
+>    320			dma_addr_t cpu_addr;
+>    321	
+>    322			gelic_descr_set_status(descr, GELIC_DESCR_DMA_NOT_IN_USE);
+>    323	
+>    324			cpu_addr = dma_map_single(ctodev(card), descr,
+>    325						  GELIC_DESCR_SIZE, DMA_BIDIRECTIONAL);
+>    326	
+>    327			if (dma_mapping_error(ctodev(card), cpu_addr))
+>    328				goto iommu_error;
+>    329	
+>  > 330			descr->bus_addr = cpu_to_be32(cpu_addr);
 
-I miss the point why bindings must be changed with driver.
+The values of the gelic hardware descriptors are all be32.  I think what we
+want is to force cpu_addr to be32 so the conversion to be32 won't give a
+warning, so something like this:
 
-Really, guys, we are milling the first GS101 patches for entire cycle.
-Almost 3 months. The moment I merge bindings you tell me they are wrong.
-Few days after merging them.
+  descr->bus_addr = cpu_to_be32((__force __be32)cpu_addr);
 
+I'll prepare a patch and submit after some testing.
 
-Best regards,
-Krzysztof
+-Geoff
+
 
 
