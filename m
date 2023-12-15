@@ -1,139 +1,140 @@
-Return-Path: <linux-kernel+bounces-1123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF33814AD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:43:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E7B814AD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:43:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EE561C236BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:43:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86BBFB22921
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB46364C3;
-	Fri, 15 Dec 2023 14:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DAC3A8F9;
+	Fri, 15 Dec 2023 14:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJfpU01J"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s3kuor0o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E142DB8F
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:41:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC202C433C7;
-	Fri, 15 Dec 2023 14:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702651282;
-	bh=jxynl7qPjH3mBVQOeL0t9o19ICih7P69V0e+PCySVP4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RJfpU01Jw/GRL5meXRBx7eTq13iyNlDyvjkQHa3VYQoWgHGc5emAIcYGZoAGGPyBj
-	 EW7u1UhagIoN9Z76WsT83oOr3k7pnSABbpbxS/UDvftVOHO0OrFHD+KliIuShYF9KA
-	 7z4V12dhIk+PixYrYpbq5GHGkhZAxqg6FNjtTEIW/EJUozC5IyfH/lXBEO9XAlkha9
-	 hJyQrq+NOs5bCnVYKoyrS9gmgOLVro+yAP+DY52Xh3e0pCWc+GRm3LuiY9PUCsbbiD
-	 mIaOP3A5dNeTib6EfO4Xny+PT+iLSz09QXbtMGROTRrpAkrhgA7o4bcRzC+byLO6bN
-	 Gb7Jln7JFlIFw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 63456403EF; Fri, 15 Dec 2023 11:41:19 -0300 (-03)
-Date: Fri, 15 Dec 2023 11:41:19 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Jing Zhang <renyu.zj@linux.alibaba.com>
-Cc: kajoljain <kjain@linux.ibm.com>,
-	Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
-	Ian Rogers <irogers@google.com>, Heiko Carstens <hca@linux.ibm.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: perf tools arch Arm CMN PMU JSON files build breakage on ubuntu
- 18.04 cross build
-Message-ID: <ZXxlj3g-KMG3iYjx@kernel.org>
-References: <ZBxP77deq7ikTxwG@kernel.org>
- <a21aa4e1-506a-916c-03bd-39d7403c7941@linux.ibm.com>
- <ZXxlERShV-TIGVit@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE2639FF1
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-67f07090053so5445986d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:42:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702651350; x=1703256150; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aGMYxeknzC7gjgFIn010QvpivnBYXCaeK7U8Zp8Dqns=;
+        b=s3kuor0ortf4gI9VX9IlGJh5gT8HeElsb18TwHJRc2oQQ4mHRepVR2n+ODPkBAY+Nx
+         H8JFyVglnsbqlNlkZsHPn+T3gSB2oA10HGvQkkq7UPmA4udR75x5zVoblvovqUtE5S/2
+         pwxdn92vpW0faVF2dBJrCr6e7hPn3r3Q913YKforl0UlctOLHPb6zHKPqQOyHkNfp5/N
+         OWOKTiRpBIrYJzmGN4LZMi5OOZuBmoYWR7W8FN5kfU/PGYoeiA/Ha2o6IhgcuSE7RlWx
+         4XPdVQQfa7mMG9Cwr/syXEJMsYD40Ttp35nXtMrBJ0qZSIRZAgobTeARkd0JtFwPCPOJ
+         aMGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702651350; x=1703256150;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aGMYxeknzC7gjgFIn010QvpivnBYXCaeK7U8Zp8Dqns=;
+        b=CTNA3m6wfgZc1DG96E3bTL4maNX67OUoOm4fRB4zw8H5VWG/auijRgoiVM6vEEuA7Y
+         cMFhkkc+7BpD7VcCtaIC/Z9pKzZmoCYzk5C7eKqN3Z138n1wTpV1NjfZktweJWeOXqzr
+         AAI96eq7WCp2vnh/UbK1l1tTWFi/WlfeF+z4I6tBm9K6eH3X3maubd0WdOoF0jJEG8pk
+         k/8D/HpEYsI2nmqLpy7er1glP8fcfbPhA43b7Z7AqUJEsUx6kf0ozLwHUK1HzAcrngjL
+         XLL26n5WC48DQgvwzRDtPbTyAYlztk1gPkiEfkn+xi61K/YMaKi4jWqyFl1iNGPl+9wg
+         UkSg==
+X-Gm-Message-State: AOJu0YzwVVAewTbv9VHj4ECsadBaGTMCqxKX2cH9TANA8xlfamIo6Xh3
+	wNYODIzv46mCJGfr7jb58RO2HTftLln1POG8YkV+4g==
+X-Google-Smtp-Source: AGHT+IFEP4GTH7PwOKt2GmIEi320wj42DmjXITQoebReQVa4qOl1P4PdTy3zrAT0HyjDjZcIXiRIU+gdyZRM37a8Siw=
+X-Received: by 2002:a05:6214:226d:b0:67f:f0d:1bda with SMTP id
+ gs13-20020a056214226d00b0067f0f0d1bdamr2911619qvb.110.1702651350277; Fri, 15
+ Dec 2023 06:42:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXxlERShV-TIGVit@kernel.org>
-X-Url: http://acmel.wordpress.com
+References: <000000000000f66a3005fa578223@google.com> <20231213104950.1587730-1-glider@google.com>
+ <ZXofF2lXuIUvKi/c@rh> <ZXopGGh/YqNIdtMJ@dread.disaster.area>
+ <CAG_fn=UukAf5sPrwqQtmL7-_dyUs3neBpa75JAaeACUzXsHwOA@mail.gmail.com> <ZXt2BklghFSmDbhg@dread.disaster.area>
+In-Reply-To: <ZXt2BklghFSmDbhg@dread.disaster.area>
+From: Alexander Potapenko <glider@google.com>
+Date: Fri, 15 Dec 2023 15:41:49 +0100
+Message-ID: <CAG_fn=VqSEyt+vwZ7viviiJtipPPYyzEhkuDjdnmRcW-UXZkYg@mail.gmail.com>
+Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in __crc32c_le_base (3)
+To: Dave Chinner <david@fromorbit.com>
+Cc: Dave Chinner <dchinner@redhat.com>, 
+	syzbot+a6d6b8fffa294705dbd8@syzkaller.appspotmail.com, hch@lst.de, 
+	davem@davemloft.net, herbert@gondor.apana.org.au, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Em Fri, Dec 15, 2023 at 11:39:14AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Mar 27, 2023 at 09:52:11AM +0530, kajoljain escreveu:
-> > On 3/23/23 18:41, Arnaldo Carvalho de Melo wrote:
-> > > Exception processing pmu-events/arch/powerpc/power9/other.json
-> > > Traceback (most recent call last):
-> > >   File "pmu-events/jevents.py", line 997, in <module>
-> > >     main()
-> > >   File "pmu-events/jevents.py", line 979, in main
-> > >     ftw(arch_path, [], preprocess_one_file)
-> > >   File "pmu-events/jevents.py", line 935, in ftw
-> > >     ftw(item.path, parents + [item.name], action)
-> > >   File "pmu-events/jevents.py", line 933, in ftw
-> > >     action(parents, item)
-> > >   File "pmu-events/jevents.py", line 514, in preprocess_one_file
-> > >     for event in read_json_events(item.path, topic):
-> > >   File "pmu-events/jevents.py", line 388, in read_json_events
-> > >     events = json.load(open(path), object_hook=JsonEvent)
-> > >   File "/usr/lib/python3.6/json/__init__.py", line 296, in load
-> > >     return loads(fp.read(),
-> > >   File "/usr/lib/python3.6/encodings/ascii.py", line 26, in decode
-> > >     return codecs.ascii_decode(input, self.errors)[0]
-> > > UnicodeDecodeError: 'ascii' codec can't decode byte 0xc2 in position 55090: ordinal not in range(128)
-> > >   CC      /tmp/build/perf/tests/expr.o
-> > > pmu-events/Build:35: recipe for target '/tmp/build/perf/pmu-events/pmu-events.c' failed
-> > > make[3]: *** [/tmp/build/perf/pmu-events/pmu-events.c] Error 1
-> > > make[3]: *** Deleting file '/tmp/build/perf/pmu-events/pmu-events.c'
-> > > Makefile.perf:679: recipe for target '/tmp/build/perf/pmu-events/pmu-events-in.o' failed
-> > > make[2]: *** [/tmp/build/perf/pmu-events/pmu-events-in.o] Error 2
-> > > make[2]: *** Waiting for unfinished jobs....
-> 
-> > > Now jevents is an opt-out feature so I'm noticing these problems.
->  
-> >     Thanks for raising it. I will check this issue.
-> 
-> Now I'm seeing this on:
+On Thu, Dec 14, 2023 at 10:39=E2=80=AFPM 'Dave Chinner' via syzkaller-bugs
+<syzkaller-bugs@googlegroups.com> wrote:
+>
+> On Thu, Dec 14, 2023 at 03:55:00PM +0100, Alexander Potapenko wrote:
+> > On Wed, Dec 13, 2023 at 10:58=E2=80=AFPM 'Dave Chinner' via syzkaller-b=
+ugs
+> > <syzkaller-bugs@googlegroups.com> wrote:
+> > >
+> > > On Thu, Dec 14, 2023 at 08:16:07AM +1100, Dave Chinner wrote:
+> > > > [cc linux-xfs@vger.kernel.org because that's where all questions
+> > > > about XFS stuff should be directed, not to random individual
+> > > > developers. ]
+> > > >
+> > > > On Wed, Dec 13, 2023 at 11:49:50AM +0100, Alexander Potapenko wrote=
+:
+> > > > > Hi Christoph, Dave,
+> > > > >
+> > > > > The repro provided by Xingwei indeed works.
+> > >
+> > > Can you please test the patch below?
+> >
+> > It fixed the problem for me, feel free to add:
+> >
+> > Tested-by: Alexander Potapenko <glider@google.com>
+>
+> Thanks.
+>
+> > As for the time needed to detect the bug, note that kmemcheck was
+> > never used together with syzkaller, so it couldn't have the chance to
+> > find it.
+> >
+> > KMSAN found this bug in April
+> > (https://syzkaller.appspot.com/bug?extid=3Da6d6b8fffa294705dbd8),
+>
+> KMSAN has been used for quite a long time with syzbot, however,
+> and it's supposed to find these problems, too. Yet it's only been
+> finding this for 6 months?
+>
+> > only
+> > half a year after we started mounting XFS images on syzbot.
+>
+> Really? Where did you get that from?  syzbot has been exercising XFS
+> filesystems since 2017 - the bug reports to the XFS list go back at
+> least that far.
 
-Jing,
+You are right, syzbot used to mount XFS way before 2022.
+On the other hand, last fall there were some major changes to the way
+syz_mount_image() works, so I am attributing the newly detected bugs
+to those changes.
+Unfortunately we don't have much insight into reasons behind syzkaller
+being able to trigger one bug or another: once a bug is found for the
+first time, the likelihood to trigger it again increases, but finding
+it initially might be tricky.
 
-	Please take a look at:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5d9df8731c0941f3add30f96745a62586a0c9d52
-
-	For the fix for the ppc case above.
-
-- Arnaldo
- 
-> Exception processing pmu-events/arch/arm64/arm/cmn/sys/cmn.json
-> Traceback (most recent call last):
->   File "pmu-events/jevents.py", line 1285, in <module>
->     main()
->   File "pmu-events/jevents.py", line 1267, in main
->     ftw(arch_path, [], preprocess_one_file)
->   File "pmu-events/jevents.py", line 1217, in ftw
->     ftw(item.path, parents + [item.name], action)
->   File "pmu-events/jevents.py", line 1217, in ftw
->     ftw(item.path, parents + [item.name], action)
->   File "pmu-events/jevents.py", line 1217, in ftw
->     ftw(item.path, parents + [item.name], action)
->   File "pmu-events/jevents.py", line 1215, in ftw
->     action(parents, item)
->   File "pmu-events/jevents.py", line 599, in preprocess_one_file
->     for event in read_json_events(item.path, topic):
->   File "pmu-events/jevents.py", line 416, in read_json_events
->     events = json.load(open(path), object_hook=JsonEvent)
->   File "/usr/lib/python3.6/json/__init__.py", line 296, in load
->     return loads(fp.read(),
->   File "/usr/lib/python3.6/encodings/ascii.py", line 26, in decode
->     return codecs.ascii_decode(input, self.errors)[0]
-> UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 3071: ordinal not in range(128)
-> 
-
--- 
-
-- Arnaldo
+I don't understand much how trivial is the repro at
+https://gist.github.com/xrivendell7/c7bb6ddde87a892818ed1ce206a429c4,
+but overall we are not drilling deep enough into XFS.
+https://storage.googleapis.com/syzbot-assets/8547e3dd1cca/ci-upstream-kmsan=
+-gce-c7402612.html
+(ouch, 230Mb!) shows very limited coverage.
 
