@@ -1,126 +1,137 @@
-Return-Path: <linux-kernel+bounces-402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4317181409C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:26:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33F9281409D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:28:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E9901C21E16
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:26:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7C041F22AC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1536846BA;
-	Fri, 15 Dec 2023 03:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3DA56AB9;
+	Fri, 15 Dec 2023 03:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BL9fG1Vi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CB620F9
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b74bad5ea5so32728939f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:26:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702610762; x=1703215562;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M8L4f+5tKvr0PBNnfFmfd5h0rlvnnStP6aBdKq38GBA=;
-        b=LmCKHhZAMkM4J8M3JmjfoQ3Jbt5u8azdxsfsokuqbnUXioovt4Rj8NtC56L46PCcr1
-         qzp3G9X3bMAabv9ohNwNtuMzoEsr8XiQBIWeAie7gkamIVxEzWH1zMQhpPE1E8awSWtC
-         EDt6hUDXkZxMt+PkwEYG2KG0eIdzIbj1GqhAM9O+Cf0UOMZskgLeUErNJs+zQ7oDxwYG
-         fq4qazJFKT2dLspxI9QtKMxwh5JaikRketsI6TSn+gy8PQXK1V14tfbMxRMkOJyOYZ3T
-         /0hFmMltjSYGlr5kSBZWvll3C4MPlq+ucp86LGLQKG47ph/1lHyb4vRkcsE/VT0S52YB
-         9w3w==
-X-Gm-Message-State: AOJu0YwzAxwwf3PA3FgV6p/OsS3OKz3q9Jmu95WQzcpbtOadcddDQzXc
-	AANqGVmQ8Q5/28v8zhPO4gRbBtRpYIFg+L2Hc10DEAMa/IJLKis=
-X-Google-Smtp-Source: AGHT+IHMWkdjANRlRQtgnLH8TzSRwuEH7BvCJhnsOfElc6cmW47WUg3fJA9p/i7wzKSbWStv8Sgh6dzJYR7lx8bi+qYQ8MJ4SxL/
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B636AA1
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702610874;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LwL29/cvUYFmPMFizthvB5mbwWT7pj5mVWcUZ0VQ95E=;
+	b=BL9fG1ViaydqQIMV3SFv7dcwApRPNy+mp3oJbuShgrWUUN41sclF4QYUmNM8HgYgOQXQYA
+	sf2ENn5s97ehDrIeazOhderrS828jjSZ6jMOCjTawbqopdd+k7GYVTp96PZtlSEQElx8QS
+	Ggb0Ob2XP+7omMh5L8AEFGgeW1VGJjQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-176-YCg3eLfLP4ybHpWIskAtsg-1; Thu, 14 Dec 2023 22:27:48 -0500
+X-MC-Unique: YCg3eLfLP4ybHpWIskAtsg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD7A6101A555;
+	Fri, 15 Dec 2023 03:27:47 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id ACB4140C6EB9;
+	Fri, 15 Dec 2023 03:27:46 +0000 (UTC)
+Date: Fri, 15 Dec 2023 11:27:43 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Vivek Goyal <vgoyal@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Eric DeVolder <eric.devolder@oracle.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sourabh Jain <sourabhjain@linux.ibm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Takashi Iwai <tiwai@suse.de>, Lianbo Jiang <lijiang@redhat.com>
+Subject: Re: [PATCH 1/3] x86/crash: remove the unused image parameter from
+ prepare_elf_headers()
+Message-ID: <ZXvHrx9ODn1yW9hf@MiWiFi-R3L-srv>
+References: <20231214163842.129139-1-ytcoode@gmail.com>
+ <20231214163842.129139-2-ytcoode@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:41a1:b0:466:7cfc:bef7 with SMTP id
- az33-20020a05663841a100b004667cfcbef7mr216883jab.1.1702610762513; Thu, 14 Dec
- 2023 19:26:02 -0800 (PST)
-Date: Thu, 14 Dec 2023 19:26:02 -0800
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b0c2ea060c83f56c@google.com>
-Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214163842.129139-2-ytcoode@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On 12/15/23 at 12:38am, Yuntao Wang wrote:
+> The image parameter is no longer in use, remove it. Also, tidy up the code
+> formatting.
+> 
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> ---
+>  arch/x86/kernel/crash.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-***
+Acked-by: Baoquan He <bhe@redhat.com>
 
-Subject: [ext4?] kernel BUG in ext4_write_inline_data
-Author: eadavis@qq.com
-
-please test kernel BUG in ext4_write_inline_data
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 44c026a73be8
-
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 9a84a5f9fef4..e0d261ffe623 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -169,6 +169,7 @@ int ext4_find_inline_data_nolock(struct inode *inode)
- 					(void *)ext4_raw_inode(&is.iloc));
- 		EXT4_I(inode)->i_inline_size = EXT4_MIN_INLINE_DATA_SIZE +
- 				le32_to_cpu(is.s.here->e_value_size);
-+		printk("iis: %d, in: %p, %s\n", EXT4_I(inode)->i_inline_size, inode, __func__);
- 	}
- out:
- 	brelse(is.iloc.bh);
-@@ -232,7 +233,9 @@ static void ext4_write_inline_data(struct inode *inode, struct ext4_iloc *iloc,
- 		return;
- 
- 	BUG_ON(!EXT4_I(inode)->i_inline_off);
--	BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
-+	printk("pos: %d, len: %d, in: %p, iis: %d, %s\n", pos, len, inode, EXT4_I(inode)->i_inline_size, __func__);
-+	if (EXT4_I(inode)->i_inline_size > 0)
-+		BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
- 
- 	raw_inode = ext4_raw_inode(iloc);
- 	buffer += pos;
-@@ -314,6 +317,7 @@ static int ext4_create_inline_data(handle_t *handle,
- 	EXT4_I(inode)->i_inline_off = (u16)((void *)is.s.here -
- 				      (void *)ext4_raw_inode(&is.iloc));
- 	EXT4_I(inode)->i_inline_size = len + EXT4_MIN_INLINE_DATA_SIZE;
-+	printk("len: %d, in: %p, iis: %d, %s\n", len, inode, EXT4_I(inode)->i_inline_size, __func__);
- 	ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
- 	ext4_set_inode_flag(inode, EXT4_INODE_INLINE_DATA);
- 	get_bh(is.iloc.bh);
-@@ -381,6 +385,7 @@ static int ext4_update_inline_data(handle_t *handle, struct inode *inode,
- 				      (void *)ext4_raw_inode(&is.iloc));
- 	EXT4_I(inode)->i_inline_size = EXT4_MIN_INLINE_DATA_SIZE +
- 				le32_to_cpu(is.s.here->e_value_size);
-+	printk("iis: %d, in:%p, %s\n", EXT4_I(inode)->i_inline_size, inode, __func__);
- 	ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 	get_bh(is.iloc.bh);
- 	error = ext4_mark_iloc_dirty(handle, inode, &is.iloc);
-@@ -469,6 +474,7 @@ static int ext4_destroy_inline_data_nolock(handle_t *handle,
- 
- 	EXT4_I(inode)->i_inline_off = 0;
- 	EXT4_I(inode)->i_inline_size = 0;
-+	printk("iis: %d, in: %p, %s\n", EXT4_I(inode)->i_inline_size, inode, __func__);
- 	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- out:
- 	brelse(is.iloc.bh);
-@@ -1979,6 +1985,7 @@ int ext4_inline_data_truncate(struct inode *inode, int *has_inline)
- 		EXT4_I(inode)->i_inline_size = i_size <
- 					EXT4_MIN_INLINE_DATA_SIZE ?
- 					EXT4_MIN_INLINE_DATA_SIZE : i_size;
-+		printk("isize: %d, in: %p, iis: %d, %s\n", i_size, inode, EXT4_I(inode)->i_inline_size, __func__);
- 	}
- 
- out_error:
+> 
+> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+> index c92d88680dbf..792231a56d11 100644
+> --- a/arch/x86/kernel/crash.c
+> +++ b/arch/x86/kernel/crash.c
+> @@ -198,8 +198,8 @@ static int prepare_elf64_ram_headers_callback(struct resource *res, void *arg)
+>  }
+>  
+>  /* Prepare elf headers. Return addr and size */
+> -static int prepare_elf_headers(struct kimage *image, void **addr,
+> -					unsigned long *sz, unsigned long *nr_mem_ranges)
+> +static int prepare_elf_headers(void **addr, unsigned long *sz,
+> +			       unsigned long *nr_mem_ranges)
+>  {
+>  	struct crash_mem *cmem;
+>  	int ret;
+> @@ -221,7 +221,7 @@ static int prepare_elf_headers(struct kimage *image, void **addr,
+>  	*nr_mem_ranges = cmem->nr_ranges;
+>  
+>  	/* By default prepare 64bit headers */
+> -	ret =  crash_prepare_elf64_headers(cmem, IS_ENABLED(CONFIG_X86_64), addr, sz);
+> +	ret = crash_prepare_elf64_headers(cmem, IS_ENABLED(CONFIG_X86_64), addr, sz);
+>  
+>  out:
+>  	vfree(cmem);
+> @@ -349,7 +349,7 @@ int crash_load_segments(struct kimage *image)
+>  				  .buf_max = ULONG_MAX, .top_down = false };
+>  
+>  	/* Prepare elf headers and add a segment */
+> -	ret = prepare_elf_headers(image, &kbuf.buffer, &kbuf.bufsz, &pnum);
+> +	ret = prepare_elf_headers(&kbuf.buffer, &kbuf.bufsz, &pnum);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -452,7 +452,7 @@ void arch_crash_handle_hotplug_event(struct kimage *image)
+>  	 * Create the new elfcorehdr reflecting the changes to CPU and/or
+>  	 * memory resources.
+>  	 */
+> -	if (prepare_elf_headers(image, &elfbuf, &elfsz, &nr_mem_ranges)) {
+> +	if (prepare_elf_headers(&elfbuf, &elfsz, &nr_mem_ranges)) {
+>  		pr_err("unable to create new elfcorehdr");
+>  		goto out;
+>  	}
+> -- 
+> 2.43.0
+> 
 
 
