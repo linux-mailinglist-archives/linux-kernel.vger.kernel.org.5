@@ -1,42 +1,31 @@
-Return-Path: <linux-kernel+bounces-1244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE295814C54
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:01:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05779814C28
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 884792854AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:01:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3808D1C21316
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1D739FD5;
-	Fri, 15 Dec 2023 16:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ta7wbS5o"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A993D393;
+	Fri, 15 Dec 2023 15:53:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF613717F;
-	Fri, 15 Dec 2023 16:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1702655619;
-	bh=qzMh8frRtGFJ29d3oqzMz4SSOiBgHf2UGDFCUl3N0Qs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ta7wbS5oraWz0ep2zIvINP7c9WekLU3kFt+X+NJ8w5tsCzd/GIRB6a3jCcZJPGnR+
-	 nb5uI/OGJVM8G2Gn/cymcMc49MnwbY9E/+bAHtSXcWFeOisE9kRKEN1q02IXBzTzNg
-	 1DlnKIKyb8sxU590pphymOGppXtXTwnE5xrM+WzUBZXWcM4iHip9dHyu028A9b5HXk
-	 6kVfIgazFe74ldumJXULV971fJRrPi3PqSfOo4sJjKJZGtPRuk3p6PbL023cBed2DI
-	 jDpNTdypdAmNcBfWuPMd3ft5Qws4wBQtIvq1lBrB1kuHHcpLOoWictFQJ3/YdzI3+z
-	 W4u/m/fLbgm2Q==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4SsDKH3vG5zGb7;
-	Fri, 15 Dec 2023 10:53:39 -0500 (EST)
-Message-ID: <21936075-3858-446a-9391-a38e8d8968e7@efficios.com>
-Date: Fri, 15 Dec 2023 10:53:39 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1E23C49B;
+	Fri, 15 Dec 2023 15:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 575D2C15;
+	Fri, 15 Dec 2023 07:53:59 -0800 (PST)
+Received: from [10.57.85.151] (unknown [10.57.85.151])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0986D3F5A1;
+	Fri, 15 Dec 2023 07:53:09 -0800 (PST)
+Message-ID: <2b0524b9-3b54-4548-9054-2ba48eed6b65@arm.com>
+Date: Fri, 15 Dec 2023 15:54:13 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,83 +33,117 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing: Add disable-filter-buf option
+Subject: Re: [PATCH 0/5] Rework system pressure interface to the scheduler
 Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>, LKML
- <linux-kernel@vger.kernel.org>,
- Linux trace kernel <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
-References: <20231215102633.7a24cb77@rorschach.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231215102633.7a24cb77@rorschach.local.home>
+From: Lukasz Luba <lukasz.luba@arm.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: catalin.marinas@arm.com, will@kernel.org,
+ linux-trace-kernel@vger.kernel.org, amit.kachhap@gmail.com,
+ daniel.lezcano@linaro.org, mhiramat@kernel.org, vschneid@redhat.com,
+ bristot@redhat.com, mgorman@suse.de, bsegall@google.com,
+ juri.lelli@redhat.com, peterz@infradead.org, mingo@redhat.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ konrad.dybcio@linaro.org, andersson@kernel.org, agross@kernel.org,
+ rui.zhang@intel.com, viresh.kumar@linaro.org, rafael@kernel.org,
+ sudeep.holla@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20231212142730.998913-1-vincent.guittot@linaro.org>
+ <47b4cbcb-d33d-4699-a148-0108cf734e23@arm.com>
+ <CAKfTPtATWSWdk1dhnMvBqTZigtprv7d_0j0zpf48WfVDfMit5g@mail.gmail.com>
+ <2c2fad2b-89ce-437e-96b3-f06e6f99639f@arm.com>
+In-Reply-To: <2c2fad2b-89ce-437e-96b3-f06e6f99639f@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2023-12-15 10:26, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+
+
+On 12/14/23 08:32, Lukasz Luba wrote:
 > 
-> Normally, when the filter is enabled, a temporary buffer is created to
-> copy the event data into it to perform the filtering logic. If the filter
-> passes and the event should be recorded, then the event is copied from the
-> temporary buffer into the ring buffer. If the event is to be discarded
-> then it is simply dropped. If another event comes in via an interrupt, it
-> will not use the temporary buffer as it is busy and will write directly
-> into the ring buffer.
 > 
-> The disable-filter-buf option will disable the temporary buffer and always
-> write into the ring buffer. This will avoid the copy when the event is to
-> be recorded, but also adds a bit more overhead on the discard, and if
-> another event were to interrupt the event that is to be discarded, then
-> the event will not be removed from the ring buffer but instead converted
-> to padding that will not be read by the reader. Padding will still take up
-> space on the ring buffer.
+> On 12/14/23 08:29, Vincent Guittot wrote:
+>> On Thu, 14 Dec 2023 at 09:21, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>
+>>> Hi Vincent,
+>>>
+>>> I've been waiting for this feature, thanks!
+>>>
+>>>
+>>> On 12/12/23 14:27, Vincent Guittot wrote:
+>>>> Following the consolidation and cleanup of CPU capacity in [1], this 
+>>>> serie
+>>>> reworks how the scheduler gets the pressures on CPUs. We need to 
+>>>> take into
+>>>> account all pressures applied by cpufreq on the compute capacity of 
+>>>> a CPU
+>>>> for dozens of ms or more and not only cpufreq cooling device or HW
+>>>> mitigiations. we split the pressure applied on CPU's capacity in 2 
+>>>> parts:
+>>>> - one from cpufreq and freq_qos
+>>>> - one from HW high freq mitigiation.
+>>>>
+>>>> The next step will be to add a dedicated interface for long standing
+>>>> capping of the CPU capacity (i.e. for seconds or more) like the
+>>>> scaling_max_freq of cpufreq sysfs. The latter is already taken into
+>>>> account by this serie but as a temporary pressure which is not 
+>>>> always the
+>>>> best choice when we know that it will happen for seconds or more.
+>>>>
+>>>> [1] 
+>>>> https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
+>>>>
+>>>> Vincent Guittot (4):
+>>>>     cpufreq: Add a cpufreq pressure feedback for the scheduler
+>>>>     sched: Take cpufreq feedback into account
+>>>>     thermal/cpufreq: Remove arch_update_thermal_pressure()
+>>>>     sched: Rename arch_update_thermal_pressure into
+>>>>       arch_update_hw_pressure
+>>>>
+>>>>    arch/arm/include/asm/topology.h               |  6 +--
+>>>>    arch/arm64/include/asm/topology.h             |  6 +--
+>>>>    drivers/base/arch_topology.c                  | 26 ++++-----
+>>>>    drivers/cpufreq/cpufreq.c                     | 48 +++++++++++++++++
+>>>>    drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
+>>>>    drivers/thermal/cpufreq_cooling.c             |  3 --
+>>>>    include/linux/arch_topology.h                 |  8 +--
+>>>>    include/linux/cpufreq.h                       | 10 ++++
+>>>>    include/linux/sched/topology.h                |  8 +--
+>>>>    .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
+>>>>    include/trace/events/sched.h                  |  2 +-
+>>>>    init/Kconfig                                  | 12 ++---
+>>>>    kernel/sched/core.c                           |  8 +--
+>>>>    kernel/sched/fair.c                           | 53 
+>>>> ++++++++++---------
+>>>>    kernel/sched/pelt.c                           | 18 +++----
+>>>>    kernel/sched/pelt.h                           | 16 +++---
+>>>>    kernel/sched/sched.h                          |  4 +-
+>>>>    17 files changed, 152 insertions(+), 94 deletions(-)
+>>>>    rename include/trace/events/{thermal_pressure.h => hw_pressure.h} 
+>>>> (55%)
+>>>>
+>>>
+>>> I would like to test it, but something worries me. Why there is 0/5 in
+>>> this subject and only 4 patches?
+>>
+>> I removed a patch from the series but copied/pasted the cover letter
+>> subject without noticing the /5 instead of /4
 > 
-> This option can be beneficial if most events are recorded and not
-> discarded, or simply for debugging the discard functionality of the ring
-> buffer.
+> OK
 > 
-> Also fix some whitespace (that was fixed by editing this in vscode).
+>>
+>>>
+>>> Could you tell me your base branch that I can apply this, please?
+>>
+>> It applies on top of tip/sched/core + [1]
+>> and you can find it here:
+>> https://git.linaro.org/people/vincent.guittot/kernel.git/log/?h=sched/system-pressure
+> 
+> Thanks for the info and handy link.
+> 
 
+I've tested your patches with: DTPM/PowerCap + thermal gov + cpufreq
+sysfs scaling_max_freq. It works fine all my cases (couldn't cause
+any issues). If you like to test DTPM you will need 2 fixed pending
+in Rafael's tree.
 
-I'm not convinced that a boolean state is what you need here.
-
-Yes, today you are in a position where you have two options:
-
-a) use the filter buffer, which falls back on copy to ring buffer
-    if nested,
-
-b) disable the filter buffer, and thus always copy to ring buffer
-    before filtering,
-
-But I think it would not be far-fetched to improve the implementation
-of the filter-buffer to have one filter-buffer per nesting level
-(per execution context), or just implement the filter buffer as a
-per-cpu stack, which would remove the need to fall back on copy
-to ring buffer when nested. Or you could even do like LTTng and
-filter on the input arguments directly.
-
-But each of these changes would add yet another boolean tunable,
-which can quickly make the mix hard to understand from a user
-perspective.
-
-So rather than stacking tons of "on/off" switches for filter
-features, how about you let users express the mechanism they
-want to use for filtering with a string instead ? e.g.
-
-filter-method="temp-buffer"
-filter-method="ring-buffer"
-filter-method="input-arguments"
-
-?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+So, I'm looking for a your v2 to continue reviewing it.
 
