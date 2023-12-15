@@ -1,105 +1,102 @@
-Return-Path: <linux-kernel+bounces-622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B14948143AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:34:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D4E18143B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16A73281CFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:34:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBA101C2267D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A84B134BF;
-	Fri, 15 Dec 2023 08:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD58171C1;
+	Fri, 15 Dec 2023 08:34:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kSUETJ/w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQZdR34U"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117B510A17
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40c38e520e2so45905e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702629237; x=1703234037; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nH00aA121x0wt9tSYv6S52kB6dsUFNy2Wev1qwKspsw=;
-        b=kSUETJ/woFRbUzlSBqWIfTwDiPb5FTvW1lrXytd8Qvq+eHIIfiSqGWDJjezXfoi4XT
-         /YYtZs1MLgaAPxkPJrxoS+V/b+3Hu6mCnQNVbjvptQGDDIiwl+ev88jB8XVjrp7pPMpT
-         IQBTLzcTp/zL9p0DecFpAEB5wcFG0mX0nx/nLDgLBqXRfmELy+P5B5KWObmcoiGQxEBA
-         1FE0eDfsl6veGrHftp1FAfMVMbCANuGH3liF36DtS4Q5lBHZ6Y/XgBaPZrp8sutLErbj
-         ZT0pAL3E2CdLXjk1xIIcgYq9jHm/6HCffhqxb49Yo3BRA64JzjQhHhMRd/YcKOtPQv6t
-         bUAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702629237; x=1703234037;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nH00aA121x0wt9tSYv6S52kB6dsUFNy2Wev1qwKspsw=;
-        b=Id7IlaKmpudnt704DMlhQvEHfmCl2DAnGIylGLOuLfh+MN5/8JY+Achr4lSo8F0XJx
-         +ifpTYa+o+fIZwbDzdLR5ZybDeSI4biUjO3mq7uAVCJm63vqvv+noCixZOKLEDB5PRLZ
-         QCiBBj1B5+NQ2HLhCxhMNF0q8cR4l/a01Yj1h9Gqffz6tdEHLGp6b9A24Dqu+jMqQvmh
-         pZO4p2WqLBEfOe1X925htnVJwRX9JzWiL77TUxT9uzD3vbXpUybuKQYuI/2OKxvpyYfo
-         m818H/lKJhrYmgA8oNoRemTscLjB3ZJRhUzBxwQm6tAffP1HDQyE+CpA7snTsmN4G+q8
-         WDOA==
-X-Gm-Message-State: AOJu0YzkXEvfiRQJflbPHkQa6Zveu2GW/LYz7mfzX9J3PzvgFaqql+nq
-	YEZBbmJkRwkAWVpdVd8Ev+yi0tMqXn8x6hepHQaMbQ==
-X-Google-Smtp-Source: AGHT+IHCuoXmKPQdsauUyid8g8apT+ABo8Z6QF3/4ZQ1AenTe8DJq9g9olKXx/VBUVe3CcDC3sKuimKTrwfQbh2Q6qU=
-X-Received: by 2002:a05:600c:5113:b0:40c:329:d498 with SMTP id
- o19-20020a05600c511300b0040c0329d498mr624641wms.1.1702629237109; Fri, 15 Dec
- 2023 00:33:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84EC168B7;
+	Fri, 15 Dec 2023 08:34:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40F6FC433C9;
+	Fri, 15 Dec 2023 08:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702629245;
+	bh=rss/R2yr8u3xOa9j+hUBTknCPEWH5RN5Y0uY7UIDmog=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cQZdR34UJ/BTJ7VG/KfJZNszJHl9kgkTwTsZp5FVTai07fg3xqRGfN3856pAsbtpk
+	 NgiI4h16ZpxpV7UwaEbOlJfwOCFTHAGN7p8U3HtimC84vbx8ymhwEmUTxmHiKx+Olv
+	 ghfAY7z3JY0SDklpjDZB0qKz7KaSH1fCtV5ZvExyKcpe23j/D6q/lt/SVmyzUpg+7V
+	 xvwRtgHO4wheC8ypj2ApkwfMt1qwoAObp5Ekh0GPQ7Bc5BifIsBM0P1LFFC00UbRBe
+	 WQFj0jdMOZRf4DlvwI481Cs+CduR38zEm/88DObRH1+Uu3cV/BfDyDgecBbeZmO1Jp
+	 EpZxaFYf+kexg==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rE3dw-0007LZ-1w;
+	Fri, 15 Dec 2023 09:34:00 +0100
+Date: Fri, 15 Dec 2023 09:34:00 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/3] gnss: ubx: support the reset pin of the Neo-M8
+ variant
+Message-ID: <ZXwPeJFdEERbhj3b@hovoldconsulting.com>
+References: <20231113005152.10656-1-wsa+renesas@sang-engineering.com>
+ <ZXfTwscAltoVY1lV@shikoro>
+ <ZXsk4i/OTGFhiCk9@shikoro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215074619.173787-1-aravinda.prasad@intel.com>
-In-Reply-To: <20231215074619.173787-1-aravinda.prasad@intel.com>
-From: Yu Zhao <yuzhao@google.com>
-Date: Fri, 15 Dec 2023 01:33:18 -0700
-Message-ID: <CAOUHufZW8ZbNDnu3Cfc61oJ4FkXK+AbT90XpS5Ei++1_5mcFFQ@mail.gmail.com>
-Subject: Re: mm/DAMON: Profiling enhancements for DAMON
-To: Aravinda Prasad <aravinda.prasad@intel.com>
-Cc: damon@lists.linux.dev, linux-mm@kvack.org, sj@kernel.org, 
-	linux-kernel@vger.kernel.org, s2322819@ed.ac.uk, sandeep4.kumar@intel.com, 
-	ying.huang@intel.com, dave.hansen@intel.com, dan.j.williams@intel.com, 
-	sreenivas.subramoney@intel.com, antti.kervinen@intel.com, 
-	alexander.kanevskiy@intel.com, Alan Nair <alan.nair@intel.com>, 
-	Juergen Gross <jgross@suse.com>, Ryan Roberts <ryan.roberts@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jMxtUNg6do9ROjXB"
+Content-Disposition: inline
+In-Reply-To: <ZXsk4i/OTGFhiCk9@shikoro>
+
+
+--jMxtUNg6do9ROjXB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 12:42=E2=80=AFAM Aravinda Prasad
-<aravinda.prasad@intel.com> wrote:
-...
+On Thu, Dec 14, 2023 at 04:53:06PM +0100, Wolfram Sang wrote:
+> On Tue, Dec 12, 2023 at 04:30:10AM +0100, Wolfram Sang wrote:
+> > On Sun, Nov 12, 2023 at 07:51:48PM -0500, Wolfram Sang wrote:
+> > > The Renesas KingFisher board includes a U-Blox Neo-M8 chip with its
+> > > reset pin wired to a GPIO. To support that, we need "reset-gpio" supp=
+ort
+> > > (patches 2+3). But first, simplify regulator handling with a new help=
+er
+> > > (patch 1).
+> > >=20
+> > > Changes since v4:
+> > >=20
+> > > * don't touch reset during open/close. Only deassert it during probe.
+> > >   [patch 3]
+> >=20
+> > Johan, all good now?
+>=20
+> If there are no further comments, can we have this series in 6.8.?
 
-> This patch proposes profiling different levels of the application=E2=80=
-=99s
-> page table tree to detect whether a region is accessed or not. This
-> patch is based on the observation that, when the accessed bit for a
-> page is set, the accessed bits at the higher levels of the page table
-> tree (PMD/PUD/PGD) corresponding to the path of the page table walk
-> are also set. Hence, it is efficient to  check the accessed bits at
-> the higher levels of the page table tree to detect whether a region
-> is accessed or not.
+All good. Now applied for 6.8.
 
-This patch can crash on Xen. See commit 4aaf269c768d("mm: introduce
-arch_has_hw_nonleaf_pmd_young()")
+Johan
 
-MGLRU already does this in the correct way. See mm/vmscan.c.
+--jMxtUNg6do9ROjXB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This patch also can cause USER DATA CORRUPTION. See commit
-c11d34fa139e ("mm/damon/ops-common: atomically test and clear young on
-ptes and pmds").
+-----BEGIN PGP SIGNATURE-----
 
-The quality of your patch makes me very much doubt the quality of your
-paper, especially your results on Google's kstaled and MGLRU in table
-6.2.
+iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCZXwPdAAKCRALxc3C7H1l
+CLHtAQCcwG7tS+xoay2ulLA84bKG3CfqhW0ec8vHzF+qVEhRwAD9HSRu2FD/yDJc
+cQqJm4HM5XgX8VtoR9uqmHZxAxQfiw0=
+=pi5t
+-----END PGP SIGNATURE-----
+
+--jMxtUNg6do9ROjXB--
 
