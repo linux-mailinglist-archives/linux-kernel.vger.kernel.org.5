@@ -1,136 +1,93 @@
-Return-Path: <linux-kernel+bounces-1525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2DA4814FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:26:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5A41814FB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:29:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99A58281E2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:26:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9122C285EB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:29:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9963588B;
-	Fri, 15 Dec 2023 18:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PyKhJrsi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6FA3EA92;
+	Fri, 15 Dec 2023 18:29:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F3730130;
-	Fri, 15 Dec 2023 18:26:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1178DC433C8;
-	Fri, 15 Dec 2023 18:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702664809;
-	bh=Uxm+Ld+49+IKhlPh3+Lb8jzwdKp8zlKxeU1rGQh+uUU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PyKhJrsiRdLEraV527cDOWhQbObcRjmIiegnkMgjULdaB9RzGb1HQkGRM+Lm7TaU3
-	 Vd2dNC1zrVz/PzMIrXykUKke7H9RrYz9YFA1DNmU+m4fMQsq9jDV8li1Zq/wY8LeqC
-	 pvzYyEOUF+BF14YGXPZOhrG2XnTjzVq0Jl34g6rC9jHAvCep/zilYrFVY7VPybFNWI
-	 RONJmn9L9AtfqemjvL87HZiR8bGD4h7Wdsv3hQBgkUNU59nVuaDwDSr7lyfnueujQN
-	 gWhDD1rmFg8806u2BzFSf4ldI1i1/judHa1Kr6Ql5wAoFbF6mhK3IHPN4Zpxcyz5T+
-	 VwduapuXXn36w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 5A65F403EF; Fri, 15 Dec 2023 15:26:46 -0300 (-03)
-Date: Fri, 15 Dec 2023 15:26:46 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, Ian Rogers <irogers@google.com>,
-	Namhyung Kim <namhyung@kernel.org>, maz@kernel.org,
-	marcan@marcan.st, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf top: Use evsel's cpus to replace user_requested_cpus
-Message-ID: <ZXyaZjwrpy6toGf6@kernel.org>
-References: <20231208210855.407580-1-kan.liang@linux.intel.com>
- <ZXd7ZuxbNNsjAyqm@kernel.org>
- <07677ab2-c29b-499b-b473-f7535fb27a8c@linux.intel.com>
- <CAM9d7ci-VVhubefMqkSQgK-B2e2z4QU1=TLJtC49wbWW=VNc8g@mail.gmail.com>
- <CAP-5=fVd-0aSovYVsOmTo2dfKb5_PHz1KV7ePipi35_JbfJ6qQ@mail.gmail.com>
- <ZXim6U5251q0_bB2@FVFF77S0Q05N.cambridge.arm.com>
- <ZXxyanyZgWBTOnoK@kernel.org>
- <4658ca16-9749-434e-9296-3893aa2a34da@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4188430135
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 18:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-102-dwHkrF_VMcKZTSA8qp3ypQ-1; Fri, 15 Dec 2023 18:27:37 +0000
+X-MC-Unique: dwHkrF_VMcKZTSA8qp3ypQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 15 Dec
+ 2023 18:27:22 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 15 Dec 2023 18:27:22 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'NeilBrown' <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>
+CC: Chuck Lever <chuck.lever@oracle.com>, Christian Brauner
+	<brauner@kernel.org>, Jens Axboe <axboe@kernel.dk>, Oleg Nesterov
+	<oleg@redhat.com>, Jeff Layton <jlayton@kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
+Subject: RE: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
+ files.
+Thread-Topic: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
+ files.
+Thread-Index: AQHaLVs+Da4cBTiba0eOmEq6cWLvM7Cqq/GA
+Date: Fri, 15 Dec 2023 18:27:22 +0000
+Message-ID: <ac74bdb82e114d71b26864fe51f6433b@AcuMS.aculab.com>
+References: <20231208033006.5546-1-neilb@suse.de>,
+ <20231208033006.5546-2-neilb@suse.de>,
+ <ZXMv4psmTWw4mlCd@tissot.1015granger.net>,
+ <170224845504.12910.16483736613606611138@noble.neil.brown.name>,
+ <20231211191117.GD1674809@ZenIV>,
+ <170233343177.12910.2316815312951521227@noble.neil.brown.name>,
+ <20231211231330.GE1674809@ZenIV>, <20231211232135.GF1674809@ZenIV>
+ <170242728484.12910.12134295135043081177@noble.neil.brown.name>
+In-Reply-To: <170242728484.12910.12134295135043081177@noble.neil.brown.name>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4658ca16-9749-434e-9296-3893aa2a34da@linux.intel.com>
-X-Url: http://acmel.wordpress.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-Em Fri, Dec 15, 2023 at 12:59:22PM -0500, Liang, Kan escreveu:
-> On 2023-12-15 10:36 a.m., Arnaldo Carvalho de Melo wrote:
-> 
-> #perf report --header-only | grep event
-> # event : name = cpu_atom/cycles:P/, , id = { 7360, 7361, 7362, 7363,
-> 7364, 7365, 7366, 7367, 7368, 7369 }, type = 0 (PERF_TYPE_HARDWARE),
-> size = 136, config = 0xa00000000, { sample_period, sample_freq } = 3000,
-> sample_type = IP|TID|TIME|PERIOD|IDENTIFIER, read_format = ID|LOST,
-> disabled = 1, inherit = 1, freq = 1, enable_on_exec = 1, precise_ip = 3,
-> sample_id_all = 1
-> # event : name = cpu_core/cycles:P/, , id = { 7370, 7371, 7372, 7373,
-> 7374, 7375, 7376, 7377, 7378, 7379, 7380, 7381 }, type = 0
-> (PERF_TYPE_HARDWARE), size = 136, config = 0x400000000, { sample_period,
-> sample_freq } = 3000, sample_type = IP|TID|TIME|PERIOD|IDENTIFIER,
-> read_format = ID|LOST, disabled = 1, inherit = 1, freq = 1,
-> enable_on_exec = 1, precise_ip = 3, sample_id_all = 1
-> 
-> I think we should move all the modifiers after the "/". The below patch
-> can fix it.
-> 
-> https://lore.kernel.org/lkml/20231215175455.1300261-1-kan.liang@linux.intel.com/
-
-Right, I implemented it in a slightly different way, but end result
-should be the same:
-
-From 5dd1b7ab1ba69ebb8e070923dcc214b7b489ffc2 Mon Sep 17 00:00:00 2001
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date: Fri, 15 Dec 2023 15:23:30 -0300
-Subject: [PATCH 1/1] perf evlist: Move event attributes to after the / when
- uniquefying using the PMU name
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/evlist.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 6f0892803c2249af..3a9505c99490b372 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -2522,7 +2522,7 @@ void evlist__warn_user_requested_cpus(struct evlist *evlist, const char *cpu_lis
- void evlist__uniquify_name(struct evlist *evlist)
- {
- 	struct evsel *pos;
--	char *new_name;
-+	char *new_name, *attributes;
- 	int ret;
- 
- 	if (perf_pmus__num_core_pmus() == 1)
-@@ -2535,8 +2535,16 @@ void evlist__uniquify_name(struct evlist *evlist)
- 		if (strchr(pos->name, '/'))
- 			continue;
- 
--		ret = asprintf(&new_name, "%s/%s/",
--			       pos->pmu_name, pos->name);
-+		attributes = strchr(pos->name, ':');
-+		if (attributes)
-+			*attributes = '\0';
-+
-+		ret = asprintf(&new_name, "%s/%s/%s",
-+			       pos->pmu_name, pos->name, attributes ? attributes + 1 : "");
-+
-+		if (attributes)
-+			*attributes = ':';
-+
- 		if (ret) {
- 			free(pos->name);
- 			pos->name = new_name;
--- 
-2.43.0
+Li4uDQo+ID4gUFM6IHB1dCBpdCB0aGF0IHdheSAtIEkgY2FuIGJ1eSAibmZzZCBpcyBkb2luZyB0
+aGF0IG9ubHkgdG8gcmVndWxhcg0KPiA+IGZpbGVzIGFuZCBub3Qgb24gYW4gYXJiaXRyYXJ5IGZp
+bGVzeXN0ZW0sIGF0IHRoYXQ7IGhhdmluZyB0aGUgdGhyZWFkDQo+ID4gd2FpdCBvbiB0aGF0IHN1
+Y2tlciBpcyBub3QgZ29pbmcgdG8gY2F1c2UgdG9vIG11Y2ggdHJvdWJsZSI7IEkgZG8gKm5vdCoN
+Cj4gPiBidXkgdHVybmluZyBpdCBpbnRvIGEgdGhpbmcgdXNhYmxlIG91dHNpZGUgb2YgYSB2ZXJ5
+IG5hcnJvdyBzZXQgb2YNCj4gPiBjaXJjdW1zdGFuY2VzLg0KPiA+DQo+IA0KPiBDYW4geW91IHNh
+eSBtb3JlIGFib3V0ICJub3Qgb24gYW4gYXJiaXRyYXJ5IGZpbGVzeXN0ZW0iID8NCj4gSSBndWVz
+cyB5b3UgbWVhbnMgdGhhdCBwcm9jZnMgYW5kL29yIHN5c2ZzIG1pZ2h0IGJlIHByb2JsZW1hdGlj
+IGFzIG1heQ0KPiBzaW1pbGFyIHZpcnR1YWwgZmlsZXN5c3RlbXMgKG5mc2QgbWF5YmUpLg0KDQpD
+YW4gbmZzIGV4cG9ydCBhbiBleHQ0IGZzIHRoYXQgaXMgb24gYSBsb29wYmFjayBtb3VudCBvbiBh
+IGZpbGUNCnRoYXQgaXMgcmVtb3RlbHkgbmZzIChvciBvdGhlcikgbW91bnRlZD8NCg0KQXMgc29v
+biBhcyB5b3UgZ2V0IGxvb3BzIGxpa2UgdGhhdCB5b3UgbWlnaHQgZmluZCB0aGF0IGZwdXQoKSBz
+dGFydHMNCmJlaW5nIHByb2JsZW1hdGljLg0KDQpJJ20gYWxzbyBzdXJlIEkgcmVtZW1iZXIgdGhh
+dCBuZnMgd2Fzbid0IHN1cHBvc2VkIHRvIHJlc3BvbmQgdG8gYSB3cml0ZQ0KdW50aWwgaXQgaGFk
+IGlzc3VlZCB0aGUgYWN0dWFsIGRpc2sgd3JpdGUgLSBidXQgbWF5YmUgbm8gb25lIGRvIHRoYXQN
+CmFueSBtb3JlIGJlY2F1c2UgaXQgcmVhbGx5IGlzIHRvbyBzbG93Lg0KKEVzcGVjaWFsbHkgaWYg
+dGhlICdkaXNrJyBpcyBhIFVTQiBzdGljay4pDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFk
+ZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywg
+TUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
 
