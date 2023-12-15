@@ -1,140 +1,94 @@
-Return-Path: <linux-kernel+bounces-1296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE27B814D0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:29:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23581814D0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:30:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C5451C23924
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:29:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF5EC2871F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606603EA6B;
-	Fri, 15 Dec 2023 16:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55763DB93;
+	Fri, 15 Dec 2023 16:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bpAT68hY"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="e9/7rq6F"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1863EA82;
-	Fri, 15 Dec 2023 16:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702657778; x=1734193778;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BOKVON2nPzCUQ+5yB/RhFkliuaM48sv6AgfSyuqqRlM=;
-  b=bpAT68hYY6H7EmOjN0j1smE0ghZzyOEGugNygkky4FPHa8CAWJFSlpSs
-   LyiFgCegN/cYnCiiQ1ExCd7wlIVPuxjHZsMz/naVtQt1lJVULKEjnBi6h
-   t/V24NxDMrCqoyx8hhL1CptqHZ4hu7OZuY7xsaNNQYmPFrN2qwXs3rk3a
-   x80HqzWxSrHHdsYY5I2ZA02olhLeP76KvPed8v6Nx4+Al9PdF5DOYc3KQ
-   LcSS7DF/bRlMuDYqC/qJnBh8nT/AJE8XgQLLLHiLOAqidAlNsr4Mzk6nU
-   LHtcHK0qOU/esRzdJ0ckVvW9bGUi6GycswSf5ilI31fY1pWhW+ltuFjdh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="8717587"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="8717587"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:29:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="845175327"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="845175327"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.8.163])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 08:29:33 -0800
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, "Mike Rapoport (IBM)" <rppt@kernel.org>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>, Kim Phillips <kim.phillips@amd.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation/mm: Describe folios in physical_memory.rst
-Date: Fri, 15 Dec 2023 17:29:30 +0100
-Message-ID: <25243171.6Emhk5qWAg@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <ZXxkZcq4rzlzsiZh@casper.infradead.org>
-References:
- <20231215120022.2010667-1-fabio.maria.de.francesco@linux.intel.com>
- <ZXxkZcq4rzlzsiZh@casper.infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1BB3C48A;
+	Fri, 15 Dec 2023 16:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 5EC5F2ED;
+	Fri, 15 Dec 2023 16:30:06 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5EC5F2ED
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1702657806; bh=OQVXZTeba2LNUlZHGrTPJnHYEPWu6rsuCl/p8uGfzuw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=e9/7rq6Fm9mKEEQz8Fkevxn3Pz1BvrxaRsrHQ8rtPLb6GWEcGgLaYz8kD+UBD1PDK
+	 7zD4H7yjDONwohGzkqRFLmrq78/yPlsV3kure7xr1vXBaYiNayL6+fha3K3PgzUU7r
+	 n/RM/hvr+GiB8S49NVUV/udwkJEJR0YiBYZ+ymFphW/FZGCJvd4aJB6udlGHY29QST
+	 uAH0UXLf81TAWLrkhBOzQVjveCg3kL2diaSRK27nDDVllW5ZW8dlD2sGl8x6h7VggW
+	 J7Xm0qXumPGgrtA1o5JxqVFTB8wOOtBHonExeR3QVOTUYGREbmJGXpTpdXWH7e4vmc
+	 X2iXNUCVriO5g==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Tim Chen
+ <tim.c.chen@linux.intel.com>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2] Documentation, mm/unaccepted: document accept_memory
+ kernel parameter
+In-Reply-To: <20231214-accept_memory_param-v2-1-f38cd20a0247@suse.cz>
+References: <20231214-accept_memory_param-v2-1-f38cd20a0247@suse.cz>
+Date: Fri, 15 Dec 2023 09:30:05 -0700
+Message-ID: <871qbnqvhu.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 
-On Friday, 15 December 2023 15:36:21 CET Matthew Wilcox wrote:
-> On Fri, Dec 15, 2023 at 01:00:12PM +0100, Fabio M. De Francesco wrote:
-> > +A folio is a physically, virtually and logically contiguous set of bytes.
-> > +It is a power-of-two in size, and it is aligned to that same
-> > power-of-two.
-> > +It is at least as large as %PAGE_SIZE. If it is in the page cache, it is
-> > +at a file offset which is a multiple of that power-of-two. It may be
-> > +mapped into userspace at an address which is at an arbitrary page offset,
-> > +but its kernel virtual address is aligned to its size.
-> 
-> This text is verbatim from include/linux/mm_types.h.  It seems sad
-> to have kernel-doc and then replicate it in an rst file.
+Vlastimil Babka <vbabka@suse.cz> writes:
 
-Actually, I took this text from the private email you sent me. I thought you 
-were asking to use exactly this words. And so I acted accordingly to what it 
-seemed to me you had suggested. 
+> The accept_memory kernel parameter was added in commit dcdfdd40fa82
+> ("mm: Add support for unaccepted memory") but not listed in the
+> kernel-parameters doc. Add it there.
+>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+> changes since v1:
+> - use shorter sentences (Tim Chen)
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..91bd74b2e203 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1,3 +1,14 @@
+> +	accept_memory=  [MM]
+> +			Format: { eager | lazy }
+> +			default: lazy
+> +			By default, unaccepted memory is accepted lazily to
+> +			avoid prolonged boot times. The lazy option will add
+> +			some runtime overhead until all memory is eventually
+> +			accepted. In most cases the overhead is negligible.
+> +			For some workloads or for debugging purposes
+> +			accept_memory=eager can be used to accept all memory
+> +			at once during boot.
+> +
 
-Furthermore I had forgotten that these words are in kernel-doc exactly because 
-I copy-pasted from your email.
+Applied, thanks.
 
-OK. I can explain what a folio is by using different words and elaborating a 
-bit.
-
-> > +As Matthew Wilcox explains in his introduction to folios, the need for
-> 
-> oof, no, don't mention my name.
-> 
-> > +`struct folio` arises mostly to address issues with the use of compound
-> > +pages. It is often unclear whether a function operates on an individual
-> > +page, or an entire compound page.
-> > +
-> > +"A function which has a `struct page` pointer argument might be
-> > +expecting a head or base page and will BUG if given a tail page. It might
-> > +work with any kind of page and operate on %PAGE_SIZE bytes. It might work
-> > +with any kind of page and operate on page_size() bytes if given a head
-> > +page but %PAGE_SIZE bytes if given a base or tail page. It might operate
-> > +on page_size() bytes if passed a head or tail page. We have examples of
-> > +all of these today.".
-> > +
-> > +A pointer to folio points to a page that is never a tail page. It
-> > +represents an entire compound page. Therefore, there is no need to call
-> > +compound_head() to get a pointer to the head. Folios has eliminted the
-> > +need to unnecessary calls and has avoided bugs related to the misuse of
-> > +pages passed to functions. Furthermore, the inline compound_head() makes
-> > +the kernel bigger and slows things down.
-> > +
-> > +The folio APIs are described in the "Memory Management APIs" document.
-> 
-> This was exactly the kind of documentation I was hoping you wouldn't
-> write ;-(  It's documentation that makes sense today, but won't in five
-> years time.
-
-I wanted to explain why you introduced folios. If you think that the 
-historical perspective is not what future developers will need in the next 5 
-years, I can think of something else. 
-
-> We want to say something like,
-> 
-> A folio represents a single memory allocation.  It may be composed of
-> several pages ...
-
-Ah, OK. I think I got it.
-
-Thanks for your comments.
-
-Fabio
-
-
+jon
 
