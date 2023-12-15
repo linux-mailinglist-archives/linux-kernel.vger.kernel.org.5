@@ -1,84 +1,72 @@
-Return-Path: <linux-kernel+bounces-1248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC523814C68
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:03:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F17E814C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:58:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1728AB231AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:03:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 342E31C22E7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AFDB3A8D9;
-	Fri, 15 Dec 2023 16:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890CB39FF0;
+	Fri, 15 Dec 2023 15:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="N+ZiMM/W"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from harvie.cz (harvie.cz [77.87.242.242])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88CF39FE4;
-	Fri, 15 Dec 2023 16:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from anemophobia.amit.cz (unknown [31.30.84.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by harvie.cz (Postfix) with ESMTPSA id 13566180370;
-	Fri, 15 Dec 2023 16:56:51 +0100 (CET)
-From: Tomas Mudrunka <tomas.mudrunka@gmail.com>
-To: jeff@labundy.com
-Cc: dmitry.torokhov@gmail.com,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tomas.mudrunka@gmail.com
-Subject: [PATCH v7] Fix freeze in lm8333 i2c keyboard driver
-Date: Fri, 15 Dec 2023 16:56:43 +0100
-Message-ID: <20231215155643.705116-1-tomas.mudrunka@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZXpnbifDOQ/eF5jb@nixie71>
-References: <ZXpnbifDOQ/eF5jb@nixie71>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5048358BD;
+	Fri, 15 Dec 2023 15:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=psNE8qmEitSFH28reo79kUb726RgTDQfpJzZ+4hkCl4=; b=N+ZiMM/W4XJeQDDrhvUbhUFdxl
+	iIjEtlv28fbklWWbaS/pNq4k1Ps5x8fa/BfxNEB/qPVSqWJQu+yzvpCh28Hgo2UlTRakK0+bJswyr
+	gWJYCDc5FNI86h9s97ivlH2ZqX7EMxJcoXPxzRpZIlbdq2NLS4YEXXtNXfimJk/fJFPk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rEAZH-0032ST-Qr; Fri, 15 Dec 2023 16:57:39 +0100
+Date: Fri, 15 Dec 2023 16:57:39 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Rob Herring <robh@kernel.org>
+Cc: Conor Dooley <conor@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] dt-bindings: net: marvell,orion-mdio: Drop
+ "reg" sizes schema
+Message-ID: <3299678e-6faf-4474-9e13-ad082c6628d8@lunn.ch>
+References: <20231213232455.2248056-1-robh@kernel.org>
+ <20231214-buzz-playlist-2f75095ef2b0@spud>
+ <CAL_JsqKaGFfQNwR3HqRnVs3K7SUtevpoG6tEDntM0SNfyyp6AQ@mail.gmail.com>
+ <e59ff8c2-caa1-4072-b86f-0446120ac49b@lunn.ch>
+ <CAL_JsqJwqQTCJmAfNpM7z+0BjusB33OwUgr7_7AxOpnQ-GwaLQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJwqQTCJmAfNpM7z+0BjusB33OwUgr7_7AxOpnQ-GwaLQ@mail.gmail.com>
 
-LM8333 uses gpio interrupt line which is active-low.
-When interrupt is set to FALLING edge and button is pressed
-before driver loads, driver will miss the edge and never respond.
-To fix this we should handle ONESHOT LOW interrupt rather than edge.
+> Is that an Ack? I almost read your double negative as a Nak and that's
+> what the maintainers read because it is now "Rejected" in PW.
 
-Rather than hardcoding this, we simply remove the override from
-driver by calling request_threaded_irq() without specifying trigger.
-This will keep interrupt trigger configuration as per devicetree. eg.:
+I don't know if this will work, but we can give it a try.
 
-	lm8333@51 {
-		compatible = "ti,lm8333";
-		interrupt-parent = <&gpio1>;
-		interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
-		...
-	}
+pw-bot: new
 
-Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
-Reviewed-by: Jeff LaBundy <jeff@labundy.com>
----
- drivers/input/keyboard/lm8333.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/input/keyboard/lm8333.c b/drivers/input/keyboard/lm8333.c
-index 7457c3220..c5770ebb2 100644
---- a/drivers/input/keyboard/lm8333.c
-+++ b/drivers/input/keyboard/lm8333.c
-@@ -179,7 +179,7 @@ static int lm8333_probe(struct i2c_client *client)
- 	}
- 
- 	err = request_threaded_irq(client->irq, NULL, lm8333_irq_thread,
--				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+				   IRQF_ONESHOT,
- 				   "lm8333", lm8333);
- 	if (err)
- 		goto free_mem;
--- 
-2.40.0
+	Andrew
 
