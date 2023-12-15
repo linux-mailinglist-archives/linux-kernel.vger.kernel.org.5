@@ -1,141 +1,111 @@
-Return-Path: <linux-kernel+bounces-1371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DAC814E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC466814DEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:08:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B91928614A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:13:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 788B9285531
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40D24AF98;
-	Fri, 15 Dec 2023 17:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="i1txzjU2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qpiqOMh1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEBD3FE58;
+	Fri, 15 Dec 2023 17:07:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E658246459;
-	Fri, 15 Dec 2023 17:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702660237;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ttIXeZ1ovHzP3s4F4dQhi8p1AikC0DzBNJEl/q3oOFU=;
-	b=i1txzjU2KalZCJ8xYOeccEgh79T53JDMXo6hg9E0Mau+4g4nEzUiD/CU8QtNlcyNoMioNh
-	TxMQ6lCO2yFp+l4aRR42CeLo7AtXdM42ZZzsnfMKblwNsySw00E19iXVw2u5HXIlKMh1od
-	0Llrgx3TK8reem3ivDEKJy2UXYWWALyMSBMFYs9+zxL/HlBtrzIcUXm5m8ZZ/5YImNN7lO
-	cAGnMTMRhHeXvmYWjgB14T5Fcz6Y7eQAgy4ZqjE08SOVUO1jI2u1fAy/aFqNaScVh8B9jc
-	QCHYZ1d78L1SzqyNvK0hY0llM5vR2g43iaL1X+2sVIpumHkKDsIyh1k5X25prQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702660237;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ttIXeZ1ovHzP3s4F4dQhi8p1AikC0DzBNJEl/q3oOFU=;
-	b=qpiqOMh1zBcnXXLLLCyeEFb2GN33yYgr8NRbg0Pr11SJ8OU7LfkwcblN3sg2bH4nUYN3Sc
-	jk7theU4aQBFwpBA==
-To: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next 13/24] net: Use nested-BH locking for bpf_scratchpad.
-Date: Fri, 15 Dec 2023 18:07:32 +0100
-Message-ID: <20231215171020.687342-14-bigeasy@linutronix.de>
-In-Reply-To: <20231215171020.687342-1-bigeasy@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437B63FE55;
+	Fri, 15 Dec 2023 17:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id ADB5C20640;
+	Fri, 15 Dec 2023 18:07:37 +0100 (CET)
+Date: Fri, 15 Dec 2023 18:07:33 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Johan Hovold <johan@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+	Jiri Slaby <jirislaby@kernel.org>, linux-bluetooth@vger.kernel.org,
+	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, greybus-dev@lists.linaro.org,
+	linux-iio@vger.kernel.org, netdev@vger.kernel.org,
+	chrome-platform@lists.linux.dev,
+	platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Alex Elder <elder@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+	Lee Jones <lee@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v1] treewide, serdev: change receive_buf() return type to
+ size_t
+Message-ID: <ZXyH1Zv3Pxd6S3ag@francesco-nb.int.toradex.com>
+References: <20231214170146.641783-1-francesco@dolcini.it>
+ <ZXxWX-Fw1InID2ax@hovoldconsulting.com>
+ <ZXxa7yzKzG6048vw@francesco-nb.int.toradex.com>
+ <ZXx8bCVyxJ9Ddvqm@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXx8bCVyxJ9Ddvqm@hovoldconsulting.com>
 
-bpf_scratchpad is a per-CPU variable and relies on disabled BH for its
-locking. Without per-CPU locking in local_bh_disable() on PREEMPT_RT
-this data structure requires explicit locking.
+Hello Johan, Greg
 
-Add a local_lock_t to the data structure and use local_lock_nested_bh()
-for locking. This change adds only lockdep coverage and does not alter
-the functional behaviour for !PREEMPT_RT.
+On Fri, Dec 15, 2023 at 05:18:52PM +0100, Johan Hovold wrote:
+> On Fri, Dec 15, 2023 at 02:55:59PM +0100, Francesco Dolcini wrote:
+> > To me the change is correct, with that said probably this should have
+> > been explicitly mentioned in the commit message or a separate
+> > preparation patch.
+> 
+> It's a separate change and should not be hidden away in a tree-wide
+> change that goes through a different maintainer.
+> 
+> Please drop this change from this patch and resubmit it separately to me
+> if you want and I'll review when I have the time.
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- net/core/filter.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Fine, I agree.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index c8013f762524b..896aa3fa699f9 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -1652,9 +1652,12 @@ struct bpf_scratchpad {
- 		__be32 diff[MAX_BPF_STACK / sizeof(__be32)];
- 		u8     buff[MAX_BPF_STACK];
- 	};
-+	local_lock_t	lock;
- };
-=20
--static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
-+static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp) =3D {
-+	.lock	=3D INIT_LOCAL_LOCK(lock),
-+};
-=20
- static inline int __bpf_try_make_writable(struct sk_buff *skb,
- 					  unsigned int write_len)
-@@ -2023,6 +2026,7 @@ BPF_CALL_5(bpf_csum_diff, __be32 *, from, u32, from_s=
-ize,
- 		     diff_size > sizeof(sp->diff)))
- 		return -EINVAL;
-=20
-+	guard(local_lock_nested_bh)(&bpf_sp.lock);
- 	for (i =3D 0; i < from_size / sizeof(__be32); i++, j++)
- 		sp->diff[j] =3D ~from[i];
- 	for (i =3D 0; i <   to_size / sizeof(__be32); i++, j++)
---=20
-2.43.0
+I see those options (let me know if you see other options I have not
+mentioned):
+
+1. I add this change (taking into account also intel ice) as a separate
+   patch in this series and you may just ack it and Greg could merge
+   together with the serdev one.
+2. I prepare an independent patch for the GNSS change and only once this
+   is merged I'll send a rebased v2 of this one.
+3. I update this patch without this GNSS API change, that mean I will
+   have to cast away the signed type from a few GNSS drivers.
+
+1 is my preferred option, 2 is fine, but it seems a little bit of overdoing,
+3 I would avoid, we are doing this cleanup to be a little bit more
+strongly typed and to prevent the kind of bugs that is the original trigger
+for this patch.
+
+What would you Greg and Johan prefer?
+
+
+> And when doing tree-wide changes, please try to follow the style of the
+> driver you are changing (e.g. do not introduce inconsistencies by
+> changing to open parenthesis alignment of continuation lines in code
+> that do not use it).
+
+ack, sorry about that, looking back at the archive is seems a recent
+pain point, also Jiri fell in this trap.
+
+Francesco
 
 
