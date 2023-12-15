@@ -1,152 +1,146 @@
-Return-Path: <linux-kernel+bounces-1827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F4CF815495
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:36:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E2E815497
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 083BAB23F6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:36:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74E971F238CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A302C699;
-	Fri, 15 Dec 2023 23:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A628F18EDD;
+	Fri, 15 Dec 2023 23:36:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N44rzKSk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1741118ECB;
-	Fri, 15 Dec 2023 23:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
-Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
-	by server.atrad.com.au (8.17.2/8.17.2) with ESMTPS id 3BFNZKjE001393
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Sat, 16 Dec 2023 10:05:22 +1030
-Date: Sat, 16 Dec 2023 10:05:20 +1030
-From: Jonathan Woithe <jwoithe@just42.net>
-To: Igor Mammedov <imammedo@redhat.com>
-Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Regression] Commit 40613da52b13 ("PCI: acpiphp: Reassign
- resources on bridge if necessary")
-Message-ID: <ZXziuPCKNBLhbssO@marvin.atrad.com.au>
-References: <ZXpaNCLiDM+Kv38H@marvin.atrad.com.au>
- <20231214143205.4ba0e11a@imammedo.users.ipa.redhat.com>
- <ZXt+BxvmG6ru63qJ@marvin.atrad.com.au>
- <ZXw4Ly/csFgl76Lj@marvin.atrad.com.au>
- <20231215143638.032028eb@imammedo.users.ipa.redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353D746424
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 23:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cc5a0130faso3913821fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:35:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702683355; x=1703288155; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YBG7vJ0wQQ9pJwBsGA7yTbbvPq6lJZZywu38DBk+C5o=;
+        b=N44rzKSk2/Py3oKQwqvnOLRhZpn5jEhsnLjpGHPYy26AGIvMnV/jU3g/ISBADfYsav
+         wYwj+lUTCUxheqGkX2y8DxvZhyOLvJfRUGmHQ89doQhQWetJ5by5bFcOYWgmB/X9oCkb
+         KgoGMK22JLb5jUAoAnoYp7l2IRm+sBWbN09dOgVkTuaNtbuPWVVNMnbQ1PEuKbI39zUp
+         axv4waudgtaWQUuROT8HUISfqBSK/Sfb4PzpJ1fXZLtbhCArRJenhU4fmT1IMtWvxCPL
+         zbZGmFMTgm0b1wyvh0oB8LIRabYysCg9+7B84KkQtBnKyCwLXTcKwZE8wwhuWJ1Dq0b+
+         vf8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702683355; x=1703288155;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YBG7vJ0wQQ9pJwBsGA7yTbbvPq6lJZZywu38DBk+C5o=;
+        b=jP13sxo8AbujHMfOdwr93pU5uEOrBvN1BtnybR2ltnStZCoXwptTsLtfzV/P+TJm01
+         yiz8BWZhhQ99JmAJsCuIf7pJFighMzvTITsH7iDK1R0xoTw46/XruOEZIxa2OZMuHUJ5
+         WBz5FsVjM1ygn20fk2e+mnaivg3JDyDTR9KnGno0z4Qec7qR7xbSoVQqGsBvdJtYMbE5
+         VhnYZIXhWqLbaRlgH5OX70fk1vo+dBBl6R4chtJcgsiHdLLbzQZ+38VDT9DO3A40IuIV
+         70ixxnGG0xK9er1qmntv5siJmyuKeBMmhQbjP3/dVJBt6tetEm64MSW7RIVbUte1WK00
+         wxhQ==
+X-Gm-Message-State: AOJu0YwCkLyS6lHiJ3K8uFVpek3U6ZcqDdORvQ/zfJDqd4UDycZ7ak79
+	5HYkoISujJESmXMfy4fJbxJQgA==
+X-Google-Smtp-Source: AGHT+IHjPSx49Ek10kxZQdEL4+jDoPGZhx6kHsjSpzOCqfBvuol4kaHrFaMXnjTktyfv2xXNNmlTXg==
+X-Received: by 2002:a05:651c:b10:b0:2cc:4b4a:50 with SMTP id b16-20020a05651c0b1000b002cc4b4a0050mr1099892ljr.84.1702683355138;
+        Fri, 15 Dec 2023 15:35:55 -0800 (PST)
+Received: from [192.168.199.59] (178235179137.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.137])
+        by smtp.gmail.com with ESMTPSA id ez1-20020a056402450100b00551ca461bd7sm3725606edb.48.2023.12.15.15.35.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 15:35:54 -0800 (PST)
+Message-ID: <e4329952-34ac-4458-a63c-1f64e288614c@linaro.org>
+Date: Sat, 16 Dec 2023 00:35:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215143638.032028eb@imammedo.users.ipa.redhat.com>
-X-MIMEDefang-action: accept
-X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/5] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+Content-Language: en-US
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>, will@kernel.org,
+ robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
+ jsnitsel@redhat.com, quic_bjorande@quicinc.com, mani@kernel.org,
+ quic_eberman@quicinc.com, robdclark@chromium.org,
+ u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com,
+ quic_pkondeti@quicinc.com, quic_molvera@quicinc.com,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ qipl.kernel.upstream@quicinc.com
+References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
+ <20231215101827.30549-4-quic_bibekkum@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231215101827.30549-4-quic_bibekkum@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 15, 2023 at 02:36:38PM +0100, Igor Mammedov wrote:
-> On Fri, 15 Dec 2023 21:57:43 +1030
-> Jonathan Woithe <jwoithe@just42.net> wrote:
+On 15.12.2023 11:18, Bibek Kumar Patro wrote:
+> Add ACTLR data table for SM8550 along with support for
+> same including SM8550 specific implementation operations.
 > 
-> > On Fri, Dec 15, 2023 at 08:43:29AM +1030, Jonathan Woithe wrote:
-> > > On Thu, Dec 14, 2023 at 02:32:05PM +0100, Igor Mammedov wrote:  
-> > > > On Thu, 14 Dec 2023 11:58:20 +1030 Jonathan Woithe wrote:  
-> > > > > 
-> > > > > Following an update from 5.15.72 to 5.15.139 on one of my machines, the  
-> > > > 
-> > > > looks like you are running downstream kernel, can you file bug report
-> > > > with distro that you use (with a link posed here as well).  
-> > > 
-> > > I am running Slackware64 15.0.  The kernels supplied by that distribution
-> > > are unmodified kernel.org kernels.
-> > >   
-> > > > For now offending patches are being reverted, so downstream bug will help
-> > > > with tracking it and reverting it there.   
-> > > 
-> > > The patches will be reverted in Slackware as a matter of course when a
-> > > kernel.org "-stable" kernel with the fix is adopted.  Slackware does not
-> > > apply any patches to kernel.org kernels.  Nevertheless, I will raise a post
-> > > in the forum, hopefully later today.  
-> > 
-> > This has now been done:
-> > 
-> >   https://www.linuxquestions.org/questions/slackware-14/heads-up-pci-regression-introduced-in-or-around-5-15-129-commit-40613da52b13-4175731828/#post6470559
-> > 
-> > > > > The output of lspci is given at the end of this post[1].  The CPU is an
-> > > > > "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz" which is not overclocked.  Please
-> > > > > let me know if you'd like more information about the affected machine.  I
-> > > > > can also perform additional tests if required, although for various reasons
-> > > > > these can only be done on Thursdays at present.
-> > > > > 
-> > > > > The kernel configuration file can easily be supplied if that would be
-> > > > > useful.  
-> > > > 
-> > > > full dmesg log and used config might help down the road (preferably with current
-> > > > upstream kernel), as I will be looking into fixing related issues.
-> > > > 
-> > > > Perhaps a better way for taking this issue and collecting logs, will be
-> > > > opening a separate bug at https://bugzilla.kernel.org (pls CC me as well)  
-> > > 
-> > > Sure, will do.  I'll be able to get the dmesg log from my earlier tests and
-> > > config easily enough.  Testing with another kernel will have to wait until
-> > > next Thursday as that is when I'll next have physical access to the machine.  
-> > 
-> > A bug has been opened at bugzilla.kernel.org as requested.  The logs, kernel
-> > configuration and the "lspci -tv" output (requested in a subsequent email)
-> > have been added.  The logs and kernel configuration are from the kernel.org
-> > 5.15.139 kernel.  You have been added to the bug's CC.  The bug number is
-> > 218268:
-> > 
-> >   https://bugzilla.kernel.org/show_bug.cgi?id=218268
-> > 
-> > As mentioned, testing another kernel can only happen next Thursday.  If
-> > you would like other tests done let me know and I'll do them at the same
-> > time.  I have remote access to the machine, so it's possible to retrieve
-> > information from it at any time.
-> 
-> lets wait till you can get logs with dyndbg='...' (I've asked for earlier)
-> and one more test with "pci=realloc" on kernel CLI to see if that helps.
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> ---
+[...]
 
-Okay.
+> +static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
+> +	.impl = &qcom_smmu_500_impl,
+> +	.adreno_impl = &qcom_adreno_smmu_500_impl,
+> +	.cfg = &qcom_smmu_impl0_cfg,
+> +	.actlrcfg = sm8550_apps_actlr_cfg,
+> +	.actlrcfg_gfx = sm8550_gfx_actlr_cfg,
+There are platforms that feature more than just APPS and Adreno SMMUs,
+this implementation seems to assume there's only these two :/
 
-> > Let me know if there's anything else I can do to assist.
-> 
-> It looks like  pci_assign_unassigned_bridge_resources() messed up BIOS configured
-> resources. And then didn't manage to reconfigure bridges correctly, which led to
-> unassigned BARs => thunderbolt/VGA issues.
-> 
-> Something in ACPI tables must be triggering acpiphp hotplug path during boot.
-> Can you dump DSDT + SSDT tables and attach them to BZ.
-> PS:
-> to dump tables you can use command from acpica-tools (not sure how it's called in Slackware) 
->  acpidump -b
-> which will dump all tables in binary format (so attach those or 'iasl -d' de-compiled ones)
+I suppose the only way to solve this would be to introduce new compatibles
+for each one of them.. Krzysztof, do you think that's reasonable? E.g.
+MSM8996 has at least 5 instances, 8998 has at least 4 etc.
 
-Slackware doesn't provide acpidump AFAIK but it was easy enough to compile
-from tools/power/acpi/tools/acpidump within the 5.15.72 tree I'd used
-previously to build 5.15.72 (the kernel that's currently running).  However,
-running
-
-  acpidump -b
-
-resulted in a segmentation fault.  The root cause is line 339 in vsnprintf()
-in utprint.c.  With a workaround in place a functional acpidump was
-obtained.  I can provide further information from my analysis if it's
-appropriate and you're interested.
-
-For completeness I then tried the acpica source from Intel (version
-20230628).  The acpidump from this worked fine, and the files produced were
-identical to those from my fixed kernel-tree acpidump.  A tarball of these
-is now attached to the Bugzilla report.  Curiously enough, the corresponding
-vsnprintf() line in the Intel acpica source distribution matches that in the
-5.15.72 source.  Perhaps the compiler flags in the Intel package happen to
-prevent the segfault condition occurring at runtime for me.
-
-Regards
-  jonathan
+Konrad
 
