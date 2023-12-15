@@ -1,32 +1,32 @@
-Return-Path: <linux-kernel+bounces-1479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE7B1814F4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:55:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8827814F4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:55:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64C4A1F24937
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:55:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D33E1F2200E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278523FE4E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672AE41859;
 	Fri, 15 Dec 2023 17:54:55 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6BA3EA6B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0790D3FB37;
 	Fri, 15 Dec 2023 17:54:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 629B3C43397;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B15BC433C8;
 	Fri, 15 Dec 2023 17:54:54 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rECPY-00000002wOn-1Fui;
+	id 1rECPY-00000002wPH-2S1r;
 	Fri, 15 Dec 2023 12:55:44 -0500
-Message-ID: <20231215175544.087211896@goodmis.org>
+Message-ID: <20231215175544.370837340@goodmis.org>
 User-Agent: quilt/0.67
-Date: Fri, 15 Dec 2023 12:55:05 -0500
+Date: Fri, 15 Dec 2023 12:55:06 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -37,7 +37,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
  Vincent Donnefort <vdonnefort@google.com>,
  Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH v4 03/15] ring-buffer: Add interface for configuring trace sub buffer size
+Subject: [PATCH v4 04/15] ring-buffer: Set new size of the ring buffer sub page
 References: <20231215175502.106587604@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,206 +49,180 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-The trace ring buffer sub page size can be configured, per trace
-instance. A new ftrace file "buffer_subbuf_order" is added to get and
-set the size of the ring buffer sub page for current trace instance.
-The size must be an order of system page size, that's why the new
-interface works with system page order, instead of absolute page size:
-0 means the ring buffer sub page is equal to 1 system page and so
-forth:
-0 - 1 system page
-1 - 2 system pages
-2 - 4 system pages
-...
-The ring buffer sub page size is limited between 1 and 128 system
-pages. The default value is 1 system page.
-New ring buffer APIs are introduced:
- ring_buffer_subbuf_order_set()
- ring_buffer_subbuf_order_get()
- ring_buffer_subbuf_size_get()
+There are two approaches when changing the size of the ring buffer
+sub page:
+ 1. Destroying all pages and allocating new pages with the new size.
+ 2. Allocating new pages, copying the content of the old pages before
+    destroying them.
+The first approach is easier, it is selected in the proposed
+implementation. Changing the ring buffer sub page size is supposed to
+not happen frequently. Usually, that size should be set only once,
+when the buffer is not in use yet and is supposed to be empty.
 
-Link: https://lore.kernel.org/linux-trace-devel/20211213094825.61876-4-tz.stoyanov@gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20211213094825.61876-5-tz.stoyanov@gmail.com
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/ring_buffer.h |  4 ++
- kernel/trace/ring_buffer.c  | 73 +++++++++++++++++++++++++++++++++++++
- kernel/trace/trace.c        | 48 ++++++++++++++++++++++++
- 3 files changed, 125 insertions(+)
+ kernel/trace/ring_buffer.c | 80 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 73 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index ce46218ce46d..12573306b889 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -202,6 +202,10 @@ struct trace_seq;
- int ring_buffer_print_entry_header(struct trace_seq *s);
- int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
- 
-+int ring_buffer_subbuf_order_get(struct trace_buffer *buffer);
-+int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order);
-+int ring_buffer_subbuf_size_get(struct trace_buffer *buffer);
-+
- enum ring_buffer_flags {
- 	RB_FL_OVERWRITE		= 1 << 0,
- };
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index b4b13e3244a9..7774202d7212 100644
+index 7774202d7212..27e72cc87daa 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -506,6 +506,7 @@ struct trace_buffer {
- 	bool				time_stamp_abs;
- 
- 	unsigned int			subbuf_size;
-+	unsigned int			subbuf_order;
- 	unsigned int			max_data_size;
+@@ -331,6 +331,7 @@ struct buffer_page {
+ 	unsigned	 read;		/* index for next read */
+ 	local_t		 entries;	/* entries on this page */
+ 	unsigned long	 real_end;	/* real end of data */
++	unsigned	 order;		/* order of the page */
+ 	struct buffer_data_page *page;	/* Actual data page */
  };
  
-@@ -5694,6 +5695,78 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+@@ -361,7 +362,7 @@ static __always_inline unsigned int rb_page_commit(struct buffer_page *bpage)
+ 
+ static void free_buffer_page(struct buffer_page *bpage)
+ {
+-	free_page((unsigned long)bpage->page);
++	free_pages((unsigned long)bpage->page, bpage->order);
+ 	kfree(bpage);
  }
- EXPORT_SYMBOL_GPL(ring_buffer_read_page);
  
-+/**
-+ * ring_buffer_subbuf_size_get - get size of the sub buffer.
-+ * @buffer: the buffer to get the sub buffer size from
-+ *
-+ * Returns size of the sub buffer, in bytes.
-+ */
-+int ring_buffer_subbuf_size_get(struct trace_buffer *buffer)
-+{
-+	return buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_subbuf_size_get);
-+
-+/**
-+ * ring_buffer_subbuf_order_get - get order of system sub pages in one buffer page.
-+ * @buffer: The ring_buffer to get the system sub page order from
-+ *
-+ * By default, one ring buffer sub page equals to one system page. This parameter
-+ * is configurable, per ring buffer. The size of the ring buffer sub page can be
-+ * extended, but must be an order of system page size.
-+ *
-+ * Returns the order of buffer sub page size, in system pages:
-+ * 0 means the sub buffer size is 1 system page and so forth.
-+ * In case of an error < 0 is returned.
-+ */
-+int ring_buffer_subbuf_order_get(struct trace_buffer *buffer)
-+{
-+	if (!buffer)
-+		return -EINVAL;
-+
-+	return buffer->subbuf_order;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_get);
-+
-+/**
-+ * ring_buffer_subbuf_order_set - set the size of ring buffer sub page.
-+ * @buffer: The ring_buffer to set the new page size.
-+ * @order: Order of the system pages in one sub buffer page
-+ *
-+ * By default, one ring buffer pages equals to one system page. This API can be
-+ * used to set new size of the ring buffer page. The size must be order of
-+ * system page size, that's why the input parameter @order is the order of
-+ * system pages that are allocated for one ring buffer page:
-+ *  0 - 1 system page
-+ *  1 - 2 system pages
-+ *  3 - 4 system pages
-+ *  ...
-+ *
-+ * Returns 0 on success or < 0 in case of an error.
-+ */
-+int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
-+{
-+	int psize;
-+
-+	if (!buffer || order < 0)
-+		return -EINVAL;
-+
-+	if (buffer->subbuf_order == order)
-+		return 0;
-+
-+	psize = (1 << order) * PAGE_SIZE;
-+	if (psize <= BUF_PAGE_HDR_SIZE)
-+		return -EINVAL;
-+
-+	buffer->subbuf_order = order;
-+	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
-+
-+	/* Todo: reset the buffer with the new page size */
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
-+
- /*
-  * We only allocate new buffers, never free them if the CPU goes down.
-  * If we were to free the buffer, then the user would lose any trace that was in
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 45ed9cb5399b..88d7feca0a25 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9365,6 +9365,51 @@ static const struct file_operations buffer_percent_fops = {
- 	.llseek		= default_llseek,
- };
+@@ -1481,10 +1482,12 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
  
-+static ssize_t
-+buffer_order_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
-+{
-+	struct trace_array *tr = filp->private_data;
-+	char buf[64];
-+	int r;
-+
-+	r = sprintf(buf, "%d\n", ring_buffer_subbuf_order_get(tr->array_buffer.buffer));
-+
-+	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
-+}
-+
-+static ssize_t
-+buffer_order_write(struct file *filp, const char __user *ubuf,
-+		   size_t cnt, loff_t *ppos)
-+{
-+	struct trace_array *tr = filp->private_data;
-+	unsigned long val;
-+	int ret;
-+
-+	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	/* limit between 1 and 128 system pages */
-+	if (val < 0 || val > 7)
-+		return -EINVAL;
-+
-+	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, val);
-+	if (ret)
-+		return ret;
-+
-+	(*ppos)++;
-+
-+	return cnt;
-+}
-+
-+static const struct file_operations buffer_order_fops = {
-+	.open		= tracing_open_generic_tr,
-+	.read		= buffer_order_read,
-+	.write		= buffer_order_write,
-+	.release	= tracing_release_generic_tr,
-+	.llseek		= default_llseek,
-+};
-+
- static struct dentry *trace_instance_dir;
+ 		list_add(&bpage->list, pages);
  
- static void
-@@ -9831,6 +9876,9 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 	trace_create_file("buffer_percent", TRACE_MODE_WRITE, d_tracer,
- 			tr, &buffer_percent_fops);
+-		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags, 0);
++		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags,
++					cpu_buffer->buffer->subbuf_order);
+ 		if (!page)
+ 			goto free_pages;
+ 		bpage->page = page_address(page);
++		bpage->order = cpu_buffer->buffer->subbuf_order;
+ 		rb_init_page(bpage->page);
  
-+	trace_create_file("buffer_subbuf_order", TRACE_MODE_WRITE, d_tracer,
-+			  tr, &buffer_order_fops);
+ 		if (user_thread && fatal_signal_pending(current))
+@@ -1563,7 +1566,8 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
+ 	rb_check_bpage(cpu_buffer, bpage);
+ 
+ 	cpu_buffer->reader_page = bpage;
+-	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, 0);
 +
- 	create_trace_options_dir(tr);
++	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, cpu_buffer->buffer->subbuf_order);
+ 	if (!page)
+ 		goto fail_free_reader;
+ 	bpage->page = page_address(page);
+@@ -1647,6 +1651,7 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
+ 		goto fail_free_buffer;
  
- #ifdef CONFIG_TRACER_MAX_TRACE
+ 	/* Default buffer page size - one system page */
++	buffer->subbuf_order = 0;
+ 	buffer->subbuf_size = PAGE_SIZE - BUF_PAGE_HDR_SIZE;
+ 
+ 	/* Max payload is buffer page size - header (8bytes) */
+@@ -5436,8 +5441,8 @@ void *ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
+ 	if (bpage)
+ 		goto out;
+ 
+-	page = alloc_pages_node(cpu_to_node(cpu),
+-				GFP_KERNEL | __GFP_NORETRY, 0);
++	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_NORETRY,
++				cpu_buffer->buffer->subbuf_order);
+ 	if (!page)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -5486,7 +5491,7 @@ void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu, void *data
+ 	local_irq_restore(flags);
+ 
+  out:
+-	free_page((unsigned long)bpage);
++	free_pages((unsigned long)bpage, buffer->subbuf_order);
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_free_read_page);
+ 
+@@ -5746,7 +5751,13 @@ EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_get);
+  */
+ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+ {
++	struct ring_buffer_per_cpu **cpu_buffers;
++	int old_order, old_size;
++	int nr_pages;
+ 	int psize;
++	int bsize;
++	int err;
++	int cpu;
+ 
+ 	if (!buffer || order < 0)
+ 		return -EINVAL;
+@@ -5758,12 +5769,67 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+ 	if (psize <= BUF_PAGE_HDR_SIZE)
+ 		return -EINVAL;
+ 
++	bsize = sizeof(void *) * buffer->cpus;
++	cpu_buffers = kzalloc(bsize, GFP_KERNEL);
++	if (!cpu_buffers)
++		return -ENOMEM;
++
++	old_order = buffer->subbuf_order;
++	old_size = buffer->subbuf_size;
++
++	/* prevent another thread from changing buffer sizes */
++	mutex_lock(&buffer->mutex);
++	atomic_inc(&buffer->record_disabled);
++
++	/* Make sure all commits have finished */
++	synchronize_rcu();
++
+ 	buffer->subbuf_order = order;
+ 	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
+ 
+-	/* Todo: reset the buffer with the new page size */
++	/* Make sure all new buffers are allocated, before deleting the old ones */
++	for_each_buffer_cpu(buffer, cpu) {
++		if (!cpumask_test_cpu(cpu, buffer->cpumask))
++			continue;
++
++		nr_pages = buffer->buffers[cpu]->nr_pages;
++		cpu_buffers[cpu] = rb_allocate_cpu_buffer(buffer, nr_pages, cpu);
++		if (!cpu_buffers[cpu]) {
++			err = -ENOMEM;
++			goto error;
++		}
++	}
++
++	for_each_buffer_cpu(buffer, cpu) {
++		if (!cpumask_test_cpu(cpu, buffer->cpumask))
++			continue;
++
++		rb_free_cpu_buffer(buffer->buffers[cpu]);
++		buffer->buffers[cpu] = cpu_buffers[cpu];
++	}
++
++	atomic_dec(&buffer->record_disabled);
++	mutex_unlock(&buffer->mutex);
++
++	kfree(cpu_buffers);
+ 
+ 	return 0;
++
++error:
++	buffer->subbuf_order = old_order;
++	buffer->subbuf_size = old_size;
++
++	atomic_dec(&buffer->record_disabled);
++	mutex_unlock(&buffer->mutex);
++
++	for_each_buffer_cpu(buffer, cpu) {
++		if (!cpu_buffers[cpu])
++			continue;
++		kfree(cpu_buffers[cpu]);
++	}
++	kfree(cpu_buffers);
++
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
+ 
 -- 
 2.42.0
 
