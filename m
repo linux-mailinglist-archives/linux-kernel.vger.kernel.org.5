@@ -1,226 +1,181 @@
-Return-Path: <linux-kernel+bounces-461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E0F9814179
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD1A81417C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:47:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F4191C22416
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:46:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FDC31C22434
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94376D22;
-	Fri, 15 Dec 2023 05:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7E56ADE;
+	Fri, 15 Dec 2023 05:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="hSs5X5Gs"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WHMR8htq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2071.outbound.protection.outlook.com [40.107.9.71])
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA926AA6;
-	Fri, 15 Dec 2023 05:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ISMWu+TY198gs56eeWg1+c1X2osROlyoidQs3ahi3GLl3KgckTM4NoR60deerlogg5Q/gk7XJhqBHuXdFmcwOl3S5OatScgCkj/LT6wsmEcSuBi2YJrXjKcRN5ksYCSqyfM+1gY4GjkSI4WKcR9PlvgYTUYFCEpJpAhvRxl7rweNQrcOfRittHx/x651FsSfhjZUxyEy4tPp92aYK7VkYeumhtvX78pRHB0lP5SHGOj66A7rYncEp4UfScWI3/Q1WlcgD77Q1K8nopkEiC4xsqbSPG7i2I5tbhNpp+dxOaGgjPrLzQv5CELeSYEE7vsv+THCUyIl2s1V7yPwKjbuTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UVMMZG23TPlX43BU4DP+uwSFLoiuCmMf9CezlcYVk2M=;
- b=V2bKBo8vSRHqHX9UlLast44Nj5zx+FUZCO+IpM2yxLl36DffGmPI+9fIlhWHjl/x4rAfc7AfEoooHTqDViyqdcRvhVpakEH7pDWXE9mLZTL+8kUzPbAzLjX5MXK3mRTMfkoiKbMYZeIu19hbgA7sgcsNmmv7eOJzvNiWrXCK0tOE1U38hjQmX/dA4bawvE0wLIKjtG0gZq+aceqB6zZMExjHiwSjNCD6HfktTvnoVq+z8E+mcBCcxSiWx9NQQKE25l7DV3HOSbcrY+uXioEfnNWgIX7XqcDouZnWSF4OUf0s6v6TNmV5OsomiEV6xGEtGmDQF6CC3b+rzf4AKQkkjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UVMMZG23TPlX43BU4DP+uwSFLoiuCmMf9CezlcYVk2M=;
- b=hSs5X5GsRvcAZCvzqq3fPwd4NUX04TXLjqiLW2RkBZdepS/yph3YaHULpF1zlo7hPDajVqGjeFv8pGaxU/5dw9J18CTLJ3dId4HF/m8OvPYjcqQCh3Tux+RJNzZzHOmUF9abVM0D5DfwqCxP95kdy9Smq6XAyYAmtYzou4v4Kf8mN8jILDIVSXJn73DIp0MOBgvaSuOYx09axvpsttf2KDarACCo8qoWi+urNrU7i3aCh8mbDzqce8PrPgNsUTaOTryu7UdwSIUc4FXObYpsuIHWT0FVJZIcmTdxG1Sa4a0pSatpMuX5cToSAUE75hBeZhxsPZhCvLHXsU7GZagK7w==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB1951.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:192::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 05:46:25 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.030; Fri, 15 Dec 2023
- 05:46:24 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Waiman Long <longman@redhat.com>, George Stark
-	<gnstark@salutedevices.com>, "andy.shevchenko@gmail.com"
-	<andy.shevchenko@gmail.com>, "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org"
-	<lee@kernel.org>, "vadimp@nvidia.com" <vadimp@nvidia.com>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>, "npiggin@gmail.com"
-	<npiggin@gmail.com>, "hdegoede@redhat.com" <hdegoede@redhat.com>,
-	"mazziesaccount@gmail.com" <mazziesaccount@gmail.com>, "peterz@infradead.org"
-	<peterz@infradead.org>, "mingo@redhat.com" <mingo@redhat.com>,
-	"will@kernel.org" <will@kernel.org>, "boqun.feng@gmail.com"
-	<boqun.feng@gmail.com>, "nikitos.tr@gmail.com" <nikitos.tr@gmail.com>
-CC: "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"kernel@salutedevices.com" <kernel@salutedevices.com>
-Subject: Re: [PATCH v4 02/10] locking: introduce devm_mutex_init
-Thread-Topic: [PATCH v4 02/10] locking: introduce devm_mutex_init
-Thread-Index: AQHaLrQSLTXRy4mOS0OgHh/wjtvn+LCpHvQAgAASE4CAACAsAIAAhXeA
-Date: Fri, 15 Dec 2023 05:46:24 +0000
-Message-ID: <5ef8a83a-5dfd-4038-851e-c730d5f1b6f3@csgroup.eu>
-References: <20231214173614.2820929-1-gnstark@salutedevices.com>
- <20231214173614.2820929-3-gnstark@salutedevices.com>
- <5c10f66c-3fd8-4861-994b-13e71c24f10a@redhat.com>
- <b158ca2b-7300-4ad0-82b8-e1442d267734@csgroup.eu>
- <300d2131-87ef-48c1-b162-dcef0d8d5722@redhat.com>
-In-Reply-To: <300d2131-87ef-48c1-b162-dcef0d8d5722@redhat.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB1951:EE_
-x-ms-office365-filtering-correlation-id: afaecdc4-6b3a-4aed-471e-08dbfd312cb0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- p1swEM37G3DFbbVGjETkoLrpkHPbkDXy364s3/GGdiLsScFyh3wnwoCmrYnV5C9I//DTFqmQBVTkpN5MMfBM2nW9Gp/5SGpGLN/MqMuI5qRPR4ZgOwcBMmldnLxnzIkKbsRXHkOd+yY8AztelUfbePmUPU5FsZEWGRIIvdIYpVs4KNKnzk3LKbh7/YGzWqTlWbn2eTeWZRylA4Tusyv9ohs4cs6Pk0FUAeNBo4poSGiBqwI0mS5dlQ1jR8HeFd0v+ZWR9t5yAwdutYjv+Cj5qKOtVwTIvg35a41n3W3soUTlysMM4G67/xShGT8cbOXjTKVZSy5HIJtQRpPqapz0X5O3KZNl4R0lgCgOFYW1LCqAfQxyYlxRb3/bNfpxsqXIKuzTgR6XkmUESpWmUmRPjrcIBZVnfbh9ZGOPrY8wEojR0EUhG0/VE4w6Gk1xZt9UQP2YAFKsGgBuasAkCMvbOHFdogPGYSU79+EGFTgYFZS9xeMZk9fmkqqBkphddNKL+VxlJRxq4OdU4a34cIhms5vUqYcSY+FkkQgypSLg8UV5fiphRp2m8foWEp6vbe12sThbdqLP2dKwjrlN88kSXLx34z6x+4ckxTpSUUQ4dA2bKAkeklz/c0GudNOjs0NQlpK65QFaN9iNAssdK/SJRgumGMuOJ8K8r7PEYniIWbK8PEBSGJLg6e4Kpi92zIQLy/uwz9waMXpimL/J0VIYUG1zV45lQ55ljKeswcUAtH8=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(376002)(366004)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799012)(451199024)(186009)(4326008)(8936002)(44832011)(8676002)(2906002)(7416002)(5660300002)(478600001)(6506007)(6512007)(53546011)(91956017)(110136005)(54906003)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(316002)(6486002)(66899024)(41300700001)(38100700002)(122000001)(31686004)(31696002)(86362001)(36756003)(921008)(38070700009)(71200400001)(66574015)(2616005)(26005)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?VVg2UVA4S2M0MkgwZDA5ejRPTFk2UCtUNVgrZHhhU0l5cnNLNnJRM2I3aDZN?=
- =?utf-8?B?bzJ6cFZ3NGMzcVlmTTIzY0FKNzBZR2V3ajVxYTRkamZsNklPSXF5TnpuclJO?=
- =?utf-8?B?UC9iMHdobmplRmJ4MjRSNDdzRWRhMGNMRUNLQVVndGRvOUZVSTJPdUlWemNO?=
- =?utf-8?B?TnVpTThONFFSVXAvVko3ZjJMVWtVMTZNOGVHeWxPNHhWcm4vcU9qYWhOTzla?=
- =?utf-8?B?ejdwSVRURytscDRpcVdJa3lHNVFqcENaaWk0eHJvbFJCNzRub01KYW9yNWpU?=
- =?utf-8?B?T2FFd0xSMFFjNXMrS0VBbXFObUJYRkR3dmFwczRNaEdtZEVYNk5JK2xQWC8w?=
- =?utf-8?B?V2ljSU9uMlpxSzNxdS9yN2w5VmY3aU9JdnJiUTQrc1JMdG5pcU13anRla3NQ?=
- =?utf-8?B?VGFzeGtqM2E5STcxaUR4WmVqdlE5MTdReXl2bDkwYngwL3grRUtEQ014Vzhm?=
- =?utf-8?B?MnR3OXFUTzhLVEtIeHFEallxZWxZZm11UE5icmJvUGI4Y21ublpQZFk1dUky?=
- =?utf-8?B?aUkwV0VxdVB2RG5UVlkyM2ZpakRXMkp4UGx1WitvMWpucHZtc211WnNhd21S?=
- =?utf-8?B?S05tZU9uREo5S2FJMHZmbWI1dmE4SmZ5alpUNVlNZ2hxcjY0aERrOU54bVJx?=
- =?utf-8?B?Rnl0VUMwUDJ3RUd4YkZLSkh4NTFKeUErbE9MTjYyRi9NSGUwdWRuM0Z3UFI0?=
- =?utf-8?B?SDJRRmJGcFR6RGJ2a0JlZ2JLZWpDb3UxS2grYmhSQXAvUTYxOVRaTGtFeFkw?=
- =?utf-8?B?OGt3cmxjOEFnUFdkMWRmZXpDb3VwVjYyNlNaOW14SjhkZlJVb09SQ0NGWGhj?=
- =?utf-8?B?WWVrZXJ1aFc2SldiRGVKSFR2QnJGbEFZUEhCdm40NnVnRUJza2ZHMGV4NUxC?=
- =?utf-8?B?TDAyVTVzbEljZlU3SkhxVzIrWC9mYmlEWlNOQkRpZnZ6ejh2RDBLbldXVnZC?=
- =?utf-8?B?NC81dDRRdVpOby9GTlZ2N0pIV2czQXJOUE1UYmVkSk43OTRUZXl1bW1Bck0v?=
- =?utf-8?B?QzNwVjN4NW5OU1JnYTd0bFJwdmtiTHZmYU1EaEI1dDJKaEU5eHdkbGhYemFj?=
- =?utf-8?B?SkduS01OSmhTVWc1bC90dGwvdUhTMWE5eVdTaG01NHJKeW9SYVkvUmRDZk1H?=
- =?utf-8?B?bEJpeTg0VWFnVjVWWTBLeVJQd09TSmtRNGRUZno0bTlvY3VVSDZaaVVwcVIv?=
- =?utf-8?B?aUh3UnE5c05mVk5BeTJycVZodHMwNEJodGdidzFIbDBlcG55QS84Um5iOW9a?=
- =?utf-8?B?Sy9DbEZMNGdPUzQyVTZ3dHdYbzJmMDNMbFRubkcva3lzVE1iRS9GNTFaN1JC?=
- =?utf-8?B?WnNEaFFnRDQ4dS9XRHN5TUZ4Q2JMWldMVm53R3ZweFZFaFdlRlBzdDN1ZnEy?=
- =?utf-8?B?K3hBNFBwTGNWVVhhNCtOd0tnNVpRU0ZuYk1VYXdFUHpnUDZhbWJlMkFndTNS?=
- =?utf-8?B?bTlkekhCS1VrMWNFdW56Y1VMRUhlR2d6eXhUcEtwS3FFcXRCZWFIbjllRVhK?=
- =?utf-8?B?a0ZCblVNcmVBbUtOTWNPQ1Y1SGNMMitmMVVSeW9PazhCeVBwdVBvNEFOL3gz?=
- =?utf-8?B?d3pGSnBUZzhyM25IakgzQkZoVmIra1dqV05CWFdRaktkR2VyWnRaRVF4cjFO?=
- =?utf-8?B?a3BJdHRJdzhDalNtNVY4UmMwVWlqcEV4aDRBL1Jwc216MTNnVFVoWmo0UFNL?=
- =?utf-8?B?bkp1QytqS1hKQ2piY3Y3aU5ZVU1wZEtrTmw4NXlqUHFlOTgrejFwVk5JQTgz?=
- =?utf-8?B?RUZJNkljOTBUUGhSSmtoNjRTRlhCL2d6UkV5M1AvYVN0MU1wZzgzWU5Bd1dp?=
- =?utf-8?B?VU9KM3REZ2h6dzlFcFBkdlVUMjZ1RUJ1dzlYa2x3eUozMFRjbm1xQkQ5VC8z?=
- =?utf-8?B?ZkpEdXNwRm9Pa3k0VkxtZk9aaDRHZFJEVUxCSVFNeE5yZWx4Z0g4S2ZEKzNq?=
- =?utf-8?B?Wkt2UXdQWDVTNSt2bnJ3Y0FCZUQrZVdTa1NvNlY3a2FxMjhSZ0pOc1hWWlc5?=
- =?utf-8?B?OEQrNGxpVm1hWkVySGxyQThFMDZnY1lBbTVVRkZkSGpmaGU0dWNhK0MvWkta?=
- =?utf-8?B?RzNremlzMGFtRjlaSWJVRW1UUS9pSFJpTVh1MzNtWTJnS3JYZVQxUzg3Qkxl?=
- =?utf-8?B?V1RPMEJNTzNxMitVZG4wdHczTExEZkl1YmMvaHlkUnBjR1J0WDZ6TUc1anll?=
- =?utf-8?B?bVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8E1CE5739461284DB35EE9E8CA455D74@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0050FD266;
+	Fri, 15 Dec 2023 05:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BF5lQ2P025894;
+	Thu, 14 Dec 2023 23:47:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1702619246;
+	bh=7A27bnkq/YPvUJRBGKKNkhpKPuydlLKX445lS/WVm1k=;
+	h=From:To:CC:Subject:Date;
+	b=WHMR8htqybt5NPW711/q2x2BZRPV2nSot3Y5TASB4PWuw/1udMHuQo8guBqNI/OmD
+	 pb8V4w8a4xJuW6vth4cFLTgVPPSBmih+oxcY+MQfHgjo7sqxOHV0mnhAvcv6feqxfS
+	 5E668IOk4IPdYo9sXshyfNPwJtyReNn/brQ+6kIY=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BF5lQvx005968
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 14 Dec 2023 23:47:26 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
+ Dec 2023 23:47:26 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 14 Dec 2023 23:47:26 -0600
+Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BF5lLfp076019;
+	Thu, 14 Dec 2023 23:47:22 -0600
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
+        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH v3] arm64: dts: ti: k3-am654-icssg2: Enable PHY interrupt for ICSSG2 PHY0
+Date: Fri, 15 Dec 2023 11:17:21 +0530
+Message-ID: <20231215054721.1975642-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: afaecdc4-6b3a-4aed-471e-08dbfd312cb0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 05:46:24.7701
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hE0HUtOT9GRnWt22U9JrxI8tkN5c5qRwQ+b0ykW98SnyGNGZWTPlUg9g2gY862omnIhV+y/Yg49/UyGkBYea7Q5SwMFKroVKglIs1xeua7o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB1951
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-DQoNCkxlIDE0LzEyLzIwMjMgw6AgMjI6NDgsIFdhaW1hbiBMb25nIGEgw6ljcml0wqA6DQo+IE9u
-IDEyLzE0LzIzIDE0OjUzLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPj4NCj4+IExlIDE0LzEy
-LzIwMjMgw6AgMTk6NDgsIFdhaW1hbiBMb25nIGEgw6ljcml0wqA6DQo+Pj4gT24gMTIvMTQvMjMg
-MTI6MzYsIEdlb3JnZSBTdGFyayB3cm90ZToNCj4+Pj4gVXNpbmcgb2YgZGV2bSBBUEkgbGVhZHMg
-dG8gYSBjZXJ0YWluIG9yZGVyIG9mIHJlbGVhc2luZyByZXNvdXJjZXMuDQo+Pj4+IFNvIGFsbCBk
-ZXBlbmRlbnQgcmVzb3VyY2VzIHdoaWNoIGFyZSBub3QgZGV2bS13cmFwcGVkIHNob3VsZCBiZSBk
-ZWxldGVkDQo+Pj4+IHdpdGggcmVzcGVjdCB0byBkZXZtLXJlbGVhc2Ugb3JkZXIuIE11dGV4IGlz
-IG9uZSBvZiBzdWNoIG9iamVjdHMgdGhhdA0KPj4+PiBvZnRlbiBpcyBib3VuZCB0byBvdGhlciBy
-ZXNvdXJjZXMgYW5kIGhhcyBubyBvd24gZGV2bSB3cmFwcGluZy4NCj4+Pj4gU2luY2UgbXV0ZXhf
-ZGVzdHJveSgpIGFjdHVhbGx5IGRvZXMgbm90aGluZyBpbiBub24tZGVidWcgYnVpbGRzDQo+Pj4+
-IGZyZXF1ZW50bHkgY2FsbGluZyBtdXRleF9kZXN0cm95KCkgaXMganVzdCBpZ25vcmVkIHdoaWNo
-IGlzIHNhZmUgZm9yIA0KPj4+PiBub3cNCj4+Pj4gYnV0IHdyb25nIGZvcm1hbGx5IGFuZCBjYW4g
-bGVhZCB0byBhIHByb2JsZW0gaWYgbXV0ZXhfZGVzdHJveSgpIHdpbGwgYmUNCj4+Pj4gZXh0ZW5k
-ZWQgc28gaW50cm9kdWNlIGRldm1fbXV0ZXhfaW5pdCgpDQo+Pj4+DQo+Pj4+IFNpZ25lZC1vZmYt
-Ynk6IEdlb3JnZSBTdGFyayA8Z25zdGFya0BzYWx1dGVkZXZpY2VzLmNvbT4NCj4+Pj4gLS0tDQo+
-Pj4+IMKgwqAgaW5jbHVkZS9saW51eC9tdXRleC5owqDCoMKgwqDCoMKgwqAgfCAyMyArKysrKysr
-KysrKysrKysrKysrKysrKw0KPj4+PiDCoMKgIGtlcm5lbC9sb2NraW5nL211dGV4LWRlYnVnLmMg
-fCAyMiArKysrKysrKysrKysrKysrKysrKysrDQo+Pj4+IMKgwqAgMiBmaWxlcyBjaGFuZ2VkLCA0
-NSBpbnNlcnRpb25zKCspDQo+Pj4+DQo+Pj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L211
-dGV4LmggYi9pbmNsdWRlL2xpbnV4L211dGV4LmgNCj4+Pj4gaW5kZXggYTMzYWE5ZWI5ZmMzLi5l
-YmQwM2ZmMWVmNjYgMTAwNjQ0DQo+Pj4+IC0tLSBhL2luY2x1ZGUvbGludXgvbXV0ZXguaA0KPj4+
-PiArKysgYi9pbmNsdWRlL2xpbnV4L211dGV4LmgNCj4+Pj4gQEAgLTIxLDYgKzIxLDggQEANCj4+
-Pj4gwqDCoCAjaW5jbHVkZSA8bGludXgvZGVidWdfbG9ja3MuaD4NCj4+Pj4gwqDCoCAjaW5jbHVk
-ZSA8bGludXgvY2xlYW51cC5oPg0KPj4+PiArc3RydWN0IGRldmljZTsNCj4+Pj4gKw0KPj4+PiDC
-oMKgICNpZmRlZiBDT05GSUdfREVCVUdfTE9DS19BTExPQw0KPj4+PiDCoMKgICMgZGVmaW5lIF9f
-REVQX01BUF9NVVRFWF9JTklUSUFMSVpFUihsb2NrbmFtZSnCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IFwNCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAgLCAuZGVwX21hcCA9IHvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+Pj4+IEBAIC0xMjcsNiArMTI5LDIwIEBAIGV4
-dGVybiB2b2lkIF9fbXV0ZXhfaW5pdChzdHJ1Y3QgbXV0ZXggKmxvY2ssDQo+Pj4+IGNvbnN0IGNo
-YXIgKm5hbWUsDQo+Pj4+IMKgwqDCoCAqLw0KPj4+PiDCoMKgIGV4dGVybiBib29sIG11dGV4X2lz
-X2xvY2tlZChzdHJ1Y3QgbXV0ZXggKmxvY2spOw0KPj4+PiArI2lmZGVmIENPTkZJR19ERUJVR19N
-VVRFWEVTDQo+Pj4+ICsNCj4+Pj4gK2ludCBkZXZtX211dGV4X2luaXQoc3RydWN0IGRldmljZSAq
-ZGV2LCBzdHJ1Y3QgbXV0ZXggKmxvY2spOw0KPj4+IFBsZWFzZSBhZGQgImV4dGVybiIgdG8gdGhl
-IGZ1bmN0aW9uIGRlY2xhcmF0aW9uIHRvIGJlIGNvbnNpc3RlbnQgd2l0aA0KPj4+IG90aGVyIGZ1
-bmN0aW9uYWwgZGVjbGFyYXRpb25zIGluIG11dGV4LmguDQo+PiAnZXh0ZXJuJyBpcyBwb2ludGxl
-c3MgYW5kIGRlcHJlY2F0ZWQgb24gZnVuY3Rpb24gcHJvdG90eXBlcy4gQWxyZWFkeQ0KPj4gaGF2
-aW5nIHNvbWUgaXMgbm90IGEgZ29vZCByZWFzb24gdG8gYWRkIG5ldyBvbmVzLCBlcnJvcnMgZnJv
-bSB0aGUgcGFzdA0KPj4gc2hvdWxkIGJlIGF2b2lkZWQgbm93YWRheXMuIFdpdGggdGltZSB0aGV5
-IHNob3VsZCBhbGwgZGlzYXBwZWFyIHNvIGRvbid0DQo+PiBhZGQgbmV3IG9uZXMuDQo+IFllcywg
-ImV4dGVybiIgaXMgb3B0aW9uYWwuIEl0IGlzIGp1c3QgYSBzdWdnZXN0aW9uIGFuZCBJIGFtIGdv
-aW5nIHRvIA0KPiBhcmd1ZSBhYm91dCB0aGF0Lg0KDQpGV0lXLCBub3RlIHRoYXQgd2hlbiB5b3Ug
-cGVyZm9ybSBhIHN0cmljdCBjaGVjayB3aXRoIGNoZWNrcGF0Y2gucGwsIHlvdSANCmdldCBhIHdh
-cm5pbmcgZm9yIHRoYXQ6DQoNCiQgLi9zY3JpcHRzL2NoZWNrcGF0Y2gucGwgLS1zdHJpY3QgLWcg
-SEVBRA0KQ0hFQ0s6IGV4dGVybiBwcm90b3R5cGVzIHNob3VsZCBiZSBhdm9pZGVkIGluIC5oIGZp
-bGVzDQojNTY6IEZJTEU6IGluY2x1ZGUvbGludXgvbXV0ZXguaDoxMzE6DQorZXh0ZXJuIGludCBk
-ZXZtX211dGV4X2luaXQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgbXV0ZXggKmxvY2spOw0K
-DQp0b3RhbDogMCBlcnJvcnMsIDAgd2FybmluZ3MsIDEgY2hlY2tzLCA5OSBsaW5lcyBjaGVja2Vk
-DQoNCj4+DQo+Pj4+ICsNCj4+Pj4gKyNlbHNlDQo+Pj4+ICsNCj4+Pj4gK3N0YXRpYyBpbmxpbmUg
-aW50IGRldm1fbXV0ZXhfaW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBtdXRleA0KPj4+
-PiAqbG9jaykNCj4+Pj4gK3sNCj4+Pj4gK8KgwqDCoCBtdXRleF9pbml0KGxvY2spOw0KPj4+PiAr
-wqDCoMKgIHJldHVybiAwOw0KPj4+PiArfQ0KPj4+IEkgd291bGQgcHJlZmVyIHlvdSB0byBhZGQg
-YSBkZXZtX211dGV4X2luaXQgbWFjcm8gYWZ0ZXIgdGhlIGZ1bmN0aW9uDQo+Pj4gZGVjbGFyYXRp
-b24gYW5kIHB1dCB0aGlzIGlubGluZSBmdW5jdGlvbiBhdCB0aGUgZW5kIG9mIGhlYWRlciBpZiB0
-aGUNCj4+PiBkZXZtX211dGV4X2luaXQgbWFjcm8gaXNuJ3QgZGVmaW5lZC4gSW4gdGhpcyB3YXks
-IHlvdSBkb24ndCBuZWVkIHRvDQo+Pj4gcmVwZWF0IHRoaXMgaW5saW5lIGZ1bmN0aW9uIHR3aWNl
-IGFzIGl0IGhhcyBubyBkZXBlbmRlbmN5IG9uIFBSRUVNUFRfUlQuDQo+PiBJdCBpcyBhbHJlYWR5
-IGRvbmUgdGhhdCB3YXkgZm9yIG90aGVyIGZ1bmN0aW9ucyBpbiB0aGF0IGZpbGUuIFNob3VsZCBi
-ZQ0KPj4ga2VwdCBjb25zaXN0YW50LiBJIGFncmVlIHdpdGggeW91IGl0IGlzIG5vdCBpZGVhbCwg
-bWF5YmUgd2Ugc2hvdWxkDQo+PiByZXdvcmsgdGhhdCBmaWxlIGNvbXBsZXRlbHkgYnV0IEkgZG9u
-J3QgbGlrZSB0aGUgaWRlYSBvZiBhDQo+PiBkZXZtX211dGV4X2luaXQgbWFjcm8gZm9yIHRoYXQu
-DQo+IA0KPiBkZXZtX211dGV4X2luaXQoKSBpcyBub3QgYW4gQVBJIGZvciB0aGUgY29yZSBtdXRl
-eCBjb2RlLiBUaGF0IGlzIHdoeSBJIA0KPiB3YW50IHRvIG1pbmltaXplIGNoYW5nZSB0byB0aGUg
-ZXhpc3RpbmcgY29kZSBsYXlvdXQuIFB1dHRpbmcgaXQgYXQgdGhlIA0KPiBlbmQgd2lsbCByZWR1
-Y2UgY29uZnVzaW9uIHdoZW4gZGV2ZWxvcGVycyBsb29rIHVwIG11dGV4LmggaGVhZGVyIGZpbGUg
-dG8gDQo+IGZpbmQgb3V0IHdoYXQgbXV0ZXggZnVuY3Rpb25zIGFyZSBhdmFpbGFibGUuDQoNCklm
-IEkgbG9vayBhdCBsaW51eC9ncGlvLmggd2UgYXJlIG1vcmUgb3IgbGVzcyBpbiB0aGUgc2FtZSBz
-aXR1YXRpb24gSSB0aGluay4NCg0KZGV2bV9tdXRleF9pbml0KCkgaXMgbm90IGFuIEFQSSBmb3Ig
-dGhlIGNvcmUgbXV0ZXggY29kZSwgYnV0IGRldmVsb3BlcnMgDQpuZWVkIHRvIGtub3cgdGhlIG1h
-bmFnZWQgZnVuY3Rpb25zIGZvciBtdXRleCBleGlzdCwgYW5kIGhhdmluZyB0aGVtIGF0IA0KdGhl
-IHNhbWUgcGxhY2UgYXMgbm9uIG1hbmFnZWQgZnVuY3Rpb25zIGxvb2tzIGJldHRlciB0byBtZS4g
-Tm93IEkgYWdyZWUgDQp3aXRoIHlvdSB0aGF0IHRoaXMgZHVwbGljYXRpb24gb2YgZnVuY3Rpb25z
-IGlzIG5vdCB0aGUgYmVzdCwgYW5kIGl0IGFsc28gDQphcHBsaWVzIHRvIGV4aXN0aW5nIGNvbnRl
-bnQgb2YgbXV0ZXguaCBzbyBtYXliZSB3ZSBjYW4gZG8gc29tZXRoaW5nIA0KYWJvdXQgaXQgbGF0
-ZXIgYW5kIGltcHJvdmUgdGhlIHNpdHVhdGlvbi4NCg0KQ2hyaXN0b3BoZQ0K
+Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
+used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
+for interrupts generated by the PHY. Thus, add the necessary device-tree
+support to enable it.
+
+Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
+the pinmux to select GPIO1_87 for routing the interrupt.
+
+The GPIO1_87 interrupt line is shared by both the PHYs used by ICSSG2 due
+to the board design. Since the SoC only supports Edge-Triggered interrupts
+and Edge-Triggered interrupts cannot be shared, enable interrupt mode of
+operation for ICSSG2 PHY0 alone while ICSSG2 PHY1 shall continue operating
+in polled mode.
+
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Reviewed-by: MD Danish Anwar <danishanwar@ti.com>
+---
+Hello,
+
+This patch is based on linux-next tagged next-20231215.
+
+v2:
+https://lore.kernel.org/r/20231213080216.1710730-1-s-vadapalli@ti.com/
+Changes since v2:
+- Rebased patch on next-20231215.
+- As pointed out by Nishanth Menon <nm@ti.com> at:
+  https://lore.kernel.org/r/20231213123819.tqh3lm2ceir3qjbk@swimmer/
+  the interrupt being shared between both the PHYs is an Edge-Triggered
+  interrupt, due to which it shouldn't be shared. Thus, as discussed at:
+  https://lore.kernel.org/r/0cef8f50-6608-cf3d-ad62-1afd3f5560ea@ti.com/
+  the interrupt shall be dedicated to ICSSG2 PHY0 while ICSSG2 PHY1 shall
+  continue operating in polled mode.
+- Removed interrupt specific configuration from icssg2_phy1 which was
+  present in the v2 patch.
+- Added comment above icssg2_phy0 indicating why the interrupt mode of
+  operation is only being enabled for icssg2_phy0 and not for icssg2_phy1.
+- Updated commit message to match the new implementation.
+
+v1:
+https://lore.kernel.org/r/20231120063159.539306-1-s-vadapalli@ti.com/
+Changes since v1:
+- Rebased patch on next-20231213.
+- Collected Reviewed-by tag from
+  MD Danish Anwar <danishanwar@ti.com>
+- Moved pinctrl from MDIO node to Ethernet PHY node based on feedback from
+  Nishanth Menon <nm@ti.com>
+- Replaced the hard-coded value 0x2 with IRQ_TYPE_EDGE_FALLING for
+  setting the interrupt trigger type and level flag based on feedback from
+  Nishanth Menon <nm@ti.com>
+- Included dt-bindings/interrupt-controller/irq.h in the overlay.
+- Updated commit message with details of the pinmux resource allocation.
+
+Regards,
+Siddharth.
+
+ arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 23 +++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+index ec8cf20ca3ac..cce3f60904f1 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
++++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+@@ -8,6 +8,7 @@
+ /dts-v1/;
+ /plugin/;
+ 
++#include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/net/ti-dp83867.h>
+ #include "k3-pinctrl.h"
+ 
+@@ -124,6 +125,15 @@ AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
+ 	};
+ };
+ 
++&main_pmx1 {
++	/* Select GPIO1_87 for ICSSG2 PHY interrupt */
++	icssg2_phy_irq_pins_default: icssg2-phy-irq-default-pins {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0014, PIN_INPUT, 7) /* (A22) EXT_REFCLK1.GPIO1_87 */
++		>;
++	};
++};
++
+ &icssg2_mdio {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+@@ -131,8 +141,21 @@ &icssg2_mdio {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+ 
++	/*
++	 * icssg2_phy0 and icssg2_phy1 share the same interrupt:
++	 * "GPIO1_87" due to the board design.
++	 * Since the SoC only supports Edge-Triggered interrupts and
++	 * Edge-Triggered interrupts cannot be shared, the interrupt will
++	 * be dedicated solely for icssg2_phy0's use while icssg2_phy1
++	 * shall continue operating in polled mode.
++	 */
+ 	icssg2_phy0: ethernet-phy@0 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&icssg2_phy_irq_pins_default>;
++
+ 		reg = <0>;
++		interrupt-parent = <&main_gpio1>;
++		interrupts = <87 IRQ_TYPE_EDGE_FALLING>;
+ 		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+ 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+ 	};
+-- 
+2.34.1
+
 
