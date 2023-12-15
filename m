@@ -1,96 +1,96 @@
-Return-Path: <linux-kernel+bounces-946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A15DB81485B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:44:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 590E881485D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 591B6286337
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:44:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8990D1C22CC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9220B2DB6B;
-	Fri, 15 Dec 2023 12:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C7E2C6BA;
+	Fri, 15 Dec 2023 12:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Wb8qv6yO"
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="p028LLFF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8102D7BB;
-	Fri, 15 Dec 2023 12:44:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5A80C433C8;
-	Fri, 15 Dec 2023 12:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1702644261;
-	bh=OE6L5PNX6SGRt851a9OF5sucHu+J1674aufGgMwMSXI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Wb8qv6yOz7kb7SzBjxFcHjpjelmwnipxcMznBaBt6H+xVhnYCcBH9uZ8G03LxTgZe
-	 5PJaTNm5lNhooQavzZeTDPyNQAqYjOWvpNdeVlQARqgiG8PX1PY7e4HHexIht1j3nZ
-	 0pzKzbpFZLMp1lhSVL6hL0bzUI0srek605qS1vVU=
-Date: Fri, 15 Dec 2023 13:44:17 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Sam Edwards <cfsworks@gmail.com>
-Cc: Mathias Nyman <mathias.nyman@intel.com>,
-	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	Heiko Stuebner <heiko@sntech.de>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: dwc3: host: Disable USB3 ports if maximum-speed
- doesn't permit USB3
-Message-ID: <2023121506-persecute-lining-45bf@gregkh>
-References: <20231208210458.912776-1-CFSworks@gmail.com>
- <20231208210458.912776-3-CFSworks@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42FEC2C6AB
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1702644295;
+	bh=ZbNUQcJBnFYDjt8DqRZb690YTN+Yerf1ziIZEyZ/aFk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=p028LLFFmSypXdSf5eQppnhuXxGpim1xqRZkdhtLAxpY23ZFzTWkSL8T/RdmI8sLL
+	 QZwz/IDzaaWsAE4icbVRfMLR29J9FF12OF1IZbHHsniZQ6iqqLUv8MCRZHbg/eeaeR
+	 mJ/r0zQqoGs1G3DcyNm6Ae9zn6XqZmKEA+pJtX/2vhk7BKw61zCVqjXNKXfogQRhzB
+	 XvGZyAzRD9weGxEqE8IWKL5w6kAhsrAdMpNFGzt9ffyftFsOvN9ma8RCFDANZDitx0
+	 TDKU6x3COGie6OLcT1f43fFUSltCQ4wfUkXPqQ9DUGwSQRRUAWQZcvs0akdCdwNbrh
+	 YjLEF/m1dokWA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ss87W3Y79z4xG8;
+	Fri, 15 Dec 2023 23:44:55 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: <linuxppc-dev@lists.ozlabs.org>
+Cc: <linux-kernel@vger.kernel.org>
+Subject: [PATCH] powerpc/64s: Increase default stack size to 32KB
+Date: Fri, 15 Dec 2023 23:44:49 +1100
+Message-ID: <20231215124449.317597-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208210458.912776-3-CFSworks@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 08, 2023 at 02:04:58PM -0700, Sam Edwards wrote:
-> The DWC3 core can be configured (during IP instantiation, and/or via
-> configuration signals) not to have any USB3 ports. Some SoCs, however,
-> may have USB3 interfaces enabled that do not have USB3 PHYs driving
-> them. This can be due to a few circumstances, including:
-> a) The hardware designer didn't include USB3 PHYs and neglected to
->    disable the DWC3 core's USB ports (I know of no instance where this
->    has actually happened, however, and it seems pretty unlikely).
-> b) The USB3 PHYs are present but powered off. Perhaps a driver to enable
->    the PHYs has not yet been written or merged, or USB3 capability is
->    unneeded in the system and the system designer would like to conserve
->    power.
-> c) The USB3 PHYs are muxed to a different controller. This can happen if
->    the PHYs support non-USB protocols and one of these alternate
->    functions is needed instead.
-> 
-> In these circumstances, if the DWC3 does not receive clear link status
-> indication on an enabled USB3 port, the DWC3 may not allow even USB2
-> to function: in host mode, the DWC3 generates an endless barrage of
-> PORT_CSC status on the accompanying USB2 port, and the xHCI driver is
-> unable to bring the USB2 port to a functioning state.
-> 
-> Fix this by first checking if the maximum-speed property in the DT
-> permits USB3. If not, pass the new `disable-usb3;` property to the
-> virtual xHCI device, causing the xHCI driver not to enable the USB3
-> ports. This allows USB2 to function even with USB3 PHYs
-> missing/misbehaving, and may be useful even when the USB3 PHYs are
-> well-behaved: a DT author may know that USB3 support is intact, but
-> disconnected (not exposed off-board) and choose to lower the
-> maximum-speed property to avoid an unusable USB3 rhub showing up in
-> sysfs/lsusb where it may mislead end-users.
-> 
-> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
-> ---
->  drivers/usb/dwc3/host.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+There are reports of kernels crashing due to stack overflow while
+running OpenShift (Kubernetes). The primary contributor to the stack
+usage seems to be openvswitch, which is used by OVN-Kubernetes (based on
+OVN (Open Virtual Network)), but NFS also contributes in some stack
+traces.
 
-Where is patch 1/2 of this series?
+There may be some opportunities to reduce stack usage in the openvswitch
+code, but doing so potentially require tradeoffs vs performance, and
+also requires testing across architectures.
 
-confused,
+Looking at stack usage across the kernel (using -fstack-usage), shows
+that ppc64le stack frames are on average 50-100% larger than the
+equivalent function built for x86-64. Which is not surprising given the
+minimum stack frame size is 32 bytes on ppc64le vs 16 bytes on x86-64.
 
-greg k-h
+So increase the default stack size to 32KB for the modern 64-bit Book3S
+platforms, ie. pseries (virtualised) and powernv (bare metal). That
+leaves the older systems like G5s, and the AmigaOne (pasemi) with a 16KB
+stack which should be sufficient on those machines.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ arch/powerpc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 6f105ee4f3cf..2df545c1446e 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -858,6 +858,7 @@ config THREAD_SHIFT
+ 	int "Thread shift" if EXPERT
+ 	range 13 15
+ 	default "15" if PPC_256K_PAGES
++	default "15" if PPC_PSERIES || PPC_POWERNV
+ 	default "14" if PPC64
+ 	default "13"
+ 	help
+-- 
+2.43.0
+
 
