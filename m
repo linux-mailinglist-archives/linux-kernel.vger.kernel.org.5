@@ -1,99 +1,190 @@
-Return-Path: <linux-kernel+bounces-430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAD38814105
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:39:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FFBE81410D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:55:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96615283C5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:39:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 185EF1F22F65
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE5B63A6;
-	Fri, 15 Dec 2023 04:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09C963A9;
+	Fri, 15 Dec 2023 04:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="C1A0ef93"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c6MZYqys"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEAF53BA;
-	Fri, 15 Dec 2023 04:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF2TX7M028392;
-	Fri, 15 Dec 2023 04:39:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=fZbnhIpJaK2fgilpaTx88
-	zv3506kRqZ00devt7lchuk=; b=C1A0ef93gx/utOfiCZjXAphy4x9+oE/U2Jin4
-	Msu/3zCIXf5xiGFpHDR/asKLf0NteERe+klEpBbZHuiK04OuQj/mJ6QevTB8FpP9
-	fd4wWruwBx9dbyWF2COgQApxT1v4uTSitvNsbzcGbzuLJvFLtm6epo+EB1qDAQ5y
-	jZVHSQtW1TdaaNx+KjOAbketXmGiroadKEuhPMjEh+uq+M+gPG7KYa91y/EIXaQF
-	S9u/k0Hfzx5efzV4eTIWdtxkqMn+QHLzKDmuKuZ/qcqIuhjaRicbsIK+e1yFLNLz
-	qdDvjR9GRgvuDTX1Y0wIT4G97L3OytkfXSXjYbD8RhmUkTOow==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynjac7tu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 04:39:38 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BF4dbJO030231
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 04:39:37 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 20:39:34 -0800
-Date: Fri, 15 Dec 2023 10:09:30 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: <agross@kernel.org>, <andersson@kernel.org>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH] regulator: qcom_smd: Add LDO5 MP5496 regulator
-Message-ID: <ZXvYgmB/NRtZZb8f@hu-varada-blr.qualcomm.com>
-References: <20231214104052.3267039-1-quic_varada@quicinc.com>
- <93bec6b7-78c3-4064-9775-b27c5ac511fb@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDE91C31;
+	Fri, 15 Dec 2023 04:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702616144; x=1734152144;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=NNfMgy2cTrS1wiw43TcFoePLy/Ki0BUTJzsVdIqabMc=;
+  b=c6MZYqys+eDvrMUmmt7mH/Nk71ggIEBbYkBqI/qu9QQiw5QPKiLRr/UH
+   CiM7TTZPFNq6GcH9v6bN5H2Uir/szAQ9spN2FWn1EBSgjbcyyOhAHdMZp
+   oMadF98l1G9vNSVqL569/6z8Lyc/LLcRjCb9FiYZYTC5mvpFPV8X+AIus
+   KRl+M059a/Huq4r661bWfRcgl5tlPHcfzXy4Nc93A/YtAnYki0mUnK5l1
+   z237d2dkwRgl3A5WeHT0KPBg0L6mMPr+O3tRqqGHr5vDKOSV91wS+z6lN
+   u03B7uHizgCKolQRWt5PYlKCYWUwDTM6+MaPL0ylNXXwgvYXugxQWZ7Xq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="8587929"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="8587929"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 20:55:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="22699992"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 20:55:40 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,  Dave Jiang
+ <dave.jiang@intel.com>,  Andrew Morton <akpm@linux-foundation.org>,  Oscar
+ Salvador <osalvador@suse.de>,  <linux-kernel@vger.kernel.org>,
+  <nvdimm@lists.linux.dev>,  <linux-cxl@vger.kernel.org>,  David
+ Hildenbrand <david@redhat.com>,  "Dave Hansen"
+ <dave.hansen@linux.intel.com>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  <linux-mm@kvack.org>,  "Li Zhijian"
+ <lizhijian@fujitsu.com>,  Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v5 4/4] dax: add a sysfs knob to control
+ memmap_on_memory behavior
+In-Reply-To: <20231214-vv-dax_abi-v5-4-3f7b006960b4@intel.com> (Vishal Verma's
+	message of "Thu, 14 Dec 2023 00:37:57 -0700")
+References: <20231214-vv-dax_abi-v5-0-3f7b006960b4@intel.com>
+	<20231214-vv-dax_abi-v5-4-3f7b006960b4@intel.com>
+Date: Fri, 15 Dec 2023 12:53:40 +0800
+Message-ID: <87h6kkqd63.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <93bec6b7-78c3-4064-9775-b27c5ac511fb@linaro.org>
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: n2lVb3VfLE-ANA8UnoUHzw3lh2KVXzoy
-X-Proofpoint-ORIG-GUID: n2lVb3VfLE-ANA8UnoUHzw3lh2KVXzoy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=14 malwarescore=0 adultscore=0
- impostorscore=0 spamscore=14 priorityscore=1501 mlxlogscore=80 mlxscore=14
- clxscore=1015 lowpriorityscore=0 bulkscore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312150031
+Content-Type: text/plain; charset=ascii
 
-On Thu, Dec 14, 2023 at 07:26:24PM +0100, Konrad Dybcio wrote:
->
->
-> On 12/14/23 11:40, Varadarajan Narayanan wrote:
-> > Add support for LDO5 regulator. This is used by IPQ9574 USB.
-> >
-> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > ---
-> Why did you remove the bindings since the last revision?
->
-> https://lore.kernel.org/linux-arm-msm/cover.1701160842.git.varada@hu-varada-blr.qualcomm.com/
+Vishal Verma <vishal.l.verma@intel.com> writes:
 
-Oops! Sorry. Sent the wrong patch.
-Will send the correct one.
+> Add a sysfs knob for dax devices to control the memmap_on_memory setting
+> if the dax device were to be hotplugged as system memory.
+>
+> The default memmap_on_memory setting for dax devices originating via
+> pmem or hmem is set to 'false' - i.e. no memmap_on_memory semantics, to
+> preserve legacy behavior. For dax devices via CXL, the default is on.
+> The sysfs control allows the administrator to override the above
+> defaults if needed.
+>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Tested-by: Li Zhijian <lizhijian@fujitsu.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+> ---
+>  drivers/dax/bus.c                       | 38 +++++++++++++++++++++++++++++++++
+>  Documentation/ABI/testing/sysfs-bus-dax | 17 +++++++++++++++
+>  2 files changed, 55 insertions(+)
+>
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 6226de131d17..f4d3beec507c 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -1245,6 +1245,43 @@ static ssize_t numa_node_show(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RO(numa_node);
+>  
+> +static ssize_t memmap_on_memory_show(struct device *dev,
+> +				     struct device_attribute *attr, char *buf)
+> +{
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
+> +
+> +	return sprintf(buf, "%d\n", dev_dax->memmap_on_memory);
+> +}
+> +
+> +static ssize_t memmap_on_memory_store(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      const char *buf, size_t len)
+> +{
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
+> +	struct dax_device_driver *dax_drv;
+> +	ssize_t rc;
+> +	bool val;
+> +
+> +	rc = kstrtobool(buf, &val);
+> +	if (rc)
+> +		return rc;
+> +
+> +	if (val == true && !mhp_supports_memmap_on_memory()) {
+> +		dev_dbg(dev, "memmap_on_memory is not available\n");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	guard(device)(dev);
+> +	dax_drv = to_dax_drv(dev->driver);
 
-Varada
+Although "struct driver" is the first member of "struct
+dax_device_driver", I feel the code is fragile to depends on that.  Can
+we check dev->driver directly instead?
+
+--
+Best Regards,
+Huang, Ying
+
+> +	if (dax_drv && dev_dax->memmap_on_memory != val &&
+> +	    dax_drv->type == DAXDRV_KMEM_TYPE)
+> +		return -EBUSY;
+> +	dev_dax->memmap_on_memory = val;
+> +
+> +	return len;
+> +}
+> +static DEVICE_ATTR_RW(memmap_on_memory);
+> +
+>  static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+>  {
+>  	struct device *dev = container_of(kobj, struct device, kobj);
+> @@ -1271,6 +1308,7 @@ static struct attribute *dev_dax_attributes[] = {
+>  	&dev_attr_align.attr,
+>  	&dev_attr_resource.attr,
+>  	&dev_attr_numa_node.attr,
+> +	&dev_attr_memmap_on_memory.attr,
+>  	NULL,
+>  };
+>  
+> diff --git a/Documentation/ABI/testing/sysfs-bus-dax b/Documentation/ABI/testing/sysfs-bus-dax
+> index 6359f7bc9bf4..40d9965733b2 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-dax
+> +++ b/Documentation/ABI/testing/sysfs-bus-dax
+> @@ -134,3 +134,20 @@ KernelVersion:	v5.1
+>  Contact:	nvdimm@lists.linux.dev
+>  Description:
+>  		(RO) The id attribute indicates the region id of a dax region.
+> +
+> +What:		/sys/bus/dax/devices/daxX.Y/memmap_on_memory
+> +Date:		October, 2023
+> +KernelVersion:	v6.8
+> +Contact:	nvdimm@lists.linux.dev
+> +Description:
+> +		(RW) Control the memmap_on_memory setting if the dax device
+> +		were to be hotplugged as system memory. This determines whether
+> +		the 'altmap' for the hotplugged memory will be placed on the
+> +		device being hotplugged (memmap_on_memory=1) or if it will be
+> +		placed on regular memory (memmap_on_memory=0). This attribute
+> +		must be set before the device is handed over to the 'kmem'
+> +		driver (i.e.  hotplugged into system-ram). Additionally, this
+> +		depends on CONFIG_MHP_MEMMAP_ON_MEMORY, and a globally enabled
+> +		memmap_on_memory parameter for memory_hotplug. This is
+> +		typically set on the kernel command line -
+> +		memory_hotplug.memmap_on_memory set to 'true' or 'force'."
 
