@@ -1,415 +1,220 @@
-Return-Path: <linux-kernel+bounces-1727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF5081533A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:08:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE8A815364
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 462B0B25290
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:08:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41C37B24BF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80AF260B96;
-	Fri, 15 Dec 2023 22:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1776718EA9;
+	Fri, 15 Dec 2023 22:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="coibmiha"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="IgggiDUE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2058.outbound.protection.outlook.com [40.107.243.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C10D67E72
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5e4c255846aso8243067b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:01:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702677676; x=1703282476; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q/XgF9D+ghWHUEkU0/9EFhe8biuUdcjJQbYRys6RmOs=;
-        b=coibmiha3XGJaH/fO8bYZr4hVK5r9xdV3z08WKvum2hAT5+M4TSGw+Zy//kFyPMeCu
-         gll1VtNF6lhQ4jwhKrp5rCma0WPdXbQNm1+5iVFi1WJLVuVqtbq/8wdoJQj1vbNppaXJ
-         pK9cbt+TUmLRAITxC+z/IJYmztuRBccbpLu51QvgiGKbEEbxc25VeQpOFa+XMyOhROrw
-         AGgwjAFmU6QGtsOeNKUZJHOKcXkWruDVLyYxUXhASnR6jyQaf+ADPHy9ZtMYtS1NLHu2
-         +yp6n6Fq3wFnYMRSCxuA0SfKtA0duI8Xgj+vzJ+uSgA7RyeSZFKXdQwtlBTNnJLyOCMe
-         GDfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702677676; x=1703282476;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=q/XgF9D+ghWHUEkU0/9EFhe8biuUdcjJQbYRys6RmOs=;
-        b=tAt7pDygfBsltIX93vho+oZeuvXhba8HuLH1DnHzvQVmQtbMjU3e6KNMDHBSIEgRLW
-         6GkavChbk4M40YFGI+W59NrNcNv1c+mbjMMB+O7BfR98hsUeZtJr737bOHW5QCJLcAiL
-         Y4KnMI+doUk85mye9FM8We+yR8h1cBiMOPzAlPLhCAa+Flx17YMthR5hGfWmOExvpAaG
-         MJvDMvfCXkkQYlBlfn74LQU7K5yMjQzO7adsDBqwBCXF4mEifvXiQ6KkZiSrXaQJ9LG5
-         guiwEAtUBoCfIK3kr268yBBHT4oSNCVE5oYuA+IquXzyH3MR+NbKj6TkDxj67biMUFBe
-         gJ1g==
-X-Gm-Message-State: AOJu0YzBo/JZcQZkVRe8WQvCAZq1deXQ8j132Z7I6+Vl7FDt9J5sWTU8
-	ZLuEMFrwZuxaMKyDr6B3KMep6jlyJZU=
-X-Google-Smtp-Source: AGHT+IFRfifySHfu+x7zocgmttDsEC9d4gRnsz7xikVQGrFLGy2SKg/qdoWft9GPsjmIJAKpi++YUen43Z4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:134a:b0:dbd:2f0:c763 with SMTP id
- g10-20020a056902134a00b00dbd02f0c763mr9605ybu.1.1702677675842; Fri, 15 Dec
- 2023 14:01:15 -0800 (PST)
-Date: Fri, 15 Dec 2023 14:01:14 -0800
-In-Reply-To: <CAEXW_YQ6hVwWrRe-Fgk8bU6BcbwVYoX5ARB8eR+ERZuTuE-wug@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9E118EA1;
+	Fri, 15 Dec 2023 22:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lFb0o2RWX5sq/uQmq9tI0K9ZfUU/hz5rhwowED3BO1x3iv52Vxz37YwYXVGvB+Gcfz7ThwFXI9YHBAaQWFS6gxW6kY1ydvjK34flgMx+RIiPtLtDV2+aNmIt737EDMAtU/UyENsMB9K8wCcKpF+g2wFq+4zNwnsNRdyIYqC1D3j5gEZNdEIY8LW0ILmIGt4Ygu26FjNPfYqVlorQTSoAAAesd3v6h8ip3/0HLGN4JZ5KXgA4/Z0pN92CnAGdJw3NK09Suv9UuQuhs3zT9BHNvyya0zWfq59KX2bqtjuf3jjjItUn+wuumBdXNORR+2XpoQKRHtnuYHwYs0KUNcuztg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F8yQiURzbi+JuTiylQT8sVzM/UD+jOTKzIg7VMaTVto=;
+ b=U6WXLtrqP1snoH9vcjC89kO9usB1JQqZcamoltf/m7fixDTL3Ix/QJzSEt1UCZNa34NfR1BaRZO/Zj8xU4eqvq7ua8egwuItXIokFB9CtIf7DhhGayYUl7+r2Vi/fkWtIcTVWEDWGmu4h9kSx/hZcMgYBQ5+h2VghUMuv+AHcMajmgD7VEHK/lAry5wJZLSsMCUSu3aqgRepXWZ68VV5rA3bzHinE6IiF+jSzBT5LsQB2TcCRtWymyfofo7UmP6B2Stt5uusnioCwc8z5xEn0qKJjoIYxi2KJmLRg9xYhFLBaT8EWAzQp/3WwaqIuH0mj9Ffj9urQmYkp75q/3SLpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F8yQiURzbi+JuTiylQT8sVzM/UD+jOTKzIg7VMaTVto=;
+ b=IgggiDUEVdvRBzbJv6jY1ukH56/8FjrchIpNiLxD2goHEXnSEvB5mXswTtvrcCoCCdrd2LzZNyx9ullQcOvdz5yJGm9vUfIPBYs7cT5Wih6Ba9Llfcq6Ug5QP9Zy/s+XKjz3wANOY+z1evD+qU+8nJVv4XQX3p4ZNaPMlNtdpaQ=
+Received: from MW4PR03CA0279.namprd03.prod.outlook.com (2603:10b6:303:b5::14)
+ by MW4PR12MB7215.namprd12.prod.outlook.com (2603:10b6:303:228::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.33; Fri, 15 Dec
+ 2023 22:18:06 +0000
+Received: from CO1PEPF000042A9.namprd03.prod.outlook.com
+ (2603:10b6:303:b5:cafe::43) by MW4PR03CA0279.outlook.office365.com
+ (2603:10b6:303:b5::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.32 via Frontend
+ Transport; Fri, 15 Dec 2023 22:18:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000042A9.mail.protection.outlook.com (10.167.243.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7113.14 via Frontend Transport; Fri, 15 Dec 2023 22:18:05 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 15 Dec
+ 2023 16:17:52 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: Bjorn Helgaas <bhelgaas@google.com>, "Rafael J . Wysocki"
+	<rjw@rjwysocki.net>
+CC: <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH v2] x86/pci: Stop requiring ECAM to be declared in E820, ACPI or EFI
+Date: Fri, 15 Dec 2023 16:03:43 -0600
+Message-ID: <20231215220343.22523-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <ZXsvl7mabUuNkWcY@google.com> <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
- <ZXth7hu7jaHbJZnj@google.com> <CAEXW_YTfgemRBKRv2UNjsOLhokxvvmHbVVj1JLtVmhywKtqeHA@mail.gmail.com>
- <ZXyA-Me-DSmCWr7x@google.com> <CAEXW_YQ6hVwWrRe-Fgk8bU6BcbwVYoX5ARB8eR+ERZuTuE-wug@mail.gmail.com>
-Message-ID: <ZXzMqiGFVe4sepaw@google.com>
-Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
-From: Sean Christopherson <seanjc@google.com>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Vineeth Remanan Pillai <vineeth@bitbyteword.org>, Ben Segall <bsegall@google.com>, 
-	Borislav Petkov <bp@alien8.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, 
-	Mel Gorman <mgorman@suse.de>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042A9:EE_|MW4PR12MB7215:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8ca13cbe-4fcf-4a24-48ad-08dbfdbbb631
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	2ZW2w8jTSle3yfckqkqBiSR/8N6dexdLn0niCSZBH8QcmH6oywZdlQKfc8isb+kUkrGm0BPu9MQWgOpF94CyU+UYMrptg+7MX3bV76bX+/vryFYX9w3c/GYpoKTnv002GFUoobfrWZUS9aPQwjpia1gcGMhObocJMjY5jfB8WnqCxmDoB3sgsq2i44EwoE+EMQzWzyl51kEbo3cBPTPGTg8qGPSD2f5IXUbRWPZ5g3VVYQYRY3rwcrkLQOcoit5Yzj8EirykexMmGxd31nTtk55gsTpEg2HnGk/89eXJrCZKcZrEJ9X7QTR0aSkRyoi+1302NLtjA09Gcggis21ixGEX0fUleZMXE5WSXZDLb17jh4NBN+twfscQxhgFPnNdYnFOHdamF0/8Yi+TMTAoOGQ6g9nUGKgCNbA+tLEsbnUDAz0Vlz+dD1dRNgl8i6n/q+J2nCtHRZatDJliXl8C+tTKnkaMtXLgPXfLdJfVOC7GskhsikDFO1kyQRFBrpLGt+I6KfThpF11ZFd4Zcp05abw6ujlnUCo3FqZAKoh6ru4QJtfDsofR/f44MRy3QH7aThJT7S/1Of2QIHOAnPOvgOVNYgK+xkyxwwHV/ceToOs85wWN9vJhNlUXm6m4BN9j3vgY4tw7Phvlupls250H/nXKuqYoZGYO34gAsYLbzpLC9z4kSzqnp1a/AjLyzcaIfUHgnsxaTMxhp1GS3WqlZGLZYVUkphoMiEjFyB6MO+Aq2HXGT+OBfQovMN5NFSceYOv/irgMfWDJU0dV7NvOA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(396003)(346002)(376002)(230922051799003)(186009)(451199024)(82310400011)(1800799012)(64100799003)(40470700004)(36840700001)(46966006)(83380400001)(966005)(478600001)(82740400003)(6666004)(7696005)(1076003)(40480700001)(2616005)(426003)(336012)(16526019)(26005)(110136005)(54906003)(316002)(70206006)(70586007)(356005)(81166007)(36860700001)(47076005)(86362001)(8676002)(4326008)(44832011)(40460700003)(8936002)(5660300002)(2906002)(36756003)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 22:18:05.8889
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ca13cbe-4fcf-4a24-48ad-08dbfdbbb631
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000042A9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7215
 
-On Fri, Dec 15, 2023, Joel Fernandes wrote:
-> On Fri, Dec 15, 2023 at 11:38=E2=80=AFAM Sean Christopherson <seanjc@goog=
-le.com> wrote:
-> >
-> > On Fri, Dec 15, 2023, Joel Fernandes wrote:
-> > > Hi Sean,
-> > > Nice to see your quick response to the RFC, thanks. I wanted to
-> > > clarify some points below:
-> > >
-> > > On Thu, Dec 14, 2023 at 3:13=E2=80=AFPM Sean Christopherson <seanjc@g=
-oogle.com> wrote:
-> > > >
-> > > > On Thu, Dec 14, 2023, Vineeth Remanan Pillai wrote:
-> > > > > On Thu, Dec 14, 2023 at 11:38=E2=80=AFAM Sean Christopherson <sea=
-njc@google.com> wrote:
-> > > > > Now when I think about it, the implementation seems to
-> > > > > suggest that we are putting policies in kvm. Ideally, the goal is=
-:
-> > > > > - guest scheduler communicates the priority requirements of the w=
-orkload
-> > > > > - kvm applies the priority to the vcpu task.
-> > > >
-> > > > Why?  Tasks are tasks, why does KVM need to get involved?  E.g. if =
-the problem
-> > > > is that userspace doesn't have the right knobs to adjust the priori=
-ty of a task
-> > > > quickly and efficiently, then wouldn't it be better to solve that p=
-roblem in a
-> > > > generic way?
-> > >
-> > > No, it is not only about tasks. We are boosting anything RT or above
-> > > such as softirq, irq etc as well.
-> >
-> > I was talking about the host side of things.  A vCPU is a task, full st=
-op.  KVM
-> > *may* have some information that is useful to the scheduler, but KVM do=
-es not
-> > *need* to initiate adjustments to a vCPU's priority.
->=20
-> Sorry I thought you were referring to guest tasks. You are right, KVM
-> does not *need* to change priority. But a vCPU is a container of tasks
-> who's priority dynamically changes. Still, I see your point of view
-> and that's also why we offer the capability to be selectively enabled
-> or disabled per-guest by the VMM (Vineeth will make it default off and
-> opt-in in the next series).
->=20
-> > > Could you please see the other patches?
-> >
-> > I already have, see my comments about boosting vCPUs that have received
-> > NMIs and IRQs not necessarily being desirable.
->=20
-> Ah, I was not on CC for that email. Seeing it now. I think I don't
-> fully buy that argument, hard IRQs are always high priority IMHO.
+commit 7752d5cfe3d1 ("x86: validate against acpi motherboard resources")
+introduced checks for ensuring that MCFG table also has memory region
+reservations to ensure no conflicts were introduced from a buggy BIOS.
 
-They most definitely are not, and there are undoubtedly tiers of priority, =
-e.g.
-tiers are part and parcel of the APIC architecture.  I agree that *most* IR=
-Qs are
-high-ish priority, but that is not the same that *all* IRQs are high priori=
-ty.
-It only takes one example to disprove the latter, and I can think of severa=
-l off
-the top of my head.
+This has proceeded over time to add other types of reservation checks
+for ACPI PNP resources and EFI MMIO memory type.  The PCI firmware spec
+does say that these checks are only required when the operating system
+doesn't comprehend the firmware region:
 
-Nested virtualization is the easy one to demonstrate.
+```
+If the operating system does not natively comprehend reserving the MMCFG
+region, the MMCFG region must be reserved by firmware. The address range
+reported in the MCFG table or by _CBA method (see Section 4.1.3) must be
+reserved by declaring a motherboard resource. For most systems, the
+motherboard resource would appear at the root of the ACPI namespace
+(under \_SB) in a node with a _HID of EISAID (PNP0C02), and the resources
+in this case should not be claimed in the root PCI bus’s _CRS. The
+resources can optionally be returned in Int15 E820h or EFIGetMemoryMap
+as reserved memory but must always be reported through ACPI as a
+motherboard resource.
+```
 
-On AMD, which doesn't have an equivalent to the VMX preemption timer, KVM u=
-ses a
-self-IPI to wrest control back from the guest immediately after VMRUN in so=
-me
-situations (mostly to inject events into L2 while honoring the architectura=
-l
-priority of events).  If the guest is running a nested workload, the result=
-ing
-IRQ in L1 is not at all interesting or high priority, as the L2 workload ha=
-sn't
-suddenly become high priority just because KVM wants to inject an event.
+Running this check causes problems with accessing extended PCI
+configuration space on OEM laptops that don't specify the region in PNP
+resources or in the EFI memory map. That later manifests as problems with
+dGPU and accessing resizable BAR. Similar problems don't exist in Windows
+11 with exact same laptop/firmware stack.
 
-Anyways, I didn't mean to start a debate over the priority of handling IRQs=
- and
-NMIs, quite the opposite actually.  The point I'm trying to make is that un=
-der
-no circumstance do I want KVM to be making decisions about whether or not s=
-uch
-things are high priority.  I have no objection to KVM making information av=
-ailable
-to whatever entity is making the actual decisions, it's having policy in KV=
-M that
-I am staunchly opposed to.
+Due to the stability of the Windows ecosystem that x86 machines participate
+it is unlikely that using the region specified in the MCFG table as
+a reservation will cause a problem. The possible worst circumstance could
+be that a buggy BIOS causes a larger hole in the memory map that is
+unusable for devices than intended.
 
-> If an hrtimer expires on a CPU running a low priority workload, that
-> hrtimer might itself wake up a high priority thread. If we don't boost
-> the hrtimer interrupt handler, then that will delay the wakeup as
-> well. It is always a chain of events and it has to be boosted from the
-> first event. If a system does not wish to give an interrupt a high
-> priority, then the typical way is to use threaded IRQs and lower the
-> priority of the thread. That will give the interrupt handler lower
-> priority and the guest is free to do that. We had many POCs before
-> where we don't boost at all for interrupts and they all fall apart.
-> This is the only POC that works without any issues as far as we know
-> (we've been trying to do this for a long time :P).
+Change the default behavior to keep the region specified in MCFG even if
+it's not specified in another source. This is expected to improve
+machines that otherwise couldn't access PCI extended configuration space.
 
-In *your* environment.  The fact that it took multiple months to get a stab=
-le,
-functional set of patches for one use case is *exactly* why I am pushing ba=
-ck on
-this.  Change any number of things about the setup and odds are good that t=
-he
-result would need different tuning.  E.g. the ratio of vCPUs to pCPUs, the =
-number
-of VMs, the number of vCPUs per VM, whether or not the host kernel is preem=
-ptible,
-whether or not the guest kernel is preemptible, the tick rate of the host a=
-nd
-guest kernels, the workload of the VM, the affinity of tasks within the VM,=
- and
-and so on and so forth.
+In case this change causes problems, add a kernel command line parameter
+that can restore the previous behavior.
 
-It's a catch-22 of sorts.  Anything that is generic enough to land upstream=
- is
-likely going to be too coarse grained to be universally applicable.
+Link: https://members.pcisig.com/wg/PCI-SIG/document/15350
+      PCI Firmware Specification 3.3
+      Section 4.1.2 MCFG Table Description Note 2
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+v1->v2:
+ * Rebase on pci/next
+ * Add an escape hatch
+ * Reword commit message
+---
+ .../admin-guide/kernel-parameters.txt         |  6 ++++++
+ arch/x86/pci/mmconfig-shared.c                | 19 +++++++++++++++----
+ 2 files changed, 21 insertions(+), 4 deletions(-)
 
-> Regarding perf, I similarly disagree. I think a PMU event is super
-> important (example, some versions of the kernel watchdog that depend
-> on PMU fail without it). But if some VM does not want this to be
-> prioritized, they could just not opt-in for the feature IMO. I can see
-> your point of view that not all VMs may want this behavior though.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 65731b060e3f..eacd0c0521c2 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1473,6 +1473,12 @@
+ 			(in particular on some ATI chipsets).
+ 			The kernel tries to set a reasonable default.
+ 
++	enforce_ecam_resv [X86]
++			Enforce requiring an ECAM reservation specified in
++			BIOS for PCI devices.
++			This parameter is only valid if CONFIG_PCI_MMCONFIG
++			is enabled.
++
+ 	enforcing=	[SELINUX] Set initial enforcing status.
+ 			Format: {"0" | "1"}
+ 			See security/selinux/Kconfig help text.
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 0cc9520666ef..aee117c6bbf9 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -34,6 +34,15 @@ static DEFINE_MUTEX(pci_mmcfg_lock);
+ 
+ LIST_HEAD(pci_mmcfg_list);
+ 
++static bool enforce_ecam_resv __read_mostly;
++static int __init parse_ecam_options(char *str)
++{
++	enforce_ecam_resv = true;
++
++	return 1;
++}
++__setup("enforce_ecam_resv", parse_ecam_options);
++
+ static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
+ {
+ 	if (cfg->res.parent)
+@@ -569,10 +578,12 @@ static void __init pci_mmcfg_reject_broken(int early)
+ 
+ 	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+ 		if (!pci_mmcfg_reserved(NULL, cfg, early)) {
+-			pr_info("not using ECAM (%pR not reserved)\n",
+-				&cfg->res);
+-			free_all_mmcfg();
+-			return;
++			pr_info("ECAM %pR not reserved, %s\n", &cfg->res,
++				enforce_ecam_resv ? "ignoring" : "using anyway");
++			if (enforce_ecam_resv) {
++				free_all_mmcfg();
++				return;
++			}
+ 		}
+ 	}
+ }
 
-Or a VM may want it conditionally, e.g. only for select tasks.
+base-commit: 67e04d921cb6902e8c2abdbf748279d43f25213e
+-- 
+2.34.1
 
-> > > At the moment, the only ABI is a shared memory structure and a custom
-> > > MSR. This is no different from the existing steal time accounting
-> > > where a shared structure is similarly shared between host and guest,
-> > > we could perhaps augment that structure with other fields instead of
-> > > adding a new one?
-> >
-> > I'm not concerned about the number of structures/fields, it's the amoun=
-t/type of
-> > information and the behavior of KVM that is problematic.  E.g. boosting=
- the priority
-> > of a vCPU that has a pending NMI is dubious.
->=20
-> I think NMIs have to be treated as high priority, the perf profiling
-> interrupt for instance works well on x86 (unlike ARM) because it can
-> interrupt any context (other than NMI and possibly the machine check
-> ones). On ARM on the other hand, because the perf interrupt is a
-> regular non-NMI interrupt, you cannot profile hardirq and IRQ-disable
-> regions (this could have changed since pseudo-NMI features). So making
-> the NMI a higher priority than IRQ is not dubious AFAICS, it is a
-> requirement in many cases IMHO.
-
-Again, many, but not all.  A large part of KVM's success is that KVM has ve=
-ry few
-"opinions" of its own.  Outside of the MMU and a few paravirt paths, KVM mo=
-stly
-just emulates/virtualizes hardware according to the desires of userspace.  =
-This
-has allowed a fairly large variety of use cases to spring up with relativel=
-y few
-changes to KVM.
-
-What I want to avoid is (a) adding something that only works for one use ca=
-se
-and (b) turning KVM into a scheduler of any kind.
-
-> > Which illustrates one of the points I'm trying to make is kind of my po=
-int.
-> > Upstream will never accept anything that's wildly complex or specific b=
-ecause such
-> > a thing is unlikely to be maintainable.
->=20
-> TBH, it is not that complex though.=20
-
-Yet.  Your use case is happy with relatively simple, coarse-grained hooks. =
- Use
-cases that want to squeeze out maximum performance, e.g. because shaving N%=
- off
-the runtime saves $$$, are likely willing to take on far more complexity, o=
-r may
-just want to make decisions at a slightly different granularity.
-
-> But let us know which parts, if any, can be further simplified (I saw you=
-r
-> suggestions for next steps in the reply to Vineeth, those look good to me=
- and
-> we'll plan accordingly).
-
-It's not a matter of simplifying things, it's a matter of KVM (a) not defin=
-ing
-policy of any kind and (b) KVM not defining a guest/host ABI.
-
-> > > We have to intervene *before* the scheduler takes the vCPU thread off=
- the
-> > > CPU.
-> >
-> > If the host scheduler is directly involved in the paravirt shenanigans,=
- then
-> > there is no need to hook KVM's VM-Exit path because the scheduler alrea=
-dy has the
-> > information needed to make an informed decision.
->=20
-> Just to clarify, we're not making any "decisions" in the VM exit path,
-
-Yes, you are.
-
-> we're just giving the scheduler enough information (via the
-> setscheduler call). The scheduler may just as well "decide" it wants
-> to still preempt the vCPU thread -- that's Ok in fact required some
-> times. We're just arming it with more information, specifically that
-> this is an important thread. We can find another way to pass this
-> information along (BPF etc) but I just wanted to mention that KVM is
-> not really replacing the functionality or decision-making of the
-> scheduler even with this POC.
-
-Yes, it is.  kvm_vcpu_kick_boost() *directly* adjusts the priority of the t=
-ask.
-KVM is not just passing a message, KVM is defining a scheduling policy of "=
-boost
-vCPUs with pending IRQs, NMIs, SMIs, and PV unhalt events".
-
-The VM-Exit path also makes those same decisions by boosting a vCPU if the =
-guest
-has requested boost *or* the vCPU has a pending event (but oddly, not pendi=
-ng
-NMIs, SMIs, or PV unhalt events):
-
-	bool pending_event =3D kvm_cpu_has_pending_timer(vcpu) || kvm_cpu_has_inte=
-rrupt(vcpu);
-
-	/*
-	 * vcpu needs a boost if
-	 * - A lazy boost request active or a pending latency sensitive event, and
-	 * - Preemption disabled duration on this vcpu has not crossed the thresho=
-ld.
-	 */
-	return ((schedinfo.boost_req =3D=3D VCPU_REQ_BOOST || pending_event) &&
-			!kvm_vcpu_exceeds_preempt_disabled_duration(&vcpu->arch));
-
-
-Which, by the by is suboptimal.  Detecting for pending events isn't free, s=
-o you
-ideally want to check for pending events if and only if the guest hasn't re=
-quested
-a boost.
-
-> > > Similarly, in the case of an interrupt injected into the guest, we ha=
-ve
-> > > to boost the vCPU before the "vCPU run" stage -- anything later might=
- be too
-> > > late.
-> >
-> > Except that this RFC doesn't actually do this.  KVM's relevant function=
- names suck
-> > and aren't helping you, but these patches boost vCPUs when events are *=
-pended*,
-> > not when they are actually injected.
->=20
-> We are doing the injection bit in:
-> https://lore.kernel.org/all/20231214024727.3503870-5-vineeth@bitbyteword.=
-org/
->=20
-> For instance, in:
->=20
->  kvm_set_msi ->
->   kvm_irq_delivery_to_apic ->
->      kvm_apic_set_irq ->
->        __apic_accept_irq ->
->             kvm_vcpu_kick_boost();
->=20
-> The patch is a bit out of order because patch 4 depends on 3. Patch 3
-> does what you're referring to, which is checking for pending events.
->=20
-> Did we miss something? If there is some path that we are missing, your
-> help is much appreciated as you're likely much more versed with this
-> code than me.  But doing the boosting at injection time is what has
-> made all the difference (for instance with cyclictest latencies).
-
-That accepts in IRQ into the vCPU's local APIC, it does not *inject* the IR=
-Q into
-the vCPU proper.  The actual injection is done by kvm_check_and_inject_even=
-ts().
-A pending IRQ is _usually_ delivered/injected fairly quickly, but not alway=
-s.
-
-E.g. if the guest has IRQs disabled (RFLAGS.IF=3D0), KVM can't immediately =
-inject
-the IRQ (without violating x86 architecture).  In that case, KVM will twidd=
-le
-VMCS/VMCB knobs to detect an IRQ window, i.e. to cause a VM-Exit when IRQs =
-are
-no longer blocked in the guest.
-
-Your PoC actually (mostly) handles this (see above) by keeping the vCPU boo=
-sted
-after EXIT_REASON_INTERRUPT_WINDOW (because the IRQ will obviously still be=
- pending).
-
-> > Boosting the priority of vCPUs at semi-arbitrary points is going to be =
-much more
-> > difficult for KVM to "get right".  E.g. why boost the priority of a vCP=
-U that has
-> > a pending IRQ, but not a vCPU that is running with IRQs disabled?
->=20
-> I was actually wanting to boost preempted vCPU threads that were
-> preempted in IRQ disabled regions as well. In fact, that is on our
-> TODO.. we just haven't done it yet as we notice that usually IRQ is
-> disabled while preemption was already disabled and just boosting
-> preempt-disabled gets us most of the way there.
->=20
-> > The potential for endless twiddling to try and tune KVM's de facto
-> > scheduling logic so that it's universally "correct" is what terrifies m=
-e.
->=20
-> Yes, we can certainly look into BPF to make it a bit more generic for
-> our usecase (while getting enough information from the kernel).
->=20
-> By the way, one other usecase for this patch series is RCU.  I am one
-> of the RCU maintainers and I am looking into improving RCU in VMs. For
-> instance, boosting preempted RCU readers to RT (CONFIG_RCU_BOOST) does
-> not usually work because the vCPU thread on the host is not RT.
-> Similarly, other RCU threads which have RT priority don't get to run
-> causing issues.
->=20
-> Thanks!
->=20
->  - Joel
 
