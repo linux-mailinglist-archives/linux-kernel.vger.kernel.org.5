@@ -1,245 +1,135 @@
-Return-Path: <linux-kernel+bounces-448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87FE281413F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:27:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5BC881412F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACE801C223DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:27:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 085BD1C223C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31F5746B;
-	Fri, 15 Dec 2023 05:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511E4CA6F;
+	Fri, 15 Dec 2023 05:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="THr7GBr3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QabC6c2R"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17FC63B3
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231215052619epoutp021b7d6ddf59223655ad12b450363b6b90~g6ggY0Cnh1798117981epoutp02a
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:26:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231215052619epoutp021b7d6ddf59223655ad12b450363b6b90~g6ggY0Cnh1798117981epoutp02a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1702617979;
-	bh=eL9hYEmNDzP5hw9IEZEImZuBabBqahO/D3bSV7irFQA=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=THr7GBr3zww+nZ8fljL6K7Ln3j++5cQTtrx0C4DBsV/LOKTRwasAgdQv8FnEiTqjz
-	 2hkLw7n8S+8Jc35RkNuKRI6WoiBdZDTPiEsFlD8XduKeUzIvLT5UJqJ4jweVmfhupL
-	 3BtqATTbHulbC26B5N4MaW3TkM2QavTDbJEvqSU8=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-	20231215052619epcas5p4938fc462999af551f8b9191ab99bee0d~g6gf7b1fa0727707277epcas5p4y;
-	Fri, 15 Dec 2023 05:26:19 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.182]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4SryPN41Ggz4x9Q9; Fri, 15 Dec
-	2023 05:26:16 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	2C.89.19369.873EB756; Fri, 15 Dec 2023 14:26:16 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-	20231215051108epcas5p2c657d2629ed8451ad519644c28e6c234~g6TPpQhPL1850118501epcas5p2X;
-	Fri, 15 Dec 2023 05:11:08 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231215051108epsmtrp1c0c8998163945bab413ca8d1c50a1178~g6TPoXwJW2671726717epsmtrp1b;
-	Fri, 15 Dec 2023 05:11:08 +0000 (GMT)
-X-AuditID: b6c32a50-c99ff70000004ba9-e3-657be378944b
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	E3.B3.18939.CEFDB756; Fri, 15 Dec 2023 14:11:08 +0900 (KST)
-Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20231215051106epsmtip28b912955bc5af8f9bb80aae351fd2e89~g6TOZnKls0775707757epsmtip2c;
-	Fri, 15 Dec 2023 05:11:06 +0000 (GMT)
-From: "Aakarsh Jain" <aakarsh.jain@samsung.com>
-To: "'Rob Herring'" <robh@kernel.org>, "'Mauro Carvalho Chehab'"
-	<mchehab@kernel.org>, "'Krzysztof Kozlowski'"
-	<krzysztof.kozlowski+dt@linaro.org>, "'Conor Dooley'" <conor+dt@kernel.org>,
-	"'Marek Szyprowski'" <m.szyprowski@samsung.com>
-Cc: <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-In-Reply-To: <20231214195553.862920-1-robh@kernel.org>
-Subject: RE: [PATCH v2] media: dt-bindings: samsung,s5p-mfc: Fix iommu
- properties schemas
-Date: Fri, 15 Dec 2023 10:41:04 +0530
-Message-ID: <114701da2f15$1c8cf730$55a6e590$@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551C9CA6B
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6cea2a38b48so244726b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:21:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702617678; x=1703222478; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s+5lBSVYnqDcPFtwn8gCQhYwDjCzvbLiJIKd8Yzo52s=;
+        b=QabC6c2RpuvHsizgy4fYjZzA9v4vpeaD1eS0LlBx7bdMwFMX/JHDs1af2TX7QucMK0
+         MLqfM39sbjn1q2vz0AGm+uINktCCzGWWHfzZDjN8AecnSPZA3crSbQ9a/+UIQt09woim
+         v+ZpsTpVAtOvctbaG1fEOt6qqNidjV+grAvb6pDPcWWJzuw42Y2VtQX0f4ec7sKJQfjW
+         nMz+RfcW2p1CNGoV0COs7GP4R5hnpXBGwRMpnrIleAkEcE1jPhHxKp72lj0F81dp83mh
+         Bs6pamyCFeCAAXSO1r7a7cUgr0YOqIgNHcHOiS0+M782ASExnyF4h8oTO6K9kMQIfRmv
+         1auA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702617678; x=1703222478;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s+5lBSVYnqDcPFtwn8gCQhYwDjCzvbLiJIKd8Yzo52s=;
+        b=L2xTI/l8edFq3ORl3GsokxYm//Nbf/ugLHa/3wxqzPMiKVWfCtkS75UAqAJpH9mYSy
+         2Ll3yxvLWCv0w2kJnnoVFBnbR2R4xRRsojh0iyJazZ7M14pGltPqVXakbTL73vkKvlWh
+         O9frsjsZvL1QpUwygm1gySKAit3l/dQLaChTfU64bGJfiVIInwGbdx8xXLnDS+7mH0Tn
+         Ux1Y2oIkKFKVa0BH4yoedEaefx9fyNES6vKk3dOfq15kEOQIoX528N9z/cJ/F/zTv5V3
+         VLGPgZ1QzP9BmRrr02I34nu3SXur1FNRkiMJIbQcM5b34r7CejKy6ciUej0BO7K8AZRn
+         8ZoA==
+X-Gm-Message-State: AOJu0Yy1keQ+0AtHwO+NL8BAOa/ZwvehkbJefhNc9qE5s6NdWT4T5sc0
+	hgeGfBuZtOGT1JfYesPssak=
+X-Google-Smtp-Source: AGHT+IFht6jswMwabNafHJ7W/vy2mXm7pcUSJHVjGcuN971hwNVXm68KGLw+XrOGkEqilBvD4XKa5Q==
+X-Received: by 2002:a05:6a00:2e10:b0:6d0:9913:3363 with SMTP id fc16-20020a056a002e1000b006d099133363mr8892948pfb.46.1702617678480;
+        Thu, 14 Dec 2023 21:21:18 -0800 (PST)
+Received: from localhost.localdomain ([202.137.218.19])
+        by smtp.gmail.com with ESMTPSA id y20-20020a056a00191400b00688435a9915sm12608593pfi.189.2023.12.14.21.21.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 21:21:18 -0800 (PST)
+From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+To: alexander.deucher@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	Hawking.Zhang@amd.com,
+	candice.li@amd.com,
+	Le.Ma@amd.com,
+	lijo.lazar@amd.com
+Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] gpu: drm: amd: fixed typos
+Date: Fri, 15 Dec 2023 10:50:33 +0530
+Message-Id: <20231215052033.550509-1-ghanshyam1898@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHcypBR0AxbKGLonVbN0M0kdAGaSgFmSeOHsJlilgA=
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmhm7F4+pUg8Z2WYs1e88xWcw/co7V
-	ou/FQ2aLy7vmsFn0bNjKarH2yF12i2Wb/jBZ/N+zg92Bw2PTqk42jzvX9rB59G1ZxejxeZNc
-	AEtUtk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0BlK
-	CmWJOaVAoYDE4mIlfTubovzSklSFjPziElul1IKUnAKTAr3ixNzi0rx0vbzUEitDAwMjU6DC
-	hOyMi0v3sxbMk6qYtzaygfGZYBcjJ4eEgInEtnnrWbsYuTiEBPYwSmw5dJQFwvnEKHHy7BcE
-	5/maNmaYlqtLZjFDJHYySpz/+hmq6jmjxJz5S1hBqtgE9CXun+oBGywi8JFRYsareWDtzAKJ
-	Ev+73wElODg4Bcwktr1UBTGFBaIlmm84glSwCKhKXH0zAayaV8BSonXfYihbUOLkzCcsEFPk
-	Jba/nQN1kILEz6fLwNaKCFhJ3N++lR2iRlzi6M8eqJqpHBJdHaUQtovEy4tbWSBsYYlXx7ew
-	Q9hSEi/726DsZInHi15C9eZIrN8zBareXuLAlTksICczC2hKrN+lDxGWlZh6ah0TxFo+id7f
-	T5gg4rwSO+bB2GoSc+78YIWwZSQOr17KOIFRaRaSz2Yh+WwWkg9mIWxbwMiyilEqtaA4Nz01
-	2bTAUDcvtRwe38n5uZsYwYlUK2AH4+oNf/UOMTJxMB5ilOBgVhLhXbC2OlWINyWxsiq1KD++
-	qDQntfgQoykwvCcyS4km5wNTeV5JvKGJpYGJmZmZiaWxmaGSOO/r1rkpQgLpiSWp2ampBalF
-	MH1MHJxSDUymi52mzRLhKn36UHRWdfXa+m1mkbEdnduYU9uFTlUVpsnsfr4t6tm6CRl+fh6t
-	b1c7XpgtKyzr5cK/ZDH/MrXA07VTj9z53nH6eSTv2RZ235I4r4mzzheEP7gbzzC/8j2H3qFV
-	a+KKuP72Xpfft6XONdSpo6bmruqOp8uzHDtmpa3OVP8oy1SmyrDo9lEV61jhSWz5Byb90I0N
-	Tv2x/5Xi/8MHntU3N7p/1qw4Vrj2SOFh1bJl0y7+4G8QnF72S2GD4vS3++ONztY/bOmKj+hM
-	/Hvxm3Kr3rF+w2WBhryFmo3ZvmXfJ716wSR9UOtlp6G43KXiaRNLa52PXLk2XZBt79b1Kvs1
-	dE6uSlx5e70SS3FGoqEWc1FxIgDTxQ0hLQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDLMWRmVeSWpSXmKPExsWy7bCSvO6b+9WpBn0beSzW7D3HZDH/yDlW
-	i74XD5ktLu+aw2bRs2Erq8XaI3fZLZZt+sNk8X/PDnYHDo9NqzrZPO5c28Pm0bdlFaPH501y
-	ASxRXDYpqTmZZalF+nYJXBkXl+5nLZgnVTFvbWQD4zPBLkZODgkBE4mrS2YxdzFycQgJbGeU
-	uHfxOxtEQkbif9sxdghbWGLlv+dgtpDAU0aJhb3GIDabgL7E/VM9rCDNIgKfGSUO7HvNCJJg
-	FkiWePP2GdTUdkaJa9PWASU4ODgFzCS2vVQFqREWiJRYO38HC4jNIqAqcfXNBGYQm1fAUqJ1
-	32IoW1Di5MwnLCCtzAJ6Em0bocbLS2x/O4cZ4jYFiZ9Pl7GC2CICVhL3t29lh6gRlzj6s4d5
-	AqPwLCSTZiFMmoVk0iwkHQsYWVYxiqYWFOem5yYXGOoVJ+YWl+al6yXn525iBEeQVtAOxmXr
-	/+odYmTiYDzEKMHBrCTCu2BtdaoQb0piZVVqUX58UWlOavEhRmkOFiVxXuWczhQhgfTEktTs
-	1NSC1CKYLBMHp1QDU0L6Z6Xklz2zdu552i9ocyRh4c5FfpHxW44cNp14KKpqbnXB1cS2pNAl
-	WdeFFno/W1NiwNGYdzWU10x6eahHy/rciI9Xj/50+b5X6GO81PxbT14Kd/5f9v99bmT20xip
-	L5LbetiPyVzQu1xqtzdHfuHzuMVtM87Ou/i6RebXll/zJrarOPj8eBmoVDn/rvlv889m6kmX
-	tJWllVR2Hqpd9DY7ccrjdhufJ5MCHh1ZdLLwXH/Cl3ns71ZvOP/j0dpdz86rLTursipT5Ub7
-	fRmvs9kpac/38L89dCEoOyDrfh3H4n98t1MVTNylZK/MW9fzoTTntdbT+9n6CZPPvni+Z9au
-	qc/OMDxmT0hT226/0POfEktxRqKhFnNRcSIAlfcufg8DAAA=
-X-CMS-MailID: 20231215051108epcas5p2c657d2629ed8451ad519644c28e6c234
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231214195605epcas5p1ae2470abdb641ad8d299968fc306ec07
-References: <CGME20231214195605epcas5p1ae2470abdb641ad8d299968fc306ec07@epcas5p1.samsung.com>
-	<20231214195553.862920-1-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
 
+Fixed multiple typos in atomfirmware.h
 
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+---
+ drivers/gpu/drm/amd/include/atomfirmware.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: 15 December 2023 01:26
-> To: Mauro Carvalho Chehab <mchehab@kernel.org>; Krzysztof Kozlowski
-> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> <conor+dt@kernel.org>; Marek Szyprowski <m.szyprowski@samsung.com>;
-> Aakarsh Jain <aakarsh.jain@samsung.com>
-> Cc: linux-media@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org
-> Subject: [PATCH v2] media: dt-bindings: samsung,s5p-mfc: Fix iommu
-> properties schemas
-> 
-> The iommus and iommu-names property schemas have several issues. First,
-> 'iommus-names' in the if/then schemas is the wrong name. As all the names
-> are the same, they can be defined at the top level instead. Then the
-if/then
-> schemas just need to define how many entries. The iommus if/then schemas
-> are also redundant. Best I can tell, the desire was to require 2 entries
-for
-> "samsung,exynos5433-mfc", "samsung,mfc-v5", "samsung,mfc-v6", and
-> "samsung,mfc-v8".
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v2:
->  - Fix some more cases of iommus-names
-> ---
->  .../bindings/media/samsung,s5p-mfc.yaml       | 33 ++++++++-----------
->  1 file changed, 13 insertions(+), 20 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/samsung,s5p-
-> mfc.yaml b/Documentation/devicetree/bindings/media/samsung,s5p-
-> mfc.yaml
-> index 084b44582a43..4c3250985ac3 100644
-> --- a/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml
-> +++ b/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml
-> @@ -49,7 +49,9 @@ properties:
-> 
->    iommu-names:
->      minItems: 1
-> -    maxItems: 2
-> +    items:
-> +      - const: left
-> +      - const: right
-> 
->    power-domains:
->      maxItems: 1
-> @@ -84,7 +86,7 @@ allOf:
->              - const: sclk_mfc
->          iommus:
->            maxItems: 1
-> -        iommus-names: false
-> +        iommu-names: false
-> 
->    - if:
->        properties:
-> @@ -102,11 +104,9 @@ allOf:
->              - const: aclk
->              - const: aclk_xiu
->          iommus:
-> -          maxItems: 2
-> -        iommus-names:
-> -          items:
-> -            - const: left
-> -            - const: right
-> +          minItems: 2
-> +        iommu-names:
-> +          minItems: 2
-> 
->    - if:
->        properties:
-> @@ -123,11 +123,9 @@ allOf:
->              - const: mfc
->              - const: sclk_mfc
->          iommus:
-> -          maxItems: 2
-> -        iommus-names:
-> -          items:
-> -            - const: left
-> -            - const: right
-> +          minItems: 2
-> +        iommu-names:
-> +          minItems: 2
-> 
->    - if:
->        properties:
-> @@ -144,11 +142,9 @@ allOf:
->            items:
->              - const: mfc
->          iommus:
-> -          maxItems: 2
-> -        iommus-names:
-> -          items:
-> -            - const: left
-> -            - const: right
-> +          minItems: 2
-> +        iommu-names:
-> +          minItems: 2
-> 
->    - if:
->        properties:
-> @@ -161,9 +157,6 @@ allOf:
->          clocks:
->            minItems: 1
->            maxItems: 2
-> -        iommus:
-> -          minItems: 1
-> -          maxItems: 2
-> 
->  examples:
->    - |
-> --
-> 2.43.0
-
-Reviewed-by: Aakarsh Jain <aakarsh.jain@samsung.com>
+diff --git a/drivers/gpu/drm/amd/include/atomfirmware.h b/drivers/gpu/drm/amd/include/atomfirmware.h
+index fa7d6ced786f..41d553921adf 100644
+--- a/drivers/gpu/drm/amd/include/atomfirmware.h
++++ b/drivers/gpu/drm/amd/include/atomfirmware.h
+@@ -210,7 +210,7 @@ atom_bios_string          = "ATOM"
+ };
+ */
+ 
+-#pragma pack(1)                          /* BIOS data must use byte aligment*/
++#pragma pack(1)                          /* BIOS data must use byte alignment */
+ 
+ enum atombios_image_offset{
+   OFFSET_TO_ATOM_ROM_HEADER_POINTER          = 0x00000048,
+@@ -452,7 +452,7 @@ struct atom_dtd_format
+   uint8_t   refreshrate;
+ };
+ 
+-/* atom_dtd_format.modemiscinfo defintion */
++/* atom_dtd_format.modemiscinfo definition */
+ enum atom_dtd_format_modemiscinfo{
+   ATOM_HSYNC_POLARITY    = 0x0002,
+   ATOM_VSYNC_POLARITY    = 0x0004,
+@@ -645,7 +645,7 @@ struct lcd_info_v2_1
+   uint32_t reserved1[8];
+ };
+ 
+-/* lcd_info_v2_1.panel_misc defintion */
++/* lcd_info_v2_1.panel_misc definition */
+ enum atom_lcd_info_panel_misc{
+   ATOM_PANEL_MISC_FPDI            =0x0002,
+ };
+@@ -683,7 +683,7 @@ enum atom_gpio_pin_assignment_gpio_id {
+   /* gpio_id pre-define id for multiple usage */
+   /* GPIO use to control PCIE_VDDC in certain SLT board */
+   PCIE_VDDC_CONTROL_GPIO_PINID = 56,
+-  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC swithing feature is enable */
++  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC switching feature is enable */
+   PP_AC_DC_SWITCH_GPIO_PINID = 60,
+   /* VDDC_REGULATOR_VRHOT_GPIO_PINID in Gpio_Pin_LutTable, VRHot feature is enable */
+   VDDC_VRHOT_GPIO_PINID = 61,
+-- 
+2.25.1
 
 
