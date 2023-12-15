@@ -1,146 +1,184 @@
-Return-Path: <linux-kernel+bounces-564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8E08142FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:52:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33F038142FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A69B21F21748
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:52:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 660FE1C22099
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1FA0107A8;
-	Fri, 15 Dec 2023 07:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C9510963;
+	Fri, 15 Dec 2023 07:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GgQL50wf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SCZ+6v78"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1C010797
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-54cde11d0f4so442677a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:51:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702626717; x=1703231517; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w+UmIifhhd7J02PhLn10w2KreV/vi1DdOEwYftCwOVE=;
-        b=GgQL50wfTu6QwRsFV19dxZW/QmHPkT2LYi03qbHjXy1e/FVvGDMLnukqQbMDDTr5yi
-         Lv8oVgB6V38UNfJVaOHL+E/WY/v7BUHaSz12aOoXlQCFH2+f6BkhQzlkG7vO9NTbFj9K
-         X2WUUieihCeR926PCA2kjhPAyukYCcwgjMjyrW6O3eLX4Ru6FOQUAghL8FMUZfSXLxho
-         /6c4sI4zLV/eFRcq0dFi6p1p2YN+qoDa0rTeW/FEh9ErtZiFYhRKBAjXtcUfTGqA3+Ot
-         xUHtqq5bTGaxOx4j+hN7MJwyQJY+DxvG8CrMfspaTGjWA3DbqgpH9aA7yyZ762D+Xfbg
-         UN1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702626717; x=1703231517;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w+UmIifhhd7J02PhLn10w2KreV/vi1DdOEwYftCwOVE=;
-        b=eeeCD0DteZx5edZ4M/EbccawN6HpZE590ehUSj7+qLb/Yl/LUWNQo6gPTnHJyBEjXS
-         pG4N+MKxEMD/dXKwegQGNg9rtJIKtEZ+HIyFdzwV5dkX6fa0brzsij2OGCHBgsyU3XgT
-         kgEJunkXrQhNn5pNppG0dkvbGE7gnDlshSBA6cUdzImZMgu6z2BFbd6lsf7nPkU29zca
-         cR7jRYkqol/61uWVtVegdplKGk/At9zVevfJeV7VBQg9ID3mMKM7WqL/0/CKKMbtxkjU
-         muJdGXgUeVDfMEI37jNA/s2wCeBIL1ssUmGf9j26Tx+n8XrY+bqUED1mTnWzuWoj4njp
-         5KgQ==
-X-Gm-Message-State: AOJu0Yz2/SjRir4f12/dk/34/pgboe+w6jI6nuw3KXVjH46si7aM5uQD
-	Odyf2AR/5l64jvYNcU/XX5fPnw==
-X-Google-Smtp-Source: AGHT+IFPzwuk7YVPIQj75asWCZrCHArqXonr6PvWqVYefpGivEp6ScL9vW0TUJgoLyXEWzVJPiH+ww==
-X-Received: by 2002:a17:907:940b:b0:a1d:3839:a6fc with SMTP id dk11-20020a170907940b00b00a1d3839a6fcmr6728328ejc.88.1702626716893;
-        Thu, 14 Dec 2023 23:51:56 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id mt29-20020a170907619d00b00a0a5a794575sm10497533ejc.216.2023.12.14.23.51.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 23:51:56 -0800 (PST)
-Message-ID: <cfd27865-8d6f-498a-8991-c5a02e50c02f@linaro.org>
-Date: Fri, 15 Dec 2023 08:51:55 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE125107A5;
+	Fri, 15 Dec 2023 07:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702626913; x=1734162913;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=E3dxP/JeHc7c4fIWBmlsAqRVqJ6RpEEE2GiOPJLY2mw=;
+  b=SCZ+6v7832f/wCK3EDKY6kafK7xkHLO3K+HcbMZEXA/W2sbjK0qQ+/ov
+   Qk8u+rS5l9k1AoUNAXUlF6zOfRqtUgxYwoJfvuTIZcUN4+gwoKaHQi0St
+   pAzwDuyilh6tiefJuiTdiWS1Pu5AUp3HeYDAaXjoT7Zbk53aXI/E4r71d
+   NMHshb0TPFsAqFLTkGx0gRiLevJNWmIrt4mpafzXX83De3f27Lt0n+vEC
+   ZUjFhxiSpWUPoHBUT2Le5eMhtJbCjpA62+Qpn8QsCZa7YYTMvGuoz32kV
+   kH3IeDpFbKQ2q7E9TflpMNcfg5IuJnCuYBwgCeAFrdqitgqwhtoetbhKL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="461705868"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="461705868"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 23:55:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="16200871"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 23:55:08 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,  Dave Jiang
+ <dave.jiang@intel.com>,  Andrew Morton <akpm@linux-foundation.org>,  Oscar
+ Salvador <osalvador@suse.de>,  <linux-kernel@vger.kernel.org>,
+  <nvdimm@lists.linux.dev>,  <linux-cxl@vger.kernel.org>,  David
+ Hildenbrand <david@redhat.com>,  "Dave Hansen"
+ <dave.hansen@linux.intel.com>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  <linux-mm@kvack.org>,  "Li Zhijian"
+ <lizhijian@fujitsu.com>,  Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v6 4/4] dax: add a sysfs knob to control
+ memmap_on_memory behavior
+In-Reply-To: <20231214-vv-dax_abi-v6-4-ad900d698438@intel.com> (Vishal Verma's
+	message of "Thu, 14 Dec 2023 22:25:29 -0700")
+References: <20231214-vv-dax_abi-v6-0-ad900d698438@intel.com>
+	<20231214-vv-dax_abi-v6-4-ad900d698438@intel.com>
+Date: Fri, 15 Dec 2023 15:53:08 +0800
+Message-ID: <871qbnrjff.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] media: dt-bindings: samsung,s5p-mfc: Fix iommu
- properties schemas
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Mauro Carvalho Chehab
- <mchehab@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Aakarsh Jain <aakarsh.jain@samsung.com>
-Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231214195553.862920-1-robh@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231214195553.862920-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ascii
 
-On 14/12/2023 20:55, Rob Herring wrote:
-> The iommus and iommu-names property schemas have several issues. First,
-> 'iommus-names' in the if/then schemas is the wrong name. As all the names
-> are the same, they can be defined at the top level instead. Then the
-> if/then schemas just need to define how many entries. The iommus if/then
-> schemas are also redundant. Best I can tell, the desire was to require 2
-> entries for "samsung,exynos5433-mfc", "samsung,mfc-v5", "samsung,mfc-v6",
-> and "samsung,mfc-v8".
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Vishal Verma <vishal.l.verma@intel.com> writes:
+
+> Add a sysfs knob for dax devices to control the memmap_on_memory setting
+> if the dax device were to be hotplugged as system memory.
+>
+> The default memmap_on_memory setting for dax devices originating via
+> pmem or hmem is set to 'false' - i.e. no memmap_on_memory semantics, to
+> preserve legacy behavior. For dax devices via CXL, the default is on.
+> The sysfs control allows the administrator to override the above
+> defaults if needed.
+>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Tested-by: Li Zhijian <lizhijian@fujitsu.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+
+Looks good to me!  Thanks!
+
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+
 > ---
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+>  drivers/dax/bus.c                       | 36 +++++++++++++++++++++++++++++++++
+>  Documentation/ABI/testing/sysfs-bus-dax | 17 ++++++++++++++++
+>  2 files changed, 53 insertions(+)
+>
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 6226de131d17..3622b3d1c0de 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -1245,6 +1245,41 @@ static ssize_t numa_node_show(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RO(numa_node);
+>  
+> +static ssize_t memmap_on_memory_show(struct device *dev,
+> +				     struct device_attribute *attr, char *buf)
+> +{
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
+> +
+> +	return sysfs_emit(buf, "%d\n", dev_dax->memmap_on_memory);
+> +}
+> +
+> +static ssize_t memmap_on_memory_store(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      const char *buf, size_t len)
+> +{
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
+> +	ssize_t rc;
+> +	bool val;
+> +
+> +	rc = kstrtobool(buf, &val);
+> +	if (rc)
+> +		return rc;
+> +
+> +	if (val == true && !mhp_supports_memmap_on_memory()) {
+> +		dev_dbg(dev, "memmap_on_memory is not available\n");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	guard(device)(dev);
+> +	if (dev_dax->memmap_on_memory != val && dev->driver &&
+> +	    to_dax_drv(dev->driver)->type == DAXDRV_KMEM_TYPE)
+> +		return -EBUSY;
+> +	dev_dax->memmap_on_memory = val;
+> +
+> +	return len;
+> +}
+> +static DEVICE_ATTR_RW(memmap_on_memory);
+> +
+>  static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+>  {
+>  	struct device *dev = container_of(kobj, struct device, kobj);
+> @@ -1271,6 +1306,7 @@ static struct attribute *dev_dax_attributes[] = {
+>  	&dev_attr_align.attr,
+>  	&dev_attr_resource.attr,
+>  	&dev_attr_numa_node.attr,
+> +	&dev_attr_memmap_on_memory.attr,
+>  	NULL,
+>  };
+>  
+> diff --git a/Documentation/ABI/testing/sysfs-bus-dax b/Documentation/ABI/testing/sysfs-bus-dax
+> index 6359f7bc9bf4..b34266bfae49 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-dax
+> +++ b/Documentation/ABI/testing/sysfs-bus-dax
+> @@ -134,3 +134,20 @@ KernelVersion:	v5.1
+>  Contact:	nvdimm@lists.linux.dev
+>  Description:
+>  		(RO) The id attribute indicates the region id of a dax region.
+> +
+> +What:		/sys/bus/dax/devices/daxX.Y/memmap_on_memory
+> +Date:		January, 2024
+> +KernelVersion:	v6.8
+> +Contact:	nvdimm@lists.linux.dev
+> +Description:
+> +		(RW) Control the memmap_on_memory setting if the dax device
+> +		were to be hotplugged as system memory. This determines whether
+> +		the 'altmap' for the hotplugged memory will be placed on the
+> +		device being hotplugged (memmap_on_memory=1) or if it will be
+> +		placed on regular memory (memmap_on_memory=0). This attribute
+> +		must be set before the device is handed over to the 'kmem'
+> +		driver (i.e.  hotplugged into system-ram). Additionally, this
+> +		depends on CONFIG_MHP_MEMMAP_ON_MEMORY, and a globally enabled
+> +		memmap_on_memory parameter for memory_hotplug. This is
+> +		typically set on the kernel command line -
+> +		memory_hotplug.memmap_on_memory set to 'true' or 'force'."
 
