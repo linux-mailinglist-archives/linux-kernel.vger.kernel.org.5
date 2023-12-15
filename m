@@ -1,119 +1,870 @@
-Return-Path: <linux-kernel+bounces-1527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE38A814FB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:28:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D8E2814FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E02A21C230E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:28:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A61A01F250D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E35F3013E;
-	Fri, 15 Dec 2023 18:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A212D3FB2E;
+	Fri, 15 Dec 2023 18:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="xVG+9PPM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rqI7p6MC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7337845BE0;
-	Fri, 15 Dec 2023 18:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BFFOjxN006697;
-	Fri, 15 Dec 2023 19:27:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=selector1; bh=BjOqj4pPwqHC177zwB45U
-	ceMHy2woG5K27cvATFEIgQ=; b=xVG+9PPMP/NNfvHzLlg8bFX0nUwQRQagg6eHK
-	EymLJP1VCsqopbltlFV9CW89DE9+PN0LQyuUIBrgxYUe/5y/CCIm5Z3a+4OrKd42
-	uhy4bOUH3+/MzhXqUvF+GEpfUaP0fMaIkuOeUnSG+jUk5I/75fpc3+qMlkb3hZn3
-	EXAQoAhjalrA+V86WAV7vCKCkJoYCR2nH/g+lhBQDjCZ1v6ozi9VXkhi94PuLjFT
-	eUgb4pmOG0xrbxYzun2xw2fUZcPAPkYpz0j114FdGbZJmwkVQdjR1Q2MWPxJx/Qu
-	++NcfFYImtxked1Z++nhgr2Fr2lif4O/I8xlAjwlJvaT7o2sg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvg0hapcu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 19:27:46 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 624B0100052;
-	Fri, 15 Dec 2023 19:27:45 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5928424C433;
-	Fri, 15 Dec 2023 19:27:45 +0100 (CET)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Dec
- 2023 19:27:45 +0100
-Date: Fri, 15 Dec 2023 19:27:39 +0100
-From: Alain Volmat <alain.volmat@foss.st.com>
-To: Mark Brown <broonie@kernel.org>
-CC: Ben Wolsieffer <ben.wolsieffer@hefring.com>, <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>
-Subject: Re: [PATCH] spi: stm32: use runtime PM to enable/disable controller
-Message-ID: <20231215182739.GA96945@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Mark Brown <broonie@kernel.org>,
-	Ben Wolsieffer <ben.wolsieffer@hefring.com>,
-	linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>
-References: <20231204202055.2895125-1-ben.wolsieffer@hefring.com>
- <58897511-3187-4583-bf29-11871dd4d136@sirena.org.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E6B36B09
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 18:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-db538b07865so861844276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:28:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702664899; x=1703269699; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9PqIdrq6zhgXf6r+YbWbdkOcZMHFiA6qFyAc+PSdXWQ=;
+        b=rqI7p6MCqhTWjMjiLtyLmq2lUEcw4TRs5Eq6WaW7dq7SHgCJzHc0S1WRthmxSgP5Fv
+         vn5G8P4i5Vq2Vgq5sLNLgLmLE2Jb399FZKgx7jjxfYiT5yTVO6YRMxckMIFqSDx+1gVn
+         5VIgcJqF8Wp8v2p8kjAFXnNTqj08EJuzgfbl2Ml2bswE/eI8Nn259OL4NPvGOWFjawm1
+         VknYd7+Y4XNUB+Q0p14tNJIVEPLt1Gkfp5T/QeySieR6tqV+g6gbWehEzPm/A2XPnYJA
+         BSuF3Vv9BC9hLV7Pjq/drCsUiksXRkx0doiCkm4NAH0XqSD3vLlZBllgM+dUW3z9Ndop
+         CPdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702664899; x=1703269699;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9PqIdrq6zhgXf6r+YbWbdkOcZMHFiA6qFyAc+PSdXWQ=;
+        b=mXLdvjj4B0Ga0F/oHvCepT/bgbfosVLlGnUV/hRGfx9Re3l0IfofAi6F4sB928mL4m
+         /P0iEoG4CkfRcxlVRv40evBZ9DS07AhUQUtzKh+BaZ5QEIfifg0fnkQpK8yEbkUBZidX
+         rGjA6JXysAVjeLBu+E8gRCAJiesw6NriyBi1uB9/78w0zsdw7rT3gYaJU9fKT2Gt1MK+
+         KS1UUUfcYLggkAB1agTebbVFTfpfBU+odaI3db+vcdfly2cTZ7pCIvWflCn4ZanvhVtv
+         WupzT35t5wH6EWr9cgGb5XSfwRFKbV9RjuIjfUlWrmySaIRHuv7WbBMrB3aMX/u3TR8E
+         G2lQ==
+X-Gm-Message-State: AOJu0YxYM7gWCEnWN4jerOXzEUGJRgT0FvJDB8+umKjaI8kXJo0n1euV
+	l9IpUS7H4UBVkKYzZ6LMH0uknr/IY6iD+b5mqW9/xA==
+X-Google-Smtp-Source: AGHT+IFh44dgyZ/b5EJ5JRvsIMBmXXpG6wKedxeu6CBjyCZiU9IX3OkR9+8L4AWEi3+sMyu1NodVI1S+z9DKu7EIEa4=
+X-Received: by 2002:a25:ad8d:0:b0:dbc:ca40:f73a with SMTP id
+ z13-20020a25ad8d000000b00dbcca40f73amr3986484ybi.83.1702664899048; Fri, 15
+ Dec 2023 10:28:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <58897511-3187-4583-bf29-11871dd4d136@sirena.org.uk>
-X-Disclaimer: ce message est personnel / this message is private
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-15_10,2023-12-14_01,2023-05-22_02
+References: <20231129-slub-percpu-caches-v3-0-6bcf536772bc@suse.cz> <20231129-slub-percpu-caches-v3-5-6bcf536772bc@suse.cz>
+In-Reply-To: <20231129-slub-percpu-caches-v3-5-6bcf536772bc@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 15 Dec 2023 10:28:06 -0800
+Message-ID: <CAJuCfpGeDEacej1grKJOBghtrh+qr6vOTRUh7NziTDaBxS9AAg@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 5/9] mm/slub: add opt-in percpu array cache of objects
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+	David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+	Matthew Wilcox <willy@infradead.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	maple-tree@lists.infradead.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Nov 29, 2023 at 1:53=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> kmem_cache_setup_percpu_array() will allocate a per-cpu array for
+> caching alloc/free objects of given size for the cache. The cache
+> has to be created with SLAB_NO_MERGE flag.
+>
+> When empty, half of the array is filled by an internal bulk alloc
+> operation. When full, half of the array is flushed by an internal bulk
+> free operation.
+>
+> The array does not distinguish NUMA locality of the cached objects. If
+> an allocation is requested with kmem_cache_alloc_node() with numa node
+> not equal to NUMA_NO_NODE, the array is bypassed.
+>
+> The bulk operations exposed to slab users also try to utilize the array
+> when possible, but leave the array empty or full and use the bulk
+> alloc/free only to finish the operation itself. If kmemcg is enabled and
+> active, bulk freeing skips the array completely as it would be less
+> efficient to use it.
+>
+> The locking scheme is copied from the page allocator's pcplists, based
+> on embedded spin locks. Interrupts are not disabled, only preemption
+> (cpu migration on RT). Trylock is attempted to avoid deadlock due to an
+> interrupt; trylock failure means the array is bypassed.
+>
+> Sysfs stat counters alloc_cpu_cache and free_cpu_cache count objects
+> allocated or freed using the percpu array; counters cpu_cache_refill and
+> cpu_cache_flush count objects refilled or flushed form the array.
+>
+> kmem_cache_prefill_percpu_array() can be called to ensure the array on
+> the current cpu to at least the given number of objects. However this is
+> only opportunistic as there's no cpu pinning between the prefill and
+> usage, and trylocks may fail when the usage is in an irq handler.
+> Therefore allocations cannot rely on the array for success even after
+> the prefill. But misses should be rare enough that e.g. GFP_ATOMIC
+> allocations should be acceptable after the refill.
+>
+> When slub_debug is enabled for a cache with percpu array, the objects in
+> the array are considered as allocated from the slub_debug perspective,
+> and the alloc/free debugging hooks occur when moving the objects between
+> the array and slab pages. This means that e.g. an use-after-free that
+> occurs for an object cached in the array is undetected. Collected
+> alloc/free stacktraces might also be less useful. This limitation could
+> be changed in the future.
+>
+> On the other hand, KASAN, kmemcg and other hooks are executed on actual
+> allocations and frees by kmem_cache users even if those use the array,
+> so their debugging or accounting accuracy should be unaffected.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  include/linux/slab.h     |   4 +
+>  include/linux/slub_def.h |  12 ++
+>  mm/Kconfig               |   1 +
+>  mm/slub.c                | 457 +++++++++++++++++++++++++++++++++++++++++=
++++++-
+>  4 files changed, 468 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index d6d6ffeeb9a2..fe0c0981be59 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -197,6 +197,8 @@ struct kmem_cache *kmem_cache_create_usercopy(const c=
+har *name,
+>  void kmem_cache_destroy(struct kmem_cache *s);
+>  int kmem_cache_shrink(struct kmem_cache *s);
+>
+> +int kmem_cache_setup_percpu_array(struct kmem_cache *s, unsigned int cou=
+nt);
+> +
+>  /*
+>   * Please use this macro to create slab caches. Simply specify the
+>   * name of the structure and maybe some flags that are listed above.
+> @@ -512,6 +514,8 @@ void kmem_cache_free(struct kmem_cache *s, void *objp=
+);
+>  void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p);
+>  int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size=
+, void **p);
+>
+> +int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int c=
+ount, gfp_t gfp);
+> +
+>  static __always_inline void kfree_bulk(size_t size, void **p)
+>  {
+>         kmem_cache_free_bulk(NULL, size, p);
+> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+> index deb90cf4bffb..2083aa849766 100644
+> --- a/include/linux/slub_def.h
+> +++ b/include/linux/slub_def.h
+> @@ -13,8 +13,10 @@
+>  #include <linux/local_lock.h>
+>
+>  enum stat_item {
+> +       ALLOC_PCA,              /* Allocation from percpu array cache */
+>         ALLOC_FASTPATH,         /* Allocation from cpu slab */
+>         ALLOC_SLOWPATH,         /* Allocation by getting a new cpu slab *=
+/
+> +       FREE_PCA,               /* Free to percpu array cache */
+>         FREE_FASTPATH,          /* Free to cpu slab */
+>         FREE_SLOWPATH,          /* Freeing not to cpu slab */
+>         FREE_FROZEN,            /* Freeing to frozen slab */
+> @@ -39,6 +41,8 @@ enum stat_item {
+>         CPU_PARTIAL_FREE,       /* Refill cpu partial on free */
+>         CPU_PARTIAL_NODE,       /* Refill cpu partial from node partial *=
+/
+>         CPU_PARTIAL_DRAIN,      /* Drain cpu partial to node partial */
+> +       PCA_REFILL,             /* Refilling empty percpu array cache */
+> +       PCA_FLUSH,              /* Flushing full percpu array cache */
+>         NR_SLUB_STAT_ITEMS
+>  };
+>
+> @@ -66,6 +70,13 @@ struct kmem_cache_cpu {
+>  };
+>  #endif /* CONFIG_SLUB_TINY */
+>
+> +struct slub_percpu_array {
+> +       spinlock_t lock;
+> +       unsigned int count;
+> +       unsigned int used;
+> +       void * objects[];
+> +};
+> +
+>  #ifdef CONFIG_SLUB_CPU_PARTIAL
+>  #define slub_percpu_partial(c)         ((c)->partial)
+>
+> @@ -99,6 +110,7 @@ struct kmem_cache {
+>  #ifndef CONFIG_SLUB_TINY
+>         struct kmem_cache_cpu __percpu *cpu_slab;
+>  #endif
+> +       struct slub_percpu_array __percpu *cpu_array;
+>         /* Used for retrieving partial slabs, etc. */
+>         slab_flags_t flags;
+>         unsigned long min_partial;
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 89971a894b60..aa53c51bb4a6 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -237,6 +237,7 @@ choice
+>  config SLAB_DEPRECATED
+>         bool "SLAB (DEPRECATED)"
+>         depends on !PREEMPT_RT
+> +       depends on BROKEN
+>         help
+>           Deprecated and scheduled for removal in a few cycles. Replaced =
+by
+>           SLUB.
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 59912a376c6d..f08bd71c244f 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -188,6 +188,79 @@ do {                                       \
+>  #define USE_LOCKLESS_FAST_PATH()       (false)
+>  #endif
+>
+> +/* copy/pasted  from mm/page_alloc.c */
+> +
+> +#if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
+> +/*
+> + * On SMP, spin_trylock is sufficient protection.
+> + * On PREEMPT_RT, spin_trylock is equivalent on both SMP and UP.
+> + */
+> +#define pcp_trylock_prepare(flags)     do { } while (0)
+> +#define pcp_trylock_finish(flag)       do { } while (0)
+> +#else
+> +
+> +/* UP spin_trylock always succeeds so disable IRQs to prevent re-entranc=
+y. */
+> +#define pcp_trylock_prepare(flags)     local_irq_save(flags)
+> +#define pcp_trylock_finish(flags)      local_irq_restore(flags)
+> +#endif
+> +
+> +/*
+> + * Locking a pcp requires a PCP lookup followed by a spinlock. To avoid
+> + * a migration causing the wrong PCP to be locked and remote memory bein=
+g
+> + * potentially allocated, pin the task to the CPU for the lookup+lock.
+> + * preempt_disable is used on !RT because it is faster than migrate_disa=
+ble.
+> + * migrate_disable is used on RT because otherwise RT spinlock usage is
+> + * interfered with and a high priority task cannot preempt the allocator=
+.
+> + */
+> +#ifndef CONFIG_PREEMPT_RT
+> +#define pcpu_task_pin()                preempt_disable()
+> +#define pcpu_task_unpin()      preempt_enable()
+> +#else
+> +#define pcpu_task_pin()                migrate_disable()
+> +#define pcpu_task_unpin()      migrate_enable()
+> +#endif
+> +
+> +/*
+> + * Generic helper to lookup and a per-cpu variable with an embedded spin=
+lock.
+> + * Return value should be used with equivalent unlock helper.
+> + */
+> +#define pcpu_spin_lock(type, member, ptr)                              \
+> +({                                                                     \
+> +       type *_ret;                                                     \
+> +       pcpu_task_pin();                                                \
+> +       _ret =3D this_cpu_ptr(ptr);                                      =
+ \
+> +       spin_lock(&_ret->member);                                       \
+> +       _ret;                                                           \
+> +})
+> +
+> +#define pcpu_spin_trylock(type, member, ptr)                           \
+> +({                                                                     \
+> +       type *_ret;                                                     \
+> +       pcpu_task_pin();                                                \
+> +       _ret =3D this_cpu_ptr(ptr);                                      =
+ \
+> +       if (!spin_trylock(&_ret->member)) {                             \
+> +               pcpu_task_unpin();                                      \
+> +               _ret =3D NULL;                                           =
+ \
+> +       }                                                               \
+> +       _ret;                                                           \
+> +})
+> +
+> +#define pcpu_spin_unlock(member, ptr)                                  \
+> +({                                                                     \
+> +       spin_unlock(&ptr->member);                                      \
+> +       pcpu_task_unpin();                                              \
+> +})
+> +
+> +/* struct slub_percpu_array specific helpers. */
+> +#define pca_spin_lock(ptr)                                             \
+> +       pcpu_spin_lock(struct slub_percpu_array, lock, ptr)
+> +
+> +#define pca_spin_trylock(ptr)                                          \
+> +       pcpu_spin_trylock(struct slub_percpu_array, lock, ptr)
+> +
+> +#define pca_spin_unlock(ptr)                                           \
+> +       pcpu_spin_unlock(lock, ptr)
+> +
+>  #ifndef CONFIG_SLUB_TINY
+>  #define __fastpath_inline __always_inline
+>  #else
+> @@ -3454,6 +3527,78 @@ static __always_inline void maybe_wipe_obj_freeptr=
+(struct kmem_cache *s,
+>                         0, sizeof(void *));
+>  }
+>
+> +static bool refill_pca(struct kmem_cache *s, unsigned int count, gfp_t g=
+fp);
+> +
+> +static __fastpath_inline
+> +void *alloc_from_pca(struct kmem_cache *s, gfp_t gfp)
+> +{
+> +       unsigned long __maybe_unused UP_flags;
+> +       struct slub_percpu_array *pca;
+> +       void *object;
+> +
+> +retry:
+> +       pcp_trylock_prepare(UP_flags);
+> +       pca =3D pca_spin_trylock(s->cpu_array);
+> +
+> +       if (unlikely(!pca)) {
+> +               pcp_trylock_finish(UP_flags);
+> +               return NULL;
+> +       }
+> +
+> +       if (unlikely(pca->used =3D=3D 0)) {
+> +               unsigned int batch =3D pca->count / 2;
+> +
+> +               pca_spin_unlock(pca);
+> +               pcp_trylock_finish(UP_flags);
+> +
+> +               if (!gfpflags_allow_blocking(gfp) || in_irq())
+> +                       return NULL;
+> +
+> +               if (refill_pca(s, batch, gfp))
+> +                       goto retry;
+> +
+> +               return NULL;
+> +       }
+> +
+> +       object =3D pca->objects[--pca->used];
+> +
+> +       pca_spin_unlock(pca);
+> +       pcp_trylock_finish(UP_flags);
+> +
+> +       stat(s, ALLOC_PCA);
+> +
+> +       return object;
+> +}
+> +
+> +static __fastpath_inline
+> +int alloc_from_pca_bulk(struct kmem_cache *s, size_t size, void **p)
+> +{
+> +       unsigned long __maybe_unused UP_flags;
+> +       struct slub_percpu_array *pca;
+> +
+> +       pcp_trylock_prepare(UP_flags);
+> +       pca =3D pca_spin_trylock(s->cpu_array);
+> +
+> +       if (unlikely(!pca)) {
+> +               size =3D 0;
+> +               goto failed;
+> +       }
+> +
+> +       if (pca->used < size)
+> +               size =3D pca->used;
+> +
+> +       for (int i =3D size; i > 0;) {
+> +               p[--i] =3D pca->objects[--pca->used];
+> +       }
+> +
+> +       pca_spin_unlock(pca);
+> +       stat_add(s, ALLOC_PCA, size);
+> +
+> +failed:
+> +       pcp_trylock_finish(UP_flags);
+> +       return size;
+> +}
+> +
+>  /*
+>   * Inlined fastpath so that allocation functions (kmalloc, kmem_cache_al=
+loc)
+>   * have the fastpath folded into their functions. So no function call
+> @@ -3479,7 +3624,11 @@ static __fastpath_inline void *slab_alloc_node(str=
+uct kmem_cache *s, struct list
+>         if (unlikely(object))
+>                 goto out;
+>
+> -       object =3D __slab_alloc_node(s, gfpflags, node, addr, orig_size);
+> +       if (s->cpu_array && (node =3D=3D NUMA_NO_NODE))
+> +               object =3D alloc_from_pca(s, gfpflags);
+> +
+> +       if (!object)
+> +               object =3D __slab_alloc_node(s, gfpflags, node, addr, ori=
+g_size);
+>
+>         maybe_wipe_obj_freeptr(s, object);
+>         init =3D slab_want_init_on_alloc(gfpflags, s);
+> @@ -3726,6 +3875,81 @@ static void __slab_free(struct kmem_cache *s, stru=
+ct slab *slab,
+>         discard_slab(s, slab);
+>  }
+>
+> +static bool flush_pca(struct kmem_cache *s, unsigned int count);
+> +
+> +static __fastpath_inline
+> +bool free_to_pca(struct kmem_cache *s, void *object)
+> +{
+> +       unsigned long __maybe_unused UP_flags;
+> +       struct slub_percpu_array *pca;
+> +
+> +retry:
+> +       pcp_trylock_prepare(UP_flags);
+> +       pca =3D pca_spin_trylock(s->cpu_array);
+> +
+> +       if (!pca) {
+> +               pcp_trylock_finish(UP_flags);
+> +               return false;
+> +       }
+> +
+> +       if (pca->used =3D=3D pca->count) {
+> +               unsigned int batch =3D pca->count / 2;
+> +
+> +               pca_spin_unlock(pca);
+> +               pcp_trylock_finish(UP_flags);
+> +
+> +               if (in_irq())
+> +                       return false;
+> +
+> +               if (!flush_pca(s, batch))
+> +                       return false;
+> +
+> +               goto retry;
+> +       }
+> +
+> +       pca->objects[pca->used++] =3D object;
+> +
+> +       pca_spin_unlock(pca);
+> +       pcp_trylock_finish(UP_flags);
+> +
+> +       stat(s, FREE_PCA);
+> +
+> +       return true;
+> +}
+> +
+> +static __fastpath_inline
+> +size_t free_to_pca_bulk(struct kmem_cache *s, size_t size, void **p)
+> +{
+> +       unsigned long __maybe_unused UP_flags;
+> +       struct slub_percpu_array *pca;
+> +       bool init;
+> +
+> +       pcp_trylock_prepare(UP_flags);
+> +       pca =3D pca_spin_trylock(s->cpu_array);
+> +
+> +       if (unlikely(!pca)) {
+> +               size =3D 0;
+> +               goto failed;
+> +       }
+> +
+> +       if (pca->count - pca->used < size)
+> +               size =3D pca->count - pca->used;
+> +
+> +       init =3D slab_want_init_on_free(s);
+> +
+> +       for (size_t i =3D 0; i < size; i++) {
+> +               if (likely(slab_free_hook(s, p[i], init)))
+> +                       pca->objects[pca->used++] =3D p[i];
+> +       }
+> +
+> +       pca_spin_unlock(pca);
+> +       stat_add(s, FREE_PCA, size);
+> +
+> +failed:
+> +       pcp_trylock_finish(UP_flags);
+> +       return size;
+> +}
+> +
+>  #ifndef CONFIG_SLUB_TINY
+>  /*
+>   * Fastpath with forced inlining to produce a kfree and kmem_cache_free =
+that
+> @@ -3811,7 +4035,12 @@ void slab_free(struct kmem_cache *s, struct slab *=
+slab, void *object,
+>  {
+>         memcg_slab_free_hook(s, slab, &object, 1);
+>
+> -       if (likely(slab_free_hook(s, object, slab_want_init_on_free(s))))
+> +       if (unlikely(!slab_free_hook(s, object, slab_want_init_on_free(s)=
+)))
+> +               return;
+> +
+> +       if (s->cpu_array)
+> +               free_to_pca(s, object);
 
-sorry for the delay.
+free_to_pca() can return false and leave the object alive. I think you
+need to handle the failure case here to avoid leaks.
 
-On Thu, Dec 14, 2023 at 10:58:54AM +0000, Mark Brown wrote:
-> On Mon, Dec 04, 2023 at 03:20:55PM -0500, Ben Wolsieffer wrote:
-> > Instead of disabling the SPI controller between each message, do it
-> > as part of runtime PM.
-> 
-> This doesn't apply against current code, please check and resend.
+> +       else
+>                 do_slab_free(s, slab, object, object, 1, addr);
+>  }
+>
+> @@ -3956,6 +4185,26 @@ void kmem_cache_free_bulk(struct kmem_cache *s, si=
+ze_t size, void **p)
+>         if (!size)
+>                 return;
+>
+> +       /*
+> +        * In case the objects might need memcg_slab_free_hook(), skip th=
+e array
+> +        * because the hook is not effective with single objects and bene=
+fits
+> +        * from groups of objects from a single slab that the detached fr=
+eelist
+> +        * builds. But once we build the detached freelist, it's wasteful=
+ to
+> +        * throw it away and put the objects into the array.
+> +        *
+> +        * XXX: This test could be cache-specific if it was not possible =
+to use
+> +        * __GFP_ACCOUNT with caches that are not SLAB_ACCOUNT
+> +        */
+> +       if (s && s->cpu_array && !memcg_kmem_online()) {
+> +               size_t pca_freed =3D free_to_pca_bulk(s, size, p);
+> +
+> +               if (pca_freed =3D=3D size)
+> +                       return;
+> +
+> +               p +=3D pca_freed;
+> +               size -=3D pca_freed;
+> +       }
+> +
+>         do {
+>                 struct detached_freelist df;
+>
+> @@ -4073,7 +4322,8 @@ static int __kmem_cache_alloc_bulk(struct kmem_cach=
+e *s, gfp_t flags,
+>  int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size=
+,
+>                           void **p)
+>  {
+> -       int i;
+> +       int from_pca =3D 0;
+> +       int allocated =3D 0;
+>         struct obj_cgroup *objcg =3D NULL;
+>
+>         if (!size)
+> @@ -4084,19 +4334,147 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, =
+gfp_t flags, size_t size,
+>         if (unlikely(!s))
+>                 return 0;
+>
+> -       i =3D __kmem_cache_alloc_bulk(s, flags, size, p);
+> +       if (s->cpu_array)
+> +               from_pca =3D alloc_from_pca_bulk(s, size, p);
+> +
+> +       if (from_pca < size) {
+> +               allocated =3D __kmem_cache_alloc_bulk(s, flags, size-from=
+_pca,
+> +                                                   p+from_pca);
+> +               if (allocated =3D=3D 0 && from_pca > 0) {
+> +                       __kmem_cache_free_bulk(s, from_pca, p);
+> +               }
+> +       }
+> +
+> +       allocated +=3D from_pca;
+>
+>         /*
+>          * memcg and kmem_cache debug support and memory initialization.
+>          * Done outside of the IRQ disabled fastpath loop.
+>          */
+> -       if (i !=3D 0)
+> +       if (allocated !=3D 0)
+>                 slab_post_alloc_hook(s, objcg, flags, size, p,
+>                         slab_want_init_on_alloc(flags, s), s->object_size=
+);
+> -       return i;
+> +       return allocated;
+>  }
+>  EXPORT_SYMBOL(kmem_cache_alloc_bulk);
+>
+> +static bool refill_pca(struct kmem_cache *s, unsigned int count, gfp_t g=
+fp)
+> +{
+> +       void *objects[32];
+> +       unsigned int batch, allocated;
+> +       unsigned long __maybe_unused UP_flags;
+> +       struct slub_percpu_array *pca;
+> +
+> +bulk_alloc:
+> +       batch =3D min(count, 32U);
 
-I rapidly gave a try on this patch on top of the spi/for-next branch
-(manually fixing the conflict due to the MASTER->HOST renaming).
-It turns out that with that applied, transfers on the MP13
-(compatible: st,stm32h7-spi) are not working anymore while simply
-removing it back it works again.
-(test is simply doing loopback spidev_test)
+Do you cap each batch at 32 to avoid overshooting too much (same in
+flush_pca())? If so, it would be good to have a comment here. Also,
+maybe this hardcoded 32 should be a function of pca->count instead? If
+we set up a pca array with pca->count larger than 64 then the refill
+count of pca->count/2 will always end up higher than 32, so at the end
+we will have to loop back (goto bulk_alloc) to allocate more objects.
 
-spi mode: 0x0
-bits per word: 8
-max speed: 500000 Hz (500 kHz)
-TX | 8D D6 73 8B 9D 8B 1C 7D 8D 80 EC 32 F9 0D BA AD 9F 88 A5 9B 3F AA 48 8C 21 35 0D C1 C8 E5 6A 81  |..s....}...2........?.H.!5....j.|
-RX | 8D 00 00 00 D6 00 73 00 8B 00 00 00 9D 00 00 8B 1C 00 00 00 7D 00 00 8D F9 00 00 00 BA 00 00 00  |......s.............}...........|
+> +
+> +       allocated =3D __kmem_cache_alloc_bulk(s, gfp, batch, &objects[0])=
+;
+> +       if (!allocated)
+> +               return false;
+> +
+> +       pcp_trylock_prepare(UP_flags);
+> +       pca =3D pca_spin_trylock(s->cpu_array);
+> +       if (!pca) {
+> +               pcp_trylock_finish(UP_flags);
+> +               return false;
+> +       }
+> +
+> +       batch =3D min(allocated, pca->count - pca->used);
+> +
+> +       for (unsigned int i =3D 0; i < batch; i++) {
+> +               pca->objects[pca->used++] =3D objects[i];
+> +       }
+> +
+> +       pca_spin_unlock(pca);
+> +       pcp_trylock_finish(UP_flags);
+> +
+> +       stat_add(s, PCA_REFILL, batch);
+> +
+> +       /*
+> +        * We could have migrated to a different cpu or somebody else fre=
+ed to the
+> +        * pca while we were bulk allocating, and now we have too many ob=
+jects
+> +        */
+> +       if (batch < allocated) {
+> +               __kmem_cache_free_bulk(s, allocated - batch, &objects[bat=
+ch]);
+> +       } else {
+> +               count -=3D batch;
+> +               if (count > 0)
+> +                       goto bulk_alloc;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+> +static bool flush_pca(struct kmem_cache *s, unsigned int count)
+> +{
+> +       void *objects[32];
+> +       unsigned int batch, remaining;
+> +       unsigned long __maybe_unused UP_flags;
+> +       struct slub_percpu_array *pca;
+> +
+> +next_batch:
+> +       batch =3D min(count, 32);
+> +
+> +       pcp_trylock_prepare(UP_flags);
+> +       pca =3D pca_spin_trylock(s->cpu_array);
+> +       if (!pca) {
+> +               pcp_trylock_finish(UP_flags);
+> +               return false;
+> +       }
+> +
+> +       batch =3D min(batch, pca->used);
+> +
+> +       for (unsigned int i =3D 0; i < batch; i++) {
+> +               objects[i] =3D pca->objects[--pca->used];
+> +       }
+> +
+> +       remaining =3D pca->used;
+> +
+> +       pca_spin_unlock(pca);
+> +       pcp_trylock_finish(UP_flags);
+> +
+> +       __kmem_cache_free_bulk(s, batch, &objects[0]);
+> +
+> +       stat_add(s, PCA_FLUSH, batch);
+> +
+> +       if (batch < count && remaining > 0) {
+> +               count -=3D batch;
+> +               goto next_batch;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+> +/* Do not call from irq handler nor with irqs disabled */
+> +int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int c=
+ount,
+> +                                   gfp_t gfp)
+> +{
+> +       struct slub_percpu_array *pca;
+> +       unsigned int used;
+> +
+> +       lockdep_assert_no_hardirq();
+> +
+> +       if (!s->cpu_array)
+> +               return -EINVAL;
+> +
+> +       /* racy but we don't care */
+> +       pca =3D raw_cpu_ptr(s->cpu_array);
+> +
+> +       used =3D READ_ONCE(pca->used);
+> +
+> +       if (used >=3D count)
+> +               return 0;
+> +
+> +       if (pca->count < count)
+> +               return -EINVAL;
+> +
+> +       count -=3D used;
+> +
+> +       if (!refill_pca(s, count, gfp))
+> +               return -ENOMEM;
+> +
+> +       return 0;
+> +}
+>
+>  /*
+>   * Object placement in a slab is made very easy because we always start =
+at
+> @@ -5167,6 +5545,65 @@ int __kmem_cache_create(struct kmem_cache *s, slab=
+_flags_t flags)
+>         return 0;
+>  }
+>
+> +/**
+> + * kmem_cache_setup_percpu_array - Create a per-cpu array cache for the =
+cache
+> + * @s: The cache to add per-cpu array. Must be created with SLAB_NO_MERG=
+E flag.
+> + * @count: Size of the per-cpu array.
+> + *
+> + * After this call, allocations from the cache go through a percpu array=
+. When
+> + * it becomes empty, half is refilled with a bulk allocation. When it be=
+comes
+> + * full, half is flushed with a bulk free operation.
+> + *
+> + * Using the array cache is not guaranteed, i.e. it can be bypassed if i=
+ts lock
+> + * cannot be obtained. The array cache also does not distinguish NUMA no=
+des, so
+> + * allocations via kmem_cache_alloc_node() with a node specified other t=
+han
+> + * NUMA_NO_NODE will bypass the cache.
+> + *
+> + * Bulk allocation and free operations also try to use the array.
+> + *
+> + * kmem_cache_prefill_percpu_array() can be used to pre-fill the array c=
+ache
+> + * before e.g. entering a restricted context. It is however not guarante=
+ed that
+> + * the caller will be able to subsequently consume the prefilled cache. =
+Such
+> + * failures should be however sufficiently rare so after the prefill,
+> + * allocations using GFP_ATOMIC | __GFP_NOFAIL are acceptable for object=
+s up to
+> + * the prefilled amount.
+> + *
+> + * Limitations: when slub_debug is enabled for the cache, all relevant a=
+ctions
+> + * (i.e. poisoning, obtaining stacktraces) and checks happen when object=
+s move
+> + * between the array cache and slab pages, which may result in e.g. not
+> + * detecting a use-after-free while the object is in the array cache, an=
+d the
+> + * stacktraces may be less useful.
+> + *
+> + * Return: 0 if OK, -EINVAL on caches without SLAB_NO_MERGE or with the =
+array
+> + * already created, -ENOMEM when the per-cpu array creation fails.
+> + */
+> +int kmem_cache_setup_percpu_array(struct kmem_cache *s, unsigned int cou=
+nt)
+> +{
+> +       int cpu;
+> +
+> +       if (WARN_ON_ONCE(!(s->flags & SLAB_NO_MERGE)))
+> +               return -EINVAL;
+> +
+> +       if (s->cpu_array)
+> +               return -EINVAL;
+> +
+> +       s->cpu_array =3D __alloc_percpu(struct_size(s->cpu_array, objects=
+, count),
+> +                                       sizeof(void *));
 
-The RX data contains lots of 00 between each byte.  Moreover it seems
-that with this patch applied non-dma transfer (when there is no dmas
-properties within the node) are now failing.
+Maybe I missed it, but where do you free s->cpu_array? I see
+__kmem_cache_release() freeing s->cpu_slab but s->cpu_array seems to
+be left alive...
 
-I'll check that and give more details but could you avoid applying this
-patch for the time being ?
-
-Thanks.
-Alain
+> +
+> +       if (!s->cpu_array)
+> +               return -ENOMEM;
+> +
+> +       for_each_possible_cpu(cpu) {
+> +               struct slub_percpu_array *pca =3D per_cpu_ptr(s->cpu_arra=
+y, cpu);
+> +
+> +               spin_lock_init(&pca->lock);
+> +               pca->count =3D count;
+> +               pca->used =3D 0;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  #ifdef SLAB_SUPPORTS_SYSFS
+>  static int count_inuse(struct slab *slab)
+>  {
+> @@ -5944,8 +6381,10 @@ static ssize_t text##_store(struct kmem_cache *s, =
+               \
+>  }                                                              \
+>  SLAB_ATTR(text);                                               \
+>
+> +STAT_ATTR(ALLOC_PCA, alloc_cpu_cache);
+>  STAT_ATTR(ALLOC_FASTPATH, alloc_fastpath);
+>  STAT_ATTR(ALLOC_SLOWPATH, alloc_slowpath);
+> +STAT_ATTR(FREE_PCA, free_cpu_cache);
+>  STAT_ATTR(FREE_FASTPATH, free_fastpath);
+>  STAT_ATTR(FREE_SLOWPATH, free_slowpath);
+>  STAT_ATTR(FREE_FROZEN, free_frozen);
+> @@ -5970,6 +6409,8 @@ STAT_ATTR(CPU_PARTIAL_ALLOC, cpu_partial_alloc);
+>  STAT_ATTR(CPU_PARTIAL_FREE, cpu_partial_free);
+>  STAT_ATTR(CPU_PARTIAL_NODE, cpu_partial_node);
+>  STAT_ATTR(CPU_PARTIAL_DRAIN, cpu_partial_drain);
+> +STAT_ATTR(PCA_REFILL, cpu_cache_refill);
+> +STAT_ATTR(PCA_FLUSH, cpu_cache_flush);
+>  #endif /* CONFIG_SLUB_STATS */
+>
+>  #ifdef CONFIG_KFENCE
+> @@ -6031,8 +6472,10 @@ static struct attribute *slab_attrs[] =3D {
+>         &remote_node_defrag_ratio_attr.attr,
+>  #endif
+>  #ifdef CONFIG_SLUB_STATS
+> +       &alloc_cpu_cache_attr.attr,
+>         &alloc_fastpath_attr.attr,
+>         &alloc_slowpath_attr.attr,
+> +       &free_cpu_cache_attr.attr,
+>         &free_fastpath_attr.attr,
+>         &free_slowpath_attr.attr,
+>         &free_frozen_attr.attr,
+> @@ -6057,6 +6500,8 @@ static struct attribute *slab_attrs[] =3D {
+>         &cpu_partial_free_attr.attr,
+>         &cpu_partial_node_attr.attr,
+>         &cpu_partial_drain_attr.attr,
+> +       &cpu_cache_refill_attr.attr,
+> +       &cpu_cache_flush_attr.attr,
+>  #endif
+>  #ifdef CONFIG_FAILSLAB
+>         &failslab_attr.attr,
+>
+> --
+> 2.43.0
+>
+>
 
