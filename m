@@ -1,72 +1,42 @@
-Return-Path: <linux-kernel+bounces-1826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78F42815493
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:33:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F4CF815495
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:36:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D790928584B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:33:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 083BAB23F6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE741CA9D;
-	Fri, 15 Dec 2023 23:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HHwb3tb0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A302C699;
+	Fri, 15 Dec 2023 23:35:53 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59A4495C9;
-	Fri, 15 Dec 2023 23:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b9e2a014e8so981724b6e.2;
-        Fri, 15 Dec 2023 15:33:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702683221; x=1703288021; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+hMnTlRGS/PXAXBP5TPslgIi8w7BTIAAQCZQIaoU8eQ=;
-        b=HHwb3tb01uNXh/jLi3nQLIRLGs9CYcAsNVX393SALLkkbB3COBASkv9Y+bhd7BePJh
-         dGNr+v1CkuapkAEHcSzcOi+QnPaWVQzq3HyFNX3nVppEZVqGGmDoT+tGM6oHap8XJdIo
-         NV1WODxhJbmf8Pu6TmEYfkVnImHUfaqlax8OCeBIGSwGxZMwwD2K2/6KPz800c/OFhOA
-         GrLN1mja+Q62SEtWpv4EEg3dXPQA/etDI6JEplsThOxndz5UrrCq3VC1sfqlb1Xn5ym8
-         cVvpeNpiyq+K94qB27gsoJrvKfzNlYcpUcEzYFq1xSVnpYCwS5Fx1CQja3SEUIhPVdvH
-         XUlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702683221; x=1703288021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+hMnTlRGS/PXAXBP5TPslgIi8w7BTIAAQCZQIaoU8eQ=;
-        b=ZdsaPK11xeq2pZb1owqgC68A3YK+vHPPVUZqktp0XNIljMnsvGpA/aPqfNJaiA5kcp
-         94u+hiHTT+wdxf4Wb456LVMTXUC5UMI7K5xXdu4E4f9FCjgbtNtDvUwmyr/zMV2v/SSm
-         jBdqOhIUgjdoVAfAdq9Tq7T+FQ4SbDyDuH9LlEvSE7IDaf34OCTSswmKnIyVnuj76YtJ
-         s/XVEi8nUDWM4iMH/F/HKiG3pHAVhGuDJTqzD7A4KO1tDK6EptqJ4rplfoNdGhLtd2+4
-         jIPFCGtjNVPcvj+4Ov4hO9aQFQd7oyzh8GF1+KeFAimYS1TAQVxFOindmcx1FafH98N0
-         qc3g==
-X-Gm-Message-State: AOJu0YzAAEIok3dlbD1wKdRSqxn+YEz1H/ZcrPcb+9MN49JyXxE6K+Qk
-	jnX0Mh/bSRIGWRJTFzjTnAVGeUxYIKY=
-X-Google-Smtp-Source: AGHT+IFt6HYJ/TQPfxqy8q2sMFCyk3omOehMQg5P3QqDOGTONmqpvsXvJNqg8cv6+Quv718plUhXwA==
-X-Received: by 2002:a05:6808:6494:b0:3ba:10b1:7a1e with SMTP id fh20-20020a056808649400b003ba10b17a1emr10299294oib.5.1702683221569;
-        Fri, 15 Dec 2023 15:33:41 -0800 (PST)
-Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id jw20-20020a170903279400b001d36df58ba2sm3463505plb.308.2023.12.15.15.33.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 15:33:41 -0800 (PST)
-Date: Sat, 16 Dec 2023 07:33:37 +0800
-From: Kent Gibson <warthog618@gmail.com>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl,
-	linus.walleij@linaro.org
-Subject: Re: [PATCH v3 1/5] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-Message-ID: <ZXziUYicXaENTDk_@rigel>
-References: <20231215023805.63289-1-warthog618@gmail.com>
- <20231215023805.63289-2-warthog618@gmail.com>
- <ZXyAQq7tVaOFI2Vs@smile.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1741118ECB;
+	Fri, 15 Dec 2023 23:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
+Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
+	by server.atrad.com.au (8.17.2/8.17.2) with ESMTPS id 3BFNZKjE001393
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Sat, 16 Dec 2023 10:05:22 +1030
+Date: Sat, 16 Dec 2023 10:05:20 +1030
+From: Jonathan Woithe <jwoithe@just42.net>
+To: Igor Mammedov <imammedo@redhat.com>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Regression] Commit 40613da52b13 ("PCI: acpiphp: Reassign
+ resources on bridge if necessary")
+Message-ID: <ZXziuPCKNBLhbssO@marvin.atrad.com.au>
+References: <ZXpaNCLiDM+Kv38H@marvin.atrad.com.au>
+ <20231214143205.4ba0e11a@imammedo.users.ipa.redhat.com>
+ <ZXt+BxvmG6ru63qJ@marvin.atrad.com.au>
+ <ZXw4Ly/csFgl76Lj@marvin.atrad.com.au>
+ <20231215143638.032028eb@imammedo.users.ipa.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,88 +45,108 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXyAQq7tVaOFI2Vs@smile.fi.intel.com>
+In-Reply-To: <20231215143638.032028eb@imammedo.users.ipa.redhat.com>
+X-MIMEDefang-action: accept
+X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
 
-On Fri, Dec 15, 2023 at 06:35:14PM +0200, Andy Shevchenko wrote:
-> On Fri, Dec 15, 2023 at 10:38:01AM +0800, Kent Gibson wrote:
-> > Store the debounce period for a requested line locally, rather than in
-> > the debounce_period_us field in the gpiolib struct gpio_desc.
-> >
-> > Add a global tree of lines containing supplemental line information
-> > to make the debounce period available to be reported by the
-> > GPIO_V2_GET_LINEINFO_IOCTL and the line change notifier.
->
-> LGTM, a few minor comments below.
->
-> ...
->
-> > +/*
->
-> (now you can have a kernel doc :-)
->
+On Fri, Dec 15, 2023 at 02:36:38PM +0100, Igor Mammedov wrote:
+> On Fri, 15 Dec 2023 21:57:43 +1030
+> Jonathan Woithe <jwoithe@just42.net> wrote:
+> 
+> > On Fri, Dec 15, 2023 at 08:43:29AM +1030, Jonathan Woithe wrote:
+> > > On Thu, Dec 14, 2023 at 02:32:05PM +0100, Igor Mammedov wrote:  
+> > > > On Thu, 14 Dec 2023 11:58:20 +1030 Jonathan Woithe wrote:  
+> > > > > 
+> > > > > Following an update from 5.15.72 to 5.15.139 on one of my machines, the  
+> > > > 
+> > > > looks like you are running downstream kernel, can you file bug report
+> > > > with distro that you use (with a link posed here as well).  
+> > > 
+> > > I am running Slackware64 15.0.  The kernels supplied by that distribution
+> > > are unmodified kernel.org kernels.
+> > >   
+> > > > For now offending patches are being reverted, so downstream bug will help
+> > > > with tracking it and reverting it there.   
+> > > 
+> > > The patches will be reverted in Slackware as a matter of course when a
+> > > kernel.org "-stable" kernel with the fix is adopted.  Slackware does not
+> > > apply any patches to kernel.org kernels.  Nevertheless, I will raise a post
+> > > in the forum, hopefully later today.  
+> > 
+> > This has now been done:
+> > 
+> >   https://www.linuxquestions.org/questions/slackware-14/heads-up-pci-regression-introduced-in-or-around-5-15-129-commit-40613da52b13-4175731828/#post6470559
+> > 
+> > > > > The output of lspci is given at the end of this post[1].  The CPU is an
+> > > > > "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz" which is not overclocked.  Please
+> > > > > let me know if you'd like more information about the affected machine.  I
+> > > > > can also perform additional tests if required, although for various reasons
+> > > > > these can only be done on Thursdays at present.
+> > > > > 
+> > > > > The kernel configuration file can easily be supplied if that would be
+> > > > > useful.  
+> > > > 
+> > > > full dmesg log and used config might help down the road (preferably with current
+> > > > upstream kernel), as I will be looking into fixing related issues.
+> > > > 
+> > > > Perhaps a better way for taking this issue and collecting logs, will be
+> > > > opening a separate bug at https://bugzilla.kernel.org (pls CC me as well)  
+> > > 
+> > > Sure, will do.  I'll be able to get the dmesg log from my earlier tests and
+> > > config easily enough.  Testing with another kernel will have to wait until
+> > > next Thursday as that is when I'll next have physical access to the machine.  
+> > 
+> > A bug has been opened at bugzilla.kernel.org as requested.  The logs, kernel
+> > configuration and the "lspci -tv" output (requested in a subsequent email)
+> > have been added.  The logs and kernel configuration are from the kernel.org
+> > 5.15.139 kernel.  You have been added to the bug's CC.  The bug number is
+> > 218268:
+> > 
+> >   https://bugzilla.kernel.org/show_bug.cgi?id=218268
+> > 
+> > As mentioned, testing another kernel can only happen next Thursday.  If
+> > you would like other tests done let me know and I'll do them at the same
+> > time.  I have remote access to the machine, so it's possible to retrieve
+> > information from it at any time.
+> 
+> lets wait till you can get logs with dyndbg='...' (I've asked for earlier)
+> and one more test with "pci=realloc" on kernel CLI to see if that helps.
 
-Maybe you can, but I can't.
+Okay.
 
-> > + * a rbtree of the struct lines containing supplemental info.
-> > + * Used to populate gpio_v2_line_info with cdev specific fields not contained
-> > + * in the struct gpio_desc.
-> > + * A line is determined to contain supplemental information by
-> > + * line_is_supplemental().
-> > + */
-> > +static struct rb_root supinfo_tree = RB_ROOT;
-> > +/* covers supinfo_tree */
-> > +DEFINE_SPINLOCK(supinfo_lock);
->
-> Shouldn't this also be static?
->
+> > Let me know if there's anything else I can do to assist.
+> 
+> It looks like  pci_assign_unassigned_bridge_resources() messed up BIOS configured
+> resources. And then didn't manage to reconfigure bridges correctly, which led to
+> unassigned BARs => thunderbolt/VGA issues.
+> 
+> Something in ACPI tables must be triggering acpiphp hotplug path during boot.
+> Can you dump DSDT + SSDT tables and attach them to BZ.
+> PS:
+> to dump tables you can use command from acpica-tools (not sure how it's called in Slackware) 
+>  acpidump -b
+> which will dump all tables in binary format (so attach those or 'iasl -d' de-compiled ones)
 
-Indeed.
+Slackware doesn't provide acpidump AFAIK but it was easy enough to compile
+from tools/power/acpi/tools/acpidump within the 5.15.72 tree I'd used
+previously to build 5.15.72 (the kernel that's currently running).  However,
+running
 
-> ...
->
-> > +	guard(spinlock)(&supinfo_lock);
->
-> + cleanup.h ?
->
+  acpidump -b
 
-Bah, I could've sworn I added that in, but it isn't evident in any of
-the patches all the way back to v1, so apparently not.
+resulted in a segmentation fault.  The root cause is line 339 in vsnprintf()
+in utprint.c.  With a workaround in place a functional acpidump was
+obtained.  I can provide further information from my analysis if it's
+appropriate and you're interested.
 
-> ...
->
-> > +static void supinfo_to_lineinfo(struct gpio_desc *desc,
-> > +				struct gpio_v2_line_info *info)
-> > +{
-> > +	struct gpio_v2_line_attribute *attr;
-> > +	struct line *line;
-> > +
-> > +	guard(spinlock)(&supinfo_lock);
-> > +
-> > +	line = supinfo_find(desc);
-> > +	if (line) {
->
-> 	if (!line)
-> 		return;
->
-> ?
+For completeness I then tried the acpica source from Intel (version
+20230628).  The acpidump from this worked fine, and the files produced were
+identical to those from my fixed kernel-tree acpidump.  A tarball of these
+is now attached to the Bugzilla report.  Curiously enough, the corresponding
+vsnprintf() line in the Intel acpica source distribution matches that in the
+5.15.72 source.  Perhaps the compiler flags in the Intel package happen to
+prevent the segfault condition occurring at runtime for me.
 
-Will do.
-
->
-> > +		attr = &info->attrs[info->num_attrs];
-> > +		attr->id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
-> > +		attr->debounce_period_us = READ_ONCE(line->debounce_period_us);
-> > +		info->num_attrs++;
-> > +	}
-> > +}
->
-
-Cheers,
-Kent.
-
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Regards
+  jonathan
 
