@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-1777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A4F8153CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:39:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F9148153DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:40:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519EF1F26809
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:39:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71BE21C2430F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B137218EC3;
-	Fri, 15 Dec 2023 22:39:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2001B18EC1;
+	Fri, 15 Dec 2023 22:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="tTllBY/E"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="O6zwzudR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sonic306-28.consmr.mail.ne1.yahoo.com (sonic306-28.consmr.mail.ne1.yahoo.com [66.163.189.90])
+Received: from sonic315-27.consmr.mail.ne1.yahoo.com (sonic315-27.consmr.mail.ne1.yahoo.com [66.163.190.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EC118EAE
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA92C18EBF
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702679937; bh=9keQf9g8TT1WOTQ4FMsX6B5QIMK24lZJ/xlVXj6t8WU=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=tTllBY/E6SGxl+s9lXFNHY+lk5xjxPuWSo69GbT05A8S6sbVEqBokVFaoZrIgEA5jIPPb7YBUrjSfIxQPUqhBSOgd0yEFArlfcRgEuxbER2RGlQddeuKlHAKTDMSB5XeI/f8WmSOhfydOex7RYluhhpkqlsOvtpUKLsqfQrUQ8MSJxMiAKg1UCQR3YzKaoXJmjEjOdhVF1BOHd5nAHT2394anIsFJf0gN4aDxu3koNeWs3OUfyw5u/3+qTCg4QcWSeibEXlEmOExUuvkNyOQnxwwlBEzpuWe4gk3X6jfi3UnVr+oixRohEFbP0+MviJfiuavec3Vwf9z+cczQzRZ4g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702679937; bh=CQqsukU7gsFz0lAYspeBrRZglBXPOm741QE/iLeobu2=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=gZOeQRUBrPQk642wfw4ZWb9K3976Ch0P33u9+zRPpFwsLefkTSLthCs5kE3b+HrAX9j9IK2gWL26RDmdApeBWdu3DTzODujcsPpSEP8SDclAVfbqcVk8rPL72oyH+dXAMAmluZAj9WB05O6LCXA0d1WqiJlYiOXjg3Gk5VP5jARV6nOTbofcwaP/z4IkedNu60XuIuEWd/yWpAAO0hDeZ/exOTRMSala5W9VioWwxIh45ZoYq61kUJPftfuCeeNe90TU2X/+vI8QOKbn9RvJefY0Xwz2XWXDzXMCHFwWawFDFHLiy5lD9cb27PcCoyOl8c+wYLEbWJfkn96kmWxJBw==
-X-YMail-OSG: n5fF0doVM1lZUSo11zSkzVfMSBl6JA9JVJAUwgdHa7WOiPISWCVuhE5ZkQaGJA2
- rVPFy.ry9_zVh_EGfz4VEIFv2e1lvYZS11xfPdYjRkpbvgdXlLaelXMBebLpGm2Jn2UAOB8gw.X4
- b9qzT53D2j7zQjmtVCZL1MD..QGM_hNTwyC_FuFzAIFxn3_Rpz3X2NH0ONBPOoUO3i_sc1VQyZFq
- FvdbPWxcCoDG347hjUHgg1IEdKcKV5Ad5WLMeM7WxNlhGoIDJXY3f1CVVkNNP567CnvdnIhGb7fw
- 0ezXWyh5X7Gr_VPc3IKpVv.lfUwNV4lTBH6UW7jucj2XxnBDW1k2cDzpLYQ1.b6mgKg7XMVbNTrT
- ujlqzxg9D1v6e3vX2zPk3XQWMHEihYyD_OLHDCHmvG6USTB8fYha1YGvWdQtefmqcmIacU1Rr6hl
- 8EGvVN_jYUPWRGHcjWmf5xRhj2VtP5eJteVnRjHnEBoI34l0mImUTPK1jCeoA69VTSy5dG_dIkf1
- lDqy42946hUi9hzLKyx1qXAo3L7zq0fI.5kCTHCYrJtKZqWJvY3a77i0Lem4vt.2nfgsuNbp06sq
- dc.jsXUdPwYrGHFxq2KDfu_pwtefAyoS79WPqI34c2d2pJ0YHhmLQS17PjgJMnpBfTH3XjjMVBn.
- vESvcXo7k7u7kNIzvpzs3Wf.s82bH_AMEZlJgzjrwvQ_SqE6oU6T_vuhokf3Qv2F2dtZ0hhxeute
- aAR4v4NgX5xhqvgCk.kmiQhvMd98WOPq4Al8lRQ2z6h2X_LrV8VDWB1mFMiMw2u6X_jhtThT9q8_
- IR6V5.Aa0SIcUx1hrdfvBoBloHHQuxzblQZsOz8fHSOyt5S52Jm5qWmMHbayrsTLLBeJEWAFPOiH
- 99qgSs81nicClkYlXd_WUikXA5WAjCb_J.Mmfa_qHHKGsyIG5qGURzKms6HNm3oRQnV1kB5Fmc19
- 6kHg19Bwz3KhuuMNzrBW4yP8mnyR_MqcMK8HwqIEm2BR247cMh_5uxo6mv1pDgvOS4Ss_FWO5O9J
- 9HWCSkFclln6wFhiKvrhTWugMN.lPNd_Ylou1vvXbLTqku3YjM6eFELrcOkVMbFm6UMQjiDRSvnh
- FEqeGDy1P2hPrKGdm0Ju8yFD.Oft5gJNGzYyTZMPwUhE0he_YBFYY1d9WSi8wne73CUWQEqxMVmK
- i5Xu_npffOkIGd6qdFVHtqx_tvzqYgQEDfJRkPvuCi6yOAaXt_x_Zow8jOdUrXNfF8rUGmzq86bj
- 73OJ4fU1..nUiMoKPe3xluLY1Z.dMKvdt6V8kfKlTmr9N6KDmtz3VpklbN3daTDaVSfgYzeyn_W9
- N99Lx.SST080lpDOFE2toRhjVhqrcKvPHICD5pzeFv.i2cHloU7qKbD3TXoYwmgaqc5sOUu1NRQM
- CuyKPc.kdU4T5S_fTIAiWWWZjeRCTFpS23YwjSdXZuMcKYNwhe15.317.H9UBK.u_UnPC_FvifgC
- j91ACufAmzbjPirK00LKQpPCqHYxpRsbAfUDSf1Kt2w4KgtM9qOXHOHhdRGKxVco1MHIUYKoBLvQ
- s2r1C5rVEys0e9uTrFyMbiIo7TgcpjZ6dvfHIXj0OfuKWHkYMC943rt4BE5Ny0Z8VNxeDzkvaaPm
- m.uo3cg9ROS94.LdctzXdn1BwYoRDS3mPlZBtlhqE6JAPEv.uLMgedz6NTWsbReCj.zvUMJt9BBl
- UuWyR.9uM_ObAmVNDyf8Pb1oUx..Lqq4FgyDDzD0rpZnGmKiuN_eCX2YsUFNDGV75k5f6brgB24u
- w6QXaxwrMahQ04Upjy00dFA_l0e8EjZlnft9mLgk8dStViittzdrR2DkSShmokx3usCgok69T5HQ
- qWmygj8DYb9g1LgAlnqmnsB.GzHcfmn79dQks9zK5nmSsuAI248WKYHpUYqsjcEN_aZejC_jvsEJ
- V7FAGymdR.1oH5d9wps22MJbgV7EGMYTeLOu_YIiJtMsWCUPksV8OoB_7JIxUDKofxq57X3gvcec
- F8uFpZ1oubMgiOtsH4wCLaI6FgNI71IZ_FAQ9vdnVVdaRuLSZlmx2_.IjRIzdRdjLydaAs1bkpRu
- 6Sv1PWM9y7GCdIgRcI0.78ua0VaDxjx7PA.WyPTF0OV5yQEY7DTHxYvIJa8R1cB8WgBmIew_kxpB
- NwDDSmErTFUSrDjvFfB77Qcv3DWCdOEzUyqIDPntngDo8EWeYR8dGVweEqTOypceJCt8Ic06xBGY
- z5GqSOxIqVlm9fxNuS975PVsqfbBfAN8OtxjQqaEVu2GO4SbQQJm5.GVWdHf27Ei7t3NaPssIlQc
- ZT7QK.AXplPvt9cevmWJyH46VHEM-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680033; bh=o5IMFBUGP2UovHyCSNRiU+4kZ3jQYyLWEB5ADn6j2oU=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=O6zwzudRZVUq8/FVNESHRKoaMDlJ5scqxAv5JDviYB9mNlB/tPsF1kXlZ4Q5jGlhnqKfzbx4yEPSls7cv+tLceDr526M8rBDCa95/Omwc9A+ULU00lkuuW12xcAtti/B5hr8dw3ytH5MJBEIBI81PD7JYRSbd0gotwlNgCuVzcuDYHy6rOu7x896Ndynp8067dT+bmTstNVBk8X24e/khYoj5H3YoDshmE6IXXdA7vfyrxgVcxARqy0QQ5Dbh78/UPvqaXaYQNi8E8WG9Jef7JU4wjvorp3W3nQeE1t4Z8AaDEUZaBExYfKDxX5yDQe3cqDxFPM2czNYxKCN1iEIJw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680033; bh=+bUJYUNOXUuVi58l0WjnoNkLHMIXQZXrNStlx5iarTM=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=d//Xed7AmTwqwyuD7jNF6GcThSFms6MTymep/x8SPkwM3Y9fjyXzpjB7/l3fAi/QahahcQ7KFoX0nUY2rAaRJ2HWN8uNsAVr/6VpJfXy4qeyk6AuGrVjNJd+lHcMJ9GgIUKtsMziWo7gZxRuJRnuArKIZg2Xqnp6Jn4s80H/ASJzZXfCeOW0FW19jvtMMDRLKxA+/bbwapn1ME7Ukym/5KxBQkj6AyxpV1nwIAg3MoEAkLphLemPDx4VlcSfGbSJl05IoW1yDrFUpxOkMGvpaw/4UxupyxlZVc5tRVQ0mHrSoDnomf6Up8bYoxrMLZETpV0lS9xpjvTTOOqNl0uNYg==
+X-YMail-OSG: LuT8lnAVM1nEZoptBRpIACvIfKhJTin.P1ZwBGe1zPGEiYD2ZOPaST8XiPvbDGO
+ SeNN7zoADgVlrgQ7rX_CtmqcNy.KSk6oRPLw6KWCgL8LLag5_GLx8uwE.L1SJJpXjLM98lFwRXOh
+ goJlGpjCeYzAGQRLIYcTJgcSJdh6at1ppH5sJOFwyLdxojbO5UlhbQbAsdz9WIBmUO9v2nzqcvvg
+ sYr_MA8VoO0YJAp_i9z5zXrGLU57inhSFNPjH2s7RP3tPCkm7mmliycSaESsPvZWtt3ztrptg0CC
+ xexglxtCMzJXkM_FueiZlE3F6T4E_w9eBxefPHYeIGgIoCrLdYKVmuJ0_GCl4O7F8vc6ABX157Y1
+ wZkq27JpSDToc975D7J.kGwiGPkxEyq1kLoPkt.wNGwh4n.dL3mMimy5dEx366FkYBVHjN1wSQAm
+ eTlQ1g7Gxq0Ukvt7N5JecI5E63tuRiBcy9b_9lqXfxdYHwxkTE7_SS7X1DE9yuTKRepnPqiXSN4O
+ PGhaok2r8.69P8OuKrfVoVpw3ejK3yW0lqrub0PZDolg03VTYzTTQlbCB7_cYRovWP0Ukk52Jna2
+ lqCrpDJr2DA0P9aSEHAwtbOGQW7b.DGrHa1ut0yboWqCcOyBdgbE1av_Kfsv2AASH8kUP1_lGRDb
+ znDVYUojshoN4WAWSC1dJsymGJDplft5FbPxSHAmu6Zzs3NexiRnlKNtQaLcXrzrYKIusLKtodas
+ xIaOzg5KVcUP6Py1vrZcZqGpD9i5Kbi.RNpvmT1LLI0WY41aDuYp3ajB4vaSZIw7daDxYbNThV89
+ 8dzdO65TA8PuqXujqt3zt3BmRQn1rclBiJZzsjEuzP1I9j52R9c_OO1ZMPbxXUp9kuSm26D1LIJ5
+ gqYYWKENac_EpEBkOaEN38fTYk6L4F3sPK96_YMIdJfOBDRf3ickRGaooyXmpSJngyhjcPlmjliB
+ 4Ia65ahXfqd_5jckbC.Eigw7bX.gABeJ9F3gsikF9BtkAQ6CII45EXBC7iRe_rlJc5QeadCFdLxi
+ LvRhcPi9ETznW1zzpCfxanWsqieDX5yFKn_GHkPrOTXrH_KNcH_3mra5VRGAGNQKgHkyHaVtGGO1
+ 1LztTlKM_Ict0GflBH5BGEzY4h9U57IMAcsAGIb5Il93tb8G7UANbjU_.yN8Luz6VuU1QedBWvoC
+ SR6sDNtygO6acb98fKyh4i09IG00iSD8PEsovZWtXKGe0a.DYguT9RBg3AsciM33JKdxI9m8MyNF
+ p.UffrTm9sBs2ylITeSnjEunW1butr581m1uC.5ZMqktR5PfDOhHbBrrAhju0Z9FYxcgqlrcrXw9
+ FWK2NhUPbLHXFHXr93Ij4BZ73wbJ..J.A6JPhJJYrvjoI2Ns32hgWJGbs1_HyTPfSlUcRm7tQdFz
+ czfFXgMbtd7op4V.FrBXiPxrJTp_yE8vvVL2dPDlEPPMAZeiYXLEB3_Aa89tvsxucWgRaARwRXRc
+ pEWayQqQ78CuOPXVG293pB5a.eSDjt8_XedP39.tjb9mCCcSGxM07FCTsGf3RYZw._PoELXUAULk
+ _pzZxrIIvFzX_vYV589y_W9wtOJ_bFjqN0fstBYfXZk8uCYpkln1VBvQuq0zhWIW3pLCzMjtgV4X
+ YelQzxnzNjRtz_W4VjEoCHm3jvxlubLgIxVbuf.Yt8gMsSYqAz0MQrMTSfeKL.seoZOxqC1PC.n9
+ 81yghYGThpPCYxsNjemYZgRk_3HbRjdl8gLYNoUY2Pdrm61gPu9eAbD42WpCKNoW4EhIx74Lk1BU
+ 5o93mZurnOSCZGP_H6YFcJpSKH3_7Iomv4I3R5aEV4Ub0RXT..unGjLdJyZXUNbIWQ2Bc.9ves4D
+ 5.5D08dgK75eH36un9tizKfJqBabHaeX6RBX0.OHYd_p6GQ4Up_by1DStQDpONE0UH.bu3uND8rp
+ PmRFgDPdr85_p0E7d5DQTafpmH4iIMcXvLVi0L8sRl6gdFUX5FkMPLtDmeCTI5KS1aWHDIpiUfnr
+ S20i00gvy_.C2wUQhZpWk4ZGjYJe2PWvVnaDCTusl1YAMf4eXuiueiFiBi8vkoE2zsaiF_ehTbo4
+ evnLUIT93KR3JJE.jpkajBON416r4AlTIWo2MzOhTh6PhFW3Nu4IJA6mXSjv6KPTpykUNKcLbtn8
+ 41c4HYm7bpJ1T7Bc9FYNRvtbjqCD6hTGllRwBMZVTlaMziUsyq1LwahHCfh2MQ7cigAt_iGW.nLL
+ X42_NASxM7T2eBQtHQRIzkiobOZQqUZMoOLgpoiLui0swU3kqkpQl9EyCji5KZfEkgsovv8O.C2I
+ _ukiPRJx4Z334LuV1mX49pEETWSm.
 X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: dd58fa10-8b58-492f-8a87-50fb20c791ee
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Dec 2023 22:38:57 +0000
-Received: by hermes--production-gq1-6949d6d8f9-q7525 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 522caf1ff66b851381e701962a25c33e;
-          Fri, 15 Dec 2023 22:38:55 +0000 (UTC)
+X-Sonic-ID: 88385606-f443-4ae1-a189-0fcb3bac267e
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Dec 2023 22:40:33 +0000
+Received: by hermes--production-gq1-6949d6d8f9-k52jv (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 154018758a06b94c4980c22812ec859e;
+          Fri, 15 Dec 2023 22:40:29 +0000 (UTC)
 From: Casey Schaufler <casey@schaufler-ca.com>
 To: casey@schaufler-ca.com,
 	paul@paul-moore.com,
@@ -73,9 +73,9 @@ Cc: jmorris@namei.org,
 	stephen.smalley.work@gmail.com,
 	linux-kernel@vger.kernel.org,
 	mic@digikod.net
-Subject: [PATCH v39 29/42] LSM: secctx provider check on release
-Date: Fri, 15 Dec 2023 14:16:23 -0800
-Message-ID: <20231215221636.105680-30-casey@schaufler-ca.com>
+Subject: [PATCH v39 30/42] LSM: Single calls in socket_getpeersec hooks
+Date: Fri, 15 Dec 2023 14:16:24 -0800
+Message-ID: <20231215221636.105680-31-casey@schaufler-ca.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231215221636.105680-1-casey@schaufler-ca.com>
 References: <20231215221636.105680-1-casey@schaufler-ca.com>
@@ -87,58 +87,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Verify that the LSM releasing the secctx is the LSM that
-allocated it. This was not necessary when only one LSM could
-create a secctx, but once there can be more than one it is.
+security_socket_getpeersec_stream() and security_socket_getpeersec_dgram()
+can only provide a single security context or secid to their callers.
+Open code these two hooks to return the first hook provided. Because
+only one "major" LSM is allowed there will only be one hook in the list,
+with the excepton being BPF. BPF is not expected to be using these
+interfaces.
 
 Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 ---
- security/apparmor/secid.c | 10 ++--------
- security/selinux/hooks.c  | 10 ++--------
- 2 files changed, 4 insertions(+), 16 deletions(-)
+ security/security.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/security/apparmor/secid.c b/security/apparmor/secid.c
-index c9b9a8d90afa..1df08372bf1b 100644
---- a/security/apparmor/secid.c
-+++ b/security/apparmor/secid.c
-@@ -146,14 +146,8 @@ int apparmor_secctx_to_secid(const char *secdata, u32 seclen, u32 *secid)
- 
- void apparmor_release_secctx(struct lsmcontext *cp)
+diff --git a/security/security.c b/security/security.c
+index f2ef6032a925..3f0a4c5094a5 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -4686,8 +4686,14 @@ EXPORT_SYMBOL(security_sock_rcv_skb);
+ int security_socket_getpeersec_stream(struct socket *sock, sockptr_t optval,
+ 				      sockptr_t optlen, unsigned int len)
  {
--	/*
--	 * stacking scaffolding:
--	 * When it is possible for more than one LSM to provide a
--	 * release hook, do this check:
--	 * if (cp->id == LSM_ID_APPARMOR || cp->id == LSM_ID_UNDEF)
--	 */
--
--	kfree(cp->context);
-+	if (cp->id == LSM_ID_APPARMOR)
-+		kfree(cp->context);
+-	return call_int_hook(socket_getpeersec_stream, -ENOPROTOOPT, sock,
+-			     optval, optlen, len);
++	struct security_hook_list *hp;
++
++	hlist_for_each_entry(hp, &security_hook_heads.socket_getpeersec_stream,
++			     list)
++		return hp->hook.socket_getpeersec_stream(sock, optval, optlen,
++							 len);
++
++	return -ENOPROTOOPT;
  }
  
  /**
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 656f25337334..a6deccbbcc40 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -6616,14 +6616,8 @@ static int selinux_secctx_to_secid(const char *secdata, u32 seclen, u32 *secid)
- 
- static void selinux_release_secctx(struct lsmcontext *cp)
+@@ -4707,8 +4713,13 @@ int security_socket_getpeersec_stream(struct socket *sock, sockptr_t optval,
+ int security_socket_getpeersec_dgram(struct socket *sock,
+ 				     struct sk_buff *skb, u32 *secid)
  {
--	/*
--	 * stacking scaffolding:
--	 * When it is possible for more than one LSM to provide a
--	 * release hook, do this check:
--	 * if (cp->id == LSM_ID_SELINUX || cp->id == LSM_ID_UNDEF)
--	 */
--
--	kfree(cp->context);
-+	if (cp->id == LSM_ID_SELINUX)
-+		kfree(cp->context);
+-	return call_int_hook(socket_getpeersec_dgram, -ENOPROTOOPT, sock,
+-			     skb, secid);
++	struct security_hook_list *hp;
++
++	hlist_for_each_entry(hp, &security_hook_heads.socket_getpeersec_dgram,
++			     list)
++		return hp->hook.socket_getpeersec_dgram(sock, skb, secid);
++
++	return -ENOPROTOOPT;
  }
+ EXPORT_SYMBOL(security_socket_getpeersec_dgram);
  
- static void selinux_inode_invalidate_secctx(struct inode *inode)
 -- 
 2.41.0
 
