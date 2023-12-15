@@ -1,62 +1,70 @@
-Return-Path: <linux-kernel+bounces-951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73F7281486E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:51:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2C70814870
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:51:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28FEA1F245B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:51:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 382FCB230EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9192C6B8;
-	Fri, 15 Dec 2023 12:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66AC02D616;
+	Fri, 15 Dec 2023 12:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Shn0gYuo"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O7MWuzwW"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114502DB75
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642412C6B1;
+	Fri, 15 Dec 2023 12:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702644685; x=1734180685;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Qitsnoe4czQzS8dI93mK8gLEVhXQMpYmjWDPRKPtpOY=;
-  b=Shn0gYuoiFgZ2NdcWGqkz9WPeqGAUIH8Ffw2UvmHaOUAfyziGK5RM8cr
-   zvl01Ewt/Y/opARDQEaesLQaNWkVNxZJkGPaCivhiV7UqM/xf2wKo+/WZ
-   7VQDcdo3cRrj74f6piIdxcnmeHh5hb6i5DyF90W9/5fGgnjHan5AOw5Z0
-   bi04srLHzR8ykUEfSZLkaYRCpsU31TYLi/sa31jdU8PBLTAzzXtxNlsL6
-   F4dPGKfj+tu5D9iiNOhEjn3oYbMGIduxQb+BwpHalFvfyuTIkbXU5rauo
-   wxyl/CdWmqu1KY0icaC3q+bwXH06HnNJhx6EVm8NE68ddgSekyETp9I8t
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="380266703"
+  t=1702644687; x=1734180687;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fzPxfKu5qBe6tZ/jrEy3J9qTN7QyGjhXfJqX+tBLEc8=;
+  b=O7MWuzwW8RkyZ7JuPJVlJgfOYDkTuHaEI+IkmzNP/yP/TTu6CXR9G2fd
+   +9JXDpOEUQrlbYhEKSjrV/i/zJaY2xa9P3josBR4ibYi62n4RyiVtXi10
+   KboDbKrl51c/YwS6AcjZaFVtsz8zxuqrzclUFBZT1vKHjtGFpnlZXUnPa
+   P8Lpf8KScSr5UdkVzrfcups9S8hW1O5ohJ8puV7BKfcD7VI9e5guiqGBg
+   e9orlYpul3dpPVNdyXh7V4vTwCbSiPSDSpApuq1FU0li5t0KLu/odvPci
+   uD/wuL6FHQSd0rdV0wx67wq6UCirZNnhXTMuksZ611mJ3KfO8vORhfjJ7
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="380266716"
 X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="380266703"
+   d="scan'208";a="380266716"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 04:51:24 -0800
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 04:51:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="898128676"
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="898128673"
 X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="898128676"
+   d="scan'208";a="898128673"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga004.jf.intel.com with ESMTP; 15 Dec 2023 04:51:23 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rE7ey-0000DQ-2s;
+	id 1rE7ey-0000DW-37;
 	Fri, 15 Dec 2023 12:51:20 +0000
-Date: Fri, 15 Dec 2023 20:50:27 +0800
+Date: Fri, 15 Dec 2023 20:50:28 +0800
 From: kernel test robot <lkp@intel.com>
-To: Will Deacon <will@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol
- '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be
- static?
-Message-ID: <202312152025.1qeAzjCU-lkp@intel.com>
+To: Christian Marangi <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	netdev@vger.kernel.org, Christian Marangi <ansuelsmth@gmail.com>
+Subject: Re: [net-next PATCH v2 3/3] net: phy: led: dynamically allocate
+ speed modes array
+Message-ID: <202312152038.v9NZyBxd-lkp@intel.com>
+References: <20231214154906.29436-4-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,35 +73,114 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231214154906.29436-4-ansuelsmth@gmail.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
-commit: 5c8b0cbd9d6bac5f40943b5a7d8eac8cb86cbe7f arm64: Pull in task_stack_page() to Spectre-v4 mitigation code
-date:   3 years, 3 months ago
-config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231215/202312152025.1qeAzjCU-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231215/202312152025.1qeAzjCU-lkp@intel.com/reproduce)
+Hi Christian,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/net-phy-refactor-and-better-document-phy_speeds-function/20231215-064112
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231214154906.29436-4-ansuelsmth%40gmail.com
+patch subject: [net-next PATCH v2 3/3] net: phy: led: dynamically allocate speed modes array
+config: arm-randconfig-002-20231215 (https://download.01.org/0day-ci/archive/20231215/202312152038.v9NZyBxd-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312152038.v9NZyBxd-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312152025.1qeAzjCU-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312152038.v9NZyBxd-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be static?
+All errors (new ones prefixed by >>):
 
-vim +/__pcpu_scope_arm64_ssbd_callback_required +353 arch/arm64/kernel/proton-pack.c
+>> drivers/net/phy/phy_led_triggers.c:89:30: error: call to undeclared function 'phy_supported_speeds_num'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      89 |         phy->phy_num_led_triggers = phy_supported_speeds_num(phy);
+         |                                     ^
+   drivers/net/phy/phy_led_triggers.c:89:30: note: did you mean 'phy_supported_speeds'?
+   include/linux/phy.h:208:14: note: 'phy_supported_speeds' declared here
+     208 | unsigned int phy_supported_speeds(struct phy_device *phy,
+         |              ^
+>> drivers/net/phy/phy_led_triggers.c:133:2: error: call to undeclared library function 'free' with type 'void (void *)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     133 |         free(speeds);
+         |         ^
+   drivers/net/phy/phy_led_triggers.c:133:2: note: include the header <stdlib.h> or explicitly provide a declaration for 'free'
+   2 errors generated.
 
-c28762070ca651 Will Deacon 2020-09-18  351  
-c28762070ca651 Will Deacon 2020-09-18  352  /* This is the per-cpu state tracking whether we need to talk to firmware */
-c28762070ca651 Will Deacon 2020-09-18 @353  DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
-c28762070ca651 Will Deacon 2020-09-18  354  
 
-:::::: The code at line 353 was first introduced by commit
-:::::: c28762070ca651fe7a981b8f31d972c9b7d2c386 arm64: Rewrite Spectre-v4 mitigation code
+vim +/phy_supported_speeds_num +89 drivers/net/phy/phy_led_triggers.c
 
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
+    83	
+    84	int phy_led_triggers_register(struct phy_device *phy)
+    85	{
+    86		unsigned int *speeds;
+    87		int i, err;
+    88	
+  > 89		phy->phy_num_led_triggers = phy_supported_speeds_num(phy);
+    90		if (!phy->phy_num_led_triggers)
+    91			return 0;
+    92	
+    93		speeds = kmalloc_array(phy->phy_num_led_triggers, sizeof(*speeds),
+    94				       GFP_KERNEL);
+    95		if (!speeds)
+    96			return -ENOMEM;
+    97	
+    98		/* Presence of speed modes already checked up */
+    99		phy_supported_speeds(phy, speeds, phy->phy_num_led_triggers);
+   100	
+   101		phy->led_link_trigger = devm_kzalloc(&phy->mdio.dev,
+   102						     sizeof(*phy->led_link_trigger),
+   103						     GFP_KERNEL);
+   104		if (!phy->led_link_trigger) {
+   105			err = -ENOMEM;
+   106			goto out_clear;
+   107		}
+   108	
+   109		err = phy_led_trigger_register(phy, phy->led_link_trigger, 0, "link");
+   110		if (err)
+   111			goto out_free_link;
+   112	
+   113		phy->phy_led_triggers = devm_kcalloc(&phy->mdio.dev,
+   114						    phy->phy_num_led_triggers,
+   115						    sizeof(struct phy_led_trigger),
+   116						    GFP_KERNEL);
+   117		if (!phy->phy_led_triggers) {
+   118			err = -ENOMEM;
+   119			goto out_unreg_link;
+   120		}
+   121	
+   122		for (i = 0; i < phy->phy_num_led_triggers; i++) {
+   123			err = phy_led_trigger_register(phy, &phy->phy_led_triggers[i],
+   124						       speeds[i],
+   125						       phy_speed_to_str(speeds[i]));
+   126			if (err)
+   127				goto out_unreg;
+   128		}
+   129	
+   130		phy->last_triggered = NULL;
+   131		phy_led_trigger_change_speed(phy);
+   132	
+ > 133		free(speeds);
+   134	
+   135		return 0;
+   136	out_unreg:
+   137		while (i--)
+   138			phy_led_trigger_unregister(&phy->phy_led_triggers[i]);
+   139		devm_kfree(&phy->mdio.dev, phy->phy_led_triggers);
+   140	out_unreg_link:
+   141		phy_led_trigger_unregister(phy->led_link_trigger);
+   142	out_free_link:
+   143		devm_kfree(&phy->mdio.dev, phy->led_link_trigger);
+   144		phy->led_link_trigger = NULL;
+   145	out_clear:
+   146		free(speeds);
+   147		phy->phy_num_led_triggers = 0;
+   148		return err;
+   149	}
+   150	EXPORT_SYMBOL_GPL(phy_led_triggers_register);
+   151	
 
 -- 
 0-DAY CI Kernel Test Service
