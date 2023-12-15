@@ -1,258 +1,170 @@
-Return-Path: <linux-kernel+bounces-1342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C452D814DB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:57:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D744F814DB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:59:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29803B21FD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:57:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91FB8284306
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35A845C07;
-	Fri, 15 Dec 2023 16:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92FD3EA7C;
+	Fri, 15 Dec 2023 16:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l/prYTqF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IurPGBVZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8138145BE7
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-db7dd9a8bd6so775856276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:57:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970D43EA6B;
+	Fri, 15 Dec 2023 16:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cc3facf0c0so8301801fa.0;
+        Fri, 15 Dec 2023 08:59:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702659419; x=1703264219; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tedB6dzGtFnZ2/TTckAyrV84Fj9w//nedimy7msq/vI=;
-        b=l/prYTqFnj/8QUIraDNSix/1WvD9o3qpSQzlfGPhZ9nezjQ63oYlk5PcH8nnfI8t2U
-         V0vVJXuNSOOZp/Hj+PtSAxwpjwm7bDOfE7LNraM5CzYOm3cN3GBz6XXlznKrRP+T8U0E
-         kHD1Lact0a5WwW/czjzPNsXwV4gqwSXYAmTIVH6+vutglQPl7IMlIis57Nk3X3whmaKo
-         VnnuYVMKVwXPBmRUVJ1dEgr80tLXxfQcYUdtHBGnhkSbqM8PuAUAdaUA3odGwJ80xEtW
-         phvqGHDK+KZOqnJ0BUvrj/RhrmoN9M/TTkIj9j0AxuBkQOIexvpTOdkFM6XoBe6Bclz7
-         QsEQ==
+        d=gmail.com; s=20230601; t=1702659538; x=1703264338; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ng6OxL3bfprBeqixlAY27bfZCnLXVb/25bFamyart8Q=;
+        b=IurPGBVZyPxLwUG7oD0kRT33HeAnQ4XleFTQ/Mal2YDn4A70oD2vR7EUhLgB0EhWlL
+         /3s8zaFjjFRxc27Gq8oToxxlgg+aUng2PwSsKWzbcjXQvcff//7+2AMN3ZBbMLva9r6N
+         WkoXfY0g2lau3J+nbNACGc0+8zwcveXOHMIV+eKYg+YvaKciHoevz+66vLY3LQ/Oo6wC
+         v73ZeW1JQrqYhs/N4Ww9s5da7RHCf9a7NFAP5N0Bs78x+pYO5xwEVrtKdlbbwiTgNW4r
+         qsF74/oP1Q3kubhEroU74fXwLprQlWAqUcxgWtIQcCBkvOHfRQBhU7cKmJ9IgqJcGdCh
+         cDUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702659419; x=1703264219;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tedB6dzGtFnZ2/TTckAyrV84Fj9w//nedimy7msq/vI=;
-        b=UljGI1DGdsE0/DajQScvL2fQM1XfmtCgaEOuxhyRBy8RDzyCeAhjoKFVhYp53+bvD7
-         Z6FxjXNorX2csDrsy8rOMWY0LtKJEseSvgboqQSoMKaOInEZLA27yRoGX3LuQGTyshId
-         LHDr/hnYQ/7u1bmsaRiXr7TK9EzqUlanxf6JyKOsBpYTtbm2b926oqzId1G/hZc17WAn
-         k5i8vraVQ8tE38OmtTZvzmGsfeBR2ka22exlk/3GfMiQINSjounUbmLW7Sip1d/KDSb6
-         MJkcqPolD0Ij+aIQXwb78E/ynDxceNFOuV9ZFOC3Ody9GcIm6/w6nCEftw+YII5nalVY
-         RzbA==
-X-Gm-Message-State: AOJu0YxDUg8kN0Hyen+sncvBIsQVHmF1diLs+HCc3pshthAOGtWW+Nt0
-	hWsC6QcSlWkVOU9VFhACTivzIXzP5/4=
-X-Google-Smtp-Source: AGHT+IHVIw5v9gkKRIyDQB+tzsM2jhf1AroENr4CCUApEftHVR60jPLwilhj6NINZ/rxmZnW3lio+y8QeLA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:28a:b0:daf:5829:5b68 with SMTP id
- v10-20020a056902028a00b00daf58295b68mr96578ybh.7.1702659419487; Fri, 15 Dec
- 2023 08:56:59 -0800 (PST)
-Date: Fri, 15 Dec 2023 08:56:57 -0800
-In-Reply-To: <CAO7JXPik9eMgef6amjCk5JPeEhg66ghDXowWQESBrd_fAaEsCA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1702659538; x=1703264338;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ng6OxL3bfprBeqixlAY27bfZCnLXVb/25bFamyart8Q=;
+        b=tfyS9yAWsO6lMmhUP7QDlhuEj7Mtnx0LiYUCSr66LsIJbuzSYUgku6opZL37tjEp7N
+         AdBDv5tPLSN2QyndyNWQDkoOiyE43ey5deb5T90zGQj9ZGq3262tBqF1Ni76U7vo3eH/
+         L06t/mmCdmLINEPJHF/5Lh5rVOp48csaua4lroxythd2y3e+j2IlxXY2PFb/csI+Iz11
+         fTASX25Hnk45qZp8i+/CeQkNlNN6uqzzUPn6LnQdde7baEV1MbVlPynkdV/Z0VlN5RHP
+         y1+vzaXjxJhEVV/v+uyJ+rEN31xmthxw0VZmw20XS6DqXGNKyGJwmmiL+Ie4zY4iiyYP
+         XsgA==
+X-Gm-Message-State: AOJu0YxETCJ4pRLOeDQjwGSMxzsfhX/j/Ktll2gOzLPJxgUEIHp9tzvC
+	Y9K0mXjCqmrN6wKJdC1KrPQ=
+X-Google-Smtp-Source: AGHT+IHP23uE00H/RQwr42qR+drtU4psvRD8J4Zc/giYF4D+Pn6m6nF7FIYwwhvM1WTYs6Vdj/TX/Q==
+X-Received: by 2002:a2e:a367:0:b0:2ca:27a:1829 with SMTP id i7-20020a2ea367000000b002ca027a1829mr6530295ljn.2.1702659538200;
+        Fri, 15 Dec 2023 08:58:58 -0800 (PST)
+Received: from pc636 (host-90-235-2-229.mobileonline.telia.com. [90.235.2.229])
+        by smtp.gmail.com with ESMTPSA id z13-20020a05651c11cd00b002c9f8626256sm2530609ljo.53.2023.12.15.08.58.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 08:58:57 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Fri, 15 Dec 2023 17:58:55 +0100
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Qais Yousef <qyousef@layalina.io>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrea Righi <andrea.righi@canonical.com>,
+	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Message-ID: <ZXyFz1BD6Nh1zsnc@pc636>
+References: <20231203011252.233748-1-qyousef@layalina.io>
+ <ZXhTjrTqZvMTXKtK@pc636>
+ <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com>
+ <ZXmI9zDW8KlZqQj7@pc636>
+ <CAEXW_YRdgQywfJ+A9fa1itDojPDiZ_Xc3M8n6dS=M2LHX9hSFg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <ZXsvl7mabUuNkWcY@google.com> <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
- <ZXth7hu7jaHbJZnj@google.com> <CAO7JXPhQ3zPzsNeuUphLx7o_+DOfJrmCoyRXXjcQMEzrKnGc9g@mail.gmail.com>
- <ZXuiM7s7LsT5hL3_@google.com> <CAO7JXPik9eMgef6amjCk5JPeEhg66ghDXowWQESBrd_fAaEsCA@mail.gmail.com>
-Message-ID: <ZXyFWTSU3KRk7EtQ@google.com>
-Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
-From: Sean Christopherson <seanjc@google.com>
-To: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
-Cc: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>, 
-	Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YRdgQywfJ+A9fa1itDojPDiZ_Xc3M8n6dS=M2LHX9hSFg@mail.gmail.com>
 
-On Fri, Dec 15, 2023, Vineeth Remanan Pillai wrote:
-> > > >
-> > > I get your point. A generic way would have been more preferable, but =
-I
-> > > feel the scenario we are tackling is a bit more time critical and kvm
-> > > is better equipped to handle this. kvm has control over the VM/vcpu
-> > > execution and hence it can take action in the most effective way.
-> >
-> > No, KVM most definitely does not.  Between sched, KVM, and userspace, I=
- would
-> > rank KVM a very distant third.  Userspace controls when to do KVM_RUN, =
-to which
-> > cgroup(s) a vCPU task is assigned, the affinity of the task, etc.  sche=
-d decides
-> > when and where to run a vCPU task based on input from userspace.
-> >
-> > Only in some edge cases that are largely unique to overcommitted CPUs d=
-oes KVM
-> > have any input on scheduling whatsoever.   And even then, KVM's view is=
- largely
-> > limited to a single VM, e.g. teaching KVM to yield to a vCPU running in=
- a different
-> > VM would be interesting, to say the least.
-> >
-> Over committed case is exactly what we are trying to tackle.
+Hello, Joel!
 
-Yes, I know.  I was objecting to the assertion that "kvm has control over t=
-he
-VM/vcpu execution and hence it can take action in the most effective way". =
- In
-overcommit use cases, KVM has some *influence*, and in non-overcommit use c=
-ases,
-KVM is essentially not in the picture at all.
+> [....]
+> > > > > +       Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
+> > > > > +
+> > > > > +config RCU_LAZY_DEFAULT_OFF
+> > > > > +     bool "Turn RCU lazy invocation off by default"
+> > > > > +     depends on RCU_LAZY
+> > > > > +     default n
+> > > > > +     help
+> > > > > +       Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
+> > > > > +       off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
+> > > > > +       it back on.
+> > > > > +
+> > > > >  config RCU_DOUBLE_CHECK_CB_TIME
+> > > > >       bool "RCU callback-batch backup time check"
+> > > > >       depends on RCU_EXPERT
+> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > index 3ac3c846105f..8b7675624815 100644
+> > > > > --- a/kernel/rcu/tree.c
+> > > > > +++ b/kernel/rcu/tree.c
+> > > > > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+> > > > >  }
+> > > > >
+> > > > >  #ifdef CONFIG_RCU_LAZY
+> > > > > +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
+> > > > > +module_param(enable_rcu_lazy, bool, 0444);
+> > > > > +
+> > > > >  /**
+> > > > >   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+> > > > >   * flush all lazy callbacks (including the new one) to the main ->cblist while
+> > > > > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+> > > > >       __call_rcu_common(head, func, false);
+> > > > >  }
+> > > > >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > > > > +#else
+> > > > > +#define enable_rcu_lazy              false
+> > > > >  #endif
+> > > > >
+> > > > >  /**
+> > > > > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > > > >   */
+> > > > >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > > >  {
+> > > > > -     __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> > > > > +     __call_rcu_common(head, func, enable_rcu_lazy);
+> > > > >  }
+> > > > >  EXPORT_SYMBOL_GPL(call_rcu);
+> > > > >
+> > > > I think, it makes sense. Especially for devices/systems where it is hard
+> > > > to recompile the kernel and deploy it. For example, Google and GKI approach.
+> > >
+> > > My concerns had nothing to do with recompiling the kernel. Passing a
+> > > boot parameter (without a kernel compile) can just as well
+> > > default-disable the feature.
+> > >
+> > > I think what Qais is saying is that passing a boot parameter is itself
+> > > a hassle in Android (something I did not know about) because of GKI
+> > > etc.
+> > >
+> > That is true. Doing:
+> >
+> > echo 1 > /sys/.../enable_lazy
+> >
+> > is a way how to make it easy and flexible.
+> 
+> Hey Vlad, are you suggesting that the boot parameter be made to
+> support runtime? We can keep that for later as it may get complicated.
+> Qais's boot parameter is designed only for boot time.
+> 
+No problem. Yes, i meant a runtime one. But as you stated there might
+be hidden issues witch we are not aware of yet.
 
-> Sorry for not making this clear in the cover letter. ChromeOS runs on low=
--end
-> devices (eg: 2C/2T cpus) and does not have enough compute capacity to
-> offload scheduling decisions. In-band scheduling decisions gave the
-> best results.
->=20
-> > > One example is the place where we handle boost/unboost. By the time
-> > > you come out of kvm to userspace it would be too late.
-> >
-> > Making scheduling decisions in userspace doesn't require KVM to exit to=
- userspace.
-> > It doesn't even need to require a VM-Exit to KVM.  E.g. if the schedule=
-r (whether
-> > it's in kernel or userspace) is running on a different logical CPU(s), =
-then there's
-> > no need to trigger a VM-Exit because the scheduler can incorporate info=
-rmation
-> > about a vCPU in real time, and interrupt the vCPU if and only if someth=
-ing else
-> > needs to run on that associated CPU.  From the sched_ext cover letter:
-> >
-> >  : Google has also experimented with some promising, novel scheduling p=
-olicies.
-> >  : One example is =E2=80=9Ccentral=E2=80=9D scheduling, wherein a singl=
-e CPU makes all
-> >  : scheduling decisions for the entire system. This allows most cores o=
-n the
-> >  : system to be fully dedicated to running workloads, and can have sign=
-ificant
-> >  : performance improvements for certain use cases. For example, central
-> >  : scheduling with VCPUs can avoid expensive vmexits and cache flushes,=
- by
-> >  : instead delegating the responsibility of preemption checks from the =
-tick to
-> >  : a single CPU. See scx_central.bpf.c for a simple example of a centra=
-l
-> >  : scheduling policy built in sched_ext.
-> >
-> This makes sense when the host has enough compute resources for
-> offloading scheduling decisions.
+Thanks!
 
-Yeah, again, I know.  The point I am trying to get across is that this RFC =
-only
-benefits/handles one use case, and doesn't have line of sight to being exte=
-nsible
-to other use cases.
-
-> > > As you mentioned, custom contract between guest and host userspace is
-> > > really flexible, but I believe tackling scheduling(especially latency=
-)
-> > > issues is a bit more difficult with generic approaches. Here kvm does
-> > > have some information known only to kvm(which could be shared - eg:
-> > > interrupt injection) but more importantly kvm has some unique
-> > > capabilities when it comes to scheduling. kvm and scheduler are
-> > > cooperating currently for various cases like, steal time accounting,
-> > > vcpu preemption state, spinlock handling etc. We could possibly try t=
-o
-> > > extend it a little further in a non-intrusive way.
-> >
-> > I'm not too worried about the code being intrusive, I'm worried about t=
-he
-> > maintainability, longevity, and applicability of this approach.
-> >
-> > IMO, this has a significantly lower ceiling than what is possible with =
-something
-> > like sched_ext, e.g. it requires a host tick to make scheduling decisio=
-ns, and
-> > because it'd require a kernel-defined ABI, would essentially be limited=
- to knobs
-> > that are broadly useful.  I.e. every bit of information that you want t=
-o add to
-> > the guest/host ABI will need to get approval from at least the affected=
- subsystems
-> > in the guest, from KVM, and possibly from the host scheduler too.  That=
-'s going
-> > to make for a very high bar.
-> >
-> Just thinking out  loud, The ABI could be very simple to start with. A
-> shared page with dedicated guest and host areas. Guest fills details
-> about its priority requirements, host fills details about the actions
-> it took(boost/unboost, priority/sched class etc). Passing this
-> information could be in-band or out-of-band. out-of-band could be used
-> by dedicated userland schedulers. If both guest and host agrees on
-> in-band during guest startup, kvm could hand over the data to
-> scheduler using a scheduler callback. I feel this small addition to
-> kvm could be maintainable and by leaving the protocol for interpreting
-> shared memory to guest and host, this would be very generic and cater
-> to multiple use cases. Something like above could be used both by
-> low-end devices and high-end server like systems and guest and host
-> could have custom protocols to interpret the data and make decisions.
->=20
-> In this RFC, we have a miniature form of the above, where we have a
-> shared memory area and the scheduler callback is basically
-> sched_setscheduler. But it could be made very generic as part of ABI
-> design. For out-of-band schedulers, this call back could be setup by
-> sched_ext, a userland scheduler and any similar out-of-band scheduler.
->=20
-> I agree, getting a consensus and approval is non-trivial. IMHO, this
-> use case is compelling for such an ABI because out-of-band schedulers
-> might not give the desired results for low-end devices.
->=20
-> > > Having a formal paravirt scheduling ABI is something we would want to
-> > > pursue (as I mentioned in the cover letter) and this could help not
-> > > only with latencies, but optimal task placement for efficiency, power
-> > > utilization etc. kvm's role could be to set the stage and share
-> > > information with minimum delay and less resource overhead.
-> >
-> > Making KVM middle-man is most definitely not going to provide minimum d=
-elay or
-> > overhead.  Minimum delay would be the guest directly communicating with=
- the host
-> > scheduler.  I get that convincing the sched folks to add a bunch of par=
-avirt
-> > stuff is a tall order (for very good reason), but that's exactly why I =
-Cc'd the
-> > sched_ext folks.
-> >
-> As mentioned above, guest directly talking to host scheduler without
-> involving kvm would mean an out-of-band scheduler and the
-> effectiveness depends on how fast the scheduler gets to run.
-
-No, the "host scheduler" could very well be a dedicated in-kernel paravirt
-scheduler.  It could be a sched_ext BPF program that for all intents and pu=
-rposes
-is in-band.
-
-You are basically proposing that KVM bounce-buffer data between guest and h=
-ost.
-I'm saying there's no _technical_ reason to use a bounce-buffer, just do ze=
-ro copy.
-
-> In lowend compute devices, that would pose a challenge. In such scenarios=
-, kvm
-> seems to be a better option to provide minimum delay and cpu overhead.
+--
+Uladzislau Rezki
 
