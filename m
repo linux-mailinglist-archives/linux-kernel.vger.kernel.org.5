@@ -1,127 +1,137 @@
-Return-Path: <linux-kernel+bounces-1349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA9BD814DCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:03:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 653DF814DC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:03:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDCFA1C23E16
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:03:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22ED0286061
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3D63FB31;
-	Fri, 15 Dec 2023 17:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40BB3EA89;
+	Fri, 15 Dec 2023 17:03:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="QbLIf5Bm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L8njkoym"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CB03EA78;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E75E3EA7C;
 	Fri, 15 Dec 2023 17:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BFDLSlT017503;
-	Fri, 15 Dec 2023 18:02:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=selector1; bh=vD6h9pH
-	zJnmCBjscGPQb18sMsLi5KfISG29RwhbGxYI=; b=QbLIf5BmFBOSkCIpMkerL7K
-	93jFOZqTkajmC9EvJt+jWRyOqE+oj6zCuny5JcWWdvIviwGMcfh0f1ziVqck8DVk
-	OuuoujyjkcyA0I5zNJV32aCKMjsy6afNBIjV2bVnqDBa3g23KEu6LBbft6tACNRV
-	xiUEQQqGJg+gU+kpJE4npqDlJlyQBKVpui92RsAipq3P+a8WRS3XE1qjPYFE9uqE
-	3nHZP3QCxrjHqti6o53BojNaMP+T6nyNI6MjqVwLqLuXpsO3Dm4PsAvZgWUHPo9E
-	+IRlLR0YERGrr3PuVduuKROcboPQYK+XRIL2hPbRK/CK1FcCvcyyo0lYfbEmgsw=
-	=
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v0cbtuhhn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 18:02:47 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 64E4C100052;
-	Fri, 15 Dec 2023 18:02:46 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 585F4237D9B;
-	Fri, 15 Dec 2023 18:02:46 +0100 (CET)
-Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Dec
- 2023 18:02:46 +0100
-From: Alain Volmat <alain.volmat@foss.st.com>
-To: Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre
- Torgue <alexandre.torgue@foss.st.com>,
-        Pierre-Yves MORDRET
-	<pierre-yves.mordret@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>
-CC: Conor Dooley <conor@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 0/7] i2c: stm32f7: enhancements and support for stm32mp25
-Date: Fri, 15 Dec 2023 18:02:10 +0100
-Message-ID: <20231215170223.95549-1-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F145C433CD;
+	Fri, 15 Dec 2023 17:03:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702659787;
+	bh=ajf26pir6fXq20CplEJMXiFdwNUfaixnT+N6tmJkitw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=L8njkoymU68soJsWcs0umSxZd8F8wVyIF44uHMIBxOUEUo+UUCwo1z/U3p8h6/qpT
+	 iWOoXvXUFpvE5U1nHRzhQbI2bkfGtV5dlI/Dt8Ttjfux6T89RMq7d8V8KnwcEmDNji
+	 9qgWjUMt66f7hG7gDCHcITJviZGhQGH4EA81fRAKr36LI05zmHDtxf38QwzXYR4LMv
+	 jkNKcwv/UeCUA0w/5TGM7DQq5KQhs0SqABI23rpk7I7HO9TjzQR93MYs5oKMSsf5rr
+	 uHT1rm6al/+LEQ1/poUMJEBzZHHaOBMRJ9mgSWFhw/XTUuJSHqyUHprkSeo/0zVIrw
+	 RkPycjKtarHqQ==
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-20379a7a926so208503fac.3;
+        Fri, 15 Dec 2023 09:03:07 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw2rGtP9N4ALA+4D8XcCXL7KoZZiltkoXvQWZ2Wv0E8io4/Wgnm
+	aIPGfAewA9m0elOYyT8i1ML3xMQ/S97L/YUKBSc=
+X-Google-Smtp-Source: AGHT+IFSdu/F7vwdNFiRRFkJzwflbFSMH3nCh+pN8oX/a2dGXQaDLR/33PZz2VqwQ/n7qpPj+780mMDcb6GA1hrvNng=
+X-Received: by 2002:a05:6870:7a2:b0:1fa:2620:6c4e with SMTP id
+ en34-20020a05687007a200b001fa26206c4emr8111187oab.4.1702659786858; Fri, 15
+ Dec 2023 09:03:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-15_10,2023-12-14_01,2023-05-22_02
+References: <20231208181802.88528-3-leobras@redhat.com> <ZXgMa57Ere6FJCJB@infradead.org>
+ <CAK7LNAQiJW0eFYQZN0wuURhrdc-8y7=TcEazpxhLf=+mRbKHHQ@mail.gmail.com>
+ <ZXhbUmxzH6nWAzaw@infradead.org> <ZXiT1zyADQVXOEqw@LeoBras>
+In-Reply-To: <ZXiT1zyADQVXOEqw@LeoBras>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 16 Dec 2023 02:02:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARhah+P+wESAYxVUzRkD81EacR_J+muDcP7HLZpCRkd8g@mail.gmail.com>
+Message-ID: <CAK7LNARhah+P+wESAYxVUzRkD81EacR_J+muDcP7HLZpCRkd8g@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 1/1] scripts: Introduce a default git.orderFile
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This series first perform enhancements in the way interrupt are handled
-and cleanup in messages.
-Then it adds support for the stm32mp25 which differs in that
-it only has a single irq line for both event/error and has a
-different handling of the FastModePlus.
-Support is then enabled within the stm32mp25 related device-trees.
+On Wed, Dec 13, 2023 at 2:10=E2=80=AFAM Leonardo Bras <leobras@redhat.com> =
+wrote:
+>
+> On Tue, Dec 12, 2023 at 05:08:34AM -0800, Christoph Hellwig wrote:
+> > On Tue, Dec 12, 2023 at 05:09:21PM +0900, Masahiro Yamada wrote:
+> > > Unlike .gitignore, this feature is opt-in rather than enforced.
+> > >
+> > > To use this, you need to run
+> > >
+> > > 'git config diff.orderFile scripts/git.orderFile'
+> > >
+> > > or
+> > >
+> > > 'git diff -C scripts/git.orderFile'
+> >
+> > Oh, ok.  That greatly reduces my concern.
+>
+> Yes, it's an opt-in, so no user should be directly impacted.
 
-Changelog:
-v3: - addition of 2 commits dealing with readl_relaxed(I2C_ISR) in
-      isr handler and a second one to use dev_err_probe during probe
-    - correction of SOB in commit
 
-v2: - correct st,stm32-i2c.yaml.  Use if then else scheme to indicate
-      number of interrupts / interrupt-names depending on the
-      compatible while keeping the description within the common part
+Applied to linux-kbuild.
+Thanks.
 
-    - correct 2 maybe-uninitialized warnings
-          * ret in stm32f7_i2c_write_fm_plus_bits
-          * irq_error in stm32f7_i2c_probe, move the platform_get_irq
-            within the same if block as devm_request_threaded_irq
 
-Alain Volmat (9):
-  i2c: stm32f7: use dev_err_probe upon calls of devm_request_irq
-  i2c: stm32f7: perform most of irq job in threaded handler
-  i2c: stm32f7: simplify status messages in case of errors
-  dt-bindings: i2c: document st,stm32mp25-i2c compatible
-  i2c: stm32f7: perform I2C_ISR read once at beginning of event isr
-  i2c: stm32f7: add support for stm32mp25 soc
-  arm64: dts: st: add all 8 i2c nodes on stm32mp251
-  arm64: dts: st: add i2c2/i2c8 pins for stm32mp25
-  arm64: dts: st: add i2c2 / i2c8 properties on stm32mp257f-ev1
 
- .../devicetree/bindings/i2c/st,stm32-i2c.yaml |  28 ++
- arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi |  36 ++
- arch/arm64/boot/dts/st/stm32mp251.dtsi        |  96 +++++
- arch/arm64/boot/dts/st/stm32mp257f-ev1.dts    |  20 +
- drivers/i2c/busses/i2c-stm32f7.c              | 342 +++++++++---------
- 5 files changed, 358 insertions(+), 164 deletions(-)
 
--- 
-2.25.1
 
+
+
+
+> >
+> > >
+> > > Indeed, the file order is subjective, leaving
+> > > us a question "do we need it in upstream"?
+>
+> The main idea is patch generation.
+> This file's order is supposed to be the best order for reading a raw patc=
+h
+> and understanding the code changes.
+>
+> > >
+> > > At least, it is harmless for people who have no interest.
+> >
+> > .. but this is still a good question.  I'm not really sure there is
+> > much of a need for it, but as long as it doesn't harm everyone else
+> > I'm at least neutral on it.
+>
+> diff.orderfile was introduced in git to help order the git diff, and thus
+> the patch generation, in a way that it's easier to understand what the
+> commit / patch intends on doing.
+>
+> Take this example introducing a feature foo, you should see:
+> - Documentation on foo, if introduced
+> - How is foo enabled in build system, if needed
+> - The types / stucts / fields introduced by foo, if any
+> - The interface for using foo, if any
+> - The actual foo implementation.
+>
+> Of course the actual order is open to discussion, and I encourage everyon=
+e
+> to suggest any other items or order.
+>
+> Thanks!
+> Leo
+>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
