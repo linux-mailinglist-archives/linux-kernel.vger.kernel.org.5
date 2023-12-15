@@ -1,106 +1,76 @@
-Return-Path: <linux-kernel+bounces-832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78A498146D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:25:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ECBF8146D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C9661F231C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:25:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E7901F21536
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62228250E4;
-	Fri, 15 Dec 2023 11:25:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C74250E6;
+	Fri, 15 Dec 2023 11:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H75SE11a"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="tjU2DB2w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A194625578;
-	Fri, 15 Dec 2023 11:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3333131e08dso487947f8f.2;
-        Fri, 15 Dec 2023 03:25:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702639498; x=1703244298; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=78QwY/yXp7SyEhpI3hXVRE/tZyrcCs2zsxYlhvSEhSw=;
-        b=H75SE11aOHp4MsZGHC1WeFjfX9x7PLQRMwdoTs2Y//jqKBg3fMvr39MlqgfCsFqYpD
-         4r4GfAGDh3jDKOWN2W/uKrfF1r0A2P5uxYtPCzkBkoH4SxO/ZnVsXCAH55xqqbeF4PO8
-         RcXLSQSEn+f9c2PWno5WH0YkQUbNurkQSD91b32fzNNhYufyYUjw4zpN4VBTDZIMfn52
-         m3LtwShSD1J7k5kHCi5zdbrtOtu2pJg39e6gYSIfChyRZ+1F/m8wrCRFYqAacaLf4v59
-         s/chXjNMHdSD9K9w+C8P0f5M/zhFN8ZNd56DHpVf2dxMBepkJ3gLe92OrPSr8eCexttH
-         VJHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702639498; x=1703244298;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=78QwY/yXp7SyEhpI3hXVRE/tZyrcCs2zsxYlhvSEhSw=;
-        b=eJ6HzvnaK1L4MExagZwUZo0CdagyvJpigdXwZkT91AvtZbxu/+ityGPGFr9tZ8puQl
-         SNFzxLsC2PBJ46qUYV1WahQ7oGDHDA9zffKrBTu2mgjE7t+X28WdtiMReyCGWx8ZtPPC
-         2t4M7Fegz4OA6D2olmG7WK56LZ/cMMj/3iX87XaG953ijeVaRDdukWYzQzymFAXjL5R1
-         2qUTipMyLAPI65QmvWiiY//5aXLaTACtR0p4JAsf+8xAVdLuiEDhZ0ATTknTK/mPgKEQ
-         rdnDfFTZ+Fij91DXDLKkDQUajnSQA//HD/K7Q8sGLt2EmiLIAevAMgKnfxRyUOSCrUeZ
-         KSgw==
-X-Gm-Message-State: AOJu0YzqsYkzBH+9ztHBo+qHoKZjIY/YZtqPQvMT/sUm3XtHAFl7r0Zq
-	fUDxt5dlH2GhfGtZkTmgsNk=
-X-Google-Smtp-Source: AGHT+IHbvlF50uwy5uxAGyjsXMY3E1oRBF1pOxK0P3BvjONqgzkK+7agL/9FjbSYjrZbPUgvJTYAew==
-X-Received: by 2002:adf:ed49:0:b0:336:4350:e2fb with SMTP id u9-20020adfed49000000b003364350e2fbmr2275153wro.76.1702639498352;
-        Fri, 15 Dec 2023 03:24:58 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id df5-20020a5d5b85000000b003364a0e6983sm3668181wrb.62.2023.12.15.03.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 03:24:57 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kselftest@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] powerpc/selftests: Fix spelling mistake "EACCESS" -> "EACCES"
-Date: Fri, 15 Dec 2023 11:24:56 +0000
-Message-Id: <20231215112456.13554-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE2A2C698;
+	Fri, 15 Dec 2023 11:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Dw5pweRuSlfkLQEGXeQwxUMxSRNgHjntBvvtfrs4n0U=; b=tjU2DB2wYK/Xi+QtyUhuecMtcx
+	tb8gCMhXf938cdjBSYfDFdhO/eb63JT5oq0x1qXOJxIvjmIh5QVshJrEAvj5SdcBOZv+FjPEfiseu
+	35m8pJlRxXWp4CqtXr90POk7+gRqRS5hppHTFRQa00efsej/eL8C7SUjsrZ4DIiS4WKE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rE6JR-0030zs-KA; Fri, 15 Dec 2023 12:25:01 +0100
+Date: Fri, 15 Dec 2023 12:25:01 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jie Luo <quic_luoj@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
+	p.zabel@pengutronix.de, f.fainelli@gmail.com,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
+ properties
+Message-ID: <4cb2bd57-f3d3-49f9-9c02-a922fd270572@lunn.ch>
+References: <20231215074005.26976-1-quic_luoj@quicinc.com>
+ <20231215074005.26976-15-quic_luoj@quicinc.com>
+ <bdfba8a7-9197-4aae-a7f9-6075a375f60b@linaro.org>
+ <c3391e33-e770-4c61-855e-d90e82b95f75@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3391e33-e770-4c61-855e-d90e82b95f75@quicinc.com>
 
-There is a spelling mistake of the EACCES error name, fix it.
+> The "maxItems: 1" of the property resets is defined in ethernet-phy.yaml
+> that is referenced by qca,ar803x.yaml, but i have 11 reset instances
+> used for qca8084 PHY
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+11!?!?? Really? Why?
 
-diff --git a/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c b/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c
-index d5436de5b8ed..f56c15a11e2f 100644
---- a/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c
-+++ b/tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c
-@@ -177,7 +177,7 @@ static const struct sysparm_test sysparm_tests[] = {
- 	},
- 	{
- 		.function = set_with_ro_fd,
--		.description = "PAPR_IOC_SYSPARM_SET returns EACCESS on read-only fd",
-+		.description = "PAPR_IOC_SYSPARM_SET returns EACCES on read-only fd",
- 	},
- };
- 
--- 
-2.39.2
+I assume the order and timer matters, otherwise why would you need
+11? So the PHY driver needs to handle this, not phylib framework. So
+you will be adding vendor properties to describe all 11 of them. So
+ethernet-phy.yaml does not matter.
 
+	Andrew
 
