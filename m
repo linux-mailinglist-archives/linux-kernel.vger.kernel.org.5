@@ -1,154 +1,295 @@
-Return-Path: <linux-kernel+bounces-1505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D88814F7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:10:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1990F814F81
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 710291F24730
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:10:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68DA9B224E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD11830139;
-	Fri, 15 Dec 2023 18:10:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QDCXAPPO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1935241865;
+	Fri, 15 Dec 2023 18:10:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA5C30129
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 18:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702663810; x=1734199810;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=chXsHALesc7fMigjpB8mkMQzFl4hKSDNazDZ6RjWiSc=;
-  b=QDCXAPPOhxoLfJXYwmT1wu0HFjMV6iwxnQlIeCY/ILlmySP6ghxawD2u
-   i77TLUvbZgg95AEERStUPVDRlkxeiwfIDoL+Flyo5JZoVzsHJ3dU1tISk
-   Tjmqfk0IimLw5hPwD+w81cwV9J3LoC6F3LpTO5C2K/tpVAQDZFlPU142+
-   5RZSPVSc+GeS83v8F35Z4kDDBNyXe/jVi5lS36Yh65uxAaQrW6euxSkWv
-   34erJcgiMEp3X4i0x+fDPwvtxhQd3nub/dN9LSdjo7pns97rp6kXDeB53
-   R3QJk1QFcosMtTgQpyg4d1ERI436zNGYit65GDYj3GIOJa7C8XxCeKq7M
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="426439108"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="426439108"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 10:10:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="803790500"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="803790500"
-Received: from jwaxmons-hp.amr.corp.intel.com (HELO [10.212.150.221]) ([10.212.150.221])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 10:10:09 -0800
-Message-ID: <99ce13b6-600d-411e-9dab-97a8ed166deb@intel.com>
-Date: Fri, 15 Dec 2023 10:10:08 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78657405FF;
+	Fri, 15 Dec 2023 18:10:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-77f42ee9370so63432485a.2;
+        Fri, 15 Dec 2023 10:10:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702663819; x=1703268619;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H1zqirXTVa12/6H82R2b8lUo2qSAjH5NjhR9uP4Mqk4=;
+        b=uBRq/a70Gw9AxnxqEyFoe43HPp9ZqWd9NbAVUTsN7+lxrpBf7dnWGRuPOIfXg2eoMn
+         EcazhnMVb1kMvM1yg5R0gRQpYQpSuihLl3Vp9FGLEF2BubulO/3F+IDwBqIqmCw+EMN1
+         94rxX1PWosww8zMxTXSuc/ksmXVQ9vcnaF7j0kkaijHXux7QQm9h26gvsyTlTbbkYrfL
+         BlkMAdu73j7Y0eb1JebTW5w9nHantPlNRWZznQpNMyJpULyoIbmeTivLWcSYXNZB7PUv
+         dGpwypLTrjLpQwXbNpcK/ibDAwHXMIM9Hacdl41m/zHHXpkyB23eluCeBkm8/t69aAWr
+         SAfw==
+X-Gm-Message-State: AOJu0Ywwat9mKA+rZiX9ztvz8MaD9dsORgingMLhz6zh096i4u33l/RP
+	6x8b/0Drdr+NR4Ip9I/bylc=
+X-Google-Smtp-Source: AGHT+IFDag/H8j+phtDZ/rid8lizokP7FCIkdyNmVUopSrNwl8b5GnrNB7Z8BsAGaO+59B8WakCW5Q==
+X-Received: by 2002:a37:e218:0:b0:77e:fba4:3a14 with SMTP id g24-20020a37e218000000b0077efba43a14mr13697816qki.106.1702663819227;
+        Fri, 15 Dec 2023 10:10:19 -0800 (PST)
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id qt6-20020a05620a8a0600b0077d8622ee6csm6268427qkn.81.2023.12.15.10.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 10:10:18 -0800 (PST)
+Date: Fri, 15 Dec 2023 12:10:14 -0600
+From: David Vernet <void@manifault.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
+	Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>,
+	Barret Rhoden <brho@google.com>, David Dunn <daviddunn@google.com>,
+	julia.lawall@inria.fr, himadrispandya@gmail.com,
+	jean-pierre.lozi@inria.fr, ast@kernel.org
+Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
+Message-ID: <20231215181014.GB2853@maniforge>
+References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
+ <ZXsvl7mabUuNkWcY@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: mm/DAMON: Profiling enhancements for DAMON
-Content-Language: en-US
-To: Aravinda Prasad <aravinda.prasad@intel.com>, damon@lists.linux.dev,
- linux-mm@kvack.org, sj@kernel.org, linux-kernel@vger.kernel.org
-Cc: s2322819@ed.ac.uk, sandeep4.kumar@intel.com, ying.huang@intel.com,
- dan.j.williams@intel.com, sreenivas.subramoney@intel.com,
- antti.kervinen@intel.com, alexander.kanevskiy@intel.com,
- Alan Nair <alan.nair@intel.com>
-References: <20231215074619.173787-1-aravinda.prasad@intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231215074619.173787-1-aravinda.prasad@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Rpw1utlia7Ob6CNM"
+Content-Disposition: inline
+In-Reply-To: <ZXsvl7mabUuNkWcY@google.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On 12/14/23 23:46, Aravinda Prasad wrote:
-> +static int damon_young_pmd(pmd_t *pmd, unsigned long addr,
-> +		unsigned long next, struct mm_walk *walk)
-> +{
-> +	spinlock_t *ptl;
-> +	struct damon_young_walk_private *priv = walk->private;
-> +
-> +	if (!pmd_present(*pmd) || pmd_none(*pmd))
-> +		goto out;
-> +
-> +	ptl = pmd_lock(walk->mm, pmd);
-> +	if (pmd_young(*pmd) || mmu_notifier_test_young(walk->mm, addr))
-> +		priv->young = true;
-> +
-> +	*priv->folio_sz = (1UL << PMD_SHIFT);
-> +	spin_unlock(ptl);
-> +out:
-> +	return 0;
-> +}
 
-There are a number of paired p*_present() and p_*none() checks in this
-patch.  What is their function (especially pmd_none())?  For instance,
-damon_young_pmd() gets called via the pagewalk infrastructure:
+--Rpw1utlia7Ob6CNM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->                           struct mm_walk *walk)
-> {
-...
->                 next = pmd_addr_end(addr, end);
->                 if (pmd_none(*pmd)) {
-...
->                         continue;
->                 }
-...
->                 if (ops->pmd_entry)
->                         err = ops->pmd_entry(pmd, addr, next, walk);
+On Thu, Dec 14, 2023 at 08:38:47AM -0800, Sean Christopherson wrote:
+> +sched_ext folks
 
-I'd suggest taking a closer look at the code you are replacing and other
-mm_walk users to make sure the handlers are doing appropriate checks.
+Thanks for the cc.
+
+>=20
+> On Wed, Dec 13, 2023, Vineeth Pillai (Google) wrote:
+> > Double scheduling is a concern with virtualization hosts where the host
+> > schedules vcpus without knowing whats run by the vcpu and guest schedul=
+es
+> > tasks without knowing where the vcpu is physically running. This causes
+> > issues related to latencies, power consumption, resource utilization
+> > etc. An ideal solution would be to have a cooperative scheduling
+> > framework where the guest and host shares scheduling related information
+> > and makes an educated scheduling decision to optimally handle the
+> > workloads. As a first step, we are taking a stab at reducing latencies
+> > for latency sensitive workloads in the guest.
+> >=20
+> > This series of patches aims to implement a framework for dynamically
+> > managing the priority of vcpu threads based on the needs of the workload
+> > running on the vcpu. Latency sensitive workloads (nmi, irq, softirq,
+> > critcal sections, RT tasks etc) will get a boost from the host so as to
+> > minimize the latency.
+> >=20
+> > The host can proactively boost the vcpu threads when it has enough
+> > information about what is going to run on the vcpu - fo eg: injecting
+> > interrupts. For rest of the case, guest can request boost if the vcpu is
+> > not already boosted. The guest can subsequently request unboost after
+> > the latency sensitive workloads completes. Guest can also request a
+> > boost if needed.
+> >=20
+> > A shared memory region is used to communicate the scheduling informatio=
+n.
+> > Guest shares its needs for priority boosting and host shares the boosti=
+ng
+> > status of the vcpu. Guest sets a flag when it needs a boost and continu=
+es
+> > running. Host reads this on next VMEXIT and boosts the vcpu thread. For
+> > unboosting, it is done synchronously so that host workloads can fairly
+> > compete with guests when guest is not running any latency sensitive
+> > workload.
+>=20
+> Big thumbs down on my end.  Nothing in this RFC explains why this should =
+be done
+> in KVM.  In general, I am very opposed to putting policy of any kind into=
+ KVM,
+> and this puts a _lot_ of unmaintainable policy into KVM by deciding when =
+to
+> start/stop boosting a vCPU.
+
+I have to agree, not least of which is because in addition to imposing a
+severe maintenance tax, these policies are far from exhaustive in terms
+of what you may want to do for cooperative paravirt scheduling. I think
+something like sched_ext would give you the best of all worlds: no
+maintenance burden on the KVM maintainers, more options for implementing
+various types of policies, performant, safe to run on the host, no need
+to reboot when trying a new policy, etc. More on this below.
+
+> Concretely, boosting vCPUs for most events is far too coarse grained.  E.=
+g. boosting
+> a vCPU that is running a low priority workload just because the vCPU trig=
+gered
+> an NMI due to PMU counter overflow doesn't make sense.  Ditto for if a gu=
+est's
+> hrtimer expires on a vCPU running a low priority workload.
+>
+> And as evidenced by patch 8/8, boosting vCPUs based on when an event is _=
+pending_
+> is not maintainable.  As hardware virtualizes more and more functionality=
+, KVM's
+> visilibity into the guest effectively decreases, e.g. Intel and AMD both =
+support
+> with IPI virtualization.
+>=20
+> Boosting the target of a PV spinlock kick is similarly flawed.  In that c=
+ase, KVM
+> only gets involved _after_ there is a problem, i.e. after a lock is conte=
+nded so
+> heavily that a vCPU stops spinning and instead decided to HLT.  It's not =
+hard to
+> imagine scenarios where a guest would want to communicate to the host tha=
+t it's
+> acquiring a spinlock for a latency sensitive path and so shouldn't be sch=
+eduled
+> out.  And of course that's predicated on the assumption that all vCPUs ar=
+e subject
+> to CPU overcommit.
+>=20
+> Initiating a boost from the host is also flawed in the sense that it reli=
+es on
+> the guest to be on the same page as to when it should stop boosting.  E.g=
+=2E if
+> KVM boosts a vCPU because an IRQ is pending, but the guest doesn't want t=
+o boost
+> IRQs on that vCPU and thus doesn't stop boosting at the end of the IRQ ha=
+ndler,
+> then the vCPU could end up being boosted long after its done with the IRQ.
+>=20
+> Throw nested virtualization into the mix and then all of this becomes nigh
+> impossible to sort out in KVM.  E.g. if an L1 vCPU is a running an L2 vCP=
+U, i.e.
+> a nested guest, and L2 is spamming interrupts for whatever reason, KVM wi=
+ll end
+> repeatedly boosting the L1 vCPU regardless of the priority of the L2 work=
+load.
+>=20
+> For things that aren't clearly in KVM's domain, I don't think we should i=
+mplement
+> KVM-specific functionality until every other option has been tried (and f=
+ailed).
+> I don't see any reason why KVM needs to get involved in scheduling, beyon=
+d maybe
+> providing *input* regarding event injection, emphasis on *input* because =
+KVM
+> providing information to userspace or some other entity is wildly differe=
+nt than
+> KVM making scheduling decisions based on that information.
+>=20
+> Pushing the scheduling policies to host userspace would allow for far mor=
+e control
+> and flexibility.  E.g. a heavily paravirtualized environment where host u=
+serspace
+> knows *exactly* what workloads are being run could have wildly different =
+policies
+> than an environment where the guest is a fairly vanilla Linux VM that has=
+ received
+> a small amount of enlightment.
+>=20
+> Lastly, if the concern/argument is that userspace doesn't have the right =
+knobs
+> to (quickly) boost vCPU tasks, then the proposed sched_ext functionality =
+seems
+> tailor made for the problems you are trying to solve.
+>
+> https://lkml.kernel.org/r/20231111024835.2164816-1-tj%40kernel.org
+
+I very much agree. There are some features missing from BPF that we'd
+need to add to enable this, but they're on the roadmap, and I don't
+think they'd be especially difficult to implement.
+
+The main building block that I was considering is a new kptr [0] and set
+of kfuncs [1] that would allow a BPF program to have one or more R/W
+shared memory regions with a guest. This could enable a wide swath of
+BPF paravirt use cases that are not limited to scheduling, but in terms
+of sched_ext, the BPF scheduler could communicate with the guest
+scheduler over this shared memory region in whatever manner was required
+for that use case.
+
+[0]: https://lwn.net/Articles/900749/
+[1]: https://lwn.net/Articles/856005/
+
+For example, the guest could communicate scheduling intention such as:
+
+- "Don't preempt me and/or boost me (because I'm holding a spinlock, in an
+  NMI region, running some low-latency task, etc)".
+- "VCPU x prefers to be on a P core", and then later, "Now it prefers an
+  E core". Note that this doesn't require pinning or anything like that.
+  It's just the VCPU requesting some best-effort placement, and allowing
+  that policy to change dynamically depending on what the guest is
+  doing.
+- "Try to give these VCPUs their own fully idle cores if possible, but
+  these other VCPUs should ideally be run as hypertwins as they're
+  expected to have good cache locality", etc.
+
+In general, some of these policies might be silly and not work well,
+others might work very well for some workloads / architectures and not
+as well on others, etc. sched_ext would make it easy to try things out
+and see what works well, without having to worry about rebooting or
+crashing the host, and ultimately without having to implement and
+maintain some scheduling policy directly in KVM. As Sean said, the host
+knows exactly what workloads are being run and could have very targeted
+and bespoke policies that wouldn't be appropriate for a vanilla Linux
+VM.
+
+Finally, while it's not necessarily related to paravirt scheduling
+specifically, I think it's maybe worth mentioning that sched_ext would
+have allowed us to implement a core-sched-like policy when L1TF first
+hit us. It was inevitable that we'd need a core-sched policy build into
+the core kernel as well, but we could have used sched_ext as a solution
+until core sched was merged. Tejun implemented something similar in an
+example scheduler where only tasks in the same cgroup are ever allowed
+to run as hypertwins [3]. The point is, you can do basically anything
+you want with sched_ext. For paravirt, I think there are a ton of
+interesting possibilities, and I think those possibilities are better
+explored and implemented with sched_ext rather than implementing
+policies directly in KVM.
+
+[3]: https://lore.kernel.org/lkml/20231111024835.2164816-27-tj@kernel.org/
+
+--Rpw1utlia7Ob6CNM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZXyWhQAKCRBZ5LhpZcTz
+ZFVUAQD3XUPclbBsH9uENyL7MKc5Muk1mRQ/bnZe9dtn1ln3DAD+LuHMpeE0QXXi
+EOqGN2b24F3/mYhswdXW+5Di4GutzQM=
+=dfLq
+-----END PGP SIGNATURE-----
+
+--Rpw1utlia7Ob6CNM--
 
