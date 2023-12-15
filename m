@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2FA6814558
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:20:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A147981455A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:20:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75E87B2356A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:20:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E3A81F23FEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FDE719BBB;
-	Fri, 15 Dec 2023 10:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5725924B23;
+	Fri, 15 Dec 2023 10:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZjJpxklG"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="g1tDhe4T"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E452199C2;
-	Fri, 15 Dec 2023 10:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5B219BDD;
+	Fri, 15 Dec 2023 10:19:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF2wUCf001631;
-	Fri, 15 Dec 2023 10:18:59 GMT
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF6Hn6u015999;
+	Fri, 15 Dec 2023 10:19:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=Cyuy5K1/eJPUo/RtECMi
-	X6Lsj6sa60ojM0f9F7kHHXg=; b=ZjJpxklGsVmD5/DJYE8rhIEkLt4yEnnRY9Yz
-	VofxOqx5W2CckkIXUJhH6nKiHMHnjcuVlPNlYwK+5+yX41wJf2cdAPMkQbVjg5XV
-	MUtqFnWjSSeCbRWeDGyZ8N+XnkqhOPpKiMEkg/D35QrdrhHBpQFATlmWdBE1BDwJ
-	oE3psR0NdAMozOdIo3rVlLyF0Nl/hlgrq9/W0mNZqznNewi1P0WTKsP3V1FxfHo/
-	A300lQUSlt2YX1TBDp1Hv4fn327IWiVoB1YVgOLnCNK307tdYykD+P8JqfBZBEj+
-	wjY3me1Rs6f2AtN6Gq12XN5Voc3gDa8s+n5j5Dwql6+5X7pXXA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v081t1rcc-1
+	:mime-version:content-type; s=qcppdkim1; bh=lXJ5V3mfT+EvsOn6UxmT
+	LIMPjEfkLdtS7BpbCTx0/lo=; b=g1tDhe4TkFqUT0NtMNnbFCemGWNPvFv2WiRu
+	BAbAc1ZBlDjnIQnxXzLJynQwPZUllANRpWaEj9JD3IylxVHYLNlIOAs/dqlHxseo
+	mzg1Jy2Q18XlgKSUo7w2dIpA2PuAP5/Toj9rMyqKfgvq/Nhq2K45BfWOFM5mzaSU
+	LVAL3wdEr9JR0GGOcQgpsi2uCfCNNy7L3isWvRSTlOmIRoj3Kj7YuUwX10hkDKC/
+	vZAnjda4v+hyQNGrSQjMh5m2LE26V3c9qa9ENPby4AVSS+gpiLZKviSj3x+mByqc
+	PMT7WDZbxhwlmhtbXddKlfjLoh8WqmtFgpCRRvAr4Iqb4SIy3w==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0hdf8q2e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 10:18:59 +0000 (GMT)
+	Fri, 15 Dec 2023 10:19:06 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFAIweK006502
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFAJ6wI002418
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 10:18:58 GMT
+	Fri, 15 Dec 2023 10:19:06 GMT
 Received: from hu-bibekkum-hyd.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Dec 2023 02:18:51 -0800
+ 15.2.1118.40; Fri, 15 Dec 2023 02:18:59 -0800
 From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
         <dmitry.baryshkov@linaro.org>, <konrad.dybcio@linaro.org>,
@@ -59,9 +59,9 @@ CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         <qipl.kernel.upstream@quicinc.com>,
         Bibek Kumar Patro
 	<quic_bibekkum@quicinc.com>
-Subject: [PATCH v4 1/5] iommu/arm-smmu: refactor qcom_smmu structure to include single pointer
-Date: Fri, 15 Dec 2023 15:48:23 +0530
-Message-ID: <20231215101827.30549-2-quic_bibekkum@quicinc.com>
+Subject: [PATCH v4 2/5] iommu/arm-smmu: introduction of ACTLR for custom prefetcher settings
+Date: Fri, 15 Dec 2023 15:48:24 +0530
+Message-ID: <20231215101827.30549-3-quic_bibekkum@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
 References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
@@ -76,69 +76,164 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: rnr6NeXde7M3oiFdKFb1C6OL-eSqBbpF
-X-Proofpoint-GUID: rnr6NeXde7M3oiFdKFb1C6OL-eSqBbpF
+X-Proofpoint-ORIG-GUID: 6hYEdPdyp4DHEGYHoONN6I3DxF4FKvra
+X-Proofpoint-GUID: 6hYEdPdyp4DHEGYHoONN6I3DxF4FKvra
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=982 mlxscore=0 bulkscore=0
- impostorscore=0 adultscore=0 malwarescore=0 suspectscore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 impostorscore=0 spamscore=0 lowpriorityscore=0
+ adultscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2312150069
 
-qcom_smmu_match_data is static and constant so refactor qcom_smmu
-to store single pointer to qcom_smmu_match_data instead of
-replicating multiple child members of the same and handle the further
-dereferences in the places that want them.
+Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+the TLB to fetch just the next page table. MMU-500 features ACTLR
+register which is implementation defined and is used for Qualcomm SoCs
+to have a custom prefetch setting enabling TLB to prefetch the next set
+of page tables accordingly allowing for faster translations.
 
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
+ACTLR value is unique for each SMR (Stream matching register) and stored
+in a pre-populated table. This value is set to the register during
+context bank initialisation.
+
 Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c | 2 +-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c       | 2 +-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h       | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c
-index bb89d49adf8d..e9798b133cbb 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c
-@@ -22,7 +22,7 @@ void qcom_smmu_tlb_sync_debug(struct arm_smmu_device *smmu)
- 	if (__ratelimit(&rs)) {
- 		dev_err(smmu->dev, "TLB sync timed out -- SMMU may be deadlocked\n");
-
--		cfg = qsmmu->cfg;
-+		cfg = qsmmu->data->cfg;
- 		if (!cfg)
- 			return;
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 45 ++++++++++++++++++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  4 ++
+ drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 ++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
+ 4 files changed, 57 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 549ae4dba3a6..8a7c16a86694 100644
+index 8a7c16a86694..cb49291f5233 100644
 --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
 +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -465,7 +465,7 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
- 		return ERR_PTR(-ENOMEM);
+@@ -14,6 +14,12 @@
 
- 	qsmmu->smmu.impl = impl;
--	qsmmu->cfg = data->cfg;
-+	qsmmu->data = data;
+ #define QCOM_DUMMY_VAL	-1
 
- 	return &qsmmu->smmu;
++struct actlr_config {
++	u16 sid;
++	u16 mask;
++	u32 actlr;
++};
++
+ static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+ {
+ 	return container_of(smmu, struct qcom_smmu, smmu);
+@@ -205,9 +211,38 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
+ 	return true;
  }
+
++static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
++		const struct actlr_config *actlrcfg)
++{
++	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++	struct arm_smmu_smr *smr;
++	u16 mask;
++	int idx;
++	u16 id;
++	int i;
++
++	for (; actlrcfg->sid || actlrcfg->mask || actlrcfg->actlr; actlrcfg++) {
++		id = actlrcfg->sid;
++		mask = actlrcfg->mask;
++
++		for_each_cfg_sme(cfg, fwspec, i, idx) {
++			smr = &smmu->smrs[idx];
++			if (smr_is_subset(smr, id, mask)) {
++				arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
++						actlrcfg->actlr);
++				break;
++			}
++		}
++	}
++}
++
+ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+ {
++	struct arm_smmu_device *smmu = smmu_domain->smmu;
++	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
++	int cbndx = smmu_domain->cfg.cbndx;
+ 	struct adreno_smmu_priv *priv;
+
+ 	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+@@ -238,6 +273,9 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 	priv->set_stall = qcom_adreno_smmu_set_stall;
+ 	priv->resume_translation = qcom_adreno_smmu_resume_translation;
+
++	if (qsmmu->data->actlrcfg_gfx)
++		qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg_gfx);
++
+ 	return 0;
+ }
+
+@@ -264,6 +302,13 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+ static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+ {
++	struct arm_smmu_device *smmu = smmu_domain->smmu;
++	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
++	int cbndx = smmu_domain->cfg.cbndx;
++
++	if (qsmmu->data->actlrcfg)
++		qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg);
++
+ 	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+
+ 	return 0;
 diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-index 593910567b88..f3b91963e234 100644
+index f3b91963e234..448a66b5332f 100644
 --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
 +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-@@ -8,7 +8,7 @@
+@@ -24,7 +24,11 @@ struct qcom_smmu_config {
+ 	const u32 *reg_offset;
+ };
 
- struct qcom_smmu {
- 	struct arm_smmu_device smmu;
--	const struct qcom_smmu_config *cfg;
-+	const struct qcom_smmu_match_data *data;
- 	bool bypass_quirk;
- 	u8 bypass_cbndx;
- 	u32 stall_enabled;
++struct actlr_config;
++
+ struct qcom_smmu_match_data {
++	const struct actlr_config *actlrcfg;
++	const struct actlr_config *actlrcfg_gfx;
+ 	const struct qcom_smmu_config *cfg;
+ 	const struct arm_smmu_impl *impl;
+ 	const struct arm_smmu_impl *adreno_impl;
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index d6d1a2a55cc0..0c7f700b27dd 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+ 		 * expect simply identical entries for this case, but there's
+ 		 * no harm in accommodating the generalisation.
+ 		 */
+-		if ((mask & smrs[i].mask) == mask &&
+-		    !((id ^ smrs[i].id) & ~smrs[i].mask))
++
++		if (smr_is_subset(&smrs[i], id, mask))
+ 			return i;
++
+ 		/*
+ 		 * If the new entry has any other overlap with an existing one,
+ 		 * though, then there always exists at least one stream ID
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+index 703fd5817ec1..2e4f65412c6b 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+@@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+ 		writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+ }
+
++static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 mask)
++{
++	return (mask & smrs->mask) == mask && !((id ^ smrs->id) & ~smrs->mask);
++}
++
+ #define ARM_SMMU_GR0		0
+ #define ARM_SMMU_GR1		1
+ #define ARM_SMMU_CB(s, n)	((s)->numpage + (n))
 --
 2.17.1
 
