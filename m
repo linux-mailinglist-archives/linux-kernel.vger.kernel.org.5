@@ -1,103 +1,111 @@
-Return-Path: <linux-kernel+bounces-1207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EEF8814BAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:23:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4CF814BAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6222281F85
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C5E31C22682
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CDC36AE0;
-	Fri, 15 Dec 2023 15:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C01C3716A;
+	Fri, 15 Dec 2023 15:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZP/OuKyj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCE72FE26;
-	Fri, 15 Dec 2023 15:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6d9da137748so312121a34.1;
-        Fri, 15 Dec 2023 07:22:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702653777; x=1703258577;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rw3CYoRVmGzAAcY/wyRAKNOBUN7bY7gSQi19yFERVh8=;
-        b=cGEHC7xLtq4Ko6AZh9LJ8zMO6DQqD3OIRbNwbnl9C58FtKGawuXAxr8K6V8kkcyK29
-         idCDLQrercW9LP3lACnZh6FpOwBeg3c4iuXPYaC/CjU/9iu2PuKVTINd/qvJZPhg/6aM
-         6jVY25WG3wRGeEiCYy9yHed9VJxeFK9BKdOSGAR5xlJWQxdyBVYRNe0b+QzFrZxjU9du
-         +fOEAVcxHsgMbE4YDNk+/uwOR2C0XlKxS/x/d1tCwPhUlOOsllbOC9aLBmrPnGrpDcpS
-         Q/o9RJg+w0L/tFcRnvGoM03m9/4ROqQJppC7tAuGWSaQR/vuNtPaelLMzawZqf2i5ZPg
-         s0Eg==
-X-Gm-Message-State: AOJu0Yzhc0ie8JYrKSjnhD7mZAFi9hEQDhd+6iCZnYHLKdUhHYi3Iq4C
-	ig0m5sTXEIjp8eWgC/XdBXWXsNGuPA==
-X-Google-Smtp-Source: AGHT+IHLfII0gke7uRP+LV5Ugn7EjczkP0xhnm/lpvntYGNQZQI/qUz+mfer6s8PP4+Uu4dw106EpA==
-X-Received: by 2002:a05:6830:1511:b0:6da:3273:319f with SMTP id k17-20020a056830151100b006da3273319fmr2279116otp.9.1702653777214;
-        Fri, 15 Dec 2023 07:22:57 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id eq9-20020a056830490900b006da0e88aa4bsm2685520otb.64.2023.12.15.07.22.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 07:22:56 -0800 (PST)
-Received: (nullmailer pid 3974040 invoked by uid 1000);
-	Fri, 15 Dec 2023 15:22:55 -0000
-Date: Fri, 15 Dec 2023 09:22:55 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Simon Glass <sjg@chromium.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Christian Marangi <ansuelsmth@gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: nvmem: add "data-size" property
-Message-ID: <20231215152255.GA3798777-robh@kernel.org>
-References: <20231213154721.5037-1-zajec5@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644AB37141
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=PsuBt3Vxcjvct1x6GswH9qrfO3gP89Oemg6DFIds43o=; b=ZP/OuKyjnrqJ1cfREu6NHWOPBP
+	byVZ318SPUj0MAHcz96U15upnAMKHUaELm3jrg1nO6Jw7HyVWIFS7hSLjr93uFnxfxtCKuso81Bh2
+	9jDseVlPNpAWFmVlOiXsyl9fVIhbTOc07FXswNGv3sLLSkop3AgpyauaunGpBk7g2bXXHTfYEsidc
+	tr3a3VO7GDxMddeihm8Hs3BpClkbV9H17WzsfFHxWJ/WwkVPn1RxPOUPLa0CiDIz2G6bGyz0EnD5s
+	tReWuuLLXsuSlcVz/OjJUTBlbs1LrzgAK9HsgqIYvl6qVrwt1Ou/A8Dp5sRB+mFaIPYgQSdZGPKUT
+	GMl+ifsQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEA1v-009xag-37;
+	Fri, 15 Dec 2023 15:23:12 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 9EA993005B2; Fri, 15 Dec 2023 16:23:11 +0100 (CET)
+Date: Fri, 15 Dec 2023 16:23:11 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Cc: Ingo Molnar <mingo@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
+	Josh Don <joshdon@google.com>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Xunlei Pang <xlpang@linux.alibaba.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched/fair: take into account scheduling domain in
+ select_idle_core()
+Message-ID: <20231215152311.GL36716@noisy.programming.kicks-ass.net>
+References: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
+ <20231214175551.629945-2-keisuke.nishimura@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231213154721.5037-1-zajec5@gmail.com>
+In-Reply-To: <20231214175551.629945-2-keisuke.nishimura@inria.fr>
 
-On Wed, Dec 13, 2023 at 04:47:20PM +0100, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Thu, Dec 14, 2023 at 06:55:51PM +0100, Keisuke Nishimura wrote:
+> When picking out a CPU on a task wakeup, select_idle_smt() has to take
+> into account the scheduling domain where the function looks for the CPU.
+> This is because cpusets and isolcpus can remove CPUs from the domain
+> to isolate them from other SMT siblings.
+
+Same question as before, when cpusets, the cpu should also be unset from
+p->cpus_ptr. So I'm thinking you're one of those isolcpus users I wish
+that would go away ;-)
+
+> This change replaces the set of CPUs allowed to run the task from
+> p->cpus_ptr by the intersection of p->cpus_ptr and sched_domain_span(sd)
+> which is stored in the cpus argument provided by select_idle_cpu.
 > 
-> Allow specifying NVMEM device content size in case it differs from
-> device total size.
-> 
-> Cc: Christian Marangi <ansuelsmth@gmail.com>
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Fixes: 9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
+> Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 > ---
->  Documentation/devicetree/bindings/nvmem/nvmem.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  kernel/sched/fair.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> index 4fd015d402ce..095aed4250de 100644
-> --- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> @@ -26,6 +26,13 @@ properties:
->    "#size-cells":
->      const: 1
->  
-> +  data-size:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      NVMEM device actual data (content) size. It may be need to be specified
-> +      if it differs by design from the total NVMEM device size and it's
-> +      impossible to determine it on runtime.
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 71306b48cf68..3b7d32632674 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7262,7 +7262,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+>  		if (!available_idle_cpu(cpu)) {
+>  			idle = false;
+>  			if (*idle_cpu == -1) {
+> -				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
+> +				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, cpus)) {
+>  					*idle_cpu = cpu;
+>  					break;
+>  				}
+> @@ -7270,7 +7270,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+>  			}
+>  			break;
+>  		}
+> -		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
+> +		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, cpus))
+>  			*idle_cpu = cpu;
+>  	}
 
-'data-size' is already defined in 
-Documentation/devicetree/bindings/eeprom/microchip,93lc46b.yaml.
-
-That would be fine, but it's defining bits per word. So I think it's 
-better if we call this something else. 'total-data-size' or 
-'actual-data-size'?
-
-I think Simon had something similar for binman.
-
-Rob
+Aside of that, the actual patch seems to be fine, just the rationale
+needs work.
 
