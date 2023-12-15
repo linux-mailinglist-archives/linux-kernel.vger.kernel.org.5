@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 370FE81418F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E90F814194
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 687871C2244D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:53:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0E711C22484
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593C479E5;
-	Fri, 15 Dec 2023 05:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127B7D27D;
+	Fri, 15 Dec 2023 05:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="osIOs18x"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bTWau8W4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C470DDA8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEA28DDAD;
 	Fri, 15 Dec 2023 05:52:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF3tA23030077;
-	Fri, 15 Dec 2023 05:52:25 GMT
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF4piv2020912;
+	Fri, 15 Dec 2023 05:52:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	message-id:date:mime-version:subject:to:cc:references:from
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=WwhbnCJ/fvj1pBHTsPcikQpwh3p9fizJJVTCR0bzuCo=; b=os
-	IOs18xp/yBTZqmdQzVbjlJTRbFjICiHbu9cijQ0MNmMnxMm0nE88Ap3eyc222Y/B
-	n1RFlSredGasfpyvHZiA5cRJrQ41j1cGUYTf8N7AcnSFBJZQd5BYVrWmmUZXJpHo
-	OvDCjCWCFF8tqtKb2JdefmfpHEDY4cAtDfrVThmNNPiQHm7pmF6JOaRxOY/Znppe
-	k0yxmOzsADwRB54Nu0VD6lnhZydUlgecvtpb4H6UAruSxXTxfNGwYGi4rueVo0KE
-	Rm6kQqu550Rl2EJZLDN51Kgbuc5GSEgZFEtGs13R0Bay3rmqbxh/0Vhpk8d2dLte
-	xADAHzfUcPaEoElYgAuQ==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyp0pb79r-1
+	qcppdkim1; bh=Rme/5OhVSjCBq2kmTCYlSIW8T0zVGGECmOSIYy5c8Ys=; b=bT
+	Wau8W4ngt+G9V5ROW9aIdbb3R3WPqMMVe2zZHRzd0/PpmwP676FCZGFqhdDX+MBp
+	p7ejv66eGLuwvJrL8smkUQfiZ96rHeblIGgGV66HkS8sGt2aLV1I3VFC6KZs1jmF
+	n7C4vqTpYd5FAFqG4Fzg2TpXcW/C1dN5xa3KR1T8zo56wgbKnT2fn67Rfepu5u15
+	oQ5HrpzpiKHcKUHUsujGyX5dqLEpUtJy5uqeHQ+Ld4PLfOXFnbEv2JdM7Z+4cVpc
+	3u0YX4Io3iv3hN+wK6bF2hUlkWYqwlOJdQAMlpQuAq4qvxGfaqNogNSMNBMX5I2W
+	gRK7Wq30YdPfamemZF0Q==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynjace5m-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 05:52:25 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BF5qOFd024341
+	Fri, 15 Dec 2023 05:52:43 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BF5qflH006608
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 05:52:24 GMT
-Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 15 Dec 2023 05:52:41 GMT
+Received: from [10.201.3.91] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
- 2023 21:52:16 -0800
-Message-ID: <75de85ae-ebcb-4f86-8cbf-749708cb3668@quicinc.com>
-Date: Fri, 15 Dec 2023 13:52:14 +0800
+ 2023 21:52:34 -0800
+Message-ID: <356c7a26-00eb-4189-b463-8946ac5e8201@quicinc.com>
+Date: Fri, 15 Dec 2023 11:22:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,80 +56,131 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
- tasklist_lock
+Subject: Re: [PATCH 07/10] dt-bindings: PCI: qcom: Add IPQ5332 SoC
 Content-Language: en-US
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
-        Matthew Wilcox
-	<willy@infradead.org>
-CC: <kernel@quicinc.com>, <quic_pkondeti@quicinc.com>, <keescook@chromium.or>,
-        <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <oleg@redhat.com>,
-        <dhowells@redhat.com>, <jarkko@kernel.org>, <paul@paul-moore.com>,
-        <jmorris@namei.org>, <serge@hallyn.com>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <keyrings@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
- <ZXnaNSrtaWbS2ivU@casper.infradead.org>
- <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
-From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-In-Reply-To: <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <vkoul@kernel.org>, <kishon@kernel.org>, <mani@kernel.org>,
+        <quic_nsekar@quicinc.com>, <quic_srichara@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <quic_varada@quicinc.com>, <quic_devipriy@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>
+References: <20231214062847.2215542-1-quic_ipkumar@quicinc.com>
+ <20231214062847.2215542-8-quic_ipkumar@quicinc.com>
+ <CAA8EJppyd5-TQmvzRB3rBhRQtMLdu=6u5aQd5rWHitRuaJXzpA@mail.gmail.com>
+From: Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <CAA8EJppyd5-TQmvzRB3rBhRQtMLdu=6u5aQd5rWHitRuaJXzpA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9L7uaS1JyabO0j9O4o1SCZxK4G0IVJ0o
-X-Proofpoint-GUID: 9L7uaS1JyabO0j9O4o1SCZxK4G0IVJ0o
+X-Proofpoint-GUID: y_9pkFcntguGdLcF8mnAq_eQCS_KVja0
+X-Proofpoint-ORIG-GUID: y_9pkFcntguGdLcF8mnAq_eQCS_KVja0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=543 mlxscore=0 phishscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 bulkscore=0 spamscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2311290000
  definitions=main-2312150034
 
 
 
-On 12/14/2023 2:27 AM, Eric W. Biederman wrote:
-> Matthew Wilcox <willy@infradead.org> writes:
-> 
->> On Wed, Dec 13, 2023 at 06:17:45PM +0800, Maria Yu wrote:
->>> +static inline void write_lock_tasklist_lock(void)
->>> +{
->>> +	while (1) {
->>> +		local_irq_disable();
->>> +		if (write_trylock(&tasklist_lock))
->>> +			break;
->>> +		local_irq_enable();
->>> +		cpu_relax();
+On 12/14/2023 12:45 PM, Dmitry Baryshkov wrote:
+> On Thu, 14 Dec 2023 at 08:30, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>> Add support for the PCIe controller on the Qualcomm
+>> IPQ5332 SoC to the bindings.
 >>
->> This is a bad implementation though.  You don't set the _QW_WAITING flag
-Any better ideas and suggestions are welcomed. :)
->> so readers don't know that there's a pending writer.  Also, I've see >> cpu_relax() pessimise CPU behaviour; putting it into a low-power mode
->> that takes a while to wake up from.
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+>>   .../devicetree/bindings/pci/qcom,pcie.yaml    | 36 +++++++++++++++++++
+>>   1 file changed, 36 insertions(+)
 >>
->> I think the right way to fix this is to pass a boolean flag to
->> queued_write_lock_slowpath() to let it know whether it can re-enable
->> interrupts while checking whether _QW_WAITING is set.
-> 
-> Yes.  It seems to make sense to distinguish between write_lock_irq and
-> write_lock_irqsave and fix this for all of write_lock_irq.
-> 
-Let me think about this.
-It seems a possible because there is a special behavior from reader side 
-when in interrupt it will directly get the lock regardless of the 
-pending writer.
-
-> Either that or someone can put in the work to start making the
-> tasklist_lock go away.
-> 
-> Eric
-> 
-
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>> index eadba38171e1..af5e67d2a984 100644
+>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>> @@ -21,6 +21,7 @@ properties:
+>>             - qcom,pcie-apq8064
+>>             - qcom,pcie-apq8084
+>>             - qcom,pcie-ipq4019
+>> +          - qcom,pcie-ipq5332
+>>             - qcom,pcie-ipq6018
+>>             - qcom,pcie-ipq8064
+>>             - qcom,pcie-ipq8064-v2
+>> @@ -170,6 +171,7 @@ allOf:
+>>           compatible:
+>>             contains:
+>>               enum:
+>> +              - qcom,pcie-ipq5332
+>>                 - qcom,pcie-ipq6018
+>>                 - qcom,pcie-ipq8074-gen3
+>>       then:
+>> @@ -332,6 +334,39 @@ allOf:
+>>               - const: ahb # AHB reset
+>>               - const: phy_ahb # PHY AHB reset
+>>
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,pcie-ipq5332
+> As you seem to be depending on the ipq9574, could you please reuse the
+> DT entry too?
+Sure, will reuse ipq9574 entry.
+>> +    then:
+>> +      properties:
+>> +        clocks:
+>> +          minItems: 6
+>> +          maxItems: 6
+>> +        clock-names:
+>> +          items:
+>> +            - const: ahb # AHB clock
+>> +            - const: aux # Auxiliary clock
+>> +            - const: axi_m # AXI Master clock
+>> +            - const: axi_s # AXI Slave clock
+>> +            - const: axi_bridge # AXI bridge clock
+>> +            - const: rchng
+>> +        resets:
+>> +          minItems: 8
+>> +          maxItems: 8
+>> +        reset-names:
+>> +          items:
+>> +            - const: pipe # PIPE reset
+>> +            - const: sticky # Core sticky reset
+>> +            - const: axi_m_sticky # AXI master sticky reset
+>> +            - const: axi_m # AXI master reset
+>> +            - const: axi_s_sticky # AXI slave sticky reset
+>> +            - const: axi_s # AXI slave reset
+>> +            - const: ahb # AHB reset
+>> +            - const: aux # AUX reset
+>> +
+>>     - if:
+>>         properties:
+>>           compatible:
+>> @@ -790,6 +825,7 @@ allOf:
+>>                 enum:
+>>                   - qcom,pcie-apq8064
+>>                   - qcom,pcie-ipq4019
+>> +                - qcom,pcie-ipq5332
+>>                   - qcom,pcie-ipq8064
+>>                   - qcom,pcie-ipq8064v2
+>>                   - qcom,pcie-ipq8074
+>> --
+>> 2.34.1
+>>
+>>
+>
+--
+Thanks,
+Praveenkumar
 
