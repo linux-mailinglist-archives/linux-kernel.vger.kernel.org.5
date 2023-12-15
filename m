@@ -1,74 +1,71 @@
-Return-Path: <linux-kernel+bounces-628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6FC8143D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:40:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39E198143D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:40:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E8D2B22065
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:40:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C36F1C22576
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A967A168B7;
-	Fri, 15 Dec 2023 08:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5592A182C3;
+	Fri, 15 Dec 2023 08:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lgn9kY2L";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lgn9kY2L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SukheDzC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDCB314F6D;
-	Fri, 15 Dec 2023 08:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 14DD31F821;
-	Fri, 15 Dec 2023 08:39:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702629588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sa6s0EtHuv6zTIbOPJXyR9juo2eumL5AFKs/cusr4M4=;
-	b=lgn9kY2LLAbob+5LzOF0WxzXb4bPVQO/28ib46KTGSAkNuSJsXEfLrqLOMrMZNRwVeReoE
-	zqYgKVAGGssuipGyHrvXh+BacjqO7EEXcLNIQR1kQnAPcGdeAD0KFKvwnkmmu34D5x7vBk
-	whvBbV5m1MMQPl24xeXf420DekZRiVs=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702629588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sa6s0EtHuv6zTIbOPJXyR9juo2eumL5AFKs/cusr4M4=;
-	b=lgn9kY2LLAbob+5LzOF0WxzXb4bPVQO/28ib46KTGSAkNuSJsXEfLrqLOMrMZNRwVeReoE
-	zqYgKVAGGssuipGyHrvXh+BacjqO7EEXcLNIQR1kQnAPcGdeAD0KFKvwnkmmu34D5x7vBk
-	whvBbV5m1MMQPl24xeXf420DekZRiVs=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A58113A08;
-	Fri, 15 Dec 2023 08:39:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id sKG7C9EQfGVJBgAAn2gu4w
-	(envelope-from <wqu@suse.com>); Fri, 15 Dec 2023 08:39:45 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD4A18029;
+	Fri, 15 Dec 2023 08:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6da41cd19d3so426394a34.2;
+        Fri, 15 Dec 2023 00:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702629596; x=1703234396; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2AO3yjiUYIdHC+VFwE6rSiRrMUR/zgHnkv0+F2jQjLg=;
+        b=SukheDzCyOEUDlZzOw4TEcg2SGPFVLf4Vin/70PqCOBAO9RTKMmr979kES4hmn+JJU
+         4UkCFK7bNOJluuCyy26w2LiFZJIZ/l0vLmtvmWvOWcK/q9F5EIbxMcj9db+l6nF50Mpy
+         FfgKQvUpEhUVOVJCoBdmtkelf2KbjmJ7kdkk3Q+o6qF48E9vsFoLb6gQ1G9oVpd1cwkA
+         aTRstNQyFgra8ouANrLPbUF2z7GxxOijTCseOm/ycvKWN+/29ZIKbsd30kWu7IwzLPYs
+         0+IhsxJn03BkV4mbvxlQXqfjz0paSUvYgfMAxakfEpawU8P9qxqvokAFebJQGKcTvd3z
+         4UdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702629596; x=1703234396;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2AO3yjiUYIdHC+VFwE6rSiRrMUR/zgHnkv0+F2jQjLg=;
+        b=pm/NtK70WUYHW0Klv2SknXbjX2dBLY7kvkyas2SkA5+vQQ2AvmmYltuirgMKLzcnUV
+         +quA3tyHYbzTFZxSm9HdNqi9Y8mhjY6BL1ZD3jbqrWsWvKM9X4QLcBrW7GVLN958+QOn
+         6jB8VGFmR/VI7bgUV8rmL/HS/JYzl9DBiecSEbqqGJQG3dK7Lb7uthdPO9DNBwKDwW1M
+         ea/bPRBszAbmkIXCDp3s86aSYN7ZbjHcdAkvm/o0LhRUEFonSLX73vI77B9B/5CHh7Y7
+         P0TxuhSVdaS7HryHIodrcUiV+8XNrQAJLWs0rkF2Ys6p1XiA4yvpbu1Z4b7tgAPU3Smz
+         kijQ==
+X-Gm-Message-State: AOJu0YyNPUqC031s8viHY10zBO4eEds3BN2Yqw5x3/jzj46zGUzGEohc
+	2UNvM5ylrg133HNjS55RhcU=
+X-Google-Smtp-Source: AGHT+IG7vwtay99+owRCx/pWv7x/yzgqEjICgRfABNiZpBSFGMk0Yr1EdWmBU9mbayDyQ6vVkO+51w==
+X-Received: by 2002:a05:6808:14d5:b0:3b9:e3d7:1271 with SMTP id f21-20020a05680814d500b003b9e3d71271mr15011091oiw.9.1702629596419;
+        Fri, 15 Dec 2023 00:39:56 -0800 (PST)
+Received: from localhost.localdomain ([202.137.218.19])
+        by smtp.gmail.com with ESMTPSA id fb6-20020a056a002d8600b006ce95e37a40sm12950545pfb.111.2023.12.15.00.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 00:39:56 -0800 (PST)
+From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+To: heikki.krogerus@linux.intel.com,
+	gregkh@linuxfoundation.org
+Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+	linux-usb@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-Date: Fri, 15 Dec 2023 19:09:23 +1030
-Message-ID: <11da10b4d07bf472cd47410db65dc0e222d61e83.1702628925.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1702628925.git.wqu@suse.com>
-References: <cover.1702628925.git.wqu@suse.com>
+Subject: [PATCH] usb: typec: fixed a typo
+Date: Fri, 15 Dec 2023 14:09:30 +0530
+Message-Id: <20231215083930.566164-1-ghanshyam1898@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,258 +73,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: 0.70
-X-Spam-Flag: NO
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 R_MISSING_CHARSET(2.50)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,wanadoo.fr,linux.intel.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
-Authentication-Results: smtp-out2.suse.de;
-	none
 
-Just as mentioned in the comment of memparse(), the simple_stroull()
-usage can lead to overflow all by itself.
+Fixed one typo.
 
-Furthermore, the suffix calculation is also super overflow prone because
-that some suffix like "E" itself would eat 60bits, leaving only 4 bits
-available.
-
-And that suffix "E" can also lead to confusion since it's using the same
-char of hex Ox'E'.
-
-One simple example to expose all the problem is to use memparse() on
-"25E".
-The correct value should be 28823037615171174400, but the suffix E makes
-it super simple to overflow, resulting the incorrect value
-10376293541461622784 (9E).
-
-So here we introduce a new helper to address the problem,
-kstrtoull_suffix():
-
-- Enhance _kstrtoull()
-  This allow _kstrtoull() to return even if it hits an invalid char, as
-  long as the optional parameter @retptr is provided.
-
-  If @retptr is provided, _kstrtoull() would try its best to parse the
-  valid part, and leave the remaining to be handled by the caller.
-
-  If @retptr is not provided, the behavior is not altered.
-
-- New kstrtoull_suffix() helper
-  This new helper utilize the new @retptr capability of _kstrtoull(),
-  and provides 2 new ability:
-
-  * Allow certain suffixes to be chosen
-    The recommended suffix list is "KkMmGgTtPp", excluding the overflow
-    prone "Ee". Undermost cases there is really no need to use "E" suffix
-    anyway.
-    And for those who really need that exabytes suffix, they can enable
-    that suffix pretty easily.
-
-  * Add overflow checks for the suffixes
-    If the original number string is fine, but with the extra left
-    shift overflow happens, then -EOVERFLOW is returned.
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
 ---
- include/linux/kstrtox.h |   7 +++
- lib/kstrtox.c           | 113 ++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 115 insertions(+), 5 deletions(-)
+ drivers/usb/typec/pd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
-index 7fcf29a4e0de..12c754152c15 100644
---- a/include/linux/kstrtox.h
-+++ b/include/linux/kstrtox.h
-@@ -9,6 +9,13 @@
- int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
- int __must_check _kstrtol(const char *s, unsigned int base, long *res);
- 
-+/*
-+ * The default suffix list would not include "E" since it's too easy to overflow
-+ * and not much real world usage.
-+ */
-+#define KSTRTOULL_SUFFIX_DEFAULT		("KkMmGgTtPp")
-+int kstrtoull_suffix(const char *s, unsigned int base, unsigned long long *res,
-+		     const char *suffixes);
- int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
- int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
- 
-diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-index d586e6af5e5a..63831207dfdd 100644
---- a/lib/kstrtox.c
-+++ b/lib/kstrtox.c
-@@ -93,7 +93,8 @@ unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long
- 	return _parse_integer_limit(s, base, p, INT_MAX);
- }
- 
--static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
-+static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res,
-+		      char **retptr)
- {
- 	unsigned long long _res;
- 	unsigned int rv;
-@@ -105,11 +106,19 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
- 	if (rv == 0)
- 		return -EINVAL;
- 	s += rv;
--	if (*s == '\n')
-+
-+	/*
-+	 * If @retptr is provided, caller is responsible to detect
-+	 * the extra chars, otherwise we can skip one newline.
-+	 */
-+	if (!retptr && *s == '\n')
- 		s++;
--	if (*s)
-+	if (!retptr && *s)
- 		return -EINVAL;
-+
- 	*res = _res;
-+	if (retptr)
-+		*retptr = (char *)s;
- 	return 0;
- }
- 
-@@ -133,10 +142,104 @@ int kstrtoull(const char *s, unsigned int base, unsigned long long *res)
- {
- 	if (s[0] == '+')
- 		s++;
--	return _kstrtoull(s, base, res);
-+	return _kstrtoull(s, base, res, NULL);
- }
- EXPORT_SYMBOL(kstrtoull);
- 
-+/**
-+ * kstrtoull_suffix - convert a string to ull with suffixes support
-+ * @s: The start of the string. The string must be null-terminated, and may also
-+ *  include a single newline before its terminating null.
-+ * @base: The number base to use. The maximum supported base is 16. If base is
-+ *  given as 0, then the base of the string is automatically detected with the
-+ *  conventional semantics - If it begins with 0x the number will be parsed as a
-+ *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-+ *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-+ * @res: Where to write the result of the conversion on success.
-+ * @suffixes: A string of acceptable suffixes, must be provided. Or caller
-+ *  should use kstrtoull() directly.
-+ *
-+ *
-+ * Return 0 on success.
-+ *
-+ * Return -ERANGE on overflow or -EINVAL if invalid chars found.
-+ * Return value must be checked.
-+ */
-+int kstrtoull_suffix(const char *s, unsigned int base, unsigned long long *res,
-+		     const char *suffixes)
-+{
-+	unsigned long long init_value;
-+	unsigned long long final_value;
-+	char *endptr;
-+	int ret;
-+
-+	ret = _kstrtoull(s, base, &init_value, &endptr);
-+	/* Either already overflow or no number string at all. */
-+	if (ret < 0)
-+		return ret;
-+	final_value = init_value;
-+	/* No suffixes. */
-+	if (!*endptr)
-+		goto done;
-+
-+	switch (*endptr) {
-+	case 'K':
-+	case 'k':
-+		if (!strchr(suffixes, *endptr))
-+			return -EINVAL;
-+		final_value <<= 10;
-+		endptr++;
-+		break;
-+	case 'M':
-+	case 'm':
-+		if (!strchr(suffixes, *endptr))
-+			return -EINVAL;
-+		final_value <<= 20;
-+		endptr++;
-+		break;
-+	case 'G':
-+	case 'g':
-+		if (!strchr(suffixes, *endptr))
-+			return -EINVAL;
-+		final_value <<= 30;
-+		endptr++;
-+		break;
-+	case 'T':
-+	case 't':
-+		if (!strchr(suffixes, *endptr))
-+			return -EINVAL;
-+		final_value <<= 40;
-+		endptr++;
-+		break;
-+	case 'P':
-+	case 'p':
-+		if (!strchr(suffixes, *endptr))
-+			return -EINVAL;
-+		final_value <<= 50;
-+		endptr++;
-+		break;
-+	case 'E':
-+	case 'e':
-+		if (!strchr(suffixes, *endptr))
-+			return -EINVAL;
-+		final_value <<= 60;
-+		endptr++;
-+		break;
-+	}
-+	if (*endptr == '\n')
-+		endptr++;
-+	if (*endptr)
-+		return -EINVAL;
-+
-+	/* Overflow check. */
-+	if (final_value < init_value)
-+		return -EOVERFLOW;
-+done:
-+	*res = final_value;
-+	return 0;
-+}
-+EXPORT_SYMBOL(kstrtoull_suffix);
-+
+diff --git a/drivers/usb/typec/pd.c b/drivers/usb/typec/pd.c
+index 85d015cdbe1f..bc4a35f322df 100644
+--- a/drivers/usb/typec/pd.c
++++ b/drivers/usb/typec/pd.c
+@@ -468,7 +468,7 @@ static struct device_type pd_capabilities_type = {
  /**
-  * kstrtoll - convert a string to a long long
-  * @s: The start of the string. The string must be null-terminated, and may also
-@@ -159,7 +262,7 @@ int kstrtoll(const char *s, unsigned int base, long long *res)
- 	int rv;
- 
- 	if (s[0] == '-') {
--		rv = _kstrtoull(s + 1, base, &tmp);
-+		rv = _kstrtoull(s + 1, base, &tmp, NULL);
- 		if (rv < 0)
- 			return rv;
- 		if ((long long)-tmp > 0)
+  * usb_power_delivery_register_capabilities - Register a set of capabilities.
+  * @pd: The USB PD instance that the capabilities belong to.
+- * @desc: Description of the Capablities Message.
++ * @desc: Description of the Capabilities Message.
+  *
+  * This function registers a Capabilities Message described in @desc. The
+  * capabilities will have their own sub-directory under @pd in sysfs.
 -- 
-2.43.0
+2.25.1
 
 
