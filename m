@@ -1,221 +1,594 @@
-Return-Path: <linux-kernel+bounces-1080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7161814A08
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:07:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D36AA814A02
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:06:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 083661C2351E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:07:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02A081C21DE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEDF3EA8A;
-	Fri, 15 Dec 2023 14:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C714A30352;
+	Fri, 15 Dec 2023 14:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dyN5JGxF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="js/224qB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2089.outbound.protection.outlook.com [40.107.100.89])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874133EA83;
-	Fri, 15 Dec 2023 14:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cXWzqydgXSDt5+tKH3xPvmTbeNiOIShCu2O7faypghniqc1tJryYFTGrzBkk2u1IHM6aA2Z9x00C8rdzI4wU4+oxP5887m6GicBovltkzvXjwkgBXqmdydA98i3YYyDlVacLSXWW8PP2qsm7ZjzizAi8lahLEUsHbdKz7HzgEzXUAkVY1cnBADLeBFjxMGDjRGeDb7hAca3GqZLEzNwTrOSQtL1HLeJ0FfTAtCHk52hNt4Qfuv7u3dJ7hz0PGuorLuEdy7G6DjgsvT/+2l77NrgC2ZN/QfCAJxQWeLQuTV3Gc9yPOhWWNZnynNxDbOEwd1446v2eNAC3ouscTbAVnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nCkDUWSVBbPDHMGVxZ/kQ/O3FYpPFUjYdtgplbmD6Uo=;
- b=ngaN7Dq8f+PkYcj1S23p9Lo1R0LKPgc9ZtWS+PD0Ba7pyRJQkLbmMMVoSpTaeP+auH1YclmMwEPvqJ9EtG3e2jyykXOvpApa4JIMNE5+t0AFBSwKhM2FOwwTswtiOcKybOm26WmJUA/UkGJqdOE8s35DWM2U4eH6qwTltHTGodMsD0OKZb5EmLmeE+MU1NL/e7ptnABU5CcTEK9N9YCJ4GJJFBk6gQqZHvs79rPwR5CsjI+nrI+CmpCQzX7Fi4ibpaDWhFk3ESlv8a5UQVJJtfIAZy1HEoQLWSpmle1rRNCvsxLNIwQdvptC5SbYjwotbKDklfJDbwP6nK7C826s7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nCkDUWSVBbPDHMGVxZ/kQ/O3FYpPFUjYdtgplbmD6Uo=;
- b=dyN5JGxFllxDknEvZzmMyoP70ap9DwRd/TAEWADJuNP0cNgRLB1Kd6XhvZWE9xW9Yy/tQei2X0p59IM1BLxY3+UeY4mdr9cuURV0x7MV3lejPB+AqYHW/8mrcVsJSlA2WrvijDS0gxX7WOoxOfyoyA731EqOQnUVwrn6a5kqa7LFX59KoXK5t3qZVjGzA6N1muCt0LMig8gNlpDQgFQGgwRAGEjNPOvRw3/I6BAHV1CD7xYZnGKGnoNLzA9ndvlIksVgKZNWkXmdTCI8EnGTp7ky/ilXOfQF+Y3K76t+dj8YtD2Pa4BCEkFVTu1hKBm7Qye7fszZHa/mlFo1ek7DZg==
-Received: from DM6PR11CA0007.namprd11.prod.outlook.com (2603:10b6:5:190::20)
- by SA0PR12MB4509.namprd12.prod.outlook.com (2603:10b6:806:9e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 14:02:37 +0000
-Received: from CY4PEPF0000EDD6.namprd03.prod.outlook.com
- (2603:10b6:5:190:cafe::6) by DM6PR11CA0007.outlook.office365.com
- (2603:10b6:5:190::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31 via Frontend
- Transport; Fri, 15 Dec 2023 14:02:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000EDD6.mail.protection.outlook.com (10.167.241.210) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7113.14 via Frontend Transport; Fri, 15 Dec 2023 14:02:36 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 15 Dec
- 2023 06:02:17 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 15 Dec
- 2023 06:02:17 -0800
-Received: from c-237-113-220-225.mtl.labs.mlnx (10.127.8.12) by
- mail.nvidia.com (10.129.68.8) with Microsoft SMTP Server id 15.2.986.41 via
- Frontend Transport; Fri, 15 Dec 2023 06:02:14 -0800
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Eugenio Perez Martin <eperezma@redhat.com>, Si-Wei Liu
-	<si-wei.liu@oracle.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
-	<leon@kernel.org>, <virtualization@lists.linux-foundation.org>, Gal Pressman
-	<gal@nvidia.com>
-CC: Dragos Tatulea <dtatulea@nvidia.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Parav Pandit <parav@nvidia.com>, Xuan Zhuo
-	<xuanzhuo@linux.alibaba.com>
-Subject: [PATCH vhost v3 6/6] vdpa/mlx5: Add mkey leak detection
-Date: Fri, 15 Dec 2023 16:01:46 +0200
-Message-ID: <20231215140146.95816-7-dtatulea@nvidia.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231215140146.95816-1-dtatulea@nvidia.com>
-References: <20231215140146.95816-1-dtatulea@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4B5358B7;
+	Fri, 15 Dec 2023 14:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702648949; x=1734184949;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=aE0+NqkdhHYiQbGcFlJzhUdn/GPf3qbh+3rhu0AVFLA=;
+  b=js/224qBq6tTipaRXDl3pxZ5NeVs0xQBJ/oag+p+YNPCfPn+Re7QjWWG
+   7jC8egP0YnoUKNMeyCoWghKbVyy7PUDGXmBvBJCHBYA7CFpxAZn//bHiM
+   otRBuF4lrkIevcaFIh5+wVJfOJ6SHdFmSX2DHfd84fOLGAvn6DqF8PiX/
+   wmqvJNv5d0hVSA/TAzx5/+OdWgkFmTh0yy2xj2y2TjH17149/aXglSzBT
+   MeHQj54epnZ/sK4DHbe0+LOZekCdcaFhEIbb9NRlKYDLtgVTMafTR8DDS
+   hWj2hrwfOajVgqaYAT5YlaxJCdoEmOf5BMZ8ogfhY9q77XlEBkgtkb01E
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="395021852"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="395021852"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 06:02:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1021947747"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="1021947747"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Dec 2023 06:02:25 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 31FFE44F; Fri, 15 Dec 2023 16:02:24 +0200 (EET)
+Date: Fri, 15 Dec 2023 16:02:24 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Sanath S <sanaths2@amd.com>
+Cc: Sanath S <Sanath.S@amd.com>, mario.limonciello@amd.com,
+	andreas.noever@gmail.com, michael.jamet@intel.com,
+	YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset
+ downstream ports created by boot firmware
+Message-ID: <20231215140224.GX1074920@black.fi.intel.com>
+References: <20231213062306.GL1074920@black.fi.intel.com>
+ <adcc6446-8c30-a258-e19b-76fca2c50d21@amd.com>
+ <20231213115256.GM1074920@black.fi.intel.com>
+ <f673ffc8-f6f8-4898-d809-effb2c24e53e@amd.com>
+ <20231214070746.GS1074920@black.fi.intel.com>
+ <32163f49-8387-0754-534f-1764e731f26d@amd.com>
+ <20231214073242.GT1074920@black.fi.intel.com>
+ <ff143967-63ff-c4fb-9c88-8537a663c45b@amd.com>
+ <20231215115521.GW1074920@black.fi.intel.com>
+ <c7d174d3-028f-9ce4-7ef5-3e033c195159@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD6:EE_|SA0PR12MB4509:EE_
-X-MS-Office365-Filtering-Correlation-Id: 26b1cacc-f9af-4db3-c419-08dbfd767e47
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	dUbJnda7EaM6vJarQQp9MA0aAeVY4ql/JEBNq8PVkkpCKPMydK5Cdhkj6EnDmomIHprFCQc1tj1hOJDQHwHvGisTbFe9sfnM3Ajh01adtGCc+1FgiRyB5yy+/T/kHeQZi/OGtZ4gZYycXU1zHAMM6qj1bckrtgMFaQ5EcOqaKfoEMEBrthAGz47Q/q85AMxHssGfXmmPsqwefmcvipYzgX7FyfXFJeGaQN1/3Et/lQVp7CgEIgGCd1b0jw2dN6yCPhXybMe8S5R20HvEaj6NVIUbE9rT5vUnm8WciRMigioq9rRgEBG2s2r7N/WEC1LFgpZoAsFNzLMDO/6hTJZ8xwbJOUq1VCMbg+EabQ6OR20/kUDUZC9kGwmO53x9YfJ4HOKHpFnFgPrN25or2b+hq8s3tCIp/MaI/aeheqfCqYWVa/kMzZIjFgtYgG6WGiafquMlotxUMUf1IeHtujAoRZQLuQMTl599Hf34by/TdVAP8pNjZ3jTXi6mRA+M9PHhZLM3UZMI0glWHd5BPXi4TmUSf8+KHVCvuj7pgszObIHRIqeyyMFco0rYuL+1xQX6lokuoWot8+q2e8oiQK62Fhhd1ZIXJVowj4psQ1IjlLVP9jqc9HhDv22A7gTkzPXWIaH4zZR4rwevexvAoT0AP1cjToROtmxdeqQy/337iMnTd1tCseCBNAEJA7z+5uG822GRd2lGJ3kf85k12poooHVchSnVqiONTPrbXBlNgYKYajjMzqDa0jXFEn4KjOF+yjlEofiZzOG1yC8uTChdnM5EEiKc00OknWHR+e1igH3QdcbhH0+n2DzftfaFN9XffylscB5nWTawGbKxMNHAGw==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(346002)(136003)(230273577357003)(230173577357003)(230922051799003)(1800799012)(186009)(64100799003)(82310400011)(451199024)(46966006)(40470700004)(36840700001)(40480700001)(40460700003)(36860700001)(47076005)(356005)(82740400003)(2906002)(36756003)(5660300002)(83380400001)(336012)(6666004)(66574015)(426003)(7636003)(1076003)(26005)(2616005)(478600001)(54906003)(70206006)(70586007)(41300700001)(86362001)(110136005)(4326008)(8676002)(8936002)(6636002)(316002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 14:02:36.8251
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26b1cacc-f9af-4db3-c419-08dbfd767e47
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EDD6.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4509
+In-Reply-To: <c7d174d3-028f-9ce4-7ef5-3e033c195159@amd.com>
 
-Track allocated mrs in a list and show warning when leaks are detected
-on device free or reset.
+On Fri, Dec 15, 2023 at 07:24:07PM +0530, Sanath S wrote:
+> 
+> On 12/15/2023 5:25 PM, Mika Westerberg wrote:
+> > On Thu, Dec 14, 2023 at 09:00:29PM +0530, Sanath S wrote:
+> > > > Unfortunately that's not possible because tb_switch_reset() lives in
+> > > > switch.s (and should live there) and tb_deactivate_and_free_tunnel() is
+> > > > part of tb.c (as should be). This is actually why I would like to try
+> > > > the "reset" protocol adapters + their path config spaces in
+> > > > tb_switch_reset() as then that would work with any router and does not
+> > > > need to have any knowledge about tunnels or tb.c internals.
+> > > Ok.
+> > > To perform a protocol adapter reset we would require upstream and downstream
+> > > adapter ports. So that we can use tb_port_write() set the ADP_PCIE_CS_0.Path
+> > > Enable bits.
+> > > Challenge here is to get the upstream port without discovering. I'll think
+> > > more on this line
+> > > if its possible to reset the protocol adapters and its path.
+> > > 
+> > > If you have any reference here or any idea already in mind, let me know, I
+> > > can give it a try :)
+> > Here is something I had in mind. Only build tested now, and not split
+> > into proper patches. This would make it possible to reset any router if
+> > we ever need that (not sure if we want to add the TBT2/3 bits now). Let
+> > me know if you see problems with this.
+> > 
+> > Feel free to use this code as you like (or ignore completely).
+> Thanks Mika for your suggestion.
+> It looks good to me and I'll be checking this on Monday.
 
-Reviewed-by: Gal Pressman <gal@nvidia.com>
-Acked-by: Eugenio Pérez <eperezma@redhat.com>
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
----
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |  2 ++
- drivers/vdpa/mlx5/core/mr.c        | 23 +++++++++++++++++++++++
- drivers/vdpa/mlx5/net/mlx5_vnet.c  |  2 ++
- 3 files changed, 27 insertions(+)
+Okay.
 
-diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-index 1a0d27b6e09a..50aac8fe57ef 100644
---- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-+++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-@@ -37,6 +37,7 @@ struct mlx5_vdpa_mr {
- 	bool user_mr;
- 
- 	refcount_t refcount;
-+	struct list_head mr_list;
- };
- 
- struct mlx5_vdpa_resources {
-@@ -95,6 +96,7 @@ struct mlx5_vdpa_dev {
- 	u32 generation;
- 
- 	struct mlx5_vdpa_mr *mr[MLX5_VDPA_NUM_AS];
-+	struct list_head mr_list_head;
- 	/* serialize mr access */
- 	struct mutex mr_mtx;
- 	struct mlx5_control_vq cvq;
-diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-index c7dc8914354a..4758914ccf86 100644
---- a/drivers/vdpa/mlx5/core/mr.c
-+++ b/drivers/vdpa/mlx5/core/mr.c
-@@ -508,6 +508,8 @@ static void _mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_
- 
- 	vhost_iotlb_free(mr->iotlb);
- 
-+	list_del(&mr->mr_list);
-+
- 	kfree(mr);
- }
- 
-@@ -560,12 +562,31 @@ void mlx5_vdpa_update_mr(struct mlx5_vdpa_dev *mvdev,
- 	mutex_unlock(&mvdev->mr_mtx);
- }
- 
-+static void mlx5_vdpa_show_mr_leaks(struct mlx5_vdpa_dev *mvdev)
-+{
-+	struct mlx5_vdpa_mr *mr;
-+
-+	mutex_lock(&mvdev->mr_mtx);
-+
-+	list_for_each_entry(mr, &mvdev->mr_list_head, mr_list) {
-+
-+		mlx5_vdpa_warn(mvdev, "mkey still alive after resource delete: "
-+				      "mr: %p, mkey: 0x%x, refcount: %u\n",
-+				       mr, mr->mkey, refcount_read(&mr->refcount));
-+	}
-+
-+	mutex_unlock(&mvdev->mr_mtx);
-+
-+}
-+
- void mlx5_vdpa_destroy_mr_resources(struct mlx5_vdpa_dev *mvdev)
- {
- 	for (int i = 0; i < MLX5_VDPA_NUM_AS; i++)
- 		mlx5_vdpa_update_mr(mvdev, NULL, i);
- 
- 	prune_iotlb(mvdev->cvq.iotlb);
-+
-+	mlx5_vdpa_show_mr_leaks(mvdev);
- }
- 
- static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
-@@ -592,6 +613,8 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
- 	if (err)
- 		goto err_iotlb;
- 
-+	list_add_tail(&mr->mr_list, &mvdev->mr_list_head);
-+
- 	return 0;
- 
- err_iotlb:
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 0df82e4d13f4..88b633682e18 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -3707,6 +3707,8 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name,
- 	if (err)
- 		goto err_mpfs;
- 
-+	INIT_LIST_HEAD(&mvdev->mr_list_head);
-+
- 	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
- 		err = mlx5_vdpa_create_dma_mr(mvdev);
- 		if (err)
--- 
-2.43.0
+> I have one doubt on protocol adapter reset part which I have mentioned
+> below.
+> > diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
+> > index ec7b5f65804e..31f3da4e6a08 100644
+> > --- a/drivers/thunderbolt/domain.c
+> > +++ b/drivers/thunderbolt/domain.c
+> > @@ -423,6 +423,7 @@ struct tb *tb_domain_alloc(struct tb_nhi *nhi, int timeout_msec, size_t privsize
+> >   /**
+> >    * tb_domain_add() - Add domain to the system
+> >    * @tb: Domain to add
+> > + * @reset: Issue reset to the host router
+> >    *
+> >    * Starts the domain and adds it to the system. Hotplugging devices will
+> >    * work after this has been returned successfully. In order to remove
+> > @@ -431,7 +432,7 @@ struct tb *tb_domain_alloc(struct tb_nhi *nhi, int timeout_msec, size_t privsize
+> >    *
+> >    * Return: %0 in case of success and negative errno in case of error
+> >    */
+> > -int tb_domain_add(struct tb *tb)
+> > +int tb_domain_add(struct tb *tb, bool reset)
+> >   {
+> >   	int ret;
+> > @@ -460,7 +461,7 @@ int tb_domain_add(struct tb *tb)
+> >   	/* Start the domain */
+> >   	if (tb->cm_ops->start) {
+> > -		ret = tb->cm_ops->start(tb);
+> > +		ret = tb->cm_ops->start(tb, reset);
+> >   		if (ret)
+> >   			goto err_domain_del;
+> >   	}
+> > diff --git a/drivers/thunderbolt/icm.c b/drivers/thunderbolt/icm.c
+> > index d8b9c734abd3..623aa81a8833 100644
+> > --- a/drivers/thunderbolt/icm.c
+> > +++ b/drivers/thunderbolt/icm.c
+> > @@ -2144,7 +2144,7 @@ static int icm_runtime_resume(struct tb *tb)
+> >   	return 0;
+> >   }
+> > -static int icm_start(struct tb *tb)
+> > +static int icm_start(struct tb *tb, bool not_used)
+> >   {
+> >   	struct icm *icm = tb_priv(tb);
+> >   	int ret;
+> > diff --git a/drivers/thunderbolt/lc.c b/drivers/thunderbolt/lc.c
+> > index 633970fbe9b0..63cb4b6afb71 100644
+> > --- a/drivers/thunderbolt/lc.c
+> > +++ b/drivers/thunderbolt/lc.c
+> > @@ -6,6 +6,8 @@
+> >    * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
+> >    */
+> > +#include <linux/delay.h>
+> > +
+> >   #include "tb.h"
+> >   /**
+> > @@ -45,6 +47,49 @@ static int find_port_lc_cap(struct tb_port *port)
+> >   	return sw->cap_lc + start + phys * size;
+> >   }
+> > +/**
+> > + * tb_lc_reset_port() - Trigger downstream port reset through LC
+> > + * @port: Port that is reset
+> > + *
+> > + * Triggers downstream port reset through link controller registers.
+> > + * Returns %0 in case of success negative errno otherwise. Only supports
+> > + * non-USB4 routers with link controller (that's Thunderbolt 2 and
+> > + * Thunderbolt 3).
+> > + */
+> > +int tb_lc_reset_port(struct tb_port *port)
+> > +{
+> > +	struct tb_switch *sw = port->sw;
+> > +	int cap, ret;
+> > +	u32 mode;
+> > +
+> > +	if (sw->generation < 2)
+> > +		return -EINVAL;
+> > +
+> > +	cap = find_port_lc_cap(port);
+> > +	if (cap < 0)
+> > +		return cap;
+> > +
+> > +	ret = tb_sw_read(sw, &mode, TB_CFG_SWITCH, cap + TB_LC_PORT_MODE, 1);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	mode |= TB_LC_PORT_MODE_DPR;
+> > +
+> > +	ret = tb_sw_write(sw, &mode, TB_CFG_SWITCH, cap + TB_LC_PORT_MODE, 1);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	fsleep(10000);
+> > +
+> > +	ret = tb_sw_read(sw, &mode, TB_CFG_SWITCH, cap + TB_LC_PORT_MODE, 1);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	mode &= ~TB_LC_PORT_MODE_DPR;
+> > +
+> > +	return tb_sw_write(sw, &mode, TB_CFG_SWITCH, cap + TB_LC_PORT_MODE, 1);
+> > +}
+> > +
+> >   static int tb_lc_set_port_configured(struct tb_port *port, bool configured)
+> >   {
+> >   	bool upstream = tb_is_upstream_port(port);
+> > diff --git a/drivers/thunderbolt/nhi.c b/drivers/thunderbolt/nhi.c
+> > index fb4f46e51753..b22023fae60d 100644
+> > --- a/drivers/thunderbolt/nhi.c
+> > +++ b/drivers/thunderbolt/nhi.c
+> > @@ -1221,7 +1221,7 @@ static void nhi_check_iommu(struct tb_nhi *nhi)
+> >   		str_enabled_disabled(port_ok));
+> >   }
+> > -static void nhi_reset(struct tb_nhi *nhi)
+> > +static bool nhi_reset(struct tb_nhi *nhi)
+> >   {
+> >   	ktime_t timeout;
+> >   	u32 val;
+> > @@ -1229,11 +1229,11 @@ static void nhi_reset(struct tb_nhi *nhi)
+> >   	val = ioread32(nhi->iobase + REG_CAPS);
+> >   	/* Reset only v2 and later routers */
+> >   	if (FIELD_GET(REG_CAPS_VERSION_MASK, val) < REG_CAPS_VERSION_2)
+> > -		return;
+> > +		return false;
+> >   	if (!host_reset) {
+> >   		dev_dbg(&nhi->pdev->dev, "skipping host router reset\n");
+> > -		return;
+> > +		return false;
+> >   	}
+> >   	iowrite32(REG_RESET_HRR, nhi->iobase + REG_RESET);
+> > @@ -1244,12 +1244,14 @@ static void nhi_reset(struct tb_nhi *nhi)
+> >   		val = ioread32(nhi->iobase + REG_RESET);
+> >   		if (!(val & REG_RESET_HRR)) {
+> >   			dev_warn(&nhi->pdev->dev, "host router reset successful\n");
+> > -			return;
+> > +			return true;
+> >   		}
+> >   		usleep_range(10, 20);
+> >   	} while (ktime_before(ktime_get(), timeout));
+> >   	dev_warn(&nhi->pdev->dev, "timeout resetting host router\n");
+> > +
+> > +	return false;
+> >   }
+> >   static int nhi_init_msi(struct tb_nhi *nhi)
+> > @@ -1331,6 +1333,7 @@ static int nhi_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >   	struct device *dev = &pdev->dev;
+> >   	struct tb_nhi *nhi;
+> >   	struct tb *tb;
+> > +	bool reset;
+> >   	int res;
+> >   	if (!nhi_imr_valid(pdev))
+> > @@ -1365,7 +1368,11 @@ static int nhi_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >   	nhi_check_quirks(nhi);
+> >   	nhi_check_iommu(nhi);
+> > -	nhi_reset(nhi);
+> > +	/*
+> > +	 * Only USB4 v2 hosts support host reset so if we already did
+> > +	 * that then don't do it again when the domain is initialized.
+> > +	 */
+> > +	reset = nhi_reset(nhi) ? false : host_reset;
+> >   	res = nhi_init_msi(nhi);
+> >   	if (res)
+> > @@ -1392,7 +1399,7 @@ static int nhi_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >   	dev_dbg(dev, "NHI initialized, starting thunderbolt\n");
+> > -	res = tb_domain_add(tb);
+> > +	res = tb_domain_add(tb, reset);
+> >   	if (res) {
+> >   		/*
+> >   		 * At this point the RX/TX rings might already have been
+> > diff --git a/drivers/thunderbolt/path.c b/drivers/thunderbolt/path.c
+> > index 091a81bbdbdc..f760e54cd9bd 100644
+> > --- a/drivers/thunderbolt/path.c
+> > +++ b/drivers/thunderbolt/path.c
+> > @@ -446,6 +446,19 @@ static int __tb_path_deactivate_hop(struct tb_port *port, int hop_index,
+> >   	return -ETIMEDOUT;
+> >   }
+> > +/**
+> > + * tb_path_deactivate_hop() - Deactivate one path in path config space
+> > + * @port: Lane or protocol adapter
+> > + * @hop_index: HopID of the path to be cleared
+> > + *
+> > + * This deactivates or clears a single path config space entry at
+> > + * @hop_index. Returns %0 in success and negative errno otherwise.
+> > + */
+> > +int tb_path_deactivate_hop(struct tb_port *port, int hop_index)
+> > +{
+> > +	return __tb_path_deactivate_hop(port, hop_index, true);
+> > +}
+> > +
+> >   static void __tb_path_deactivate_hops(struct tb_path *path, int first_hop)
+> >   {
+> >   	int i, res;
+> > diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+> > index 900114ba4371..c4f486629a2b 100644
+> > --- a/drivers/thunderbolt/switch.c
+> > +++ b/drivers/thunderbolt/switch.c
+> > @@ -676,6 +676,13 @@ int tb_port_disable(struct tb_port *port)
+> >   	return __tb_port_enable(port, false);
+> >   }
+> > +static int tb_port_reset(struct tb_port *port)
+> > +{
+> > +	if (tb_switch_is_usb4(port->sw))
+> > +		return usb4_port_reset(port);
+> > +	return tb_lc_reset_port(port);
+> > +}
+> > +
+> >   /*
+> >    * tb_init_port() - initialize a port
+> >    *
+> > @@ -1532,20 +1539,64 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
+> >   }
+> >   /**
+> > - * tb_switch_reset() - reconfigure route, enable and send TB_CFG_PKG_RESET
+> > - * @sw: Switch to reset
+> > + * tb_switch_reset() - Perform reset to the router
+> > + * @sw: Router to reset
+> >    *
+> > - * Return: Returns 0 on success or an error code on failure.
+> > + * Issues reset to the router. Can be used for any router. Returns %0
+> > + * on success or an error code on failure.
+> >    */
+> >   int tb_switch_reset(struct tb_switch *sw)
+> >   {
+> >   	struct tb_cfg_result res;
+> > -	if (sw->generation > 1)
+> > -		return 0;
+> > +	tb_sw_dbg(sw, "resetting router\n");
+> > +
+> > +	if (sw->generation > 1) {
+> > +		struct tb_port *port;
+> > +
+> > +		tb_switch_for_each_port(sw, port) {
+> > +			int i, ret;
+> > +
+> > +			/*
+> > +			 * For lane adapters we issue downstream port
+> > +			 * reset. That clears up also the path config
+> > +			 * spaces.
+> > +			 *
+> > +			 * For protocol adapters we disable the path and
+> > +			 * clear path config space one by one (from 8 to
+> > +			 * Max Input HopID of the adapter).
+> > +			 */
+> > +			if (tb_port_is_null(port) && !tb_is_upstream_port(port)) {
+> > +				ret = tb_port_reset(port);
+> > +				if (ret)
+> > +					return ret;
+> > +				continue;
+> 
+> I had thought in similar lines when you told about reset protocol adapters.
+> 
+> But, here we are traversing through all the ports, what if we get to perform
+> the DPR first ?
+> and then the PCIe, USB and DP reset. This may cause unplug event before we 
+> tear down
+> protocol adapters and its path configuration. (I may be wrong)
 
+Yeah, it could be that it is better first disable protocol adapters and
+then do the DPR or so.
+
+> I'll check the behavior on Monday and update.
+> 
+> Assuming this works, I can incorporate the suggestion and send out v3 with
+> appropriate tags ? It can be split into 3 patches.
+
+Sure.
+
+Bonus points if you can drop some more lines from that :)
+
+> > +			} else if (tb_port_is_usb3_down(port) ||
+> > +				   tb_port_is_usb3_up(port)) {
+> > +				tb_usb3_port_enable(port, false);
+> > +			} else if (tb_port_is_dpin(port) ||
+> > +				   tb_port_is_dpout(port)) {
+> > +				tb_dp_port_enable(port, false);
+> > +			} else if (tb_port_is_pcie_down(port) ||
+> > +				   tb_port_is_pcie_up(port)) {
+> > +				tb_pci_port_enable(port, false);
+> > +			} else {
+> > +				continue;
+> > +			}
+> > -	tb_sw_dbg(sw, "resetting switch\n");
+> > +			/* Cleanup path config space of protocol adapter */
+> > +			for (i = TB_PATH_MIN_HOPID;
+> > +			     i <= port->config.max_in_hop_id; i++) {
+> > +				ret = tb_path_deactivate_hop(port, i);
+> > +				if (ret)
+> > +					return ret;
+> > +			}
+> > +		}
+> > +
+> > +		return 0;
+> > +	}
+> > +	/* Thunderbolt 1 uses the "reset" config space packet */
+> >   	res.err = tb_sw_write(sw, ((u32 *) &sw->config) + 2,
+> >   			      TB_CFG_SWITCH, 2, 2);
+> >   	if (res.err)
+> > diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
+> > index 8bc3985df749..5e5e3aebe018 100644
+> > --- a/drivers/thunderbolt/tb.c
+> > +++ b/drivers/thunderbolt/tb.c
+> > @@ -2590,7 +2590,7 @@ static int tb_scan_finalize_switch(struct device *dev, void *data)
+> >   	return 0;
+> >   }
+> > -static int tb_start(struct tb *tb)
+> > +static int tb_start(struct tb *tb, bool reset)
+> >   {
+> >   	struct tb_cm *tcm = tb_priv(tb);
+> >   	int ret;
+> > @@ -2631,12 +2631,22 @@ static int tb_start(struct tb *tb)
+> >   	tb_switch_tmu_configure(tb->root_switch, TB_SWITCH_TMU_MODE_LOWRES);
+> >   	/* Enable TMU if it is off */
+> >   	tb_switch_tmu_enable(tb->root_switch);
+> > -	/* Full scan to discover devices added before the driver was loaded. */
+> > -	tb_scan_switch(tb->root_switch);
+> > -	/* Find out tunnels created by the boot firmware */
+> > -	tb_discover_tunnels(tb);
+> > -	/* Add DP resources from the DP tunnels created by the boot firmware */
+> > -	tb_discover_dp_resources(tb);
+> > +
+> > +	if (reset && usb4_switch_version(tb->root_switch) == 1) {
+> > +		ret = tb_switch_reset(tb->root_switch);
+> > +		if (ret) {
+> > +			tb_sw_warn(tb->root_switch, "failed to reset\n");
+> > +			return ret;
+> > +		}
+> > +	
+> Ok. So idea is to drop reset for <= TBT3 currently.
+
+Yes, there are some older Apple systems that "benefit" from the
+discovery so I would keep it there for them.
+
+> > } else {
+> > +		/* Full scan to discover devices added before the driver was loaded. */
+> > +		tb_scan_switch(tb->root_switch);
+> > +		/* Find out tunnels created by the boot firmware */
+> > +		tb_discover_tunnels(tb);
+> > +		/* Add DP resources from the DP tunnels created by the boot firmware */
+> > +		tb_discover_dp_resources(tb);
+> > +	}
+> > +
+> >   	/*
+> >   	 * If the boot firmware did not create USB 3.x tunnels create them
+> >   	 * now for the whole topology.
+> > @@ -2702,7 +2712,7 @@ static int tb_resume_noirq(struct tb *tb)
+> >   {
+> >   	struct tb_cm *tcm = tb_priv(tb);
+> >   	struct tb_tunnel *tunnel, *n;
+> > -	unsigned int usb3_delay = 0;
+> > +	unsigned int usb3_delay;
+> >   	LIST_HEAD(tunnels);
+> >   	tb_dbg(tb, "resuming...\n");
+> > @@ -2715,19 +2725,7 @@ static int tb_resume_noirq(struct tb *tb)
+> >   	tb_free_unplugged_children(tb->root_switch);
+> >   	tb_restore_children(tb->root_switch);
+> > -	/*
+> > -	 * If we get here from suspend to disk the boot firmware or the
+> > -	 * restore kernel might have created tunnels of its own. Since
+> > -	 * we cannot be sure they are usable for us we find and tear
+> > -	 * them down.
+> > -	 */
+> > -	tb_switch_discover_tunnels(tb->root_switch, &tunnels, false);
+> > -	list_for_each_entry_safe_reverse(tunnel, n, &tunnels, list) {
+> > -		if (tb_tunnel_is_usb3(tunnel))
+> > -			usb3_delay = 500;
+> > -		tb_tunnel_deactivate(tunnel);
+> > -		tb_tunnel_free(tunnel);
+> > -	}
+> > +	usb3_delay = tb_switch_is_usb4(tb->root_switch) ? 500 : 0;
+> >   	/* Re-create our tunnels now */
+> >   	list_for_each_entry_safe(tunnel, n, &tcm->tunnel_list, list) {
+> > diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
+> > index 7ad55f5966f3..2bc8eca965ed 100644
+> > --- a/drivers/thunderbolt/tb.h
+> > +++ b/drivers/thunderbolt/tb.h
+> > @@ -489,7 +489,7 @@ struct tb_path {
+> >    */
+> >   struct tb_cm_ops {
+> >   	int (*driver_ready)(struct tb *tb);
+> > -	int (*start)(struct tb *tb);
+> > +	int (*start)(struct tb *tb, bool reset);
+> >   	void (*stop)(struct tb *tb);
+> >   	int (*suspend_noirq)(struct tb *tb);
+> >   	int (*resume_noirq)(struct tb *tb);
+> > @@ -752,7 +752,7 @@ int tb_xdomain_init(void);
+> >   void tb_xdomain_exit(void);
+> >   struct tb *tb_domain_alloc(struct tb_nhi *nhi, int timeout_msec, size_t privsize);
+> > -int tb_domain_add(struct tb *tb);
+> > +int tb_domain_add(struct tb *tb, bool reset);
+> >   void tb_domain_remove(struct tb *tb);
+> >   int tb_domain_suspend_noirq(struct tb *tb);
+> >   int tb_domain_resume_noirq(struct tb *tb);
+> > @@ -1156,6 +1156,7 @@ struct tb_path *tb_path_alloc(struct tb *tb, struct tb_port *src, int src_hopid,
+> >   void tb_path_free(struct tb_path *path);
+> >   int tb_path_activate(struct tb_path *path);
+> >   void tb_path_deactivate(struct tb_path *path);
+> > +int tb_path_deactivate_hop(struct tb_port *port, int hop_index);
+> >   bool tb_path_is_invalid(struct tb_path *path);
+> >   bool tb_path_port_on_path(const struct tb_path *path,
+> >   			  const struct tb_port *port);
+> > @@ -1175,6 +1176,7 @@ int tb_drom_read(struct tb_switch *sw);
+> >   int tb_drom_read_uid_only(struct tb_switch *sw, u64 *uid);
+> >   int tb_lc_read_uuid(struct tb_switch *sw, u32 *uuid);
+> > +int tb_lc_reset_port(struct tb_port *port);
+> >   int tb_lc_configure_port(struct tb_port *port);
+> >   void tb_lc_unconfigure_port(struct tb_port *port);
+> >   int tb_lc_configure_xdomain(struct tb_port *port);
+> > @@ -1307,6 +1309,7 @@ void usb4_switch_remove_ports(struct tb_switch *sw);
+> >   int usb4_port_unlock(struct tb_port *port);
+> >   int usb4_port_hotplug_enable(struct tb_port *port);
+> > +int usb4_port_reset(struct tb_port *port);
+> >   int usb4_port_configure(struct tb_port *port);
+> >   void usb4_port_unconfigure(struct tb_port *port);
+> >   int usb4_port_configure_xdomain(struct tb_port *port, struct tb_xdomain *xd);
+> > diff --git a/drivers/thunderbolt/tb_regs.h b/drivers/thunderbolt/tb_regs.h
+> > index 87e4795275fe..efcae298b370 100644
+> > --- a/drivers/thunderbolt/tb_regs.h
+> > +++ b/drivers/thunderbolt/tb_regs.h
+> > @@ -389,6 +389,7 @@ struct tb_regs_port_header {
+> >   #define PORT_CS_18_CSA				BIT(22)
+> >   #define PORT_CS_18_TIP				BIT(24)
+> >   #define PORT_CS_19				0x13
+> > +#define PORT_CS_19_DPR				BIT(0)
+> >   #define PORT_CS_19_PC				BIT(3)
+> >   #define PORT_CS_19_PID				BIT(4)
+> >   #define PORT_CS_19_WOC				BIT(16)
+> > @@ -584,6 +585,9 @@ struct tb_regs_hop {
+> >   #define TB_LC_POWER				0x740
+> >   /* Link controller registers */
+> > +#define TB_LC_PORT_MODE				0x26
+> > +#define TB_LC_PORT_MODE_DPR			BIT(0)
+> > +
+> >   #define TB_LC_CS_42				0x2a
+> >   #define TB_LC_CS_42_USB_PLUGGED			BIT(31)
+> > diff --git a/drivers/thunderbolt/usb4.c b/drivers/thunderbolt/usb4.c
+> > index 675d1ed62372..9e002bf73d2e 100644
+> > --- a/drivers/thunderbolt/usb4.c
+> > +++ b/drivers/thunderbolt/usb4.c
+> > @@ -1107,6 +1107,45 @@ int usb4_port_hotplug_enable(struct tb_port *port)
+> >   	return tb_port_write(port, &val, TB_CFG_PORT, ADP_CS_5, 1);
+> >   }
+> > +/**
+> > + * usb4_port_reset() - Issue downstream port reset
+> > + * @port: USB4 port to reset
+> > + *
+> > + * Issues downstream port reset to @port.
+> > + */
+> > +int usb4_port_reset(struct tb_port *port)
+> > +{
+> > +	int ret;
+> > +	u32 val;
+> > +
+> > +	if (!port->cap_usb4)
+> > +		return -EINVAL;
+> > +
+> > +	ret = tb_port_read(port, &val, TB_CFG_PORT,
+> > +			   port->cap_usb4 + PORT_CS_19, 1);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	val |= PORT_CS_19_DPR;
+> > +
+> > +	ret = tb_port_write(port, &val, TB_CFG_PORT,
+> > +			    port->cap_usb4 + PORT_CS_19, 1);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	fsleep(10000);
+> > +
+> > +	ret = tb_port_read(port, &val, TB_CFG_PORT,
+> > +			   port->cap_usb4 + PORT_CS_19, 1);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	val &= ~PORT_CS_19_DPR;
+> > +
+> > +	return tb_port_write(port, &val, TB_CFG_PORT,
+> > +			     port->cap_usb4 + PORT_CS_19, 1);
+> > +}
+> > +
+> >   static int usb4_port_set_configured(struct tb_port *port, bool configured)
+> >   {
+> >   	int ret;
+> > 
+> > 
 
