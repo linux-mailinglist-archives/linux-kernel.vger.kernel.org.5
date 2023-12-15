@@ -1,192 +1,145 @@
-Return-Path: <linux-kernel+bounces-967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 473F68148AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:03:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C7B58148B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B6761C227E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:03:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 189B8B225AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213E12D056;
-	Fri, 15 Dec 2023 13:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD092D05E;
+	Fri, 15 Dec 2023 13:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OyqkOq1t"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QTVU7ike"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2062.outbound.protection.outlook.com [40.107.93.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142752C6BA;
-	Fri, 15 Dec 2023 13:03:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DcSen+n4LZ9Jtv7YQH00QvAch2fUBZ3jl+TN/ffYqzQuD6pbJO/Mny0oOCFrLrJFzVx5z7rB0r9mLeMdsrIm+S04UcQAdhfEiE2Y0N/Pil4/sdWAP7kSzwF+wRsY6pJAUP1NRjeH0InkVqrzn57Y5JSrkW8rLkRJrxDdpECXn5DvZGsbhwsvonwpH5syAnXuoE5ZwjAnk1whdJ/PqdZ4FlF3Ons8Xb4/By+T2o3H7mM7cueieR9EM+4k+B3swMej+D3/F+/os5NN9j4UzkocFpkLotavVaAyrv7Yw5pvPckZdAb24SeBD1DtKdUATXJ3GUDqwbgLyzU8zWEtbWCztA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WT+j2wqW/88Zx7q4M6l3IyxbtUO4IUc0tPi6gfAMLy4=;
- b=IdRfiqR762npydXhdkgckLjR8HFk6CEUZY+nyTrN7as9xJHNCosS3jK1NcHTX/q5TPwx4jxx4chHvrLVKPRh7z5iMwbCEZ6RkZZz0WyamnjtEcZQOQk2aEdHHc7TL0WxudLUtCJr+ZA8pdWNjIMmwcgrbzi+UVe5LvUyXOM1kOnM7A1EegtT0frY/FTGGeQMJAKIRqr9sPJIc5qiW0WTHspRNQ8ENnBuQFVEwk8dB9M+eriekYNh3AqE8NBfxmYwf6msrfUHtrkE48TZ5Yq7dJK04vRBbkrujzRB9HgXTlrfKXtcTFYTIP2ktt21d9M/6xbOwwnj2NsLp6gSNpLPgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WT+j2wqW/88Zx7q4M6l3IyxbtUO4IUc0tPi6gfAMLy4=;
- b=OyqkOq1tM/UUgaXnA+E9+QraNGziOnWOF5O5sbvso9m07JssWdD4E6l84tOGCCT8ObWe38TFGre7Fm4UPHXooNU6J7nRB1BAfp/7cA/7WSCIeI8o2eK8K8eOGfjt8CPAmgmiGOv7fCHHZVsTxqtrDHsTecVlUGPxafCpMAUzAwg=
-Received: from CY5PR13CA0062.namprd13.prod.outlook.com (2603:10b6:930:a::13)
- by SN7PR12MB6930.namprd12.prod.outlook.com (2603:10b6:806:262::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
- 2023 13:03:46 +0000
-Received: from CY4PEPF0000E9D4.namprd03.prod.outlook.com
- (2603:10b6:930:a:cafe::e2) by CY5PR13CA0062.outlook.office365.com
- (2603:10b6:930:a::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.12 via Frontend
- Transport; Fri, 15 Dec 2023 13:03:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D4.mail.protection.outlook.com (10.167.241.147) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.14 via Frontend Transport; Fri, 15 Dec 2023 13:03:46 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 15 Dec
- 2023 07:03:10 -0600
-Received: from amd-B450M-DS3H.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Fri, 15 Dec 2023 07:03:06 -0600
-From: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC: <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-	<Sunil-kumar.Dommati@amd.com>, <mario.limonciello@amd.com>,
-	<posteuca@mutex.one>, <bagasdotme@gmail.com>,
-	<venkataprasad.potturu@amd.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto
-	<kuninori.morimoto.gx@renesas.com>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
-	<u.kleine-koenig@pengutronix.de>, Nicolas Ferre
-	<nicolas.ferre@microchip.com>, "open list:SOUND - SOC LAYER / DYNAMIC AUDIO
- POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
-	<linux-kernel@vger.kernel.org>
-Subject: [RESEND] ASoC: amd: acp: add pm ops support for renoir platform.
-Date: Fri, 15 Dec 2023 18:32:42 +0530
-Message-ID: <20231215130300.1247475-1-Syed.SabaKareem@amd.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5158B2D78C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-552d39ac3ccso745978a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:04:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702645468; x=1703250268; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ot2lnBmxYYc4EXpRhtUVZqKkxb59kHy1hNAIij3qtm4=;
+        b=QTVU7ikeoVxpOqDPfl5pe34dSf9nuBoWAMduApjJ7d/ILYOt6mC6Sk3EGdBSosfqqZ
+         UGz04sRrJR4qnuRSb1wqbMzfc6SV9AO5gQ7iv43uPJgR+/IreiYXykPebYwMMzV8vTb+
+         IMxcdcM24qhizOfgAo7VBttBwCDmIifKsYhb+vL7tbXQIj97NSa02U75VJlbHA5mBQ/4
+         kygR4IOk5omzIfy1mfPPKo+dca9oIXZl1jWDpSm4QBvGabmwfbUhPdDTKReQEx4WENQh
+         JArS/1Lq0RztzVZcBKXA/wGoVo8cmutBkzSt0nLnioAWXAh7yzI1sGMd+r6PwTwQB8MI
+         DpLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702645468; x=1703250268;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ot2lnBmxYYc4EXpRhtUVZqKkxb59kHy1hNAIij3qtm4=;
+        b=NQfI4e4qvAhHwEST9/nT7Tpyl8TYxN/PA4XnkIDayci83P4wgdgVvcPoaNTy31B6gb
+         eHJUeL9d9+HAHuKLIyIrrm/3l1WY5XzQmZPrmNcx67sJPfSlkiYcjRlCTDLF1+EKxZY2
+         G2+YVY2rowocB7FkR6YtPmt4VbbezI/hagnJeDm5DEpEoEz4KycHOqwxvfzPh9rmzxsF
+         KIxOuAIVgOu1H8Y4lPSw1INX6lrlnaP3l9kdOgFDeB3vnPHkn+I1OewIVxfJL0sNrIZF
+         fp20t3jeWVrQYGIaOaphMF7WT4yKysKa6sxzKwPzV3Gsf7QPyfbczGkBRdxl5K+FnnW3
+         XvrQ==
+X-Gm-Message-State: AOJu0YwiZRYbAjyb4Oxf4FL+2DNP0VomyxxjK91i+uV6uJw63vlMnFqF
+	lXXEE67Ww34UbZ4c+Dn7ETN2/g==
+X-Google-Smtp-Source: AGHT+IEYs6G3ikEFl0VfTdaWZwFA6Rfvsnn8nfDU6xQ1gLQ88+jLLpOo9fdfXQdZPcHgQ2P6/jUaPA==
+X-Received: by 2002:a17:906:30d5:b0:a1c:d8c6:c21 with SMTP id b21-20020a17090630d500b00a1cd8c60c21mr11706304ejb.67.1702645468376;
+        Fri, 15 Dec 2023 05:04:28 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id cw15-20020a170907160f00b00a1937153bddsm10637875ejd.20.2023.12.15.05.04.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 05:04:27 -0800 (PST)
+Message-ID: <073549db-06c4-47fe-ad9c-ec1aad72de06@linaro.org>
+Date: Fri, 15 Dec 2023 14:04:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D4:EE_|SN7PR12MB6930:EE_
-X-MS-Office365-Filtering-Correlation-Id: d521bd10-ed5a-4044-024d-08dbfd6e45f7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yPLdiK5iavX5BURgKKWbFziBD6iq0+jYLiqfbqKb7yVtvU8/r0zj9KikiAAt8a+/8w0xhLqPmv4EHzUQ/MsDjagSA/eWyNyykw/7nQ83j5QxchopDaPDtoh5e6IpUW2iPEVGXeKcog58QvfGrgr2byy2d5xErDrEzTU6WIki5mst8P8pA+4ksVLq3/IS9mU6bO5v3dy4DfKir54wMWbd6NTjSJigN/u1r1wXglTImcJqgui1Cxir1ixDR6sJtnFTHC6tFPZGmeAsR9+TTbWmyShxg96/gQUKEYcw/G3gMfTqQK7wPO1rnQwVjQ3XtJMlgkFGsfqvB+LUyRa7hr67WkhYBtaq6YTL+J1h2IkF812O9YEogzbZn41PZnHLSPL98kfQTPlPpcgsjfi2yn9NR8Epf9x3dQl9w+Z6r3WUq1lKjz4e2f57H+HnROjoGlIbb5Ei/tnTwMFl5ZRzk23KOzxzkRJDM/6ZfAjyXx/N864jOu0BAEup0fD1nVasohdQvuLq/LaOOAi11LNNsBM45pBUDyUO+1oQyLXqxawEB/EYlwfyLwEldJTS65mAEjB6xiU713s5D+Hlc8udA4+hso7Cy6jvsbX08T3I0zwRNL2M0UMWOBm42vIHEjcp0JFzSv4cDq5QXACKqX8/PC1lZiN7LhjgAFJD1nU4F+6KzkDztex6C5fMfRdQaTfNuZPNROX+5RT3VNRMNi46Q1GV9ZZBkaUmrFz4emQXKciti4mckHW44ZVSETtWBhy0Q7wiMCfB4uQR0EUCPu4oumhi4g==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(39860400002)(346002)(396003)(230922051799003)(451199024)(82310400011)(64100799003)(1800799012)(186009)(40470700004)(46966006)(36840700001)(4326008)(36756003)(70206006)(54906003)(70586007)(110136005)(316002)(426003)(1076003)(2616005)(336012)(26005)(478600001)(7696005)(6666004)(41300700001)(8676002)(8936002)(5660300002)(2906002)(7416002)(356005)(40460700003)(47076005)(86362001)(40480700001)(81166007)(36860700001)(82740400003)(83380400001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 13:03:46.4009
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d521bd10-ed5a-4044-024d-08dbfd6e45f7
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D4.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6930
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sm8650: add fastrpc-compute-cb nodes
+Content-Language: en-US
+To: Neil Armstrong <neil.armstrong@linaro.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231215-topic-sm8650-upstream-dt-fastrpc-v1-1-5016f685ab5a@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231215-topic-sm8650-upstream-dt-fastrpc-v1-1-5016f685ab5a@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add pm ops for renoir platform.
+On 15/12/2023 12:45, Neil Armstrong wrote:
+> Add the missing aDSP and cDSP fastrpc compute-cb nodes for the SM8650 SoC.
+> 
+> Fixes: 10e024671295 ("arm64: dts: qcom: sm8650: add interconnect dependent device nodes")
 
-Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
----
- sound/soc/amd/acp/acp-renoir.c | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+We are bringing new hardware, so logically it is done step-by-step.
+Missing pieces in such case is usually not a bug, thus no fixes.
 
-diff --git a/sound/soc/amd/acp/acp-renoir.c b/sound/soc/amd/acp/acp-renoir.c
-index a591482a0726..b0e181c9a733 100644
---- a/sound/soc/amd/acp/acp-renoir.c
-+++ b/sound/soc/amd/acp/acp-renoir.c
-@@ -20,6 +20,7 @@
- #include <sound/soc.h>
- #include <sound/soc-dai.h>
- #include <linux/dma-mapping.h>
-+#include <linux/pm_runtime.h>
- 
- #include "amd.h"
- #include "acp-mach.h"
-@@ -196,6 +197,11 @@ static int renoir_audio_probe(struct platform_device *pdev)
- 	acp_enable_interrupts(adata);
- 	acp_platform_register(dev);
- 
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
- 	return 0;
- }
- 
-@@ -208,11 +214,42 @@ static void renoir_audio_remove(struct platform_device *pdev)
- 	acp_platform_unregister(dev);
- }
- 
-+static int __maybe_unused rn_pcm_resume(struct device *dev)
-+{
-+	struct acp_dev_data *adata = dev_get_drvdata(dev);
-+	struct acp_stream *stream;
-+	struct snd_pcm_substream *substream;
-+	snd_pcm_uframes_t buf_in_frames;
-+	u64 buf_size;
-+
-+	spin_lock(&adata->acp_lock);
-+	list_for_each_entry(stream, &adata->stream_list, list) {
-+		substream = stream->substream;
-+		if (substream && substream->runtime) {
-+			buf_in_frames = (substream->runtime->buffer_size);
-+			buf_size = frames_to_bytes(substream->runtime, buf_in_frames);
-+			config_pte_for_stream(adata, stream);
-+			config_acp_dma(adata, stream, buf_size);
-+			if (stream->dai_id)
-+				restore_acp_i2s_params(substream, adata, stream);
-+			else
-+				restore_acp_pdm_params(substream, adata);
-+		}
-+	}
-+	spin_unlock(&adata->acp_lock);
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops rn_dma_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(NULL, rn_pcm_resume)
-+};
-+
- static struct platform_driver renoir_driver = {
- 	.probe = renoir_audio_probe,
- 	.remove_new = renoir_audio_remove,
- 	.driver = {
- 		.name = "acp_asoc_renoir",
-+		.pm = &rn_dma_pm_ops,
- 	},
- };
- 
--- 
-2.25.1
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+
+Anyway:
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
 
