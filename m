@@ -1,231 +1,120 @@
-Return-Path: <linux-kernel+bounces-1246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF22814C61
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:02:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C565814C6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 322F72856FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:02:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3138B21B8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852703A8F4;
-	Fri, 15 Dec 2023 16:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17593BB2E;
+	Fri, 15 Dec 2023 16:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g2B3I0/N"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265C4364B9;
-	Fri, 15 Dec 2023 16:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E7C4C15;
-	Fri, 15 Dec 2023 08:03:14 -0800 (PST)
-Received: from [10.57.85.151] (unknown [10.57.85.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AA0D3F5A1;
-	Fri, 15 Dec 2023 08:02:25 -0800 (PST)
-Message-ID: <06412759-659c-4b80-b946-f533775baa02@arm.com>
-Date: Fri, 15 Dec 2023 16:03:28 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9DF39FF1;
+	Fri, 15 Dec 2023 16:04:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82A12C433C8;
+	Fri, 15 Dec 2023 16:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702656286;
+	bh=21UpLYYm/amrRWsA6Z0Z5i27B+/zK87yVNZjHVxo7MI=;
+	h=From:Subject:Date:To:Cc:From;
+	b=g2B3I0/NcDq7i9hJlY6LmE9UUvybF0eTEzp/+CvjIBjOsGUvEjDjFaUt3r9psEnKC
+	 skT5RdEL4vJg4BUfTGsrRdW8Nkg1+ZlVxrLZe2ytGGx/74h0p4tp5y3CLfY1Q8yRws
+	 8s58HnfunGetKbdsjYCuufIHPVTf9okcplVXK9XtskxoPWkpWoPCS3pit1dqPbD/CN
+	 KRU6CJ9xzFWWrChTCxbyzUDwyXGZVzvQb12vB25MqwsbQpjSBnQeNB2QJgZ1SoCt3l
+	 Gg7xiojErzJbk7px+2XjSe6yDHl1datwFl9w5IXSgmcIILcJYW/A97cwOhYFTrAYG2
+	 eP4tfiifqgBoA==
+From: Matthieu Baerts <matttbe@kernel.org>
+Subject: [PATCH net 0/4] mptcp: misc. fixes for v6.7
+Date: Fri, 15 Dec 2023 17:04:23 +0100
+Message-Id: <20231215-upstream-net-20231215-mptcp-misc-fixes-v1-0-91d20266d525@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] sched: Take cpufreq feedback into account
-Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>
-References: <20231212142730.998913-1-vincent.guittot@linaro.org>
- <20231212142730.998913-3-vincent.guittot@linaro.org>
-Cc: catalin.marinas@arm.com, will@kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- mgorman@suse.de, linux-pm@vger.kernel.org, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, mhiramat@kernel.org, vschneid@redhat.com,
- bristot@redhat.com, dietmar.eggemann@arm.com, juri.lelli@redhat.com,
- agross@kernel.org, peterz@infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, konrad.dybcio@linaro.org,
- andersson@kernel.org, viresh.kumar@linaro.org, sudeep.holla@arm.com,
- rafael@kernel.org, mingo@redhat.com, rostedt@goodmis.org,
- bsegall@google.com, rui.zhang@intel.com
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231212142730.998913-3-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAd5fGUC/z2MQQrCQAxFr1KyNtBJKohXERclpjWLGYfJKIXSu
+ xtcuHz/894Ors3U4Trs0PRjbq8SkE4DyHMuq6I9goFG4kTpjO/qvemcsWjH/5prl4rZXHCxTR2
+ ZZeLLKLQwQcRq098RrRuECvfj+AJQm1PpfQAAAA==
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Benjamin Hesmans <benjamin.hesmans@tessares.net>, 
+ Dmytro Shytyi <dmytro@shytyi.net>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Matthieu Baerts <matttbe@kernel.org>, 
+ Geliang Tang <geliang.tang@linux.dev>, stable@vger.kernel.org, 
+ syzbot+c53d4d3ddb327e80bc51@syzkaller.appspotmail.com
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1482; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=21UpLYYm/amrRWsA6Z0Z5i27B+/zK87yVNZjHVxo7MI=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlfHkadq64+Jj4+lw1xgSumvoytJWthMiPdayoY
+ mEerJZN/UmJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZXx5GgAKCRD2t4JPQmmg
+ c0uJEACf528mDj3ot7R2by6zX9YL7bC37nr3ZzTlXbgvCHkfHlDBlyFKeR2fJp67mlTRYAgnC7G
+ tt5gzeyAPE077Zg80RYgdVU26MXDxb8wQud+dtSvkNt0b8w7bITvsS7RTY9rGeURNdTMETdY2T/
+ s/dp0h29TulF1M8sgz3/WRJOo/gAPZrVutY2rc9CZUpuX364Tl2FDjI9F3qPj9QOfhjenF7ClJu
+ h7GFi0fyGLJeeXhDtPIozh5kZ1hyN12Y+yF0GzeJCA4y3EF4Mzk/1z+UeqcOlXIUG2hlEBRcSha
+ jz2RhTkU9hBg7C1eqPRHmaLdHjDyGzxPvKBRcVxxAqFoyXDJuEVlC9ICpXj8RR4BSDeOaJILG1N
+ xVEQ3nIZ/HRwcJHUX18MKQ0yezQMACg/Re0yAvi5lgwhOIV8m6dVeWkw7FmerEE7iVA3vhIF/Ro
+ dQeEvSf6AbkvuTkc9EczKajr1jKRWMxPprKC7yaAffCbh0RyKmyG2cwq5SVMcUwCFrpoOaBfmxV
+ di5ToPnvmchhhqlku2euggC9aL58He+3Ywuhvvlyn06PNPC3kqfuFCSV5wKWZxwgc6H8IcAhBx8
+ JZbCg5Lp6AMyfEpY8GikzN3tt6J+TcnSEQyFKMrp0kFWs043XE9OXphr5OVI+2IDxuEsCDIpNcR
+ ZVv9j79Ip8WK91Q==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
+Here are a few fixes related to MPTCP:
 
+Patch 1 avoids skipping some subtests of the MPTCP Join selftest by
+mistake when using older versions of GCC. This fixes a patch introduced
+in v6.4, backported up to v6.1.
 
-On 12/12/23 14:27, Vincent Guittot wrote:
-> Aggregate the different pressures applied on the capacity of CPUs and
-> create a new function that returns the actual capacity of the CPU:
->    get_actual_cpu_capacity()
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->   kernel/sched/fair.c | 43 +++++++++++++++++++++++--------------------
->   1 file changed, 23 insertions(+), 20 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index bcea3d55d95d..11d3be829302 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4932,12 +4932,20 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
->   	trace_sched_util_est_se_tp(&p->se);
->   }
->   
-> +static inline unsigned long get_actual_cpu_capacity(int cpu)
-> +{
-> +	unsigned long capacity = arch_scale_cpu_capacity(cpu);
-> +
-> +	capacity -= max(thermal_load_avg(cpu_rq(cpu)), cpufreq_get_pressure(cpu));
-> +
-> +	return capacity;
-> +}
->   static inline int util_fits_cpu(unsigned long util,
->   				unsigned long uclamp_min,
->   				unsigned long uclamp_max,
->   				int cpu)
->   {
-> -	unsigned long capacity_orig, capacity_orig_thermal;
-> +	unsigned long capacity_orig;
->   	unsigned long capacity = capacity_of(cpu);
->   	bool fits, uclamp_max_fits;
->   
-> @@ -4970,7 +4978,6 @@ static inline int util_fits_cpu(unsigned long util,
->   	 * goal is to cap the task. So it's okay if it's getting less.
->   	 */
->   	capacity_orig = arch_scale_cpu_capacity(cpu);
-> -	capacity_orig_thermal = capacity_orig - arch_scale_thermal_pressure(cpu);
->   
->   	/*
->   	 * We want to force a task to fit a cpu as implied by uclamp_max.
-> @@ -5045,7 +5052,7 @@ static inline int util_fits_cpu(unsigned long util,
->   	 * handle the case uclamp_min > uclamp_max.
->   	 */
->   	uclamp_min = min(uclamp_min, uclamp_max);
-> -	if (fits && (util < uclamp_min) && (uclamp_min > capacity_orig_thermal))
-> +	if (fits && (util < uclamp_min) && (uclamp_min > get_actual_cpu_capacity(cpu)))
+Patch 2 fixes an inconsistent state when using MPTCP + FastOpen. A fix
+for v6.2.
 
-That's quite long line, I would break it into 2.
+Patch 3 adds a description for MPTCP Kunit test modules to avoid a
+warning.
 
->   		return -1;
->   
->   	return fits;
-> @@ -7426,7 +7433,7 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
->   		 * Look for the CPU with best capacity.
->   		 */
->   		else if (fits < 0)
-> -			cpu_cap = arch_scale_cpu_capacity(cpu) - thermal_load_avg(cpu_rq(cpu));
-> +			cpu_cap = get_actual_cpu_capacity(cpu);
->   
->   		/*
->   		 * First, select CPU which fits better (-1 being better than 0).
-> @@ -7919,8 +7926,8 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->   	struct root_domain *rd = this_rq()->rd;
->   	int cpu, best_energy_cpu, target = -1;
->   	int prev_fits = -1, best_fits = -1;
-> -	unsigned long best_thermal_cap = 0;
-> -	unsigned long prev_thermal_cap = 0;
-> +	unsigned long best_actual_cap = 0;
-> +	unsigned long prev_actual_cap = 0;
->   	struct sched_domain *sd;
->   	struct perf_domain *pd;
->   	struct energy_env eenv;
-> @@ -7950,7 +7957,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->   
->   	for (; pd; pd = pd->next) {
->   		unsigned long util_min = p_util_min, util_max = p_util_max;
-> -		unsigned long cpu_cap, cpu_thermal_cap, util;
-> +		unsigned long cpu_cap, cpu_actual_cap, util;
->   		long prev_spare_cap = -1, max_spare_cap = -1;
->   		unsigned long rq_util_min, rq_util_max;
->   		unsigned long cur_delta, base_energy;
-> @@ -7962,18 +7969,17 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->   		if (cpumask_empty(cpus))
->   			continue;
->   
-> -		/* Account thermal pressure for the energy estimation */
-> +		/* Account external pressure for the energy estimation */
->   		cpu = cpumask_first(cpus);
-> -		cpu_thermal_cap = arch_scale_cpu_capacity(cpu);
-> -		cpu_thermal_cap -= arch_scale_thermal_pressure(cpu);
-> +		cpu_actual_cap = get_actual_cpu_capacity(cpu);
->   
-> -		eenv.cpu_cap = cpu_thermal_cap;
-> +		eenv.cpu_cap = cpu_actual_cap;
->   		eenv.pd_cap = 0;
->   
->   		for_each_cpu(cpu, cpus) {
->   			struct rq *rq = cpu_rq(cpu);
->   
-> -			eenv.pd_cap += cpu_thermal_cap;
-> +			eenv.pd_cap += cpu_actual_cap;
->   
->   			if (!cpumask_test_cpu(cpu, sched_domain_span(sd)))
->   				continue;
-> @@ -8044,7 +8050,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->   			if (prev_delta < base_energy)
->   				goto unlock;
->   			prev_delta -= base_energy;
-> -			prev_thermal_cap = cpu_thermal_cap;
-> +			prev_actual_cap = cpu_actual_cap;
->   			best_delta = min(best_delta, prev_delta);
->   		}
->   
-> @@ -8059,7 +8065,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->   			 * but best energy cpu has better capacity.
->   			 */
->   			if ((max_fits < 0) &&
-> -			    (cpu_thermal_cap <= best_thermal_cap))
-> +			    (cpu_actual_cap <= best_actual_cap))
->   				continue;
->   
->   			cur_delta = compute_energy(&eenv, pd, cpus, p,
-> @@ -8080,14 +8086,14 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->   			best_delta = cur_delta;
->   			best_energy_cpu = max_spare_cap_cpu;
->   			best_fits = max_fits;
-> -			best_thermal_cap = cpu_thermal_cap;
-> +			best_actual_cap = cpu_actual_cap;
->   		}
->   	}
->   	rcu_read_unlock();
->   
->   	if ((best_fits > prev_fits) ||
->   	    ((best_fits > 0) && (best_delta < prev_delta)) ||
-> -	    ((best_fits < 0) && (best_thermal_cap > prev_thermal_cap)))
-> +	    ((best_fits < 0) && (best_actual_cap > prev_actual_cap)))
->   		target = best_energy_cpu;
->   
->   	return target;
-> @@ -9466,7 +9472,7 @@ static inline void init_sd_lb_stats(struct sd_lb_stats *sds)
->   static unsigned long scale_rt_capacity(int cpu)
->   {
->   	struct rq *rq = cpu_rq(cpu);
-> -	unsigned long max = arch_scale_cpu_capacity(cpu);
-> +	unsigned long max = get_actual_cpu_capacity(cpu);
+Patch 4 adds an entry to the mailmap file for Geliang's email addresses.
 
-Maybe it's not strictly related to this patch, but I would swap the
-2 above lines, so that they will be sorted (from longest to shortest).
+Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
+---
+Geliang Tang (2):
+      selftests: mptcp: join: fix subflow_send_ack lookup
+      mailmap: add entries for Geliang Tang
 
->   	unsigned long used, free;
->   	unsigned long irq;
->   
-> @@ -9478,12 +9484,9 @@ static unsigned long scale_rt_capacity(int cpu)
->   	/*
->   	 * avg_rt.util_avg and avg_dl.util_avg track binary signals
->   	 * (running and not running) with weights 0 and 1024 respectively.
-> -	 * avg_thermal.load_avg tracks thermal pressure and the weighted
-> -	 * average uses the actual delta max capacity(load).
->   	 */
->   	used = READ_ONCE(rq->avg_rt.util_avg);
->   	used += READ_ONCE(rq->avg_dl.util_avg);
-> -	used += thermal_load_avg(rq);
->   
->   	if (unlikely(used >= max))
->   		return 1;
+Matthieu Baerts (1):
+      mptcp: fill in missing MODULE_DESCRIPTION()
 
-The rest looks good
+Paolo Abeni (1):
+      mptcp: fix inconsistent state on fastopen race
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+ .mailmap                                        |  4 ++++
+ net/mptcp/crypto_test.c                         |  1 +
+ net/mptcp/protocol.c                            |  6 +++---
+ net/mptcp/protocol.h                            |  9 +++++---
+ net/mptcp/subflow.c                             | 28 +++++++++++++++----------
+ net/mptcp/token_test.c                          |  1 +
+ tools/testing/selftests/net/mptcp/mptcp_join.sh |  8 +++----
+ 7 files changed, 36 insertions(+), 21 deletions(-)
+---
+base-commit: 64b8bc7d5f1434c636a40bdcfcd42b278d1714be
+change-id: 20231215-upstream-net-20231215-mptcp-misc-fixes-33c4380c2f32
+
+Best regards,
+-- 
+Matthieu Baerts <matttbe@kernel.org>
+
 
