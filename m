@@ -1,74 +1,94 @@
-Return-Path: <linux-kernel+bounces-977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199C28148CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 690F98148D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACE8F1F24967
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:13:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10F401F249CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4AD2DB99;
-	Fri, 15 Dec 2023 13:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61092DB6D;
+	Fri, 15 Dec 2023 13:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5WXOQ5M"
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="Srd2SsiP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from aposti.net (aposti.net [89.234.176.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092892DB89
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:13:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3198DC433C9;
-	Fri, 15 Dec 2023 13:13:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702645990;
-	bh=Dehen5HnXFNaa3WfZmpIvUhDsZ5iy/FsmZyQTwq/+OU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=B5WXOQ5McoHNvKHmRHggUXcrXBTdPajeiSwaFPgQaCVt9SJZ2x2uKwKiOFfmXH8ei
-	 eT4tCs235k6op6X/zu3SRozD/NvvX+quBl0OUnUN8XRm7FkV5Mz1hAyZPF+Y9uHm/x
-	 ejt7hC9TH93iNDegGptMMpTSSMNiSUmTeSLlk/2UGqHzzLUGsTGK1UaHiqHyRxFoTc
-	 F10vtR2TWP9aWO8SWeDVykSIS/qmzVSynE/b2/DX0CZzqKp4Bv4PaBtruJoSQ5c1et
-	 ScusWitNTeaijd159wDMHBBKbU5DvDDgLo4IvQWj8zhi2wCgrovq4C5NFSBq7xaXbP
-	 COyc+GFQyD5Tg==
-From: Maxime Ripard <mripard@kernel.org>
-To: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Donald Robson <donald.robson@imgtec.com>
-Cc: frank.binns@imgtec.com, matt.coster@imgtec.com, 
- maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, airlied@gmail.com, 
- daniel@ffwll.ch, Dan Carpenter <dan.carpenter@linaro.org>
-In-Reply-To: <20231213144431.94956-1-donald.robson@imgtec.com>
-References: <20231213144431.94956-1-donald.robson@imgtec.com>
-Subject: Re: (subset) [PATCH 1/2] drm/imagination: Fix ERR_PTR test on
- pointer to pointer.
-Message-Id: <170264598817.449619.12909620922259107900.b4-ty@kernel.org>
-Date: Fri, 15 Dec 2023 14:13:08 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DFF2D791;
+	Fri, 15 Dec 2023 13:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1702646029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=21xrIJTonl2JSPX53jr10oHQ64LwYtc2R0VBvZ9/BIs=;
+	b=Srd2SsiPVhfJfsyWju8h+Dm7x5+BPCtFQl+HxHQbQDmI+PE4bBDNFI8XEZ/F00eK+WVL0E
+	1WRaVjqdmk26n/7H3E5q1RbKKjB/g34lRMRLvxcKJPC2sqozzM8vmaANDeLiVdaMqTPdyM
+	/RQRKKg/IfZopXUG219fOc6KrlKNbXY=
+From: Paul Cercueil <paul@crapouillou.net>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+	=?UTF-8?q?Nuno=20S=C3=A1?= <noname.nuno@gmail.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH v2 1/5] dmaengine: axi-dmac: Small code cleanup
+Date: Fri, 15 Dec 2023 14:13:09 +0100
+Message-ID: <20231215131313.23840-2-paul@crapouillou.net>
+In-Reply-To: <20231215131313.23840-1-paul@crapouillou.net>
+References: <20231215131313.23840-1-paul@crapouillou.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 
-On Wed, 13 Dec 2023 14:44:30 +0000, Donald Robson wrote:
-> drivers/gpu/drm/imagination/pvr_vm.c:631 pvr_vm_create_context()
->   error: 'vm_ctx->mmu_ctx' dereferencing possible ERR_PTR()
-> 
-> 612         vm_ctx->mmu_ctx = pvr_mmu_context_create(pvr_dev);
-> 613         err = PTR_ERR_OR_ZERO(&vm_ctx->mmu_ctx);
->                                       ^
-> The address is never an error pointer so this will always return 0.
-> Remove the ampersand.
-> 
-> [...]
+Use a for() loop instead of a while() loop in axi_dmac_fill_linear_sg().
+This makes the code leaner and cleaner overall, and does not introduce
+any functional change.
 
-Applied to drm/drm-misc (drm-misc-next-fixes).
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-Thanks!
-Maxime
+---
+v2: Improve commit message
+---
+ drivers/dma/dma-axi-dmac.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-dmac.c
+index 2457a420c13d..760940b21eab 100644
+--- a/drivers/dma/dma-axi-dmac.c
++++ b/drivers/dma/dma-axi-dmac.c
+@@ -508,16 +508,13 @@ static struct axi_dmac_sg *axi_dmac_fill_linear_sg(struct axi_dmac_chan *chan,
+ 	segment_size = ((segment_size - 1) | chan->length_align_mask) + 1;
+ 
+ 	for (i = 0; i < num_periods; i++) {
+-		len = period_len;
+-
+-		while (len > segment_size) {
++		for (len = period_len; len > segment_size; sg++) {
+ 			if (direction == DMA_DEV_TO_MEM)
+ 				sg->dest_addr = addr;
+ 			else
+ 				sg->src_addr = addr;
+ 			sg->x_len = segment_size;
+ 			sg->y_len = 1;
+-			sg++;
+ 			addr += segment_size;
+ 			len -= segment_size;
+ 		}
+-- 
+2.42.0
 
 
