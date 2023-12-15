@@ -1,141 +1,129 @@
-Return-Path: <linux-kernel+bounces-375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACFF481402D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:46:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65F41814032
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 190A728838B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:46:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 989A91C2228C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C8010E1;
-	Fri, 15 Dec 2023 02:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC4F1879;
+	Fri, 15 Dec 2023 02:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZzbnkpVT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jLRQyiEc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581BFEBC
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2f8c1719-2ac7-45d2-99a5-65a732adf299@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702608370;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e62/UPwTCq/WeGbwMi7fzunn5DcATJ+YhRpMZa876ts=;
-	b=ZzbnkpVTe8sz0X0kwiuFO0fdgWgpGTQgK577C+mnNU/p2+MaaBl6g7Ok5/EB951OO0Ev95
-	DlDcQ1JNpBYJVwkESl7IS2QDvsz6agiUAtC9ZD978XPeuCtXd/WR6iPceMuxT5fjGdIQEw
-	uUIKqRvQgBlAwzwJhZNQkw/WWj+HgjQ=
-Date: Fri, 15 Dec 2023 10:46:02 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF9D46B1;
+	Fri, 15 Dec 2023 02:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-336447f240cso99222f8f.3;
+        Thu, 14 Dec 2023 18:46:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702608390; x=1703213190; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oQP9MgK72ktKydhJ4Sd86nQLKYkKX/b8wJIAMimh76Y=;
+        b=jLRQyiEcYOSpj71XPYjhxFzsjPDrP7E+C9ph8KPlBJ3avkoc282jh/NqykQdWNikN1
+         DiFsGCSHn7ObMmiuY4STXY8y0WuC4jICrKEXLKmjpbEiXJO6evGY0enJ8ymbS/E0T+eA
+         /YdhB487RXeqzp4TcOYjuarVf7OBe9CZYXuWpidRVfORydRS4QLww0YM/7m3ePUBdNSb
+         ZYlN01tRrXdI7eK24Qch0/eN1WOaX/8oCK5fNVcLJfeZC96HtmOeNgiUBeyKlOLg1M3T
+         mE1laPSeEO10FswUo0PLiZmGU+plkq8qO9kRdWZpXYntzRLN8AhrvoSG732F2TPraN/X
+         NbQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702608390; x=1703213190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oQP9MgK72ktKydhJ4Sd86nQLKYkKX/b8wJIAMimh76Y=;
+        b=Te7THDOxWJU0LuEh9Y51peWlnA0P3QGDX49q3LejqFKrFAofUudbMurYSVTHccyH8t
+         35CgdxfUwozi1j+Iqy4k6ZX189IPkJKNNwwE/85WndnvAjsxYzGmbHjw3Sf0A0kKnwC7
+         EaOUY5pEcfsMEE7FGg9NB2K+QBR2ghJYO02iXMl/VfSmUABZbl90C4g+6Zghj41wNR9y
+         Hx9+9xLF4dHUKM4Qmvcc1/P74RFHfP2rt10xPUgmv4wXXQuWzCOyoOemI3kQ+awBKUDt
+         by2hhi2vYOq0mtuv7yodSao121wugnvC+TUmQDdppiv9dCOcfi9GuA0VXn3/n0duiqs5
+         4yGw==
+X-Gm-Message-State: AOJu0YzzyNWlepPS5JRuwDr/1QEB6pa/0BwU7OYIgsbxWIkoEKeHdknR
+	kkm6QS3F7yxrUNduYCP2+aqdPlBDYzUYBSAsghc=
+X-Google-Smtp-Source: AGHT+IET6mk/5KdP95zibr3c9wPK3ZnXhMahqd+rDVI4co35xqUOEuC0bTo3empnf6uNK/k9YOZM4Ik2o/fuAUskq3w=
+X-Received: by 2002:a5d:4cd2:0:b0:336:42ff:6924 with SMTP id
+ c18-20020a5d4cd2000000b0033642ff6924mr1654975wrt.56.1702608390344; Thu, 14
+ Dec 2023 18:46:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next v7 0/7] On-Demand Paging on SoftRoCE
-To: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
- Jason Gunthorpe <jgg@nvidia.com>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "leon@kernel.org" <leon@kernel.org>,
- "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
- "Xiao Yang (Fujitsu)" <yangx.jy@fujitsu.com>,
- "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
- "Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com>
-References: <cover.1699503619.git.matsuda-daisuke@fujitsu.com>
- <20231205001139.GA2772824@nvidia.com>
- <d639b4e3-e12a-47e8-9b03-2398b076fdbf@linux.dev>
- <OS3PR01MB98659C7691D5DFB98D98D2BDE58BA@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <c2414371-d638-4ac3-9658-30a07bc514e0@linux.dev>
- <OS3PR01MB9865474CFAC55AEB91D5A502E58CA@OS3PR01MB9865.jpnprd01.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <OS3PR01MB9865474CFAC55AEB91D5A502E58CA@OS3PR01MB9865.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <cover.1702594357.git.dxu@dxuuu.xyz> <97ada80f3aaaeb16bf97e31a8fc204513b4fb6a9.1702594357.git.dxu@dxuuu.xyz>
+In-Reply-To: <97ada80f3aaaeb16bf97e31a8fc204513b4fb6a9.1702594357.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 14 Dec 2023 18:46:19 -0800
+Message-ID: <CAADnVQ+j80DCDHsqJZVmBOohFzOT01Ofdi3TbFEuV2xJ4+A=tA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: selftests: Add bpf_assert_if() and
+ bpf_assert_with_if() macros
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-在 2023/12/14 13:55, Daisuke Matsuda (Fujitsu) 写道:
-> On Wed, Dec 13, 2023 3:08 AM Zhu Yanjun wrote:
->> 在 2023/12/7 14:37, Daisuke Matsuda (Fujitsu) 写道:
->>> On Tue, Dec 5, 2023 10:51 AM Zhu Yanjun wrote:
->>>> 在 2023/12/5 8:11, Jason Gunthorpe 写道:
->>>>> On Thu, Nov 09, 2023 at 02:44:45PM +0900, Daisuke Matsuda wrote:
->>>>>> Daisuke Matsuda (7):
->>>>>>      RDMA/rxe: Always defer tasks on responder and completer to workqueue
->>>>>>      RDMA/rxe: Make MR functions accessible from other rxe source code
->>>>>>      RDMA/rxe: Move resp_states definition to rxe_verbs.h
->>>>>>      RDMA/rxe: Add page invalidation support
->>>>>>      RDMA/rxe: Allow registering MRs for On-Demand Paging
->>>>>>      RDMA/rxe: Add support for Send/Recv/Write/Read with ODP
->>>>>>      RDMA/rxe: Add support for the traditional Atomic operations with ODP
->>>>> What is the current situation with rxe? I don't recall seeing the bugs
->>>>> that were reported get fixed?
->>> Well, I suppose Jason is mentioning "blktests srp/002 hang".
->>> cf. https://lore.kernel.org/linux-rdma/dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u/T/
->>>
->>> It is likely to be a timing issue. Bob reported that "siw hangs with the debug kernel",
->>> so the hang looks not specific to rxe.
->>> cf. https://lore.kernel.org/all/53ede78a-f73d-44cd-a555-f8ff36bd9c55@acm.org/T/
->>> I think we need to decide whether to continue to block patches to rxe since nobody has successfully fixed the issue.
->>>
->>>
->>> There is another issue that causes kernel panic.
->>> [bug report][bisected] rdma_rxe: blktests srp lead kernel panic with 64k page size
->>> cf. https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
->>>
->>> https://patchwork.kernel.org/project/linux-rdma/list/?series=798592&state=*
->>> Zhijian has submitted patches to fix this, and he got some comments.
->>> It looks he is involved in CXL driver intensively these days.
->>> I guess he is still working on it.
->>>
->>>> Exactly. A problem is reported in the link
->>>> https://www.spinics.net/lists/linux-rdma/msg120947.html
->>>>
->>>> It seems that a variable 'entry' set but not used
->>>> [-Wunused-but-set-variable]
->>> Yeah, I can revise the patch anytime.
->>>
->>>> And ODP is an important feature. Should we suggest to add a test case
->>>> about this ODP in rdma-core to verify this ODP feature?
->>> Rxe can share the same tests with mlx5.
->>> I added test cases for Write, Read and Atomic operations with ODP,
->>> and we can add more tests if there are any suggestions.
->>> Cf. https://github.com/linux-rdma/rdma-core/blob/master/tests/test_odp.py
->> Thanks a lot.
->> Do you make tests with blktests after your patches are applied with the
->> latest kernel?
-> I have not done that yet, but I agree I should do it.
-> I will try to take time for the test before submitting v8
-
-Thanks. Hope blktest can work well with your commits.
-
-Zhu Yanjun
-
+On Thu, Dec 14, 2023 at 2:56=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> Thanks,
-> Daisuke Matsuda
+> These macros are a temporary stop-gap until bpf exceptions support
+> unwinding acquired entities. Basically these macros act as if they take
+> a callback which only get executed if the assertion fails.
 >
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  .../testing/selftests/bpf/bpf_experimental.h  | 22 +++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 >
->> Zhu Yanjun
->>
->>> Thanks,
->>> Daisuke Matsuda
->>>
->>>> Zhu Yanjun
->>>>
->>>>> I'm reluctant to dig a deeper hold until it is done?
->>>>>
->>>>> Thanks,
->>>>> Jason
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
+ng/selftests/bpf/bpf_experimental.h
+> index 1386baf9ae4a..d63f415bef26 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -263,6 +263,17 @@ extern void bpf_throw(u64 cookie) __ksym;
+>   */
+>  #define bpf_assert(cond) if (!(cond)) bpf_throw(0);
+>
+> +/* Description
+> + *     Assert that a conditional expression is true. If false, runs code=
+ in the
+> + *     body before throwing.
+> + * Returns
+> + *     Void.
+> + * Throws
+> + *     An exception with the value zero when the assertion fails.
+> + */
+> +#define bpf_assert_if(cond) \
+> +       for (int ___i =3D 0, ___j =3D !!(cond); !(___j) && !___i; bpf_thr=
+ow(0), ___i++)
+
+Kumar,
+
+Is this approach reliable?
+I suspect the compiler can still optimize it.
+I feel it will be annoying to clean up if folks start using it now,
+since there won't be a drop in replacement.
+Every such bpf_assert_if() would need to be manually patched.
+
+If 2nd part of exception is far, how about we add an equivalent
+of __bpf_assert() macroses with conditional ops in asm,
+but with extra 'asm volatile goto' that can be used to construct
+release of resources.
+
+bpf_do_assert_eq(var1, 0) { bpf_spin_unlock(...); }
+bpf_do_assert_lt(var2, 0) { bpf_spin_unlock(...); }
 
