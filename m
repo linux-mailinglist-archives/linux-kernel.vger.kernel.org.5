@@ -1,98 +1,242 @@
-Return-Path: <linux-kernel+bounces-901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00AC8147C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:12:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 131338147C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:13:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E29A21C23341
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:12:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFC632856E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A89F2C698;
-	Fri, 15 Dec 2023 12:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F302C6A9;
+	Fri, 15 Dec 2023 12:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="TS8l8InO"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="I7ZtUIBX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688D828DA0;
-	Fri, 15 Dec 2023 12:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=4SqwIzQ2gFOs3NuS1hhR00by+excYqHOsV2vJcYIZi0=; b=TS8l8InOQHvt5UFmiyoV7lbntE
-	Y8X/nBB9bI+e13UtkyIu7EzSNlnPMxTd94KSen2zrv+JbqY57q7CxqVg3grHED42zCPb6Ao7UhQ15
-	QPMcQIgrK2gsdxgt7k4kRLJZa8OKB8PK9UyENfLEfiqpWbAv+2DbnIk1+F4zZPL1JMAY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rE73J-0031HX-2h; Fri, 15 Dec 2023 13:12:25 +0100
-Date: Fri, 15 Dec 2023 13:12:25 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Luo Jie <quic_luoj@quicinc.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
-	p.zabel@pengutronix.de, f.fainelli@gmail.com,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Message-ID: <60b9081c-76fa-4122-b7ae-5c3dcf7229f9@lunn.ch>
-References: <20231215074005.26976-1-quic_luoj@quicinc.com>
- <20231215074005.26976-15-quic_luoj@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458FE2C68A;
+	Fri, 15 Dec 2023 12:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BF9dxop002855;
+	Fri, 15 Dec 2023 13:12:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=selector1; bh=kvE5XBu2+Fd93UaI428vG
+	WnjnWCMDEpyRUaHUxWJrW0=; b=I7ZtUIBX3AT99QeCJLaVB0aVgc10L3IImwTqj
+	1gafLIseHZqpj2t5QQep7K8ZyoOJNIThwKPcGQ3PZzdo8e2xZSQ+IPGHNDNYTSOo
+	x/ZA1ofwp59DpNn5HVtHi3WK7YrlvEi3i+aMt4iksblgxFC6ZaYZ5xgS7+weZSXM
+	lnmFXMK5RtheNLKpvT+zKH3kZNWimdDf0QIbWeBqUC8XgeNhjPpvFiO7jNMBFido
+	0pHT/95P0Dfh5Wm+zq8LoKsxrcyuaUNFYgqjjmf+55q6WwiEhXuP/cqwvCZp8I6D
+	Xn6RM1foPk9+pmkuox3wfy6eo++A3wGNp8rJ0gSpStx8SvpzA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uxvh9n7pj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 13:12:42 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4E9B3100052;
+	Fri, 15 Dec 2023 13:12:41 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3D041217B7B;
+	Fri, 15 Dec 2023 13:12:41 +0100 (CET)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Dec
+ 2023 13:12:40 +0100
+Date: Fri, 15 Dec 2023 13:12:31 +0100
+From: Alain Volmat <alain.volmat@foss.st.com>
+To: Andi Shyti <andi.shyti@kernel.org>
+CC: Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Pierre-Yves MORDRET
+	<pierre-yves.mordret@foss.st.com>,
+        Conor Dooley <conor@kernel.org>, Rob
+ Herring <robh@kernel.org>,
+        Valentin Caron <valentin.caron@foss.st.com>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/7] i2c: stm32f7: add support for stm32mp25 soc
+Message-ID: <20231215121231.GA3866676@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+	Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+	Valentin Caron <valentin.caron@foss.st.com>,
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231208164719.3584028-1-alain.volmat@foss.st.com>
+ <20231208164719.3584028-5-alain.volmat@foss.st.com>
+ <20231209000747.4l6462nlzj3po3sf@zenone.zhora.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231215074005.26976-15-quic_luoj@quicinc.com>
+In-Reply-To: <20231209000747.4l6462nlzj3po3sf@zenone.zhora.eu>
+X-Disclaimer: ce message est personnel / this message is private
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-15_06,2023-12-14_01,2023-05-22_02
 
-> +  clocks:
-> +    items:
-> +      - description: APB bridge clock
-> +      - description: AHB clock
-> +      - description: Security control clock
-> +      - description: TLMM clock
-> +      - description: TLMM AHB clock
-> +      - description: CNOC AHB clock
-> +      - description: MDIO AHB clock
-> +      - description: MDIO master AHB clock
-> +      - description: PCS0 system clock
-> +      - description: PCS1 system clock
-> +      - description: EPHY0 system clock
-> +      - description: EPHY1 system clock
-> +      - description: EPHY2 system clock
-> +      - description: EPHY3 system clock
+Hi Andi,
 
-What exactly are you describing here? A PHY, or a PHY package?
+thanks for your review.
 
-The ethernet-phy.yaml describes a PHY. So does each of your 4 PHYs
-have 14 clocks? The PHY package as a whole has 14*4 clocks?
+I'll shortly post a v3 to correct all your comments.
 
-This seems unlikely. You have some clocks used by the package as a
-whole, and you have some clocks used by one specific PHY within the
-package. So you need a hierarchical description of the hardware in DT,
-to match the actual hierarchical of the hardware.
+On Sat, Dec 09, 2023 at 01:07:47AM +0100, Andi Shyti wrote:
+> Hi Alain,
+> 
+> On Fri, Dec 08, 2023 at 05:47:13PM +0100, Alain Volmat wrote:
+> > The stm32mp25 has only a single interrupt line used for both
+> > events and errors. In order to cope with that, reorganise the
+> > error handling code so that it can be called either from the
+> > common handler (used in case of SoC having only a single IT line)
+> > and the error handler for others.
+> > The CR1 register also embeds a new FMP bit, necessary when running
+> > at Fast Mode Plus frequency. This bit should be used instead of
+> > the SYSCFG bit used on other platforms.
+> > Add a new compatible to distinguish between the SoCs and two
+> > boolean within the setup structure in order to know if the
+> > platform has a single/multiple IT lines and if the FMP bit
+> > within CR1 is available or not.
+> > 
+> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+> 
+> your SoB here should come last because you are the one sending
+> the patch.
 
-This is exactly what Christian has been working on, and you have
-persistently ignored what he is doing. You need to work with him.
-Nothing is going to be merged until you and Christian have one
-consistent design for the two PHYs you are working on.
+Fixed.
 
+> 
+> > ---
+> >  drivers/i2c/busses/i2c-stm32f7.c | 230 ++++++++++++++++++-------------
+> >  1 file changed, 133 insertions(+), 97 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+> > index 2a011deec3c5..5634332900fb 100644
+> > --- a/drivers/i2c/busses/i2c-stm32f7.c
+> > +++ b/drivers/i2c/busses/i2c-stm32f7.c
+> > @@ -50,6 +50,7 @@
+> >  #define STM32F7_I2C_TXDR			0x28
+> >  
+> >  /* STM32F7 I2C control 1 */
+> > +#define STM32_I2C_CR1_FMP			BIT(24)
+> >  #define STM32F7_I2C_CR1_PECEN			BIT(23)
+> >  #define STM32F7_I2C_CR1_ALERTEN			BIT(22)
+> >  #define STM32F7_I2C_CR1_SMBHEN			BIT(20)
+> > @@ -226,6 +227,8 @@ struct stm32f7_i2c_spec {
+> >   * @rise_time: Rise time (ns)
+> >   * @fall_time: Fall time (ns)
+> >   * @fmp_clr_offset: Fast Mode Plus clear register offset from set register
+> > + * @single_it_line: Only a single IT line is used for both events/errors
+> > + * @fmp_cr1_bit: Fast Mode Plus control is done via a bit in CR1
+> 
+> Is the Fast Mode Plus an optional feature?
 
-    Andrew
+Yes, from what I've seen, it seems an optional feature on some versions
+of stm32f7.
 
----
-pw-bot: cr
+> 
+> >   */
+> >  struct stm32f7_i2c_setup {
+> >  	u32 speed_freq;
+> > @@ -233,6 +236,8 @@ struct stm32f7_i2c_setup {
+> >  	u32 rise_time;
+> >  	u32 fall_time;
+> >  	u32 fmp_clr_offset;
+> > +	bool single_it_line;
+> > +	bool fmp_cr1_bit;
+> >  };
+> 
+> [...]
+> 
+> > -static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev)
+> > +static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev, u32 status)
+> >  {
+> >  	void __iomem *base = i2c_dev->base;
+> > -	u32 cr2, status, mask;
+> > +	u32 cr2, mask;
+> >  	u8 val;
+> >  	int ret;
+> >  
+> > -	status = readl_relaxed(i2c_dev->base + STM32F7_I2C_ISR);
+> > -
+> 
+> good to see this change here, relates to my comment in patch 1.
+> But I think this should go on a different patch.
+
+Agreed. I've split this small change into a dedicated commit done before
+this patch.
+
+> 
+> >  	/* Slave transmitter mode */
+> >  	if (status & STM32F7_I2C_ISR_TXIS) {
+> >  		i2c_slave_event(i2c_dev->slave_running,
+> > @@ -1494,17 +1504,81 @@ static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev)
+> >  	return IRQ_HANDLED;
+> >  }
+> 
+> [...]
+> 
+> > -	setup = of_device_get_match_data(&pdev->dev);
+> > -	if (!setup) {
+> > -		dev_err(&pdev->dev, "Can't get device data\n");
+> > -		return -ENODEV;
+> > +		ret = devm_request_threaded_irq(&pdev->dev, irq_error,
+> > +						NULL,
+> > +						stm32f7_i2c_isr_error_thread,
+> > +						IRQF_ONESHOT,
+> > +						pdev->name, i2c_dev);
+> > +		if (ret) {
+> > +			dev_err(&pdev->dev, "Failed to request irq error %i\n",
+> > +				irq_error);
+> 
+> please use dev_err_probe();
+
+Done as well in a dedicated commit at the very beginning of the serie.
+
+> 
+> > +			return ret;
+> > +		}
+> 
+> out of the scope of the patch and just for curiosity: does the
+> driver work without being able to signal on the error interrupt
+> line?
+
+Sorry, not sure to understand the question.  Just for clarification,
+on the MP25 not having a dedicated error line doesn't mean we are not
+signaled for errors.  It is simply they just come via the same
+interrupt line, hence we need to check for both event and error
+within the same handler.
+On systems using two interrupts line, the error interrupt irq line
+should be handled in order to tackle those errors cases.
+Sorry, does this answer your question ?
+
+> 
+> Overall the patch looks good to me, though.
+> 
+> Andi
 
