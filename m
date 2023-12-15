@@ -1,70 +1,126 @@
-Return-Path: <linux-kernel+bounces-1238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 126A4814C2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:54:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE295814C54
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:01:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3265285AB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:54:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 884792854AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1ECB3DBAE;
-	Fri, 15 Dec 2023 15:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1D739FD5;
+	Fri, 15 Dec 2023 16:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="wJwWbat3"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ta7wbS5o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1653DBA7;
-	Fri, 15 Dec 2023 15:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=7nYzH22LO4fzfP6gupLWbgtIdjUBvIX9s3qRIeMw4F0=; b=wJwWbat3dR2/W78qjQCGwYElTM
-	VT6buch+Z5O6X8T0/Ng5Z1JSQ9dCYjkMl6d3iCeUy5GEovRao+5z77sSJTnQf2EkEqFgdns9hI7LA
-	gr5DIMK2eWA75sRSr3ZGFK0qy4OHsktDQdM7uuTnP9W+UdCfxIHIK2tnXBCtpNhEYMH0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rEAV6-0032R3-Q1; Fri, 15 Dec 2023 16:53:20 +0100
-Date: Fri, 15 Dec 2023 16:53:20 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Rob Herring <robh@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] dt-bindings: net: marvell,orion-mdio: Drop
- "reg" sizes schema
-Message-ID: <520366db-88f3-4485-87f9-68e11cd15e22@lunn.ch>
-References: <20231213232455.2248056-1-robh@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF613717F;
+	Fri, 15 Dec 2023 16:01:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1702655619;
+	bh=qzMh8frRtGFJ29d3oqzMz4SSOiBgHf2UGDFCUl3N0Qs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ta7wbS5oraWz0ep2zIvINP7c9WekLU3kFt+X+NJ8w5tsCzd/GIRB6a3jCcZJPGnR+
+	 nb5uI/OGJVM8G2Gn/cymcMc49MnwbY9E/+bAHtSXcWFeOisE9kRKEN1q02IXBzTzNg
+	 1DlnKIKyb8sxU590pphymOGppXtXTwnE5xrM+WzUBZXWcM4iHip9dHyu028A9b5HXk
+	 6kVfIgazFe74ldumJXULV971fJRrPi3PqSfOo4sJjKJZGtPRuk3p6PbL023cBed2DI
+	 jDpNTdypdAmNcBfWuPMd3ft5Qws4wBQtIvq1lBrB1kuHHcpLOoWictFQJ3/YdzI3+z
+	 W4u/m/fLbgm2Q==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4SsDKH3vG5zGb7;
+	Fri, 15 Dec 2023 10:53:39 -0500 (EST)
+Message-ID: <21936075-3858-446a-9391-a38e8d8968e7@efficios.com>
+Date: Fri, 15 Dec 2023 10:53:39 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213232455.2248056-1-robh@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing: Add disable-filter-buf option
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux trace kernel <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
+References: <20231215102633.7a24cb77@rorschach.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231215102633.7a24cb77@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 13, 2023 at 05:24:55PM -0600, Rob Herring wrote:
-> Defining the size of register regions is not really in scope of what
-> bindings need to cover. The schema for this is also not completely correct
-> as a reg entry can be variable number of cells for the address and size,
-> but the schema assumes 1 cell.
+On 2023-12-15 10:26, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Normally, when the filter is enabled, a temporary buffer is created to
+> copy the event data into it to perform the filtering logic. If the filter
+> passes and the event should be recorded, then the event is copied from the
+> temporary buffer into the ring buffer. If the event is to be discarded
+> then it is simply dropped. If another event comes in via an interrupt, it
+> will not use the temporary buffer as it is busy and will write directly
+> into the ring buffer.
+> 
+> The disable-filter-buf option will disable the temporary buffer and always
+> write into the ring buffer. This will avoid the copy when the event is to
+> be recorded, but also adds a bit more overhead on the discard, and if
+> another event were to interrupt the event that is to be discarded, then
+> the event will not be removed from the ring buffer but instead converted
+> to padding that will not be read by the reader. Padding will still take up
+> space on the ring buffer.
+> 
+> This option can be beneficial if most events are recorded and not
+> discarded, or simply for debugging the discard functionality of the ring
+> buffer.
+> 
+> Also fix some whitespace (that was fixed by editing this in vscode).
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-    Andrew
+I'm not convinced that a boolean state is what you need here.
+
+Yes, today you are in a position where you have two options:
+
+a) use the filter buffer, which falls back on copy to ring buffer
+    if nested,
+
+b) disable the filter buffer, and thus always copy to ring buffer
+    before filtering,
+
+But I think it would not be far-fetched to improve the implementation
+of the filter-buffer to have one filter-buffer per nesting level
+(per execution context), or just implement the filter buffer as a
+per-cpu stack, which would remove the need to fall back on copy
+to ring buffer when nested. Or you could even do like LTTng and
+filter on the input arguments directly.
+
+But each of these changes would add yet another boolean tunable,
+which can quickly make the mix hard to understand from a user
+perspective.
+
+So rather than stacking tons of "on/off" switches for filter
+features, how about you let users express the mechanism they
+want to use for filtering with a string instead ? e.g.
+
+filter-method="temp-buffer"
+filter-method="ring-buffer"
+filter-method="input-arguments"
+
+?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
