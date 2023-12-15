@@ -1,118 +1,216 @@
-Return-Path: <linux-kernel+bounces-1009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2404A814929
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:26:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFAC181492C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8103B23276
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:26:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AF9A1F2380B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122962DB69;
-	Fri, 15 Dec 2023 13:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968102DB8F;
+	Fri, 15 Dec 2023 13:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="uDr6Wazg"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gNJvKAAF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YHTHxRrf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gNJvKAAF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YHTHxRrf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102562C688;
-	Fri, 15 Dec 2023 13:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702646799;
-	bh=WMPnWsUlFFgO2rziKdOQefwB/ccC+zfLPtfvmvBwKqY=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=uDr6WazgLau8fLePhmRCMl5xT4wm8MODt32jt91i1Pk5o2yrRk2Tcy7Cl+QQfBNXz
-	 uDt5UVsvgQ3txgNqRNXmARNokg5lIJpn0KXyWYKptMjFzHgSV+JmhsnFvCCnEyeWfK
-	 xMxX1FFQvI2vcINV69z5KoK5mO/8Y3skD62UY1TZrkhdEaeMsvJ+yli7IBg1+Ii6HU
-	 ce92YICdeOLZvBnbfmIaLOf6uF5mx9fc4EMTYJ0XS8a9GduCNwt14glp1xEKve9HUM
-	 utb7HLqBnT/HF4yqZyNrQJRVq7sEjVWQsCIXdUiUdOQZVOSB2NqTDubWMGkpYLKtnO
-	 +VE6OvLK8gp7A==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF4A18C2F;
+	Fri, 15 Dec 2023 13:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A80CA3781FB2;
-	Fri, 15 Dec 2023 13:26:34 +0000 (UTC)
-Message-ID: <71a3274c-a51a-4660-a7cf-679e779af6ad@collabora.com>
-Date: Fri, 15 Dec 2023 18:26:30 +0500
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B259721FA3;
+	Fri, 15 Dec 2023 13:26:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702646799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq9zADGaqdljmDLOT8it4clHsoh/dCFqwv8EI9ZL3eA=;
+	b=gNJvKAAF4tgbYx7L32FAFZXR3Y92PmR7f4QPEFf+rb3IGmc1QGAAsP6HNZa8FKvmoF6GoA
+	nl55891gIiVDrStzsvrASU7QOr7h3cAgcMaskLoCAnV8f34CZ3m0hAC+fHrtPrlFLKcjMy
+	Bduld3LDJna/5UU7GrRvaSilNVFRyFQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702646799;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq9zADGaqdljmDLOT8it4clHsoh/dCFqwv8EI9ZL3eA=;
+	b=YHTHxRrfky1iaCK5Tr5cnHsW7rhiZCjuluxBPt4rtHknnYMBBL9zMC3Rh8J7llRLh9tpUZ
+	qbUr+mYfDiDE9lDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702646799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq9zADGaqdljmDLOT8it4clHsoh/dCFqwv8EI9ZL3eA=;
+	b=gNJvKAAF4tgbYx7L32FAFZXR3Y92PmR7f4QPEFf+rb3IGmc1QGAAsP6HNZa8FKvmoF6GoA
+	nl55891gIiVDrStzsvrASU7QOr7h3cAgcMaskLoCAnV8f34CZ3m0hAC+fHrtPrlFLKcjMy
+	Bduld3LDJna/5UU7GrRvaSilNVFRyFQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702646799;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq9zADGaqdljmDLOT8it4clHsoh/dCFqwv8EI9ZL3eA=;
+	b=YHTHxRrfky1iaCK5Tr5cnHsW7rhiZCjuluxBPt4rtHknnYMBBL9zMC3Rh8J7llRLh9tpUZ
+	qbUr+mYfDiDE9lDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A162813912;
+	Fri, 15 Dec 2023 13:26:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id DXxgJw9UfGVkWAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Fri, 15 Dec 2023 13:26:39 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2FE5DA07E0; Fri, 15 Dec 2023 14:26:39 +0100 (CET)
+Date: Fri, 15 Dec 2023 14:26:39 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 01/11] writeback: Factor out writeback_finish()
+Message-ID: <20231215132639.ftis3fhmcqkhrpzo@quack3>
+References: <20231214132544.376574-1-hch@lst.de>
+ <20231214132544.376574-2-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- kernel@collabora.com, "kernelci.org bot" <bot@kernelci.org>,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: secretmem: Floor the memory size to the
- multiple of page_size
-To: Mike Rapoport <rppt@kernel.org>
-References: <20231214101931.1155586-1-usama.anjum@collabora.com>
- <20231215105933.GO636165@kernel.org>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231215105933.GO636165@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214132544.376574-2-hch@lst.de>
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,infradead.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gNJvKAAF;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YHTHxRrf
+X-Spam-Score: -2.81
+X-Rspamd-Queue-Id: B259721FA3
 
-On 12/15/23 3:59 PM, Mike Rapoport wrote:
-> On Thu, Dec 14, 2023 at 03:19:30PM +0500, Muhammad Usama Anjum wrote:
->> The "locked-in-memory size" limit per process can be non-multiple of
->> page_size. The mmap() fails if we try to allocate locked-in-memory
->> with same size as the allowed limit if it isn't multiple of the
->> page_size because mmap() rounds off the memory size to be allocated
->> to next multiple of page_size.
->>
->> Fix this by flooring the length to be allocated with mmap() to the
->> previous multiple of the page_size.
->>
->> Fixes: 76fe17ef588a ("secretmem: test: add basic selftest for memfd_secret(2)")
->> Reported-by: "kernelci.org bot" <bot@kernelci.org>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->>  tools/testing/selftests/mm/memfd_secret.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/tools/testing/selftests/mm/memfd_secret.c b/tools/testing/selftests/mm/memfd_secret.c
->> index 957b9e18c729..9b298f6a04b3 100644
->> --- a/tools/testing/selftests/mm/memfd_secret.c
->> +++ b/tools/testing/selftests/mm/memfd_secret.c
->> @@ -62,6 +62,9 @@ static void test_mlock_limit(int fd)
->>  	char *mem;
->>  
->>  	len = mlock_limit_cur;
->> +	if (len % page_size != 0)
->> +		len = (len/page_size) * page_size;
->> +
+On Thu 14-12-23 14:25:34, Christoph Hellwig wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> With mlock limit smaller than a page we get zero length here and mmap will
-> fail with -EINVAL because of it.
-This test has a initialization step in prepare() where it increases the
-limit to at least a page if it is less than a page. Hence we'll never get
-len = 0 here.
+> Instead of having a 'done' variable that controls the nested loops,
+> have a writeback_finish() that can be returned directly.  This involves
+> keeping more things in writeback_control, but it's just moving stuff
+> allocated on the stack to being allocated slightly earlier on the stack.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> [hch: reorder and comment struct writeback_control]
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/writeback.h |  8 +++++
+>  mm/page-writeback.c       | 72 +++++++++++++++++++++------------------
+>  2 files changed, 46 insertions(+), 34 deletions(-)
+> 
+> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+> index 083387c00f0c8b..05e8add4b5ae3c 100644
+> --- a/include/linux/writeback.h
+> +++ b/include/linux/writeback.h
+> @@ -11,6 +11,7 @@
+>  #include <linux/flex_proportions.h>
+>  #include <linux/backing-dev-defs.h>
+>  #include <linux/blk_types.h>
+> +#include <linux/pagevec.h>
+>  
+>  struct bio;
+>  
+> @@ -40,6 +41,7 @@ enum writeback_sync_modes {
+>   * in a manner such that unspecified fields are set to zero.
+>   */
+>  struct writeback_control {
+> +	/* public fields that can be set and/or consumed by the caller: */
+>  	long nr_to_write;		/* Write this many pages, and decrement
+>  					   this for each page written */
+>  	long pages_skipped;		/* Pages which were not written */
+> @@ -77,6 +79,12 @@ struct writeback_control {
+>  	 */
+>  	struct swap_iocb **swap_plug;
+>  
+> +	/* internal fields used by the ->writepages implementation: */
+> +	struct folio_batch fbatch;
+> +	pgoff_t done_index;
+> +	int err;
+> +	unsigned range_whole:1;		/* entire file */
 
-> In this case I think we can just skip the first mmap and only check that
-> mmaping more than mlock limit fails.
-> 
->>  	mem = mmap(NULL, len, prot, mode, fd, 0);
->>  	if (mem == MAP_FAILED) {
->>  		fail("unable to mmap secret memory\n");
->> -- 
->> 2.42.0
->>
-> 
+Do we really need the range_whole member here? It is trivially derived from
+range_start && range_end and used only in one place in writeback_finish().
 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index ee2fd6a6af4072..45309f3b8193f8 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2360,6 +2360,24 @@ void tag_pages_for_writeback(struct address_space *mapping,
+>  }
+>  EXPORT_SYMBOL(tag_pages_for_writeback);
+>  
+> +static int writeback_finish(struct address_space *mapping,
+> +		struct writeback_control *wbc, bool done)
+> +{
+> +	folio_batch_release(&wbc->fbatch);
+> +
+> +	/*
+> +	 * If we hit the last page and there is more work to be done:
+> +	 * wrap the index back to the start of the file for the next
+> +	 * time we are called.
+> +	 */
+> +	if (wbc->range_cyclic && !done)
+> +		wbc->done_index = 0;
+> +	if (wbc->range_cyclic || (wbc->range_whole && wbc->nr_to_write > 0))
+> +		mapping->writeback_index = wbc->done_index;
+> +
+> +	return wbc->err;
+> +}
+
+Also I suspect we can get rid of the 'done' argument here. After all it
+just controls whether we cycle back to index 0 which we could just
+determine as:
+
+	if (wbc->range_cyclic && !wbc->err && wbc->nr_to_write > 0) {
+		WARN_ON_ONCE(wbc->sync_mode != WB_SYNC_NONE);
+		wbc->done_index = 0;
+	}
+
+								Honza
 -- 
-BR,
-Muhammad Usama Anjum
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
