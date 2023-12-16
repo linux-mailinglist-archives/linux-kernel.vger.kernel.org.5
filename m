@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-1917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD9A28155C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F6458155CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:01:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14D381C235B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:01:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 957241C2354A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF53C3C2D;
-	Sat, 16 Dec 2023 01:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1F14C77;
+	Sat, 16 Dec 2023 01:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="krijQ7z4";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="wl/NDM1m"
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="MivDLGmr";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tXXgs4qK"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FD017E8
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 01:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83461257E
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 01:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id 585623200A47;
-	Fri, 15 Dec 2023 20:00:48 -0500 (EST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 989B0320099B;
+	Fri, 15 Dec 2023 20:00:50 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 15 Dec 2023 20:00:48 -0500
+  by compute2.internal (MEProxy); Fri, 15 Dec 2023 20:00:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1702688447; x=
-	1702774847; bh=UNqxnPS/KECSJYSAYrhyozfSwB0BLIrorXrPvuKMpIw=; b=k
-	rijQ7z4dC/X1TkaIVNpPYJijTkUu1LKK3b32MRl3XDdey+0iHt0VptChxoobPfMp
-	+Z5z7tddUQypyI385x1XZYC+N4sx6wndtJIPciUVw3MDkOCRH9gK+cCSvYG7nGvr
-	wcOHr91SvvP6Br+vxuIpb9+pA6VwBpsg8PhybwxZN2KuNDek3XXKTU0NzNmp3i0b
-	kgilFJJwkMRphAC7xm5wqEe2Jy4I3bND5LYxjqStzQkL0LOrXB6JwULbEoXzRY8D
-	URzIPp1ExlEFR6++nFoClZl2RG0zAGlpHtMHCaRBtcr/o8Ek1JBnQzZxq3MRNIlv
-	Bxp02MvaKOURAyPbV/lVg==
+	:reply-to:subject:subject:to:to; s=fm2; t=1702688450; x=
+	1702774850; bh=5750rQocdnyD7jpR3uy757KH/wiiVOExOowo8BdV8LQ=; b=M
+	ivDLGmrD1XO+HxFe1xL2Rd14o0PHGsIivWMC2yMOY2IMhpwW1RzoByqg7NGaReuc
+	O75vqpHuDGTfSLv4gFofw0Zem/q4TvK7M2ae+LROLaoSv8W3YTzS6qpH4O+05Jck
+	1KWrE+jEcAm6Q8DHdZvUEC6kyBnYEM1Hxpx/S0+qAvxlUKvYxZDrvIDDQ7r6CfZD
+	e/K1P2q82e1yMSIZ7chl3LJN3oi/BDeqIKZnpbfXKTVV29SjQaLhbmwBPKYBAzGI
+	A9DMolt5GMf0oH97zomp7xw0udG3dTqYN9Ato80rWq/fZNHo51xua7iz4sCDBTpB
+	rvP3hwV5nByJvoCQ67WeQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702688447; x=
-	1702774847; bh=UNqxnPS/KECSJYSAYrhyozfSwB0BLIrorXrPvuKMpIw=; b=w
-	l/NDM1m8yZXQiYrAE8QeFNqpyFqKuO615AYFeWYz116j24ry2WDi/xeWPE9DzE6E
-	pm9ruZlOyk7iQ0uP3SpxcANEPmFer2R6cH4LWRnGda7n6nZoB9VIYgAger0wKZSH
-	pp2sdHY9VlIonnjwYEiWnlzWcCp4kkQZxv/2DeDZ0kCMvdWKhc5Ucd3dpew6rjI9
-	IGiuSunOH0v62iM5bThwJGU46yUcTxdDtqD+hXLc/fiFSPSFfnGq9JyJgQ6ZjIAu
-	rBYtdIcPzghLPq/0+oqhFzodr2l86jCrXPnQQDYIlEbtOCdDo+0wAdxWeMxJGpep
-	VS6U5OUCdLl2bahYT/svw==
-X-ME-Sender: <xms:v_Z8ZamMyjMWzWA-lAzO_c3tUBvWVSIJuA8W7M8n-ATyuzoLi4mvjQ>
-    <xme:v_Z8ZR3WX4ny-nr4_9xhrjtKHPKkvupSl3d9Sadin5nT4UC6wU_K4iz07ytedmEq9
-    53gcWEgRqNSD46NMOs>
-X-ME-Received: <xmr:v_Z8ZYqQSBghGIkaO_3wdlHVcTW5KFMfidjGbJA-fvfHPXzwXiVEjkO77_fGh7ebqpdG8y7rryyCzWWG7H2GfMmrXScFmoQhC1LFRGWFnT8>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702688450; x=
+	1702774850; bh=5750rQocdnyD7jpR3uy757KH/wiiVOExOowo8BdV8LQ=; b=t
+	XXgs4qK/a6BwhtMN/O0MhehFxj6B/mHXcTLoh7RlcgqblQZK3/CMMPPBO4pnHknu
+	HUbus//1YaUorua0xKWiCsV8bPCtDrWXWsC5mE8cKnrDYAH24Qk3UpXuBsVVcYS9
+	Fs/3MkSbjSYa8c62EiY+VRVJ9kpUO7du9mrv3bRek/B9qVEZWNvW4kPl+Ss2QBMD
+	txsravPlDd1heTEnMTz1m9NtCe8VFTbThI1RULSz5Wdyy0TnD0hF3MLmpJcVU5Qx
+	DB8CeGvXr+ig29HsRKZPLhHojmDjK3KbgoU6c3rnexdrZsUrCdvOpHrAFxTqI2do
+	FReOhRhY/r2by6FaMgF0Q==
+X-ME-Sender: <xms:wfZ8Zd5_UwQ0EzgdtEQkjuLhcIlDz0PsRmfrMIxemWLTyLwH1pJp2Q>
+    <xme:wfZ8Za4BDYlzcs4qCbETmQ8_5GPUlnCHpY_n3lK_MKLHc0Mn3z1Bo_zMPtNdhRi68
+    TXtymRWElAvNgw5wsw>
+X-ME-Received: <xmr:wfZ8ZUdj1HE0wr23FI0t_i3RjCbmNzIYiv_iKtpaVg-M6VshNB4MNbU_H7HWStVH9w-FJe2XQMdSozewh_qhiPFICsJ0gbay833OhoX9vM4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtfedgfedtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
@@ -64,22 +64,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtfedgfedtucetufdoteggod
     egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
     ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
     grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:v_Z8Zeny3Lg-A1d3aubMPF-2NdaiWxVeR-4hw6fPVs1Do8L4LPkBCg>
-    <xmx:v_Z8ZY2HYHE11-9Pshw5KQO5HpaywWs-LQ3VKQBxSOSfUFSCvZxyKg>
-    <xmx:v_Z8ZVsBxbwVbPIqsZvYNuQ8QFQuTBH5qqwYi8KmDY8gv3wDcEoVhQ>
-    <xmx:v_Z8ZVwXDE6t1duaqG1IMFyzdTlrG7HYr8cU7h5R2bJI6E5CfBgNpA>
+X-ME-Proxy: <xmx:wvZ8ZWJ796TcKaljtQfgRJlzEWIL4ZJbphXCWmvAwrio_loYcOslpQ>
+    <xmx:wvZ8ZRJZ1YxtYWrhsBtTSl3TZnDRuEisx8j3_vhzEU7V7d4dFyYqCw>
+    <xmx:wvZ8Zfy0W96Ll50H3SMqUXHeBtUB26ckz2mA5HYZS6J3dizpzwznMQ>
+    <xmx:wvZ8ZR0-TzGMv0pukX8Qr_4TehiEAbzQDBJ-Dqwqus7MYx1-Bgw80A>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 15 Dec 2023 20:00:47 -0500 (EST)
+ 15 Dec 2023 20:00:49 -0500 (EST)
 From: Gary Rookard <garyrookard@fastmail.org>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH v2 2/4] staging: rtl8192e: rename variable pCapELE
-Date: Fri, 15 Dec 2023 20:01:03 -0500
-Message-ID: <20231216010105.9810-3-garyrookard@fastmail.org>
+Subject: [PATCH v2 3/4] staging: rtl8192e: rename variable HTGetHighestMCSRate
+Date: Fri, 15 Dec 2023 20:01:04 -0500
+Message-ID: <20231216010105.9810-4-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231216010105.9810-1-garyrookard@fastmail.org>
 References: <20231216010105.9810-1-garyrookard@fastmail.org>
@@ -92,127 +92,66 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Coding style issue, checkpatch Avoid CamelCase,
-rename it. pCapELE -> cap_ele
+rename it. HTGetHighestMCSRate -> ht_get_highest_mcs_rate
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
 v2: Corrections to make applicable.
 v1: Not applicable, conflicting line numbers, code changed.
 
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 64 +++++++++++------------
- 1 file changed, 32 insertions(+), 32 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
+ drivers/staging/rtl8192e/rtllib.h         | 2 +-
+ drivers/staging/rtl8192e/rtllib_wx.c      | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 29c3d33bf5a6..8d9037130424 100644
+index 8d9037130424..6c1af19d67d2 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -231,7 +231,7 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
- 				  u8 *len, u8 is_encrypt, bool assoc)
- {
- 	struct rt_hi_throughput *ht = ieee->ht_info;
--	struct ht_capab_ele *pCapELE = NULL;
-+	struct ht_capab_ele *cap_ele = NULL;
- 
- 	if (!pos_ht_cap || !ht) {
- 		netdev_warn(ieee->dev,
-@@ -244,66 +244,66 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
- 		static const u8	EWC11NHTCap[] = { 0x00, 0x90, 0x4c, 0x33 };
- 
- 		memcpy(pos_ht_cap, EWC11NHTCap, sizeof(EWC11NHTCap));
--		pCapELE = (struct ht_capab_ele *)&pos_ht_cap[4];
-+		cap_ele = (struct ht_capab_ele *)&pos_ht_cap[4];
- 		*len = 30 + 2;
- 	} else {
--		pCapELE = (struct ht_capab_ele *)pos_ht_cap;
-+		cap_ele = (struct ht_capab_ele *)pos_ht_cap;
- 		*len = 26 + 2;
- 	}
- 
--	pCapELE->AdvCoding		= 0;
-+	cap_ele->AdvCoding		= 0;
- 	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
--		pCapELE->ChlWidth = 0;
-+		cap_ele->ChlWidth = 0;
- 	else
--		pCapELE->ChlWidth = 1;
-+		cap_ele->ChlWidth = 1;
- 
--	pCapELE->MimoPwrSave		= 3;
--	pCapELE->GreenField		= 0;
--	pCapELE->ShortGI20Mhz		= 1;
--	pCapELE->ShortGI40Mhz		= 1;
-+	cap_ele->MimoPwrSave		= 3;
-+	cap_ele->GreenField		= 0;
-+	cap_ele->ShortGI20Mhz		= 1;
-+	cap_ele->ShortGI40Mhz		= 1;
- 
--	pCapELE->TxSTBC			= 1;
--	pCapELE->RxSTBC			= 0;
--	pCapELE->DelayBA		= 0;
--	pCapELE->MaxAMSDUSize = (MAX_RECEIVE_BUFFER_SIZE >= 7935) ? 1 : 0;
--	pCapELE->DssCCk = 1;
--	pCapELE->PSMP = 0;
--	pCapELE->LSigTxopProtect = 0;
-+	cap_ele->TxSTBC			= 1;
-+	cap_ele->RxSTBC			= 0;
-+	cap_ele->DelayBA		= 0;
-+	cap_ele->MaxAMSDUSize = (MAX_RECEIVE_BUFFER_SIZE >= 7935) ? 1 : 0;
-+	cap_ele->DssCCk = 1;
-+	cap_ele->PSMP = 0;
-+	cap_ele->LSigTxopProtect = 0;
- 
- 	netdev_dbg(ieee->dev,
- 		   "TX HT cap/info ele BW=%d MaxAMSDUSize:%d DssCCk:%d\n",
--		   pCapELE->ChlWidth, pCapELE->MaxAMSDUSize, pCapELE->DssCCk);
-+		   cap_ele->ChlWidth, cap_ele->MaxAMSDUSize, cap_ele->DssCCk);
- 
- 	if (is_encrypt) {
--		pCapELE->MPDUDensity	= 7;
--		pCapELE->MaxRxAMPDUFactor	= 2;
-+		cap_ele->MPDUDensity	= 7;
-+		cap_ele->MaxRxAMPDUFactor	= 2;
- 	} else {
--		pCapELE->MaxRxAMPDUFactor	= 3;
--		pCapELE->MPDUDensity	= 0;
-+		cap_ele->MaxRxAMPDUFactor	= 3;
-+		cap_ele->MPDUDensity	= 0;
- 	}
- 
--	memcpy(pCapELE->MCS, ieee->reg_dot11ht_oper_rate_set, 16);
--	memset(&pCapELE->ExtHTCapInfo, 0, 2);
--	memset(pCapELE->TxBFCap, 0, 4);
-+	memcpy(cap_ele->MCS, ieee->reg_dot11ht_oper_rate_set, 16);
-+	memset(&cap_ele->ExtHTCapInfo, 0, 2);
-+	memset(cap_ele->TxBFCap, 0, 4);
- 
--	pCapELE->ASCap = 0;
-+	cap_ele->ASCap = 0;
- 
- 	if (assoc) {
- 		if (ht->iot_action & HT_IOT_ACT_DISABLE_MCS15)
--			pCapELE->MCS[1] &= 0x7f;
-+			cap_ele->MCS[1] &= 0x7f;
- 
- 		if (ht->iot_action & HT_IOT_ACT_DISABLE_MCS14)
--			pCapELE->MCS[1] &= 0xbf;
-+			cap_ele->MCS[1] &= 0xbf;
- 
- 		if (ht->iot_action & HT_IOT_ACT_DISABLE_ALL_2SS)
--			pCapELE->MCS[1] &= 0x00;
-+			cap_ele->MCS[1] &= 0x00;
- 
- 		if (ht->iot_action & HT_IOT_ACT_DISABLE_RX_40MHZ_SHORT_GI)
--			pCapELE->ShortGI40Mhz		= 0;
-+			cap_ele->ShortGI40Mhz		= 0;
- 
- 		if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev)) {
--			pCapELE->ChlWidth = 0;
--			pCapELE->MCS[1] = 0;
-+			cap_ele->ChlWidth = 0;
-+			cap_ele->MCS[1] = 0;
- 		}
- 	}
+@@ -357,7 +357,7 @@ static u8 ht_pick_mcs_rate(struct rtllib_device *ieee, u8 *pOperateMCS)
+ 	return true;
  }
+ 
+-u8 HTGetHighestMCSRate(struct rtllib_device *ieee, u8 *pMCSRateSet,
++u8 ht_get_highest_mcs_rate(struct rtllib_device *ieee, u8 *pMCSRateSet,
+ 		       u8 *pMCSFilter)
+ {
+ 	u8		i, j;
+@@ -493,7 +493,7 @@ void ht_on_assoc_rsp(struct rtllib_device *ieee)
+ 	HTFilterMCSRate(ieee, pPeerHTCap->MCS, ieee->dot11ht_oper_rate_set);
+ 
+ 	pMcsFilter = MCS_FILTER_ALL;
+-	ieee->HTHighestOperaRate = HTGetHighestMCSRate(ieee,
++	ieee->HTHighestOperaRate = ht_get_highest_mcs_rate(ieee,
+ 						       ieee->dot11ht_oper_rate_set,
+ 						       pMcsFilter);
+ 	ieee->HTCurrentOperaRate = ieee->HTHighestOperaRate;
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index b4413cfcb17e..966a62cfcfde 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1763,7 +1763,7 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
+ 				   struct rtllib_network *pNetwork);
+ void HT_update_self_and_peer_setting(struct rtllib_device *ieee,
+ 				     struct rtllib_network *pNetwork);
+-u8 HTGetHighestMCSRate(struct rtllib_device *ieee, u8 *pMCSRateSet,
++u8 ht_get_highest_mcs_rate(struct rtllib_device *ieee, u8 *pMCSRateSet,
+ 		       u8 *pMCSFilter);
+ extern u8 MCS_FILTER_ALL[];
+ extern u16 MCS_DATA_RATE[2][2][77];
+diff --git a/drivers/staging/rtl8192e/rtllib_wx.c b/drivers/staging/rtl8192e/rtllib_wx.c
+index a37250de7ba3..f92ec0faf4d5 100644
+--- a/drivers/staging/rtl8192e/rtllib_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_wx.c
+@@ -134,7 +134,7 @@ static inline char *rtl819x_translate_scan(struct rtllib_device *ieee,
+ 				((ht_cap->ShortGI40Mhz) ? 1 : 0) :
+ 				((ht_cap->ShortGI20Mhz) ? 1 : 0);
+ 
+-		max_mcs = HTGetHighestMCSRate(ieee, ht_cap->MCS,
++		max_mcs = ht_get_highest_mcs_rate(ieee, ht_cap->MCS,
+ 					      MCS_FILTER_ALL);
+ 		rate = MCS_DATA_RATE[is40M][isShortGI][max_mcs & 0x7f];
+ 		if (rate > max_rate)
 -- 
 2.41.0
 
