@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-1874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8D8815514
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:22:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDE9081552B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:24:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CD3D1C24813
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:22:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C7871C24729
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4631E6FCD;
-	Sat, 16 Dec 2023 00:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC7A14A8A;
+	Sat, 16 Dec 2023 00:21:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Ho5R1vYp"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mfPB/NIM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D9C2564;
-	Sat, 16 Dec 2023 00:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CB5F4F1;
+	Sat, 16 Dec 2023 00:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BG0DSPq008061;
-	Sat, 16 Dec 2023 00:21:07 GMT
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFNw2Zm008687;
+	Sat, 16 Dec 2023 00:21:08 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=UMQK/jqI+zZBCX1hsbfmt3S4BKDtl7KD+PCoeHmQrA8
-	=; b=Ho5R1vYppdUkY6bpGHzifHG49ABnTX81t3d2r5jmAvFZQeL8nOtfH/BlNLV
-	nOFtfBKmdcdZwBLwFF6HZYAl4o/qgg2TbAmOi4ysT84N/YLF3/i4UsfZ0m8AwYTY
-	Ohdmga8sxOlUlpahSMCfk+GTjQibi+2hb/b33yYYjZZvCGm2X/SDRoWPgvg8VtY0
-	QY6LdzOhwGAiRrEv8lRzudo5Ay80hzUxMXqv9MaHKZbFVta7ZF104hruFAiaNDOl
-	WQe4XISJb312apLLlp80sdD6w3SJ79Poq0gGyL8/ZkEn392otyNYGRzNVlAhdq6y
-	YdIE9aQ+dzVJxRBSEafrIy5rQdg==
+	:cc; s=qcppdkim1; bh=JtC3tB/j5lbY9AVgjGdS9xv5kMbBIO7Z4MtW73yukyM
+	=; b=mfPB/NIMdew7Is4iUrAyafOJvKCdB88RaY0aps/RprTx+fYlKjIIRQ+Bfx7
+	+ICAUCAduZyR4DgSb9NnVpjCA/lnGWdmdx1p6/O+LaNJ7f4zH8h4mm9QPW+PUSCS
+	L+NMYkhW6A8b7Xyn6SQxYMrQqqkbVOQaD1xYoXiAEtdtmIOnb28PxjOejFCcxN0O
+	I5CVFvZ+ZE68G3LMJSivXzx4WBNi7rLfq4XVdM9XlZKoWwYDSyg90qhOn8rEdpJY
+	/cQlxWfSEtiS1+v0NYhd5nFgRXx74GYR9qlWf9mYaIkD8LhucKreEFrJ+kW4i3sT
+	V5V9Xofvs3tqQ/CLWtnvWLXBdsg==
 Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0k90t5ea-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0vv9ghj1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Sat, 16 Dec 2023 00:21:07 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG0L67r016515
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG0L64V016525
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Sat, 16 Dec 2023 00:21:06 GMT
 Received: from [169.254.0.1] (10.49.16.6) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 16:21:05 -0800
+ 2023 16:21:06 -0800
 From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Fri, 15 Dec 2023 16:20:50 -0800
-Subject: [PATCH RFC v15 09/30] gunyah: vm_mgr: Introduce basic VM Manager
+Date: Fri, 15 Dec 2023 16:20:51 -0800
+Subject: [PATCH RFC v15 10/30] gunyah: vm_mgr: Add ioctls to support basic
+ non-proxy VM boot
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,7 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231215-gunyah-v15-9-192a5d872a30@quicinc.com>
+Message-ID: <20231215-gunyah-v15-10-192a5d872a30@quicinc.com>
 References: <20231215-gunyah-v15-0-192a5d872a30@quicinc.com>
 In-Reply-To: <20231215-gunyah-v15-0-192a5d872a30@quicinc.com>
 To: Alex Elder <elder@linaro.org>,
@@ -96,320 +97,306 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: vh0_MAp-vZpZcMm-i162IpOByC_-xZqr
-X-Proofpoint-GUID: vh0_MAp-vZpZcMm-i162IpOByC_-xZqr
+X-Proofpoint-GUID: vsncKepodU3EQkR6g9-WtO_cbrJBQ1kh
+X-Proofpoint-ORIG-GUID: vsncKepodU3EQkR6g9-WtO_cbrJBQ1kh
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312160001
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ phishscore=0 clxscore=1015 adultscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312160001
 
-Gunyah VM manager is a kernel moduel which exposes an interface to
-Gunyah userspace to load, run, and interact with other Gunyah virtual
-machines. The interface is a character device at /dev/gunyah.
+Add remaining ioctls to support non-proxy VM boot:
 
-Add a basic VM manager driver. Upcoming patches will add more ioctls
-into this driver.
+ - Gunyah Resource Manager uses the VM's devicetree to configure the
+   virtual machine. The location of the devicetree in the guest's
+   virtual memory can be declared via the SET_DTB_CONFIG ioctl.
+ - Trigger start of the virtual machine with VM_START ioctl.
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-by: Alex Elder <elder@linaro.org>
 Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- Documentation/userspace-api/ioctl/ioctl-number.rst |  1 +
- drivers/virt/gunyah/Makefile                       |  2 +-
- drivers/virt/gunyah/rsc_mgr.c                      | 51 ++++++++++++
- drivers/virt/gunyah/vm_mgr.c                       | 94 ++++++++++++++++++++++
- drivers/virt/gunyah/vm_mgr.h                       | 22 +++++
- include/uapi/linux/gunyah.h                        | 23 ++++++
- 6 files changed, 192 insertions(+), 1 deletion(-)
+ drivers/virt/gunyah/vm_mgr.c | 194 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/virt/gunyah/vm_mgr.h |  11 +++
+ include/uapi/linux/gunyah.h  |   5 ++
+ 3 files changed, 210 insertions(+)
 
-diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-index d8b6cb1a3636..91e01925a41b 100644
---- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-+++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -137,6 +137,7 @@ Code  Seq#    Include File                                           Comments
- 'F'   DD     video/sstfb.h                                           conflict!
- 'G'   00-3F  drivers/misc/sgi-gru/grulib.h                           conflict!
- 'G'   00-0F  xen/gntalloc.h, xen/gntdev.h                            conflict!
-+'G'   00-0F  linux/gunyah.h                                          conflict!
- 'H'   00-7F  linux/hiddev.h                                          conflict!
- 'H'   00-0F  linux/hidraw.h                                          conflict!
- 'H'   01     linux/mei.h                                             conflict!
-diff --git a/drivers/virt/gunyah/Makefile b/drivers/virt/gunyah/Makefile
-index b1bdf3e84155..47f1fae5419b 100644
---- a/drivers/virt/gunyah/Makefile
-+++ b/drivers/virt/gunyah/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/drivers/virt/gunyah/vm_mgr.c b/drivers/virt/gunyah/vm_mgr.c
+index b4d44379e5ce..1b1b26f568af 100644
+--- a/drivers/virt/gunyah/vm_mgr.c
++++ b/drivers/virt/gunyah/vm_mgr.c
+@@ -15,6 +15,68 @@
  
--gunyah_rsc_mgr-y += rsc_mgr.o rsc_mgr_rpc.o
-+gunyah_rsc_mgr-y += rsc_mgr.o rsc_mgr_rpc.o vm_mgr.o
+ #include "vm_mgr.h"
  
- obj-$(CONFIG_GUNYAH) += gunyah.o gunyah_rsc_mgr.o
-diff --git a/drivers/virt/gunyah/rsc_mgr.c b/drivers/virt/gunyah/rsc_mgr.c
-index 2f9afe167aa6..052b3f072a85 100644
---- a/drivers/virt/gunyah/rsc_mgr.c
-+++ b/drivers/virt/gunyah/rsc_mgr.c
-@@ -15,8 +15,10 @@
- #include <linux/completion.h>
- #include <linux/gunyah_rsc_mgr.h>
- #include <linux/platform_device.h>
-+#include <linux/miscdevice.h>
- 
- #include "rsc_mgr.h"
-+#include "vm_mgr.h"
- 
- /* clang-format off */
- #define RM_RPC_API_VERSION_MASK		GENMASK(3, 0)
-@@ -126,6 +128,7 @@ struct gunyah_rm_message {
-  * @send_lock: synchronization to allow only one request to be sent at a time
-  * @send_ready: completion to send messages again
-  * @nh: notifier chain for clients interested in RM notification messages
-+ * @miscdev: /dev/gunyah
-  */
- struct gunyah_rm {
- 	struct device *dev;
-@@ -142,6 +145,8 @@ struct gunyah_rm {
- 	struct mutex send_lock;
- 	struct completion send_ready;
- 	struct blocking_notifier_head nh;
++static int gunyah_vm_rm_notification_status(struct gunyah_vm *ghvm, void *data)
++{
++	struct gunyah_rm_vm_status_payload *payload = data;
 +
-+	struct miscdevice miscdev;
- };
++	if (le16_to_cpu(payload->vmid) != ghvm->vmid)
++		return NOTIFY_OK;
++
++	/* All other state transitions are synchronous to a corresponding RM call */
++	if (payload->vm_status == GUNYAH_RM_VM_STATUS_RESET) {
++		down_write(&ghvm->status_lock);
++		ghvm->vm_status = payload->vm_status;
++		up_write(&ghvm->status_lock);
++		wake_up(&ghvm->vm_status_wait);
++	}
++
++	return NOTIFY_DONE;
++}
++
++static int gunyah_vm_rm_notification_exited(struct gunyah_vm *ghvm, void *data)
++{
++	struct gunyah_rm_vm_exited_payload *payload = data;
++
++	if (le16_to_cpu(payload->vmid) != ghvm->vmid)
++		return NOTIFY_OK;
++
++	down_write(&ghvm->status_lock);
++	ghvm->vm_status = GUNYAH_RM_VM_STATUS_EXITED;
++	up_write(&ghvm->status_lock);
++	wake_up(&ghvm->vm_status_wait);
++
++	return NOTIFY_DONE;
++}
++
++static int gunyah_vm_rm_notification(struct notifier_block *nb,
++				     unsigned long action, void *data)
++{
++	struct gunyah_vm *ghvm = container_of(nb, struct gunyah_vm, nb);
++
++	switch (action) {
++	case GUNYAH_RM_NOTIFICATION_VM_STATUS:
++		return gunyah_vm_rm_notification_status(ghvm, data);
++	case GUNYAH_RM_NOTIFICATION_VM_EXITED:
++		return gunyah_vm_rm_notification_exited(ghvm, data);
++	default:
++		return NOTIFY_OK;
++	}
++}
++
++static void gunyah_vm_stop(struct gunyah_vm *ghvm)
++{
++	int ret;
++
++	if (ghvm->vm_status == GUNYAH_RM_VM_STATUS_RUNNING) {
++		ret = gunyah_rm_vm_stop(ghvm->rm, ghvm->vmid);
++		if (ret)
++			dev_warn(ghvm->parent, "Failed to stop VM: %d\n", ret);
++	}
++
++	wait_event(ghvm->vm_status_wait,
++		   ghvm->vm_status == GUNYAH_RM_VM_STATUS_EXITED);
++}
++
+ static __must_check struct gunyah_vm *gunyah_vm_alloc(struct gunyah_rm *rm)
+ {
+ 	struct gunyah_vm *ghvm;
+@@ -24,14 +86,144 @@ static __must_check struct gunyah_vm *gunyah_vm_alloc(struct gunyah_rm *rm)
+ 		return ERR_PTR(-ENOMEM);
  
- /**
-@@ -618,6 +623,36 @@ int gunyah_rm_notifier_unregister(struct gunyah_rm *rm,
+ 	ghvm->parent = gunyah_rm_get(rm);
++	ghvm->vmid = GUNYAH_VMID_INVAL;
+ 	ghvm->rm = rm;
+ 
++	init_rwsem(&ghvm->status_lock);
++	init_waitqueue_head(&ghvm->vm_status_wait);
++	ghvm->vm_status = GUNYAH_RM_VM_STATUS_NO_STATE;
++
+ 	return ghvm;
  }
- EXPORT_SYMBOL_GPL(gunyah_rm_notifier_unregister);
  
-+struct device *gunyah_rm_get(struct gunyah_rm *rm)
++static int gunyah_vm_start(struct gunyah_vm *ghvm)
 +{
-+	return get_device(rm->miscdev.this_device);
-+}
-+EXPORT_SYMBOL_GPL(gunyah_rm_get);
++	int ret;
 +
-+void gunyah_rm_put(struct gunyah_rm *rm)
++	down_write(&ghvm->status_lock);
++	if (ghvm->vm_status != GUNYAH_RM_VM_STATUS_NO_STATE) {
++		up_write(&ghvm->status_lock);
++		return 0;
++	}
++
++	ghvm->nb.notifier_call = gunyah_vm_rm_notification;
++	ret = gunyah_rm_notifier_register(ghvm->rm, &ghvm->nb);
++	if (ret)
++		goto err;
++
++	ret = gunyah_rm_alloc_vmid(ghvm->rm, 0);
++	if (ret < 0) {
++		gunyah_rm_notifier_unregister(ghvm->rm, &ghvm->nb);
++		goto err;
++	}
++	ghvm->vmid = ret;
++	ghvm->vm_status = GUNYAH_RM_VM_STATUS_LOAD;
++
++	ret = gunyah_rm_vm_configure(ghvm->rm, ghvm->vmid, ghvm->auth, 0, 0, 0,
++				     0, 0);
++	if (ret) {
++		dev_warn(ghvm->parent, "Failed to configure VM: %d\n", ret);
++		goto err;
++	}
++
++	ret = gunyah_rm_vm_init(ghvm->rm, ghvm->vmid);
++	if (ret) {
++		ghvm->vm_status = GUNYAH_RM_VM_STATUS_INIT_FAILED;
++		dev_warn(ghvm->parent, "Failed to initialize VM: %d\n", ret);
++		goto err;
++	}
++	ghvm->vm_status = GUNYAH_RM_VM_STATUS_READY;
++
++	ret = gunyah_rm_vm_start(ghvm->rm, ghvm->vmid);
++	if (ret) {
++		dev_warn(ghvm->parent, "Failed to start VM: %d\n", ret);
++		goto err;
++	}
++
++	ghvm->vm_status = GUNYAH_RM_VM_STATUS_RUNNING;
++	up_write(&ghvm->status_lock);
++	return ret;
++err:
++	/* gunyah_vm_free will handle releasing resources and reclaiming memory */
++	up_write(&ghvm->status_lock);
++	return ret;
++}
++
++static int gunyah_vm_ensure_started(struct gunyah_vm *ghvm)
 +{
-+	put_device(rm->miscdev.this_device);
-+}
-+EXPORT_SYMBOL_GPL(gunyah_rm_put);
++	int ret;
 +
-+static long gunyah_dev_ioctl(struct file *filp, unsigned int cmd,
-+			     unsigned long arg)
-+{
-+	struct miscdevice *miscdev = filp->private_data;
-+	struct gunyah_rm *rm = container_of(miscdev, struct gunyah_rm, miscdev);
-+
-+	return gunyah_dev_vm_mgr_ioctl(rm, cmd, arg);
-+}
-+
-+static const struct file_operations gunyah_dev_fops = {
-+	/* clang-format off */
-+	.owner		= THIS_MODULE,
-+	.unlocked_ioctl	= gunyah_dev_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
-+	.llseek		= noop_llseek,
-+	/* clang-format on */
-+};
-+
- static int gunyah_platform_probe_capability(struct platform_device *pdev,
- 					    int idx,
- 					    struct gunyah_resource *ghrsc)
-@@ -703,9 +738,24 @@ static int gunyah_rm_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	rm->miscdev.name = "gunyah";
-+	rm->miscdev.minor = MISC_DYNAMIC_MINOR;
-+	rm->miscdev.fops = &gunyah_dev_fops;
-+
-+	ret = misc_register(&rm->miscdev);
++	ret = down_read_interruptible(&ghvm->status_lock);
 +	if (ret)
 +		return ret;
 +
- 	return 0;
- }
- 
-+static void gunyah_rm_remove(struct platform_device *pdev)
-+{
-+	struct gunyah_rm *rm = platform_get_drvdata(pdev);
++	/* Unlikely because VM is typically started */
++	if (unlikely(ghvm->vm_status == GUNYAH_RM_VM_STATUS_NO_STATE)) {
++		up_read(&ghvm->status_lock);
++		ret = gunyah_vm_start(ghvm);
++		if (ret)
++			return ret;
++		/** gunyah_vm_start() is guaranteed to bring status out of
++		 * GUNYAH_RM_VM_STATUS_LOAD, thus infinitely recursive call is not
++		 * possible
++		 */
++		return gunyah_vm_ensure_started(ghvm);
++	}
 +
-+	misc_deregister(&rm->miscdev);
++	/* Unlikely because VM is typically running */
++	if (unlikely(ghvm->vm_status != GUNYAH_RM_VM_STATUS_RUNNING))
++		ret = -ENODEV;
++
++	up_read(&ghvm->status_lock);
++	return ret;
 +}
 +
- static const struct of_device_id gunyah_rm_of_match[] = {
- 	{ .compatible = "gunyah-resource-manager" },
- 	{}
-@@ -714,6 +764,7 @@ MODULE_DEVICE_TABLE(of, gunyah_rm_of_match);
- 
- static struct platform_driver gunyah_rm_driver = {
- 	.probe = gunyah_rm_probe,
-+	.remove_new = gunyah_rm_remove,
- 	.driver = {
- 		.name = "gunyah_rsc_mgr",
- 		.of_match_table = gunyah_rm_of_match,
-diff --git a/drivers/virt/gunyah/vm_mgr.c b/drivers/virt/gunyah/vm_mgr.c
-new file mode 100644
-index 000000000000..b4d44379e5ce
---- /dev/null
-+++ b/drivers/virt/gunyah/vm_mgr.c
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#define pr_fmt(fmt) "gunyah_vm_mgr: " fmt
-+
-+#include <linux/anon_inodes.h>
-+#include <linux/file.h>
-+#include <linux/gunyah_rsc_mgr.h>
-+#include <linux/miscdevice.h>
-+#include <linux/module.h>
-+
-+#include <uapi/linux/gunyah.h>
-+
-+#include "vm_mgr.h"
-+
-+static __must_check struct gunyah_vm *gunyah_vm_alloc(struct gunyah_rm *rm)
-+{
-+	struct gunyah_vm *ghvm;
-+
-+	ghvm = kzalloc(sizeof(*ghvm), GFP_KERNEL);
-+	if (!ghvm)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ghvm->parent = gunyah_rm_get(rm);
-+	ghvm->rm = rm;
-+
-+	return ghvm;
-+}
-+
-+static int gunyah_vm_release(struct inode *inode, struct file *filp)
++static long gunyah_vm_ioctl(struct file *filp, unsigned int cmd,
++			    unsigned long arg)
 +{
 +	struct gunyah_vm *ghvm = filp->private_data;
++	long r;
 +
-+	gunyah_rm_put(ghvm->rm);
-+	kfree(ghvm);
-+	return 0;
-+}
-+
-+static const struct file_operations gunyah_vm_fops = {
-+	.owner = THIS_MODULE,
-+	.release = gunyah_vm_release,
-+	.llseek = noop_llseek,
-+};
-+
-+static long gunyah_dev_ioctl_create_vm(struct gunyah_rm *rm, unsigned long arg)
-+{
-+	struct gunyah_vm *ghvm;
-+	struct file *file;
-+	int fd, err;
-+
-+	/* arg reserved for future use. */
-+	if (arg)
-+		return -EINVAL;
-+
-+	ghvm = gunyah_vm_alloc(rm);
-+	if (IS_ERR(ghvm))
-+		return PTR_ERR(ghvm);
-+
-+	fd = get_unused_fd_flags(O_CLOEXEC);
-+	if (fd < 0) {
-+		err = fd;
-+		goto err_destroy_vm;
-+	}
-+
-+	file = anon_inode_getfile("gunyah-vm", &gunyah_vm_fops, ghvm, O_RDWR);
-+	if (IS_ERR(file)) {
-+		err = PTR_ERR(file);
-+		goto err_put_fd;
-+	}
-+
-+	fd_install(fd, file);
-+
-+	return fd;
-+
-+err_put_fd:
-+	put_unused_fd(fd);
-+err_destroy_vm:
-+	gunyah_rm_put(ghvm->rm);
-+	kfree(ghvm);
-+	return err;
-+}
-+
-+long gunyah_dev_vm_mgr_ioctl(struct gunyah_rm *rm, unsigned int cmd,
-+			     unsigned long arg)
-+{
 +	switch (cmd) {
-+	case GUNYAH_CREATE_VM:
-+		return gunyah_dev_ioctl_create_vm(rm, arg);
-+	default:
-+		return -ENOTTY;
++	case GUNYAH_VM_START: {
++		r = gunyah_vm_ensure_started(ghvm);
++		break;
 +	}
++	default:
++		r = -ENOTTY;
++		break;
++	}
++
++	return r;
 +}
++
+ static int gunyah_vm_release(struct inode *inode, struct file *filp)
+ {
+ 	struct gunyah_vm *ghvm = filp->private_data;
++	int ret;
++
++	if (ghvm->vm_status == GUNYAH_RM_VM_STATUS_RUNNING)
++		gunyah_vm_stop(ghvm);
++
++	if (ghvm->vm_status != GUNYAH_RM_VM_STATUS_NO_STATE &&
++	    ghvm->vm_status != GUNYAH_RM_VM_STATUS_LOAD &&
++	    ghvm->vm_status != GUNYAH_RM_VM_STATUS_RESET) {
++		ret = gunyah_rm_vm_reset(ghvm->rm, ghvm->vmid);
++		if (ret)
++			dev_err(ghvm->parent, "Failed to reset the vm: %d\n",
++				ret);
++		wait_event(ghvm->vm_status_wait,
++			   ghvm->vm_status == GUNYAH_RM_VM_STATUS_RESET);
++	}
++
++	if (ghvm->vm_status > GUNYAH_RM_VM_STATUS_NO_STATE) {
++		gunyah_rm_notifier_unregister(ghvm->rm, &ghvm->nb);
++
++		ret = gunyah_rm_dealloc_vmid(ghvm->rm, ghvm->vmid);
++		if (ret)
++			dev_warn(ghvm->parent,
++				 "Failed to deallocate vmid: %d\n", ret);
++	}
+ 
+ 	gunyah_rm_put(ghvm->rm);
+ 	kfree(ghvm);
+@@ -40,6 +232,8 @@ static int gunyah_vm_release(struct inode *inode, struct file *filp)
+ 
+ static const struct file_operations gunyah_vm_fops = {
+ 	.owner = THIS_MODULE,
++	.unlocked_ioctl = gunyah_vm_ioctl,
++	.compat_ioctl = compat_ptr_ioctl,
+ 	.release = gunyah_vm_release,
+ 	.llseek = noop_llseek,
+ };
 diff --git a/drivers/virt/gunyah/vm_mgr.h b/drivers/virt/gunyah/vm_mgr.h
-new file mode 100644
-index 000000000000..434a510e360f
---- /dev/null
+index 434a510e360f..aa058722c5fe 100644
+--- a/drivers/virt/gunyah/vm_mgr.h
 +++ b/drivers/virt/gunyah/vm_mgr.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
+@@ -8,6 +8,10 @@
+ 
+ #include <linux/device.h>
+ #include <linux/gunyah_rsc_mgr.h>
++#include <linux/kref.h>
++#include <linux/notifier.h>
++#include <linux/rwsem.h>
++#include <linux/wait.h>
+ 
+ #include <uapi/linux/gunyah.h>
+ 
+@@ -15,8 +19,15 @@ long gunyah_dev_vm_mgr_ioctl(struct gunyah_rm *rm, unsigned int cmd,
+ 			     unsigned long arg);
+ 
+ struct gunyah_vm {
++	u16 vmid;
+ 	struct gunyah_rm *rm;
+ 	struct device *parent;
++	enum gunyah_rm_vm_auth_mechanism auth;
 +
-+#ifndef _GUNYAH_VM_MGR_PRIV_H
-+#define _GUNYAH_VM_MGR_PRIV_H
-+
-+#include <linux/device.h>
-+#include <linux/gunyah_rsc_mgr.h>
-+
-+#include <uapi/linux/gunyah.h>
-+
-+long gunyah_dev_vm_mgr_ioctl(struct gunyah_rm *rm, unsigned int cmd,
-+			     unsigned long arg);
-+
-+struct gunyah_vm {
-+	struct gunyah_rm *rm;
-+	struct device *parent;
-+};
-+
-+#endif
++	struct notifier_block nb;
++	enum gunyah_rm_vm_status vm_status;
++	wait_queue_head_t vm_status_wait;
++	struct rw_semaphore status_lock;
+ };
+ 
+ #endif
 diff --git a/include/uapi/linux/gunyah.h b/include/uapi/linux/gunyah.h
-new file mode 100644
-index 000000000000..ac338ec4b85d
---- /dev/null
+index ac338ec4b85d..31e7f79a6c39 100644
+--- a/include/uapi/linux/gunyah.h
 +++ b/include/uapi/linux/gunyah.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+@@ -20,4 +20,9 @@
+  */
+ #define GUNYAH_CREATE_VM _IO(GUNYAH_IOCTL_TYPE, 0x0) /* Returns a Gunyah VM fd */
+ 
 +/*
-+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * ioctls for gunyah-vm fds (returned by GUNYAH_CREATE_VM)
 + */
++#define GUNYAH_VM_START		_IO(GUNYAH_IOCTL_TYPE, 0x3)
 +
-+#ifndef _UAPI_LINUX_GUNYAH_H
-+#define _UAPI_LINUX_GUNYAH_H
-+
-+/*
-+ * Userspace interface for /dev/gunyah - gunyah based virtual machine
-+ */
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+
-+#define GUNYAH_IOCTL_TYPE 'G'
-+
-+/*
-+ * ioctls for /dev/gunyah fds:
-+ */
-+#define GUNYAH_CREATE_VM _IO(GUNYAH_IOCTL_TYPE, 0x0) /* Returns a Gunyah VM fd */
-+
-+#endif
+ #endif
 
 -- 
 2.43.0
