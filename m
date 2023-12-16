@@ -1,40 +1,42 @@
-Return-Path: <linux-kernel+bounces-2052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71B8815753
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:23:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B843815756
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:24:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 672091F25981
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC48A281AFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36420199C7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1A1B1DFF0;
 	Sat, 16 Dec 2023 04:21:54 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97843179B4
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 04:21:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77E9CC433D9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4099519BA5;
+	Sat, 16 Dec 2023 04:21:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E6EC433CB;
 	Sat, 16 Dec 2023 04:21:53 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rEMCK-00000002yEk-1wmG;
+	id 1rEMCK-00000002yFF-3BcO;
 	Fri, 15 Dec 2023 23:22:44 -0500
-Message-ID: <20231216042244.247503479@goodmis.org>
+Message-ID: <20231216042244.539165490@goodmis.org>
 User-Agent: quilt/0.67
-Date: Fri, 15 Dec 2023 23:22:23 -0500
+Date: Fri, 15 Dec 2023 23:22:24 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- Zheng Yejian <zhengyejian1@huawei.com>
-Subject: [for-linus][PATCH 09/15] tracing: Fix uaf issue when open the hist or hist_debug file
+ stable@vger.kernel.org,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Vincent Donnefort <vdonnefort@google.com>
+Subject: [for-linus][PATCH 10/15] ring-buffer: Do not try to put back write_stamp
 References: <20231216042214.905262999@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -44,175 +46,98 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: Zheng Yejian <zhengyejian1@huawei.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-KASAN report following issue. The root cause is when opening 'hist'
-file of an instance and accessing 'trace_event_file' in hist_show(),
-but 'trace_event_file' has been freed due to the instance being removed.
-'hist_debug' file has the same problem. To fix it, call
-tracing_{open,release}_file_tr() in file_operations callback to have
-the ref count and avoid 'trace_event_file' being freed.
+If an update to an event is interrupted by another event between the time
+the initial event allocated its buffer and where it wrote to the
+write_stamp, the code try to reset the write stamp back to the what it had
+just overwritten. It knows that it was overwritten via checking the
+before_stamp, and if it didn't match what it wrote to the before_stamp
+before it allocated its space, it knows it was overwritten.
 
-  BUG: KASAN: slab-use-after-free in hist_show+0x11e0/0x1278
-  Read of size 8 at addr ffff242541e336b8 by task head/190
+To put back the write_stamp, it uses the before_stamp it read. The problem
+here is that by writing the before_stamp to the write_stamp it makes the
+two equal again, which means that the write_stamp can be considered valid
+as the last timestamp written to the ring buffer. But this is not
+necessarily true. The event that interrupted the event could have been
+interrupted in a way that it was interrupted as well, and can end up
+leaving with an invalid write_stamp. But if this happens and returns to
+this context that uses the before_stamp to update the write_stamp again,
+it can possibly incorrectly make it valid, causing later events to have in
+correct time stamps.
 
-  CPU: 4 PID: 190 Comm: head Not tainted 6.7.0-rc5-g26aff849438c #133
-  Hardware name: linux,dummy-virt (DT)
-  Call trace:
-   dump_backtrace+0x98/0xf8
-   show_stack+0x1c/0x30
-   dump_stack_lvl+0x44/0x58
-   print_report+0xf0/0x5a0
-   kasan_report+0x80/0xc0
-   __asan_report_load8_noabort+0x1c/0x28
-   hist_show+0x11e0/0x1278
-   seq_read_iter+0x344/0xd78
-   seq_read+0x128/0x1c0
-   vfs_read+0x198/0x6c8
-   ksys_read+0xf4/0x1e0
-   __arm64_sys_read+0x70/0xa8
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+As it is OK to leave this function with an invalid write_stamp (one that
+doesn't match the before_stamp), there's no reason to try to make it valid
+again in this case. If this race happens, then just leave with the invalid
+write_stamp and the next event to come along will just add a absolute
+timestamp and validate everything again.
 
-  Allocated by task 188:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_alloc_info+0x20/0x30
-   __kasan_slab_alloc+0x6c/0x80
-   kmem_cache_alloc+0x15c/0x4a8
-   trace_create_new_event+0x84/0x348
-   __trace_add_new_event+0x18/0x88
-   event_trace_add_tracer+0xc4/0x1a0
-   trace_array_create_dir+0x6c/0x100
-   trace_array_create+0x2e8/0x568
-   instance_mkdir+0x48/0x80
-   tracefs_syscall_mkdir+0x90/0xe8
-   vfs_mkdir+0x3c4/0x610
-   do_mkdirat+0x144/0x200
-   __arm64_sys_mkdirat+0x8c/0xc0
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+Bonus points: This gets rid of another cmpxchg64!
 
-  Freed by task 191:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_free_info+0x34/0x58
-   __kasan_slab_free+0xe4/0x158
-   kmem_cache_free+0x19c/0x508
-   event_file_put+0xa0/0x120
-   remove_event_file_dir+0x180/0x320
-   event_trace_del_tracer+0xb0/0x180
-   __remove_instance+0x224/0x508
-   instance_rmdir+0x44/0x78
-   tracefs_syscall_rmdir+0xbc/0x140
-   vfs_rmdir+0x1cc/0x4c8
-   do_rmdir+0x220/0x2b8
-   __arm64_sys_unlinkat+0xc0/0x100
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+Link: https://lore.kernel.org/linux-trace-kernel/20231214222921.193037a7@gandalf.local.home
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231214012153.676155-1-zhengyejian1@huawei.com
-
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: stable@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Vincent Donnefort <vdonnefort@google.com>
+Fixes: a389d86f7fd09 ("ring-buffer: Have nested events still record running time stamp")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c             |  6 ++++++
- kernel/trace/trace.h             |  1 +
- kernel/trace/trace_events_hist.c | 12 ++++++++----
- 3 files changed, 15 insertions(+), 4 deletions(-)
+ kernel/trace/ring_buffer.c | 29 ++++++-----------------------
+ 1 file changed, 6 insertions(+), 23 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 6c79548f9574..199df497db07 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -4968,6 +4968,12 @@ int tracing_release_file_tr(struct inode *inode, struct file *filp)
- 	return 0;
- }
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 1d9caee7f542..2668dde23343 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3612,14 +3612,14 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	}
  
-+int tracing_single_release_file_tr(struct inode *inode, struct file *filp)
-+{
-+	tracing_release_file_tr(inode, filp);
-+	return single_release(inode, filp);
-+}
-+
- static int tracing_mark_open(struct inode *inode, struct file *filp)
- {
- 	stream_open(inode, filp);
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b7f4ea25a194..0489e72c8169 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -617,6 +617,7 @@ int tracing_open_generic(struct inode *inode, struct file *filp);
- int tracing_open_generic_tr(struct inode *inode, struct file *filp);
- int tracing_open_file_tr(struct inode *inode, struct file *filp);
- int tracing_release_file_tr(struct inode *inode, struct file *filp);
-+int tracing_single_release_file_tr(struct inode *inode, struct file *filp);
- bool tracing_is_disabled(void);
- bool tracer_tracing_is_on(struct trace_array *tr);
- void tracer_tracing_on(struct trace_array *tr);
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 1abc07fba1b9..5ecf3c8bde20 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -5623,10 +5623,12 @@ static int event_hist_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open() */
-+	file->private_data = NULL;
- 	return single_open(file, hist_show, file);
- }
- 
-@@ -5634,7 +5636,7 @@ const struct file_operations event_hist_fops = {
- 	.open = event_hist_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_single_release_file_tr,
- };
- 
- #ifdef CONFIG_HIST_TRIGGERS_DEBUG
-@@ -5900,10 +5902,12 @@ static int event_hist_debug_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open() */
-+	file->private_data = NULL;
- 	return single_open(file, hist_debug_show, file);
- }
- 
-@@ -5911,7 +5915,7 @@ const struct file_operations event_hist_debug_fops = {
- 	.open = event_hist_debug_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_single_release_file_tr,
- };
- #endif
- 
+ 	if (likely(tail == w)) {
+-		u64 save_before;
+-		bool s_ok;
+-
+ 		/* Nothing interrupted us between A and C */
+  /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
+-		barrier();
+- /*E*/		s_ok = rb_time_read(&cpu_buffer->before_stamp, &save_before);
+-		RB_WARN_ON(cpu_buffer, !s_ok);
++		/*
++		 * If something came in between C and D, the write stamp
++		 * may now not be in sync. But that's fine as the before_stamp
++		 * will be different and then next event will just be forced
++		 * to use an absolute timestamp.
++		 */
+ 		if (likely(!(info->add_timestamp &
+ 			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
+ 			/* This did not interrupt any time update */
+@@ -3627,24 +3627,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		else
+ 			/* Just use full timestamp for interrupting event */
+ 			info->delta = info->ts;
+-		barrier();
+ 		check_buffer(cpu_buffer, info, tail);
+-		if (unlikely(info->ts != save_before)) {
+-			/* SLOW PATH - Interrupted between C and E */
+-
+-			a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-			RB_WARN_ON(cpu_buffer, !a_ok);
+-
+-			/* Write stamp must only go forward */
+-			if (save_before > info->after) {
+-				/*
+-				 * We do not care about the result, only that
+-				 * it gets updated atomically.
+-				 */
+-				(void)rb_time_cmpxchg(&cpu_buffer->write_stamp,
+-						      info->after, save_before);
+-			}
+-		}
+ 	} else {
+ 		u64 ts;
+ 		/* SLOW PATH - Interrupted between A and C */
 -- 
 2.42.0
 
