@@ -1,122 +1,150 @@
-Return-Path: <linux-kernel+bounces-2366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1A72815BC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:54:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E95BA815BC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B1CA1C21921
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:54:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54E182833B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647622EB13;
-	Sat, 16 Dec 2023 20:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D9oEZzzZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43839328CF;
+	Sat, 16 Dec 2023 20:56:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397E6315B9
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 20:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702760031; x=1734296031;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ALNX+qXijpTf9tqgoEJQ9fHPY9HwN57/8oHm4RLG8DU=;
-  b=D9oEZzzZQGbOzkVzBrpYFkyw1lFxRPljD6ZDNi7q3aMuiAp9LwDDJBH8
-   ou7Cz6zD4y6rg6Kc8g9rBkNzdDmn5vVCqFQhr/PrM7ungLFdYaXboj1Vx
-   /TwlJZz/S2laJs8iDTNjjPnR4pUq5OUihBioGfjysukmC7Qfgd22Gyscy
-   kqJ8qJw2EC+m3Ol0seDbbDPQVj/djtttZi+Y3M2r2TLnFzmZEsMQ30nJj
-   zl98CUZZ+iN+uYtzbD0ezyFXATGW9XFsTPt9sYLfFj9TjIQjl0ibbjfKR
-   bzoNFWP2Fy+xpWTw/q2cdPn5Y97OBpAzIdFzZP0FvRuFOvwUsu/sB/00f
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="8813469"
-X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
-   d="scan'208";a="8813469"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 12:53:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="893315693"
-X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
-   d="scan'208";a="893315693"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Dec 2023 12:53:49 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEbfO-0002Cs-2z;
-	Sat, 16 Dec 2023 20:53:46 +0000
-Date: Sun, 17 Dec 2023 04:53:36 +0800
-From: kernel test robot <lkp@intel.com>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Nick Desaulniers <ndesaulniers@google.com>
-Subject: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section
- mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_1g
- (section: .init.rodata)
-Message-ID: <202312170440.IAVkUVxe-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576681E494;
+	Sat, 16 Dec 2023 20:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.82.73) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 16 Dec
+ 2023 23:56:05 +0300
+Subject: Re: [PATCH net-next v2 21/21] net: ravb: Add runtime PM support
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-22-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <07dd346c-a6f8-ecdb-9af5-7b891881347b@omp.ru>
+Date: Sat, 16 Dec 2023 23:56:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20231214114600.2451162-22-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/16/2023 20:43:46
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182147 [Dec 16 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;31.173.82.73:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.82.73
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/16/2023 20:48:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/16/2023 5:57:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c8e97fc6b4c057a350a9e9a1ad625e10cc9c39ee
-commit: a9bb3e5d57293773d7f925dd07e45f6e13e94947 modpost: remove is_shndx_special() check from section_rel(a)
-date:   7 months ago
-config: openrisc-randconfig-r015-20230110 (https://download.01.org/0day-ci/archive/20231217/202312170440.IAVkUVxe-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231217/202312170440.IAVkUVxe-lkp@intel.com/reproduce)
+On 12/14/23 2:46 PM, Claudiu wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312170440.IAVkUVxe-lkp@intel.com/
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Add runtime PM support for the ravb driver. As the driver is used by
+> different IP variants, with different behaviors, to be able to have the
+> runtime PM support available for all devices, the preparatory commits
+> moved all the resources parsing and allocations in the driver's probe
+> function and kept the settings for ravb_open(). This is due to the fact
+> that on some IP variants-platforms tuples disabling/enabling the clocks
+> will switch the IP to the reset operation mode where registers' content is
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+   The register contents.
 
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_1g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_10g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_25g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_40g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_50g_base_r (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_50g_base_r2 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_100g_base_r2 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_100g_base_r4 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_1g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_10g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_20g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_25g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_40g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_50g (section: .init.rodata)
-WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_bb_100g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_1000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_10000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_20000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_25000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_40000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_50000 (section: .init.rodata)
-WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_100000 (section: .init.rodata)
-WARNING: modpost: "__mulsi3" [kernel/locking/test-ww_mutex.ko] undefined!
-WARNING: modpost: "__mulsi3" [kernel/trace/preemptirq_delay_test.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/ext2/ext2.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/ntfs/ntfs.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/ntfs3/ntfs3.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/fuse/fuse.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/fuse/cuse.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/fuse/virtiofs.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/jfs/jfs.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/nilfs2/nilfs2.ko] undefined!
-WARNING: modpost: suppressed 594 unresolved symbol warnings because there were too many)
+> lost and reconfiguration needs to be done. For this the rabv_open()
+> function enables the clocks, switches the IP to configuration mode, applies
+> all the registers settings and switches the IP to the operational mode. At
+> the end of ravb_open() IP is ready to send/receive data.
+> 
+> In ravb_close() necessary reverts are done (compared with ravb_open()), the
+> IP is switched to reset mode and clocks are disabled.
+> 
+> The ethtool APIs or IOCTLs that might execute while the interface is down
+> are either cached (and applied in ravb_open()) or rejected (as at that time
+> the IP is in reset mode). Keeping the IP in the reset mode also increases
+> the power saved (according to the hardware manual).
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+[...]
+
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 9ff943dff522..0733b63ff910 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -1839,16 +1839,21 @@ static int ravb_open(struct net_device *ndev)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+>  	const struct ravb_hw_info *info = priv->info;
+> +	struct device *dev = &priv->pdev->dev;
+>  	int error;
+>  
+>  	napi_enable(&priv->napi[RAVB_BE]);
+>  	if (info->nc_queues)
+>  		napi_enable(&priv->napi[RAVB_NC]);
+>  
+> +	error = pm_runtime_resume_and_get(dev);
+> +	if (error < 0)
+> +		goto out_napi_off;
+> +
+
+   Note that sh_eth.c does this before enabling NAPI...
+
+[...]
+
+MBR, Sergey
 
