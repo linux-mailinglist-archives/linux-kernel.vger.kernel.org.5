@@ -1,122 +1,110 @@
-Return-Path: <linux-kernel+bounces-2345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B07C815B57
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:37:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A534B815B5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BE6A1C21CD3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:37:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3732DB22FF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C81321BC;
-	Sat, 16 Dec 2023 19:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="ayBnWqvm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414F4321BB;
+	Sat, 16 Dec 2023 19:38:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0EF423C7;
-	Sat, 16 Dec 2023 19:36:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 089ED1C006B; Sat, 16 Dec 2023 20:36:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1702755411;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LBUZp3N8L4MJ5ZGOE6xga7KiiycmLyCj1RkGWg22FNs=;
-	b=ayBnWqvm7++RG8BJ+Asd6Z2oO/sOD1LQlYSs+GQ1HeYLRfYWVYMtI86OZ20xs544Sbc2to
-	7Dtj7MRRyaTTXdyZd4+woJrX9USowF2jBqLncrCVfkjfNbLz++KUCLRgE2ad/BJAqon7by
-	Ps6V7mzJbLJVed5fpgJ44yoSvgSUgQA=
-Date: Sat, 16 Dec 2023 20:36:50 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Alain Volmat <alain.volmat@foss.st.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Rob Herring <robh@kernel.org>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] media: i2c: gc2145: Galaxy Core GC2145 sensor
- support
-Message-ID: <ZX38UnAvBn45+y0W@duo.ucw.cz>
-References: <20231122075154.789431-1-alain.volmat@foss.st.com>
- <20231122075154.789431-4-alain.volmat@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3B030F8A;
+	Sat, 16 Dec 2023 19:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.82.73) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 16 Dec
+ 2023 22:38:16 +0300
+Subject: Re: [PATCH net-next v2 16/21] net: ravb: Keep the reverse order of
+ operations in ravb_close()
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-17-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <665f3a75-2687-d8bf-9fe0-9693759b8f3f@omp.ru>
+Date: Sat, 16 Dec 2023 22:38:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J/MO1rl1fQBm0I5V"
-Content-Disposition: inline
-In-Reply-To: <20231122075154.789431-4-alain.volmat@foss.st.com>
+In-Reply-To: <20231214114600.2451162-17-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/16/2023 19:03:00
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182147 [Dec 16 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;31.173.82.73:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.82.73
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/16/2023 19:09:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/16/2023 5:24:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
+On 12/14/23 2:45 PM, Claudiu wrote:
 
---J/MO1rl1fQBm0I5V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Keep the reverse order of operations in ravb_close() when comparing with
 
-Hi!
+   Compared.
 
-> Addition of support for the Galaxy Core GC2145 XVGA sensor.
-> The sensor supports both DVP and CSI-2 interfaces however for
-> the time being only CSI-2 is implemented.
->=20
-> Configurations are currently based on initialization scripts
-> coming from Galaxy Core and so for that purpose only 3 static
-> resolutions are supported:
->  - 640x480
->  - 1280x720
->  - 1600x1200
+> ravb_open(). This is the recommended configuration sequence.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Also only limited subset of pixel formats is implemented? Would be
-worth mentioning in the changelog, but perhaps comment at the start of
-the file would be even better.
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-> +++ b/drivers/media/i2c/Kconfig
-> @@ -50,6 +50,16 @@ config VIDEO_AR0521
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called ar0521.
-> =20
-> +config VIDEO_GC2145
-> +	select V4L2_CCI_I2C
-> +	tristate "GalaxyCore GC2145 sensor support"
-> +	help
-> +	  This is a V4L2 sensor-level driver for GalaxyCore GC2145
-> +	  2 Mpixel camera.
+[...]
 
-Normally tristate would go before select.
-
-Reviewed-by: Pavel Machek <pavel@ucw.cz>
-
-(But you probably want to solve the problems reported by the build
-bot).
-
-Thanks and best regards,
-							Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---J/MO1rl1fQBm0I5V
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZX38UgAKCRAw5/Bqldv6
-8rhpAJ96f/a2MmnMxqL586aG7j0Su5XwFACfUliE825R4b4S2aYyg3SopYMo9XU=
-=Ymzx
------END PGP SIGNATURE-----
-
---J/MO1rl1fQBm0I5V--
+MBR, Sergey
 
