@@ -1,127 +1,139 @@
-Return-Path: <linux-kernel+bounces-2347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 441AA815B61
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B64F815B6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:44:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC6B61F24008
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:39:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54C361F24040
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDEE31A9C;
-	Sat, 16 Dec 2023 19:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="J6dUi0z8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E822328B5;
+	Sat, 16 Dec 2023 19:44:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B13931A85
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com [209.85.128.197])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5023A3F1EE
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1702755555;
-	bh=2c7dacoDuG5K0tl+4E3IQI93Dvy5OouinIjtAewN7Os=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=J6dUi0z8RXb9y/LaMdfbLe1HW8+KwMBDyPBg/Pl61TOAlpig9gRbl2mos7D+3iWCb
-	 oSwRUWcyYkfmQBGZRZVu/ou+Ru0PMS1QGI1vrJMKGQxi9eHhJI+Q4o22M8Ou7+vMZF
-	 +J0Mh3g94WTd6+CSdvAuvc4nP02xbIpHg+hqbLwfOdPwmo2B/ChVQnD2CSUOR+3vZp
-	 aQYUiSTHvPUUmNDiD2LpAMRjx8kA8MQL+LcrslbkRq5EkPjrgLGfLaROvkI74xlEpp
-	 VSjCQf3yBC3gxWOlVfeFTwcY6RvVzDiyF+yFH8fryv1pQPt1sqaksvN8J50H9/YSWp
-	 IzMyjfoK0QGJw==
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5e5b7e6cd2fso3185057b3.2
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 11:39:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702755554; x=1703360354;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2c7dacoDuG5K0tl+4E3IQI93Dvy5OouinIjtAewN7Os=;
-        b=nr0HesMyY/mX/pNvgOumJNxT6JE937ju4dx8qsBiPGpz6nCeU2LzfTk6wAK6WI3POA
-         R+/DrnGP2FY+Dk/hI1dcgJkO6V2yQAlfoHgUWRFPqZP+mcdQ6PXGaK3A+Th6eIXm5ZTm
-         ugGr3EmPOLJCxTLq5oW5+WdL+0G2i5zZ/J8lY1ItNB+avbWbKopdteetuAZ7vAxh0X5m
-         WPXZfNkssgT66UTd5ykyT/3CKZCz3afh8QSIeSoQNkWfsMi3B2XCIFUODorpZ6gBeThq
-         ebQ1v0mxxnKYE/H4CUGj+44ULpBvOe5WCEatwAydUNJxUcvvJ1SNSOgP4QaTSaVDcE4l
-         XRzw==
-X-Gm-Message-State: AOJu0YzDWBO18f/EKMS3Cq+skz7AimbfGI13Ib+1HmZ/IsmeSSGlMvDQ
-	TlhstRLfDd40WksIquAczuMJuDM46qk1bmAEvPTX/Ag2XAJDHZN/UOrYBZ1pqwOyPMoTiHN+csx
-	5fBI9C0aqWA/wbaLDfRuzx1gDTjpH322Tv8Npp82CoJ06xTfCIG+r+FHEJA==
-X-Received: by 2002:a05:622a:1c8:b0:425:4043:18bd with SMTP id t8-20020a05622a01c800b00425404318bdmr20333345qtw.112.1702755534008;
-        Sat, 16 Dec 2023 11:38:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFkdKr9ZA1ECc64gwyj30qjy4snj5vZUkODgrjSVIiFsMAP3aqvVWnQrSXJixVzRgLW2ZfvbY5zJh4SCWF268k=
-X-Received: by 2002:a05:622a:1c8:b0:425:4043:18bd with SMTP id
- t8-20020a05622a01c800b00425404318bdmr20333325qtw.112.1702755533644; Sat, 16
- Dec 2023 11:38:53 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Sat, 16 Dec 2023 11:38:53 -0800
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231215204050.2296404-6-cristian.ciocaltea@collabora.com>
-References: <20231215204050.2296404-1-cristian.ciocaltea@collabora.com> <20231215204050.2296404-6-cristian.ciocaltea@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D371B13AC0;
+	Sat, 16 Dec 2023 19:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.82.73) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 16 Dec
+ 2023 22:43:47 +0300
+Subject: Re: [PATCH net-next v2 17/21] net: ravb: Keep clock request
+ operations grouped together
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-18-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <2cb29821-7135-4369-ebc7-c742226e6230@omp.ru>
+Date: Sat, 16 Dec 2023 22:43:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Sat, 16 Dec 2023 11:38:53 -0800
-Message-ID: <CAJM55Z-bg0EGPaLHtxcu2AzqN59zfuiT0eE7oCShrx7dG_QK1g@mail.gmail.com>
-Subject: Re: [PATCH v3 5/9] riscv: dts: starfive: jh7100-common: Setup pinmux
- and enable gmac
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Emil Renner Berthing <kernel@esmil.dk>, Samin Guo <samin.guo@starfivetech.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Hal Feng <hal.feng@starfivetech.com>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Richard Cochran <richardcochran@gmail.com>, 
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-clk@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, kernel@collabora.com, 
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+In-Reply-To: <20231214114600.2451162-18-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/16/2023 19:03:00
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182147 [Dec 16 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;31.173.82.73:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.82.73
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/16/2023 19:09:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/16/2023 5:24:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Cristian Ciocaltea wrote:
-> Add pinmux configuration for DWMAC found on the JH7100 based boards and
-> enable the related DT node, providing a basic PHY configuration.
->
-> Co-developed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+On 12/14/23 2:45 PM, Claudiu wrote:
+
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Keep clock request operations grouped togeter to have all clock-related
+> code in a single place. This makes the code simpler to follow.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > ---
->  .../boot/dts/starfive/jh7100-common.dtsi      | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-> index 42fb61c36068..5cafe8f5c2e7 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-> @@ -72,7 +72,92 @@ wifi_pwrseq: wifi-pwrseq {
->  	};
->  };
->
-> +&gmac {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&gmac_pins>;
-> +	phy-mode = "rgmii-id";
-> +	phy-handle = <&phy>;
+> 
+> Changes in v2:
+> - none; this patch is new
+> 
+>  drivers/net/ethernet/renesas/ravb_main.c | 28 ++++++++++++------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 38999ef1ea85..a2a64c22ec41 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2768,6 +2768,20 @@ static int ravb_probe(struct platform_device *pdev)
+>  	if (error)
+>  		goto out_reset_assert;
+>  
+> +	priv->clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (IS_ERR(priv->clk)) {
+> +		error = PTR_ERR(priv->clk);
+> +		goto out_reset_assert;
+> +	}
+> +
+> +	if (info->gptp_ref_clk) {
+> +		priv->gptp_clk = devm_clk_get(&pdev->dev, "gptp");
+> +		if (IS_ERR(priv->gptp_clk)) {
+> +			error = PTR_ERR(priv->gptp_clk);
+> +			goto out_reset_assert;
+> +		}
+> +	}
+> +
+>  	priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
+>  	if (IS_ERR(priv->refclk)) {
+>  		error = PTR_ERR(priv->refclk);
 
-I'm not sure if it's a generic policy or not, but I don't really like adding a
-reference to a non-existant node here. I'd move this property to the board
-files where the phy node is actually defined.
+   Hmm... I think we currently have all these calls in one place.
+Perhaps you just shouldn't have moved this code around?
 
-/Emil
+MBR, Sergey
 
