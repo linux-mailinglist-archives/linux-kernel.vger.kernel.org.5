@@ -1,81 +1,88 @@
-Return-Path: <linux-kernel+bounces-2128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544F3815831
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 08:08:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D41815838
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 08:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 104AA287C96
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 07:08:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4942A1F2590E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 07:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E5F134D7;
-	Sat, 16 Dec 2023 07:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C72134D9;
+	Sat, 16 Dec 2023 07:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="xBwjmUEm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430BC13FEA;
-	Sat, 16 Dec 2023 07:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Sscc85fPLz1wnlD;
-	Sat, 16 Dec 2023 15:07:52 +0800 (CST)
-Received: from kwepemm000007.china.huawei.com (unknown [7.193.23.189])
-	by mail.maildlp.com (Postfix) with ESMTPS id E8D0C1A0172;
-	Sat, 16 Dec 2023 15:08:02 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 16 Dec 2023 15:08:02 +0800
-From: Jijie Shao <shaojijie@huawei.com>
-To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>
-CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 net-next] net: hns3: add new matainer for the HNS3 ethernet driver
-Date: Sat, 16 Dec 2023 15:04:13 +0800
-Message-ID: <20231216070413.233668-1-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263326FBA
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 07:19:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18524C433C8;
+	Sat, 16 Dec 2023 07:19:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702711195;
+	bh=g1hqMgI8g1l74P0c+B7FgDGA+41wsHf4KclcSInh/k0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=xBwjmUEmjk4kcqt0RllDOAmBNmKEfL0b0TlmmfH/Ud1VwdUmym+1W3xYaQkuwRkQm
+	 dCrMrUorZaXybE4I3TYcUEXjfg/H/gOvJ5tSjnu836mw/aJwPgmIB4cyOuNuskfAWg
+	 xou3sGEnfP0Se87X/sJbUZ0J/vEO04NltMNimtsY=
+Date: Sat, 16 Dec 2023 08:19:51 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ayush Singh <ayushdevel1325@gmail.com>
+Cc: greybus-dev@lists.linaro.org, johan@kernel.org, elder@kernel.org,
+	linux-kernel@vger.kernel.org, jkridner@beagleboard.org, nm@ti.com,
+	yujie.liu@intel.com
+Subject: Re: [PATCH V2 1/1] greybus: gb-beagleplay: Remove use of pad bytes
+Message-ID: <2023121616-depict-unloving-525b@gregkh>
+References: <20231211065420.213664-1-ayushdevel1325@gmail.com>
+ <20231211065420.213664-2-ayushdevel1325@gmail.com>
+ <2023121559-overfed-kisser-3923@gregkh>
+ <e60f7697-1a1a-46a4-9def-b59cae9777a3@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000007.china.huawei.com (7.193.23.189)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e60f7697-1a1a-46a4-9def-b59cae9777a3@gmail.com>
 
-Jijie Shao will be responsible for
-maintaining the hns3 driver's code in the future,
-so add Jijie to the hns3 driver's matainer list.
+On Sat, Dec 16, 2023 at 05:39:30AM +0530, Ayush Singh wrote:
+> On 12/15/23 21:50, Greg KH wrote:
+> 
+> > On Mon, Dec 11, 2023 at 12:24:18PM +0530, Ayush Singh wrote:
+> > > Make gb-beagleplay greybus spec compliant by moving cport information to
+> > > transport layer instead of using `header->pad` bytes.
+> > > 
+> > > Greybus HDLC frame now has the following payload:
+> > > 1. le16 cport
+> > > 2. gb_operation_msg_hdr msg_header
+> > > 3. u8 *msg_payload
+> > > 
+> > > Fixes: ec558bbfea67 ("greybus: Add BeaglePlay Linux Driver")
+> > > Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+> > > ---
+> > >   drivers/greybus/gb-beagleplay.c | 55 ++++++++++++++++++++++++---------
+> > >   1 file changed, 41 insertions(+), 14 deletions(-)
+> > This doesn't apply against my char-misc-next branch at all, what did you
+> > generate it against?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> The base commit of my tree is `0f5f12ac05f36f117e793656c3f560625e927f1b`.
+> The tag is `next-20231205`.
+> 
+> I can rebase to a newer tag if you wish.
 
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
-v2: add 'net-next' in subject
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Please rebase on the char-misc-next branch otherwise I can not take it.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 012df8ccf34e..9de29720e88f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9581,6 +9581,7 @@ F:	drivers/bus/hisi_lpc.c
- HISILICON NETWORK SUBSYSTEM 3 DRIVER (HNS3)
- M:	Yisen Zhuang <yisen.zhuang@huawei.com>
- M:	Salil Mehta <salil.mehta@huawei.com>
-+M:	Jijie Shao <shaojijie@huawei.com>
- L:	netdev@vger.kernel.org
- S:	Maintained
- W:	http://www.hisilicon.com
--- 
-2.30.0
+thanks,
 
+greg k-h
 
