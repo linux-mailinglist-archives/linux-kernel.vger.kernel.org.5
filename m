@@ -1,155 +1,259 @@
-Return-Path: <linux-kernel+bounces-2159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9929C8158C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:23:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EF7A8158CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25D4AB24402
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 11:23:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44FB82868D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 11:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8FA815E94;
-	Sat, 16 Dec 2023 11:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7982415AF4;
+	Sat, 16 Dec 2023 11:26:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nR9DRkEz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fHqHyq+U"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C99154A9
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 11:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3ba2dc0f6b7so1293900b6e.2
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 03:23:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702725826; x=1703330626; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qnMCgoEF3bBGwkMIyi+ffwyEvbkLUBGcU4ida8KYtA4=;
-        b=nR9DRkEzXNPO9EWS5dIdHBURO2bumR3k//p2FYWg1K+p0GJfZUVx8oI3SDW5lqkI5Q
-         Xz6EBRiYd4TMR0ALpUDQ/T6x2kEHxVlEIjLVAuF1FCSKb6sZ5CO7gYHKe0lLoV1ehggx
-         t5KMPL7jO9PMuXEv+FKKn+4lXbPUcCq6J+OuhFKdOWfkDlyomHVWf4WPEuSpnyzyDbeU
-         f1Le4ZyNRikcPLWKwWc06iZpAnOTkMlT9P0Q0HdhbRat+2QlRqJo61jUUYCgYM0GkZd9
-         /Id1WYzLszVWgbfLM/jm7f5fPwwe9La3m+z38ds4OjvG+5nWz9L+0cbgl4SDEOJBFg+R
-         tw1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702725826; x=1703330626;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qnMCgoEF3bBGwkMIyi+ffwyEvbkLUBGcU4ida8KYtA4=;
-        b=nb5I/X6kf5+NxFL+9MWYGFWhZhw9Dqs+bQyycbAwfBbMHYsTKeXQrd1QnYddU41GPj
-         XJciSLWfYHKzJT63FthbfBOFNg77OurSsr03px75/Go7w85go8wf9OkPuQUxHaqmKuJM
-         jUKZMN8hr+W8sbRIsazcoX9zbg3qeNoRWcSN5bXeH4LLIUVFfnzpl5kIWLgRDVKvXKEd
-         Qyg3LoW/YYIBE0Sdq6Pob67PQJ639yelfMGyzKmQ/0Bd6unp6bjVT38MZKDoI6xERmbS
-         F2/+yu7tCTj3nc15vmD6YR6t54hneos6QMyXZjofm2Soa8EdRtZ+efmhs6X+Zy5+fe5c
-         6sTw==
-X-Gm-Message-State: AOJu0YyNslHt9LjA0V+gbogd01r/GdmedEteSVutXCFAwG+gN/3L7eSQ
-	vEmXn6ZyADpWarElA4IQPi4=
-X-Google-Smtp-Source: AGHT+IFErTvBZa7RFfEFVfwrbzUjy2c/h8/SUdsTfJow2CaFwX1pn4Z+CA4CGhZHL+rKkTDKB/A4Iw==
-X-Received: by 2002:a05:6808:3c86:b0:3b9:e69f:c08d with SMTP id gs6-20020a0568083c8600b003b9e69fc08dmr19655056oib.52.1702725825763;
-        Sat, 16 Dec 2023 03:23:45 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id x128-20020a626386000000b006cea1db00cbsm604902pfb.204.2023.12.16.03.23.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 03:23:45 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: bhe@redhat.com
-Cc: akpm@linux-foundation.org,
-	bp@alien8.de,
-	corbet@lwn.net,
-	dave.hansen@linux.intel.com,
-	ebiederm@xmission.com,
-	hpa@zytor.com,
-	kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	tglx@linutronix.de,
-	x86@kernel.org,
-	ytcoode@gmail.com
-Subject: [PATCH 1/3 v3] kexec: modify the meaning of the end parameter in kimage_is_destination_range()
-Date: Sat, 16 Dec 2023 19:23:36 +0800
-Message-ID: <20231216112336.252557-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZX1t/4Reai6HdoJf@MiWiFi-R3L-srv>
-References: <ZX1t/4Reai6HdoJf@MiWiFi-R3L-srv>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A90154A9
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 11:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702725997; x=1734261997;
+  h=date:from:to:cc:subject:message-id;
+  bh=/lfUd+nDh/MuLo+TshVdii23z56FFuIpA7rmfWzruvU=;
+  b=fHqHyq+U2EI57DHHwPB/F+OgSozUiVI7Qk8P692YxoWOv5EiAOeFq7H7
+   I6fdKYCPMMpETKVTuM06+yo8YEJH9R+s3hRYxDy64OkE8WqLOzA4FBCGj
+   ylPgUHYEBR9CZfkrDP6jwsshUpxGWh7ENdwFSU/zyQyV/0EfYLmuszAM8
+   jTolSEMeo3fDhZERH26U5P9gj4iagYSRm7bXUViLtfwzQ73Ul+5XU3Y1F
+   AIk0SjWIjefEDbgskyeA2TmxPczbOFP6GW8DBslnpdAPY7rDwpoMtDCCk
+   qSb4L9DIckwzlbeoNnfEfVAFA8/pMMIDMr0zD4xqXPQJqBWsfP7+UHsqd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="8796103"
+X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
+   d="scan'208";a="8796103"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 03:26:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="724732956"
+X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
+   d="scan'208";a="724732956"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 16 Dec 2023 03:26:34 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rESoS-0001Va-0q;
+	Sat, 16 Dec 2023 11:26:32 +0000
+Date: Sat, 16 Dec 2023 19:26:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/merge] BUILD SUCCESS
+ 396087db9e0ba4a7d968fb4a98a811b522c45c97
+Message-ID: <202312161924.mZGPlvbl-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The end parameter received by kimage_is_destination_range() should be the
-last valid byte address of the target memory segment plus 1. However, in
-the locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions,
-the corresponding value passed to kimage_is_destination_range() is the last
-valid byte address of the target memory segment, which is 1 less.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
+branch HEAD: 396087db9e0ba4a7d968fb4a98a811b522c45c97  Merge branch 'x86/paravirt' into x86/merge, to ease integration testing
 
-There are two ways to fix this bug. We can either correct the logic of the
-locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions, or we
-can fix kimage_is_destination_range() by making the end parameter represent
-the last valid byte address of the target memory segment. Here, we choose
-the second approach.
+elapsed time: 1499m
 
-Due to the modification to kimage_is_destination_range(), we also need to
-adjust its callers, such as kimage_alloc_normal_control_pages() and
-kimage_alloc_page().
+configs tested: 177
+configs skipped: 2
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-v1->v2:
-  Fix this issue using the approach suggested by Eric and Baoquan.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-  As this patch is independent of the other patches in this series, I sent
-  out the v2 patch separately. If it's inconvenient for anyone, I can
-  resend the entire series again.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20231216   gcc  
+arc                   randconfig-002-20231216   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                         lpc18xx_defconfig   gcc  
+arm                   randconfig-001-20231216   gcc  
+arm                   randconfig-002-20231216   gcc  
+arm                   randconfig-003-20231216   gcc  
+arm                   randconfig-004-20231216   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231216   gcc  
+arm64                 randconfig-002-20231216   gcc  
+arm64                 randconfig-003-20231216   gcc  
+arm64                 randconfig-004-20231216   gcc  
+csky                             alldefconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231216   gcc  
+csky                  randconfig-002-20231216   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20231216   clang
+hexagon               randconfig-002-20231216   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231216   gcc  
+i386         buildonly-randconfig-002-20231216   gcc  
+i386         buildonly-randconfig-003-20231216   gcc  
+i386         buildonly-randconfig-004-20231216   gcc  
+i386         buildonly-randconfig-005-20231216   gcc  
+i386         buildonly-randconfig-006-20231216   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231216   gcc  
+i386                  randconfig-002-20231216   gcc  
+i386                  randconfig-003-20231216   gcc  
+i386                  randconfig-004-20231216   gcc  
+i386                  randconfig-005-20231216   gcc  
+i386                  randconfig-006-20231216   gcc  
+i386                  randconfig-011-20231216   clang
+i386                  randconfig-012-20231216   clang
+i386                  randconfig-013-20231216   clang
+i386                  randconfig-014-20231216   clang
+i386                  randconfig-015-20231216   clang
+i386                  randconfig-016-20231216   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231216   gcc  
+loongarch             randconfig-002-20231216   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                           ci20_defconfig   gcc  
+mips                          malta_defconfig   clang
+mips                          rm200_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231216   gcc  
+nios2                 randconfig-002-20231216   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231216   gcc  
+parisc                randconfig-002-20231216   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                        icon_defconfig   clang
+powerpc                 mpc8313_rdb_defconfig   clang
+powerpc                      pasemi_defconfig   gcc  
+powerpc                     powernv_defconfig   clang
+powerpc               randconfig-001-20231216   gcc  
+powerpc               randconfig-002-20231216   gcc  
+powerpc               randconfig-003-20231216   gcc  
+powerpc                     tqm8548_defconfig   gcc  
+powerpc64             randconfig-001-20231216   gcc  
+powerpc64             randconfig-002-20231216   gcc  
+powerpc64             randconfig-003-20231216   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231216   gcc  
+riscv                 randconfig-002-20231216   gcc  
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231216   clang
+s390                  randconfig-002-20231216   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                            hp6xx_defconfig   gcc  
+sh                    randconfig-001-20231216   gcc  
+sh                    randconfig-002-20231216   gcc  
+sh                          sdk7786_defconfig   gcc  
+sh                           se7343_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231216   gcc  
+sparc64               randconfig-002-20231216   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231216   gcc  
+um                    randconfig-002-20231216   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231216   gcc  
+x86_64       buildonly-randconfig-002-20231216   gcc  
+x86_64       buildonly-randconfig-003-20231216   gcc  
+x86_64       buildonly-randconfig-004-20231216   gcc  
+x86_64       buildonly-randconfig-005-20231216   gcc  
+x86_64       buildonly-randconfig-006-20231216   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231216   clang
+x86_64                randconfig-002-20231216   clang
+x86_64                randconfig-003-20231216   clang
+x86_64                randconfig-004-20231216   clang
+x86_64                randconfig-005-20231216   clang
+x86_64                randconfig-006-20231216   clang
+x86_64                randconfig-011-20231216   gcc  
+x86_64                randconfig-012-20231216   gcc  
+x86_64                randconfig-013-20231216   gcc  
+x86_64                randconfig-014-20231216   gcc  
+x86_64                randconfig-015-20231216   gcc  
+x86_64                randconfig-016-20231216   gcc  
+x86_64                randconfig-071-20231216   gcc  
+x86_64                randconfig-072-20231216   gcc  
+x86_64                randconfig-073-20231216   gcc  
+x86_64                randconfig-074-20231216   gcc  
+x86_64                randconfig-075-20231216   gcc  
+x86_64                randconfig-076-20231216   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20231216   gcc  
+xtensa                randconfig-002-20231216   gcc  
 
-v2->v3:
-  Modify the assignment of eaddr as suggested by Baoquan.
-
- kernel/kexec_core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index be5642a4ec49..e65e8f186eff 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -276,8 +276,8 @@ int kimage_is_destination_range(struct kimage *image,
- 		unsigned long mstart, mend;
- 
- 		mstart = image->segment[i].mem;
--		mend = mstart + image->segment[i].memsz;
--		if ((end > mstart) && (start < mend))
-+		mend = mstart + image->segment[i].memsz - 1;
-+		if ((end >= mstart) && (start <= mend))
- 			return 1;
- 	}
- 
-@@ -370,7 +370,7 @@ static struct page *kimage_alloc_normal_control_pages(struct kimage *image,
- 		pfn   = page_to_boot_pfn(pages);
- 		epfn  = pfn + count;
- 		addr  = pfn << PAGE_SHIFT;
--		eaddr = epfn << PAGE_SHIFT;
-+		eaddr = epfn << PAGE_SHIFT - 1;
- 		if ((epfn >= (KEXEC_CONTROL_MEMORY_LIMIT >> PAGE_SHIFT)) ||
- 			      kimage_is_destination_range(image, addr, eaddr)) {
- 			list_add(&pages->lru, &extra_pages);
-@@ -716,7 +716,7 @@ static struct page *kimage_alloc_page(struct kimage *image,
- 
- 		/* If the page is not a destination page use it */
- 		if (!kimage_is_destination_range(image, addr,
--						  addr + PAGE_SIZE))
-+						  addr + PAGE_SIZE - 1))
- 			break;
- 
- 		/*
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
