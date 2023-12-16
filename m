@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-1965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6941781567A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:49:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D50A281567B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DF48284ED0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:49:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1270B1C20F9C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3446AB2;
-	Sat, 16 Dec 2023 02:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76064DDB0;
+	Sat, 16 Dec 2023 02:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kjH1mX2r"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uOPZ6KP7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BBE4A31
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 02:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5988E63B0
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 02:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702694926;
+	t=1702694928;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N4QTR2/N8809UNpiUk1nEmTQb/VXiPK1VfzHpWfE4AE=;
-	b=kjH1mX2r1sSnQGMez9MPglMnwKgNBiVdKnHgbMusC0unwxLJ98cnwh2/RvFv5rU4t9RGjp
-	zZIYYU7XV6YACVErvZP3Pd4wVOaZpQbkO138BuemBgLJZfYNrjyJk7HQm1N0hr1a9NXe8n
-	aBTw5c+L9g7thNIddUk1niUgyphXAOQ=
+	bh=adc0sNIM7gQ4trdre1K6cbqGQoob6WcBiJ3dUIPudMk=;
+	b=uOPZ6KP7ychMoKw8qtR/0qfWiQ8j9jkHkMD1SK35PVi+vFoj3X/OLCoqJUaIcYeIqu41/q
+	ou7avzvpSAIlOW44jhZr4JYW24u6/QLdr8koxyghwIIaZLIQknvEo1WSBT50/ruKuYe0qj
+	egaJK3764sLrvSCuHsyr5L9g/D8dUOU=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -51,9 +51,9 @@ Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	longman@redhat.com,
 	boqun.feng@gmail.com,
 	brauner@kernel.org
-Subject: [PATCH 02/50] x86/kernel/fpu/bugs.c: fix missing include
-Date: Fri, 15 Dec 2023 21:47:43 -0500
-Message-ID: <20231216024834.3510073-3-kent.overstreet@linux.dev>
+Subject: [PATCH 03/50] x86/lib/cache-smp.c: fix missing include
+Date: Fri, 15 Dec 2023 21:47:44 -0500
+Message-ID: <20231216024834.3510073-4-kent.overstreet@linux.dev>
 In-Reply-To: <20231216024834.3510073-1-kent.overstreet@linux.dev>
 References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -67,21 +67,19 @@ X-Migadu-Flow: FLOW_OUT
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- arch/x86/kernel/fpu/bugs.c | 1 +
+ arch/x86/lib/cache-smp.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kernel/fpu/bugs.c b/arch/x86/kernel/fpu/bugs.c
-index 794e70151203..a06b876bbf2d 100644
---- a/arch/x86/kernel/fpu/bugs.c
-+++ b/arch/x86/kernel/fpu/bugs.c
-@@ -2,6 +2,7 @@
- /*
-  * x86 FPU bug checks:
-  */
-+#include <asm/cpufeature.h>
- #include <asm/fpu/api.h>
+diff --git a/arch/x86/lib/cache-smp.c b/arch/x86/lib/cache-smp.c
+index 7c48ff4ae8d1..7af743bd3b13 100644
+--- a/arch/x86/lib/cache-smp.c
++++ b/arch/x86/lib/cache-smp.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <asm/paravirt.h>
+ #include <linux/smp.h>
+ #include <linux/export.h>
  
- /*
 -- 
 2.43.0
 
