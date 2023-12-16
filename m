@@ -1,29 +1,29 @@
-Return-Path: <linux-kernel+bounces-2352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3AD2815B80
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3279815B83
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:03:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6760C1F23DC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:02:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 781DA1F23757
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:03:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17F1328CD;
-	Sat, 16 Dec 2023 20:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2930933CDD;
+	Sat, 16 Dec 2023 20:02:48 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BCB31A69;
-	Sat, 16 Dec 2023 20:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3E4328C5;
+	Sat, 16 Dec 2023 20:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
 Received: from [192.168.1.104] (31.173.82.73) by msexch01.omp.ru (10.188.4.12)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 16 Dec
- 2023 23:02:25 +0300
+ 2023 23:02:36 +0300
 Subject: Re: [PATCH net-next v2 18/21] net: ravb: Return cached statistics if
  the interface is down
 To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
@@ -38,8 +38,8 @@ References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
  <20231214114600.2451162-19-claudiu.beznea.uj@bp.renesas.com>
 From: Sergey Shtylyov <s.shtylyov@omp.ru>
 Organization: Open Mobile Platform
-Message-ID: <025040a9-f160-d5f3-e5b0-79fe4619aa9b@omp.ru>
-Date: Sat, 16 Dec 2023 23:02:24 +0300
+Message-ID: <4c583c43-aab5-6ef5-1d97-a06dfd74ec6f@omp.ru>
+Date: Sat, 16 Dec 2023 23:02:36 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 Precedence: bulk
