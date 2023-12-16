@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-1970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D1E7815684
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:50:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A43815686
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0361C23985
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:50:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2B271F255AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4DA154A9;
-	Sat, 16 Dec 2023 02:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFCB20E2;
+	Sat, 16 Dec 2023 02:49:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E5TOS+zz"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dJfFOWnu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1819C13AD6
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 02:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FB214AAE
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 02:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702694936;
+	t=1702694938;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JFJDIdtuotmIE37QAtPpvf0GFZ4wui0KRlxF/kj4A8Y=;
-	b=E5TOS+zzwHxDMZr0qGILzsmsu2z5sXZ+KynrihtXY9WWFP97rdVx1Wa6+XQm9X/VJ7z5+R
-	ztYZL3TcmTXvxqoFwA/JQcbXzPAGaEaXj6H0mketIq+hqbvN4x13KO+J55w7f74vvP79eu
-	GNSTXpff1Z0o9Uw3fIy+k9LxiNzCnAc=
+	bh=9EFmOyXk3truVIn0SSWZ4cc9kvqJ/ykNAgWR9ge7mnc=;
+	b=dJfFOWnuTMPLbFxhvXAvw3peecXAVwE0hO8//NmIMYwpmpbtkCCwXiY0vx/QM68+EvJ+H5
+	CIbNuabBcu6kt+JNkDAxNXePrrJB+3tbKZvnsxh76L17MwHJgNWtwOuTok0lWHt3DGM2er
+	/C9565y/ZA387MRGhIvzNDjDWy4k1QY=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -51,9 +51,9 @@ Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	longman@redhat.com,
 	boqun.feng@gmail.com,
 	brauner@kernel.org
-Subject: [PATCH 07/50] nsproxy.h: add missing include
-Date: Fri, 15 Dec 2023 21:47:48 -0500
-Message-ID: <20231216024834.3510073-8-kent.overstreet@linux.dev>
+Subject: [PATCH 08/50] kernel/fork.c: add missing include
+Date: Fri, 15 Dec 2023 21:47:49 -0500
+Message-ID: <20231216024834.3510073-9-kent.overstreet@linux.dev>
 In-Reply-To: <20231216024834.3510073-1-kent.overstreet@linux.dev>
 References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -67,21 +67,21 @@ X-Migadu-Flow: FLOW_OUT
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- include/linux/nsproxy.h | 1 +
+ kernel/fork.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/nsproxy.h b/include/linux/nsproxy.h
-index 771cb0285872..5601d14e2886 100644
---- a/include/linux/nsproxy.h
-+++ b/include/linux/nsproxy.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_NSPROXY_H
- #define _LINUX_NSPROXY_H
- 
-+#include <linux/refcount.h>
- #include <linux/spinlock.h>
- #include <linux/sched.h>
- 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 10917c3e1f03..319e61297bfb 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -53,6 +53,7 @@
+ #include <linux/seccomp.h>
+ #include <linux/swap.h>
+ #include <linux/syscalls.h>
++#include <linux/syscall_user_dispatch.h>
+ #include <linux/jiffies.h>
+ #include <linux/futex.h>
+ #include <linux/compat.h>
 -- 
 2.43.0
 
