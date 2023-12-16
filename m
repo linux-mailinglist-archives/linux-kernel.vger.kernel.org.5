@@ -1,90 +1,90 @@
-Return-Path: <linux-kernel+bounces-1865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08AC38154EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:19:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B06108154F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:19:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B345A2872D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:18:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D283A1C246AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E9F6AA9;
-	Sat, 16 Dec 2023 00:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B404C151;
+	Sat, 16 Dec 2023 00:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="a42u2+f3";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="AQAb3eLz"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Ee5IoCnQ";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="GrLQ5bnO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023C5568E
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 00:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CC86FA0
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 00:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFK7tS0020292;
-	Sat, 16 Dec 2023 00:18:39 GMT
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFK7oBH017585;
+	Sat, 16 Dec 2023 00:18:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=GBc3Vht6jBeZ8GBCfY8HcSU4XQVPmxjaKev6rJ3FwPE=;
- b=a42u2+f3i5YG6yfAh5STzMmrn1SxXJksCFEgWgmvkNke+94WzNhUg/ffGqa/P4J0Ydt0
- LXUNToFQuOmzmat5XB066tzhWYKzcmbo+mk2jhRzT1QME6mxquPhW4Gz3r53yw+Sv9WW
- +29BGkr6JYjRB0hwAdoXzNb1aFdOWgMMt8OPk5tLcRGCWHss/90QzBgsg8j7S/Nf+tjf
- tLDU4ClWOYsNS1IV1LQ9vg5mPmGVHmmwsGTUbHyh8f2rC+ybFWMEH+zgx2F3G5PxQXxx
- WAi3qUuT+o4qdvZwXlR4CSIl+wZfPJADfcwFeRx09jRhrkBUNUlpyxdc5Z8jFs2gOZn2 Aw== 
+ s=corp-2023-11-20; bh=6LpANcvu2MA8lS0jzGbZW7nNZ+/r33G/+knpdIQVMeY=;
+ b=Ee5IoCnQDxIU/2obzrJ/9hmnx3J9UlshcxF0AVTCX6NY5l/FdhUNoq3Dt17OOCraEhNg
+ vbZQKJJI+HKJn5qGC3zqSG+lRrgwXdTTzObcXmSRLjmjJw/Q4STS1nxrOYe4kSRSqJgM
+ gTmAakWNZO6E3ONK3vfZIOaL7FENjLLBRoPoxkfsPWVUpVo1zkzJMKaJ0kuZM7MG598Q
+ bCRyJR81WUS2Y9iSXSCfWFLxhhFHZsqse43d7ZvYNvFDBY/vGgFdIKbkDTDWtK1GmsYg
+ onQ43cmS82Ah3Qm1GakYrcePF7ch5e5nHN9oFfN3by4ZWKqiAbwXApqqm8kFY1/2TSMI KA== 
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvfuuejcx-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ux5dfb7hb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 16 Dec 2023 00:18:40 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFLuKYZ021489;
+	Sat, 16 Dec 2023 00:18:39 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvepcmaas-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Sat, 16 Dec 2023 00:18:39 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFLuKYY021489;
-	Sat, 16 Dec 2023 00:18:38 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvepcmaas-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 16 Dec 2023 00:18:38 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ofAInPcX1LaDHHdvQcYKq2CqlMcf0iqfWVXOObNP1EkB8Pxr1kuFVLvel4XoTYRo5Q7URjAsKjzgY+Sv0fzOkUlB9YUVZ+sQ+nVve/vYeSuXvIC5m1S7ew7aDeWv958g7mYNRqI9Gwbv6iciaEIBPvfpKSIAGlExZsWWCt1OGTpcbJ990qbc8DsZGE38vNP0yw8hKCwFSr/V8dRgb0Qvs8Ibxr1OXeMG0pvl3ew9TRDklofd1EH/CXPBuO+vfdq6aGpdso50c3nq2Lss3QEUBsrfezIeDCPC/bqoNHD28doGFlEpxfcJh2DyO6ZsZsFqRpNdKdMRfx3xTKHHVsdWWg==
+ b=e4tqJIdRTzrlcgAvBlj+KNYL/d9TA/tculgyuDpKgH92zvW0LL9qkQABov8aw9M7Oju73dJdiIhF1ZRqwgSajzOJ43yjSmu75e5QzJCU2Xvpqp9kTXrlPKLFc+zsJJDW/7cs1C1W9jyQqsblgNIFK4/NpiXeTt9TmAtdJBGGMEq2SFKwbtIntK8ybOvsKAxd19ppV7qXYcJA6wh1/664lc0lB3lxafa8AfGoB7jWpWgLHHAyCqsk++HclqIuKGntn77cvEAtCo0MTBRRkmzC3wH5a8YXvS4nhHlhWi6fLHxYs9jqaK+F7seyfbLwut6QPseHX5auZGmxviESRXonLg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GBc3Vht6jBeZ8GBCfY8HcSU4XQVPmxjaKev6rJ3FwPE=;
- b=FRLbAUeB6dc38L0jv8bTtr9NgOgWcjVNYpO3KmDQIrM51CZViQh5fCqScuhOujgIwEIB/bABHWVW/m4MPBgUfuAS5xj8mYTDuQwaeyiy84sF2grIhovakqCjg61mhWtK6Sg+nXRYp8nacQ0zIG+jxkmNxryrutjw3q9dPzMpiK3wHNE9rihm+Gz1IfqZh+eoegmV5HcXtca7KHNmF+0c6xuKQMInjOT5tN3uiEXQ9PCaUARuAcwxyDRfH7gmf84hNhzbySue1XnWJ+ARfxZekzr3a8+S5ttwDVAy0/J0EvR3hSU8rKDiWtPcdAlfqMvsgY/SsVUxJ+9ACHhtmYI6uQ==
+ bh=6LpANcvu2MA8lS0jzGbZW7nNZ+/r33G/+knpdIQVMeY=;
+ b=KxTpRqPl4xFZnwnRF90dyLWFMc9US4tiCxTfcfyM7D0VmFpEFr+nQqwA7g/VXJdFIgQMU2e6NufOQcw0f8JwHDijmEqyTM5GePvJf4SDJCz4ObqNJhOHFvoYnUv8IGvM3QtoWjz6OJyBJfTlS+GxQwKtkec6frVou82oA3CJUToZr132ONi6owpfYK9/HX6Z/2m8Ep4+MMdTwFt+/ge2l5PxcopXEHPSz+tzrwN4eHl1ogPKiehEbQGk/JGkK5XqoHAYooe+yCNimPM1ffkK9s8YYWGffFQxCehR99Vh0ju5Q6kCK9uQthZLrH2Gj6j24zmNLe9pS/JF5cyjKPuNEw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GBc3Vht6jBeZ8GBCfY8HcSU4XQVPmxjaKev6rJ3FwPE=;
- b=AQAb3eLzLa5LvgduCmf3kwTe85Wy8iB/Cskvx940E9yFuN7EbPoirq5mALa4JeIXV4k5nhbx9qA60aKkn1KjgJCFx6+vDxCqcNN0ZQzHcZD9amlPtbrBV95Ef+TVY2kCmTK7LmqQY0RpIdK/FfkMRmPA7UhZ+e90q//Prrnq734=
+ bh=6LpANcvu2MA8lS0jzGbZW7nNZ+/r33G/+knpdIQVMeY=;
+ b=GrLQ5bnOy5WTM/yYG0qXYHUHO6c7nfsQtiuag6AalC56Hkk3b3/6tl7BbW5Dv8O+G6LaLARJu35bw9AZ7NO5Y2JAcxBS8JMUG8urx73+71awEECA1NORuX+LXoFUAxcWbCrmrshiWpY2Hv2zU0d8ZSSRsSMyDWZfIZb1RjNTy/0=
 Received: from CO1PR10MB4705.namprd10.prod.outlook.com (2603:10b6:303:96::11)
  by MN2PR10MB4287.namprd10.prod.outlook.com (2603:10b6:208:1da::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.33; Sat, 16 Dec
- 2023 00:18:22 +0000
+ 2023 00:18:24 +0000
 Received: from CO1PR10MB4705.namprd10.prod.outlook.com
  ([fe80::67e:d770:a6fd:6d00]) by CO1PR10MB4705.namprd10.prod.outlook.com
  ([fe80::67e:d770:a6fd:6d00%4]) with mapi id 15.20.7091.030; Sat, 16 Dec 2023
- 00:18:22 +0000
+ 00:18:24 +0000
 From: chris hyser <chris.hyser@oracle.com>
 To: "Chris Hyser" <chris.hyser@oracle.com>,
         "Peter Zijlstra" <peterz@infradead.org>,
         "Mel Gorman" <mgorman@suse.de>, linux-kernel@vger.kernel.org
 Cc: "Konrad Wilk" <konrad.wilk@oracle.com>
-Subject: [RFC/POC 1/2] sched/numa: Adds ability to over-ride a tasks numa_preferred_nid.
-Date: Fri, 15 Dec 2023 19:18:00 -0500
-Message-Id: <20231216001801.3015832-2-chris.hyser@oracle.com>
+Subject: [RFC/POC 2/2] sched/numa: Adds simple prctl for setting task's preferred node affinity.
+Date: Fri, 15 Dec 2023 19:18:01 -0500
+Message-Id: <20231216001801.3015832-3-chris.hyser@oracle.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231216001801.3015832-1-chris.hyser@oracle.com>
 References: <20231216001801.3015832-1-chris.hyser@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BY5PR03CA0027.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::37) To CO1PR10MB4705.namprd10.prod.outlook.com
+X-ClientProxiedBy: BYAPR07CA0053.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::30) To CO1PR10MB4705.namprd10.prod.outlook.com
  (2603:10b6:303:96::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -94,56 +94,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CO1PR10MB4705:EE_|MN2PR10MB4287:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7913f3b2-e9ab-4bf0-843c-08dbfdcc8399
+X-MS-Office365-Filtering-Correlation-Id: b38cc442-7ce3-4110-0520-08dbfdcc84ba
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	trTUkqhCTTYxKIXzfdrhaly8ZcTZBn5HCTIX38APolnxr1pRCSI8Q3DszWSCqJHLsDFt2rYK3OnyNK2cQvd1yqmDBJ3pdS11SSoiBB9QJU+jc67gJOtMCpfUUVounZpYglzGB27hZvthiSMNRFtIZ23l+kz1h23YJu+By/3tckwJbAbeT5vNuW6xIrmkpiI0lxjaepSO8AGQT/N7lwwXhN9nyx+4UU40E4lRevZWgIM0s0VYRTvxXzawd4ynGgRWa/QrxEHXEXf2VSHRr4dw0uatdo/zbFPHl31vKM2T3ZyACL4CcVCiE76hbT6oIawgaII87xQm/kpZe/pPgvrbiteaqWPuj9HjcittWriqpM7oHQWXNQwS/qJORNLI7k0tTvgKIAYpYjWMhrGhdBPsBYRtA6uCsAXR9Gi4QT4vST3AFXHPxxNtaHYu5gD85NIJ2WyqNRnYyvVuYut/qONr+ZYHjsAKWzXatBaIqmDK4taJiQICJEnoImydswoyzRhd5wpmbbtOF7WUmhgjz7ghWjQnG1ZjW7vEMLLTWg8R+Gp07iuD3SJ1vCTjMz0bnqMd
+	b7mkBzCGgeZaLeEOJEhQ8zRQjWM3jYGCKHzX74MMvmG8s8yLQ6U0LIPaUAOwiA5LJphlpgjO68b44WFw5Uha1clXYDnXQsjWTV6JNjSDPWlrTBaXpt331ZObKF36FbY/RtEZu5yoWZS39BlUeI3JA/DaiKp+LMmWyfovr4SL5rgZpEjYJg3vF8qylssTUQuG2j1KvKfJK5YAl+9rjhIB6L2Qe1XO2WP3BbLbEg2H36vWXeagf+ecLzeGnhX/Z56MZdiiXQxwENstvETID81qWxGhpJj5DJ31jdZALPelwEEdC7Ut/HEh5VMrgAF85Os7L8wtQmqcvyAlaS0gSEF1iXFAzcWiQ0Jaq1ySOBDzexfqytlWK7/E5Q6U3qWhxr4zN0vTBb2orf1JMBu/gz+l6CY0uJy13npD41rEKcDlmgYJWnjukR+1Ld5vqFS+S3t18khd0cF/Zr9A74wbbXNhDSRPwYnsARSetGMjJZhUI0ulAq2gvBJwLw7djzaCYS+KAmaUGktDXoWja0HerzFqYTwV9KhrrP5GpE3LTzxQ6Tj/1SDNa3ur7onNCzFgZh/V
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4705.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(366004)(136003)(346002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(316002)(66946007)(66556008)(66476007)(8936002)(8676002)(4326008)(478600001)(6486002)(110136005)(41300700001)(36756003)(2906002)(86362001)(5660300002)(38100700002)(6666004)(6512007)(6506007)(83380400001)(2616005)(1076003)(26005)(107886003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?L/cujRE7JctinvR7J9UanySFH+cFh3472JiwHh5o02a/bg6pvwAROaz8/XJJ?=
- =?us-ascii?Q?o5YEzar4a5IyFDtBKs7+92rx/QT3opUZNP/zomrtbNv49FtkjeMcvhWmzbgP?=
- =?us-ascii?Q?KAH6Adly2s00qCGkwxN54mOdgY03FAvgq/WaGJt/tOMEMwTU1Xt7lnflI8UA?=
- =?us-ascii?Q?+dfvdfDln/gZaCcO1punjQxpkXkPQckykT3hR+PsemZrUHkSydqJmiYMvuR7?=
- =?us-ascii?Q?8hNmsgU0pk1VptyNkEZT5zoP3AS37QBWDq4u3mw1oCYObrUfrKK0MJJp6yhL?=
- =?us-ascii?Q?3u68KJI+PPbf/Quc2pdzk7pV5oKinjSAmWSBs8Jy/DZCvf2HfDQ3gyTj1NQZ?=
- =?us-ascii?Q?97DQLXau0aFKYu/WdlS4xPL+EiQGW8dLtC8h2e9GPTpXNsoDQs8NvRCrQaFX?=
- =?us-ascii?Q?8+pdH0OABBpbo4IZEXg1Hso+uyuCJJJLBHoXUUNnNmdHQQEG7/smM7rOhcPe?=
- =?us-ascii?Q?90qNhAPk8/XhlwGlk/XjmYnIxDp8ziCT4IvnAQ9lWd0I30ShSAIpEsAuMGPc?=
- =?us-ascii?Q?T1vDDaHvkrKW87ODhkID7jq4NnloBcfa2qxZG6e80bWmQCmqhGUelvgOHFDe?=
- =?us-ascii?Q?cYXMAI26cpACaHUPCW6UYFFINBODaCNeofYn46LvDcW5Kvw7CLq72NW/C4JP?=
- =?us-ascii?Q?/V6NYHZwjYmu7VuGRZPhO/YMcAlvg6OfUBDm45b6GSJUzT8iTMkK0PDpcSOr?=
- =?us-ascii?Q?afgnNYpiXohr+rA3bXl1BvRRseDYNpPuwMIK6XrJnM1Gim208ti98g8krsSY?=
- =?us-ascii?Q?+fTJQFQ+JRGCFWzMaHkV4HvlCVV5cDrM1geRvKxfcETx6U9TNH8Dty+X3Kq1?=
- =?us-ascii?Q?hvmwbevkUuKGUvN6cyeu0Dym+uVpO166wxEpWW+18Rl908CUY5iO7lZFVUaC?=
- =?us-ascii?Q?ENQBoHmmVcTYGQmoxE1dgUilOK0bL64+06u3BoD4h+TN5z29eRBXWX00999P?=
- =?us-ascii?Q?LBHtmLn/PJwaD8pSCSOnQWqrvcTL7rnAnB42WEWf9a446A4yyBBOJZiWjfER?=
- =?us-ascii?Q?ergUj3ES5chkzOpCSPQ+j88opxwXgHvAB0S5MyNj4RqA3spJfOaiOf7uxPyz?=
- =?us-ascii?Q?8gGtLzwqZPKwkOaPGrQoA99iK7PM1bWKQ8Vo1knwYskDZ7wB3my/iKg9wFDZ?=
- =?us-ascii?Q?2YN2tO9RTbE5ADOg2b2tNOmWQcFg6efNiQRN9z2hY3oTFamyZF3FqW4Qb/9X?=
- =?us-ascii?Q?TipofeYimMLEgN8lfhbOF99EF1nr01NDujsKnJquSixqOJdC+B/RDFRZkdIl?=
- =?us-ascii?Q?PNaBj1d7PK5zSguSBRAK/9iBWBfWvoXsBJJlGzFp1poO7sYpw4rvtppgrQ01?=
- =?us-ascii?Q?5qeqwsgfXegls36hgWnofiV873q/SQ9iuAYfTy96kuPAwaJuO6Jqd+nVepLK?=
- =?us-ascii?Q?oFT29DMPHj05pdiBqjE3kYmwjU910Jb8GHOhtubdkaPKukN6g9SP3Zsmk5GB?=
- =?us-ascii?Q?yYOY8JRMnD1z/Z3GYihGokMWuW3SKObaIZH1J9xeUCzGVblNj6HzOpqeaDPQ?=
- =?us-ascii?Q?bQoDWp/lc/ukeOpw09KcPlAJcRFmWAf+u4f+ZMXWMWLia7gT76fAw7CbeH5G?=
- =?us-ascii?Q?S/PtwkR9+viRR55wMRxAJqoFEewXW/30fbtyb5n7?=
+	=?us-ascii?Q?zdGEaCQg4qVaRnQtoRl30GBU+HzgZbIgn0shbeQFN6prCUip7DaqMQo5wQiH?=
+ =?us-ascii?Q?5XLa88zMTruvWHBpjt2cKU/CLkagPd/sxUUnnlSQC9LAzAuhNZhUvD1Dw9Qm?=
+ =?us-ascii?Q?sohNju0SvVpoCngqyCYszIpOmjXb1abvhtjb5lNymU4ZHIs2aDz3B261hKP8?=
+ =?us-ascii?Q?69W2lmE9TK1AZDmFN0c2GKUJ34Q8ratL+oo6/pVPj59JRL5WUXHzstxTJ7rA?=
+ =?us-ascii?Q?GH/19K728t6SiEHVC0MbDjjK0SXKdQx4EAqoniqcITVETWCOzvpIVoNcmRoc?=
+ =?us-ascii?Q?lWD9OJWSMlioAxyV9lGORcpkQmfDdn+RbGv/GjFiImOzvrO+0RGvxBXjEm/4?=
+ =?us-ascii?Q?wxbY0Y2R0u7oeN8f9eSwxa2FVpjTeu6AoX11cW4YcxsC7E12w8P4Iq5I2Nxp?=
+ =?us-ascii?Q?6phVhDTovduVnC+gAauLc+vzYTbcQuxHTR05p5uYo7eyHLRYaIrG2VhlVjPd?=
+ =?us-ascii?Q?cK2bgM+QaAf1oEo5yH9/J+jEM9XxKug6/4zTTKaWdHqO+e6wncx9bRvr5Wxj?=
+ =?us-ascii?Q?vCg6Z/FqFHy7tyNZyg138Ih4U3/LlGc45SjdWOaRgXZoZbWR3t1aJ2wbutKa?=
+ =?us-ascii?Q?iykhAPspwntovtg7st/Borx14czozGqyfJcXJPQuB72D1YEDxoxNdZfFqtRb?=
+ =?us-ascii?Q?tL3VHT6K17xsDorsP6XTg+Hy/5NQ7AOUnJSLSDkmkTuGpk9q2EksogZ3R4gI?=
+ =?us-ascii?Q?JHgqMFFYo9a9PYkZOis8Y0fVR9h6lxHBZZZhLRYbEOlOyEWxwuY5fxoyd+Sn?=
+ =?us-ascii?Q?j8g/dlRPF18V1kagaFgd3A4fx3ADf5OTBb3hgqzpBLNmZppQazCA0xfkoBaY?=
+ =?us-ascii?Q?5wCgKvvSH6a6+7FXizasi0BtS9SK5TUzhVvR/jjTpkwU3n7gRNAmLt0UObnq?=
+ =?us-ascii?Q?16M8nd6zHbLxg22QRMSd+/gsYt1US2LgUY1c7O99cu35qc64iHU/bv1nZLl/?=
+ =?us-ascii?Q?vhBnsWxQlAZtqqJA6fV3n/odoPTLlSwj88RswR7ayKxxJpbs1ScDR4CXvaPq?=
+ =?us-ascii?Q?kkMAbzgMFciN8FL5hwgj1n7KW7ZoIb37/dzEebd5fO9Frn7Om3DQ4E4Glf+z?=
+ =?us-ascii?Q?9vVC2VJ0JW8ByiQbER5QdaWL+SrmRsXRAfHYiVv4E4NzLZ2PInL5feJ5aIkc?=
+ =?us-ascii?Q?9VXCyflR7eblQg69smya4Zk8zQin21GDgtMRs9TzEfI1MTp/vBZmff7lM/ND?=
+ =?us-ascii?Q?Gos4Fhgt2D2UPK6m11niU7kw+BjWZYK6KrvYz2cBpNr+b827qHjTpEWaFf+/?=
+ =?us-ascii?Q?u00uL6+wCnuQoGju0B8GU2S5841da3Jz7eS/KeCn2nVeuggS7VA0Cypw5jFr?=
+ =?us-ascii?Q?LxpVHxmozpmpKgIMiZXNb708erq0pZWiuaFhqIAgtjLVlHwr9jsTLRLWtq+s?=
+ =?us-ascii?Q?6uZePT26upX0y5oI1fIFKmmxvMTbrh+2JIxMpHVdQkKMWeFhzBKk8YA1Nqo6?=
+ =?us-ascii?Q?6zKGTgtHOLOT6IEC7Oruyc8xsDu9fIHH+fW3ykT7aNRgmJLeWRPGk3zrnxP+?=
+ =?us-ascii?Q?l78boZJRZb9o4mWQNJH+REVyPj8SXvGkpjcCdCy9w5fD80WSAbVc1vBKChDD?=
+ =?us-ascii?Q?iATbEo7vjqisBlXsgINeK+isYNrBBvv5c3W9ecuJ?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	KDX4WopPXHjzwwpqNYRQm0FdHHKaVqT9DWMzP1iN5wBw2KL/2bdbFnIry+HLUuzK53dW4zHEI83z9+MR+RO/i5h8Z7GQr2GvN1yjRn9lnTVMyDGyCHB8b6YcDN72ZY1Jv92AmQh+8VKEIcyA4XmuAK3Rpx8EpvRbjWCA/q3/1Wvy+LVhQtjz7pm2UWDZJ7DJN9JuduHM5JsPKmrpTwJSzn1C7nSrbU3AGbqc0hRlSVy1HAkAB7xChSnRScuM1YldYObKvpGdGk0PBI+/wNle8y3EdegU3PhisOAMIWSPkyI+AQNfRNENVNvNbgPhPzKaRsShKwdYwpcfh1TmCnaEQWIrT0lcjrQc9y/GT9qDIagsTLhShtIdFoPePcAtp4PtDEeqEY2u1V15MJuxuEeJCrIn7O1EbXiughIA63crcKEXZGtoCY6tPKv+Bsdlsg6jKKDX60y9Eu6J7ubsMzrhreawYodT2QI3061MQLcWua2s9uWj43IJrJnkAj1g4nkMZbvsTxtjeOZ7F2FWSCEe6GDSOBTNJqzlUtxJ+xjLFGimdLMh1iRBKtr2Qn9d2sV2VfGOafWx0R4D88ljxO6HfDsmanWflqkfuz6zLzauM0o=
+	NtXVBDFLs8jNDmBaMBdeZNPs+f7GwjDGygZ1uHoylVH0xdO061C4vE15oid5W7/NtrB7Ui69WxFQYSgkjnFZZdWvqSeU4HUterDSiq8NR3Gs0aOpfcXKn9b3yn9381sMmVVrthbgYjuZ4eT/fZG/RW1SS8zyvyBQc4SSRLXRBYnH1JMXRK3HBrb9s8owe1TlLhqBQpyUthSQkvfn0zNXHLOAs1i1wsFoX3+IB1XqVRDCqcgMTQVFAgJw1a/DyCNrKQFJiEDLbkRdwnjBKlu9/G2l0i+cM0f69MeDWEABiYVSJU5aWY3oAlnVnlvwE2mmUm/heXxSMi915J84lVQxKuGy5L7ZUdpm7Y8YnwcsNYC86t8CdDFhO07kieeA5lG+aDzvBKngMOXWIQ3G0T0JSlErbt9j8Y9tnsmnYCEGk9S5RVqAVwTX3k6vqoE5bd7tMYIqZd6AXJy3ppspAdMp6HMgcJoYfP6zNH2sQtaXwQj8+B9QLGMd+hZ738oTJUd5xUOxrBTT95PWm8uye1mEEsdHl3tE1PMeIxDd9fXsTfAPLnNsNlTcUgCQFHAfrIQrmLrDvDoGl3OM5FLuVvqSrMw7zqBWWkg1HOnCG7cTAUM=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7913f3b2-e9ab-4bf0-843c-08dbfdcc8399
+X-MS-Exchange-CrossTenant-Network-Message-Id: b38cc442-7ce3-4110-0520-08dbfdcc84ba
 X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4705.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2023 00:18:22.7409
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2023 00:18:24.6045
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t1M3i5DbP/GQLtEJ91P7LU1cBI14nwIc2qc1qD+S9ticBfj+RzEZjPnntSUNxA+sykvRIPIzZ9hW2h1R7+Wa8g==
+X-MS-Exchange-CrossTenant-UserPrincipalName: KYGtt67w5qnUuEA5zNiJI8QnGqZOCjgPHgb63YCGfqcjNPeEFmR6mJQxBYFxZ+/fYZC5mBxCVBWyPnZcq78dWw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4287
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
@@ -152,120 +152,123 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 susp
  phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 bulkscore=0
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2312160001
-X-Proofpoint-GUID: RyRIKOhq-371vekGhSInnSXt9DsUwryR
-X-Proofpoint-ORIG-GUID: RyRIKOhq-371vekGhSInnSXt9DsUwryR
+X-Proofpoint-GUID: N2Mj9uayuZU7-LjW-iEpx3cA8ZClGN7k
+X-Proofpoint-ORIG-GUID: N2Mj9uayuZU7-LjW-iEpx3cA8ZClGN7k
 
 EXPERIMENTAL - NOT INTENDED FOR SUBMISSION
 
-This "patch" is a proof of concept for over-riding a tasks "Preferred Node
-Affinity". It is not intended for submission, but simply to show the code
-used in generating the included results.
+Adds a simple prctl() interface to the preferred node affinity test code.
 
 Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
 ---
- include/linux/sched.h |  1 +
- init/init_task.c      |  1 +
- kernel/sched/core.c   |  5 ++++-
- kernel/sched/debug.c  |  1 +
- kernel/sched/fair.c   | 17 ++++++++++++++---
- 5 files changed, 21 insertions(+), 4 deletions(-)
+ include/uapi/linux/prctl.h |  9 ++++++
+ kernel/sys.c               | 66 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 8d258162deb0..6e7290468fa5 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1279,6 +1279,7 @@ struct task_struct {
- 	short				pref_node_fork;
- #endif
- #ifdef CONFIG_NUMA_BALANCING
-+	int				numa_preferred_nid_force;
- 	int				numa_scan_seq;
- 	unsigned int			numa_scan_period;
- 	unsigned int			numa_scan_period_max;
-diff --git a/init/init_task.c b/init/init_task.c
-index 5727d42149c3..a1797037af7e 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -174,6 +174,7 @@ struct task_struct init_task
- 	.vtime.state	= VTIME_SYS,
- #endif
- #ifdef CONFIG_NUMA_BALANCING
-+	.numa_preferred_nid_force = NUMA_NO_NODE,
- 	.numa_preferred_nid = NUMA_NO_NODE,
- 	.numa_group	= NULL,
- 	.numa_faults	= NULL,
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index db4be4921e7f..1444dd0207aa 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9380,7 +9380,10 @@ void sched_setnuma(struct task_struct *p, int nid)
- 	if (running)
- 		put_prev_task(rq, p);
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 370ed14b1ae0..6c8f6c0156d8 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -293,6 +293,15 @@ struct prctl_mm_map {
  
--	p->numa_preferred_nid = nid;
-+        if (p->numa_preferred_nid_force != NUMA_NO_NODE)
-+		p->numa_preferred_nid = p->numa_preferred_nid_force;
-+	else
-+		p->numa_preferred_nid = nid;
+ #define PR_GET_AUXV			0x41555856
  
- 	if (queued)
- 		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 168eecc209b4..fecf529c9dc7 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -978,6 +978,7 @@ static void sched_show_numa(struct task_struct *p, struct seq_file *m)
- 		P(mm->numa_scan_seq);
++/*
++ * This is experimental and placed out of order to keep surrounding context
++ * the same in the presence of new prctls. Thus the patch should just apply.
++ */
++#define PR_PREFERRED_NID		101
++# define PR_PREFERRED_NID_GET		0
++# define PR_PREFERRED_NID_SET		1
++# define PR_PREFERRED_NID_CMD_MAX	2
++
+ #define PR_SET_MEMORY_MERGE		67
+ #define PR_GET_MEMORY_MERGE		68
  
- 	P(numa_pages_migrated);
-+	P(numa_preferred_nid_force);
- 	P(numa_preferred_nid);
- 	P(total_numa_faults);
- 	SEQ_printf(m, "current_node=%d, numa_group_id=%d\n",
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index bcea3d55d95d..988b3285f40c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -2541,9 +2541,14 @@ static void numa_migrate_preferred(struct task_struct *p)
- 	unsigned long interval = HZ;
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 420d9cb9cc8e..6dca12da6ade 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2406,6 +2406,67 @@ static inline int prctl_set_mdwe(unsigned long bits, unsigned long arg3,
+ 	return 0;
+ }
  
- 	/* This task has no NUMA fault statistics yet */
--	if (unlikely(p->numa_preferred_nid == NUMA_NO_NODE || !p->numa_faults))
-+	if (unlikely(p->numa_preferred_nid == NUMA_NO_NODE))
- 		return;
- 
-+	if (p->numa_preferred_nid_force == NUMA_NO_NODE) {
-+		if (unlikely(!p->numa_faults))
-+			return;
++#ifdef CONFIG_NUMA_BALANCING
++
++void sched_setnuma(struct task_struct *p, int node);
++
++static int prctl_chg_pref_nid(unsigned long cmd, int nid, pid_t pid, unsigned long uaddr)
++{
++	struct task_struct *task;
++	int err = 0;
++
++	if (cmd >= PR_PREFERRED_NID_CMD_MAX)
++		return -ERANGE;
++
++	rcu_read_lock();
++	if (pid == 0) {
++		task = current;
++	} else {
++		task = find_task_by_vpid((pid_t)pid);
++		if (!task) {
++			rcu_read_unlock();
++			return -ESRCH;
++		}
++	}
++	get_task_struct(task);
++	rcu_read_unlock();
++
++	/*
++	 * Check if this process has the right to modify the specified
++	 * process. Use the regular "ptrace_may_access()" checks.
++	 */
++	if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
++		err = -EPERM;
++		goto out;
 +	}
 +
- 	/* Periodically retry migrating the task to the preferred node */
- 	interval = min(interval, msecs_to_jiffies(p->numa_scan_period) / 16);
- 	p->numa_migrate_retry = jiffies + interval;
-@@ -3462,7 +3467,10 @@ void init_numa_balancing(unsigned long clone_flags, struct task_struct *p)
- 
- 	/* New address space, reset the preferred nid */
- 	if (!(clone_flags & CLONE_VM)) {
--		p->numa_preferred_nid = NUMA_NO_NODE;
-+		if (p->numa_preferred_nid_force == NUMA_NO_NODE)
-+			p->numa_preferred_nid = NUMA_NO_NODE;
-+		else
-+			p->numa_preferred_nid = p->numa_preferred_nid_force;
- 		return;
- 	}
- 
-@@ -8828,7 +8836,10 @@ static int migrate_degrades_locality(struct task_struct *p, struct lb_env *env)
- 	if (!static_branch_likely(&sched_numa_balancing))
- 		return -1;
- 
--	if (!p->numa_faults || !(env->sd->flags & SD_NUMA))
-+	if (p->numa_preferred_nid_force == NUMA_NO_NODE && !p->numa_faults)
-+		return -1;
++	switch (cmd) {
++	case PR_PREFERRED_NID_GET:
++		if (uaddr & 0x3) {
++			err = -EINVAL;
++			goto out;
++		}
++		err = put_user(task->numa_preferred_nid_force, (int __user *)uaddr);
++		break;
 +
-+	if (!(env->sd->flags & SD_NUMA))
- 		return -1;
- 
- 	src_nid = cpu_to_node(env->src_cpu);
++	case PR_PREFERRED_NID_SET:
++		if (!(-1 <= nid && nid < num_possible_nodes())) {
++			pr_err("prctl_chg_pref_nid: %d error\n", nid);
++			err = -EINVAL;
++			goto out;
++		}
++
++		task->numa_preferred_nid_force = nid;
++		sched_setnuma(task, nid);
++		break;
++	}
++
++out:
++	put_task_struct(task);
++	return err;
++}
++#endif /* CONFIG_NUMA_BALANCING */
++
+ static inline int prctl_get_mdwe(unsigned long arg2, unsigned long arg3,
+ 				 unsigned long arg4, unsigned long arg5)
+ {
+@@ -2698,6 +2759,11 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 	case PR_SCHED_CORE:
+ 		error = sched_core_share_pid(arg2, arg3, arg4, arg5);
+ 		break;
++#endif
++#ifdef CONFIG_NUMA_BALANCING
++	case PR_PREFERRED_NID:
++		error = prctl_chg_pref_nid(arg2, arg3, arg4, arg5);
++		break;
+ #endif
+ 	case PR_SET_MDWE:
+ 		error = prctl_set_mdwe(arg2, arg3, arg4, arg5);
 -- 
 2.39.3
 
