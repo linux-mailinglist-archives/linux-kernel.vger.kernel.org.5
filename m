@@ -1,114 +1,153 @@
-Return-Path: <linux-kernel+bounces-2213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7757815998
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:51:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 337618159A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 177C11C216C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:51:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E63472857A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169D92208B;
-	Sat, 16 Dec 2023 13:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD8A2D7A9;
+	Sat, 16 Dec 2023 13:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="IoXaWU4d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SFaL9Tny"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8152C6A9;
-	Sat, 16 Dec 2023 13:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=dSsrLnhvQMh6fed+BTCDMZIum7s58eYFEwcQNJr4BqE=; b=IoXaWU4dUaeDmsuhAoOpjm0sd1
-	HKoOolEwFK2gD1iF5p99cML3WccY5XjkOnhu4UMZKmToZqqCH+hiLjvMN9jBKK+dYfDMAm1zXNA4W
-	6Mk+75xgCTm+tulWvITlE4xFal1mtk7fzv9ibLC7TU9P9Fb4ljxK7g0J+mEijHuAOhf7iQkpgWbAQ
-	1kZhD08zTk9W7asMgGI+tx9/oDwtlCzpx8sbvqJ6vsak5wKTn6ji4hH12MjxiN/edLqTJnk3J+/ar
-	pVv7Tl243xLUkI7wK8ZVuvXfjwU9bQd8EfYiXFinqZNN1QluCuZw9iN+m2GvZ+XgvSdPHfDsK70R4
-	h3akB9TQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55866)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rEV4X-0003ms-22;
-	Sat, 16 Dec 2023 13:51:17 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rEV4V-0004i2-WF; Sat, 16 Dec 2023 13:51:16 +0000
-Date: Sat, 16 Dec 2023 13:51:15 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Jie Luo <quic_luoj@quicinc.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, hkallweit1@gmail.com, corbet@lwn.net,
-	p.zabel@pengutronix.de, f.fainelli@gmail.com,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	Christian Marangi <ansuelsmth@gmail.com>
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Message-ID: <ZX2rU5OFcZFyBmGl@shell.armlinux.org.uk>
-References: <20231215074005.26976-1-quic_luoj@quicinc.com>
- <20231215074005.26976-15-quic_luoj@quicinc.com>
- <60b9081c-76fa-4122-b7ae-5c3dcf7229f9@lunn.ch>
- <a65ad12d-b990-4439-b196-903f4a5f096a@quicinc.com>
- <f5c5cbce-c36e-498a-97e2-35f06d927d74@lunn.ch>
- <a9798333-3105-422f-8033-76c0b1d4f439@quicinc.com>
- <7c05b08a-bb6d-4fa1-8cee-c1051badc9d9@lunn.ch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD1F288AE;
+	Sat, 16 Dec 2023 13:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1317496a12.1;
+        Sat, 16 Dec 2023 05:56:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702734991; x=1703339791; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d+QKSwtAIEuecoULCNbymDGc4MmnFHIZxwHr8KNV/bw=;
+        b=SFaL9TnyUyG4IPwikOl6FCuDYqfUUDEMZbTkywhOxY98ok//mmxQzO0aWgeq6ivGRh
+         4qLFhb9BMYalGWPXZLyHrndyKSpHqDJes9ltiurFFPBg5AIxdLc+3otsrRFJfpXY2ApT
+         OJ/6ZySx/9biC+X19s/yMmuDlZnvF4s/PHL471iXG+kdLCiV3lFgKox2xKAHJp1Gonxo
+         DdsA6YaKGujCBlCOugMnhlhpIIHL0egkYx/mQa3KdtnXXpQbmrNTFXWmSDGkz3c93vRu
+         5RWKlg6CVbUNVo9t9Cc6EyXRt0tjOZCRa444bFpEeztVKMGZbAEvZaVJDk4Gnv3FazVs
+         8ItQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702734991; x=1703339791;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d+QKSwtAIEuecoULCNbymDGc4MmnFHIZxwHr8KNV/bw=;
+        b=I3XM6yYlfo6FiaBe9nJGuZVGDnoBhCETb499pwxYrgeTt1c0M6DDMCo/WbWiRIUJIx
+         xo5vnrLfB5R0TYmQ701Dk8py7gi+f4WO/7SUaXmQS2QG3m+FfNUWZPoZ4vZAcSiqVtur
+         UUEqtt9sNRCUrMH16jSwdXlaKiu7a2CDRQcaXgGb3Fec5UUefBDj768I1xDRzBUH3E7p
+         mng4jXXEouLvzbZFHwBhQBBAe7yEIMrqsryYlxEiubHRv/mwLHiUdE5HOJThJEfkM0gc
+         phaznnMOhaqznAgbPwMD1Pxxf9EOjad9JJORyBsxSWrnEGpaBBqjXP5Od6RpjvjGF/Ja
+         QWUg==
+X-Gm-Message-State: AOJu0YwTMn7/6qFll7Y86Bm5298jdHxKPeto+tzGsbT8IXLTzU0TXNo2
+	D2fUdTjgThLUouESsqKoRhE=
+X-Google-Smtp-Source: AGHT+IEvyd9u/4I3Ib/Kj8Ccrn9JnHOTcgSpSuZTPny6sk8cJ2XeXf+zI8WOCSUg/vamTGy38bBXqw==
+X-Received: by 2002:a05:6a20:54a9:b0:190:1c0:1c25 with SMTP id i41-20020a056a2054a900b0019001c01c25mr17329292pzk.91.1702734991213;
+        Sat, 16 Dec 2023 05:56:31 -0800 (PST)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id kb1-20020a17090ae7c100b00286e9bec1efsm18039549pjb.33.2023.12.16.05.56.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Dec 2023 05:56:30 -0800 (PST)
+Message-ID: <08b3f964-a66e-483d-81dd-4f6f8f61bdbd@gmail.com>
+Date: Sat, 16 Dec 2023 10:56:25 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c05b08a-bb6d-4fa1-8cee-c1051badc9d9@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rust: support `srctree`-relative links
+Content-Language: en-US
+To: Miguel Ojeda <ojeda@kernel.org>, Wedson Almeida Filho
+ <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+ FUJITA Tomonori <fujita.tomonori@gmail.com>
+References: <20231215235428.243211-1-ojeda@kernel.org>
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20231215235428.243211-1-ojeda@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Dec 16, 2023 at 11:21:53AM +0100, Andrew Lunn wrote:
-> > The following is the chip package, the chip can work on the switch mode
-> > like the existed upstream code qca8k, where PHY1-PHY4 is connected with
-> > MAC1-MAC4 directly;
+On 12/15/23 20:54, Miguel Ojeda wrote:
+> Some of our links use relative paths in order to point to files in the
+> source tree, e.g.:
 > 
-> Ah, that is new information, and has a big effect on the design.
+>      //! C header: [`include/linux/printk.h`](../../../../include/linux/printk.h)
+>      /// [`struct mutex`]: ../../../../include/linux/mutex.h
+> 
+> These are problematic because they are hard to maintain and do not support
+> `O=` builds.
+> 
+> Instead, provide support for `srctree`-relative links, e.g.:
+> 
+>      //! C header: [`include/linux/printk.h`](srctree/include/linux/printk.h)
+>      /// [`struct mutex`]: srctree/include/linux/mutex.h
+> 
+> The links are fixed after `rustdoc` generation to be based on the absolute
+> path to the source tree.
+> 
+> Essentially, this is the automatic version of Tomonori's fix [1],
+> suggested by Gary [2].
+> 
+> Suggested-by: Gary Guo <gary@garyguo.net>
+> Reported-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+> Closes: https://lore.kernel.org/r/20231026.204058.2167744626131849993.fujita.tomonori@gmail.com [1]
+> Fixes: 48fadf440075 ("docs: Move rustdoc output, cross-reference it")
+> Link: https://lore.kernel.org/rust-for-linux/20231026154525.6d14b495@eugeo/ [2]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+>   Documentation/rust/coding-guidelines.rst | 13 +++++++++++++
+>   rust/Makefile                            |  3 ++-
+>   rust/kernel/error.rs                     |  2 +-
+>   rust/kernel/ioctl.rs                     |  2 +-
+>   rust/kernel/kunit.rs                     |  2 +-
+>   rust/kernel/print.rs                     |  8 ++++----
+>   rust/kernel/sync/condvar.rs              |  2 +-
+>   rust/kernel/sync/lock/mutex.rs           |  2 +-
+>   rust/kernel/sync/lock/spinlock.rs        |  2 +-
+>   rust/kernel/task.rs                      |  2 +-
+>   rust/kernel/workqueue.rs                 |  2 +-
+>   rust/macros/lib.rs                       |  2 +-
+>   12 files changed, 28 insertions(+), 14 deletions(-)
+> 
+> diff --git a/Documentation/rust/coding-guidelines.rst b/Documentation/rust/coding-guidelines.rst
+> index aa8ed082613e..05542840b16c 100644
+> [...]
+> diff --git a/rust/Makefile b/rust/Makefile
+> index 543b37f6c77f..73ea24117f07 100644
+> --- a/rust/Makefile
+> +++ b/rust/Makefile
+> @@ -98,7 +98,8 @@ rustdoc: rustdoc-core rustdoc-macros rustdoc-compiler_builtins \
+>   	$(Q)find $(rustdoc_output) -name '*.html' -type f -print0 | xargs -0 sed -Ei \
+>   		-e 's:rust-logo-[0-9a-f]+\.svg:logo.svg:g' \
+>   		-e 's:favicon-[0-9a-f]+\.svg:logo.svg:g' \
+> -		-e 's:<link rel="alternate icon" type="image/png" href="[/.]+/static\.files/favicon-(16x16|32x32)-[0-9a-f]+\.png">::g'
+> +		-e 's:<link rel="alternate icon" type="image/png" href="[/.]+/static\.files/favicon-(16x16|32x32)-[0-9a-f]+\.png">::g' \
+> +		-e 's:<a href="srctree/([^"]+)">:<a href="$(abs_srctree)/\1">:g'
 
-This QCA8084 that's being proposed in these patches is not a PHY in
-itself, but is a SoC. I came across this:
+Another way would be to not put `srctree` in the link and add
+`abs_srctree` here to directories that are in `srctree`. But that might
+be too wonky to rely on so this will be the way to go.
 
- https://www.rt-rk.com/android-tv-solution-tv-in-smartphone-pantsstb-based-on-qualcomm-soc-design/
+>   	$(Q)for f in $(rustdoc_output)/static.files/rustdoc-*.css; do \
+>   		echo ".logo-container > img { object-fit: contain; }" >> $$f; done
+>   
+> [...]
 
-It's sounding like what we have here is some PHY IP that is integrated
-into a larger SoC, and the larger SoC needs to be configured so the
-PHY IP can work correctly.
-
-Given that this package of four PHYs seems to be rather unique, I think
-we need Jie Luo to provide sufficient information so we can understand:
-
-1) this package of four PHYs itself
-2) how this package is integrated into the SoC
-
-Specifically, what resets and clocks are controlled from within the
-package's register space, which are external to the package
-register space (and thus are provided by other IPs in the SoC).
-
-As I've said previously, the lack of DT example doesn't help to further
-our understanding. The lack of details of what the package encompases
-also doesn't help us understand the hardware.
-
-Unless we can gain that understanding, I feel that Jie Luo's patches
-are effectively unreviewable and can't be accepted into mainline.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 
