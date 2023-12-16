@@ -1,98 +1,87 @@
-Return-Path: <linux-kernel+bounces-1922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AA448155E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:17:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8DFC8155E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:17:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8CD6B23F02
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:17:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 586731F255A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04362110B;
-	Sat, 16 Dec 2023 01:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P1+t8tUS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57FDE17FE;
+	Sat, 16 Dec 2023 01:17:15 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7819A10FE;
-	Sat, 16 Dec 2023 01:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702689415; x=1734225415;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Uu/DuVeOYQ8cy5ChNWdZWy4tzkcdqBmvZKljPoGxouA=;
-  b=P1+t8tUSa6V8ChZpa8Peuf3IOdntlWwfnbbuiKlqmCPc2pchZphsCGIe
-   NyV/s/gIzGPbgZ47WxogjnGcolzkqviyG2hYztwYmIzZdwaf+Pmb4cyJg
-   HOgpxGMNUCA7ejcPOlLS+LBENpZ5wZjUAUVzlSHQPhMSnitz714olI68J
-   2v2/G42E1SvEboTiLak5UBYpubz1cq976waHB5qkjWcnRjFrSvfsuOWle
-   9X271oP9N60LPU3VWw0e/o6qnCl2dIEl2uKIAb87sTxb/sUrUvVexI2gI
-   KIXwAE1VEvQiSFTX4lJD1lyBmx45eEf9PYcquNyZ3ZaU0VkvAgB/KFUcP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="392520044"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="392520044"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 17:16:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="948139340"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="948139340"
-Received: from simmons1-mobl5.amr.corp.intel.com (HELO rjingar-desk5.intel.com) ([10.213.162.133])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 17:16:53 -0800
-From: rjingar <rajvi.jingar@linux.intel.com>
-To: irenic.rajneesh@gmail.com,
-	david.e.box@intel.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	markgross@kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: rajvi.jingar@linux.intel.com
-Subject: [PATCH 1/2] platform/x86/intel/pmc: Fix hang in pmc_core_send_ltr_ignore()
-Date: Fri, 15 Dec 2023 17:16:50 -0800
-Message-Id: <20231216011650.1973941-1-rajvi.jingar@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F18B29AD;
+	Sat, 16 Dec 2023 01:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rEJIU-0001k3-0O;
+	Sat, 16 Dec 2023 01:16:55 +0000
+Date: Sat, 16 Dec 2023 01:16:51 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Conor Dooley <conor@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chunfeng Yun <chunfeng.yun@mediatek.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Mark Lee <Mark-MC.Lee@mediatek.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexander Couzens <lynxis@fe80.eu>,
+	Qingfang Deng <dqfext@gmail.com>,
+	SkyLake Huang <SkyLake.Huang@mediatek.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH net-next v3 1/8] dt-bindings: phy:
+ mediatek,xfi-pextp: add new bindings
+Message-ID: <ZXz6g0Su-kNPA3rX@makrotopia.org>
+References: <cover.1702352117.git.daniel@makrotopia.org>
+ <b875f693f6d4367a610a12ef324584f3bf3a1c1c.1702352117.git.daniel@makrotopia.org>
+ <20231212-renderer-strobe-2b46652cd6e7@spud>
+ <ZXiNhSYDbowUiNvy@makrotopia.org>
+ <c9605d38-e4b8-477d-84d8-de7b4dedd1f1@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9605d38-e4b8-477d-84d8-de7b4dedd1f1@lunn.ch>
 
-From: Rajvi Jingar <rajvi.jingar@linux.intel.com>
+On Wed, Dec 13, 2023 at 02:20:45PM +0100, Andrew Lunn wrote:
+> > Because it is only present in one of the two SerDes channels.
+> > Channel 0 needs the work-around, Channel 1 doesn't.
+> 
+> Does the channel know its own number?
 
-For input value 0, PMC stays unassigned which causes crash while trying
-to access PMC for register read/write. Include LTR index 0 in pmc_index
-and ltr_index calculation.
+As far as I know we can't infer the channel number by any of the
+registers default values.
 
-Fixes: 2bcef4529222 ("platform/x86:intel/pmc: Enable debugfs multiple PMC support")
-Signed-off-by: Rajvi Jingar <rajvi.jingar@linux.intel.com>
----
- drivers/platform/x86/intel/pmc/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
-index 983e3a8f4910..55eb6a4683fb 100644
---- a/drivers/platform/x86/intel/pmc/core.c
-+++ b/drivers/platform/x86/intel/pmc/core.c
-@@ -474,7 +474,7 @@ int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value)
- 	 * is based on the contiguous indexes from ltr_show output.
- 	 * pmc index and ltr index needs to be calculated from it.
- 	 */
--	for (pmc_index = 0; pmc_index < ARRAY_SIZE(pmcdev->pmcs) && ltr_index > 0; pmc_index++) {
-+	for (pmc_index = 0; pmc_index < ARRAY_SIZE(pmcdev->pmcs) && ltr_index >= 0; pmc_index++) {
- 		pmc = pmcdev->pmcs[pmc_index];
- 
- 		if (!pmc)
--- 
-2.34.1
-
+We could infer it from the base address, and that would kinda defy the
+purpose of having Device Tree to begin with in my feeling at least,
+but it would be possible, of course.
 
