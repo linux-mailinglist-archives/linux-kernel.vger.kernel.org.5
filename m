@@ -1,86 +1,78 @@
-Return-Path: <linux-kernel+bounces-2401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB3DD815CA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6CA1815CA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:58:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A20AB20AB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 23:58:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46B55B21479
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 23:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC9737D07;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECD337D1C;
 	Sat, 16 Dec 2023 23:58:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6BB73035B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FE2374D7
 	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 23:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7317a556cso338500339f.3
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fa5849db5so3846375ab.1
         for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 15:58:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702771102; x=1703375902;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CU1fCdRSKLUYFxXvXY/GaJOQx9UoYbtAgRwpZ31wxfI=;
-        b=XPrt+IHdCUwvA2ZGpHh0wBir4aiaP91vi9qON4xPGz/d3vqirYkOcoFwroNjGm8XDi
-         PWAWxz+f1AqYl5x4nQ+j63GwZP9OJySGtwYATDwUZlivKfWaVahgMjsO/DeXj+y47mbg
-         BSTs6TKiVhl3d7iZmqwAKILXLk3/waNmggNYsRFUc1xZDqkrQqaWoXAarfsEpIF97dY6
-         RvFbe7UqBaGLhNtnXWVAXxIuQaZuVjso9SirGOtD6HHXWboYUaxHor7FXyBU+GzDCtcs
-         jmZ0A1bl4U+iNOC+zmJ29cXKQiRFsGemPS1B/HUf1J90/tlRIXkbdOGoaMxPspbtQgK/
-         LmAw==
-X-Gm-Message-State: AOJu0YwGQ4gyOJAQZGDfq6vuuVD0Fh1IMSaVWUZ0m9BzYvPG5EpmgBGq
-	60eAZQGDQESs62oqzDGEFd+cyuE+POEAKv/50DVA866qhrOA
-X-Google-Smtp-Source: AGHT+IHcC0En6nacMUficHFOKTR82apdlEfzqmwf3wVqLox3BcwrH7ZsFv+cm5infKCHM6YUcmVJ8hUqfsgEiOJF9AKcmhyN0SXg
+        bh=GXhFawib27R3jHDx5b2dSN5ZKTfu8QWKSOK8v/6Ndas=;
+        b=ENYqVaZYquucV4w9CRSLnt6QDLG0tGdw5dQgXnOMwaqd3biuLMFXg3jOcccq1KmL37
+         OG4Kx7EdXMmsvavWzonAG8Rw1ADK901l+t4nIzbe/WKX32K1mHavkCigpj7rQS7qG7Iq
+         HzxuraHutmOVXbe94/1pAVABDEmvbIWgCxhed7V7IGxrH1miAQlsJWh9w6v4Eu6RevMc
+         BYug+fW2fWFTCsZi5F4oY81H5y/8uzoIpSgrh1QfPG4sAMOn0PvXsf88CgCPrVEMM5a2
+         p6lRC92830bpB1DoNUMoYJfq7FVGwp+cm08bI2PfH5ioVXShsrcKJrE+MDWp6JYs6Ub1
+         oGWw==
+X-Gm-Message-State: AOJu0Yx8c9VqI3lfEu/0qFRZPpvxiQPUCfovfMKHVWNMHtwQFKUNeftz
+	r2wW9+NSpDD4gpk4Ke5DG0R1YsQrhyE7z5B7RVRpcTJFxByJ
+X-Google-Smtp-Source: AGHT+IHxxvSt9Thw+8a4IeIgi6GYmDA47KQfRcAExphPlmdjJxGJkO7YEVOvyYREaa71ZvP1mbONIBc6lmhaY9m8GmunwtkGlXGf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:411c:b0:468:fc2b:d008 with SMTP id
- ay28-20020a056638411c00b00468fc2bd008mr775933jab.1.1702771101976; Sat, 16 Dec
- 2023 15:58:21 -0800 (PST)
-Date: Sat, 16 Dec 2023 15:58:21 -0800
+X-Received: by 2002:a92:6408:0:b0:35f:535a:9c64 with SMTP id
+ y8-20020a926408000000b0035f535a9c64mr306638ilb.3.1702771102180; Sat, 16 Dec
+ 2023 15:58:22 -0800 (PST)
+Date: Sat, 16 Dec 2023 15:58:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aad375060ca94afe@google.com>
-Subject: [syzbot] Monthly input report (Dec 2023)
-From: syzbot <syzbot+list4a3f2b317d71e1c2ae57@syzkaller.appspotmail.com>
-To: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+Message-ID: <000000000000adf052060ca94ae3@google.com>
+Subject: [syzbot] Monthly kvm report (Dec 2023)
+From: syzbot <syzbot+listea04bedb19a9215eca12@syzkaller.appspotmail.com>
+To: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello input maintainers/developers,
+Hello kvm maintainers/developers,
 
-This is a 31-day syzbot report for the input subsystem.
+This is a 31-day syzbot report for the kvm subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/input
+https://syzkaller.appspot.com/upstream/s/kvm
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 12 issues are still open and 51 have been fixed so far.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 3 issues are still open and 108 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 3953    Yes   WARNING in input_mt_init_slots
-                  https://syzkaller.appspot.com/bug?extid=0122fa359a69694395d5
-<2> 944     Yes   WARNING in implement
-                  https://syzkaller.appspot.com/bug?extid=38e7237add3712479d65
-<3> 322     No    possible deadlock in evdev_pass_values (2)
-                  https://syzkaller.appspot.com/bug?extid=13d3cb2a3dc61e6092f5
-<4> 138     Yes   WARNING in cm109_urb_irq_callback/usb_submit_urb
-                  https://syzkaller.appspot.com/bug?extid=2d6d691af5ab4b7e66df
-<5> 67      Yes   INFO: task hung in uhid_char_release
-                  https://syzkaller.appspot.com/bug?extid=8fe2d362af0e1cba8735
-<6> 38      Yes   WARNING in bcm5974_start_traffic/usb_submit_urb
-                  https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
-<7> 2       No    WARNING in cm109_input_open/usb_submit_urb (2)
-                  https://syzkaller.appspot.com/bug?extid=2e305789579d76b5c253
+<1> 144     Yes   WARNING in handle_exception_nmi (2)
+                  https://syzkaller.appspot.com/bug?extid=4688c50a9c8e68e7aaa1
+<2> 24      Yes   WARNING in kvm_mmu_notifier_invalidate_range_start (3)
+                  https://syzkaller.appspot.com/bug?extid=c74f40907a9c0479af10
+<3> 2       Yes   WARNING in kvm_mmu_notifier_change_pte
+                  https://syzkaller.appspot.com/bug?extid=81227d2bd69e9dedb802
 
 ---
 This report is generated by a bot. It may contain errors.
