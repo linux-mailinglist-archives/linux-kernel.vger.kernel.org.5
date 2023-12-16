@@ -1,140 +1,229 @@
-Return-Path: <linux-kernel+bounces-2399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 901C3815C9B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:54:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84958815C9E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:55:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B43CF1C2134C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 23:54:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C81C284365
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 23:55:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F19381A8;
-	Sat, 16 Dec 2023 23:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300BF37D08;
+	Sat, 16 Dec 2023 23:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="wNqrlGwC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r8YvkXZ+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2719E37D25
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 23:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e23c620e8so1355930e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 15:54:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702770863; x=1703375663; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WntJQyn9d0EfCk0SDSkeTZwQkNZHb3LF+mvl4Xb0xIU=;
-        b=wNqrlGwC3Sf+PGExqMprov2He6/QVoAfCREWXLMHLXBNgbdhd4fMjmD6zmG9Iy00Q7
-         d3DUp1fLli3E1l974m3DhCegxkNY7kkumSX8akgCQss4GpuNrhHjPJBUJdyETRcGpOeX
-         6zbHOmzQMJbHKGx0EYJE8XR0eU5Kmr1u9VumobVNk14AfC6leaN/KKODGpml+Beu/AOH
-         yVYsazmfP8d4K+pIVF6ZPxl7DqM9obhHJyQSV/iwlRX5KWBMwEMlRwvujBggKPbyffnG
-         cpaYFlkwLeYw2gzJueSXplWLad0eId7LpSYxKFezeKwbv4Os0ZIJsnGVpCat/gDxu68U
-         pMSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702770863; x=1703375663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WntJQyn9d0EfCk0SDSkeTZwQkNZHb3LF+mvl4Xb0xIU=;
-        b=Y1y1c0JThpiTtng27dqok/fm+Nc2T4cVxpdQPLUPDBMrJREIbR2zvVT9Tb52lCOpIb
-         gfavEmswGOdn9DRz7l/GcGhhjCUUkIy55OsHJnZK9Tc1P+soV42B1zTg8VEpFfH2qDEH
-         UlMtzhAX0BwdK2fOaEnRq8BUVTL2o6C5osGywZAr3PEZVhishOINTMV0C9dBIYVzZ8F/
-         O2iBwP89f/QfHCn9lXhLHQ05jeAe10CGJt/ZdkhwD+uflNOdeiTx+lwe7brhd0M8X+IP
-         Ngxhrkq7VNqORlDzNlT4SMQ4MIOqwDo7tKz6r9OzDcGCYADZm2VkVpR/qkDQrNZ0rS+w
-         +UVA==
-X-Gm-Message-State: AOJu0YyttsSbtzq1Wx/AF3V2l4AUK14VPE5AXp9gFTIvx1AKb3ailimM
-	rrxUPFtPmVR92jMH8bBWLYsbkz9X99QvECbol8QFeOFKKw/zwEgV
-X-Google-Smtp-Source: AGHT+IE1/jRA2wUT3JVq0cBsvdnJ3jWI+itVMLElTEFYL5LSRsq0y7RSLiNPanS6wpM7Qe6VZVATfsJEmkHB+pXeq3Q=
-X-Received: by 2002:a05:6512:b9c:b0:50c:180:2162 with SMTP id
- b28-20020a0565120b9c00b0050c01802162mr7539695lfv.99.1702770862548; Sat, 16
- Dec 2023 15:54:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5113D39ADF;
+	Sat, 16 Dec 2023 23:55:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61AA1C433C8;
+	Sat, 16 Dec 2023 23:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702770909;
+	bh=jUWCpQuntd7FLZ5VSvblzKYwGE3d0UrsZ5sCSburff4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r8YvkXZ+g+79moR5UrJbKEVmttUNh0VC3orUH1inTDoh4QrTY0xYJSiCjOY0+Sa/u
+	 ifenv2hVyrBHS2iWoOxLC7C0rj/T57R7I2LcbwGMuJVbdRQuVWy4Sg+l+tUtfnNySO
+	 R7UYfZ2/D8OUG2jMpkNwFW/D2WpfzA5m0NFrEQXJXpEbyebMcbdLRfobjzHhm9z32F
+	 +ks3eMaF1YkBCxcuwesnSnwSqxYT/axFlBMefhaIp53uJ1VAUc+ZShZVWpt+VHUPXe
+	 ohot3Dql1+eU4WbVtrG1LEiJtBhNpZCbIVnp/9Lr2x+II2/khXim3yJwXsjyHnICit
+	 Z6n2Jde364EWA==
+Date: Sat, 16 Dec 2023 23:55:04 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Marcelo Schmitt <marcelo.schmitt@analog.com>
+Cc: apw@canonical.com, joe@perches.com, dwaipayanray1@gmail.com,
+	lukas.bulwahn@gmail.com, paul.cercueil@analog.com,
+	Michael.Hennerich@analog.com, lars@metafoo.de, jic23@kernel.org,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, dan.carpenter@linaro.org,
+	dlechner@baylibre.com, marcelo.schmitt1@gmail.com,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 12/15] dt-bindings: iio: Add AD7091R-8
+Message-ID: <20231216-curfew-sandbox-69a0aac58010@spud>
+References: <cover.1702746240.git.marcelo.schmitt1@gmail.com>
+ <7c725dbb0ddeeec77d56bb67c77e819b4ba78e2e.1702746240.git.marcelo.schmitt1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205024310.1593100-1-atishp@rivosinc.com> <20231205024310.1593100-3-atishp@rivosinc.com>
- <20231207-professed-component-84128c06befa@wendy> <CAAhSdy1vqGHeEMStu8Ft2Cz-_c=9e8ciwo9nBh=CDnEejEvp9w@mail.gmail.com>
-In-Reply-To: <CAAhSdy1vqGHeEMStu8Ft2Cz-_c=9e8ciwo9nBh=CDnEejEvp9w@mail.gmail.com>
-From: Atish Kumar Patra <atishp@rivosinc.com>
-Date: Sat, 16 Dec 2023 15:54:11 -0800
-Message-ID: <CAHBxVyFZvXo8pDLz_6jbowQt49N377WaRif55ZdQoq_WB5NTgg@mail.gmail.com>
-Subject: Re: [RFC 2/9] drivers/perf: riscv: Add a flag to indicate SBI v2.0 support
-To: Anup Patel <anup@brainfault.org>
-Cc: Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
-	Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Th6k7RUxHz5pajtC"
+Content-Disposition: inline
+In-Reply-To: <7c725dbb0ddeeec77d56bb67c77e819b4ba78e2e.1702746240.git.marcelo.schmitt1@gmail.com>
+
+
+--Th6k7RUxHz5pajtC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 4:16=E2=80=AFAM Anup Patel <anup@brainfault.org> wr=
-ote:
->
-> On Thu, Dec 7, 2023 at 5:39=E2=80=AFPM Conor Dooley <conor.dooley@microch=
-ip.com> wrote:
-> >
-> > On Mon, Dec 04, 2023 at 06:43:03PM -0800, Atish Patra wrote:
-> > > SBI v2.0 added few functions to improve SBI PMU extension. In order
-> > > to be backward compatible, the driver must use these functions only
-> > > if SBI v2.0 is available.
-> > >
-> > > Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> >
-> > IMO this does not make sense in a patch of its own and should probably
-> > be squashed with the first user for it.
->
-> I agree. This patch should be squashed into patch4 where the
-> flag is first used.
->
+On Sat, Dec 16, 2023 at 02:50:11PM -0300, Marcelo Schmitt wrote:
+> Add device tree documentation for AD7091R-8.
+>=20
+> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
 
-Done. Thanks.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
+Cheers,
+Conor.
 
-> Regards,
-> Anup
->
-> >
-> > > ---
-> > >  drivers/perf/riscv_pmu_sbi.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sb=
-i.c
-> > > index 16acd4dcdb96..40a335350d08 100644
-> > > --- a/drivers/perf/riscv_pmu_sbi.c
-> > > +++ b/drivers/perf/riscv_pmu_sbi.c
-> > > @@ -35,6 +35,8 @@
-> > >  PMU_FORMAT_ATTR(event, "config:0-47");
-> > >  PMU_FORMAT_ATTR(firmware, "config:63");
-> > >
-> > > +static bool sbi_v2_available;
-> > > +
-> > >  static struct attribute *riscv_arch_formats_attr[] =3D {
-> > >       &format_attr_event.attr,
-> > >       &format_attr_firmware.attr,
-> > > @@ -1108,6 +1110,9 @@ static int __init pmu_sbi_devinit(void)
-> > >               return 0;
-> > >       }
-> > >
-> > > +     if (sbi_spec_version >=3D sbi_mk_version(2, 0))
-> > > +             sbi_v2_available =3D true;
-> > > +
-> > >       ret =3D cpuhp_setup_state_multi(CPUHP_AP_PERF_RISCV_STARTING,
-> > >                                     "perf/riscv/pmu:starting",
-> > >                                     pmu_sbi_starting_cpu, pmu_sbi_dyi=
-ng_cpu);
-> > > --
-> > > 2.34.1
-> > >
+> ---
+>  .../bindings/iio/adc/adi,ad7091r5.yaml        | 82 ++++++++++++++++++-
+>  1 file changed, 78 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml =
+b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
+> index ce7ba634643c..ddec9747436c 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
+> @@ -4,36 +4,92 @@
+>  $id: http://devicetree.org/schemas/iio/adc/adi,ad7091r5.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+> =20
+> -title: Analog Devices AD7091R5 4-Channel 12-Bit ADC
+> +title: Analog Devices AD7091R-2/-4/-5/-8 Multi-Channel 12-Bit ADCs
+> =20
+>  maintainers:
+>    - Michael Hennerich <michael.hennerich@analog.com>
+> +  - Marcelo Schmitt <marcelo.schmitt@analog.com>
+> =20
+>  description: |
+> -  Analog Devices AD7091R5 4-Channel 12-Bit ADC
+> +  Analog Devices AD7091R5 4-Channel 12-Bit ADC supporting I2C interface
+>    https://www.analog.com/media/en/technical-documentation/data-sheets/ad=
+7091r-5.pdf
+> +  Analog Devices AD7091R-2/AD7091R-4/AD7091R-8 2-/4-/8-Channel 12-Bit AD=
+Cs
+> +  supporting SPI interface
+> +  https://www.analog.com/media/en/technical-documentation/data-sheets/AD=
+7091R-2_7091R-4_7091R-8.pdf
+> =20
+>  properties:
+>    compatible:
+>      enum:
+> +      - adi,ad7091r2
+> +      - adi,ad7091r4
+>        - adi,ad7091r5
+> +      - adi,ad7091r8
+> =20
+>    reg:
+>      maxItems: 1
+> =20
+> +  vdd-supply:
+> +    description:
+> +      Provide VDD power to the sensor (VDD range is from 2.7V to 5.25V).
+> +
+> +  vdrive-supply:
+> +    description:
+> +      Determines the voltage level at which the interface logic will ope=
+rate.
+> +      The V_drive voltage range is from 1.8V to 5.25V and must not excee=
+d VDD by
+> +      more than 0.3V.
+> +
+>    vref-supply:
+>      description:
+>        Phandle to the vref power supply
+> =20
+> -  interrupts:
+> +  convst-gpios:
+> +    description:
+> +      GPIO connected to the CONVST pin.
+> +      This logic input is used to initiate conversions on the analog
+> +      input channels.
+>      maxItems: 1
+> =20
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      Interrupt for signaling when conversion results exceed the high li=
+mit for
+> +      ADC readings or fall below the low limit for them. Interrupt sourc=
+e must
+> +      be attached to ALERT/BUSY/GPO0 pin.
+> +    maxItems: 1
+> =20
+>  required:
+>    - compatible
+>    - reg
+> =20
+> -additionalProperties: false
+> +allOf:
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +  # AD7091R-2 does not have ALERT/BUSY/GPO pin
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - adi,ad7091r2
+> +    then:
+> +      properties:
+> +        interrupts: false
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - adi,ad7091r2
+> +              - adi,ad7091r4
+> +              - adi,ad7091r8
+> +    then:
+> +      required:
+> +        - convst-gpios
+> +
+> +unevaluatedProperties: false
+> =20
+>  examples:
+>    - |
+> @@ -51,4 +107,22 @@ examples:
+>              interrupt-parent =3D <&gpio>;
+>          };
+>      };
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    spi {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        adc@0 {
+> +            compatible =3D "adi,ad7091r8";
+> +            reg =3D <0x0>;
+> +            spi-max-frequency =3D <1000000>;
+> +            vref-supply =3D <&adc_vref>;
+> +            convst-gpios =3D <&gpio 25 GPIO_ACTIVE_LOW>;
+> +            reset-gpios =3D <&gpio 27 GPIO_ACTIVE_LOW>;
+> +            interrupts =3D <22 IRQ_TYPE_EDGE_FALLING>;
+> +            interrupt-parent =3D <&gpio>;
+> +        };
+> +    };
+>  ...
+> --=20
+> 2.42.0
+>=20
+
+--Th6k7RUxHz5pajtC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZX442AAKCRB4tDGHoIJi
+0puPAP481u/M1/SE7A3mGnzFFhFkdDY4nGG8wkkWzNIYlFCwqgEAxTcIAVT87Vjy
+v52dK6ZRY/blA9VyxQfCS/FpCiyx8QI=
+=0TDZ
+-----END PGP SIGNATURE-----
+
+--Th6k7RUxHz5pajtC--
 
