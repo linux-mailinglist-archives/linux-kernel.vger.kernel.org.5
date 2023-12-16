@@ -1,71 +1,100 @@
-Return-Path: <linux-kernel+bounces-2330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1963B815B24
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:51:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78FE1815B26
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:52:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D47B81C21A2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:51:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA762285439
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FED7328B1;
-	Sat, 16 Dec 2023 18:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCEC31A6B;
+	Sat, 16 Dec 2023 18:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwhu8qhc"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ykcwfrsd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 824F0328A7
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 18:51:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E2679C433C8;
-	Sat, 16 Dec 2023 18:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702752699;
-	bh=akbTgXWkDvgnJXHxYTzKR00phRRDMAwH5ibXamyIg0k=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=dwhu8qhcf7U1VDSyFqeS6hDLIcNloh73TDu9MOTyyR7fIW7bBiYG4M9n/pNy+6FXE
-	 r846xKszy5abExq3KpuzyKsOkP2NZJ5X4rP7Jh9JgEUfVvKCVU4zMMXbFYqKs2z9GG
-	 FsqqoR5Tyv6TpEJp8i/HJ2dciu0+NtXu/yAuYwn/Tui4KMVACqO3lgVUSxWhicLglI
-	 lxhQarQvKDabJS7FWOlcwOdOnv3DcIjWN5/ganWpg7woAMz4fSsNyUQugofdmzOhHx
-	 FR8rdt6Bq5THMaN3kA7hK/cqKVnpPB17+eBoEFKU8pDeULKLXCd5eu6vTuWdZo5LXN
-	 kFhfC3ZzESuWg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C77F5C4314C;
-	Sat, 16 Dec 2023 18:51:38 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Fixes for v6.7-rc5
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20231215232956.3127a09b@rorschach.local.home>
-References: <20231215232956.3127a09b@rorschach.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231215232956.3127a09b@rorschach.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.7-rc5
-X-PR-Tracked-Commit-Id: 712292308af2265cd9b126aedfa987f10f452a33
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3b8a9b2e6809d281890dd0a1102dc14d2cd11caf
-Message-Id: <170275269873.13191.5928138547084705519.pr-tracker-bot@kernel.org>
-Date: Sat, 16 Dec 2023 18:51:38 +0000
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Beau Belgrave <beaub@linux.microsoft.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zheng Yejian <zhengyejian1@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A823454B;
+	Sat, 16 Dec 2023 18:52:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=3hVE5RPWNcQ5hlL8FuG56P37WA0eyg5gChyAuDS+aI8=; b=YkcwfrsdywyoNzi62MbRk6S8wV
+	AfjHfznQhSdfxjOP14qr0Yzyvs95QTVHHMGVFffCnais4+M3YDHOAqjNBNY6lM3UU/fbupZLJcyjD
+	SzTTFXJEmPTP4IkxhpWS0/fo6Fm9hfU356RAk4COpEsRyRaSNx86oyLRKV0Dr6sQRGU7VQ152mmrn
+	TtZm4V1CQlAW6ItB5/XrZ/0zL4+bHERCbs/PW0QBcl6ETAbarTGkAmgdQfqSU6zmpi/DiddbDlnzW
+	LV26rKUsSUXIpXtfsP0M9oZn46SwR7ljtojN/CGXn1otxwqmEisjAmpUmv7StdoxcbQc+0p5GxSrL
+	ZPTWMkxA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEZld-006Yxh-0o;
+	Sat, 16 Dec 2023 18:52:05 +0000
+Message-ID: <28e353de-1ea8-418b-8d96-a315a9469794@infradead.org>
+Date: Sat, 16 Dec 2023 10:52:04 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/50] prandom: Remove unused include
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+Cc: tglx@linutronix.de, x86@kernel.org, tj@kernel.org, peterz@infradead.org,
+ mathieu.desnoyers@efficios.com, paulmck@kernel.org, keescook@chromium.org,
+ dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
+ longman@redhat.com, boqun.feng@gmail.com, brauner@kernel.org,
+ Suren Baghdasaryan <surenb@google.com>
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-2-kent.overstreet@linux.dev>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231216032651.3553101-2-kent.overstreet@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The pull request you sent on Fri, 15 Dec 2023 23:29:56 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.7-rc5
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3b8a9b2e6809d281890dd0a1102dc14d2cd11caf
+On 12/15/23 19:26, Kent Overstreet wrote:
+> prandom.h doesn't use percpu.h - this fixes some circular header issues.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  include/linux/prandom.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/include/linux/prandom.h b/include/linux/prandom.h
+> index f2ed5b72b3d6..f7f1e5251c67 100644
+> --- a/include/linux/prandom.h
+> +++ b/include/linux/prandom.h
+> @@ -10,7 +10,6 @@
+>  
+>  #include <linux/types.h>
+>  #include <linux/once.h>
+> -#include <linux/percpu.h>
+>  #include <linux/random.h>
+>  
+>  struct rnd_state {
 
-Thank you!
+In this header file:
+
+    22	void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state);
+
+so where does it get __percpu from?
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
