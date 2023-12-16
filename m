@@ -1,32 +1,32 @@
-Return-Path: <linux-kernel+bounces-2047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80A1081574B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:22:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAEAF815750
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34E381F25B7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:22:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87B20281F1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9498C134AF;
-	Sat, 16 Dec 2023 04:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B9A18AEA;
+	Sat, 16 Dec 2023 04:21:53 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303681171E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D117313FEA;
 	Sat, 16 Dec 2023 04:21:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05736C43397;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B4F6C433CD;
 	Sat, 16 Dec 2023 04:21:52 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rEMCJ-00000002yCF-03UD;
+	id 1rEMCJ-00000002yCk-1JRZ;
 	Fri, 15 Dec 2023 23:22:43 -0500
-Message-ID: <20231216042242.803616937@goodmis.org>
+Message-ID: <20231216042243.088375583@goodmis.org>
 User-Agent: quilt/0.67
-Date: Fri, 15 Dec 2023 23:22:18 -0500
+Date: Fri, 15 Dec 2023 23:22:19 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
@@ -34,7 +34,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
  stable@vger.kernel.org
-Subject: [for-linus][PATCH 04/15] ring-buffer: Fix memory leak of free page
+Subject: [for-linus][PATCH 05/15] tracing: Update snapshot buffer on resize if it is allocated
 References: <20231216042214.905262999@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,46 +46,57 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Reading the ring buffer does a swap of a sub-buffer within the ring buffer
-with a empty sub-buffer. This allows the reader to have full access to the
-content of the sub-buffer that was swapped out without having to worry
-about contention with the writer.
+The snapshot buffer is to mimic the main buffer so that when a snapshot is
+needed, the snapshot and main buffer are swapped. When the snapshot buffer
+is allocated, it is set to the minimal size that the ring buffer may be at
+and still functional. When it is allocated it becomes the same size as the
+main ring buffer, and when the main ring buffer changes in size, it should
+do.
 
-The readers call ring_buffer_alloc_read_page() to allocate a page that
-will be used to swap with the ring buffer. When the code is finished with
-the reader page, it calls ring_buffer_free_read_page(). Instead of freeing
-the page, it stores it as a spare. Then next call to
-ring_buffer_alloc_read_page() will return this spare instead of calling
-into the memory management system to allocate a new page.
+Currently, the resize only updates the snapshot buffer if it's used by the
+current tracer (ie. the preemptirqsoff tracer). But it needs to be updated
+anytime it is allocated.
 
-Unfortunately, on freeing of the ring buffer, this spare page is not
-freed, and causes a memory leak.
+When changing the size of the main buffer, instead of looking to see if
+the current tracer is utilizing the snapshot buffer, just check if it is
+allocated to know if it should be updated or not.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231210221250.7b9cc83c@rorschach.local.home
+Also fix typo in comment just above the code change.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20231210225447.48476a6a@rorschach.local.home
 
 Cc: stable@vger.kernel.org
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Fixes: 73a757e63114d ("ring-buffer: Return reader page back into existing ring buffer")
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: ad909e21bbe69 ("tracing: Add internal tracing_snapshot() functions")
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/trace/trace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index b8986f82eccf..dcd47895b424 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -1787,6 +1787,8 @@ static void rb_free_cpu_buffer(struct ring_buffer_per_cpu *cpu_buffer)
- 		free_buffer_page(bpage);
- 	}
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index aa8f99f3e5de..6c79548f9574 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -6348,7 +6348,7 @@ static int __tracing_resize_ring_buffer(struct trace_array *tr,
+ 	if (!tr->array_buffer.buffer)
+ 		return 0;
  
-+	free_page((unsigned long)cpu_buffer->free_page);
-+
- 	kfree(cpu_buffer);
- }
+-	/* Do not allow tracing while resizng ring buffer */
++	/* Do not allow tracing while resizing ring buffer */
+ 	tracing_stop_tr(tr);
  
+ 	ret = ring_buffer_resize(tr->array_buffer.buffer, size, cpu);
+@@ -6356,7 +6356,7 @@ static int __tracing_resize_ring_buffer(struct trace_array *tr,
+ 		goto out_start;
+ 
+ #ifdef CONFIG_TRACER_MAX_TRACE
+-	if (!tr->current_trace->use_max_tr)
++	if (!tr->allocated_snapshot)
+ 		goto out;
+ 
+ 	ret = ring_buffer_resize(tr->max_buffer.buffer, size, cpu);
 -- 
 2.42.0
 
