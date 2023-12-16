@@ -1,130 +1,343 @@
-Return-Path: <linux-kernel+bounces-2074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6001A81578A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:42:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC94E815741
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F214C1F25BDF
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:42:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72ED0287308
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:18:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844B410A1F;
-	Sat, 16 Dec 2023 04:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="sNmMiW8k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF9710A3D;
+	Sat, 16 Dec 2023 04:18:18 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
+Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF7911CA1;
-	Sat, 16 Dec 2023 04:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1702701720;
-	bh=wdNndgGeLlcNwK9hbEpoW5H6j3meU+l8uskTtib8Uhs=;
-	h=From:To:Cc:Subject:Date;
-	b=sNmMiW8kuBVigciMYuNFvyf1VoYyZ/+fgaGxok8hYA5gCbl1NWd532p5jLYLrzaAf
-	 qIxHfeFs27leyWsYtr4ZadvXvkgnxuZKJ8lUpp5JoY++QrNmkilby++zVG0Zk47nbW
-	 RmCGN3Wwdx9TcxK3XSQ7JOMRPjZ0qYt/ah2ykiTs=
-Received: from localhost.localdomain ([118.112.114.229])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 4A409021; Sat, 16 Dec 2023 12:18:36 +0800
-X-QQ-mid: xmsmtpt1702700316tp6eo8v02
-Message-ID: <tencent_4AE0AD70494AB08166266B6493F4C507CE08@qq.com>
-X-QQ-XMAILINFO: OZZSS56D9fAjyoRLlB1WdJJ7RuUl5TjiHz/6ppILou0ypj6soqQ2oZ5NyubAhc
-	 DN24kzTe67KAiTHnoBVxvZvHlA42BS40WYljtQDeSEbTIFZo+Lac5P1MzPAkUrayDmiGGed4IPWI
-	 pCzclg7f6F50xLoPl+EFNUjNlJxSOD+7jjmW4589o+VYwvvAgOjxbj3PzwxLSsCj4M21MogIKcVg
-	 tbx/rSLdhnknTRmW+RT9/wvJyN1IIg6JhqPUwYwjlNrEkWbXF0NlGSduz83ULwVM0/VIvIERNzZF
-	 zcpUYw9LwtJFK2hktBmNBj4VWDRyNwCjiPZ0adw/WEm5F+aekXYkYhfyHF+19Bv+hB3MsU9B/BW+
-	 ldmwMut55Qe3eT9+w7TXKG92Fzh3iCvZIbywl2VAIDtG0X0QEnlHJpDXAv9cJo8R5QZEE6mMEdCE
-	 x5ODcDy/lH0Q3Ze78LRa+NpKyiy4Uti/RnoEFfL+YLNabr7bDbCqAJrjLLZNaxYqzW+2v6NW+cld
-	 RwbIcJF8F3kqL4dTCKfsmFAB0X/eoHyqvVoArUPbLzC97GA0TWuxOl/dUXeHa2BQBurS1N5K+PnB
-	 viok+f9dI+j/cDxxAf3QZZ66LNelTjUetQmmMX7ewRXZLXzXK5ICCdqzVY24/yIu75UE0oRI1YnZ
-	 siRITp27/PuuFblHyLyFa8zkWd9RLUBNCrPGNh4hvuiXpatTNadLSGiBssIMD6YlBqF4OiKfVZ69
-	 DiP5q2qXbputQQ7QfoPif+yBtNlUMBgQzP0ks2vmWcf3ArYxaWHI5h6CsIP9cf1C/hX9Ggqz0hxl
-	 nwf4M6LdVEVcNM/mM4zRcxw3M2/AReVS6vY5UEnEcHLmDm/G1Acy/V6yYc9swWGZNo3KcMIZG413
-	 K3gpWMlcF7U1c9voc9GHdE9mR6KXCrd8vBpY0iQClINVEINSwwEfOQfKVs2LO6+DymO60sMPLdCV
-	 bdTrTM82dPD+lkcrC9FODEPaYU9AsxDk98wYfTBV0OcZYn0oFOlouT0fGLshVNgZbVC36V/Ww=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: renjun wang <renjunw0@foxmail.com>
-To: ezequiel@vanguardiasur.com.ar,
-	p.zabel@pengutronix.de,
-	mchehab@kernel.org,
-	heiko@sntech.de
-Cc: linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	renjun wang <renjunw0@foxmail.com>
-Subject: [PATCH] media: verisilicon: Fix some typos
-Date: Sat, 16 Dec 2023 12:18:05 +0800
-X-OQ-MSGID: <20231216041805.12936-1-renjunw0@foxmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B147812B68;
+	Sat, 16 Dec 2023 04:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.hallyn.com
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+	id 92DFCAEB; Fri, 15 Dec 2023 22:18:11 -0600 (CST)
+Date: Fri, 15 Dec 2023 22:18:11 -0600
+From: "Serge E. Hallyn" <serge@hallyn.com>
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,
+	Maxime Coquelin <maxime.coquelin@redhat.com>, jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com, paul@paul-moore.com, jmorris@namei.org,
+	serge@hallyn.com, stephen.smalley.work@gmail.com,
+	eparis@parisplace.org, xieyongji@bytedance.com,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org, david.marchand@redhat.com, lulu@redhat.com
+Subject: Re: [PATCH v5 4/4] vduse: Add LSM hook to check Virtio device type
+Message-ID: <20231216041811.GB78578@mail.hallyn.com>
+References: <20231212131712.1816324-1-maxime.coquelin@redhat.com>
+ <20231212131712.1816324-5-maxime.coquelin@redhat.com>
+ <c58da5f5-131f-425e-b008-260506d1bc0d@schaufler-ca.com>
+ <20231212124518-mutt-send-email-mst@kernel.org>
+ <f7bd9ef6-cfa1-4b7e-a9f9-0b6015ac394f@schaufler-ca.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7bd9ef6-cfa1-4b7e-a9f9-0b6015ac394f@schaufler-ca.com>
 
-Function hantro_g1_h264_dec_prepare_table() does not exist,
-should be replaced with hantro_h264_dec_init().
+On Tue, Dec 12, 2023 at 02:55:33PM -0800, Casey Schaufler wrote:
+> On 12/12/2023 9:59 AM, Michael S. Tsirkin wrote:
+> > On Tue, Dec 12, 2023 at 08:33:39AM -0800, Casey Schaufler wrote:
+> >> On 12/12/2023 5:17 AM, Maxime Coquelin wrote:
+> >>> This patch introduces a LSM hook for devices creation,
+> >>> destruction (ioctl()) and opening (open()) operations,
+> >>> checking the application is allowed to perform these
+> >>> operations for the Virtio device type.
+> >> My earlier comments on a vduse specific LSM hook still hold.
+> >> I would much prefer to see a device permissions hook(s) that
+> >> are useful for devices in general. Not just vduse devices.
+> >> I know that there are already some very special purpose LSM
+> >> hooks, but the experience with maintaining them is why I don't
+> >> want more of them. 
+> > What exactly does this mean?
+> 
+> You have proposed an LSM hook that is only useful for vduse.
+> You want to implement a set of controls that only apply to vduse.
+> I can't help but think that if someone (i.e. you) wants to control
+> device creation for vduse that there could well be a use case for
+> control over device creation for some other set of devices. It is
+> quite possible that someone out there is desperately trying to
+> solve the same problem you have, but with a different device.
+> 
+> I have no desire to have to deal with
+> 	security_vduse_perm_check()
+> 	security_odddev_perm_check()
+> 	...
+> 	security_evendev_perm_check()
+> 
+> when we should be able to have
+> 	security_device_perm_check()
+> 
+> that can service them all.
+> 
+> 
+> >  Devices like tap etc? How do we
+> > find them all though?
+> 
+> I'm not suggesting you find them all. I'm suggesting that you provide
+> an interface that someone could use if they wanted to. I think you
+> will be surprised how many will appear (with complaints about the
+> interface you propose, of course) if you implement a generally useful
+> LSM hook.
 
-The register name av1_ulticore_tile_col confused sometimes,
-although not be used corrently. The correct name should be
-av1_multicore_tile_col.
+Right now you have create, destroy, and open.  Are you expecting to add
+other perms?  These sound generic enough that it definitely seems worth
+doing as Casey suggests.  On the other hand, if this could become a
+gateway to lsm device access hooks basically becoming ioctl, we might
+want to consider that.
 
-Signed-off-by: renjun wang <renjunw0@foxmail.com>
----
- drivers/media/platform/verisilicon/hantro_g1_h264_dec.c        | 2 +-
- drivers/media/platform/verisilicon/rockchip_vpu2_hw_h264_dec.c | 2 +-
- drivers/media/platform/verisilicon/rockchip_vpu981_regs.h      | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
-index 9de7f05eff2a..ad5c1a6634f5 100644
---- a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
-+++ b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
-@@ -243,7 +243,7 @@ static void set_buffers(struct hantro_ctx *ctx, struct vb2_v4l2_buffer *src_buf)
- 		vdpu_write_relaxed(vpu, dst_dma + offset, G1_REG_ADDR_DIR_MV);
- 	}
- 
--	/* Auxiliary buffer prepared in hantro_g1_h264_dec_prepare_table(). */
-+	/* Auxiliary buffer prepared in hantro_h264_dec_init(). */
- 	vdpu_write_relaxed(vpu, ctx->h264_dec.priv.dma, G1_REG_ADDR_QTABLE);
- }
- 
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu2_hw_h264_dec.c b/drivers/media/platform/verisilicon/rockchip_vpu2_hw_h264_dec.c
-index 46c1a83bcc4e..6da87f5184bc 100644
---- a/drivers/media/platform/verisilicon/rockchip_vpu2_hw_h264_dec.c
-+++ b/drivers/media/platform/verisilicon/rockchip_vpu2_hw_h264_dec.c
-@@ -460,7 +460,7 @@ static void set_buffers(struct hantro_ctx *ctx, struct vb2_v4l2_buffer *src_buf)
- 		vdpu_write_relaxed(vpu, dst_dma + offset, VDPU_REG_DIR_MV_BASE);
- 	}
- 
--	/* Auxiliary buffer prepared in hantro_g1_h264_dec_prepare_table(). */
-+	/* Auxiliary buffer prepared in hantro_h264_dec_init(). */
- 	vdpu_write_relaxed(vpu, ctx->h264_dec.priv.dma, VDPU_REG_QTABLE_BASE);
- }
- 
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu981_regs.h b/drivers/media/platform/verisilicon/rockchip_vpu981_regs.h
-index 182e6c830ff6..850ff0f84424 100644
---- a/drivers/media/platform/verisilicon/rockchip_vpu981_regs.h
-+++ b/drivers/media/platform/verisilicon/rockchip_vpu981_regs.h
-@@ -118,7 +118,7 @@
- #define av1_mcomp_filt_type		AV1_DEC_REG(11, 8, 0x7)
- #define av1_multicore_expect_context_update	AV1_DEC_REG(11, 11, 0x1)
- #define av1_multicore_sbx_offset	AV1_DEC_REG(11, 12, 0x7f)
--#define av1_ulticore_tile_col		AV1_DEC_REG(11, 19, 0x7f)
-+#define av1_multicore_tile_col		AV1_DEC_REG(11, 19, 0x7f)
- #define av1_transform_mode		AV1_DEC_REG(11, 27, 0x7)
- #define av1_dec_tile_size_mag		AV1_DEC_REG(11, 30, 0x3)
- 
--- 
-2.39.2
-
+> >>> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+> >>> ---
+> >>>  MAINTAINERS                         |  1 +
+> >>>  drivers/vdpa/vdpa_user/vduse_dev.c  | 13 ++++++++++++
+> >>>  include/linux/lsm_hook_defs.h       |  2 ++
+> >>>  include/linux/security.h            |  6 ++++++
+> >>>  include/linux/vduse.h               | 14 +++++++++++++
+> >>>  security/security.c                 | 15 ++++++++++++++
+> >>>  security/selinux/hooks.c            | 32 +++++++++++++++++++++++++++++
+> >>>  security/selinux/include/classmap.h |  2 ++
+> >>>  8 files changed, 85 insertions(+)
+> >>>  create mode 100644 include/linux/vduse.h
+> >>>
+> >>> diff --git a/MAINTAINERS b/MAINTAINERS
+> >>> index a0fb0df07b43..4e83b14358d2 100644
+> >>> --- a/MAINTAINERS
+> >>> +++ b/MAINTAINERS
+> >>> @@ -23040,6 +23040,7 @@ F:	drivers/net/virtio_net.c
+> >>>  F:	drivers/vdpa/
+> >>>  F:	drivers/virtio/
+> >>>  F:	include/linux/vdpa.h
+> >>> +F:	include/linux/vduse.h
+> >>>  F:	include/linux/virtio*.h
+> >>>  F:	include/linux/vringh.h
+> >>>  F:	include/uapi/linux/virtio_*.h
+> >>> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
+> >>> index fa62825be378..59ab7eb62e20 100644
+> >>> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> >>> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> >>> @@ -8,6 +8,7 @@
+> >>>   *
+> >>>   */
+> >>>  
+> >>> +#include "linux/security.h"
+> >>>  #include <linux/init.h>
+> >>>  #include <linux/module.h>
+> >>>  #include <linux/cdev.h>
+> >>> @@ -30,6 +31,7 @@
+> >>>  #include <uapi/linux/virtio_blk.h>
+> >>>  #include <uapi/linux/virtio_ring.h>
+> >>>  #include <linux/mod_devicetable.h>
+> >>> +#include <linux/vduse.h>
+> >>>  
+> >>>  #include "iova_domain.h"
+> >>>  
+> >>> @@ -1442,6 +1444,10 @@ static int vduse_dev_open(struct inode *inode, struct file *file)
+> >>>  	if (dev->connected)
+> >>>  		goto unlock;
+> >>>  
+> >>> +	ret = -EPERM;
+> >>> +	if (security_vduse_perm_check(VDUSE_PERM_OPEN, dev->device_id))
+> >>> +		goto unlock;
+> >>> +
+> >>>  	ret = 0;
+> >>>  	dev->connected = true;
+> >>>  	file->private_data = dev;
+> >>> @@ -1664,6 +1670,9 @@ static int vduse_destroy_dev(char *name)
+> >>>  	if (!dev)
+> >>>  		return -EINVAL;
+> >>>  
+> >>> +	if (security_vduse_perm_check(VDUSE_PERM_DESTROY, dev->device_id))
+> >>> +		return -EPERM;
+> >>> +
+> >>>  	mutex_lock(&dev->lock);
+> >>>  	if (dev->vdev || dev->connected) {
+> >>>  		mutex_unlock(&dev->lock);
+> >>> @@ -1828,6 +1837,10 @@ static int vduse_create_dev(struct vduse_dev_config *config,
+> >>>  	int ret;
+> >>>  	struct vduse_dev *dev;
+> >>>  
+> >>> +	ret = -EPERM;
+> >>> +	if (security_vduse_perm_check(VDUSE_PERM_CREATE, config->device_id))
+> >>> +		goto err;
+> >>> +
+> >>>  	ret = -EEXIST;
+> >>>  	if (vduse_find_dev(config->name))
+> >>>  		goto err;
+> >>> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> >>> index ff217a5ce552..3930ab2ae974 100644
+> >>> --- a/include/linux/lsm_hook_defs.h
+> >>> +++ b/include/linux/lsm_hook_defs.h
+> >>> @@ -419,3 +419,5 @@ LSM_HOOK(int, 0, uring_override_creds, const struct cred *new)
+> >>>  LSM_HOOK(int, 0, uring_sqpoll, void)
+> >>>  LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
+> >>>  #endif /* CONFIG_IO_URING */
+> >>> +
+> >>> +LSM_HOOK(int, 0, vduse_perm_check, enum vduse_op_perm op_perm, u32 device_id)
+> >>> diff --git a/include/linux/security.h b/include/linux/security.h
+> >>> index 1d1df326c881..2a2054172394 100644
+> >>> --- a/include/linux/security.h
+> >>> +++ b/include/linux/security.h
+> >>> @@ -32,6 +32,7 @@
+> >>>  #include <linux/string.h>
+> >>>  #include <linux/mm.h>
+> >>>  #include <linux/sockptr.h>
+> >>> +#include <linux/vduse.h>
+> >>>  
+> >>>  struct linux_binprm;
+> >>>  struct cred;
+> >>> @@ -484,6 +485,7 @@ int security_inode_notifysecctx(struct inode *inode, void *ctx, u32 ctxlen);
+> >>>  int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
+> >>>  int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
+> >>>  int security_locked_down(enum lockdown_reason what);
+> >>> +int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id);
+> >>>  #else /* CONFIG_SECURITY */
+> >>>  
+> >>>  static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
+> >>> @@ -1395,6 +1397,10 @@ static inline int security_locked_down(enum lockdown_reason what)
+> >>>  {
+> >>>  	return 0;
+> >>>  }
+> >>> +static inline int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
+> >>> +{
+> >>> +	return 0;
+> >>> +}
+> >>>  #endif	/* CONFIG_SECURITY */
+> >>>  
+> >>>  #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
+> >>> diff --git a/include/linux/vduse.h b/include/linux/vduse.h
+> >>> new file mode 100644
+> >>> index 000000000000..7a20dcc43997
+> >>> --- /dev/null
+> >>> +++ b/include/linux/vduse.h
+> >>> @@ -0,0 +1,14 @@
+> >>> +/* SPDX-License-Identifier: GPL-2.0 */
+> >>> +#ifndef _LINUX_VDUSE_H
+> >>> +#define _LINUX_VDUSE_H
+> >>> +
+> >>> +/*
+> >>> + * The permission required for a VDUSE device operation.
+> >>> + */
+> >>> +enum vduse_op_perm {
+> >>> +	VDUSE_PERM_CREATE,
+> >>> +	VDUSE_PERM_DESTROY,
+> >>> +	VDUSE_PERM_OPEN,
+> >>> +};
+> >>> +
+> >>> +#endif /* _LINUX_VDUSE_H */
+> >>> diff --git a/security/security.c b/security/security.c
+> >>> index dcb3e7014f9b..150abf85f97d 100644
+> >>> --- a/security/security.c
+> >>> +++ b/security/security.c
+> >>> @@ -5337,3 +5337,18 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
+> >>>  	return call_int_hook(uring_cmd, 0, ioucmd);
+> >>>  }
+> >>>  #endif /* CONFIG_IO_URING */
+> >>> +
+> >>> +/**
+> >>> + * security_vduse_perm_check() - Check if a VDUSE device type operation is allowed
+> >>> + * @op_perm: the operation type
+> >>> + * @device_id: the Virtio device ID
+> >>> + *
+> >>> + * Check whether the Virtio device creation is allowed
+> >>> + *
+> >>> + * Return: Returns 0 if permission is granted.
+> >>> + */
+> >>> +int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
+> >>> +{
+> >>> +	return call_int_hook(vduse_perm_check, 0, op_perm, device_id);
+> >>> +}
+> >>> +EXPORT_SYMBOL(security_vduse_perm_check);
+> >>> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> >>> index feda711c6b7b..18845e4f682f 100644
+> >>> --- a/security/selinux/hooks.c
+> >>> +++ b/security/selinux/hooks.c
+> >>> @@ -21,6 +21,8 @@
+> >>>   *  Copyright (C) 2016 Mellanox Technologies
+> >>>   */
+> >>>  
+> >>> +#include "av_permissions.h"
+> >>> +#include "linux/vduse.h"
+> >>>  #include <linux/init.h>
+> >>>  #include <linux/kd.h>
+> >>>  #include <linux/kernel.h>
+> >>> @@ -92,6 +94,7 @@
+> >>>  #include <linux/fsnotify.h>
+> >>>  #include <linux/fanotify.h>
+> >>>  #include <linux/io_uring.h>
+> >>> +#include <uapi/linux/virtio_ids.h>
+> >>>  
+> >>>  #include "avc.h"
+> >>>  #include "objsec.h"
+> >>> @@ -6950,6 +6953,34 @@ static int selinux_uring_cmd(struct io_uring_cmd *ioucmd)
+> >>>  }
+> >>>  #endif /* CONFIG_IO_URING */
+> >>>  
+> >>> +static int selinux_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
+> >>> +{
+> >>> +	u32 requested_op, requested_type, sid = current_sid();
+> >>> +	int ret;
+> >>> +
+> >>> +	if (op_perm == VDUSE_PERM_CREATE)
+> >>> +		requested_op = VDUSE__CREATE;
+> >>> +	else if (op_perm == VDUSE__DESTROY)
+> >>> +		requested_op = VDUSE__DESTROY;
+> >>> +	else if (op_perm == VDUSE_PERM_OPEN)
+> >>> +		requested_op = VDUSE__OPEN;
+> >>> +	else
+> >>> +		return -EINVAL;
+> >>> +
+> >>> +	ret = avc_has_perm(sid, sid, SECCLASS_VDUSE, requested_op, NULL);
+> >>> +	if (ret)
+> >>> +		return ret;
+> >>> +
+> >>> +	if (device_id == VIRTIO_ID_NET)
+> >>> +		requested_type = VDUSE__NET;
+> >>> +	else if (device_id == VIRTIO_ID_BLOCK)
+> >>> +		requested_type = VDUSE__BLOCK;
+> >>> +	else
+> >>> +		return -EINVAL;
+> >>> +
+> >>> +	return avc_has_perm(sid, sid, SECCLASS_VDUSE, requested_type, NULL);
+> >>> +}
+> >>> +
+> >>>  /*
+> >>>   * IMPORTANT NOTE: When adding new hooks, please be careful to keep this order:
+> >>>   * 1. any hooks that don't belong to (2.) or (3.) below,
+> >>> @@ -7243,6 +7274,7 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
+> >>>  #ifdef CONFIG_PERF_EVENTS
+> >>>  	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
+> >>>  #endif
+> >>> +	LSM_HOOK_INIT(vduse_perm_check, selinux_vduse_perm_check),
+> >>>  };
+> >>>  
+> >>>  static __init int selinux_init(void)
+> >>> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
+> >>> index a3c380775d41..b0a358cbac1c 100644
+> >>> --- a/security/selinux/include/classmap.h
+> >>> +++ b/security/selinux/include/classmap.h
+> >>> @@ -256,6 +256,8 @@ const struct security_class_mapping secclass_map[] = {
+> >>>  	  { "override_creds", "sqpoll", "cmd", NULL } },
+> >>>  	{ "user_namespace",
+> >>>  	  { "create", NULL } },
+> >>> +	{ "vduse",
+> >>> +	  { "create", "destroy", "open", "net", "block", NULL} },
+> >>>  	{ NULL }
+> >>>    };
+> >>>  
+> >
 
