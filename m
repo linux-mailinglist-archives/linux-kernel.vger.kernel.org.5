@@ -1,128 +1,213 @@
-Return-Path: <linux-kernel+bounces-2288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DB8E815A8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D49B0815A8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22B13285BA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 16:59:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08FC3285B4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8159A30357;
-	Sat, 16 Dec 2023 16:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784633066C;
+	Sat, 16 Dec 2023 17:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="NbZWaK33"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MXvKlRUp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A103034C
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 16:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from pop-os.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id EY0pryseOIOhHEY0prH1vA; Sat, 16 Dec 2023 17:59:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1702745980;
-	bh=gMk6oO0NWua7+I1geY3QhXhIuX72nIXC65+3OnaHd6U=;
-	h=From:To:Cc:Subject:Date;
-	b=NbZWaK33+MieCc2Fvs6kEZTUXhQ7Hxm7bgyD9XSl4LF2QdGjMahfX5Vy7ZnGAOY9N
-	 OSjvbaIzYsS2uoQ48s65kS6iraZrGTdQLOUVksR0YFnis5FfYr4MJhNBYY30BsZ3Cm
-	 gT/1gElgjCEUpEH8UVkmhfhA6YSdtOEeDcYYt/8ZSSFsLN+WhZApYqN3PkdansG7Ge
-	 YhKmzMm44LCp7RnDzr0N1rGqSt0NayKY3pc5eEnTwCIQEmS/62PxhZR49jspOobN/S
-	 O9WBuPi2r8c6rWALwllhDlNxlPuDA62B+wWF86TyuvNGzNgtOIFFADP9x/U2sHOb56
-	 pJNQEWzlGj8ew==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 16 Dec 2023 17:59:40 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	chrome-platform@lists.linux.dev
-Subject: [PATCH] platform/chrome/wilco_ec: Remove usage of the deprecated ida_simple_xx() API
-Date: Sat, 16 Dec 2023 17:59:38 +0100
-Message-Id: <898d9aa181a84f1d17725ca047004bad532c37e9.1702745959.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BCB30645
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 17:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702746221; x=1734282221;
+  h=date:from:to:cc:subject:message-id;
+  bh=9EDOCvMvn+Uh6h7Zl6UFrabi57qU0svRisTOq+IgxMo=;
+  b=MXvKlRUptubvfjXNPE+D0LVdZehkLie+ESGCo1GSY3tNcoROByx1/sOh
+   NjtxwYlJYv7nTPGFw2lXtTNl8RkiZ7chp3uGVc4A1mLtsezh7F19bjGio
+   xUlYxERDtMa8uowR6zw3RoSQKd6x97ToirC73tullzCOkMFcgu5pT6543
+   +qzRGFKd2qaxHLjoEVZVAiUWPcQqGJ74Gm0+bL+X04Ew8ox5tl+NEK2jf
+   XDBQEklaD66o75V05aZtJiJR9FePpdwsF7JoduHUHKFZbTDFQ+0xOMQt7
+   IaYUF6jO67CR0FYEvgOquV9nsXohbIH50nGdr/KNn9/gvKKrNsi2Hx06R
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="2234178"
+X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
+   d="scan'208";a="2234178"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 09:03:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="804055814"
+X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
+   d="scan'208";a="804055814"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 16 Dec 2023 09:03:31 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEY4W-0001us-0I;
+	Sat, 16 Dec 2023 17:03:28 +0000
+Date: Sun, 17 Dec 2023 01:02:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ 1f68ce2a027250aeeb1756391110cdc4dc97c797
+Message-ID: <202312170148.mwlkNgnN-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
+branch HEAD: 1f68ce2a027250aeeb1756391110cdc4dc97c797  x86/mce: Handle Intel threshold interrupt storms
 
-This is less verbose.
+elapsed time: 1474m
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/platform/chrome/wilco_ec/event.c     | 4 ++--
- drivers/platform/chrome/wilco_ec/telemetry.c | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+configs tested: 131
+configs skipped: 2
 
-diff --git a/drivers/platform/chrome/wilco_ec/event.c b/drivers/platform/chrome/wilco_ec/event.c
-index f80a7c83cfba..13291fb4214e 100644
---- a/drivers/platform/chrome/wilco_ec/event.c
-+++ b/drivers/platform/chrome/wilco_ec/event.c
-@@ -495,7 +495,7 @@ static int event_device_add(struct acpi_device *adev)
- free_dev_data:
- 	hangup_device(dev_data);
- free_minor:
--	ida_simple_remove(&event_ida, minor);
-+	ida_free(&event_ida, minor);
- 	return error;
- }
- 
-@@ -504,7 +504,7 @@ static void event_device_remove(struct acpi_device *adev)
- 	struct event_device_data *dev_data = adev->driver_data;
- 
- 	cdev_device_del(&dev_data->cdev, &dev_data->dev);
--	ida_simple_remove(&event_ida, MINOR(dev_data->dev.devt));
-+	ida_free(&event_ida, MINOR(dev_data->dev.devt));
- 	hangup_device(dev_data);
- }
- 
-diff --git a/drivers/platform/chrome/wilco_ec/telemetry.c b/drivers/platform/chrome/wilco_ec/telemetry.c
-index 253098bace63..b7c616f3d179 100644
---- a/drivers/platform/chrome/wilco_ec/telemetry.c
-+++ b/drivers/platform/chrome/wilco_ec/telemetry.c
-@@ -372,7 +372,7 @@ static int telem_device_probe(struct platform_device *pdev)
- 
- 	dev_data = kzalloc(sizeof(*dev_data), GFP_KERNEL);
- 	if (!dev_data) {
--		ida_simple_remove(&telem_ida, minor);
-+		ida_free(&telem_ida, minor);
- 		return -ENOMEM;
- 	}
- 
-@@ -393,7 +393,7 @@ static int telem_device_probe(struct platform_device *pdev)
- 	error = cdev_device_add(&dev_data->cdev, &dev_data->dev);
- 	if (error) {
- 		put_device(&dev_data->dev);
--		ida_simple_remove(&telem_ida, minor);
-+		ida_free(&telem_ida, minor);
- 		return error;
- 	}
- 
-@@ -405,7 +405,7 @@ static void telem_device_remove(struct platform_device *pdev)
- 	struct telem_device_data *dev_data = platform_get_drvdata(pdev);
- 
- 	cdev_device_del(&dev_data->cdev, &dev_data->dev);
--	ida_simple_remove(&telem_ida, MINOR(dev_data->dev.devt));
-+	ida_free(&telem_ida, MINOR(dev_data->dev.devt));
- 	put_device(&dev_data->dev);
- }
- 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231216   gcc  
+arc                   randconfig-002-20231216   gcc  
+arm                               allnoconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20231216   gcc  
+arm                   randconfig-002-20231216   gcc  
+arm                   randconfig-003-20231216   gcc  
+arm                   randconfig-004-20231216   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231216   gcc  
+arm64                 randconfig-002-20231216   gcc  
+arm64                 randconfig-003-20231216   gcc  
+arm64                 randconfig-004-20231216   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231216   gcc  
+csky                  randconfig-002-20231216   gcc  
+hexagon                           allnoconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20231216   clang
+hexagon               randconfig-002-20231216   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231216   gcc  
+i386         buildonly-randconfig-002-20231216   gcc  
+i386         buildonly-randconfig-003-20231216   gcc  
+i386         buildonly-randconfig-004-20231216   gcc  
+i386         buildonly-randconfig-005-20231216   gcc  
+i386         buildonly-randconfig-006-20231216   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231216   gcc  
+i386                  randconfig-002-20231216   gcc  
+i386                  randconfig-003-20231216   gcc  
+i386                  randconfig-004-20231216   gcc  
+i386                  randconfig-005-20231216   gcc  
+i386                  randconfig-006-20231216   gcc  
+i386                  randconfig-011-20231216   clang
+i386                  randconfig-012-20231216   clang
+i386                  randconfig-013-20231216   clang
+i386                  randconfig-014-20231216   clang
+i386                  randconfig-015-20231216   clang
+i386                  randconfig-016-20231216   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231216   gcc  
+loongarch             randconfig-002-20231216   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231216   gcc  
+nios2                 randconfig-002-20231216   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231216   gcc  
+parisc                randconfig-002-20231216   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc               randconfig-001-20231216   gcc  
+powerpc               randconfig-002-20231216   gcc  
+riscv                             allnoconfig   clang
+riscv                               defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231216   gcc  
+x86_64       buildonly-randconfig-002-20231216   gcc  
+x86_64       buildonly-randconfig-003-20231216   gcc  
+x86_64       buildonly-randconfig-004-20231216   gcc  
+x86_64       buildonly-randconfig-005-20231216   gcc  
+x86_64       buildonly-randconfig-006-20231216   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231216   clang
+x86_64                randconfig-002-20231216   clang
+x86_64                randconfig-003-20231216   clang
+x86_64                randconfig-004-20231216   clang
+x86_64                randconfig-005-20231216   clang
+x86_64                randconfig-006-20231216   clang
+x86_64                randconfig-011-20231216   gcc  
+x86_64                randconfig-012-20231216   gcc  
+x86_64                randconfig-013-20231216   gcc  
+x86_64                randconfig-014-20231216   gcc  
+x86_64                randconfig-015-20231216   gcc  
+x86_64                randconfig-016-20231216   gcc  
+x86_64                randconfig-071-20231216   gcc  
+x86_64                randconfig-072-20231216   gcc  
+x86_64                randconfig-073-20231216   gcc  
+x86_64                randconfig-074-20231216   gcc  
+x86_64                randconfig-075-20231216   gcc  
+x86_64                randconfig-076-20231216   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
