@@ -1,185 +1,156 @@
-Return-Path: <linux-kernel+bounces-2297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E662815AAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:42:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A38E815AB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:45:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 481741F23CD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:42:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55067285DC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0B930F95;
-	Sat, 16 Dec 2023 17:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bb+gxqNG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9868330FA0;
+	Sat, 16 Dec 2023 17:45:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7403031A62;
-	Sat, 16 Dec 2023 17:42:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FBFC433C7;
-	Sat, 16 Dec 2023 17:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702748557;
-	bh=Ay2QNVsNTU6j2GMaTNAhYy4JMuUy7ClKkYEkpFyMsxo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Bb+gxqNGvyByYwbbyL3AFUiisXcAxAgwnaLLO9CjB2SbIoeikWYnYpgn0WMXAFoCm
-	 Ht0Eq/ACYADwaGl8N4YLMtpp1d2Jfcmb7izhZpp7vdkYo+9tjkg1c92bWvWTvr11wY
-	 Is/Npoak1g1Iri6CA8iO/iGg9bMW4WtSU6TFa8IMoP7V+/G30zEEKky9L3V+B51eb9
-	 KBb2AyKhg1QGhG+fLEKI/zMA8NuVIiVnWcjUkH51UF+DX93MPwjyoh7prjhpkSjl/A
-	 a4wMOthqk9BDh8uOwLOBGyP7/K9AW6XnwwMpPW+umL4ujTDNKhuErCIYi3nHX7/OWR
-	 P+N1gOrdIV38g==
-Date: Sat, 16 Dec 2023 17:42:33 +0000
-From: Simon Horman <horms@kernel.org>
-To: Min Li <lnimi@hotmail.com>
-Cc: richardcochran@gmail.com, lee@kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, Min Li <min.li.xe@renesas.com>
-Subject: Re: [PATCH net-next v3 2/2] ptp: add FemtoClock3 Wireless as ptp
- hardware clock
-Message-ID: <20231216174233.GA48471@kernel.org>
-References: <20231214163625.17939-1-lnimi@hotmail.com>
- <PH7PR03MB7064D4543F1EE6E0A45053C8A08CA@PH7PR03MB7064.namprd03.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B173F2C192;
+	Sat, 16 Dec 2023 17:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BGEYQka002174;
+	Sat, 16 Dec 2023 12:45:07 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3v1526spe1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Dec 2023 12:45:06 -0500 (EST)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3BGHj5lw033801
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sat, 16 Dec 2023 12:45:05 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Sat, 16 Dec
+ 2023 12:45:04 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Sat, 16 Dec 2023 12:45:04 -0500
+Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3BGHikIr015700;
+	Sat, 16 Dec 2023 12:44:48 -0500
+From: Marcelo Schmitt <marcelo.schmitt@analog.com>
+To: <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
+        <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
+        <Michael.Hennerich@analog.com>, <lars@metafoo.de>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <dan.carpenter@linaro.org>,
+        <dlechner@baylibre.com>, <marcelo.schmitt1@gmail.com>
+CC: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 00/15] Add support for AD7091R-2/-4/-8
+Date: Sat, 16 Dec 2023 14:44:43 -0300
+Message-ID: <cover.1702746240.git.marcelo.schmitt1@gmail.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR03MB7064D4543F1EE6E0A45053C8A08CA@PH7PR03MB7064.namprd03.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: ZteL9u2eUe3dogRbUEce-DRqXKLVF4DJ
+X-Proofpoint-ORIG-GUID: ZteL9u2eUe3dogRbUEce-DRqXKLVF4DJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 impostorscore=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 adultscore=0
+ clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312160136
 
-On Thu, Dec 14, 2023 at 11:36:25AM -0500, Min Li wrote:
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
 
-...
+----------------- Updates -----------------
 
-> diff --git a/drivers/ptp/ptp_fc3.c b/drivers/ptp/ptp_fc3.c
+Applied changes suggested to the previous set.
 
-...
+Change log v3 -> v4:
+- Patch 1: checkpatch patch
+  * Changed __aligned regex string.
+- Patch 2: alert handling fix
+  * Applied David's suggestion [1] to pass iio_dev on to IRQ thread handler.
+- Patches 6, 7, 9
+  * Removed ad7091r prefix from callback function names.
+- New Patch 7: Remove uneeded probe parameters
+  * Removed id->name and regmap from probe paramenters.
+- Patch 8 (now Patch 9): Enable internal vref
+  * Not expecting NULL return from regulator_get_optional() anymore;
+  * Reverted to previous probe defer handling.
+- Patch 10 (now Patch 11): dt doc
+  * Extending existing ad7091r5 dt doc instead of creating a new one;
+  * Added VDD and VDRIVE supplies to dt doc;
+  * Removed channel property from dt doc;
+  * Interrupt description, interrupt constraint check, example indentation improvements.
+- Patch 12 (now Patch 13): add ad7091r8 patch
+  * Neats to macros, gpio setups, and probe parameters.
+- Patch 13 (now Patch 14):
+  * Made use of wild cards in MAINTAINERS file.
+- New Patch (Patch 15): event configuration callbacks
 
-> +static inline s64 ns2counters(struct idtfc3 *idtfc3, s64 nsec, u32 *sub_ns)
+[1]: https://lore.kernel.org/linux-iio/CAMknhBHCYicEL_xhumBQMUm=HBVb=7dLrYsK8Zj2o7RodvMarw@mail.gmail.com/
 
-Sorry, I missed this in my earlier response.
+Thank you all for the help with this set,
+Marcelo
 
-Please don't use inline in .c files unless htere is a demonstrable
-reason to do so. Rather, please leave inlining up to the compiler.
+----------------- Context -----------------
 
-> +{
-> +	s64 sync;
-> +	s32 rem;
-> +
-> +	if (likely(nsec >= 0)) {
-> +		sync = div_u64_rem(nsec, idtfc3->ns_per_sync, &rem);
-> +		*sub_ns = rem;
-> +	} else if (nsec < 0) {
-> +		sync = -div_u64_rem(-nsec - 1, idtfc3->ns_per_sync, &rem) - 1;
-> +		*sub_ns = idtfc3->ns_per_sync - rem - 1;
-> +	}
-> +
-> +	return sync * idtfc3->ns_per_sync;
-> +}
-> +
-> +static inline s64 tdc_meas2offset(struct idtfc3 *idtfc3, u64 meas_read)
-> +{
-> +	s64 coarse, fine;
-> +
-> +	fine = sign_extend64(FIELD_GET(FINE_MEAS_MASK, meas_read), 12);
-> +	coarse = sign_extend64(FIELD_GET(COARSE_MEAS_MASK, meas_read), (39 - 13));
-> +
-> +	fine = div64_s64(fine * NSEC_PER_SEC, idtfc3->tdc_apll_freq * 62LL);
-> +	coarse = div64_s64(coarse * NSEC_PER_SEC, idtfc3->time_ref_freq);
-> +
-> +	return coarse + fine;
-> +}
-> +
-> +static inline s64 tdc_offset2phase(struct idtfc3 *idtfc3, s64 offset_ns)
-> +{
-> +	if (offset_ns > idtfc3->ns_per_sync / 2)
-> +		offset_ns -= idtfc3->ns_per_sync;
-> +
-> +	return offset_ns * idtfc3->tdc_offset_sign;
-> +}
+This series adds support for AD7091R-2/-4/-8 ADCs which can do single shot
+or sequenced readings. Threshold events are also supported.
+Overall, AD7091R-2/-4/-8 are very similar to AD7091R-5 except they use SPI interface.
 
-...
+Changes have been tested with raspberrypi and eval board on raspberrypi kernel
+6.7-rc3 from raspberrypi fork.
+Link: https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/ad7091r8
 
-> +static inline bool get_tdc_meas(struct idtfc3 *idtfc3, s64 *offset_ns)
-> +{
-> +	bool valid = false;
-> +	u8 buf[9];
-> +	u8 val;
-> +	int err;
-> +
-> +	while (true) {
-> +		err = regmap_bulk_read(idtfc3->regmap, TDC_FIFO_STS,
-> +				       &val, sizeof(val));
-> +		if (err)
-> +			return false;
-> +
-> +		if (val & FIFO_EMPTY)
-> +			break;
-> +
-> +		err = regmap_bulk_read(idtfc3->regmap, TDC_FIFO_READ_REQ,
-> +				       &buf, sizeof(buf));
-> +		if (err)
-> +			return false;
-> +
-> +		valid = true;
-> +	}
-> +
-> +	if (valid)
-> +		*offset_ns = tdc_meas2offset(idtfc3, get_unaligned_le64(&buf[1]));
-> +
-> +	return valid;
-> +}
-> +
-> +static inline int check_tdc_fifo_overrun(struct idtfc3 *idtfc3)
-> +{
-> +	u8 val;
-> +	int err;
-> +
-> +	/* Check if FIFO is overrun */
-> +	err = regmap_bulk_read(idtfc3->regmap, TDC_FIFO_STS, &val, sizeof(val));
-> +	if (err)
-> +		return err;
-> +
-> +	if (!(val & FIFO_FULL))
-> +		return 0;
-> +
-> +	dev_warn(idtfc3->dev, "TDC FIFO overrun !!!");
-> +
-> +	err = idtfc3_enable_tdc(idtfc3, true, CONTINUOUS);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
-> +}
+Marcelo Schmitt (15):
+  scripts: checkpatch: Add __aligned to the list of attribute notes
+  iio: adc: ad7091r: Pass iio_dev to event handler
+  iio: adc: ad7091r: Set alert bit in config register
+  iio: adc: ad7091r: Align arguments to function call parenthesis
+  iio: adc: ad7091r: Move generic AD7091R code to base driver and header
+    file
+  iio: adc: ad7091r: Move chip init data to container struct
+  iio: adc: ad7091r: Remove unneeded probe parameters
+  iio: adc: ad7091r: Set device mode through chip_info callback
+  iio: adc: ad7091r: Enable internal vref if external vref is not
+    supplied
+  iio: adc: ad7091r: Add chip_info callback to get conversion result
+    channel
+  iio: adc: Split AD7091R-5 config symbol
+  dt-bindings: iio: Add AD7091R-8
+  iio: adc: Add support for AD7091R-8
+  MAINTAINERS: Add MAINTAINERS entry for AD7091R
+  iio: adc: ad7091r: Allow users to configure device events
 
-...
+ .../bindings/iio/adc/adi,ad7091r5.yaml        |  82 +++++-
+ MAINTAINERS                                   |   8 +
+ drivers/iio/adc/Kconfig                       |  16 ++
+ drivers/iio/adc/Makefile                      |   4 +-
+ drivers/iio/adc/ad7091r-base.c                | 255 +++++++++++------
+ drivers/iio/adc/ad7091r-base.h                |  81 +++++-
+ drivers/iio/adc/ad7091r5.c                    | 120 ++++----
+ drivers/iio/adc/ad7091r8.c                    | 257 ++++++++++++++++++
+ scripts/checkpatch.pl                         |   1 +
+ 9 files changed, 682 insertions(+), 142 deletions(-)
+ create mode 100644 drivers/iio/adc/ad7091r8.c
 
-> +static int idtfc3_remove(struct platform_device *pdev)
-> +{
-> +	struct idtfc3 *idtfc3 = platform_get_drvdata(pdev);
-> +
-> +	ptp_clock_unregister(idtfc3->ptp_clock);
+-- 
+2.42.0
 
-FWIIW, I'm slightly surprised that more cleanup isn't needed.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver idtfc3_driver = {
-> +	.driver = {
-> +		.name = "rc38xxx-phc",
-> +	},
-> +	.probe = idtfc3_probe,
-> +	.remove	= idtfc3_remove,
-> +};
-> +
-> +module_platform_driver(idtfc3_driver);
-
-...
 
