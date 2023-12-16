@@ -1,179 +1,118 @@
-Return-Path: <linux-kernel+bounces-2181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7AEB815913
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:46:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB310815914
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EFA51F23AB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:46:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 700BF285EE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A421D69E;
-	Sat, 16 Dec 2023 12:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41141D69E;
+	Sat, 16 Dec 2023 12:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+ZYGiIj"
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="GyYj8oDq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EZtC6XK6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2BA18EA6;
-	Sat, 16 Dec 2023 12:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3364c9ba749so1258090f8f.1;
-        Sat, 16 Dec 2023 04:45:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702730757; x=1703335557; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1H4hMNJCw/32Z+RZWpdrmp582opVHteiynBOAnY14+Y=;
-        b=B+ZYGiIjDMpUECTMQnlD+xleKAzubC/13ZGcpQAJFlGHIUI8VegQT4z2GODs2VGI/p
-         L4i4R8hr05AsO8EUgwl6R1VQfmaBNCTY4pIB2gsXYt6fO+OOWIDUSfuIlKSCJ7dfaKih
-         lmbv+lyr/wAKuWukSMlEleZfnHQt7TayZjuINj+t7/jThexf+crNZFGyqrlUFK/VZExG
-         rDZEugIj/ezx0cdEsBuuLLmYDUgI9zwvq0Kkfdx3r76+LUxHLpA1fWOpXlD2Jme9BKaI
-         hzKO/oHr8XrrybUTl6NmfIo7j6e3/5NSEEELuy9jUu12kXaUyZL1QvamEPQLmZm24XZJ
-         D5Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702730757; x=1703335557;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1H4hMNJCw/32Z+RZWpdrmp582opVHteiynBOAnY14+Y=;
-        b=exuDJBt2XOqXMTCi8WrZaVqG28ZdFbaSfyOfqxi/F7Z99NxNndhrzkLGebqHC9HYHQ
-         P/+ZUczGib8cscVjYce51WLM1VF9CrjJrWi5fmTlT1xubUc7zCB9JVUdVlGYKWFUKFoS
-         PKBLvV5M8aRcrRZLECXkBdcw4F70mCv9dLGIJDEEwKZbJUh4+Xfft3gqeb3Gvsa8/Bw1
-         KMVs6Cpyt7S31CA3vry7NF/dWK4dVq4Fbeh4dRAHYjjURCdJNilBqaktnbmpQMFFNy0s
-         3mvCdOfCEE+GLGB9Vh98ZqhJU7w50pqavg0w38e/r3AWR/6+UPyUoF0GOaURoP6p+pUs
-         Mmbg==
-X-Gm-Message-State: AOJu0YyvTTi+vLzRXntRVcHZMxdm8Icwd2XPbHv79PUj4jZQB97+rd3T
-	LH3kQNCuwDwTn1/UZv1H/ac4xSysMVE=
-X-Google-Smtp-Source: AGHT+IHMYHWJES6roXispGRb1UVzSUy2mCj2n9V5d+lGj61Xf1XEIiW0yHZbSqNk1xnabS0cdDUErA==
-X-Received: by 2002:adf:e841:0:b0:336:608f:91eb with SMTP id d1-20020adfe841000000b00336608f91ebmr126621wrn.95.1702730756677;
-        Sat, 16 Dec 2023 04:45:56 -0800 (PST)
-Received: from jekhomev ([46.251.53.180])
-        by smtp.gmail.com with ESMTPSA id vg14-20020a170907d30e00b00a1dcfd8f95csm11775051ejc.37.2023.12.16.04.45.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 04:45:56 -0800 (PST)
-Date: Sat, 16 Dec 2023 14:45:55 +0200
-From: Yauhen Kharuzhy <jekhor@gmail.com>
-To: linux-input@vger.kernel.org, linux-iio@vger.kernel.org
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
-	Jiri Kosina <jikos@kernel.org>,
-	Basavaraj Natikar <Basavaraj.Natikar@amd.com>
-Subject: Re: [PATCH] iio: hid-sensor-als: Don't stop probing at non-supported
- attribute
-Message-ID: <20231216124555.eyplwam45jdfazr3@jekhomev>
-References: <20231216114229.652020-1-jekhor@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5478B18EBF
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 12:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 69D875C00DE;
+	Sat, 16 Dec 2023 07:52:27 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Sat, 16 Dec 2023 07:52:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+	cc:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1702731147; x=1702817547; bh=V/Swu2Ok4xoLueHEPWDCQ
+	hLZgLyrqWw+uIjeSWzbtwI=; b=GyYj8oDq4e06+3HOUGVWgdfODhmoZjC9MefCJ
+	mos0hyYRpoV2R0waWCC+akkOLkI/h0I2qG2ZenvQkyUzianJTCqFGIWj2MIkfWxJ
+	ixdVH3x1PXaW89+HsRYnZdpwIMHlxxlkVNl0f7avIEbNy8bX2w35Wp1aPEOHT00J
+	XCVZgasDClcVXytumyflxsUw3rrtln3GyOJDxsr14sMxsJM3b6CUsdpizVO8m80Y
+	mEHR1FJR0JYpreDvMF04QEul9L409DMr90UGDv5dIh+ZS1DN8L84YwBdLExlV13V
+	LWQ3yGnNFnSr+/yWAVdjk/l0kQkq184PX6IrlVEpaRNiQNQdQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1702731147; x=1702817547; bh=V/Swu2Ok4xoLueHEPWDCQhLZgLyr
+	qWw+uIjeSWzbtwI=; b=EZtC6XK6cI9px0LqJn9yO3lu5GtzIqkbg7Cb43JWU5P0
+	j+fM2PgX+32QUKtNQmxtp6QAwCGPtrHFg19El4DBl2V/Sx76C5kfbJgJyH5IOLcV
+	foMc/u8yvkHtJxXzLDqwdOdW1EiV7ZpguXDg/zeHXQe2Sc/wHmtHeVTM40WNYVAD
+	T/kS2or95WYmCI5Owo3t0Zm1kycKgWv2WoYyI0G5rdcO24x8K/9vgyr5KVoDk2vC
+	5hZCJR0Sll9Bo5DfdZlWDvMZ0XIqJr7G5jQJ4bCCSw0PSY++1RyNfwP7F/L+4AN+
+	lCYC9YB8YRm/cHlY0W8Ee/Pg3k2MEetPEtUQFO+WbA==
+X-ME-Sender: <xms:i519ZWPutzOEHqrusFqK9l3LwUN9HRu3ujIuDma-8UJCZlvwc55UmA>
+    <xme:i519ZU-OtyrxPQz6mdBOcqBzAMHNYIQoKI65ZUUuQLmTNrnBLlAR1MiVB2flRuYcQ
+    joBqLUwWiKZiuPjhbM>
+X-ME-Received: <xmr:i519ZdTpNsRyn_AK-3mRAEPupRsKCoa1N95ROkMpOg2cX6ehyIoxNrRNd5IJZT_d4TJpFdIau4sSoofl2q80-rJ5tblbMQngauFnWCVt0lg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtgedggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgrrhgu
+    sehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepleegffffgfehhfejge
+    ejheeivdfgleefheeuueetkedtffeihfevlefhgeevvdevnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfhgrsh
+    htmhgrihhlrdhorhhg
+X-ME-Proxy: <xmx:i519ZWtzyY3R9ccjybSLHUSGlrEFf_UmYM8_fVs8aIX09iiOAMI2KQ>
+    <xmx:i519ZecKYMknWHewOLHxl66_Stm1tX4eInUF-Nt99-nG6a234n3mmw>
+    <xmx:i519Za3KiudQs7cNwupCoIPfzsCLLgQ4m-yQTaxirG3sUjBKWEEHZw>
+    <xmx:i519Ze74brAPw5C3oNvuIylVub1MXu1LhE_anit4bpWsX3B5BoMJhQ>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 16 Dec 2023 07:52:26 -0500 (EST)
+From: Gary Rookard <garyrookard@fastmail.org>
+To: gregkh@linuxfoundation.org,
+	philipp.g.hortmann@gmail.com
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH v3 0/4] staging: rtl8192e: rename variable pHT
+Date: Sat, 16 Dec 2023 07:52:59 -0500
+Message-ID: <20231216125303.3404-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231216114229.652020-1-jekhor@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Dec 16, 2023 at 01:42:29PM +0200, Yauhen Kharuzhy wrote:
-> Some ambient light sensors don't support color temperature and
-> chromaticity attributes. The driver stops probing if it finds this.
-> 
-> To support sensors without of color temperature and chromaticity
-> attributes, just skip them at probing if they weren't found.
-> 
-> Tested at Lenovo Yogabook YB1-X91L tablet.
+Hi,
 
-Hi, It seems that Srinivas Pandruvada has posted another patch fixing
-the same issue. So, drop my patch in favor of his one.
+This patch series renames (4) different variables with
+checkpatch coding style issue Avoid CamelCase.
 
-> 
-> Signed-off-by: Yauhen Kharuzhy <jekhor@gmail.com>
-> ---
->  drivers/iio/light/hid-sensor-als.c | 39 ++++++++++++++++++------------
->  1 file changed, 23 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
-> index f17304b54468..b711bac3bb2b 100644
-> --- a/drivers/iio/light/hid-sensor-als.c
-> +++ b/drivers/iio/light/hid-sensor-als.c
-> @@ -314,8 +314,11 @@ static int als_parse_report(struct platform_device *pdev,
->  						usage_id,
->  						HID_USAGE_SENSOR_LIGHT_ILLUM,
->  						&st->als[i]);
-> -		if (ret < 0)
-> +		if (ret < 0) {
-> +			dev_err(&pdev->dev,
-> +				"Failed to setup Illuminance attribute\n");
->  			return ret;
-> +		}
->  		als_adjust_channel_bit_mask(channels, i, st->als[i].size);
->  
->  		dev_dbg(&pdev->dev, "als %x:%x\n", st->als[i].index,
-> @@ -326,14 +329,16 @@ static int als_parse_report(struct platform_device *pdev,
->  				usage_id,
->  				HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE,
->  				&st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP]);
-> -	if (ret < 0)
-> -		return ret;
-> -	als_adjust_channel_bit_mask(channels, CHANNEL_SCAN_INDEX_COLOR_TEMP,
-> -				st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].size);
-> +	if (!ret) {
-> +		dev_info(&pdev->dev, "Color temperature is supported\n");
-> +		als_adjust_channel_bit_mask(channels,
-> +			CHANNEL_SCAN_INDEX_COLOR_TEMP,
-> +			st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].size);
->  
-> -	dev_dbg(&pdev->dev, "als %x:%x\n",
-> -		st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].index,
-> -		st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].report_id);
-> +		dev_dbg(&pdev->dev, "als %x:%x\n",
-> +			st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].index,
-> +			st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].report_id);
-> +	}
->  
->  	for (i = 0; i < 2; i++) {
->  		int next_scan_index = CHANNEL_SCAN_INDEX_CHROMATICITY_X + i;
-> @@ -342,23 +347,25 @@ static int als_parse_report(struct platform_device *pdev,
->  				HID_INPUT_REPORT, usage_id,
->  				HID_USAGE_SENSOR_LIGHT_CHROMATICITY_X + i,
->  				&st->als[next_scan_index]);
-> -		if (ret < 0)
-> -			return ret;
-> -
-> -		als_adjust_channel_bit_mask(channels,
-> +		if (!ret) {
-> +			dev_info(&pdev->dev,
-> +				 "Light chromaticity %c is supported\n",
-> +				 i ? 'Y' : 'X');
-> +			als_adjust_channel_bit_mask(channels,
->  					CHANNEL_SCAN_INDEX_CHROMATICITY_X + i,
->  					st->als[next_scan_index].size);
->  
-> -		dev_dbg(&pdev->dev, "als %x:%x\n",
-> -			st->als[next_scan_index].index,
-> -			st->als[next_scan_index].report_id);
-> +			dev_dbg(&pdev->dev, "als %x:%x\n",
-> +				st->als[next_scan_index].index,
-> +				st->als[next_scan_index].report_id);
-> +		}
->  	}
->  
->  	st->scale_precision = hid_sensor_format_scale(usage_id,
->  				&st->als[CHANNEL_SCAN_INDEX_INTENSITY],
->  				&st->scale_pre_decml, &st->scale_post_decml);
->  
-> -	return ret;
-> +	return 0;
->  }
->  
->  /* Function to initialize the processing for usage id */
-> -- 
-> 2.43.0
-> 
+(resubmittals)
+
+Patch 1/4) rename variable pHT
+Patch 2/4) rename variable pCapELE
+Patch 3/4) rename variable HTGetHighestMCSRate
+Patch 4/4) rename variable HTFilterMCSRate
+
+Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+
+Gary Rookard (4):
+  staging: rtl8192e: rename variable pHT
+  staging: rtl8192e: rename variable pCapELE
+  staging: rtl8192e: rename variable HTGetHighestMCSRate
+  staging: rtl8192e: renamed variable HTFilterMCSRate
+
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 86 +++++++++++------------
+ drivers/staging/rtl8192e/rtllib.h         |  2 +-
+ drivers/staging/rtl8192e/rtllib_wx.c      |  2 +-
+ 3 files changed, 45 insertions(+), 45 deletions(-)
 
 -- 
-Yauhen Kharuzhy
+2.41.0
+
 
