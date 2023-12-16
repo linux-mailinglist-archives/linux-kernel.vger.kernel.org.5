@@ -1,213 +1,124 @@
-Return-Path: <linux-kernel+bounces-2289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D49B0815A8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:03:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C875C815A93
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08FC3285B4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:03:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1F271C2185D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784633066C;
-	Sat, 16 Dec 2023 17:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MXvKlRUp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5116830CF0;
+	Sat, 16 Dec 2023 17:11:00 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BCB30645
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 17:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702746221; x=1734282221;
-  h=date:from:to:cc:subject:message-id;
-  bh=9EDOCvMvn+Uh6h7Zl6UFrabi57qU0svRisTOq+IgxMo=;
-  b=MXvKlRUptubvfjXNPE+D0LVdZehkLie+ESGCo1GSY3tNcoROByx1/sOh
-   NjtxwYlJYv7nTPGFw2lXtTNl8RkiZ7chp3uGVc4A1mLtsezh7F19bjGio
-   xUlYxERDtMa8uowR6zw3RoSQKd6x97ToirC73tullzCOkMFcgu5pT6543
-   +qzRGFKd2qaxHLjoEVZVAiUWPcQqGJ74Gm0+bL+X04Ew8ox5tl+NEK2jf
-   XDBQEklaD66o75V05aZtJiJR9FePpdwsF7JoduHUHKFZbTDFQ+0xOMQt7
-   IaYUF6jO67CR0FYEvgOquV9nsXohbIH50nGdr/KNn9/gvKKrNsi2Hx06R
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="2234178"
-X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
-   d="scan'208";a="2234178"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 09:03:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="804055814"
-X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
-   d="scan'208";a="804055814"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 16 Dec 2023 09:03:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEY4W-0001us-0I;
-	Sat, 16 Dec 2023 17:03:28 +0000
-Date: Sun, 17 Dec 2023 01:02:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- 1f68ce2a027250aeeb1756391110cdc4dc97c797
-Message-ID: <202312170148.mwlkNgnN-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2903035D;
+	Sat, 16 Dec 2023 17:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.82.73) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 16 Dec
+ 2023 20:10:46 +0300
+Subject: Re: [PATCH net-next v2 12/21] net: ravb: Move ptp initialization in
+ the driver's ndo_open API for ccc_gac platorms
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-13-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <5c33fc3e-5ca7-a0da-acff-32b2e7a38dd9@omp.ru>
+Date: Sat, 16 Dec 2023 20:10:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <20231214114600.2451162-13-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/16/2023 16:57:54
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182146 [Dec 15 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;31.173.82.73:7.1.2;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.82.73
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/16/2023 17:03:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/16/2023 2:57:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
-branch HEAD: 1f68ce2a027250aeeb1756391110cdc4dc97c797  x86/mce: Handle Intel threshold interrupt storms
+On 12/14/23 2:45 PM, Claudiu wrote:
 
-elapsed time: 1474m
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> The initialization sequence for PTP is the same for platforms with ccc_gac
+> and gptp (according to chapter "Figure 50.71 Flow of gPTP Initialization
+> (Normal, Common to All Modes)" of the R-Car Series, 3rd generation hardware
+   Figure is hardly a chapter. :-)
 
-configs tested: 131
-configs skipped: 2
+> manual and chapter "Figure 37A.53 Flow of gPTP Initialization (Normal,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+   Here as well...
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231216   gcc  
-arc                   randconfig-002-20231216   gcc  
-arm                               allnoconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20231216   gcc  
-arm                   randconfig-002-20231216   gcc  
-arm                   randconfig-003-20231216   gcc  
-arm                   randconfig-004-20231216   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231216   gcc  
-arm64                 randconfig-002-20231216   gcc  
-arm64                 randconfig-003-20231216   gcc  
-arm64                 randconfig-004-20231216   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231216   gcc  
-csky                  randconfig-002-20231216   gcc  
-hexagon                           allnoconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20231216   clang
-hexagon               randconfig-002-20231216   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231216   gcc  
-i386         buildonly-randconfig-002-20231216   gcc  
-i386         buildonly-randconfig-003-20231216   gcc  
-i386         buildonly-randconfig-004-20231216   gcc  
-i386         buildonly-randconfig-005-20231216   gcc  
-i386         buildonly-randconfig-006-20231216   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231216   gcc  
-i386                  randconfig-002-20231216   gcc  
-i386                  randconfig-003-20231216   gcc  
-i386                  randconfig-004-20231216   gcc  
-i386                  randconfig-005-20231216   gcc  
-i386                  randconfig-006-20231216   gcc  
-i386                  randconfig-011-20231216   clang
-i386                  randconfig-012-20231216   clang
-i386                  randconfig-013-20231216   clang
-i386                  randconfig-014-20231216   clang
-i386                  randconfig-015-20231216   clang
-i386                  randconfig-016-20231216   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231216   gcc  
-loongarch             randconfig-002-20231216   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231216   gcc  
-nios2                 randconfig-002-20231216   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231216   gcc  
-parisc                randconfig-002-20231216   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc               randconfig-001-20231216   gcc  
-powerpc               randconfig-002-20231216   gcc  
-riscv                             allnoconfig   clang
-riscv                               defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231216   gcc  
-x86_64       buildonly-randconfig-002-20231216   gcc  
-x86_64       buildonly-randconfig-003-20231216   gcc  
-x86_64       buildonly-randconfig-004-20231216   gcc  
-x86_64       buildonly-randconfig-005-20231216   gcc  
-x86_64       buildonly-randconfig-006-20231216   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231216   clang
-x86_64                randconfig-002-20231216   clang
-x86_64                randconfig-003-20231216   clang
-x86_64                randconfig-004-20231216   clang
-x86_64                randconfig-005-20231216   clang
-x86_64                randconfig-006-20231216   clang
-x86_64                randconfig-011-20231216   gcc  
-x86_64                randconfig-012-20231216   gcc  
-x86_64                randconfig-013-20231216   gcc  
-x86_64                randconfig-014-20231216   gcc  
-x86_64                randconfig-015-20231216   gcc  
-x86_64                randconfig-016-20231216   gcc  
-x86_64                randconfig-071-20231216   gcc  
-x86_64                randconfig-072-20231216   gcc  
-x86_64                randconfig-073-20231216   gcc  
-x86_64                randconfig-074-20231216   gcc  
-x86_64                randconfig-075-20231216   gcc  
-x86_64                randconfig-076-20231216   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+> Common to All Modes)" of the RZ/G Series hardware manual).
+> 
+> As some IP variants switch to reset mode (and thus registers' content is
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+   The register content.
+
+> lost) when setting clocks (due to module standby functionality) to be able
+> to implement runtime PM, move the PTP initialization to the driver's
+> ndo_open API.
+> 
+> This commit prepares the code for the addition of runtime PM.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+[...]
+
+MBR, Sergey
 
