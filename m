@@ -1,99 +1,136 @@
-Return-Path: <linux-kernel+bounces-2371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B368815BD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:17:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA82815BD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:17:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D50AB23756
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:17:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79795284F7D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF2A3528B;
-	Sat, 16 Dec 2023 21:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6F23528E;
+	Sat, 16 Dec 2023 21:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f9WZdsjg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BR3kSWoS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7961DFDA
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 21:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702761417; x=1734297417;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=QRzY5II7xxmMLyFeiXiZG1jsaIeY3ADmR/eNGBeUk8E=;
-  b=f9WZdsjg0mkWcfbFSg8pulAWy4kwSt3IKCkFfPLZ2MflhUi9dlYZ56Cs
-   EYzUX8RaavD2izuE5zxb5gkPl41X/oAzV7nsMWqj0PnFMBt3cLaq4yvXP
-   xdHVCgkqdKu+cbvRfcmWE7FThr1s9AexaJvf21U+y93NltKhEcEU9vzVM
-   aZl3tUJFOnltYySPyfdAHnhKF2k1rSeVNnKGhDfEZ/+5ZGMy3q1VtE2h/
-   hbBtwB5si7Nwj2uuO5sPPYMUVnehSfwZkGcaYbSSIIJjXGMH5pIGyLi8D
-   K/XSS5ELNVfT8kAbWAePUgkx/Ul29e39rTSwuIZIHeni24TWm1laQaToM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="8748085"
-X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
-   d="scan'208";a="8748085"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 13:16:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
-   d="scan'208";a="23239586"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 16 Dec 2023 13:16:55 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEc1j-0002DU-1A;
-	Sat, 16 Dec 2023 21:16:51 +0000
-Date: Sun, 17 Dec 2023 05:16:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/m68k/sun3/sun3ints.c:33:13: sparse: sparse: cast truncates bits
- from constant value (ffffff7f becomes 7f)
-Message-ID: <202312170514.ETYcyz4E-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5578235280;
+	Sat, 16 Dec 2023 21:17:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94E0FC433C7;
+	Sat, 16 Dec 2023 21:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702761444;
+	bh=wbCb7V8TWLXWLW8MxcJ7qPWIEaOem3AcnmRfFX2rmA8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BR3kSWoS8OnHrcL5hEm2lXZG3sB12hceeVyLBjari4NMpLXOYePN/QDTFWzI9195P
+	 eqxj/EPR3V+O3Wvnx0u00KFm5QygsEJSga2X2/PMfPif1ZVt7+g0okfxCJEKPy2wg+
+	 rMpSe8NLr4ikom0S4unHw7q/yJnmmkmyEGeYv1H5S9DPf2qgaEGO2rb4kFAyNh5F3V
+	 WyJWM6uziWjiGrL+CzoerPZwOTATuByWWwo6mQApSDU8rdIKv1B4BU8i7YBH3g8inm
+	 gRfxbry2VSOc8sRyXhUIkds17cPQeItegGe7BufMjSJ3uD7BJHAAdhozQcSsfozGza
+	 Ngwifx+19eDDg==
+Date: Sat, 16 Dec 2023 22:17:20 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] srcu: Improve comments about acceleration leak
+Message-ID: <ZX4T4E02hbsgnGBY@localhost.localdomain>
+References: <20231211015717.1067822-1-joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231211015717.1067822-1-joel@joelfernandes.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3b8a9b2e6809d281890dd0a1102dc14d2cd11caf
-commit: 72e70a0e7ac7c422843eb8bbf192e820e9ccd24d m68k: sun3: Change led_pattern[] to unsigned char
-date:   2 months ago
-config: m68k-randconfig-r133-20231117 (https://download.01.org/0day-ci/archive/20231217/202312170514.ETYcyz4E-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231217/202312170514.ETYcyz4E-lkp@intel.com/reproduce)
+Le Mon, Dec 11, 2023 at 01:57:16AM +0000, Joel Fernandes (Google) a écrit :
+> The comments added in commit 1ef990c4b36b ("srcu: No need to
+> advance/accelerate if no callback enqueued") are a bit confusing to me.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312170514.ETYcyz4E-lkp@intel.com/
+I know some maintainers who may argue that in the changelog world, the first
+person doesn't exist :-)
 
-sparse warnings: (new ones prefixed by >>)
-   arch/m68k/sun3/sun3ints.c: note: in included file (through include/linux/mmzone.h, include/linux/topology.h, include/linux/irq.h, ...):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
->> arch/m68k/sun3/sun3ints.c:33:13: sparse: sparse: cast truncates bits from constant value (ffffff7f becomes 7f)
+> The comments are describing a scenario for code that was moved and is
+> no longer the way it was (snapshot after advancing). Improve the code
+> comments to reflect this and also document by acceleration can never
 
-vim +33 arch/m68k/sun3/sun3ints.c
+s/by/why
 
-    31	
-    32	static unsigned char led_pattern[8] = {
-  > 33		(u8)~(0x80), (u8)~(0x01),
-    34		(u8)~(0x40), (u8)~(0x02),
-    35		(u8)~(0x20), (u8)~(0x04),
-    36		(u8)~(0x10), (u8)~(0x08)
-    37	};
-    38	
+> fail.
+> 
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> v1->v2: Fix typo in change log.
+> 
+>  kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 0351a4e83529..051e149490d1 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+>  	if (rhp)
+>  		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+>  	/*
+> -	 * The snapshot for acceleration must be taken _before_ the read of the
+> -	 * current gp sequence used for advancing, otherwise advancing may fail
+> -	 * and acceleration may then fail too.
+> +	 * It's crucial to capture the snapshot 's' for acceleration before
+> +	 * reading the current gp_seq that is used for advancing. This is
+> +	 * essential because if the acceleration snapshot is taken after a
+> +	 * failed advancement attempt, there's a risk that a grace period may
+> +	 * conclude and a new one may start in the interim. If the snapshot is
+> +	 * captured after this sequence of events, the acceleration snapshot 's'
+> +	 * could be excessively advanced, leading to acceleration failure.
+> +	 * In such a scenario, an 'acceleration leak' can occur, where new
+> +	 * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segment.
+> +	 * Also note that encountering advancing failures is a normal
+> +	 * occurrence when the grace period for RCU_WAIT_TAIL is in progress.
+>  	 *
+> -	 * This could happen if:
+> +	 * To see this, consider the following events which occur if
+> +	 * rcu_seq_snap() were to be called after advance:
+>  	 *
+>  	 *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num = X + 4) and the
+>  	 *     RCU_NEXT_READY_TAIL also has callbacks (gp_num = X + 8).
+> @@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+>  	if (rhp) {
+>  		rcu_segcblist_advance(&sdp->srcu_cblist,
+>  				      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> +		/*
+> +		 * Acceleration can never fail because the state of gp_seq used
+> +		 * for advancing is <= the state of gp_seq used for
+> +		 * acceleration.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+What do you mean by "state" here? If it's the gp_seq number, that doesn't look
+right. The situation raising the initial bug also involved a gp_seq used for
+advancing <= the gp_seq used for acceleration.
+
+Thanks.
+
+> +                This means that RCU_NEXT_TAIL segment will
+> +		 * always be able to be emptied by the acceleration into the
+> +		 * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
+> +		 */
+>  		WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
+>  	}
+>  	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
 
