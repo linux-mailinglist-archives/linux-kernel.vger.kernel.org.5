@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-2015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B343B8156F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:35:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7CF88156F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52DE61F25BD5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:35:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A983B23096
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6BDE38DD6;
-	Sat, 16 Dec 2023 03:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527F039AF4;
+	Sat, 16 Dec 2023 03:33:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wmpSPZvk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lSNJdfbY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F4537D08
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 03:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBC737D3C
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 03:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702697604;
+	t=1702697606;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dxw2KqDvlMnMD4Kapv1bIsL/tByrZwT85T/LljRE2HE=;
-	b=wmpSPZvk0q6PpcFET+M+jpSJuPO1rvRf4yekiYZQcySO04+MNinlp+POwwTts/ZKSMA+vd
-	G1nJLMt5WnAM8ceV7UR9qMkJRjc/TkrFKG3Rhg+S893Mr7vpUsk+D8ltIU+aPtti5HYLQ2
-	HGLpevlfQAM+3lPkaQ5vzJJDZLqfwks=
+	bh=YdcVMfL4RKMuBKbyjbkGPxOyNcu8DW6qpqsLkgSGWJs=;
+	b=lSNJdfbYaiT0EPw0hIZjBAE42js3NNtjIZAEm3CZvP9VPgMFCvaZwf4nKLCqlFLrmLpPLg
+	TtjghGotjTtZR8nlnSqPQVJ6gE0bx8Dt1FxRHTj4dqrAf346qCgInLCPHjR4ZTJK+Lb13+
+	ebUEdRyyiV22oIBkxeHQtXj0tdrxZAY=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -51,9 +51,9 @@ Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	longman@redhat.com,
 	boqun.feng@gmail.com,
 	brauner@kernel.org
-Subject: [PATCH 36/50] syscall_user_dispatch.h: split out *_types.h
-Date: Fri, 15 Dec 2023 22:32:42 -0500
-Message-ID: <20231216033300.3553457-4-kent.overstreet@linux.dev>
+Subject: [PATCH 37/50] x86/signal: kill dependency on time.h
+Date: Fri, 15 Dec 2023 22:32:43 -0500
+Message-ID: <20231216033300.3553457-5-kent.overstreet@linux.dev>
 In-Reply-To: <20231216033300.3553457-1-kent.overstreet@linux.dev>
 References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
  <20231216033300.3553457-1-kent.overstreet@linux.dev>
@@ -66,88 +66,25 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-thread_info.h pulls in a lot of junk that sched.h that we don't need; in
-particular, this helps to kill the printk.h dependency.
+this is unecessary, and was pulling in printk.h from uapi headers
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- include/linux/sched.h                       |  2 +-
- include/linux/syscall_user_dispatch.h       |  9 +--------
- include/linux/syscall_user_dispatch_types.h | 22 +++++++++++++++++++++
- 3 files changed, 24 insertions(+), 9 deletions(-)
- create mode 100644 include/linux/syscall_user_dispatch_types.h
+ arch/x86/include/uapi/asm/signal.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d799427f6d1b..fea6d913e004 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -28,7 +28,7 @@
- #include <linux/sched/prio.h>
- #include <linux/sched/types.h>
- #include <linux/signal_types.h>
--#include <linux/syscall_user_dispatch.h>
-+#include <linux/syscall_user_dispatch_types.h>
- #include <linux/mm_types_task.h>
- #include <linux/task_io_accounting.h>
- #include <linux/posix-timers_types.h>
-diff --git a/include/linux/syscall_user_dispatch.h b/include/linux/syscall_user_dispatch.h
-index 641ca8880995..3858a6ffdd5c 100644
---- a/include/linux/syscall_user_dispatch.h
-+++ b/include/linux/syscall_user_dispatch.h
-@@ -6,16 +6,10 @@
- #define _SYSCALL_USER_DISPATCH_H
+diff --git a/arch/x86/include/uapi/asm/signal.h b/arch/x86/include/uapi/asm/signal.h
+index 777c3a0f4e23..f777346450ec 100644
+--- a/arch/x86/include/uapi/asm/signal.h
++++ b/arch/x86/include/uapi/asm/signal.h
+@@ -4,7 +4,6 @@
  
- #include <linux/thread_info.h>
-+#include <linux/syscall_user_dispatch_types.h>
+ #ifndef __ASSEMBLY__
+ #include <linux/types.h>
+-#include <linux/time.h>
+ #include <linux/compiler.h>
  
- #ifdef CONFIG_GENERIC_ENTRY
- 
--struct syscall_user_dispatch {
--	char __user	*selector;
--	unsigned long	offset;
--	unsigned long	len;
--	bool		on_dispatch;
--};
--
- int set_syscall_user_dispatch(unsigned long mode, unsigned long offset,
- 			      unsigned long len, char __user *selector);
- 
-@@ -29,7 +23,6 @@ int syscall_user_dispatch_set_config(struct task_struct *task, unsigned long siz
- 				     void __user *data);
- 
- #else
--struct syscall_user_dispatch {};
- 
- static inline int set_syscall_user_dispatch(unsigned long mode, unsigned long offset,
- 					    unsigned long len, char __user *selector)
-diff --git a/include/linux/syscall_user_dispatch_types.h b/include/linux/syscall_user_dispatch_types.h
-new file mode 100644
-index 000000000000..3be36b06c7d7
---- /dev/null
-+++ b/include/linux/syscall_user_dispatch_types.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _SYSCALL_USER_DISPATCH_TYPES_H
-+#define _SYSCALL_USER_DISPATCH_TYPES_H
-+
-+#include <linux/types.h>
-+
-+#ifdef CONFIG_GENERIC_ENTRY
-+
-+struct syscall_user_dispatch {
-+	char __user	*selector;
-+	unsigned long	offset;
-+	unsigned long	len;
-+	bool		on_dispatch;
-+};
-+
-+#else
-+
-+struct syscall_user_dispatch {};
-+
-+#endif
-+
-+#endif /* _SYSCALL_USER_DISPATCH_TYPES_H */
+ /* Avoid too many header ordering problems.  */
 -- 
 2.43.0
 
