@@ -1,100 +1,97 @@
-Return-Path: <linux-kernel+bounces-2331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78FE1815B26
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:52:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05EDA815B2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA762285439
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:52:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6879285E63
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCEC31A6B;
-	Sat, 16 Dec 2023 18:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903D531A69;
+	Sat, 16 Dec 2023 19:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ykcwfrsd"
+	dkim=pass (2048-bit key) header.d=wizery-com.20230601.gappssmtp.com header.i=@wizery-com.20230601.gappssmtp.com header.b="iji/RbfY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A823454B;
-	Sat, 16 Dec 2023 18:52:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=3hVE5RPWNcQ5hlL8FuG56P37WA0eyg5gChyAuDS+aI8=; b=YkcwfrsdywyoNzi62MbRk6S8wV
-	AfjHfznQhSdfxjOP14qr0Yzyvs95QTVHHMGVFffCnais4+M3YDHOAqjNBNY6lM3UU/fbupZLJcyjD
-	SzTTFXJEmPTP4IkxhpWS0/fo6Fm9hfU356RAk4COpEsRyRaSNx86oyLRKV0Dr6sQRGU7VQ152mmrn
-	TtZm4V1CQlAW6ItB5/XrZ/0zL4+bHERCbs/PW0QBcl6ETAbarTGkAmgdQfqSU6zmpi/DiddbDlnzW
-	LV26rKUsSUXIpXtfsP0M9oZn46SwR7ljtojN/CGXn1otxwqmEisjAmpUmv7StdoxcbQc+0p5GxSrL
-	ZPTWMkxA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEZld-006Yxh-0o;
-	Sat, 16 Dec 2023 18:52:05 +0000
-Message-ID: <28e353de-1ea8-418b-8d96-a315a9469794@infradead.org>
-Date: Sat, 16 Dec 2023 10:52:04 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E87030F8A
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wizery.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=wizery.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so1219371276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 11:00:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=wizery-com.20230601.gappssmtp.com; s=20230601; t=1702753202; x=1703358002; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hIw0KKUn/sOJBPVAoLZOVp9Vicr1Z2LvCEsaKQOJ4vI=;
+        b=iji/RbfYRGlkGC1aqPTRRA1fRi1x+37MCNA9+8uRxq9SS9MZk6RfuMNb2MriP5OA10
+         tR5Wrev0UwCVOA1adLbUHNwx7Pf6UBBxCobNp6RsZy8VTVgfvsVowU/m7rP3vKOeI5nz
+         oQXfi+GR2w6RTT1bfCHk3QM89bWl85b8iNaJT9iFziAU9HrXRLTSQaeJmNL9oLr7vhdu
+         YvS+KOMcyKhcf28lLPeb7Ve1kdwRy6BWJSDwoAepZxh2L85YquhiZh6x9sGCDEdJyCgf
+         dfLgh9cjNykWSopFmUc7NfMMjv11tAu9BDd7DO4DeOSMN7dVXs+D25Q6pAufGgegX+uL
+         8mmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702753202; x=1703358002;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hIw0KKUn/sOJBPVAoLZOVp9Vicr1Z2LvCEsaKQOJ4vI=;
+        b=LcW6h5qjxSPyr8jRcj1jaUoRiF4PQC+Ch8Xi258F3tVwKvmY0i17+w6estUY4DNeyz
+         3ENJVuK9nh0XWSdGw2xRwtthBsZaO2GFGEf18BU9qmxCJY1rLEXd2taWv/8PeOgpiyyR
+         aDg3NqtuVPFIURrfS+hapKOKwDNRJDpz5Zxam1DlPDcxMidNF/Ium3FymqzWkzBTEQlU
+         sWFBWW2WtA4eudejPNjmWL5vxZ+mFNelL6LklCJe5V0vmopcj+CY/Aas7DxlAa1qAjtJ
+         MoH7lY/zAm7psUN56zuPMA8hYdo0NEMAgkpQw25o0qTeuWU0OT1Prz4BtoKZPxkwvRJD
+         YD3Q==
+X-Gm-Message-State: AOJu0Ywd2RewnOWf8viFCsbxbdO33jWbkBbby2L2ZJwcEKXRpiDgQprZ
+	kC+jX6I+Dts11aWrxGp74CgMkiSJDoao1rc4kCH66g==
+X-Google-Smtp-Source: AGHT+IEu+BEXHnMbI0ik6h0fSzQ/20GsZF57JKonaLuC0uEMnoISaaztlU5S6nY6t42nI9n75OQvE9qmJt3aQCsJS+M=
+X-Received: by 2002:a25:2391:0:b0:dbc:e53f:8703 with SMTP id
+ j139-20020a252391000000b00dbce53f8703mr2406150ybj.100.1702753202061; Sat, 16
+ Dec 2023 11:00:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/50] prandom: Remove unused include
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org
-Cc: tglx@linutronix.de, x86@kernel.org, tj@kernel.org, peterz@infradead.org,
- mathieu.desnoyers@efficios.com, paulmck@kernel.org, keescook@chromium.org,
- dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
- longman@redhat.com, boqun.feng@gmail.com, brauner@kernel.org,
- Suren Baghdasaryan <surenb@google.com>
-References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
- <20231216032651.3553101-1-kent.overstreet@linux.dev>
- <20231216032651.3553101-2-kent.overstreet@linux.dev>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231216032651.3553101-2-kent.overstreet@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231216111017.17624-2-bagasdotme@gmail.com>
+In-Reply-To: <20231216111017.17624-2-bagasdotme@gmail.com>
+From: Ohad Ben Cohen <ohad@wizery.com>
+Date: Sat, 16 Dec 2023 20:59:50 +0200
+Message-ID: <CAK=WgbZcM8qEm6EOT2FFLNLoJC986UYpjEWK2O6-js0P=4No4w@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Remove Ohad Ben-Cohen from hwspinlock subsystem
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux RPC <linux-remoteproc@vger.kernel.org>, Linux OMAP <linux-omap@vger.kernel.org>, 
+	Linux Memory Management List <linux-mm@kvack.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Bagas,
 
+On Sat, Dec 16, 2023 at 1:10=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com=
+> wrote:
+> --- a/CREDITS
+> +++ b/CREDITS
+> @@ -323,6 +323,7 @@ N: Ohad Ben Cohen
+>  E: ohad@wizery.com
+>  D: Remote Processor (remoteproc) subsystem
+>  D: Remote Processor Messaging (rpmsg) subsystem
+> +D: Hardware spinlock (hwspinlock) subsystem
 
-On 12/15/23 19:26, Kent Overstreet wrote:
-> prandom.h doesn't use percpu.h - this fixes some circular header issues.
-> 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  include/linux/prandom.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/include/linux/prandom.h b/include/linux/prandom.h
-> index f2ed5b72b3d6..f7f1e5251c67 100644
-> --- a/include/linux/prandom.h
-> +++ b/include/linux/prandom.h
-> @@ -10,7 +10,6 @@
->  
->  #include <linux/types.h>
->  #include <linux/once.h>
-> -#include <linux/percpu.h>
->  #include <linux/random.h>
->  
->  struct rnd_state {
+Please also add:
 
-In this header file:
+D: OMAP hwspinlock driver
+D: OMAP remoteproc driver
 
-    22	void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state);
-
-so where does it get __percpu from?
-
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+Thanks,
+Ohad.
 
