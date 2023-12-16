@@ -1,89 +1,83 @@
-Return-Path: <linux-kernel+bounces-1849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5358C8154C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:03:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32428154C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:02:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 091471F25CB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:03:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 762BBB2115E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C81065694;
-	Sat, 16 Dec 2023 00:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kO1eLu58"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C187258D;
+	Sat, 16 Dec 2023 00:02:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D31A44A26;
-	Sat, 16 Dec 2023 00:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 809304406;
+	Sat, 16 Dec 2023 00:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-db538b07865so1112173276.2;
-        Fri, 15 Dec 2023 16:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702684956; x=1703289756; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HUP3bpCvVKirlUHMbPP+Vvn/KkPpGHwcdqXev2j/lBA=;
-        b=kO1eLu581j9gEmC3vmDTqmZ2HaoI5q1SYoFe2nDiIrQ6DimOv8/M/yzSCle9uf6bav
-         Jzlbx22bf3Ci9nsYnxIKaitXy/7CPwvUnbQJSv+tyKGTg3aMG+UenPmEm0yZbi9O6PuZ
-         nw+hv/NRyaGzeX+Anxr4KqDHHpOp+bmyf4LSlfbjDBYi3iKQTrOZnqJeVJyDnm1Tgvg9
-         wUc13O7vqmhLjKq1m0jVr3GHcyZbX/LaxjclpaDExeXuWkGc0fCpaUn00OdmJOAyul2n
-         bLui6WfZV9/UjDNub+BmW4b69Y9H5XH64pH7579foAFJ8uUGa5vM4cRzCBV3b8mVQ/yM
-         7d4A==
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-35f3e4ce411so7536055ab.0;
+        Fri, 15 Dec 2023 16:02:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702684956; x=1703289756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HUP3bpCvVKirlUHMbPP+Vvn/KkPpGHwcdqXev2j/lBA=;
-        b=l2oYkhGIaY5fXNiZ649dHwsarKK/gRqvmK0o/Qi3fVpcH0qURHFST/NLKLybwrbhr/
-         rtpsPMgOA54Z7g2BdYuvSLa9iF75SK3UmHMCx9cCj5gsQhvuV5STZF8mSNJEQFeg//Ba
-         YlX3IBeiqJDWh8/xcZrCnwjkotzAdHFaZSpdap6gXpXYr8oX3PwXJxvHpKkkFAhqy15X
-         Pnrnf71m7DukYuVw8pQ6JlRql/jwy/zWi7iWaKEKBCJ42U9yrw4OS/Mx1KQYfZSv54Iv
-         YvwvJ8V4CCsABEWOR9ffaSfu17FTsiKJzsBALe0fWXjcRtkHZ+5sJTtcyqpQysTsiOYE
-         wdpQ==
-X-Gm-Message-State: AOJu0Yxd4EGXe3woJeohflsdiBA1JBZ374cvw/uHptU+qSZDxswBujl7
-	ZbfuWnb0QuA2KUy2eoxopXuK6ytrkqimpub3msk=
-X-Google-Smtp-Source: AGHT+IGvPfH0mpoBG1iug8UwmNxFRI3F59+AybxidcQnROd3JXcSiY/aigPxSIwnvGkPkOjXOxZBO+SEVyrpS16B2bw=
-X-Received: by 2002:a25:dcd1:0:b0:dbc:e53f:8705 with SMTP id
- y200-20020a25dcd1000000b00dbce53f8705mr2535065ybe.81.1702684955826; Fri, 15
- Dec 2023 16:02:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702684947; x=1703289747;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p9i62YdT9dE6duOtlQtMrokuNps6ULf38KYvoR5jIR4=;
+        b=Ml6xex67Cq0WrqKu9wvmufnMfKqj8mB6Nz9mYYMWUe3juPIXeJ6qIz5q+XWVDQdScw
+         ZoHA6lr+ifl9J1noEeSY0YhWQJOtGn6sY25fdu/NbKO9JEmPUNFh9jGsbQ6sVh7/m3hc
+         2C3/P2ZT7TSezkTI5fzIj9xBAn8uLOF5v3QQYuPiOa97dWW3y/mvKzu43Rv42xeBdy2n
+         xuwpZOe3oQJE9ek5aejWWQI/ZHs+/HzW4LB97tbAsRqA7qGIqcmQMg4jSZDurfsl16YY
+         hQWnbanM8Ae+GYx/JexPknw3v5ygWkcxiQmRpFlW0Q6jMzSM+Tj7uHKlan2u8mZQ5HnR
+         VQ6w==
+X-Gm-Message-State: AOJu0Yw1FhU73rRJ3Zlg3EBngVMy38YA7vM4nyZ9YZThW2v0Yv2/pNQh
+	JB18M/e9Clxt8a+AzuWsMIo=
+X-Google-Smtp-Source: AGHT+IEAvclkEwNnk6yOtGocBSwjHeKqsSnI6arQHEKm+zMUxj6bFymJXjMZfTum84wGDMPpXvSsrg==
+X-Received: by 2002:a05:6e02:12c3:b0:35f:84b8:c1af with SMTP id i3-20020a056e0212c300b0035f84b8c1afmr3975644ilm.31.1702684947507;
+        Fri, 15 Dec 2023 16:02:27 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id b8-20020a170903228800b001d052d1aaf2sm14658389plh.101.2023.12.15.16.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 16:02:27 -0800 (PST)
+Date: Sat, 16 Dec 2023 09:02:25 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: PCI: qcom: Correct reset-names property
+Message-ID: <20231216000225.GB1570493@rocinante>
+References: <20231111142006.51883-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215235428.243211-1-ojeda@kernel.org>
-In-Reply-To: <20231215235428.243211-1-ojeda@kernel.org>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Sat, 16 Dec 2023 01:02:24 +0100
-Message-ID: <CANiq72mvspvQ_0Mr6TAw55sa_GUM6FRSYb_1JU67hwT+PzLZkg@mail.gmail.com>
-Subject: Re: [PATCH] rust: support `srctree`-relative links
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
-	FUJITA Tomonori <fujita.tomonori@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231111142006.51883-1-krzysztof.kozlowski@linaro.org>
 
-On Sat, Dec 16, 2023 at 12:54=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wr=
-ote:
->
-> Instead, provide support for `srctree`-relative links, e.g.:
+Hello,
 
-If we decide to go this way, then I plan to send this to stable later on.
+> There is no "resets-names" property, but "reset-names".
 
-Cheers,
-Miguel
+Applied to dt-bindings, thank you!
+
+[1/1] dt-bindings: PCI: qcom: Correct reset-names property
+      https://git.kernel.org/pci/pci/c/3b74713a0321
+
+	Krzysztof
 
