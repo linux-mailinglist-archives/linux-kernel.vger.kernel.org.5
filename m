@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-2250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0520815A32
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:27:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BB4815A36
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:28:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FD86B238B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 16:27:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F5E01C2184F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 16:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0082130FA1;
-	Sat, 16 Dec 2023 16:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FAC31A85;
+	Sat, 16 Dec 2023 16:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NV/CDwrx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MTLyyQTy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D305F30662;
-	Sat, 16 Dec 2023 16:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DB230D1B;
+	Sat, 16 Dec 2023 16:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a1f0616a15bso190965766b.2;
-        Sat, 16 Dec 2023 08:27:08 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso2051734a12.2;
+        Sat, 16 Dec 2023 08:27:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702744027; x=1703348827; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702744028; x=1703348828; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4Lm26+4tm6Q9dy5TiKyQzH1wZ/PMiBfYpwbeTXzDXzY=;
-        b=NV/CDwrxIKEOovhSvBgy9czdYvWrYP01xZCrxuRiYLtO5nn1ZRKtGUIWJ8g8WiDorU
-         0CU6hQfRm9F61WNNOT2NlAcW077SK0bM8nbiepAXWLLWInDGW0elbFq2mBvl7E1sEN10
-         wJJm+7aMHMPBbhZH9jdNs4tah3w8M/GrSoSFExQpSVazo5M/sdKk0DP8edCd9UU8F5t1
-         o6j6Db/7EBYDiXGpplV9LLdRe8Yj8qmF+HNTwKh5OqaYVWOH6Rdxl0Q/YnVDBK7Da4VF
-         YH+yCdQAd2LefAkI7Ubt5Wi+MF0YhV/7l8HamY+OGWFmLq/uQZsHUdTL++G1QNpcM06q
-         mgtA==
+        bh=qyAWfNkXQL+v/gZSDlmmFF5ztG5yHb26ZkJxvxzB8Hc=;
+        b=MTLyyQTyFUzMRpweOwN2a4P2t6HZlLsvqYYCzfi5ACj/FoJB7OPE/VxNKS1i5I1N7b
+         UW3wpFOkZXX4uKUEhIMBuosEDvUZEKYA73lEESiZQy709pH1UAtjyT9bb6QVJv1MGmZL
+         t3fPSVS6DJ4bJCSgFWvJ4vO5tTrVbDAeQ5lA+MJLGCmLfMatZ39zu//YbXMR5QAV2oga
+         TbNw3EWQCsjReb0xOJpA9lZVjtGdHVZ5W98IDKxWeZpJ/TskKJWEprcWNUHBEXfPiC2T
+         5pl52dxrovT/7ZkgfEUFguRGimXLs5iMAmcx1Pza0sGv3asdSjpRQt5AuIST/6lWnwlb
+         JbyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702744027; x=1703348827;
+        d=1e100.net; s=20230601; t=1702744028; x=1703348828;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4Lm26+4tm6Q9dy5TiKyQzH1wZ/PMiBfYpwbeTXzDXzY=;
-        b=ltMvoS280ieEK6oqfjCUGKwcZzFuDpz2LCJUXYyDEyucxtivhsJGN7APxzphY8kvXr
-         uyV5hwAo82GUTlq9iSQQtgP4JtH+AtOtscSEgHyjDuzJ2ftHuQRQgWt26hZNz7ePLux7
-         +03NSpiBTbPtsoTkxRdMmum9AQsHiKRBfJ+dJNvX8iW533/qf/8PaaRTsqoX0ncR1Mk7
-         e/gwxw/KP/UAhMTczDXLRJ8EsLeAUuJTJnsZEJXi1VQiiAseqtY05Uk1hvThsvlPfmdL
-         0tKVgFUhGqX8ygX4+HVT7x8vVc/7hLUEMlIUT6ZM3dvhlG3QT+AIoOqyZhYUotjdxSbW
-         ceTw==
-X-Gm-Message-State: AOJu0YyOcZFIlTumT5luhX0LShe8eLOAth+8GYB6ay2bdBeqF3QYvf6E
-	9MpT24lCYQy3C7iYoPVHaQ==
-X-Google-Smtp-Source: AGHT+IGZ7VeNHGWq+1VZP4LYh9qX3NgWRdPWJnURnN0HnbB2LJH1KRm9aL1BAMwgow9ZPeylMhQF8w==
-X-Received: by 2002:a17:907:208f:b0:a19:a19b:78a7 with SMTP id pv15-20020a170907208f00b00a19a19b78a7mr7159079ejb.106.1702744027021;
+        bh=qyAWfNkXQL+v/gZSDlmmFF5ztG5yHb26ZkJxvxzB8Hc=;
+        b=D2HDZ5F9xsi9ODeoGbuJuUcMpFXwDBa9XeSuFZXAAXFElI+JFWeME1aE5/HlWlrAOp
+         tZpxl4ch/3ibwGywpb4gYlKqxLUlXzUFtkIhnaPagqtQSpYrg4XB0NSbBbs1BCx0Y/ZV
+         nY6UR9UPCITb1eUWiBki9GyQ+eVbEa2F8K8I70InlxtOSV2oUkMmjoVRZvnm9KFFwE/B
+         NJhavkr/4dNxGUc92F6XxtJdKCgObznpzpLZqr7B6y0Ue7ZtjWOZBS0fGIp8ZcLryAwM
+         HUflKt7OFmsenPO2rD303zKet0aHlHI8FFZzsrdY3+3mJoYlSueBV03FRRb+HKg4p0Jh
+         gujw==
+X-Gm-Message-State: AOJu0Yx3s3lFrHjkV6ROrWeAphS6T0TYitsuVrfWyMHKnKd0oF1Z584N
+	2xh6gpsD9Y8rRiUsdb2xYg==
+X-Google-Smtp-Source: AGHT+IG3ytNKpYhW3AxvamdKVLTOk5M5VW41roA7N2pAlKA2C2kww6MnweL75Ttzw+MUjezGDENIdQ==
+X-Received: by 2002:a17:906:6a1d:b0:9c2:2d0a:320c with SMTP id qw29-20020a1709066a1d00b009c22d0a320cmr8522242ejc.46.1702744027873;
         Sat, 16 Dec 2023 08:27:07 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:e807:d345:6f47:1db9])
-        by smtp.gmail.com with ESMTPSA id st10-20020a170907c08a00b00a1cd0794696sm11990362ejc.53.2023.12.16.08.27.06
+        by smtp.gmail.com with ESMTPSA id st10-20020a170907c08a00b00a1cd0794696sm11990362ejc.53.2023.12.16.08.27.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 08:27:06 -0800 (PST)
+        Sat, 16 Dec 2023 08:27:07 -0800 (PST)
 From: Alex Bee <knaerzche@gmail.com>
 To: Sandy Huang <hjc@rock-chips.com>,
 	=?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
@@ -73,10 +73,11 @@ Cc: David Airlie <airlied@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 02/27] drm/rockchip: vop: Add output selection registers for RK312x
-Date: Sat, 16 Dec 2023 17:26:13 +0100
-Message-ID: <20231216162639.125215-3-knaerzche@gmail.com>
+	Alex Bee <knaerzche@gmail.com>,
+	Zheng Yang <zhengyang@rock-chips.com>
+Subject: [PATCH v2 03/27] drm/rockchip: inno_hdmi: Fix video timing
+Date: Sat, 16 Dec 2023 17:26:14 +0100
+Message-ID: <20231216162639.125215-4-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231216162639.125215-1-knaerzche@gmail.com>
 References: <20231216162639.125215-1-knaerzche@gmail.com>
@@ -88,64 +89,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In contrast to RK3036, RK312x SoCs have multiple output channels such as
-RGB (i.e. LVDS TTL), LVDS, DSI and HDMI.
+The controller wants the difference between *total and *sync_start in the
+HDMI_VIDEO_EXT_*DELAY registers. Otherwise the signal is very unstable for
+certain non-VIC modes. See downstream commit [0].
 
-In order to support that, this splits output from RK3036 and defines an
-separate one for RK3126 with the registers required to enable the
-appropriate output and setup the correct polarity.
+[0] https://github.com/rockchip-linux/kernel/commit/8eb559f2502c
 
+Fixes: 412d4ae6b7a5 ("drm/rockchip: hdmi: add Innosilicon HDMI support")
+Co-developed-by: Zheng Yang <zhengyang@rock-chips.com>
+Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
 changes in v2:
- - rephrase commit message
-
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 13 ++++++++++++-
- drivers/gpu/drm/rockchip/rockchip_vop_reg.h |  3 +++
- 2 files changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index c51ca82320cb..b9ee02061d5b 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -227,11 +227,22 @@ static const struct vop_win_data rk3126_vop_win_data[] = {
- 	  .type = DRM_PLANE_TYPE_CURSOR },
- };
+ - none
  
-+static const struct vop_output rk3126_output = {
-+	.pin_pol = VOP_REG(RK3036_DSP_CTRL0, 0xf, 4),
-+	.hdmi_pin_pol = VOP_REG(RK3126_INT_SCALER, 0x7, 4),
-+	.hdmi_en = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 22),
-+	.hdmi_dclk_pol = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 23),
-+	.rgb_en = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 24),
-+	.rgb_dclk_pol = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 25),
-+	.mipi_en = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 28),
-+	.mipi_dclk_pol = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 29),
-+};
-+
- static const struct vop_data rk3126_vop = {
- 	.intr = &rk3036_intr,
- 	.common = &rk3036_common,
- 	.modeset = &rk3036_modeset,
--	.output = &rk3036_output,
-+	.output = &rk3126_output,
- 	.win = rk3126_vop_win_data,
- 	.win_size = ARRAY_SIZE(rk3126_vop_win_data),
- 	.max_output = { 1920, 1080 },
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.h b/drivers/gpu/drm/rockchip/rockchip_vop_reg.h
-index 406e981c75bd..fbf1bcc68625 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.h
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.h
-@@ -872,6 +872,9 @@
- /* rk3036 register definition end */
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
+index 6e5b922a121e..345253e033c5 100644
+--- a/drivers/gpu/drm/rockchip/inno_hdmi.c
++++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
+@@ -412,7 +412,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_L, value & 0xFF);
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_H, (value >> 8) & 0xFF);
  
- /* rk3126 register definition */
-+#define RK3126_INT_SCALER		0x0c
-+
-+/* win1 register */
- #define RK3126_WIN1_MST			0x4c
- #define RK3126_WIN1_DSP_INFO		0x50
- #define RK3126_WIN1_DSP_ST		0x54
+-	value = mode->hsync_start - mode->hdisplay;
++	value = mode->htotal - mode->hsync_start;
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_L, value & 0xFF);
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_H, (value >> 8) & 0xFF);
+ 
+@@ -427,7 +427,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
+ 	value = mode->vtotal - mode->vdisplay;
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VBLANK, value & 0xFF);
+ 
+-	value = mode->vsync_start - mode->vdisplay;
++	value = mode->vtotal - mode->vsync_start;
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VDELAY, value & 0xFF);
+ 
+ 	value = mode->vsync_end - mode->vsync_start;
 -- 
 2.43.0
 
