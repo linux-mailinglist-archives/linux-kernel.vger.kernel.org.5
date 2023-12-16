@@ -1,343 +1,152 @@
-Return-Path: <linux-kernel+bounces-2040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC94E815741
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:18:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B18815742
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:18:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72ED0287308
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:18:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7AB41F25762
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF9710A3D;
-	Sat, 16 Dec 2023 04:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9D910A3D;
+	Sat, 16 Dec 2023 04:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VrVybW/G"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B147812B68;
-	Sat, 16 Dec 2023 04:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.hallyn.com
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-	id 92DFCAEB; Fri, 15 Dec 2023 22:18:11 -0600 (CST)
-Date: Fri, 15 Dec 2023 22:18:11 -0600
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>,
-	Maxime Coquelin <maxime.coquelin@redhat.com>, jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com, paul@paul-moore.com, jmorris@namei.org,
-	serge@hallyn.com, stephen.smalley.work@gmail.com,
-	eparis@parisplace.org, xieyongji@bytedance.com,
-	virtualization@lists.linux-foundation.org,
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org, david.marchand@redhat.com, lulu@redhat.com
-Subject: Re: [PATCH v5 4/4] vduse: Add LSM hook to check Virtio device type
-Message-ID: <20231216041811.GB78578@mail.hallyn.com>
-References: <20231212131712.1816324-1-maxime.coquelin@redhat.com>
- <20231212131712.1816324-5-maxime.coquelin@redhat.com>
- <c58da5f5-131f-425e-b008-260506d1bc0d@schaufler-ca.com>
- <20231212124518-mutt-send-email-mst@kernel.org>
- <f7bd9ef6-cfa1-4b7e-a9f9-0b6015ac394f@schaufler-ca.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A2E10A19
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 04:18:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3ba2e4ff6e1so1051756b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 20:18:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702700324; x=1703305124; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KqN/tzHkDS+S7fn8n5b5X+Q06o8UCyNU3Cig5GP00UI=;
+        b=VrVybW/GAL3sdREpjH4Qr8OLWeZBjscC5w5tZBRym3+2BmKA3DABLrt6wW1Euem5MY
+         gN3G0Ska91vRcbS2k44ARZV81Aqm7IEgN0lQV6htDRaeNAhiw3lPwoloX74YRek8Lc7J
+         I+oYmogP2C0VOBs7t3bJiK4RiuuN77IjkccmVF375uFjO4c23qjTO4+RMfLRiYpL3ajr
+         dIbqPxLElMccuuBNEeDiP9iQvv+jwxNquBLTLzIf+8r6Drsz2WdpmXqlgkeRVhIJiVRo
+         LCJPo/Kg6AeZa8gDiXstUJCCzGEpzRN1DcySZafOEomXhDRjPTdXhvP2fgq4XkmupZ6Y
+         ghZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702700324; x=1703305124;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KqN/tzHkDS+S7fn8n5b5X+Q06o8UCyNU3Cig5GP00UI=;
+        b=s5oZIKEiaCpZuMzCP2zcjRo2uF2ap+TxSjI94OP9UDskb+4kWTGu8RWZIBf9mb+iHG
+         Q934xnfKRTGZ76oHrRJXOAfgYtDJT515IFKA6VBIgo1QCcLWoYrP3mHYcYM64do6cdbe
+         WNfr8cRTCd12VoGtOAmdLy5d0VOewfLZfrdvfyXZmhfN5ksr3eh5qRiAJyRf7GkgZu9d
+         bq1gnE+d1QRmuYMKfOVuf1nsLO7Fu9oR/K0O1kNHiETOdMek9QJNEAjzKOmKnTg+ydCd
+         mTJT5R31hlBMltfaZbUmzcIVhRHe6tD3WYvPdSv3RW8cnBPNzlWzEjFW7Jaf0UhHi/ae
+         Vpvw==
+X-Gm-Message-State: AOJu0YwlFy19MYd4vkpx82qoe7goOUyrYeTYJKpF1M9cbs/vjvhKJnaT
+	2ktuadPP/qao6zxxa9Xty+4=
+X-Google-Smtp-Source: AGHT+IGz6FD8r/yubBJ2wlfYD2DjnHf06jHjqfO+SSyJbu+wSqgzl+9oWiwC5XcIbbt0FERTWIw8Bg==
+X-Received: by 2002:a05:6808:1804:b0:3b8:b063:9b5d with SMTP id bh4-20020a056808180400b003b8b0639b5dmr15572457oib.79.1702700323815;
+        Fri, 15 Dec 2023 20:18:43 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id x17-20020a62fb11000000b006d26f1d1cedsm2550086pfm.118.2023.12.15.20.18.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 20:18:43 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: bhe@redhat.com
+Cc: akpm@linux-foundation.org,
+	bp@alien8.de,
+	corbet@lwn.net,
+	dave.hansen@linux.intel.com,
+	ebiederm@xmission.com,
+	hpa@zytor.com,
+	kexec@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	tglx@linutronix.de,
+	x86@kernel.org,
+	ytcoode@gmail.com
+Subject: [PATCH 1/3 v2] kexec: modify the meaning of the end parameter in kimage_is_destination_range()
+Date: Sat, 16 Dec 2023 12:18:33 +0800
+Message-ID: <20231216041833.220466-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZX0JwbQ59XH5rqm9@MiWiFi-R3L-srv>
+References: <ZX0JwbQ59XH5rqm9@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7bd9ef6-cfa1-4b7e-a9f9-0b6015ac394f@schaufler-ca.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 12, 2023 at 02:55:33PM -0800, Casey Schaufler wrote:
-> On 12/12/2023 9:59 AM, Michael S. Tsirkin wrote:
-> > On Tue, Dec 12, 2023 at 08:33:39AM -0800, Casey Schaufler wrote:
-> >> On 12/12/2023 5:17 AM, Maxime Coquelin wrote:
-> >>> This patch introduces a LSM hook for devices creation,
-> >>> destruction (ioctl()) and opening (open()) operations,
-> >>> checking the application is allowed to perform these
-> >>> operations for the Virtio device type.
-> >> My earlier comments on a vduse specific LSM hook still hold.
-> >> I would much prefer to see a device permissions hook(s) that
-> >> are useful for devices in general. Not just vduse devices.
-> >> I know that there are already some very special purpose LSM
-> >> hooks, but the experience with maintaining them is why I don't
-> >> want more of them. 
-> > What exactly does this mean?
-> 
-> You have proposed an LSM hook that is only useful for vduse.
-> You want to implement a set of controls that only apply to vduse.
-> I can't help but think that if someone (i.e. you) wants to control
-> device creation for vduse that there could well be a use case for
-> control over device creation for some other set of devices. It is
-> quite possible that someone out there is desperately trying to
-> solve the same problem you have, but with a different device.
-> 
-> I have no desire to have to deal with
-> 	security_vduse_perm_check()
-> 	security_odddev_perm_check()
-> 	...
-> 	security_evendev_perm_check()
-> 
-> when we should be able to have
-> 	security_device_perm_check()
-> 
-> that can service them all.
-> 
-> 
-> >  Devices like tap etc? How do we
-> > find them all though?
-> 
-> I'm not suggesting you find them all. I'm suggesting that you provide
-> an interface that someone could use if they wanted to. I think you
-> will be surprised how many will appear (with complaints about the
-> interface you propose, of course) if you implement a generally useful
-> LSM hook.
+The end parameter received by kimage_is_destination_range() should be the
+last valid byte address of the target memory segment plus 1. However, in
+the locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions,
+the corresponding value passed to kimage_is_destination_range() is the last
+valid byte address of the target memory segment, which is 1 less.
 
-Right now you have create, destroy, and open.  Are you expecting to add
-other perms?  These sound generic enough that it definitely seems worth
-doing as Casey suggests.  On the other hand, if this could become a
-gateway to lsm device access hooks basically becoming ioctl, we might
-want to consider that.
+There are two ways to fix this bug. We can either correct the logic of the
+locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions, or we
+can fix kimage_is_destination_range() by making the end parameter represent
+the last valid byte address of the target memory segment. Here, we choose
+the second approach.
 
-> >>> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
-> >>> ---
-> >>>  MAINTAINERS                         |  1 +
-> >>>  drivers/vdpa/vdpa_user/vduse_dev.c  | 13 ++++++++++++
-> >>>  include/linux/lsm_hook_defs.h       |  2 ++
-> >>>  include/linux/security.h            |  6 ++++++
-> >>>  include/linux/vduse.h               | 14 +++++++++++++
-> >>>  security/security.c                 | 15 ++++++++++++++
-> >>>  security/selinux/hooks.c            | 32 +++++++++++++++++++++++++++++
-> >>>  security/selinux/include/classmap.h |  2 ++
-> >>>  8 files changed, 85 insertions(+)
-> >>>  create mode 100644 include/linux/vduse.h
-> >>>
-> >>> diff --git a/MAINTAINERS b/MAINTAINERS
-> >>> index a0fb0df07b43..4e83b14358d2 100644
-> >>> --- a/MAINTAINERS
-> >>> +++ b/MAINTAINERS
-> >>> @@ -23040,6 +23040,7 @@ F:	drivers/net/virtio_net.c
-> >>>  F:	drivers/vdpa/
-> >>>  F:	drivers/virtio/
-> >>>  F:	include/linux/vdpa.h
-> >>> +F:	include/linux/vduse.h
-> >>>  F:	include/linux/virtio*.h
-> >>>  F:	include/linux/vringh.h
-> >>>  F:	include/uapi/linux/virtio_*.h
-> >>> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-> >>> index fa62825be378..59ab7eb62e20 100644
-> >>> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> >>> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> >>> @@ -8,6 +8,7 @@
-> >>>   *
-> >>>   */
-> >>>  
-> >>> +#include "linux/security.h"
-> >>>  #include <linux/init.h>
-> >>>  #include <linux/module.h>
-> >>>  #include <linux/cdev.h>
-> >>> @@ -30,6 +31,7 @@
-> >>>  #include <uapi/linux/virtio_blk.h>
-> >>>  #include <uapi/linux/virtio_ring.h>
-> >>>  #include <linux/mod_devicetable.h>
-> >>> +#include <linux/vduse.h>
-> >>>  
-> >>>  #include "iova_domain.h"
-> >>>  
-> >>> @@ -1442,6 +1444,10 @@ static int vduse_dev_open(struct inode *inode, struct file *file)
-> >>>  	if (dev->connected)
-> >>>  		goto unlock;
-> >>>  
-> >>> +	ret = -EPERM;
-> >>> +	if (security_vduse_perm_check(VDUSE_PERM_OPEN, dev->device_id))
-> >>> +		goto unlock;
-> >>> +
-> >>>  	ret = 0;
-> >>>  	dev->connected = true;
-> >>>  	file->private_data = dev;
-> >>> @@ -1664,6 +1670,9 @@ static int vduse_destroy_dev(char *name)
-> >>>  	if (!dev)
-> >>>  		return -EINVAL;
-> >>>  
-> >>> +	if (security_vduse_perm_check(VDUSE_PERM_DESTROY, dev->device_id))
-> >>> +		return -EPERM;
-> >>> +
-> >>>  	mutex_lock(&dev->lock);
-> >>>  	if (dev->vdev || dev->connected) {
-> >>>  		mutex_unlock(&dev->lock);
-> >>> @@ -1828,6 +1837,10 @@ static int vduse_create_dev(struct vduse_dev_config *config,
-> >>>  	int ret;
-> >>>  	struct vduse_dev *dev;
-> >>>  
-> >>> +	ret = -EPERM;
-> >>> +	if (security_vduse_perm_check(VDUSE_PERM_CREATE, config->device_id))
-> >>> +		goto err;
-> >>> +
-> >>>  	ret = -EEXIST;
-> >>>  	if (vduse_find_dev(config->name))
-> >>>  		goto err;
-> >>> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> >>> index ff217a5ce552..3930ab2ae974 100644
-> >>> --- a/include/linux/lsm_hook_defs.h
-> >>> +++ b/include/linux/lsm_hook_defs.h
-> >>> @@ -419,3 +419,5 @@ LSM_HOOK(int, 0, uring_override_creds, const struct cred *new)
-> >>>  LSM_HOOK(int, 0, uring_sqpoll, void)
-> >>>  LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
-> >>>  #endif /* CONFIG_IO_URING */
-> >>> +
-> >>> +LSM_HOOK(int, 0, vduse_perm_check, enum vduse_op_perm op_perm, u32 device_id)
-> >>> diff --git a/include/linux/security.h b/include/linux/security.h
-> >>> index 1d1df326c881..2a2054172394 100644
-> >>> --- a/include/linux/security.h
-> >>> +++ b/include/linux/security.h
-> >>> @@ -32,6 +32,7 @@
-> >>>  #include <linux/string.h>
-> >>>  #include <linux/mm.h>
-> >>>  #include <linux/sockptr.h>
-> >>> +#include <linux/vduse.h>
-> >>>  
-> >>>  struct linux_binprm;
-> >>>  struct cred;
-> >>> @@ -484,6 +485,7 @@ int security_inode_notifysecctx(struct inode *inode, void *ctx, u32 ctxlen);
-> >>>  int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
-> >>>  int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
-> >>>  int security_locked_down(enum lockdown_reason what);
-> >>> +int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id);
-> >>>  #else /* CONFIG_SECURITY */
-> >>>  
-> >>>  static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
-> >>> @@ -1395,6 +1397,10 @@ static inline int security_locked_down(enum lockdown_reason what)
-> >>>  {
-> >>>  	return 0;
-> >>>  }
-> >>> +static inline int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
-> >>> +{
-> >>> +	return 0;
-> >>> +}
-> >>>  #endif	/* CONFIG_SECURITY */
-> >>>  
-> >>>  #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
-> >>> diff --git a/include/linux/vduse.h b/include/linux/vduse.h
-> >>> new file mode 100644
-> >>> index 000000000000..7a20dcc43997
-> >>> --- /dev/null
-> >>> +++ b/include/linux/vduse.h
-> >>> @@ -0,0 +1,14 @@
-> >>> +/* SPDX-License-Identifier: GPL-2.0 */
-> >>> +#ifndef _LINUX_VDUSE_H
-> >>> +#define _LINUX_VDUSE_H
-> >>> +
-> >>> +/*
-> >>> + * The permission required for a VDUSE device operation.
-> >>> + */
-> >>> +enum vduse_op_perm {
-> >>> +	VDUSE_PERM_CREATE,
-> >>> +	VDUSE_PERM_DESTROY,
-> >>> +	VDUSE_PERM_OPEN,
-> >>> +};
-> >>> +
-> >>> +#endif /* _LINUX_VDUSE_H */
-> >>> diff --git a/security/security.c b/security/security.c
-> >>> index dcb3e7014f9b..150abf85f97d 100644
-> >>> --- a/security/security.c
-> >>> +++ b/security/security.c
-> >>> @@ -5337,3 +5337,18 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
-> >>>  	return call_int_hook(uring_cmd, 0, ioucmd);
-> >>>  }
-> >>>  #endif /* CONFIG_IO_URING */
-> >>> +
-> >>> +/**
-> >>> + * security_vduse_perm_check() - Check if a VDUSE device type operation is allowed
-> >>> + * @op_perm: the operation type
-> >>> + * @device_id: the Virtio device ID
-> >>> + *
-> >>> + * Check whether the Virtio device creation is allowed
-> >>> + *
-> >>> + * Return: Returns 0 if permission is granted.
-> >>> + */
-> >>> +int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
-> >>> +{
-> >>> +	return call_int_hook(vduse_perm_check, 0, op_perm, device_id);
-> >>> +}
-> >>> +EXPORT_SYMBOL(security_vduse_perm_check);
-> >>> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> >>> index feda711c6b7b..18845e4f682f 100644
-> >>> --- a/security/selinux/hooks.c
-> >>> +++ b/security/selinux/hooks.c
-> >>> @@ -21,6 +21,8 @@
-> >>>   *  Copyright (C) 2016 Mellanox Technologies
-> >>>   */
-> >>>  
-> >>> +#include "av_permissions.h"
-> >>> +#include "linux/vduse.h"
-> >>>  #include <linux/init.h>
-> >>>  #include <linux/kd.h>
-> >>>  #include <linux/kernel.h>
-> >>> @@ -92,6 +94,7 @@
-> >>>  #include <linux/fsnotify.h>
-> >>>  #include <linux/fanotify.h>
-> >>>  #include <linux/io_uring.h>
-> >>> +#include <uapi/linux/virtio_ids.h>
-> >>>  
-> >>>  #include "avc.h"
-> >>>  #include "objsec.h"
-> >>> @@ -6950,6 +6953,34 @@ static int selinux_uring_cmd(struct io_uring_cmd *ioucmd)
-> >>>  }
-> >>>  #endif /* CONFIG_IO_URING */
-> >>>  
-> >>> +static int selinux_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
-> >>> +{
-> >>> +	u32 requested_op, requested_type, sid = current_sid();
-> >>> +	int ret;
-> >>> +
-> >>> +	if (op_perm == VDUSE_PERM_CREATE)
-> >>> +		requested_op = VDUSE__CREATE;
-> >>> +	else if (op_perm == VDUSE__DESTROY)
-> >>> +		requested_op = VDUSE__DESTROY;
-> >>> +	else if (op_perm == VDUSE_PERM_OPEN)
-> >>> +		requested_op = VDUSE__OPEN;
-> >>> +	else
-> >>> +		return -EINVAL;
-> >>> +
-> >>> +	ret = avc_has_perm(sid, sid, SECCLASS_VDUSE, requested_op, NULL);
-> >>> +	if (ret)
-> >>> +		return ret;
-> >>> +
-> >>> +	if (device_id == VIRTIO_ID_NET)
-> >>> +		requested_type = VDUSE__NET;
-> >>> +	else if (device_id == VIRTIO_ID_BLOCK)
-> >>> +		requested_type = VDUSE__BLOCK;
-> >>> +	else
-> >>> +		return -EINVAL;
-> >>> +
-> >>> +	return avc_has_perm(sid, sid, SECCLASS_VDUSE, requested_type, NULL);
-> >>> +}
-> >>> +
-> >>>  /*
-> >>>   * IMPORTANT NOTE: When adding new hooks, please be careful to keep this order:
-> >>>   * 1. any hooks that don't belong to (2.) or (3.) below,
-> >>> @@ -7243,6 +7274,7 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
-> >>>  #ifdef CONFIG_PERF_EVENTS
-> >>>  	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
-> >>>  #endif
-> >>> +	LSM_HOOK_INIT(vduse_perm_check, selinux_vduse_perm_check),
-> >>>  };
-> >>>  
-> >>>  static __init int selinux_init(void)
-> >>> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> >>> index a3c380775d41..b0a358cbac1c 100644
-> >>> --- a/security/selinux/include/classmap.h
-> >>> +++ b/security/selinux/include/classmap.h
-> >>> @@ -256,6 +256,8 @@ const struct security_class_mapping secclass_map[] = {
-> >>>  	  { "override_creds", "sqpoll", "cmd", NULL } },
-> >>>  	{ "user_namespace",
-> >>>  	  { "create", NULL } },
-> >>> +	{ "vduse",
-> >>> +	  { "create", "destroy", "open", "net", "block", NULL} },
-> >>>  	{ NULL }
-> >>>    };
-> >>>  
-> >
+Due to the modification to kimage_is_destination_range(), we also need to
+adjust its callers, such as kimage_alloc_normal_control_pages() and
+kimage_alloc_page().
+
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+v1->v2:
+  Fix this issue using the approach suggested by Eric and Baoquan.
+
+  As this patch is independent of the other patches in this series, I sent
+  out the v2 patch separately. If it's inconvenient for anyone, I can
+  resend the entire series again.
+
+ kernel/kexec_core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index be5642a4ec49..5991b3ae072c 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -276,8 +276,8 @@ int kimage_is_destination_range(struct kimage *image,
+ 		unsigned long mstart, mend;
+ 
+ 		mstart = image->segment[i].mem;
+-		mend = mstart + image->segment[i].memsz;
+-		if ((end > mstart) && (start < mend))
++		mend = mstart + image->segment[i].memsz - 1;
++		if ((end >= mstart) && (start <= mend))
+ 			return 1;
+ 	}
+ 
+@@ -372,7 +372,7 @@ static struct page *kimage_alloc_normal_control_pages(struct kimage *image,
+ 		addr  = pfn << PAGE_SHIFT;
+ 		eaddr = epfn << PAGE_SHIFT;
+ 		if ((epfn >= (KEXEC_CONTROL_MEMORY_LIMIT >> PAGE_SHIFT)) ||
+-			      kimage_is_destination_range(image, addr, eaddr)) {
++			      kimage_is_destination_range(image, addr, eaddr - 1)) {
+ 			list_add(&pages->lru, &extra_pages);
+ 			pages = NULL;
+ 		}
+@@ -716,7 +716,7 @@ static struct page *kimage_alloc_page(struct kimage *image,
+ 
+ 		/* If the page is not a destination page use it */
+ 		if (!kimage_is_destination_range(image, addr,
+-						  addr + PAGE_SIZE))
++						  addr + PAGE_SIZE - 1))
+ 			break;
+ 
+ 		/*
+-- 
+2.43.0
+
 
