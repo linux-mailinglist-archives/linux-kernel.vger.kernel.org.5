@@ -1,159 +1,88 @@
-Return-Path: <linux-kernel+bounces-2363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E8EF815BB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:36:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F43815BBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221632846E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:36:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C20B41C215D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8681E4AB;
-	Sat, 16 Dec 2023 20:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB2A2EB13;
+	Sat, 16 Dec 2023 20:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J0RqQoDK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330ED1E48E;
-	Sat, 16 Dec 2023 20:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (31.173.82.73) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 16 Dec
- 2023 23:36:32 +0300
-Subject: Re: [PATCH net-next v2 20/21] net: ravb: Do not apply RX CSUM
- settings to hardware if the interface is down
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-21-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <247ad9d9-298e-017b-f6e4-e672ee458ee7@omp.ru>
-Date: Sat, 16 Dec 2023 23:36:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D60A1D557;
+	Sat, 16 Dec 2023 20:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ce6b62746dso883535b3a.2;
+        Sat, 16 Dec 2023 12:38:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702759107; x=1703363907; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L2LO6vEHv4/T1kbEpjbOJy3tLSNlB3tYBSM9vHM5WAg=;
+        b=J0RqQoDKQL6DoYRCLsWYco48XSRtkkMVyMVvOVIh3FzKlgb4uB8OWFuP/devMjbgp9
+         oKNXN5aLpGLd3fyfTVrnb6fqzybvpKrjUnHx565EFn4jbyEu5hPDmpIbB+H/8hReO1og
+         NDCCkE40zJ80gXTC2w8wbHTixruvYjkoooSMob0jK+w7waTC8jip4+pmN+96QbGntNi4
+         kvDH/VaDodG655oeUC8Y1U1gIZFBxn+i/VypxeqjT8EZpIbR9myvP44fhHUO0POvodbB
+         MdcjEl8eksNg7gBig1mA/pzuNfUoNSokAhC9UEhZ77YF3znCUrzLFTUiPSN1Ty/TZNhU
+         l+gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702759107; x=1703363907;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L2LO6vEHv4/T1kbEpjbOJy3tLSNlB3tYBSM9vHM5WAg=;
+        b=TQcJ5Oiouk2jaiZiOvv6I/NEYioANUmPct/Rvn3qTAin4keweM9Z9p8B5b+hrcP+Gv
+         ATXhUoPSb7w4cmQ6QYCff23Wx7BbnR+8sM1T/k2mfSKwt/LLiwQ+xXAhv8qmP2jxGBVU
+         QdLXaVz7cXLXNq+3ZgkigqMQSsFXfnoqPNjLi6rKA4DlhuvLzfMfOtHWgiBXMLOibJgU
+         hxaz17MaX4A1GS5MX2Y+xahHWt9uU9ZxPWGyk4DH/1zx7MluqMnUxqfBiwCGWJe+UqoA
+         xPMzYOLyOzhzPNt3JMtOCwCoea2m0Qaq/lFuGYXgTHB/e8yT4xn+7LzRBgW+oXLYjXbN
+         iy9Q==
+X-Gm-Message-State: AOJu0YyeKpeBqoFL/b4ZbVf1Daz2bonAYBnQ4RVppZHUOcpiXkEtZyYy
+	J0U+uELg5n+zclEVx5hyTA0=
+X-Google-Smtp-Source: AGHT+IFxxNiLCWxmj9Sdn2ox9rHEu2kTaOtmmAmrNVA8+hOa/Gth5UnPM2qeqsYM5/wopyp2dTUdYA==
+X-Received: by 2002:a05:6a20:1586:b0:18f:97c:823d with SMTP id h6-20020a056a20158600b0018f097c823dmr8436771pzj.71.1702759106746;
+        Sat, 16 Dec 2023 12:38:26 -0800 (PST)
+Received: from localhost.localdomain (125-229-200-221.hinet-ip.hinet.net. [125.229.200.221])
+        by smtp.googlemail.com with ESMTPSA id w7-20020a1709027b8700b001d38ca8cbc2sm2976839pll.156.2023.12.16.12.38.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Dec 2023 12:38:26 -0800 (PST)
+From: Zenm Chen <zenmchen@gmail.com>
+To: Jes.Sorensen@gmail.com
+Cc: kvalo@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	pkshih@realtek.com,
+	rtl8821cerfe2@gmail.com,
+	Larry.Finger@lwfinger.net,
+	zenmchen@gmail.com
+Subject: Re: [PATCH] wifi: rtl8xxxu: Add additional USB IDs for RTL8192EU
+Date: Sun, 17 Dec 2023 04:38:22 +0800
+Message-ID: <20231216203822.8426-1-zenmchen@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231216145655.3772-1-zenmchen@gmail.com>
+References: <20231216145655.3772-1-zenmchen@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231214114600.2451162-21-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/16/2023 20:25:28
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182147 [Dec 16 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_phishing_log_reg_50_60}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	31.173.82.73:7.1.2;127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.82.73
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/16/2023 20:30:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/16/2023 5:57:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Transfer-Encoding: 8bit
 
-On 12/14/23 2:45 PM, Claudiu wrote:
+https://patchwork.kernel.org/project/linux-wireless/patch/20231216165259.5389-1-zenmchen@gmail.com/
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Do not apply the RX CSUM settings to hardware if the interface is down. In
-> case runtime PM is enabled, and while the interface is down, the IP will be
-> in reset mode (as for some platforms disabling/enabling the clocks will
-> switch the IP to standby mode, which will lead to losing registers'
+As Larry mentioned above, I made some mistakes in my patch v2.
+If this patch also has any problems, I will fix them as possible as I can, thanks.
 
-   To/From perhaps?
-   And just "register".
-
-> content) and applying settings in reset mode is not an option. Instead,
-> cache the RX CSUM settings and apply them in ravb_open().
-
-   Have this issue actually occurred for you?
-
-> Commit prepares for the addition of runtime PM.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-[...]
-
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 633346b6cd7c..9ff943dff522 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -1868,6 +1868,15 @@ static int ravb_open(struct net_device *ndev)
->  	if (info->gptp || info->ccc_gac)
->  		ravb_ptp_init(ndev, priv->pdev);
->  
-> +	/* Apply features that might have been changed while the interface
-> +	 * was down.
-> +	 */
-> +	if (ndev->hw_features & NETIF_F_RXCSUM) {
-
-   I'm afraid this is a wrong field; we need ndev->features, no?
-
-> +		u32 val = (ndev->features & NETIF_F_RXCSUM) ? ECMR_RCSC : 0;
-> +
-> +		ravb_modify(ndev, ECMR, ECMR_RCSC, val);
-> +	}
-> +
-
-   The ECMR setting is already done in ravb_emac_init_rcar(), no need
-to duplicate it here, I think...
-
->  	/* PHY control start */
->  	error = ravb_phy_start(ndev);
->  	if (error)
-> @@ -2337,6 +2346,9 @@ static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
->  	struct ravb_private *priv = netdev_priv(ndev);
->  	unsigned long flags;
->  
-> +	if (!netif_running(ndev))
-
-   Racy as well...
-
-> +		return;
-> +
-
-   Hm, sh_eth.c doesn't have such check -- perhaps should be fixed
-as well...
-
-[...]
-
-MBR, Sergey
 
