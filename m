@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-2207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B86F81595B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:36:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2058181595F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A76741F22960
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:36:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 537E71C217A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 700CA2D033;
-	Sat, 16 Dec 2023 13:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6FF2C681;
+	Sat, 16 Dec 2023 13:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c2bg+Fsn"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E2Rk4zgB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D502C6B5
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 13:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725F030117
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 13:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a1f5cb80a91so194187566b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 05:35:50 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a1f5cb80a91so194252966b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 05:37:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702733749; x=1703338549; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702733819; x=1703338619; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=aHlMVtszkXmKl92EYpx3ExVCb9pl0oYVuWZJzucbYgs=;
-        b=c2bg+FsnrsIXIfxH6254GaUpItsd5ezMCKKRkxoIm87CUIsZzLZay6bVcpLcFBP4GS
-         ejpnaeX4e9SnbtTVUZY9Fiiy+8iLLzQo5X6D3FrUjtHmxUjMJFexyNXds24gogUtXdmB
-         OgJjcckNcykPn/8rZbu55CynyVJeMvA6atNUVK8qS9klzQU1rdKi7FXPOgavN8/M7OuK
-         6omYpNIakvHrcfQR0urKqSCfql9MCG+sAAdhyqZtuWFNRYg1wdZJtTa3dcsgBwriaSuS
-         EbFq8lQU3zpsUrtxkUWqu2nk3xaO4WVniCPTBQReAqP0DKPaXX89DlWQSsitBU4u+nc1
-         Q/Xw==
+        bh=gTxrdmzMhx+e3qmVGNMBR5C6/7xIPi2dPVSW7Pyo3yc=;
+        b=E2Rk4zgB8p0jwsQEaaBwQiWUmIt2XpLwYRRJMHlS7EY7c+xMqN73d7gri8GGJkzM76
+         buNaNjEl43VoaZltxQsHJ6JWGFVQYVJBLoFIgGPYnPX8BMbiM8y2AqWn9DiQwE+hLeOw
+         tOLpARVy8UmNp9U3boNQfZrdaTbUpJTmbVeKO6POkDTJX5jk4VO/MLgnLQEabBjqlE+F
+         zbG+dUtMbM+wgw0cRkf5EdezlgiHhvPEvNPeJ0o60jpfna7Wukt85FeL7X8IHdg0BugH
+         z8xKvIczgynMoh4N0Z4nu+coapTFe036j2Gdu7M6qXhKR9Qj+MDqeOFXhU9PjaoEKKsP
+         B+lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702733749; x=1703338549;
+        d=1e100.net; s=20230601; t=1702733819; x=1703338619;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aHlMVtszkXmKl92EYpx3ExVCb9pl0oYVuWZJzucbYgs=;
-        b=Y8OtqIUlcqmvp1IpRztJqzpYPbUvibnmYyVZFARyR9qH2ybmA6LXAWmK1Vx8ssLhVF
-         TgQ7fZZiDrL1FLortNapT75OBx18U0HSEhwDHVHAQwqenTboIqGTC8cNi030/QfNEl/O
-         185KtM+vCFUS9DrlgYpfM108hARDU8DIspvfhDVODCYLetTOJnxVs1wSiISQZ1hwaWR9
-         fO6InAl2B1wVgmZWAVe3IRwsEgFgLevRb1Zvvl0xsLaHs8VfC41bsJMlOFBtbtdaOfHZ
-         oox42JNeIhdF0AH85RJZwFnSV6A211Nt/jFVhprJCcDLBqkB0YV+/Gdf2wg9GWPLM2DZ
-         Mp8g==
-X-Gm-Message-State: AOJu0Yw9BH+ViRoSy5ItmzTgXnhzLs1fzc5Is7+ucavpiFOH6qWkUtdc
-	mnrQ2RkJeKmjT2sspH8LcI4G7A==
-X-Google-Smtp-Source: AGHT+IEZq2XgB47CwE6fMxDBpYr5ShmXQzJLDAeUl+5yrZKFu01eb4jMWTUX7CR7g85oRsMyuBWjZQ==
-X-Received: by 2002:a17:906:1cc2:b0:a1f:69b1:a493 with SMTP id i2-20020a1709061cc200b00a1f69b1a493mr4417183ejh.187.1702733749155;
-        Sat, 16 Dec 2023 05:35:49 -0800 (PST)
+        bh=gTxrdmzMhx+e3qmVGNMBR5C6/7xIPi2dPVSW7Pyo3yc=;
+        b=JFoXNxhEOGTjUth3pFK3uyL/Cep7P1E2OO5cmfCvdKiZmzlz8ICwrq6gXemCYGLNP8
+         FxhJkcXdcF62Rb07i6JBuryFC/0QLCjUbnSvgwZ8V6v2kQFSDqKgV96R4xq+X82jjThc
+         FXnXC1yA9mIxWmeq6eyoQ6SA4yB8K32rV8D9ntwUCcLmIjTyvXZqEftn+QRl0b/FLkJD
+         c17HacPjjy8aLSWqGwadA6wRUnrQkd/wh7piV6b/XZcH5aLIOniItrkEKUNRXD8N6tQ8
+         TBht897HMVZEPPzxi01XzIlCBQf/yrNGlwbd+9MZp4MVFcjLZE3BPtWAZfnSUESogAfm
+         3Bdw==
+X-Gm-Message-State: AOJu0YwjsZWKgTXAdYIh/fxeOpcl/8i5b0vg7A8d3dsSdwRDUHmrETCA
+	OgkYJmwrZsC61aToFLArrd8Vtg==
+X-Google-Smtp-Source: AGHT+IFjGht9uTCYss7cNMzqqeisz2WsXjNaesQq8vVHVAkXwEBHjAW0nAHHwgwBextUMIbMw3dkBQ==
+X-Received: by 2002:a17:906:b251:b0:a1e:9769:2e94 with SMTP id ce17-20020a170906b25100b00a1e97692e94mr3941231ejb.114.1702733818709;
+        Sat, 16 Dec 2023 05:36:58 -0800 (PST)
 Received: from [192.168.199.59] (178235179137.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.137])
-        by smtp.gmail.com with ESMTPSA id tq24-20020a170907c51800b00a1f9543a540sm9191936ejc.160.2023.12.16.05.35.46
+        by smtp.gmail.com with ESMTPSA id tq24-20020a170907c51800b00a1f9543a540sm9191936ejc.160.2023.12.16.05.36.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Dec 2023 05:35:48 -0800 (PST)
-Message-ID: <993d76c7-ceab-4381-b63e-794c77f7d0df@linaro.org>
-Date: Sat, 16 Dec 2023 14:35:45 +0100
+        Sat, 16 Dec 2023 05:36:58 -0800 (PST)
+Message-ID: <c034afc0-eb1f-42b7-820a-f018cf4453eb@linaro.org>
+Date: Sat, 16 Dec 2023 14:36:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 08/10] clk: qcom: Add GPU clock driver for x1e80100
+Subject: Re: [PATCH v2 09/10] clk: qcom: Add TCSR clock driver for x1e80100
 Content-Language: en-US
 To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
  Bjorn Andersson <andersson@kernel.org>,
@@ -78,10 +78,9 @@ To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
  Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- Rajendra Nayak <quic_rjendra@quicinc.com>
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org
 References: <20231214-x1e80100-clock-controllers-v2-0-2b0739bebd27@linaro.org>
- <20231214-x1e80100-clock-controllers-v2-8-2b0739bebd27@linaro.org>
+ <20231214-x1e80100-clock-controllers-v2-9-2b0739bebd27@linaro.org>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -118,51 +117,18 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231214-x1e80100-clock-controllers-v2-8-2b0739bebd27@linaro.org>
+In-Reply-To: <20231214-x1e80100-clock-controllers-v2-9-2b0739bebd27@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 14.12.2023 17:49, Abel Vesa wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+> The TCSR clock controller found on X1E80100 provides refclks
+> for PCIE, USB and UFS. Add clock driver for it.
 > 
-> Add Graphics Clock Controller (GPUCC) support for X1E80100 platform.
-> 
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
 > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
-[...]
-
-I see no usage of clk_branch2_aon_ops, is that intended?
-
-[...]
-
-> +static struct gdsc gpu_cc_cx_gdsc = {
-> +	.gdscr = 0x9108,
-> +	.gds_hw_ctrl = 0x953c,
-> +	.en_rest_wait_val = 0x2,
-> +	.en_few_wait_val = 0x2,
-> +	.clk_dis_wait_val = 0xf,
-> +	.pd = {
-> +		.name = "gpu_cc_cx_gdsc",
-> +	},
-> +	.pwrsts = PWRSTS_OFF_ON,
-> +	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
-That's.. unusual..
-
-Can you doublecheck these flags?
-
-
-> +
-> +	/*
-> +	 * Keep clocks always enabled:
-> +	 *	gpu_cc_cb_clk
-> +	 */
-> +	regmap_update_bits(regmap, 0x93a4, BIT(0), BIT(0));
-Please make the comment inline, so:
-
-regmap_update_bits(regmap, 0x93a4, BIT(0), BIT(0)); /* GPU_CC_CB_CLK */
-
-I have submitted another series cleaning this up and adding a helper
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
 
