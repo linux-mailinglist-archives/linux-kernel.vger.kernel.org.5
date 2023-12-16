@@ -1,177 +1,150 @@
-Return-Path: <linux-kernel+bounces-2031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA789815719
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:40:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B4CB81571C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:43:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22F151F25AB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:40:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F7EC1C24A0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454D06FCD;
-	Sat, 16 Dec 2023 03:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443C7CA70;
+	Sat, 16 Dec 2023 03:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dEQDETk6"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1h6OsDVj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198F146A7;
-	Sat, 16 Dec 2023 03:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702698007; x=1734234007;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7R/IuFR5FZNJvpmjLiBZEn2SwykJelg8Grq1wWQdd9Y=;
-  b=dEQDETk6W6HDz9AlBinQFSSWuFDVgUXvnUdgCTEQAZYUok724wnGX+p0
-   tg4t3kQImdGzZGRcL3u6HZOqC+S4fYaQzfi74MXvOwmQ+Jl25CACdbRGC
-   RDmn486x+2Xt+SczlOI2jDHTlWVNVgnpXQOCqcqc+nzfhblv3cqA8TV5J
-   LdZGzdUlq8UuB02aaG0P6dR7gDjCOOLIPAvIqF+Za+kwbdkgO9UjFhyNk
-   vvRB3HaeMnVJP9fUMQpDiPMjxNcyzg3ZCtAtemmQLk3qKqP+Xmqh1GbtI
-   Iu+Uy8iyPXTOFgpufAD1Al1wtAKzEp/vLemdHY9jCr5ixbVf2iwoKfrJx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="394230250"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="394230250"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 19:40:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="840865507"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="840865507"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Dec 2023 19:39:59 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rELWv-00016a-0V;
-	Sat, 16 Dec 2023 03:39:57 +0000
-Date: Sat, 16 Dec 2023 11:39:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	David Ahern <dsahern@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 12/24] seg6: Use nested-BH locking for
- seg6_bpf_srh_states.
-Message-ID: <202312161151.k1MBvXUD-lkp@intel.com>
-References: <20231215171020.687342-13-bigeasy@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4071384
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 03:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--badhri.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6cee48f2507so1028701b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:43:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702698221; x=1703303021; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MJ2mISBcTBUnQo3gMwCpghdZw1VZrVIIe2xs3t2Tvxs=;
+        b=1h6OsDVj2qvIwx32zTRf8Hvna5Z1o1nzGposLVdt7898uhM0XlIP3jCs6BVUsgM18O
+         Y2Aka99/VfVQhwvW8fGDRiPsarNM8ZEhDLpzKcfXDIBOBSTpv1gsi1Ebtqd1dEPMUuUB
+         Jr+SZtqNUbMti2bLarKoE47eMHJssEAewFIGQsxlgVxPhatK3++xPA4n578UH+wrzFDH
+         0gZMOlLaTZ9mZtzzRKwbH0/3qVtV0F/JoNl4sWfVcN/g7ZgBCZMaKVT0Yt/67R96xiM+
+         NUpfQo6h8MDu1PLwdegcflrS0EIigyGDkfeLohDPDSsIK3ZqU+gFiT0hKNWCJgq+yiQL
+         QQcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702698221; x=1703303021;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MJ2mISBcTBUnQo3gMwCpghdZw1VZrVIIe2xs3t2Tvxs=;
+        b=ZEe+ZlOh2ki6mFDsFy96q3NUydJRFXjzU6ZA4pFKxmOb6hveGd0FOJyWLkOXeEKj1w
+         dTRQg6BHaZpfrU5Yfperx9GPydBt4rxq+3xLZocSChqxnqlskFjFOixICs9CR3trDvXF
+         FFYV87SHuRCHux+MVZgaxRPKdtYbxR3cfpGTqIqq8x8fkAoVTa/f2SMYm2jo7pMdE3uO
+         qMp5VrCA8duuT/OCWatlC7hjkJ458s6XccF90IMFjWJphndsIMrkHLoDeOQwINXjIaJm
+         XouGxgTKJjhG4gHNF+Sp3u3sTRGjj13qQZryVxbPSN+q4tOuJIKUD2FC25nQkQnOCDeO
+         dr8g==
+X-Gm-Message-State: AOJu0Ywq0wJxFLY9Tzu/ReNYI3yp+PS4yH0zOzekKjr31nd52i+vqTUq
+	SkdgrXkxSAfz04DWPz+eI5wgDCC9B5s=
+X-Google-Smtp-Source: AGHT+IEZ3UotmDAsP3MqxR43N33J7D5VebnajIIvPoWQOdyiE3op914IY6KCzLf4La2eSpzWKhGer//pcOo=
+X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
+ (user=badhri job=sendgmr) by 2002:a17:902:dacd:b0:1d3:9d94:3300 with SMTP id
+ q13-20020a170902dacd00b001d39d943300mr474plx.4.1702698219736; Fri, 15 Dec
+ 2023 19:43:39 -0800 (PST)
+Date: Sat, 16 Dec 2023 03:43:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215171020.687342-13-bigeasy@linutronix.de>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231216034335.242168-1-badhri@google.com>
+Subject: [PATCH v1 1/2] usb: dwc3: Refactor usb-psy init
+From: Badhri Jagan Sridharan <badhri@google.com>
+To: Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org, raychi@google.com, 
+	royluo@google.com
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Badhri Jagan Sridharan <badhri@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Sebastian,
+Move usb-psy init to dwc3_populate_usb_psy() so that gadget can re-use
+it to retry setting up usb-psy when null.
 
-kernel test robot noticed the following build warnings:
+Cc: stable@vger.kernel.org
+Fixes: 6f0764b5adea ("usb: dwc3: add a power supply for current control")
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/usb/dwc3/core.c | 24 ++++++++++++++++--------
+ drivers/usb/dwc3/core.h |  1 +
+ 2 files changed, 17 insertions(+), 8 deletions(-)
 
-[auto build test WARNING on net-next/main]
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index b101dbf8c5dc..a93425b9c1c0 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1495,6 +1495,19 @@ static void dwc3_core_exit_mode(struct dwc3 *dwc)
+ 	dwc3_set_prtcap(dwc, DWC3_GCTL_PRTCAP_DEVICE);
+ }
+ 
++void dwc3_populate_usb_psy(struct dwc3 *dwc)
++{
++	const char *usb_psy_name;
++	int ret;
++
++	if (dwc->usb_psy)
++		return;
++
++	ret = device_property_read_string(dwc->dev, "usb-psy-name", &usb_psy_name);
++	if (ret >= 0)
++		dwc->usb_psy = power_supply_get_by_name(usb_psy_name);
++}
++
+ static void dwc3_get_properties(struct dwc3 *dwc)
+ {
+ 	struct device		*dev = dwc->dev;
+@@ -1510,8 +1523,6 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+ 	u8			tx_thr_num_pkt_prd = 0;
+ 	u8			tx_max_burst_prd = 0;
+ 	u8			tx_fifo_resize_max_num;
+-	const char		*usb_psy_name;
+-	int			ret;
+ 
+ 	/* default to highest possible threshold */
+ 	lpm_nyet_threshold = 0xf;
+@@ -1544,12 +1555,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+ 	else
+ 		dwc->sysdev = dwc->dev;
+ 
+-	ret = device_property_read_string(dev, "usb-psy-name", &usb_psy_name);
+-	if (ret >= 0) {
+-		dwc->usb_psy = power_supply_get_by_name(usb_psy_name);
+-		if (!dwc->usb_psy)
+-			dev_err(dev, "couldn't get usb power supply\n");
+-	}
++	dwc3_populate_usb_psy(dwc);
++	if (!dwc->usb_psy)
++		dev_err(dev, "couldn't get usb power supply\n");
+ 
+ 	dwc->has_lpm_erratum = device_property_read_bool(dev,
+ 				"snps,has-lpm-erratum");
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index efe6caf4d0e8..6c65d76e6fe2 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -1526,6 +1526,7 @@ struct dwc3_gadget_ep_cmd_params {
+ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode);
+ void dwc3_set_mode(struct dwc3 *dwc, u32 mode);
+ u32 dwc3_core_fifo_space(struct dwc3_ep *dep, u8 type);
++void dwc3_populate_usb_psy(struct dwc3 *dwc);
+ 
+ #define DWC3_IP_IS(_ip)							\
+ 	(dwc->ip == _ip##_IP)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/20231216-011911
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231215171020.687342-13-bigeasy%40linutronix.de
-patch subject: [PATCH net-next 12/24] seg6: Use nested-BH locking for seg6_bpf_srh_states.
-config: x86_64-randconfig-r131-20231216 (https://download.01.org/0day-ci/archive/20231216/202312161151.k1MBvXUD-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312161151.k1MBvXUD-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312161151.k1MBvXUD-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> net/ipv6/seg6_local.c:1431:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct local_lock_t [usertype] *l @@     got struct local_lock_t [noderef] __percpu * @@
-   net/ipv6/seg6_local.c:1431:9: sparse:     expected struct local_lock_t [usertype] *l
-   net/ipv6/seg6_local.c:1431:9: sparse:     got struct local_lock_t [noderef] __percpu *
-
-vim +1431 net/ipv6/seg6_local.c
-
-  1410	
-  1411	static int input_action_end_bpf(struct sk_buff *skb,
-  1412					struct seg6_local_lwt *slwt)
-  1413	{
-  1414		struct seg6_bpf_srh_state *srh_state;
-  1415		struct ipv6_sr_hdr *srh;
-  1416		int ret;
-  1417	
-  1418		srh = get_and_validate_srh(skb);
-  1419		if (!srh) {
-  1420			kfree_skb(skb);
-  1421			return -EINVAL;
-  1422		}
-  1423		advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
-  1424	
-  1425		/* The access to the per-CPU buffer srh_state is protected by running
-  1426		 * always in softirq context (with disabled BH). On PREEMPT_RT the
-  1427		 * required locking is provided by the following local_lock_nested_bh()
-  1428		 * statement. It is also accessed by the bpf_lwt_seg6_* helpers via
-  1429		 * bpf_prog_run_save_cb().
-  1430		 */
-> 1431		scoped_guard(local_lock_nested_bh, &seg6_bpf_srh_states.bh_lock) {
-  1432			srh_state = this_cpu_ptr(&seg6_bpf_srh_states);
-  1433			srh_state->srh = srh;
-  1434			srh_state->hdrlen = srh->hdrlen << 3;
-  1435			srh_state->valid = true;
-  1436	
-  1437			rcu_read_lock();
-  1438			bpf_compute_data_pointers(skb);
-  1439			ret = bpf_prog_run_save_cb(slwt->bpf.prog, skb);
-  1440			rcu_read_unlock();
-  1441	
-  1442			switch (ret) {
-  1443			case BPF_OK:
-  1444			case BPF_REDIRECT:
-  1445				break;
-  1446			case BPF_DROP:
-  1447				goto drop;
-  1448			default:
-  1449				pr_warn_once("bpf-seg6local: Illegal return value %u\n", ret);
-  1450				goto drop;
-  1451			}
-  1452	
-  1453			if (srh_state->srh && !seg6_bpf_has_valid_srh(skb))
-  1454				goto drop;
-  1455		}
-  1456	
-  1457		if (ret != BPF_REDIRECT)
-  1458			seg6_lookup_nexthop(skb, NULL, 0);
-  1459	
-  1460		return dst_input(skb);
-  1461	
-  1462	drop:
-  1463		kfree_skb(skb);
-  1464		return -EINVAL;
-  1465	}
-  1466	
-
+base-commit: 51920207674e9e3475a91d2091583889792df99a
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0.472.g3155946c3a-goog
+
 
