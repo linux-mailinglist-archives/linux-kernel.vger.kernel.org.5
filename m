@@ -1,136 +1,105 @@
-Return-Path: <linux-kernel+bounces-2372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA82815BD3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:17:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D5A6815BD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:22:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79795284F7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:17:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BA3D1C21954
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6F23528E;
-	Sat, 16 Dec 2023 21:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01353527D;
+	Sat, 16 Dec 2023 21:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BR3kSWoS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c2WDYNMf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5578235280;
-	Sat, 16 Dec 2023 21:17:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94E0FC433C7;
-	Sat, 16 Dec 2023 21:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702761444;
-	bh=wbCb7V8TWLXWLW8MxcJ7qPWIEaOem3AcnmRfFX2rmA8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BR3kSWoS8OnHrcL5hEm2lXZG3sB12hceeVyLBjari4NMpLXOYePN/QDTFWzI9195P
-	 eqxj/EPR3V+O3Wvnx0u00KFm5QygsEJSga2X2/PMfPif1ZVt7+g0okfxCJEKPy2wg+
-	 rMpSe8NLr4ikom0S4unHw7q/yJnmmkmyEGeYv1H5S9DPf2qgaEGO2rb4kFAyNh5F3V
-	 WyJWM6uziWjiGrL+CzoerPZwOTATuByWWwo6mQApSDU8rdIKv1B4BU8i7YBH3g8inm
-	 gRfxbry2VSOc8sRyXhUIkds17cPQeItegGe7BufMjSJ3uD7BJHAAdhozQcSsfozGza
-	 Ngwifx+19eDDg==
-Date: Sat, 16 Dec 2023 22:17:20 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] srcu: Improve comments about acceleration leak
-Message-ID: <ZX4T4E02hbsgnGBY@localhost.localdomain>
-References: <20231211015717.1067822-1-joel@joelfernandes.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE24D3527E;
+	Sat, 16 Dec 2023 21:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40b5155e154so22232625e9.3;
+        Sat, 16 Dec 2023 13:21:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702761716; x=1703366516; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ep6QV7S0LD+l2v1oGCSbwLCeiUsCxqLVqe3qakJ/WRg=;
+        b=c2WDYNMfxaRxXEeIk4OGBqyhuLof+iZLr/lrwY1HeZLYH3kSJyovR3/EaCqYTyhHMW
+         lkQIubnoiySz6i18v77huwAp/4xedbi7RLO30TNGLApszatPVMTlceE6BO9sdVB4KfoT
+         yGUNPieO/kcGXKCfSTakwldqiJBBe5lq67PjBKvs2rl0wOVo8BklrEB3QJNR/+kU38Qc
+         65Yz1tfYw+OvHo1c3mHrPJ8udxDWm+5Aqxg6xA6QyuCXEGll0oyKzMh/0/n5Er+tJCix
+         7WYlrLR314GdbUwASQJLptgIEAtFoBeTo1htfErYP4aOuS1juyNCGJ7Fzyi6/8dqK5oZ
+         uqNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702761716; x=1703366516;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ep6QV7S0LD+l2v1oGCSbwLCeiUsCxqLVqe3qakJ/WRg=;
+        b=WKFXMAkKQpQLFQjKk50PyfPTqy2IBzlmWrzWB1cmz66Uf+CB626So5biI9mZVsipaq
+         ucwZUUe35KQ7zzIbuzehD0pXPbaMohWWUKLB/Z1vz26Sk8CGuLnR7/SpuKrtho+ZFE6R
+         OoWJAxmLnY71qN/nBWMKaifdU0a7Qx+grz/u0gsv25qqQpW3uR9Js2BsxVbgG+aK2xAj
+         lYI90NsL3qgBWmcG52GHPjjbXEkF4FbvFqDvVx3aG+7D0SNtgYKn3mW80pG6B6BVdCx9
+         fFi6eRfTgSJJf9HQ/IbC91rxHSjOTQOlOZN6gfXXB5Zruku1y2BYf3viDqGOB+qbkmda
+         /QlQ==
+X-Gm-Message-State: AOJu0YyWU4NAQc2OHQmxyrbhHM5+C+TKjIjixyx1azVAwjjqL3YUHQGK
+	2kBwGImyS4w2YJwEN9OSeGRI7gJwjgR8PQ==
+X-Google-Smtp-Source: AGHT+IG7B+FTcFzeYXt/n4qfZysDGamT9Gb/+0TSs44EIYdfPhgymDIRV2BJdHte+Snez1QdL4VB3A==
+X-Received: by 2002:a05:600c:444a:b0:40c:6e2a:70b with SMTP id v10-20020a05600c444a00b0040c6e2a070bmr1307239wmn.12.1702761716244;
+        Sat, 16 Dec 2023 13:21:56 -0800 (PST)
+Received: from apple.sigmaris.info ([2a02:8010:6606:0:c984:6cfa:50ea:c4cb])
+        by smtp.gmail.com with ESMTPSA id j18-20020a05600c191200b0040c6b667dccsm8166767wmq.25.2023.12.16.13.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Dec 2023 13:21:56 -0800 (PST)
+From: Hugh Cole-Baker <sigmaris@gmail.com>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>
+Cc: Hugh Cole-Baker <sigmaris@gmail.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: Support poweroff on NanoPC-T6
+Date: Sat, 16 Dec 2023 21:21:34 +0000
+Message-Id: <20231216212134.23314-1-sigmaris@gmail.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231211015717.1067822-1-joel@joelfernandes.org>
 
-Le Mon, Dec 11, 2023 at 01:57:16AM +0000, Joel Fernandes (Google) a écrit :
-> The comments added in commit 1ef990c4b36b ("srcu: No need to
-> advance/accelerate if no callback enqueued") are a bit confusing to me.
+The RK806 on the NanoPC-T6 can be used to power on/off the whole board.
+Mark it as the system power controller.
 
-I know some maintainers who may argue that in the changelog world, the first
-person doesn't exist :-)
+Signed-off-by: Hugh Cole-Baker <sigmaris@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> The comments are describing a scenario for code that was moved and is
-> no longer the way it was (snapshot after advancing). Improve the code
-> comments to reflect this and also document by acceleration can never
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
+index 612107615e66..0fc48fb0d34d 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
+@@ -569,6 +569,8 @@ pmic@0 {
+ 		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
+ 			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
+ 
++		system-power-controller;
++
+ 		vcc1-supply = <&vcc4v0_sys>;
+ 		vcc2-supply = <&vcc4v0_sys>;
+ 		vcc3-supply = <&vcc4v0_sys>;
+-- 
+2.39.3 (Apple Git-145)
 
-s/by/why
-
-> fail.
-> 
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
-> v1->v2: Fix typo in change log.
-> 
->  kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
->  1 file changed, 20 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 0351a4e83529..051e149490d1 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
->  	if (rhp)
->  		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
->  	/*
-> -	 * The snapshot for acceleration must be taken _before_ the read of the
-> -	 * current gp sequence used for advancing, otherwise advancing may fail
-> -	 * and acceleration may then fail too.
-> +	 * It's crucial to capture the snapshot 's' for acceleration before
-> +	 * reading the current gp_seq that is used for advancing. This is
-> +	 * essential because if the acceleration snapshot is taken after a
-> +	 * failed advancement attempt, there's a risk that a grace period may
-> +	 * conclude and a new one may start in the interim. If the snapshot is
-> +	 * captured after this sequence of events, the acceleration snapshot 's'
-> +	 * could be excessively advanced, leading to acceleration failure.
-> +	 * In such a scenario, an 'acceleration leak' can occur, where new
-> +	 * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segment.
-> +	 * Also note that encountering advancing failures is a normal
-> +	 * occurrence when the grace period for RCU_WAIT_TAIL is in progress.
->  	 *
-> -	 * This could happen if:
-> +	 * To see this, consider the following events which occur if
-> +	 * rcu_seq_snap() were to be called after advance:
->  	 *
->  	 *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num = X + 4) and the
->  	 *     RCU_NEXT_READY_TAIL also has callbacks (gp_num = X + 8).
-> @@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
->  	if (rhp) {
->  		rcu_segcblist_advance(&sdp->srcu_cblist,
->  				      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-> +		/*
-> +		 * Acceleration can never fail because the state of gp_seq used
-> +		 * for advancing is <= the state of gp_seq used for
-> +		 * acceleration.
-
-What do you mean by "state" here? If it's the gp_seq number, that doesn't look
-right. The situation raising the initial bug also involved a gp_seq used for
-advancing <= the gp_seq used for acceleration.
-
-Thanks.
-
-> +                This means that RCU_NEXT_TAIL segment will
-> +		 * always be able to be emptied by the acceleration into the
-> +		 * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
-> +		 */
->  		WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
->  	}
->  	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
-> -- 
-> 2.43.0.472.g3155946c3a-goog
-> 
 
