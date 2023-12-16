@@ -1,76 +1,98 @@
-Return-Path: <linux-kernel+bounces-2142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34793815882
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 10:19:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C675F815887
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 10:26:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480D81C249DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 09:19:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33B8E1F25A8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 09:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A184914018;
-	Sat, 16 Dec 2023 09:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB65A14A91;
+	Sat, 16 Dec 2023 09:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="JIQ5jIFq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026A214010
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 09:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b703513168so166607839f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 01:19:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702718344; x=1703323144;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lHOaDtLQj0LVbYHpiDDUC0HL9T+GyNK15FqZKzRWwb8=;
-        b=JKw+mbzfFUID4WPxvvJaKB54knOZiV3DjsSLDFPRxiBvF1hevAqhqFPtScL0uvGwS5
-         vGVm98X3R0+1MjwPrWrxSgWkcI/N3xKQsf3HQt1Fv0lj2L8SdmDtmjivYl4w7zmuzpY+
-         JZWnsgvuc2Zr9GzTBsXK5mwhiHTgpuGQPXA4Mf4XI7pcpTmQjdNMWeRNULHNzLOcBPRf
-         F0KTmXMbV+/PSw5cxqYmshh9cCD0gxqmqFu9TSVzrR3Cd8N2WjdR6U2g5gc7/dHg+xrt
-         YKS+MB2sBdJLsjTMgeWKw5qk2VquIqYoYBfQ5nUQ7jZPSdLjrWtznVQ8N/cqH7MbgTIF
-         TgYw==
-X-Gm-Message-State: AOJu0YylJEoocbn60c0GB8avh69/wV+Jr/Ed/hHCj8Ia0jLDVLj1oTyO
-	fvuYdvZCv/bqMp33hEfJN2sobou3WUgcYKcBgh/FFiLdXQgY
-X-Google-Smtp-Source: AGHT+IF/ccgnluBL0uQkJChKI3GLSojI6PswOKcs1SlK9Oi2nPNcDv11LxH7XLepAGE4E2RwdhdubAF1Muzh/Q65Tkc1YLnK6CD/
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F234E1427B;
+	Sat, 16 Dec 2023 09:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1702718778; x=1703323578; i=wahrenst@gmx.net;
+	bh=gfYciJ2AEdIgDiTmCWiWaoharmtLugzOfLflyfvVBs8=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=JIQ5jIFqeSpiAJOUhXiSZPVLYmjHCd0lkOXbkq3EznZ3CEc+RO9swyeUB6NdTILo
+	 Xf1omLUsFd2pFtqUzeFNmeL+z6Sa5YEuCxE61SQiVQWhvplg87/82cQ8Yvp2VHELG
+	 PSaDA4gK0ux6PoUyWpNeEz3JQSu85NhnieE3CoDmcYhUDlvE3fU8ZMyIUhGCAlkTk
+	 In0RYrdN/JPklhQaQ2EiBeZX3JG4ah8HT5V3jKr4/kHTUWCVGd1ywUUuVHd8vd4Hw
+	 br/c7XZ4OWLxsTbF1v+qEyHqRH6iGuJOpygGm64W5dlFb8VGRUBW0gsHhuAHnKjbB
+	 iCQy0LP19Mp5Hvg3qA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.130] ([37.4.248.43]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MjjCL-1rd0Er0RcB-00lGki; Sat, 16
+ Dec 2023 10:26:18 +0100
+Message-ID: <58b48448-2a6b-41bf-8b04-fdff3391aecd@gmx.net>
+Date: Sat, 16 Dec 2023 10:26:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3783:b0:466:3aa7:45e4 with SMTP id
- w3-20020a056638378300b004663aa745e4mr535061jal.5.1702718344237; Sat, 16 Dec
- 2023 01:19:04 -0800 (PST)
-Date: Sat, 16 Dec 2023 01:19:04 -0800
-In-Reply-To: <tencent_F3CD8D809237DDE95DB69927CFA68DBF2507@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000f982a060c9d02eb@google.com>
-Subject: Re: [syzbot] [block?] general protection fault in bio_first_folio
-From: syzbot <syzbot+8b23309d5788a79d3eea@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/12 net-next] qca_spi: collection of improvements
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231214150944.55808-1-wahrenst@gmx.net>
+ <20231215182518.081559ea@kernel.org>
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <20231215182518.081559ea@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:M2q3R/2uiIc6vknGORc7HkL4znYPM48XdZ3gipX/3ai/dYcfE5q
+ MPTUnYV3kgIatWZf/KAoYC98ZuElgH1K9OrOrQhv7tTgu5cekXqzqmq9xcaW9XAyv+FmfAX
+ goEQfifVjMlYB7+jChW4ujUe6AcyQvFYABT/ev6nG+zyCoAn2oaxtdh+1JKlOaMF9DoKKl0
+ CwV96PMC00zOZXY4aBP4w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:6n220bydgKY=;dFzdhSai7pV06as8WXYsdnG7q/D
+ rELGuywfF3LtHTpj0N66f66YUaOTB8j5uGnRX/l7+tpYRH6FQt2tRoruWQVl9huVAmrkPJ2En
+ 7BcEZZr/s3crYSlDALYSClaLKRXlJ4MG/r3/NFDBi65tLf64gdO5m7xTwghMd1Pj/UIOT4JyQ
+ HOlv2qQr+9GO6HGK82PCCNfdmLd1rcviwM5dC2CbbE0tGwm6EMQ9IavtwKw9M2X40exjp+DMC
+ /pk38VGli6Mkg7QXsBJ+ndzgHAzESUzFXvHcSRyi3sUPlMcB4e6LZepWMaC40qZa3JQa2e9hd
+ c4vPNmrJdyIz2aJxoOvZTIqdoAeW0HVdfrRfot3Ts5/Lqkl0sWQDJFVrpcpENRomRl4TKwehx
+ mk9Fk88mVo48q+mzpgUHhjE/GAbVo7BngYso46I1Cbeb4/Hod9SksgsNl79YSIxPXTu9tQ4oV
+ sutIljBtgIgB7mm7xpLBniN+A1lrWJv9MoLJ6XKWddofrb6mrd1moZutX9GwjnLiuoaAlnqLj
+ q7r/3a/VkaOehV5EjwcgYg47u0P+brant0NO18JktAkDyjLj1wsoqf3oVtSHENEBeIrZe6TQa
+ q6k/VOoYbgVmsyFMadFWNo5TZlWH1h6MYgLjCVmzu/IGbU4TuNm15luePbXLYrGt/hJ/gIQ9Z
+ oxAP68DUsAxJdrY5N3LG8PCVpDPQjadIpGySO3cE1kFZObJn7zqk/EqS/japNhM7HnlXVLkRc
+ LTLj7DWfZ7VZzjsAFlJGLJ/0vxjNQ57fx6JTjtflDGQx9Gvvc1m8sxRcePmVgCZSDtafc+5oQ
+ tqBw+LeCjWfLoXVBtVeZKqccOZSXPIaMpUm/NFCO2Y0xwu8Kx2Yp1XnwUVFcFRW7iryZ+lRP5
+ LX78l+rCBzhGRTxm1V96uicyLZ2eOB6r5bLypcuAmHCq0i42Qhz9snEtlPDOj8Qtxv8dQqWBw
+ 5geu8Fz4CSUvQgANz5Xo/k0yo1g=
 
-Hello,
+Hi Jakub,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+8b23309d5788a79d3eea@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         abb240f7 Add linux-next specific files for 20231212
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=14b24771e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cc2485c21b49ddc4
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b23309d5788a79d3eea
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14840371e80000
-
-Note: testing is done by a robot and is best-effort only.
+Am 16.12.23 um 03:25 schrieb Jakub Kicinski:
+> On Thu, 14 Dec 2023 16:09:32 +0100 Stefan Wahren wrote:
+>> This series contains a wild collection of improvements for the
+>> qca_spi driver. This is a follow-up series to the recent bugfixes.
+> The fixes are now in net-next, and looks like this series
+> no longer applied, please rebase & repost.
+let me explain. This series shouldn't replace the already applied
+bugfixes. Before i submitted the bugfix patches, i prepared all these
+patches. Since the bugfixes had a much higher prio, i decided to split
+my patches into a bugfix and improvement series. The bugfixes has been
+applied and this series is the improvement part which based on current
+net-next including the bugfix series. Sorry for not making this clear.
+Patch 1 & 2 in this series is the initially intended rework, which is
+also considered valuable by Paolo.
 
