@@ -1,85 +1,68 @@
-Return-Path: <linux-kernel+bounces-1951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B596815648
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:10:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A43AD81564C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 577A2286182
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:10:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 444381F218A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43F941C3F;
-	Sat, 16 Dec 2023 02:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4655186B;
+	Sat, 16 Dec 2023 02:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LLsNSErK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LYtK3mce"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89BB115B9;
-	Sat, 16 Dec 2023 02:10:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 22AFDC433C9;
-	Sat, 16 Dec 2023 02:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293EB185A;
+	Sat, 16 Dec 2023 02:10:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13295C433C7;
+	Sat, 16 Dec 2023 02:10:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702692625;
-	bh=DfJ+bv2uP/EXrVEPsZCt6Py3/DrsGztH6oFNdIAkrRA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=LLsNSErKKN9rKC4Cdh8sf7YkJtLvdnFdqPt+b5vnYqZqyVq3NZ6Hg/VkEUmJYHTUH
-	 sU6lHDYR4+CxZEcul1f73fPlFfMYPNdheu3PP8OhN8R5DDWYeUJT9EV8joyudRYcfw
-	 RaZkk7w+NxrdQ5+0hoaHD8QBKkxnBfktW5zB7hIy5S280P9+rOwAy1jl3KluM9xxa8
-	 ErD+GoGPOTnuTuQ6AcPJDpYCh5+B+7CL4u0w9Q6Qn0tiAoa4iBdxkwfQ4+XpPUdNeC
-	 kr3Z5TEe0q+u3zSs2zHWF+9EB9ibEGtbZU7t5fijXy+C0yNa23PDGkEVk7Of/IRrgQ
-	 lHg0mBd6frUaQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F3773C4166E;
-	Sat, 16 Dec 2023 02:10:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1702692644;
+	bh=j/voS/7d34MytfDrCELADQRaybMJaIlqQDl1Natue7s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LYtK3mceYHV0FksWDJo92BP8wiZyXjWc3vQ9aChfjsBTEmREMJkIjEKRS83RjFHZv
+	 f7hmJ9hhBDx+Y6neOskMWcCkpac95F/kaQMpmLZEGhz4oeigrjYEayPLtNR6StARVs
+	 Rd4KMdRbLJZL28Abhbwp7KDyR3DL6wFZm2XvMuWI7R6a72N4J366l3E0nrCFvzZZEj
+	 hlJJSAF3vZ8olTZiMWK+/rCnhZA3GfrPC5HD9Yp6mBI/aekTvyoQ1wkeboWbDoWezI
+	 9OGr0lSNCGEwVlB+cgljJIiicXX04CurJoPPdQeBjjURpQbmsmfLP/RFsaxq60n3qj
+	 UECv1+Apq1XaQ==
+Date: Fri, 15 Dec 2023 18:10:43 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Wang Jinchao <wangjinchao@xfusion.com>
+Cc: Sunil Goutham <sgoutham@marvell.com>, Linu Cherian
+ <lcherian@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Jerin Jacob
+ <jerinj@marvell.com>, hariprasad <hkelam@marvell.com>, Subbaraya Sundeep
+ <sbhatta@marvell.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <stone.xulei@xfusion.com>
+Subject: Re: [PATCH] net: devlink: insert space after include
+Message-ID: <20231215181043.4ed733cf@kernel.org>
+In-Reply-To: <202312151404+0800-wangjinchao@xfusion.com>
+References: <202312151404+0800-wangjinchao@xfusion.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] dt-bindings: net: marvell,orion-mdio: Drop "reg"
- sizes schema
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170269262499.31252.15989898401960537918.git-patchwork-notify@kernel.org>
-Date: Sat, 16 Dec 2023 02:10:24 +0000
-References: <20231213232455.2248056-1-robh@kernel.org>
-In-Reply-To: <20231213232455.2248056-1-robh@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- andrew@lunn.ch, netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Fri, 15 Dec 2023 14:04:52 +0800 Wang Jinchao wrote:
+> Subject: [PATCH] net: devlink: insert space after include
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Please repost with subject changed to:
 
-On Wed, 13 Dec 2023 17:24:55 -0600 you wrote:
-> Defining the size of register regions is not really in scope of what
-> bindings need to cover. The schema for this is also not completely correct
-> as a reg entry can be variable number of cells for the address and size,
-> but the schema assumes 1 cell.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> 
-> [...]
+[PATCH net-next v2] octeontx2-af: insert space after include
 
-Here is the summary with links:
-  - [net-next] dt-bindings: net: marvell,orion-mdio: Drop "reg" sizes schema
-    https://git.kernel.org/netdev/net-next/c/758a8d5b6a64
-
-You are awesome, thank you!
+Please keep Subbaraya's review tag.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+pw-bot: cr
 
