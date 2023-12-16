@@ -1,76 +1,68 @@
-Return-Path: <linux-kernel+bounces-2384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E747815C11
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 23:12:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E3C0815C15
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 23:13:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5E01F221B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:12:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EED65B21127
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D673358BD;
-	Sat, 16 Dec 2023 22:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43135364DD;
+	Sat, 16 Dec 2023 22:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChoXgljS"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ko4WYXcg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B29B3588C;
-	Sat, 16 Dec 2023 22:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c55872d80so16376175e9.1;
-        Sat, 16 Dec 2023 14:11:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702764713; x=1703369513; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vFxvDNzq/a/57fWqrc0hFxj0N99OnhOBGr8fli8AnDk=;
-        b=ChoXgljStYMADXJw5qY2jmmqZAyCw/lDd+1sSt0lftTNjHEhmhWsOubh1FxOukcWJ6
-         8gE/D+EbiGjkGMXIrxB50gcjjdEShAammsnnGZtEaXYzuPTrxPEwgy/7/amJeTRHXgPc
-         49XKduMow1DiYzcMBKe/i3K16pHQM3oRkqapCEQboqu/FC9UNmjRZQpaKMzBp1GuQD60
-         4T+pNdDLbBZbXN9ezTT30M7j3yI/7GtHxmXT2FZARExm39cRLzu3VI19fcEI3ce0IZIV
-         ECuepvjh5BdmPz7+QbFJlaugulM4axJyvGjz/fEMZDvqzq+dE+sgzVQxIsSlsG3PSM+T
-         2n8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702764713; x=1703369513;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vFxvDNzq/a/57fWqrc0hFxj0N99OnhOBGr8fli8AnDk=;
-        b=vRtIu2UWTNOhWFGS9yiW9XOykaHSXNXhZh3qtrfVfx8tbQ32ETNWh5f8ctya1gco4/
-         5kISMgloLdEkyDOwtDdAUoQeVctf764ewXZx8T44qXLIhKc2se7IbszgU4aoTL+2Acw8
-         fLTaijUJ/Z1/ZcIfbPt4tB+PMFv+UC+pCNqp/loyHlcHX72PQ2OMa0/e/fwR/HlTsj9r
-         c178FESS7HpushK6LgepOHjH8tKTlX2EOiuXCvz18CVDOGYBLyffn+AhCwRHhbVBvSTO
-         wTl23Z2NaHk+g1rtPVMDpMQp3tushA/1+g3uljZiUmSxou+F5F3sKs58dSzB33oBvpgb
-         aNTQ==
-X-Gm-Message-State: AOJu0YxvztWyQfJ01YOPXauBmyYgpnxErVoHT/uSaMetwdS3Wd8NE4Ow
-	sW8Whhu8arXZeflAsjGtePQ=
-X-Google-Smtp-Source: AGHT+IE+jkGzSKkDQZ6/DtJ39jl9N7HMf0sbJIX4/sOXzrcaDY0xsxy2zk0oK56xGrfpo4DSknmq9Q==
-X-Received: by 2002:a05:600c:3b99:b0:40b:4072:54de with SMTP id n25-20020a05600c3b9900b0040b407254demr6835048wms.13.1702764713349;
-        Sat, 16 Dec 2023 14:11:53 -0800 (PST)
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id fk10-20020a05600c0cca00b0040b3d8907fesm36017851wmb.29.2023.12.16.14.11.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 14:11:53 -0800 (PST)
-Date: Sat, 16 Dec 2023 23:11:51 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: marvell-88q2xxx: add driver for the Marvell
- 88Q2220 PHY
-Message-ID: <20231216221151.GA143483@debian>
-References: <20231215213102.35994-1-dima.fedrau@gmail.com>
- <74d4b8f9-700e-45bc-af59-95a40a777b00@lunn.ch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7277835880;
+	Sat, 16 Dec 2023 22:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702764784; x=1734300784;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LrrLMVtF5thE9H16OS3pY7snAyvKHmli7OPtS5+MFRI=;
+  b=Ko4WYXcgB/tuBNXaOWo12meBtGJKXFfHsLSU92X0HJwX8iVy5z/7L+Yr
+   ssjcNX1G1t+PcdULQ6cAKD8mv1hYg7BW7mVWHcwj1rPAEDlfs61c1NROz
+   isqCEaeF8GDQR4zW2RrjVKlWIgJAnh5YYgu+amuGhxiz6X/yd/Ho/16/g
+   CHFrailQBZbAyHNjNT0MsozcdzmGMLWQVQVakwUp+dSxB90HaFyUEk8th
+   /bT++eSfneUDHuRWBxahVIwhkRAh393hTkVO+YSjjwbVwxerxUxyyiwQg
+   EWZkjYfCJtd8Y7HggCHq8eqOGPrFGNlklj76zfSlT4mVU/TKfebEVysEM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="8815304"
+X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
+   d="scan'208";a="8815304"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 14:13:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="845504176"
+X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
+   d="scan'208";a="845504176"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Dec 2023 14:13:01 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEcu3-0002GY-0U;
+	Sat, 16 Dec 2023 22:12:59 +0000
+Date: Sun, 17 Dec 2023 06:12:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jia Jie Ho <jiajie.ho@starfivetech.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 4/5] crypto: starfive: Add sm3 support for JH8100
+Message-ID: <202312170614.24rtwf9x-lkp@intel.com>
+References: <20231216141234.417498-5-jiajie.ho@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,59 +71,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <74d4b8f9-700e-45bc-af59-95a40a777b00@lunn.ch>
+In-Reply-To: <20231216141234.417498-5-jiajie.ho@starfivetech.com>
 
-Am Sat, Dec 16, 2023 at 05:46:32PM +0100 schrieb Andrew Lunn:
-> > +static int mv88q222x_config_aneg_gbit(struct phy_device *phydev)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* send_s detection threshold, slave and master */
-> > +	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8032, 0x2020);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0xa28);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0xc28);
-> > +	if (ret < 0)
-> > +		return ret;
-> 
-> Same register with two different values?
->
-Just copied the init sequence from sample code provided by Marvell.
-I don't know if its a mistake. There is no documentation on this.
+Hi Jia,
 
-> There are a lot of magic values here. Does the datasheet names these
-> registers? Does it define the bits? Adding #defines would be good.
-> 
-Datasheet is not naming them. I once asked Marvell Support for
-documentation on the init sequence and what purpose each register has.
-Just got the answer to use the sample code as it is.
+kernel test robot noticed the following build warnings:
 
-> > +static int mv88q222x_config_aneg_preinit(struct phy_device *phydev)
-> > +{
-> > +	int ret, val, i;
-> > +
-> > +	/* Enable txdac */
-> > +	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8033, 0x6801);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	/* Disable ANEG */
-> > +	ret = phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_T1_CTRL, 0x0);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	/* Set IEEE power down */
-> > +	ret = phy_write_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1, 0x840);
-> 
-> 0x800 is MDIO_CTRL1_LPOWER. What is the other? It seems like a speed
-> selection bit?
->
-The other is MDIO_PMA_CTRL1_SPEED1000. Will fix this in V2.
+[auto build test WARNING on herbert-cryptodev-2.6/master]
+[also build test WARNING on next-20231215]
+[cannot apply to robh/for-next linus/master v6.7-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> 	  Andrew
+url:    https://github.com/intel-lab-lkp/linux/commits/Jia-Jie-Ho/dt-bindings-crypto-starfive-Add-jh8100-compatible-string/20231216-221614
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20231216141234.417498-5-jiajie.ho%40starfivetech.com
+patch subject: [PATCH 4/5] crypto: starfive: Add sm3 support for JH8100
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231217/202312170614.24rtwf9x-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231217/202312170614.24rtwf9x-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312170614.24rtwf9x-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/crypto/starfive/jh8100-sm3.c:179:6: warning: no previous prototype for function 'starfive_sm3_done_task' [-Wmissing-prototypes]
+     179 | void starfive_sm3_done_task(unsigned long param)
+         |      ^
+   drivers/crypto/starfive/jh8100-sm3.c:179:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     179 | void starfive_sm3_done_task(unsigned long param)
+         | ^
+         | static 
+>> drivers/crypto/starfive/jh8100-sm3.c:524:5: warning: no previous prototype for function 'starfive_sm3_register_algs' [-Wmissing-prototypes]
+     524 | int starfive_sm3_register_algs(void)
+         |     ^
+   drivers/crypto/starfive/jh8100-sm3.c:524:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     524 | int starfive_sm3_register_algs(void)
+         | ^
+         | static 
+>> drivers/crypto/starfive/jh8100-sm3.c:529:6: warning: no previous prototype for function 'starfive_sm3_unregister_algs' [-Wmissing-prototypes]
+     529 | void starfive_sm3_unregister_algs(void)
+         |      ^
+   drivers/crypto/starfive/jh8100-sm3.c:529:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     529 | void starfive_sm3_unregister_algs(void)
+         | ^
+         | static 
+   3 warnings generated.
+
+
+vim +/starfive_sm3_done_task +179 drivers/crypto/starfive/jh8100-sm3.c
+
+   178	
+ > 179	void starfive_sm3_done_task(unsigned long param)
+   180	{
+   181		struct starfive_cryp_dev *cryp = (struct starfive_cryp_dev *)param;
+   182		int err;
+   183	
+   184		err = starfive_sm3_copy_hash(cryp->req.hreq);
+   185	
+   186		/* Reset to clear hash_done in irq register*/
+   187		writel(STARFIVE_SM3_RESET, cryp->base + STARFIVE_SM3_CSR);
+   188	
+   189		crypto_finalize_hash_request(cryp->engine, cryp->req.hreq, err);
+   190	}
+   191	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
