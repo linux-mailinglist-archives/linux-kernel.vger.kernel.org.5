@@ -1,107 +1,83 @@
-Return-Path: <linux-kernel+bounces-1932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D44D815606
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:37:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9C01815604
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3AEC1F2578D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:37:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5945A1F2564B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9C91FBA;
-	Sat, 16 Dec 2023 01:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cjCM8QpH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B012D1365;
+	Sat, 16 Dec 2023 01:37:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7483A3FFB
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 01:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702690644;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KH7LHyJ+LsPwH+bGnDG9Wd9NgeRdlqn7GY3HTAJcVcY=;
-	b=cjCM8QpHTDWi609uEE7DIKJZe8g0zJEt2fQJBgguZuL3Exe5GF6GSlpTvV3NgpKAwpb1Kd
-	evMl5DhvAWstpIZrGhPo9U//KN67Y+llyWj2z77XGP4vPHWC/oRlfh3gypvSsSaSkF77D+
-	W/r1bdmnuScydeG7THMUkn1KOPtKS0Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-42-sQYicR6GMrW7FqwSQg05cw-1; Fri, 15 Dec 2023 20:37:17 -0500
-X-MC-Unique: sQYicR6GMrW7FqwSQg05cw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 55B3A101A551;
-	Sat, 16 Dec 2023 01:37:17 +0000 (UTC)
-Received: from llong.com (unknown [10.22.9.217])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DA72BC15968;
-	Sat, 16 Dec 2023 01:37:16 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	George Stark <gnstark@salutedevices.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH 2/2] locking/rwsem: Make DEBUG_RWSEMS and PREEMPT_RT mutually exclusive
-Date: Fri, 15 Dec 2023 20:36:56 -0500
-Message-Id: <20231216013656.1382213-2-longman@redhat.com>
-In-Reply-To: <20231216013656.1382213-1-longman@redhat.com>
-References: <20231216013656.1382213-1-longman@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0105923C9;
+	Sat, 16 Dec 2023 01:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SsTF82M7Wz29dPr;
+	Sat, 16 Dec 2023 09:35:56 +0800 (CST)
+Received: from kwepemm000007.china.huawei.com (unknown [7.193.23.189])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1F5A11402CB;
+	Sat, 16 Dec 2023 09:37:06 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 16 Dec 2023 09:37:05 +0800
+Message-ID: <9ac4a3aa-602a-4bc9-aa73-c6896effefe3@huawei.com>
+Date: Sat, 16 Dec 2023 09:37:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
+	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <shenjian15@huawei.com>,
+	<wangjie125@huawei.com>, <liuyonglong@huawei.com>, <lanhao@huawei.com>,
+	<wangpeiyang1@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 net-next 2/3] net: hns3: dump more reg info based on
+ ras mod
+To: Simon Horman <horms@kernel.org>
+References: <20231214141135.613485-1-shaojijie@huawei.com>
+ <20231214141135.613485-3-shaojijie@huawei.com>
+ <20231215080104.GV5817@kernel.org>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20231215080104.GV5817@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000007.china.huawei.com (7.193.23.189)
 
-The debugging code enabled by CONFIG_DEBUG_RWSEMS will only be
-compiled in when CONFIG_PREEMPT_RT isn't set. There is no point to
-allow CONFIG_DEBUG_RWSEMS to be set in a kernel configuration where
-CONFIG_PREEMPT_RT is also set. Make them mutually exclusive.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- lib/Kconfig.debug | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+on 2023/12/15 16:01, Simon Horman wrote:
+> On Thu, Dec 14, 2023 at 10:11:34PM +0800, Jijie Shao wrote:
+>>   #include "hclge_main.h"
+>> +#include "hclge_debugfs.h"
+> Hi Jijie Shao and Peiyang Wang,
+>
+> hclge_debugfs.h defines a number of constants, such as hclge_dbg_tqp_reg.
+>
+> With the above include added, these constants are now also defined
+> in files that include hclge_err.h. Which leads to them
+> being defined but unused in hclge_main.c.
+>
+> At a glance, it seems that these constants are only used in hclge_debugfs.c.
+> Perhaps they could simply be moved there?
+>
+Yeah, I also plan to move them to hclge_debugfs.c.
+So I'm going to add a patch to the v3 patchset to move them
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index cc7d53d9dc01..2a95caa7e122 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1297,7 +1297,7 @@ config PROVE_LOCKING
- 	select DEBUG_SPINLOCK
- 	select DEBUG_MUTEXES if !PREEMPT_RT
- 	select DEBUG_RT_MUTEXES if RT_MUTEXES
--	select DEBUG_RWSEMS
-+	select DEBUG_RWSEMS if !PREEMPT_RT
- 	select DEBUG_WW_MUTEX_SLOWPATH
- 	select DEBUG_LOCK_ALLOC
- 	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
-@@ -1420,7 +1420,7 @@ config DEBUG_WW_MUTEX_SLOWPATH
- 
- config DEBUG_RWSEMS
- 	bool "RW Semaphore debugging: basic checks"
--	depends on DEBUG_KERNEL
-+	depends on DEBUG_KERNEL && !PREEMPT_RT
- 	help
- 	  This debugging feature allows mismatched rw semaphore locks
- 	  and unlocks to be detected and reported.
--- 
-2.39.3
+Thanks,
+Jijie
 
 
