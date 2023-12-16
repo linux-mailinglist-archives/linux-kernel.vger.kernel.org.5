@@ -1,46 +1,72 @@
-Return-Path: <linux-kernel+bounces-2180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78691815910
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:45:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7AEB815913
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AE101C217AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:45:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EFA51F23AB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA38318ED7;
-	Sat, 16 Dec 2023 12:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A421D69E;
+	Sat, 16 Dec 2023 12:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+ZYGiIj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D6B154BA;
-	Sat, 16 Dec 2023 12:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D20E2F4;
-	Sat, 16 Dec 2023 04:45:29 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78DC73F762;
-	Sat, 16 Dec 2023 04:44:42 -0800 (PST)
-Date: Sat, 16 Dec 2023 12:44:33 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: James Clark <james.clark@arm.com>, will@kernel.org,
-	catalin.marinas@arm.com
-Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
-	linux-next@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v2 1/1] arm: perf: Fix ARCH=arm build with GCC
-Message-ID: <ZX2bsYEdWVxTCiTi@FVFF77S0Q05N>
-References: <20231215175648.3397170-1-james.clark@arm.com>
- <20231215175648.3397170-2-james.clark@arm.com>
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2BA18EA6;
+	Sat, 16 Dec 2023 12:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3364c9ba749so1258090f8f.1;
+        Sat, 16 Dec 2023 04:45:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702730757; x=1703335557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1H4hMNJCw/32Z+RZWpdrmp582opVHteiynBOAnY14+Y=;
+        b=B+ZYGiIjDMpUECTMQnlD+xleKAzubC/13ZGcpQAJFlGHIUI8VegQT4z2GODs2VGI/p
+         L4i4R8hr05AsO8EUgwl6R1VQfmaBNCTY4pIB2gsXYt6fO+OOWIDUSfuIlKSCJ7dfaKih
+         lmbv+lyr/wAKuWukSMlEleZfnHQt7TayZjuINj+t7/jThexf+crNZFGyqrlUFK/VZExG
+         rDZEugIj/ezx0cdEsBuuLLmYDUgI9zwvq0Kkfdx3r76+LUxHLpA1fWOpXlD2Jme9BKaI
+         hzKO/oHr8XrrybUTl6NmfIo7j6e3/5NSEEELuy9jUu12kXaUyZL1QvamEPQLmZm24XZJ
+         D5Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702730757; x=1703335557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1H4hMNJCw/32Z+RZWpdrmp582opVHteiynBOAnY14+Y=;
+        b=exuDJBt2XOqXMTCi8WrZaVqG28ZdFbaSfyOfqxi/F7Z99NxNndhrzkLGebqHC9HYHQ
+         P/+ZUczGib8cscVjYce51WLM1VF9CrjJrWi5fmTlT1xubUc7zCB9JVUdVlGYKWFUKFoS
+         PKBLvV5M8aRcrRZLECXkBdcw4F70mCv9dLGIJDEEwKZbJUh4+Xfft3gqeb3Gvsa8/Bw1
+         KMVs6Cpyt7S31CA3vry7NF/dWK4dVq4Fbeh4dRAHYjjURCdJNilBqaktnbmpQMFFNy0s
+         3mvCdOfCEE+GLGB9Vh98ZqhJU7w50pqavg0w38e/r3AWR/6+UPyUoF0GOaURoP6p+pUs
+         Mmbg==
+X-Gm-Message-State: AOJu0YyvTTi+vLzRXntRVcHZMxdm8Icwd2XPbHv79PUj4jZQB97+rd3T
+	LH3kQNCuwDwTn1/UZv1H/ac4xSysMVE=
+X-Google-Smtp-Source: AGHT+IHMYHWJES6roXispGRb1UVzSUy2mCj2n9V5d+lGj61Xf1XEIiW0yHZbSqNk1xnabS0cdDUErA==
+X-Received: by 2002:adf:e841:0:b0:336:608f:91eb with SMTP id d1-20020adfe841000000b00336608f91ebmr126621wrn.95.1702730756677;
+        Sat, 16 Dec 2023 04:45:56 -0800 (PST)
+Received: from jekhomev ([46.251.53.180])
+        by smtp.gmail.com with ESMTPSA id vg14-20020a170907d30e00b00a1dcfd8f95csm11775051ejc.37.2023.12.16.04.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Dec 2023 04:45:56 -0800 (PST)
+Date: Sat, 16 Dec 2023 14:45:55 +0200
+From: Yauhen Kharuzhy <jekhor@gmail.com>
+To: linux-input@vger.kernel.org, linux-iio@vger.kernel.org
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
+	Jiri Kosina <jikos@kernel.org>,
+	Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Subject: Re: [PATCH] iio: hid-sensor-als: Don't stop probing at non-supported
+ attribute
+Message-ID: <20231216124555.eyplwam45jdfazr3@jekhomev>
+References: <20231216114229.652020-1-jekhor@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,71 +75,105 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231215175648.3397170-2-james.clark@arm.com>
+In-Reply-To: <20231216114229.652020-1-jekhor@gmail.com>
 
-On Fri, Dec 15, 2023 at 05:56:48PM +0000, James Clark wrote:
-> LLVM ignores everything inside the if statement and doesn't generate
-> errors, but GCC doesn't ignore it, resulting in the following error:
+On Sat, Dec 16, 2023 at 01:42:29PM +0200, Yauhen Kharuzhy wrote:
+> Some ambient light sensors don't support color temperature and
+> chromaticity attributes. The driver stops probing if it finds this.
 > 
->   drivers/perf/arm_pmuv3.c: In function 'armv8pmu_write_evtype':
->   include/linux/bits.h:34:29: error: left shift count >= width of type [-Werror=shift-count-overflow]
->   34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
+> To support sensors without of color temperature and chromaticity
+> attributes, just skip them at probing if they weren't found.
 > 
-> Fix it by using GENMASK_ULL which doesn't overflow on arm32 (even though
-> the value is never used there).
+> Tested at Lenovo Yogabook YB1-X91L tablet.
 
-It would be nice if this could explain the overflow problem, i.e.
+Hi, It seems that Srinivas Pandruvada has posted another patch fixing
+the same issue. So, drop my patch in favor of his one.
 
-| The GENMASK() macro creates masks of type unsigned long, and we use this to
-| geenrate the ARMV8_PMU_EVTYPE_TH and ARMV8_PMU_EVTYPE_TC constants. These
-| include bits above bit 31, and generating these requires shifting more than the
-| size of unsigned long on 32-bit ARM.
-| 
-| Consequently when building for 32-bit arm, GCC warns about their use:
-| 
-|   drivers/perf/arm_pmuv3.c: In function 'armv8pmu_write_evtype':
-|   include/linux/bits.h:34:29: error: left shift count >= width of type [-Werror=shift-count-overflow]
-|   34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
-| 
-| ... though LLVM does not warn as the actual usage is not reachable on 32-bit
-| ARM due to `if (IS_ENABLED(...)` checks.
-| 
-| Avoid the warning by using GENMACK_ULL(), which doesn't overflow on 32-bit arm.
-
-> Fixes: 3115ee021bfb ("arm64: perf: Include threshold control fields in PMEVTYPER mask")
-> Reported-by: Uwe Kleine-K"onig <u.kleine-koenig@pengutronix.de>
-> Closes: https://lore.kernel.org/linux-arm-kernel/20231215120817.h2f3akgv72zhrtqo@pengutronix.de/
-> Signed-off-by: James Clark <james.clark@arm.com>
-
-Thanks for this!
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Will, Catalin, the broken commit is queued in the arm64 for-next/perf branch
-(and merged into for-next/core); is this something we can easily fold in?
-
-Mark.
-
+> 
+> Signed-off-by: Yauhen Kharuzhy <jekhor@gmail.com>
 > ---
->  include/linux/perf/arm_pmuv3.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/iio/light/hid-sensor-als.c | 39 ++++++++++++++++++------------
+>  1 file changed, 23 insertions(+), 16 deletions(-)
 > 
-> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
-> index 0f4d62ef3a9a..46377e134d67 100644
-> --- a/include/linux/perf/arm_pmuv3.h
-> +++ b/include/linux/perf/arm_pmuv3.h
-> @@ -234,8 +234,8 @@
->   * PMXEVTYPER: Event selection reg
->   */
->  #define ARMV8_PMU_EVTYPE_EVENT	GENMASK(15, 0)	/* Mask for EVENT bits */
-> -#define ARMV8_PMU_EVTYPE_TH	GENMASK(43, 32)
-> -#define ARMV8_PMU_EVTYPE_TC	GENMASK(63, 61)
-> +#define ARMV8_PMU_EVTYPE_TH	GENMASK_ULL(43, 32) /* arm64 only */
-> +#define ARMV8_PMU_EVTYPE_TC	GENMASK_ULL(63, 61) /* arm64 only */
+> diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
+> index f17304b54468..b711bac3bb2b 100644
+> --- a/drivers/iio/light/hid-sensor-als.c
+> +++ b/drivers/iio/light/hid-sensor-als.c
+> @@ -314,8 +314,11 @@ static int als_parse_report(struct platform_device *pdev,
+>  						usage_id,
+>  						HID_USAGE_SENSOR_LIGHT_ILLUM,
+>  						&st->als[i]);
+> -		if (ret < 0)
+> +		if (ret < 0) {
+> +			dev_err(&pdev->dev,
+> +				"Failed to setup Illuminance attribute\n");
+>  			return ret;
+> +		}
+>  		als_adjust_channel_bit_mask(channels, i, st->als[i].size);
 >  
->  /*
->   * Event filters for PMUv3
+>  		dev_dbg(&pdev->dev, "als %x:%x\n", st->als[i].index,
+> @@ -326,14 +329,16 @@ static int als_parse_report(struct platform_device *pdev,
+>  				usage_id,
+>  				HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE,
+>  				&st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP]);
+> -	if (ret < 0)
+> -		return ret;
+> -	als_adjust_channel_bit_mask(channels, CHANNEL_SCAN_INDEX_COLOR_TEMP,
+> -				st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].size);
+> +	if (!ret) {
+> +		dev_info(&pdev->dev, "Color temperature is supported\n");
+> +		als_adjust_channel_bit_mask(channels,
+> +			CHANNEL_SCAN_INDEX_COLOR_TEMP,
+> +			st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].size);
+>  
+> -	dev_dbg(&pdev->dev, "als %x:%x\n",
+> -		st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].index,
+> -		st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].report_id);
+> +		dev_dbg(&pdev->dev, "als %x:%x\n",
+> +			st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].index,
+> +			st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].report_id);
+> +	}
+>  
+>  	for (i = 0; i < 2; i++) {
+>  		int next_scan_index = CHANNEL_SCAN_INDEX_CHROMATICITY_X + i;
+> @@ -342,23 +347,25 @@ static int als_parse_report(struct platform_device *pdev,
+>  				HID_INPUT_REPORT, usage_id,
+>  				HID_USAGE_SENSOR_LIGHT_CHROMATICITY_X + i,
+>  				&st->als[next_scan_index]);
+> -		if (ret < 0)
+> -			return ret;
+> -
+> -		als_adjust_channel_bit_mask(channels,
+> +		if (!ret) {
+> +			dev_info(&pdev->dev,
+> +				 "Light chromaticity %c is supported\n",
+> +				 i ? 'Y' : 'X');
+> +			als_adjust_channel_bit_mask(channels,
+>  					CHANNEL_SCAN_INDEX_CHROMATICITY_X + i,
+>  					st->als[next_scan_index].size);
+>  
+> -		dev_dbg(&pdev->dev, "als %x:%x\n",
+> -			st->als[next_scan_index].index,
+> -			st->als[next_scan_index].report_id);
+> +			dev_dbg(&pdev->dev, "als %x:%x\n",
+> +				st->als[next_scan_index].index,
+> +				st->als[next_scan_index].report_id);
+> +		}
+>  	}
+>  
+>  	st->scale_precision = hid_sensor_format_scale(usage_id,
+>  				&st->als[CHANNEL_SCAN_INDEX_INTENSITY],
+>  				&st->scale_pre_decml, &st->scale_post_decml);
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  /* Function to initialize the processing for usage id */
 > -- 
-> 2.34.1
+> 2.43.0
 > 
+
+-- 
+Yauhen Kharuzhy
 
