@@ -1,60 +1,68 @@
-Return-Path: <linux-kernel+bounces-2377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9A5815BE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:32:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F7B815BE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 22:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 810201C21570
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:32:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 746E41C215B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144E23529B;
-	Sat, 16 Dec 2023 21:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8863529F;
+	Sat, 16 Dec 2023 21:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D6XlCPgC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2FA3527D;
-	Sat, 16 Dec 2023 21:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3ba2dc0f6b7so1584704b6e.2;
-        Sat, 16 Dec 2023 13:32:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702762356; x=1703367156;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=psEzIYkM3EG4tzTREhQS7ZnmwXwyHVyspLnxM8V7TYs=;
-        b=hCAKXXNqu7gXFmzGSodovS0Req0Bik7a6KOhQ+YXDAWGxp3MHqHogh9QMaQfiheXrd
-         ohZETnuF+AWN+gCa6QNm1redTbpLTUKyhiFNuR/Ns6r6ZBF8bM8MMiHR4s9YpufdxmAR
-         RKCJ4EQ/fP1MegnMV2gXwUht8VoRo4xeIxgB9X+WXNMSHmOBy4Y//MGS38JSaWBY/Y9C
-         9rjvtLbrXT9x6ptUN5uQSQVouhd35Ul5d8oalwlR0ynT4d1qJ7tvy5J8HZGLNvAoLuRJ
-         7J+vJ9bFc+oIgeYOV9HlWGmFWdZxqP61XIMjYo0/UkMXMxGQ7HHiSw3IhoAq2tkxDK+p
-         ah0g==
-X-Gm-Message-State: AOJu0Yzgj17hR+E0UJVcEavKXoKdIxf58H+bIKSzc7RFRL0WytOWuH11
-	Fe0xbeIgUxs/QAUEs3IIk29EHFABucP36LKF
-X-Google-Smtp-Source: AGHT+IGnVXoTT8NdzT5TI4uq5qxxn85/v5R+WwtgIWXvww5WjUjzKiRIlN5HIfeM5Bkx0hQ5gg3W1g==
-X-Received: by 2002:a05:6808:3993:b0:3b9:f0f5:93e7 with SMTP id gq19-20020a056808399300b003b9f0f593e7mr25734106oib.17.1702762356496;
-        Sat, 16 Dec 2023 13:32:36 -0800 (PST)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id e25-20020aa79819000000b006ce691a1419sm948196pfl.186.2023.12.16.13.32.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 13:32:36 -0800 (PST)
-Date: Sun, 17 Dec 2023 06:32:34 +0900
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-Cc: linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	bhelgaas@google.com, lpieralisi@kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	michal.simek@amd.com, bharat.kumar.gogada@amd.com
-Subject: Re: [PATCH v7 RESEND 0/3] Add support for Xilinx XDMA Soft IP as
- Root Port.
-Message-ID: <20231216213234.GC3302836@rocinante>
-References: <20231003173453.938190-1-thippeswamy.havalige@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930D03527E;
+	Sat, 16 Dec 2023 21:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702762805; x=1734298805;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=B5+1khIzYC84y6QeFySsT9tQ2/gDS/cYymgmLyh/A28=;
+  b=D6XlCPgCLOPqkoeFJSTIilgLLtE+UNi1o4V4uPayLDn+b8usoexdmeph
+   n3GvebnpCeDFlYVTp/hZJTmVYuYx1JIpwUqHjK8iFzFrRq3hqv2OKUBTy
+   gVaGWlXXvsU3zU3jdSqnxX9PmpNgCc3TMwXQQIE6erz4Mac83dpXKwqre
+   UKo8jW/NdvL14JK9FgZtnYtccvfHhGzcBvp27FIaNy1xr35m8BqNh4lxT
+   NV4qzlGOlVUzfu9T8w4d3+lhxwy5PwwEzOQH+M+r4h0fB6YII+9WO4PWb
+   1tgw0+OR8GYNHqiSF0fl7BiM4qG6ZgE0Mx5GhV2QfVZbTEHZgxcVy/16t
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="8748610"
+X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
+   d="scan'208";a="8748610"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 13:40:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="751325541"
+X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
+   d="scan'208";a="751325541"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 16 Dec 2023 13:40:00 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEcO6-0002Ew-06;
+	Sat, 16 Dec 2023 21:39:58 +0000
+Date: Sun, 17 Dec 2023 05:39:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jia Jie Ho <jiajie.ho@starfivetech.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 4/5] crypto: starfive: Add sm3 support for JH8100
+Message-ID: <202312170505.afaYFFS6-lkp@intel.com>
+References: <20231216141234.417498-5-jiajie.ho@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,26 +71,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231003173453.938190-1-thippeswamy.havalige@amd.com>
+In-Reply-To: <20231216141234.417498-5-jiajie.ho@starfivetech.com>
 
-Hello,
+Hi Jia,
 
-> This series of patch add support for Xilinx XDMA Soft IP as Root Port.
-> 
-> The Xilinx XDMA Soft IP support's 32 bit and 64bit BAR's.
-> As Root Port it supports MSI and legacy interrupts.
-> 
-> For code reusability existing CPM4 error interrupt bits are moved to
-> common header.
+kernel test robot noticed the following build warnings:
 
-Applied to controller/xilinx-xdma, thank you!
+[auto build test WARNING on herbert-cryptodev-2.6/master]
+[also build test WARNING on next-20231215]
+[cannot apply to robh/for-next linus/master v6.7-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[01/03] PCI: xilinx-cpm: Move IRQ definitions to a common header
-        https://git.kernel.org/pci/pci/c/a977ee945e94
-[02/03] dt-bindings: PCI: xilinx-xdma: Add schemas for Xilinx XDMA PCIe Root Port Bridge
-        https://git.kernel.org/pci/pci/c/4ae1cd7d4be2
-[03/03] PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver
-        https://git.kernel.org/pci/pci/c/8d786149d78c
+url:    https://github.com/intel-lab-lkp/linux/commits/Jia-Jie-Ho/dt-bindings-crypto-starfive-Add-jh8100-compatible-string/20231216-221614
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20231216141234.417498-5-jiajie.ho%40starfivetech.com
+patch subject: [PATCH 4/5] crypto: starfive: Add sm3 support for JH8100
+config: csky-randconfig-r081-20231217 (https://download.01.org/0day-ci/archive/20231217/202312170505.afaYFFS6-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231217/202312170505.afaYFFS6-lkp@intel.com/reproduce)
 
-	Krzysztof
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312170505.afaYFFS6-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/crypto/starfive/jh8100-sm3.c:179:6: warning: no previous prototype for 'starfive_sm3_done_task' [-Wmissing-prototypes]
+     179 | void starfive_sm3_done_task(unsigned long param)
+         |      ^~~~~~~~~~~~~~~~~~~~~~
+>> drivers/crypto/starfive/jh8100-sm3.c:524:5: warning: no previous prototype for 'starfive_sm3_register_algs' [-Wmissing-prototypes]
+     524 | int starfive_sm3_register_algs(void)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/crypto/starfive/jh8100-sm3.c:529:6: warning: no previous prototype for 'starfive_sm3_unregister_algs' [-Wmissing-prototypes]
+     529 | void starfive_sm3_unregister_algs(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/starfive_sm3_done_task +179 drivers/crypto/starfive/jh8100-sm3.c
+
+   178	
+ > 179	void starfive_sm3_done_task(unsigned long param)
+   180	{
+   181		struct starfive_cryp_dev *cryp = (struct starfive_cryp_dev *)param;
+   182		int err;
+   183	
+   184		err = starfive_sm3_copy_hash(cryp->req.hreq);
+   185	
+   186		/* Reset to clear hash_done in irq register*/
+   187		writel(STARFIVE_SM3_RESET, cryp->base + STARFIVE_SM3_CSR);
+   188	
+   189		crypto_finalize_hash_request(cryp->engine, cryp->req.hreq, err);
+   190	}
+   191	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
