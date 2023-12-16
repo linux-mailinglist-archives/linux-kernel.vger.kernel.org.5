@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-2231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B17D98159FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 16:32:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF2F8159FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 16:32:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CC6A285D53
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 15:32:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 241C7B241EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 15:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DDE130FA8;
-	Sat, 16 Dec 2023 15:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D81315B6;
+	Sat, 16 Dec 2023 15:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zFK+QRWX"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O4GYevy6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f74.google.com (mail-lf1-f74.google.com [209.85.167.74])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6F830677
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 15:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159D730F8F
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 15:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-lf1-f74.google.com with SMTP id 2adb3069b0e04-50be5bdae9fso1422176e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 07:31:56 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5cf4696e202so19858577b3.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 07:31:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702740715; x=1703345515; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702740718; x=1703345518; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XdxQEaIrLyM2shqQ86h8R9r1OVkGiHgwK8DLLX+9PM=;
-        b=zFK+QRWXtRe2wERG8G50NQvXPYv05St1zsnKjVU4S6dYvFqPZf7CHiBO4Cc5+sM1WB
-         uKhIQLt2wNPjwkv1RpRfRD49stc/4VZE+yoZyGdrT8ms7lIlLHLoUT7Q1RAs9IpYoKbh
-         rnP9XAvnckJ2g+CjGR84rI+Bamd3YWXbhqEz016xJ2BVLkppldBg16k2r/sE0uaVfgxN
-         g2lKNN5JcDK6Q4jsA84S/NAH9XvWBMQUzOdTHnhHuaJH08VmXnF4+O/QSpxjt1KH6WZE
-         nx2v+IcESJU7EN7G3RwASBtaBQcwuivzgoOC2+HfzTVqY/itiio2KzDRLvev5vA8a9un
-         ad2Q==
+        bh=T/ddlBRhTE0D+FYTRDCtGuJMObI89/Ad+6YQTmYW7YA=;
+        b=O4GYevy65C8yLpH5APpvEknmJnjmCzn5uPsm6HRyvcXFutxrvG+DD3zjZkZJFwul/K
+         MT8Q10Oy2QEaKCVt0VjmO/lJWJ+GPihxMjbOw78/hqscF8miJnL2NuCEjnhiZGND6gh1
+         PvoxwtY7u2sFdDs2g0bHTCyF8zbQo2qmUTKHtIpaYgaeYy0SVGBNH5LGWgEHf4G32IAT
+         JKlGQGOV1d+Ud60nYOonqGBLPwU9+bQYNLaLc6GLBtVMi6qBux5y+5Lt0XAcGSPoW8sR
+         nxv5j+1sUNhL9dZWa/sJtlGTiJGe65V3Y+peLa7xUun412cqe1yEJjmze5ksk+uT/BpL
+         HCuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702740715; x=1703345515;
+        d=1e100.net; s=20230601; t=1702740718; x=1703345518;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XdxQEaIrLyM2shqQ86h8R9r1OVkGiHgwK8DLLX+9PM=;
-        b=KuKQLfFs9nxDkEjvLfTbiEugKo9lVEY8t76ygGHUxaZJN5NBFrrkR62fOxKo35zcXp
-         g1TE9xz3Uhe48g70NekmrL+/qa6JU+ZPqPw3JhvmuiP12qVhjjZQBLwiS14dtO3asnGt
-         0SUGsNYDwWJ3g2DVgDoEa5LeCF8gy0slcjP5T59dJqgYHUXKlwgYQ4z2CP+crV2Cfqua
-         FJbFim2/IZGdQ6amZSNFYdPcIKdHToXdVfIM5/NzTUR18ZEzaHRJHUvNuxmWMg9VkyFZ
-         rwgncW5nuQl8gFtuswq6OBKaMYq8dB70OBbV7GkAQVB7/7wHRnhve79P0us5DZBDdk78
-         u6pA==
-X-Gm-Message-State: AOJu0YwxULy1S9e8+Vd2+L6zb7AWBnvjgMwI8WfEQ0nuuNFZuEps2aSO
-	gUj0TWscv6OxKfshxTu7433sQkVgXAjpO+M=
-X-Google-Smtp-Source: AGHT+IEthAYpaHDCMjYR8nUdZ+/YnPDTYSr6eCrXIphwuuiveREFJUiTzweZakr2KUYW/17OoW2BModVj1nx+Sw=
+        bh=T/ddlBRhTE0D+FYTRDCtGuJMObI89/Ad+6YQTmYW7YA=;
+        b=Fu7ksUgvk8AYFWJVAo+qGQ15WuZWxFDz6EXbjGlEJy0QmZUFE4lj9IND0toeSEJfWP
+         v3YK7ZOazks3WWAGGJVzvvGSSQ8JtkkULMPhA0IznXIXJ8LFqy0Achrb2EvrQqvIBlO8
+         RYmYhTEaJCytPLMQJ2sZfMxzTx05XSn8y1zI8RTI2MLJVaELfHoxIyuwx9NlYD98/9aV
+         4+hJaK0MBQR4hHrTk31t/ZRETeo1mrFR83MUuGACtPdXA5Sv1MeHmYetld0h37Cu6U/5
+         izHyZgs8ZU39Hb9BZ0YxgVwlnECfpj/lxj/EqR9D7YwXz+mQ14/uGU/0gh8sg9VKUKfC
+         fQUA==
+X-Gm-Message-State: AOJu0Yz92rXejU6i6MCcHj/ABOye3D+6VHxJfoOBgrNgWXrDrUFSAwiA
+	yrAacR98O1t0B6J7YazgPaVJIWJn/tr+5Hs=
+X-Google-Smtp-Source: AGHT+IGVKMCUskWZKxPFNRIG6Xo50mlBjoKSY7G0F4Z6hsa3Ztbi2UoKKWL4LxG+4j3srMjp3appHKyqifwdlX8=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:3ba8:b0:50b:e73f:da50 with SMTP
- id g40-20020a0565123ba800b0050be73fda50mr120667lfv.1.1702740714659; Sat, 16
- Dec 2023 07:31:54 -0800 (PST)
-Date: Sat, 16 Dec 2023 15:31:40 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:690c:a8c:b0:5d7:8bf2:de42 with SMTP
+ id ci12-20020a05690c0a8c00b005d78bf2de42mr772473ywb.9.1702740718105; Sat, 16
+ Dec 2023 07:31:58 -0800 (PST)
+Date: Sat, 16 Dec 2023 15:31:41 +0000
 In-Reply-To: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,22 +63,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2389; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=TlYeKLnmj5lAoBU99t4m6Fy/w/vV4RiIS0XGhAp4JT4=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlfcLgl4BrfTd4DVnj7BHnDlDKdqC79XAmSxNM+
- 8SzFF0LZ0+JAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZX3C4AAKCRAEWL7uWMY5
- RmufD/4/uTwFp1pjkeBY8c/cz9iCxJLYt+glC3U5xg6hjNcM0khejVJBGTqPetTD2JgWYkqWfy6
- vXCxpFAgeSdTRH4+ChLY+DmfKlp+V3rUKRN4gNEgzKgIK6tovaHzx3ooH7Q5V+Jqb+jH6aRR8gX
- 2s8VGYTDnLT8r2ahWai+tHJCuqr4gEt8rn/DMJgpIJCDA8XreDpDGwmvW1Esc3aLL9OJlHV2d1x
- Jpx67gsRo8Y9xRZLTXV+qQEQe31fP+BjWdRsuyKiQjWJc9hh31QhtpbxpYjeSl7yFg9J/XoAXXw
- 3KO22adl2WDRbfTPlw+zL/S01N4EVTxe+nS9BcQdE7aMCigLwOJWFq3D6uewR1Uj+fW3WSy7Bgk
- C82NwBXOe6iJz1BsfF2n+iaVquFpXURwlfUJDkbk/s60IpjZ8/XovZOdZ2s4ArxrZTxBSvv6yjk
- 97XvPnZXeC4T2cwp/pxZDl/okOpGj5ylmt0ozU5bs6Ks45cX3Q0vFhonlbJwa4eLx8raLkF9ttX
- OI2jp3S6PJA3KnUiNNNsMZdl1kDQkxq9xc4Frm9no4K9iH1/0uhAinxYqUJJg5aH3ct+mj0s3GV
- 9X0p4FSoXpLwUj21QJBj52KSO8TogltLSmZZUX520Mm0J15waUfpjGq5MlLQAvALZTBov2yt4k1 nQRtMKZRz2kiilw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6461; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=uF4Q1+xxQjulRgS6F2spL0AmSmj4UawnBJX/beYz82U=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlfcLg/1Olosyur+zr0QwGGVAhRokjwG/43yx/u
+ 5HP8Eqs2T6JAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZX3C4AAKCRAEWL7uWMY5
+ RpgkD/0VzqMF0pkgpx5FVS6mKRSKNy2iC81KBiuS3iCje6w1qE7cQUwVUzztbmbMKxUTot5eDeB
+ GWkUEmNPv9wamZc6JOd9Qp/lE/IusUyh3KX+EjcI3uu2ez2WDSd0TpDxrZe6zYJUAlDWcIfLY/d
+ Dt+pSdSF/kgbWFMugAapMON6+YIAjBwD++SogKtA7b85i7OgnwT6Zz73a71hD9IUa4GxznEX0VN
+ WXKt8QclmH2JMbcXzn5OSYid9VmUh3ip61MXHMQYoKC6Kt9XYBfX2KVZJmIgxsIIW3OcUf9lArf
+ wPsIUR65sh7J+p4xCiKGz+uEAGn9/Eqw1mZyq3L1/0Hze2+0S+ZmsWcVP5WeoRqEUbmQIyck36R
+ F9qLgwehSaLY01SV7MVjzBK/78ViN2ficq8TrJZ2hPlJtvWOJ2Gf/MGXWexUuHTMOKUSqq5uZon
+ r0ZqUQGhbqu6bcMuG+U04nWwSPrIpdWTIJ5HY+uDVs+pSHQtCDJA0CBapRW0/BjrpaJq1WQkj6x
+ l4DvpAp28A7PeVcp3HDnyOHDg0pNmN16D4XdnC+lUD+EAOht3KIVHZ45JglrrkRVy7g2fxPzlsE
+ xCc61pfs9BenRJBOHFuGaKersznboXJoZq5wJu+V6h9MHSuKUS3t/hZHgOopjVL9TfsfEZgJeHn wOQfQLCEr6hFYhg==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20231216-rb-new-condvar-methods-v2-2-b05ab61e6d5b@google.com>
-Subject: [PATCH v2 2/4] rust: time: add msecs to jiffies conversion
+Message-ID: <20231216-rb-new-condvar-methods-v2-3-b05ab61e6d5b@google.com>
+Subject: [PATCH v2 3/4] rust: sync: add `CondVar::wait_timeout`
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
 	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
@@ -90,75 +90,155 @@ Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Alice Ryhl <aliceryhl@google.com>
 Content-Type: text/plain; charset="utf-8"
 
-Defines type aliases and conversions for msecs and jiffies.
+Sleep on a condition variable with a timeout.
 
 This is used by Rust Binder for process freezing. There, we want to
 sleep until the freeze operation completes, but we want to be able to
 abort the process freezing if it doesn't complete within some timeout.
-The freeze timeout is supplied in msecs.
 
-Note that we need to convert to jiffies in Binder. It is not enough to
-introduce a variant of `CondVar::wait_timeout` that takes the timeout in
-msecs because we need to be able to restart the sleep with the remaining
-sleep duration if it is interrupted, and if the API takes msecs rather
-than jiffies, then that would require a conversion roundtrip jiffies->
-msecs->jiffies that is best avoided.
-
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/bindings/bindings_helper.h |  1 +
- rust/kernel/lib.rs              |  1 +
- rust/kernel/time.rs             | 17 +++++++++++++++++
- 3 files changed, 19 insertions(+)
+ rust/kernel/sync/condvar.rs | 59 ++++++++++++++++++++++++++++++++++++++++-----
+ rust/kernel/sync/lock.rs    |  4 +--
+ 2 files changed, 55 insertions(+), 8 deletions(-)
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 85f013ed4ca4..c482c8018f3d 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -8,6 +8,7 @@
+diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
+index 9331eb606738..0176cdfced6c 100644
+--- a/rust/kernel/sync/condvar.rs
++++ b/rust/kernel/sync/condvar.rs
+@@ -6,7 +6,8 @@
+ //! variable.
  
- #include <kunit/test.h>
- #include <linux/errname.h>
-+#include <linux/jiffies.h>
- #include <linux/slab.h>
- #include <linux/refcount.h>
- #include <linux/wait.h>
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index e6aff80b521f..d4f90acdd517 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -46,6 +46,7 @@
- pub mod str;
- pub mod sync;
- pub mod task;
-+pub mod time;
- pub mod types;
- pub mod workqueue;
+ use super::{lock::Backend, lock::Guard, LockClassKey};
+-use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque};
++use crate::{bindings, init::PinInit, pin_init, str::CStr, time::Jiffies, types::Opaque};
++use core::ffi::c_long;
+ use core::marker::PhantomPinned;
+ use macros::pin_data;
  
-diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
-new file mode 100644
-index 000000000000..23c4d1a74f68
---- /dev/null
-+++ b/rust/kernel/time.rs
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0
+@@ -18,6 +19,8 @@ macro_rules! new_condvar {
+     };
+ }
+ 
++const MAX_SCHEDULE_TIMEOUT: c_long = c_long::MAX;
 +
-+//! Timers.
+ /// A conditional variable.
+ ///
+ /// Exposes the kernel's [`struct wait_queue_head`] as a condition variable. It allows the caller to
+@@ -102,7 +105,12 @@ pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self
+         })
+     }
+ 
+-    fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guard<'_, T, B>) {
++    fn wait_internal<T: ?Sized, B: Backend>(
++        &self,
++        wait_state: u32,
++        guard: &mut Guard<'_, T, B>,
++        timeout: c_long,
++    ) -> c_long {
+         let wait = Opaque::<bindings::wait_queue_entry>::uninit();
+ 
+         // SAFETY: `wait` points to valid memory.
+@@ -113,11 +121,13 @@ fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guar
+             bindings::prepare_to_wait_exclusive(self.wait_list.get(), wait.get(), wait_state as _)
+         };
+ 
+-        // SAFETY: No arguments, switches to another thread.
+-        guard.do_unlocked(|| unsafe { bindings::schedule() });
++        // SAFETY: Switches to another thread. The timeout can be any number.
++        let ret = guard.do_unlocked(|| unsafe { bindings::schedule_timeout(timeout) });
+ 
+         // SAFETY: Both `wait` and `wait_list` point to valid memory.
+         unsafe { bindings::finish_wait(self.wait_list.get(), wait.get()) };
 +
-+/// The time unit of Linux kernel. One jiffy equals (1/HZ) second.
-+pub type Jiffies = core::ffi::c_ulong;
++        ret
+     }
+ 
+     /// Releases the lock and waits for a notification in uninterruptible mode.
+@@ -127,7 +137,7 @@ fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guar
+     /// [`CondVar::notify_one`] or [`CondVar::notify_all`]. Note that it may also wake up
+     /// spuriously.
+     pub fn wait<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_, T, B>) {
+-        self.wait_internal(bindings::TASK_UNINTERRUPTIBLE, guard);
++        self.wait_internal(bindings::TASK_UNINTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
+     }
+ 
+     /// Releases the lock and waits for a notification in interruptible mode.
+@@ -138,10 +148,31 @@ pub fn wait<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_, T, B>) {
+     /// Returns whether there is a signal pending.
+     #[must_use = "wait_interruptible returns if a signal is pending, so the caller must check the return value"]
+     pub fn wait_interruptible<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_, T, B>) -> bool {
+-        self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard);
++        self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
+         crate::current!().signal_pending()
+     }
+ 
++    /// Releases the lock and waits for a notification in interruptible mode.
++    ///
++    /// Atomically releases the given lock (whose ownership is proven by the guard) and puts the
++    /// thread to sleep. It wakes up when notified by [`CondVar::notify_one`] or
++    /// [`CondVar::notify_all`], or when a timeout occurs, or when the thread receives a signal.
++    #[must_use = "wait_interruptible_timeout returns if a signal is pending, so the caller must check the return value"]
++    pub fn wait_interruptible_timeout<T: ?Sized, B: Backend>(
++        &self,
++        guard: &mut Guard<'_, T, B>,
++        jiffies: Jiffies,
++    ) -> CondVarTimeoutResult {
++        let jiffies = jiffies.try_into().unwrap_or(MAX_SCHEDULE_TIMEOUT);
++        let res = self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard, jiffies);
 +
-+/// The millisecond time unit.
-+pub type Msecs = core::ffi::c_uint;
++        match (res as Jiffies, crate::current!().signal_pending()) {
++            (jiffies, true) => CondVarTimeoutResult::Signal { jiffies },
++            (0, false) => CondVarTimeoutResult::Timeout,
++            (jiffies, false) => CondVarTimeoutResult::Woken { jiffies },
++        }
++    }
 +
-+/// Converts milliseconds to jiffies.
-+#[inline]
-+pub fn msecs_to_jiffies(msecs: Msecs) -> Jiffies {
-+    // SAFETY: The `__msecs_to_jiffies` function is always safe to call no
-+    // matter what the argument is.
-+    unsafe { bindings::__msecs_to_jiffies(msecs) }
+     /// Calls the kernel function to notify the appropriate number of threads with the given flags.
+     fn notify(&self, count: i32, flags: u32) {
+         // SAFETY: `wait_list` points to valid memory.
+@@ -177,3 +208,19 @@ pub fn notify_all(&self) {
+         self.notify(0, 0);
+     }
+ }
++
++/// The return type of `wait_timeout`.
++pub enum CondVarTimeoutResult {
++    /// The timeout was reached.
++    Timeout,
++    /// Somebody woke us up.
++    Woken {
++        /// Remaining sleep duration.
++        jiffies: Jiffies,
++    },
++    /// A signal occurred.
++    Signal {
++        /// Remaining sleep duration.
++        jiffies: Jiffies,
++    },
 +}
+diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
+index f12a684bc957..149a5259d431 100644
+--- a/rust/kernel/sync/lock.rs
++++ b/rust/kernel/sync/lock.rs
+@@ -139,7 +139,7 @@ pub struct Guard<'a, T: ?Sized, B: Backend> {
+ unsafe impl<T: Sync + ?Sized, B: Backend> Sync for Guard<'_, T, B> {}
+ 
+ impl<T: ?Sized, B: Backend> Guard<'_, T, B> {
+-    pub(crate) fn do_unlocked(&mut self, cb: impl FnOnce()) {
++    pub(crate) fn do_unlocked<U>(&mut self, cb: impl FnOnce() -> U) -> U {
+         // SAFETY: The caller owns the lock, so it is safe to unlock it.
+         unsafe { B::unlock(self.lock.state.get(), &self.state) };
+ 
+@@ -147,7 +147,7 @@ pub(crate) fn do_unlocked(&mut self, cb: impl FnOnce()) {
+         let _relock =
+             ScopeGuard::new(|| unsafe { B::relock(self.lock.state.get(), &mut self.state) });
+ 
+-        cb();
++        cb()
+     }
+ }
+ 
 
 -- 
 2.43.0.472.g3155946c3a-goog
