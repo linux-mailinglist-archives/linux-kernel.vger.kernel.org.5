@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-1871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 801F0815508
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:22:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A26815501
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:21:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F65A1F255D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:22:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AD792824E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051D646BD;
-	Sat, 16 Dec 2023 00:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 562CB186D;
+	Sat, 16 Dec 2023 00:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XgnrPOn8"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bBhf+SDl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3C515C8;
-	Sat, 16 Dec 2023 00:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED72A46;
+	Sat, 16 Dec 2023 00:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFNKPMB017090;
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BG0GDF0016567;
 	Sat, 16 Dec 2023 00:21:05 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=dlIQYYiZkB6lUKK/+BFyt+atRuKMzeGXRa/ViJoTpro
-	=; b=XgnrPOn8duX+dLX0rITrDHx5nyIJOqtBgdKK6flEtygjndVvl8mJYkH5DAK
-	k5BTtT7O812gqs2GM51JL2Fnx9sg8c21LUJ02TyTs8CHQ276e8KsFQ04orqtna0o
-	hhac9XsNzrH1OysLGH1C8gyvFI18EuDQ9Fd1JnUaC9Gym4yl6Uoc8mPPmnN2F/xP
-	gkbYO0pQyZOOqeq+16IrdDAenEYM08yp9R9Y6vgQMJFigngfBw3tnEPcAD4mmkJg
-	M2BM1fd+1A2aMPlwoJY5bbBgkPdtJ36Whs8D1C5jSJumn2OdChYbu/ZuzBUmgtRE
-	leddYxO1sPHE98X8QtuNOfj1YRw==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0hb02g6f-1
+	:cc; s=qcppdkim1; bh=OEEOctwZRiqnvSmFq54/UY9u6/0OSkhlKKf9mPwOG6w
+	=; b=bBhf+SDldV7WY7ylnnV6FoIgJtYHK9ui9F3aGt+Uhub0UjTy9B7PNuTUH2+
+	42UBT4BfCbhjQim18xuqpHqWt/WMRuYkXb2FDGaYdPerw4phe9D1IMSumhxJvoWa
+	ij8r770Oub3EQEErnFtYRmwaDTUnviiMfitGrlOX/5aKMPc8bnHLDpCLg2SUqI0y
+	uaRjeUGjXTpGfApyaltWl/EVpCWOQ0AjeSlidrL9Bz1/plJTTNC1rC70/ehQnGlZ
+	y1w9nuJ2KXC1hBQrhrCA7RWmRbL86l0kTHI8t0d0NNUhxmG24aQGhHtx6waMa2w4
+	y4B0BmTDJOK7EQDUgbWPfTSK+Tg==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0hqcjf8e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Dec 2023 00:21:04 +0000 (GMT)
+	Sat, 16 Dec 2023 00:21:05 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG0L317006238
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG0L45w015519
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Dec 2023 00:21:03 GMT
+	Sat, 16 Dec 2023 00:21:04 GMT
 Received: from [169.254.0.1] (10.49.16.6) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 16:21:02 -0800
+ 2023 16:21:03 -0800
 From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Fri, 15 Dec 2023 16:20:46 -0800
-Subject: [PATCH RFC v15 05/30] virt: gunyah: Add hypervisor driver
+Date: Fri, 15 Dec 2023 16:20:47 -0800
+Subject: [PATCH RFC v15 06/30] virt: gunyah: msgq: Add hypercalls to send
+ and receive messages
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,7 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231215-gunyah-v15-5-192a5d872a30@quicinc.com>
+Message-ID: <20231215-gunyah-v15-6-192a5d872a30@quicinc.com>
 References: <20231215-gunyah-v15-0-192a5d872a30@quicinc.com>
 In-Reply-To: <20231215-gunyah-v15-0-192a5d872a30@quicinc.com>
 To: Alex Elder <elder@linaro.org>,
@@ -96,104 +97,94 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: d6FbTRpad0tCTBg7ARO1ukrJs2SMoeD7
-X-Proofpoint-GUID: d6FbTRpad0tCTBg7ARO1ukrJs2SMoeD7
+X-Proofpoint-ORIG-GUID: QmBFIMYPI86yIje7NAN2g-T1lKudR__E
+X-Proofpoint-GUID: QmBFIMYPI86yIje7NAN2g-T1lKudR__E
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- priorityscore=1501 impostorscore=0 spamscore=0 mlxlogscore=999
- clxscore=1015 lowpriorityscore=0 bulkscore=0 suspectscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312160000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ phishscore=0 adultscore=0 priorityscore=1501 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 suspectscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312160001
 
-Add driver to detect when running under Gunyah. It performs basic
-identification hypercall and populates the platform bus for resource
-manager to probe.
+Add hypercalls to send and receive messages on a Gunyah message queue.
 
+Reviewed-by: Alex Elder <elder@linaro.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/virt/Makefile        |  1 +
- drivers/virt/gunyah/Makefile |  3 +++
- drivers/virt/gunyah/gunyah.c | 52 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 56 insertions(+)
+ arch/arm64/gunyah/gunyah_hypercall.c | 34 ++++++++++++++++++++++++++++++++++
+ include/linux/gunyah.h               |  7 +++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
-index f29901bd7820..ef6a3835d078 100644
---- a/drivers/virt/Makefile
-+++ b/drivers/virt/Makefile
-@@ -10,3 +10,4 @@ obj-y				+= vboxguest/
- obj-$(CONFIG_NITRO_ENCLAVES)	+= nitro_enclaves/
- obj-$(CONFIG_ACRN_HSM)		+= acrn/
- obj-y				+= coco/
-+obj-y				+= gunyah/
-diff --git a/drivers/virt/gunyah/Makefile b/drivers/virt/gunyah/Makefile
-new file mode 100644
-index 000000000000..34f32110faf9
---- /dev/null
-+++ b/drivers/virt/gunyah/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-$(CONFIG_GUNYAH) += gunyah.o
-diff --git a/drivers/virt/gunyah/gunyah.c b/drivers/virt/gunyah/gunyah.c
-new file mode 100644
-index 000000000000..20bd6029ffc4
---- /dev/null
-+++ b/drivers/virt/gunyah/gunyah.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#include <linux/gunyah.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+
-+static int gunyah_probe(struct platform_device *pdev)
+diff --git a/arch/arm64/gunyah/gunyah_hypercall.c b/arch/arm64/gunyah/gunyah_hypercall.c
+index 739d7f9cef9f..cadc512934c4 100644
+--- a/arch/arm64/gunyah/gunyah_hypercall.c
++++ b/arch/arm64/gunyah/gunyah_hypercall.c
+@@ -37,6 +37,8 @@ EXPORT_SYMBOL_GPL(arch_is_gunyah_guest);
+ 
+ /* clang-format off */
+ #define GUNYAH_HYPERCALL_HYP_IDENTIFY		GUNYAH_HYPERCALL(0x8000)
++#define GUNYAH_HYPERCALL_MSGQ_SEND		GUNYAH_HYPERCALL(0x801B)
++#define GUNYAH_HYPERCALL_MSGQ_RECV		GUNYAH_HYPERCALL(0x801C)
+ /* clang-format on */
+ 
+ /**
+@@ -58,5 +60,37 @@ void gunyah_hypercall_hyp_identify(
+ }
+ EXPORT_SYMBOL_GPL(gunyah_hypercall_hyp_identify);
+ 
++enum gunyah_error gunyah_hypercall_msgq_send(u64 capid, size_t size, void *buff,
++					     u64 tx_flags, bool *ready)
 +{
-+	struct gunyah_hypercall_hyp_identify_resp gunyah_api;
++	struct arm_smccc_res res;
 +
-+	if (!arch_is_gunyah_guest())
-+		return -ENODEV;
++	arm_smccc_1_1_hvc(GUNYAH_HYPERCALL_MSGQ_SEND, capid, size,
++			  (uintptr_t)buff, tx_flags, 0, &res);
 +
-+	gunyah_hypercall_hyp_identify(&gunyah_api);
++	if (res.a0 == GUNYAH_ERROR_OK)
++		*ready = !!res.a1;
 +
-+	pr_info("Running under Gunyah hypervisor %llx/v%u\n",
-+		FIELD_GET(GUNYAH_API_INFO_VARIANT_MASK, gunyah_api.api_info),
-+		gunyah_api_version(&gunyah_api));
-+
-+	/* Might move this out to individual drivers if there's ever an API version bump */
-+	if (gunyah_api_version(&gunyah_api) != GUNYAH_API_V1) {
-+		pr_info("Unsupported Gunyah version: %u\n",
-+			gunyah_api_version(&gunyah_api));
-+		return -ENODEV;
-+	}
-+
-+	return devm_of_platform_populate(&pdev->dev);
++	return res.a0;
 +}
++EXPORT_SYMBOL_GPL(gunyah_hypercall_msgq_send);
 +
-+static const struct of_device_id gunyah_of_match[] = {
-+	{ .compatible = "gunyah-hypervisor" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gunyah_of_match);
++enum gunyah_error gunyah_hypercall_msgq_recv(u64 capid, void *buff, size_t size,
++					     size_t *recv_size, bool *ready)
++{
++	struct arm_smccc_res res;
 +
-+/* clang-format off */
-+static struct platform_driver gunyah_driver = {
-+	.probe = gunyah_probe,
-+	.driver = {
-+		.name = "gunyah",
-+		.of_match_table = gunyah_of_match,
++	arm_smccc_1_1_hvc(GUNYAH_HYPERCALL_MSGQ_RECV, capid, (uintptr_t)buff,
++			  size, 0, &res);
++
++	if (res.a0 == GUNYAH_ERROR_OK) {
++		*recv_size = res.a1;
++		*ready = !!res.a2;
 +	}
-+};
-+/* clang-format on */
-+module_platform_driver(gunyah_driver);
 +
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Gunyah Driver");
++	return res.a0;
++}
++EXPORT_SYMBOL_GPL(gunyah_hypercall_msgq_recv);
++
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Gunyah Hypervisor Hypercalls");
+diff --git a/include/linux/gunyah.h b/include/linux/gunyah.h
+index 8cdeaba34aa9..ea2c9eecce0e 100644
+--- a/include/linux/gunyah.h
++++ b/include/linux/gunyah.h
+@@ -141,4 +141,11 @@ gunyah_api_version(const struct gunyah_hypercall_hyp_identify_resp *gunyah_api)
+ void gunyah_hypercall_hyp_identify(
+ 	struct gunyah_hypercall_hyp_identify_resp *hyp_identity);
+ 
++#define GUNYAH_HYPERCALL_MSGQ_TX_FLAGS_PUSH BIT(0)
++
++enum gunyah_error gunyah_hypercall_msgq_send(u64 capid, size_t size, void *buff,
++					     u64 tx_flags, bool *ready);
++enum gunyah_error gunyah_hypercall_msgq_recv(u64 capid, void *buff, size_t size,
++					     size_t *recv_size, bool *ready);
++
+ #endif
 
 -- 
 2.43.0
