@@ -1,180 +1,118 @@
-Return-Path: <linux-kernel+bounces-2193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE7E81592D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:02:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A16781591C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:56:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE4B11C217DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:02:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ED521F23B10
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49AA725553;
-	Sat, 16 Dec 2023 13:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1FB19452;
+	Sat, 16 Dec 2023 12:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="dUmPu60U"
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="QIui7Z+I";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="byrCnleX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2406830351
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 13:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from pop-os.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id EUC8rL1Hz45wtEUC8rBRUA; Sat, 16 Dec 2023 13:55:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1702731305;
-	bh=Fa9yeiiOVaCIdEktKvlcN06YmNgKcMNBNVzgkivBQlM=;
-	h=From:To:Cc:Subject:Date;
-	b=dUmPu60UhSREhpVkcpZzDVQ689zSfTU3NlsfqjtfvupSWZEOVLUDCpxKto0CSkdCS
-	 5Nnz1O4jZqfqJyS7xA65N7xp1/kmUYljw3x+tt45Q+MXE5cg9EsqdE9dgDSxhtWDXR
-	 5ppLEBsLOB+DvYlZOVH7klV4W/NwDXWvYLa0by1VEYun4K9rtAN1nBgZwQPFtY2Y8Q
-	 5RExd/d6mlgz104tZhfylYj2bgUpalB5Vc4RRgn1wUZ7H3/1NZYhjrRX5EdgAR2Ejd
-	 fw1JpwvUDvlszECy2petjXjIxYPQY4hb9TJES0C/R4AbPDK6PRLg1/a0xsKLhE9R3H
-	 X/1OmkPCMQwqA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 16 Dec 2023 13:55:05 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Tejun Heo <tj@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Shaohua Li <shli@fb.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org
-Subject: [PATCH] blk-throttle: Fix some potential string truncation in tg_prfill_limit()
-Date: Sat, 16 Dec 2023 13:54:56 +0100
-Message-Id: <0461f1d69c84cf5a98ae57012856dace757d319e.1702731206.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169FF134D9
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 12:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.nyi.internal (Postfix) with ESMTP id 4599F5C01A0;
+	Sat, 16 Dec 2023 07:56:35 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sat, 16 Dec 2023 07:56:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+	cc:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1702731395; x=1702817795; bh=V/Swu2Ok4xoLueHEPWDCQ
+	hLZgLyrqWw+uIjeSWzbtwI=; b=QIui7Z+IfRWYnzTi8vIFLLuA0ohXyqGo4mcyc
+	S+O/BhdEdYy7u3BBbPMnACTba0cWjCUa534mWU3ZJUvQtLokMr86xdfrSTPZP0YK
+	ScBk/V9NpmH1sm/yegqvT8KZWxhclY9ECqwEY/D8iEf0LuioK7Q4pJQ3mjNxUUOd
+	LvG5nuMjyjz1ZgypMrasS+cA+11aoo/Nwb7Bli2/c5OdOtX47fQyn7mj6lyRihNB
+	OpGkbtBDPA65naNW6SOd2TS82zsOM5EK8w4CdtzOl4Buw9roFsTxmfE3tQzDphBE
+	9oARIhCxinUieFWK9rQn51GGsqMVjHqIAzy8F2edaA5KkZdKw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1702731395; x=1702817795; bh=V/Swu2Ok4xoLueHEPWDCQhLZgLyr
+	qWw+uIjeSWzbtwI=; b=byrCnleXneksRhc6l9XdhLUGQeWBgO8FyKMmnnkWc9Et
+	vw2lenscIiD0ZFFPfidGVgviGwavp1MCRsBSfyxrGV5NrRRKMM4LFLRqLq0yYtvp
+	yNxcKW8I7E1XhXA1rrHK5ALbCJ10XkQY5oNsuR3vpB8JKOXOX+tKyw9l6OYQFfWy
+	f3eGNnafwQpG4cBYuYIB37XCJTfaHxJ4JRjh3fP6FFgUdDZEiBxrQIrb0Vppteaq
+	nncf6gLalCPiSFzqy+d1QVIRcNeSv/G8In/f2/IGSBfx7IVVB6crwJjU6xE9xtSO
+	3atntxuWJUcm6TrvrBDw+SHfECuI0IYBJDl+/9UxuA==
+X-ME-Sender: <xms:g559ZWxLC_18BaplY_aYHZqV8W5369YqLjui9l-OBCGuAe9b0fl2Vg>
+    <xme:g559ZSRBGFtMcm1XsK9FPPT1qS-zNJerlpzlZUqD2Jbj4THIfUOzWmh0LIfMA4isQ
+    xvYmsD9A-yp5EHBJNc>
+X-ME-Received: <xmr:g559ZYVsatCj233x81pff4kd0Y0yVAhpoZ0lJgy2GXGOAaOQFEqkyZ-PSsR_okgSmc-lynmxCr6dcspZdQwRE9X8WXKuNGuVd1UVtmNRbJs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtgedggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgrrhgu
+    sehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepleegffffgfehhfejge
+    ejheeivdfgleefheeuueetkedtffeihfevlefhgeevvdevnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfhgrsh
+    htmhgrihhlrdhorhhg
+X-ME-Proxy: <xmx:g559ZcgeTwB-I9Ea6E3zZgZ4EOroh8w0SyvJ92hsCll3xs7PWT0PrA>
+    <xmx:g559ZYCP-0OfO5gf_BkcO8iuSiJ-i_FhwxKn2kckxtPJ4UBrGbkPKA>
+    <xmx:g559ZdK1779iLhoIB8NpEUakWEgB1Q-sEqmEFo3Rlssjtc2mu9qjTQ>
+    <xmx:g559ZbND1jpAr95l7HtVPZkSrCvgCk-krTDak2sb7AzHSPNV1fmSoA>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 16 Dec 2023 07:56:34 -0500 (EST)
+From: Gary Rookard <garyrookard@fastmail.org>
+To: gregkh@linuxfoundation.org,
+	philipp.g.hortmann@gmail.com
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH v3 0/4] staging: rtl8192e: rename variable pHT
+Date: Sat, 16 Dec 2023 07:57:12 -0500
+Message-ID: <20231216125712.3522-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-When compiled with W=1, we get:
-  block/blk-throttle.c: In function ‘tg_prfill_limit’:
-  block/blk-throttle.c:1539:74: error: ‘snprintf’ output may be truncated before the last format character [-Werror=format-truncation=]
-   1539 |                         snprintf(idle_time, sizeof(idle_time), " idle=%lu",
-        |                                                                          ^
-  block/blk-throttle.c:1539:25: note: ‘snprintf’ output between 8 and 27 bytes into a destination of size 26
-   1539 |                         snprintf(idle_time, sizeof(idle_time), " idle=%lu",
-        |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1540 |                                 tg->idletime_threshold_conf);
-        |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  block/blk-throttle.c:1546:43: error: ‘%lu’ directive output may be truncated writing between 1 and 20 bytes into a region of size 17 [-Werror=format-truncation=]
-   1546 |                                 " latency=%lu", tg->latency_target_conf);
-        |                                           ^~~
-  block/blk-throttle.c:1546:33: note: directive argument in the range [0, 18446744073709551614]
-   1546 |                                 " latency=%lu", tg->latency_target_conf);
-        |                                 ^~~~~~~~~~~~~~
-  block/blk-throttle.c:1545:25: note: ‘snprintf’ output between 11 and 30 bytes into a destination of size 26
-   1545 |                         snprintf(latency_time, sizeof(latency_time),
-        |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1546 |                                 " latency=%lu", tg->latency_target_conf);
-        |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hi,
 
-In order to fix it, remove all the intermediate buffers and write directly
-into the 'sf' seq_file.
+This patch series renames (4) different variables with
+checkpatch coding style issue Avoid CamelCase.
 
-Fixes: ada75b6e5b2a ("blk-throttle: add interface to configure idle time threshold")
-Fixes: ec80991d6fc2 ("blk-throttle: add interface for per-cgroup target latency")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- block/blk-throttle.c | 52 +++++++++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 22 deletions(-)
+(resubmittals)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 16f5766620a4..470a8a4ed68e 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1494,11 +1494,8 @@ static u64 tg_prfill_limit(struct seq_file *sf, struct blkg_policy_data *pd,
- {
- 	struct throtl_grp *tg = pd_to_tg(pd);
- 	const char *dname = blkg_dev_name(pd->blkg);
--	char bufs[4][21] = { "max", "max", "max", "max" };
- 	u64 bps_dft;
- 	unsigned int iops_dft;
--	char idle_time[26] = "";
--	char latency_time[26] = "";
- 
- 	if (!dname)
- 		return 0;
-@@ -1520,35 +1517,46 @@ static u64 tg_prfill_limit(struct seq_file *sf, struct blkg_policy_data *pd,
- 	      tg->latency_target_conf == DFL_LATENCY_TARGET)))
- 		return 0;
- 
-+	seq_printf(sf, "%s", dname);
-+
-+	seq_puts(sf, " rbps=");
- 	if (tg->bps_conf[READ][off] != U64_MAX)
--		snprintf(bufs[0], sizeof(bufs[0]), "%llu",
--			tg->bps_conf[READ][off]);
-+		seq_printf(sf, "%llu", tg->bps_conf[READ][off]);
-+	else
-+		seq_puts(sf, "max");
-+
-+	seq_puts(sf, " wbps=");
- 	if (tg->bps_conf[WRITE][off] != U64_MAX)
--		snprintf(bufs[1], sizeof(bufs[1]), "%llu",
--			tg->bps_conf[WRITE][off]);
-+		seq_printf(sf, "%llu", tg->bps_conf[WRITE][off]);
-+	else
-+		seq_puts(sf, "max");
-+
-+	seq_puts(sf, " riops=");
- 	if (tg->iops_conf[READ][off] != UINT_MAX)
--		snprintf(bufs[2], sizeof(bufs[2]), "%u",
--			tg->iops_conf[READ][off]);
-+		seq_printf(sf, "%u", tg->iops_conf[READ][off]);
-+	else
-+		seq_puts(sf, "max");
-+
-+	seq_puts(sf, " wiops=");
- 	if (tg->iops_conf[WRITE][off] != UINT_MAX)
--		snprintf(bufs[3], sizeof(bufs[3]), "%u",
--			tg->iops_conf[WRITE][off]);
-+		seq_printf(sf, "%u", tg->iops_conf[WRITE][off]);
-+	else
-+		seq_puts(sf, "max");
-+
- 	if (off == LIMIT_LOW) {
--		if (tg->idletime_threshold_conf == ULONG_MAX)
--			strcpy(idle_time, " idle=max");
-+		seq_puts(sf, " idle=");
-+		if (tg->idletime_threshold_conf != ULONG_MAX)
-+			seq_printf(sf, "%lu", tg->idletime_threshold_conf);
- 		else
--			snprintf(idle_time, sizeof(idle_time), " idle=%lu",
--				tg->idletime_threshold_conf);
-+			seq_puts(sf, "max");
- 
--		if (tg->latency_target_conf == ULONG_MAX)
--			strcpy(latency_time, " latency=max");
-+		seq_puts(sf, " latency=");
-+		if (tg->latency_target_conf != ULONG_MAX)
-+			seq_printf(sf, "%lu", tg->latency_target_conf);
- 		else
--			snprintf(latency_time, sizeof(latency_time),
--				" latency=%lu", tg->latency_target_conf);
-+			seq_puts(sf, "max");
- 	}
- 
--	seq_printf(sf, "%s rbps=%s wbps=%s riops=%s wiops=%s%s%s\n",
--		   dname, bufs[0], bufs[1], bufs[2], bufs[3], idle_time,
--		   latency_time);
- 	return 0;
- }
- 
+Patch 1/4) rename variable pHT
+Patch 2/4) rename variable pCapELE
+Patch 3/4) rename variable HTGetHighestMCSRate
+Patch 4/4) rename variable HTFilterMCSRate
+
+Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+
+Gary Rookard (4):
+  staging: rtl8192e: rename variable pHT
+  staging: rtl8192e: rename variable pCapELE
+  staging: rtl8192e: rename variable HTGetHighestMCSRate
+  staging: rtl8192e: renamed variable HTFilterMCSRate
+
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 86 +++++++++++------------
+ drivers/staging/rtl8192e/rtllib.h         |  2 +-
+ drivers/staging/rtl8192e/rtllib_wx.c      |  2 +-
+ 3 files changed, 45 insertions(+), 45 deletions(-)
+
 -- 
-2.34.1
+2.41.0
 
 
