@@ -1,204 +1,140 @@
-Return-Path: <linux-kernel+bounces-1936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2CC481561A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A587681561C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 02:54:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 293E81F25869
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:52:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 450C51F2584A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CB71841;
-	Sat, 16 Dec 2023 01:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5798139E;
+	Sat, 16 Dec 2023 01:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="AUVdl8PS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSU3evic"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A991F1365
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 01:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d098b87eeeso10474915ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:52:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEAFB1116
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 01:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6da4893142aso1025472a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:54:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1702691555; x=1703296355; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6t6LWkh9QArABZ9vx6356WU8okUDG/uwd9Bp0jKdzNw=;
-        b=AUVdl8PSB2HZEHaNQST9imrGniAONpcj1Ghrn0shkaTH6WKyLK55L4mbOrW3v+LTb/
-         HNrRNafni9qNxDo2PDgOE/WyzcBO5pJ8ieHmwo09n06jahmIDZkzG1tfGpRGu9VMw+bp
-         7aZRUAwjzlAucuyXX1QS/BIzeosdIDAur6gC+Yu0BPkVrAzi5uHe8ksBu5hdmPqsoGI4
-         ydl8H975jJjNGSaoNaWVlW6NVag8nbIwP7sFvtM7ecM9gFSHnNiGFcx3MSKHIDwJIivI
-         i0RTSQBLZrgM7r9AVPOn8toH22FiqXDAK/DJMz2G0JLRtJJ+1lLOMDQQii+a0H8M+Iuf
-         V1Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702691555; x=1703296355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702691661; x=1703296461; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6t6LWkh9QArABZ9vx6356WU8okUDG/uwd9Bp0jKdzNw=;
-        b=Eqp6Cner1SqQudwYxbw21s6UhulE3dd3Rw3FAXSQmyBe74dnW7VYg0klbG9vMsEguu
-         8SFgogXrtj6/mB75t7BCuw1JSvhN2nJt5KEM5xfFmQj4+WVCD2vqtGp87WJqbWbVX6u/
-         NBj3rMBuTGUZ0GXVivZGfNFlTQ89dBr/kVSSdlu6IEUl/RQ02yuJlF72ZqU+188O4PzV
-         Utm0FRLZSE+7+GJs+wjXFyS4E6PjT+KlzLDvgdbkgzMl39vkCdYTT0gYstpxDDTecs94
-         FkQddjv0b9ReQJpXoKiKLnTaiICfqMW4PBgfNu43RusHh6o2gnHC8MuhFKRJ/CE16rEL
-         /MSg==
-X-Gm-Message-State: AOJu0YySlDqmW/flyAGT8KoBSIQQ8rBOg/udaYHcCM7cFCZEvN1aStUM
-	CPFIRV9sJJOxGC5GxJ89OOs3vg==
-X-Google-Smtp-Source: AGHT+IEGg8iW+nBj1jfCwiKkFKSNzmYSyRSqqadiTHllG+D7hkgQStbOPQ1ogLxTa0ryRzZKLlSW8g==
-X-Received: by 2002:a17:903:41c9:b0:1d0:6ffd:9dfe with SMTP id u9-20020a17090341c900b001d06ffd9dfemr14421986ple.80.1702691555000;
-        Fri, 15 Dec 2023 17:52:35 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id y12-20020a170902700c00b001bbb8d5166bsm14735663plk.123.2023.12.15.17.50.32
+        bh=XuZFf9TLsyeNevfCqjs6eOOovm2u77pXZ45scIzaN/o=;
+        b=CSU3evicqHnggpJkmAtYwlqE8rztZ5W8aJT0aRv3pHQKFUkQdT9nRfroPHrXyI01+6
+         rH+o7K78WHMrujhLw/gdulHyVHhf78dy/VVMv2iL4KbPjdlM3uWUra2TdviIoP11zz75
+         5duhBq5CD6vQmHxn8YTYgwMt/tIx9ZQZSDKoDXgtGDunCDNP0OqyTCVVnv4uDElm6CaY
+         QYePPSMXtyvkaPldQQdw9Zv8PtOyb34f2MpKRSo4Pvw8ZbZDQi3BqFWFmoxo8e3kMPbw
+         ZBOdBgIUDdXJpM9Izpfupr1m5NPWOtLdmMwslXTRWESO7TZHwxRfivp5a37Sj80bMxDf
+         /jyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702691661; x=1703296461;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XuZFf9TLsyeNevfCqjs6eOOovm2u77pXZ45scIzaN/o=;
+        b=UPtoJ9oBJGpS6qoSc5Kku7d70nj1k5nn6Q2QXHnxiY1LoqhCN1oqMOeVo7RlRylHIN
+         3H3gCSGG/PZPMTX4uDxiU/MRXhHrIkNjxQkE10KC9XNOIEvH2aZuLo7U2uJWQ4OwPgcV
+         qj9KGkDMteqzMDbZKzAS3YGVuj6u1kXXUOWtFZYD+isge/QAUasxQJ8VJ9At7d0g2YZS
+         aYHyQNoPPBcQfzl9CBklRo6cm/XMWNRg4tBtvn0C7rj3Vw5Z7L6rWm1KabSjNUife162
+         TNX+MUF+hh0ECAQAnvROauabnWuyzOdahgN3E2atPbs8LizO5ohBjTEKEN9XbFHOc6v4
+         onvg==
+X-Gm-Message-State: AOJu0YzOrjp+Nde1xeykCPYndPOoxdsecYdmwHCqP/xxAxDKHLIr4kG8
+	ZxQxBHT4NQLzTPxGHlr6sq4=
+X-Google-Smtp-Source: AGHT+IElHsdK7kzoxwrGczqS5sCy0MkNGAofEJaLn4q6en4gr5qW5GYlKqZQN6W7pju0prltPwBSIg==
+X-Received: by 2002:a05:6808:14c4:b0:3b8:b402:74de with SMTP id f4-20020a05680814c400b003b8b40274demr16249503oiw.32.1702691660867;
+        Fri, 15 Dec 2023 17:54:20 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id 10-20020a17090a19ca00b0028ad9d801e3sm203558pjj.46.2023.12.15.17.54.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 17:51:46 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rEJor-008tIe-1k;
-	Sat, 16 Dec 2023 12:50:21 +1100
-Date: Sat, 16 Dec 2023 12:50:21 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: NeilBrown <neilb@suse.de>
-Cc: Chuck Lever <chuck.lever@oracle.com>, Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-	Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
- files.
-Message-ID: <ZX0CXWrHzgaKs0p7@dread.disaster.area>
-References: <20231208033006.5546-1-neilb@suse.de>
- <20231208033006.5546-2-neilb@suse.de>
- <ZXMv4psmTWw4mlCd@tissot.1015granger.net>
- <170224845504.12910.16483736613606611138@noble.neil.brown.name>
+        Fri, 15 Dec 2023 17:54:20 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: bhe@redhat.com
+Cc: akpm@linux-foundation.org,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	dyoung@redhat.com,
+	eric.devolder@oracle.com,
+	hbathini@linux.ibm.com,
+	hpa@zytor.com,
+	kexec@lists.infradead.org,
+	lijiang@redhat.com,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	seanjc@google.com,
+	sourabhjain@linux.ibm.com,
+	tglx@linutronix.de,
+	tiwai@suse.de,
+	vgoyal@redhat.com,
+	x86@kernel.org,
+	ytcoode@gmail.com
+Subject: Re: [PATCH 3/3] crash_core: fix and simplify the logic of crash_exclude_mem_range()
+Date: Sat, 16 Dec 2023 09:54:10 +0800
+Message-ID: <20231216015410.188924-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZXxtfpXpuFXLd+ge@MiWiFi-R3L-srv>
+References: <ZXxtfpXpuFXLd+ge@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170224845504.12910.16483736613606611138@noble.neil.brown.name>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 11, 2023 at 09:47:35AM +1100, NeilBrown wrote:
-> On Sat, 09 Dec 2023, Chuck Lever wrote:
-> > On Fri, Dec 08, 2023 at 02:27:26PM +1100, NeilBrown wrote:
-> > > Calling fput() directly or though filp_close() from a kernel thread like
-> > > nfsd causes the final __fput() (if necessary) to be called from a
-> > > workqueue.  This means that nfsd is not forced to wait for any work to
-> > > complete.  If the ->release of ->destroy_inode function is slow for any
-> > > reason, this can result in nfsd closing files more quickly than the
-> > > workqueue can complete the close and the queue of pending closes can
-> > > grow without bounces (30 million has been seen at one customer site,
-> > > though this was in part due to a slowness in xfs which has since been
-> > > fixed).
-> > > 
-> > > nfsd does not need this.
+On Fri, 15 Dec 2023 23:15:10 +0800, Baoquan He wrote:
+> On 12/15/23 at 12:38am, Yuntao Wang wrote:
+> > The purpose of crash_exclude_mem_range() is to remove all memory ranges
+> > that overlap with [mstart-mend]. However, the current logic only removes
+> > the first overlapping memory range.
 > > 
-> > That is technically true, but IIUC, there is only one case where a
-> > synchronous close matters for the backlog problem, and that's when
-> > nfsd_file_free() is called from nfsd_file_put(). AFAICT all other
-> > call sites (except rename) are error paths, so there aren't negative
-> > consequences for the lack of synchronous wait there...
+> > Commit a2e9a95d2190 ("kexec: Improve & fix crash_exclude_mem_range() to
+> > handle overlapping ranges") attempted to address this issue, but it did not
+> > fix all error cases.
 > 
-> What you say is technically true but it isn't the way I see it.
+> Hmm, this is a specific function for kdump kernel loading. So far it's
+> sufficiently meet demands. Say so because we only need to exclude
+> crashk_res and crashk_low_res when constructing elfcorehdr. region
+> crashk_res/crashk_low_res are digged out from system RAM region. That's
+> why the break is taken in the for loop in the current code. X86 needs
+> exclude low 1M, the low 1M could span several system RAM regions because
+> BIOS under low 1M reserved some spaces. And the elfcorehdr exluding from
+> crashkernel region taken in x86 is also a splitting.
 > 
-> Firstly I should clarify that __fput_sync() is *not* a flushing close as
-> you describe it below.
-> All it does, apart for some trivial book-keeping, is to call ->release
-> and possibly ->destroy_inode immediately rather than shunting them off
-> to another thread.
-> Apparently ->release sometimes does something that can deadlock with
-> some kernel threads or if some awkward locks are held, so the whole
-> final __fput is delay by default.  But this does not apply to nfsd.
-> Standard fput() is really the wrong interface for nfsd to use.  
-> It should use __fput_sync() (which shouldn't have such a scary name).
+> Generally speaking, crashk_res/crashk_low_res is inside a big chunk of
+> continuous region. On x86, low 1M spans several complete region on x86,
+> elfcorehdr region is inside continuous crashk_res region.
 > 
-> The comment above flush_delayed_fput() seems to suggest that unmounting
-> is a core issue.  Maybe the fact that __fput() can call
-> dissolve_on_fput() is a reason why it is sometimes safer to leave the
-> work to later.  But I don't see that applying to nfsd.
+> You can see why crash_exclude_mem_range() looks like now it is. This patch
+> makes crash_exclude_mem_range() be a generic region removing function. I do
+> see the memmove can improve code readbility, while I have concern about the
+> while loop.
 > 
-> Of course a ->release function *could* do synchronous writes just like
-> the XFS ->destroy_inode function used to do synchronous reads.
+> Imagine we have a crashkernel region 256M reserved under 4G, say [2G, 2G+256M].
+> Then after excluding the 256M from a region, it should stop. But now, this patch
+> will make it continue scanning. Not sure if it's all in my mind.
 
-What do you mean "could"? The correct word is "does".
+Hi Baoquan,
 
-> I don't think we should ever try to hide that by putting it in
-> a workqueue.  It's probably a bug and it is best if bugs are visible.
+Thank you for such a detailed reply. Now I finally understand why the code is
+written this way.
 
-Most definitely *not* a bug.
+However, if we can guarantee its correctness, wouldn't it be better to use the
+generic region removing logic? At least it is more concise and clear, and other
+people reading this code for the first time wouldn't get confused like me.
 
-XFS, ext4 and btrfs all call filemap_flush() from their respective
-->release methods. This is required to protect user data against
-loss caused by poorly written applications that overwrite user data
-in an unsafe manner (i.e. the open-truncate-write-close overwrite
-anti-pattern).
+As for your concern about the while loop, I think it wouldn't affect performance
+much because the total number of loops is small.
 
-The btrfs flush trigger is very similar to XFS:
-
-	/*
-         * Set by setattr when we are about to truncate a file from a non-zero
-         * size to a zero size.  This tries to flush down new bytes that may
-         * have been written if the application were using truncate to replace
-         * a file in place.
-         */
-        if (test_and_clear_bit(BTRFS_INODE_FLUSH_ON_CLOSE,
-                               &BTRFS_I(inode)->runtime_flags))
-                        filemap_flush(inode->i_mapping);
-
-XFS started doing this in 2006, ext4 in 2008, and git will tell you
-when btrfs picked this up, too. IOWs, we've been doing writeback
-from ->release for a *very long time*.
-
-> Note that the XFS ->release function does call filemap_flush() in some
-> cases, but that is an async flush, so __fput_sync doesn't wait for the
-> flush to complete.
-
-"async flush" does not mean it will not block for long periods of
-time, it just means it won't wait for *all* the IO to complete.
-i.e. if the async flush saturates the device, bio submission will
-wait for previous IO that the flush submitted own IO to complete
-before it can continue flushing the data.
-
-But wait, it gets better!
-
-XFS, btrfs and ext4 all implement delayed allocation, which means
-writeback often needs to run extent allocation transactions. In
-these cases, transaction reservation can block on metadata writeback
-to free up journal space. In the case of XFS, this could be tens of
-thousands of metadata IOs needing to be submitted and completed!.
-
-Then consider that extent allocation needs to search for free space
-which may need to read in metadata. i.e. extent allocation will end
-up submitting and waiting on synchronous read IO. Also, reading that
-metadata requires memory allocation for the buffers that will store
-it - memory allocation can also block on IO and other subsystems to
-free up memory.
-
-Even less obvious is the stack usage issues calling ->release from
-arbitrary code entails. The filesystem writeback stack is -deep-.
-
-Remember all the problems we used to have with ->writepage() being
-called from direct memory reclaim and so putting the writeback path
-at arbitrary depths in the stack and then running out of stack
-space?  We really don't want to go back to the bad old days where
-filesystem write paths can be entered from code that has already
-consumed most of the stack space....
-
-Hence, IMO, __fput_sync() is something that needs to be very
-carefully controlled and should have big scary warnings on it. We
-really don't want it to be called from just anywhere...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Sincerely,
+Yuntao
 
