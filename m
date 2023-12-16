@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-2350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14936815B73
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:50:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB9C3815B74
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2304284FAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:50:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CB4BB21A75
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 19:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F013F328BC;
-	Sat, 16 Dec 2023 19:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F1632C6B;
+	Sat, 16 Dec 2023 19:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SKg1q+J+"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n7WvxKfH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EFD7321BC
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318FF321B9
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
 	Content-ID:Content-Description:In-Reply-To:References;
-	bh=B8RmtSt9j0Sk37XFsr8jPTPVxFFvG2cLd3/RNO/nL7c=; b=SKg1q+J+wxMmHEwIV2kt4/wALt
-	jEUhwi/N5JuW6Q3pkLWcCN3qCn5voEFThe5Vmn8GLC3vgHvxouZKXh9+9oCZzrCTyzDdt5LufZFzW
-	ms5NmOmnRm2o7XCaQvKCDifI7I5e9ZTvZtdEviuvVRDJ8xcLN5xvAV8pgK5Y0XuuIf1AsismqCfUW
-	UOfp+TiLRPDa97sASrBPqnYBo0uUsMHpmZ9Wq8nKiPUJyIM+bw368DHIxoboY2w/EH/zvxesGmp/a
-	qKUqCsY38mkRoEVyguSY/9/jxRbRzJQkyDwoUc7KJRAGZ9/3NYPACf31ec67UhetO1YDZC9EKIEe8
-	3AmXkoDA==;
+	bh=8Gi4x3Inp2xxLyTPy1lJV9jnNXXCCUrVYWMh7677tSA=; b=n7WvxKfH0MpM2VjSa9rOtaTbAu
+	cnOVlkXGSRkE83w90MS9IvndZBoHQd+xan5z0Ac44AQWimTRq2hA/CWtLovV6FxG7/J/5/mBWH12f
+	GrDXsxFb1Gvx6gHLCHDURtUAyyBzwpwWkXm4G6JGruJUlRbXynwNHpObsBOlSMCbsDZckGKMkU7hr
+	hcG5phmB1QQ+uE+QEa5lOw19WzX63oIWMKbJzoplBIroz/YPDLfmgHAekDTXARs8ibIPRE59V3U9/
+	GttyjrkhjeUgJt/yzz1ZoTOhqN5PuCCAQo6mdA3wvF/PdtPeuFE7qwS8HXRP08Fh6pec0lyt03xKJ
+	pSxYX2Ug==;
 Received: from [50.53.46.231] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEafl-006eQT-1Y;
-	Sat, 16 Dec 2023 19:50:05 +0000
+	id 1rEaft-006eQs-2C;
+	Sat, 16 Dec 2023 19:50:13 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -44,9 +44,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Borislav Petkov <bp@alien8.de>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	x86@kernel.org
-Subject: [PATCH] x86/usercopy: fix kernel-doc function param name
-Date: Sat, 16 Dec 2023 11:50:04 -0800
-Message-ID: <20231216195004.29040-1-rdunlap@infradead.org>
+Subject: [PATCH] x86/insn-eval: fix function param name in get_eff_addr_sib()
+Date: Sat, 16 Dec 2023 11:50:13 -0800
+Message-ID: <20231216195013.29117-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -56,11 +56,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Correct the function parameter name in clean_cache_range() to prevent
-kernel-doc warnings:
+Change "regoff" to "base_offset" in 2 places in the kernel-doc comments to
+prevent warnings:
 
-usercopy_64.c:29: warning: Function parameter or member 'addr' not described in 'clean_cache_range'
-usercopy_64.c:29: warning: Excess function parameter 'vaddr' description in 'clean_cache_range'
+insn-eval.c:1152: warning: Function parameter or member 'base_offset' not described in 'get_eff_addr_sib'
+insn-eval.c:1152: warning: Excess function parameter 'regoff' description in 'get_eff_addr_sib'
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -69,19 +69,29 @@ Cc: Borislav Petkov <bp@alien8.de>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: x86@kernel.org
 ---
- arch/x86/lib/usercopy_64.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/lib/insn-eval.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff -- a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -18,7 +18,7 @@
- #ifdef CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE
- /**
-  * clean_cache_range - write back a cache range with CLWB
-- * @vaddr:	virtual start address
-+ * @addr:	virtual start address
-  * @size:	number of bytes to write back
+diff -- a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
+--- a/arch/x86/lib/insn-eval.c
++++ b/arch/x86/lib/insn-eval.c
+@@ -1129,15 +1129,15 @@ static int get_eff_addr_modrm_16(struct
+  * get_eff_addr_sib() - Obtain referenced effective address via SIB
+  * @insn:	Instruction. Must be valid.
+  * @regs:	Register values as seen when entering kernel mode
+- * @regoff:	Obtained operand offset, in pt_regs, associated with segment
++ * @base_offset: Obtained operand offset, in pt_regs, associated with segment
+  * @eff_addr:	Obtained effective address
   *
-  * Write back a cache range using the CLWB (cache line write back)
+  * Obtain the effective address referenced by the SIB byte of @insn. After
+  * identifying the registers involved in the indexed, register-indirect memory
+  * reference, its value is obtained from the operands in @regs. The computed
+  * address is stored @eff_addr. Also, the register operand that indicates the
+- * associated segment is stored in @regoff, this parameter can later be used to
+- * determine such segment.
++ * associated segment is stored in @base_offset; this parameter can later be
++ * used to determine such segment.
+  *
+  * Returns:
+  *
 
