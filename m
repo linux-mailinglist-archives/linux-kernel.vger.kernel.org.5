@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-1880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19C9815532
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:24:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41A5181553B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9F4A281F58
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:24:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACB171F25798
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6742215EA6;
-	Sat, 16 Dec 2023 00:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FBAA1DFF2;
+	Sat, 16 Dec 2023 00:21:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LUKP349R"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="S+YBWtgP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A927107A1;
-	Sat, 16 Dec 2023 00:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20EB9134C0;
+	Sat, 16 Dec 2023 00:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFMqUoH027173;
-	Sat, 16 Dec 2023 00:21:10 GMT
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BG0Kf5x006568;
+	Sat, 16 Dec 2023 00:21:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=/+Id6UngUNXl0d+rJA071fD+Qr412G4VIuAp81DQV5I
-	=; b=LUKP349RPynWGfGdn4h214nYsasY4jj+1a8uGryPSnj1jTPANSLvPR9QHry
-	Jv50lyTAG3WqsgDyv9tR4w5BbQLlwZcQWRwKAGYHh0WIgl0VHxWlRaALEL4/QfP0
-	FeDpUf1aaFFr0Z3Hv/5T9MXO3LVg1jN+s4GRIeLV/ZeOZ8U/36Nk6idrFVFnIn9p
-	fnMngljLK1Aq1BnuhuS4wtDsDMA+HDAUaDs3vReNV5CFgavJo7rgeG5yjvTrBGMu
-	wQozXGPGvCgR5xr2gEVJQwUxHYUh8ANQKKNFdDuorSpW2MWqZm+Sr77WVVKy520e
-	z1uL7kk1jhtQacGGukFPoGqF6Qg==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0k90t5ee-1
+	:cc; s=qcppdkim1; bh=IC3bcqcwKy8KffxllZXS23XN2gL4nURWbQSLOfvNnAU
+	=; b=S+YBWtgPCDuzmbm2bV2ViPHohni9kLP+h1SLlnTk6YvNRnFrDfQwexblwa+
+	833rhGublJYHiBuCUOE8Bc2HoUC3k1O5y1s/IsIlvZtfKmhLI3DXq+5l8ZBCBtHz
+	e4t04YJPNakHCold2EPxNghPgGtNdsBMcxYp7e0lPa+m7Z+wOn+IiVsPskkgtS7p
+	cu8lm1BWxOx+vOCvd38QFBpf5zkrWxwo9QFgPkBNp8qVXNJijzPqyELCUf/JlDwm
+	rRwEpubnGyHGNrTwm9MLGu1DE99NBeDdLgNTzkoBTOJwAUFDW5T7rGlrxVUWH9wJ
+	8/efdUmB/LbW6gLZ4BYnoHoYeaA==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v118s801t-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Dec 2023 00:21:10 +0000 (GMT)
+	Sat, 16 Dec 2023 00:21:11 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG0L9j1006332
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG0LAbi015616
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Dec 2023 00:21:09 GMT
+	Sat, 16 Dec 2023 00:21:10 GMT
 Received: from [169.254.0.1] (10.49.16.6) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 16:21:08 -0800
+ 2023 16:21:09 -0800
 From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Fri, 15 Dec 2023 16:20:55 -0800
-Subject: [PATCH RFC v15 14/30] virt: gunyah: Add IO handlers
+Date: Fri, 15 Dec 2023 16:20:56 -0800
+Subject: [PATCH RFC v15 15/30] gunyah: Add hypercalls for demand paging
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,7 +58,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231215-gunyah-v15-14-192a5d872a30@quicinc.com>
+Message-ID: <20231215-gunyah-v15-15-192a5d872a30@quicinc.com>
 References: <20231215-gunyah-v15-0-192a5d872a30@quicinc.com>
 In-Reply-To: <20231215-gunyah-v15-0-192a5d872a30@quicinc.com>
 To: Alex Elder <elder@linaro.org>,
@@ -96,223 +96,219 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: viVGif0NYI_o8FMi5l-n1s0_bA6JvWVC
-X-Proofpoint-GUID: viVGif0NYI_o8FMi5l-n1s0_bA6JvWVC
+X-Proofpoint-ORIG-GUID: cGamZTK9kCVm63Vm9fSgArhy6xIUUNve
+X-Proofpoint-GUID: cGamZTK9kCVm63Vm9fSgArhy6xIUUNve
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- mlxlogscore=936 adultscore=0 suspectscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312160001
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=556 malwarescore=0 phishscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 spamscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312160001
 
-Add framework for VM functions to handle stage-2 write faults from Gunyah
-guest virtual machines. IO handlers have a range of addresses which they
-apply to. Optionally, they may apply to only when the value written
-matches the IO handler's value.
+Three hypercalls are needed to support demand paging.
 
-Reviewed-by: Alex Elder <elder@linaro.org>
-Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
-Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/virt/gunyah/vm_mgr.c  | 114 ++++++++++++++++++++++++++++++++++++++++++
- drivers/virt/gunyah/vm_mgr.h  |   5 ++
- include/linux/gunyah_vm_mgr.h |  29 +++++++++++
- 3 files changed, 148 insertions(+)
+ arch/arm64/gunyah/gunyah_hypercall.c | 60 +++++++++++++++++++++++++++
+ arch/arm64/include/asm/gunyah.h      | 21 ++++++++++
+ include/linux/gunyah.h               | 79 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 160 insertions(+)
 
-diff --git a/drivers/virt/gunyah/vm_mgr.c b/drivers/virt/gunyah/vm_mgr.c
-index fb22459b21c8..8feb9302d7d2 100644
---- a/drivers/virt/gunyah/vm_mgr.c
-+++ b/drivers/virt/gunyah/vm_mgr.c
-@@ -285,6 +285,118 @@ static void gunyah_vm_clean_resources(struct gunyah_vm *ghvm)
- 	mutex_unlock(&ghvm->resources_lock);
+diff --git a/arch/arm64/gunyah/gunyah_hypercall.c b/arch/arm64/gunyah/gunyah_hypercall.c
+index cadc512934c4..468a5bcb98b1 100644
+--- a/arch/arm64/gunyah/gunyah_hypercall.c
++++ b/arch/arm64/gunyah/gunyah_hypercall.c
+@@ -39,6 +39,9 @@ EXPORT_SYMBOL_GPL(arch_is_gunyah_guest);
+ #define GUNYAH_HYPERCALL_HYP_IDENTIFY		GUNYAH_HYPERCALL(0x8000)
+ #define GUNYAH_HYPERCALL_MSGQ_SEND		GUNYAH_HYPERCALL(0x801B)
+ #define GUNYAH_HYPERCALL_MSGQ_RECV		GUNYAH_HYPERCALL(0x801C)
++#define GUNYAH_HYPERCALL_ADDRSPACE_MAP		GUNYAH_HYPERCALL(0x802B)
++#define GUNYAH_HYPERCALL_ADDRSPACE_UNMAP		GUNYAH_HYPERCALL(0x802C)
++#define GUNYAH_HYPERCALL_MEMEXTENT_DONATE		GUNYAH_HYPERCALL(0x8061)
+ /* clang-format on */
+ 
+ /**
+@@ -92,5 +95,62 @@ enum gunyah_error gunyah_hypercall_msgq_recv(u64 capid, void *buff, size_t size,
+ }
+ EXPORT_SYMBOL_GPL(gunyah_hypercall_msgq_recv);
+ 
++enum gunyah_error gunyah_hypercall_addrspace_map(u64 capid, u64 extent_capid, u64 vbase,
++					u32 extent_attrs, u32 flags, u64 offset, u64 size)
++{
++	struct arm_smccc_1_2_regs args = {
++		.a0 = GUNYAH_HYPERCALL_ADDRSPACE_MAP,
++		.a1 = capid,
++		.a2 = extent_capid,
++		.a3 = vbase,
++		.a4 = extent_attrs,
++		.a5 = flags,
++		.a6 = offset,
++		.a7 = size,
++		/* C language says this will be implictly zero. Gunyah requires 0, so be explicit */
++		.a8 = 0,
++	};
++	struct arm_smccc_1_2_regs res;
++
++	arm_smccc_1_2_hvc(&args, &res);
++
++	return res.a0;
++}
++EXPORT_SYMBOL_GPL(gunyah_hypercall_addrspace_map);
++
++enum gunyah_error gunyah_hypercall_addrspace_unmap(u64 capid, u64 extent_capid, u64 vbase,
++					u32 flags, u64 offset, u64 size)
++{
++	struct arm_smccc_1_2_regs args = {
++		.a0 = GUNYAH_HYPERCALL_ADDRSPACE_UNMAP,
++		.a1 = capid,
++		.a2 = extent_capid,
++		.a3 = vbase,
++		.a4 = flags,
++		.a5 = offset,
++		.a6 = size,
++		/* C language says this will be implictly zero. Gunyah requires 0, so be explicit */
++		.a7 = 0,
++	};
++	struct arm_smccc_1_2_regs res;
++
++	arm_smccc_1_2_hvc(&args, &res);
++
++	return res.a0;
++}
++EXPORT_SYMBOL_GPL(gunyah_hypercall_addrspace_unmap);
++
++enum gunyah_error gunyah_hypercall_memextent_donate(u32 options, u64 from_capid, u64 to_capid,
++					    u64 offset, u64 size)
++{
++	struct arm_smccc_res res;
++
++	arm_smccc_1_1_hvc(GUNYAH_HYPERCALL_MEMEXTENT_DONATE, options, from_capid, to_capid,
++				offset, size, 0, &res);
++
++	return res.a0;
++}
++EXPORT_SYMBOL_GPL(gunyah_hypercall_memextent_donate);
++
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Gunyah Hypervisor Hypercalls");
+diff --git a/arch/arm64/include/asm/gunyah.h b/arch/arm64/include/asm/gunyah.h
+index 0cd3debe22b6..4adf24977fd1 100644
+--- a/arch/arm64/include/asm/gunyah.h
++++ b/arch/arm64/include/asm/gunyah.h
+@@ -33,4 +33,25 @@ static inline int arch_gunyah_fill_irq_fwspec_params(u32 virq,
+ 	return 0;
  }
  
-+static int _gunyah_vm_io_handler_compare(const struct rb_node *node,
-+					 const struct rb_node *parent)
-+{
-+	struct gunyah_vm_io_handler *n =
-+		container_of(node, struct gunyah_vm_io_handler, node);
-+	struct gunyah_vm_io_handler *p =
-+		container_of(parent, struct gunyah_vm_io_handler, node);
++enum arch_gunyah_memtype {
++	/* clang-format off */
++	GUNYAH_MEMTYPE_DEVICE_nGnRnE	= 0,
++	GUNYAH_DEVICE_nGnRE		= 1,
++	GUNYAH_DEVICE_nGRE		= 2,
++	GUNYAH_DEVICE_GRE		= 3,
 +
-+	if (n->addr < p->addr)
-+		return -1;
-+	if (n->addr > p->addr)
-+		return 1;
-+	if ((n->len && !p->len) || (!n->len && p->len))
-+		return 0;
-+	if (n->len < p->len)
-+		return -1;
-+	if (n->len > p->len)
-+		return 1;
-+	/* one of the io handlers doesn't have datamatch and the other does.
-+	 * For purposes of comparison, that makes them identical since the
-+	 * one that doesn't have datamatch will cover the same handler that
-+	 * does.
-+	 */
-+	if (n->datamatch != p->datamatch)
-+		return 0;
-+	if (n->data < p->data)
-+		return -1;
-+	if (n->data > p->data)
-+		return 1;
-+	return 0;
-+}
++	GUNYAH_NORMAL_NC	= 0b0101,
++	GUNYAH_NORMAL_ONC_IWT	= 0b0110,
++	GUNYAH_NORMAL_ONC_IWB	= 0b0111,
++	GUNYAH_NORMAL_OWT_INC	= 0b1001,
++	GUNYAH_NORMAL_WT	= 0b1010,
++	GUNYAH_NORMAL_OWT_IWB	= 0b1011,
++	GUNYAH_NORMAL_OWB_INC	= 0b1101,
++	GUNYAH_NORMAL_OWB_IWT	= 0b1110,
++	GUNYAH_NORMAL_WB	= 0b1111,
++	/* clang-format on */
++};
 +
-+static int gunyah_vm_io_handler_compare(struct rb_node *node,
-+					const struct rb_node *parent)
-+{
-+	return _gunyah_vm_io_handler_compare(node, parent);
-+}
-+
-+static int gunyah_vm_io_handler_find(const void *key,
-+				     const struct rb_node *node)
-+{
-+	const struct gunyah_vm_io_handler *k = key;
-+
-+	return _gunyah_vm_io_handler_compare(&k->node, node);
-+}
-+
-+static struct gunyah_vm_io_handler *
-+gunyah_vm_mgr_find_io_hdlr(struct gunyah_vm *ghvm, u64 addr, u64 len, u64 data)
-+{
-+	struct gunyah_vm_io_handler key = {
-+		.addr = addr,
-+		.len = len,
-+		.datamatch = true,
-+		.data = data,
-+	};
-+	struct rb_node *node;
-+
-+	node = rb_find(&key, &ghvm->mmio_handler_root,
-+		       gunyah_vm_io_handler_find);
-+	if (!node)
-+		return NULL;
-+
-+	return container_of(node, struct gunyah_vm_io_handler, node);
-+}
-+
-+int gunyah_vm_mmio_write(struct gunyah_vm *ghvm, u64 addr, u32 len, u64 data)
-+{
-+	struct gunyah_vm_io_handler *io_hdlr = NULL;
-+	int ret;
-+
-+	down_read(&ghvm->mmio_handler_lock);
-+	io_hdlr = gunyah_vm_mgr_find_io_hdlr(ghvm, addr, len, data);
-+	if (!io_hdlr || !io_hdlr->ops || !io_hdlr->ops->write) {
-+		ret = -ENOENT;
-+		goto out;
-+	}
-+
-+	ret = io_hdlr->ops->write(io_hdlr, addr, len, data);
-+
-+out:
-+	up_read(&ghvm->mmio_handler_lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(gunyah_vm_mmio_write);
-+
-+int gunyah_vm_add_io_handler(struct gunyah_vm *ghvm,
-+			     struct gunyah_vm_io_handler *io_hdlr)
-+{
-+	struct rb_node *found;
-+
-+	if (io_hdlr->datamatch &&
-+	    (!io_hdlr->len || io_hdlr->len > sizeof(io_hdlr->data)))
-+		return -EINVAL;
-+
-+	down_write(&ghvm->mmio_handler_lock);
-+	found = rb_find_add(&io_hdlr->node, &ghvm->mmio_handler_root,
-+			    gunyah_vm_io_handler_compare);
-+	up_write(&ghvm->mmio_handler_lock);
-+
-+	return found ? -EEXIST : 0;
-+}
-+EXPORT_SYMBOL_GPL(gunyah_vm_add_io_handler);
-+
-+void gunyah_vm_remove_io_handler(struct gunyah_vm *ghvm,
-+				 struct gunyah_vm_io_handler *io_hdlr)
-+{
-+	down_write(&ghvm->mmio_handler_lock);
-+	rb_erase(&io_hdlr->node, &ghvm->mmio_handler_root);
-+	up_write(&ghvm->mmio_handler_lock);
-+}
-+EXPORT_SYMBOL_GPL(gunyah_vm_remove_io_handler);
-+
- static int gunyah_vm_rm_notification_status(struct gunyah_vm *ghvm, void *data)
- {
- 	struct gunyah_rm_vm_status_payload *payload = data;
-@@ -366,6 +478,8 @@ static __must_check struct gunyah_vm *gunyah_vm_alloc(struct gunyah_rm *rm)
- 	mutex_init(&ghvm->resources_lock);
- 	INIT_LIST_HEAD(&ghvm->resources);
- 	INIT_LIST_HEAD(&ghvm->resource_tickets);
-+	init_rwsem(&ghvm->mmio_handler_lock);
-+	ghvm->mmio_handler_root = RB_ROOT;
- 	INIT_LIST_HEAD(&ghvm->functions);
- 	mutex_init(&ghvm->fn_lock);
- 
-diff --git a/drivers/virt/gunyah/vm_mgr.h b/drivers/virt/gunyah/vm_mgr.h
-index b94f6d16b787..a26bf81e94fc 100644
---- a/drivers/virt/gunyah/vm_mgr.h
-+++ b/drivers/virt/gunyah/vm_mgr.h
-@@ -12,6 +12,7 @@
- #include <linux/list.h>
- #include <linux/mutex.h>
- #include <linux/notifier.h>
-+#include <linux/rbtree.h>
- #include <linux/rwsem.h>
- #include <linux/wait.h>
- 
-@@ -37,6 +38,10 @@ struct gunyah_vm {
- 	struct mutex resources_lock;
- 	struct list_head resources;
- 	struct list_head resource_tickets;
-+	struct rb_root mmio_handler_root;
-+	struct rw_semaphore mmio_handler_lock;
- };
- 
-+int gunyah_vm_mmio_write(struct gunyah_vm *ghvm, u64 addr, u32 len, u64 data);
++#define ARCH_GUNYAH_DEFAULT_MEMTYPE	GUNYAH_NORMAL_WB
 +
  #endif
-diff --git a/include/linux/gunyah_vm_mgr.h b/include/linux/gunyah_vm_mgr.h
-index b02c6e89b207..635adcbcc7d4 100644
---- a/include/linux/gunyah_vm_mgr.h
-+++ b/include/linux/gunyah_vm_mgr.h
-@@ -133,4 +133,33 @@ int gunyah_vm_add_resource_ticket(struct gunyah_vm *ghvm,
- void gunyah_vm_remove_resource_ticket(struct gunyah_vm *ghvm,
- 				      struct gunyah_vm_resource_ticket *ticket);
+diff --git a/include/linux/gunyah.h b/include/linux/gunyah.h
+index ecd62d0e36ad..86f48dc1d56d 100644
+--- a/include/linux/gunyah.h
++++ b/include/linux/gunyah.h
+@@ -151,4 +151,83 @@ enum gunyah_error gunyah_hypercall_msgq_send(u64 capid, size_t size, void *buff,
+ enum gunyah_error gunyah_hypercall_msgq_recv(u64 capid, void *buff, size_t size,
+ 					     size_t *recv_size, bool *ready);
  
-+/*
-+ * gunyah_vm_io_handler contains the info about an io device and its associated
-+ * addr and the ops associated with the io device.
-+ */
-+struct gunyah_vm_io_handler {
-+	struct rb_node node;
-+	u64 addr;
++#define GUNYAH_ADDRSPACE_SELF_CAP 0
 +
-+	bool datamatch;
-+	u8 len;
-+	u64 data;
-+	struct gunyah_vm_io_handler_ops *ops;
++enum gunyah_pagetable_access {
++	/* clang-format off */
++	GUNYAH_PAGETABLE_ACCESS_NONE		= 0,
++	GUNYAH_PAGETABLE_ACCESS_X		= 1,
++	GUNYAH_PAGETABLE_ACCESS_W		= 2,
++	GUNYAH_PAGETABLE_ACCESS_R		= 4,
++	GUNYAH_PAGETABLE_ACCESS_RX		= 5,
++	GUNYAH_PAGETABLE_ACCESS_RW		= 6,
++	GUNYAH_PAGETABLE_ACCESS_RWX		= 7,
++	/* clang-format on */
 +};
 +
-+/*
-+ * gunyah_vm_io_handler_ops contains function pointers associated with an iodevice.
-+ */
-+struct gunyah_vm_io_handler_ops {
-+	int (*read)(struct gunyah_vm_io_handler *io_dev, u64 addr, u32 len,
-+		    u64 data);
-+	int (*write)(struct gunyah_vm_io_handler *io_dev, u64 addr, u32 len,
-+		     u64 data);
++/* clang-format off */
++#define GUNYAH_MEMEXTENT_MAPPING_USER_ACCESS		GENMASK_ULL(2, 0)
++#define GUNYAH_MEMEXTENT_MAPPING_KERNEL_ACCESS		GENMASK_ULL(6, 4)
++#define GUNYAH_MEMEXTENT_MAPPING_TYPE			GENMASK_ULL(23, 16)
++/* clang-format on */
++
++enum gunyah_memextent_donate_type {
++	/* clang-format off */
++	GUNYAH_MEMEXTENT_DONATE_TO_CHILD		= 0,
++	GUNYAH_MEMEXTENT_DONATE_TO_PARENT		= 1,
++	GUNYAH_MEMEXTENT_DONATE_TO_SIBLING		= 2,
++	GUNYAH_MEMEXTENT_DONATE_TO_PROTECTED		= 3,
++	GUNYAH_MEMEXTENT_DONATE_FROM_PROTECTED		= 4,
++	/* clang-format on */
 +};
 +
-+int gunyah_vm_add_io_handler(struct gunyah_vm *ghvm,
-+			     struct gunyah_vm_io_handler *io_dev);
-+void gunyah_vm_remove_io_handler(struct gunyah_vm *ghvm,
-+				 struct gunyah_vm_io_handler *io_dev);
++enum gunyah_addrspace_map_flag_bits {
++	/* clang-format off */
++	GUNYAH_ADDRSPACE_MAP_FLAG_PARTIAL	= 0,
++	GUNYAH_ADDRSPACE_MAP_FLAG_PRIVATE	= 1,
++	GUNYAH_ADDRSPACE_MAP_FLAG_VMMIO		= 2,
++	GUNYAH_ADDRSPACE_MAP_FLAG_NOSYNC	= 31,
++	/* clang-format on */
++};
++
++enum gunyah_error gunyah_hypercall_addrspace_map(u64 capid, u64 extent_capid,
++						 u64 vbase, u32 extent_attrs,
++						 u32 flags, u64 offset,
++						 u64 size);
++enum gunyah_error gunyah_hypercall_addrspace_unmap(u64 capid, u64 extent_capid,
++						   u64 vbase, u32 flags,
++						   u64 offset, u64 size);
++
++/* clang-format off */
++#define GUNYAH_MEMEXTENT_OPTION_TYPE_MASK	GENMASK_ULL(7, 0)
++#define GUNYAH_MEMEXTENT_OPTION_NOSYNC		BIT(31)
++/* clang-format on */
++
++enum gunyah_error gunyah_hypercall_memextent_donate(u32 options, u64 from_capid,
++						    u64 to_capid, u64 offset,
++						    u64 size);
++
++struct gunyah_hypercall_vcpu_run_resp {
++	union {
++		enum {
++			/* clang-format off */
++			/* VCPU is ready to run */
++			GUNYAH_VCPU_STATE_READY			= 0,
++			/* VCPU is sleeping until an interrupt arrives */
++			GUNYAH_VCPU_STATE_EXPECTS_WAKEUP	= 1,
++			/* VCPU is powered off */
++			GUNYAH_VCPU_STATE_POWERED_OFF		= 2,
++			/* VCPU is blocked in EL2 for unspecified reason */
++			GUNYAH_VCPU_STATE_BLOCKED		= 3,
++			/* VCPU has returned for MMIO READ */
++			GUNYAH_VCPU_ADDRSPACE_VMMIO_READ	= 4,
++			/* VCPU has returned for MMIO WRITE */
++			GUNYAH_VCPU_ADDRSPACE_VMMIO_WRITE	= 5,
++			/* clang-format on */
++		} state;
++		u64 sized_state;
++	};
++	u64 state_data[3];
++};
 +
  #endif
 
