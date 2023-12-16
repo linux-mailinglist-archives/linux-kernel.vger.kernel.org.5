@@ -1,153 +1,383 @@
-Return-Path: <linux-kernel+bounces-2075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F5381578D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:44:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47293815790
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:44:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 871191C248C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:44:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C57A81F25C9B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 566D410A33;
-	Sat, 16 Dec 2023 04:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DDF10A33;
+	Sat, 16 Dec 2023 04:44:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LIBtbvGL"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="sYVCXFAn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2080.outbound.protection.outlook.com [40.107.21.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 283821095F;
-	Sat, 16 Dec 2023 04:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702701846; x=1734237846;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+wm8O2jpkMg+U4sXAGtL5iG9r74+fI4ciPTlI6TYHbc=;
-  b=LIBtbvGLIFcl8+PUN4aYcWdVABYKoDTc5VDhiMYQYtd3yY4JL2M/Dw3z
-   DS2/ir4qR8AKCkEymt3kz+n9UNRCNwjRPmfTzrsthsLgzRWZXO2eZn76E
-   s5cErn0xbKA1kKmNnHFjuqoXJVIyhV2xTaOonTUN1SCUkQWSIMF2J6n3a
-   nbAiYVjhgNpaif+mMBRjeA/A+HS3U7cvOl/x9OAw0T2DT/JP7u/24TFLV
-   oel2/9q+0z8m/YZiHvm/Q1U/4+jGuEoanwzNuYhneXQtFVBEsc1yXutpH
-   sDDBwXkS1ToH/igcymEeFjr3GXkZSrUFRi9HPMonKKCah8KbaiMqtZAOH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="2534284"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="2534284"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 20:44:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="898354499"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="898354499"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 15 Dec 2023 20:44:01 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEMWt-0001AI-0L;
-	Sat, 16 Dec 2023 04:43:59 +0000
-Date: Sat, 16 Dec 2023 12:43:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH net-next 04/24] net: Use nested-BH locking for
- napi_alloc_cache.
-Message-ID: <202312161210.q8xdLxsl-lkp@intel.com>
-References: <20231215171020.687342-5-bigeasy@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE7313ACA;
+	Sat, 16 Dec 2023 04:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R/3Ljg5t5RJi5FA8LvZeEYkXaeUDPc/AXiPyHOUphVnHeb3wtIOiSb7jR3oMU5qDn3qrbVMIQcjHeW9GTfM5PVBMHisQpFSrLbGWCDca0ON28yBMlNpOujsCY7baS1GlFEJJp36MG9H7nQbTMKBTWiHzWAD79KdS4iP00WjSQn+/zOkkFsM61SnVjJvcgCfO7EqfP7ghPlcgcRR97PwVHO6mqYcxsL4aGwcz3nDVurD78tR7oZfqUfQjLcVygS3uZ+Jc0uVsWn4IWTA/3ioXHa157L873nlEBgv4907ro5mTKQpp0gVsx1n2XNx4HRNfx79OGpHtcuIOoAKHTMzN3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o/B5UvwpggWNbSG/AvsjVgcAblMd4aRyRP3sJu8QWG0=;
+ b=c5RhZzli5hHYb3T8UBOcbY4/qqnfzuiFwyLRdhMjjBlUm21uNRflXlMjC1xzSGar3YjTQHsJ+bGrgRKt6SPOughviW6slKztaDM03AVCJDHn1CnfKZHn03zYkoCf+xU7Y+wjsWa4SKiUQwE94JFTp+BL4PZOybCFyeikD5djd/S8Yr3/xv0VakyrFxrBo0+HfX34p8nwuhTqYMpIPPzPjBlX+M8S0B447c4/lJM7o5HXUlaIS7l9z9zyXIjEMqLCb6NODTRks/TXPA9bDH0zysgurgPTaQk+uVzeNsua5bLuK6iU866B+nqNyPyFX2K1i+ghquYOJUa088MEQq0Kpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o/B5UvwpggWNbSG/AvsjVgcAblMd4aRyRP3sJu8QWG0=;
+ b=sYVCXFAnz6UCWi2CtSypxCpvedNC/YzgixsOmQjZLQLAQVNdt716skpQaAZT9q78oMQgKXldzjmB0KwhFqs8FvCDaiKkjRId6x/JuaXweohphIlblAihJgxYvCsPzC0+QqI/HxauNXvLkMkAwAI5WzN6uElKMcQ+1LAIr6dk6Bw=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AM0PR04MB6883.eurprd04.prod.outlook.com (2603:10a6:208:17f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.33; Sat, 16 Dec
+ 2023 04:44:39 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::ff06:bbb2:c068:5fb3]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::ff06:bbb2:c068:5fb3%7]) with mapi id 15.20.7046.015; Sat, 16 Dec 2023
+ 04:44:38 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Rob Herring <robh@kernel.org>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi
+	<cristian.marussi@arm.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Linus Walleij
+	<linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+	<s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
+	<linux-gpio@vger.kernel.org>
+Subject: RE: [PATCH 4/7] dt-bindings: firmware: arm,scmi: support pinctrl
+ protocol
+Thread-Topic: [PATCH 4/7] dt-bindings: firmware: arm,scmi: support pinctrl
+ protocol
+Thread-Index: AQHaL00vUsuXdEJTYUWYoB3T3FLKXbCqx0MAgACOi2A=
+Date: Sat, 16 Dec 2023 04:44:38 +0000
+Message-ID:
+ <DU0PR04MB94177607820C463B904173DF8892A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20231215-pinctrl-scmi-v1-0-0fe35e4611f7@nxp.com>
+ <20231215-pinctrl-scmi-v1-4-0fe35e4611f7@nxp.com>
+ <20231215201148.GA304363-robh@kernel.org>
+In-Reply-To: <20231215201148.GA304363-robh@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AM0PR04MB6883:EE_
+x-ms-office365-filtering-correlation-id: 72447c2b-2f0f-4162-8724-08dbfdf1b5d6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ squhPc9o8ADgbLJiSRSAmLGa8MCIWCn0D4uNFIi/zcH/VTcR+MzCMpKY4C7pdSn8tNUqTqmSiDhzLTvWjSO6s4y6RRdOdU9cDA/7vIq3d6Z8v9cIX32ikYvh2z40BEJUFb+/GYwzwxV/i/vaqVYkH2gq7IzWbn9s5wEGS76ufo65MQVAZnzRwVua2ZYic9qp/pZ/LfNV+o0JrEHheThGsy85gBA0cIn+SFO7XR22voqn2MXSFoDMRdSypUqoWX0ScI0dMtDGLMjOHmKG/Ol+5blj69TCFirmpi7oyGyR+z800HHYvFUrkrqXJeyXCJ9O/ys8P1C8FIZO372olJarQzRW59eLAM7DXgZaWdnjZ96SpxGcxQrmbWYRbgdqGEOymAVPiD4oebBusXUZoK/ixR1Np4To15I9NGaAwQUb+R35ZsKkAd+4WGlSCcMzKkfo97d7hh7aiCLzOHK6Gweew3AuETt4kvJch4BiyeqvnNu5j3iFp6MAqqyIfmjE3g8lHblE0nSJouluWx2OiasTL4tmb2PF+Zpa0iGG4FwFafygLpk3xcNak2gbaPxPTCWyc5CoYYl4Hc5LO8AIhxsbmUnravuKz1TWfoKQNjPXBbyNv52t2LDIjvRUKwYX8TaH
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(136003)(366004)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(71200400001)(26005)(122000001)(38100700002)(4326008)(8676002)(5660300002)(8936002)(44832011)(52536014)(41300700001)(7416002)(2906002)(478600001)(66946007)(316002)(6506007)(7696005)(9686003)(54906003)(64756008)(66446008)(66476007)(66556008)(76116006)(110136005)(33656002)(86362001)(38070700009)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?w4jNGk9Vd6+SlxcXN3wmGzpnBTMA0tCSn29QzggvSG5sEtiGZY9ZKX4alHBO?=
+ =?us-ascii?Q?Q7OFugTTtFnKsS7LLwE8SBCkp/MCjxKdNDa/zCTbBzen6GVhbuuy+TB/YsVC?=
+ =?us-ascii?Q?R6Sa/zyaj7K9XpuOAOGJwszenOLDETe5dBK5KIGr3GtKhTpR1rqKM/PIMffG?=
+ =?us-ascii?Q?YjH6xHWcXzUMk7ine3dmMtLyYkQ4UTPTFtgzFBLpVhpRhdTseUdWB/UGVHJD?=
+ =?us-ascii?Q?kM3NZ1fUMSeExgoQOaq/R0iy5fOXZ9hzVil7FUWuTmVoOBwkFn8VhO4GXKGl?=
+ =?us-ascii?Q?vDJfP3G0W2mwC7dlxkciLjBiFD5h/XFgLRvkOybIXKpXdHtZsnPH2YQj88rk?=
+ =?us-ascii?Q?9gRCQr0d9/LhNeRw1qgMuGNNSCG2FT3RLnLW4p/cdHPrBXS4rW3octvxzgcz?=
+ =?us-ascii?Q?DbBXNbptZdOrcLKoXrIVDJ5SrH+i+DBR/dWk1Tm7qsHCPCvekSWtoTn2qNqJ?=
+ =?us-ascii?Q?zO4Ie/vonaG+NC7/Pp9J+X0wsWlcrfGOVhmlf/Z95oZUTA0z8xpCDbvWey6q?=
+ =?us-ascii?Q?QfZlKRTpv2j94dvhh08me8v7uxl+/icOZZfwpSL4REJec0pptP4NzIHjWarI?=
+ =?us-ascii?Q?TXOlDmpvnoF+85FaQdU0PG1JG+hGaiZuESd4cb/yXk/Lisb9nr6ke0KEm0Qs?=
+ =?us-ascii?Q?CpIRoK7C/jdGUlhF3U9SppgcibvPVuh1DqH1LMESvROf4kKW/MohVUiJhzci?=
+ =?us-ascii?Q?6kr/khPA/uUB6EJ5oEjMMvB/mk0SV8QwaI4Rj11SZDgAp5VOO+8W+RZtbs84?=
+ =?us-ascii?Q?pSLDHfpcvApCNP4vXW0DPBaoNbiAwRfcxGrXd2kOdjAswISw1YB8VnHpaaM/?=
+ =?us-ascii?Q?n8nyvR0V8ksm7miPOzqtAUupo8KdXrVQkiMCTanaGmzR+GxSEegQwiPcnlou?=
+ =?us-ascii?Q?DwZprwAchzW3JMLNKDE2g2pTwwMP1zZGF5O/rvrLfrdaGCnUSFJCFTsMUjlv?=
+ =?us-ascii?Q?qPXZUXMpxnkvQvFiR8f04c1p/kTGLREG91ofzpVB74RlJLjU2rP/vGPjq9UN?=
+ =?us-ascii?Q?iKPEDPjVHcJhUtiXMuw4KmYnZUbAK7w+n+Tj974aTSnzvM88qb/hLuo+P/2y?=
+ =?us-ascii?Q?s9OwfLBwBkln41hb3G7ZApE6ZGe8MZ8zOtIUaLDVJSi/HAQZaFP+uDq3ay69?=
+ =?us-ascii?Q?qMFNtliYJkxoKkNV+cpbZ+44Ht61BMjLGHQMInd6rGF4hOAfer7bCDKImtU+?=
+ =?us-ascii?Q?1NGaxl/UAkBg2fAUESBrodDEA3+bSA8/Mcq6HfFemqF1Rd4704bJpKzyDjIy?=
+ =?us-ascii?Q?Cw7dkG40aWjsbH/TEn6TLQYXGL2F+clBU06bOfnA4/IxfIDmCVLBEMNWZO1S?=
+ =?us-ascii?Q?qVxsKzzmv1CvnShW0dgA+CUOvDu5C7hm6tUx4n8PDpMilhwVY6ws//iytrZ6?=
+ =?us-ascii?Q?4HOkyCVGZUDsJifA9bK+KB3eslzOE4FpNptLI5IfrPMtvL/ViUiLPunv+v7U?=
+ =?us-ascii?Q?etjHpxeRu7z9XCkIQv4AeRJEd4GH48K+CVrJOmgOv3oOLIGcUVwgBhTkR/rD?=
+ =?us-ascii?Q?/ckqVCN2LcvdthN3KAaeyGmqIC0sxayqEOyiyriBtW27dnAgRTW7EmAuV0q2?=
+ =?us-ascii?Q?fYUeooE+NiiEh44TrQc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215171020.687342-5-bigeasy@linutronix.de>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72447c2b-2f0f-4162-8724-08dbfdf1b5d6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2023 04:44:38.2308
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X6/LwSeTR3PtpFAlAG5rZUYEpWmifgFNE9z5vn7S+ybFEnBd5dq2lWugvbGyf8o7og7Qdx8XzcclP3f9ylIFiA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6883
 
-Hi Sebastian,
+Hi Rob,
 
-kernel test robot noticed the following build warnings:
+> Subject: Re: [PATCH 4/7] dt-bindings: firmware: arm,scmi: support pinctrl
+> protocol
+>=20
+> On Fri, Dec 15, 2023 at 07:56:32PM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > Add SCMI v3.2 pinctrl protocol bindings and example.
+> >
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  .../devicetree/bindings/firmware/arm,scmi.yaml     | 99
+> ++++++++++++++++++++++
+> >  1 file changed, 99 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > index 4591523b51a0..bfd2b6a89979 100644
+> > --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > @@ -247,6 +247,85 @@ properties:
+> >        reg:
+> >          const: 0x18
+> >
+> > +  protocol@19:
+> > +    type: object
+> > +    allOf:
+> > +      - $ref: '#/$defs/protocol-node'
+> > +      - $ref: /schemas/pinctrl/pinctrl.yaml
+> > +      - if:
+> > +          properties:
+> > +            compatible:
+> > +              const: fsl,imx95-scmi-pinctrl
+> > +        then:
+> > +          patternProperties:
+> > +            "grp$": false
+> > +            "-pins$": true
+> > +        else:
+> > +          patternProperties:
+> > +            "grp$": false
+> > +            "-pins$": true
+> > +    unevaluatedProperties: false
+>=20
+> This will not scale if each vendor adds to arm,scmi.yaml. You need to mov=
+e
+> this to its own file. That can have a ref to
+> /schemas/firmware/arm,scmi.yaml#/$defs/protocol-node.
+>=20
+> Here you can just say compatible is "fsl,imx95-scmi-pinctrl" and
+> 'additionalProperties: true'.
 
-[auto build test WARNING on net-next/main]
+Do you have an example for this? I am not able write a correct
+one to pass the dt check.
+      - if:                                                                =
+                        =20
+          properties:                                                      =
+                        =20
+            compatible:                                                    =
+                        =20
+              const: fsl,imx95-scmi-pinctrl                                =
+                        =20
+        then:                                                              =
+                        =20
+          properties:                                                      =
+                        =20
+            additionalProperties: true
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/20231216-011911
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231215171020.687342-5-bigeasy%40linutronix.de
-patch subject: [PATCH net-next 04/24] net: Use nested-BH locking for napi_alloc_cache.
-config: x86_64-randconfig-121-20231216 (https://download.01.org/0day-ci/archive/20231216/202312161210.q8xdLxsl-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312161210.q8xdLxsl-lkp@intel.com/reproduce)
+.......
+      compatible: true
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312161210.q8xdLxsl-lkp@intel.com/
+And in fsl,imx95-scmi-pinctrl.yaml
 
-sparse warnings: (new ones prefixed by >>)
->> net/core/skbuff.c:302:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct local_lock_t [usertype] *l @@     got struct local_lock_t [noderef] __percpu * @@
-   net/core/skbuff.c:302:38: sparse:     expected struct local_lock_t [usertype] *l
-   net/core/skbuff.c:302:38: sparse:     got struct local_lock_t [noderef] __percpu *
-   net/core/skbuff.c:331:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct local_lock_t [usertype] *l @@     got struct local_lock_t [noderef] __percpu * @@
-   net/core/skbuff.c:331:38: sparse:     expected struct local_lock_t [usertype] *l
-   net/core/skbuff.c:331:38: sparse:     got struct local_lock_t [noderef] __percpu *
-   net/core/skbuff.c:734:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct local_lock_t [usertype] *l @@     got struct local_lock_t [noderef] __percpu * @@
-   net/core/skbuff.c:734:17: sparse:     expected struct local_lock_t [usertype] *l
-   net/core/skbuff.c:734:17: sparse:     got struct local_lock_t [noderef] __percpu *
-   net/core/skbuff.c:806:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct local_lock_t [usertype] *l @@     got struct local_lock_t [noderef] __percpu * @@
-   net/core/skbuff.c:806:9: sparse:     expected struct local_lock_t [usertype] *l
-   net/core/skbuff.c:806:9: sparse:     got struct local_lock_t [noderef] __percpu *
-   net/core/skbuff.c:1317:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct local_lock_t [usertype] *l @@     got struct local_lock_t [noderef] __percpu * @@
-   net/core/skbuff.c:1317:38: sparse:     expected struct local_lock_t [usertype] *l
-   net/core/skbuff.c:1317:38: sparse:     got struct local_lock_t [noderef] __percpu *
-   net/core/skbuff.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
-   net/core/skbuff.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
->> include/linux/local_lock.h:71:1: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct local_lock_t [usertype] * @@
-   include/linux/local_lock.h:71:1: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   include/linux/local_lock.h:71:1: sparse:     got struct local_lock_t [usertype] *
->> include/linux/local_lock.h:71:1: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct local_lock_t [usertype] * @@
-   include/linux/local_lock.h:71:1: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   include/linux/local_lock.h:71:1: sparse:     got struct local_lock_t [usertype] *
->> include/linux/local_lock.h:71:1: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct local_lock_t [usertype] * @@
-   include/linux/local_lock.h:71:1: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   include/linux/local_lock.h:71:1: sparse:     got struct local_lock_t [usertype] *
-   net/core/skbuff.c: note: in included file (through include/net/net_namespace.h, include/linux/inet.h):
-   include/linux/skbuff.h:2715:28: sparse: sparse: self-comparison always evaluates to false
-   net/core/skbuff.c: note: in included file (through include/linux/skbuff.h, include/net/net_namespace.h, include/linux/inet.h):
-   include/net/checksum.h:33:39: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected restricted __wsum [usertype] sum @@     got unsigned int @@
-   include/net/checksum.h:33:39: sparse:     expected restricted __wsum [usertype] sum
-   include/net/checksum.h:33:39: sparse:     got unsigned int
+allOf:                                                                     =
+                        =20
+  - $ref: '/schemas/firmware/arm,scmi.yaml#/$defs/protocol-node'           =
+                        =20
+                                                                           =
+                        =20
+properties:                                                                =
+                        =20
+  reg:                                                                     =
+                        =20
+    const: 0x19                                                            =
+                        =20
+                                                                           =
+                        =20
+  compatible:                                                              =
+                        =20
+    const: fsl,imx95-scmi-pinctrl                                          =
+                        =20
+                                                                           =
+                        =20
+patternProperties:                                                         =
+                        =20
+  'grp$':                                                                  =
+                        =20
+    type: object                                                           =
+                        =20
+    description:                                                           =
+                        =20
+      Pinctrl node's client devices use subnodes for desired pin configurat=
+ion.                    =20
+      Client device subnodes use below standard properties.                =
+                        =20
+                                                                           =
+                        =20
+    properties:                                                            =
+                        =20
+      fsl,pins:                                                            =
+                        =20
+        description:     =20
 
-vim +302 net/core/skbuff.c
+.....
+>=20
+> > +
+> > +    properties:
+> > +      reg:
+> > +        const: 0x19
+> > +
+> > +      '#pinctrl-cells':
+> > +        const: 0
+>=20
+> Generally not used if 0.
 
-   296	
-   297	void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align_mask)
-   298	{
-   299		struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
-   300	
-   301		fragsz = SKB_DATA_ALIGN(fragsz);
- > 302		guard(local_lock_nested_bh)(&napi_alloc_cache.bh_lock);
-   303	
-   304		return page_frag_alloc_align(&nc->page, fragsz, GFP_ATOMIC, align_mask);
-   305	}
-   306	EXPORT_SYMBOL(__napi_alloc_frag_align);
-   307	
+Will drop this property.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>=20
+> > +
+> > +      compatible:
+> > +        const: fsl,imx95-scmi-pinctrl
+> > +
+> > +    patternProperties:
+> > +      '-pins$':
+> > +        type: object
+> > +        allOf:
+> > +          - $ref: /schemas/pinctrl/pincfg-node.yaml#
+> > +          - $ref: /schemas/pinctrl/pinmux-node.yaml#
+> > +        unevaluatedProperties: false
+> > +
+> > +        description:
+> > +          A pin multiplexing sub-node describe how to configure a
+> > +          set of pins is some desired function.
+> > +          A single sub-node may define several pin configurations.
+> > +          This sub-node is using default pinctrl bindings to configure
+> > +          pin multiplexing and using SCMI protocol to apply specified
+> > +          configuration using SCMI protocol.
+> > +
+> > +      'grp$':
+> > +        type: object
+> > +        description:
+> > +          Pinctrl node's client devices use subnodes for desired pin
+> configuration.
+> > +          Client device subnodes use below standard properties.
+> > +
+> > +        properties:
+> > +          fsl,pins:
+> > +            description:
+> > +              each entry consists of 6 integers and represents the mux=
+ and
+> config
+> > +              setting for one pin. The first 5 integers <mux_reg conf_=
+reg
+> input_reg
+> > +              mux_val input_val> are specified using a PIN_FUNC_ID mac=
+ro,
+> which can
+> > +              be found in <arch/arm64/boot/dts/freescale/imx95-pinfunc=
+.h>.
+> The last
+> > +              integer CONFIG is the pad setting value like pull-up on =
+this pin.
+> Please
+> > +              refer to i.MX95 Plus Reference Manual for detailed CONFI=
+G
+> settings.
+> > +            $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > +            items:
+> > +              items:
+> > +                - description: |
+> > +                    "mux_reg" indicates the offset of mux register.
+> > +                - description: |
+> > +                    "conf_reg" indicates the offset of pad configurati=
+on register.
+> > +                - description: |
+> > +                    "input_reg" indicates the offset of select input r=
+egister.
+> > +                - description: |
+> > +                    "mux_val" indicates the mux value to be applied.
+> > +                - description: |
+> > +                    "input_val" indicates the select input value to be=
+ applied.
+> > +                - description: |
+> > +                    "pad_setting" indicates the pad configuration valu=
+e to be
+> applied.
+> > +
+> > +    required:
+> > +      - reg
+> > +
+> >  additionalProperties: false
+> >
+> >  $defs:
+> > @@ -401,6 +480,26 @@ examples:
+> >              scmi_powercap: protocol@18 {
+> >                  reg =3D <0x18>;
+> >              };
+> > +
+> > +            scmi_pinctrl: protocol@19 {
+> > +                reg =3D <0x19>;
+> > +                #pinctrl-cells =3D <0>;
+>=20
+> Missing compatible. Schema should catch that...
+
+Only i.MX need compatible here.
+
+Thanks,
+Peng.
+
+>=20
+> > +
+> > +                i2c2-pins {
+> > +                    groups =3D "i2c2_a", "i2c2_b";
+> > +                    function =3D "i2c2";
+> > +                };
+> > +
+> > +                mdio-pins {
+> > +                    groups =3D "avb_mdio";
+> > +                    drive-strength =3D <24>;
+> > +                };
+> > +
+> > +                keys_pins: keys-pins {
+> > +                    pins =3D "GP_5_17", "GP_5_20", "GP_5_22", "GP_2_1"=
+;
+> > +                    bias-pull-up;
+> > +                };
+> > +            };
+> >          };
+> >      };
+> >
+> >
+> > --
+> > 2.37.1
+> >
 
