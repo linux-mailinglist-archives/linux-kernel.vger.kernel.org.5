@@ -1,232 +1,106 @@
-Return-Path: <linux-kernel+bounces-2224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 618CB8159D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 15:17:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65EE48159DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 15:19:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D04471F23BF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:17:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 980151C218C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:19:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B9E2E63A;
-	Sat, 16 Dec 2023 14:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA252E63A;
+	Sat, 16 Dec 2023 14:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aZ6vKmeg"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="eJ6XuSLe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic321-19.consmr.mail.gq1.yahoo.com (sonic321-19.consmr.mail.gq1.yahoo.com [98.137.66.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0D92D7A6;
-	Sat, 16 Dec 2023 14:16:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E476C433C8;
-	Sat, 16 Dec 2023 14:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702736213;
-	bh=t+y+M2JnxGrEOUAALEQCknie1oJTMkhmah2MAcB9pfI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aZ6vKmegJLHpPyCchb+m2KOseBHjiCzbJOcZFVCXoZbG4Ecwbr+ELIHorMLBSJ8+/
-	 Dg5IjcwIDqMj4tlOivVTrTalKpzFh6XojsZhJHCJ4wqlG2WyCCPmi8f7vy2arzHyoC
-	 weuYNGKTN3uaL9z5ggmLKiUATaQF1yUDAZbi+yxCzv1lJKQIQ0IGr8ywNvrCLkXNcM
-	 fTgT4UAo0QI/NUsz59PuMmL3iDSqeTa9pEo9eOR9X+H2JNFNFWVgzU/KVbE90/Su0D
-	 pipsiszoqrHvCkcOOnPx5IpAUXGuH0y9uu/AdkFyFG5oUBhdQkWjr+s9DQwfN/o8gK
-	 9WymAOmAbA+KA==
-Date: Sat, 16 Dec 2023 14:16:47 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, agross@kernel.org,
-	andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
-	linux@armlinux.org.uk, robert.marko@sartura.hr,
-	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_srichara@quicinc.com
-Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
-Message-ID: <20231216-unearned-lucid-4bd2ddcd4ac2@spud>
-References: <26c8b0b1-5ea9-45cc-adf3-0d0b03a1284d@linaro.org>
- <4b9c56b8-3b29-4861-a3d5-2da26fbc14b4@quicinc.com>
- <2e77e3b1-00b6-46b9-bfed-7cae3ffa15e9@linaro.org>
- <7bae46fd-63fd-4b86-9a56-73052cf0ea95@quicinc.com>
- <5a8095e6-b6a6-4d11-b006-31519e8d8622@linaro.org>
- <7466b655-2b7e-44f2-a510-6e0cc1b95248@quicinc.com>
- <602759ce-c93d-4111-9272-1dce7e4a170a@linaro.org>
- <f656d1c7-ea86-405a-9165-9eb079ea6f2a@quicinc.com>
- <20231215-gauze-sprinkled-172729f22b6c@spud>
- <9eab958e-d91f-4f3c-aadd-6b34eaed2cef@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A671A2D63C
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 14:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702736333; bh=c9Q/G8q7C7ZJqKauA6OpQdBE0Zs7XsAVs9LzN52MOKI=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=eJ6XuSLeXDcal5rlHHn4Q2vE2A7CDfUQw4O6ooED2Eci8j9Zg3UXLhY99EoalKlcW7TIwI1I6jd9QQYNAg0OmnlhVkDH0xvaleEA+s2gEkzHXvMTrA4FxL4GkYO1PCoTBcEF6xispglw64ECxqROSaqrLIjdjcHWptz8DY5rfJaIHHjJWK05g3av34uJQncbgZTa7omHkA+R5ixpZa5FcsBm8jMYuWHWDlWD/z/Jt6OrPE8b6MgYznjFsz4j6/7ifN+bO90JsMWMP3x+WG01veUixOeek6IlNFFzL4F05JmYnjwxEH/Zhp8z+m48DK5mS4Bp//Ud6Z6GaguxAbMYhA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702736333; bh=ZQZcyLosgWogrvyY0hMVJrwXAkmzP4bsitvbQRkzg1f=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=Yv7Vd/swhBePvq6J30781WSAUjQEFdknvBH5dvH4oTe2t9NlL4xD1dGbqWF6CMaE3ZzDf1fTaW3T+9YGqhnhb1hTwfZ6/6bo+72RsxRbrGqJwaRuLiHwf0ARd7+PQ9voYE7sBcINmAg2iSukOIcHfHS/vBvhtCneBv5cZk97MWQ718T714KJI7Hn9EQXg5bmiRL7Z9tsA+F2I2i19U20n1EKiB6UlYNPgfkU4Yl6EcvCNz9ZHxkif6baWxp184/QnMu3Z4rshOdXHFERxfGTLCZDPc/Db0EnvC7Gs83XGngqVyz03wyUUCnMYJYV9kO992J/14b6q7v4AKm38d0I2Q==
+X-YMail-OSG: zf5PvwwVM1lgzi8w_2Sg2c9AVWQ_gJXn8RmjoZZyWpKqWMCHrur.I2BYn.cEYWI
+ wDJNGP_l4XN9ZLleLTy4Edci0ztjYImtxTWu_L.yuFsQH_DMvdGof2mGKRY9SPxhhAdVmArC.KP2
+ aXR9zyd5eEipCEeMpQxBHrx153wjPjkhSG944uGAJJ5VOdO47OVYlMOCyfF1i0UYh5NWbYwJba8s
+ CG58IBRwu.h6FEfGfnO3zkWeFRWH46LYDszNc14zqflJEkA0UZNfIz2RWrJEqYQtMzWWLhq4RE9B
+ LbzSpXktHxzXlWxZ0oEA06YI6QVZTNC2i9SdnjkMEnxBUG0fDZH.H2fG_BzQiQRxFMaW8sX5OP0A
+ QhhGDnHZ80g54olRfLZSl_i5_9uAramI00gRr0DpiliMyCDkdNjRJv.zcjq9jt5U6MpiO3.xk9NQ
+ SnzC0P5OnWYHCka_5OxiEY4bfNo4epk2vhTCBE3BDV_WHBKc7DPHqBzSY_y8KauUXqrfajJwwI0G
+ kAe9T.8_bE3iaDeI_LouMlMDsJDvHLlYnZBb.X6aNWS0MSJvIQ1bV7ULGZQ2tS6NX2acIpJs_.a9
+ Xvx_hhLCoQjudZiPDEamVVhgnuHeIdqyHHdAKO_EeFxEvI1qQjv9blBCmzDbAk5Rq6kHZUaq5EeJ
+ .252jBuAAbFGeQz4BYgOx37W_ee03dI9n21WRzk6FPSZogNRrme9kyQMhIzBA7.cGfkw0FLbzTcJ
+ hmL0oLxu3sH4pGl0bir7VwNPDZ040HNggX4zKeay1vnuV7QZRs5v.JdIdJi_hlBRAQlQsAKb4MgF
+ 6HINv051RugBE8if3EIFyi0ju3ecQLmUookScERpitnKEVJtD7PMCbafCaYjfLhKEYZH6gitehYN
+ KSCY8rA2q26P_Zd4xktXmjdSxgiq4SR5RBvhKMcMvdsK1J4k8yvCDueoOkBQanFIMQ2V5sZMCoXy
+ wye9Cj1ymtlObQwV4CDCPKuyZRx3VUnuqMNG6qcvAUeH1o.DfSV6zvSuKBd6DrBo_eR.7177A5R6
+ K4pI2VliQsI9mZ3i9VqUbz_afgCaVZbH6U341GOLusXARLcFvE19BnAsZ0guG6DxnYW79i4wPgV1
+ _whQwJ02S.rTdK21lmZkNNympE7NzVLb_piINOQSwQROStPMQRFRxttA3lI41BlAvWpsiu02OPhP
+ sCoyTmru3kLuuDoZYrzC87ArXbbHvBegpteK8piUMC5KHImrnjavoobFvCRVypoJjyn0Hgpv9EHu
+ RcYIszQOB0qY5RCfj4Ulx0TQ4vIujrUmRRDQVaVg9jDtgqOALWnnzeD5dSn19YetI1YY8vZQf8wW
+ XDx0WNBlNC5PbSR7c10ahmr3EXYq0.I1Ebj025TrEUvI85OHlreYmLHUGq9UtO7Ht4avWmgUEpw5
+ U4at6zqkCbZ0ulthLN6hAVu3MD9eAC.T_uYewHLKdeo6ecbgsqHbtfmdfcQE7Mst9oJDGyNQU8E1
+ W3fXYm69YfO.SEqwZ7v.Fiwh8sx1FhAL_pF_82Ww.rAPBggqrBVgSX3By0JA8BWDmOMOSRzcvcin
+ xKR3Pr731nXLfw9hCsXfd3QWJGHCoC3QD8kdVeeq8_pp3owfuB_SuiCvmlsLbjakEIxOWYr4GR4C
+ gqojBsSGxA9bf15d3pb_kwedCQ0UWx9Sqbo.vnH0ICl7H23baoMydYX2r0P2rEisi35uk.FaPPEb
+ 90YKLpflu2Mu8YXHVq0GfZWYp8pkY1VCQWUvnykl3F9vGY2IrBDoQkHfx0qQ5g8qd7CowwiVHZRa
+ .Od7ZqFLI_vrl87_sj9NFBhDBWuHxLHlbaQYnc47A2I54JBrvbIq0ZYCT8GdYOwP8OSIXF1hZ3IA
+ NorFynQJmTbnxkvWZ6MHjcWsxnANoh0S1.2HeDtnh94aqSaQhNHxYgnWmhHS4YGa7e9U6qyS3yXU
+ ovEO8me0ddVejBxfAZlyGcKdazHcP.cb4hwqt4iQmiSTiF9qndQ5reou3.bDPRl2qJrI6p0IaZ4Y
+ BSq0C.SxxqkUjQQmiC8JNQJbK7aIC090MolZEM2JdtMFWHb200ALwaRE7Qy7ygEJ3jsVflTpLVS1
+ UZ0lSa8S63ArEYuRz1saNb4hGnv3BULmT62ma7VsXfkUoiAJDz2uZyKwLDxYk5udBQuv1gKcy3vH
+ L3Oxt.irrSN8mmVx0FmJc8GKRaEja.tL..U1UXIgTysVypOqIOHpOCECCCKtbl1qoNlmPEJvb46g
+ GW0S3
+X-Sonic-MF: <chaosesqueteam@yahoo.com>
+X-Sonic-ID: 8a05b375-9c08-478a-93f5-59b199466fb4
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic321.consmr.mail.gq1.yahoo.com with HTTP; Sat, 16 Dec 2023 14:18:53 +0000
+Date: Sat, 16 Dec 2023 14:18:48 +0000 (UTC)
+From: "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
+To: Bruce Perens <bruce@perens.com>
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>, Richard Stallman <rms@gnu.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Networking <netdev@vger.kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Julia Lawall <julia.lawall@inria.fr>, 
+	Paolo Abeni <pabeni@redhat.com>, Aditya Pakki <pakki001@umn.edu>, 
+	Anna Schumaker <anna.schumaker@netapp.com>, 
+	"ansgar@debian.org" <ansgar@debian.org>, 
+	"blukashev@sempervictus.com" <blukashev@sempervictus.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, 
+	Dave Wysochanski <dwysocha@redhat.com>, 
+	"editor@lwn.net" <editor@lwn.net>, 
+	"esr@thyrsus.com" <esr@thyrsus.com>, 
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
+	"J. Bruce Fields" <bfields@fieldses.org>, 
+	Leon Romanovsky <leon@kernel.org>, 
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
+	"moglen@columbia.edu" <moglen@columbia.edu>, 
+	"skraw.ml@ithnet.com" <skraw.ml@ithnet.com>, 
+	"tcallawa@redhat.com" <tcallawa@redhat.com>, 
+	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>, 
+	"torvalds@osdl.org" <torvalds@osdl.org>, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	"misc@openbsd.org" <misc@openbsd.org>, 
+	"tech@openbsd.org" <tech@openbsd.org>
+Message-ID: <1587993142.1777988.1702736328778@mail.yahoo.com>
+In-Reply-To: <1891850654.636910.1701859570489@mail.yahoo.com>
+References: <875007189.3298572.1696619900247.ref@mail.yahoo.com> <875007189.3298572.1696619900247@mail.yahoo.com> <ZSEdS8a5imvsAE8F@debian.me> <457035954.3503192.1696688953071@mail.yahoo.com> <CAK2MWOsK=pTKADr1kUuj=fvmRB=X2Z0+SkWQ9PTSxCqOVCq39A@mail.gmail.com> <641990627.3964368.1696950113530@mail.yahoo.com> <CAK2MWOurH4AHGd3ntgVvg-+Z6rNZriO2xQm9_RNqpUMwWWQCkg@mail.gmail.com> <1891850654.636910.1701859570489@mail.yahoo.com>
+Subject: Re: I can't get contributors for my C project. Can you help?
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lskATpY3N5YDan1V"
-Content-Disposition: inline
-In-Reply-To: <9eab958e-d91f-4f3c-aadd-6b34eaed2cef@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21952 YMailNorrin
 
-
---lskATpY3N5YDan1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Dec 16, 2023 at 09:16:49PM +0800, Jie Luo wrote:
->=20
->=20
-> On 12/15/2023 9:41 PM, Conor Dooley wrote:
-> > On Fri, Dec 15, 2023 at 08:40:20PM +0800, Jie Luo wrote:
-> > >=20
-> > >=20
-> > > On 12/15/2023 8:19 PM, Krzysztof Kozlowski wrote:
-> > > > On 15/12/2023 12:42, Jie Luo wrote:
-> > > > > > > > > > > > Which clocks are these mentioned in the property? F=
-rom where do they come?
-> > > > > > > > > > > >=20
-> > > > > > > > > > > > Anyway, property is in existing form is not correct=
- - this is not a
-> > > > > > > > > > > > generic property.
-> > > > > > > > > > > >=20
-> > > > > > > > > > >=20
-> > > > > > > > > > > This property cmn-reference-clock is just the hardwar=
-e register
-> > > > > > > > > > > configuration, since the different IPQ platform needs=
- to select
-> > > > > > > > > > > the different reference clock source for the CMN PLL =
-block that
-> > > > > > > > > > > provides the various clock outputs to the all kinds o=
-f Ethernet
-> > > > > > > > > > > devices, which is not from GCC provider.
-> > > > > > > > > >=20
-> > > > > > > > > > AGAIN: where do the clocks come from? Which device gene=
-rates them?
-> > > > > > > > >=20
-> > > > > > > > > Oh, OK, the reference clock is from wifi that provides 48=
-MHZ to
-> > > > > > > > > Ethernet block.
-> > > > > > > >=20
-> > > > > > > > Then WiFi should be providing you the clock and this device=
- should be
-> > > > > > > > clock consumer, right?
-> > > > > > >=20
-> > > > > > > Yes, wifi provides 48MHz clock to CMM PLL block, there is no =
-GCC
-> > > > > > > for this 48MHZ clock output, it is the hardware PIN connectio=
-n.
-> > > > > >=20
-> > > > > > All clocks are some hardware pin connections.
-> > > > > >=20
-> > > > > > Best regards,
-> > > > > > Krzysztof
-> > > > > >=20
-> > > > >=20
-> > > > > Yes, all reference clocks here are from hardware pin connection.
-> > > >=20
-> > > > You keep answering with short sentences without touching the root o=
-f the
-> > > > problem. I don't know exactly why, but I feel this discussion leads
-> > > > nowhere. After long discussion you finally admitted that clocks came
-> > > > from another device - Wifi. It took us like 6 emails?
-> > > >=20
-> > > > So last statement: if you have clock provider and clock consumer, y=
-ou
-> > > > must represent it in the bindings or provide rationale why it shoul=
-d not
-> > > > or must not be represented in the bindings. So far I do not see any=
- of
-> > > > such arguments.
-> > > >=20
-> > > > If you use arguments like:
-> > > > "My driver....": sorry, bindings are not about drivers
-> > > > "I don't have clock driver for WiFi": sorry, it does not matter if =
-you
-> > > > can write one, right?
-> > > >=20
-> > > > Please reach internally your colleagues to solve these problems and=
- make
-> > > > review process smoother.
-> >=20
-> > > These reference clocks source do not need the hardware configuration,
-> > > that is the reason why the clock provider is not needed, some referen=
-ce
-> > > clock source are even from external crystal.
-> >=20
-> > I fail to understand how that makes this clock different to the clocks
-> > on any other platform. Clocks from external crystals are present in many
-> > many systems. See for example fixed-clock.yaml.
->=20
-> The reference clock rate has no meaning to the CMN PLL block, since the
-> software can't control the behavior of CMN PLL, and various output
-> clocks of CMN PLL block are fixed, adding this custom property is just
-> for selecting the different reference clock source, since different
-> IPQ platform needs to be configured the different reference clock source
-> for the CMN PLL block.
-
-Many, many other systems are in the same situation, where clocks are
-provided to a peripheral that has no control over the clock rate, but
-has to pick internal dividers or set bits in a config register depending
-on what clock rate is provided to it. That is not something special
-about this particular platform and other systems are able to use the
-clocks property for this purpose.
-
-> let's say if we register 48MHZ reference clock as the fix clock, we
-> can't distinguish it is internal 48MHZ or external 48MHZ, for these
-> two reference clock sources, there are different hardware configuration
-> of CMN PLL block
-
-That's easy, if the reference is external, it is provided by the clocks
-property. If it internal, then there will be no clocks property
-providing it.
-
-> and this reference clock selection is not applicable
-> for the IPQ4019 platform.
-
-Isn't this a patch for the IPQ4019? Why would it not be relevant?
-
-> > > There is also no enable control for the reference clocks since it is
-> > > inputted by the hardware PIN connection, i will update these descript=
-ion
-> > > in the DT to make it more clear.
-> >=20
-> > Again, this does not justify having custom properties for this clock,
-> > as it is no different to other platforms. As far as I can tell, the only
-> > thing that a standard "clocks" property cannot convey here is the
-> > internal reference. I would suggest that since there is only one
-> > internal clock frequency, the absence of this particular clock in the
-> > "clocks" property can be used to determine that the reference is the
-> > internal one.
-
-I'm surprised you didn't pick up on this, but there are actually _2_
-internal references, which I have just noticed while double checking the
-binding patch.
-
-What is the impact of using the 48 MHz or 96 MHz internal reference?
-
-Thanks,
-Conor.
-
-> Yes, we can get the clock rate of the clocks property if we register
-> these as the fix clock to distinguish the different clock source.
->=20
-> Since the reference clock rate value has no matter with the CMN clock
-> configuration, it is just the reference clock source selection, so
-> i did not use the fix clock for this.
->
-> Thanks for this suggestion, i will verify the fix clock register solution.
-
---lskATpY3N5YDan1V
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZX2xTwAKCRB4tDGHoIJi
-0psiAPwOjDlpx9TwSrv5c3aiBLP8ykDC5q3w39hpCmuz8eQLZgD/V8nYISfPXZY8
-IBfmbcjtQYNPCAgQZSYXk2eYrs8/fw4=
-=Tk8X
------END PGP SIGNATURE-----
-
---lskATpY3N5YDan1V--
+Why won't anyone help my free software project?
+I simply want help with the unreal map format. https://sourceforge.net/p/chaosesqueanthology/tickets/2/
 
