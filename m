@@ -1,153 +1,155 @@
-Return-Path: <linux-kernel+bounces-2158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479198158C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:11:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9929C8158C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AD0C1C23A49
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 11:11:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25D4AB24402
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 11:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C33615E94;
-	Sat, 16 Dec 2023 11:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8FA815E94;
+	Sat, 16 Dec 2023 11:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QNUs2bRP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nR9DRkEz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3026414005;
-	Sat, 16 Dec 2023 11:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C99154A9
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 11:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d383c7a751so11462345ad.1;
-        Sat, 16 Dec 2023 03:10:51 -0800 (PST)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3ba2dc0f6b7so1293900b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 03:23:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702725051; x=1703329851; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=52bukz5OEwPqW3+PrJR3Zff5UyUgEPAKyq1wevAV7IQ=;
-        b=QNUs2bRPLagZt0dnCu7Un9b425vMd2FQeg2BVOb0pp20RrhRVF3q5t0C62cQt3geJa
-         G8iQEX1jQQlqL3hla0OkC40wNwxEfLEtL4RUpj0SB13Z759BgW0fpw2SSk5MEcobAj0W
-         J4RYhKTfY/gWzd/YIT7gT5he1AGln26DWNdfXas5EHyeocB+bZfBmRCHxDWNZF2BOO4F
-         3ABDdwujhn4CBZ1IyVI1nuqwwKuboXJMNsyYqswLHxqp5/Lc8y5P7g4hU5diqddF8+Gd
-         X4I84ufNlPA3q0iRttUrUy0gYJ14MpED3vlvJ7eBAVijGZCxWp8I113KvgizgtMeWDAr
-         xCiA==
+        d=gmail.com; s=20230601; t=1702725826; x=1703330626; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qnMCgoEF3bBGwkMIyi+ffwyEvbkLUBGcU4ida8KYtA4=;
+        b=nR9DRkEzXNPO9EWS5dIdHBURO2bumR3k//p2FYWg1K+p0GJfZUVx8oI3SDW5lqkI5Q
+         Xz6EBRiYd4TMR0ALpUDQ/T6x2kEHxVlEIjLVAuF1FCSKb6sZ5CO7gYHKe0lLoV1ehggx
+         t5KMPL7jO9PMuXEv+FKKn+4lXbPUcCq6J+OuhFKdOWfkDlyomHVWf4WPEuSpnyzyDbeU
+         f1Le4ZyNRikcPLWKwWc06iZpAnOTkMlT9P0Q0HdhbRat+2QlRqJo61jUUYCgYM0GkZd9
+         /Id1WYzLszVWgbfLM/jm7f5fPwwe9La3m+z38ds4OjvG+5nWz9L+0cbgl4SDEOJBFg+R
+         tw1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702725051; x=1703329851;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=52bukz5OEwPqW3+PrJR3Zff5UyUgEPAKyq1wevAV7IQ=;
-        b=puLIgZmDyZvuRI6WEAt6QTdThq4HRC5e8YFTQLXq3oP7EdTc6ocgKivqffPTGk+7m8
-         Cp2551Yf4Vn8J83cjNxjO4WMemL2Rbwv7Zaq0YXNMEdBRpoy7ZFx0jc6m4rf8YrlPirN
-         zsBAqU6JsXpdsV9VnYoiwVdVgWb3PRWW9kyXdGYhF0GG8qtZ3JeKHGJ4FezefVMjKDE4
-         td27KDlqL4QXkIwiZTNNZhzxMc6kAF8vq5qpTfPkNVaUwrKx1eto4zeyQ+S/FKzf8wgV
-         DK2YhQ8mXvQYz1+jdEPxIGha8iifguSbgli10CAOBqvelH2LWibgSCrR2BWdLuFG5/AP
-         yCfQ==
-X-Gm-Message-State: AOJu0YxfSBV/zlrYKBCne5x8R6797oep3EKf6OyJM1EKCXVYKkLoJsCC
-	7+7lpYIditdK4vf0siuVbMg=
-X-Google-Smtp-Source: AGHT+IFcxUUJzWefJMD4f++MNnbTZ8X51NmtzAWytJLOpY467MG5rc1yFYx3c58rFOy2s+JkzbNaBw==
-X-Received: by 2002:a17:903:2303:b0:1d0:6ffd:e2c5 with SMTP id d3-20020a170903230300b001d06ffde2c5mr16060236plh.95.1702725051389;
-        Sat, 16 Dec 2023 03:10:51 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id ix2-20020a170902f80200b001cffd42711csm813414plb.199.2023.12.16.03.10.50
+        d=1e100.net; s=20230601; t=1702725826; x=1703330626;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qnMCgoEF3bBGwkMIyi+ffwyEvbkLUBGcU4ida8KYtA4=;
+        b=nb5I/X6kf5+NxFL+9MWYGFWhZhw9Dqs+bQyycbAwfBbMHYsTKeXQrd1QnYddU41GPj
+         XJciSLWfYHKzJT63FthbfBOFNg77OurSsr03px75/Go7w85go8wf9OkPuQUxHaqmKuJM
+         jUKZMN8hr+W8sbRIsazcoX9zbg3qeNoRWcSN5bXeH4LLIUVFfnzpl5kIWLgRDVKvXKEd
+         Qyg3LoW/YYIBE0Sdq6Pob67PQJ639yelfMGyzKmQ/0Bd6unp6bjVT38MZKDoI6xERmbS
+         F2/+yu7tCTj3nc15vmD6YR6t54hneos6QMyXZjofm2Soa8EdRtZ+efmhs6X+Zy5+fe5c
+         6sTw==
+X-Gm-Message-State: AOJu0YyNslHt9LjA0V+gbogd01r/GdmedEteSVutXCFAwG+gN/3L7eSQ
+	vEmXn6ZyADpWarElA4IQPi4=
+X-Google-Smtp-Source: AGHT+IFErTvBZa7RFfEFVfwrbzUjy2c/h8/SUdsTfJow2CaFwX1pn4Z+CA4CGhZHL+rKkTDKB/A4Iw==
+X-Received: by 2002:a05:6808:3c86:b0:3b9:e69f:c08d with SMTP id gs6-20020a0568083c8600b003b9e69fc08dmr19655056oib.52.1702725825763;
+        Sat, 16 Dec 2023 03:23:45 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id x128-20020a626386000000b006cea1db00cbsm604902pfb.204.2023.12.16.03.23.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 03:10:50 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 566E3102F376D; Sat, 16 Dec 2023 18:10:45 +0700 (WIB)
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux RPC <linux-remoteproc@vger.kernel.org>,
-	Linux OMAP <linux-omap@vger.kernel.org>,
-	Linux Memory Management List <linux-mm@kvack.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ohad Ben-Cohen <ohad@wizery.com>,
-	Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH] MAINTAINERS: Remove Ohad Ben-Cohen from hwspinlock subsystem
-Date: Sat, 16 Dec 2023 18:10:18 +0700
-Message-ID: <20231216111017.17624-2-bagasdotme@gmail.com>
+        Sat, 16 Dec 2023 03:23:45 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: bhe@redhat.com
+Cc: akpm@linux-foundation.org,
+	bp@alien8.de,
+	corbet@lwn.net,
+	dave.hansen@linux.intel.com,
+	ebiederm@xmission.com,
+	hpa@zytor.com,
+	kexec@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	tglx@linutronix.de,
+	x86@kernel.org,
+	ytcoode@gmail.com
+Subject: [PATCH 1/3 v3] kexec: modify the meaning of the end parameter in kimage_is_destination_range()
+Date: Sat, 16 Dec 2023 19:23:36 +0800
+Message-ID: <20231216112336.252557-1-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZX1t/4Reai6HdoJf@MiWiFi-R3L-srv>
+References: <ZX1t/4Reai6HdoJf@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2231; i=bagasdotme@gmail.com; h=from:subject; bh=6OfYArUW8Avykd+ylNtEXIf2NipDbU3dsr6Tpm5qsoo=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKm1zV9cFVJOzJuwRP72y32m8+b/eHi44yWX9elFMt1es i2+/Bt1O0pZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjARAQuGfxZe0uUeZQYXuFSK dSen782uPp+96vQ2t5+r+TTe60gZKTP89xJWYIyw2TC3JuApo7VEQFeR5sNt8ts/lmtwqnb3vEr gAQA=
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 
-Commit 62c46d55688894 ("MAINTAINERS: Removing Ohad from remoteproc/rpmsg
-maintenance") removes his MAINTAINERS entry in regards to remoteproc
-subsystem due to his inactivity (the last commit with his Signed-off-by
-is 99c429cb4e628e ("remoteproc/wkup_m3: Use MODULE_DEVICE_TABLE to
-export alias") which is authored in 2015 and his last LKML message prior
-to 62c46d55688894 was [1]).
+The end parameter received by kimage_is_destination_range() should be the
+last valid byte address of the target memory segment plus 1. However, in
+the locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions,
+the corresponding value passed to kimage_is_destination_range() is the last
+valid byte address of the target memory segment, which is 1 less.
 
-Remove also his MAINTAINERS entry for hwspinlock subsystem as there is
-no point of Cc'ing maintainers who never respond in a long time.
+There are two ways to fix this bug. We can either correct the logic of the
+locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions, or we
+can fix kimage_is_destination_range() by making the end parameter represent
+the last valid byte address of the target memory segment. Here, we choose
+the second approach.
 
-[1]: https://lore.kernel.org/r/CAK=Wgbbcyi36ef1-PV8VS=M6nFoQnFGUDWy6V7OCnkt0dDrtfg@mail.gmail.com/
+Due to the modification to kimage_is_destination_range(), we also need to
+adjust its callers, such as kimage_alloc_normal_control_pages() and
+kimage_alloc_page().
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
-I was prompted to do the removal when I was reviewing kernel-doc fix
-[2]. When I was digging MAINTAINERS history (`git log --no-merges --
-MAINTAINERS`), I noticed that Ohad is inactive.
+v1->v2:
+  Fix this issue using the approach suggested by Eric and Baoquan.
 
-This patch is based on mm-nonmm-unstable as I intend to route it
-through mm tree.
+  As this patch is independent of the other patches in this series, I sent
+  out the v2 patch separately. If it's inconvenient for anyone, I can
+  resend the entire series again.
 
-[2]: https://lore.kernel.org/r/ZX04Ymz_vDFEeUDX@archie.me/
+v2->v3:
+  Modify the assignment of eaddr as suggested by Baoquan.
 
- CREDITS     | 1 +
- MAINTAINERS | 4 +---
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ kernel/kexec_core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/CREDITS b/CREDITS
-index 81845c39e3cf37..cff24c62b0e8f9 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -323,6 +323,7 @@ N: Ohad Ben Cohen
- E: ohad@wizery.com
- D: Remote Processor (remoteproc) subsystem
- D: Remote Processor Messaging (rpmsg) subsystem
-+D: Hardware spinlock (hwspinlock) subsystem
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index be5642a4ec49..e65e8f186eff 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -276,8 +276,8 @@ int kimage_is_destination_range(struct kimage *image,
+ 		unsigned long mstart, mend;
  
- N: Krzysztof Benedyczak
- E: golbi@mat.uni.torun.pl
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5c9d3d8546714a..4acc4a3d4fcd96 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9257,7 +9257,6 @@ F:	drivers/char/hw_random/
- F:	include/linux/hw_random.h
+ 		mstart = image->segment[i].mem;
+-		mend = mstart + image->segment[i].memsz;
+-		if ((end > mstart) && (start < mend))
++		mend = mstart + image->segment[i].memsz - 1;
++		if ((end >= mstart) && (start <= mend))
+ 			return 1;
+ 	}
  
- HARDWARE SPINLOCK CORE
--M:	Ohad Ben-Cohen <ohad@wizery.com>
- M:	Bjorn Andersson <andersson@kernel.org>
- R:	Baolin Wang <baolin.wang7@gmail.com>
- L:	linux-remoteproc@vger.kernel.org
-@@ -15692,9 +15691,8 @@ F:	Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
- F:	drivers/gpio/gpio-omap.c
+@@ -370,7 +370,7 @@ static struct page *kimage_alloc_normal_control_pages(struct kimage *image,
+ 		pfn   = page_to_boot_pfn(pages);
+ 		epfn  = pfn + count;
+ 		addr  = pfn << PAGE_SHIFT;
+-		eaddr = epfn << PAGE_SHIFT;
++		eaddr = epfn << PAGE_SHIFT - 1;
+ 		if ((epfn >= (KEXEC_CONTROL_MEMORY_LIMIT >> PAGE_SHIFT)) ||
+ 			      kimage_is_destination_range(image, addr, eaddr)) {
+ 			list_add(&pages->lru, &extra_pages);
+@@ -716,7 +716,7 @@ static struct page *kimage_alloc_page(struct kimage *image,
  
- OMAP HARDWARE SPINLOCK SUPPORT
--M:	Ohad Ben-Cohen <ohad@wizery.com>
- L:	linux-omap@vger.kernel.org
--S:	Maintained
-+S:	Orphan
- F:	drivers/hwspinlock/omap_hwspinlock.c
+ 		/* If the page is not a destination page use it */
+ 		if (!kimage_is_destination_range(image, addr,
+-						  addr + PAGE_SIZE))
++						  addr + PAGE_SIZE - 1))
+ 			break;
  
- OMAP HS MMC SUPPORT
-
-base-commit: cbeb59a84b8f29151b882d03a4d23d19d92f4337
+ 		/*
 -- 
-An old man doll... just what I always wanted! - Clara
+2.43.0
 
 
