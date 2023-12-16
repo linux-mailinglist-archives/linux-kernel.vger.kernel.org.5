@@ -1,448 +1,183 @@
-Return-Path: <linux-kernel+bounces-2110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BACA18157FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 07:17:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B48D8157FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 07:22:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 717B1282287
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 06:17:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19AB91F24E8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 06:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E503E156C2;
-	Sat, 16 Dec 2023 06:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YFLUsH/8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C891612E43;
+	Sat, 16 Dec 2023 06:22:05 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A012154A0
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 06:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4259c7dfb63so9354141cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:17:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702707450; x=1703312250; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d9funWxOfefT592Dy2FEP5WAfCVFqoc4vYrUREvWZCE=;
-        b=YFLUsH/8e65bkYNqA/8Yrw+xspc2FPfIvx2/HW81g03eTwmXFm5nfMfR1BlfH+EeuV
-         6SXPLOYX8YNJBSKvKb6VmViVb7+uzSiG0NNhzJHkmh9tO7+XuF+PiFtf3gv1NzgXwcyT
-         oC7aC+7yPRDAqugS/wcHYAdEn8rrnaucQOdIDwgCwlP2YP3REM9Cs4SfBeSBLktG4J8C
-         1sLd5b3G8v4pjCgOnh0Rid20nWZs1bQ2P9GS4J7H8ZN3GWRRcjUXxLwpPpHB0umm+w0e
-         bnEq4iJMwxachL5KKbsZEuZEpvVwFUXt5bwxg7bs/hlvOGIq972qDPsilbLmuzLqppBT
-         W7UQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F9712B68
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 06:22:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b70c8b7314so220311539f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:22:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702707450; x=1703312250;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d9funWxOfefT592Dy2FEP5WAfCVFqoc4vYrUREvWZCE=;
-        b=nQV7VwAG5w5sCp33StTJXWmPM1Z+yxXe12QqncIprwVJSJ+DkOXiOpPU96RQ+ltXZH
-         na58b+keml3FzMwy5HYdUNtQo8SBpl0g4baF12XZIRGiFXIQwRgRPnHfE+LXGsKrz6PT
-         yuT5aGq+veJgnqIXbAuMAd2Vnw2NMXxEo/iFWzQvpp9VyehkYneOr6+9/p6gW42FMh3v
-         WfbNo9zzw0UWdFv7G8wlh7Gvk5O2kyvWR5t4eYcGheGMg6JqUglxWfMA3KT3e0cGFukt
-         wcRsOqHJfyQjeNXS6XCGXYmtxaXpORtTwsfWYWNeR2qtc0V5tVXg+rbSu3EZ+LDWQNG+
-         skrg==
-X-Gm-Message-State: AOJu0Yw4VXIckEUH+EHU13tj83sKc645qyVtr3a5eUyTELZ4Y773WF3/
-	U72+vY+pm233Uu5JPvRElF4Ht+uas5qU5UaKAjs=
-X-Google-Smtp-Source: AGHT+IEaotvTCxqhBjSXXcBpjOh1c8M/RGYsnJyQVcd2jNQEGN5VxtrcbwXy9jWLBwy/BsnPdWLW/A/TYI/5pv6gcdw=
-X-Received: by 2002:a05:620a:11b9:b0:77f:8be6:25f7 with SMTP id
- c25-20020a05620a11b900b0077f8be625f7mr7641347qkk.8.1702707450110; Fri, 15 Dec
- 2023 22:17:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702707723; x=1703312523;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gTmqEJUqo8mgq0Gq1BZ7a2ZpXFKHO46XjkjxRWlx1v8=;
+        b=KWlFEsUb+fH1s9OocdSL9DWMXaomLS+JeyIvGgDvFxuH9HeXiHVMa8CqZKVqCyGvNg
+         /uXjkYBoJi8fcBmhXezxPsk8BlsbNhsGyzlOQL3Ijd9NQoi9mmuRPcWQnA9YXqF6BEb9
+         EepYEmDcuqN7w3z3wIxT+oL9F2h9Zx+ql1cTNNm5VkkX9Q7uRK+rfpXSlJb2huyIzFJZ
+         LzwkTklN7EKX6+LWOeKXjSTxOfUyOb67FJaoU5XH1gZOEoBLOKFOBMNR0Z5qrkVdtgEU
+         MfNn61YuectZFpCAuHwd7Ydc4mTdwfJAU6SbJFHcK7J1mDXJlojiPW5c3pb+senbvoLX
+         qVxw==
+X-Gm-Message-State: AOJu0YzaqVja6xEMnc4ghYwAP6eJe/yE8wtxEElrCjLYRxgxri+ONmC4
+	epLcrOeuSyd9MpydB2WOPZRnJvVpNnO5fdJXDzWWm0a430cL
+X-Google-Smtp-Source: AGHT+IHyNnLt63HPzzJT+lKuhQkv1jbZNXdNLI/gpuHLTVJZqUoa1pFg5N/2IY5VaPdETwFb3g08NikuVcdBALm2pvvGKH5UwSqp
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130234048.157509-1-lb@semihalf.com> <20231130234048.157509-11-lb@semihalf.com>
-In-Reply-To: <20231130234048.157509-11-lb@semihalf.com>
-From: jim.cromie@gmail.com
-Date: Fri, 15 Dec 2023 23:17:03 -0700
-Message-ID: <CAJfuBxwYhidyr0Fmjbf8Sp1H0-f8yWx4eazE301HtkzrboThqA@mail.gmail.com>
-Subject: Re: [PATCH v2 10/15] dyndbg: add open and close commands for trace
-To: =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Cc: Jason Baron <jbaron@akamai.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kees Cook <keescook@chromium.org>, Douglas Anderson <dianders@chromium.org>, 
-	Guenter Roeck <groeck@google.com>, Yaniv Tzoreff <yanivt@google.com>, Benson Leung <bleung@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	Pekka Paalanen <ppaalanen@gmail.com>, Sean Paul <seanpaul@chromium.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org, upstream@semihalf.com
+X-Received: by 2002:a05:6638:1926:b0:469:221d:5f12 with SMTP id
+ p38-20020a056638192600b00469221d5f12mr567632jal.4.1702707722831; Fri, 15 Dec
+ 2023 22:22:02 -0800 (PST)
+Date: Fri, 15 Dec 2023 22:22:02 -0800
+In-Reply-To: <20231216054106.1572-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f9cc66060c9a8811@google.com>
+Subject: Re: [syzbot] [block?] INFO: task hung in bdev_release
+From: syzbot <syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-** entering the bikeshed **
+Hello,
 
-On Thu, Nov 30, 2023 at 4:41=E2=80=AFPM =C5=81ukasz Bartosik <lb@semihalf.c=
-om> wrote:
->
-> Add open and close commands for opening and closing trace instances.
-> The open command has to be mandatory followed by a trace instance name.
-> If a trace instance already exists in <debugfs>/tracing/instances
-> directory then the open command will reuse it otherwise a new trace
-> instance with a name provided to the open will be created. Close
-> command closes previously opened trace instance. The close will
-> fail if a user tries to close non-existent trace instances or an
-> instance which was not previously opened.
->
-> For example the following command will open (create or reuse existing)
-> trace instance located in <debugfs>/tracing/instances/usbcore:
->
->     echo "open usbcore" > <debugfs>/dynamic_debug/control
->
-> Signed-off-by: =C5=81ukasz Bartosik <lb@semihalf.com>
-> ---
->  lib/Kconfig.debug   |   1 +
->  lib/dynamic_debug.c | 193 ++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 194 insertions(+)
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 5bc56c7247a2..f184c3c91ba3 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -181,6 +181,7 @@ config DYNAMIC_DEBUG_CORE
->         bool "Enable core function of dynamic debug support"
->         depends on PRINTK
->         depends on (DEBUG_FS || PROC_FS)
-> +       depends on TRACING
->         help
->           Enable core functional support of dynamic debug. It is useful
->           when you want to tie dynamic debug to your kernel modules with
-> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> index 0dc9ec76b867..43e94023a4eb 100644
-> --- a/lib/dynamic_debug.c
-> +++ b/lib/dynamic_debug.c
-> @@ -36,6 +36,7 @@
->  #include <linux/sched.h>
->  #include <linux/device.h>
->  #include <linux/netdevice.h>
-> +#include <linux/trace.h>
->
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/dyndbg.h>
-> @@ -73,6 +74,25 @@ struct flag_settings {
->         unsigned int mask;
->  };
->
-> +#define DD_OPEN_CMD    "open"
-> +#define DD_CLOSE_CMD   "close"
-> +#define DD_TR_EVENT    "0"
-> +
-> +struct ddebug_trace_inst {
-> +       const char *name;
-> +       struct trace_array *arr;
-> +};
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in blkdev_put
 
-can we bikeshed the struct name here ?
-inst is not a great abbreviation, its hard to say,
-and tends to look like a spelling error.
+INFO: task syz-executor.0:5497 blocked for more than 143 seconds.
+      Not tainted 6.7.0-rc5-syzkaller-00214-gc8e97fc6b4c0 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:27872 pid:5497  tgid:5496  ppid:5434   flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5376 [inline]
+ __schedule+0xedb/0x5af0 kernel/sched/core.c:6688
+ __schedule_loop kernel/sched/core.c:6763 [inline]
+ schedule+0xe9/0x270 kernel/sched/core.c:6778
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6835
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:747
+ blkdev_put+0xb0/0x8e0 block/bdev.c:930
+ bdev_release+0x4f/0x80 block/bdev.c:954
+ blkdev_release+0x37/0x50 block/fops.c:616
+ __fput+0x270/0xb70 fs/file_table.c:394
+ task_work_run+0x14d/0x240 kernel/task_work.c:180
+ get_signal+0x106f/0x2790 kernel/signal.c:2680
+ arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x121/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1e/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x4d/0x110 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f766767cae9
+RSP: 002b:00007f766845b0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: 0000000000000000 RBX: 00007f766779bf80 RCX: 00007f766767cae9
+RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000005
+RBP: 00007f76676c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f766779bf80 R15: 00007ffc44ea6c78
+ </TASK>
 
- _tr_ appearing later on in function names isnt great either.
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8cfab760 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ #0: ffffffff8cfab760 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ #0: ffffffff8cfab760 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6614
+2 locks held by getty/4818:
+ #0: ffff88814b8ea0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc6/0x1490 drivers/tty/n_tty.c:2201
+1 lock held by udevd/5426:
+ #0: ffff888140b5d4c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x4ea/0xb10 block/bdev.c:788
+1 lock held by syz-executor.0/5497:
+ #0: ffff888140b5d4c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0xb0/0x8e0 block/bdev.c:930
+1 lock held by syz-executor.0/5806:
+ #0: ffff888140b5d4c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x4ea/0xb10 block/bdev.c:788
+1 lock held by syz-executor.0/5826:
+ #0: ffff888140b5d4c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x4ea/0xb10 block/bdev.c:788
 
-dd_private_tracebuf ??
+=============================================
 
-I could get used to EVENT for the global tracebuf,
-but I dont find it entirely natural.
-Is it a convention in any way ?
+NMI backtrace for cpu 1
+CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.7.0-rc5-syzkaller-00214-gc8e97fc6b4c0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x277/0x390 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xf87/0x1210 kernel/hung_task.c:379
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 2415 Comm: kworker/u4:9 Not tainted 6.7.0-rc5-syzkaller-00214-gc8e97fc6b4c0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Workqueue: events_unbound cfg80211_wiphy_work
+RIP: 0010:__sanitizer_cov_trace_pc+0x59/0x60 kernel/kcov.c:225
+Code: 82 d8 15 00 00 83 f8 02 75 20 48 8b 8a e0 15 00 00 8b 92 dc 15 00 00 48 8b 01 48 83 c0 01 48 39 d0 73 07 48 89 01 48 89 34 c1 <c3> 66 0f 1f 44 00 00 f3 0f 1e fa 41 57 41 56 49 89 d6 41 55 41 54
+RSP: 0018:ffffc9000a8b79d0 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: ffff88801a3ba000 RCX: 1ffffffff23e7cce
+RDX: ffff8880259f8000 RSI: ffffffff813b3858 RDI: ffff88801a3ba000
+RBP: 0000000080000000 R08: 0000000000000001 R09: fffffbfff23e25dd
+R10: ffffffff91f12eef R11: 0000000000000003 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff88806fc7cc80 R15: ffff88806af7d550
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000562c2ba01600 CR3: 000000000cd77000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ __phys_addr+0x18/0x140 arch/x86/mm/physaddr.c:17
+ virt_to_folio include/linux/mm.h:1281 [inline]
+ kfree+0x45/0x150 mm/slab_common.c:1048
+ ieee80211_rx_mgmt_probe_beacon net/mac80211/ibss.c:1578 [inline]
+ ieee80211_ibss_rx_queued_mgmt+0x1b00/0x3120 net/mac80211/ibss.c:1604
+ ieee80211_iface_process_skb net/mac80211/iface.c:1589 [inline]
+ ieee80211_iface_work+0xa67/0xda0 net/mac80211/iface.c:1643
+ cfg80211_wiphy_work+0x24e/0x330 net/wireless/core.c:437
+ process_one_work+0x886/0x15d0 kernel/workqueue.c:2627
+ process_scheduled_works kernel/workqueue.c:2700 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2781
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
 
-FWIW, I chose "class" as synonymous with (modelled after)
-drm's category, but spelled different (and shorter)
 
+Tested on:
 
+commit:         c8e97fc6 Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=132d7556e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=48e9d2b9b4b93f29
+dashboard link: https://syzkaller.appspot.com/bug?extid=4da851837827326a7cd4
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-> +
-> +/*
-> + * TRACE_DST_MAX value is reserved for writing
-> + * debug logs to trace events (prdbg, devdbg)
-> + */
-> +struct ddebug_trace {
-> +       struct ddebug_trace_inst inst[TRACE_DST_MAX-1];
-> +       DECLARE_BITMAP(bmap, TRACE_DST_MAX-1);
-> +       int bmap_size;
-> +};
-
-some kind of tbl in the name ?
-struct _ddebug_info contains descriptors and classes,
-struct dd_tracebuf_tbl_info ??
-(maybe not, but hopefully it prompts better)
-
-Also, since it touches on the 0 as EVENTS global trace-buf,
-does it simplify if we just waste index 0 in the inst[] array,
-and change MAX to LAST ?
-Or is it too much magic in 0 this way ?
-
-> +
->  static DEFINE_MUTEX(ddebug_lock);
->  static LIST_HEAD(ddebug_tables);
->  static int verbose;
-> @@ -80,6 +100,8 @@ module_param(verbose, int, 0644);
->  MODULE_PARM_DESC(verbose, " dynamic_debug/control processing "
->                  "( 0 =3D off (default), 1 =3D module add/rm, 2 =3D >cont=
-rol summary, 3 =3D parsing, 4 =3D per-site changes)");
->
-> +static struct ddebug_trace tr =3D { .bmap_size =3D TRACE_DST_MAX-1 };
-
-cryptic name.
-it does appear ~20x in kernel/trace/trace_events.c
-usually as trace_array_put(tr)
-
-   trc_tbl ?
-
-and where is the map itself established ?
-
-> +
->  static inline struct dd_ctrl *get_ctrl(struct _ddebug *desc)
->  {
->         return &desc->ctrl;
-> @@ -171,6 +193,148 @@ static void vpr_info_dq(const struct ddebug_query *=
-query, const char *msg)
->                   query->first_lineno, query->last_lineno, query->class_s=
-tring);
->  }
->
-> +static bool is_ddebug_cmd(const char *str)
-
-is_dd_trace_cmd()
-
-> +{
-> +       if (!strcmp(str, DD_OPEN_CMD) ||
-> +           !strcmp(str, DD_CLOSE_CMD))
-
-single line < 80 chr ?
-
-> +               return true;
-> +
-> +       return false;
-> +}
-> +
-> +static bool validate_tr_name(const char *str)
-
-something less procedural sounding, and more is-ok?
-dd_good_trace_name ?
-
-> +{
-> +       /* "0" is reserved for writing debug logs to trace events (prdbg,=
- devdbg) */
-> +       if (!strcmp(str, DD_TR_EVENT))
-> +               return false;
-> +
-> +       /* we allow trace instance names to include ^\w+ and underscore *=
-/
-> +       while (*str !=3D '\0') {
-> +               if (!isalnum(*str) && *str !=3D '_')
-> +                       return false;
-> +               str++;
-> +       }
-> +
-> +       return true;
-> +}
-> +
-> +static int find_tr_instance(const char *name)
-
-is this finding a slot ?
-not that slot is meaningful, but instance is at risk of overuse.
-
-> +{
-> +       int idx;
-> +
-> +       for_each_set_bit(idx, tr.bmap, tr.bmap_size)
-> +               if (!strcmp(tr.inst[idx].name, name))
-> +                       return idx;
-> +
-> +       return -ENOENT;
-> +}
-> +
-> +static int handle_tr_opend_cmd(const char *arg)
-
-handle_open_?trace_cmd or  handle_trace_?open_cmd ?
-
-> +{
-> +       struct ddebug_trace_inst *inst;
-> +       int idx, ret =3D 0;
-> +
-> +       mutex_lock(&ddebug_lock);
-> +
-> +       idx =3D find_first_zero_bit(tr.bmap, tr.bmap_size);
-> +       if (idx =3D=3D tr.bmap_size) {
-> +               ret =3D -ENOSPC;
-> +               goto end;
-> +       }
-> +
-> +       if (!validate_tr_name(arg)) {
-> +               pr_err("invalid instance name:%s\n", arg);
-> +               ret =3D -EINVAL;
-> +               goto end;
-> +       }
-> +
-> +       if (find_tr_instance(arg) >=3D 0) {
-> +               pr_err("instance is already opened name:%s\n ", arg);
-> +               ret =3D -EEXIST;
-> +               goto end;
-> +       }
-> +
-> +       inst =3D &tr.inst[idx];
-> +       inst->name =3D kstrdup(arg, GFP_KERNEL);
-> +       if (!inst->name) {
-> +               ret =3D -ENOMEM;
-> +               goto end;
-> +       }
-> +
-> +       inst->arr =3D trace_array_get_by_name(inst->name);
-> +       if (!inst->arr) {
-
-any advice (pr_notice) worth giving if this happens ?
-conversely, does this get need a corresponding put ?
-yes - I see it in the close-cmd-handler
-if so, can we check the inst->arr before (re-)calling get-by-name ?
-
-Or does doing this tie up the instance,
-blocking the user from deleting it ?
-
-> +               ret =3D -EINVAL;
-> +               goto end;trace_array_get_by_name
-> +       }
-> +
-> +       ret =3D trace_array_init_printk(inst->arr);
-> +       if (ret) {
-> +               trace_array_put(inst->arr);
-> +               trace_array_destroy(inst->arr);
-> +               goto end;
-> +       }
-> +
-> +       set_bit(idx, tr.bmap);
-> +       v3pr_info("opened trace instance idx=3D%d, name=3D%s\n", idx, arg=
-);
-> +end:
-> +       mutex_unlock(&ddebug_lock);
-> +       return ret;
-> +}
-> +
-> +static int handle_tr_close_cmd(const char *arg)
-> +{
-> +       struct ddebug_trace_inst *inst;
-> +       int idx, ret =3D 0;
-> +
-> +       mutex_lock(&ddebug_lock);
-> +
-> +       idx =3D find_tr_instance(arg);
-> +       if (idx < 0) {
-> +               ret =3D idx;
-> +               goto end;
-> +       }
-> +
-> +       inst =3D &tr.inst[idx];
-> +
-> +       trace_array_put(inst->arr);
-> +       /*
-> +        * don't destroy trace instance but let user do it manually
-> +        * with rmdir command at a convenient time later, if it is
-> +        * destroyed here all debug logs will be lost
-> +        *
-
-aha.  thx for this comment. it clarifies something I asked somewhere
-
-> +        * trace_array_destroy(inst->arr);
-> +        */
-> +       inst->arr =3D NULL;
-> +
-> +       kfree(inst->name);
-> +       inst->name =3D NULL;
-> +
-> +       clear_bit(idx, tr.bmap);
-> +       v3pr_info("closed trace instance idx=3D%d, name=3D%s\n", idx, arg=
-);
-> +end:
-> +       mutex_unlock(&ddebug_lock);
-> +       return ret;
-> +}
-> +
-> +static int ddebug_parse_cmd(char *words[], int nwords)
-> +{
-> +       int ret;
-> +
-> +       if (nwords !=3D 1)
-> +               return -EINVAL;
-> +
-> +       if (!strcmp(words[0], DD_OPEN_CMD))
-> +               ret =3D handle_tr_opend_cmd(words[1]);
-
-  just return handle_() ?
-  and drop following else
-
-> +       else if (!strcmp(words[0], DD_CLOSE_CMD))
-> +               ret =3D handle_tr_close_cmd(words[1]);
-> +       else {
-> +               pr_err("invalid command %s\n", words[0]);
-> +               ret =3D -EINVAL;
-
-just return here.
-
-> +}
-> +
->  static struct ddebug_class_map *ddebug_find_valid_class(struct ddebug_ta=
-ble const *dt,
->                                                           const char *cla=
-ss_string, int *class_id)
->  {
-> @@ -567,6 +731,11 @@ static int ddebug_exec_query(char *query_string, con=
-st char *modname)
->                 pr_err("tokenize failed\n");
->                 return -EINVAL;
->         }
-> +
-> +       /* check for open, close commands */
-> +       if (is_ddebug_cmd(words[0]))
-> +               return ddebug_parse_cmd(words, nwords-1);
-> +
->         /* check flags 1st (last arg) so query is pairs of spec,val */
->         if (ddebug_parse_flags(words[nwords-1], &modifiers)) {
->                 pr_err("flags parse failed\n");
-> @@ -1191,6 +1360,20 @@ static struct _ddebug *ddebug_iter_next(struct dde=
-bug_iter *iter)
->         return &iter->table->ddebugs[iter->idx];
->  }
->
-> +/*
-> + * Check if the iterator points to the last _ddebug object
-> + * to traverse.
-> + */
-> +static bool ddebug_iter_is_last(struct ddebug_iter *iter)
-> +{
-> +       if (iter->table =3D=3D NULL)
-> +               return false;
-> +       if (iter->idx-1 < 0 &&
-> +           list_is_last(&iter->table->link, &ddebug_tables))
-> +               return true;
-> +       return false;
-> +}
-> +
->  /*
->   * Seq_ops start method.  Called at the start of every
->   * read() call from userspace.  Takes the ddebug_lock and
-> @@ -1281,6 +1464,16 @@ static int ddebug_proc_show(struct seq_file *m, vo=
-id *p)
->         }
->         seq_puts(m, "\n");
->
-> +       if (ddebug_iter_is_last(iter) &&
-> +           !bitmap_empty(tr.bmap, tr.bmap_size)) {
-> +               int idx;
-> +
-> +               seq_puts(m, "\n");
-> +               seq_puts(m, "Opened trace instances:\n");
-> +               for_each_set_bit(idx, tr.bmap, tr.bmap_size)
-> +                       seq_printf(m, "%s\n", tr.inst[idx].name);
-> +       }
-> +
->         return 0;
->  }
->
-> --
-> 2.43.0.rc2.451.g8631bc7472-goog
->
+Note: no patches were applied.
 
