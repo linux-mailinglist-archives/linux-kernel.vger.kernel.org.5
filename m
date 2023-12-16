@@ -1,85 +1,84 @@
-Return-Path: <linux-kernel+bounces-2229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFB108159F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 16:31:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A339E8159F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 16:32:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8306D1F23C4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 15:31:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54896285CA6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 15:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0071E2F866;
-	Sat, 16 Dec 2023 15:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D66030665;
+	Sat, 16 Dec 2023 15:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4RC4tbQ/"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="m8Y3+oUm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-lf1-f74.google.com (mail-lf1-f74.google.com [209.85.167.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A9D14A85
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 15:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4BEF3035D
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 15:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbce9c6cd26so1542079276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 07:31:49 -0800 (PST)
+Received: by mail-lf1-f74.google.com with SMTP id 2adb3069b0e04-50bfc3c3c5eso1476224e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 07:31:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702740709; x=1703345509; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cShlorMw8kWqKOf3zj1Y7K2yyj9kYaaJBBygnuYbW/A=;
-        b=4RC4tbQ/sH9AGS9rXXs0+JLcBAbeQNthB68PJP8tXR7P7a1M3K37kR7SwUE2xQ0y6n
-         x/aMQU1c5A4FynHzx3sp3j6sMaDO1OCaRTy4fWKGAu1zORsjkTNuIPbXT7SluGXgNE2h
-         tip5ub6zBhTvAuyMS2g/AmfqSGRl9ZYisYRiSTIv9F8j2CtZWp6OJuBsLlXSj7zfycpQ
-         i3KIOADuS6PBkWPj9RcB8BzQhylHKCdKKAZgWSoyjn1ffHojaPYpadp3JqfL2jmJqbnu
-         Y1hkjFRrw4dCTPV+dmXeF2zeRXD2xWDN8dGY0fWhkcNNR4MExBjBGvlaO6BP+3bd+NBu
-         WoaA==
+        d=google.com; s=20230601; t=1702740712; x=1703345512; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=n21sZvx4OGz0fMgIbSc81FSV19tv9Tbnfac5je6hStI=;
+        b=m8Y3+oUmLqKfjT0EcFYFUxcsv3jKvWJdMInKvCL/SSkihaOFi8KAPuuvicPlxFw/4h
+         rD/R2MV0DmqJ9a6oyXo7s0Ny3grC+QoGsYXGbuVAuonST1a1WlXIiiwCfxFBlk8B494u
+         xRYWn6OCBD2AQvgv5uZmkHJD+jo8u+VPpUmS1H3MKTx0izb+RCC/normYydep16boR1A
+         CKHplCN3jZlE11upMPykQ+HoyyJxJEn392FMCYfo3R1WIktn4XJbdsEh/R3JPG/jrpPv
+         dYZ0IVFs2BDguI/7po7j1EET1fjUDIqEaZTI3Y4qxtl1FixYXM43zAHBA61Wwt9R0iDX
+         xghw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702740709; x=1703345509;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cShlorMw8kWqKOf3zj1Y7K2yyj9kYaaJBBygnuYbW/A=;
-        b=mnbhHL2x/wHhb/iGhLFyqiIa22+y/xH1BsfKh6dzC9Ts900xq0lE0JLpBbyrxVdAkE
-         oQIGX7VNHY5FKnPkpLkBg5u3FYKclbgJP71ZlYxaw+OauShoKmIq9wBSyEfi1H9xKzVV
-         15FWX29DDhhsOL4cFMoHLjqNDe8YLAjDKX69XoEC+qsOenX6504qaHcodDbPEo1xElqy
-         9brG18ZFHY1DCRtyVheoh2SxzaI1mJXWISotHq/krfaMcYmbShc0y6J9S4I7FjlMr5od
-         3qJrSi+FHEVS4Dh9JiSYh8IriCsGl9HMrJegQuDKQt6CC7awqEYix1hWhJPnh61WiPQO
-         xnlg==
-X-Gm-Message-State: AOJu0YzaC1cCNNFqzT6Bhgf8tAY1rQ7+81LEV9Gbqclh3YyoMpYM5mTW
-	Em5JEgDKKimmUSSappTSzXGOgpemx9JvtGI=
-X-Google-Smtp-Source: AGHT+IEPOKAO2SCoPiLlIvEV2jbrdgVIUULnGyWnw2rW2jtaGD22VUk7aw7p6ScIw805MZhYN1NdZ0Sl0pF6T/Q=
+        d=1e100.net; s=20230601; t=1702740712; x=1703345512;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n21sZvx4OGz0fMgIbSc81FSV19tv9Tbnfac5je6hStI=;
+        b=ka/ROpYV88o5fhIpfgyiZqhTI+b5PrgLWgYsJ66qAXNZH7jA4i4wAWME9aObI2NO8y
+         eTxDHe8k2P2EuEM1YhMUBuH9+ltMAScSDlFBNuTDro0JseHH9r9PzVvAMzHvVafyninX
+         IVKa7KVdV6TxbuGJYWj4nbVjyNFK/2OpUYwXzpVLR0fjXWmnsiMmKDGeHNZaxHo1xYWX
+         Cb3gggKaKLuVxLsAOuzBrJ5DvwVCVezxLu2hwTJydNdIN+lVR4tzfKPGPcnLiXArnQub
+         B0psOJDBy/5TTALWXjpT2wq4UoWFgqtOXaplomld/Uf9zvLjwX+u31OgXOryoEnoxcqC
+         nBHA==
+X-Gm-Message-State: AOJu0YwrUxuVKAx4Uh58LmkH6+Z23G2CEdCCgKFGp5LKwi+CkQUp108F
+	ScHRSv1aknGv8f3T3UeOGMDw0UxnLwKE0T0=
+X-Google-Smtp-Source: AGHT+IFPb67LbaPE6VM7e+gjZkusqwNzggRxuRvHf6JAMNULNkMI2Zdv1CznDmLXgtlPx/vQv8kTuZ84bMJe+jc=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6902:343:b0:db5:f536:17d4 with SMTP
- id e3-20020a056902034300b00db5f53617d4mr518542ybs.11.1702740708918; Sat, 16
- Dec 2023 07:31:48 -0800 (PST)
-Date: Sat, 16 Dec 2023 15:31:38 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6512:118a:b0:50c:21d8:40da with SMTP
+ id g10-20020a056512118a00b0050c21d840damr273029lfr.1.1702740711767; Sat, 16
+ Dec 2023 07:31:51 -0800 (PST)
+Date: Sat, 16 Dec 2023 15:31:39 +0000
+In-Reply-To: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANvCfWUC/3WNQQ6CMBBFr0Jm7RhaQKIr72FYDO0ATaRjWlI1h
- LtbSVy6fC/5768QOTiOcClWCJxcdOIz6EMBZiI/MjqbGXSpK6XLBkOPnp9oxNtEAWdeJrERddv
- TubFDY2sFefwIPLjXHr51mScXFwnv/Sepr/0lT/+SSWGJVUW1ob4dLNF1FBnvfDQyQ7dt2wfB8 NhjvQAAAA==
+References: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2406; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=HTy45/347Drn5hP7O0VpJSWU02XY86CTstQyaTmhs/4=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlfcLe4OYhYNujNTzHwytf3JEYFtuVZVifc1MqW
- +jE3mGb3G+JAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZX3C3gAKCRAEWL7uWMY5
- RsdrD/98nB+Ly5U5uqjm5uXJOoSTNSBTCo4utRByUziEzuaeddFruRLfbergNLbE40DnUiPSsfh
- EBULuY4l+QqsXHV0S9zySvbsmZs0pUhseR6mO3GDatg9FXsAw+8HzY5arXNGe2jMad+0YKe1GpQ
- AgzG8cPyiHHRMc0/kPm+aQxjH6L40oaHWAz64AZaxb905D5gIEh8p/NImyCeBRJpwA4Wj+av5au
- YR2GYIWdIx6QZlTCiRsXp+SoGKrUsXeBUpH5UqnLso1CU0ooiJx6zGRkwuXxQPiM+iDs4/loc1t
- FgFYSmu9nru9ai9CIKS4+ZbxX4FakYgv/SWiExVVZ/nT4aNgB7viK6daw/UzzEJSqMmSGEdCwE6
- xha8NfwKS7NMuWL4zTm8dyTWrWSvAxiGpJY882xD7d0MSA6r1ZpHAdSeBfAoAow/H/tLRslZbdY
- Kb8EVy/RBvNeh8QOzq53XE5Zpn2uJRIcNB9WQa+B+mLzqeFwOpdlFs4wdjjOxDvfpts++z+E4mo
- pL3nTDhupJ0BWvQn/uZ0tdUAB2K0lOd7WGEL8OM0XOEBGqEYAgKXiv3SrK32Zn2VtEHaANv3X/M
- V7UaYCSr+dh6DKynY86u5hiIxsOf3XwlqnToyRsxy0GGcGHgI5VOtwLcMpexegmK7ooCKs3DDef nDWnGbxMZMc5acQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1451; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=sq4o+0fCxkYUC2mgTGvD+vhZ6Pja4Fjl7gEOQStlLeY=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlfcLf7qSifHao52i6f1nLRLHyYtY4Wn5qsuFpj
+ TxPIj7uwFSJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZX3C3wAKCRAEWL7uWMY5
+ RjJRD/4nBUX0NzHvzLrX/JKnInVQ1ftZ0lCrZTOqIzVNp3nZ5eAoilchBKaN9oS9VxiWwpjJpQ5
+ LyW/kPMb2mqVh/qRKz82S1MjhDHKQXy66HQ43BscfEstQEgIj+hxNWJ+c03r9jpXTjo92s4WPM8
+ CUM3Dc5ojYbE4IGW+5xi2KnXTCiRomyWmmxrJpNchhQ9w3TNxkxFwHsDD/gWXMlCJvRC2VnPnGY
+ HUKLB4S2cruSCqRFQnkFhSBxfo0BME2OW0VWzhJUiHG1rp0yjgYjjApMFfPwghwUcHqKWvPsDvW
+ 1MsOc5CbsN06/WNCNJz956fVkSRrm03cxbRlG4UuuZ9wBKOj5ePmYSkN47e5HgsvYPKyASjtPp4
+ W4FM4V9TPqN9d9RubDZCYsAzS74AMtzOOdcPoC40k6kFmiSBLh+RZnk3bKw4HPrnH45ZgUqaRch
+ V9BVCM8G5p2ZhroNbe4FOt1ek56hhP1iftlgzESoNLUA/7+tH8ULFeIfNOjVAaSPx/YO85eLZE/
+ xFWkTbzFTFzD+tYvYVbOmDPbTMFY+TLFvMHjHMZf7CXqD42DsM3O3hO8oPmd2N81WawVLWE19WO
+ 7UHAHYzQmOfwHYx7DstBYzg1pnkJQgJofA646MiFp61+oG9lfeVh9gKMFuabZlnv8jynOaluQYi tV0RYgXEtK0WPzw==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
-Subject: [PATCH v2 0/4] Additional CondVar methods needed by Rust Binder
+Message-ID: <20231216-rb-new-condvar-methods-v2-1-b05ab61e6d5b@google.com>
+Subject: [PATCH v2 1/4] rust: sync: add `CondVar::notify_sync`
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
 	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
@@ -91,62 +90,43 @@ Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Content-Type: text/plain; charset="utf-8"
 
-This patchset contains some CondVar methods that Rust Binder needs.
+Wake up another thread synchronously.
 
-The CondVar type implements a condition variable, and tries to mirror
-the API of the CondVar type provided by the Rust standard library [2].
-It is implemented using a `wait_queue_head`.
+This method behaves like `notify_one`, except that it hints to the
+scheduler that the current thread is about to go to sleep, so it should
+schedule the target thread on the same CPU.
 
-Please see the Rust Binder RFC for usage examples [1].
+This is used by Rust Binder as a performance optimization. When sending
+a transaction to a different process, we usually know which thread will
+handle it, so we can schedule that thread for execution next on this
+CPU for better cache locality.
 
-Users of rust: sync: add `CondVar::notify_sync`:
-	[PATCH RFC 04/20] rust_binder: add work lists
-	[PATCH RFC 07/20] rust_binder: add epoll support
-	[PATCH RFC 08/20] rust_binder: add non-oneway transactions
-
-Users of rust: time: add msecs to jiffies conversion:
-	[PATCH v2 3/3] rust: sync: add `CondVar::wait_timeout`
-	[PATCH RFC 15/20] rust_binder: add process freezing
-
-Users of rust: sync: add `CondVar::wait_timeout`:
-	[PATCH RFC 15/20] rust_binder: add process freezing
-
-This patchset is based on top of Boqun's patch [3] that renames the
-existing wait methods to follow the C convention of using the
-_interruptable suffix.
-
-Link: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-0-08ba9197f637@google.com/ [1]
-Link: https://doc.rust-lang.org/stable/std/sync/struct.Condvar.html [2]
-Link: https://lore.kernel.org/all/20231214200421.690629-1-boqun.feng@gmail.com/ [3]
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
-Changes in v2:
-- Introduce "rust: time: add msecs to jiffies conversion" patch.
-- Introduce "rust: sync: update integer types in CondVar" patch.
-- Merge wait_internal and wait_internal_timeout.
-- Use new Jiffies type alias instead of u64.
-- Update names to use _interruptable suffix (and base patchset on top of [3]).
-- Link to v1: https://lore.kernel.org/r/20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com
+ rust/kernel/sync/condvar.rs | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
----
-Alice Ryhl (4):
-      rust: sync: add `CondVar::notify_sync`
-      rust: time: add msecs to jiffies conversion
-      rust: sync: add `CondVar::wait_timeout`
-      rust: sync: update integer types in CondVar
+diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
+index 8630faa29b78..9331eb606738 100644
+--- a/rust/kernel/sync/condvar.rs
++++ b/rust/kernel/sync/condvar.rs
+@@ -155,6 +155,12 @@ fn notify(&self, count: i32, flags: u32) {
+         };
+     }
+ 
++    /// Calls the kernel function to notify one thread synchronously.
++    pub fn notify_sync(&self) {
++        // SAFETY: `wait_list` points to valid memory.
++        unsafe { bindings::__wake_up_sync(self.wait_list.get(), bindings::TASK_NORMAL) };
++    }
++
+     /// Wakes a single waiter up, if any.
+     ///
+     /// This is not 'sticky' in the sense that if no thread is waiting, the notification is lost
 
- rust/bindings/bindings_helper.h |  1 +
- rust/kernel/lib.rs              |  1 +
- rust/kernel/sync/condvar.rs     | 86 ++++++++++++++++++++++++++++++++---------
- rust/kernel/sync/lock.rs        |  4 +-
- rust/kernel/time.rs             | 17 ++++++++
- 5 files changed, 89 insertions(+), 20 deletions(-)
----
-base-commit: 2a76b6e08193d2997689011321bcf230f0c8d4fe
-change-id: 20231205-rb-new-condvar-methods-27ba95df5d41
-
-Best regards,
 -- 
-Alice Ryhl <aliceryhl@google.com>
+2.43.0.472.g3155946c3a-goog
 
 
