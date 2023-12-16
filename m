@@ -1,90 +1,207 @@
-Return-Path: <linux-kernel+bounces-2191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A3F9815927
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:00:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B33D1815929
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 14:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D321AB2149B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:00:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7248E2832BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41F6118ECC;
-	Sat, 16 Dec 2023 13:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HmSBuDHY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C91A24A03;
+	Sat, 16 Dec 2023 13:02:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0BD30328
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 13:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702731640; x=1734267640;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=pPhv7hbEtV2klsAVYYae6ssgIimkXUCBhsJTOx6lO48=;
-  b=HmSBuDHYXc0IOnPHcJPXUH7oRBGg6iSL+ZiEipl8t0zwSuSEXeiZlchh
-   5fSbM8RsD5BLRsd1oauXQxf2+IkBzsVQmBP2+whmdBLCST6ZbNabEmg6K
-   hWXXuxgOoMk2grQEWS4ExBUdaAxj8ugPwDLWETt/K+2fzzvKEQUaWY6jW
-   fl5XRMa8/28HDGdTZkqroL1tvVd7jmUEsLqDrQ8kuqJJKV2mlZ1PxKTAa
-   i4U3FgsueLYcVDzOEkJ5ZHtHJ6ImUWIvieMxsjWK8Vy9D8Tml5lMjuXYP
-   2+bW7GIEcNo73Xr2dOuTX4qe1JB5WLB1QK0FYbygPcZlKGNtk9rQE26it
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="16929483"
-X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
-   d="scan'208";a="16929483"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 05:00:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="809279374"
-X-IronPort-AV: E=Sophos;i="6.04,281,1695711600"; 
-   d="scan'208";a="809279374"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 16 Dec 2023 05:00:38 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEUHU-0001bm-0w;
-	Sat, 16 Dec 2023 13:00:36 +0000
-Date: Sat, 16 Dec 2023 21:00:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: powerpc.c:undefined reference to `kvm_set_irq'
-Message-ID: <202312162045.MByX2xeH-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37028219F7
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 13:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7399e0707so195984239f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 05:02:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702731739; x=1703336539;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WbR8Fsh2M5lB952Po3IbpA8nnTS73zmHgvg5Bdyi2aQ=;
+        b=CDrGao/RUTGaR/g6Sw6zttwmzMtbOn2mj6jK8EMvXcYktO4ZkcFp4DcEEmcNr1hBMj
+         HQ3QtrcPhznNkFIYbCibV+8Jdscid3gRdIKuFbAROWHMArumGaQedw8yVUzA8L/tHat4
+         9m2N6f+cDg+RO/RQXzeOO4DN4lk2RV8A0YkQgOp/12ULBwKqIb5degNGedYUi3HB2qXS
+         DBJyLfF012ql10b4f7Zzsl0rM//UFJHOLpDDhVPJnpvs4HafNmWdi4aV3It5gZObY10b
+         zW5cI4DW0bvsIlgFPPjAEZvGHqHWgqjL3xCg6S/e/oapAguZU9bCmfPif5Eo+V8Lvums
+         lsrw==
+X-Gm-Message-State: AOJu0Yx5qWK2+N8JOC8xvfbCXMeCKTtyXKS8OSpIaAeGoDrQPkpGt/Dp
+	Dv4ykVt6chpzi86Wd6Ofouq4vohKWaS+3kMmhKuNS/UDlf4ZpOw=
+X-Google-Smtp-Source: AGHT+IG342q/fct2QbJy//JLAQuUEJ6Oz9FyS7Ikz9JhDznLLzQpzv10K88nWUJERm4FCggnsFny2DT/1tcmAbV7SeXf1HhKQIaa
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6e02:1a44:b0:35d:3b19:73b4 with SMTP id
+ u4-20020a056e021a4400b0035d3b1973b4mr525407ilv.1.1702731739435; Sat, 16 Dec
+ 2023 05:02:19 -0800 (PST)
+Date: Sat, 16 Dec 2023 05:02:19 -0800
+In-Reply-To: <000000000000098af2060b5ff161@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007a1cfe060ca020d3@google.com>
+Subject: Re: [syzbot] [block?] INFO: task hung in bdev_release
+From: syzbot <syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c8e97fc6b4c057a350a9e9a1ad625e10cc9c39ee
-commit: d663b8a285986072428a6a145e5994bc275df994 KVM: replace direct irq.h inclusion
-date:   1 year, 1 month ago
-config: powerpc-randconfig-r005-20220102 (https://download.01.org/0day-ci/archive/20231216/202312162045.MByX2xeH-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312162045.MByX2xeH-lkp@intel.com/reproduce)
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312162045.MByX2xeH-lkp@intel.com/
+***
 
-All errors (new ones prefixed by >>):
+Subject: [block?] INFO: task hung in bdev_release
+Author: eadavis@qq.com
 
-   powerpc-linux-ld: arch/powerpc/sysdev/cpm_common.o: in function `udbg_init_cpm':
-   cpm_common.c:(.init.text+0xc0): undefined reference to `setbat'
-   powerpc-linux-ld: arch/powerpc/kvm/powerpc.o: in function `kvm_vm_ioctl_irq_line':
->> powerpc.c:(.text+0x4fec): undefined reference to `kvm_set_irq'
+please test task hung in bdev_release
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  8c9660f65153
+
+diff --git a/block/bdev.c b/block/bdev.c
+index 6f73b02d549c..9fdf2dbc450e 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -130,12 +130,14 @@ static void set_init_blocksize(struct block_device *bdev)
+ 	unsigned int bsize = bdev_logical_block_size(bdev);
+ 	loff_t size = i_size_read(bdev->bd_inode);
+ 
++	printk("s: %llu, %s\n", size, __func__);
+ 	while (bsize < PAGE_SIZE) {
+ 		if (size & bsize)
+ 			break;
+ 		bsize <<= 1;
+ 	}
+ 	bdev->bd_inode->i_blkbits = blksize_bits(bsize);
++	printk("out s: %llu, %s\n", size, __func__);
+ }
+ 
+ int set_blocksize(struct block_device *bdev, int size)
+@@ -870,6 +872,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 	if (ret)
+ 		goto put_module;
+ 	bdev_claim_write_access(bdev, mode);
++	printk("%p, h: %p, %s\n", bdev, holder, __func__);
+ 	if (holder) {
+ 		bd_finish_claiming(bdev, holder, hops);
+ 
+@@ -887,6 +890,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 		}
+ 	}
+ 	mutex_unlock(&disk->open_mutex);
++	printk("out om, b: %p, disk: %p, %s\n", bdev, disk, __func__);
+ 
+ 	if (unblock_events)
+ 		disk_unblock_events(disk);
+@@ -900,6 +904,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 	if (holder)
+ 		bd_abort_claiming(bdev, holder);
+ 	mutex_unlock(&disk->open_mutex);
++	printk("out om, b: %p, %s\n", bdev, __func__);
+ 	disk_unblock_events(disk);
+ put_blkdev:
+ 	blkdev_put_no_open(bdev);
+@@ -964,6 +969,7 @@ void bdev_release(struct bdev_handle *handle)
+ 	if (atomic_read(&bdev->bd_openers) == 1)
+ 		sync_blockdev(bdev);
+ 
++	printk("nxt om, b: %p, dk: %p, %s\n", bdev, disk, __func__);
+ 	mutex_lock(&disk->open_mutex);
+ 	bdev_yield_write_access(bdev, handle->mode);
+ 
+@@ -982,6 +988,7 @@ void bdev_release(struct bdev_handle *handle)
+ 	else
+ 		blkdev_put_whole(bdev);
+ 	mutex_unlock(&disk->open_mutex);
++	printk("out om, b: %p, dk: %p, %s\n", bdev, disk, __func__);
+ 
+ 	module_put(disk->fops->owner);
+ 	blkdev_put_no_open(bdev);
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index f47ffcfdfcec..e48c26513f4d 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -698,6 +698,7 @@ int bdev_disk_changed(struct gendisk *disk, bool invalidate)
+ 
+ 	if (get_capacity(disk)) {
+ 		ret = blk_add_partitions(disk);
++		printk("r: %d, disk: %p, %s\n", ret, disk, __func__);
+ 		if (ret == -EAGAIN)
+ 			goto rescan;
+ 	} else if (invalidate) {
+@@ -708,6 +709,7 @@ int bdev_disk_changed(struct gendisk *disk, bool invalidate)
+ 		kobject_uevent(&disk_to_dev(disk)->kobj, KOBJ_CHANGE);
+ 	}
+ 
++	printk("disk: %p, %s\n", disk, __func__);
+ 	return ret;
+ }
+ /*
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index b6414e1e645b..090cdef5899d 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1137,6 +1137,7 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	int err;
+ 
+ 	/* Arg will be cast to int, check it to avoid overflow */
++	printk("arg: %d, nbd: %p, %s\n", arg, nbd, __func__);
+ 	if (arg > INT_MAX)
+ 		return -EINVAL;
+ 	sock = nbd_get_socket(nbd, arg, &err);
+@@ -1188,10 +1189,12 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	socks[config->num_connections++] = nsock;
+ 	atomic_inc(&config->live_connections);
+ 	blk_mq_unfreeze_queue(nbd->disk->queue);
++	printk("arg: %d, nbd: %p, nd: %p, nc: %d, %s\n", arg, nbd, nbd->disk, config->num_connections, __func__);
+ 
+ 	return 0;
+ 
+ put_socket:
++	printk("nbd: %p, %s\n", nbd, __func__);
+ 	blk_mq_unfreeze_queue(nbd->disk->queue);
+ 	sockfd_put(sock);
+ 	return err;
+@@ -1372,6 +1375,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 	int num_connections = config->num_connections;
+ 	int error = 0, i;
+ 
++	printk("dev: %p, nc: %d, pid: %d, socks: %p, %s\n", nbd, num_connections, nbd->pid, config->socks, __func__);
+ 	if (nbd->pid)
+ 		return -EBUSY;
+ 	if (!config->socks)
+@@ -1425,6 +1429,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 		args->index = i;
+ 		queue_work(nbd->recv_workq, &args->work);
+ 	}
++	printk("bs: %lld, blks: %lld, %s\n", config->bytesize, nbd_blksize(config), __func__);
+ 	return nbd_set_size(nbd, config->bytesize, nbd_blksize(config));
+ }
+ 
+@@ -1596,6 +1601,7 @@ static int nbd_open(struct gendisk *disk, blk_mode_t mode)
+ 	struct nbd_config *config;
+ 	int ret = 0;
+ 
++	printk("d: %p, %s\n", disk, __func__);
+ 	mutex_lock(&nbd_index_mutex);
+ 	nbd = disk->private_data;
+ 	if (!nbd) {
+@@ -1629,6 +1635,7 @@ static int nbd_open(struct gendisk *disk, blk_mode_t mode)
+ 			set_bit(GD_NEED_PART_SCAN, &disk->state);
+ 	}
+ out:
++	printk("ret: %d, out, d: %p, %s\n", ret, disk, __func__);
+ 	mutex_unlock(&nbd_index_mutex);
+ 	return ret;
+ }
+
 
