@@ -1,325 +1,121 @@
-Return-Path: <linux-kernel+bounces-1996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56C298156D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:29:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 643F18156D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F18E282A71
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:29:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1478B24287
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 030DB2F87F;
-	Sat, 16 Dec 2023 03:27:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71FC23D4;
+	Sat, 16 Dec 2023 03:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aaiz38pz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PlsddIeC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D9521A1A
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 03:27:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702697240;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERZYSmZBhuvvvnoYNYpkA3Vl+n3Jximiv1YGZ7OitLQ=;
-	b=aaiz38pzKiugC7Tlg40b87BRR7qNJ7SLJQXvUkpdJM+Lutdum8RxgQdiWqRBF8d9+kXBci
-	8dAv7dkfFinK2AYiUgdDki2xwVSVyOnDuDr6pLssATxbY1vRtr0MkZvomYziXMZRlSCGfx
-	xau0WAmrv1ShMUk4AXdY6FF6ZxeArLk=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	tglx@linutronix.de,
-	x86@kernel.org,
-	tj@kernel.org,
-	peterz@infradead.org,
-	mathieu.desnoyers@efficios.com,
-	paulmck@kernel.org,
-	keescook@chromium.org,
-	dave.hansen@linux.intel.com,
-	mingo@redhat.com,
-	will@kernel.org,
-	longman@redhat.com,
-	boqun.feng@gmail.com,
-	brauner@kernel.org
-Subject: [PATCH 21/50] locking/seqlock: Split out seqlock_types.h
-Date: Fri, 15 Dec 2023 22:26:20 -0500
-Message-ID: <20231216032651.3553101-11-kent.overstreet@linux.dev>
-In-Reply-To: <20231216032651.3553101-1-kent.overstreet@linux.dev>
-References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
- <20231216032651.3553101-1-kent.overstreet@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C8535263
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 03:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702697283; x=1734233283;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vbBASBiJaH4THpMtwHkToEZ+1eMr/8HKB5TNd5kuKi0=;
+  b=PlsddIeCQUFLNasBUTOVp8F87Siew7dCbxvvbKCKyt9WCmkoQIoYFWkk
+   n2rCbeOMZvmdID9+TE+A2HDjbo+o9DjqYOYF+QyPH98cdVjavW3P7lZx0
+   nS93M3zLN9K1tlrjomzq9hYGbNSzu7I00ulrIQ0cOB6Hmxm79N91plCK5
+   mOXEFggWjih700k/lA18uJPxLxK68iuMRCBMT2mTIm09cUFUuhoS2cqnX
+   Wlz5ozZKfkdemGnLxrkoJerewL+6bZJRmL1Wu5UEg1HpNa0wuynloo9B+
+   YiQeW56qO0dEDIW84yuMG9RT89GRSdeFeH/0/by+o6ynsbGOQR2VreYCP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="8712139"
+X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
+   d="scan'208";a="8712139"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 19:28:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="1106321452"
+X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
+   d="scan'208";a="1106321452"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Dec 2023 19:27:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rELLI-00016E-2j;
+	Sat, 16 Dec 2023 03:27:56 +0000
+Date: Sat, 16 Dec 2023 11:27:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Maksim Davydov <davydov-max@yandex-team.ru>,
+	linux-kernel@vger.kernel.org, x86@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, davydov-max@yandex-team.ru,
+	den-plotnikov@yandex-team.ru, tony.luck@intel.com,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org
+Subject: Re: [PATCH] x86/split_lock: add split lock counter
+Message-ID: <202312161122.4Y1qkw0S-lkp@intel.com>
+References: <20231215140113.57173-1-davydov-max@yandex-team.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215140113.57173-1-davydov-max@yandex-team.ru>
 
-Trimming down sched.h dependencies: we don't want to include more than
-the base types.
+Hi Maksim,
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- include/linux/sched.h         |  2 +-
- include/linux/seqlock.h       | 79 +----------------------------
- include/linux/seqlock_types.h | 93 +++++++++++++++++++++++++++++++++++
- 3 files changed, 96 insertions(+), 78 deletions(-)
- create mode 100644 include/linux/seqlock_types.h
+kernel test robot noticed the following build warnings:
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 6d803d0904d9..436f7ce1450a 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -33,7 +33,7 @@
- #include <linux/task_io_accounting.h>
- #include <linux/posix-timers_types.h>
- #include <linux/rseq.h>
--#include <linux/seqlock.h>
-+#include <linux/seqlock_types.h>
- #include <linux/kcsan.h>
- #include <linux/rv.h>
- #include <linux/livepatch_sched.h>
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index e92f9d5577ba..d90d8ee29d81 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -18,6 +18,7 @@
- #include <linux/lockdep.h>
- #include <linux/mutex.h>
- #include <linux/preempt.h>
-+#include <linux/seqlock_types.h>
- #include <linux/spinlock.h>
- 
- #include <asm/processor.h>
-@@ -37,37 +38,6 @@
-  */
- #define KCSAN_SEQLOCK_REGION_MAX 1000
- 
--/*
-- * Sequence counters (seqcount_t)
-- *
-- * This is the raw counting mechanism, without any writer protection.
-- *
-- * Write side critical sections must be serialized and non-preemptible.
-- *
-- * If readers can be invoked from hardirq or softirq contexts,
-- * interrupts or bottom halves must also be respectively disabled before
-- * entering the write section.
-- *
-- * This mechanism can't be used if the protected data contains pointers,
-- * as the writer can invalidate a pointer that a reader is following.
-- *
-- * If the write serialization mechanism is one of the common kernel
-- * locking primitives, use a sequence counter with associated lock
-- * (seqcount_LOCKNAME_t) instead.
-- *
-- * If it's desired to automatically handle the sequence counter writer
-- * serialization and non-preemptibility requirements, use a sequential
-- * lock (seqlock_t) instead.
-- *
-- * See Documentation/locking/seqlock.rst
-- */
--typedef struct seqcount {
--	unsigned sequence;
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--	struct lockdep_map dep_map;
--#endif
--} seqcount_t;
--
- static inline void __seqcount_init(seqcount_t *s, const char *name,
- 					  struct lock_class_key *key)
- {
-@@ -131,28 +101,6 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
-  * See Documentation/locking/seqlock.rst
-  */
- 
--/*
-- * For PREEMPT_RT, seqcount_LOCKNAME_t write side critical sections cannot
-- * disable preemption. It can lead to higher latencies, and the write side
-- * sections will not be able to acquire locks which become sleeping locks
-- * (e.g. spinlock_t).
-- *
-- * To remain preemptible while avoiding a possible livelock caused by the
-- * reader preempting the writer, use a different technique: let the reader
-- * detect if a seqcount_LOCKNAME_t writer is in progress. If that is the
-- * case, acquire then release the associated LOCKNAME writer serialization
-- * lock. This will allow any possibly-preempted writer to make progress
-- * until the end of its writer serialization lock critical section.
-- *
-- * This lock-unlock technique must be implemented for all of PREEMPT_RT
-- * sleeping locks.  See Documentation/locking/locktypes.rst
-- */
--#if defined(CONFIG_LOCKDEP) || defined(CONFIG_PREEMPT_RT)
--#define __SEQ_LOCK(expr)	expr
--#else
--#define __SEQ_LOCK(expr)
--#endif
--
- /*
-  * typedef seqcount_LOCKNAME_t - sequence counter with LOCKNAME associated
-  * @seqcount:	The real sequence counter
-@@ -194,11 +142,6 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
-  * @lockbase:		prefix for associated lock/unlock
-  */
- #define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockbase)	\
--typedef struct seqcount_##lockname {					\
--	seqcount_t		seqcount;				\
--	__SEQ_LOCK(locktype	*lock);					\
--} seqcount_##lockname##_t;						\
--									\
- static __always_inline seqcount_t *					\
- __seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
- {									\
-@@ -284,6 +227,7 @@ SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
- SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
- SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
- SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
-+#undef SEQCOUNT_LOCKNAME
- 
- /*
-  * SEQCNT_LOCKNAME_ZERO - static initializer for seqcount_LOCKNAME_t
-@@ -794,25 +738,6 @@ static inline void raw_write_seqcount_latch(seqcount_latch_t *s)
- 	smp_wmb();      /* increment "sequence" before following stores */
- }
- 
--/*
-- * Sequential locks (seqlock_t)
-- *
-- * Sequence counters with an embedded spinlock for writer serialization
-- * and non-preemptibility.
-- *
-- * For more info, see:
-- *    - Comments on top of seqcount_t
-- *    - Documentation/locking/seqlock.rst
-- */
--typedef struct {
--	/*
--	 * Make sure that readers don't starve writers on PREEMPT_RT: use
--	 * seqcount_spinlock_t instead of seqcount_t. Check __SEQ_LOCK().
--	 */
--	seqcount_spinlock_t seqcount;
--	spinlock_t lock;
--} seqlock_t;
--
- #define __SEQLOCK_UNLOCKED(lockname)					\
- 	{								\
- 		.seqcount = SEQCNT_SPINLOCK_ZERO(lockname, &(lockname).lock), \
-diff --git a/include/linux/seqlock_types.h b/include/linux/seqlock_types.h
-new file mode 100644
-index 000000000000..dfdf43e3fa3d
---- /dev/null
-+++ b/include/linux/seqlock_types.h
-@@ -0,0 +1,93 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __LINUX_SEQLOCK_TYPES_H
-+#define __LINUX_SEQLOCK_TYPES_H
-+
-+#include <linux/lockdep_types.h>
-+#include <linux/mutex_types.h>
-+#include <linux/spinlock_types.h>
-+
-+/*
-+ * Sequence counters (seqcount_t)
-+ *
-+ * This is the raw counting mechanism, without any writer protection.
-+ *
-+ * Write side critical sections must be serialized and non-preemptible.
-+ *
-+ * If readers can be invoked from hardirq or softirq contexts,
-+ * interrupts or bottom halves must also be respectively disabled before
-+ * entering the write section.
-+ *
-+ * This mechanism can't be used if the protected data contains pointers,
-+ * as the writer can invalidate a pointer that a reader is following.
-+ *
-+ * If the write serialization mechanism is one of the common kernel
-+ * locking primitives, use a sequence counter with associated lock
-+ * (seqcount_LOCKNAME_t) instead.
-+ *
-+ * If it's desired to automatically handle the sequence counter writer
-+ * serialization and non-preemptibility requirements, use a sequential
-+ * lock (seqlock_t) instead.
-+ *
-+ * See Documentation/locking/seqlock.rst
-+ */
-+typedef struct seqcount {
-+	unsigned sequence;
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map dep_map;
-+#endif
-+} seqcount_t;
-+
-+/*
-+ * For PREEMPT_RT, seqcount_LOCKNAME_t write side critical sections cannot
-+ * disable preemption. It can lead to higher latencies, and the write side
-+ * sections will not be able to acquire locks which become sleeping locks
-+ * (e.g. spinlock_t).
-+ *
-+ * To remain preemptible while avoiding a possible livelock caused by the
-+ * reader preempting the writer, use a different technique: let the reader
-+ * detect if a seqcount_LOCKNAME_t writer is in progress. If that is the
-+ * case, acquire then release the associated LOCKNAME writer serialization
-+ * lock. This will allow any possibly-preempted writer to make progress
-+ * until the end of its writer serialization lock critical section.
-+ *
-+ * This lock-unlock technique must be implemented for all of PREEMPT_RT
-+ * sleeping locks.  See Documentation/locking/locktypes.rst
-+ */
-+#if defined(CONFIG_LOCKDEP) || defined(CONFIG_PREEMPT_RT)
-+#define __SEQ_LOCK(expr)	expr
-+#else
-+#define __SEQ_LOCK(expr)
-+#endif
-+
-+#define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockbase)	\
-+typedef struct seqcount_##lockname {					\
-+	seqcount_t		seqcount;				\
-+	__SEQ_LOCK(locktype	*lock);					\
-+} seqcount_##lockname##_t;
-+
-+SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
-+SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
-+SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
-+SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
-+#undef SEQCOUNT_LOCKNAME
-+
-+/*
-+ * Sequential locks (seqlock_t)
-+ *
-+ * Sequence counters with an embedded spinlock for writer serialization
-+ * and non-preemptibility.
-+ *
-+ * For more info, see:
-+ *    - Comments on top of seqcount_t
-+ *    - Documentation/locking/seqlock.rst
-+ */
-+typedef struct {
-+	/*
-+	 * Make sure that readers don't starve writers on PREEMPT_RT: use
-+	 * seqcount_spinlock_t instead of seqcount_t. Check __SEQ_LOCK().
-+	 */
-+	seqcount_spinlock_t seqcount;
-+	spinlock_t lock;
-+} seqlock_t;
-+
-+#endif /* __LINUX_SEQLOCK_TYPES_H */
+[auto build test WARNING on tip/x86/core]
+[also build test WARNING on tip/master tip/sched/core linus/master tip/auto-latest v6.7-rc5 next-20231215]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Maksim-Davydov/x86-split_lock-add-split-lock-counter/20231215-220639
+base:   tip/x86/core
+patch link:    https://lore.kernel.org/r/20231215140113.57173-1-davydov-max%40yandex-team.ru
+patch subject: [PATCH] x86/split_lock: add split lock counter
+config: um-defconfig (https://download.01.org/0day-ci/archive/20231216/202312161122.4Y1qkw0S-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312161122.4Y1qkw0S-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312161122.4Y1qkw0S-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from fs/proc/base.c:101:
+>> arch/x86/include/asm/cpu.h:36:31: warning: 'struct cpuinfo_x86' declared inside parameter list will not be visible outside of this definition or declaration
+      36 | int mwait_usable(const struct cpuinfo_x86 *);
+         |                               ^~~~~~~~~~~
+   arch/x86/include/asm/cpu.h:42:37: warning: 'struct cpuinfo_x86' declared inside parameter list will not be visible outside of this definition or declaration
+      42 | extern void __init sld_setup(struct cpuinfo_x86 *c);
+         |                                     ^~~~~~~~~~~
+   arch/x86/include/asm/cpu.h:85:32: warning: 'struct cpuinfo_x86' declared inside parameter list will not be visible outside of this definition or declaration
+      85 | void init_ia32_feat_ctl(struct cpuinfo_x86 *c);
+         |                                ^~~~~~~~~~~
+
+
+vim +36 arch/x86/include/asm/cpu.h
+
+bb6e89df9028b2 Thomas Gleixner        2022-04-15  35  
+1c9d16e3591109 Borislav Petkov        2011-02-11 @36  int mwait_usable(const struct cpuinfo_x86 *);
+6d652ea1d05639 Jaswinder Singh Rajput 2009-01-07  37  
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
