@@ -1,76 +1,145 @@
-Return-Path: <linux-kernel+bounces-2138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD8E81585E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 09:11:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FB1481586B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 09:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 600BB1C24A82
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 08:11:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2278B1F25818
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 08:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEE913FF1;
-	Sat, 16 Dec 2023 08:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D867314280;
+	Sat, 16 Dec 2023 08:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P2mcD+70"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DA2134A0
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 08:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b7317a556cso231619939f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 00:11:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702714266; x=1703319066;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=stKCNPf7MrdScRFIz52dvcQp0ICXPKW5KxHbQB9PF9s=;
-        b=axyWxxhFGYpkG6jPm7ToKLIrbPuYody8HDgN1bLS2P1y7Ef3ujhzkFPaEJCNkctjkR
-         NKD/U4zpdX7GbJAuVvMjDeEHJ9Mvp3EFbb52Xh5/yPB819fmS7sgh8n2OGqD0nqnRJE4
-         ltuRagzjsbUG+AMPCGrgOd3YpqQhs7BEvwjXSZ24sI192jMVi0W+DdyNKo2fFLh7WB0i
-         ErnUk8eg+0HnQsz+TJxEj8z4gJDgWT9CrrSzCHsahGuiV3mQqgUD6hXM+V4B9WBOMRPI
-         7pLRHg91NnPnvdnTAa/Q1aDsjGRyr2rIB0CefjEPwz7zB3oYivIaLyT7Lccbeci2NIZx
-         Z76w==
-X-Gm-Message-State: AOJu0Yy4AKNHrzNZAD/9NFSvrVo6y1okDFNSj9HUFzO721dFqYqon6mb
-	zCAJvS5WiSzPcko0+iZSQawZfXk+8JI3NNa6KcOoQqgXnHQ3
-X-Google-Smtp-Source: AGHT+IENpvYVHAQWc4nVHRBP0sSef7ET8MguUu3rLPKjGeCZ+b4BRFjuukVr05Qi+sXT+KuVQde8wqRq3cypdoV084hQW7Aw8nuj
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87EAA13AED;
+	Sat, 16 Dec 2023 08:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BG8AlnW011556;
+	Sat, 16 Dec 2023 08:15:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=UrutHSPGcLDRLLUpSzQn97qPAwY9DBQLxCjQ9z93DWs=; b=P2
+	mcD+70T0TpAXVrwTaecPrUvY+EWWkwBu4MIT0j4DciDLrbngCVypQxXrEz8EW1Ev
+	Fol2HOa2iQp54LLF3T8GXZHMqUBXdzSIUt/bn56b1z/WJpEB582DL2VntRr5KzT0
+	Qv2djQvJ7mqROMv7lIkNXx1urqlqug0xttGL4ks+KAXN2CEirAVKPHHuV4RIfgrG
+	/y0VisQtm1ara5PT+tcR4Lmj/8ChbSY+zXy5/JpLZyh8XEYEsN4Hhi9Gct2DCSVY
+	iZ7tOlEHVGSv7YDFN9WVz3Php6Ury7U1ZIGjfuueaJakfV1GfPyM9Wyjc82N/j0T
+	X2S8QUAY2kICJHHPJZGw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v14vjg7vw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Dec 2023 08:15:22 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG8FLdL011863
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Dec 2023 08:15:21 GMT
+Received: from [10.216.47.123] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 16 Dec
+ 2023 00:15:17 -0800
+Message-ID: <89ca6eb2-9a33-c37e-14ae-6181edb8626c@quicinc.com>
+Date: Sat, 16 Dec 2023 13:45:14 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1445:b0:464:1f14:eab1 with SMTP id
- l5-20020a056638144500b004641f14eab1mr602746jad.0.1702714266126; Sat, 16 Dec
- 2023 00:11:06 -0800 (PST)
-Date: Sat, 16 Dec 2023 00:11:06 -0800
-In-Reply-To: <20231216070012.1643-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fc92ae060c9c0e8b@google.com>
-Subject: Re: [syzbot] [block?] general protection fault in bio_first_folio
-From: syzbot <syzbot+8b23309d5788a79d3eea@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] power: reset: msm: Process register_restart_handler()
+ error
+Content-Language: en-US
+To: Nikita Kiryushin <kiryushin@ancud.ru>, Andy Gross <agross@kernel.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Stephen Boyd
+	<sboyd@codeaurora.org>,
+        Pramod Gurav <pramod.gurav@smartplayin.com>,
+        Guenter
+ Roeck <linux@roeck-us.net>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lvc-project@linuxtesting.org>
+References: <feeb1a89-59bd-4fd6-81a5-1d828f95b0f0@ancud.ru>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <feeb1a89-59bd-4fd6-81a5-1d828f95b0f0@ancud.ru>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: iPeTEqpyHD1CYQFA_s5Qs3YqJqvzId4w
+X-Proofpoint-GUID: iPeTEqpyHD1CYQFA_s5Qs3YqJqvzId4w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ bulkscore=0 clxscore=1011 malwarescore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312160062
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+8b23309d5788a79d3eea@syzkaller.appspotmail.com
+On 11/8/2023 10:57 PM, Nikita Kiryushin wrote:
+> If registering restart handler fails for msm-restart result is not checked.
+> It may be irrelevant now (as stated in comment to register_restart_handler,
+> the function currently always returns zero), but if the behavior changes
+> in the future, an error at registration of handler will be silently 
+> skipped.
+> 
+> Add return error code and print error message too debug log in case of
+> non-zero result of register_restart_handler.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 18a702e0de98 ("power: reset: use restart_notifier mechanism for 
+> msm-poweroff")
+> 
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+> ---
+>   drivers/power/reset/msm-poweroff.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/power/reset/msm-poweroff.c 
+> b/drivers/power/reset/msm-poweroff.c
+> index b9a401bd280b..5877a1ba2778 100644
+> --- a/drivers/power/reset/msm-poweroff.c
+> +++ b/drivers/power/reset/msm-poweroff.c
+> @@ -35,11 +35,16 @@ static void do_msm_poweroff(void)
+>    static int msm_restart_probe(struct platform_device *pdev)
+>   {
+> +    int ret = -EINVAL;
 
-Tested on:
+This does not add up anything., no need to initialize.
 
-commit:         abb240f7 Add linux-next specific files for 20231212
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=126c1aaee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cc2485c21b49ddc4
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b23309d5788a79d3eea
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1644417ce80000
+-Mukesh
 
-Note: testing is done by a robot and is best-effort only.
+
+>       msm_ps_hold = devm_platform_ioremap_resource(pdev, 0);
+>       if (IS_ERR(msm_ps_hold))
+>           return PTR_ERR(msm_ps_hold);
+>   -    register_restart_handler(&restart_nb);
+> +    ret = register_restart_handler(&restart_nb);
+> +    if (ret) {
+> +        dev_err(&pdev->dev, "unable to register restart handler, %d\n", 
+> ret);
+> +        return ret;
+> +    }
+>        pm_power_off = do_msm_poweroff;
+>   -- 2.34.1
+> 
 
