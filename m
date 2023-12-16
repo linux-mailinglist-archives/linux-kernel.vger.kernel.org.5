@@ -1,180 +1,168 @@
-Return-Path: <linux-kernel+bounces-2038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E383C81573C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:13:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 452EE81573E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50AC3B23E81
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:13:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9CE61F25912
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A0810A1F;
-	Sat, 16 Dec 2023 04:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kv6m6gB+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AED10A12;
+	Sat, 16 Dec 2023 04:17:55 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B4A107A1;
-	Sat, 16 Dec 2023 04:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702699989; x=1734235989;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LmI/S8V6mA9hG+wIBl7uJCDqj/JYOAakrqXZAAVPnCY=;
-  b=kv6m6gB+mltwRmQE/+NbnenMDxEQJBeVcvmgi3a2ckrI3cJV1booizQ6
-   wRUatkEPQmaC4I8iQRH7FZvB/5554mVx/VQZyKo2gUyh+GcJBXBpeD9la
-   UN+xRfZFdnlb67Ms4+LtKxl7JpIeoUR8B+ZZegOTzqC6XGT3rM/0WqKTc
-   yfqtIe74K+xD6eyMobfldOXu+S+YIMH1rEk7DapEfHUaS1y6L4UieW1a2
-   KeMKV93G2yyNva8fvvRab4sBRqinb6VL4asDx+1mYtXAjORY5Flc7No0g
-   BV9iBv7NAvqIhltqvsctkfQ4SAP3eKVrZPBbs0Ll/LeukKZyJklwYfsJh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="459683134"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="459683134"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 20:13:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="768214712"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="768214712"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 15 Dec 2023 20:13:00 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEM2s-00019E-1f;
-	Sat, 16 Dec 2023 04:12:58 +0000
-Date: Sat, 16 Dec 2023 12:12:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Cong Wang <xiyou.wangcong@gmail.com>, Hao Luo <haoluo@google.com>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Ronak Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
- redirect.
-Message-ID: <202312161103.iKeGoacH-lkp@intel.com>
-References: <20231215171020.687342-16-bigeasy@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1437D1095F
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 04:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b3d54a346dso156105739f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 20:17:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702700273; x=1703305073;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OMrgEcEX0GmYTq86igCnRTgrjwBUPAcjBGPBvHKtqA0=;
+        b=Rxn00dKOiGekoEMteGM9C+ybbrVLdXxQCXroWVSs1VzaiEMrx+EIz6N2QaCRUbrDHg
+         4DO+XVQoqQk4/OJWgEQmbTJLQluvJKsAzSgOIy9m2244gjh2S69bih/0HzIZRF+bqXNo
+         YELkqd6g1PBDsApuCxZL3ka/81UKIeLBJEKTv9frSRERDo3i1eOKomaVXMzgFSJDEylz
+         geWK65AyQ+FOhhWeAOzZtu1w6w7tcapCR3Q1Lk3km5nxUVif0shcqlR9C/ozO9di+bce
+         auEdCjQBV+mCNUcLY2nUr4DAP0BSaLYwB72rJWCha5SEzKUJxkeBwcDSY3w8/3m/p0/Y
+         zXKw==
+X-Gm-Message-State: AOJu0YyCnHeUZU3ImHjkwy1+rMx7Jm24HOtouUzfZDpaoH2Ta9jIFS1y
+	ulIil/yXQkkRVLm+EwGajpYujHoS2B2Yy2rgwMB3Df+h5D6eZTE=
+X-Google-Smtp-Source: AGHT+IGQkaKtvP7GDXD6pMFWKB/uabE7/bNbstnRC6XZZl5ELZFe+ITArTCtXHeSqEGpoPSJM/+kBvKHFAWZ2BTy9kWTqVoO1yTp
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215171020.687342-16-bigeasy@linutronix.de>
+X-Received: by 2002:a05:6638:2056:b0:45c:34a5:6d09 with SMTP id
+ t22-20020a056638205600b0045c34a56d09mr492829jaj.2.1702700273378; Fri, 15 Dec
+ 2023 20:17:53 -0800 (PST)
+Date: Fri, 15 Dec 2023 20:17:53 -0800
+In-Reply-To: <000000000000098af2060b5ff161@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f42f25060c98cc96@google.com>
+Subject: Re: [syzbot] [block?] INFO: task hung in bdev_release
+From: syzbot <syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Sebastian,
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-kernel test robot noticed the following build warnings:
+***
 
-[auto build test WARNING on net-next/main]
+Subject: [block?] INFO: task hung in bdev_release
+Author: eadavis@qq.com
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/20231216-011911
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231215171020.687342-16-bigeasy%40linutronix.de
-patch subject: [PATCH net-next 15/24] net: Use nested-BH locking for XDP redirect.
-config: x86_64-randconfig-122-20231216 (https://download.01.org/0day-ci/archive/20231216/202312161103.iKeGoacH-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312161103.iKeGoacH-lkp@intel.com/reproduce)
+please test task hung in bdev_release
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312161103.iKeGoacH-lkp@intel.com/
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  8c9660f65153
 
-sparse warnings: (new ones prefixed by >>)
-   net/sched/cls_api.c:391:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] protocol @@     got unsigned int [usertype] protocol @@
-   net/sched/cls_api.c:391:22: sparse:     expected restricted __be16 [usertype] protocol
-   net/sched/cls_api.c:391:22: sparse:     got unsigned int [usertype] protocol
-   net/sched/cls_api.c:1862:16: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   net/sched/cls_api.c:1862:16: sparse:    struct tcf_proto *
-   net/sched/cls_api.c:1862:16: sparse:    struct tcf_proto [noderef] __rcu *
-   net/sched/cls_api.c:1962:20: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   net/sched/cls_api.c:1962:20: sparse:    struct tcf_proto [noderef] __rcu *
-   net/sched/cls_api.c:1962:20: sparse:    struct tcf_proto *
-   net/sched/cls_api.c:1924:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   net/sched/cls_api.c:1924:25: sparse:    struct tcf_proto [noderef] __rcu *
-   net/sched/cls_api.c:1924:25: sparse:    struct tcf_proto *
-   net/sched/cls_api.c:1944:16: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   net/sched/cls_api.c:1944:16: sparse:    struct tcf_proto *
-   net/sched/cls_api.c:1944:16: sparse:    struct tcf_proto [noderef] __rcu *
-   net/sched/cls_api.c:2010:25: sparse: sparse: restricted __be16 degrades to integer
-   net/sched/cls_api.c:2697:50: sparse: sparse: restricted __be16 degrades to integer
->> net/sched/cls_api.c:3933:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct local_lock_t [usertype] *l @@     got struct local_lock_t [noderef] __percpu * @@
-   net/sched/cls_api.c:3933:38: sparse:     expected struct local_lock_t [usertype] *l
-   net/sched/cls_api.c:3933:38: sparse:     got struct local_lock_t [noderef] __percpu *
-   net/sched/cls_api.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
-   include/linux/local_lock.h:71:1: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct local_lock_t [usertype] * @@
-   include/linux/local_lock.h:71:1: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   include/linux/local_lock.h:71:1: sparse:     got struct local_lock_t [usertype] *
+diff --git a/block/bdev.c b/block/bdev.c
+index 6f73b02d549c..17ead61b00e2 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -854,6 +854,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 
+ 	disk_block_events(disk);
+ 
++	printk("next om, b: %p, disk: %p, %s\n", bdev, disk, __func__);
+ 	mutex_lock(&disk->open_mutex);
+ 	ret = -ENXIO;
+ 	if (!disk_live(disk))
+@@ -887,6 +888,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 		}
+ 	}
+ 	mutex_unlock(&disk->open_mutex);
++	printk("out om, b: %p, disk: %p, %s\n", bdev, disk, __func__);
+ 
+ 	if (unblock_events)
+ 		disk_unblock_events(disk);
+@@ -900,6 +902,7 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 	if (holder)
+ 		bd_abort_claiming(bdev, holder);
+ 	mutex_unlock(&disk->open_mutex);
++	printk("out om, b: %p, %s\n", bdev, __func__);
+ 	disk_unblock_events(disk);
+ put_blkdev:
+ 	blkdev_put_no_open(bdev);
+@@ -964,6 +967,7 @@ void bdev_release(struct bdev_handle *handle)
+ 	if (atomic_read(&bdev->bd_openers) == 1)
+ 		sync_blockdev(bdev);
+ 
++	printk("nxt om, b: %p, dk: %p, %s\n", bdev, disk, __func__);
+ 	mutex_lock(&disk->open_mutex);
+ 	bdev_yield_write_access(bdev, handle->mode);
+ 
+@@ -982,6 +986,7 @@ void bdev_release(struct bdev_handle *handle)
+ 	else
+ 		blkdev_put_whole(bdev);
+ 	mutex_unlock(&disk->open_mutex);
++	printk("out om, b: %p, dk: %p, %s\n", bdev, disk, __func__);
+ 
+ 	module_put(disk->fops->owner);
+ 	blkdev_put_no_open(bdev);
+diff --git a/block/ioctl.c b/block/ioctl.c
+index 9c73a763ef88..67825e6bec13 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -483,6 +483,7 @@ static int blkdev_bszset(struct block_device *bdev, blk_mode_t mode,
+ 	if (mode & BLK_OPEN_EXCL)
+ 		return set_blocksize(bdev, n);
+ 
++	printk("s: %d, b: %p, bd: %p, %s\n", n, bdev, bdev->bd_dev, __func__);
+ 	handle = bdev_open_by_dev(bdev->bd_dev, mode, &bdev, NULL);
+ 	if (IS_ERR(handle))
+ 		return -EBUSY;
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index b6414e1e645b..3cc7993b0b67 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1137,6 +1137,7 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	int err;
+ 
+ 	/* Arg will be cast to int, check it to avoid overflow */
++	printk("arg: %d, nbd: %p, %s\n", arg, nbd, __func__);
+ 	if (arg > INT_MAX)
+ 		return -EINVAL;
+ 	sock = nbd_get_socket(nbd, arg, &err);
+@@ -1188,10 +1189,12 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	socks[config->num_connections++] = nsock;
+ 	atomic_inc(&config->live_connections);
+ 	blk_mq_unfreeze_queue(nbd->disk->queue);
++	printk("arg: %d, nbd: %p, nd: %p, nc: %d, %s\n", arg, nbd, nbd->disk, config->num_connections, __func__);
+ 
+ 	return 0;
+ 
+ put_socket:
++	printk("nbd: %p, %s\n", nbd, __func__);
+ 	blk_mq_unfreeze_queue(nbd->disk->queue);
+ 	sockfd_put(sock);
+ 	return err;
+@@ -1372,6 +1375,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 	int num_connections = config->num_connections;
+ 	int error = 0, i;
+ 
++	printk("dev: %p, nc: %d, pid: %d, socks: %p, %s\n", nbd, num_connections, nbd->pid, config->socks, __func__);
+ 	if (nbd->pid)
+ 		return -EBUSY;
+ 	if (!config->socks)
+@@ -1425,6 +1429,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 		args->index = i;
+ 		queue_work(nbd->recv_workq, &args->work);
+ 	}
++	printk("bs: %lld, blks: %lld, %s\n", config->bytesize, nbd_blksize(config), __func__);
+ 	return nbd_set_size(nbd, config->bytesize, nbd_blksize(config));
+ }
+ 
 
-vim +3933 net/sched/cls_api.c
-
-  3921	
-  3922	struct sk_buff *tcf_qevent_handle(struct tcf_qevent *qe, struct Qdisc *sch, struct sk_buff *skb,
-  3923					  struct sk_buff **to_free, int *ret)
-  3924	{
-  3925		struct tcf_result cl_res;
-  3926		struct tcf_proto *fl;
-  3927	
-  3928		if (!qe->info.block_index)
-  3929			return skb;
-  3930	
-  3931		fl = rcu_dereference_bh(qe->filter_chain);
-  3932	
-> 3933		guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
-  3934		switch (tcf_classify(skb, NULL, fl, &cl_res, false)) {
-  3935		case TC_ACT_SHOT:
-  3936			qdisc_qstats_drop(sch);
-  3937			__qdisc_drop(skb, to_free);
-  3938			*ret = __NET_XMIT_BYPASS;
-  3939			return NULL;
-  3940		case TC_ACT_STOLEN:
-  3941		case TC_ACT_QUEUED:
-  3942		case TC_ACT_TRAP:
-  3943			__qdisc_drop(skb, to_free);
-  3944			*ret = __NET_XMIT_STOLEN;
-  3945			return NULL;
-  3946		case TC_ACT_REDIRECT:
-  3947			skb_do_redirect(skb);
-  3948			*ret = __NET_XMIT_STOLEN;
-  3949			return NULL;
-  3950		}
-  3951	
-  3952		return skb;
-  3953	}
-  3954	EXPORT_SYMBOL(tcf_qevent_handle);
-  3955	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
