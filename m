@@ -1,107 +1,101 @@
-Return-Path: <linux-kernel+bounces-2099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21D0F8157D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 06:43:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92D1F8157DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 06:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B60E51F2339B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:43:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CEBCB24798
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 05:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5866C12E43;
-	Sat, 16 Dec 2023 05:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569D5125C5;
+	Sat, 16 Dec 2023 05:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nabijaczleweli.xyz header.i=@nabijaczleweli.xyz header.b="OynTwoFD"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="2mbYUiQH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651201170A;
-	Sat, 16 Dec 2023 05:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nabijaczleweli.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabijaczleweli.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-	s=202305; t=1702705390;
-	bh=+wHapOXox/BER7lwK/c3gIBBT3hLoNAm5iv9cDfXCd0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OynTwoFDMNulnT1FKRC/3YIDVQC74pZWGE8XzoKZ1j34ObiTxOFy50juJCoff5YHN
-	 JMrWPCd9nAQez89j1VdYaBRJ0VRpC4ZX94QF+YVlqUOXV6MPMYoZK8cNSXzVulPEoa
-	 5bJdADWcRnNg6CvPZfnTjWpIwyx+0cAoj1HQR0YB+gickjyCF2X8X8CttsweA8Np0m
-	 EWtO1fxkASRzdkh1er1oxRc7Q86T5/V/jXKckkz2J/FMRUKetNqsfGpwmFSrdTlCMI
-	 ynvnsbyslEdk36fX9L40LYP3jqYwT6LDhz9bpOyj91PS7TjpYxNHjMeLeM+9p3ll54
-	 /jRreNYjaNP5w==
-Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-	by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 0209113C0A;
-	Sat, 16 Dec 2023 06:43:09 +0100 (CET)
-Date: Sat, 16 Dec 2023 06:43:09 +0100
-From: 
-	Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
-To: NeilBrown <neilb@suse.de>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>, 
-	Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
-	Jeff Layton <jlayton@kernel.org>, Olga Kornievskaia <kolga@netapp.com>, 
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-nfs@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: sunrpc: sizeof('\0') is 4, not 1
-Message-ID: <ikgsiev777wvypqueii5mcshrdeftme22stfvztonxbvcrf35l@tarta.nabijaczleweli.xyz>
-References: <4zlmy3qwneijnrsbygfr2wbsnvdvcgvjyvudqnuxq5zvwmyaof@tarta.nabijaczleweli.xyz>
- <170270083607.12910.2219100479356858889@noble.neil.brown.name>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D42E18E0F;
+	Sat, 16 Dec 2023 05:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=JTRGM6kINLV6hMcJUOeSF2SryxrbP5qZgaXJQ74eITo=; b=2mbYUiQHlTLkr2ku8bF5uu0sWP
+	e2+fQ9U9aDDBLmsbsT/jrF3pN/tMDjF6e8KW5gH88xvmem3vTA0hH7AGpYxVccyxzVvxnCsiiLqgx
+	P9yiSavydlUwThiC5al8hC28J6gd84QlpFfeZOsrVnoNc1z0i0GcK4okHsxPGbYMxo+yVjUi7mYUD
+	JMZj4CeuTDHyYMBqAZjpBuY8yzBtq2NDeG7ZWsvNQUmczu0ZyK8AnTu3R4JOSLWL1+CirkQz3QCsQ
+	lhGW/NaEz8OXSAMZEnJxJA3nJW5xs/k16teeSW0dn1y6mFrRT4nEULxedsW3YPmNldVVFAkCzUKeE
+	BLA+yjTQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rENWT-005Vds-1U;
+	Sat, 16 Dec 2023 05:47:37 +0000
+Message-ID: <fb8c1ab0-f169-4a8d-bd84-3eb3b806f622@infradead.org>
+Date: Fri, 15 Dec 2023 21:47:36 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ur233i3m2n556z64"
-Content-Disposition: inline
-In-Reply-To: <170270083607.12910.2219100479356858889@noble.neil.brown.name>
-User-Agent: NeoMutt/20231103-116-3b855e-dirty
+User-Agent: Mozilla Thunderbird
+Subject: Re: scripts/kernel-doc: drivers/mtd/nand/raw/marvell_nand.c:352:
+ warning: Excess struct member 'sels' description in 'marvell_nand_chip'
+Content-Language: en-US
+To: Philip Li <philip.li@intel.com>, kernel test robot <lkp@intel.com>
+Cc: Kees Cook <keescook@chromium.org>, llvm@lists.linux.dev,
+ oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+References: <202312160703.nnQfaSja-lkp@intel.com> <ZX04SC/YF4c45QGS@rli9-mobl>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZX04SC/YF4c45QGS@rli9-mobl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
---ur233i3m2n556z64
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 16, 2023 at 03:27:16PM +1100, NeilBrown wrote:
-> On Sat, 16 Dec 2023, Ahelenia Ziemia=C5=84ska wrote:
-> > To make it self-documenting, the referenced commit added the space
-> > for the null terminator as sizeof('\0'). The message elaborates on
-> > why only one byte is needed, so this is clearly a mistake.
-> > Spell it as 1 /* NUL */ instead.
-> >=20
-> > Fixes: commit 1e360a60b24a ("SUNRPC: Address  buffer overrun in
-> >  rpc_uaddr2sockaddr()")
-> It isn't clear to me that "Fixes" is appropriate as that patch isn't
-> harmful, just confused and sub-optimal.
-I definitely agree, I don't like Fixes here at all,
-but I don't really see another trailer in the documentation
-or in the log that could be used for this.
+On 12/15/23 21:40, Philip Li wrote:
+> On Sat, Dec 16, 2023 at 07:39:43AM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   3bd7d748816927202268cb335921f7f68b3ca723
+>> commit: a8eaf3ef549980719c5fcca257d5b220ac0f3f1b mtd: rawnand: marvell: Annotate struct marvell_nand_chip with __counted_by
+>> date:   3 months ago
+>> config: arm-randconfig-002-20231215 (https://download.01.org/0day-ci/archive/20231216/202312160703.nnQfaSja-lkp@intel.com/config)
+>> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312160703.nnQfaSja-lkp@intel.com/reproduce)
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> 
+> Kindly ignore this report and others that are related to __counted_by annotation.
+> We will look for a way to avoid such reports which are duplicated with same cause.
+> 
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202312160703.nnQfaSja-lkp@intel.com/
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>>> scripts/kernel-doc: drivers/mtd/nand/raw/marvell_nand.c:352: warning: Excess struct member 'sels' description in 'marvell_nand_chip'
+>>
+>> -- 
+>> 0-DAY CI Kernel Test Service
+>> https://github.com/intel/lkp-tests/wiki
 
---ur233i3m2n556z64
-Content-Type: application/pgp-signature; name="signature.asc"
+Hi,
+This patch from Kees:
+https://lore.kernel.org/linux-doc/20231215001347.work.151-kees@kernel.org/
 
------BEGIN PGP SIGNATURE-----
+should fix these problems. Jon Corbet has merged it into the (some?) docs tree.
 
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmV9OO0ACgkQvP0LAY0m
-WPE42RAAuE2y/k1eIQefSd7rFtGSFVgZvFcRmrN8GquoYGeXs596QNnq8tAwSroo
-6MB9avhWDwLI6opEuELRalbuFS30kddoRWPZxt/spkrU4hDcagWrU2wkgCb3lFAV
-Xk0Q5m17j/7aKhOygEI5HlDQVvQu0lz6+8KBzUKGUWqznNZQJPOF0IL3CYO+NmbP
-Jakn57ZSoT6hTWHsg6vfApSe3sZQiBbBfuxKLVfUMTdAmLl2JZj2UU0w/KXUeteW
-vI7g7uigw+TXJVqcrAN6bEV4i96zQB523JGmYkhnA0/n03yTQg/mHWGqTsK7iFfC
-IAakkDCWSJs+dXCnK5WJcBl/MpEGMsR9w0Nswua4CWTZAWFVW5rhKlcwyvagIH9p
-FVR6osRtVRhYPHYtRXnYyuhmEDaFuLfgFc9YhuJ2JjXmRLOo1l3hITW5Al7/RC0G
-o3W31S+7d/f+JB4f9WvJ7oo/3SvpzuUzqrpwpP6TR9RNyJ6nrs4Mxu5xk4dXz+vH
-/v1SecxG/GUV/D005A96AfhkKpmuOClIRSpR5bOCkayoxalS1r1o2Cbj4VGgaDq3
-kqYbRZ4uVcdC8EEmfYDwCZXG7ND961SYlEUDnE0EBqup4BptIoYwJudiODuKlNdb
-o+JaEE4qV4S/QSxrL0tPgvfNqYpKBCdpBnQ9YLEq7fPg7ENw2QU=
-=gDvI
------END PGP SIGNATURE-----
-
---ur233i3m2n556z64--
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
