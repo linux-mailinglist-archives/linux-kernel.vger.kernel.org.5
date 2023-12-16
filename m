@@ -1,32 +1,32 @@
-Return-Path: <linux-kernel+bounces-1907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86C2C815599
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:34:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F1581559D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D7C42856B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:34:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9074B22F36
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A3F44384;
-	Sat, 16 Dec 2023 00:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E9C10A00;
+	Sat, 16 Dec 2023 00:23:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B9042AB8;
-	Sat, 16 Dec 2023 00:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C753F44C91;
+	Sat, 16 Dec 2023 00:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1rEISP-0001YR-0W;
-	Sat, 16 Dec 2023 00:23:06 +0000
-Date: Sat, 16 Dec 2023 00:23:02 +0000
+	id 1rEISb-0001Yp-15;
+	Sat, 16 Dec 2023 00:23:18 +0000
+Date: Sat, 16 Dec 2023 00:23:14 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -50,9 +50,9 @@ To: Rob Herring <robh+dt@kernel.org>,
 	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
-Subject: [PATCH v6 3/5] dt-bindings: clock: mediatek: add clock controllers
- of MT7988
-Message-ID: <365bd4f704c6bcc39b9deec0539296703126ed39.1702685864.git.daniel@makrotopia.org>
+Subject: [PATCH v6 4/5] clk: mediatek: add pcw_chg_bit control for PLLs of
+ MT7988
+Message-ID: <384cb034139239e06d1f8091492f47263b66e2e9.1702685864.git.daniel@makrotopia.org>
 References: <27f99db432e9ccc804cc5b6501d7d17d72cae879.1702685864.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,298 +64,68 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <27f99db432e9ccc804cc5b6501d7d17d72cae879.1702685864.git.daniel@makrotopia.org>
 
-Add various clock controllers found in the MT7988 SoC to existing
-bindings (if applicable) and add files for the new ethwarp, mcusys
-and xfi-pll clock controllers not previously present in any SoC.
+From: Sam Shih <sam.shih@mediatek.com>
 
+Introduce pcw_chg_bit member to struct mtk_pll_data and use it instead
+of the previously hardcoded PCW_CHG_MASK macro if set.
+This will needed for clocks on the MT7988 SoC.
+
+Signed-off-by: Sam Shih <sam.shih@mediatek.com>
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
-v6:
- * remove invalid '_' from compatible string
- * drop minItems where uneeded due to listed clock-names
- * fix condition regarding presence of the 'pcs' subnode
+v6: no changes
+v5: rename to .pcw_chg_bit, use ? operator instead of changing every
+    single existing driver. The approach in v4 doesn't work as
+    if .pcw_chg_reg is unset/0, pll->pcw_chg_addr will default to
+    pll->base_addr + REG_CON1. Hence setting .pcw_chg_bit would be
+    required for *all* drivers instead of just those setting
+    .pcs_chf_reg. And that seems like an excessive change which can
+    easily be avoided by using the ? operator to set the default
+    at runtime (and we can easily cope with that overhead).
+v4: always set .pcw_chg_shift if .pcw_chg_reg is used instead of
+    having an if-expression in mtk_pll_set_rate_regs().
+v3: use git --from ...
+v2: no changes
+ drivers/clk/mediatek/clk-pll.c | 5 +++--
+ drivers/clk/mediatek/clk-pll.h | 1 +
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-v5:
- * drop use of ti,syscon-reset and hence also syscon and simple-mfd
-   compatibles from mt7988-ethwarp clock controller which now got the
-   clock controller provide the reset(s).
-
-v4:
- * add subnodes for controllers acting as MFD
-
-v3:
- * move clock bindings to clock folder
- * drop ti,syscon-reset from bindings and example
- * merge mcusys with topckgen bindings
-
-v2:
- * dropped unused labels
- * add 'type: object' declaration for reset-controller found in new
-   ethwarp controller and represented as ti,syscon-reset
- * rebase on top of
-   "dt-bindings: arm: mediatek: move ethsys controller & convert to DT schema"
-
- .../arm/mediatek/mediatek,infracfg.yaml       |  1 +
- .../bindings/clock/mediatek,apmixedsys.yaml   |  1 +
- .../bindings/clock/mediatek,ethsys.yaml       |  1 +
- .../clock/mediatek,mt7988-ethwarp.yaml        | 52 +++++++++++++++
- .../clock/mediatek,mt7988-xfi-pll.yaml        | 48 ++++++++++++++
- .../bindings/clock/mediatek,topckgen.yaml     |  2 +
- .../bindings/net/pcs/mediatek,sgmiisys.yaml   | 65 ++++++++++++++++---
- 7 files changed, 161 insertions(+), 9 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7988-ethwarp.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7988-xfi-pll.yaml
-
-diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,infracfg.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,infracfg.yaml
-index ea98043c6ba3d..230b5188a88db 100644
---- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,infracfg.yaml
-+++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,infracfg.yaml
-@@ -30,6 +30,7 @@ properties:
-               - mediatek,mt7629-infracfg
-               - mediatek,mt7981-infracfg
-               - mediatek,mt7986-infracfg
-+              - mediatek,mt7988-infracfg
-               - mediatek,mt8135-infracfg
-               - mediatek,mt8167-infracfg
-               - mediatek,mt8173-infracfg
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,apmixedsys.yaml b/Documentation/devicetree/bindings/clock/mediatek,apmixedsys.yaml
-index 372c1d744bc27..685535846cbb7 100644
---- a/Documentation/devicetree/bindings/clock/mediatek,apmixedsys.yaml
-+++ b/Documentation/devicetree/bindings/clock/mediatek,apmixedsys.yaml
-@@ -22,6 +22,7 @@ properties:
-           - mediatek,mt7622-apmixedsys
-           - mediatek,mt7981-apmixedsys
-           - mediatek,mt7986-apmixedsys
-+          - mediatek,mt7988-apmixedsys
-           - mediatek,mt8135-apmixedsys
-           - mediatek,mt8173-apmixedsys
-           - mediatek,mt8516-apmixedsys
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,ethsys.yaml b/Documentation/devicetree/bindings/clock/mediatek,ethsys.yaml
-index 94d42c8647777..f9cddacc2eae1 100644
---- a/Documentation/devicetree/bindings/clock/mediatek,ethsys.yaml
-+++ b/Documentation/devicetree/bindings/clock/mediatek,ethsys.yaml
-@@ -22,6 +22,7 @@ properties:
-               - mediatek,mt7629-ethsys
-               - mediatek,mt7981-ethsys
-               - mediatek,mt7986-ethsys
-+              - mediatek,mt7988-ethsys
-           - const: syscon
-       - items:
-           - const: mediatek,mt7623-ethsys
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7988-ethwarp.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7988-ethwarp.yaml
-new file mode 100644
-index 0000000000000..b7f3b42438662
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/mediatek,mt7988-ethwarp.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/mediatek/mediatek,mt7988-ethwarp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek MT7988 ethwarp Controller
-+
-+maintainers:
-+  - Daniel Golle <daniel@makrotopia.org>
-+
-+description:
-+  The Mediatek MT7988 ethwarp controller provides clocks and resets for the
-+  Ethernet related subsystems found the MT7988 SoC.
-+  The clock values can be found in <dt-bindings/clock/mt*-clk.h>.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: mediatek,mt7988-ethwarp
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  '#reset-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
-+  - '#reset-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/reset/ti-syscon.h>
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        clock-controller@15031000 {
-+            compatible = "mediatek,mt7988-ethwarp";
-+            reg = <0 0x15031000 0 0x1000>;
-+            #clock-cells = <1>;
-+            #reset-cells = <1>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7988-xfi-pll.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7988-xfi-pll.yaml
-new file mode 100644
-index 0000000000000..fe5e3a70299fd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/mediatek,mt7988-xfi-pll.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/mediatek/mediatek,mt7988-xfi-pll.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek MT7988 XFI PLL Clock Controller
-+
-+maintainers:
-+  - Daniel Golle <daniel@makrotopia.org>
-+
-+description:
-+  The MediaTek XFI PLL controller provides the 156.25MHz clock for the
-+  Ethernet SerDes PHY from the 40MHz top_xtal clock.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt7988-xfi-pll
-+
-+  reg:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  '#clock-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - resets
-+  - '#clock-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+        clock-controller@11f40000 {
-+            compatible = "mediatek,mt7988-xfi-pll";
-+            reg = <0 0x11f40000 0 0x1000>;
-+            resets = <&watchdog 16>;
-+            #clock-cells = <1>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,topckgen.yaml b/Documentation/devicetree/bindings/clock/mediatek,topckgen.yaml
-index 6d087ded7437a..bdf3b55bd56fd 100644
---- a/Documentation/devicetree/bindings/clock/mediatek,topckgen.yaml
-+++ b/Documentation/devicetree/bindings/clock/mediatek,topckgen.yaml
-@@ -37,6 +37,8 @@ properties:
-               - mediatek,mt7629-topckgen
-               - mediatek,mt7981-topckgen
-               - mediatek,mt7986-topckgen
-+              - mediatek,mt7988-mcusys
-+              - mediatek,mt7988-topckgen
-               - mediatek,mt8167-topckgen
-               - mediatek,mt8183-topckgen
-           - const: syscon
-diff --git a/Documentation/devicetree/bindings/net/pcs/mediatek,sgmiisys.yaml b/Documentation/devicetree/bindings/net/pcs/mediatek,sgmiisys.yaml
-index 66a95191bd776..1bacc0eeff757 100644
---- a/Documentation/devicetree/bindings/net/pcs/mediatek,sgmiisys.yaml
-+++ b/Documentation/devicetree/bindings/net/pcs/mediatek,sgmiisys.yaml
-@@ -15,15 +15,22 @@ description:
+diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
+index 513ab6b1b3229..ce453e1718e53 100644
+--- a/drivers/clk/mediatek/clk-pll.c
++++ b/drivers/clk/mediatek/clk-pll.c
+@@ -23,7 +23,7 @@
+ #define CON0_BASE_EN		BIT(0)
+ #define CON0_PWR_ON		BIT(0)
+ #define CON0_ISO_EN		BIT(1)
+-#define PCW_CHG_MASK		BIT(31)
++#define PCW_CHG_BIT		31
  
- properties:
-   compatible:
--    items:
--      - enum:
--          - mediatek,mt7622-sgmiisys
--          - mediatek,mt7629-sgmiisys
--          - mediatek,mt7981-sgmiisys_0
--          - mediatek,mt7981-sgmiisys_1
--          - mediatek,mt7986-sgmiisys_0
--          - mediatek,mt7986-sgmiisys_1
--      - const: syscon
-+    oneOf:
-+      - items:
-+          - enum:
-+              - mediatek,mt7622-sgmiisys
-+              - mediatek,mt7629-sgmiisys
-+              - mediatek,mt7981-sgmiisys_0
-+              - mediatek,mt7981-sgmiisys_1
-+              - mediatek,mt7986-sgmiisys_0
-+              - mediatek,mt7986-sgmiisys_1
-+          - const: syscon
-+      - items:
-+          - enum:
-+              - mediatek,mt7988-sgmiisys0
-+              - mediatek,mt7988-sgmiisys1
-+          - const: simple-mfd
-+          - const: syscon
+ #define AUDPLL_TUNER_EN		BIT(31)
  
-   reg:
-     maxItems: 1
-@@ -35,11 +42,51 @@ properties:
-     description: Invert polarity of the SGMII data lanes
-     type: boolean
+@@ -114,7 +114,8 @@ static void mtk_pll_set_rate_regs(struct mtk_clk_pll *pll, u32 pcw,
+ 			pll->data->pcw_shift);
+ 	val |= pcw << pll->data->pcw_shift;
+ 	writel(val, pll->pcw_addr);
+-	chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
++	chg = readl(pll->pcw_chg_addr) |
++	      BIT(pll->data->pcw_chg_bit ? : PCW_CHG_BIT);
+ 	writel(chg, pll->pcw_chg_addr);
+ 	if (pll->tuner_addr)
+ 		writel(val + 1, pll->tuner_addr);
+diff --git a/drivers/clk/mediatek/clk-pll.h b/drivers/clk/mediatek/clk-pll.h
+index f17278ff15d78..285c8db958b39 100644
+--- a/drivers/clk/mediatek/clk-pll.h
++++ b/drivers/clk/mediatek/clk-pll.h
+@@ -48,6 +48,7 @@ struct mtk_pll_data {
+ 	const char *parent_name;
+ 	u32 en_reg;
+ 	u8 pll_en_bit; /* Assume 0, indicates BIT(0) by default */
++	u8 pcw_chg_bit;
+ };
  
-+  pcs:
-+    type: object
-+    description: MediaTek LynxI HSGMII PCS
-+    properties:
-+      compatible:
-+        const: mediatek,mt7988-sgmii
-+
-+      clocks:
-+        maxItems: 3
-+
-+      clock-names:
-+        items:
-+          - const: sgmii_sel
-+          - const: sgmii_tx
-+          - const: sgmii_rx
-+
-+    required:
-+      - compatible
-+      - clocks
-+      - clock-names
-+
-+    additionalProperties: false
-+
- required:
-   - compatible
-   - reg
-   - '#clock-cells'
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - mediatek,mt7988-sgmiisys0
-+              - mediatek,mt7988-sgmiisys1
-+
-+    then:
-+      required:
-+        - pcs
-+
-+    else:
-+      properties:
-+        pcs: false
-+
- additionalProperties: false
- 
- examples:
+ /*
 -- 
 2.43.0
 
