@@ -1,125 +1,141 @@
-Return-Path: <linux-kernel+bounces-1976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D254815698
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:01:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 728F781569A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 04:04:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 290D7287332
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:01:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DFDE1F25732
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 03:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3F220F7;
-	Sat, 16 Dec 2023 03:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7501C32;
+	Sat, 16 Dec 2023 03:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kSJWuzXf"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KuhMqLw/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0F71869;
-	Sat, 16 Dec 2023 03:01:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB8FFC433C7;
-	Sat, 16 Dec 2023 03:01:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702695691;
-	bh=/P/ZhrLqJHACtkn9yyEkbbr1lTbkhgNG4DxVbVllBpc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kSJWuzXf5JsHFjt6K7rC+2VlvyaR6vrFZPqXGVBXJ22KO4Xlf0lCZ6503KvqaGDL9
-	 IS4QM56v9pkuRl1X3HiEY24kAYSv4YOAY0AZ/6yZjXOI4Qubv7whLLJ6VlTUKGRtoT
-	 L1k7/gFq6GVPcg4ZfH/lgDpPFnzba89eyccX0FQbsbQFs3gfLhwEzKHSjRVwwazTVM
-	 npO5CMl1qlngApV+pK6Cki843NGMwIUeJYmBnzSLUYFdflZM16+e9IHhFZW2xB0jMs
-	 c7+bzsTrOS7SIewdnVCHELoCnspZ01H+edRsLNE8MGbibM1YZ+LoHXvhgn+1yeXICt
-	 ny2/w064p7T4A==
-Date: Fri, 15 Dec 2023 19:01:26 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Shakeel Butt <shakeelb@google.com>
-Cc: Mina Almasry <almasrymina@google.com>, Yunsheng Lin
- <linyunsheng@huawei.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Sumit Semwal <sumit.semwal@linaro.org>, "Christian =?UTF-8?B?S8O2bmln?="
- <christian.koenig@amd.com>, Michael Chan <michael.chan@broadcom.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
- Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei
- Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
- <xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de
- Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Shailend Chand <shailend@google.com>, Yisen Zhuang
- <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, Jesse
- Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Russell
- King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, Geetha
- sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
- hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin
- <john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>, Mark Lee
- <Mark-MC.Lee@mediatek.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
- <jaswinder.singh@linaro.org>, Ilias Apalodimas
- <ilias.apalodimas@linaro.org>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli
- <s-vadapalli@ti.com>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger
- Quadros <rogerq@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan
- Lou <mengyuanlou@net-swift.com>, Ronak Doshi <doshir@vmware.com>, VMware
- PV-Drivers Reviewers <pv-drivers@vmware.com>, Ryder Lee
- <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, Kalle
- Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, Stefano
- Stabellini <sstabellini@kernel.org>, Oleksandr Tyshchenko
- <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>, Stefano
- Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, "
- =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?=" <mic@digikod.net>, Nathan Chancellor
- <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Bill
- Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Jason
- Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t
- instead of struct page in API
-Message-ID: <20231215190126.1040fa12@kernel.org>
-In-Reply-To: <20231215021114.ipvdx2bwtxckrfdg@google.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
-	<20231214020530.2267499-5-almasrymina@google.com>
-	<ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
-	<CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
-	<20231215021114.ipvdx2bwtxckrfdg@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0448E5670;
+	Sat, 16 Dec 2023 03:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=m1kkjflSaXlRG8CRCUF8DyyydFgrQziYsG0nGeB4/64=; b=KuhMqLw/iYusyNgvEAy8QduJNj
+	1/kUrf8rKilum4ck/VlP4mKtyDerXqHsNAH89IFr73dM7z8U6mG/Sy6cPA8KkCJFHouA6g/1wHVEm
+	FtEdBpaZpWbj+DmT7/9H4UckblBvoM+eOlEzETWhU3FsVvYFlUYJADEDJXi8oFhSRRp3Y0R5ghP7h
+	X79MizaeoWbXyfBcbC8vftSotHMfsc9nffdUY5qc2FwefsLxpQjTSXTMnbW7iKL830Nv43jTpdIhH
+	tSppyZdpTDfGQ2l2CN/fqVdQBUbFE2fcuC1x5z3dR6aHGLGImA8rPXeQVkhKqKR99fGwLSGt/bdIs
+	86Jsst5g==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEKy6-005DN6-2d;
+	Sat, 16 Dec 2023 03:03:58 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Steve French <sfrench@samba.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Tom Talpey <tom@talpey.com>,
+	linux-cifs@vger.kernel.org
+Subject: [PATCH] ksmbd: auth: fix most kernel-doc warnings
+Date: Fri, 15 Dec 2023 19:03:57 -0800
+Message-ID: <20231216030357.7728-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 15 Dec 2023 02:11:14 +0000 Shakeel Butt wrote:
-> > From my POV it has to be the first one. We want to abstract the memory
-> > type from the drivers as much as possible, not introduce N new memory
-> > types and ask the driver to implement new code for each of them
-> > separately.
-> 
-> Agree with Mina's point. Let's aim to decouple memory types from
-> drivers.
+Fix 12 of 17 kernel-doc warnings in auth.c:
 
-What does "decouple" mean? Drivers should never convert netmem 
-to pages. Either a path in the driver can deal with netmem,
-i.e. never touch the payload, or it needs pages.
+auth.c:221: warning: Function parameter or member 'conn' not described in 'ksmbd_auth_ntlmv2'
+auth.c:221: warning: Function parameter or member 'cryptkey' not described in 'ksmbd_auth_ntlmv2'
+auth.c:305: warning: Function parameter or member 'blob_len' not described in 'ksmbd_decode_ntlmssp_auth_blob'
+auth.c:305: warning: Function parameter or member 'conn' not described in 'ksmbd_decode_ntlmssp_auth_blob'
+auth.c:305: warning: Excess function parameter 'usr' description in 'ksmbd_decode_ntlmssp_auth_blob'
+auth.c:385: warning: Function parameter or member 'blob_len' not described in 'ksmbd_decode_ntlmssp_neg_blob'
+auth.c:385: warning: Function parameter or member 'conn' not described in 'ksmbd_decode_ntlmssp_neg_blob'
+auth.c:385: warning: Excess function parameter 'rsp' description in 'ksmbd_decode_ntlmssp_neg_blob'
+auth.c:385: warning: Excess function parameter 'sess' description in 'ksmbd_decode_ntlmssp_neg_blob'
+auth.c:413: warning: Function parameter or member 'conn' not described in 'ksmbd_build_ntlmssp_challenge_blob'
+auth.c:413: warning: Excess function parameter 'rsp' description in 'ksmbd_build_ntlmssp_challenge_blob'
+auth.c:413: warning: Excess function parameter 'sess' description in 'ksmbd_build_ntlmssp_challenge_blob'
 
-Perhaps we should aim to not export netmem_to_page(),
-prevent modules from accessing it directly.
+The other 5 are only present when a W=1 kernel build is done or
+when scripts/kernel-doc is run with -Wall. They are:
+
+auth.c:81: warning: No description found for return value of 'ksmbd_gen_sess_key'
+auth.c:385: warning: No description found for return value of 'ksmbd_decode_ntlmssp_neg_blob'
+auth.c:413: warning: No description found for return value of 'ksmbd_build_ntlmssp_challenge_blob'
+auth.c:577: warning: No description found for return value of 'ksmbd_sign_smb2_pdu'
+auth.c:628: warning: No description found for return value of 'ksmbd_sign_smb3_pdu'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Steve French <sfrench@samba.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Tom Talpey <tom@talpey.com>
+Cc: linux-cifs@vger.kernel.org
+---
+ fs/smb/server/auth.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff -- a/fs/smb/server/auth.c b/fs/smb/server/auth.c
+--- a/fs/smb/server/auth.c
++++ b/fs/smb/server/auth.c
+@@ -208,10 +208,12 @@ out:
+ 
+ /**
+  * ksmbd_auth_ntlmv2() - NTLMv2 authentication handler
+- * @sess:	session of connection
++ * @conn:		connection
++ * @sess:		session of connection
+  * @ntlmv2:		NTLMv2 challenge response
+  * @blen:		NTLMv2 blob length
+  * @domain_name:	domain name
++ * @cryptkey:		session crypto key
+  *
+  * Return:	0 on success, error number on error
+  */
+@@ -294,7 +296,8 @@ out:
+  * ksmbd_decode_ntlmssp_auth_blob() - helper function to construct
+  * authenticate blob
+  * @authblob:	authenticate blob source pointer
+- * @usr:	user details
++ * @blob_len:	length of the @authblob message
++ * @conn:	connection
+  * @sess:	session of connection
+  *
+  * Return:	0 on success, error number on error
+@@ -376,8 +379,8 @@ int ksmbd_decode_ntlmssp_auth_blob(struc
+  * ksmbd_decode_ntlmssp_neg_blob() - helper function to construct
+  * negotiate blob
+  * @negblob: negotiate blob source pointer
+- * @rsp:     response header pointer to be updated
+- * @sess:    session of connection
++ * @blob_len:	length of the @authblob message
++ * @conn:	connection
+  *
+  */
+ int ksmbd_decode_ntlmssp_neg_blob(struct negotiate_message *negblob,
+@@ -403,8 +406,7 @@ int ksmbd_decode_ntlmssp_neg_blob(struct
+  * ksmbd_build_ntlmssp_challenge_blob() - helper function to construct
+  * challenge blob
+  * @chgblob: challenge blob source pointer to initialize
+- * @rsp:     response header pointer to be updated
+- * @sess:    session of connection
++ * @conn:	connection
+  *
+  */
+ unsigned int
 
