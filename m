@@ -1,242 +1,141 @@
-Return-Path: <linux-kernel+bounces-2318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 021A5815AEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:52:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA4B815AEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 18:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C351F21E8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:52:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9790C1C218DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 17:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6ADD31593;
-	Sat, 16 Dec 2023 17:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C02C31755;
+	Sat, 16 Dec 2023 17:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="cJ2OvdTE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic309-21.consmr.mail.gq1.yahoo.com (sonic309-21.consmr.mail.gq1.yahoo.com [98.137.65.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC48A31A63;
-	Sat, 16 Dec 2023 17:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BGFkJUJ011007;
-	Sat, 16 Dec 2023 12:52:16 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3v1etvg904-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Dec 2023 12:52:15 -0500 (EST)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 3BGHqE1d029661
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sat, 16 Dec 2023 12:52:14 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Sat, 16 Dec
- 2023 12:52:13 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Sat, 16 Dec 2023 12:52:13 -0500
-Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3BGHprHg015946;
-	Sat, 16 Dec 2023 12:51:56 -0500
-From: Marcelo Schmitt <marcelo.schmitt@analog.com>
-To: <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
-        <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
-        <Michael.Hennerich@analog.com>, <lars@metafoo.de>, <jic23@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <dan.carpenter@linaro.org>,
-        <dlechner@baylibre.com>, <marcelo.schmitt1@gmail.com>
-CC: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 15/15] iio: adc: ad7091r: Allow users to configure device events
-Date: Sat, 16 Dec 2023 14:51:50 -0300
-Message-ID: <24a9f1bb721e66df65e36797b0c3fd2ca1f95227.1702746240.git.marcelo.schmitt1@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1702746240.git.marcelo.schmitt1@gmail.com>
-References: <cover.1702746240.git.marcelo.schmitt1@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D08E31593
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 17:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702749379; bh=3ywQ30xHRQGoctUza57VrSGBvlL0tJAUFYSNd2wM/kU=; h=Date:From:To:In-Reply-To:References:Subject:From:Subject:Reply-To; b=cJ2OvdTEz0udI2PTzrD70iVuUtfna5bcsdtvuUO1HMyf4SD5AmlgVlI0Ed0WDWiB70iQiJCDVOsyJgot/V40LVf/dQD65CVLRdGfjUun6GxyWbaetJgHgLiwIu9bfe7F0CpTf3nfKpqwVb/XQqIGJ6x2hzJ4vTo3m8TxyammdoZoTmWqWBpcp4grqKS3gXwH99nWNddZVfC4SnZGfvwMXwimLLxjOvq6DWTiuzlygz4pP6DrsHR7Bcqlcb7lyDBZ3DYGl6KUHROZFBEaCjHLcNpo5uXobtFR4vF7FDHcTrE7CV7A7FcZXy6iH7MWhXIXOLz3cdO0T6Pm/RvqS9kkaw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702749379; bh=AyIeB1fq/aAa32dktPDdYa69LW/FqpDdIrtdmsC2b/m=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=LbmfSbAxUvLXfn4t+03GyUY0HQbpyLLm6OaNMuhAD1b2Cms3i6UEBcDb7OW1iuMyqCJCgHtEdz2O7p0BjQERlNx55td7qGqfES0CTTi2vFakAwjacrHpPPBTlRcB5Me68u18X100O7SnhA2+BC2/ynKAog1VJc7f2/ZReWI/X40w2yZnOvzkHWDI1K4Qy2Mjw7KoaihavcBcOKAg7sI7jp4DenmjtbSf/DXFbic5KdjTYgy5ahzbDZMz0WrxTNBpepZJBQtYCgBNEeINlEx8tAzkaH6UKk+zhQG9ka+PpTn7Y6eruIKu6VqWN9FzAqcJKInzYcTXR/Gms5mQ4ovGgA==
+X-YMail-OSG: dM9YqbIVM1kbWb.dV5VjyR49GbeFFR7ilofNFYGk4PxejMth8EYvD2cV9P8VuiK
+ 3SiaSGLl1OvqWzplRiFdj8Ubde3PZO9nPS5IPfpTjYQDAeDsmXp6dPfwbaDYKHN7XtO8tD9.vR4g
+ Ys.MESGEK7xPsJ9ZEMDiNi9gaI38wG._EB45o0woHJTzgfaH_1Md3o.csbT8mJWu_VUDL7c4rrPs
+ QIOfowP2ubEyxHSewLlPvtHggDXkk1eo9T.mKgDbuYwMZBh_oM5x3wOrj_z7HSnVrMNukYxEviLG
+ CfaB_ebYruRUcg1Z9390vpUTHV2U1JiIwHKwEEX7AX42yzx4nT0SGKIPCPgYmcm5fMzwY6Oue_bU
+ llcTweHQINOI0HkF7aNAziCIhpb_MmsVPUtZnAZpsS5n4P99qUeP8_6j04ugxnGfUb_csiPJXJ_c
+ AypXEnN5vbK9B7MhWhh5ge47SZxfMg0oXz0gxZOZrM_GcfkyeJjyHsf0qFdSJITLpC5aCpyP9syD
+ 7uZN_JrRjERi7SUJ6iCuCZjP3etAS8sdEXajO2yJ_B_bPTbewAfONf2tCDzBPzQY__LwCDzohSO6
+ zPQxxCo1sKJrQujUZLk0auzy.TjtWUTfv0XtLtPBaRfHkwA8cVFrKKy4S0nsoZTLu15sU9lh4jEV
+ 0ZyCIlq8wxEZkpevymkfgBbMS3B24iQeRzhrLuHrLlnu4nk0TfbX5wVBbtRaLPksUmBTNzMERr2w
+ UdtXPj5UujgF70ImEAIqFqwjHxxIBU5JaYIYiHUgFIrXVj2EsW41JEHgzU9Mg.Eqc1u7tJUjDFkR
+ mRKX04YXjtWRQbwNmfRkE1h6V.7aCpxWvdfazIRTAvpSzG.bUhDa1anFjmpNJ_XQcxwEZddqckCJ
+ QiEC1w3t2mYbKmE0Zax8h7oSlO1yWVh2U0WyKkZXsFFBd1VxVDFrnYGbNzfRxbrWxqXDun1VDMke
+ DZNK1OaL8iH9KlJqv0F7jVpigpi4BXxU0EiC6JEaXPEFzzvGjWnB6XNAjrkFVVtcl4KwGsOrZg_U
+ RlFWdsgvNBi_fJdsE4DRgIwBHsDqOxR.8H9shoLfoAQipkKU1wGhJvPjhuVxkgF5JBqquPsdNn2p
+ NMOZO0alGnOBDTcVgijB6OtZlFBkPevvVJ7yN4BrUyr95Vh3iaUpwCQoIAjLDdHarIWSvMgsd_3Z
+ jDJ_8C9YEMd9qrsAvNdXxjWSghHvQJd_pAWU0cFVwCEyqicmyU.fZpXPvcZuykCn.oPZxaT_NTsd
+ 6UqIrXn2r6WVhgg5GtZRmeljIedCfCRJ5uFLDHAI88ou0urFbLs33FbVTnlYhvWFmdrIt28CiC.H
+ Dn5ILhf.uiF_XY1j1a_Oj_IVfaqIDdZjTSmTDRCGcSMtvTSjkoh0zjkkomiLK6jJaoLFfqdQSDtw
+ oj.rxO7G7yPDb7J3Uqv24sGyG3eHxy073S7UKDQs06b49poUIfmHhOCv3GtbRlc7_JFPZ7C1OWCG
+ UYaFzOPthtAgoFjCMu9spoTSkOymupaUnE9vSx9jqZaO1PInuQObN8aBdEpSiyxLE92_DQm9bMV1
+ 92qwoP1alReCY6MTGlM4uWd010n_2m3VmHPW5WPQ1uOM4twOigO4bzvkj3PP1Cc_n9EF86Ytjpt4
+ d2GP4W4fU0iCn3eE8q9aPi1UwAlg2LrmUEyZBnpXrHDFjcVK6QGuNkHz7P8pVmXhAgOb9kYFSQut
+ K4ASQ83TuO_9uXMY7s5zXHKar4l_vtU.g8JCtzFyzwCv3O5StilI8Xgc4jTlbVm9.PcnmyUySE4D
+ gyeRqgsbEFaktvreaptyYno9LNSP8QYqLvRXbF0Is4TXh4YhrPvzXSguKkUpt53X_aiQ84CMDdIc
+ R9ffjb9dzdVGK0ukJagWAv5ZKu1.I9la6OudcyxvFTLHV2vTmmj0xBmZKCAZG1buiWYGCrD6PdVV
+ bG6zdlMSI7x7JzVc3QhDuyAEhxSmKrMPB3vBv672qk_kBDcaBFJfD2YajOvo8I_aa8QtLzgbNma4
+ Xk8qriGa6TcBt_b93oNulDnS35eUSujJ86qERrK1mNAr29ib_S1kAnrf13FpGDtaxVZq2W9NOrX.
+ Y4NZXX6za0ZuuTzZy0Odf_vixbc02r2NoLAs.wKaI3T7_nbDUTjaagkLeRJq6Bu8s0r8gabu.pd0
+ T1S_dqKzi5p1Xriu7Rk2OHw4zoF.q.UNFDnrP4wX8XSXjKGc_pKCfvOnogzbEpMhZ9CPAdmQWKnh
+ QHSEGITeyBs9VUu6EVg--
+X-Sonic-MF: <chaosesqueteam@yahoo.com>
+X-Sonic-ID: 65d099a4-8cca-4028-8c81-4b5b677d577a
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.gq1.yahoo.com with HTTP; Sat, 16 Dec 2023 17:56:19 +0000
+Date: Sat, 16 Dec 2023 17:56:14 +0000 (UTC)
+From: "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
+To: "misc@openbsd.org" <misc@openbsd.org>, 
+	"tech@openbsd.org" <tech@openbsd.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Networking <netdev@vger.kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Richard Stallman <rms@gnu.org>, 
+	Aditya Pakki <pakki001@umn.edu>, 
+	Anna Schumaker <anna.schumaker@netapp.com>, 
+	"ansgar@debian.org" <ansgar@debian.org>, 
+	"blukashev@sempervictus.com" <blukashev@sempervictus.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, 
+	Dave Wysochanski <dwysocha@redhat.com>, 
+	"tcallawa@redhat.com" <tcallawa@redhat.com>, 
+	"editor@lwn.net" <editor@lwn.net>, 
+	"esr@thyrsus.com" <esr@thyrsus.com>, 
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
+	"J. Bruce Fields" <bfields@fieldses.org>, 
+	Leon Romanovsky <leon@kernel.org>, 
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
+	"moglen@columbia.edu" <moglen@columbia.edu>, 
+	"skraw.ml@ithnet.com" <skraw.ml@ithnet.com>, 
+	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>, 
+	"torvalds@osdl.org" <torvalds@osdl.org>, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	Julia Lawall <julia.lawall@inria.fr>, 
+	Paolo Abeni <pabeni@redhat.com>, Bruce Perens <bruce@perens.com>
+Message-ID: <2070059348.1814523.1702749374962@mail.yahoo.com>
+In-Reply-To: <ZX3TEj9LyyHg1cHQ@skapet.bsdly.net>
+References: <875007189.3298572.1696619900247.ref@mail.yahoo.com> <875007189.3298572.1696619900247@mail.yahoo.com> <ZSEdS8a5imvsAE8F@debian.me> <457035954.3503192.1696688953071@mail.yahoo.com> <CAK2MWOsK=pTKADr1kUuj=fvmRB=X2Z0+SkWQ9PTSxCqOVCq39A@mail.gmail.com> <641990627.3964368.1696950113530@mail.yahoo.com> <CAK2MWOurH4AHGd3ntgVvg-+Z6rNZriO2xQm9_RNqpUMwWWQCkg@mail.gmail.com> <1891850654.636910.1701859570489@mail.yahoo.com> <1587993142.1777988.1702736328778@mail.yahoo.com> <ZX3TEj9LyyHg1cHQ@skapet.bsdly.net>
+Subject: Re: I can't get contributors for my C project. Can you help?
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: _4crZyDm5Dzt93J_dLhyAmqxIj7l3WZg
-X-Proofpoint-ORIG-GUID: _4crZyDm5Dzt93J_dLhyAmqxIj7l3WZg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 adultscore=0 clxscore=1015 bulkscore=0 mlxscore=0
- impostorscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312160138
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21952 YMailNorrin
 
-Implement event configuration callbacks allowing users to read/write
-event thresholds and enable/disable event generation.
+Thanks. I don't know either. The engine is a pure C project (nothing else, engine wise).
+So I need to talk to (fellow) C programmers.
+Its main area of interest is old 3d file formats from the golden age of 3d shooters.
 
-Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
----
-This is from a review suggestion David made on v3 [1].
+That limits where one can discuss since no one seems to like C anymore.
 
-Is this the case for a Suggested-by tag?
 
-[1]: https://lore.kernel.org/linux-iio/CAMknhBFPbAqp4-AQdmbp+VRW-Ksk1PxaLCG+3n=Zk4gyStqhgw@mail.gmail.com/#t
 
- drivers/iio/adc/ad7091r-base.c | 117 +++++++++++++++++++++++++++++++--
- 1 file changed, 113 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
-index 57355ca157a1..64e8baeff258 100644
---- a/drivers/iio/adc/ad7091r-base.c
-+++ b/drivers/iio/adc/ad7091r-base.c
-@@ -20,19 +20,18 @@ const struct iio_event_spec ad7091r_events[] = {
- 	{
- 		.type = IIO_EV_TYPE_THRESH,
- 		.dir = IIO_EV_DIR_RISING,
--		.mask_separate = BIT(IIO_EV_INFO_VALUE) |
--				 BIT(IIO_EV_INFO_ENABLE),
-+		.mask_separate = BIT(IIO_EV_INFO_VALUE),
- 	},
- 	{
- 		.type = IIO_EV_TYPE_THRESH,
- 		.dir = IIO_EV_DIR_FALLING,
--		.mask_separate = BIT(IIO_EV_INFO_VALUE) |
--				 BIT(IIO_EV_INFO_ENABLE),
-+		.mask_separate = BIT(IIO_EV_INFO_VALUE),
- 	},
- 	{
- 		.type = IIO_EV_TYPE_THRESH,
- 		.dir = IIO_EV_DIR_EITHER,
- 		.mask_separate = BIT(IIO_EV_INFO_HYSTERESIS),
-+		.mask_shared_by_all = BIT(IIO_EV_INFO_ENABLE),
- 	},
- };
- EXPORT_SYMBOL_NS_GPL(ad7091r_events, IIO_AD7091R);
-@@ -128,8 +127,118 @@ static int ad7091r_read_raw(struct iio_dev *iio_dev,
- 	return ret;
- }
- 
-+static int ad7091r_read_event_config(struct iio_dev *indio_dev,
-+				     const struct iio_chan_spec *chan,
-+				     enum iio_event_type type,
-+				     enum iio_event_direction dir)
-+{
-+	struct ad7091r_state *st = iio_priv(indio_dev);
-+	unsigned int alert;
-+	int ret;
-+
-+	ret = regmap_read(st->map, AD7091R_REG_CONF, &alert);
-+	if (ret)
-+		return ret;
-+
-+	return !!(FIELD_GET(AD7091R_REG_CONF_ALERT_EN, alert));
-+}
-+
-+static int ad7091r_write_event_config(struct iio_dev *indio_dev,
-+				      const struct iio_chan_spec *chan,
-+				      enum iio_event_type type,
-+				      enum iio_event_direction dir, int state)
-+{
-+	struct ad7091r_state *st = iio_priv(indio_dev);
-+
-+	/*
-+	 * Whenever alerts are enabled, every ADC conversion will generate
-+	 * an alert if the conversion result for a particular channel falls
-+	 * bellow the respective low limit register or above the respective
-+	 * high limit register.
-+	 * We can enable or disable all alerts by writing to the config reg.
-+	 */
-+	return regmap_update_bits(st->map, AD7091R_REG_CONF,
-+				  AD7091R_REG_CONF_ALERT_EN, state << 4);
-+}
-+
-+static int ad7091r_read_event_value(struct iio_dev *indio_dev,
-+				    const struct iio_chan_spec *chan,
-+				    enum iio_event_type type,
-+				    enum iio_event_direction dir,
-+				    enum iio_event_info info, int *val, int *val2)
-+{
-+	struct ad7091r_state *st = iio_priv(indio_dev);
-+	int ret;
-+
-+	switch (info) {
-+	case IIO_EV_INFO_VALUE:
-+		switch (dir) {
-+		case IIO_EV_DIR_RISING:
-+			ret = regmap_read(st->map,
-+					  AD7091R_REG_CH_HIGH_LIMIT(chan->channel),
-+					  val);
-+			if (ret)
-+				return ret;
-+			return IIO_VAL_INT;
-+		case IIO_EV_DIR_FALLING:
-+			ret = regmap_read(st->map,
-+					  AD7091R_REG_CH_LOW_LIMIT(chan->channel),
-+					  val);
-+			if (ret)
-+				return ret;
-+			return IIO_VAL_INT;
-+		default:
-+			return -EINVAL;
-+		}
-+	case IIO_EV_INFO_HYSTERESIS:
-+		ret = regmap_read(st->map,
-+				  AD7091R_REG_CH_HYSTERESIS(chan->channel),
-+				  val);
-+		if (ret)
-+			return ret;
-+		return IIO_VAL_INT;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int ad7091r_write_event_value(struct iio_dev *indio_dev,
-+				     const struct iio_chan_spec *chan,
-+				     enum iio_event_type type,
-+				     enum iio_event_direction dir,
-+				     enum iio_event_info info, int val, int val2)
-+{
-+	struct ad7091r_state *st = iio_priv(indio_dev);
-+
-+	switch (info) {
-+	case IIO_EV_INFO_VALUE:
-+		switch (dir) {
-+		case IIO_EV_DIR_RISING:
-+			return regmap_write(st->map,
-+					    AD7091R_REG_CH_HIGH_LIMIT(chan->channel),
-+					    val);
-+		case IIO_EV_DIR_FALLING:
-+			return regmap_write(st->map,
-+					    AD7091R_REG_CH_LOW_LIMIT(chan->channel),
-+					    val);
-+		default:
-+			return -EINVAL;
-+		}
-+	case IIO_EV_INFO_HYSTERESIS:
-+		return regmap_write(st->map,
-+				    AD7091R_REG_CH_HYSTERESIS(chan->channel),
-+				    val);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
- static const struct iio_info ad7091r_info = {
- 	.read_raw = ad7091r_read_raw,
-+	.read_event_config = &ad7091r_read_event_config,
-+	.write_event_config = &ad7091r_write_event_config,
-+	.read_event_value = &ad7091r_read_event_value,
-+	.write_event_value = &ad7091r_write_event_value,
- };
- 
- static irqreturn_t ad7091r_event_handler(int irq, void *private)
+
+
+On Saturday, December 16, 2023 at 11:40:52 AM EST, Peter N. M. Hansteen <peter@bsdly.net> wrote: 
+
+
+
+
+
+On Sat, Dec 16, 2023 at 02:18:48PM +0000, chaosesqueteam@yahoo.com wrote:
+
+> Why won't anyone help my free software project?
+> I simply want help with the unreal map format. https://sourceforge.net/p/chaosesqueanthology/tickets/2/
+
+
+If you are not getting any response, you are most likely not addressing the
+right forums or individuals.
+
+Then again, I have no idea what would be the proper forum(s) for this.
+
+All the best,
+Peter (who you reached via openbsd-misc)
+
 -- 
-2.42.0
+Peter N. M. Hansteen, member of the first RFC 1149 implementation team
+https://bsdly.blogspot.com/ https://www.bsdly.net/ https://www.nuug.no/
+"Remember to set the evil bit on all malicious network traffic"
+delilah spamd[29949]: 85.152.224.147: disconnected after 42673 seconds.
 
 
