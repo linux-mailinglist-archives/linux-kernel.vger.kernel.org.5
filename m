@@ -1,145 +1,154 @@
-Return-Path: <linux-kernel+bounces-2140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FB1481586B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 09:18:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4409815862
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 09:16:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2278B1F25818
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 08:18:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04DB41C24B38
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 08:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D867314280;
-	Sat, 16 Dec 2023 08:18:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0BE714018;
+	Sat, 16 Dec 2023 08:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P2mcD+70"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="fSQlZQCi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87EAA13AED;
-	Sat, 16 Dec 2023 08:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BG8AlnW011556;
-	Sat, 16 Dec 2023 08:15:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=UrutHSPGcLDRLLUpSzQn97qPAwY9DBQLxCjQ9z93DWs=; b=P2
-	mcD+70T0TpAXVrwTaecPrUvY+EWWkwBu4MIT0j4DciDLrbngCVypQxXrEz8EW1Ev
-	Fol2HOa2iQp54LLF3T8GXZHMqUBXdzSIUt/bn56b1z/WJpEB582DL2VntRr5KzT0
-	Qv2djQvJ7mqROMv7lIkNXx1urqlqug0xttGL4ks+KAXN2CEirAVKPHHuV4RIfgrG
-	/y0VisQtm1ara5PT+tcR4Lmj/8ChbSY+zXy5/JpLZyh8XEYEsN4Hhi9Gct2DCSVY
-	iZ7tOlEHVGSv7YDFN9WVz3Php6Ury7U1ZIGjfuueaJakfV1GfPyM9Wyjc82N/j0T
-	X2S8QUAY2kICJHHPJZGw==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v14vjg7vw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Dec 2023 08:15:22 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BG8FLdL011863
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Dec 2023 08:15:21 GMT
-Received: from [10.216.47.123] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 16 Dec
- 2023 00:15:17 -0800
-Message-ID: <89ca6eb2-9a33-c37e-14ae-6181edb8626c@quicinc.com>
-Date: Sat, 16 Dec 2023 13:45:14 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37ED14000
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 08:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=daynix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=daynix.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so1918280b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 00:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1702714547; x=1703319347; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j34U3DbBJyUmmhCTSIWekoWpOW5ZdWSwa2YWU4yaUK4=;
+        b=fSQlZQCinU0xlc/C7XkWiMFc/n4JnuL0J2BMpN1y8kLXwcdhoph+AlxWeMItVAImiE
+         jM6ABIHhQDEgvbUyrzd0X86wCICqDW0QvnwDyNVUmlW8ad0NDZMuENaA94eOpf7oizEP
+         bDYoM5g04sXrYq6RBCcofqg0ond+33l5i0vzg/PGAo3DUXZcGUqXEDVCqO6Cs2Cgyd+8
+         3XZ+Sn2e9+MB3nRsl1LetszqffjwE/g4YMF7OH5tJCqwkugzCAmwj2hA3oZYRVc8jb3y
+         hGh6UPJHOvtpum9xUHMXBH80bGdJWsu/fBlT2pXpcPZS2i1YXetEGlN4ZOnLjFpAJrP4
+         FKVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702714547; x=1703319347;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j34U3DbBJyUmmhCTSIWekoWpOW5ZdWSwa2YWU4yaUK4=;
+        b=Prg8vP8o8g6+Olgvih+XQ0k1qWWFHq4ftr2yiZXYrwVP32WrCzAptB8uLr88Z67Jlz
+         Zgi9CcvpmuBdQVEKnNVuI9QoFmFU0r5PVf43ofdt0VF02XOAgb21WRAy9HPkEPYt5FF+
+         lofQZWqYXLedzGZM5ll7U7q1Eq21PHFiXOG8J0C5IHDonSvSF8jJvOARtaCiEOn06Pf9
+         ih7UYs2ZaZIKQEyDrN2oOxwqtkXjGs6+tZa7XV/yfbGaFdwRfhmf2VTwUZp5De4sRz2r
+         tyrJ5aFWt1eSqG6Hez9JToFdc7UGxA/9teZjIca3rkXR31nFTUgZhkm2llPZ3ge2I4mo
+         qx5A==
+X-Gm-Message-State: AOJu0Yy3+pPrqxMp7peRvC21FP2xUtychcgF0bjNb3jjH2uF5/ycCb3j
+	bJynpi0WuDEMHXqRpvzjnJWM/A==
+X-Google-Smtp-Source: AGHT+IEeuPfCOabIrvg0uS3E2YqqLjNkgjJjHCcIA2x49ExvIgKwxCgYmGKVjZEUpfIORWU2Bd9Yug==
+X-Received: by 2002:a05:6a00:198b:b0:6ce:78c9:5979 with SMTP id d11-20020a056a00198b00b006ce78c95979mr17324911pfl.18.1702714547181;
+        Sat, 16 Dec 2023 00:15:47 -0800 (PST)
+Received: from [157.82.205.15] ([157.82.205.15])
+        by smtp.gmail.com with ESMTPSA id p18-20020a056a000b5200b006ce835b77d9sm14707733pfo.20.2023.12.16.00.15.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Dec 2023 00:15:46 -0800 (PST)
+Message-ID: <11507101-ca4f-486d-9fb8-a5d4de0b1b85@daynix.com>
+Date: Sat, 16 Dec 2023 17:15:39 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] power: reset: msm: Process register_restart_handler()
- error
+User-Agent: Mozilla Thunderbird
+Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
 Content-Language: en-US
-To: Nikita Kiryushin <kiryushin@ancud.ru>, Andy Gross <agross@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Stephen Boyd
-	<sboyd@codeaurora.org>,
-        Pramod Gurav <pramod.gurav@smartplayin.com>,
-        Guenter
- Roeck <linux@roeck-us.net>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lvc-project@linuxtesting.org>
-References: <feeb1a89-59bd-4fd6-81a5-1d828f95b0f0@ancud.ru>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <feeb1a89-59bd-4fd6-81a5-1d828f95b0f0@ancud.ru>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: iPeTEqpyHD1CYQFA_s5Qs3YqJqvzId4w
-X-Proofpoint-GUID: iPeTEqpyHD1CYQFA_s5Qs3YqJqvzId4w
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- bulkscore=0 clxscore=1011 malwarescore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312160062
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Jason Wang <jasowang@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Yuri Benditovich
+ <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>,
+ Benjamin Tissoires <bentiss@kernel.org>, bpf <bpf@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, kvm@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ virtualization@lists.linux-foundation.org,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>
+References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
+ <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
+ <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
+ <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
+ <0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
+ <20231214094042.75f704f6@hermes.local>
+ <72b8e198-7058-469a-a1e0-17f48330deca@daynix.com>
+ <20231215083644.4dd9a323@hermes.local>
+From: Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <20231215083644.4dd9a323@hermes.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On 11/8/2023 10:57 PM, Nikita Kiryushin wrote:
-> If registering restart handler fails for msm-restart result is not checked.
-> It may be irrelevant now (as stated in comment to register_restart_handler,
-> the function currently always returns zero), but if the behavior changes
-> in the future, an error at registration of handler will be silently 
-> skipped.
+On 2023/12/16 1:36, Stephen Hemminger wrote:
+> On Fri, 15 Dec 2023 14:49:56 +0900
+> Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
 > 
-> Add return error code and print error message too debug log in case of
-> non-zero result of register_restart_handler.
+>>>> It is exactly what BPF_PROG_TYPE_SOCKET_FILTER does, but it lacks a
+>>>> mechanism to report hash values so I need to extend it or invent a new
+>>>> method. Extending BPF_PROG_TYPE_SOCKET_FILTER is not a way forward since
+>>>> CO-RE is superior to the context rewrite it relies on. But apparently
+>>>> adopting kfuncs and CO-RE also means to lose the "we don't break user
+>>>> space" contract although I have no intention to expose kernel internals
+>>>> to the eBPF program.
+>>>
+>>> An example is how one part of DPDK recomputes RSS over TAP.
+>>>
+>>> https://git.dpdk.org/dpdk/tree/drivers/net/tap/bpf/tap_bpf_program.c
+>>>
+>>> This feature is likely to be removed, because it is not actively used
+>>> and the changes in BPF program loading broke it on current kernel
+>>> releases.  Which brings up the point that since the kernel does
+>>> not have stable API/ABI for BPF program infrastructure, I would
+>>> avoid it for projects that don't want to deal with that.
+>>
+>> It's unfortunate to hear that, but thanks for the information.
+>> I'll consider more about the option not using BPF (plain ioctl and
+>> in-kernel implementation).
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 18a702e0de98 ("power: reset: use restart_notifier mechanism for 
-> msm-poweroff")
-> 
-> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
-> ---
->   drivers/power/reset/msm-poweroff.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/power/reset/msm-poweroff.c 
-> b/drivers/power/reset/msm-poweroff.c
-> index b9a401bd280b..5877a1ba2778 100644
-> --- a/drivers/power/reset/msm-poweroff.c
-> +++ b/drivers/power/reset/msm-poweroff.c
-> @@ -35,11 +35,16 @@ static void do_msm_poweroff(void)
->    static int msm_restart_probe(struct platform_device *pdev)
->   {
-> +    int ret = -EINVAL;
+> With libbpf, things are much better. It is just that projects like
+> DPDK have to support wide range of kernels including older versions of RHEL.
 
-This does not add up anything., no need to initialize.
+I have checked DPDK documentation. It says it supports the oldest LTS 
+kernel:
+https://doc.dpdk.org/guides/linux_gsg/sys_reqs.html#system-software
 
--Mukesh
+My use case is QEMU, which has much more relaxed compatibility 
+requirement that refers to recent distribution versions instead of LTS 
+kernels:
+https://qemu.readthedocs.io/en/v8.1.0/about/build-platforms.html
 
+That said, I'm not really concerned about the case running QEMU on older 
+kernels. QEMU developers can just pay extra efforts to support those old 
+kernels if necessary.
 
->       msm_ps_hold = devm_platform_ioremap_resource(pdev, 0);
->       if (IS_ERR(msm_ps_hold))
->           return PTR_ERR(msm_ps_hold);
->   -    register_restart_handler(&restart_nb);
-> +    ret = register_restart_handler(&restart_nb);
-> +    if (ret) {
-> +        dev_err(&pdev->dev, "unable to register restart handler, %d\n", 
-> ret);
-> +        return ret;
-> +    }
->        pm_power_off = do_msm_poweroff;
->   -- 2.34.1
-> 
+The more concerning scenario is that a newer kernel breaks compatibility 
+with older QEMU versions; such a scenario has not been considered before 
+AFAIK.
+
+QEMU already uses libbpf to load a BPF_PROG_TYPE_SOCKET_FILTER program.
 
