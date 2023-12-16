@@ -1,118 +1,157 @@
-Return-Path: <linux-kernel+bounces-2187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A16781591C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:56:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7580C815921
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 13:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ED521F23B10
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:56:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 316A3285E84
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 12:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1FB19452;
-	Sat, 16 Dec 2023 12:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970C4219F9;
+	Sat, 16 Dec 2023 12:59:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="QIui7Z+I";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="byrCnleX"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IdnFIlEC";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oQjA0Sjj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169FF134D9
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 12:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 4599F5C01A0;
-	Sat, 16 Dec 2023 07:56:35 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sat, 16 Dec 2023 07:56:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-	cc:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1702731395; x=1702817795; bh=V/Swu2Ok4xoLueHEPWDCQ
-	hLZgLyrqWw+uIjeSWzbtwI=; b=QIui7Z+IfRWYnzTi8vIFLLuA0ohXyqGo4mcyc
-	S+O/BhdEdYy7u3BBbPMnACTba0cWjCUa534mWU3ZJUvQtLokMr86xdfrSTPZP0YK
-	ScBk/V9NpmH1sm/yegqvT8KZWxhclY9ECqwEY/D8iEf0LuioK7Q4pJQ3mjNxUUOd
-	LvG5nuMjyjz1ZgypMrasS+cA+11aoo/Nwb7Bli2/c5OdOtX47fQyn7mj6lyRihNB
-	OpGkbtBDPA65naNW6SOd2TS82zsOM5EK8w4CdtzOl4Buw9roFsTxmfE3tQzDphBE
-	9oARIhCxinUieFWK9rQn51GGsqMVjHqIAzy8F2edaA5KkZdKw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1702731395; x=1702817795; bh=V/Swu2Ok4xoLueHEPWDCQhLZgLyr
-	qWw+uIjeSWzbtwI=; b=byrCnleXneksRhc6l9XdhLUGQeWBgO8FyKMmnnkWc9Et
-	vw2lenscIiD0ZFFPfidGVgviGwavp1MCRsBSfyxrGV5NrRRKMM4LFLRqLq0yYtvp
-	yNxcKW8I7E1XhXA1rrHK5ALbCJ10XkQY5oNsuR3vpB8JKOXOX+tKyw9l6OYQFfWy
-	f3eGNnafwQpG4cBYuYIB37XCJTfaHxJ4JRjh3fP6FFgUdDZEiBxrQIrb0Vppteaq
-	nncf6gLalCPiSFzqy+d1QVIRcNeSv/G8In/f2/IGSBfx7IVVB6crwJjU6xE9xtSO
-	3atntxuWJUcm6TrvrBDw+SHfECuI0IYBJDl+/9UxuA==
-X-ME-Sender: <xms:g559ZWxLC_18BaplY_aYHZqV8W5369YqLjui9l-OBCGuAe9b0fl2Vg>
-    <xme:g559ZSRBGFtMcm1XsK9FPPT1qS-zNJerlpzlZUqD2Jbj4THIfUOzWmh0LIfMA4isQ
-    xvYmsD9A-yp5EHBJNc>
-X-ME-Received: <xmr:g559ZYVsatCj233x81pff4kd0Y0yVAhpoZ0lJgy2GXGOAaOQFEqkyZ-PSsR_okgSmc-lynmxCr6dcspZdQwRE9X8WXKuNGuVd1UVtmNRbJs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtgedggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgrrhgu
-    sehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepleegffffgfehhfejge
-    ejheeivdfgleefheeuueetkedtffeihfevlefhgeevvdevnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfhgrsh
-    htmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:g559ZcgeTwB-I9Ea6E3zZgZ4EOroh8w0SyvJ92hsCll3xs7PWT0PrA>
-    <xmx:g559ZYCP-0OfO5gf_BkcO8iuSiJ-i_FhwxKn2kckxtPJ4UBrGbkPKA>
-    <xmx:g559ZdK1779iLhoIB8NpEUakWEgB1Q-sEqmEFo3Rlssjtc2mu9qjTQ>
-    <xmx:g559ZbND1jpAr95l7HtVPZkSrCvgCk-krTDak2sb7AzHSPNV1fmSoA>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 16 Dec 2023 07:56:34 -0500 (EST)
-From: Gary Rookard <garyrookard@fastmail.org>
-To: gregkh@linuxfoundation.org,
-	philipp.g.hortmann@gmail.com
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH v3 0/4] staging: rtl8192e: rename variable pHT
-Date: Sat, 16 Dec 2023 07:57:12 -0500
-Message-ID: <20231216125712.3522-1-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D1714005;
+	Sat, 16 Dec 2023 12:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sat, 16 Dec 2023 12:58:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702731531;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sWTL02ik7kDn5fM6Msulg+dYgLYIyO6t+MXOT8Sr/W8=;
+	b=IdnFIlEC6v6C7RRP9xecw1o+PryswOcAbnAskqkESHXpAed6is9xeU039qlvGF5cEku/0E
+	HoI5GOD4K+N39H5mMB1KIhYwxI9X9t8uIt2zMuQxLDQ0pCLytwI7UzCEvGekClSGSDcvQA
+	sOlZz9wpDOo9G3Dtqb/QdtfBGYQkghrN1T4iDroRVMaCIEBABzqaQgrPLIv/a+ysHT+osY
+	TOBItk8peGjt2LCPsduw3pLACzj05DVLoVyaMYRi29aZD6MTcDbZt1MRJvAVio3+uB6/9Y
+	yDJYk7mn7AyKAuDwKQRHJUUgWtaQPRP67yHwiH5IdETvv+HXzImxpvVlE7b3hg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702731531;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sWTL02ik7kDn5fM6Msulg+dYgLYIyO6t+MXOT8Sr/W8=;
+	b=oQjA0SjjJtI+Nvrq2ZFz/P4fCf0+YgBobOxrBxi9oVtjjD/r2vdMxnFGcPbeoexDxspnUr
+	CqczHNmVZoZG/9DQ==
+From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/alternatives: Disable interrupts and sync when
+ optimizing NOPs in place
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
+ Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>, stable@vger.kernel.org,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <ZT6narvE%2BLxX%2B7Be@windriver.com>
+References: <ZT6narvE%2BLxX%2B7Be@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <170273153061.398.13274192737128400603.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi,
+The following commit has been merged into the x86/urgent branch of tip:
 
-This patch series renames (4) different variables with
-checkpatch coding style issue Avoid CamelCase.
+Commit-ID:     2dc4196138055eb0340231aecac4d78c2ec2bea5
+Gitweb:        https://git.kernel.org/tip/2dc4196138055eb0340231aecac4d78c2ec2bea5
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 07 Dec 2023 20:49:26 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 15 Dec 2023 19:34:42 +01:00
 
-(resubmittals)
+x86/alternatives: Disable interrupts and sync when optimizing NOPs in place
 
-Patch 1/4) rename variable pHT
-Patch 2/4) rename variable pCapELE
-Patch 3/4) rename variable HTGetHighestMCSRate
-Patch 4/4) rename variable HTFilterMCSRate
+apply_alternatives() treats alternatives with the ALT_FLAG_NOT flag set
+special as it optimizes the existing NOPs in place.
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+Unfortunately, this happens with interrupts enabled and does not provide any
+form of core synchronization.
 
-Gary Rookard (4):
-  staging: rtl8192e: rename variable pHT
-  staging: rtl8192e: rename variable pCapELE
-  staging: rtl8192e: rename variable HTGetHighestMCSRate
-  staging: rtl8192e: renamed variable HTFilterMCSRate
+So an interrupt hitting in the middle of the update and using the affected code
+path will observe a half updated NOP and crash and burn. The following
+3 NOP sequence was observed to expose this crash halfway reliably under QEMU
+  32bit:
 
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 86 +++++++++++------------
- drivers/staging/rtl8192e/rtllib.h         |  2 +-
- drivers/staging/rtl8192e/rtllib_wx.c      |  2 +-
- 3 files changed, 45 insertions(+), 45 deletions(-)
+   0x90 0x90 0x90
 
--- 
-2.41.0
+which is replaced by the optimized 3 byte NOP:
 
+   0x8d 0x76 0x00
+
+So an interrupt can observe:
+
+   1) 0x90 0x90 0x90		nop nop nop
+   2) 0x8d 0x90 0x90		undefined
+   3) 0x8d 0x76 0x90		lea    -0x70(%esi),%esi
+   4) 0x8d 0x76 0x00		lea     0x0(%esi),%esi
+
+Where only #1 and #4 are true NOPs. The same problem exists for 64bit obviously.
+
+Disable interrupts around this NOP optimization and invoke sync_core()
+before re-enabling them.
+
+Fixes: 270a69c4485d ("x86/alternative: Support relocations in alternatives")
+Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/ZT6narvE%2BLxX%2B7Be@windriver.com
+---
+ arch/x86/kernel/alternative.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index fd44739..aae7456 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -255,6 +255,16 @@ static void __init_or_module noinline optimize_nops(u8 *instr, size_t len)
+ 	}
+ }
+ 
++static void __init_or_module noinline optimize_nops_inplace(u8 *instr, size_t len)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	optimize_nops(instr, len);
++	sync_core();
++	local_irq_restore(flags);
++}
++
+ /*
+  * In this context, "source" is where the instructions are placed in the
+  * section .altinstr_replacement, for example during kernel build by the
+@@ -438,7 +448,7 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 		 *   patch if feature is *NOT* present.
+ 		 */
+ 		if (!boot_cpu_has(a->cpuid) == !(a->flags & ALT_FLAG_NOT)) {
+-			optimize_nops(instr, a->instrlen);
++			optimize_nops_inplace(instr, a->instrlen);
+ 			continue;
+ 		}
+ 
 
