@@ -1,317 +1,225 @@
-Return-Path: <linux-kernel+bounces-1846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F86B8154BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:59:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 208A68154C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:00:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDC62B22E12
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:59:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A08EB20F28
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5614B12B;
-	Fri, 15 Dec 2023 23:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF963FE0;
+	Sat, 16 Dec 2023 00:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="thWYxail"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A/xx4nPv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2062.outbound.protection.outlook.com [40.107.223.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FDB48CF9;
-	Fri, 15 Dec 2023 23:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EZDVILEsm3/GMKBkCkupPEcfLujAbOSuKWv5dPvLGrwOjnp4pR7e6E9ng+d5MN2ZtfB2wwxGSs00tTOj6K1Ds52YJPTgnTwG4GltYcervJC5oOqTSv6e2x7U4C3r8vscrL0nNufVFz7D4R9pd6elI1Cpmx0/x7nV9BDsM4qOll9TiAbeB6TXm0aorVwY7xxBMzIb9Gtaa9EL3jtUJ6dqkVROymBfqFcJ07gS1PrkIqypQewlz8TMi7bICZHatIYbmIFh7Vomskg/WmwkFErOy5LHo7DWmUiWzfLFrfMcA24FadkqyubaLlKUwgK2kIUPOFYMpaNqaUwsk/6+zfuiXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Pvl4+cVaqYww/vIFr5BXRJxt5oa6SG5tXO0+w9gsOII=;
- b=Hu1s5XC4TfW/BPQ/GqpeN7ZvpefXRLh9Py04bmvlXdGRTuu9hhIuLWqcIro5Re3V4hBsWqGtrO3aF+bflz17dePxeaKcWbbg6P2De4Hjx+vXBQJgh+mnHPzIo+udHn6DsaLIMOJgNZF07c5KwsyEGjYYhYWBDxJINkaT/oKOJILKaroldvnF/8/B47qQjWJXUVWr8DIfS+FqYNErO9VaZaL/CQDofc7Jck6spTZuLvW3EtgKCuwNrqoObkgSqEAQDu2qHbihEbGgz04DrrV4X/T3S0sKFOOPPgIkbv1z7Qy3rDooEHFCICa5th+aWxE3j42CoUJw3l8/we/fiqs3rQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pvl4+cVaqYww/vIFr5BXRJxt5oa6SG5tXO0+w9gsOII=;
- b=thWYxailPGeAuSHyOkx+R0Sku/DHZNBePgZTmYIkN1hlNXGRXXm6fMhkb+ZPToeO1UoyWmdAGMJgAeYZQj1kS/BPoKb1Xb2FZT7DAn7CAOnFyn7BiUVCJl5Zpa5lR7uDYfiTVJ7C7isiOeVYtmYeRd5PB+FKn6zLVyxeMvfLLws=
-Received: from MN2PR05CA0061.namprd05.prod.outlook.com (2603:10b6:208:236::30)
- by PH7PR12MB6908.namprd12.prod.outlook.com (2603:10b6:510:1ba::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 23:58:33 +0000
-Received: from MN1PEPF0000F0DE.namprd04.prod.outlook.com
- (2603:10b6:208:236:cafe::e6) by MN2PR05CA0061.outlook.office365.com
- (2603:10b6:208:236::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.13 via Frontend
- Transport; Fri, 15 Dec 2023 23:58:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000F0DE.mail.protection.outlook.com (10.167.242.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.14 via Frontend Transport; Fri, 15 Dec 2023 23:58:32 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 15 Dec
- 2023 17:58:23 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 15 Dec
- 2023 17:58:23 -0600
-Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Fri, 15 Dec 2023 17:58:22 -0600
-From: Tanmay Shah <tanmay.shah@amd.com>
-To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <michal.simek@amd.com>, <ben.levinsky@amd.com>,
-	<tanmay.shah@amd.com>
-CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 3/3] remoteproc: zynqmp: parse TCM from device tree
-Date: Fri, 15 Dec 2023 15:57:25 -0800
-Message-ID: <20231215235725.1247350-4-tanmay.shah@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231215235725.1247350-1-tanmay.shah@amd.com>
-References: <20231215235725.1247350-1-tanmay.shah@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A264256383
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 00:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a1915034144so147868966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702684820; x=1703289620; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sN0lvoDPfS7i150aa8oqtPzHJovkS24N6+5HgMNju2w=;
+        b=A/xx4nPvBhSvcTuk2uDvfGQCoujAKpuV0ihabeCrtOhCFqoGqH+jSKeuoJNhz0ToE2
+         tc/9olBae1u19CLHol3WGxpE2m4I9jRanvabgoYg3RR1C8ld4p5/O0+eW0DH/1FlPkDY
+         +qfXyhOGYqdeVFfCc61PoFNh7vZN/AEP/wF1bW30Uf6IzNF97cAuGgp8R1xhpCotJHJf
+         fyP1CO9/PHLPa7+ClA6RVbZ3xSbjjGnUA7V6hCIK6lY8MMV49JSEd6oTl1VzpMxsm+9R
+         a4AW0EsAKZnnzCCjlFsH06E5jll8mRnPXWaFbly0ZepnJCnHwH+yGgoT7Xq+vcL1eXZa
+         vvRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702684820; x=1703289620;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sN0lvoDPfS7i150aa8oqtPzHJovkS24N6+5HgMNju2w=;
+        b=L1lLhDWKUfuUq16gLOpcoyk/hSK572vxYmvpz6t8VtnxlUQa0Lp49SHsAqO6o/qH0y
+         JNxKaLUDAoBsKT/hFClQFeB3I6rqiSo7E+zqkYWOOn7IUDOg5O53ruCwoA3ROkh3YJF8
+         Iuwv9Be5N460sBz/535aT9BewOXEnLVbqMl9KMtWUa6O2Wy94PL3Afhx2PorBDnbW1Ox
+         ejRmhX7FCsXzJpohnKnVQHRfPwYpP/0pDFHQlKgwtimgW7hhwLGM2rJcjnxYSGxM2nxR
+         HR/BBEPxInKeMyW0TptEddbhuhiv9PAVHHHcBuxH8UHRsYAptpWQyQmIa9HNQetUW7Zt
+         f1Gg==
+X-Gm-Message-State: AOJu0YwgSZLWckHewlTYvucbGd1964o79K5P7ZxKVcYjLYTvxVNFyyyq
+	7vjw3MMvEkd6Zxfg0d4o79OxbA==
+X-Google-Smtp-Source: AGHT+IG8MdgYoGZ3DHrSECZ1F0U1XNTXqNeUPduzwiH4CmH5pEbm1spSlLj5YGFqele1Hlqsqxi5uw==
+X-Received: by 2002:a17:907:869e:b0:a1e:a:12d2 with SMTP id qa30-20020a170907869e00b00a1e000a12d2mr8816400ejc.77.1702684819922;
+        Fri, 15 Dec 2023 16:00:19 -0800 (PST)
+Received: from [192.168.199.59] (178235179137.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.137])
+        by smtp.gmail.com with ESMTPSA id mb8-20020a170906eb0800b00a1de512fa1fsm11201130ejb.186.2023.12.15.16.00.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 16:00:19 -0800 (PST)
+Message-ID: <07e24570-4041-430f-b51e-6ac535218a30@linaro.org>
+Date: Sat, 16 Dec 2023 01:00:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0DE:EE_|PH7PR12MB6908:EE_
-X-MS-Office365-Filtering-Correlation-Id: f06354c2-4059-4097-dc20-08dbfdc9be72
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	2M9kLUlrAhqglEr1/Q3PV++PuXQ9jeoNe3KtUnLwS/9E0ynWPtu86WT90AygtIfUbYirEYvsbVHfIGwoFtaqihrlTDxzaupfubS9tp0UmjsaEAX6tDozRBPkQuVJDfVVZ/5B8/Fsc3woRK4ElbT0nOhrtb2uSK444azdWmQBM83ZRGfMg5ruYuBgTOJkFKKHh60Y2DeMtq/mUGKngpP470AHHv6p0yzLY/QgnR7ZGjwqzuZeToxqAqFYriE9TRhlvOxp/qkJOmgicAtjoiPaVMI+ZbiEaWwoX/Eilk6GKCki5HyqoQSS4hOOmk7nvmPv9THgpr2BXpSs+iCkBevQvE/T7azHIik8uieBZERtQElQqZFGrxz5arIODVMx14XoD6VGNj8jx4FS0QZFF+75Nl5RPMHBe4ulCJM5ayl+EO1PowRaKvKOjPfipl6dLWt8iQbcr+hYqpvoDD0W05x4gN50tr+4N8RAFvzmo5S8P3rZ1uL5te4bqFPlF3Oq6q5rNjvPP9avcCCLOaXVwQRtM7WiduxO/9biVm2iEDF+un04zVag20fUdKnmNhlAmM3GisnCYyhmDxOfjVacTZDdPrlbgiK/mDuRjL/H4E9EuoBbuHsKlmLxCygZvjUN+aDrryVnU/NjIRrIbqHiO8cQhl0oD5OmUdhmPPYTLtuUXu2CuHEutoLacsnSqvxW8A3KdG1b7dCl5E0csC8LoyogMuv24HLZ+7ZydbTXYnwP+en75vQygeyrM7JwJztAdvkWjvmiPmsQfuZR+2VnBfeZXA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(82310400011)(40470700004)(36840700001)(46966006)(40480700001)(66899024)(40460700003)(26005)(426003)(336012)(2616005)(1076003)(7049001)(356005)(82740400003)(86362001)(36756003)(81166007)(47076005)(83380400001)(5660300002)(4326008)(44832011)(36860700001)(70586007)(316002)(70206006)(110136005)(8676002)(8936002)(54906003)(2906002)(41300700001)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 23:58:32.8196
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f06354c2-4059-4097-dc20-08dbfdc9be72
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0DE.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6908
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] dt-bindings: iommu: Convert msm,iommu-v0 to yaml
+Content-Language: en-US
+To: David Heidelberg <david@ixit.cz>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: iommu@lists.linux.dev, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20231215233034.95789-1-david@ixit.cz>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231215233034.95789-1-david@ixit.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-ZynqMP TCM information is fixed in driver. Now ZynqMP TCM information
-is available in device-tree. Parse TCM information in driver
-as per new bindings.
+On 16.12.2023 00:30, David Heidelberg wrote:
+> Convert Qualcomm IOMMU v0 implementation to yaml format.
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+[...]
 
-Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
----
+> +description: >
+Not sure if > is necessary
 
-Changes in v8:
-  - parse power-domains property from device-tree and use EEMI calls
-    to power on/off TCM instead of using pm domains framework
-  - Remove checking of pm_domain_id validation to power on/off tcm
-  - Remove spurious change
+> +  The MSM IOMMU is an implementation compatible with the ARM VMSA short
+> +  descriptor page tables. It provides address translation for bus masters
+> +  outside of the CPU, each connected to the IOMMU through a port called micro-TLB.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,apq8064-iommu
+> +
+> +  clocks:
+> +    items:
+> +      - description: interface clock for register accesses
+> +      - description: functional clock for bus accesses
+> +
+> +  clock-names:
+> +    items:
+> +      - const: smmu_pclk
+> +      - const: iommu_clk
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Specifiers for the MMU fault interrupts.
+> +    minItems: 1
+> +    items:
+> +      - description: non-secure mode interrupt
+> +      - description: secure mode interrupt (for instances which supports it)
+> +
+> +  "#iommu-cells":
+> +    const: 1
+> +    description: |
+| may not be necessary
+> +      The first cell is a phandle to the IOMMU and
+> +      the second cell is the stream id.
+Weird wrapping
 
-Changes in v7:
-  - move checking of pm_domain_id from previous patch
-  - fix mem_bank_data memory allocation
+> +      A single master device can be connected to more than one iommu
+> +      and multiple contexts in each of the iommu.
+> +      So multiple entries are required to list all the iommus and
+> +      the stream ids that the master is connected to.
+> +
+> +  qcom,ncb:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: The total number of context banks in the IOMMU.
+> +
+> +required:
+> +  - clocks
+> +  - clock-names
+> +  - reg
+> +  - interrupts
+> +  - qcom,ncb
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,mmcc-msm8960.h>
+> +
+> +    iommu@7500000 {
+> +            compatible = "qcom,apq8064-iommu";
+> +            #iommu-cells = <1>;
+> +            clock-names =
+> +                "smmu_pclk",
+> +                "iommu_clk";
+> +            clocks =
+> +                <&clk SMMU_AHB_CLK>,
+> +                <&clk MDP_AXI_CLK>;
+> +            reg = <0x07500000 0x100000>;
+> +            interrupts =
+> +                <0 63 0>,
+> +                <0 64 0>;
+> +            qcom,ncb = <2>;
+2012 codestyle :D
 
- drivers/remoteproc/xlnx_r5_remoteproc.c | 154 +++++++++++++++++++++++-
- 1 file changed, 148 insertions(+), 6 deletions(-)
+Please update to:
 
-diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-index 4395edea9a64..36d73dcd93f0 100644
---- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-+++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-@@ -74,8 +74,8 @@ struct mbox_info {
- };
- 
- /*
-- * Hardcoded TCM bank values. This will be removed once TCM bindings are
-- * accepted for system-dt specifications and upstreamed in linux kernel
-+ * Hardcoded TCM bank values. This will stay in driver to maintain backward
-+ * compatibility with device-tree that does not have TCM information.
-  */
- static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
- 	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
-@@ -878,6 +878,139 @@ static struct zynqmp_r5_core *zynqmp_r5_add_rproc_core(struct device *cdev)
- 	return ERR_PTR(ret);
- }
- 
-+static int zynqmp_r5_get_tcm_node_from_dt(struct zynqmp_r5_cluster *cluster)
-+{
-+	struct of_phandle_args out_args;
-+	int tcm_reg_per_r5, tcm_pd_idx;
-+	struct zynqmp_r5_core *r5_core;
-+	int i, j, tcm_bank_count, ret;
-+	struct platform_device *cpdev;
-+	struct mem_bank_data *tcm;
-+	struct device_node *np;
-+	struct resource *res;
-+	u64 abs_addr, size;
-+	struct device *dev;
-+
-+	for (i = 0; i < cluster->core_count; i++) {
-+		r5_core = cluster->r5_cores[i];
-+		dev = r5_core->dev;
-+		np = of_node_get(dev_of_node(dev));
-+		tcm_pd_idx = 1;
-+
-+		/* we have address cell 2 and size cell as 2 */
-+		tcm_reg_per_r5 = of_property_count_elems_of_size(np, "reg",
-+								 4 * sizeof(u32));
-+		if (tcm_reg_per_r5 <= 0) {
-+			dev_err(dev, "can't get reg property err %d\n", tcm_reg_per_r5);
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * In lockstep mode, r5 core 0 will use r5 core 1 TCM
-+		 * power domains as well. so allocate twice of per core TCM
-+		 */
-+		if (cluster->mode == LOCKSTEP_MODE)
-+			tcm_bank_count = tcm_reg_per_r5 * 2;
-+		else
-+			tcm_bank_count = tcm_reg_per_r5;
-+
-+		r5_core->tcm_banks = devm_kcalloc(dev, tcm_bank_count,
-+						  sizeof(struct mem_bank_data *),
-+						  GFP_KERNEL);
-+		if (!r5_core->tcm_banks)
-+			ret = -ENOMEM;
-+
-+		r5_core->tcm_bank_count = tcm_bank_count;
-+		for (j = 0; j < tcm_bank_count; j++) {
-+			tcm = devm_kzalloc(dev, sizeof(struct mem_bank_data),
-+					   GFP_KERNEL);
-+			if (!tcm)
-+				return -ENOMEM;
-+
-+			r5_core->tcm_banks[j] = tcm;
-+
-+			/*
-+			 * In lockstep mode, get second core's TCM power domains id
-+			 * after first core TCM parsing is done as
-+			 */
-+			if (j == tcm_reg_per_r5) {
-+				/* dec first core node */
-+				of_node_put(np);
-+
-+				/* get second core node */
-+				np = of_get_next_child(cluster->dev->of_node, np);
-+
-+				/*
-+				 * reset index of power-domains property list
-+				 * for second core
-+				 */
-+				tcm_pd_idx = 1;
-+			}
-+
-+			/* get power-domains id of tcm */
-+			ret = of_parse_phandle_with_args(np, "power-domains",
-+							 "#power-domain-cells",
-+							 tcm_pd_idx,
-+							 &out_args);
-+			if (ret) {
-+				dev_err(r5_core->dev,
-+					"failed to get tcm %d pm domain, ret %d\n",
-+					j, ret);
-+				of_node_put(out_args.np);
-+				return ret;
-+			}
-+			tcm->pm_domain_id = out_args.args[0];
-+			of_node_put(out_args.np);
-+			tcm_pd_idx++;
-+
-+			/*
-+			 * In lockstep mode, we only need second core's power domain
-+			 * ids. Other information from second core isn't needed so
-+			 * ignore it. This forms table as zynqmp_tcm_banks_lockstep
-+			 */
-+			if (j >= tcm_reg_per_r5)
-+				continue;
-+
-+			/* get tcm address without translation */
-+			ret = of_property_read_reg(np, j, &abs_addr, &size);
-+			if (ret) {
-+				of_node_put(np);
-+				dev_err(dev, "failed to get reg property\n");
-+				return ret;
-+			}
-+
-+			/*
-+			 * remote processor can address only 32 bits
-+			 * so convert 64-bits into 32-bits. This will discard
-+			 * any unwanted upper 32-bits.
-+			 */
-+			tcm->da = (u32)abs_addr;
-+			tcm->size = (u32)size;
-+
-+			cpdev = to_platform_device(dev);
-+			res = platform_get_resource(cpdev, IORESOURCE_MEM, j);
-+			if (!res) {
-+				of_node_put(np);
-+				dev_err(dev, "failed to get tcm resource\n");
-+				return -EINVAL;
-+			}
-+
-+			tcm->addr = (u32)res->start;
-+			tcm->bank_name = (char *)res->name;
-+			res = devm_request_mem_region(dev, tcm->addr, tcm->size,
-+						      tcm->bank_name);
-+			if (!res) {
-+				dev_err(dev, "failed to request tcm resource\n");
-+				of_node_put(np);
-+				return -EINVAL;
-+			}
-+		}
-+	}
-+
-+	of_node_put(np);
-+	return 0;
-+}
-+
- /**
-  * zynqmp_r5_get_tcm_node()
-  * Ideally this function should parse tcm node and store information
-@@ -956,10 +1089,19 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
- 	struct zynqmp_r5_core *r5_core;
- 	int ret, i;
- 
--	ret = zynqmp_r5_get_tcm_node(cluster);
--	if (ret < 0) {
--		dev_err(dev, "can't get tcm node, err %d\n", ret);
--		return ret;
-+	r5_core = cluster->r5_cores[0];
-+	if (of_find_property(r5_core->np, "reg", NULL)) {
-+		ret = zynqmp_r5_get_tcm_node_from_dt(cluster);
-+		if (ret) {
-+			dev_err(dev, "can't get tcm node from dt, err %d\n", ret);
-+			return ret;
-+		}
-+	} else {
-+		ret = zynqmp_r5_get_tcm_node(cluster);
-+		if (ret < 0) {
-+			dev_err(dev, "can't get tcm node, err %d\n", ret);
-+			return ret;
-+		}
- 	}
- 
- 	for (i = 0; i < cluster->core_count; i++) {
--- 
-2.25.1
+iommu@7500000 {
+	compatible = "qcom,apq8064-iommu";
+	reg = <0x07500000 0x100000>;
+	interrupts = <GIC_SPI 63 IRQ_TYPE_NONE>, //preferably fix this TYPE_NONE
+		     <GIC_SPI 64 IRQ_TYPE_NONE>;
+	clocks = <&clk SMMU_AHB_CLK>,
+		 <&clk MDP_AXI_CLK>;
+	clock-names = "smmu_pclk",
+		      "iommu_clk";
+	#iommu-cells = <1>;
+	qcom,ncb = <2>;
+};
 
++ Krzysztof would likely suggest to reorder the definitions and occurences
+in required: to match this /\
+
+Thanks for taking care of this old junk!
+
+Konrad
 
