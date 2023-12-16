@@ -1,108 +1,131 @@
-Return-Path: <linux-kernel+bounces-2358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E548B815B96
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC12815B9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 21:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1C421C21BCD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:14:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5B9B1C21B02
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 20:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D41332C62;
-	Sat, 16 Dec 2023 20:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kfnurh4T"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD9F32C67;
+	Sat, 16 Dec 2023 20:16:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563CA31A7F;
-	Sat, 16 Dec 2023 20:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d0985c70ffso1004888b3a.2;
-        Sat, 16 Dec 2023 12:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702757643; x=1703362443; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ISKon5ZR/yS/6ND76BAqWus+LJVP5hp+FFcICHrHPPE=;
-        b=kfnurh4ToymyMl4cyWXrvOuSsQDxzSfOvhoI6Oh1hti1Sa/58eWvTRcVPHaTsNz9pZ
-         3DWSHJlc2RTaEokWeSboOfSiGwDVjRDbI/FhFOXz8uwRcFDjq+7qKKPcBISTPNL6cLGq
-         uoUVkK1lfyFllqgbMVAJFiSx+cXF/wm5J2Y9GcOQ61iEZC5Q+ifnLkIXqHBRNMe1a58E
-         AsG7E/YLdPKKLbxH9958qtg6mBwUJOB8zuradcP2vZdqJ3naBalZH7PRbo5zZGoYdZzA
-         7mbYS1MPqwQ935zFwGFM/GPQKnZb7r7YyYpdLW7dCstFIfWIUPrMcAbcm0aMJPrM0KY+
-         v6Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702757643; x=1703362443;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ISKon5ZR/yS/6ND76BAqWus+LJVP5hp+FFcICHrHPPE=;
-        b=ikvJLSzuuoFg5u6bUmzQ7zp5msmn0XKmxKbpA5lw10IMlbClVUpYudRvYqv6IumNH4
-         NxYjwtHvkMjbzJHelI5QDbSYWOYAuoFyM89ZRvdZaHez7MB8pVK79KR7AR0b4kEuTf/k
-         VJ6Le8r4SWvEDZLKsp7f8mkA/eZ3GZDRU8cCOV42Ip8JH89pjlle4UWbYgIoluEpXGQ2
-         ACZPW3lLh6wq8cI651z1oPmS+PX34zsia9xgkG2dqBeMv5LDbOVsaN2gh776uQg2BwSJ
-         KIglGUnkts1q44P7mW7uRRLQmx4ogJ/zlGOPXSSB07tXJB6/ObTzgfO5T4l6UlHXVJDq
-         z8wQ==
-X-Gm-Message-State: AOJu0YxbU9OlrKL0y2KoESpaITbRMYxCPhd9stZ9p23BTuPT25vlGh9N
-	DRw8mJv8x2i6wQhvHpQlmOo=
-X-Google-Smtp-Source: AGHT+IHr4BnYJvxaRaxU2bkA+nYi6DJEV4q9VROEwqKqTqiPkPD9UDAmj82NIsSQZnccO5jOPk60MQ==
-X-Received: by 2002:a05:6a21:99aa:b0:18f:97c:925b with SMTP id ve42-20020a056a2199aa00b0018f097c925bmr8427793pzb.64.1702757643323;
-        Sat, 16 Dec 2023 12:14:03 -0800 (PST)
-Received: from localhost.localdomain (1-170-84-144.dynamic-ip.hinet.net. [1.170.84.144])
-        by smtp.googlemail.com with ESMTPSA id w10-20020a170902e88a00b001d38410aa13sm3242188plg.192.2023.12.16.12.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 12:14:03 -0800 (PST)
-From: Zenm Chen <zenmchen@gmail.com>
-To: Larry.Finger@lwfinger.net
-Cc: Jes.Sorensen@gmail.com,
-	kvalo@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	pkshih@realtek.com,
-	rtl8821cerfe2@gmail.com,
-	zenmchen@gmail.com
-Subject: Re: [PATCH v2] wifi: rtl8xxxu: Add additional USB IDs for RTL8192EU
-Date: Sun, 17 Dec 2023 04:13:59 +0800
-Message-ID: <20231216201359.8176-1-zenmchen@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231216165259.5389-1-zenmchen@gmail.com>
-References: <20231216165259.5389-1-zenmchen@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529882FC24;
+	Sat, 16 Dec 2023 20:16:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.82.73) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 16 Dec
+ 2023 23:16:32 +0300
+Subject: Re: [PATCH net-next v2 19/21] net: ravb: Do not set promiscuous mode
+ if the interface is down
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-20-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <69a80458-b607-2cee-e8b1-38eb8d56eca3@omp.ru>
+Date: Sat, 16 Dec 2023 23:16:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231214114600.2451162-20-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/16/2023 19:03:00
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182147 [Dec 16 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_phishing_log_reg_50_60}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.73 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.82.73
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/16/2023 19:36:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/16/2023 5:57:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
->> On 12/16/23 10:52, Zenm Chen wrote:
->> Add additional USB IDs found in the vendor driver from
->> https://github.com/Mange/rtl8192eu-linux-driver to support more
->> RTL8192EU devices.
->>
->> Signed-off-by: Zenm Chen <zenmchen@gmail.com>
->> ---
->> v2:
->>   - Not to put these USB IDs in CONFIG_RTL8XXXU_UNTESTED
->
-> Have you tested all modes including STA, AP, P2P, etc? If not, then your devices
-> belong in the CONFIG_RTL8XXXU_UNTESTED section.
+On 12/14/23 2:45 PM, Claudiu wrote:
 
-You're right, I haven't tested these four devices, so they should be in the 
-CONFIG_RTL8XXXU_UNTESTED section.
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Do not allow setting promiscuous mode if the interface is down. In case
+> runtime PM is enabled, and while interface is down, the IP will be in reset
+> mode (as for some platforms disabling/enabling the clocks will switch the
+> IP to standby mode which will lead to losing registers' content).
 
-Please drop this patch, thanks.
+   Register.
+   Have this issue actually occurred for you?
 
->
-> I am also not fond of splitting the rtl8192eu devices into several different
-> spots in the table. That only makes it harder to see what devices are supported.
->
-> NACKed by Larry Finger <Larry.Finger@lwfinger.net>
->
-> Larry
+> Commit prepares for the addition of runtime PM.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+[...]
+
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 1995cf7ff084..633346b6cd7c 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2164,6 +2164,9 @@ static void ravb_set_rx_mode(struct net_device *ndev)
+>  	struct ravb_private *priv = netdev_priv(ndev);
+>  	unsigned long flags;
+>  
+> +	if (!netif_running(ndev))
+
+   Seems racy as well...
+
+> +		return;
+
+   Hm, sh_eth.c doesn't have such check -- perhaps should be fixed
+as well...
+
+[...]
+
+MBR, Sergey
 
