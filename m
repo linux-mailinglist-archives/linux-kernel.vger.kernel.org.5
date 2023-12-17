@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-2529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BC90815E83
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:31:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27542815E85
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB408282F14
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 10:31:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9257AB221FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 10:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94205107A3;
-	Sun, 17 Dec 2023 10:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A72F10964;
+	Sun, 17 Dec 2023 10:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="KvG2nBiK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="c85hszWK"
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="wXQiiYFv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ot6ilm+J"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFDF79FE
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 10:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35EB0F51E
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 10:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 9ED9D5C00C6;
-	Sun, 17 Dec 2023 05:30:23 -0500 (EST)
+	by mailout.nyi.internal (Postfix) with ESMTP id 31C4F5C0071;
+	Sun, 17 Dec 2023 05:30:25 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 17 Dec 2023 05:30:23 -0500
+  by compute2.internal (MEProxy); Sun, 17 Dec 2023 05:30:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
 	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
 	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1702809023; x=
-	1702895423; bh=T7D+9jTfh4ZrMx7I02CJXosQOWU8TluFcGjtBl8VhDs=; b=K
-	vG2nBiKk2O9qeipWIanfaFHA65T25As644TAUB71MEr76M3ki+M9mqVfYo40vL+9
-	DU/al48z3VKklj/mLtcn6D9Fb7gqRuaFpV/aQejkR4U8Yql0NIZhLhly2UOw9Z10
-	V54QAcbPCJtEgvp07jvnS+Jkk3ceOzf9pLAUTWWjrMM4YMUFgYVzqkGnr3q4jM7M
-	faK0/SwJsnwz5wz6eunimhRkVFYRfLy4dKzXK3pVQAU8ELq5asJzi7oo7obGJVP/
-	KirHXtG5uDD1Pgfk3dVF985vrJCgz792IJu02Xvj6AHMRt8ZndcF32xZWbmwTDb2
-	2Dap6MrM1i9Y9qrEvvGBw==
+	:reply-to:subject:subject:to:to; s=fm2; t=1702809025; x=
+	1702895425; bh=My9Ypl5CIcGspchG4H7P6FMpwoU6YQCrhQk5UHWKnjE=; b=w
+	XQiiYFvR2H5rNzMCTbrunsykEWX3RX+445TfUYsvesPMVvJEKvWda8AmpVhzf5bk
+	ZiKmhe2tXhH6i8z1lrrHxZTn5EPhTB61OnTZAeNlsfXrxJ/6kvnMX9suqu2OD+la
+	BEYwua7f6qon9xelq3SqOwMlZeyAJrespoeftaaalMuDfgw6YhtM4ZrTtp/hS9fz
+	gBXlUiN4iXI/m5Q3wtnDZX0hCQ2VarpxGHlQZWB/22LWTORP6/FWcijNUoav9+Zy
+	lg5H21E2Azh5qx8PBOM09UP44kssEZtXhEtQQ08e9Sc72deCXj/jM1ezOu7PxHlH
+	ICj4lRdbrG3txv3t3T/vw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702809023; x=
-	1702895423; bh=T7D+9jTfh4ZrMx7I02CJXosQOWU8TluFcGjtBl8VhDs=; b=c
-	85hszWKzviDPrRcb3vbezT6Uxt5adx534SWWdRDtBqISCPloy2A3l8GZQbF9mA0m
-	EFXLuv+lJhX4qEZ+2Rw4/jnsC59pDGFocbt7CNvKtsg33fd3Q15CBShiaKT9aSeq
-	bNSSM4XS7tE4KS//Haca4hAJZ0KLHul4/NiOL9rpwHYoMwUSwRWm1SzSof1dO0JF
-	rTthzPjaHNkiOVx01815koz5pfmH+zME1X+yumSBE9ZZiPy47soJ0iwAxP1o+WzM
-	Esw3UXGQzwPbt78BDjcoN8lzvjmpzzY/3077Jw2XsDyNvadgMJQ/hg3WV9RG7sus
-	LygReovFILCiGRscwGjeA==
-X-ME-Sender: <xms:v81-ZcKD_F0duTTvL-xwmBtHUJfeuMdwNSMUTmuG3hM2WfhG-Kup9Q>
-    <xme:v81-ZcKBst1jt8Bh2FRIuk0y_mM0-GoE_StLo2tJVaocl4TS1Hn7oPbgzhTRGa_rb
-    bmKN0_ExF8N-u7eAI8>
-X-ME-Received: <xmr:v81-ZcvjzZdU7BnFFBTiQPiqHQnA78WKqGr_n4ElmRXuCuO4Kmc3TJHCiDG3GeJWeIGWD3L7-SI9rkm0oSmPfY9WaiewXiICwBHfCCzmXlT8LCo>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702809025; x=
+	1702895425; bh=My9Ypl5CIcGspchG4H7P6FMpwoU6YQCrhQk5UHWKnjE=; b=O
+	t6ilm+Jcwqoz72Z8EAXdnw8YbtsLmgJCRBp1QayC+B8FdlbxPGvEozKPGz4hL0va
+	fuVx3E3nsxf9ITGOWM3TYGWJO6kPUfZ0nZgoULN99sIRkSFO0rJhxdNIJKzKKGzn
+	a8Bl1hub3FFMbQJQWsH/6tNYqXdbjyxvzFNc8IwL26Dpz4xcVOwHgT09NDDe39+2
+	27cGp5SMe+xHr8CiohbHfuoUYatJw/DuRo3vzJVYRVlZQ65gVE1aE+kYWr42y+AE
+	Fdn3+/OnEVTVEdFAltfkdtm85BMheZb4ym2uf//RcpUMVV8yOzD38mtBySISIxo5
+	XOUe9GiqdnDWgnpn1ccSg==
+X-ME-Sender: <xms:wc1-ZYvthGJ2FV2cDx5Us2hpya-H_4Grid8i2otrbegjzNQyVU1xew>
+    <xme:wc1-ZVciHi6zr7CoynmUxT3b_7X8xxGQo7ucMMLhU3sejjCdx_6AFmetBUb8s1BqQ
+    fAz8QHlgI0h2rWIIEU>
+X-ME-Received: <xmr:wc1-ZTwhQ8dX2QZhfT_F4RCqkV19OM1S1Df8nkThFWaNLcAmGeMD03PzOIW-Jb4KQKdzB9G1e0iUU3e8xZkSPjQf_rSEuRH-uMr50CuzkjQnP2A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtiedgudehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
@@ -65,20 +65,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtiedgudehucetufdoteggod
     nhepkhgvrhhnvghlrdhorhhgpdguvghvihgtvgdrughirhgvtghtohhrhienucevlhhush
     htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhi
     sehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:v81-ZZbLWeuUEIqn6DyxHFs20hUQaspWYRPhBqNpCzm3uzsY-QVbeA>
-    <xmx:v81-ZTY3sODinZNmiiatwmdofsPlSvajXqw2oocrTAre-4Nl-ingFg>
-    <xmx:v81-ZVCiUDfztoK_Cvq_ABq1vtdvLDI0xwj5O53fAsHCd-9mTzKnMg>
-    <xmx:v81-ZaxzCs5ns6sGGS3cy5ViaNmud5DBlp3f9S9MRnNeoy2F5JEWgA>
+X-ME-Proxy: <xmx:wc1-ZbN6pBeUhxru0ibxZV7Bz2c5klz1uBjNZPJQZzVslL3yCNidUg>
+    <xmx:wc1-ZY_UjGr0xR2-09WI94y520VeiejM89knksLfVPYnZxnjxYWU2g>
+    <xmx:wc1-ZTWXqVtIaKgPiJ7RAa5IKdO01-AhmVgzLIPyF2SgRNtyJFtXyQ>
+    <xmx:wc1-ZWkJnzjeNJ3Kl-Cbx7X_IsM83cRS5_8xZeH3CJCK7dmDDDkEUA>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 17 Dec 2023 05:30:22 -0500 (EST)
+ 17 Dec 2023 05:30:23 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: linux1394-devel@lists.sourceforge.net,
 	linux-kernel@vger.kernel.org
 Cc: adamg@pobox.com
-Subject: [RFC PATCH 4/8] firewire: test: add test of CSR API for simple AV/C device
-Date: Sun, 17 Dec 2023 19:30:07 +0900
-Message-Id: <20231217103012.41273-5-o-takashi@sakamocchi.jp>
+Subject: [RFC PATCH 5/8] firewire: test: add test of CSR API for legacy AV/C device
+Date: Sun, 17 Dec 2023 19:30:08 +0900
+Message-Id: <20231217103012.41273-6-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231217103012.41273-1-o-takashi@sakamocchi.jp>
 References: <20231217103012.41273-1-o-takashi@sakamocchi.jp>
@@ -90,131 +90,140 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-At present, core function can handle node which has configuration ROM
-similar to AV/C device somehow. The standard layout of configuration ROM
-for AV/C device is described in the following document.
+Some legacy devices have configuration ROM against standard AV/C device.
+They have vendor directory to store model identifier. It is described in
+annex of the following document.
 
 - Configuration ROM for AV/C Devices 1.0 (Dec. 12, 2000, 1394 Trading
   Association)
 
-This commit adds a KUnit test for this case. The following output is the
-parse result by config-rom-pretty-printer in linux-firewire-utils
+In the case, current implementation of core function does not detect the
+model identifier, thus device attributes and modalias of unit have lack of
+it. Another KUnit test is required for the case.
+
+The following output is the parse result by config-rom-pretty-printer in
+linux-firewire-utils
 (https://git.kernel.org/pub/scm/utils/ieee1394/linux-firewire-utils.git/).
+The content of image is written by my hand.
 
 $ config-rom-pretty-printer < /tmp/rom.img
                ROM header and bus information block
                -----------------------------------------------------------------
-1024  0404eabf  bus_info_length 4, crc_length 4, crc 60095
+1024  04199fe7  bus_info_length 4, crc_length 25, crc 40935
 1028  31333934  bus_name "1394"
-1032  e0646102  irmc 1, cmc 1, isc 1, bmc 0, cyc_clk_acc 100, max_rec 6 (128)
-1036  ffffffff  company_id ffffff     |
-1040  ffffffff  device_id 1099511627775  | EUI-64 18446744073709551615
+1032  e0644000  irmc 1, cmc 1, isc 1, bmc 0, cyc_clk_acc 100, max_rec 4 (32)
+1036  00112233  company_id 001122     |
+1040  44556677  device_id 220189779575  | EUI-64 4822678189205111
 
                root directory
                -----------------------------------------------------------------
-1044  00063287  directory_length 6, crc 12935
-1048  03ffffff  vendor
-1052  8100000a  --> descriptor leaf at 1092
-1056  17ffffff  model
-1060  8100000e  --> descriptor leaf at 1116
-1064  0c0083c0  node capabilities: per IEEE 1394
-1068  d1000001  --> unit directory at 1072
+1044  0005dace  directory_length 5, crc 56014
+1048  03012345  vendor
+1052  0c0083c0  node capabilities: per IEEE 1394
+1056  8d000009  --> eui-64 leaf at 1092
+1060  d1000002  --> unit directory at 1068
+1064  c3000004  --> vendor directory at 1080
 
-               unit directory at 1072
+               unit directory at 1068
                -----------------------------------------------------------------
-1072  0004442d  directory_length 4, crc 17453
-1076  1200a02d  specifier id
-1080  13010001  version
-1084  17ffffff  model
-1088  81000007  --> descriptor leaf at 1116
+1068  0002e107  directory_length 2, crc 57607
+1072  12abcdef  specifier id
+1076  13543210  version
 
-               descriptor leaf at 1092
+               vendor directory at 1080
                -----------------------------------------------------------------
-1092  0005c915  leaf_length 5, crc 51477
-1096  00000000  textual descriptor
-1100  00000000  minimal ASCII
-1104  56656e64  "Vend"
-1108  6f72204e  "or N"
-1112  616d6500  "ame"
+1080  0002cb73  directory_length 2, crc 52083
+1084  17fedcba  model
+1088  81000004  --> descriptor leaf at 1104
 
-               descriptor leaf at 1116
+               eui-64 leaf at 1092
                -----------------------------------------------------------------
-1116  00057f16  leaf_length 5, crc 32534
-1120  00000000  textual descriptor
-1124  00000000  minimal ASCII
-1128  4d6f6465  "Mode"
-1132  6c204e61  "l Na"
-1136  6d650000  "me"
+1092  00026dc1  leaf_length 2, crc 28097
+1096  00112233  company_id 001122     |
+1100  44556677  device_id 220189779575  | EUI-64 4822678189205111
+
+               descriptor leaf at 1104
+               -----------------------------------------------------------------
+1104  00050e84  leaf_length 5, crc 3716
+1108  00000000  textual descriptor
+1112  00000000  minimal ASCII
+1116  41424344  "ABCD"
+1120  45464748  "EFGH"
+1124  494a0000  "IJ"
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- drivers/firewire/csr-api-test.c | 119 ++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
+ drivers/firewire/csr-api-test.c | 111 ++++++++++++++++++++++++++++++++
+ 1 file changed, 111 insertions(+)
 
 diff --git a/drivers/firewire/csr-api-test.c b/drivers/firewire/csr-api-test.c
-index a76d767373e9..d91852825efc 100644
+index d91852825efc..2430891c5dcb 100644
 --- a/drivers/firewire/csr-api-test.c
 +++ b/drivers/firewire/csr-api-test.c
-@@ -8,7 +8,126 @@
+@@ -45,6 +45,40 @@ static const u32 simple_avc_device[] = {
+ 	0x6d650000,
+ };
  
- #include <kunit/test.h>
- 
-+// Configuration ROM for AV/C Devices 1.0 (Dec. 12, 2000, 1394 Trading Association)
-+// Annex C:Configuration ROM example(informative)
-+// C.1 Simple AV/C device
++// Ibid.
++// Annex A:Consideration for configuration ROM reader design (informative)
++// A.1 Vendor directory
 +//
-+// Copied from the documentation.
-+static const u32 simple_avc_device[] = {
-+	0x0404eabf,
++// Written by hand.
++static const u32 legacy_avc_device[] = {
++	0x04199fe7,
 +	0x31333934,
-+	0xe0646102,
-+	0xffffffff,
-+	0xffffffff,
-+	0x00063287, // root directory.
-+	0x03ffffff,
-+	0x8100000a,
-+	0x17ffffff,
-+	0x8100000e,
++	0xe0644000,
++	0x00112233,
++	0x44556677,
++	0x0005dace, // root directory.
++	0x03012345,
 +	0x0c0083c0,
-+	0xd1000001,
-+	0x0004442d, // unit 0 directory.
-+	0x1200a02d,
-+	0x13010001,
-+	0x17ffffff,
-+	0x81000007,
-+	0x0005c915, // leaf.
++	0x8d000009,
++	0xd1000002,
++	0xc3000004,
++	0x0002e107, // unit 0 directory.
++	0x12abcdef,
++	0x13543210,
++	0x0002cb73, // vendor directory.
++	0x17fedcba,
++	0x81000004,
++	0x00026dc1, // leaf for EUI-64.
++	0x00112233,
++	0x44556677,
++	0x00050e84, // leaf for text descriptor.
 +	0x00000000,
 +	0x00000000,
-+	0x56656e64,
-+	0x6f72204e,
-+	0x616d6500,
-+	0x00057f16, // leaf.
-+	0x00000000,
-+	0x00000000,
-+	0x4d6f6465,
-+	0x6c204e61,
-+	0x6d650000,
++	0x41424344,
++	0x45464748,
++	0x494a0000,
 +};
 +
-+static void csr_api_simple_avc_device(struct kunit *test)
+ static void csr_api_simple_avc_device(struct kunit *test)
+ {
+ 	static const struct fw_device node = {
+@@ -126,8 +160,85 @@ static void csr_api_simple_avc_device(struct kunit *test)
+ 	KUNIT_EXPECT_MEMEQ(test, ids, unit_expected_ids, sizeof(ids));
+ }
+ 
++static void csr_api_legacy_avc_device(struct kunit *test)
 +{
 +	static const struct fw_device node = {
 +		.device = {
 +			.type = &fw_device_type,
 +		},
-+		.config_rom = simple_avc_device,
-+		.config_rom_length = sizeof(simple_avc_device),
++		.config_rom = legacy_avc_device,
++		.config_rom_length = sizeof(legacy_avc_device),
 +	};
 +	static const struct fw_unit unit0 = {
 +		.device = {
 +			.type = &fw_unit_type,
 +			.parent = (struct device *)&node.device,
 +		},
-+		.directory = &simple_avc_device[12],
++		.directory = &legacy_avc_device[11],
 +	};
 +	struct device *node_dev = (struct device *)&node.device;
 +	struct device *unit0_dev = (struct device *)&unit0.device;
-+	static const int unit_expected_ids[] = {0x00ffffff, 0x00ffffff, 0x0000a02d, 0x00010001};
++	static const int unit_expected_ids[] = {0x00012345, 0x00000000, 0x00abcdef, 0x00543210};
 +	char *buf = kunit_kzalloc(test, PAGE_SIZE, GFP_KERNEL);
 +	int ids[4] = {0, 0, 0, 0};
 +
@@ -222,7 +231,7 @@ index a76d767373e9..d91852825efc 100644
 +
 +	KUNIT_ASSERT_TRUE(test, is_fw_device(node_dev));
 +	KUNIT_ASSERT_FALSE(test, is_fw_unit(node_dev));
-+	KUNIT_ASSERT_PTR_EQ(test, fw_device(node_dev), &node);
++	KUNIT_ASSERT_PTR_EQ(test, fw_device((node_dev)), &node);
 +
 +	KUNIT_ASSERT_FALSE(test, is_fw_device(unit0_dev));
 +	KUNIT_ASSERT_TRUE(test, is_fw_unit(unit0_dev));
@@ -233,43 +242,38 @@ index a76d767373e9..d91852825efc 100644
 +
 +	// Vendor immediate entry is found.
 +	KUNIT_EXPECT_GT(test, show_immediate(node_dev, &config_rom_attributes[0].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "0xffffff\n");
++	KUNIT_EXPECT_STREQ(test, buf, "0x012345\n");
 +
-+	// Model immediate entry is found.
-+	KUNIT_EXPECT_GT(test, show_immediate(node_dev, &config_rom_attributes[4].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "0xffffff\n");
++	// Model immediate entry is not found.
++	KUNIT_EXPECT_LT(test, show_immediate(node_dev, &config_rom_attributes[4].attr, buf), 0);
 +
-+	// Descriptor leaf entry for vendor is found.
-+	KUNIT_EXPECT_GT(test, show_text_leaf(node_dev, &config_rom_attributes[5].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "Vendor Name\n");
++	// Descriptor leaf entry for vendor is not found.
++	KUNIT_EXPECT_LT(test, show_text_leaf(node_dev, &config_rom_attributes[5].attr, buf), 0);
 +
-+	// Descriptor leaf entry for model is found.
-+	KUNIT_EXPECT_GT(test, show_text_leaf(node_dev, &config_rom_attributes[6].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "Model Name\n");
++	// Descriptor leaf entry for model is not found.
++	KUNIT_EXPECT_LT(test, show_text_leaf(node_dev, &config_rom_attributes[6].attr, buf), 0);
 +
 +	// For entries in unit 0 directory.
 +
 +	// Vendor immediate entry is not found.
 +	KUNIT_EXPECT_LT(test, show_immediate(unit0_dev, &config_rom_attributes[0].attr, buf), 0);
 +
-+	// Model immediate entry is found.
-+	KUNIT_EXPECT_GT(test, show_immediate(unit0_dev, &config_rom_attributes[4].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "0xffffff\n");
++	// Model immediate entry is not found.
++	KUNIT_EXPECT_LT(test, show_immediate(unit0_dev, &config_rom_attributes[4].attr, buf), 0);
 +
 +	// Descriptor leaf entry for vendor is not found.
 +	KUNIT_EXPECT_LT(test, show_text_leaf(unit0_dev, &config_rom_attributes[5].attr, buf), 0);
 +
 +	// Descriptor leaf entry for model is not found.
-+	KUNIT_EXPECT_GT(test, show_text_leaf(unit0_dev, &config_rom_attributes[6].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "Model Name\n");
++	KUNIT_EXPECT_LT(test, show_text_leaf(unit0_dev, &config_rom_attributes[6].attr, buf), 0);
 +
 +	// Specifier_ID immediate entry is found.
 +	KUNIT_EXPECT_GT(test, show_immediate(unit0_dev, &config_rom_attributes[2].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "0x00a02d\n");
++	KUNIT_EXPECT_STREQ(test, buf, "0xabcdef\n");
 +
 +	// Version immediate entry is found.
 +	KUNIT_EXPECT_GT(test, show_immediate(unit0_dev, &config_rom_attributes[3].attr, buf), 0);
-+	KUNIT_EXPECT_STREQ(test, buf, "0x010001\n");
++	KUNIT_EXPECT_STREQ(test, buf, "0x543210\n");
 +
 +	kunit_kfree(test, buf);
 +
@@ -278,7 +282,8 @@ index a76d767373e9..d91852825efc 100644
 +}
 +
  static struct kunit_case csr_api_test_cases[] = {
-+	KUNIT_CASE(csr_api_simple_avc_device),
+ 	KUNIT_CASE(csr_api_simple_avc_device),
++	KUNIT_CASE(csr_api_legacy_avc_device),
  	{}
  };
  
