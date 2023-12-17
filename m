@@ -1,43 +1,64 @@
-Return-Path: <linux-kernel+bounces-2580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5212815F0D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:43:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6AF815F11
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:49:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37411B21E5C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:43:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C9DDB216DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4287B43148;
-	Sun, 17 Dec 2023 12:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1FB42ABB;
+	Sun, 17 Dec 2023 12:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="b9wK5mg0"
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="hZAWIU9X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A1944360;
-	Sun, 17 Dec 2023 12:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 97A3F1BF205;
-	Sun, 17 Dec 2023 12:42:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1702816962;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=53VdKDpJcL+9oYwjSNytfeRiAIyPbKa7FVqLsuZATU8=;
-	b=b9wK5mg0uUyb2cQPYJNlayYJcOEtfwb7WbqhgIe1HbMH7LeT6fvWNpOxUlGJafWs5WBVzP
-	jMVU/V4yxtxr0mfbAHDE+iuPKfshri1J1SEXaq2O0QOYtzTmpJT0F/Kntq8d1XCvUFpIbd
-	reBH+mlTqOqPc+Iq0dogGtnEEssPAB7UDZUFkD3ob8G6xeBuI8oV9OuV6D+NAKDdm5xGDO
-	Wy6UUwAxVQnp6akeFmO11Gjv73DM39HVAOuu3+QC+YcJncxOVJ1/hmBxBRBre4dPD4nr4D
-	L8HRuTGci9PwaO4rZljAxu8vQDITXI4FwRQL17inlZcz0chhVUAOcI21JMavlQ==
-Message-ID: <a01fa1eb-be77-4da1-bfa5-3e3c20bc08a7@arinc9.com>
-Date: Sun, 17 Dec 2023 15:42:34 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0AA742AB5
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 12:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40c69403b3eso20675345e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 04:49:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1702817368; x=1703422168; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y2A8BIjFml/ggWK/e3i3fQbXXEFS9v26POSAf3DCCGM=;
+        b=hZAWIU9X656Sq1Mw8IrBAjtphkkl1v3OjmDepGuhqskqe0ne/a1OOyeIHKIImGgrlZ
+         sX9DshER8MEy1KNm57snJPxod1yFH5VHjD+LPmvF7PjLb9X5AgtuIAY1ckdwLJOVdHDi
+         hOoGert8dYN16EDRJV2kmnHu4NxKm+h0+dzF/9iGoy1yLzlqXO1kC8gCqJ2F/wSvdqvS
+         YlOa4VHU2mkOCioq9//vVTbI+rO8hjN6SF7vXnYJEWQJKHfIFkh4GUyQMCo6l4cVmH4O
+         oBV/h0wc0G9M+3L1RCTXIGa7xuGamSCiw1OMyEWBed81njw3BZCJyKgX+4/b6ngkkAm8
+         k5Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702817368; x=1703422168;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y2A8BIjFml/ggWK/e3i3fQbXXEFS9v26POSAf3DCCGM=;
+        b=iIl8hScFzbw+iBrIQZIraQaYjPGxpbpdgKRXAWanQINBOoxn7WRghEo3BPQIn/+v0v
+         8Jelzms1ropzS4J/+7BgL+e8heiyPvdqIbJF/AKO1dCu33sgUwGgJv+oMoozJ9gjD/Sl
+         0GDmtpd4vtUQxLwSmgfJtpeFkHykT1Oh5C8UuxqcXkGBhJkbWubhMG1xDTBHSTF2UFD1
+         KBM09F1SnmCL9MysbwmerjHQ9Df8nPh2mHa4cLllV5SRPY2C7+MDpD+cXmNlO2PscguL
+         Bf/O1OPUnLNoTFELcUm6KwD84na2uxP2EdBxQQxQMbjXIrd61LI9NB6LgTq1PWrKP28M
+         GD1g==
+X-Gm-Message-State: AOJu0Yz/DHqweCbqYdYmCg825fqFDdvnx3KfmxjweJZJiKEajVZZpGZ6
+	UF39k+aFnKR80640BjGCMB107Q==
+X-Google-Smtp-Source: AGHT+IEzHG9Lb772a8OColXa7QBluK1eg+sHn/FlXUYnt1ZuQRIqOZ8by/ltEdhdycGcXBHmybt+Ug==
+X-Received: by 2002:a05:600c:3ba6:b0:40b:5e1c:5c1d with SMTP id n38-20020a05600c3ba600b0040b5e1c5c1dmr7325465wms.50.1702817367986;
+        Sun, 17 Dec 2023 04:49:27 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.103])
+        by smtp.gmail.com with ESMTPSA id h2-20020a05600c350200b0040c44b4a282sm29604119wmq.43.2023.12.17.04.49.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Dec 2023 04:49:27 -0800 (PST)
+Message-ID: <58b11076-3e8e-42a0-864f-7ad16abaccd6@tuxon.dev>
+Date: Sun, 17 Dec 2023 14:49:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,99 +66,72 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 06/15] net: dsa: mt7530: do not set
- priv->p5_interface on mt7530_setup_port5()
+Subject: Re: [PATCH net-next v2 10/21] net: ravb: Move delay mode set in the
+ driver's ndo_open API
 Content-Language: en-US
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
- Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Frank Wunderlich <frank-w@public-files.de>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com
-References: <20231118123205.266819-1-arinc.unal@arinc9.com>
- <20231118123205.266819-7-arinc.unal@arinc9.com>
- <20231207181858.ojbgt5pwyqq3tzjk@skbuf>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20231207181858.ojbgt5pwyqq3tzjk@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de,
+ yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
+ geert+renesas@glider.be
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-11-claudiu.beznea.uj@bp.renesas.com>
+ <421c684d-7092-d7a8-e00a-6abe40c557c5@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <421c684d-7092-d7a8-e00a-6abe40c557c5@omp.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 7.12.2023 21:18, Vladimir Oltean wrote:
-> On Sat, Nov 18, 2023 at 03:31:56PM +0300, Arınç ÜNAL wrote:
->> Do not set priv->p5_interface on mt7530_setup_port5(). There isn't a case
->> where mt753x_phylink_mac_config() runs after mt7530_setup_port5() which
->> setting priv->p5_interface would prevent mt7530_setup_port5() from running
->> more than once.
+
+
+On 15.12.2023 21:58, Sergey Shtylyov wrote:
+> On 12/14/23 2:45 PM, Claudiu wrote:
+> 
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->> ---
->>   drivers/net/dsa/mt7530.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
->> index 069b3dfca6fa..fc87ec817672 100644
->> --- a/drivers/net/dsa/mt7530.c
->> +++ b/drivers/net/dsa/mt7530.c
->> @@ -978,8 +978,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
->>   	dev_dbg(ds->dev, "Setup P5, HWTRAP=0x%x, intf_sel=%s, phy-mode=%s\n",
->>   		val, p5_intf_modes(priv->p5_intf_sel), phy_modes(interface));
->>   
->> -	priv->p5_interface = interface;
->> -
->>   unlock_exit:
->>   	mutex_unlock(&priv->reg_mutex);
->>   }
->> -- 
->> 2.40.1
->>
+>> Delay parse and set were done in the driver's probe API. As some IP
 > 
-> Purely as a matter of theory, mt753x_phylink_mac_config() itself could
-> be called more than once, at any time there is a phylink_major_config() -
-> first during initial one, then upon any change of the phy_interface_t.
-> With the port being fixed and internal, maybe that is unlikely.
+>    Parsing and setting?
 > 
-> Destroying and re-creating the phylink instance could also make the
-> driver see more than 1 mt753x_phylink_mac_config() call. During periods
-> of -EPROBE_DEFER, maybe this could even happen.
+>> variants switch to reset mode (and thus registers' content is lost) when
 > 
-> I think what we need to see is a description of what the priv->p5_interface
-> test is really protecting against, because it certainly is uncommon in other
-> drivers to have this much logic to avoid mt753x_mac_config() being
-> called twice.
+>    Register.
 > 
-> If there's nothing wrong with calling it twice and it's just an optimization,
-> I think that's enough of a justification for removing that extra protection.
-> At the same time, the optimization (and simplification) that we should
-> pursue is that we should remove the overlap between phylink and the
-> initial port setup made by the driver.
+>> setting clocks (due to module standby functionality) to be able to
+>> implement runtime PM keep the delay parsing in the driver's probe function
+>> and move the delay apply function to the driver's ndo_open API.
+> 
+>    Applying?
+> 
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> [...]
+> 
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index 5e01e03e1b43..04eaa1967651 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> [...]
+>> @@ -1806,6 +1821,8 @@ static int ravb_open(struct net_device *ndev)
+>>  	if (info->nc_queues)
+>>  		napi_enable(&priv->napi[RAVB_NC]);
+>>  
+>> +	ravb_set_delay_mode(ndev);
+>> +
+> 
+>    I suspect this belongs in ravb_dmac_init() now...
 
-priv->p5_interface and priv->p6_interface were actually intended to apply
-only for MT7531. It prevents the CPU ports to be configured again. CPU
-ports are unnecessarily configured before phylink. I intend to address that
-with the patch below. I'll submit it after the current patches here go
-through. There's a lot to clean up in this driver.
+I'm confused... Why? To me this seems more like MAC-PHY interface related.
 
-https://github.com/arinc9/linux/commit/80efcb1870530ef5526d7feda625374b8f308369
+Though I'm not sure what ravb_dmac_init() purpose is.
 
-If you can recall, this is where me and Russell mostly left off on my 30
-patch series. I was supposed to run some debug info prints to make sure
-that the MT7531 CPU ports are still configured as they were with
-priv->info->cpu_port_config().
-
-https://lore.kernel.org/netdev/ZHy2jQLesdYFMQtO@shell.armlinux.org.uk/
-
-For this patch, I can change the patch log to state that priv->p5_interface
-and priv->p6_interface are intended for use on the MT7531 switch.
-
-Arınç
+> 
+>>  	/* Device init */
+>>  	error = ravb_dmac_init(ndev);
+>>  	if (error)
+> [...]
+> 
+> MRB, Sergey
 
