@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-2448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8331A815D4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 04:36:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3925815D4E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 04:37:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 377052839C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:36:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 887A91F22224
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F5D23A2;
-	Sun, 17 Dec 2023 03:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DE65221;
+	Sun, 17 Dec 2023 03:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EoeD5l9w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="flKZvGRI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18ACD20E3
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 03:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC673D8F
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 03:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7b7039d30acso166613539f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:36:36 -0800 (PST)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5906e03a7a4so1429330eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:36:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702784195; x=1703388995; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702784201; x=1703389001; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3V8gSp8bUEZWRGRAcmamI1zQxxCYsLgl6TFXIZtXR8g=;
-        b=EoeD5l9wXRKiqhPFr4HMPiqmhgEy/nUK37cKf/nqi7mVT00rz4Ic9rvd7x6GkSfbOK
-         0bzULEUQ1C6eW/Qj0YXEn2PP2XhXOnmVIktm714VE3h65fs24IxVMna6G1Iw+kpk3GqB
-         2xQumGTaD/EAZGpRsRt65e5atV8IE5/ly3zK2YWh40xFDxM7PEm9CV1zNvp4frqUWAEB
-         f9wPcOO3EurGvi0sxzPGvHBE+bafgcQnLaZM1N67aC425bnTQQPStY2kJLppZTEdPLqW
-         bX5GnktwTrL1XJc3fgrTgoak+9ZOOH30NhbbP2MIbLU5hior0iJUaIaySTmxnRLKugUP
-         tdNw==
+        bh=jscYpo84xIlTIrjQEZDT5YAVqLMOQqnP0eOYv7+MbRw=;
+        b=flKZvGRI+Uua7WsjtvqA9nn0T569knckk+H60qEvF/zCwSdggTFneukCVOqgBW9L5R
+         DGNgoSutc3hlJUgVBLAAVMlek5WX2Hv48gcJS3rDGthaxcNp/YwtoabPplOVsDWCASa+
+         NyCuUOklj+ndrwEcTCahP0lYtU1Qoyqy7CzJG0bOxJLWS+MzDHvaKOX3fmKIWVzR4srK
+         45NHzv5CdaghJ1wdDkDbFg6yqNldBlC9Wt5w171J/V86VBWzYfwpnYrgBWXYbd44d2Dd
+         l89YOtyA585Y6CXSNpGIr+xJ9nGTxaMm3nKy0Yw4eCdt3aHqvWWeov53MjIxPFegev29
+         BSGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702784195; x=1703388995;
+        d=1e100.net; s=20230601; t=1702784201; x=1703389001;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3V8gSp8bUEZWRGRAcmamI1zQxxCYsLgl6TFXIZtXR8g=;
-        b=dLJoRVXL/GEi2oXxrbXzmEQpQlgBWGssME9e1WcBgO9V/BkxMFxUlHcw8n/lmhXtJu
-         dSdM0FipyigyX3+HfhjqrnCCpChSHlRkYqG1E0oajjpluhdKeP58N/WHsbYa1yhcMyAQ
-         qaDgyvPK+9tyq4DcPPuICELAPSVfvZPFZpQXIg6xVmHEEuete1Qff1+njEz/JtvqajOa
-         oGERM51fqYz4IG8663dkCarRQ9aeLVp1ry6xo8SCEuKzj0Sgu4o2aENYDwuuirYEqwPL
-         Jml78m5ZMYEnZmg0eYy244tY6KFDKyrey7idQDonUOTrUTclb/7GPLdRLDke1FZzptEZ
-         TrWA==
-X-Gm-Message-State: AOJu0Yy0Tof/wGgCI/OoMkWpaizTn2r8QDfmtZqkcO1YRUEZSsdiOjIv
-	uXBsnli5fPbczFOJI+zg7ZYojffcjOw=
-X-Google-Smtp-Source: AGHT+IF19Uou+JFEzXr0eitLYlv+ldY8dy1/12JKbWr/jE+2XcuM/gbK5TyaB6a5sCN/Nkm2axS0Jw==
-X-Received: by 2002:a5d:8850:0:b0:7b4:28f8:526 with SMTP id t16-20020a5d8850000000b007b428f80526mr16927258ios.38.1702784195510;
-        Sat, 16 Dec 2023 19:36:35 -0800 (PST)
+        bh=jscYpo84xIlTIrjQEZDT5YAVqLMOQqnP0eOYv7+MbRw=;
+        b=CFOGda09j7cRXMkYiC3GR+rfHFiLDFtr+H60EUIs7yEaOgFOyb/Gfve35gwywEIRXz
+         VPXaRopAmD49Hol3T7V7jN4a5nWkKaEK3SBWi9MuLYYPJ6UeXWhtkAZzQ3Ri1qTI7eSg
+         g1uXSlfTCB6W6U1oWaTG10SilNi46OAkcFZ5tvdXgSTT2xfpgeV3DVdc2JYMMZgFhZyt
+         ca+yvJ3SehpfZQ90ns97Zx7j/AB9FKfelwCcQJ+ilBDT/m6a/QwMriA1t4u1X8HhmZST
+         ZbFXwVx9533mKuF7tLQdFE3nP9Zt/+QxQzXZe+4v6Z3YCiHOQWj/2FzPcKAPO5Pzq20K
+         6G4w==
+X-Gm-Message-State: AOJu0YzVZSC3FhVHEtdiDSVN4ZAHKAF97hJJEPCWEvN4Ug504ev02bg7
+	vtOlzgYv62i4gamx40kDkDYs+buc0xQ=
+X-Google-Smtp-Source: AGHT+IHxfeJ2/5ZmVlwHFplWezFuqpKI/InwfEnH6Lv71yXTfqFxulFEco7zz2dzTje/5OiY9iM0Sg==
+X-Received: by 2002:a05:6808:3197:b0:3ba:18f:62c6 with SMTP id cd23-20020a056808319700b003ba018f62c6mr17936532oib.7.1702784201449;
+        Sat, 16 Dec 2023 19:36:41 -0800 (PST)
 Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b006ce48a0b7c6sm15768820pfm.109.2023.12.16.19.36.30
+        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b006ce48a0b7c6sm15768820pfm.109.2023.12.16.19.36.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 19:36:35 -0800 (PST)
+        Sat, 16 Dec 2023 19:36:41 -0800 (PST)
 From: Yuntao Wang <ytcoode@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	kexec@lists.infradead.org,
@@ -71,9 +71,9 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Eric Biederman <ebiederm@xmission.com>,
 	Baoquan He <bhe@redhat.com>,
 	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH v5 2/3] kexec_file: fix incorrect temp_start value in locate_mem_hole_top_down()
-Date: Sun, 17 Dec 2023 11:35:27 +0800
-Message-ID: <20231217033528.303333-3-ytcoode@gmail.com>
+Subject: [PATCH v5 3/3] x86/kexec: use pr_err() instead of pr_debug() when an error occurs
+Date: Sun, 17 Dec 2023 11:35:28 +0800
+Message-ID: <20231217033528.303333-4-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231217033528.303333-1-ytcoode@gmail.com>
 References: <20231217033528.303333-1-ytcoode@gmail.com>
@@ -85,37 +85,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-temp_end represents the address of the last available byte. Therefore, the
-starting address of the memory segment with temp_end as its last available
-byte and a size of `kbuf->memsz`, that is, the value of temp_start, should
-be `temp_end - kbuf->memsz + 1` instead of `temp_end - kbuf->memsz`.
+When an error is detected, use pr_err() instead of pr_debug() to output
+log message.
 
-Additionally, use the ALIGN_DOWN macro instead of open-coding it directly
-in locate_mem_hole_top_down() to improve code readability.
+In addition, remove the unnecessary return from set_page_address().
 
 Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- kernel/kexec_file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/kexec-bzimage64.c | 2 +-
+ mm/highmem.c                      | 2 --
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index f9a419cd22d4..336d085cbc47 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -426,11 +426,11 @@ static int locate_mem_hole_top_down(unsigned long start, unsigned long end,
- 	unsigned long temp_start, temp_end;
+diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+index a61c12c01270..472a45dbc79a 100644
+--- a/arch/x86/kernel/kexec-bzimage64.c
++++ b/arch/x86/kernel/kexec-bzimage64.c
+@@ -424,7 +424,7 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
+ 	 * command line. Make sure it does not overflow
+ 	 */
+ 	if (cmdline_len + MAX_ELFCOREHDR_STR_LEN > header->cmdline_size) {
+-		pr_debug("Appending elfcorehdr=<addr> to command line exceeds maximum allowed length\n");
++		pr_err("Appending elfcorehdr=<addr> to command line exceeds maximum allowed length\n");
+ 		return ERR_PTR(-EINVAL);
+ 	}
  
- 	temp_end = min(end, kbuf->buf_max);
--	temp_start = temp_end - kbuf->memsz;
-+	temp_start = temp_end - kbuf->memsz + 1;
+diff --git a/mm/highmem.c b/mm/highmem.c
+index e19269093a93..bd48ba445dd4 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -799,8 +799,6 @@ void set_page_address(struct page *page, void *virtual)
+ 		}
+ 		spin_unlock_irqrestore(&pas->lock, flags);
+ 	}
+-
+-	return;
+ }
  
- 	do {
- 		/* align down start */
--		temp_start = temp_start & (~(kbuf->buf_align - 1));
-+		temp_start = ALIGN_DOWN(temp_start, kbuf->buf_align);
- 
- 		if (temp_start < start || temp_start < kbuf->buf_min)
- 			return 0;
+ void __init page_address_init(void)
 -- 
 2.43.0
 
