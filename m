@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-2701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949F28160B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:21:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D7B48160BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24FE0B21AFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:21:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E201B21E88
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBED46442;
-	Sun, 17 Dec 2023 17:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA2D46549;
+	Sun, 17 Dec 2023 17:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGc+9iwm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SpiJ+uON"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE05946420;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011EF46456;
+	Sun, 17 Dec 2023 17:21:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68CA5C433CB;
 	Sun, 17 Dec 2023 17:21:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB221C433C7;
-	Sun, 17 Dec 2023 17:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702833695;
-	bh=CMmnXB2CNPDIqffldhQdQKBnVeMpdT3aYW8s5qEN3MY=;
+	s=k20201202; t=1702833696;
+	bh=aUnbtBvYc5j5FQICjWzIW/hZZLwVpxAe15LU129bb8A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GGc+9iwm8UEdWF2wZT2djfFZWTidVU/oyq+vBAnRZIfzjUcx+OByoJJmPKBttytbO
-	 SSezwHEQwfUWCpoAqTgyJ9u3npBcCeDA/swQXgKEsXul0zQ2suu+ysq8jVi7IOEsu2
-	 ra2ObR7ncH+yCWKNnz4QKXlFIpJyZn1CjWCqmdXygIKI5DT7aWeJSqiol8UM1v7OZU
-	 jyJUkiOnIM8VfCthknRV9TzwiNHussbGGB384rpJOZWIaBUZldFTUpiSz8KjBGEwZk
-	 UkREJc1o55tb3N/rd1DmMd3KM6zdVlGhYIMuS3CP2Yfa6R+b5CsqOrWPWX7iAumiFz
-	 ZNw7icsQz+BbQ==
+	b=SpiJ+uONUjJtRq6cFLS0HMHHPpgGpXwZrZKgPmLvC2JB6dAjRLhDH8f9qC3BvOrhy
+	 zDOSVT+nAHV/lGtMZyaPvqQJG2Gltdj/iEfSXb8fKhB7UhRF3GRzZYWxUCW+wLADM8
+	 HJ/2Utw0MrL5qocmlXS2J3rBvV5R04L/nFswj4SX5x2p62JCxqYyw8FY4la8cFKpWW
+	 HmZzNgOD9+WKgSyEfq9d9/PTXo2URfw53LwfFNTQnOuhlVALo+Y6PSDmFHhS28XXA3
+	 kmdeLakT31qreH2v/8Q9lLKjq3rQMvtYpQotZZXajPz2RUWeerbaPvZl4jHLVUc+GF
+	 Bcv0ujYK1A/yw==
 From: Bjorn Andersson <andersson@kernel.org>
 To: Andy Gross <agross@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Sibi Sankar <quic_sibis@quicinc.com>,
-	Rajendra Nayak <quic_rjendra@quicinc.com>,
 	Abel Vesa <abel.vesa@linaro.org>
 Cc: linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: x1e80100-crd: Fix supplies for some LDOs in PM8550
-Date: Sun, 17 Dec 2023 11:20:52 -0600
-Message-ID: <170283349432.66089.3956721176712420638.b4-ty@kernel.org>
+Subject: Re: [PATCH] dt-bindings: soc: qcom,aoss-qmp: document the X1E80100 Always-On Subsystem side channel
+Date: Sun, 17 Dec 2023 11:20:53 -0600
+Message-ID: <170283349431.66089.9014562198203733569.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231214-x1e80100-dts-fix-pm8550-regulators-supplies-v1-1-6b5830dc337e@linaro.org>
-References: <20231214-x1e80100-dts-fix-pm8550-regulators-supplies-v1-1-6b5830dc337e@linaro.org>
+In-Reply-To: <20231214-x1e80100-soc-qcom-aoss-v1-1-94c46c5182fd@linaro.org>
+References: <20231214-x1e80100-soc-qcom-aoss-v1-1-94c46c5182fd@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,17 +58,15 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 14 Dec 2023 21:24:50 +0200, Abel Vesa wrote:
-> The LDOs 1, 4 and 10 from PM8550 share the same supply, the SMPS 4
-> from PM8550ve. This needs to be done through shared supply approach
-> otherwise the bindings check fails.
+On Thu, 14 Dec 2023 19:35:50 +0200, Abel Vesa wrote:
+> Document the Always-On Subsystem side channel on the X1E80100 Platform.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: x1e80100-crd: Fix supplies for some LDOs in PM8550
-      commit: f8ab2984e5b0f1aaf94e3810b809bae055020e11
+[1/1] dt-bindings: soc: qcom,aoss-qmp: document the X1E80100 Always-On Subsystem side channel
+      commit: ce2e6658cfa02ef7fb7b697abac85742af4cc0c0
 
 Best regards,
 -- 
