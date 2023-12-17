@@ -1,93 +1,86 @@
-Return-Path: <linux-kernel+bounces-2789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 789F68161E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 20:59:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 324BF8161E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:07:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8F51C2207B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:59:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7CE3282E4A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 20:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787DD481B9;
-	Sun, 17 Dec 2023 19:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9A4481AA;
+	Sun, 17 Dec 2023 20:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aIy5gh//"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LU5092Tr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3E5481A0;
-	Sun, 17 Dec 2023 19:59:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9B6DC433C7;
-	Sun, 17 Dec 2023 19:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702843173;
-	bh=qy8668IHMiBnsf/vjnuSRDLSJJimOnnJOAjf1zI6zZU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aIy5gh//oidfPpzTcjRhQCDJfCx6zmRrbV724Eiur2cP8EUsQkW7Nq///EPE009dp
-	 UjRnRepNzhiaigR8itqQn26vSyIsF+UEeC3/nQRVsgY0Y12KEerbx7ENlih9p6UZL0
-	 j35PRwWWs1GpNDhIWLhEGMsuo5K6n0PWdxnGhCW72TK0z/YSnfuVBC0uUuGIWjUMbr
-	 YKtT59SlO7u51i9159IbrEKqj5HrQBX6Uh+4xrFZssSFwhzjKEh9qEsFzbg1DsHlVG
-	 AWMOUsLKhVbDVEUF91cgoaue110Q/pWx5JZSHthdZ+lWU28/3WhCzpkt0AC6q7+A2T
-	 OoVy+pqS+0OrQ==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	cros-qcom-dts-watchers@chromium.org,
-	Luca Weiss <luca.weiss@fairphone.com>
-Cc: ~postmarketos/upstreaming@lists.sr.ht,
-	phone-devel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
-	linux-arm-msm@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v3 00/11] Remoteprocs (ADSP, CDSP, WPSS) for SC7280
-Date: Sun, 17 Dec 2023 12:03:54 -0800
-Message-ID: <170284338637.3551047.8886362127846527500.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231208-sc7280-remoteprocs-v3-0-6aa394d33edf@fairphone.com>
-References: <20231208-sc7280-remoteprocs-v3-0-6aa394d33edf@fairphone.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5388F481A0;
+	Sun, 17 Dec 2023 20:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702843634; x=1734379634;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=HWsybbn3Mhvmz/bcKdVSQYDm+V803OZ5xApTGIFX5OA=;
+  b=LU5092TrgXFYkm3kZR5DnNnaCxrdJJINwBSAeWjhx9rQNzWkD/dzSwXk
+   tOSA8fAPFuDozlgy5V62PaVM71h3X2aKekpqNftBMrzsT4/FmHGhLQeMV
+   t2ycofCvD165yu5KdzJ3SlKMAB7JMCbCRc6sbLiszVzhZCQPf+E3tTEjm
+   v1nyZ8+sV52I8A80Z4zIcZBVmKyjbBFzTwhsBwoAO3okFXhpxj9TQrITN
+   GroIaHJ71mAUHtFV7ZsMX1b5hqcj+sRsQh1vQhPuZIPQWgXfef4ONCNYr
+   yRaHR6x5VKuB8v0sVMuTTM3Z6znWdCmK2PPOG7AMZ249HXwOFAfcP5pt8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="398214898"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="398214898"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 12:07:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="1022539225"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="1022539225"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Dec 2023 12:07:12 -0800
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To: jikos@kernel.org,
+	jic23@kernel.org,
+	lars@metafoo.de,
+	Basavaraj.Natikar@amd.com
+Cc: linux-input@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 0/2] Fix regression in ALS
+Date: Sun, 17 Dec 2023 12:07:01 -0800
+Message-Id: <20231217200703.719876-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+Addition of color temperature and chromaticity support breaks ALS sensor
+on several platforms. Till we have a good solution, revert these commits
+for 6.7 cycle.
 
-On Fri, 08 Dec 2023 16:07:56 +0100, Luca Weiss wrote:
-> This series adds support for the ADSP, CDSP and WPSS remoteprocs found
-> on SC7280. And finally enable them and WiFi on the QCM6490-based
-> Fairphone 5 smartphone.
-> 
-> The first two patches are fixes for the MPSS to fix some dt validation
-> issues. They're included in this series to avoid conflicts with the
-> later patches and keep it simpler.
-> 
-> [...]
+Srinivas Pandruvada (2):
+  Revert "iio: hid-sensor-als: Add light chromaticity support"
+  Revert "iio: hid-sensor-als: Add light color temperature support"
 
-Applied, thanks!
+ drivers/iio/light/hid-sensor-als.c | 100 +----------------------------
+ include/linux/hid-sensor-ids.h     |   4 --
+ 2 files changed, 2 insertions(+), 102 deletions(-)
 
-[01/11] dt-bindings: remoteproc: qcom: sc7180-pas: Fix SC7280 MPSS PD-names
-        commit: 9d598fab9731055638c6e9333c4f21aa0d174a48
-[05/11] dt-bindings: remoteproc: qcom: sc7180-pas: Add SC7280 compatibles
-        commit: 11eff1020440060c53d2261531432927c9fb4ee3
-[06/11] remoteproc: qcom_q6v5_pas: Add SC7280 ADSP, CDSP & WPSS
-        commit: 300ed425dfa99f6926299ec196a1eedf05f47b21
-
-Best regards,
 -- 
-Bjorn Andersson <andersson@kernel.org>
+2.43.0
+
 
