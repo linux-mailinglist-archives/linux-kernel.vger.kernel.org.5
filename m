@@ -1,53 +1,43 @@
-Return-Path: <linux-kernel+bounces-2844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A94008162BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:10:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59C408162C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 341001F218DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:10:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 657761C20D0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C2D49F90;
-	Sun, 17 Dec 2023 22:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="DdxFoikZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E423149F8C;
+	Sun, 17 Dec 2023 22:19:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BED54A9A2;
-	Sun, 17 Dec 2023 22:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1702851016;
-	bh=jV/gJmx2dRn8bG3USFFs1YL9j9hEU8IS+OZeoAALh/o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DdxFoikZMeNyWuoAcpms0q4zk04TBG1+e7/RgRUcBAW3qWQyxlpxF8KdpM/9LPfl9
-	 BBHrENFjN2DUvXLi2LoDd4+Kz2e/FTz1/pMX69PXVc2aCnw0eZ33SCunVdMjK7/TE8
-	 WGGHUvAHXg7I7Y4b9/DQW9E3syClaE5qe8IGSFfE=
-Date: Sun, 17 Dec 2023 23:10:15 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Joel Granados <j.granados@samsung.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Julia Lawall <julia.lawall@inria.fr>, 
-	Kees Cook <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
-	Iurii Zaikin <yzaikin@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-Message-ID: <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
-References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com>
- <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
- <20231207104357.kndqvzkhxqkwkkjo@localhost>
- <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
- <20231208095926.aavsjrtqbb5rygmb@localhost>
- <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
- <20231212090930.y4omk62wenxgo5by@localhost>
- <ZXligolK0ekZ+Zuf@bombadil.infradead.org>
- <20231217120201.z4gr3ksjd4ai2nlk@localhost>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2634B49F77;
+	Sun, 17 Dec 2023 22:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rEzTc-0001aP-1I;
+	Sun, 17 Dec 2023 22:19:13 +0000
+Date: Sun, 17 Dec 2023 22:19:10 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/7] mtd: ubi: allow UBI volumes to provide NVMEM
+Message-ID: <cover.1702850093.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,75 +46,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231217120201.z4gr3ksjd4ai2nlk@localhost>
 
-On 2023-12-17 13:02:01+0100, Joel Granados wrote:
-> Catching up with mail....
-> 
-> On Tue, Dec 12, 2023 at 11:51:30PM -0800, Luis Chamberlain wrote:
-> > On Tue, Dec 12, 2023 at 10:09:30AM +0100, Joel Granados wrote:
-> > > My idea was to do something similar to your originl RFC, where you have
-> > > an temporary proc_handler something like proc_hdlr_const (we would need
-> > > to work on the name) and move each subsystem to the new handler while
-> > > the others stay with the non-const one. At the end, the old proc_handler
-> > > function name would disapear and would be completely replaced by the new
-> > > proc_hdlr_const.
-> > >
-> > > This is of course extra work and might not be worth it if you don't get
-> > > negative feedback related to tree-wide changes. Therefore I stick to my
-> > > previous suggestion. Send the big tree-wide patches and only explore
-> > > this option if someone screams.
-> >
-> > I think we can do better, can't we just increase confidence in that we
-> > don't *need* muttable ctl_cables with something like smatch or
-> > coccinelle so that we can just make them const?
-> >
-> > Seems like a noble endeavor for us to generalize.
-> >
-> > Then we just breeze through by first fixing those that *are* using
-> > mutable tables by having it just de-register and then re-register
-> So let me see if I understand your {de,re}-register idea:
-> When we have a situation (like in the networking code) where a ctl_table
-> is being used in an unmuttable way, we do your {de,re}-register trick.
+Similar to how MAC addresses and Wi-Fi calibration data would be
+stored inside an MTD partition on devices coming with NOR flash, a UBI
+volume is used by some vendors in the same way on devices with NAND
+flash.
 
-unmuttable?
+The goal of this series is to support such embedded Linux devices which
+got NVMEM bits stored inside a UBI volume.
 
-> The trick consists in unregistering an old ctl_table and reregistering
-> with a whole new const changed table. In this way, whatever we register
-> is always const.
-> 
-> Once we address all the places where this happens, then we just change
-> the handler to const and we are done.
-> 
-> Is that correct?
+Representing the UBI volume in the Device Tree and adding a phandle to
+be referenced by NVMEM consumers allows such devices to come up with
+their correct MAC addresses and device-specific Wi-Fi calibration data
+loaded.
 
-I'm confused.
+In order for NVMEM bits to be available for other drivers, attaching
+UBI devices has to be moved from late_initcall (which is too late for
+other drivers) to happen earlier. As an alternative to the existing
+kernel cmdline parameter the Device Tree property 'compatible =
+"linux,ubi";' inside an MTD partition can be used to have that MTD
+device attached as UBI device. MTD partitions which serve as UBI
+devices may have a "volumes" subnode with volumes, and volumes may
+have an "nvmem-layout" object which will trigger the creation of an
+emulated NVMEM device on top of the UBI volume.
 
-The handlers can already be made const as shown in this series, which
-does convert the whole kernel tree.
-There is only one handler (the stackleak one) which modifies the table
-and this one is fixed as part of the series.
+In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
+acquire NVMEM bits using the usual device tree phandle, just this time
+the NVMEM content is read from a UBI volume.
 
-(Plus the changes needed to the sysctl core to avoid mutation there)
+This series is a follow-up and contains most patches of the previous
+series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
+preparation for implementing the NVMEM provider.
 
-> If that is indeed what you are proposing, you might not even need the
-> un-register step as all the mutability that I have seen occurs before
-> the register. So maybe instead of re-registering it, you can so a copy
-> (of the changed ctl_table) to a const pointer and then pass that along
-> to the register function.
+[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
 
-Tables that are modified, but *not* through the handler, would crop
-during the constification of the table structs.
-Which should be a second step.
+Changes since v5:
+ * fix whitespace problems in dt-schema additions
 
-But Luis' message was not completely clear to me.
-I guess I'm missing something.
+Changes since v4:
+ * split ubi_open_volume_path() breaking out reusable parts for
+   new match_volume_desc() function as suggested by Richard Weinberger.
+   Doing the same for ubi_open_volume_nm() doesn't work as we are working
+   on struct ubi_volume_info in match_volume_desc() while ubi_open_volume_nm()
+   is working on struct ubi_volume. That reduces the common part to a string
+   comparision and length check which doesn't seem worth breaking out of the
+   existing function.
+ * drop patches and changes not strictly needed for NVMEM use-case:
+   - don't handle ubi detach on MTD removal notification. It was not done
+     until now and the locking hell I was facing when trying to implement
+     that is non trivial.
+   - don't relocate the call to ubiblock device creation to the
+     notification handler
+   - change ubiblock only as far as needed to handle creation from cmdline
+     parameter when a volume is added.
+ * improve commit messages and comments
 
-> Can't think of anything else off the top of my head. Would have to
-> actually see the code to evaluate further I think.
-> 
-> > new tables if they need to be changed, and then a new series is sent
-> > once we fix all those muttable tables.
+Changes since v3:
+ * dt-bindings fixes as requested
 
-Thomas
+Changes since v2:
+ * include dt-bindings additions
+
+Changes since v1:
+ * include patch to fix exiting Kconfig formatting issues
+ * fix typo and indentation in Kconfig
+ 
+Daniel Golle (7):
+  dt-bindings: mtd: add basic bindings for UBI
+  dt-bindings: mtd: ubi-volume: allow UBI volumes to provide NVMEM
+  mtd: ubi: block: use notifier to create ubiblock from parameter
+  mtd: ubi: attach from device tree
+  mtd: ubi: introduce pre-removal notification for UBI volumes
+  mtd: ubi: populate ubi volume fwnode
+  mtd: ubi: provide NVMEM layer over UBI volumes
+
+ .../bindings/mtd/partitions/linux,ubi.yaml    |  75 +++++++
+ .../bindings/mtd/partitions/ubi-volume.yaml   |  40 ++++
+ drivers/mtd/ubi/Kconfig                       |  12 ++
+ drivers/mtd/ubi/Makefile                      |   1 +
+ drivers/mtd/ubi/block.c                       | 136 ++++++-------
+ drivers/mtd/ubi/build.c                       | 154 ++++++++++----
+ drivers/mtd/ubi/kapi.c                        |  56 ++++--
+ drivers/mtd/ubi/nvmem.c                       | 188 ++++++++++++++++++
+ drivers/mtd/ubi/ubi.h                         |   3 +
+ drivers/mtd/ubi/vmt.c                         |  44 +++-
+ include/linux/mtd/ubi.h                       |   2 +
+ 11 files changed, 579 insertions(+), 132 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ create mode 100644 drivers/mtd/ubi/nvmem.c
+
+-- 
+2.43.0
 
