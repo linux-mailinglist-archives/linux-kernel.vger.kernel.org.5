@@ -1,99 +1,113 @@
-Return-Path: <linux-kernel+bounces-2514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74AE9815E4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 10:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 895F9815E45
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 10:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1502AB220E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 09:32:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC014B21D2B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 09:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AF35668;
-	Sun, 17 Dec 2023 09:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B9420E3;
+	Sun, 17 Dec 2023 09:16:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="D/WZjZHR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YhiE4dyK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292453C16
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 09:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from pop-os.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id En1qrv0j2VbkuEn1rrXCqJ; Sun, 17 Dec 2023 10:01:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1702803706;
-	bh=63aio74ELKT1uUEAVdiZLSilXdr/14V0hT/e6WkdVcc=;
-	h=From:To:Cc:Subject:Date;
-	b=D/WZjZHR/ZFs86Xjnq0fLW7hnkiyAtRJPcFacZxIwfpGg2NoABPXaTG4pWCsgrUje
-	 MS0p3aGJ8V8gxSLGVuHlUdt2XGSq1KlbWMguUDocFBGSe5ozu2LUQ7sP/5Nhl7Us/U
-	 njMX7qO7w/9lEpRmz/NkfT/vXTTRPqfb4TkYq2ThLour4plxm9lClz3JrTLzs49ET/
-	 OFSR2XrfpSYriR5JP00PBvxRetv3eFzoaoKVdOCKkcJmYXKMnvUNYZwPEv+DAevSDs
-	 yPUKLnX+9m++Qw669t0I8jFpWaFH5UlN5Brt7i6yYNOZAiq7NQ3ALzoLIyqCVwz/Ru
-	 4dMbgmVx7t98w==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 17 Dec 2023 10:01:46 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] x86/callthunks: Fix some potential string truncation in callthunks_debugfs_init()
-Date: Sun, 17 Dec 2023 10:01:41 +0100
-Message-Id: <8c2b24df3c077e55b2a4d91a7ffd08fa48e28d0a.1702803679.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABAF71FAD;
+	Sun, 17 Dec 2023 09:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-67f30d74b68so6712856d6.1;
+        Sun, 17 Dec 2023 01:16:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702804580; x=1703409380; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lbSaVhmyYdnzBKhQuQo4oOm2wwCddJ5JEF6JG+CBOso=;
+        b=YhiE4dyKZ74ndk3X+elukB6TMcNajSxLri+W74tuqnLLmhS7L9oZDG4VPIZA+M2c26
+         OGJpUofT3GZG431tidkWedDUZuj2LiyYsWWg7lBa7ww1qbjOE/iY60RanUaiNkOnukyv
+         G0W4QD20FZsVYCL+Bef9fpvw9xEXFpklMsK7HFI3KDjzyZCTPh+8Rip6Rtj4i4+tyHkM
+         gQI5Obx7/wZlbLvtvq+sahRwKTfJMw7yIS+KusftGOwGPL/oIq+OKq2nDhRJPRRkGi6V
+         KccpjbXj7aI3G0DNTDHovuNWluVLqoe2Ngchhi0KAJtwQQ8LU5u0Kqh6oOkPKB2D730S
+         eM4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702804580; x=1703409380;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lbSaVhmyYdnzBKhQuQo4oOm2wwCddJ5JEF6JG+CBOso=;
+        b=SKMJ4za3ZXClOWtTVi4i4/4KPcyza1R70PRWSIgIbBUCw4dN/tZrxY4fWel3MlRfTt
+         KjuOnEzbNiDu6Yfu4mQkCM7QjUh1fXTajSGG9cQ9CSccAGGME5+Xi6A44uDeTe9IMFRI
+         PuUW0b2R3xg+TQnB4P81sWZ3RkUPjuNjJNyERbwRCPm4nwQSM3vWRs2dfpY8QZ6maFWJ
+         vZ5TBr1P4+JzygSjWhl0obnZXCNlhLM0kXrZRQdk/sSVFTorxJqFoQXjXpK2U39L1EPK
+         TEfKBcI30one95FdsE/5KIaH+AobA8uPCYnqeE5Di/2HcL8qP+YEl3jXm1s9ZTmnzv2M
+         RdGA==
+X-Gm-Message-State: AOJu0YzPX2VDNMHan+4qvLxKAxRZhofgEknpOLdIAakaPgg/Mfy3UwuH
+	eceK/iLlXVIj622srRrBpfZbi2NxuhB7sNuVclU=
+X-Google-Smtp-Source: AGHT+IHWOIfOlkls2hz3KVLlwe8JW+6pkguQ1zCX7LCxKZDQCCA11G0G/5+r6L2wIwK08YmDAXAa2IcIHeIQDTXrv3M=
+X-Received: by 2002:a05:6214:1c4c:b0:67f:2541:1b6a with SMTP id
+ if12-20020a0562141c4c00b0067f25411b6amr4585014qvb.17.1702804580557; Sun, 17
+ Dec 2023 01:16:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <000000000000863a7305e722aeeb@google.com> <0000000000003362ba060ca8beac@google.com>
+In-Reply-To: <0000000000003362ba060ca8beac@google.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sun, 17 Dec 2023 11:16:09 +0200
+Message-ID: <CAOQ4uxjjo=qwwWcRXhv_D+KFfnPa_CEOrPbbZtzLroiOO7eYDg@mail.gmail.com>
+Subject: Re: [syzbot] [reiserfs?] [squashfs?] BUG: Dentry still in use in unmount
+To: syzbot <syzbot+8608bb4553edb8c78f41@syzkaller.appspotmail.com>
+Cc: chao@kernel.org, jaegeuk@kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, phillip@squashfs.org.uk, 
+	reiserfs-devel@vger.kernel.org, squashfs-devel@lists.sourceforge.net, 
+	syzkaller-bugs@googlegroups.com, terrelln@fb.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When compiled with W=1, we get:
-  arch/x86/kernel/callthunks.c: In function ‘callthunks_debugfs_init’:
-  arch/x86/kernel/callthunks.c:394:35: error: ‘%lu’ directive writing between 1 and 10 bytes into a region of size 7 [-Werror=format-overflow=]
-    394 |                 sprintf(name, "cpu%lu", cpu);
-        |                                   ^~~
-  arch/x86/kernel/callthunks.c:394:31: note: directive argument in the range [0, 4294967294]
-    394 |                 sprintf(name, "cpu%lu", cpu);
-        |                               ^~~~~~~~
-  arch/x86/kernel/callthunks.c:394:17: note: ‘sprintf’ output between 5 and 14 bytes into a destination of size 10
-    394 |                 sprintf(name, "cpu%lu", cpu);
-        |
+On Sun, Dec 17, 2023 at 1:19=E2=80=AFAM syzbot
+<syzbot+8608bb4553edb8c78f41@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has bisected this issue to:
+>
+> commit c63e56a4a6523fcb1358e1878607d77a40b534bb
+> Author: Amir Goldstein <amir73il@gmail.com>
+> Date:   Wed Aug 16 09:42:18 2023 +0000
+>
+>     ovl: do not open/llseek lower file with upper sb_writers held
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D13723c01e8=
+0000
+> start commit:   3bd7d7488169 Merge tag 'io_uring-6.7-2023-12-15' of git:/=
+/..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D10f23c01e8=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17723c01e8000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D53ec3da1d2591=
+32f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D8608bb4553edb8c=
+78f41
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17b8b6e1e80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D16ec773ae8000=
+0
+>
+> Reported-by: syzbot+8608bb4553edb8c78f41@syzkaller.appspotmail.com
+> Fixes: c63e56a4a652 ("ovl: do not open/llseek lower file with upper sb_wr=
+iters held")
+>
 
-So, give some more space to 'name' to silence the warning. (and fix the
-issue should a lucky one have a config with so many CPU!)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- arch/x86/kernel/callthunks.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
-index cf7e5be1b844..26182a7d12b3 100644
---- a/arch/x86/kernel/callthunks.c
-+++ b/arch/x86/kernel/callthunks.c
-@@ -388,7 +388,7 @@ static int __init callthunks_debugfs_init(void)
- 	dir = debugfs_create_dir("callthunks", NULL);
- 	for_each_possible_cpu(cpu) {
- 		void *arg = (void *)cpu;
--		char name [10];
-+		char name[14];
- 
- 		sprintf(name, "cpu%lu", cpu);
- 		debugfs_create_file(name, 0644, dir, arg, &dfs_ops);
--- 
-2.34.1
-
+#syz test: https://github.com/amir73il/linux ovl-fixes
 
