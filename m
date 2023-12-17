@@ -1,95 +1,132 @@
-Return-Path: <linux-kernel+bounces-2627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26393815FAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:25:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9BAF815FE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:43:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB06E1F225C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:25:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB2281C21EFA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666B844C95;
-	Sun, 17 Dec 2023 14:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8610945BF1;
+	Sun, 17 Dec 2023 14:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="diz4mBbC"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="c4s2eGx8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7FDB44C7F;
-	Sun, 17 Dec 2023 14:24:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2300C433D9;
-	Sun, 17 Dec 2023 14:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702823087;
-	bh=a6KCBlRCq77OBBZrD6RVrWWZcrS/mslm0GyS8oEwpgI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=diz4mBbCkP2tZr/hEvAQp07lg+0CPNS5O+rmuMf5OouNEbD6yA5UetsFEvAp+LmVV
-	 hITL4YUH179nMRsdlDOUJPLwflLin7ewrrFc7hqNJS296lfTa/EL6RtyXcm9mHGPYi
-	 ZjjJUlza99jeavqnqv7POvf4vC2kj/Wah1ObO8gfb+/aGU3xnQSG4Nr2RQfgiNypov
-	 dGyly3cJeaTH5ApGBVNKteC0rxsqz+FUHzg2m+wv2KkTUwAtLmr1OsHCr+Xij9kLCI
-	 eNBnU7X9Nl9oFRuRKzdbKFaBAN0WX17Elt+B/OYn4vHyMeuNXYFEScA/BgUsAUS4BF
-	 Wwo6WWKBWVhig==
-Received: (nullmailer pid 876441 invoked by uid 1000);
-	Sun, 17 Dec 2023 14:24:42 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7481045BE8
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tfEK8
+	34hFhHWJL3vUn8/GMuXyS9juv8wssBC4nzLML0=; b=c4s2eGx8Fwq9hYgGuVbTN
+	fGEKBAkhZXLaLljjFpTvE5DnrPB8pm+P+hqxFDuNNaGO06FjvzQNhwcGkBG3/qEJ
+	ceP6XZpEnwMmiL8eFuN7J7oaNmNI7pUX4D1D+cVv4thLfXnslDVGILgYontbkxxT
+	jFm+9fzeEELK5fBVv8SGOI=
+Received: from ubuntu.lan (unknown [120.229.19.33])
+	by zwqz-smtp-mta-g5-0 (Coremail) with SMTP id _____wB3f0JABX9l13BJCA--.53408S2;
+	Sun, 17 Dec 2023 22:27:14 +0800 (CST)
+From: Junwen Wu <wudaemon@163.com>
+To: mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	bsegall@google.com,
+	vschneid@redhat.com
+Cc: mgorman@suse.de,
+	bristot@redhat.com,
+	linux-kernel@vger.kernel.org,
+	Junwen Wu <wudaemon@163.com>
+Subject: [PATCH v2] sched/debug: Update print_task format in sched_debug node
+Date: Sun, 17 Dec 2023 14:27:10 +0000
+Message-Id: <20231217142710.771888-1-wudaemon@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
-Cc: Conor Dooley <conor+dt@kernel.org>, =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, linux-input@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, ~postmarketos/upstreaming@lists.sr.ht, Karel Balej <balejk@matfyz.cz>, Lee Jones <lee@kernel.org>
-In-Reply-To: <20231217131838.7569-4-karelb@gimli.ms.mff.cuni.cz>
-References: <20231217131838.7569-1-karelb@gimli.ms.mff.cuni.cz>
- <20231217131838.7569-4-karelb@gimli.ms.mff.cuni.cz>
-Message-Id: <170282308207.876381.2939454348396043606.robh@kernel.org>
-Subject: Re: [RFC PATCH 3/5] dt-bindings: input: add entry for
- 88pm88x-onkey
-Date: Sun, 17 Dec 2023 08:24:42 -0600
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wB3f0JABX9l13BJCA--.53408S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGr43XF1ftF4fJw1xtrykGrg_yoW5GF1fpw
+	nxAF13Jr4DXw1Ygw17ArykZr15Kry8t34UWrn7Ar18JF10y345Kr17tr1xtry5Gryxtw1a
+	qFs8tr17G3WDXrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piNzV8UUUUU=
+X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/xtbBlA5JbVgi4+fJZQAAss
 
+For the sched_debug interface, print_task function  has  output
+sum_exec_runtime twice, and the promt message not align with
+the output, so optimize the output.
 
-On Sun, 17 Dec 2023 14:17:01 +0100, Karel Balej wrote:
-> From: Karel Balej <balejk@matfyz.cz>
-> 
-> Marvell 88PM88X PMICs provide onkey functionality. Document it.
-> 
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> ---
->  .../bindings/input/marvell,88pm88x-onkey.yaml | 30 +++++++++++++++++++
->  .../bindings/mfd/marvell,88pm88x.yaml         |  4 +++
->  2 files changed, 34 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/marvell,88pm88x-onkey.yaml
-> 
+Signed-off-by: Junwen Wu <wudaemon@163.com>
+---
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+V1 -> V2: fix  compile error
+ kernel/sched/debug.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231217131838.7569-4-karelb@gimli.ms.mff.cuni.cz
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 4580a450700e..342a2a942d51 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -579,13 +579,12 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
+ 	else
+ 		SEQ_printf(m, " %c", task_state_to_char(p));
+ 
+-	SEQ_printf(m, "%15s %5d %9Ld.%06ld %c %9Ld.%06ld %9Ld.%06ld %9Ld.%06ld %9Ld %5d ",
++	SEQ_printf(m, "%15s %5d %9Ld.%06ld %c %9Ld.%06ld %9Ld.%06ld %9Ld %5d ",
+ 		p->comm, task_pid_nr(p),
+ 		SPLIT_NS(p->se.vruntime),
+ 		entity_eligible(cfs_rq_of(&p->se), &p->se) ? 'E' : 'N',
+ 		SPLIT_NS(p->se.deadline),
+ 		SPLIT_NS(p->se.slice),
+-		SPLIT_NS(p->se.sum_exec_runtime),
+ 		(long long)(p->nvcsw + p->nivcsw),
+ 		p->prio);
+ 
+@@ -596,10 +595,10 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
+ 		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_block_runtime)));
+ 
+ #ifdef CONFIG_NUMA_BALANCING
+-	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
++	SEQ_printf(m, "   %d   %d", task_node(p), task_numa_group_id(p));
+ #endif
+ #ifdef CONFIG_CGROUP_SCHED
+-	SEQ_printf_task_group_path(m, task_group(p), " %s")
++	SEQ_printf_task_group_path(m, task_group(p), "   %s")
+ #endif
+ 
+ 	SEQ_printf(m, "\n");
+@@ -611,11 +610,19 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
+ 
+ 	SEQ_printf(m, "\n");
+ 	SEQ_printf(m, "runnable tasks:\n");
+-	SEQ_printf(m, " S            task   PID         tree-key  switches  prio"
+-		   "     wait-time             sum-exec        sum-sleep\n");
+-	SEQ_printf(m, "-------------------------------------------------------"
+-		   "------------------------------------------------------\n");
+-
++	SEQ_printf(m, " S            task   PID         tree-key          deadline"
++		"            slice  switches   prio"
++		"       wait-time         sum-exec        sum-sleep        sum-block"
++#ifdef CONFIG_NUMA_BALANCING
++		"  node_id"
++#endif
++#ifdef CONFIG_CGROUP_SCHED
++		"  group\n"
++#endif
++	);
++	SEQ_printf(m, "-----------------------------------------------------------------"
++			"--------------------------------------------------------------------"
++			"------------------------------------------\n");
+ 	rcu_read_lock();
+ 	for_each_process_thread(g, p) {
+ 		if (task_cpu(p) != rq_cpu)
+-- 
+2.34.1
 
 
