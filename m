@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-2447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67012815D4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 04:36:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8331A815D4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 04:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 230402839F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:36:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 377052839C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5161851;
-	Sun, 17 Dec 2023 03:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F5D23A2;
+	Sun, 17 Dec 2023 03:36:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LX86QtGW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EoeD5l9w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE581849
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 03:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18ACD20E3
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 03:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6d9f069e9b0so1737719a34.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:36:28 -0800 (PST)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7b7039d30acso166613539f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:36:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702784188; x=1703388988; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702784195; x=1703388995; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3RC+17BbjqsJDmvBDmQiYtlBEVE+AP46bYSCMNzUq08=;
-        b=LX86QtGWlGo0PbQK36904rFZvaBPMmq3owqji00eRdHvD/LrV22KIS/GR1IWuTnB4o
-         5IZDb+xDoQtZx1RUDTGyqTYeJ3rXiO3S3YlQweEBAiTgbG9SaQpa76Pary6uEZ7gxPbA
-         ru8pU6cAMELNGIy2E4BAW8VawDGOxq2GC9jgoHOYbXJCtB7TuocW2n+QmqJ/f+fsIHpS
-         +sCK0ecHJZDIfxaWCYUXDqhBo0dNq56rM3GYPvNJLjF+ZZj4AvJjkjtYkM84LXef1V+8
-         +Vk+sZrqxlmRgxZNCi4SkCdAS1H3/U+9SQBpzWR2dZ69ZABLM7YkTFXCKxMyrj4zbRg0
-         RxoQ==
+        bh=3V8gSp8bUEZWRGRAcmamI1zQxxCYsLgl6TFXIZtXR8g=;
+        b=EoeD5l9wXRKiqhPFr4HMPiqmhgEy/nUK37cKf/nqi7mVT00rz4Ic9rvd7x6GkSfbOK
+         0bzULEUQ1C6eW/Qj0YXEn2PP2XhXOnmVIktm714VE3h65fs24IxVMna6G1Iw+kpk3GqB
+         2xQumGTaD/EAZGpRsRt65e5atV8IE5/ly3zK2YWh40xFDxM7PEm9CV1zNvp4frqUWAEB
+         f9wPcOO3EurGvi0sxzPGvHBE+bafgcQnLaZM1N67aC425bnTQQPStY2kJLppZTEdPLqW
+         bX5GnktwTrL1XJc3fgrTgoak+9ZOOH30NhbbP2MIbLU5hior0iJUaIaySTmxnRLKugUP
+         tdNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702784188; x=1703388988;
+        d=1e100.net; s=20230601; t=1702784195; x=1703388995;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3RC+17BbjqsJDmvBDmQiYtlBEVE+AP46bYSCMNzUq08=;
-        b=LNwSD4H+OZCxBTxZ5VbJKnUPFASqxZ/FF1NYDRxoakEh7IBdgLQnmsQDGEPl6e/zQo
-         vaBDqY9X+bGLw+0bMKzE4gVfC/8EXtf/IMptrm0zZMTg+V2YZpekcKif2rg19VSzxGoU
-         2d0ZA6dkGOv2OORvmfG7Vd5UP3c+x6280LYItOf9jf2AWLjw9rGIckAZIy44CReqX3hC
-         GFvFSZhfnrFaAllrvYAxtVvmPiXN5wFEfU6PDo5EGE7Ls+nbdKo/ubxBnWm7m/vgFdCc
-         ieaoJKs4Wk8W+RfkpU3QvTRrKnzPtyIBR6Lzzn/eUQ7E78UcPNZJiZqU9NhjUzkA4K8P
-         kiZQ==
-X-Gm-Message-State: AOJu0YxSG3pazqVrGmm61CdnseU7EmAR3bX4CPjSWXD9cIFBMYV18yNd
-	Vp6qvb5lkW0JTHisLWswiqJQ/IIdl4U=
-X-Google-Smtp-Source: AGHT+IE2Au2oYCa3+Qix6uh+BvU4jwiDAGoZjp1oIqfibaEkctT8OYF8o5BRoDQ182Yyk25vOsDaqA==
-X-Received: by 2002:a9d:774f:0:b0:6da:3099:d8c4 with SMTP id t15-20020a9d774f000000b006da3099d8c4mr8412360otl.77.1702784187633;
-        Sat, 16 Dec 2023 19:36:27 -0800 (PST)
+        bh=3V8gSp8bUEZWRGRAcmamI1zQxxCYsLgl6TFXIZtXR8g=;
+        b=dLJoRVXL/GEi2oXxrbXzmEQpQlgBWGssME9e1WcBgO9V/BkxMFxUlHcw8n/lmhXtJu
+         dSdM0FipyigyX3+HfhjqrnCCpChSHlRkYqG1E0oajjpluhdKeP58N/WHsbYa1yhcMyAQ
+         qaDgyvPK+9tyq4DcPPuICELAPSVfvZPFZpQXIg6xVmHEEuete1Qff1+njEz/JtvqajOa
+         oGERM51fqYz4IG8663dkCarRQ9aeLVp1ry6xo8SCEuKzj0Sgu4o2aENYDwuuirYEqwPL
+         Jml78m5ZMYEnZmg0eYy244tY6KFDKyrey7idQDonUOTrUTclb/7GPLdRLDke1FZzptEZ
+         TrWA==
+X-Gm-Message-State: AOJu0Yy0Tof/wGgCI/OoMkWpaizTn2r8QDfmtZqkcO1YRUEZSsdiOjIv
+	uXBsnli5fPbczFOJI+zg7ZYojffcjOw=
+X-Google-Smtp-Source: AGHT+IF19Uou+JFEzXr0eitLYlv+ldY8dy1/12JKbWr/jE+2XcuM/gbK5TyaB6a5sCN/Nkm2axS0Jw==
+X-Received: by 2002:a5d:8850:0:b0:7b4:28f8:526 with SMTP id t16-20020a5d8850000000b007b428f80526mr16927258ios.38.1702784195510;
+        Sat, 16 Dec 2023 19:36:35 -0800 (PST)
 Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b006ce48a0b7c6sm15768820pfm.109.2023.12.16.19.36.22
+        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b006ce48a0b7c6sm15768820pfm.109.2023.12.16.19.36.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 19:36:27 -0800 (PST)
+        Sat, 16 Dec 2023 19:36:35 -0800 (PST)
 From: Yuntao Wang <ytcoode@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	kexec@lists.infradead.org,
@@ -71,9 +71,9 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Eric Biederman <ebiederm@xmission.com>,
 	Baoquan He <bhe@redhat.com>,
 	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH v5 1/3] kexec: modify the meaning of the end parameter in kimage_is_destination_range()
-Date: Sun, 17 Dec 2023 11:35:26 +0800
-Message-ID: <20231217033528.303333-2-ytcoode@gmail.com>
+Subject: [PATCH v5 2/3] kexec_file: fix incorrect temp_start value in locate_mem_hole_top_down()
+Date: Sun, 17 Dec 2023 11:35:27 +0800
+Message-ID: <20231217033528.303333-3-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231217033528.303333-1-ytcoode@gmail.com>
 References: <20231217033528.303333-1-ytcoode@gmail.com>
@@ -85,73 +85,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The end parameter received by kimage_is_destination_range() should be the
-last valid byte address of the target memory segment plus 1. However, in
-the locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions,
-the corresponding value passed to kimage_is_destination_range() is the last
-valid byte address of the target memory segment, which is 1 less.
+temp_end represents the address of the last available byte. Therefore, the
+starting address of the memory segment with temp_end as its last available
+byte and a size of `kbuf->memsz`, that is, the value of temp_start, should
+be `temp_end - kbuf->memsz + 1` instead of `temp_end - kbuf->memsz`.
 
-There are two ways to fix this bug. We can either correct the logic of the
-locate_mem_hole_bottom_up() and locate_mem_hole_top_down() functions, or we
-can fix kimage_is_destination_range() by making the end parameter represent
-the last valid byte address of the target memory segment. Here, we choose
-the second approach.
-
-Due to the modification to kimage_is_destination_range(), we also need to
-adjust its callers, such as kimage_alloc_normal_control_pages() and
-kimage_alloc_page().
+Additionally, use the ALIGN_DOWN macro instead of open-coding it directly
+in locate_mem_hole_top_down() to improve code readability.
 
 Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-Acked-by: Baoquan He <bhe@redhat.com>
 ---
-v1->v2:
-  Fix this issue using the approach suggested by Eric and Baoquan.
+ kernel/kexec_file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v2->v3:
-  Modify the assignment of eaddr as suggested by Baoquan.
-
-v3->v4:
-  `eaddr = epfn << PAGE_SHIFT - 1` causes a compilation warning, fix it.
-
-v4->v5:
-  No changes.
-
- kernel/kexec_core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index be5642a4ec49..e3b1a699f087 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -276,8 +276,8 @@ int kimage_is_destination_range(struct kimage *image,
- 		unsigned long mstart, mend;
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index f9a419cd22d4..336d085cbc47 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -426,11 +426,11 @@ static int locate_mem_hole_top_down(unsigned long start, unsigned long end,
+ 	unsigned long temp_start, temp_end;
  
- 		mstart = image->segment[i].mem;
--		mend = mstart + image->segment[i].memsz;
--		if ((end > mstart) && (start < mend))
-+		mend = mstart + image->segment[i].memsz - 1;
-+		if ((end >= mstart) && (start <= mend))
- 			return 1;
- 	}
+ 	temp_end = min(end, kbuf->buf_max);
+-	temp_start = temp_end - kbuf->memsz;
++	temp_start = temp_end - kbuf->memsz + 1;
  
-@@ -370,7 +370,7 @@ static struct page *kimage_alloc_normal_control_pages(struct kimage *image,
- 		pfn   = page_to_boot_pfn(pages);
- 		epfn  = pfn + count;
- 		addr  = pfn << PAGE_SHIFT;
--		eaddr = epfn << PAGE_SHIFT;
-+		eaddr = (epfn << PAGE_SHIFT) - 1;
- 		if ((epfn >= (KEXEC_CONTROL_MEMORY_LIMIT >> PAGE_SHIFT)) ||
- 			      kimage_is_destination_range(image, addr, eaddr)) {
- 			list_add(&pages->lru, &extra_pages);
-@@ -716,7 +716,7 @@ static struct page *kimage_alloc_page(struct kimage *image,
+ 	do {
+ 		/* align down start */
+-		temp_start = temp_start & (~(kbuf->buf_align - 1));
++		temp_start = ALIGN_DOWN(temp_start, kbuf->buf_align);
  
- 		/* If the page is not a destination page use it */
- 		if (!kimage_is_destination_range(image, addr,
--						  addr + PAGE_SIZE))
-+						  addr + PAGE_SIZE - 1))
- 			break;
- 
- 		/*
+ 		if (temp_start < start || temp_start < kbuf->buf_min)
+ 			return 0;
 -- 
 2.43.0
 
