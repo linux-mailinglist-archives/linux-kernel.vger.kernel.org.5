@@ -1,122 +1,103 @@
-Return-Path: <linux-kernel+bounces-2651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6541E815FE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:43:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F6A815FF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:46:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF2F0B22358
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:43:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78CA41F216D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7CC446C6;
-	Sun, 17 Dec 2023 14:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8065A44398;
+	Sun, 17 Dec 2023 14:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="QFc0hG3c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L61K4gga"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from aposti.net (aposti.net [89.234.176.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F83346441;
-	Sun, 17 Dec 2023 14:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1702824208;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7up0xNh2ORIiEUbqH50P1CWetD6TUmJxMwpCW1gSaUg=;
-	b=QFc0hG3cmXDMi3vrAYkSLc6BdDem19p8J1FM6D82oDIWr/84AKpWtkks6/DQwUZKr4KSci
-	OuW+zMEoP0YFfK03Yl0nGn5VmsaxudxMw8KsIhRvTHtNlOlF1RXb71RG5cmjwuj+cqS6H/
-	uh9RrmXCiT55qFgDCBcB3GP3RfoYN1s=
-Message-ID: <9cbaf60cd6cf1a581e7587088f71ca7cf6b6ff37.camel@crapouillou.net>
-Subject: Re: [PATCH v5 03/13] pinctrl: ingenic: Use C99 initializers in
- PINCTRL_PIN_GROUP()
-From: Paul Cercueil <paul@crapouillou.net>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
- <bartosz.golaszewski@linaro.org>, Geert Uytterhoeven
- <geert+renesas@glider.be>,  Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- Biju Das <biju.das.jz@bp.renesas.com>, Claudiu Beznea
- <claudiu.beznea.uj@bp.renesas.com>, Jianlong Huang
- <jianlong.huang@starfivetech.com>, linux-arm-kernel@lists.infradead.org, 
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org, 
- linux-renesas-soc@vger.kernel.org, Ray Jui <rjui@broadcom.com>, Scott
- Branden <sbranden@broadcom.com>, Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Dong Aisheng
- <aisheng.dong@nxp.com>,  Fabio Estevam <festevam@gmail.com>, Shawn Guo
- <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,  Pengutronix Kernel
- Team <kernel@pengutronix.de>, Sascha Hauer <s.hauer@pengutronix.de>, NXP
- Linux Team <linux-imx@nxp.com>, Sean Wang <sean.wang@kernel.org>, Lakshmi
- Sowjanya D <lakshmi.sowjanya.d@intel.com>, Emil Renner Berthing
- <kernel@esmil.dk>, Hal Feng <hal.feng@starfivetech.com>
-Date: Sun, 17 Dec 2023 15:43:24 +0100
-In-Reply-To: <ZXmv81bJRMqB1GLY@smile.fi.intel.com>
-References: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
-	 <20231211190321.307330-4-andriy.shevchenko@linux.intel.com>
-	 <fb29c3bca8d245e3f7496539b7293aa4fc4bccd0.camel@crapouillou.net>
-	 <ZXmv81bJRMqB1GLY@smile.fi.intel.com>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F612FE2E;
+	Sun, 17 Dec 2023 14:45:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05EDAC433C7;
+	Sun, 17 Dec 2023 14:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702824356;
+	bh=kVuXjANOUieH9LrXbZoogYCG3uzkAL+/ag6djbg25Og=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=L61K4ggaBYJDjrStvfKdJFi1QM0XjOPUHNMECn+3mLPV527Iv0+Ex2jO4zHYaRvOE
+	 VKelZxqO8ycWZvgcyzEluwDE5VvpsDWbcz/7k8YVbIm7x+wMpS55oFFHXbhwpMbwye
+	 B4bLSrqCOpqW1+PewwqwYbUh/g8Jmyd4ywY74hFowqMFOLXTzwlL78BXwb9gs77MII
+	 3otY2EC/oaNp+4IRV7rl6aCo989eyf0UD2tteDfVxNptTJzNxKw95Idn7plbDVjNlG
+	 QNWOeUe1rQuryOU7v1SRDmEWs5RY9AIf76/W4foZ6UAm7TooEHAGOlt2X9zG+ejf8K
+	 7EiO4NODTWMYg==
+Date: Sun, 17 Dec 2023 14:45:42 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Anshul Dalal <anshulusr@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Lars-Peter
+ Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v5 3/3] iio: chemical: add support for Aosong AGS02MA
+Message-ID: <20231217144542.0794bd0e@jic23-huawei>
+In-Reply-To: <20231215162312.143568-3-anshulusr@gmail.com>
+References: <20231215162312.143568-1-anshulusr@gmail.com>
+	<20231215162312.143568-3-anshulusr@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Andy,
+On Fri, 15 Dec 2023 21:53:11 +0530
+Anshul Dalal <anshulusr@gmail.com> wrote:
 
-Le mercredi 13 d=C3=A9cembre 2023 =C3=A0 15:21 +0200, Andy Shevchenko a =C3=
-=A9crit=C2=A0:
-> On Wed, Dec 13, 2023 at 10:55:46AM +0100, Paul Cercueil wrote:
-> > Le lundi 11 d=C3=A9cembre 2023 =C3=A0 20:57 +0200, Andy Shevchenko a =
-=C3=A9crit=C2=A0:
->=20
-> ...
->=20
-> > > -#define INGENIC_PIN_GROUP(name, id, func)		\
-> > > -	INGENIC_PIN_GROUP_FUNCS(name, id, (void *)(func))
-> > > +#define INGENIC_PIN_GROUP(_name_, id,
-> > > func)						\
-> > > +	{						=09
-> > > 			\
-> > > +		.name =3D
-> > > _name_,								\
-> > > +		.pins =3D
-> > > id##_pins,							\
-> > > +		.num_pins =3D
-> > > ARRAY_SIZE(id##_pins),					\
-> > > +		.data =3D (void
-> > > *)func,							\
-> > > +	}
-> >=20
-> > This INGENIC_PIN_GROUP() macro doesn't need to be modified, does
-> > it?
->=20
-> We can go either way. I prefer to go this way as it reduces level of
-> indirections in the macros. It makes code easier to read and
-> understand.
-> But if you insist, I can drop that change in next version.
->=20
+> A simple driver for the TVOC (Total Volatile Organic Compounds)
+> sensor from Aosong: AGS02MA
+> 
+> Steps in reading the VOC sensor value over i2c:
+>   1. Read 5 bytes from the register `AGS02MA_TVOC_READ_REG` [0x00]
+>   2. The first 4 bytes are taken as the big endian sensor data with final
+>      byte being the CRC
+>   3. The CRC is verified and the value is returned over an
+>      `IIO_CHAN_INFO_RAW` channel as percents
+> 
+> Tested on Raspberry Pi Zero 2W
+> 
+> Datasheet: https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
 
-I like the patches to be minimal. But I understand your point of view
-as well.
+Hi Anshul, Just one trivial thing. I'll fix up whilst applying.
 
-If you have to issue a v6, maybe state the reason why you also modify
-INGENIC_PIN_GROUP() then. But I don't care enough to request a v6 just
-for that.
+Applied to the togreg branch of iio.git. Will be initially pushed out as testing
+for 0-day to see if it can find anything we missed.
 
-So:
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Thanks,
 
-Cheers,
--Paul
+Jonathan
+
+> +
+> +static const struct iio_info ags02ma_info = {
+> +	.read_raw = ags02ma_read_raw,
+> +};
+> +
+> +static const struct iio_chan_spec ags02ma_channel = {
+> +	.type = IIO_CONCENTRATION,
+> +	.channel2 = IIO_MOD_VOC,
+> +	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_SCALE)
+
+Comma after this line. I'll fix up if there isn't much else.
+The reason for this is that it is very plausible we'll add more to this
+channel description in the future and the absence of the comma would make that
+messier.
+
+
+> +};
+
 
