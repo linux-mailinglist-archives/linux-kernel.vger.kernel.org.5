@@ -1,119 +1,127 @@
-Return-Path: <linux-kernel+bounces-2869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E49FB816379
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:46:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B23381637C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:48:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74C5A282325
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:46:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98364B21892
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7919B4B12D;
-	Sun, 17 Dec 2023 23:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACA74B136;
+	Sun, 17 Dec 2023 23:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="ZyGWsNXM"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="BKxmEd5U"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293BF4B123
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id CDA75240101
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 00:46:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1702856767; bh=B7Ta4BYxySDCYAL3BF4XbGL4luNo1llUkloFHtXOoVs=;
-	h=MIME-Version:Content-Transfer-Encoding:Date:From:To:Cc:Subject:
-	 Message-ID:From;
-	b=ZyGWsNXMb73ZimzRWC8KpTrQ+30HjjWda/KoDSvKsOQEGCrzdKlLy5m7hW7/8Tm7f
-	 MBtzND3hwMPUo+WkceoPHGyQoN1hiI3OM8rjKoOLaCPVQDQhfM55aMqfX42CcXzKeF
-	 OgpEDPsx9A4u1qlBgBvvCT/vGvvni3yZg1GNH7kq3J6n+pPYlMaQan3c9+xa4uqryP
-	 Kpszl1xMWdPbLmrYfINnc22GmYGpAAQLI7BSFZbR9rzue0vEgQ9oYw4olBYKT9zZpC
-	 KCyZI4jh+FTKNsT509UY0WmVCeR0NtpyCpRv74lZVXv2nFIKIhI0J3d0VTzCxcm7+q
-	 F5kwgKsavWURQ==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4StfjW0LjSz9rxF;
-	Mon, 18 Dec 2023 00:46:06 +0100 (CET)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F3A4B122;
+	Sun, 17 Dec 2023 23:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1702856871;
+	bh=Xd4o/leb3WIoJq7yzKGbJXYhThjRBM0bKQp6shqfr6s=;
+	h=Date:From:To:Cc:Subject:From;
+	b=BKxmEd5UqQk09NEwNo3vhgxYfjH829gpQLsQsbGIaIMVTJ0ccnWM8jyz+TKSjcvdR
+	 pWcoe0hcOksD795WHGSy4DKV7x0ITzc/HMnAnFJkEM4qXivWzZsUxFpuFn3S79oKdi
+	 /laBRT4CE5UIznwnSvWp6FDWSPrkmnhLOxBCApts2QMrunJWGr5y5Kv31r1bVTdTtI
+	 8dcjkbdKM6sdkuYFPWM7DhJ7kH3X8xkS2PZOnlZzIrEjjtntWoV/7zLxtcTqndrQWk
+	 UU58qFYx74MSZWnYm18/h2EwOPTSToD34elHSgNAnIpeug+jxMwmyX43soVrsUpOnA
+	 k0NBRy+/UoNjQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4StflV2Km3z4wd4;
+	Mon, 18 Dec 2023 10:47:50 +1100 (AEDT)
+Date: Mon, 18 Dec 2023 10:47:49 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Linux Crypto List <linux-crypto@vger.kernel.org>, Hans de Goede
+ <hdegoede@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Ma Jun <Jun.Ma2@amd.com>, Sumit Garg
+ <sumit.garg@linaro.org>, Tom Zanussi <tom.zanussi@linux.intel.com>
+Subject: linux-next: manual merge of the crypto tree with the jc_docs,
+ wireless-next trees
+Message-ID: <20231218104749.560969bf@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Sun, 17 Dec 2023 23:46:06 +0000
-From: Yueh-Shun Li <shamrocklee@posteo.net>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Irrelevant documentation recommending the use of
- "include/linux/kernel.h"
-Message-ID: <bc63acd7ef43bdd8d9609fa48dbf92f9@posteo.net>
+Content-Type: multipart/signed; boundary="Sig_/vGo7X1kCjDbbb56miX44ihq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Dear Maintainer,
+--Sig_/vGo7X1kCjDbbb56miX44ihq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The section "18) Don't re-invent the kernel macros" in
-"Linux kernel coding style" (Documentation/process/coding-style.rst)
-recommends re-using the macros defined in "include/linux/kernel.h"
-instead of the improvised ones locally.
+Hi all,
 
-However, There's a note in the comment block added by commit 
-40cbf09f060c
-("kernel.h: include a note to discourage people from including it in 
-headers")
-two years ago, saying that there's an in-progress splitting of kernel.h
-and inclusion in headers under include/ is discouraged.
+Today's linux-next merge of the crypto tree got a conflict in:
 
-Considering that the section was added 17 years ago by commit 
-58637ec90b7c
-("Add a new section to CodingStyle, promoting include/linux/kernel.h"),
-the section about kernel.h in the "Linux kernel coding style" 
-documentation seems outdated.
+  Documentation/driver-api/index.rst
 
-Reproduction steps:
+between commits:
 
-```sh
-# cd to the kernel source tree
-cd path/to/source/linux
-# Show the git blame of the documentation section added in 2006
-git blame -L 1051,1071 Documentation/process/coding-style.rst
-# Show the comment note on top of include/linux/kernel.h added in 2022
-git blame -L 2,10 include/linux/kernel.h
-```
+  50709576d81b ("Documentation: Destage TEE subsystem documentation")
+  2128f3cca5a2 ("Documentation/driver-api: Add document about WBRF mechanis=
+m")
 
-Should we change
+from the jc_docs, wireless-next trees and commit:
 
-```
-The header file include/linux/kernel.h
-```
+  8ccc257b29a1 ("crypto: iaa - Add IAA Compression Accelerator Documentatio=
+n")
 
-to something like
+from the crypto tree.
 
-```
-The header files under the include/linux/ directory
-```
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-or a specific header that contains standalone helper macros?
+--=20
+Cheers,
+Stephen Rothwell
 
-It might be out of scope here,
-but such a header that collects standalone helping macros
-seems non-existent so far.
-It would be great to have one that contains things like
-"STRINGIFY", "CONCATENATE" (or "PASTE"), "UNIQUE_ID"
-and other helper macros without external dependencies.
-There's one called "include/linux/util_macros.h", but it depends on 
-"include/linux/math.h".
+diff --cc Documentation/driver-api/index.rst
+index e8e7ee506b13,8b95501cc208..000000000000
+--- a/Documentation/driver-api/index.rst
++++ b/Documentation/driver-api/index.rst
+@@@ -112,8 -115,7 +112,9 @@@ available subsections can be seen below
+     hte/index
+     wmi
+     dpll
+ +   tee
+ +   wbrf
++    crypto/index
+ =20
+  .. only::  subproject and html
+ =20
 
-It's the first time for me to report an issue in LKML.
-Please kindly point out anything
-that I should fix or could improve.
+--Sig_/vGo7X1kCjDbbb56miX44ihq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Best regards,
+-----BEGIN PGP SIGNATURE-----
 
-Shamrock
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV/iKUACgkQAVBC80lX
+0Gz4kQf/VtDx149MrnIeJCUf28grp9VB4DFY9wo69h/8rkQFzQG3bEBJi5QZJyUW
+8iwmBokpY/744oqkGsrnkJW+vbNOCSDFTB7mqNUJTkAdkrKeh3Wi6B8Wgf1OcwKz
+/DMtbGPaFYCLOTJ8zVYgsXYvz0o0HfopBru/CWMtjZ1iWdeHWxyTYOYBYFuybwbC
+CDKQ2slGUyKrx5WHznPej7F82i3kbeiNbNdH319CI2dQsfBfYgzURPXHcWBTqsp9
+w1PiaSDeIQR8qWUXEWmiZh4GmpxyFaR3e0WzxPH1xU+1rpR25Skdf7sY49m7n4r7
+Jx7zExYIGVRv+nlkPplOuVH9d/5Kcw==
+=KSZa
+-----END PGP SIGNATURE-----
+
+--Sig_/vGo7X1kCjDbbb56miX44ihq--
 
