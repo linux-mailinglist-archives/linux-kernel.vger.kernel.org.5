@@ -1,195 +1,78 @@
-Return-Path: <linux-kernel+bounces-2700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B1148160B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:18:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 949F28160B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:21:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FEA91C21531
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:18:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24FE0B21AFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598D546455;
-	Sun, 17 Dec 2023 17:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBED46442;
+	Sun, 17 Dec 2023 17:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vKaydqxP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGc+9iwm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE5845C09
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 17:18:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7b719f05b11so119071039f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 09:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702833501; x=1703438301; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yvzvPPOvURo9eUay1zjag8iF5jEJZnvBduw4ZeL4Nkg=;
-        b=vKaydqxPH5eN5TDUVUldqnsWrWBSqc7lpcbdJJ3eBCo1mKHv6QBBqd4VE2w9ZmENPS
-         1yl7wuauPNPCEPxAYfNafFobpMI9Uq8vkA56AOVXKQm+ro9uM59CKKxLTsfStZ7oNqcB
-         cLkOMvp/ITOcBeIObfFBI/KcnylIK0l/QQh9FmA+LR/CTe45cgxf4GDTnWJG40vynpJj
-         iSbfgfVfxUBwXTNApdlMhP+1X2+fgitUZ6vSwuVJgrkuK35seAnO1h5nWYaLIRGfVlOt
-         Sp0z1bWi/gHw9UI8Ar38+4ZYFE3skS0cicrLQUDjOuyQq/BviDszpJ/wl57YN5sYFO+L
-         35lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702833501; x=1703438301;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yvzvPPOvURo9eUay1zjag8iF5jEJZnvBduw4ZeL4Nkg=;
-        b=TGRDGCn1tXsvv8lVoF5M6oMeSy5MIrY2ci0lYQZMHa0DAYadDVeQm3oWkxGodwd2Wb
-         DFY45sKz4usLGHu6c1YTnyP6PPIZpmQFH+7glr4J6jNlCEfKlgPE+Cg0+No5cKJ/ZZDD
-         Dc2LmgH9Ikk9EPhSxyd5p3d4vRtQS07zgkyGkZTq0cTFGb5C8ByPDmuoeUhlD1zUGBjs
-         +0lTL3cwbpAU6HatSHNN2NVtt7Y1CjCD2C9vmR9XEd7/TS1JfzAZRniL6IQ1v6L4VKWG
-         FvxMDJMV8tibTZ5ufDID+GzVwyrZavMJjxMOO4NsS1HiRI/8uejw5Ah5DrZpMk1wbSG5
-         qXdw==
-X-Gm-Message-State: AOJu0Yy2KkBxrkYcE9O0baHaonATU9XppiahhlxRtVYYNJDG1DqZrSXN
-	81wNvMo9tRDolgQgo4d7rIr3
-X-Google-Smtp-Source: AGHT+IG3iO9wwq2fHlKI2rNEIawMaBY13xkH+6DklBN+WvV2sdv33dbHZONs8rR6f4Lcf7btRm5LJw==
-X-Received: by 2002:a05:6602:4902:b0:7b6:fc2d:6b52 with SMTP id ef2-20020a056602490200b007b6fc2d6b52mr17463986iob.4.1702833501039;
-        Sun, 17 Dec 2023 09:18:21 -0800 (PST)
-Received: from thinkpad ([103.28.246.178])
-        by smtp.gmail.com with ESMTPSA id q18-20020a17090311d200b001d3867b6424sm4383852plh.113.2023.12.17.09.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 09:18:20 -0800 (PST)
-Date: Sun, 17 Dec 2023 22:48:11 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v4 02/15] PCI: imx6: Simplify phy handling by using by
- using IMX6_PCIE_FLAG_HAS_PHY
-Message-ID: <20231217171811.GD6748@thinkpad>
-References: <20231217051210.754832-1-Frank.Li@nxp.com>
- <20231217051210.754832-3-Frank.Li@nxp.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE05946420;
+	Sun, 17 Dec 2023 17:21:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB221C433C7;
+	Sun, 17 Dec 2023 17:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702833695;
+	bh=CMmnXB2CNPDIqffldhQdQKBnVeMpdT3aYW8s5qEN3MY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=GGc+9iwm8UEdWF2wZT2djfFZWTidVU/oyq+vBAnRZIfzjUcx+OByoJJmPKBttytbO
+	 SSezwHEQwfUWCpoAqTgyJ9u3npBcCeDA/swQXgKEsXul0zQ2suu+ysq8jVi7IOEsu2
+	 ra2ObR7ncH+yCWKNnz4QKXlFIpJyZn1CjWCqmdXygIKI5DT7aWeJSqiol8UM1v7OZU
+	 jyJUkiOnIM8VfCthknRV9TzwiNHussbGGB384rpJOZWIaBUZldFTUpiSz8KjBGEwZk
+	 UkREJc1o55tb3N/rd1DmMd3KM6zdVlGhYIMuS3CP2Yfa6R+b5CsqOrWPWX7iAumiFz
+	 ZNw7icsQz+BbQ==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sibi Sankar <quic_sibis@quicinc.com>,
+	Rajendra Nayak <quic_rjendra@quicinc.com>,
+	Abel Vesa <abel.vesa@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: x1e80100-crd: Fix supplies for some LDOs in PM8550
+Date: Sun, 17 Dec 2023 11:20:52 -0600
+Message-ID: <170283349432.66089.3956721176712420638.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231214-x1e80100-dts-fix-pm8550-regulators-supplies-v1-1-6b5830dc337e@linaro.org>
+References: <20231214-x1e80100-dts-fix-pm8550-regulators-supplies-v1-1-6b5830dc337e@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231217051210.754832-3-Frank.Li@nxp.com>
 
-On Sun, Dec 17, 2023 at 12:11:57AM -0500, Frank Li wrote:
-> Refactors the phy handling logic in the imx6 PCI driver by adding
-> IMX6_PCIE_FLAG_HAS_PHY bitmask define for drvdata::flags.
-> 
-> The drvdata::flags and a bitmask ensures a cleaner and more scalable
-> switch-case structure for handling phy.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v1 to v3:
->     - none
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 2086214345e9a..91ba26a4b4c3d 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -60,6 +60,9 @@ enum imx6_pcie_variants {
->  #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
->  #define IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE	BIT(1)
->  #define IMX6_PCIE_FLAG_SUPPORTS_SUSPEND		BIT(2)
-> +#define IMX6_PCIE_FLAG_HAS_PHY			BIT(3)
-> +
-> +#define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
->  
->  #define IMX6_PCIE_MAX_CLKS       6
->  
-> @@ -1277,6 +1280,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_HAS_PHY)) {
-> +		imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
 
-Can't you use devm_phy_optional_get()? This will return NULL if the PHY is not
-defined in DT. So you can use IS_ERR() to catch error if there are issues in
-acquiring PHY if defined and NULL can be safely passed to other PHY APIs like
-phy_init() as well.
-
-With this, you won't need a flag in drv_data and can also get rid of the
-condition around PHY APIs.
-
-- Mani
-
-> +		if (IS_ERR(imx6_pcie->phy))
-> +			return dev_err_probe(dev, PTR_ERR(imx6_pcie->phy),
-> +					     "failed to get pcie phy\n");
-> +	}
-> +
->  	switch (imx6_pcie->drvdata->variant) {
->  	case IMX7D:
->  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> @@ -1306,11 +1316,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  			return dev_err_probe(dev, PTR_ERR(imx6_pcie->apps_reset),
->  					     "failed to get pcie apps reset control\n");
->  
-> -		imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
-> -		if (IS_ERR(imx6_pcie->phy))
-> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->phy),
-> -					     "failed to get pcie phy\n");
-> -
->  		break;
->  	default:
->  		break;
-> @@ -1447,13 +1452,15 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  	},
->  	[IMX8MM] = {
->  		.variant = IMX8MM,
-> -		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
-> +		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND |
-> +			 IMX6_PCIE_FLAG_HAS_PHY,
->  		.gpr = "fsl,imx8mm-iomuxc-gpr",
->  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
->  	},
->  	[IMX8MP] = {
->  		.variant = IMX8MP,
-> -		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
-> +		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND |
-> +			 IMX6_PCIE_FLAG_HAS_PHY,
->  		.gpr = "fsl,imx8mp-iomuxc-gpr",
->  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
->  	},
-> @@ -1465,12 +1472,14 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  	},
->  	[IMX8MM_EP] = {
->  		.variant = IMX8MM_EP,
-> +		.flags = IMX6_PCIE_FLAG_HAS_PHY,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mm-iomuxc-gpr",
->  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
->  	},
->  	[IMX8MP_EP] = {
->  		.variant = IMX8MP_EP,
-> +		.flags = IMX6_PCIE_FLAG_HAS_PHY,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mp-iomuxc-gpr",
->  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
-> -- 
-> 2.34.1
+On Thu, 14 Dec 2023 21:24:50 +0200, Abel Vesa wrote:
+> The LDOs 1, 4 and 10 from PM8550 share the same supply, the SMPS 4
+> from PM8550ve. This needs to be done through shared supply approach
+> otherwise the bindings check fails.
+> 
 > 
 
+Applied, thanks!
+
+[1/1] arm64: dts: qcom: x1e80100-crd: Fix supplies for some LDOs in PM8550
+      commit: f8ab2984e5b0f1aaf94e3810b809bae055020e11
+
+Best regards,
 -- 
-மணிவண்ணன் சதாசிவம்
+Bjorn Andersson <andersson@kernel.org>
 
