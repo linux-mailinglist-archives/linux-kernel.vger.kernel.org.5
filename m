@@ -1,86 +1,248 @@
-Return-Path: <linux-kernel+bounces-2545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98CFC815EB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:25:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3A2C815EB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:26:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54DCF282CF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:25:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A6CBB2201D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DD131A9E;
-	Sun, 17 Dec 2023 11:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430C9328DD;
+	Sun, 17 Dec 2023 11:26:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IkHZ+kMD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwOg1YzV"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D6C18ED8;
-	Sun, 17 Dec 2023 11:25:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92137C433C8;
-	Sun, 17 Dec 2023 11:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8331E3219A;
+	Sun, 17 Dec 2023 11:26:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76B49C433C7;
+	Sun, 17 Dec 2023 11:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702812321;
-	bh=TmnrD4vc0nBG8oADqeg7z4TLXQC5wn/RLZ+koydjQZU=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=IkHZ+kMDsKcCB9CNMWFkeohhONco+WX37vTFyfbrsFR+I2zS5aG5xPiSxFqskcd9t
-	 YNDChQtobblkG44+bOrlyPjCsa83j2JIyuhLU94qND+Pl+VBIEx0VTyMcLvDeAsfto
-	 A13wv+TumMOApSm9nUv/i/mN/C57bKcxY846+pocLLdWExfngjz41c4gpv6ZWsexim
-	 nKPRc1k1Ug89qcCJbnEBF1F6xaUwi2H9G8oDMAiJAGFyZGP5qhIGreeDVh6ox1kY7/
-	 gvR6aB8Rh9CH7bcTc38NIps195/RZnP6keoAoD60QH3uHnnMYGOlTio35PfKiPcuV9
-	 d9Lpl8iwT+gRg==
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1702812383;
+	bh=RyZFvFJ+ALGNyHMWUvbkqjcQLUmcXZtzeRYDSGpYI3s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=bwOg1YzVOP6Pmx60xNxvbqRoFse5NJmoPOsJTTUvgFezZ0LojWpbP0s3kfyrvXynj
+	 s0/BgpVDvE6TtgAA3EzHMl5clql2reSfvIvND08VQoBxvg/ahXxwcw0dN8Y1PPfFmf
+	 ZAZIqvT93tAh4Zuffz9pjsi4dmbDC3TKAHXeOrLLq9Vnc6iHFe5ORuLOQMEE6bHDhW
+	 qNeGn8YlOqjXb17UdrZCgDDTbJjrdCD1bty/U85jYwja0c0pcJq4ZljIv4snEPU6zm
+	 NkvDHUrlRG/F56ZbNLs88UzjBAozUSFeHSY1JDCXREl1XNanpuRLV1XS5Nw11oM5U2
+	 AvzAWCwPUj9Uw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rEpHo-004oS6-RN;
+	Sun, 17 Dec 2023 11:26:20 +0000
+Date: Sun, 17 Dec 2023 11:26:15 +0000
+Message-ID: <87a5q983zc.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Kunkun Jiang <jiangkunkun@huawei.com>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Jean-Philippe Brucker
+	<jean-philippe@linaro.org>,
+	"moderated list:ARM SMMU DRIVERS" <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>,
+	open list <linux-kernel@vger.kernel.org>,
+	"wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
+Subject: Re: [bug report] GICv4.1: vSGI remains pending across the guest reset
+In-Reply-To: <7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com>
+References: <7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
-References: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
-To: Hector Martin <marcan@marcan.st>
-Cc: Arend van Spriel <aspriel@gmail.com>,
- Franky Lin <franky.lin@broadcom.com>,
- Hante Meuleman <hante.meuleman@broadcom.com>,
- Daniel Berlin <dberlin@dberlin.org>, linux-wireless@vger.kernel.org,
- brcm80211-dev-list.pdl@broadcom.com, SHA-cyfmac-dev-list@infineon.com,
- linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
- Hector Martin <marcan@marcan.st>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170281231651.2255653.7498073085103487666.kvalo@kernel.org>
-Date: Sun, 17 Dec 2023 11:25:18 +0000 (UTC)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jiangkunkun@huawei.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, jean-philippe@linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Hector Martin <marcan@marcan.st> wrote:
+On Thu, 14 Dec 2023 12:13:57 +0000,
+Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+>=20
+> Hi list,
+>=20
+> We have observed on GICv4.1 systems that, after a guest reset, the
+> secondary VCPU would receive an IPI_CPU_STOP accidently and failed to
+> come online eventually.
+>=20
+> | Guest User-space
 
-> Using the WSEC command instead of sae_password seems to be the supported
-> mechanism on newer firmware, and also how the brcmdhd driver does it.
-> 
-> According to user reports [1], the sae_password codepath doesn't actually
-> work on machines with Cypress chips anyway, so no harm in removing it.
-> 
-> This makes WPA3 work with iwd, or with wpa_supplicant pending a support
-> patchset [2].
-> 
-> [1] https://rachelbythebay.com/w/2023/11/06/wpa3/
-> [2] http://lists.infradead.org/pipermail/hostap/2023-July/041653.html
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> Reviewed-by: Neal Gompa <neal@gompa.dev>
+Guest userspace????
 
-Arend, what do you think?
+> |
+> | reset (with a vSGI pending in the
+> | hardware) [0]
+> |
+> | disable the distributor (write 0
+> | into GICD_CTLR) [1]
+> |
+> | clear pending status (write 0 into
+> | GICR_ISPENDR0 for each RD) [2]
 
-We recently talked about people testing brcmfmac patches, has anyone else
-tested this?
+This cannot clear the pending bits. Writing 0 to any of the
+ISPEND/ICPEND registers is effectively a NOP.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st/
+If you want to remove the pending SGIs, you need to write a bunch of
+1s to ICPENDR0.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> |
+> | disable the distributor (write 0
+> | into GICD_CTLR) [3]
+> |
+> | enable the distributor with ARE,
+> | Group1 and nASSGIreq [4]
+>=20
+> The problem is that even if user-space tries to disable the distributor
 
+I don't understand what userspace does here. Why is it significant
+that it is an EL0 access? I don't know of any SW doing that, but even
+if it existed, this should make no difference.
+
+> and clear pending bits for all SGIs, we don't actually propogate it into
+> HW (we only record it via vgic_dist->{enabled, nassgireq} and
+> vgic_irq->pending_latch) and the vSGI remains pending across the guest
+> reset.
+>
+> And when we're at [4], all vSGI's vgic_irq->hw are *true* and
+> vgic_v4_enable_vsgis() becomes a nop.. That's not good.
+>=20
+> The following solution can solve the problem. Not sure if this is a good
+> solution.Sent out early for suggestions or solutions.
+>=20
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index 89117ba2528a..3678ab33f5b9 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -374,6 +374,10 @@ static int vgic_v3_uaccess_write_pending(struct
+> kvm_vcpu *vcpu,
+> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 irq->pendi=
+ng_latch =3D true;
+> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 vgic_queue=
+_irq_unlock(vcpu->kvm, irq, flags);
+> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 } else {
+> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (irq->hw &&=
+ vgic_irq_is_sgi(irq->intid))
+> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=
+=C2=A0 irq_set_irqchip_state(irq->host_irq,
+> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=
+=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 IRQCH=
+IP_STATE_PENDING,
+> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=
+=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 false=
+);
+> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 irq->pendi=
+ng_latch =3D false;
+> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 raw_spin_u=
+nlock_irqrestore(&irq->irq_lock, flags);
+> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 }
+>=20
+
+But this has *nothing* to do with the guest. This is the *host*
+userspace performing a write to the redistributor view, which has
+different semantics. Which is why your earlier description made no
+sense to me.
+
+I think the problem is slightly larger than what you describe. A write
+to ISPENDR0 should be propagated to the ITS for any values of the
+latch, just like this happens on enabling HW-backed SGIs.
+
+Can you please give this a go?
+
+Thanks,
+
+	M.
+
+=46rom 9932d74392d969057e84bc3c18bd15f1769b6211 Mon Sep 17 00:00:00 2001
+From: Marc Zyngier <maz@kernel.org>
+Date: Sun, 17 Dec 2023 11:15:09 +0000
+Subject: [PATCH] KVM: arm64: vgic-v4: Restore pending state on host userspa=
+ce
+ write
+
+When the VMM writes to ISPENDR0 to set the state pending state of
+an SGI, we fail to convey this to the HW if this SGI is already
+backed by a GICv4.1 vSGI.
+
+This is a bit of a corner case, as this would only occur if the
+vgic state is changed on an already running VM, but this can
+apparently happen across a guest reset driven by the VMM.
+
+Fix this by always writing out the pending_latch value to the
+HW, and reseting it to false.
+
+Reported-by: Kunkun Jiang <jiangkunkun@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei=
+.com
+---
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-=
+mmio-v3.c
+index a764b0ab8bf9..2533f264b954 100644
+--- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
++++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+@@ -365,19 +365,26 @@ static int vgic_v3_uaccess_write_pending(struct kvm_v=
+cpu *vcpu,
+ 		struct vgic_irq *irq =3D vgic_get_irq(vcpu->kvm, vcpu, intid + i);
+=20
+ 		raw_spin_lock_irqsave(&irq->irq_lock, flags);
+-		if (test_bit(i, &val)) {
+-			/*
+-			 * pending_latch is set irrespective of irq type
+-			 * (level or edge) to avoid dependency that VM should
+-			 * restore irq config before pending info.
+-			 */
+-			irq->pending_latch =3D true;
+-			vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
+-		} else {
++
++		/*
++		 * pending_latch is set irrespective of irq type
++		 * (level or edge) to avoid dependency that VM should
++		 * restore irq config before pending info.
++		 */
++		irq->pending_latch =3D test_bit(i, &val);
++
++		if (irq->hw && vgic_irq_is_sgi(irq->intid)) {
++			irq_set_irqchip_state(irq->host_irq,
++					      IRQCHIP_STATE_PENDING,
++					      irq->pending_latch);
+ 			irq->pending_latch =3D false;
+-			raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
+ 		}
+=20
++		if (irq->pending_latch)
++			vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
++		else
++			raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
++
+ 		vgic_put_irq(vcpu->kvm, irq);
+ 	}
+=20
+--=20
+2.39.2
+
+
+--=20
+Without deviation from the norm, progress is not possible.
 
