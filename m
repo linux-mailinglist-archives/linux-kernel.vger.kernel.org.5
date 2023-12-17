@@ -1,131 +1,155 @@
-Return-Path: <linux-kernel+bounces-2504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D57815DFF
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 09:11:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC9A6815E24
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 09:30:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03ABF1C2174C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 08:11:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D318282F2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 08:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8685B20E3;
-	Sun, 17 Dec 2023 08:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347E323C2;
+	Sun, 17 Dec 2023 08:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OeKtYiVP"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="XzPqRjg8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73471FAD;
-	Sun, 17 Dec 2023 08:10:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63056C433C7;
-	Sun, 17 Dec 2023 08:10:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702800650;
-	bh=Wiirgn3qwjpQfMRM2pz85BzmEPDW3beth3oqlsva2GY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=OeKtYiVPHH0ZJBYmVGHNVHTZQlVASmncjQoYPil5k/POlw24BEvDTBF9b7nXIbXbz
-	 Hrz04y1j7hlMNdiB2e8UKZUdS85WcOy52/+03Cp68fvMK7UlaOj6zx+Q3PytEMSDPw
-	 5XCZATVXOqBbkWHe2d+ntmuB7lIzHz4RjKc9O+OI0F41XXzBr0J8tgpA/7YZETYjgJ
-	 YnJ751ZpqAd2qJLo8lQz6jrXuH0h96LG/mgrdSGYJvW0Ck7bNw5sfIdVxVXXpOfFHI
-	 V4GaY+J1KB+bA6WVk06xrBhlsTs0aIRBWG6uueyUs0mdOa3bCI15fodYEC/SUllANX
-	 8bHmdNWUOnzww==
-Date: Sun, 17 Dec 2023 17:10:45 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML
- <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] tracing: Add disable-filter-buf option
-Message-Id: <20231217171045.21e0bd95c26f17f1f19f6733@kernel.org>
-In-Reply-To: <368d36b2-e5ea-46d4-b214-6d04cf20685a@efficios.com>
-References: <20231215102633.7a24cb77@rorschach.local.home>
-	<21936075-3858-446a-9391-a38e8d8968e7@efficios.com>
-	<20231215120417.567d5ea4@rorschach.local.home>
-	<fbf8991a-ce83-462c-b87a-b60c6635d223@efficios.com>
-	<20231215123458.63f57238@rorschach.local.home>
-	<f1a75239-341e-4611-a48d-88e10407dcd4@efficios.com>
-	<20231215134335.2388aba5@rorschach.local.home>
-	<368d36b2-e5ea-46d4-b214-6d04cf20685a@efficios.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6BA20EE;
+	Sun, 17 Dec 2023 08:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1702801485; bh=0lB3OyYqJUjufHeb9cN7xRSKf7npEOsy2UKslyIKn88=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=XzPqRjg8vwn+CztCNwEscD4q6LFO2MqaOYgGyKoaGrxYfKaPP7FhH9V4+eVsEI5jt
+	 PC0eJxjh41gpLTSW/n5KK7SjoZ5CNGM6SZovz7B3XBYVPufVKxrXoX47fbfO007uoI
+	 gmA7c1PiJ5c4ramEj2l95lSOXZtH4Q10JYeRW34U=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 2DA082F6; Sun, 17 Dec 2023 16:11:26 +0800
+X-QQ-mid: xmsmtpt1702800686t9z4b36nq
+Message-ID: <tencent_4E2FCFC90D97A5910DFA926DDD945D9B1907@qq.com>
+X-QQ-XMAILINFO: NFcI4DQTV9fmkt9lUNi7+Jvn0ZFoqP30SGNnowiDA+zmTz+Hl5PeBJctWLwk4q
+	 tcupdaW6dKq65J5Ks6Gglo2JKNCYzQZwrRWB+GtECzk64+G/ZJ4Ch2dz4mpLbeKH+OgSrI1sAQEY
+	 Cf1SiWelvQTp6dzLrYv82lz/kfx5R2+LjdAASeRXVZuZcLzHOKh3jTHe6MzS/06eL/wik+Lz1CnX
+	 C6WBYLA37g5yo6+K4yrPDYGlGpVna7tmy4yAzKYjJS3OCr3mCbF//Dy8htBFRtJce11C1oJp4tBD
+	 0NUZDNCqUIcuOHthKKbkX4kf7k4jsq9QeRICVCPqq7m2FR+6MgSJ8jIJEUWclgNLrMTG8K+jQ6d/
+	 R0j5AuJX3zGwTYBj7VMigzjWIU4XqidkYYUDViPVpVyDnPBCHdaU0SknQij33jrjos8Hs3hVL0KX
+	 0mzsk6XdTJDKJN9e/ogA6lx7Wt9b9AMAjObNGZN07ajUnP+JYod3QLp+h9QuVqUo4KWbw3B0SkrB
+	 r0OClW4YTS5mfYAvUYfkoEWbhimuLOsPwEe49SSDed89yORqEcGiDKhIuVLOh2lLaECxAH7uFzqk
+	 x36G5+clgulmST+sGWuHoHIn2ZoPZLC+CVtRYcVkUdkzo7ml4UmBnFvM7daiTDGqcT8Ay1PYV1am
+	 BVNX3VqnmQoJoJF4NIPwWOkq1zpl24t7l3yz+uqEtIb8bPP3uL2xSeqBd3P2tlQojigcQZiCpQS8
+	 PP55aKry719AoI3VECLwe1cxx4mk/2pkncOxJypkw8PWMdPSLnu1cBAp8NXu8hYQJMSOpTwWhT4D
+	 auLGerAf7mTf1IpWNeyTE7Xqw1kGDMahycg3kSFsFGlVsFKi69wPcf6EOKYSMoJOMcbMVPi1DZKY
+	 MPnCh0UFZ4UfcC7U581K//XYicuUrH2pK09azcl80H2N5c0nX0L11jtHB5Nq/hPft0VY7tLglw
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+8608bb4553edb8c78f41@syzkaller.appspotmail.com
+Cc: amir73il@gmail.com,
+	chao@kernel.org,
+	jaegeuk@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	phillip@squashfs.org.uk,
+	reiserfs-devel@vger.kernel.org,
+	squashfs-devel@lists.sourceforge.net,
+	syzkaller-bugs@googlegroups.com,
+	terrelln@fb.com,
+	viro@zeniv.linux.org.uk
+Subject: [PATCH] ovl: fix BUG: Dentry still in use in unmount
+Date: Sun, 17 Dec 2023 16:11:26 +0800
+X-OQ-MSGID: <20231217081125.4138340-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <0000000000003362ba060ca8beac@google.com>
+References: <0000000000003362ba060ca8beac@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri, 15 Dec 2023 14:08:40 -0500
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+workdir and destdir could be the same when copying up to indexdir.
 
-> On 2023-12-15 13:43, Steven Rostedt wrote:
-> > On Fri, 15 Dec 2023 13:25:07 -0500
-> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> >>
-> >> I am not against exposing an ABI that allows userspace to alter the
-> >> filter behavior. I disagree on the way you plan to expose the ABI.
-> > 
-> > These are no different than the knobs for sched_debug
-> 
-> These are very much different. The sched features are enabled at
-> build-time by modifying kernel/sched/features.h. There is no userspace
-> ABI involved.
-> 
-> > 
-> >>
-> >> Exposing this option as an ABI in this way exposes too much internal
-> >> ring buffer implementation details to userspace.
-> > 
-> > There's already lots of exposure using options. The options are just
-> > knobs, nothing more.
-> > 
-> >>
-> >> It exposes the following details which IMHO should be hidden or
-> >> configurable in a way that allows moving to a whole new mechanism
-> >> which will have significantly different characteristics in the
-> >> future:
-> >>
-> >> It exposes that:
-> >>
-> >> - filtering uses a copy to a temporary buffer, and
-> >> - that this copy is enabled by default.
-> >>
-> >> Once exposed, those design constraints become immutable due to ABI.
-> > 
-> > No it is not. There is no such thing as "immutable ABI". The rule is
-> > "don't break user space" If this functionality in the kernel goes away,
-> > the knob could become a nop, and I doubt any user space will break
-> > because of it.
-> > 
-> > That is, the only burden is keeping this option exposed. But it could
-> > be just like that light switch that has nothing connected to it. It's
-> > still there, but does nothing if you switch it. This knob can act the
-> > same way. This does not in anyway prevent future innovation.
-> 
-> I am not comfortable with exposing internal ring buffer implementation
-> details to userspace which may or may not be deprecated as no-ops
-> in the future. This will lead to useless clutter.
+Fixes: c63e56a4a652 ("ovl: do not open/llseek lower file with upper sb_writers held")
+Reported-and-tested-by: syzbot+8608bb4553edb8c78f41@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/overlayfs/copy_up.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-Hmm, but this may change the ring buffer consumption rate if the filter
-is enabled. The ring buffer may be filled quickly than the user expected.
-Thus if user specifies the rare condition, most of the events on the ring
-buffer is filled with garbage. And user will know the buffer size *seems*
-smaller than the setting.
-I think copying overhead will be a secondary effect, the biggest noticable
-difference is how many events are recorded in the ring buffer. Thus, what
-about naming the option as "filter-on-buffer"?
-
-If we introduce filtering on input directly, at that point we will use
-it if "filter-on-buffer = no", because this is also not noticable from
-users.
-
-Thank you,
-
+diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+index 4382881b0709..ae5eb442025d 100644
+--- a/fs/overlayfs/copy_up.c
++++ b/fs/overlayfs/copy_up.c
+@@ -731,10 +731,14 @@ static int ovl_copy_up_workdir(struct ovl_copy_up_ctx *c)
+ 		.rdev = c->stat.rdev,
+ 		.link = c->link
+ 	};
++	err = -EIO;
++	/* workdir and destdir could be the same when copying up to indexdir */
++	if (lock_rename(c->workdir, c->destdir) != NULL)
++		goto unlock;
+ 
+ 	err = ovl_prep_cu_creds(c->dentry, &cc);
+ 	if (err)
+-		return err;
++		goto unlock;
+ 
+ 	ovl_start_write(c->dentry);
+ 	inode_lock(wdir);
+@@ -743,8 +747,9 @@ static int ovl_copy_up_workdir(struct ovl_copy_up_ctx *c)
+ 	ovl_end_write(c->dentry);
+ 	ovl_revert_cu_creds(&cc);
+ 
++	err = PTR_ERR(temp);
+ 	if (IS_ERR(temp))
+-		return PTR_ERR(temp);
++		goto unlock;
+ 
+ 	/*
+ 	 * Copy up data first and then xattrs. Writing data after
+@@ -760,10 +765,9 @@ static int ovl_copy_up_workdir(struct ovl_copy_up_ctx *c)
+ 	 * If temp was moved, abort without the cleanup.
+ 	 */
+ 	ovl_start_write(c->dentry);
+-	if (lock_rename(c->workdir, c->destdir) != NULL ||
+-	    temp->d_parent != c->workdir) {
++	if (temp->d_parent != c->workdir) {
+ 		err = -EIO;
+-		goto unlock;
++		goto unlockcd;
+ 	} else if (err) {
+ 		goto cleanup;
+ 	}
+@@ -801,16 +805,18 @@ static int ovl_copy_up_workdir(struct ovl_copy_up_ctx *c)
+ 	ovl_inode_update(inode, temp);
+ 	if (S_ISDIR(inode->i_mode))
+ 		ovl_set_flag(OVL_WHITEOUTS, inode);
++
++unlockcd:
++	ovl_end_write(c->dentry);
+ unlock:
+ 	unlock_rename(c->workdir, c->destdir);
+-	ovl_end_write(c->dentry);
+ 
+ 	return err;
+ 
+ cleanup:
+ 	ovl_cleanup(ofs, wdir, temp);
+ 	dput(temp);
+-	goto unlock;
++	goto unlockcd;
+ }
+ 
+ /* Copyup using O_TMPFILE which does not require cross dir locking */
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.0
+
 
