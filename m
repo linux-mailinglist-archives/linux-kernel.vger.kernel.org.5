@@ -1,177 +1,173 @@
-Return-Path: <linux-kernel+bounces-2675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65FC0816059
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:14:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05DBB81605B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:19:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720F51C20FD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 16:14:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2C231F21E39
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 16:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA88F45BF1;
-	Sun, 17 Dec 2023 16:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51EB45BE9;
+	Sun, 17 Dec 2023 16:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fHz9YpYW"
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="OoQ7xqfU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B1245BE4;
-	Sun, 17 Dec 2023 16:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702829675; x=1734365675;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=WB4iKFQ6lflwL/cpKRo4oLwAL8X04AxUZMzKYtP8CDo=;
-  b=fHz9YpYWSQTLtOPpzbr2cuZlSKnMgkX6UOfb9ZCd2i9yU1ULNC60mYAq
-   xyunNyrn1hHlzuDYFa6/2Xx8+EjYg0TNMHmhcHBQwMQTyaN0PVYOxk9m8
-   /U9LCAlnKNA/HQ6IvNXpeHhOnGGoKx8hGbEbTqKtDIU2+R5tGyQz/tICa
-   UmBAJyou0Q85ftlXXTLB2nkRHrqMWWdDrWEDXunuuUlK89LSOmydJ+5lg
-   +r4/XfnxDvmxa+VOH5EqSLpSndWNCIMAIXQUhVG2m8P2fi4u/Qy0EEn5g
-   ysPALeiuX5yFobwBDT/h7mVAGCWOfaDo9nJlI1ceB/AL6qIM/EzonfmKQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="8779403"
-X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
-   d="scan'208";a="8779403"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 08:14:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
-   d="scan'208";a="23453885"
-Received: from spandruv-desk.jf.intel.com (HELO spandruv-desk.amr.corp.intel.com) ([10.54.75.14])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 08:14:33 -0800
-Message-ID: <4e3e6260d844215809696bb744baf0519a9c0af0.camel@linux.intel.com>
-Subject: Re: [PATCH] iio: light: hid-sensor-als: Avoid failure for
- chromaticity support
-From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: jikos@kernel.org, lars@metafoo.de, Basavaraj.Natikar@amd.com, 
-	linux-input@vger.kernel.org, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Thomas =?ISO-8859-1?Q?Wei=DFschuh?=
-	 <thomas@t-8ch.de>, stable@vger.kernel.org
-Date: Sun, 17 Dec 2023 08:14:19 -0800
-In-Reply-To: <20231217143555.1f89ddaa@jic23-huawei>
-References: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
-	 <20231217143555.1f89ddaa@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41D244C88
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 16:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40b5155e154so28023895e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 08:19:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702829970; x=1703434770; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VpgQuU2Mi03SNo7nMLIvXtsaJFrml4RGReO/JB+4P+8=;
+        b=OoQ7xqfUZMo8TidtiTkJCAzu4JYuPrN7M1hun68NhigguiXn+3OThCWVA/hKGJNCBo
+         WqJeKgiOWn22DpzN6geYz8WGwmD1c8w7owKzzpRRN+E9XD5DQFgNICPnLGP/lqwpzt2+
+         TU2rZoYefZgULoZTFmCIV9ei1sndCFk5OuaGObyN9COKZUtBDMLDzQhHgiODitIGheoV
+         FXCiwhXurukJXVFQz4pWFD+jOpSAGVVzgV/ro0ln9ZsLtMWQyY6Ta2xpP5mYZiAmrYi6
+         djNAobQqdv0Zu1TxA+3MA4Rcb7R6aNqQ25iq6kxjvfXV8xbWrnu/iB4G3O8fWtk5JHbh
+         e64g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702829970; x=1703434770;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VpgQuU2Mi03SNo7nMLIvXtsaJFrml4RGReO/JB+4P+8=;
+        b=D/GGX8K65HaMKCejOWIVmhSYtMEERK96GTC97lEm+SgH6C+2aRRbOfQpc7jFECSRHA
+         Nid1fbPO3sCl1axmREcBwpiiVNW9+agjadAk+8I7BuO7MtNe9U+DlkT2RIbdxt5Setjq
+         x6turPXfbsephnytG4gHJRfxlUccYkcb1ZBzcdCRy2J3FW0nB4Bkga/KzYvGKeC70Vbp
+         VeU+Lu/IBUbtIUR+ykNyBNMrfh4zx1aKTC8qhi3jyvuLwn8exARUCHm+8kRG3se+6mc2
+         ssSJFkHJOhcLBoauXlAC/espAWMxDgbqig+XxcYC5NFBwhF201kuKwJAHwUAtXfdYbbB
+         kHIQ==
+X-Gm-Message-State: AOJu0YxTGn+xWnPCOMCygbEIgup9eYnC5S2WcZgtSf1myBVy0F41fDXt
+	K0+hMZ207UWzEVrr0XoM0Ak56/o+TCVYWsHwTfs=
+X-Google-Smtp-Source: AGHT+IHPV9dmwKPXmOem17g+ssUBHDuk38t0PkHWRzcHkKXVgdPYOWmDjYZ0rxIYkt/ghWFYNhrTng==
+X-Received: by 2002:a05:600c:5248:b0:40c:3e0a:692e with SMTP id fc8-20020a05600c524800b0040c3e0a692emr6804171wmb.232.1702829969876;
+        Sun, 17 Dec 2023 08:19:29 -0800 (PST)
+Received: from airbuntu (host86-135-101-43.range86-135.btcentralplus.com. [86.135.101.43])
+        by smtp.gmail.com with ESMTPSA id j18-20020a05600c191200b0040c6b667dccsm11429183wmq.25.2023.12.17.08.19.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 08:19:29 -0800 (PST)
+Date: Sun, 17 Dec 2023 16:19:27 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: John Stultz <jstultz@google.com>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Joel Fernandes <joelaf@google.com>,
+	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Zimuzo Ezeozue <zezeozue@google.com>,
+	Youssef Esmat <youssefesmat@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com,
+	Connor O'Brien <connoro@google.com>
+Subject: Re: [PATCH v6 01/20] sched: Unify runtime accounting across classes
+Message-ID: <20231217161927.vewygmvxvddhxs65@airbuntu>
+References: <20231106193524.866104-1-jstultz@google.com>
+ <20231106193524.866104-2-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231106193524.866104-2-jstultz@google.com>
 
-T24gU3VuLCAyMDIzLTEyLTE3IGF0IDE0OjM1ICswMDAwLCBKb25hdGhhbiBDYW1lcm9uIHdyb3Rl
-Ogo+IE9uIEZyaSwgMTUgRGVjIDIwMjMgMDg6MDE6NTkgLTA4MDAKPiBTcmluaXZhcyBQYW5kcnV2
-YWRhIDxzcmluaXZhcy5wYW5kcnV2YWRhQGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4gCj4gPiBX
-aXRoIHRoZSBjb21taXQgZWUzNzEwZjM5ZjlkICgiaWlvOiBoaWQtc2Vuc29yLWFsczogQWRkIGxp
-Z2h0Cj4gPiBjaHJvbWF0aWNpdHkKPiA+IHN1cHBvcnQiKSwgdGhlcmUgaXMgYW4gYXNzdW1wdGlv
-biB0aGF0IHRoZSBldmVyeSBISUQgQUxTIGRlc2NyaXB0b3IKPiA+IGhhcwo+ID4gc3VwcG9ydCBv
-ZiB1c2FnZSBpZHMgZm9yIGNocm9tYXRpY2l0eSBzdXBwb3J0LiBJZiB0aGV5IGFyZSBub3QKPiA+
-IHByZXNlbnQsCj4gPiBwcm9iZSBmYWlscyBmb3IgdGhlIGRyaXZlciAuIFRoaXMgYnJlYWtzIEFM
-UyBmdW5jdGlvbmFsaXR5IG9uCj4gPiBtYWpvcml0eSBvZgo+ID4gcGxhdGZvcm1zLgo+ID4gCj4g
-PiBJdCBpcyBwb3NzaWJsZSB0aGF0IGNocm9tYXRpY2l0eSB1c2FnZSBpZHMgYXJlIG5vdCBwcmVz
-ZW50LiBXaGVuCj4gPiBub3QKPiA+IHByZXNlbnQsIHJlc3RyaWN0IG51bWJlciBvZiBJSU8gY2hh
-bm5lbHMgdG8gbm90IGluY2x1ZGUgc3VwcG9ydCBmb3IKPiA+IGNocm9tYXRpY2l0eSBhbmQgY29u
-dGludWUuCj4gPiAKPiA+IEZpeGVzOiBlZTM3MTBmMzlmOWQgKCJpaW86IGhpZC1zZW5zb3ItYWxz
-OiBBZGQgbGlnaHQgY2hyb21hdGljaXR5Cj4gPiBzdXBwb3J0IikKPiA+IFJlcG9ydGVkLWJ5OiBU
-aG9tYXMgV2Vpw59zY2h1aCA8dGhvbWFzQHQtOGNoLmRlPgo+ID4gQ2xvc2VzOiBodHRwczovL2J1
-Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIxODIyMwo+ID4gU2lnbmVkLW9mZi1i
-eTogU3Jpbml2YXMgUGFuZHJ1dmFkYQo+ID4gPHNyaW5pdmFzLnBhbmRydXZhZGFAbGludXguaW50
-ZWwuY29tPgo+ID4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiA+IC0tLQo+ID4gwqBkcml2
-ZXJzL2lpby9saWdodC9oaWQtc2Vuc29yLWFscy5jIHwgMjQgKysrKysrKysrKysrKysrKy0tLS0t
-LS0tCj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygt
-KQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9paW8vbGlnaHQvaGlkLXNlbnNvci1hbHMu
-Ywo+ID4gYi9kcml2ZXJzL2lpby9saWdodC9oaWQtc2Vuc29yLWFscy5jCj4gPiBpbmRleCBmMTcz
-MDRiNTQ0NjguLjk5NDFiMGI5MjdjNyAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvaWlvL2xpZ2h0
-L2hpZC1zZW5zb3ItYWxzLmMKPiA+ICsrKyBiL2RyaXZlcnMvaWlvL2xpZ2h0L2hpZC1zZW5zb3It
-YWxzLmMKPiA+IEBAIC0zMDMsMTEgKzMwMywxNCBAQCBzdGF0aWMgaW50IGFsc19wYXJzZV9yZXBv
-cnQoc3RydWN0Cj4gPiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsCj4gPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGhp
-ZF9zZW5zb3JfaHViX2RldmljZQo+ID4gKmhzZGV2LAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBpaW9fY2hh
-bl9zcGVjICpjaGFubmVscywKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCB1c2FnZV9pZCwKPiA+IC3CoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHN0cnVjdCBhbHNfc3RhdGUgKnN0KQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGFsc19zdGF0ZSAqc3QsCj4g
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqBpbnQgKm1heF9jaGFubmVscykKPiA+IMKgewo+ID4gwqDCoMKgwqDCoMKgwqDCoGlu
-dCByZXQ7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgaW50IGk7Cj4gPiDCoAo+ID4gK8KgwqDCoMKgwqDC
-oMKgKm1heF9jaGFubmVscyA9IENIQU5ORUxfU0NBTl9JTkRFWF9NQVg7Cj4gPiArCj4gPiDCoMKg
-wqDCoMKgwqDCoMKgZm9yIChpID0gMDsgaSA8PSBDSEFOTkVMX1NDQU5fSU5ERVhfSUxMVU07ICsr
-aSkgewo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXQgPSBzZW5zb3JfaHVi
-X2lucHV0X2dldF9hdHRyaWJ1dGVfaW5mbyhoc2RldiwKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoEhJRF9JTlBVVF9SRVBPUlQsCj4gPiBAQCAtMzI2LDggKzMyOSwx
-MiBAQCBzdGF0aWMgaW50IGFsc19wYXJzZV9yZXBvcnQoc3RydWN0Cj4gPiBwbGF0Zm9ybV9kZXZp
-Y2UgKnBkZXYsCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgdXNhZ2VfaWQsCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgSElEX1VTQUdFX1NFTlNP
-Ul9MSUdIVF9DT0xPUl9URU1QRVIKPiA+IEFUVVJFLAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCZzdC0KPiA+ID5hbHNb
-Q0hBTk5FTF9TQ0FOX0lOREVYX0NPTE9SX1RFTVBdKTsKPiA+IC3CoMKgwqDCoMKgwqDCoGlmIChy
-ZXQgPCAwKQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7Cj4g
-PiArwqDCoMKgwqDCoMKgwqBpZiAocmV0IDwgMCkgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCptYXhfY2hhbm5lbHMgPSBDSEFOTkVMX1NDQU5fSU5ERVhfSUxMVU07Cj4gPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0ID0gMDsKPiA+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqBnb3RvIHNraXBfY29sb3JfY2hyb21hdGljaXR5Owo+ID4gK8KgwqDC
-oMKgwqDCoMKgfQo+ID4gKwo+ID4gwqDCoMKgwqDCoMKgwqDCoGFsc19hZGp1c3RfY2hhbm5lbF9i
-aXRfbWFzayhjaGFubmVscywKPiA+IENIQU5ORUxfU0NBTl9JTkRFWF9DT0xPUl9URU1QLAo+ID4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoHN0LQo+ID4gPmFsc1tDSEFOTkVMX1NDQU5fSU5ERVhfQ09MT1JfVEVNUF0uc2l6ZSk7
-Cj4gPiDCoAo+ID4gQEAgLTM1NCw2ICszNjEsNyBAQCBzdGF0aWMgaW50IGFsc19wYXJzZV9yZXBv
-cnQoc3RydWN0Cj4gPiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsCj4gPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzdC0+YWxzW25leHRfc2Nhbl9pbmRleF0u
-cmVwb3J0X2lkKTsKPiA+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gPiDCoAo+ID4gK3NraXBfY29sb3Jf
-Y2hyb21hdGljaXR5Ogo+ID4gwqDCoMKgwqDCoMKgwqDCoHN0LT5zY2FsZV9wcmVjaXNpb24gPSBo
-aWRfc2Vuc29yX2Zvcm1hdF9zY2FsZSh1c2FnZV9pZCwKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAmc3QtCj4gPiA+YWxz
-W0NIQU5ORUxfU0NBTl9JTkRFWF9JTlRFTlNJVFldLAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCZzdC0+c2NhbGVfcHJl
-X2RlY21sLCAmc3QtCj4gPiA+c2NhbGVfcG9zdF9kZWNtbCk7Cj4gPiBAQCAtMzY0LDcgKzM3Miw3
-IEBAIHN0YXRpYyBpbnQgYWxzX3BhcnNlX3JlcG9ydChzdHJ1Y3QKPiA+IHBsYXRmb3JtX2Rldmlj
-ZSAqcGRldiwKPiA+IMKgLyogRnVuY3Rpb24gdG8gaW5pdGlhbGl6ZSB0aGUgcHJvY2Vzc2luZyBm
-b3IgdXNhZ2UgaWQgKi8KPiA+IMKgc3RhdGljIGludCBoaWRfYWxzX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCj4gPiDCoHsKPiA+IC3CoMKgwqDCoMKgwqDCoGludCByZXQgPSAw
-Owo+ID4gK8KgwqDCoMKgwqDCoMKgaW50IHJldCA9IDAsIG1heF9jaGFubmVsczsKPiA+IMKgwqDC
-oMKgwqDCoMKgwqBzdGF0aWMgY29uc3QgY2hhciAqbmFtZSA9ICJhbHMiOwo+ID4gwqDCoMKgwqDC
-oMKgwqDCoHN0cnVjdCBpaW9fZGV2ICppbmRpb19kZXY7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgc3Ry
-dWN0IGFsc19zdGF0ZSAqYWxzX3N0YXRlOwo+ID4gQEAgLTM5OCwxNSArNDA2LDE1IEBAIHN0YXRp
-YyBpbnQgaGlkX2Fsc19wcm9iZShzdHJ1Y3QKPiA+IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiA+
-IMKgCj4gPiDCoMKgwqDCoMKgwqDCoMKgcmV0ID0gYWxzX3BhcnNlX3JlcG9ydChwZGV2LCBoc2Rl
-diwKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCAoc3RydWN0IGlpb19jaGFuX3NwZWMgKilpbmRpb19kZXYtCj4gPiA+Y2hhbm5l
-bHMsCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBoc2Rldi0+dXNhZ2UsCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbHNfc3RhdGUpOwo+ID4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaHNkZXYt
-PnVzYWdlLCBhbHNfc3RhdGUsCj4gPiAmbWF4X2NoYW5uZWxzKTsKPiA+IMKgwqDCoMKgwqDCoMKg
-wqBpZiAocmV0KSB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRldl9lcnIo
-JnBkZXYtPmRldiwgImZhaWxlZCB0byBzZXR1cAo+ID4gYXR0cmlidXRlc1xuIik7Cj4gPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7Cj4gPiDCoMKgwqDCoMKgwqDC
-oMKgfQo+ID4gwqAKPiA+IC3CoMKgwqDCoMKgwqDCoGluZGlvX2Rldi0+bnVtX2NoYW5uZWxzID0K
-PiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoEFSUkFZX1NJWkUoYWxzX2NoYW5uZWxzKTsKPiA+ICvCoMKgwqDCoMKgwqDCoC8q
-ICsxIHRvIGluY2x1ZGUgdGltZSBzdGFtcCAqLwo+ID4gK8KgwqDCoMKgwqDCoMKgaW5kaW9fZGV2
-LT5udW1fY2hhbm5lbHMgPSBtYXhfY2hhbm5lbHMgKyAxOwo+IAo+IEluIHRoZSBjdXJyZW50IGFy
-cmF5IHRoZSB0aW1lc3RhbXAgY2hhbm5lbCBpc24ndCB0aGUgbmV4dCBvbmUsIHNvIGhvdwo+IGRv
-ZXMgdGhpcyB3b3JrPwo+IAo+IEkgdGhpbmsgd2UgZWl0aGVyIGhhdmUgdG8gZm9ybSB0aGUgY2hh
-bm5lbCBhcnJheSBkeW5hbWljYWxseSBvciBwaWNrCj4gYmV0d2Vlbgo+IG9uZSB0aGF0IGRvZXMg
-aGF2ZSB0aGUgY29sb3VyIGluZm8gYW5kIG9uZSB0aGF0IGRvZXNuJ3QgZm9yIHRoZQo+IG9yaWdp
-bmFsIGNhc2UuCj4gCllvdSBhcmUgcmlnaHQsIGxldCBtZSByZXN1Ym1pdC4KCgo+IEdpdmVuIHRp
-bWluZyB3ZSBtYXkganVzdCBuZWVkIHRvIHJldmVydCB0aGUgYnJva2VuIHBhdGNoIGFuZCByZXZp
-c2l0Cj4gdGhpcyBuZXh0Cj4gY3ljbGUuClRoaXMgaXMgYmV0dGVyLiBJIHdpbGwgc2VuZCBhIHJl
-dmVydC4KClRoYW5rcywKU3Jpbml2YXMKCgo+IAo+IEpvbmF0aGFuCj4gCj4gCj4gPiArCj4gPiDC
-oMKgwqDCoMKgwqDCoMKgaW5kaW9fZGV2LT5pbmZvID0gJmFsc19pbmZvOwo+ID4gwqDCoMKgwqDC
-oMKgwqDCoGluZGlvX2Rldi0+bmFtZSA9IG5hbWU7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgaW5kaW9f
-ZGV2LT5tb2RlcyA9IElORElPX0RJUkVDVF9NT0RFOwo+IAoK
+On 11/06/23 19:34, John Stultz wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> All classes use sched_entity::exec_start to track runtime and have
+> copies of the exact same code around to compute runtime.
+> 
+> Collapse all that.
+> 
+> Cc: Joel Fernandes <joelaf@google.com>
+> Cc: Qais Yousef <qyousef@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Zimuzo Ezeozue <zezeozue@google.com>
+> Cc: Youssef Esmat <youssefesmat@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: "Paul E . McKenney" <paulmck@kernel.org>
+> Cc: kernel-team@android.com
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> [fix conflicts, fold in update_current_exec_runtime]
+> Signed-off-by: Connor O'Brien <connoro@google.com>
+> [jstultz: rebased, resovling minor conflicts]
+> Signed-off-by: John Stultz <jstultz@google.com>
+> ---
+> NOTE: This patch is a general cleanup and if no one objects
+> could be merged at this point. If needed, I'll resend separately
+> if it isn't picked up on its own.
 
+Looks like this actually got merged into tip via the deadline server work :-)
+
+Though not sure if I caught a bug here
+
+> diff --git a/kernel/sched/stop_task.c b/kernel/sched/stop_task.c
+> index 85590599b4d6..7595494ceb6d 100644
+> --- a/kernel/sched/stop_task.c
+> +++ b/kernel/sched/stop_task.c
+> @@ -70,18 +70,7 @@ static void yield_task_stop(struct rq *rq)
+>  
+>  static void put_prev_task_stop(struct rq *rq, struct task_struct *prev)
+>  {
+> -	struct task_struct *curr = rq->curr;
+> -	u64 now, delta_exec;
+> -
+> -	now = rq_clock_task(rq);
+> -	delta_exec = now - curr->se.exec_start;
+> -	if (unlikely((s64)delta_exec < 0))
+> -		delta_exec = 0;
+
+If negative instead of returning for stopper task; we set delta_exec to 0
+
+> -
+> -	schedstat_set(curr->stats.exec_max,
+> -		      max(curr->stats.exec_max, delta_exec));
+> -
+> -	update_current_exec_runtime(curr, now, delta_exec);
+
+And curry on to do time accounting
+
+> +	update_curr_common(rq);
+
+But the new function will return early without doing accounting. Wouldn't this
+re-introrduce 8f6189684eb4 ("sched: Fix migration thread runtime bogosity")?
+
+>  }
+
+
+Cheers
+
+--
+Qais Yousef
 
