@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-2883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2483816399
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:56:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B9B081639A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E3011F209B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:56:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBAC8282ACF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B754D58B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD41F4D5B9;
 	Sun, 17 Dec 2023 23:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="lza6wNKF"
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="KwtAIyS+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF074BA8D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57594CB22
 	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6d9d4193d94so2207552a34.3
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28a5d0ebf1fso2689995a91.0
         for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 15:55:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1702857328; x=1703462128; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1702857329; x=1703462129; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eXLxevf4aUXA3wWWgPdFXar5eXPkWv3zOFKTufedNbo=;
-        b=lza6wNKFNCQ4iqr9yt039GW22fEhUKCUgIzk4Pv07tXWYB0aohFLuS82OrKtR6gQN5
-         pUWMbAZ9Ds9N3Wk2pyzQuyhA+fEpRBRFmwsZWTRe+L7qqRVds4sk0o0PxQKUVTluZDeB
-         NdmKHAvcVqZ0b4UeQP/nk3pLPU62YCFNi2oxFe6rQ0p3/7e5Y3vsncjovbb5zSDJvO7C
-         IWfO1RKfE8NWDt++x5OVVaZzGjowrI1GvvI8luhthge1lkor2u+wLDQ+3FqS954rDD6x
-         GxTIr1NI4lfhKYf0Xs6ZnqJJISJn+/W3L5J5kpQ5sDu1oY/NX+Dy7gBdZFnQkiLMxHRS
-         ZHvQ==
+        bh=2Xh9057HjSReuOSkTJHqLjqeYxKmFJY7/nLpPeU9NVU=;
+        b=KwtAIyS+Hm6LTpgKfZXfcpVbe37qhwjRXNzqLDL2yLCKbZWetwY7bTEWGLb+Y9ScVZ
+         tsunYMrxpJ4iLsIHS4nXTLNjk/JUBUfPaqZ43mSTRAE/9LsaOO+beq+gshAlp4ctbkPB
+         OtD+PIYovk2eLvjB05ftZbeYKb4kiJXbbm79OyFOZT8OPZLieCiddm4NhxbnusZGn7LM
+         vhUkp5F0t1twuCcc7grpVe5CjHXNh2xPHBJ/WyoiyzfxahajFog2KzNupdtAKp7+zyKY
+         VuzjywduzkGQPQKpJwEc2rF7MTaWq4QLF2Zy+QQhxEfFvDMCU/TJcl9kUkIe4DpJm8R/
+         8GCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702857328; x=1703462128;
+        d=1e100.net; s=20230601; t=1702857329; x=1703462129;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eXLxevf4aUXA3wWWgPdFXar5eXPkWv3zOFKTufedNbo=;
-        b=t0BUh8Ej6NV7gA7sbAojIrLuk/nquHO5wb/4+t1hNaOFjoWYRrHxQcDQOQ/1MF9drG
-         mszHml3+9ITkifAqRsnAYsEZXoS5tEl+k7wxriHpaiYYJJHT/mr06nRW0G7AWeBZ0Cfg
-         C+xSXlxurTG//dP6LlFAIZGjTXAFjKU0A+MrOtszHblku27rPl8G4R+Eo4sPfVWdOBeo
-         VWMVGNuOQl4wpMVJ/kAElzlPibaYgTyQNgbjBh709rhl4tAj8rsv6bePVKRemGWO6b6L
-         GcNuUtOU/tOEmqexA505fenYP+HVt7GamMVStPKq2I5oFwfENq9eI5wVUei5P5b5oTNY
-         4MNA==
-X-Gm-Message-State: AOJu0YznSN1yeNwzMiPJUAtn9h6m3mOk+2UFPKDggwnQY34VE+vt04H+
-	aCw1BkvgDa3N47FdLYwpMNLVRw==
-X-Google-Smtp-Source: AGHT+IFoDEcFFi84M0TkMIePMPCmlNMXHemUSrGClgJxG96jTzzaqKgtRjJRCgD8WpaQ+GxXtCuDbA==
-X-Received: by 2002:a05:6358:e48b:b0:172:d78b:d2eb with SMTP id by11-20020a056358e48b00b00172d78bd2ebmr1473446rwb.10.1702857328274;
-        Sun, 17 Dec 2023 15:55:28 -0800 (PST)
+        bh=2Xh9057HjSReuOSkTJHqLjqeYxKmFJY7/nLpPeU9NVU=;
+        b=XOpZDlztQISD51S7CWf3VsYsfN2cIVVXO4cXaWDQ+rL6fAR9bOwljriZr0iaay4duB
+         o6PlBITC1JeKR0yjWXddXsMSSGzX1VknMKxUhDdqJ1uWorbuF9llgZWzAcHHcGqPceas
+         UUWQjCNdsFVAGPcZYsn73NjoJ2CGKClMRiqHVQqC53c9zasXAZBZ2YGUc/uRS1ma/bCd
+         BG/R6QIIkuwIs4EMXt4Wa+DQwU8zTvHliWJgoniCqIxizvzHooW5JUwTeimGdNlch0c/
+         QruAFCHW+i+oBYBdRkIsEQrq2tIiaQZwceQf3V5WXMccTMPl+O9ZMp46SJVhLPifeSc2
+         Ti3w==
+X-Gm-Message-State: AOJu0Yz2Y539nQ6oF44icdVJ2vhVoFeRgE1jnyCFkwhCyF31S/0tOWek
+	u9EqQ5cKokmfuJ+W38IqEwDzbA==
+X-Google-Smtp-Source: AGHT+IFb2n5v3YoFspuLtRt+lyzQo9g1VO/PMtFjwsN0/BR9zn2VrKZerGUAbdGHdA6juw82EwWWrQ==
+X-Received: by 2002:a17:90a:c705:b0:28b:5cd5:9ff9 with SMTP id o5-20020a17090ac70500b0028b5cd59ff9mr2713446pjt.39.1702857329474;
+        Sun, 17 Dec 2023 15:55:29 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id f11-20020a17090aec8b00b0028ae8284840sm9036176pjy.10.2023.12.17.15.55.27
+        by smtp.gmail.com with ESMTPSA id f11-20020a17090aec8b00b0028ae8284840sm9036176pjy.10.2023.12.17.15.55.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 15:55:27 -0800 (PST)
+        Sun, 17 Dec 2023 15:55:28 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -64,9 +64,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 5/6] Staging: rtl8192e: Rename variable TxRxSelect
-Date: Sun, 17 Dec 2023 15:55:19 -0800
-Message-Id: <20231217235520.30377-6-tdavies@darkphysics.net>
+Subject: [PATCH 6/6] Staging: rtl8192e: Rename variable pBaStartSeqCtrl
+Date: Sun, 17 Dec 2023 15:55:20 -0800
+Message-Id: <20231217235520.30377-7-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231217235520.30377-1-tdavies@darkphysics.net>
 References: <20231217235520.30377-1-tdavies@darkphysics.net>
@@ -78,192 +78,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename variable TxRxSelect to tx_rx_select to fix checkpatch
+Rename variable pBaStartSeqCtrl to ba_start_seq_ctrl to fix checkpatch
 warning Avoid CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 18 ++++++++---------
- drivers/staging/rtl8192e/rtl819x_TSProc.c | 24 +++++++++++------------
- drivers/staging/rtl8192e/rtllib.h         |  4 ++--
- 3 files changed, 23 insertions(+), 23 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index 2fd54312c04f..b816f94336f0 100644
+index b816f94336f0..3db7dcc3bd23 100644
 --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -125,7 +125,7 @@ static struct sk_buff *rtllib_ADDBA(struct rtllib_device *ieee, u8 *dst,
+@@ -219,7 +219,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
+ 	struct ba_record *ba = NULL;
+ 	union ba_param_set *ba_param_set = NULL;
+ 	u16 *ba_timeout_value = NULL;
+-	union sequence_control *pBaStartSeqCtrl = NULL;
++	union sequence_control *ba_start_seq_ctrl = NULL;
+ 	struct rx_ts_record *ts = NULL;
  
- static struct sk_buff *rtllib_DELBA(struct rtllib_device *ieee, u8 *dst,
- 				    struct ba_record *ba,
--				    enum tr_select TxRxSelect, u16 reason_code)
-+				    enum tr_select tx_rx_select, u16 reason_code)
- {
- 	union delba_param_set del_ba_param_set;
- 	struct sk_buff *skb = NULL;
-@@ -139,7 +139,7 @@ static struct sk_buff *rtllib_DELBA(struct rtllib_device *ieee, u8 *dst,
+ 	if (skb->len < sizeof(struct ieee80211_hdr_3addr) + 9) {
+@@ -241,7 +241,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
+ 	dialog_token = tag + 2;
+ 	ba_param_set = (union ba_param_set *)(tag + 3);
+ 	ba_timeout_value = (u16 *)(tag + 5);
+-	pBaStartSeqCtrl = (union sequence_control *)(req + 7);
++	ba_start_seq_ctrl = (union sequence_control *)(req + 7);
  
- 	memset(&del_ba_param_set, 0, 2);
+ 	if (!ieee->current_network.qos_data.active ||
+ 	    !ieee->ht_info->current_ht_support ||
+@@ -274,7 +274,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
+ 	ba->dialog_token = *dialog_token;
+ 	ba->ba_param_set = *ba_param_set;
+ 	ba->ba_timeout_value = *ba_timeout_value;
+-	ba->ba_start_seq_ctrl = *pBaStartSeqCtrl;
++	ba->ba_start_seq_ctrl = *ba_start_seq_ctrl;
  
--	del_ba_param_set.field.initiator = (TxRxSelect == TX_DIR) ? 1 : 0;
-+	del_ba_param_set.field.initiator = (tx_rx_select == TX_DIR) ? 1 : 0;
- 	del_ba_param_set.field.tid	= ba->ba_param_set.field.tid;
- 
- 	skb = dev_alloc_skb(len + sizeof(struct ieee80211_hdr_3addr));
-@@ -199,12 +199,12 @@ static void rtllib_send_ADDBARsp(struct rtllib_device *ieee, u8 *dst,
- }
- 
- static void rtllib_send_DELBA(struct rtllib_device *ieee, u8 *dst,
--			      struct ba_record *ba, enum tr_select TxRxSelect,
-+			      struct ba_record *ba, enum tr_select tx_rx_select,
- 			      u16 reason_code)
- {
- 	struct sk_buff *skb;
- 
--	skb = rtllib_DELBA(ieee, dst, ba, TxRxSelect, reason_code);
-+	skb = rtllib_DELBA(ieee, dst, ba, tx_rx_select, reason_code);
- 	if (skb)
- 		softmac_mgmt_xmit(skb, ieee);
- 	else
-@@ -486,9 +486,9 @@ void rtllib_ts_init_add_ba(struct rtllib_device *ieee, struct tx_ts_record *ts,
- 
- void rtllib_ts_init_del_ba(struct rtllib_device *ieee,
- 			   struct ts_common_info *ts_common_info,
--			   enum tr_select TxRxSelect)
-+			   enum tr_select tx_rx_select)
- {
--	if (TxRxSelect == TX_DIR) {
-+	if (tx_rx_select == TX_DIR) {
- 		struct tx_ts_record *ts =
- 			 (struct tx_ts_record *)ts_common_info;
- 
-@@ -497,14 +497,14 @@ void rtllib_ts_init_del_ba(struct rtllib_device *ieee,
- 					  (ts->tx_admitted_ba_record.b_valid) ?
- 					 (&ts->tx_admitted_ba_record) :
- 					(&ts->tx_pending_ba_record),
--					 TxRxSelect, DELBA_REASON_END_BA);
--	} else if (TxRxSelect == RX_DIR) {
-+					 tx_rx_select, DELBA_REASON_END_BA);
-+	} else if (tx_rx_select == RX_DIR) {
- 		struct rx_ts_record *ts =
- 				 (struct rx_ts_record *)ts_common_info;
- 		if (rx_ts_delete_ba(ieee, ts))
- 			rtllib_send_DELBA(ieee, ts_common_info->addr,
- 					  &ts->rx_admitted_ba_record,
--					  TxRxSelect, DELBA_REASON_END_BA);
-+					  tx_rx_select, DELBA_REASON_END_BA);
- 	}
- }
- 
-diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-index ad4d9e4c9b63..43b1e70b218b 100644
---- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-@@ -171,14 +171,14 @@ void rtllib_ts_init(struct rtllib_device *ieee)
- 
- static struct ts_common_info *SearchAdmitTRStream(struct rtllib_device *ieee,
- 						  u8 *addr, u8 TID,
--						  enum tr_select TxRxSelect)
-+						  enum tr_select tx_rx_select)
- {
- 	u8	dir;
- 	bool	search_dir[4] = {0};
- 	struct list_head *psearch_list;
- 	struct ts_common_info *pRet = NULL;
- 
--	if (TxRxSelect == TX_DIR) {
-+	if (tx_rx_select == TX_DIR) {
- 		search_dir[DIR_UP] = true;
- 		search_dir[DIR_BI_DIR] = true;
- 		search_dir[DIR_DIRECT] = true;
-@@ -188,7 +188,7 @@ static struct ts_common_info *SearchAdmitTRStream(struct rtllib_device *ieee,
- 		search_dir[DIR_DIRECT] = true;
- 	}
- 
--	if (TxRxSelect == TX_DIR)
-+	if (tx_rx_select == TX_DIR)
- 		psearch_list = &ieee->Tx_TS_Admit_List;
- 	else
- 		psearch_list = &ieee->Rx_TS_Admit_List;
-@@ -225,7 +225,7 @@ static void MakeTSEntry(struct ts_common_info *ts_common_info, u8 *addr,
- }
- 
- bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS,
--	   u8 *addr, u8 TID, enum tr_select TxRxSelect, bool bAddNewTs)
-+	   u8 *addr, u8 TID, enum tr_select tx_rx_select, bool bAddNewTs)
- {
- 	u8	UP = 0;
- 	struct qos_tsinfo tspec;
-@@ -265,7 +265,7 @@ bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS,
- 		}
- 	}
- 
--	*ppTS = SearchAdmitTRStream(ieee, addr, UP, TxRxSelect);
-+	*ppTS = SearchAdmitTRStream(ieee, addr, UP, tx_rx_select);
- 	if (*ppTS)
- 		return true;
- 
-@@ -274,21 +274,21 @@ bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS,
- 		return false;
- 	}
- 
--	pUnusedList = (TxRxSelect == TX_DIR) ?
-+	pUnusedList = (tx_rx_select == TX_DIR) ?
- 				(&ieee->Tx_TS_Unused_List) :
- 				(&ieee->Rx_TS_Unused_List);
- 
--	pAddmitList = (TxRxSelect == TX_DIR) ?
-+	pAddmitList = (tx_rx_select == TX_DIR) ?
- 				(&ieee->Tx_TS_Admit_List) :
- 				(&ieee->Rx_TS_Admit_List);
- 
--	Dir = ((TxRxSelect == TX_DIR) ? DIR_UP : DIR_DOWN);
-+	Dir = ((tx_rx_select == TX_DIR) ? DIR_UP : DIR_DOWN);
- 
- 	if (!list_empty(pUnusedList)) {
- 		(*ppTS) = list_entry(pUnusedList->next,
- 			  struct ts_common_info, List);
- 		list_del_init(&(*ppTS)->List);
--		if (TxRxSelect == TX_DIR) {
-+		if (tx_rx_select == TX_DIR) {
- 			struct tx_ts_record *tmp =
- 				container_of(*ppTS,
- 				struct tx_ts_record,
-@@ -321,11 +321,11 @@ bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS,
- }
- 
- static void RemoveTsEntry(struct rtllib_device *ieee,
--			  struct ts_common_info *pTs, enum tr_select TxRxSelect)
-+			  struct ts_common_info *pTs, enum tr_select tx_rx_select)
- {
--	rtllib_ts_init_del_ba(ieee, pTs, TxRxSelect);
-+	rtllib_ts_init_del_ba(ieee, pTs, tx_rx_select);
- 
--	if (TxRxSelect == RX_DIR) {
-+	if (tx_rx_select == RX_DIR) {
- 		struct rx_reorder_entry *pRxReorderEntry;
- 		struct rx_ts_record *ts = (struct rx_ts_record *)pTs;
- 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index d8da772b0f39..870720a12a48 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1778,13 +1778,13 @@ void rtllib_ts_init_add_ba(struct rtllib_device *ieee, struct tx_ts_record *ts,
- 			   u8 policy, u8 overwrite_pending);
- void rtllib_ts_init_del_ba(struct rtllib_device *ieee,
- 			   struct ts_common_info *ts_common_info,
--			   enum tr_select TxRxSelect);
-+			   enum tr_select tx_rx_select);
- void rtllib_ba_setup_timeout(struct timer_list *t);
- void rtllib_tx_ba_inact_timeout(struct timer_list *t);
- void rtllib_rx_ba_inact_timeout(struct timer_list *t);
- void rtllib_reset_ba_entry(struct ba_record *ba);
- bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS, u8 *addr,
--	   u8 TID, enum tr_select TxRxSelect, bool bAddNewTs);
-+	   u8 TID, enum tr_select tx_rx_select, bool bAddNewTs);
- void rtllib_ts_init(struct rtllib_device *ieee);
- void TsStartAddBaProcess(struct rtllib_device *ieee,
- 			 struct tx_ts_record *pTxTS);
+ 	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev) ||
+ 	   (ieee->ht_info->iot_action & HT_IOT_ACT_ALLOW_PEER_AGG_ONE_PKT))
 -- 
 2.39.2
 
