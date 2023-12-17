@@ -1,227 +1,153 @@
-Return-Path: <linux-kernel+bounces-2823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7161A816272
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:33:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F401816275
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:34:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14F571C20B25
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:33:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3DF6B21564
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12E74878E;
-	Sun, 17 Dec 2023 21:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B3F495CF;
+	Sun, 17 Dec 2023 21:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q2BgPGcK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SHOHstT1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E4449F98;
-	Sun, 17 Dec 2023 21:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7b3b819f8a3so132375839f.1;
-        Sun, 17 Dec 2023 13:32:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702848742; x=1703453542; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S9EUtlC/PMv4Un3TQIvI6rNRv4BEn/NrIpICR/MmGos=;
-        b=Q2BgPGcKFLcr1fSJmlUw66t671tYkTyrzSm9Vh2AwIyaqwNyPAgvO3nXj77HvgGG2n
-         iH8Mij1vaDJQb10NbUr+UMUU/ksKH/owHnlIIUfI7hFBIxyVXA1dgamS8o3jN8UydJd4
-         pBonbJhd+ETQY/uV2N5P4A0YHBHdSSGm4veBsUIkjbQjVH69d08/nH1PcI/jVzbDaZ3m
-         azP6OQwZDyry5J2YTw/ATC+O8lRORB8F3CLrSXqWfDQzDX7Z4BN+DfGFBU60vAoMLpaq
-         RhKt3LAXWjV5iSe2wEi/NRUf3BY+GpjNlb6LDIBl5CFhfkNhriyccrneb8oYuzcTi83z
-         BepA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA1948CDC
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 21:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702848809;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Umdjp5ksoy+JcwUTo/e1T9qvEs+1ox676Cz4ZgwJJjU=;
+	b=SHOHstT1tamlcva9iBgqjuihlGiz37H5hrt2r+T1OMLTDFDnvv9l0w5Ux+OYtA3dw4r94P
+	KXerQN5lkFJKLoT9JGl3CmdbuXoBwBi5LF/y8aLLfWjFawWzXr+Guq0r5tyIf1CHqpjwKk
+	5CNr1dW/LrOnzhiULk5eCGyxH3zio5I=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-44-LXd3UlW8OTSsCaHBAvSbkw-1; Sun, 17 Dec 2023 16:33:27 -0500
+X-MC-Unique: LXd3UlW8OTSsCaHBAvSbkw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c6397d9adso21900915e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 13:33:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702848742; x=1703453542;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S9EUtlC/PMv4Un3TQIvI6rNRv4BEn/NrIpICR/MmGos=;
-        b=oGvwWY0bwvNQr2PM5guOv8+BtlzkOXZLvqyaAtGOiy6XavfWXO8FhEhRNDbb5HxIVQ
-         D3YMZYlJhBOinqWwemWAuUXlPS0X9ooqvxafn+S56FXdJivALiNIDp6gW6xURvxX+UV1
-         WfJ2o+KKERvAibxV/XImUgMPHUczQmPc3ENzBMj1itWI2jF4mi/t+ABfj4MhIMQX8J8L
-         WlFsG7qj53Ri1cwq4ODb2ZNqmBa4586yu5mfOcOtPDOuFqHggrmGmGcdGQA+T2nffJQa
-         0Ks2lx3iRKorED+AwkPceukLppGn0puYZyB2i21Q09Kluo5BJOxWvtiP5u0sF2zKjknv
-         nMig==
-X-Gm-Message-State: AOJu0YzFd/rnCkdor1RysE+echqtElEdJ0ZkeedJAc5cHx/6AXIaWaMa
-	lWXnY2/MqbyxZ8vgdj5PdNQ=
-X-Google-Smtp-Source: AGHT+IEtk5oBf0yL162N5sduVtfni1aVSJeCPUAgGE2Xbp4M7tnAcPmIbMNqo1Wg89oUvIg7rz6GvA==
-X-Received: by 2002:a92:ca4a:0:b0:35c:e547:d759 with SMTP id q10-20020a92ca4a000000b0035ce547d759mr15814238ilo.12.1702848741771;
-        Sun, 17 Dec 2023 13:32:21 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:9c41:1dd2:7d5d:e008])
-        by smtp.gmail.com with ESMTPSA id e4-20020a0df504000000b005d746ac7f6bsm8197364ywf.69.2023.12.17.13.32.20
+        d=1e100.net; s=20230601; t=1702848806; x=1703453606;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Umdjp5ksoy+JcwUTo/e1T9qvEs+1ox676Cz4ZgwJJjU=;
+        b=XYZcvLDF15ls+xGFBK2FGYUYbVLbmghaxeViqy18Jaf24hqRmRNCpDkTSEE5qMxTJl
+         4JuFaGmGXUDceGvsYLNbD6ikMAoS9TrXe3Pf6NCFJiUWW8E3HPVnQN6o0k0q+t285U7m
+         X/r9HKUQEffUQvfgVZZpXlW+MpUK5Y32152qfEugYCJ7vbKmcStaJu7oqNXHRulzYehp
+         la2QDQYjpWRHP+sg8KPm8bO215SeUAcvgzSKrxf6d9i61CsQPvg4IBEznGbO1U5WnsjP
+         J6d4qzSBbykcIreJOQEVtwAeapcRs2Dvzp+0Gfi8tYvNdfcY2/W/nDByYYxQVFbyxH0R
+         Rw5w==
+X-Gm-Message-State: AOJu0Yz1hyy7optbmXQqGgkHdfYk04EzoAZWc2Nf0A+dpGgwoxcUuLzv
+	0P5CoEhOtG4SHbrvq6cShTEgaB3cMy8SqLoRG0ugBdRNnzNeq4L3ITgpT22HkdwRTcr+AsYQYwD
+	Hy4ojYpyax12OgX0EOnaDZKyAx7ZE61I7
+X-Received: by 2002:a05:600c:3403:b0:401:daf2:2735 with SMTP id y3-20020a05600c340300b00401daf22735mr8294556wmp.31.1702848805785;
+        Sun, 17 Dec 2023 13:33:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IElsMH/e3AuKVnouRvSQ1+tNGmbnVzX8Ok7/pjwFuDcho/tdFgjioZuOMxwPzVueDgH+cCPnQ==
+X-Received: by 2002:a05:600c:3403:b0:401:daf2:2735 with SMTP id y3-20020a05600c340300b00401daf22735mr8294553wmp.31.1702848805410;
+        Sun, 17 Dec 2023 13:33:25 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id e12-20020a05600c4e4c00b0040b398f0585sm39872880wmq.9.2023.12.17.13.33.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 13:32:21 -0800 (PST)
-From: Yury Norov <yury.norov@gmail.com>
-To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	longli@microsoft.com,
-	yury.norov@gmail.com,
-	leon@kernel.org,
-	cai.huoqing@linux.dev,
-	ssengar@linux.microsoft.com,
-	vkuznets@redhat.com,
-	tglx@linutronix.de,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: schakrabarti@microsoft.com,
-	paulros@microsoft.com
-Subject: [PATCH 3/3] net: mana: add a function to spread IRQs per CPUs
-Date: Sun, 17 Dec 2023 13:32:14 -0800
-Message-Id: <20231217213214.1905481-4-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231217213214.1905481-1-yury.norov@gmail.com>
-References: <20231217213214.1905481-1-yury.norov@gmail.com>
+        Sun, 17 Dec 2023 13:33:24 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>, Thomas
+ Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, Peter
+ Robinson <pbrobinson@gmail.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Conor Dooley <conor+dt@kernel.org>, Daniel Vetter
+ <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/2] dt-bindings: display: Add SSD133x OLED controllers
+In-Reply-To: <20231217-bacteria-amusable-77efb05770a4@spud>
+References: <20231217100741.1943932-1-javierm@redhat.com>
+ <20231217100741.1943932-2-javierm@redhat.com>
+ <20231217-bacteria-amusable-77efb05770a4@spud>
+Date: Sun, 17 Dec 2023 22:33:24 +0100
+Message-ID: <87fs00ms4b.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Souradeep investigated that the driver performs faster if IRQs are
-spread on CPUs with the following heuristics:
+Conor Dooley <conor@kernel.org> writes:
 
-1. No more than one IRQ per CPU, if possible;
-2. NUMA locality is the second priority;
-3. Sibling dislocality is the last priority.
+Hello Connor,
 
-Let's consider this topology:
+> On Sun, Dec 17, 2023 at 11:07:03AM +0100, Javier Martinez Canillas wrote:
 
-Node            0               1
-Core        0       1       2       3
-CPU       0   1   2   3   4   5   6   7
+[...]
 
-The most performant IRQ distribution based on the above topology
-and heuristics may look like this:
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - solomon,ssd1331
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +allOf:
+>> +  - $ref: solomon,ssd-common.yaml#
+>> +
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            const: solomon,ssd1331
+>> +    then:
+>> +      properties:
+>> +        width:
+>> +          default: 96
+>> +        height:
+>> +          default: 64
+>
+> Do you envisage a rake of devices that are going to end up in this
+> binding? Otherwise, why not unconditionally set the constraints?
+>
 
-IRQ     Nodes   Cores   CPUs
-0       1       0       0-1
-1       1       1       2-3
-2       1       0       0-1
-3       1       1       2-3
-4       2       2       4-5
-5       2       3       6-7
-6       2       2       4-5
-7       2       3       6-7
+Because these are only for the default width and height, there can be
+panels using the same controller but that have a different resolution.
 
-The irq_setup() routine introduced in this patch leverages the
-for_each_numa_hop_mask() iterator and assigns IRQs to sibling groups
-as described above.
+For example, there are panels using the SSD1306 controller that have
+128x32 [0], 64x32 [1] or 128x64 [2] resolutions.
 
-According to [1], for NUMA-aware but sibling-ignorant IRQ distribution
-based on cpumask_local_spread() performance test results look like this:
+But answering your question, yes I think that more devices for this
+SSD133x family are going to be added later. Looking at [3], there is
+at least SSD1333 that has a different default resolutions (176x176).
 
-./ntttcp -r -m 16
-NTTTCP for Linux 1.4.0
----------------------------------------------------------
-08:05:20 INFO: 17 threads created
-08:05:28 INFO: Network activity progressing...
-08:06:28 INFO: Test run completed.
-08:06:28 INFO: Test cycle finished.
-08:06:28 INFO: #####  Totals:  #####
-08:06:28 INFO: test duration    :60.00 seconds
-08:06:28 INFO: total bytes      :630292053310
-08:06:28 INFO:   throughput     :84.04Gbps
-08:06:28 INFO:   retrans segs   :4
-08:06:28 INFO: cpu cores        :192
-08:06:28 INFO:   cpu speed      :3799.725MHz
-08:06:28 INFO:   user           :0.05%
-08:06:28 INFO:   system         :1.60%
-08:06:28 INFO:   idle           :96.41%
-08:06:28 INFO:   iowait         :0.00%
-08:06:28 INFO:   softirq        :1.94%
-08:06:28 INFO:   cycles/byte    :2.50
-08:06:28 INFO: cpu busy (all)   :534.41%
+I think that even the SSD135x family could be supported by the same
+modsetting pipeline, but I need to get one to figure it out.
 
-For NUMA- and sibling-aware IRQ distribution, the same test works
-15% faster:
+[0]: https://es.aliexpress.com/item/1005003648174074.html
+[1]: https://www.buydisplay.com/white-0-49-inch-oled-display-64x32-iic-i2c-ssd1306-connector-fpc
+[2]: https://es.aliexpress.com/item/1005001582340858.html?gatewayAdapt=glo2esp
+[3]: https://www.solomon-systech.com/product-search/?technology=oled-display
 
-./ntttcp -r -m 16
-NTTTCP for Linux 1.4.0
----------------------------------------------------------
-08:08:51 INFO: 17 threads created
-08:08:56 INFO: Network activity progressing...
-08:09:56 INFO: Test run completed.
-08:09:56 INFO: Test cycle finished.
-08:09:56 INFO: #####  Totals:  #####
-08:09:56 INFO: test duration    :60.00 seconds
-08:09:56 INFO: total bytes      :741966608384
-08:09:56 INFO:   throughput     :98.93Gbps
-08:09:56 INFO:   retrans segs   :6
-08:09:56 INFO: cpu cores        :192
-08:09:56 INFO:   cpu speed      :3799.791MHz
-08:09:56 INFO:   user           :0.06%
-08:09:56 INFO:   system         :1.81%
-08:09:56 INFO:   idle           :96.18%
-08:09:56 INFO:   iowait         :0.00%
-08:09:56 INFO:   softirq        :1.95%
-08:09:56 INFO:   cycles/byte    :2.25
-08:09:56 INFO: cpu busy (all)   :569.22%
+> Cheers,
+> Conor.
 
-[1] https://lore.kernel.org/all/20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net/
-
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Co-developed-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 6367de0c2c2e..11e64e42e3b2 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1243,6 +1243,34 @@ void mana_gd_free_res_map(struct gdma_resource *r)
- 	r->size = 0;
- }
- 
-+static __maybe_unused int irq_setup(unsigned int *irqs, unsigned int len, int node)
-+{
-+	const struct cpumask *next, *prev = cpu_none_mask;
-+	cpumask_var_t cpus __free(free_cpumask_var);
-+	int cpu, weight;
-+
-+	if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
-+		return -ENOMEM;
-+
-+	rcu_read_lock();
-+	for_each_numa_hop_mask(next, node) {
-+		weight = cpumask_weight_andnot(next, prev);
-+		while (weight-- > 0) {
-+			cpumask_andnot(cpus, next, prev);
-+			for_each_cpu(cpu, cpus) {
-+				if (len-- == 0)
-+					goto done;
-+				irq_set_affinity_and_hint(*irqs++, topology_sibling_cpumask(cpu));
-+				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
-+			}
-+		}
-+		prev = next;
-+	}
-+done:
-+	rcu_read_unlock();
-+	return 0;
-+}
-+
- static int mana_gd_setup_irqs(struct pci_dev *pdev)
- {
- 	unsigned int max_queues_per_port = num_online_cpus();
 -- 
-2.40.1
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
 
