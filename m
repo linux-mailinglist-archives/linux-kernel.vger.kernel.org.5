@@ -1,91 +1,73 @@
-Return-Path: <linux-kernel+bounces-2858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0CA18162E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4600C8162E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:48:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706E51F21726
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:48:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9B491F218B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E034AF93;
-	Sun, 17 Dec 2023 22:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD2549F86;
+	Sun, 17 Dec 2023 22:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="vTuABx1C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SstXXnI3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574154B134;
-	Sun, 17 Dec 2023 22:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=283olUZWXoRvFe1qG4d0iFlOJnatVaq3Eq/A7zg0yes=; b=vTuABx1CIetIEPDr/0CJFyKpJO
-	kCxltH2Kb9zpvrcINBN+X6O1BV+SYIrgoMqVrSUY9YpfZDFGEzQ51cBs8x58GAlL03PS5JduGqiv5
-	5DVswWL5TYFtMb3gu7zSmxXN/USpBEsUBWIQqgy4JSMMZf+byXisoivw0OgLTuKpTDyI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rEzve-003AuU-1w; Sun, 17 Dec 2023 23:48:10 +0100
-Date: Sun, 17 Dec 2023 23:48:10 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/12 net-next] qca_spi: Improve SPI IRQ handling
-Message-ID: <0a372815-ce13-4254-ab3b-12bc2ca1b1a2@lunn.ch>
-References: <20231214150944.55808-1-wahrenst@gmx.net>
- <20231214150944.55808-3-wahrenst@gmx.net>
- <c5b81005-e309-46df-b534-b24814d10006@lunn.ch>
- <8cdac20c-e860-4157-95c0-6e8250e50af5@gmx.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F5947F5A;
+	Sun, 17 Dec 2023 22:48:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C56DFC433C7;
+	Sun, 17 Dec 2023 22:48:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702853294;
+	bh=4k/K7LW2vAuBQPFpH+DX281lWsUDNFM+Oh8iKk4HXPo=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=SstXXnI3+v2NHVTPFPh/RJ6nqOHBYsHcznDz5gQ0cpCbdDgYUERYwSW5fkine7yit
+	 Vq8lgJwYneoawYSgCI+QaD3rRMsEB2RqGI1iqKY/cnAujFDp0YFaF9xECgBaYkIrOM
+	 hNkvhmw58xwqRmROm7pqQ2N/XKDyDhY8BL5/7Eok3dHMzdXXowLCWFs47zOMOcrOtk
+	 QkVBmVMAgZELKD+awLjO4sMuwUjV6gNjFjBo313RJk8B8r6yb1qUbn9FkbgWBTJkaf
+	 z7Oz51zBxcZDFqxOTUv+6N8SGGItrjyydI6smNlmoqQipAttIN9rfAxX9kD/JDJzRg
+	 12MpTRzvBusjw==
+Message-ID: <6b01be23781bc025f31bf733e366073a.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8cdac20c-e860-4157-95c0-6e8250e50af5@gmx.net>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231214-dipper-earshot-72eef3059961@spud>
+References: <20231214-dipper-earshot-72eef3059961@spud>
+Subject: Re: [PATCH v1] clk: microchip: mpfs-ccc: replace include of asm-generic/errno-base.h
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>, Al Viro <viro@zeniv.linux.org.uk>, Daire McNamara <daire.mcnamara@microchip.com>, Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org
+Date: Sun, 17 Dec 2023 14:48:12 -0800
+User-Agent: alot/0.10
 
-On Sun, Dec 17, 2023 at 08:17:56PM +0100, Stefan Wahren wrote:
-> Hi Andrew,
-> 
-> Am 17.12.23 um 19:14 schrieb Andrew Lunn:
-> > On Thu, Dec 14, 2023 at 04:09:34PM +0100, Stefan Wahren wrote:
-> > > The functions qcaspi_netdev_open/close are responsible of request &
-> > > free of the SPI interrupt, which wasn't the best choice because
-> > > allocation problems are discovered not during probe. So let us split
-> > > IRQ allocation & enabling, so we can take advantage of a device
-> > > managed IRQ.
-> > Could you replace the kernel thread with a threaded interrupt handler?
-> the kernel thread is responsible for receiving, transmitting and reset
-> handling (there is no GPIO reset in this driver) which must be
-> synchronized along the same SPI interface. The interrupt just signalize
-> a chip reset or a received packet is available.
-> 
-> Could you please elaborate this request more in detail:
-> What is the problem with the kernel thread?
-> Why should i use the threaded interrupt as a replacement instead of e.g.
-> workqueue?
-> 
-> Please don't get me wrong, but i need to convince my employer for such a
-> big rewrite.
+Quoting Conor Dooley (2023-12-14 02:59:57)
+> From: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> As evidenced by the fact that only 2 other drivers include this header,
+> it is not a normal thing to do. Including the regular version of this
+> header is far more conventional for drivers.
+>=20
+> CC: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> --
+> CC: Conor Dooley <conor.dooley@microchip.com>
+> CC: Daire McNamara <daire.mcnamara@microchip.com>
+> CC: Michael Turquette <mturquette@baylibre.com>
+> CC: Stephen Boyd <sboyd@kernel.org>
+> CC: linux-riscv@lists.infradead.org
+> CC: linux-clk@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> ---
 
-I don't know this driver, which is why i asked the question. Its just
-a suggestion. Maybe it makes no sense. But there have been other SPI
-based Ethernet drivers which have been simplified by using threaded
-interrupts rather than a kernel thread or a work queue, since the
-interrupt core does all the thread management, and in particular the
-creating and destroying of the thread which drivers often get wrong.
-
-	 Andrew
+Applied to clk-next
 
