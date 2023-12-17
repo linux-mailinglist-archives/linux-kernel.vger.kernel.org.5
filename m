@@ -1,67 +1,153 @@
-Return-Path: <linux-kernel+bounces-2772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACA7816191
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:14:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E05C816194
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5F9F1F21E27
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:14:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6763CB21821
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC1D47F47;
-	Sun, 17 Dec 2023 18:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A08F47F55;
+	Sun, 17 Dec 2023 18:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Q6Uixddx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXE7JMB/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EA9315B6;
-	Sun, 17 Dec 2023 18:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=H3Yg9Ks44h9xKxHznRP1HbmjN2e0OY+H92vAnJ0cCh0=; b=Q6UixddxCDy7gVGAHV27qsheGf
-	Jd7EFu86koHVAIv7bZFLthsnvAftOIxQh4UtTzhOfPcsqmAZ+TZNvXGBGr2GrrMk3fK7jIl6QWyVA
-	Ld+EoMuLG3+RXOg5ZWFFtSKxh1GqGoldy526reoKJMgBgZ6EORoh31GgUVM0b542unKU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rEvel-003AIp-Ax; Sun, 17 Dec 2023 19:14:27 +0100
-Date: Sun, 17 Dec 2023 19:14:27 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/12 net-next] qca_spi: Improve SPI IRQ handling
-Message-ID: <c5b81005-e309-46df-b534-b24814d10006@lunn.ch>
-References: <20231214150944.55808-1-wahrenst@gmx.net>
- <20231214150944.55808-3-wahrenst@gmx.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E15847A51;
+	Sun, 17 Dec 2023 18:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3365b5d6f0eso1096846f8f.3;
+        Sun, 17 Dec 2023 10:20:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702837219; x=1703442019; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5rvNRlKQCII+W9/za8llc8bUhZndn3boPniTO/N3JSc=;
+        b=KXE7JMB/NVK9RkqzlDSiqwXLaTCs95K5dAB645Wf6ly2FRRtkYIkS2OCFhmLoCZ5+B
+         c19u+9ugykNY1t3Zo6J7BkNpyFBUFGjQIsI7VUMftr/6/Wlt7DY264hRJuP3z9MvL6Fj
+         rgTpM3lix7hHljEJT9mPn7TnWQLm6LibzWQN93gwgkiRFuUOiRWNHNaRS0ndeBzuFgft
+         9BgiVm0rqwUEN43Z6itbb9GUVQ6Fu9121pxJDddf8cjkt77tNJpeER39jRFksINsRKHW
+         WSksoX5B9SDpDQgWaEJL3eGDjMdhkLu/jPGJvWGmFGdkl5W2IfFingpjr1Yzz80c0Qcs
+         /nNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702837219; x=1703442019;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5rvNRlKQCII+W9/za8llc8bUhZndn3boPniTO/N3JSc=;
+        b=GT47TyxMIxOvhcxW5Fn8VL+KkamznRjwe4/FI5iRCkJQmk8PwbB7yuwuOqDSGfy/yc
+         9OYe/8zx1yM4eXw3NSwE5Sr+IKajNBRanqHvPsHO0qe9as+P12wG2p4sanTg5M7RAlh6
+         Ta4KVfRbO3MZVXHGqeJWgJgld9fcQCYymcItQOhpXWbs8VOqIrE73R5j6dLULbTUJG0S
+         3PwuOzZr72aUiMd75sk0TJZwiAA/ZzMhn4AGUEDJIvgjApxC1vMGTC/Vn5fDjG5livff
+         v0fhL69Yh4BMMw91Ed4TXRuDiCbxD/TEdBuV1BoPTdQiLpRr3bsFZMQodlZct/FUXtjL
+         TBAg==
+X-Gm-Message-State: AOJu0YxBaoWyX9SRzmoJeYZMevQHqinmliuc4L3gw4GPJLDpXKQyMWjm
+	hkoWPSfTKhIxGDGcRWooVIOUjMSoRp2Ni40I2jw=
+X-Google-Smtp-Source: AGHT+IGx+3iTTTrHonTIpnEoNO+lh4BjRfCi38pYNyOVhmHl4+25bUkJSJ7UQMrgDLFvhtMGbCMnbdXkJo9+yFFQIGQ=
+X-Received: by 2002:a05:6000:4e:b0:336:6555:442e with SMTP id
+ k14-20020a056000004e00b003366555442emr657643wrx.35.1702837219312; Sun, 17 Dec
+ 2023 10:20:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214150944.55808-3-wahrenst@gmx.net>
+References: <20231217131716.830290-1-menglong8.dong@gmail.com> <20231217131716.830290-3-menglong8.dong@gmail.com>
+In-Reply-To: <20231217131716.830290-3-menglong8.dong@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 17 Dec 2023 10:20:08 -0800
+Message-ID: <CAADnVQJ6yVJzzAnHT9dWcQ+-0czcT9qf6Qm_b_tmYsBs3UVUEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: activate the OP_NE login
+ in range_cond()
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 04:09:34PM +0100, Stefan Wahren wrote:
-> The functions qcaspi_netdev_open/close are responsible of request &
-> free of the SPI interrupt, which wasn't the best choice because
-> allocation problems are discovered not during probe. So let us split
-> IRQ allocation & enabling, so we can take advantage of a device
-> managed IRQ.
+On Sun, Dec 17, 2023 at 5:18=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> The edge range checking for the registers is supported by the verifier
+> now, so we can activate the extended login in
+> tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
+> such logic.
+>
+> Besides, I added some cases to the "crafted_cases" array for this logic.
+> These cases are mainly used to test the edge of the src reg and dst reg.
+>
+> All reg bounds testings has passed in the SLOW_TESTS mode:
+>
+> $ export SLOW_TESTS=3D1 && ./test_progs -t reg_bounds -j
+> Summary: 65/18959832 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> ---
+> v3:
+> - do some adjustment to the crafted cases that we added
+> v2:
+> - add some cases to the "crafted_cases"
+> ---
+>  .../selftests/bpf/prog_tests/reg_bounds.c     | 20 +++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
+testing/selftests/bpf/prog_tests/reg_bounds.c
+> index 0c9abd279e18..c9dc9fe73211 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x,=
+ struct range y,
+>                 *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b)=
+);
+>                 break;
+>         case OP_NE:
+> -               /* generic case, can't derive more information */
+> -               *newx =3D range(t, x.a, x.b);
+> -               *newy =3D range(t, y.a, y.b);
+> -               break;
+> -
+> -               /* below extended logic is not supported by verifier just=
+ yet */
+> +               /* below logic is supported by the verifier now */
+>                 if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
+>                         /* X is a constant matching left side of Y */
+>                         *newx =3D range(t, x.a, x.b);
+> @@ -2101,6 +2096,19 @@ static struct subtest_case crafted_cases[] =3D {
+>         {S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, 0}=
+},
+>         {S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
+>         {S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S32=
+_MIN, (u32)(s32)S32_MIN}},
+> +
+> +       /* edge overlap testings for BPF_NE, skipped some cases that alre=
+ady
+> +        * exist above.
+> +        */
+> +       {U64, U64, {0, U64_MAX}, {U64_MAX, U64_MAX}},
+> +       {U64, U64, {0, U64_MAX}, {0, 0}},
+> +       {S64, U64, {S64_MIN, 0}, {S64_MIN, S64_MIN}},
+> +       {S64, U64, {S64_MIN, 0}, {0, 0}},
+> +       {S64, U64, {S64_MIN, S64_MAX}, {S64_MAX, S64_MAX}},
+> +       {U32, U32, {0, U32_MAX}, {0, 0}},
+> +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {0, 0}},
+> +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {(u32)(s32)S32_MIN, (u32)(s32)=
+S32_MIN}},
+> +       {S32, U32, {(u32)(s32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
 
-Could you replace the kernel thread with a threaded interrupt handler?
-
-      Andrew
+I think you're copying the style of the casts from few lines above,
+but (s32)S32_MIN is unnecessary. S32_MIN includes the cast already.
+Please remove and fix the above lines too.
 
