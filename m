@@ -1,51 +1,70 @@
-Return-Path: <linux-kernel+bounces-2586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A1A3815F22
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:02:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F606815F26
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8611B21E2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:02:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81EC61C20FAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A4B44360;
-	Sun, 17 Dec 2023 13:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAE14436B;
+	Sun, 17 Dec 2023 13:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIP8vS81"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WdXcnoHj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A233C43147;
-	Sun, 17 Dec 2023 13:02:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A4DC433C7;
-	Sun, 17 Dec 2023 13:02:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702818147;
-	bh=totc3bhdIJhST4jH5HrKG/pFIPp32//1T4FxcfKMPPg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hIP8vS81QN8xQGOQeCV0N/GyEHaBWKyERYOmoJe64KTzsjv1E+PpSRvJPJ4/8mrNt
-	 qime86vnW6dQyV6RtIgscW3NhC6hgpEeUiriJxWnBy9zj9SoPso9BNuoLdcCWSSp9C
-	 VzqKYs29YIuknddmfyTfKVIfnvbNLAFdanhnD4Q9Rg8nfvy3D5enzAwBg3PXKixndO
-	 omRCnEfR1cbXWLcxLC+JMvYzD+I1YAq6rtQooiiOSRXgSJf4nerbTpZu2d+dqV53bH
-	 tRdFi+O127uMshEDgLW5hMAXgq9wk1EWVCltY4M5tYNtrAoUm3oKssGpdWqgEOxWWk
-	 2lqQcCTlwC3NQ==
-Date: Sun, 17 Dec 2023 13:02:21 +0000
-From: Simon Horman <horms@kernel.org>
-To: Luo Jie <quic_luoj@quicinc.com>
-Cc: andrew@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3180042ABE;
+	Sun, 17 Dec 2023 13:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702818314; x=1734354314;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rW0OaEZOM0RJb9whCOu+rkdFO0Mr/JeW2UKgiI/uOks=;
+  b=WdXcnoHjvGMSzutbF0rET2uX9SLHUPop0slKme42FsWTNIAJ7wpWq2b2
+   zU1J969Oz7y0IRg9RB/ceDO/UIOvDMcZ0wZszLqnvCTfVgetSA9nGhNF9
+   8YpQyFG+vRzU8nAJdwBrOX1/x1EfCM7Pk6z3Fk4NidOgvy2LpfOKwbSw7
+   S4NX7mlEtpf/RCI/Y3uIgE0OXRh3EMhYXzruA2D/Hfyrht1wzFV1dJpDV
+   XcfjJnKQPJnH2c2zz6eKve6xKUGH4mdhYZ4VqPyHClqIQWM13jw+EmV7l
+   XSSbVwBRCNm4cR9deLWr6ZSASZWtNfqc3KY72PrtLMbLzRC7x9JBWm0jd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="374913936"
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="374913936"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 05:05:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="918972931"
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="918972931"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 17 Dec 2023 05:05:09 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEqpP-00033V-1n;
+	Sun, 17 Dec 2023 13:05:07 +0000
+Date: Sun, 17 Dec 2023 21:04:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
+	joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+	paul.cercueil@analog.com, Michael.Hennerich@analog.com,
+	lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
-	p.zabel@pengutronix.de, f.fainelli@gmail.com,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v8 13/14] net: phy: at803x: configure qca8084 work mode
-Message-ID: <20231217130221.GZ6288@kernel.org>
-References: <20231215074005.26976-1-quic_luoj@quicinc.com>
- <20231215074005.26976-14-quic_luoj@quicinc.com>
+	dan.carpenter@linaro.org, dlechner@baylibre.com,
+	marcelo.schmitt1@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 6/15] iio: adc: ad7091r: Move chip init data to
+ container struct
+Message-ID: <202312172006.b2fep1oG-lkp@intel.com>
+References: <9d1248860193b55e79640b2e64c21c66bd6645f9.1702746240.git.marcelo.schmitt1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,60 +73,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231215074005.26976-14-quic_luoj@quicinc.com>
+In-Reply-To: <9d1248860193b55e79640b2e64c21c66bd6645f9.1702746240.git.marcelo.schmitt1@gmail.com>
 
-On Fri, Dec 15, 2023 at 03:40:03PM +0800, Luo Jie wrote:
+Hi Marcelo,
 
-...
+kernel test robot noticed the following build errors:
 
-> @@ -1038,6 +1045,46 @@ static int qca8084_common_clock_init(struct phy_device *phydev)
->  	return clk_prepare_enable(priv->clk[MDIO_MASTER_AHB_CLK]);
->  }
->  
-> +static int qca8084_parse_and_set_work_mode(struct phy_device *phydev)
-> +{
-> +	struct device_node *node;
-> +	struct at803x_priv *priv;
-> +	u32 value, work_mode;
-> +	int ret;
-> +
-> +	node = phydev->mdio.dev.of_node;
-> +	priv = phydev->priv;
+[auto build test ERROR on jic23-iio/togreg]
+[also build test ERROR on linus/master v6.7-rc5 next-20231215]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Hi Luo Jie,
+url:    https://github.com/intel-lab-lkp/linux/commits/Marcelo-Schmitt/scripts-checkpatch-Add-__aligned-to-the-list-of-attribute-notes/20231217-055420
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+patch link:    https://lore.kernel.org/r/9d1248860193b55e79640b2e64c21c66bd6645f9.1702746240.git.marcelo.schmitt1%40gmail.com
+patch subject: [PATCH v4 6/15] iio: adc: ad7091r: Move chip init data to container struct
+config: um-randconfig-r111-20231217 (https://download.01.org/0day-ci/archive/20231217/202312172006.b2fep1oG-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231217/202312172006.b2fep1oG-lkp@intel.com/reproduce)
 
-a minor nit from my side: priv is set but otherwise unused in this function.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312172006.b2fep1oG-lkp@intel.com/
 
-> +
-> +	/* The property "qcom,phy-work-mode" is only defined in one
-> +	 * PHY device tree node.
-> +	 */
-> +	ret = of_property_read_u32(node, "qcom,phy-work-mode", &value);
-> +	if (ret)
-> +		return ret == -EINVAL ? 0 : ret;
-> +
-> +	switch (value) {
-> +	case 0:
-> +		work_mode = QCA8084_WORK_MODE_QXGMII;
-> +		break;
-> +	case 1:
-> +		work_mode = QCA8084_WORK_MODE_QXGMII_PORT4_SGMII;
-> +		break;
-> +	case 2:
-> +		work_mode = QCA8084_WORK_MODE_SWITCH;
-> +		break;
-> +	case 3:
-> +		work_mode = QCA8084_WORK_MODE_SWITCH_PORT4_SGMII;
-> +		break;
-> +	default:
-> +		phydev_err(phydev, "invalid qcom,phy-work-mode %d\n", value);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return qca8084_mii_modify(phydev, QCA8084_WORK_MODE_CFG,
-> +				  QCA8084_WORK_MODE_MASK,
-> +				  FIELD_PREP(QCA8084_WORK_MODE_MASK, work_mode));
-> +}
+All errors (new ones prefixed by >>):
 
-...
+>> drivers/iio/adc/ad7091r5.c:59:14: error: initializer element is not constant
+     .irq_info = ad7091r5_chip_info_irq,
+                 ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/ad7091r5.c:59:14: note: (near initialization for 'ad7091r5_init_info.irq_info')
+   drivers/iio/adc/ad7091r5.c:60:17: error: initializer element is not constant
+     .info_no_irq = ad7091r5_chip_info_noirq,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/iio/adc/ad7091r5.c:60:17: note: (near initialization for 'ad7091r5_init_info.info_no_irq')
+
+
+vim +59 drivers/iio/adc/ad7091r5.c
+
+    57	
+    58	static struct ad7091r_init_info ad7091r5_init_info = {
+  > 59		.irq_info = ad7091r5_chip_info_irq,
+    60		.info_no_irq = ad7091r5_chip_info_noirq,
+    61		.regmap_config = &ad7091r_regmap_config,
+    62		.init_adc_regmap = &ad7091r5_regmap_init
+    63	};
+    64	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
