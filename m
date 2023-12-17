@@ -1,113 +1,119 @@
-Return-Path: <linux-kernel+bounces-2868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01CD581636D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:31:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E49FB816379
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABDE01F21B70
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:31:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74C5A282325
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E336B4B130;
-	Sun, 17 Dec 2023 23:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7919B4B12D;
+	Sun, 17 Dec 2023 23:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="D6CYSRvS"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="ZyGWsNXM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4CC648CC7;
-	Sun, 17 Dec 2023 23:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1702855845;
-	bh=YB2dFiDcE/7I5Sv39W5ZIfPPERRMneL2j2F4B0Hk8fs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=D6CYSRvSHmCuTCzrOxKRLDwhDShCVdr4y6K1hazxFFQyHEXQaFxMJZbZSjJ4xAp2Y
-	 TnEF4IuVe+KDI6oNvZ4R85EET12qk1g08brpk7MdXtnvvYlgqSmuHopcKNMtzPwVZB
-	 jTwE/ZVSvfGC3PtktmlJ7lx9iidpWMqkksnvwrs97WqoCkl2OVFJymZLTosYzOLD2z
-	 Mgc2g88W3VJ7xlloTsAFhx71unsg2mlMU2R7YQGgeR+ooG6depVbjO65UGiOiNSN5e
-	 hEkv8bVj6AiXt27gRsRqbj3iFBYRibTNL7cGqRfHLu0sK6Dvm7EFeztOFJojR8WPI7
-	 t9M6HcAA5ryAA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4StfMm4V21z4x5q;
-	Mon, 18 Dec 2023 10:30:44 +1100 (AEDT)
-Date: Mon, 18 Dec 2023 10:29:52 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, David Miller
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>
-Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
- Aleksander Lobakin <aleksander.lobakin@intel.com>, Larysa Zaremba
- <larysa.zaremba@intel.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>
-Subject: linux-next: manual merge of the bpf-next tree with the net-next
- tree
-Message-ID: <20231218102952.2428bd06@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293BF4B123
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id CDA75240101
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 00:46:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1702856767; bh=B7Ta4BYxySDCYAL3BF4XbGL4luNo1llUkloFHtXOoVs=;
+	h=MIME-Version:Content-Transfer-Encoding:Date:From:To:Cc:Subject:
+	 Message-ID:From;
+	b=ZyGWsNXMb73ZimzRWC8KpTrQ+30HjjWda/KoDSvKsOQEGCrzdKlLy5m7hW7/8Tm7f
+	 MBtzND3hwMPUo+WkceoPHGyQoN1hiI3OM8rjKoOLaCPVQDQhfM55aMqfX42CcXzKeF
+	 OgpEDPsx9A4u1qlBgBvvCT/vGvvni3yZg1GNH7kq3J6n+pPYlMaQan3c9+xa4uqryP
+	 Kpszl1xMWdPbLmrYfINnc22GmYGpAAQLI7BSFZbR9rzue0vEgQ9oYw4olBYKT9zZpC
+	 KCyZI4jh+FTKNsT509UY0WmVCeR0NtpyCpRv74lZVXv2nFIKIhI0J3d0VTzCxcm7+q
+	 F5kwgKsavWURQ==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4StfjW0LjSz9rxF;
+	Mon, 18 Dec 2023 00:46:06 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cDv_OgwexhiKmz_AYOhw3a5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Sun, 17 Dec 2023 23:46:06 +0000
+From: Yueh-Shun Li <shamrocklee@posteo.net>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Irrelevant documentation recommending the use of
+ "include/linux/kernel.h"
+Message-ID: <bc63acd7ef43bdd8d9609fa48dbf92f9@posteo.net>
 
---Sig_/cDv_OgwexhiKmz_AYOhw3a5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Dear Maintainer,
 
-Hi all,
+The section "18) Don't re-invent the kernel macros" in
+"Linux kernel coding style" (Documentation/process/coding-style.rst)
+recommends re-using the macros defined in "include/linux/kernel.h"
+instead of the improvised ones locally.
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+However, There's a note in the comment block added by commit 
+40cbf09f060c
+("kernel.h: include a note to discourage people from including it in 
+headers")
+two years ago, saying that there's an in-progress splitting of kernel.h
+and inclusion in headers under include/ is discouraged.
 
-  include/linux/skbuff.h
+Considering that the section was added 17 years ago by commit 
+58637ec90b7c
+("Add a new section to CodingStyle, promoting include/linux/kernel.h"),
+the section about kernel.h in the "Linux kernel coding style" 
+documentation seems outdated.
 
-between commit:
+Reproduction steps:
 
-  bf873a800ac3 ("net: skbuff: fix spelling errors")
+```sh
+# cd to the kernel source tree
+cd path/to/source/linux
+# Show the git blame of the documentation section added in 2006
+git blame -L 1051,1071 Documentation/process/coding-style.rst
+# Show the comment note on top of include/linux/kernel.h added in 2022
+git blame -L 2,10 include/linux/kernel.h
+```
 
-from the net-next tree and commit:
+Should we change
 
-  2ebe81c81435 ("net, xdp: Allow metadata > 32")
+```
+The header file include/linux/kernel.h
+```
 
-from the bpf-next tree.
+to something like
 
-I fixed it up (the latter removed a line that was updated by the former,
-so I just removed it) and can carry the fix as necessary. This is now
-fixed as far as linux-next is concerned, but any non trivial conflicts
-should be mentioned to your upstream maintainer when your tree is
-submitted for merging.  You may also want to consider cooperating with
-the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+```
+The header files under the include/linux/ directory
+```
 
---=20
-Cheers,
-Stephen Rothwell
+or a specific header that contains standalone helper macros?
 
---Sig_/cDv_OgwexhiKmz_AYOhw3a5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+It might be out of scope here,
+but such a header that collects standalone helping macros
+seems non-existent so far.
+It would be great to have one that contains things like
+"STRINGIFY", "CONCATENATE" (or "PASTE"), "UNIQUE_ID"
+and other helper macros without external dependencies.
+There's one called "include/linux/util_macros.h", but it depends on 
+"include/linux/math.h".
 
------BEGIN PGP SIGNATURE-----
+It's the first time for me to report an issue in LKML.
+Please kindly point out anything
+that I should fix or could improve.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV/hHAACgkQAVBC80lX
-0GzFlwf+Kpf/rnj71gHs66yQd/EoHmcA/wPjDai4NGfF2YrGTXDCcwZaL2gEoCtk
-I/QBDSVDAIddfwkGz1+UFQdl+saaBHcOHAyy8vxebve/6VLV2DveU+4nq7uz7sB4
-C++FPLqkQQgsUb/+WdZ0LZsZyNGjWBpSFiOV78pCBmJ12VPZu813MBfx0rp8JhMj
-d+Ri+BGECNJqDbyyZUcNj0SF2wlAzf8bk42KX6dGHrKvnuu7ncyslAqyepgKFLAh
-/q2Xc7gqPbPddp3cqqLuPoyiCxIVK10CJF+DZUIF0421QrPfjwizb+SPwmuzHaR8
-nLBkWO+Brrff0rLs8RlmZCu1F0tXZQ==
-=h0WP
------END PGP SIGNATURE-----
+Best regards,
 
---Sig_/cDv_OgwexhiKmz_AYOhw3a5--
+Shamrock
 
