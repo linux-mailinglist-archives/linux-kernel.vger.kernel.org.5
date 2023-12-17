@@ -1,130 +1,138 @@
-Return-Path: <linux-kernel+bounces-2439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DBAA815D31
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:18:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4305F815D35
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:26:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CBE91F22521
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 02:18:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A845D1F22289
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 02:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769E015BE;
-	Sun, 17 Dec 2023 02:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6079C10F2;
+	Sun, 17 Dec 2023 02:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VJFpDkED"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UR0SnXIm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B9AA5F
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 02:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6da3659535fso1821202a34.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 18:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702779495; x=1703384295; darn=vger.kernel.org;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=OFl8kjpw91XelbaLp/NqZrQDKjPZSUtARdmSUPQXSX8=;
-        b=VJFpDkEDGw/FR4o/St1bqanokQFV99ffBLRVEy4vwSZWwLafnkkXJAuTJnKac2oPV2
-         OXBcr2dAu0hwlqf2wxz5aLt3UFQIep2NFn1wCmTuxnCtmodjGz/zDewvgsiU4iSXfixU
-         5IVxUaZkOy7gQjYAuxwvMylvIqJJfZYzVtxdZI36NRheHiX2AnPmkUYB3odKBak+ULjN
-         fTdaFgbyOwmFglxoXQ1Zg669yAOCvBj1QUubpLI6NCTEHawkbq6uL9HvFYiM634LjBnh
-         64PUVxjLHjBEHLbM3gfV2plRQ4eK7UueVKhHogwHkhKUBayMnHNoIpCA5jfbhUHPF4sY
-         tzMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702779495; x=1703384295;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OFl8kjpw91XelbaLp/NqZrQDKjPZSUtARdmSUPQXSX8=;
-        b=QDg/DcidJLPWaWItxh8a9uE5dLkCKyGm4b1kKkQT7OCLFwhAr0tVpqBuDjVlllav3l
-         J69PvPhC9lNY0P1TwJanh/cG1boTgGSbKhBFrhdBZeb0wJjTiB2KDDUQZkf222TTbQYS
-         VAJ2bdt16rvvhhDi351Mh0skdLXBlucee/PL6hflgr24WuJuORK6Zx52kAGp0YSQMefB
-         xQmvNN7iNGKmKkuqflPnzR8hzYmPY0s/Qa4xFJVMpZ6xhCRu8IDIiwR+8/OMN1yeHJhX
-         BFBdWlmDMqR8+O5ih2X9qJF8eIG3M5I+ga5b7nutXMFUXTSQNjZFWa1NculNZNq1oCfv
-         T3ww==
-X-Gm-Message-State: AOJu0Yym3HGFkYx25xthJDGyewOUCWjgh+T5yYemGfmelM7Tsq7dIbGx
-	1q9LcnNFFLVklrWaq2eNeSP92g==
-X-Google-Smtp-Source: AGHT+IF+rykhjl/vJMlMFtG1M64I68Xtmq2p6wjQt8Jp7El542Y7P1lc23SbwSwdEGVtxnixp9/AeQ==
-X-Received: by 2002:a05:6808:3a09:b0:3b9:e828:816 with SMTP id gr9-20020a0568083a0900b003b9e8280816mr20647236oib.48.1702779495498;
-        Sat, 16 Dec 2023 18:18:15 -0800 (PST)
-Received: from localhost ([2804:14d:7e39:8470:a30f:cc0e:7239:16c3])
-        by smtp.gmail.com with ESMTPSA id ja11-20020a170902efcb00b001d39f6edd54sm1453638plb.84.2023.12.16.18.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 18:18:14 -0800 (PST)
-References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
- <20231122-arm64-gcs-v7-34-201c483bd775@kernel.org>
- <875y1089i4.fsf@linaro.org>
- <485b6454-135c-4dd4-b38e-8fb8a02779cd@sirena.org.uk>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew Morton
- <akpm@linux-foundation.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton
- <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, Suzuki K
- Poulose <suzuki.poulose@arm.com>, Arnd Bergmann <arnd@arndb.de>, Oleg
- Nesterov <oleg@redhat.com>, Eric Biederman <ebiederm@xmission.com>, Kees
- Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>, "Rick P.
- Edgecombe" <rick.p.edgecombe@intel.com>, Deepak Gupta
- <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>, Szabolcs Nagy
- <Szabolcs.Nagy@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Florian Weimer <fweimer@redhat.com>, Christian
- Brauner <brauner@kernel.org>, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, kvmarm@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v7 34/39] kselftest/arm64: Add a GCS test program built
- with the system libc
-In-reply-to: <485b6454-135c-4dd4-b38e-8fb8a02779cd@sirena.org.uk>
-Date: Sat, 16 Dec 2023 23:18:13 -0300
-Message-ID: <871qbl7esa.fsf@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A488A32
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 02:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702779976; x=1734315976;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=vKn6vctbU8U/iPOCJrNJkFIWAmLMIABwf719opRmtSs=;
+  b=UR0SnXImn7cqppSYA5nHDTrZyq/CqiCOs41jPnsMq1cy8W1OhRz9ziyo
+   1eeLpMxIbGOOfdtU51cKFU/hxq0yxpr9XXicGkFkVEzwllTLqHS7HFq+Z
+   csL7K+EdDjgjFpeVl+6HmFVhj9rS3KSW9Id3RcxbdPtSnJ0HwGphuGqnq
+   kYK1QgoJRSEr1884IGMxc01b0mDtDXadnCCNrdEBwWzgdOmkARL1Za02Y
+   NJtC33zDuEqmsFCyyyKAbp5rHRaf86qXnXC+0srMlhwv9BhJv1EskR3gv
+   bCRtd0cXnSAgWoBPxGN39BcSwTA1PZ9lI8iD2yrPfNQgHKDUsuik8Jqn1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="426529146"
+X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
+   d="scan'208";a="426529146"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 18:26:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="865827626"
+X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
+   d="scan'208";a="865827626"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Dec 2023 18:26:14 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEgr6-0002WJ-0l;
+	Sun, 17 Dec 2023 02:26:12 +0000
+Date: Sun, 17 Dec 2023 10:26:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <202312171050.VRjziNZK-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3b8a9b2e6809d281890dd0a1102dc14d2cd11caf
+commit: 59c1ad914ef2d3470f74c626ece9521dbc9645a3 video: fbdev: atmel_lcdfb: add COMPILE_TEST support
+date:   4 years, 6 months ago
+config: arc-randconfig-r111-20231107 (https://download.01.org/0day-ci/archive/20231217/202312171050.VRjziNZK-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231217/202312171050.VRjziNZK-lkp@intel.com/reproduce)
 
-Mark Brown <broonie@kernel.org> writes:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312171050.VRjziNZK-lkp@intel.com/
 
->> Also, it's strange that the tests defined after map_gcs.stack_overflow
->> don't run when I execute this test program. I'm doing:
->
->> $ ./run_kselftest.sh -t arm64:libc-gcs
->
->> I.e., these tests aren't being run in my FVP:
->
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, too_small)
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, unligned_1)
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, unligned_2)
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, unligned_3)
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, unligned_4)
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, unligned_5)
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, unligned_6)
->> > +FIXTURE_VARIANT_ADD(map_invalid_gcs, unligned_7)
->> > +TEST_F(map_invalid_gcs, do_map)
->> > +FIXTURE_VARIANT_ADD(invalid_mprotect, exec)
->> > +FIXTURE_VARIANT_ADD(invalid_mprotect, bti)
->> > +FIXTURE_VARIANT_ADD(invalid_mprotect, exec_bti)
->> > +TEST_F(invalid_mprotect, do_map)
->> > +TEST_F(invalid_mprotect, do_map_read)
->
-> I'm seeing all of those appearing.  I'm not sure what to say there -
-> that's all kselftest framework stuff, I'd expect the framework to say
-> something about what it's doing if it decides to skip and I can't think
-> why it would decide to skip.
+sparse warnings: (new ones prefixed by >>)
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got void * @@
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse:     expected char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse:     got void *
+>> drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse:     expected void *ptr
+   drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     got char [noderef] __iomem *screen_base
 
-Thanks. I'll poke some more to see if I can figure out what's going on.
+vim +362 drivers/video/fbdev/atmel_lcdfb.c
+
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  336  
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  337  /**
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  338   *	atmel_lcdfb_alloc_video_memory - Allocate framebuffer memory
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  339   *	@sinfo: the frame buffer to allocate memory for
+1d01e83557105e7 drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  340   * 	
+1d01e83557105e7 drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  341   * 	This function is called only from the atmel_lcdfb_probe()
+1d01e83557105e7 drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  342   * 	so no locking by fb_info->mm_lock around smem_len setting is needed.
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  343   */
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  344  static int atmel_lcdfb_alloc_video_memory(struct atmel_lcdfb_info *sinfo)
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  345  {
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  346  	struct fb_info *info = sinfo->info;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  347  	struct fb_var_screeninfo *var = &info->var;
+ea757acad5a5183 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  348  	unsigned int smem_len;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  349  
+ea757acad5a5183 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  350  	smem_len = (var->xres_virtual * var->yres_virtual
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  351  		    * ((var->bits_per_pixel + 7) / 8));
+ea757acad5a5183 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  352  	info->fix.smem_len = max(smem_len, sinfo->smem_len);
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  353  
+f6e45661f9be546 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  354  	info->screen_base = dma_alloc_wc(info->device, info->fix.smem_len,
+f6e45661f9be546 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  355  					 (dma_addr_t *)&info->fix.smem_start,
+f6e45661f9be546 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  356  					 GFP_KERNEL);
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  357  
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  358  	if (!info->screen_base) {
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  359  		return -ENOMEM;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  360  	}
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  361  
+01d3a5e7fab7732 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28 @362  	memset(info->screen_base, 0, info->fix.smem_len);
+01d3a5e7fab7732 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28  363  
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  364  	return 0;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  365  }
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  366  
+
+:::::: The code at line 362 was first introduced by commit
+:::::: 01d3a5e7fab7732cfc5d5d4533e9378ea435295a atmel_lcdfb: don't initialize a pre-allocated framebuffer
+
+:::::: TO: Haavard Skinnemoen <hskinnemoen@atmel.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
 
 -- 
-Thiago
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
