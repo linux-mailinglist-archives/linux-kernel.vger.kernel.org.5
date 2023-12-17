@@ -1,159 +1,116 @@
-Return-Path: <linux-kernel+bounces-2475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93D37815DA4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 06:18:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9FC815DA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 06:22:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F33F6B22A25
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 05:18:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23B7C1C2171E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 05:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC8617F8;
-	Sun, 17 Dec 2023 05:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RkmC4l+X"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284DF23DE;
+	Sun, 17 Dec 2023 05:22:44 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62FD1374;
-	Sun, 17 Dec 2023 05:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702790305; x=1734326305;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PPSkO0bQFhCKhK6lVott3/8pp9aqVOo3T+bZ0TjgAp4=;
-  b=RkmC4l+XBKfMPnr0LjOVPhwxlhQLV+FiCOY3+hqxez5vwxUwLkJaG2Tu
-   q+km+IPr0UkGtt0ktVe4wRLmxVvOQlQ6OWowbhbktfcuNsP4wPfP9rMvn
-   uQbTb0JxdotDXXbvq9KmVrHGjeV/Ppa9lieYQef6d9guQObEyVgeST4Jn
-   uC9RY/A5Q/NskKkkMRdXKuipHMnBA71FoOtScgVaPx/TPaXK49ROjjjGE
-   hNF4MmmaIw+ciaWPftER8928CBcDXqntLn9BRYEwYqmFw74zqBIqc+w98
-   JE/Zjuhc7ncQAnL6aHFT0O1PZS2140puf2oCjm0Rk4P+WpWAa9wsNf3Bk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="2240103"
-X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
-   d="scan'208";a="2240103"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2023 21:18:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="804157025"
-X-IronPort-AV: E=Sophos;i="6.04,282,1695711600"; 
-   d="scan'208";a="804157025"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 16 Dec 2023 21:18:21 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEjXe-0002gc-2Q;
-	Sun, 17 Dec 2023 05:18:18 +0000
-Date: Sun, 17 Dec 2023 13:17:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	daniel.thompson@linaro.org, dianders@chromium.org,
-	gregkh@linuxfoundation.org, jason.wessel@windriver.com,
-	jirislaby@kernel.org, kgdb-bugreport@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] tty: serial: kgdboc: Fix 8250_* kgd over serial
-Message-ID: <202312171302.vjOAqLOI-lkp@intel.com>
-References: <20231216173409.1264655-1-michael@amarulasolutions.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCCD23A2
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 05:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7ce620dd9so8894239f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 21:22:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702790561; x=1703395361;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ghR1slSXmklyUshujcAyZtfMlYi5j8Gi7ox2aOWyDsI=;
+        b=mAWW9i4ixeur1bmf2ZhK26+0/qSbEVc7hKacjRaZk6NvOABhij6Q3R0NRy/8KwBW3v
+         u+C3urmvCvuri1xYh0PfckIEZubf3aXf/uOCFDnOJQDLSLkkRxVCCjAWSDyfXQkhkGjz
+         BZ4GvvK9qyvSUXHjxRFwKKveESbxAB90VPUHs5PZMIS8eu5gVTn8ZvxFbCmvDL6oRPyf
+         uYMQjuPERX2m6FgoWFa+nkvHez6ZuOj3TdqkWk4ae0zl53kp1YLcSDhpgq2Ga9NwH0TU
+         6TfrMy+Wxuk4/hUb77H/9WJX6YtiK7g7g28+c0HOB0BgeKUXpMynRtcpNfoN8vo2L+ZM
+         PElg==
+X-Gm-Message-State: AOJu0Yw3YdOWC7d3FADVPZv3Nk/4b31fsMVZ72PfDfjWwzmEj9TrV/3U
+	6qjxW5utpkP2Hpowcl9Gvj6XjA2BMOejygM72N2yBfCkr8RERlA=
+X-Google-Smtp-Source: AGHT+IFBx4MdCcYkWvHVT1UKhCFOcDnpqN3DdTn3/k00f1GGU0q9flvp2TCF/oIjLpFIzk+E/fQH7yh0IdbCgZW/FF1n+ugwwejO
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231216173409.1264655-1-michael@amarulasolutions.com>
+X-Received: by 2002:a05:6e02:23c5:b0:35f:9ef1:7add with SMTP id
+ br5-20020a056e0223c500b0035f9ef17addmr194041ilb.4.1702790561732; Sat, 16 Dec
+ 2023 21:22:41 -0800 (PST)
+Date: Sat, 16 Dec 2023 21:22:41 -0800
+In-Reply-To: <000000000000098af2060b5ff161@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008f207c060cadd228@google.com>
+Subject: Re: [syzbot] [block?] INFO: task hung in bdev_release
+From: syzbot <syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Michael,
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-kernel test robot noticed the following build errors:
+***
 
-[auto build test ERROR on tty/tty-testing]
-[also build test ERROR on tty/tty-next tty/tty-linus linus/master v6.7-rc5 next-20231215]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Subject: [block?] INFO: task hung in bdev_release
+Author: eadavis@qq.com
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Trimarchi/tty-serial-kgdboc-Fix-8250_-kgd-over-serial/20231217-013726
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20231216173409.1264655-1-michael%40amarulasolutions.com
-patch subject: [PATCH] tty: serial: kgdboc: Fix 8250_* kgd over serial
-config: i386-buildonly-randconfig-003-20231217 (https://download.01.org/0day-ci/archive/20231217/202312171302.vjOAqLOI-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231217/202312171302.vjOAqLOI-lkp@intel.com/reproduce)
+please test task hung in bdev_release
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312171302.vjOAqLOI-lkp@intel.com/
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  8c9660f65153
 
-All errors (new ones prefixed by >>):
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index b6414e1e645b..3a00ae9b4867 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -475,10 +475,11 @@ static enum blk_eh_timer_return nbd_xmit_timeout(struct request *req)
+ 		 */
+ 		struct nbd_sock *nsock = config->socks[cmd->index];
+ 		cmd->retries++;
+-		dev_info(nbd_to_dev(nbd), "Possible stuck request %p: control (%s@%llu,%uB). Runtime %u seconds\n",
++		dev_info(nbd_to_dev(nbd), "Possible stuck request %p: control (%s@%llu,%uB). Runtime %u seconds, nbd: %p, d: %p\n",
+ 			req, nbdcmd_to_ascii(req_to_nbd_cmd_type(req)),
+ 			(unsigned long long)blk_rq_pos(req) << 9,
+-			blk_rq_bytes(req), (req->timeout / HZ) * cmd->retries);
++			blk_rq_bytes(req), (req->timeout / HZ) * cmd->retries,
++			nbd, nbd->disk);
+ 
+ 		mutex_lock(&nsock->tx_lock);
+ 		if (cmd->cookie != nsock->cookie) {
+@@ -733,7 +734,7 @@ static int nbd_read_reply(struct nbd_device *nbd, struct socket *sock,
+ 	if (result < 0) {
+ 		if (!nbd_disconnected(nbd->config))
+ 			dev_err(disk_to_dev(nbd->disk),
+-				"Receive control failed (result %d)\n", result);
++				"Receive control failed (result %d), nbd: %p, d: %p\n", result, nbd, nbd->disk);
+ 		return result;
+ 	}
+ 
+@@ -1394,6 +1395,9 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 	}
+ 	set_bit(NBD_RT_HAS_PID_FILE, &config->runtime_flags);
+ 
++	if (num_connections == 1 && !nbd->tag_set.timeout)
++		nbd->tag_set.timeout = HZ * 1024;
++
+ 	nbd_dev_dbg_init(nbd);
+ 	for (i = 0; i < num_connections; i++) {
+ 		struct recv_thread_args *args;
+@@ -1424,6 +1428,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 		args->nsock = config->socks[i];
+ 		args->index = i;
+ 		queue_work(nbd->recv_workq, &args->work);
++		printk("%p, %p, bs: %lld, blks: %lld, c: %d, %s\n", nbd, nbd->disk, config->bytesize, nbd_blksize(config), num_connections, __func__);
+ 	}
+ 	return nbd_set_size(nbd, config->bytesize, nbd_blksize(config));
+ }
 
->> drivers/tty/serial/serial_core.c:2636:26: error: expression is not assignable
-           if (!port || port->type = PORT_UNKNOWN || !(port->ops->poll_get_char && port->ops->poll_put_char)) {
-               ~~~~~~~~~~~~~~~~~~~ ^
-   1 error generated.
-
-
-vim +2636 drivers/tty/serial/serial_core.c
-
-  2618	
-  2619	static int uart_poll_init(struct tty_driver *driver, int line, char *options)
-  2620	{
-  2621		struct uart_driver *drv = driver->driver_state;
-  2622		struct uart_state *state = drv->state + line;
-  2623		enum uart_pm_state pm_state;
-  2624		struct tty_port *tport;
-  2625		struct uart_port *port;
-  2626		int baud = 9600;
-  2627		int bits = 8;
-  2628		int parity = 'n';
-  2629		int flow = 'n';
-  2630		int ret = 0;
-  2631	
-  2632		tport = &state->port;
-  2633		mutex_lock(&tport->mutex);
-  2634	
-  2635		port = uart_port_check(state);
-> 2636		if (!port || port->type = PORT_UNKNOWN || !(port->ops->poll_get_char && port->ops->poll_put_char)) {
-  2637			ret = -1;
-  2638			goto out;
-  2639		}
-  2640	
-  2641		pm_state = state->pm_state;
-  2642		uart_change_pm(state, UART_PM_STATE_ON);
-  2643	
-  2644		if (port->ops->poll_init) {
-  2645			/*
-  2646			 * We don't set initialized as we only initialized the hw,
-  2647			 * e.g. state->xmit is still uninitialized.
-  2648			 */
-  2649			if (!tty_port_initialized(tport))
-  2650				ret = port->ops->poll_init(port);
-  2651		}
-  2652	
-  2653		if (!ret && options) {
-  2654			uart_parse_options(options, &baud, &parity, &bits, &flow);
-  2655			console_list_lock();
-  2656			ret = uart_set_options(port, NULL, baud, parity, bits, flow);
-  2657			console_list_unlock();
-  2658		}
-  2659	out:
-  2660		if (ret)
-  2661			uart_change_pm(state, pm_state);
-  2662		mutex_unlock(&tport->mutex);
-  2663		return ret;
-  2664	}
-  2665	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
