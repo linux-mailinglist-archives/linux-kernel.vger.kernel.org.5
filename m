@@ -1,137 +1,100 @@
-Return-Path: <linux-kernel+bounces-2582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6AF815F11
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:49:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E61815F14
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:50:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C9DDB216DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 135171F21AB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1FB42ABB;
-	Sun, 17 Dec 2023 12:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DB843148;
+	Sun, 17 Dec 2023 12:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="hZAWIU9X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUqZMohV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0AA742AB5
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 12:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40c69403b3eso20675345e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 04:49:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1702817368; x=1703422168; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y2A8BIjFml/ggWK/e3i3fQbXXEFS9v26POSAf3DCCGM=;
-        b=hZAWIU9X656Sq1Mw8IrBAjtphkkl1v3OjmDepGuhqskqe0ne/a1OOyeIHKIImGgrlZ
-         sX9DshER8MEy1KNm57snJPxod1yFH5VHjD+LPmvF7PjLb9X5AgtuIAY1ckdwLJOVdHDi
-         hOoGert8dYN16EDRJV2kmnHu4NxKm+h0+dzF/9iGoy1yLzlqXO1kC8gCqJ2F/wSvdqvS
-         YlOa4VHU2mkOCioq9//vVTbI+rO8hjN6SF7vXnYJEWQJKHfIFkh4GUyQMCo6l4cVmH4O
-         oBV/h0wc0G9M+3L1RCTXIGa7xuGamSCiw1OMyEWBed81njw3BZCJyKgX+4/b6ngkkAm8
-         k5Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702817368; x=1703422168;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y2A8BIjFml/ggWK/e3i3fQbXXEFS9v26POSAf3DCCGM=;
-        b=iIl8hScFzbw+iBrIQZIraQaYjPGxpbpdgKRXAWanQINBOoxn7WRghEo3BPQIn/+v0v
-         8Jelzms1ropzS4J/+7BgL+e8heiyPvdqIbJF/AKO1dCu33sgUwGgJv+oMoozJ9gjD/Sl
-         0GDmtpd4vtUQxLwSmgfJtpeFkHykT1Oh5C8UuxqcXkGBhJkbWubhMG1xDTBHSTF2UFD1
-         KBM09F1SnmCL9MysbwmerjHQ9Df8nPh2mHa4cLllV5SRPY2C7+MDpD+cXmNlO2PscguL
-         Bf/O1OPUnLNoTFELcUm6KwD84na2uxP2EdBxQQxQMbjXIrd61LI9NB6LgTq1PWrKP28M
-         GD1g==
-X-Gm-Message-State: AOJu0Yz/DHqweCbqYdYmCg825fqFDdvnx3KfmxjweJZJiKEajVZZpGZ6
-	UF39k+aFnKR80640BjGCMB107Q==
-X-Google-Smtp-Source: AGHT+IEzHG9Lb772a8OColXa7QBluK1eg+sHn/FlXUYnt1ZuQRIqOZ8by/ltEdhdycGcXBHmybt+Ug==
-X-Received: by 2002:a05:600c:3ba6:b0:40b:5e1c:5c1d with SMTP id n38-20020a05600c3ba600b0040b5e1c5c1dmr7325465wms.50.1702817367986;
-        Sun, 17 Dec 2023 04:49:27 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id h2-20020a05600c350200b0040c44b4a282sm29604119wmq.43.2023.12.17.04.49.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Dec 2023 04:49:27 -0800 (PST)
-Message-ID: <58b11076-3e8e-42a0-864f-7ad16abaccd6@tuxon.dev>
-Date: Sun, 17 Dec 2023 14:49:25 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509503399B;
+	Sun, 17 Dec 2023 12:50:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94430C433C7;
+	Sun, 17 Dec 2023 12:50:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702817438;
+	bh=piYVlV3TNLVWsK5uBqrNzt1SsTLgbXbksN2rzDkzB/Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IUqZMohV7DIF/lmUYf9AsNdILN3arRDYUCXUNGL7zcA3gJMb0y79i1PclLAcJ1twX
+	 C+MLMN89mPUVV4N0tzZQyK0xO0pgsU94qRYqeM0EuXMRVkY9t7vV4csasYq6ItwDL0
+	 WJlFTU/5oSqnhAERF2dIVz4PKgMoP0mQ2JqbjZSfhD3IkF4skUqfWxXA/Q8xALQXWG
+	 TipJpriioZeUPRUJMnG6W69lv3hGD888Dr3aDp60+BmHhIjGc90GQ6yuA3QvleKdhK
+	 90k9ieWtXZpEYP/dhnpdP5RyUwio4lywfPCBFF0BYXGWYK4Y1kEdpiyRApewYRJfNw
+	 uONrszevNqv+g==
+Date: Sun, 17 Dec 2023 14:50:33 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Daniel Vacek <neelx@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] IB/ipoib fixes
+Message-ID: <20231217125033.GA4886@unreal>
+References: <20231211130426.1500427-1-neelx@redhat.com>
+ <170236977177.265346.10129245400198931968.b4-ty@kernel.org>
+ <CACjP9X-Ez80KXtquy-g1wqPwRr-orW8uBy=rvowh2hvJT1s_Nw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 10/21] net: ravb: Move delay mode set in the
- driver's ndo_open API
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, p.zabel@pengutronix.de,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
- geert+renesas@glider.be
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-11-claudiu.beznea.uj@bp.renesas.com>
- <421c684d-7092-d7a8-e00a-6abe40c557c5@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <421c684d-7092-d7a8-e00a-6abe40c557c5@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACjP9X-Ez80KXtquy-g1wqPwRr-orW8uBy=rvowh2hvJT1s_Nw@mail.gmail.com>
 
+On Wed, Dec 13, 2023 at 01:18:26PM +0100, Daniel Vacek wrote:
+> On Tue, Dec 12, 2023 at 9:29 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> >
+> > On Mon, 11 Dec 2023 14:04:23 +0100, Daniel Vacek wrote:
+> > > The first patch (hopefully) fixes a real issue while the second is an
+> > > unrelated cleanup. But it shares a context so sending as a series.
+> > >
+> > > Daniel Vacek (2):
+> > >   IB/ipoib: Fix mcast list locking
+> > >   IB/ipoib: Clean up redundant netif_addr_lock
+> > >
+> > > [...]
+> >
+> > Applied, thanks!
+> 
+> Thank you.
+> 
+> One small detail - I was asked by Yuya to change the "Reported-by" as follows:
+> 
+> ---
+> Reported-by: Yuya Fujita <fujita.yuya-00@fujitsu.com>
+> ---
+> 
+> Would that be possible? And if yes, could you amend the commit
+> yourself or do you want me to send a v3?
 
+Unfortunately, it is already too late as we promoted my wip branch to be
+official rdma/for-next.
 
-On 15.12.2023 21:58, Sergey Shtylyov wrote:
-> On 12/14/23 2:45 PM, Claudiu wrote:
-> 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Delay parse and set were done in the driver's probe API. As some IP
-> 
->    Parsing and setting?
-> 
->> variants switch to reset mode (and thus registers' content is lost) when
-> 
->    Register.
-> 
->> setting clocks (due to module standby functionality) to be able to
->> implement runtime PM keep the delay parsing in the driver's probe function
->> and move the delay apply function to the driver's ndo_open API.
-> 
->    Applying?
-> 
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> [...]
-> 
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index 5e01e03e1b43..04eaa1967651 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> [...]
->> @@ -1806,6 +1821,8 @@ static int ravb_open(struct net_device *ndev)
->>  	if (info->nc_queues)
->>  		napi_enable(&priv->napi[RAVB_NC]);
->>  
->> +	ravb_set_delay_mode(ndev);
->> +
-> 
->    I suspect this belongs in ravb_dmac_init() now...
-
-I'm confused... Why? To me this seems more like MAC-PHY interface related.
-
-Though I'm not sure what ravb_dmac_init() purpose is.
+Thanks
 
 > 
->>  	/* Device init */
->>  	error = ravb_dmac_init(ndev);
->>  	if (error)
-> [...]
+> --nX
 > 
-> MRB, Sergey
+> 
+> > [1/1] IB/ipoib: Fix mcast list locking
+> >       https://git.kernel.org/rdma/rdma/c/4f973e211b3b1c
+> >
+> > Best regards,
+> > --
+> > Leon Romanovsky <leon@kernel.org>
+> >
+> 
 
