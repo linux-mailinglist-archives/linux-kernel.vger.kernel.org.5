@@ -1,130 +1,195 @@
-Return-Path: <linux-kernel+bounces-2699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2B0D8160B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:17:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B1148160B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:18:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCDE31C21298
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:17:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FEA91C21531
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE40A4643A;
-	Sun, 17 Dec 2023 17:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598D546455;
+	Sun, 17 Dec 2023 17:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uwNchll+";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uwNchll+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vKaydqxP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF2245BFE;
-	Sun, 17 Dec 2023 17:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0FF8C21FA2;
-	Sun, 17 Dec 2023 17:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702833465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Oq3clUmKpX1OJFs+fxfc2D9tD/ZemW1cg/pI2Sgpkns=;
-	b=uwNchll+aFPfiG0FNSpc8RKYGPE3CSeMMd9z3ZecNaXJcbwweXjGJnD+9NuxQbL/PSacCd
-	ndwNne81Z88lnB1142GWERhNYWEdG7sNzKYasLj+im/CqpLiRf6HWtIwwHDR0TAQW61T1s
-	Al6t4KAwl4ymF9FDTCw4hkkx9yh2UOU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702833465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Oq3clUmKpX1OJFs+fxfc2D9tD/ZemW1cg/pI2Sgpkns=;
-	b=uwNchll+aFPfiG0FNSpc8RKYGPE3CSeMMd9z3ZecNaXJcbwweXjGJnD+9NuxQbL/PSacCd
-	ndwNne81Z88lnB1142GWERhNYWEdG7sNzKYasLj+im/CqpLiRf6HWtIwwHDR0TAQW61T1s
-	Al6t4KAwl4ymF9FDTCw4hkkx9yh2UOU=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0644813927;
-	Sun, 17 Dec 2023 17:17:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id TUA/ATktf2WnDAAAn2gu4w
-	(envelope-from <dsterba@suse.com>); Sun, 17 Dec 2023 17:17:45 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 6.7-rc6, part 2
-Date: Sun, 17 Dec 2023 18:17:39 +0100
-Message-ID: <cover.1702832900.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.42.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE5845C09
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 17:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7b719f05b11so119071039f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 09:18:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702833501; x=1703438301; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yvzvPPOvURo9eUay1zjag8iF5jEJZnvBduw4ZeL4Nkg=;
+        b=vKaydqxPH5eN5TDUVUldqnsWrWBSqc7lpcbdJJ3eBCo1mKHv6QBBqd4VE2w9ZmENPS
+         1yl7wuauPNPCEPxAYfNafFobpMI9Uq8vkA56AOVXKQm+ro9uM59CKKxLTsfStZ7oNqcB
+         cLkOMvp/ITOcBeIObfFBI/KcnylIK0l/QQh9FmA+LR/CTe45cgxf4GDTnWJG40vynpJj
+         iSbfgfVfxUBwXTNApdlMhP+1X2+fgitUZ6vSwuVJgrkuK35seAnO1h5nWYaLIRGfVlOt
+         Sp0z1bWi/gHw9UI8Ar38+4ZYFE3skS0cicrLQUDjOuyQq/BviDszpJ/wl57YN5sYFO+L
+         35lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702833501; x=1703438301;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yvzvPPOvURo9eUay1zjag8iF5jEJZnvBduw4ZeL4Nkg=;
+        b=TGRDGCn1tXsvv8lVoF5M6oMeSy5MIrY2ci0lYQZMHa0DAYadDVeQm3oWkxGodwd2Wb
+         DFY45sKz4usLGHu6c1YTnyP6PPIZpmQFH+7glr4J6jNlCEfKlgPE+Cg0+No5cKJ/ZZDD
+         Dc2LmgH9Ikk9EPhSxyd5p3d4vRtQS07zgkyGkZTq0cTFGb5C8ByPDmuoeUhlD1zUGBjs
+         +0lTL3cwbpAU6HatSHNN2NVtt7Y1CjCD2C9vmR9XEd7/TS1JfzAZRniL6IQ1v6L4VKWG
+         FvxMDJMV8tibTZ5ufDID+GzVwyrZavMJjxMOO4NsS1HiRI/8uejw5Ah5DrZpMk1wbSG5
+         qXdw==
+X-Gm-Message-State: AOJu0Yy2KkBxrkYcE9O0baHaonATU9XppiahhlxRtVYYNJDG1DqZrSXN
+	81wNvMo9tRDolgQgo4d7rIr3
+X-Google-Smtp-Source: AGHT+IG3iO9wwq2fHlKI2rNEIawMaBY13xkH+6DklBN+WvV2sdv33dbHZONs8rR6f4Lcf7btRm5LJw==
+X-Received: by 2002:a05:6602:4902:b0:7b6:fc2d:6b52 with SMTP id ef2-20020a056602490200b007b6fc2d6b52mr17463986iob.4.1702833501039;
+        Sun, 17 Dec 2023 09:18:21 -0800 (PST)
+Received: from thinkpad ([103.28.246.178])
+        by smtp.gmail.com with ESMTPSA id q18-20020a17090311d200b001d3867b6424sm4383852plh.113.2023.12.17.09.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 09:18:20 -0800 (PST)
+Date: Sun, 17 Dec 2023 22:48:11 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
+	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
+	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org
+Subject: Re: [PATCH v4 02/15] PCI: imx6: Simplify phy handling by using by
+ using IMX6_PCIE_FLAG_HAS_PHY
+Message-ID: <20231217171811.GD6748@thinkpad>
+References: <20231217051210.754832-1-Frank.Li@nxp.com>
+ <20231217051210.754832-3-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: ***
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=uwNchll+
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.59 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_DN_SOME(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.10)[-0.492];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[18.63%]
-X-Spam-Score: 3.59
-X-Rspamd-Queue-Id: 0FF8C21FA2
-X-Spam-Flag: NO
+In-Reply-To: <20231217051210.754832-3-Frank.Li@nxp.com>
 
-Hi,
+On Sun, Dec 17, 2023 at 12:11:57AM -0500, Frank Li wrote:
+> Refactors the phy handling logic in the imx6 PCI driver by adding
+> IMX6_PCIE_FLAG_HAS_PHY bitmask define for drvdata::flags.
+> 
+> The drvdata::flags and a bitmask ensures a cleaner and more scalable
+> switch-case structure for handling phy.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v1 to v3:
+>     - none
+> 
+>  drivers/pci/controller/dwc/pci-imx6.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 2086214345e9a..91ba26a4b4c3d 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -60,6 +60,9 @@ enum imx6_pcie_variants {
+>  #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
+>  #define IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE	BIT(1)
+>  #define IMX6_PCIE_FLAG_SUPPORTS_SUSPEND		BIT(2)
+> +#define IMX6_PCIE_FLAG_HAS_PHY			BIT(3)
+> +
+> +#define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
+>  
+>  #define IMX6_PCIE_MAX_CLKS       6
+>  
+> @@ -1277,6 +1280,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_HAS_PHY)) {
+> +		imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
 
-there's one more fix that verifies that the snapshot source is a root,
-same check is also done in user space but should be done by the ioctl
-as well.  Please pull, thanks.
+Can't you use devm_phy_optional_get()? This will return NULL if the PHY is not
+defined in DT. So you can use IS_ERR() to catch error if there are issues in
+acquiring PHY if defined and NULL can be safely passed to other PHY APIs like
+phy_init() as well.
 
-----------------------------------------------------------------
-The following changes since commit e85a0adacf170634878fffcbf34b725aff3f49ed:
+With this, you won't need a flag in drv_data and can also get rid of the
+condition around PHY APIs.
 
-  btrfs: ensure releasing squota reserve on head refs (2023-12-06 22:32:57 +0100)
+- Mani
 
-are available in the Git repository at:
+> +		if (IS_ERR(imx6_pcie->phy))
+> +			return dev_err_probe(dev, PTR_ERR(imx6_pcie->phy),
+> +					     "failed to get pcie phy\n");
+> +	}
+> +
+>  	switch (imx6_pcie->drvdata->variant) {
+>  	case IMX7D:
+>  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+> @@ -1306,11 +1316,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  			return dev_err_probe(dev, PTR_ERR(imx6_pcie->apps_reset),
+>  					     "failed to get pcie apps reset control\n");
+>  
+> -		imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
+> -		if (IS_ERR(imx6_pcie->phy))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->phy),
+> -					     "failed to get pcie phy\n");
+> -
+>  		break;
+>  	default:
+>  		break;
+> @@ -1447,13 +1452,15 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  	},
+>  	[IMX8MM] = {
+>  		.variant = IMX8MM,
+> -		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+> +		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND |
+> +			 IMX6_PCIE_FLAG_HAS_PHY,
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+>  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
+>  	},
+>  	[IMX8MP] = {
+>  		.variant = IMX8MP,
+> -		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+> +		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND |
+> +			 IMX6_PCIE_FLAG_HAS_PHY,
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+>  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
+>  	},
+> @@ -1465,12 +1472,14 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  	},
+>  	[IMX8MM_EP] = {
+>  		.variant = IMX8MM_EP,
+> +		.flags = IMX6_PCIE_FLAG_HAS_PHY,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+>  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
+>  	},
+>  	[IMX8MP_EP] = {
+>  		.variant = IMX8MP_EP,
+> +		.flags = IMX6_PCIE_FLAG_HAS_PHY,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+>  		.clk_names = {IMX6_CLKS_COMMON, "pcie_aux"},
+> -- 
+> 2.34.1
+> 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc5-tag
-
-for you to fetch changes up to a8892fd71933126ebae3d60aec5918d4dceaae76:
-
-  btrfs: do not allow non subvolume root targets for snapshot (2023-12-15 23:46:51 +0100)
-
-----------------------------------------------------------------
-Josef Bacik (1):
-      btrfs: do not allow non subvolume root targets for snapshot
-
- fs/btrfs/ioctl.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+-- 
+மணிவண்ணன் சதாசிவம்
 
