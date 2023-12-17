@@ -1,173 +1,174 @@
-Return-Path: <linux-kernel+bounces-2646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD512815FD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:34:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F482815FDE
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:36:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 627971F229E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:34:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 361DA2892D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4A11E51E;
-	Sun, 17 Dec 2023 14:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FEA44C74;
+	Sun, 17 Dec 2023 14:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="mNvFjsTE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ER6anyDg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5703527E
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40c41b43e1eso27559955e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 06:34:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1702823675; x=1703428475; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aqCEu2l0NGB07K1ndlA1ZvH3rmbMfoOKQJlevWlQ0i0=;
-        b=mNvFjsTE28oh6pStQtHcJfP+XYNpCucW7lKKo4u1ElTYWSQcpIKjVPkKgikcGRu6kJ
-         W4ZlJWqHpSjC3yzrKeeQmMipQ0JFt7Zo58A9x6zl6EsYcoH1bQxfwiAqovq04HgLvpCT
-         OdjxBYNQej7RczBU6bsRM0yhl4IMPbOJcrOA0nRnTQOG2uYT5fjrXF5R9sg1re7q4ekJ
-         u/G2Z9bqKPKryHRFezmv9orZ/DP40hy2WcINeKvoYCGWvcn+o1JrFcCM7QEDYBx9lx6s
-         XaJ3TnTX0E04jl7Y0IUl3aQ9BxP8T2GrVAlK+A6IDLVds/C+zdjt44vkLQz/4dLENoSZ
-         EtYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702823675; x=1703428475;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aqCEu2l0NGB07K1ndlA1ZvH3rmbMfoOKQJlevWlQ0i0=;
-        b=pSqHq278DkN2HcIfM4n7vjEBzBh/PKUY9M1hwAArQtRqUxThho1spP9nVzMeIeWZDy
-         HEYPesHiAX5ZOWr7wW4ivbvalTyiuxPS5FWvaV8aYmRV4q/xLuYC2rK9sAvNtmnLUPDG
-         lVeXoAdPTIf0Q7HO+o56wXrddp+qdPVnyDLGbVLWPYOYEYQTwZz4p97OgiJElMkWDWhI
-         2IvxQfhc90FtjDKIbTpfX0XMvP6L8R3JObuX9wR/Xs+ey5gMemZKPhvwVWQkSdyhhZlS
-         C3G8u68pGPSgToWalgYiRPdJ3NGl3Y9lp8GWRYxE58GkZ/kJXaLFQ9LEo+6DdccDQd9j
-         cidg==
-X-Gm-Message-State: AOJu0YxBw4mzxGNyR4iUfl+IG3PO93aPXAa5t92t8R5YYT8IK7PIWV2h
-	vzT/D405W9c1lf5QjtFGU6rkdw==
-X-Google-Smtp-Source: AGHT+IHF3xKWYIHsI8tvXbw1+h7osXEx8EMefr1MhYNl8r0c1B9owVBM0V0DkArB3hBHKZwEAB/Lvw==
-X-Received: by 2002:a7b:ca5a:0:b0:40c:2a41:4a1f with SMTP id m26-20020a7bca5a000000b0040c2a414a1fmr7002927wml.183.1702823675283;
-        Sun, 17 Dec 2023 06:34:35 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id k40-20020a05600c1ca800b0040b45356b72sm40209275wms.33.2023.12.17.06.34.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Dec 2023 06:34:34 -0800 (PST)
-Message-ID: <322c95f1-d42d-447d-89d1-7c61112b0cfd@tuxon.dev>
-Date: Sun, 17 Dec 2023 16:34:33 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857341DFD7;
+	Sun, 17 Dec 2023 14:36:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF555C433C8;
+	Sun, 17 Dec 2023 14:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702823770;
+	bh=ZJHYl2x/5sOZYR/DGxvRXI5eEW8wCSGNtFDh8x+V5bA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ER6anyDg+jhiNEW1JfE8yrcTvOcyVAP0Abw8SQdsCjpjoqLLjgS5jMoiATdIloM46
+	 b/FhcviIxYDHyZntmQy5Qc70SgkXtcVdjUeCjFthZJaW0wtLse26fS7MoCrrhmf3Tc
+	 c1zs2CeJaoqfs/KY7ZYaHCyIRIn0riKBffgxuMh4gHwk+ILaKNGM30u7y5musRZRhn
+	 ThtSw78tFbwtYsdpqlZaLqPv44W/4lUMbm2zO0byt/gSz76j/23SB30K1C6VFyq7Jj
+	 WZGKqHkTyDzXB2FCd/+AAQ6Az06U9s66pD8rF/Onv5x/NaL5lruOo7Mfv2gOXCbyFT
+	 sldL/41dId8CA==
+Date: Sun, 17 Dec 2023 14:35:55 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: jikos@kernel.org, lars@metafoo.de, Basavaraj.Natikar@amd.com,
+ linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
+ <thomas@t-8ch.de>, stable@vger.kernel.org
+Subject: Re: [PATCH] iio: light: hid-sensor-als: Avoid failure for
+ chromaticity support
+Message-ID: <20231217143555.1f89ddaa@jic23-huawei>
+In-Reply-To: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
+References: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 20/21] net: ravb: Do not apply RX CSUM
- settings to hardware if the interface is down
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, p.zabel@pengutronix.de,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
- geert+renesas@glider.be
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-21-claudiu.beznea.uj@bp.renesas.com>
- <247ad9d9-298e-017b-f6e4-e672ee458ee7@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <247ad9d9-298e-017b-f6e4-e672ee458ee7@omp.ru>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 15 Dec 2023 08:01:59 -0800
+Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+
+> With the commit ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity
+> support"), there is an assumption that the every HID ALS descriptor has
+> support of usage ids for chromaticity support. If they are not present,
+> probe fails for the driver . This breaks ALS functionality on majority of
+> platforms.
+>=20
+> It is possible that chromaticity usage ids are not present. When not
+> present, restrict number of IIO channels to not include support for
+> chromaticity and continue.
+>=20
+> Fixes: ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity support=
+")
+> Reported-by: Thomas Wei=C3=9Fschuh <thomas@t-8ch.de>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218223
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/iio/light/hid-sensor-als.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-s=
+ensor-als.c
+> index f17304b54468..9941b0b927c7 100644
+> --- a/drivers/iio/light/hid-sensor-als.c
+> +++ b/drivers/iio/light/hid-sensor-als.c
+> @@ -303,11 +303,14 @@ static int als_parse_report(struct platform_device =
+*pdev,
+>  				struct hid_sensor_hub_device *hsdev,
+>  				struct iio_chan_spec *channels,
+>  				unsigned usage_id,
+> -				struct als_state *st)
+> +				struct als_state *st,
+> +				int *max_channels)
+>  {
+>  	int ret;
+>  	int i;
+> =20
+> +	*max_channels =3D CHANNEL_SCAN_INDEX_MAX;
+> +
+>  	for (i =3D 0; i <=3D CHANNEL_SCAN_INDEX_ILLUM; ++i) {
+>  		ret =3D sensor_hub_input_get_attribute_info(hsdev,
+>  						HID_INPUT_REPORT,
+> @@ -326,8 +329,12 @@ static int als_parse_report(struct platform_device *=
+pdev,
+>  				usage_id,
+>  				HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE,
+>  				&st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP]);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (ret < 0) {
+> +		*max_channels =3D CHANNEL_SCAN_INDEX_ILLUM;
+> +		ret =3D 0;
+> +		goto skip_color_chromaticity;
+> +	}
+> +
+>  	als_adjust_channel_bit_mask(channels, CHANNEL_SCAN_INDEX_COLOR_TEMP,
+>  				st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].size);
+> =20
+> @@ -354,6 +361,7 @@ static int als_parse_report(struct platform_device *p=
+dev,
+>  			st->als[next_scan_index].report_id);
+>  	}
+> =20
+> +skip_color_chromaticity:
+>  	st->scale_precision =3D hid_sensor_format_scale(usage_id,
+>  				&st->als[CHANNEL_SCAN_INDEX_INTENSITY],
+>  				&st->scale_pre_decml, &st->scale_post_decml);
+> @@ -364,7 +372,7 @@ static int als_parse_report(struct platform_device *p=
+dev,
+>  /* Function to initialize the processing for usage id */
+>  static int hid_als_probe(struct platform_device *pdev)
+>  {
+> -	int ret =3D 0;
+> +	int ret =3D 0, max_channels;
+>  	static const char *name =3D "als";
+>  	struct iio_dev *indio_dev;
+>  	struct als_state *als_state;
+> @@ -398,15 +406,15 @@ static int hid_als_probe(struct platform_device *pd=
+ev)
+> =20
+>  	ret =3D als_parse_report(pdev, hsdev,
+>  			       (struct iio_chan_spec *)indio_dev->channels,
+> -			       hsdev->usage,
+> -			       als_state);
+> +			       hsdev->usage, als_state, &max_channels);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "failed to setup attributes\n");
+>  		return ret;
+>  	}
+> =20
+> -	indio_dev->num_channels =3D
+> -				ARRAY_SIZE(als_channels);
+> +	/* +1 to include time stamp */
+> +	indio_dev->num_channels =3D max_channels + 1;
+
+In the current array the timestamp channel isn't the next one, so how does =
+this work?
+
+I think we either have to form the channel array dynamically or pick between
+one that does have the colour info and one that doesn't for the original ca=
+se.
+
+Given timing we may just need to revert the broken patch and revisit this n=
+ext
+cycle.
+
+Jonathan
 
 
+> +
+>  	indio_dev->info =3D &als_info;
+>  	indio_dev->name =3D name;
+>  	indio_dev->modes =3D INDIO_DIRECT_MODE;
 
-On 16.12.2023 22:36, Sergey Shtylyov wrote:
-> On 12/14/23 2:45 PM, Claudiu wrote:
-> 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Do not apply the RX CSUM settings to hardware if the interface is down. In
->> case runtime PM is enabled, and while the interface is down, the IP will be
->> in reset mode (as for some platforms disabling/enabling the clocks will
->> switch the IP to standby mode, which will lead to losing registers'
-> 
->    To/From perhaps?
->    And just "register".
-> 
->> content) and applying settings in reset mode is not an option. Instead,
->> cache the RX CSUM settings and apply them in ravb_open().
-> 
->    Have this issue actually occurred for you?
-
-Setting RX CSUM while the if is down? No.
-
-> 
->> Commit prepares for the addition of runtime PM.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> [...]
-> 
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index 633346b6cd7c..9ff943dff522 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -1868,6 +1868,15 @@ static int ravb_open(struct net_device *ndev)
->>  	if (info->gptp || info->ccc_gac)
->>  		ravb_ptp_init(ndev, priv->pdev);
->>  
->> +	/* Apply features that might have been changed while the interface
->> +	 * was down.
->> +	 */
->> +	if (ndev->hw_features & NETIF_F_RXCSUM) {
-> 
->    I'm afraid this is a wrong field; we need ndev->features, no?
-
-RX CSUM is not enabled for all ravb aware devices (see struct
-ravb_hw_info::net_hw_features). We should be setting the ECMR only for
-these ones. ravb_hw_info::net_hw_features is set in ndev->hw_features in
-probe(). So here code checks if platforms supports RXCSUM and then below it
-applies what has been requested though ndo_set_features(), if any.
-
-> 
->> +		u32 val = (ndev->features & NETIF_F_RXCSUM) ? ECMR_RCSC : 0;
->> +
->> +		ravb_modify(ndev, ECMR, ECMR_RCSC, val);
->> +	}
->> +
-> 
->    The ECMR setting is already done in ravb_emac_init_rcar(), no need
-> to duplicate it here, I think...
-
-Ok, it worth being moved there.
-
-> 
->>  	/* PHY control start */
->>  	error = ravb_phy_start(ndev);
->>  	if (error)
->> @@ -2337,6 +2346,9 @@ static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
->>  	struct ravb_private *priv = netdev_priv(ndev);
->>  	unsigned long flags;
->>  
->> +	if (!netif_running(ndev))
-> 
->    Racy as well...
-
-It's also called with rtnl_mutex locked.
-
-> 
->> +		return;
->> +
-> 
->    Hm, sh_eth.c doesn't have such check -- perhaps should be fixed
-> as well...
-> 
-> [...]
-> 
-> MBR, Sergey
 
