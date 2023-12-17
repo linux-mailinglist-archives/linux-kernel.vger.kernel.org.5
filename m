@@ -1,82 +1,62 @@
-Return-Path: <linux-kernel+bounces-2449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3925815D4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 04:37:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2061815D55
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 04:44:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 887A91F22224
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:37:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1A741F224DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 03:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DE65221;
-	Sun, 17 Dec 2023 03:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F947110A;
+	Sun, 17 Dec 2023 03:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="flKZvGRI"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="uHypg7YJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-221-245.mail.qq.com (out203-205-221-245.mail.qq.com [203.205.221.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC673D8F
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 03:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5906e03a7a4so1429330eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 19:36:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702784201; x=1703389001; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jscYpo84xIlTIrjQEZDT5YAVqLMOQqnP0eOYv7+MbRw=;
-        b=flKZvGRI+Uua7WsjtvqA9nn0T569knckk+H60qEvF/zCwSdggTFneukCVOqgBW9L5R
-         DGNgoSutc3hlJUgVBLAAVMlek5WX2Hv48gcJS3rDGthaxcNp/YwtoabPplOVsDWCASa+
-         NyCuUOklj+ndrwEcTCahP0lYtU1Qoyqy7CzJG0bOxJLWS+MzDHvaKOX3fmKIWVzR4srK
-         45NHzv5CdaghJ1wdDkDbFg6yqNldBlC9Wt5w171J/V86VBWzYfwpnYrgBWXYbd44d2Dd
-         l89YOtyA585Y6CXSNpGIr+xJ9nGTxaMm3nKy0Yw4eCdt3aHqvWWeov53MjIxPFegev29
-         BSGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702784201; x=1703389001;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jscYpo84xIlTIrjQEZDT5YAVqLMOQqnP0eOYv7+MbRw=;
-        b=CFOGda09j7cRXMkYiC3GR+rfHFiLDFtr+H60EUIs7yEaOgFOyb/Gfve35gwywEIRXz
-         VPXaRopAmD49Hol3T7V7jN4a5nWkKaEK3SBWi9MuLYYPJ6UeXWhtkAZzQ3Ri1qTI7eSg
-         g1uXSlfTCB6W6U1oWaTG10SilNi46OAkcFZ5tvdXgSTT2xfpgeV3DVdc2JYMMZgFhZyt
-         ca+yvJ3SehpfZQ90ns97Zx7j/AB9FKfelwCcQJ+ilBDT/m6a/QwMriA1t4u1X8HhmZST
-         ZbFXwVx9533mKuF7tLQdFE3nP9Zt/+QxQzXZe+4v6Z3YCiHOQWj/2FzPcKAPO5Pzq20K
-         6G4w==
-X-Gm-Message-State: AOJu0YzVZSC3FhVHEtdiDSVN4ZAHKAF97hJJEPCWEvN4Ug504ev02bg7
-	vtOlzgYv62i4gamx40kDkDYs+buc0xQ=
-X-Google-Smtp-Source: AGHT+IHxfeJ2/5ZmVlwHFplWezFuqpKI/InwfEnH6Lv71yXTfqFxulFEco7zz2dzTje/5OiY9iM0Sg==
-X-Received: by 2002:a05:6808:3197:b0:3ba:18f:62c6 with SMTP id cd23-20020a056808319700b003ba018f62c6mr17936532oib.7.1702784201449;
-        Sat, 16 Dec 2023 19:36:41 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b006ce48a0b7c6sm15768820pfm.109.2023.12.16.19.36.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 19:36:41 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	kexec@lists.infradead.org,
-	x86@kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Baoquan He <bhe@redhat.com>,
-	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH v5 3/3] x86/kexec: use pr_err() instead of pr_debug() when an error occurs
-Date: Sun, 17 Dec 2023 11:35:28 +0800
-Message-ID: <20231217033528.303333-4-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231217033528.303333-1-ytcoode@gmail.com>
-References: <20231217033528.303333-1-ytcoode@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF43ED0
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 03:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1702784376; bh=WQbUQm6qO8In/5RqnmlJGX6EUe/PtdIM3FORG9wb+NI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=uHypg7YJ/LZow+aP+vn1Z8Kx3jFaeW2DvV4uTSR0WfmH2O42tjrjZUFvVNgwMBKtf
+	 N/B+sKvRiviy2X3zoTEOfO5FoAPSzjgeC8y9xg6ucD9/1L1fjDtiqtWTAAHjMyhRL4
+	 6Gg37w8zyh33wFRQ5A1ZMobyHTnTqGqe04lsx20k=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id 9E237A82; Sun, 17 Dec 2023 11:39:34 +0800
+X-QQ-mid: xmsmtpt1702784374tnp41sele
+Message-ID: <tencent_BC66DF537D0372896683AD445B5767376D05@qq.com>
+X-QQ-XMAILINFO: MIXpHopat2IaZk3GntdovwnmryiIzE/j9qSjqNkzb2z1jPLHW2Ti1HTRtY31Rh
+	 r+U5doDksGdh5oy4YVM9GB6Q4fVIi4A1I3NYlo0jm9n7W6pJNYzoL99qh4U+BX5jJhFeeOnuqhX8
+	 W15+cIPGpDi8iJaYCJVPFKMvWMIaDoFFkqj7JExWvU1cfbtLBdi7oVLNRhETvA5h4WJbp6qktc6c
+	 aZW/pWDR86EiGVCf4rpatt8GHd5LnscgtKYxeTrOKUZhEWvFeQhcL3kvVvO0LHYVQ4A1L08kJ+7g
+	 JiQrjHjEjefRfOB62ObbvIdz3xCMAmznCfWrQozKUp6wHNi7S+GzwKR6mIewuFwVjIF3EBdEPAMx
+	 6VQcf75r+DtUv2E+PIuEO/cORQK5mZ5T7IcCZoeF4SWFK+lCwfbM8YJzpg0ewUoV6n/jW5kohjIC
+	 Zk31Du/5jQ+9p179KOHRo3lKUBIaqG2R5PKBdeuNo5UGUP5GBUPow0GtRAUvMGwHh0gQhIg/YmP2
+	 Gfv3qHrPUSRwSgB+otI7cufRux2MRLrH7cU/zOepVTEYMoZ+6JjcRy4i0tCtJnRe4p7+gReuqwuE
+	 06WKGeSb4lksu+eqfNxaNy9lJLG0nOaot8hWipvViHobR7YB3zdHJkDI2wppUUP57pVuq84ql/Gt
+	 zZT/lKep+2nYjRjN11A9cHfwk1JC6SvC1U7uZNwRdY1TNCNl2CZkvOv0Fx2jdyI+6rf7TH60i82u
+	 uiNQMVPxodCh7lTyO4DYPZtj9kTme37U9ukHqwd5ZpIoFE6f2NCB5KutnwciNdUEizw0YPanbdn1
+	 czrpQLFZpBV4tIavtLkhCATgcfZ025brnSkibcN2c/9toYu3QHisxkhALvdzZZWy/hhcNJf+y4FY
+	 sl1czWSiWe6u751T/qfaiLH2pUgo+dQ5U8PuguEYuoyxZ/WA1xdzTaHh9WVDnSfosIHx4SHbYo
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+8608bb4553edb8c78f41@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [reiserfs?] [squashfs?] BUG: Dentry still in use in unmount
+Date: Sun, 17 Dec 2023 11:39:35 +0800
+X-OQ-MSGID: <20231217033934.3915845-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <0000000000003362ba060ca8beac@google.com>
+References: <0000000000003362ba060ca8beac@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,44 +65,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When an error is detected, use pr_err() instead of pr_debug() to output
-log message.
+please test BUG: Dentry still in use in unmount
 
-In addition, remove the unnecessary return from set_page_address().
-
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- arch/x86/kernel/kexec-bzimage64.c | 2 +-
- mm/highmem.c                      | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-index a61c12c01270..472a45dbc79a 100644
---- a/arch/x86/kernel/kexec-bzimage64.c
-+++ b/arch/x86/kernel/kexec-bzimage64.c
-@@ -424,7 +424,7 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
- 	 * command line. Make sure it does not overflow
- 	 */
- 	if (cmdline_len + MAX_ELFCOREHDR_STR_LEN > header->cmdline_size) {
--		pr_debug("Appending elfcorehdr=<addr> to command line exceeds maximum allowed length\n");
-+		pr_err("Appending elfcorehdr=<addr> to command line exceeds maximum allowed length\n");
- 		return ERR_PTR(-EINVAL);
- 	}
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3bd7d7488169
+diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+index 4382881b0709..c366b0c6fad2 100644
+--- a/fs/overlayfs/copy_up.c
++++ b/fs/overlayfs/copy_up.c
+@@ -808,6 +808,7 @@ static int ovl_copy_up_workdir(struct ovl_copy_up_ctx *c)
+ 	return err;
  
-diff --git a/mm/highmem.c b/mm/highmem.c
-index e19269093a93..bd48ba445dd4 100644
---- a/mm/highmem.c
-+++ b/mm/highmem.c
-@@ -799,8 +799,6 @@ void set_page_address(struct page *page, void *virtual)
- 		}
- 		spin_unlock_irqrestore(&pas->lock, flags);
- 	}
--
--	return;
- }
- 
- void __init page_address_init(void)
--- 
-2.43.0
+ cleanup:
++	ovl_end_write(c->dentry);
+ 	ovl_cleanup(ofs, wdir, temp);
+ 	dput(temp);
+ 	goto unlock;
 
 
