@@ -1,105 +1,228 @@
-Return-Path: <linux-kernel+bounces-2562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5964815ED9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A7EE815EDA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D625D1C20FEF
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:01:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 282211C20F39
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7183D32C6C;
-	Sun, 17 Dec 2023 12:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2965632C6F;
+	Sun, 17 Dec 2023 12:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="ZP2lPxfB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JM+1W437"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB2232C63;
-	Sun, 17 Dec 2023 12:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C0F3660005;
-	Sun, 17 Dec 2023 12:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1702814469;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Lg07BUdOWLUb55sl4jY2nUVlLAz2wv5V6/HSrQCs+4=;
-	b=ZP2lPxfBeruufnF1FkXf5EEupfSURUouUpZVNBWpt9hzX776i2vf0egCVk609emM5rwQOe
-	8UyasLk7LJ7an88tcOqUzI2yU0vxxW42D08t6m7itnmaLDC+K0tGN2qiCzQNbvEsWBBsxY
-	hwbmguqITa0CkysH9MJo59hXkNR7zXolm5/uBOaY9Cw7LgDEkeoON6AlnMZemUu+5XX1Fv
-	XXaMWPBMk8nFhPY/753hBJQcplIOBFEgQ3MkD6wCJqDZjT/Ps4/jfwuqTadyGBFwrybnRh
-	d41T+ISJmN+alFszpETgB4FvSKcitQEgrV19AO92Zg5aZdTaVoklFrvqBnAmLw==
-Message-ID: <968d0374-2584-42dd-9ec4-c30fb01c5202@arinc9.com>
-Date: Sun, 17 Dec 2023 15:01:02 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6182D847A;
+	Sun, 17 Dec 2023 12:10:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB5D1C433C7;
+	Sun, 17 Dec 2023 12:10:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702815053;
+	bh=a66tj8N4PdZrRpj7zjYZM1VA5iyh24+UFASNVr20mZs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JM+1W4373Z1/80Pnq7FohMDx2169u6iuvDaFZkGyYZG1opJrcS+EG0yJbBfKzGcyf
+	 vumCk1ikMTEiF6e55LXu4Db2Z4LuM3vQ66x+cRHZ6VARJePslZP1urmKY/vLEEDJN/
+	 N+uNd0Nznzv8pgRdRgXBNl/Bkk4wHOs5K9exveF/5H8an9xvZ4QjHAzDRFI2sXuA5g
+	 gJzn6et7TaZrgFDg6IWGGndPZS1gkCR6QxYP80LbGG2LIp5arHpLKciEsJIuWtlR1F
+	 e18EzhzLwndRx+QLdYYpdIm4OkEchJrpTKanvcOTUW99EkyjuGr5ZZUD4J+Buc3LOt
+	 RVKUzeQiLtXAQ==
+Date: Sun, 17 Dec 2023 12:10:48 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Atish Kumar Patra <atishp@rivosinc.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>,
+	Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org,
+	kvm@vger.kernel.org, linux-riscv@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [RFC 6/9] drivers/perf: riscv: Implement SBI PMU snapshot
+ function
+Message-ID: <20231217-navigate-thirsty-03509850a683@spud>
+References: <20231205024310.1593100-1-atishp@rivosinc.com>
+ <20231205024310.1593100-7-atishp@rivosinc.com>
+ <20231207-daycare-manager-2f4817171422@wendy>
+ <CAHBxVyE3xAAj=Z_Cu33tEKjXEAcnOV_=Jpkpn-+j5MoLj1FPWw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 05/15] net: dsa: mt7530: improve code path for
- setting up port 5
-Content-Language: en-US
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
- Daniel Golle <daniel@makrotopia.org>, Landen Chao
- <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Frank Wunderlich <frank-w@public-files.de>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com
-References: <20231118123205.266819-1-arinc.unal@arinc9.com>
- <20231118123205.266819-6-arinc.unal@arinc9.com>
- <ZVjNJ0nf7Mp0kHzH@shell.armlinux.org.uk>
- <5e95a436-189f-412e-b409-89a003003292@arinc9.com>
- <20231207180332.ugfp33xcdkw3elrw@skbuf>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20231207180332.ugfp33xcdkw3elrw@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XU9hTNRI3vOngvxn"
+Content-Disposition: inline
+In-Reply-To: <CAHBxVyE3xAAj=Z_Cu33tEKjXEAcnOV_=Jpkpn-+j5MoLj1FPWw@mail.gmail.com>
 
-On 7.12.2023 21:03, Vladimir Oltean wrote:
-> On Sat, Dec 02, 2023 at 11:36:03AM +0300, Arınç ÜNAL wrote:
->> On 18.11.2023 17:41, Russell King (Oracle) wrote:
->>>> For the cases of PHY muxing or the port being disabled, call
->>>> mt7530_setup_port5() from mt7530_setup(). mt7530_setup_port5() from
->>>> mt753x_phylink_mac_config() won't run when port 5 is disabled or used for
->>>> PHY muxing as port 5 won't be defined on the devicetree.
->>>
->>> ... and this should state why this needs to happen - in other words,
->>> the commit message should state why is it critical that port 5 is
->>> always setup.
->>
->> Actually, port 5 must not always be setup. With patch 7, I explain this
->> while preventing mt7530_setup_port5() from running if port 5 is disabled.
->>
->> Arınç
-> 
-> Then change that last paragraph. You could say something like this:
-> 
-> To keep the cases where port 5 isn't controlled by phylink working as
-> before, we need to preserve the mt7530_setup_port5() call from mt7530_setup().
-> 
-> I think it's a case of saying too much, which sparks too many unresolved
-> questions in the reader's mind, which are irrelevant for the purpose of
-> this specific change: eliminating the overlap between DSA's setup() time
-> and phylink.
 
-Will do, thanks.
+--XU9hTNRI3vOngvxn
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Dec 16, 2023 at 05:39:12PM -0800, Atish Kumar Patra wrote:
+> On Thu, Dec 7, 2023 at 5:06=E2=80=AFAM Conor Dooley <conor.dooley@microch=
+ip.com> wrote:
+> > On Mon, Dec 04, 2023 at 06:43:07PM -0800, Atish Patra wrote:
+
+> > > +static void pmu_sbi_snapshot_free(struct riscv_pmu *pmu)
+> > > +{
+> > > +     int cpu;
+> >
+> > > +     struct cpu_hw_events *cpu_hw_evt;
+> >
+> > This is only used inside the scope of the for loop.
+> >
+>=20
+> Do you intend to suggest using mixed declarations ? Personally, I
+> prefer all the declarations upfront for readability.
+> Let me know if you think that's an issue or violates coding style.
+
+I was suggesting
+
+int cpu;
+
+for_each_possible_cpu(cpu)
+	struct cpu_hw_events *cpu_hw_evt =3D per....()
+
+I've been asked to do this in some subsystems I submitted code to,
+and checkpatch etc do not complain about it. I don't think there is any
+specific commentary in the coding style about minimising the scope of
+variables however.
+
+> > > +     /* Free up the snapshot area memory and fall back to default SB=
+I */
+> >
+> > What does "fall back to the default SBI mean"? SBI is an interface so I
+> > don't understand what it means in this context. Secondly,
+>=20
+> In absence of SBI PMU snapshot, the driver would try to read the
+> counters directly and end up traps.
+> Also, it would not use the SBI PMU snapshot flags in the SBI start/stop c=
+alls.
+> Snapshot is an alternative mechanism to minimize the traps. I just
+> wanted to highlight that.
+>=20
+> How about this ?
+> "Free up the snapshot area memory and fall back to default SBI PMU
+> calls without snapshot */
+
+Yeah, that's fine (modulo the */ placement). The original comment just
+seemed truncated.
+
+> > > +     if (ret.error) {
+> > > +             if (ret.error !=3D SBI_ERR_NOT_SUPPORTED)
+> > > +                     pr_warn("%s: pmu snapshot setup failed with err=
+or %ld\n", __func__,
+> > > +                             ret.error);
+> >
+> > Why is the function relevant here? Is the error message in-and-of-itself
+> > not sufficient here? Where else would one be setting up the snapshots
+> > other than the setup function?
+> >
+>=20
+> The SBI implementation (i.e OpenSBI) may or may not provide a snapshot
+> feature. This error message indicates
+> that SBI implementation supports PMU snapshot but setup failed for
+> some other error.
+
+I don't see what this has to do with printing out the function. This is
+a unique error message, and there is no other place where the setup is
+done AFAICT.
+
+> > > +             /* Snapshot is taken relative to the counter idx base. =
+Apply a fixup. */
+> > > +             if (hwc->idx > 0) {
+> > > +                     sdata->ctr_values[hwc->idx] =3D sdata->ctr_valu=
+es[0];
+> > > +                     sdata->ctr_values[0] =3D 0;
+> >
+> > Why is this being zeroed in this manner? Why is zeroing it not required
+> > if hwc->idx =3D=3D 0? You've got a comment there that could probably do=
+ with
+> > elaboration.
+> >
+>=20
+> hwc->idx is the counter_idx_base here. If it is zero, that means the
+> counter0 value is updated
+> in the shared memory. However, if the base > 0, we need to update the
+> relative counter value
+> from the shared memory. Does it make sense ?
+
+Please expand on the comment so that it contains this information.
+
+> > > +             ret =3D pmu_sbi_snapshot_setup(pmu, smp_processor_id());
+> > > +             if (!ret) {
+> > > +                     pr_info("SBI PMU snapshot is available to optim=
+ize the PMU traps\n");
+> >
+> > Why the verbose message? Could we standardise on one wording for the SBI
+> > function probing stuff? Most users seem to be "SBI FOO extension detect=
+ed".
+> > Only IPI has additional wording and PMU differs slightly.
+>=20
+> Additional information is for users to understand PMU functionality
+> uses less traps on this system.
+> We can just resort to and expect users to read upon the purpose of the
+> snapshot from the spec.
+> "SBI PMU snapshot available"
+
+What I was asking for was alignment with the majority of other SBI
+extensions that use the format I mentioned above.
+
+>=20
+> >
+> > > +                     /* We enable it once here for the boot cpu. If =
+snapshot shmem fails during
+> >
+> > Again, comment style here. What does "snapshot shmem" mean? I think
+> > there's a missing action here. Registration? Allocation?
+> >
+>=20
+> Fixed it. It is supposed to be "snapshot shmem setup"
+>=20
+> > > +                      * cpu hotplug on, it should bail out.
+> >
+> > Should or will? What action does "bail out" correspond to?
+> >
+>=20
+> bail out the cpu hotplug process. We don't support heterogeneous pmus
+> for snapshot.
+> If the SBI implementation returns success for SBI_EXT_PMU_SNAPSHOT_SET_SH=
+MEM
+> boot cpu but fails for other cpus while bringing them up, it is
+> problematic to handle that.
+
+"bail out" should be replaced by a more technical explanation of what is
+going to happen. "should" is a weird word to use, either the cpuhotplug
+code does or does not deal with this case, and since that code is also
+in the kernel, this patchset should ensure that it does handle the case,
+no? If the kernel does handle it "should" should be replaced with more
+definitive wording.
+
+Thanks,
+Conor.
+
+--XU9hTNRI3vOngvxn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZX7lSAAKCRB4tDGHoIJi
+0l/hAP9YqJoyrNUc/htZ3H5eYM9OdIGG2sawQAN+P2IYsH66AAEAs/CkW1OYlLt3
+zyWWLtE53KE6mH6LAp9FSYmcrAjDGA0=
+=gtpU
+-----END PGP SIGNATURE-----
+
+--XU9hTNRI3vOngvxn--
 
