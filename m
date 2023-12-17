@@ -1,114 +1,229 @@
-Return-Path: <linux-kernel+bounces-2479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B3A815DAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 06:47:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DB1815DB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 07:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13902B22AB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 05:47:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD1C1283843
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 06:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732421849;
-	Sun, 17 Dec 2023 05:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BD41851;
+	Sun, 17 Dec 2023 06:06:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="VHOywECW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CJnRGfAX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3279D17E6
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 05:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1702792019;
-	bh=sjJYJPAysPoKxYJ9ye7fdK3cz4HvUz9eSpSgI6DOv34=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VHOywECWeAG1Q6vdSFt/hRVdkleytUo3PbfJ3u4GjFjpQGmnPICUC3B5HJic6qi4n
-	 n+x6ax/FE6DZBSkbSakTiWGbEkZZsAkSNrmRuWLUBPsTU2G9H6S9BmvtV3GB3cAW9Q
-	 4koLI5d+1azY1ofxpTpcbp4c630vZ3401UX7Zp/aJbWpDV4pVVSi5XI4UaEh+0KRIO
-	 v8XE7DpIUofIa4XFDqjF4Ceu/30aRwKP0/MvGxksN8gH4GI2xR3ReemSc4SjZ5m9Bp
-	 5TqvmYCLOzRiBCo2ACeHhOxONcc02HdfRBnNLPMlMi10gnAbkveR42B08tNc0DHCDH
-	 NjqaI8iXtwung==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4StBmL2Tkhz4wx5;
-	Sun, 17 Dec 2023 16:46:58 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: aneesh.kumar@kernel.org, haren@linux.ibm.com,
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- naveen.n.rao@linux.ibm.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.7-5 tag
-Date: Sun, 17 Dec 2023 16:46:57 +1100
-Message-ID: <875y0xmlda.fsf@mail.lhotse>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D58917E6;
+	Sun, 17 Dec 2023 06:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7c5cb5eeab1so569119241.3;
+        Sat, 16 Dec 2023 22:06:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702793167; x=1703397967; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=QCc4fkhc+oDJ/r5+AQtqwzG8eeBYVzNEuSyvoV+hHGc=;
+        b=CJnRGfAXZowqZX0qdhA1Um9BHuDJWOLOX2ik3ScKt2RArDdbo2+unJD8zB3hmGM9YM
+         JIDfRPzaYn0QrnNwwHdVOzcKBjE4pdI4ECJ8doAVKlsGb1OhGcvX7BU7CFUVL6DPfQ+A
+         t2SVYqoVVPOxx4pCc/87+uKXBRdxkfF7hdG4PvsdLgNEmWVBWKFVyTwVhhSTfI9Zwh01
+         jwmqwBi9oQ9CYYixSj2k05rhUglUdEsNoY6jK6ARnMpWDbXViv+lujdXFasAHvCfsWKL
+         N37F/x5xkVuqlN0cZN0zzDoptI0kvKYQM8s1O78ME25Y00nsRHDyEoY2xnw3ykkobeGa
+         lRbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702793167; x=1703397967;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QCc4fkhc+oDJ/r5+AQtqwzG8eeBYVzNEuSyvoV+hHGc=;
+        b=iedMsDnl9yp2MXTcVPuefBfA4SR0u7/lszqccB0Q78kMDpKdFqwo5kCQiRGZwbrTIa
+         3/rJe7VillAT0LJHZiTI2ehbQUYF1PqTDb89Ao1IB4uXtGgyL4Cq/UN7O8O9hY5fxJfI
+         RjWbpbjbUBYOvgIXRvwAsoGve0AT5InGxqJiT1a+/8h7IZZ45eTAmYO42hgGu0InE7s3
+         vwkvbCib/Op+x0J1cFhykoVGvYcTN8k0ATsYBApZcHrLHeN+d/iqXJqOss0lTvkOgYyu
+         1BZyo1cP6+Obbedwcr1ZZINZ9Vr4I0vwNkE3Q7hmeB+CKlfJpzkkquKT5t/joC/hbBHb
+         Ul2Q==
+X-Gm-Message-State: AOJu0Yw/z/AOkw+XnQ4WlgHZUHqmIjh59pYXqx90ZD48OJgpLeLB2bGR
+	so5zPNsGGaUcAj9iOCowTkA=
+X-Google-Smtp-Source: AGHT+IHObFZGtYtsx1n/ZyWuij7h+owC/JJOBkt/yYYU/U/C3H5BnxtvBv2Kqhfjvtj/i1GJRt89rA==
+X-Received: by 2002:a05:6102:cc8:b0:464:3c0a:fdd4 with SMTP id g8-20020a0561020cc800b004643c0afdd4mr10957968vst.2.1702793166617;
+        Sat, 16 Dec 2023 22:06:06 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f28-20020a056102151c00b004666fa3fb6bsm364508vsv.0.2023.12.16.22.06.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Dec 2023 22:06:06 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <fbcceae6-2daf-4855-b8f2-f7a832a53339@roeck-us.net>
+Date: Sat, 16 Dec 2023 22:06:03 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] hwmon: Add AMS AS6200 temperature sensor
+Content-Language: en-US
+To: Abdel Alkuor <alkuor@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <149032e99136a9fe47c3533b57a71092646e497d.1702744180.git.alkuor@gmail.com>
+ <63e352150ed51eefce90ca4058af5459730174b2.1702744180.git.alkuor@gmail.com>
+ <aa93010a-7ab0-4b9d-bb5d-25ea15b81120@roeck-us.net> <ZX4frjGqOGb4zMmx@abdel>
+ <c606c40b-8571-4618-827a-555ceab3ae74@roeck-us.net> <ZX6AQg1vz/Zz6JeG@abdel>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <ZX6AQg1vz/Zz6JeG@abdel>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On 12/16/23 20:59, Abdel Alkuor wrote:
+> On Sat, Dec 16, 2023 at 05:40:35PM -0800, Guenter Roeck wrote:
+>> On 12/16/23 14:07, Abdel Alkuor wrote:
+>>> On Sat, Dec 16, 2023 at 10:46:53AM -0800, Guenter Roeck wrote:
+>>>> On 12/16/23 08:39, Abdel Alkuor wrote:
+>>> Should I use tmp112 params for as6200?
+>>>
+>>
+>> Sure, or just add a separate entry for as6200.
+>>
+> I think some modifications need to be done regarding setting the default
+> configuration for chips with config reg of 16 bits.
+> 
+> Currently, tmp112 set_mask and clr_mask look like this
+> 
+>     [tmp112] = {
+>     	 .set_mask = 3 << 5,	/* 8 samples / second */
+>     	 .clr_mask = 1 << 7,	/* no one-shot mode*/
+>     	 ...
+>     }
+> 
+> and in probe function, we are using i2c_smbus_read_byte_data which
+> basically reads byte 1 of tmp112 config reg and in lm75_write_config
+> it writes byte 1 of tmp112 config reg. Now based on tmp112 set_mask,
+> we want to set the sample rate but we actually setting R0 and R1 instead.
+> According to tmp112 datasheet on pg. 16, byte 1 is written first then
+> byte 2, where byte 2 has the conversion rate at bit 6 and 7 (CR0/CR1).
+> 
+> tmp112 datasheet: https://www.ti.com/lit/ds/symlink/tmp112.pdf?ts=1702713491401&ref_url=https%253A%252F%252Fwww.google.com%252F
+> 
+> Now, to accommodate 16 bit config register read/write, something along these lines can
+> be done:
+> - In struct lm75_params,
+>    - change set_mask and clr_mask from u8 to u16
+>    - Add config reg two bytes size flag
+> - Use the proper function to read the config reg based on config reg size i.e
+>    For one byte config reg, use i2c_smbus_read_byte_data, and for 2 bytes
+>    config reg, use regmap_read.
+> 
+>    static int lm75_probe(struct i2c_client *client)
+>    {
+>     	...
+> 	if (data->params->config_reg_16bits)
+>    		status = regmap_read(client, LM75_REG_CONF, &regval);
+> 		if (status < 0) {
+> 			dev_dbg(dev, "Can't read config? %d\n", status);
+> 			return status;
+> 		}
+> 		data->orig_conf = regval;
+> 		data->current_conf = regval;
+> 	} else {
+>    		status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
+> 		if (status < 0) {
+> 			dev_dbg(dev, "Can't read config? %d\n", status);
+> 			return status;
+> 		}
+> 		data->orig_conf = status;
+> 		data->current_conf = status;
+> 	}
+> 	...
+>     }
+> 
+>     static int lm75_write_config(struct lm75_data *data, u16 set_mask,
+>     			     u16 clr_mask)
+>     {
+>       
+>       if (data->params->config_reg_16bits)
+>       	clr_mask |= LM75_SHUTDOWN << 8;
+>       else
+>       	clr_mask |= LM75_SHUTDOWN;
+>       ...
+>       	if (data->params->config_reg_16bits)
+>       		err = regmap_write(data->regmap, LM75_REG_CONF, value);
+>       	else
+>       		err = i2c_smbus_write_byte_data(data->client,
+>       			       			LM75_REG_CONF,
+>       						value);
+>       ...
+>     }
+> 
+> Based on that, the new tmp112 set_mask and clr_mask would look like this instead,
+>    [tmp112] = {
+>    	.set_mask = 3 << 6,	/* 8 samples / second */
+>    	.clr_mask = 1 << 15,	/* no one-shot mode*/
+> 	.config_reg_16bits = 1,
+>    	...
+>    }
+> 
 
-Hi Linus,
+Yes, you are correct, we'll need something like that. lm75_update_interval()
+tries to solve the problem for tmp112, but that doesn't work with
+set_mask/clear_mask. We should have a separate function lm75_read_config(),
+though, to hide the complexity.
 
-Please pull some more powerpc fixes for 6.7:
-
-The following changes since commit 4b3338aaa74d7d4ec5b6734dc298f0db94ec83d2:
-
-  powerpc/ftrace: Fix stack teardown in ftrace_no_trace (2023-12-05 14:14:12 +1100)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.7-5
-
-for you to fetch changes up to d2441d3e8c0c076d0a2e705fa235c76869a85140:
-
-  MAINTAINERS: powerpc: Add Aneesh & Naveen (2023-12-13 22:35:57 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 6.7 #5
-
- - Fix a bug where heavy VAS (accelerator) usage could race with partition
-   migration and prevent the migration from completing.
-
- - Update MAINTAINERS to add Aneesh & Naveen.
-
-Thanks to: Haren Myneni
-
-- ------------------------------------------------------------------
-Haren Myneni (1):
-      powerpc/pseries/vas: Migration suspend waits for no in-progress open windows
-
-Michael Ellerman (1):
-      MAINTAINERS: powerpc: Add Aneesh & Naveen
+Thanks,
+Guenter
 
 
- MAINTAINERS                          |  2 +
- arch/powerpc/platforms/pseries/vas.c | 51 +++++++++++++++++---
- arch/powerpc/platforms/pseries/vas.h |  2 +
- 3 files changed, 48 insertions(+), 7 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmV+hd0ACgkQUevqPMjh
-pYBXUxAAtTAlULmrNviBMDi27WZ4nSagRytDch3u+BcmoKLLSYJtHJLKW0qqujnQ
-GSJJ9bnV9dOHYu6I6VUom4SDyU3ExaxggJ4+UTlPigXM6++FZhFuhrXgXlcAh+6h
-nkL71XkPMzFitUWEUa5nboiMpcHWNn81gLWTek8rieDtggspyPi3d+TQzMFiNddd
-LOCAXU4hxxlcqbSL5v5v6UU9a+j0vGJYPU2sc/nY0mEzQHyTaC+KZcPVtloH2zzK
-/9BAeHPUkj6zIG9ioBehFgCfnocJI3hsUQgU/8v2Kqwc6om8gpUgkO/yn3Adajln
-DrYKKKiAEOBWh7qdj98G+i77nCx9HPko3cfVM6SyfH9+qZEaKz6mOVt2idXJUqsK
-+pSUXir/F3z+eZ591YmUc/Vn2LFXnNvpcih7EDKx9Tyqz4yULMpVqEKdr6onyXWf
-48/rNu4KxlqzbsZkilJKjGeCtwcrrZiYbOQNaj0D9i4pVDFgUYSTxhJ3r3oA0fIy
-U7NPSzfkbob/w0KROXNvpGJlE/IyDzb47MAw7muO009o2AiAswDiGfzgdQ4l/9z7
-4F1gvx/sEuZAcL0NgkCpZWdsy5cv+OkAZeKlGIc6C6jcoVIik2g3mSR9qxp4JE31
-yBBo5e8s4Ai7AgCnIf57rouBrhEgLuHL8WrBhjecmt2uXao5/v4=
-=duiu
------END PGP SIGNATURE-----
 
