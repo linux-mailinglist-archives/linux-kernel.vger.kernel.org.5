@@ -1,144 +1,112 @@
-Return-Path: <linux-kernel+bounces-2681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C86816073
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B14D816079
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:54:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3094E2813B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 16:49:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 283F2282FCD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 16:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1C7481A2;
-	Sun, 17 Dec 2023 16:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 943304645C;
+	Sun, 17 Dec 2023 16:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYY0iT8i"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WLAw68Jl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5AF481A4
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 16:48:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CFE4C433C7;
-	Sun, 17 Dec 2023 16:48:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702831734;
-	bh=DTlxf5zq9oXJWNE4IDf/D/Nymp57XhjY1fvVE6X8GQs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=sYY0iT8iQOa3m4GB8hC2GlkB8zKxOL7TlJSKHHKebxjvdFjaylWbG/pRXUNZL6tQe
-	 wv8tNXsnFlrIeklRGgznCXdEbwARSXtOc4sj6gs16kjMXH1Pe6jBccMAYAlK1T4Fqy
-	 55h+Olcw9Ie5SZf/U8oY/FT9VTAz396nRL2xaC0w+n251DTFZhG5QqgQ9QEFofNzUE
-	 IbI/QMX6K9hFMLkynaOEl22qfvuOGoorNoJQXtCpHBP2jCxSn2UViMPbslu78Zf9V8
-	 2fsMUnaKMufDQLUcsF86YGJt+gzCTGd1AUMk5TCrtNxcZ3zoKLrogvwMeUII5tQjN/
-	 ROLNRrL+re+xA==
-Date: Sun, 17 Dec 2023 22:18:50 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: dmaengine fixes for v6.7
-Message-ID: <ZX8mcsYczF3bDOEy@matsya>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608DA44C99;
+	Sun, 17 Dec 2023 16:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=zthoML/uhpAs1hPvD/fh13swKppKnu7l7FTtACwvAxE=; b=WLAw68JlEwbNFdIQ2xyIscfsps
+	CWgTZVnaIvQlWzz06TQgw+PjcgppWNTQHeaP9heFZI/N1X6bRYNdiDnf2HKguxboWjjhX0XmDtIjK
+	Cfq3ixlcQVdCDmt8I6cHcZgfNphEKcI3/sVh25Wwnsz+IwF9FU+0k1hDj6q3C9Vdeme9/K9trDDqA
+	V71hDtLh1lZVVWiDsNBiBlb8sihMmf06SvtbxGjuggJOMDbBBTxgpx44hH1dWWFQwYuZk0pKkO4pD
+	z9I6Ggwwd4Bgt8+xX5UuHNQ6CBWHRRa61Hf3XU+/hpP1RR7WYzVz20j0J0IOo1IjoDdlSGlIKer06
+	t4lIRgSQ==;
+Received: from [88.128.92.84] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEuOw-0088L9-1x;
+	Sun, 17 Dec 2023 16:54:03 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	dm-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: remove support for the host aware zoned model
+Date: Sun, 17 Dec 2023 17:53:54 +0100
+Message-Id: <20231217165359.604246-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bgDGIEe5wx7ekQSs"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
+Hi all,
 
---bgDGIEe5wx7ekQSs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+hen zones were first added the SCSI and ATA specs, two different
+models were supported (in addition to the drive managed one that
+is invisible to the host):
 
-Hey Linus,
+ - host managed where non-conventional zones there is strict requirement
+   to write at the write pointer, or else an error is returned
+ - host aware where a write point is maintained if writes always happen
+   at it, otherwise it is left in an under-defined state and the
+   sequential write preferred zones behave like conventional zones
+   (probably very badly performing ones, though)
 
-Please pull the bunch of driver fixes for this cycle.
+Not surprisingly this lukewarm model didn't prove to be very useful and
+was finally removed from the ZBC and SBC specs (NVMe never implemented
+it).  Due to to the easily disappearing write pointer host software
+could never rely on the write pointer to actually be useful for say
+recovery.
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+Fortunately only a few HDD prototypes shipped using this model which
+never made it to mass production.  Drop the support before it is too
+late.  Note that any such host aware prototype HDD can still be used
+with Linux as we'll now treat it as a conventional HDD.
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
-aengine-fix-6.7
-
-for you to fetch changes up to 4ee632c82d2dbb9e2dcc816890ef182a151cbd99:
-
-  dmaengine: fsl-edma: fix DMA channel leak in eDMAv4 (2023-12-11 20:14:29 =
-+0530)
-
-----------------------------------------------------------------
-dmaengine fixes for v6.7
-
-Driver fixes for:
- - SPI PDMA data fix for TI k3-psil drivers
- - suspend fix, pointer check, logic for arbitration fix and channel leak
-   fix in fsl-edma driver
- - couple of fixes in idxd driver for GRPCFG descriptions and int_handle
-   field handling
- - single fix for stm32 driver for bitfield overflow
-
-----------------------------------------------------------------
-Amelie Delaunay (1):
-      dmaengine: stm32-dma: avoid bitfield overflow assertion
-
-Frank Li (1):
-      dmaengine: fsl-edma: fix DMA channel leak in eDMAv4
-
-Guanjun (2):
-      dmaengine: idxd: Protect int_handle field in hw descriptor
-      dmaengine: idxd: Fix incorrect descriptions for GRPCFG register
-
-Jai Luthra (1):
-      dmaengine: ti: k3-psil-am62a: Fix SPI PDMA data
-
-Ronald Wahl (1):
-      dmaengine: ti: k3-psil-am62: Fix SPI PDMA data
-
-Xiaolei Wang (2):
-      dmaengine: fsl-edma: Do not suspend and resume the masked dma channel=
- when the system is sleeping
-      dmaengine: fsl-edma: Add judgment on enabling round robin arbitration
-
-Yang Yingliang (1):
-      dmaengine: fsl-edma: fix wrong pointer check in fsl_edma3_attach_pd()
-
- drivers/dma/fsl-edma-common.c  |  1 +
- drivers/dma/fsl-edma-main.c    | 12 ++++++++----
- drivers/dma/idxd/registers.h   | 12 +++++++-----
- drivers/dma/idxd/submit.c      | 14 +++++++-------
- drivers/dma/stm32-dma.c        |  8 ++++++--
- drivers/dma/ti/k3-psil-am62.c  | 12 ++++++------
- drivers/dma/ti/k3-psil-am62a.c | 12 ++++++------
- 7 files changed, 41 insertions(+), 30 deletions(-)
-
---=20
-~Vinod
-
---bgDGIEe5wx7ekQSs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmV/JnIACgkQfBQHDyUj
-g0fMIA//VV5weP5wCoM/Uzl9mmiRraRkvItQJWzt44j857Y+2LZdqpimnZdqgpg8
-Q+b4ai+y+8OA0V+0DsUQuOgyT/yNrR2TBjAL2BB3gyGpDuIuuNpM+5bmFeWSB0id
-e98GT+hJkAdc6HEWbUMtGKPIDfnv7GHkn9tW3d+Q+WOSC0fmHiub9WOyk8gvzlyA
-3jHslBFirjsOiqHGA3uCMXfAGUGm9jgFrTGAhWeNvJWaNdVlOTM2mTzYc03aYPbj
-3tIgNUes9iblbPNb9Qc/CspYTwvcV6VUASEh25aHPFD2ijyOapuXAzJOqWNgUoST
-U++hM2bI3ZJDyRbynkHaoMiHpCSb5QGp85pAfHAKI3b3rWzAwOorDfNOa8ugw5eo
-+WM1Nx0YUxC/tacnjb8O6m5V3bI8CSalxnKkIfDhcxPWG9i0YjCaKfflUl4Gc3Wq
-BIKFGsMTHARkpVDSE5wS7d80iBXpG67JG5rP2uUpDlXY7of0o/qBN3gM3Vm8n1wJ
-F0rBIMl0NVYcXzOW8O3pV8ipm44Xdw0xfLHyjAqX7NaGwMHQNhSXw/R6g0svxHV8
-oSdY/dTAlxsFTv7IIt0fYKAYTTOsJcP4jNch18+rKL7bUbGGFihNZ7p/xoZSeH5U
-5/40bA0Bz9sg43snwZ7IwycRi/K48F+pQMlX++yn0yFL32m866g=
-=cZ9t
------END PGP SIGNATURE-----
-
---bgDGIEe5wx7ekQSs--
+Diffstat:
+ block/blk-settings.c           |   83 +++++------------------------------------
+ block/blk-sysfs.c              |    9 ----
+ block/blk-zoned.c              |    3 -
+ block/blk.h                    |    2 
+ block/partitions/core.c        |   12 -----
+ drivers/block/null_blk/zoned.c |    2 
+ drivers/block/ublk_drv.c       |    2 
+ drivers/block/virtio_blk.c     |   78 +++++++++++---------------------------
+ drivers/md/dm-kcopyd.c         |    2 
+ drivers/md/dm-table.c          |   45 +++++++++-------------
+ drivers/md/dm-zoned-metadata.c |    7 +--
+ drivers/md/dm-zoned-target.c   |    4 -
+ drivers/nvme/host/zns.c        |    2 
+ drivers/scsi/scsi_debug.c      |   27 ++++++-------
+ drivers/scsi/sd.c              |   50 +++++++++++-------------
+ drivers/scsi/sd_zbc.c          |   16 -------
+ fs/btrfs/zoned.c               |   23 +----------
+ fs/btrfs/zoned.h               |    2 
+ fs/f2fs/data.c                 |    2 
+ fs/f2fs/super.c                |   17 +++-----
+ include/linux/blkdev.h         |   38 +-----------------
+ 21 files changed, 124 insertions(+), 302 deletions(-)
 
