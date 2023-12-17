@@ -1,89 +1,98 @@
-Return-Path: <linux-kernel+bounces-2402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6CA1815CA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:58:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C792F815CA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 01:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46B55B21479
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 23:58:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E9E3283A66
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECD337D1C;
-	Sat, 16 Dec 2023 23:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E133EEDB;
+	Sun, 17 Dec 2023 00:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kC2ct2d4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FE2374D7
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 23:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fa5849db5so3846375ab.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 15:58:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702771102; x=1703375902;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GXhFawib27R3jHDx5b2dSN5ZKTfu8QWKSOK8v/6Ndas=;
-        b=ENYqVaZYquucV4w9CRSLnt6QDLG0tGdw5dQgXnOMwaqd3biuLMFXg3jOcccq1KmL37
-         OG4Kx7EdXMmsvavWzonAG8Rw1ADK901l+t4nIzbe/WKX32K1mHavkCigpj7rQS7qG7Iq
-         HzxuraHutmOVXbe94/1pAVABDEmvbIWgCxhed7V7IGxrH1miAQlsJWh9w6v4Eu6RevMc
-         BYug+fW2fWFTCsZi5F4oY81H5y/8uzoIpSgrh1QfPG4sAMOn0PvXsf88CgCPrVEMM5a2
-         p6lRC92830bpB1DoNUMoYJfq7FVGwp+cm08bI2PfH5ioVXShsrcKJrE+MDWp6JYs6Ub1
-         oGWw==
-X-Gm-Message-State: AOJu0Yx8c9VqI3lfEu/0qFRZPpvxiQPUCfovfMKHVWNMHtwQFKUNeftz
-	r2wW9+NSpDD4gpk4Ke5DG0R1YsQrhyE7z5B7RVRpcTJFxByJ
-X-Google-Smtp-Source: AGHT+IHxxvSt9Thw+8a4IeIgi6GYmDA47KQfRcAExphPlmdjJxGJkO7YEVOvyYREaa71ZvP1mbONIBc6lmhaY9m8GmunwtkGlXGf
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2143EA29;
+	Sun, 17 Dec 2023 00:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=49WEMktJZzZnrc7NcYvQXYQTLTaAK6hXzQVTPjEh4lg=; b=kC2ct2d4n5wKDgv0zPRyvS8fwX
+	s7n6UCugZnNFJv/ial9cqwbNXJt2VphiRvsfIqyLmWkXWgYBmOwKiWdtBNkvYm4s1+bBXohChAmKF
+	8OXaj2/wz+1ffYi8uDw9C0EoF15htXC9/fa+yr3GxclMxc+9F6rXWvup6OVK2I/y9uUD26aNXcUag
+	sanI9e86tv6pWL0AOzOekCKDkjr6wStwBZCdUgYL3Qjc/s8uXfhnJADf3cTFDakVFQxtgpmeh6kvG
+	kCAhsfWSLc7XkzICjNROiUsK+W5MJYCdMoCaul9WbdlzYMJdY1POzA3OX2KjQLPZo9CMbQIzWiXLz
+	mywFEqyA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEeeE-006sbG-1w;
+	Sun, 17 Dec 2023 00:04:46 +0000
+Message-ID: <82ed43c2-2a9d-4c5e-8ccd-8078397b7953@infradead.org>
+Date: Sat, 16 Dec 2023 16:04:43 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:6408:0:b0:35f:535a:9c64 with SMTP id
- y8-20020a926408000000b0035f535a9c64mr306638ilb.3.1702771102180; Sat, 16 Dec
- 2023 15:58:22 -0800 (PST)
-Date: Sat, 16 Dec 2023 15:58:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000adf052060ca94ae3@google.com>
-Subject: [syzbot] Monthly kvm report (Dec 2023)
-From: syzbot <syzbot+listea04bedb19a9215eca12@syzkaller.appspotmail.com>
-To: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 46/50] preempt.h: Kill dependency on list.h
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org,
+ tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com,
+ paulmck@kernel.org, keescook@chromium.org, dave.hansen@linux.intel.com,
+ mingo@redhat.com, will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+ brauner@kernel.org
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216033552.3553579-1-kent.overstreet@linux.dev>
+ <20231216033552.3553579-3-kent.overstreet@linux.dev>
+ <ZX1AFVAWXMfbo+Ry@casper.infradead.org>
+ <20231216223522.s4skrclervsskx32@moria.home.lan>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231216223522.s4skrclervsskx32@moria.home.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello kvm maintainers/developers,
 
-This is a 31-day syzbot report for the kvm subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/kvm
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 3 issues are still open and 108 have been fixed so far.
+On 12/16/23 14:35, Kent Overstreet wrote:
+> On Sat, Dec 16, 2023 at 06:13:41AM +0000, Matthew Wilcox wrote:
+>> On Fri, Dec 15, 2023 at 10:35:47PM -0500, Kent Overstreet wrote:
+>>> -	INIT_HLIST_NODE(&notifier->link);
+>>> +	/* INIT_HLIST_NODE() open coded, to avoid dependency on list.h */
+>>> +	notifier->link.next = NULL;
+>>> +	notifier->link.pprev = NULL;
+>>
+>> Arguably INIT_HLIST_NODE() belongs in types.h -- we already have
+>> RCUREF_INIT() and ATOMIC_INIT() in there.
+> 
+> I think I'd prefer to keep types.h as minimal as possible - as soon as
+> we start putting non type stuff in there people won't know what the
+> distinction is and it'll grow.
+> 
+> preempt.h is a bit unusual too, normally we'd just split out a _types.h
+> header there but it's not so easy to split up usefully.
+> 
 
-Some of the still happening issues:
+I don't feel like I have NAK power, but if I did, I would NAK
+open coding of INIT_HLIST_HEAD() or anything like it.
+I would expect some $maintainer to do likewise, but I could be
+surprised.
 
-Ref Crashes Repro Title
-<1> 144     Yes   WARNING in handle_exception_nmi (2)
-                  https://syzkaller.appspot.com/bug?extid=4688c50a9c8e68e7aaa1
-<2> 24      Yes   WARNING in kvm_mmu_notifier_invalidate_range_start (3)
-                  https://syzkaller.appspot.com/bug?extid=c74f40907a9c0479af10
-<3> 2       Yes   WARNING in kvm_mmu_notifier_change_pte
-                  https://syzkaller.appspot.com/bug?extid=81227d2bd69e9dedb802
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
