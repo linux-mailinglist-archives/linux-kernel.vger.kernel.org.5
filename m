@@ -1,61 +1,56 @@
-Return-Path: <linux-kernel+bounces-2718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2EA88160F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:26:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CE98160F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E0A4281B7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:26:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDD0EB229C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4224EB21;
-	Sun, 17 Dec 2023 17:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F8F4F5F1;
+	Sun, 17 Dec 2023 17:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRsl0kLt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jAaU5vRi"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB954EB53;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BBA4F600;
+	Sun, 17 Dec 2023 17:21:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCF25C433D9;
 	Sun, 17 Dec 2023 17:21:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A6D2C433C9;
-	Sun, 17 Dec 2023 17:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702833718;
-	bh=dOIViLxZMDjs20JQvpRvlEhn5M+B5/Qyt56y3cRULtE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nRsl0kLtCHTllI/3n86ZN3x/Cki2M9daoJJ5shClqLmdog/2/sHKpv+GSrK6ZnnsK
-	 GE0K1EypaZp+kstmA5vp1IxFHP+gnAcpfbL6JPfjPD7b1hB+hawWzV0aME2eOlFIiD
-	 OlMu7gCpwFqqsmQVZjr5rmSgQN/N9amzteCEf1SHGQ3emGaS/bVAwjAmj7K3Xj++Hp
-	 S/76PsAG0ZqTZEp8sj2VpwqlB8eXE0EUjPmRXKPvzf18AJji1wUZLpxnY1lYCCZ0A5
-	 wx//CUdVpRAXAHAOkIp9tfI1vhJJUPun9+ajsTYZB6YT4fv15JV74LLWlCK7XPmEOF
-	 e9xxTmiJLMuNw==
+	s=k20201202; t=1702833719;
+	bh=QrJBcgZnHzXZAUrr/DhpijjExx60OBDfjNzCVzZAvBA=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=jAaU5vRikzNywGQ/z81MYErJKCyLWdsizgIwPgch7Pyg2XmLaRgRVCbxlRIBXQyB7
+	 5bQJDHX3BwDt7SSic4aLgot2W5r70DRgwauHVI1mU5ZlzxMrOm87ZFaOi71j5g/ppx
+	 bCe+4FRHjT64Ar5COCNq5iMsRohwFIYj3xgZ4/d76QAB92g2OcBQWTrD+7yGWKvvub
+	 Dtc9N53Q6qkuPxk7/ZgIEZ9YitRKJ9Lqd0dRr2bWaxpSCqck0EX7Z6qzshGO7YQFRa
+	 cfoxYayW/znGIAxQM0gR6UAz4OFW9vbHntK5V1+qWzP470IC+Z/zpJz6iK0ngYmlf5
+	 I5x2vXH/AigMQ==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>,
+To: Ulf Hansson <ulf.hansson@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-arm-kernel@lists.infradead.org,
-	iommu@lists.linux.dev,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+	linux-mmc@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH v2 0/6] SM8450 / SM8550 Adreno
-Date: Sun, 17 Dec 2023 11:21:12 -0600
-Message-ID: <170283349413.66089.744756231960843910.b4-ty@kernel.org>
+Subject: Re: (subset) [PATCH 1/3] dt-bindings: mmc: sdhci-msm: document dedicated IPQ4019 and IPQ8074
+Date: Sun, 17 Dec 2023 11:21:13 -0600
+Message-ID: <170283349422.66089.12399775138508622170.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231127-topic-a7xx_dt-v2-0-2a437588e563@linaro.org>
-References: <20231127-topic-a7xx_dt-v2-0-2a437588e563@linaro.org>
+In-Reply-To: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
+References: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,26 +61,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 04 Dec 2023 13:55:19 +0100, Konrad Dybcio wrote:
-> Following the merging of related bindings, driver and mesa changes, enable
-> the GPU on both of these platforms.
-> 
-> P1 for Will/iommu, rest for qcom
+On Mon, 11 Dec 2023 09:58:28 +0100, Krzysztof Kozlowski wrote:
+> Add dedicated compatibles for the Qualcomm IPQ4019 and IPQ8074 SoCs,
+> because usage of generic qcom,sdhci-msm-v4 compatible alone is
+> deprecated.
 > 
 > 
 
 Applied, thanks!
 
-[2/6] arm64: dts: qcom: sm8450: Add GPU nodes
-      commit: 9810647a043678638f3b98ab48ee030bc00c8270
-[3/6] arm64: dts: qcom: sm8550: Add GPU nodes
-      commit: ef19923ae103b527e6762a63024dc7f0b1055546
-[4/6] arm64: dts: qcom: sm8550-qrd: Enable the A740 GPU
-      commit: c9f785d7d546c3f38c2e0308fa91e27ae7ec3fda
-[5/6] arm64: dts: qcom: sm8550-mtp: Enable the A740 GPU
-      commit: e877f075a52c485742cfd170f5557fc49972979e
-[6/6] arm64: dts: qcom: sm8450-hdk: Enable the A730 GPU
-      commit: 0f6f5a220543d1239dc7fc04c9f8f8885fa05637
+[2/3] ARM: dts: qcom: ipq4019: add dedicated SDHCI compatible
+      commit: 7514b28f7a016845a6b912783c4c7f4caf37788a
 
 Best regards,
 -- 
