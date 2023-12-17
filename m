@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-2707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A9F28160C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:23:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E780A8160D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:23:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD3BD1F228B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:23:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 245111C212A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77513482FF;
-	Sun, 17 Dec 2023 17:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20576495FE;
+	Sun, 17 Dec 2023 17:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aPL7TrJG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IwqdoBlw"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0AC481C9;
-	Sun, 17 Dec 2023 17:21:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9ADC433CB;
-	Sun, 17 Dec 2023 17:21:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B65495CC;
+	Sun, 17 Dec 2023 17:21:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06EACC433C9;
+	Sun, 17 Dec 2023 17:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702833702;
-	bh=E25t4T82H+2BxY8BH7t7ZAwGfG0RC1QwIrN0rTrvtyQ=;
+	s=k20201202; t=1702833705;
+	bh=JS5fsSyYxb41z9OC7PCvwR7WwAOT7QbqUpZNinJrl1E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aPL7TrJGYrUf+08KCyAZma/j6s5YDmjUCoh65jyb8O4ry5+Kgr9Pn8u4LclLwctUZ
-	 tfNRCTyVxUDsZKZZ+7GXrp3prE2R8ypkKELXx0/pKuQdIN9Wc1VlNPs1ptipy3HQrm
-	 I59OlH6laXdQOCcS6rNJKKDnzwOHWpit2SEYjPaTHrN0MSaLXTrWXYo3Zhs51c7V4I
-	 0qfgyKOzjFpDwXXh4aCS2nRe4FtVsKJLU4ghAqwgJdHiZPJwrY4jg/+iGOjJHjcocU
-	 KHh/kkLF9liCo4stq9nJI+yDQYeiqmwcjKh+M0isO0ydPS6uGRA/pRk4Ia95m0ciHU
-	 FrIW0TPGGY0cQ==
+	b=IwqdoBlwb5u3f3Ula7+3Rtb7jIo43TRwu2aKwOb/d6VhplJNlQgMGxNQsskwwYI0u
+	 /+yurCwi6O92PNHWfhGAum5AKsQRM5TrMgv/HmkXYNmPURtmFyH3UzlRcE9uEZgOpb
+	 cDgCk8BJ+1fNxDrqBwDiLVHLUBn610kxSvIPonxszDZL/6uNIr7Hzvzz8ldv88pNg0
+	 QU/hUDr5inyKVsApPG8rWGDyMZDWbaTT2CAxhCjrnqvFxIAzlMNKZ2w7ajW8cCklKX
+	 e/B+5iJcIb8QrY8wGT9cBspoI4a3PHpBTJ99LPbOMbrg0eT6t/TaXScqTVMpEaBEjq
+	 tn7jlwF+RnqKw==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Andy Gross <agross@kernel.org>,
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Stephen Boyd <swboyd@chromium.org>,
+	Andy Gross <agross@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hsin-Yi Wang <hsinyi@chromium.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org,
 	devicetree@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2] arm64: dts: qcom: qrb5165-rb5: add the Bluetooth node
-Date: Sun, 17 Dec 2023 11:20:58 -0600
-Message-ID: <170283349418.66089.14144739499927605522.b4-ty@kernel.org>
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Switch pompom to the generic edp-panel
+Date: Sun, 17 Dec 2023 11:21:00 -0600
+Message-ID: <170283349429.66089.14411062816518839925.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231207090706.19134-1-brgl@bgdev.pl>
-References: <20231207090706.19134-1-brgl@bgdev.pl>
+In-Reply-To: <20231213163501.1.I8c20f926d15c9ddc12e423e07df1e89db1105d93@changeid>
+References: <20231213163501.1.I8c20f926d15c9ddc12e423e07df1e89db1105d93@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,17 +61,24 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 07 Dec 2023 10:07:06 +0100, Bartosz Golaszewski wrote:
-> Add the Bluetooth node for RB5 as well as its dependencies in the form
-> of the uart6 -> serial1 alias and the pin function for the Bluetooth
-> enable GPIO.
+On Wed, 13 Dec 2023 16:35:02 -0800, Douglas Anderson wrote:
+> Pompom has several sources for its panel. Let's switch it to the
+> generic edp-panel compatible string to account for this.
 > 
+> This fixes a problem where the panel wouldn't come up on some pompon
+> devices after commit fb3f43d50d9b ("drm/panel-edp: Avoid adding
+> multiple preferred modes"). Specifically, some models of pompom have a
+> 1920x1080 panel which is _very_ different than the 1366x768 panel
+> specified in the dts. Before the recent panel-edp fix on Linux things
+> kinda/sorta worked because the panel-edp driver would include both the
+> hardcoded and probed mode, AKA:
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: qrb5165-rb5: add the Bluetooth node
-      commit: 71a73864e144aadaa582fe8296ef73fcf3ea7377
+[1/1] arm64: dts: qcom: sc7180: Switch pompom to the generic edp-panel
+      commit: 97d1926892955c109e412d2359dc32691eec95ce
 
 Best regards,
 -- 
