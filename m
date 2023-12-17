@@ -1,123 +1,127 @@
-Return-Path: <linux-kernel+bounces-2884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9B081639A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:56:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80C9B81639B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:57:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBAC8282ACF
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:56:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D1D1F21BF0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD41F4D5B9;
-	Sun, 17 Dec 2023 23:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="KwtAIyS+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9284B143;
+	Sun, 17 Dec 2023 23:56:57 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57594CB22
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28a5d0ebf1fso2689995a91.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 15:55:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1702857329; x=1703462129; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Xh9057HjSReuOSkTJHqLjqeYxKmFJY7/nLpPeU9NVU=;
-        b=KwtAIyS+Hm6LTpgKfZXfcpVbe37qhwjRXNzqLDL2yLCKbZWetwY7bTEWGLb+Y9ScVZ
-         tsunYMrxpJ4iLsIHS4nXTLNjk/JUBUfPaqZ43mSTRAE/9LsaOO+beq+gshAlp4ctbkPB
-         OtD+PIYovk2eLvjB05ftZbeYKb4kiJXbbm79OyFOZT8OPZLieCiddm4NhxbnusZGn7LM
-         vhUkp5F0t1twuCcc7grpVe5CjHXNh2xPHBJ/WyoiyzfxahajFog2KzNupdtAKp7+zyKY
-         VuzjywduzkGQPQKpJwEc2rF7MTaWq4QLF2Zy+QQhxEfFvDMCU/TJcl9kUkIe4DpJm8R/
-         8GCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702857329; x=1703462129;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Xh9057HjSReuOSkTJHqLjqeYxKmFJY7/nLpPeU9NVU=;
-        b=XOpZDlztQISD51S7CWf3VsYsfN2cIVVXO4cXaWDQ+rL6fAR9bOwljriZr0iaay4duB
-         o6PlBITC1JeKR0yjWXddXsMSSGzX1VknMKxUhDdqJ1uWorbuF9llgZWzAcHHcGqPceas
-         UUWQjCNdsFVAGPcZYsn73NjoJ2CGKClMRiqHVQqC53c9zasXAZBZ2YGUc/uRS1ma/bCd
-         BG/R6QIIkuwIs4EMXt4Wa+DQwU8zTvHliWJgoniCqIxizvzHooW5JUwTeimGdNlch0c/
-         QruAFCHW+i+oBYBdRkIsEQrq2tIiaQZwceQf3V5WXMccTMPl+O9ZMp46SJVhLPifeSc2
-         Ti3w==
-X-Gm-Message-State: AOJu0Yz2Y539nQ6oF44icdVJ2vhVoFeRgE1jnyCFkwhCyF31S/0tOWek
-	u9EqQ5cKokmfuJ+W38IqEwDzbA==
-X-Google-Smtp-Source: AGHT+IFb2n5v3YoFspuLtRt+lyzQo9g1VO/PMtFjwsN0/BR9zn2VrKZerGUAbdGHdA6juw82EwWWrQ==
-X-Received: by 2002:a17:90a:c705:b0:28b:5cd5:9ff9 with SMTP id o5-20020a17090ac70500b0028b5cd59ff9mr2713446pjt.39.1702857329474;
-        Sun, 17 Dec 2023 15:55:29 -0800 (PST)
-Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id f11-20020a17090aec8b00b0028ae8284840sm9036176pjy.10.2023.12.17.15.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 15:55:28 -0800 (PST)
-From: Tree Davies <tdavies@darkphysics.net>
-To: gregkh@linuxfoundation.org,
-	philipp.g.hortmann@gmail.com,
-	anjan@momi.ca
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 6/6] Staging: rtl8192e: Rename variable pBaStartSeqCtrl
-Date: Sun, 17 Dec 2023 15:55:20 -0800
-Message-Id: <20231217235520.30377-7-tdavies@darkphysics.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231217235520.30377-1-tdavies@darkphysics.net>
-References: <20231217235520.30377-1-tdavies@darkphysics.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 665B74B12A;
+	Sun, 17 Dec 2023 23:56:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB8EC433C8;
+	Sun, 17 Dec 2023 23:56:55 +0000 (UTC)
+Date: Sun, 17 Dec 2023 18:56:52 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, LKML
+ <linux-kernel@vger.kernel.org>, Linux trace kernel
+ <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] tracing: Add disable-filter-buf option
+Message-ID: <20231217185652.0cd0f10c@rorschach.local.home>
+In-Reply-To: <20231217171045.21e0bd95c26f17f1f19f6733@kernel.org>
+References: <20231215102633.7a24cb77@rorschach.local.home>
+	<21936075-3858-446a-9391-a38e8d8968e7@efficios.com>
+	<20231215120417.567d5ea4@rorschach.local.home>
+	<fbf8991a-ce83-462c-b87a-b60c6635d223@efficios.com>
+	<20231215123458.63f57238@rorschach.local.home>
+	<f1a75239-341e-4611-a48d-88e10407dcd4@efficios.com>
+	<20231215134335.2388aba5@rorschach.local.home>
+	<368d36b2-e5ea-46d4-b214-6d04cf20685a@efficios.com>
+	<20231217171045.21e0bd95c26f17f1f19f6733@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Rename variable pBaStartSeqCtrl to ba_start_seq_ctrl to fix checkpatch
-warning Avoid CamelCase.
+On Sun, 17 Dec 2023 17:10:45 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > >> It exposes the following details which IMHO should be hidden or
+> > >> configurable in a way that allows moving to a whole new mechanism
+> > >> which will have significantly different characteristics in the
+> > >> future:
+> > >>
+> > >> It exposes that:
+> > >>
+> > >> - filtering uses a copy to a temporary buffer, and
+> > >> - that this copy is enabled by default.
+> > >>
+> > >> Once exposed, those design constraints become immutable due to ABI.  
+> > > 
+> > > No it is not. There is no such thing as "immutable ABI". The rule is
+> > > "don't break user space" If this functionality in the kernel goes away,
+> > > the knob could become a nop, and I doubt any user space will break
+> > > because of it.
+> > > 
+> > > That is, the only burden is keeping this option exposed. But it could
+> > > be just like that light switch that has nothing connected to it. It's
+> > > still there, but does nothing if you switch it. This knob can act the
+> > > same way. This does not in anyway prevent future innovation.  
+> > 
+> > I am not comfortable with exposing internal ring buffer implementation
+> > details to userspace which may or may not be deprecated as no-ops
+> > in the future. This will lead to useless clutter.  
+> 
+> Hmm, but this may change the ring buffer consumption rate if the filter
+> is enabled. The ring buffer may be filled quickly than the user expected.
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
----
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+WHich it has been since 0fc1b09ff1ff4 ("tracing: Use temp buffer when
+filtering events"), and before that commit, things were a bit slower.
+That commit sped things up. But, even with that commit, there's no
+guarantee that you will get to use the temp buffer and just write
+directly into the ring buffer.
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index b816f94336f0..3db7dcc3bd23 100644
---- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -219,7 +219,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
- 	struct ba_record *ba = NULL;
- 	union ba_param_set *ba_param_set = NULL;
- 	u16 *ba_timeout_value = NULL;
--	union sequence_control *pBaStartSeqCtrl = NULL;
-+	union sequence_control *ba_start_seq_ctrl = NULL;
- 	struct rx_ts_record *ts = NULL;
- 
- 	if (skb->len < sizeof(struct ieee80211_hdr_3addr) + 9) {
-@@ -241,7 +241,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
- 	dialog_token = tag + 2;
- 	ba_param_set = (union ba_param_set *)(tag + 3);
- 	ba_timeout_value = (u16 *)(tag + 5);
--	pBaStartSeqCtrl = (union sequence_control *)(req + 7);
-+	ba_start_seq_ctrl = (union sequence_control *)(req + 7);
- 
- 	if (!ieee->current_network.qos_data.active ||
- 	    !ieee->ht_info->current_ht_support ||
-@@ -274,7 +274,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
- 	ba->dialog_token = *dialog_token;
- 	ba->ba_param_set = *ba_param_set;
- 	ba->ba_timeout_value = *ba_timeout_value;
--	ba->ba_start_seq_ctrl = *pBaStartSeqCtrl;
-+	ba->ba_start_seq_ctrl = *ba_start_seq_ctrl;
- 
- 	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev) ||
- 	   (ieee->ht_info->iot_action & HT_IOT_ACT_ALLOW_PEER_AGG_ONE_PKT))
--- 
-2.39.2
+And I found that currently histograms (and sythetic events!) also write
+directly into the buffer :-p
 
+
+> Thus if user specifies the rare condition, most of the events on the ring
+> buffer is filled with garbage. And user will know the buffer size *seems*
+> smaller than the setting.
+
+Not sure what you mean by that. The event on the buffer is removed
+unless another event sneaks in and makes it impossible to reset the
+next write location before the discarded event.
+
+> I think copying overhead will be a secondary effect, the biggest noticable
+> difference is how many events are recorded in the ring buffer. Thus, what
+> about naming the option as "filter-on-buffer"?
+
+I'm not sure I understand that. How about just call it "filter_direct",
+which means to write directly on the buffer, and default that off.
+
+> 
+> If we introduce filtering on input directly, at that point we will use
+> it if "filter-on-buffer = no", because this is also not noticable from
+> users.
+
+The "filter on input" will be a different interface, as the current
+filter is only on the output of TRACE_EVENT() fields. The input
+parameters isn't exposed at all, and may never be, as that would make
+peterz and others keep all tracepoints from their subsystems.
+
+As my main motivation for this was to create a kselftest that can
+stress test the filtering directly into the ring buffer (like it use
+to, and like it does for interrupting events and histograms and
+synthetic events), we can still add tests to make sure that part works.
+
+I'm fine slapping a Kconfig of CONFIG_TRACE_FORCE_DIRECT_KNOB and
+place the documentation in the help content saying it adds a knob to
+allow kselftest stress test the direct to ring buffer filtering.
+
+-- Steve
 
