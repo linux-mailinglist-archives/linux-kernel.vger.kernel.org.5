@@ -1,237 +1,245 @@
-Return-Path: <linux-kernel+bounces-2553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD50815EC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:40:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48CF815EC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B3E01C20E87
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:40:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5BCF1C20FAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3255328B5;
-	Sun, 17 Dec 2023 11:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B1D0328C9;
+	Sun, 17 Dec 2023 11:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="AotpPxBH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n+2MBf65"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0999C32182;
-	Sun, 17 Dec 2023 11:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C85F4240002;
-	Sun, 17 Dec 2023 11:39:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1702813194;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/4He4n0DzWvLNUZxrPx6E5UwZ3AuWsmZrkJP+8TMI2w=;
-	b=AotpPxBHyFGKqHJYvd9MmKT2FKBlONx9kf7SiXRNmpI9EgzQgnwMlvRUeadb/naXzG/siw
-	fPvNSWDGK9s+xYj2aqed6J0cdWkADg/AjD6WMo1/sirYFKL2FcdilRsj1laHhZlAH5RKrJ
-	8GrKf2CluYuDGVx5/Wv92Z/sK5MeDpvODebonZ7oAAgMhBeig/EXCWDKU6RJj0QnlaJdsW
-	pGHhNmuEZnK0SFmNG6M/xI4890zHirxZP9IQPBUdHYqKWvjSJfgOUs/dkeMRkwDFCViH9A
-	d2zRddjRzts/VocHXRM++CO/UA4fu+Ql7De6DnKwdC8dioumOjnKEQDueI7cvQ==
-Message-ID: <f830ac10-8ab3-4660-8e9f-762bb41aca78@arinc9.com>
-Date: Sun, 17 Dec 2023 14:39:46 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60062315AB;
+	Sun, 17 Dec 2023 11:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702813751; x=1734349751;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8A4yV0V39ULU6Sh8G647LMOdjWrX0L8uZm72AQZ8xcg=;
+  b=n+2MBf65tcpsoSVZAp2SW7LfhG4xa5HqQ5Q5EYf3AYWaNSrSB57Quhye
+   97g4AcH/ExBOZERSo8pHrylaag69JYP2M4uqkpXFi7D0Btac3XezGEzak
+   vfCvpEKvI9UFmv4UBgRQLc87yFsiosK25VYgPmRM6HND8pATligU+FoJN
+   wbYcKz9b/PgVnu7pB2zZobg3KpM67gdqOO7A9VOyca+Ish3guQXle/eUn
+   1kwSG9QiEYsxIc8hxRyhELvB9ujxMwraKhqCtURr4b+hJEYY3WQEAXXSC
+   wMnPKOYmaKwDlQnP1UCnyQ3vyrILXs8UBLMpCBzvKE0b34hRiN011ZM44
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="2599460"
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="2599460"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 03:49:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="751454164"
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="751454164"
+Received: from ply01-vm-store.bj.intel.com ([10.238.153.201])
+  by orsmga006.jf.intel.com with ESMTP; 17 Dec 2023 03:49:06 -0800
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: bhelgaas@google.com,
+	baolu.lu@linux.intel.com,
+	dwmw2@infradead.org,
+	will@kernel.org,
+	robin.murphy@arm.com,
+	lukas@wunner.de
+Cc: linux-pci@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] fix vt-d hard lockup when hotplug ATS capable device
+Date: Sun, 17 Dec 2023 06:49:00 -0500
+Message-Id: <20231217114902.3836260-1-haifeng.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 01/15] net: dsa: mt7530: always trap frames to
- active CPU port on MT7530
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
- Daniel Golle <daniel@makrotopia.org>, Landen Chao
- <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Frank Wunderlich <frank-w@public-files.de>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com
-References: <20231118123205.266819-1-arinc.unal@arinc9.com>
- <20231118123205.266819-2-arinc.unal@arinc9.com>
- <ZVjLj6/iCL/muzmH@shell.armlinux.org.uk>
- <ffaa26b3-eb25-47cc-8891-fe3cbcc724da@arinc9.com>
- <20231207174829.jccyws7myhxbgr5k@skbuf>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20231207174829.jccyws7myhxbgr5k@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
 
-On 7.12.2023 20:48, Vladimir Oltean wrote:
-> On Sat, Dec 02, 2023 at 11:29:18AM +0300, Arınç ÜNAL wrote:
->>>>    struct mt7530_priv {
->>>>    	struct device		*dev;
->>>> @@ -786,6 +787,7 @@ struct mt7530_priv {
->>>>    	struct irq_domain *irq_domain;
->>>>    	u32 irq_enable;
->>>>    	int (*create_sgmii)(struct mt7530_priv *priv, bool dual_sgmii);
->>>> +	unsigned long active_cpu_ports;
->>>
->>> So this will be 32 or 64 bit in size. Presumably you know how many CPU
->>> ports there can be, which looking at this code must be less than 8 as
->>> CPU_PORT_MASK is only 3 bits in size. So, maybe use a u8, and check
->>> that cpu_dp->index <= 7 ?
-> 
-> We picked "unsigned long" as storage because that's also the size of the
-> argument that __ffs() takes. But admittedly, we could have also stored a
-> smaller variable and promote it to unsigned long when we pass it to __ffs().
-> 
->> Aren't there other mechanisms to check that cpu_dp->index is a valid port?
-> 
-> cpu_dp->index is guaranteed by DSA to be valid (according to the "reg"
-> value from the device tree and smaller than ds->num_ports). It's just a
-> question of balancing this kind of optimization with the possibility
-> that a future switch appears which has more than MT7530_NUM_PORTS (7) ports.
+ This patchset is used to fix vt-d hard lockup reported when surpprise
+ unplug ATS capable endpoint device connects to system via PCIe switch
+ as following topology.
 
-If this was to happen - as unlikely as I find it - I would suggest adding a
-new MTXXXX_NUM_PORTS and set priv->ds->num_ports to it after checking
-priv->id. I'm a maintainer here so I'll keep an eye out.
+     +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d
+     |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe
+     |           +-00.2  Intel Corporation Ice Lake RAS
+     |           +-00.4  Intel Corporation Device 0b23
+     |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0 
+                                           NVIDIA Corporation Device 2324
+     |                                           +-01.0-[19]----00.0
+                          Mellanox Technologies MT2910 Family [ConnectX-7]
 
-> 
->>
->> 	mt7530_rmw(priv, MT7530_MFC, CPU_EN | CPU_PORT_MASK, val);
->> }
->>
->> struct mt7530_priv {
->> 	[...]
->> 	u8 active_cpu_ports;
->> };
-> 
-> Actually, looking at the code now, I don't understand why we even keep
-> track of the active_cpu_ports mask in the driver. We could read the
-> MT7530_MFC register in mt753x_conduit_state_change(), flip the bit
-> corresponding just to cpu_dp->index (rather than rmw all of CPU_PORT_MASK),
-> and write back the result. And to address Russell's concern, we could test
-> whether the resulting CPU_PORT_MASK portion of what we're going to write
-> back is all-zeroes or not, and if it is, clear the CPU_EN bit, otherwise
-> set it.
+ User brought endpoint device 19:00.0's link down by flap it's hotplug 
+ capable slot 17:01.0 link control register, as sequence DLLSC response, 
+ pciehp_ist() will unload device driver and power it off, durning device
+ driver is unloading an iommu devTlb flush request issued to that link 
+ down device, thus a long time completion/timeout waiting in interrupt
+ context causes continuous hard lockup warnning and system hang.
 
-Correct me if I'm wrong, we introduced priv->active_cpu_ports because
-CPU_PORT_MASK from the MT7530_MFC register is a 3-bit mask, meant to keep a
-single port number ranging from 0 to 7. There's no single bit corresponding
-to cpu_dp->index on the MT7530_MFC register. So I don't see how what you
-suggest here would work.
+[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
+[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
+[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
+[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+         OE    kernel version xxxx
+[ 4223.822623] Hardware name: vendorname xxxx 666-106,
+BIOS 01.01.02.03.01 05/15/2023
+[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
+[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
+0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
+knlGS:0000000000000000
+[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
+[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[ 4223.822628] PKRU: 55555554
+[ 4223.822628] Call Trace:
+[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
+[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
+[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
+[ 4223.822629]  intel_iommu_release_device+0x1f/0x30
+[ 4223.822629]  iommu_release_device+0x33/0x60
+[ 4223.822629]  iommu_bus_notifier+0x7f/0x90
+[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
+[ 4223.822630]  device_del+0x2e5/0x420
+[ 4223.822630]  pci_remove_bus_device+0x70/0x110
+[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
+[ 4223.822631]  pciehp_disable_slot+0x6b/0x100
+[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
+[ 4223.822631]  pciehp_ist+0x176/0x180
+[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
+[ 4223.822632]  irq_thread_fn+0x19/0x50
+[ 4223.822632]  irq_thread+0x104/0x190
+[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
+[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
+[ 4223.822633]  kthread+0x114/0x130
+[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
+[ 4223.822633]  ret_from_fork+0x1f/0x30
+[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
+[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+         OE     kernel version xxxx
+[ 4223.822634] Hardware name: vendorname xxxx 666-106,
+BIOS 01.01.02.03.01 05/15/2023
+[ 4223.822634] Call Trace:
+[ 4223.822634]  <NMI>
+[ 4223.822635]  dump_stack+0x6d/0x88
+[ 4223.822635]  panic+0x101/0x2d0
+[ 4223.822635]  ? ret_from_fork+0x11/0x30
+[ 4223.822635]  nmi_panic.cold.14+0xc/0xc
+[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
+[ 4223.822636]  __perf_event_overflow+0x4f/0xf0
+[ 4223.822636]  handle_pmi_common+0x1ef/0x290
+[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
+[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
+[ 4223.822637]  ? __native_set_fixmap+0x24/0x30
+[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
+[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
+[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
+[ 4223.822638]  perf_event_nmi_handler+0x24/0x40
+[ 4223.822638]  nmi_handle+0x4d/0xf0
+[ 4223.822638]  default_do_nmi+0x49/0x100
+[ 4223.822638]  exc_nmi+0x134/0x180
+[ 4223.822639]  end_repeat_nmi+0x16/0x67
+[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
+[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
+ 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
+[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
+[ 4223.822642]  </NMI>
+[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
+[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
+[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
+[ 4223.822643]  intel_iommu_release_device+0x1f/0x30
+[ 4223.822643]  iommu_release_device+0x33/0x60
+[ 4223.822643]  iommu_bus_notifier+0x7f/0x90
+[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
+[ 4223.822644]  device_del+0x2e5/0x420
+[ 4223.822644]  pci_remove_bus_device+0x70/0x110
+[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
+[ 4223.822644]  pciehp_disable_slot+0x6b/0x100
+[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
+[ 4223.822645]  pciehp_ist+0x176/0x180
+[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
+[ 4223.822645]  irq_thread_fn+0x19/0x50
+[ 4223.822646]  irq_thread+0x104/0x190
+[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
+[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
+[ 4223.822646]  kthread+0x114/0x130
+[ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
+[ 4223.822647]  ret_from_fork+0x1f/0x30
+[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
+range: 0xffffffff80000000-0xffffffffbfffffff)
 
-This is what I've got right now:
+Make a quick fix by checking the device's error_state in
+devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB flush
+request to link down device that is set to pci_channel_io_perm_failure and
+then powered off in
 
-static void
-mt753x_conduit_state_change(struct dsa_switch *ds,
-			    const struct net_device *conduit,
-			    bool operational)
-{
-	struct dsa_port *cpu_dp = conduit->dsa_ptr;
-	struct mt7530_priv *priv = ds->priv;
-	u8 mask;
-	int val = 0;
+pciehp_ist()
+   pciehp_handle_presence_or_link_change()
+     pciehp_disable_slot()
+       remove_board()
+         pciehp_unconfigure_device()
+ 
+safe_removal unplug doesn't trigger such issue. 
+and this fix works for all supprise_removal unplug operations.
 
-	/* Set the CPU port to trap frames to for MT7530. Trapped frames will be
-	 * forwarded to the numerically smallest CPU port which the DSA conduit
-	 * interface its affine to is up.
-	 */
-	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
-		return;
+This patchset was tested by yehaorong@bytedance.com on stable-6.7rc4.
 
-	mask = BIT(cpu_dp->index);
 
-	if (operational)
-		priv->active_cpu_ports |= mask;
-	else
-		priv->active_cpu_ports &= ~mask;
+change log:
 
-	if (priv->active_cpu_ports)
-		val =
-		    CPU_EN |
-		    CPU_PORT(__ffs((unsigned long)priv->active_cpu_ports));
+v3:
+- fix commit description typo.
+v2:
+- revise commit[1] description part accoring to Lukas' suggestion.
+- revise commit[2] description to clarify the issue's impact.
+v1:
+- https://lore.kernel.org/lkml/20231213034637.2603013-1-haifeng.zhao@linux.intel.com/T/
 
-	mt7530_rmw(priv, MT7530_MFC, CPU_EN | CPU_PORT_MASK, val);
-}
 
-> 
->>
->>>
->>> I would also suggest moving irq_enable after create_sgmii, to avoid
->>> holes in the struct.
->>
->> Sorry, I've got no idea about this. Could you explain why would there
->> possibly be holes in the struct with the current ordering of the members of
->> the mt7530_priv structure?
->>
->> Arınç
-> 
-> FWIW:
-> 
-> $ pahole -C mt7530_priv $KBUILD_OUTPUT/drivers/net/dsa/mt7530.o
-> struct mt7530_priv {
->          struct device *            dev;                  /*     0     8 */
->          struct dsa_switch *        ds;                   /*     8     8 */
->          struct mii_bus *           bus;                  /*    16     8 */
->          struct regmap *            regmap;               /*    24     8 */
->          struct reset_control *     rstc;                 /*    32     8 */
->          struct regulator *         core_pwr;             /*    40     8 */
->          struct regulator *         io_pwr;               /*    48     8 */
->          struct gpio_desc *         reset;                /*    56     8 */
->          /* --- cacheline 1 boundary (64 bytes) --- */
->          const struct mt753x_info  * info;                /*    64     8 */
->          unsigned int               id;                   /*    72     4 */
->          bool                       mcm;                  /*    76     1 */
-> 
->          /* XXX 3 bytes hole, try to pack */
-> 
->          phy_interface_t            p6_interface;         /*    80     4 */
->          phy_interface_t            p5_interface;         /*    84     4 */
->          unsigned int               p5_intf_sel;          /*    88     4 */
->          u8                         mirror_rx;            /*    92     1 */
->          u8                         mirror_tx;            /*    93     1 */
-> 
->          /* XXX 2 bytes hole, try to pack */
-> 
->          struct mt7530_port         ports[7];             /*    96   168 */
->          /* --- cacheline 4 boundary (256 bytes) was 8 bytes ago --- */
->          struct mt753x_pcs          pcs[7];               /*   264   280 */
->          /* --- cacheline 8 boundary (512 bytes) was 32 bytes ago --- */
->          struct mutex               reg_mutex;            /*   544    32 */
->          /* --- cacheline 9 boundary (576 bytes) --- */
->          int                        irq;                  /*   576     4 */
-> 
->          /* XXX 4 bytes hole, try to pack */
-> 
->          struct irq_domain *        irq_domain;           /*   584     8 */
->          u32                        irq_enable;           /*   592     4 */
-> 
->          /* XXX 4 bytes hole, try to pack */
-> 
->          int                        (*create_sgmii)(struct mt7530_priv *, bool); /*   600     8 */
->          unsigned long              active_cpu_ports;     /*   608     8 */
-> 
->          /* size: 616, cachelines: 10, members: 24 */
->          /* sum members: 603, holes: 4, sum holes: 13 */
->          /* last cacheline: 40 bytes */
-> };
-> 
-> It's not like this makes any practical difference, as struct mt7530_priv
-> isn't used from hot paths, but tidying it up is a good sign of clean,
-> careful development, and of understanding memory alignment.
 
-Got it, thanks. I've got a few patches that introduce changes to the
-mt7530_priv structure. I'll make sure that, in the end, mt7530_priv won't
-have any holes.
+Thanks,
+Ethan
 
-Arınç
+
+Ethan Zhao (2):
+  PCI: make pci_dev_is_disconnected() helper public for other drivers
+  iommu/vt-d: don's issue devTLB flush request when device is
+    disconnected
+
+ drivers/iommu/intel/pasid.c | 21 ++++++++++++++++++++-
+ drivers/pci/pci.h           |  5 -----
+ include/linux/pci.h         |  5 +++++
+ 3 files changed, 25 insertions(+), 6 deletions(-)
+
+-- 
+2.31.1
+
 
