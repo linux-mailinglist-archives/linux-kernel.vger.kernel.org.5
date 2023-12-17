@@ -1,89 +1,164 @@
-Return-Path: <linux-kernel+bounces-2854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A61D8162DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:44:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0318162DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 303CB1F21B2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:44:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AB941C213EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A60481C3;
-	Sun, 17 Dec 2023 22:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE18C49F74;
+	Sun, 17 Dec 2023 22:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FK2epVai"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MnvU2z+v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81B81E488;
-	Sun, 17 Dec 2023 22:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EB6AE1C0002;
-	Sun, 17 Dec 2023 22:43:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702853033;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6438E44C67
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 22:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702853184;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vnZqkhegsA1cj9MugdXRdfKH0UAjwSba61bjkdJKI5s=;
-	b=FK2epVai1vGwovk+fTNCGKpMu3P1ZFy262Mrzb5+qgCfbhF+goJTg2rgUvdyiUX9gI8x5o
-	j6jzg6e+xRoVArPWNGMVya1JBPRltDJk2JD08b58J2K3aGh72DAugU4FyBtfKokl3UwGqq
-	Qib1yfk3mzftiJJhvG++FrO1TgjkbHx7o61lUku7lVQFFYe70Zb8MkFK8IHukuWrcxNOn7
-	vQNEmcREx4eXBx6IMXE0hZjkUgRca0t/pNUKhqeDi9E08f/+8FxhyC1saiBPyep6jXEY2Y
-	5eSYyf5fwOotGIawT9Kk/himzsukRGd+OFfNMu1gF3hRBHMDgS1dQOZFqC7H/A==
-Date: Sun, 17 Dec 2023 23:43:52 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: a.zummo@towertech.it, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	Jacky Huang <ychuang570808@gmail.com>
-Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	mjchen@nuvoton.com, schung@nuvoton.com,
-	Jacky Huang <ychuang3@nuvoton.com>
-Subject: Re: (subset) [PATCH v4 0/3] Add support for Nuvoton ma35d1 rtc
- controller
-Message-ID: <170285301016.27693.9578027782544960763.b4-ty@bootlin.com>
-References: <20230925070251.28-1-ychuang570808@gmail.com>
+	bh=ZuMkSqDphggFe82tZqaGer9Bq8n3w4NhlpIrSLDuh64=;
+	b=MnvU2z+vdVzJ4ZJXkirYvq36Hkvwx/qmECFdHoe5Q3enAS/1Dnkn9lxckYl2Wb7c3RmsCN
+	NElBw1mnXhKKqlXepVRDIM0lNCW1vEastR2eAai32F/JDx1zEkzsIVifxeGVwoO9QLz7C7
+	SgTPSzQ05+nJXK7AArPfYpv9V6pq8mM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-512-eJbr1JTnOGGtBF-qKlR06Q-1; Sun, 17 Dec 2023 17:46:22 -0500
+X-MC-Unique: eJbr1JTnOGGtBF-qKlR06Q-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c495a9c7cso20917965e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:46:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702853182; x=1703457982;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZuMkSqDphggFe82tZqaGer9Bq8n3w4NhlpIrSLDuh64=;
+        b=PP+7ACm/voxCPPhNvzUPLch9pWLIb9Bjr7lXYL6lK5EBYF20kjjrOQH2JyA0l2hbsT
+         DdwHatCeBJKIUnikgyhMWpDkNnz1dNl2Ryq1Rr7QD/tIXmFmdy1UiwzX790OAhBjdkE9
+         yOOIxKKZn8rHzh8X7+Q/SEOe8Bs7gAlUtVfSSNMbs9q/eZRIVUqx1QwSKtdGwgYldTZO
+         nUjve2PZMsOeAGwfa3T8dkuGCwnYyx9nzTjz6FLy0dyOqu8OsSs2IPfVToq25EBLzxAX
+         BxxJFbFurH6kMsUyRNhXPjA7qdTAiAmGbDGgWV99WmKjR/e6SJBGO24KxTD2sKsMLMmi
+         F0Dw==
+X-Gm-Message-State: AOJu0YxUjbreYoioPNYC2QY4H6Hg9e+oKGgVlQeywJ6QzRD5ECp2d8If
+	xMjd3gZMFOKDcyi3fxxzMjuRPypJMzAlEpf59RqFul+ISNaasA/I0n89aEu43b5UHbFus/gSFA1
+	y002YqE5zRBX1qk47P7u6s+Xg
+X-Received: by 2002:a05:600c:4f90:b0:40b:47b5:be4f with SMTP id n16-20020a05600c4f9000b0040b47b5be4fmr8011120wmq.26.1702853181860;
+        Sun, 17 Dec 2023 14:46:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHkM4LyhnxN4U9ukVqo9ZHjNr9OSCvI4cnpcJ7NkoX7UDtpCVJtXFGPGDKLVfLir4jk0uSzSQ==
+X-Received: by 2002:a05:600c:4f90:b0:40b:47b5:be4f with SMTP id n16-20020a05600c4f9000b0040b47b5be4fmr8011114wmq.26.1702853181517;
+        Sun, 17 Dec 2023 14:46:21 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id d5-20020a5d5385000000b0033662cf5e51sm3013673wrv.93.2023.12.17.14.46.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 14:46:21 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>, Thomas
+ Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, Peter
+ Robinson <pbrobinson@gmail.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Conor Dooley <conor+dt@kernel.org>, Daniel Vetter
+ <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/2] dt-bindings: display: Add SSD133x OLED controllers
+In-Reply-To: <20231217-catcall-turbulent-0a4072eaba43@spud>
+References: <20231217100741.1943932-1-javierm@redhat.com>
+ <20231217100741.1943932-2-javierm@redhat.com>
+ <20231217-bacteria-amusable-77efb05770a4@spud>
+ <87fs00ms4b.fsf@minerva.mail-host-address-is-not-set>
+ <20231217-hunk-cross-4bf51740957c@spud>
+ <87cyv4mqvs.fsf@minerva.mail-host-address-is-not-set>
+ <20231217-catcall-turbulent-0a4072eaba43@spud>
+Date: Sun, 17 Dec 2023 23:46:20 +0100
+Message-ID: <87a5q8moqr.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230925070251.28-1-ychuang570808@gmail.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+Content-Type: text/plain
 
+Conor Dooley <conor@kernel.org> writes:
 
-On Mon, 25 Sep 2023 07:02:48 +0000, Jacky Huang wrote:
-> From: Jacky Huang <ychuang3@nuvoton.com>
-> 
-> This patch series adds the rtc driver for the nuvoton ma35d1 ARMv8 SoC.
-> It includes DT binding documentation, the ma35d1 rtc driver, and device
-> tree updates.
-> 
-> The ma35d1 rtc controller provides real-time and calendar messaging
-> capabilities. It supports programmable time tick and alarm match
-> interrupts. The time and calendar messages are expressed in BCD format.
-> 
-> [...]
+Hello Connor,
 
-Applied, thanks!
+> On Sun, Dec 17, 2023 at 11:00:07PM +0100, Javier Martinez Canillas wrote:
+>> Conor Dooley <conor@kernel.org> writes:
+>> 
+>> Hello Conor,
+>> 
+>> > On Sun, Dec 17, 2023 at 10:33:24PM +0100, Javier Martinez Canillas wrote:
+>> 
+>> [...]
+>> 
+>> >> >> +    then:
+>> >> >> +      properties:
+>> >> >> +        width:
+>> >> >> +          default: 96
+>> >> >> +        height:
+>> >> >> +          default: 64
+>> >> >
+>> >> > Do you envisage a rake of devices that are going to end up in this
+>> >> > binding? Otherwise, why not unconditionally set the constraints?
+>> >> >
+>> >> 
+>> >> Because these are only for the default width and height, there can be
+>> >> panels using the same controller but that have a different resolution.
+>> >> 
+>> >> For example, there are panels using the SSD1306 controller that have
+>> >> 128x32 [0], 64x32 [1] or 128x64 [2] resolutions.
+>> >
+>> > This, as you know, does not matter here.
+>> >
+>> 
+>> Are you sure? What I tried to say is that the SSD133x are just OLED
+>> controllers and manufacturers use those chips to attach a panel that
+>> has a certain resolution.
+>> 
+>> While it makes sense to use all the supported width and height, some
+>> manufacturers chose to have a smaller panel instead (I used SSD1306
+>> as an example because I knew about these but the same might be true
+>> for let's say SSD1331).
+>> 
+>> Or saying another way, are you sure that every manufacturer selling
+>> RGB OLED panels using the SSD1331 chip will use the default resolution
+>> and users won't have to set a custom width and height ?
+>
+> That's not at all what I was saying. I just meant unconditionally set
+> the constraints on the property (in this case the default) since you
+> only have one compatible. Not unconditionally set the height and width.
+>
+> Apologies if if that was unclear.
+>
 
-[1/3] dt-bindings: rtc: Add Nuvoton ma35d1 rtc
-      commit: 3767bba698707d7bad5099371b797d0fd6d39709
-[3/3] rtc: Add driver for Nuvoton ma35d1 rtc controller
-      commit: dc0684adf3b6be6b20fec9295027980021d30353
+Oh, I see that you meant now. Sorry for my confusion!
 
+And yes, I agree with you that doesn't make sense to make it conditional
+if there's only a single compatible. I'll drop that if condition on v2.
+
+Thanks a lot for your feedback.
+
+> Thanks,
+> Conor.
+>
+ 
+-- 
 Best regards,
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
