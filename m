@@ -1,162 +1,125 @@
-Return-Path: <linux-kernel+bounces-2594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF446815F36
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:15:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D486815F3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E8E31F21F9B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:15:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9003A1C2102B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A89E44374;
-	Sun, 17 Dec 2023 13:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F031544370;
+	Sun, 17 Dec 2023 13:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Eo1hNjZ4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kuh3RPiQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997934314E
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 13:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso2331978a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 05:15:06 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8902F2A;
+	Sun, 17 Dec 2023 13:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5918f11099dso1583599eaf.0;
+        Sun, 17 Dec 2023 05:16:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1702818905; x=1703423705; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LHXWjrSlj1U/EaS6SsHAe5QV70YZbTbi+3v3DGkj4PY=;
-        b=Eo1hNjZ4t3sZAE0qtO56lRARknNwaALRnDjeSiLKq9uVqB9idn0f19sUFrMfsL4fjO
-         wRqh5uPEwZUShhnlReo/tpqZaBxazzyXo/x9q+mWJ0kHJ3UC2dzyH2V4zJpOeKTTrOW0
-         SIeA4Kfj/kiMLS6UEHEgbbPgYo2iYmrKTD2qxD5laYfsRVLfg+dF5bYAW52xSviTBDLc
-         1hFt1ec7BLpCLwwx9z3iMEIA1Y0oLQQtPgOjRPWSw8y+z05Kr9VRGM7Tw+t6AZUNIfkP
-         nnVE8yk6y5JYVGnHuo9XsBMdc2p4v8FHVTyxAYCKB1ycugQgLvCizjuEO/GaRKeHmsh8
-         EbSg==
+        d=gmail.com; s=20230601; t=1702819011; x=1703423811; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=43v36/wxQF9T3jsj2t8sjYdoiNr9q5A3vNTk2NP2+ik=;
+        b=kuh3RPiQ14wUZAmk1WNVNDdgKyytjYldIRvPvMPPf6+pjlxlPmq7ENJQBWY689s18v
+         QoF8mUGhrZZIqRR5Mhk/2N/wcO8yavC962ZWpnT72JGKaRBbiqGG3taYR+9E0rnbLGyZ
+         y0U2Iu5X/ozNZ9bXTYzzpDhIWrT+Piit/UlLje6GYtPh8cx7iLAf+Cyewo2n2gqiWT/5
+         0QpqwxQ4fTOzkP8LmH8iBQy+N21+wCHcE4zMDScMWVwz3qnIoRms/soQaCMbuiCSzThD
+         cZyKtNtTsMxipY0izvkgvVukzOSCv/PcSgRX8vfZMawkqsJ4JCYG66XG75mXhs06NLp5
+         AYpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702818905; x=1703423705;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LHXWjrSlj1U/EaS6SsHAe5QV70YZbTbi+3v3DGkj4PY=;
-        b=lPxbnvpvJMy27SRoAzrKwPoC2x3HN2Vp5RHlAJjsHrc47hG6S3T+xRxRkco/HCmPQa
-         kkAik+hogh+4ZDdJtj3uWmNMR2z/O/X+Hm0J2Y85mpLJrPhs7qbIzPte7LAAKJWpVAie
-         OLJqOmyYL0F7oFEI4zN43p+F6TPL4y6e34x9HXLnFQkBHko5cBsSyb6U9BfKvatjqslE
-         P39B+i31D7k7iTwa2MHL1Vr5PxTNrMkaNXeK7shz74UmzUta/lTXZFUD+IQY1pfNAnRJ
-         PYMPSuWoC26vBgWHmrVfafwNpyIvN3v+RS84VXeJegSI9b62+vyxv/pHMzHuvwmlhbGO
-         6chw==
-X-Gm-Message-State: AOJu0YwpSip7+rjFRdMTkHdgB2dgOMKHGrjywc6tm8j8RyOLyPIjVaAs
-	KWY/rOAq5eTDPQNpCOSU5likOvpxMZLwXi1kkZQ=
-X-Google-Smtp-Source: AGHT+IGQ++bHMqUg6tjerPuRVUO/S+HMFsxSFGEN9NHX5/OUlH55jAaz3GemmVsVA1cJJd+8Elgx2A==
-X-Received: by 2002:a50:cd16:0:b0:552:391c:c8e1 with SMTP id z22-20020a50cd16000000b00552391cc8e1mr1239635edi.107.1702818904868;
-        Sun, 17 Dec 2023 05:15:04 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id el13-20020a056402360d00b005527de2aecfsm3183456edb.42.2023.12.17.05.15.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Dec 2023 05:15:04 -0800 (PST)
-Message-ID: <ba18b668-94c0-4cab-9d2c-87ac6c3f8f8e@tuxon.dev>
-Date: Sun, 17 Dec 2023 15:15:02 +0200
+        d=1e100.net; s=20230601; t=1702819011; x=1703423811;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=43v36/wxQF9T3jsj2t8sjYdoiNr9q5A3vNTk2NP2+ik=;
+        b=LmIR6h6rapN/2aKSg9isWFvCfHOjRgYW1BoKd8GpAvuvMkqcuri/YIhVsSkquYZHvn
+         porrxOdSeCYLf66gWTEVpyWvF/pRYPCNrabACfBlM7zWlGVuI+Ad2Scy4GAzSvWYKGpj
+         MAOCWRZTm9UtAeKap+azs6xrX2kCt2lXIXGfcV7hfUnM3jisTfKOcbf4zrXoOTSNWwVU
+         GE7bamEML0h3ntPsr67XweGIKt3+pOVd9w2aYo3dW39lQwVeybW5OinoSQQ7qf/wIv1q
+         DHvcW8Ba2cAmYicLy4FGBxovtiS5hWoN6bIT3UBuNag0qHwxkZfrHHvLCVeA1Ivt6kBN
+         KhCA==
+X-Gm-Message-State: AOJu0YySamovOzSV1lWmO85k1E91hZc748wWprCz76HbQNkIamMjh3Dx
+	6Es5jqMz6oXHmrz5bNMVjFmh+BxlCp3xTICYTYY=
+X-Google-Smtp-Source: AGHT+IFPaSPm87V76Kx27E9+q4pqOpgn9y5sMFWkrnZ4gcDKVernhTdkthc9miDv1yKyHAUlPoqw6oDA+5TywHPuKgE=
+X-Received: by 2002:a4a:1d86:0:b0:590:7013:af96 with SMTP id
+ 128-20020a4a1d86000000b005907013af96mr10326446oog.19.1702819010775; Sun, 17
+ Dec 2023 05:16:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 13/21] net: ravb: Set config mode in ndo_open
- and reset mode in ndo_close
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, p.zabel@pengutronix.de,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
- geert+renesas@glider.be
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-14-claudiu.beznea.uj@bp.renesas.com>
- <78688143-e777-c98b-01eb-813f0fe67491@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <78688143-e777-c98b-01eb-813f0fe67491@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231217110952.78784-1-qiujingbao.dlmu@gmail.com>
+ <20231217110952.78784-2-qiujingbao.dlmu@gmail.com> <20231217-wrist-flakily-db9974d8b515@spud>
+In-Reply-To: <20231217-wrist-flakily-db9974d8b515@spud>
+From: jingbao qiu <qiujingbao.dlmu@gmail.com>
+Date: Sun, 17 Dec 2023 21:16:39 +0800
+Message-ID: <CAJRtX8TQ02swRqzNfPHPrcS-MU=pBN_atjV2PFsAyJeNBF8kgA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: sophgo: add RTC support for
+ Sophgo CV1800 series SoC
+To: Conor Dooley <conor@kernel.org>
+Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chao.wei@sophgo.com, 
+	unicorn_wang@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dlan@gentoo.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Dec 17, 2023 at 8:26=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Sun, Dec 17, 2023 at 07:09:50PM +0800, Jingbao Qiu wrote:
+>
+> > +  reg:
+> > +    items:
+> > +      - description: data register
+> > +      - description: control register
+>
+> > +    rtc@5025000{
+> > +      compatible =3D "sophgo,cv1800-rtc";
+> > +      reg =3D <0x5025000 0x1000>, <0x5026000 0x1000>;
+>
+> Why are these two regions rather than just one, given they are located
+> next to one another?
+> Are they separate on one of the other devices in this family?
+>
+> Thanks,
+> Conor.
+>
+
+I think there are two reasons, the first one is to distinguish
+different logical ,
+REG_ CTRL (base on 0x5025000) controls clock calibration, sleep,and other
+functions, RTC_ CORE (base on 0x5026000) has basic RTC functionality,
+The second is the maximum address used by RTC_CTRL (base on 0x5025000)
+is 0x0ac,which is much smaller than 0x1000. Therefore, the datasheet divide=
+s
+it into two parts for introduction, and I also divide it into two
+parts based on this
+introduction.So do you suggest that I merge them together=EF=BC=9F
+
+Best regards,
+Jingbao Qiu
 
 
 
-On 16.12.2023 19:28, Sergey Shtylyov wrote:
-> On 12/14/23 2:45 PM, Claudiu wrote:
-> 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> As some IP variants switch to reset mode (and thus registers' content is
-> 
->    Register.
-> 
->> lost) when setting clocks (due to module standby functionality) to be able
->> to implement runtime PM and save more power, set the IP's operation mode to
-> 
->    Operating.
-> 
->> reset at the end of the probe. Along with it, in the ndo_open API the IP
->> will be switched to configuration, then operational mode. In the ndo_close
->> API, the IP will be switched back to reset mode. This allows implementing
->> runtime PM and, along with it, save more power when the IP is not used.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> [..]
-> 
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index db9222fc57c2..31a1f8a83652 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> [...]
->> @@ -1821,13 +1845,19 @@ static int ravb_open(struct net_device *ndev)
->>  	if (info->nc_queues)
->>  		napi_enable(&priv->napi[RAVB_NC]);
->>  
->> +	/* Set AVB config mode */
->> +	error = ravb_set_config_mode(ndev);
->> +	if (error)
->> +		goto out_napi_off;
->> +
-> 
->    I suspect this too belongs in ravb_dmac_init() now...
 
-What I can do here is to keep PTP/GAC specific settings from
-ravb_set_config_mode() in a separate function close to PTP setup and remove
-ravb_set_config_mode() at all as ravb_dmac_init() switches anyway the IP to
-config mode. But with this I don't know how the PTP/GAC will be influenced
-as I don't have a setup to check it. From my memories, the commit that
-introduces the setup of PTP when switching to config mode did this by
-intention, so I'm not sure weather playing around with this is the way to
-go forward. Do you remember something specific about this?
 
-> 
-> [...]
->> @@ -2875,19 +2886,30 @@ static int ravb_probe(struct platform_device *pdev)
->>  
->>  	device_set_wakeup_capable(&pdev->dev, 1);
->>  
->> +	/* Reset MAC as the module will be runtime disabled at this moment.
->> +	 * This saves power. MAC will be switched back to configuration mode
->> +	 * in ravb_open().
->> +	 */
->> +	error = ravb_set_reset_mode(ndev);
->> +	if (error)
->> +		goto out_netdev_unregister;
->> +
-> 
->    I think this now races with the register_netdev() call above (the device
-> can be opened before it returns)! Should be called before register_netdev()...
-> 
 
-Good point! Thanks!
-
-> [...]
-> 
-> MBR, Sergey
+> > +      clocks =3D <&osc>;
+> > +      interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
+> > +    };
+>
 
