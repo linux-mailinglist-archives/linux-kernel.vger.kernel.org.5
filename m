@@ -1,71 +1,130 @@
-Return-Path: <linux-kernel+bounces-2843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FF08162BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:10:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A94008162BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:10:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A870282976
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:10:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 341001F218DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E61449F7B;
-	Sun, 17 Dec 2023 22:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C2D49F90;
+	Sun, 17 Dec 2023 22:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cufp2tts"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="DdxFoikZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6C249F72
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 22:10:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1D68FC433C7;
-	Sun, 17 Dec 2023 22:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702851005;
-	bh=IsFXbMEAhL78dopsPaTbt8vF8iZPvbL1jfvww3k77ao=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Cufp2ttsbZdkf9882hOVsgLvUaQTQbRkpxOElAX/odcKVBK9hDMctXdAXhqqqf1HI
-	 Yxg3wmBigG+iQ7wtXCeyLfAHbHtP3accqM7WTG7XBDzRYHJc/gKFpn1tGokjmrh1GH
-	 cVFmg3LnBcAH70UFRfx/at44s2yvySTcE8SnaCSB3GpY+JT4mj+Fch0tjcvRAaF3tL
-	 3612bpaBar0Q81x7LRh/gNjc627ZW6PK0L9ed2AxFNQ7wt15LZhg2PFL0Bg2OK+Dew
-	 yT+c3fPaFoSk948y1IiKlCQCBk/y/+GJEZo03787TD6NdJWdXcoAwOjRmW5NIK7cHl
-	 YYFzzqXaY+9GQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EFF1DE2A04A;
-	Sun, 17 Dec 2023 22:10:04 +0000 (UTC)
-Subject: Re: [GIT PULL] perf/urgent for v6.7-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20231217202613.GAZX9ZZWMM/ytA74VC@fat_crate.local>
-References: <20231217202613.GAZX9ZZWMM/ytA74VC@fat_crate.local>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231217202613.GAZX9ZZWMM/ytA74VC@fat_crate.local>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v6.7_rc6
-X-PR-Tracked-Commit-Id: 7e2c1e4b34f07d9aa8937fab88359d4a0fce468e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 177c2ffe69555dde28fad5ddb62a6d806982e53f
-Message-Id: <170285100491.18163.16735829252667356500.pr-tracker-bot@kernel.org>
-Date: Sun, 17 Dec 2023 22:10:04 +0000
-To: Borislav Petkov <bp@alien8.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BED54A9A2;
+	Sun, 17 Dec 2023 22:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1702851016;
+	bh=jV/gJmx2dRn8bG3USFFs1YL9j9hEU8IS+OZeoAALh/o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DdxFoikZMeNyWuoAcpms0q4zk04TBG1+e7/RgRUcBAW3qWQyxlpxF8KdpM/9LPfl9
+	 BBHrENFjN2DUvXLi2LoDd4+Kz2e/FTz1/pMX69PXVc2aCnw0eZ33SCunVdMjK7/TE8
+	 WGGHUvAHXg7I7Y4b9/DQW9E3syClaE5qe8IGSFfE=
+Date: Sun, 17 Dec 2023 23:10:15 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Julia Lawall <julia.lawall@inria.fr>, 
+	Kees Cook <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+	Iurii Zaikin <yzaikin@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
+References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com>
+ <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <20231207104357.kndqvzkhxqkwkkjo@localhost>
+ <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
+ <20231208095926.aavsjrtqbb5rygmb@localhost>
+ <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
+ <20231212090930.y4omk62wenxgo5by@localhost>
+ <ZXligolK0ekZ+Zuf@bombadil.infradead.org>
+ <20231217120201.z4gr3ksjd4ai2nlk@localhost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231217120201.z4gr3ksjd4ai2nlk@localhost>
 
-The pull request you sent on Sun, 17 Dec 2023 21:26:13 +0100:
+On 2023-12-17 13:02:01+0100, Joel Granados wrote:
+> Catching up with mail....
+> 
+> On Tue, Dec 12, 2023 at 11:51:30PM -0800, Luis Chamberlain wrote:
+> > On Tue, Dec 12, 2023 at 10:09:30AM +0100, Joel Granados wrote:
+> > > My idea was to do something similar to your originl RFC, where you have
+> > > an temporary proc_handler something like proc_hdlr_const (we would need
+> > > to work on the name) and move each subsystem to the new handler while
+> > > the others stay with the non-const one. At the end, the old proc_handler
+> > > function name would disapear and would be completely replaced by the new
+> > > proc_hdlr_const.
+> > >
+> > > This is of course extra work and might not be worth it if you don't get
+> > > negative feedback related to tree-wide changes. Therefore I stick to my
+> > > previous suggestion. Send the big tree-wide patches and only explore
+> > > this option if someone screams.
+> >
+> > I think we can do better, can't we just increase confidence in that we
+> > don't *need* muttable ctl_cables with something like smatch or
+> > coccinelle so that we can just make them const?
+> >
+> > Seems like a noble endeavor for us to generalize.
+> >
+> > Then we just breeze through by first fixing those that *are* using
+> > mutable tables by having it just de-register and then re-register
+> So let me see if I understand your {de,re}-register idea:
+> When we have a situation (like in the networking code) where a ctl_table
+> is being used in an unmuttable way, we do your {de,re}-register trick.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v6.7_rc6
+unmuttable?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/177c2ffe69555dde28fad5ddb62a6d806982e53f
+> The trick consists in unregistering an old ctl_table and reregistering
+> with a whole new const changed table. In this way, whatever we register
+> is always const.
+> 
+> Once we address all the places where this happens, then we just change
+> the handler to const and we are done.
+> 
+> Is that correct?
 
-Thank you!
+I'm confused.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+The handlers can already be made const as shown in this series, which
+does convert the whole kernel tree.
+There is only one handler (the stackleak one) which modifies the table
+and this one is fixed as part of the series.
+
+(Plus the changes needed to the sysctl core to avoid mutation there)
+
+> If that is indeed what you are proposing, you might not even need the
+> un-register step as all the mutability that I have seen occurs before
+> the register. So maybe instead of re-registering it, you can so a copy
+> (of the changed ctl_table) to a const pointer and then pass that along
+> to the register function.
+
+Tables that are modified, but *not* through the handler, would crop
+during the constification of the table structs.
+Which should be a second step.
+
+But Luis' message was not completely clear to me.
+I guess I'm missing something.
+
+> Can't think of anything else off the top of my head. Would have to
+> actually see the code to evaluate further I think.
+> 
+> > new tables if they need to be changed, and then a new series is sent
+> > once we fix all those muttable tables.
+
+Thomas
 
