@@ -1,85 +1,106 @@
-Return-Path: <linux-kernel+bounces-2798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EBD9816206
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:24:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E20B81620A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3B45B21BFD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 20:24:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 950CCB21C10
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 20:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2253F482E4;
-	Sun, 17 Dec 2023 20:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04482481B8;
+	Sun, 17 Dec 2023 20:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gaRx8pR7"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="eZ5yQoHd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583C1481C9;
-	Sun, 17 Dec 2023 20:24:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F7EC433CD;
-	Sun, 17 Dec 2023 20:24:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702844669;
-	bh=MrG/J4jSnITze5df+wa+7cDGeZH6SCd5BYEjWk2JkVI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gaRx8pR7D28+3jAmOCeJBJwlsWAaASm4yiy2dshGHR8hWNw/d+U4QzI8ksagI4I9h
-	 rUyJOSL6twEuv4QJp2uYsNfqYbojPpLfmYl/qboU3aAfH2m5QUM4LY/i7fqJSePf38
-	 2jAq87zRjscdNH8fzpZ0A9Bh2nNbdaYCrW6nXOKVbiZAlKtmX7sHBlz9055KIAtaFg
-	 FXKlJRyFUsRxktrhDI7tTb92yKdz7RjFIzimOjOdhceZn3qDpsTPm2vdW2n+reI2mQ
-	 bdOqIFXrPHcfRcSIkcWsmauiklKH4K628PbH3J9sq3rijdHoaisuDlZg/7Bmc57psk
-	 z558be2sNbn4g==
-From: Bjorn Andersson <andersson@kernel.org>
-To: ~postmarketos/upstreaming@lists.sr.ht,
-	phone-devel@vger.kernel.org,
-	Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Samuel Pascua <pascua.samuel.14@gmail.com>,
-	Iskren Chernev <me@iskren.info>,
-	Luca Weiss <luca@z3ntu.xyz>
-Cc: linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Alexey Minnekhanov <alexeymin@postmarketos.org>
-Subject: Re: [PATCH 0/3] Several smaller msm8974 fixes
-Date: Sun, 17 Dec 2023 14:24:24 -0600
-Message-ID: <170284466202.74678.52820815256260449.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231217-msm8974-misc-v1-0-bece1ba2667d@z3ntu.xyz>
-References: <20231217-msm8974-misc-v1-0-bece1ba2667d@z3ntu.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A58A481AB
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 20:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A451640E00CD;
+	Sun, 17 Dec 2023 20:26:24 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id IArvJkURkpd0; Sun, 17 Dec 2023 20:26:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1702844782; bh=BCgmZJnP8x9qFDbLAR/+5iruMPbwmtoW0exOXUqUKIM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=eZ5yQoHdY6b7Vcg1tUUrabcanxqtJNRPq8jGxrOik1hiGXtZI0An6XWn9qDnRqtvD
+	 gtTzMa6yHdhvJdUJwXzCdiO6AqKWUqUJa87z0xrJAd2O9Lr5fz52fLBK1uXompyos4
+	 e358fVRPEZ/mrN/8ybHvS10C4aF72xxS1umLfsqPYoJWFPSiSAnkuxCV8ACOpHwmFv
+	 QjqxDdhV+CMTh5vmjwDkkJNdqQD3+cMe27VqLlcHHTmS6M4YkAVUmIv6AhjFK+JvV0
+	 3+XFbBGlQy0LePeQ9fymNYon+oXuThm0dlrpWMRvkgnEDo9TcasZC6n3YxG3eRVWSd
+	 RJJyGcvG3GwtHcw9NA2mHOtXpF3AyWkUVi7mK2eASLuJtQzfEGs8lSY9UV/GqCEvxx
+	 DJlLjK+rs7QXYCZqxMEEbTT9FDJMrpnimHUrw8jS+wV4KoP0UnJON34ikUtUA8M4E3
+	 2MsIVgxzjBnBgikh6ldhcAIcLPx8QcCB76XZKTrQNK7QnJu8+bVwBMAi3sQHDBQazK
+	 Z1FbGhvPSMdjmvB2qSaZKx8OjUFm0y9RO9n6IyVszc1K3cRUXNnv6HCt0nx+SR5wSZ
+	 u7P4nUMNtv+7+bVk/nevMtabAKOo54lX/yYr/yOyzPExgP0opPsVWIH+5sT0nDpLGO
+	 eWPxEl25iv+lbwvs+JIWfVZY=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 771EC40E00C9;
+	Sun, 17 Dec 2023 20:26:19 +0000 (UTC)
+Date: Sun, 17 Dec 2023 21:26:13 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] perf/urgent for v6.7-rc6
+Message-ID: <20231217202613.GAZX9ZZWMM/ytA74VC@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+
+Hi Linus,
+
+please pull a last minute urgent perf fix for v6.7-rc6.
+
+Thx.
+
+---
+
+The following changes since commit a39b6ac3781d46ba18193c9dbb2110f31e9bffe9:
+
+  Linux 6.7-rc5 (2023-12-10 14:33:40 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v6.7_rc6
+
+for you to fetch changes up to 7e2c1e4b34f07d9aa8937fab88359d4a0fce468e:
+
+  perf: Fix perf_event_validate_size() lockdep splat (2023-12-15 12:33:23 +0100)
+
+----------------------------------------------------------------
+- Avoid iterating over newly created group leader event's siblings
+  because there are none, and thus prevent a lockdep splat
+
+----------------------------------------------------------------
+Mark Rutland (1):
+      perf: Fix perf_event_validate_size() lockdep splat
+
+ kernel/events/core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 
-On Sun, 17 Dec 2023 16:22:52 +0100, Luca Weiss wrote:
-> Send some smaller fixes that have been sitting around in my tree for
-> some time.
-> 
-> 
-
-Applied, thanks!
-
-[1/3] ARM: dts: qcom: msm8974-klte: Remove unused property
-      commit: 32b075f8a2d4fefb8d791431606930883a5d5f15
-[2/3] ARM: dts: qcom: msm8974: Remove bogus cd-gpio pinctrl
-      commit: 1522b3bb306986e2f3923152a05939176b2a8a0c
-[3/3] ARM: dts: qcom: msm8974*: Re-enable remoteprocs on various boards
-      commit: 648002a27c6b3ae293cc415e1fbf20aaa6af8bd3
-
-Best regards,
 -- 
-Bjorn Andersson <andersson@kernel.org>
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
