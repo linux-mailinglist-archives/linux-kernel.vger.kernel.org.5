@@ -1,103 +1,125 @@
-Return-Path: <linux-kernel+bounces-2672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC35816043
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 16:50:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4C4B816026
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 16:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB81D1C21BB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:50:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0F692834DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F0645974;
-	Sun, 17 Dec 2023 15:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E430744C9E;
+	Sun, 17 Dec 2023 15:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-watchdog.org header.i=@linux-watchdog.org header.b="A5nmn24K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CvYCyXxm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from www.linux-watchdog.org (www.linux-watchdog.org [185.87.125.42])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF4844C88;
-	Sun, 17 Dec 2023 15:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=linux-watchdog.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-watchdog.org
-Received: by www.linux-watchdog.org (Postfix, from userid 500)
-	id AE07240A00; Sun, 17 Dec 2023 16:33:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 www.linux-watchdog.org AE07240A00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-watchdog.org;
-	s=odk20180602; t=1702827198;
-	bh=+l0EOLKa0Bl3ZTWz3jGKaliU0ki9maj1BDrJAnID99w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A5nmn24KcJNSDhVfY9QidGiyMapfWTt138hl4+Oj//u0GhFO0wjHMJ3zVi0sUypae
-	 w7RC7V1Xl+ZjfbhpSVFKJdbQ3yfmIXDjEiH+W7ugZvdBMqRMvqtqZeYsvlT3u8fsA0
-	 JmnVrAAgFogL1Jj9qDNW6hJhRh2kFdRO7x3Oat7M=
-Date: Sun, 17 Dec 2023 16:33:18 +0100
-From: Wim Van Sebroeck <wim@linux-watchdog.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC2644C7B;
+	Sun, 17 Dec 2023 15:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4257ba1bc5fso24598021cf.0;
+        Sun, 17 Dec 2023 07:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702827201; x=1703432001; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q5Z4tR06Qkm0+yhPoaVhQmj48yvm7Zr+y9XzEyeTPI0=;
+        b=CvYCyXxmxy08oVqeMNCi5U6e3758b3ej+eh+fL5RIwXYZibozGJbjy3yyRqPlisXhE
+         NzeKUhmiTfgk/ScLFXVgUBAO92zGwIGAEw2RijU4N6cd8aPpEj2kaeN+Vk+N9YTqKycr
+         ktfr2+rxU5G08NduNyb2vPxVsWieAxKC+2e3jvwY9RAZ3o5MGqdXT0gSzXLIJ96Slya8
+         U6fjl6nd7coMLaM0Wrjix2JFXFmq3lj5nFr/+k8M+KAjqezDwsSFBC3j7ujQ1q806Qvh
+         zb6VH3CQc/MuzVqYIkfCdKkzTmitsuuvRN2uAPSrPL63ngwtEr3mLdJDR3juPf4mY9Dt
+         L1wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702827201; x=1703432001;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q5Z4tR06Qkm0+yhPoaVhQmj48yvm7Zr+y9XzEyeTPI0=;
+        b=RbPnvoDF8oggreISlEKjy9lXVdf/EkF7NJIONEI9sBk0fDIkaGsVnoc2vxlISvSKjl
+         2cI93qeZsqyEYMnqQFvUKuavBMEX+3pznGY/7+bROOldQvbvEaobZS3+U8+0t6gAgZEh
+         cMpQL55RNWOOTyPyEvcMOzTMSrEn0Cc9hhVSBiHCqLb73CwH6pklkFVviV1TNywAPtzo
+         eHHyYPBKtZSJzP+68N58Ld31YYPx0VjkgOeSTayEOPIlG6T5R4DAyq3qIahFs7LR9Nvo
+         mies38ugRG/giLzZHPXoWQbFlCTE4CRUvas7cKXQWu1D6EJVAmZZipvMyKmCsYwOFNJ6
+         zazg==
+X-Gm-Message-State: AOJu0YxbEEJz/PrAKtkRVKgiMT0cOWhexPjoraDyQCtHAxeG11FH5ClU
+	fWgrqfbQIAYYiDANcnQwyb5cN/CM9m4=
+X-Google-Smtp-Source: AGHT+IG+rX2LsMaUu+ADAb4PaMIvL834e14XpGk9OidFNNFIXmM0sY9KM4s6PVRUg27xEyf932Yaig==
+X-Received: by 2002:a05:620a:1271:b0:77d:5a1d:cf4 with SMTP id b17-20020a05620a127100b0077d5a1d0cf4mr17019544qkl.47.1702827201410;
+        Sun, 17 Dec 2023 07:33:21 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m26-20020ab0751a000000b007cb8b709b31sm280484uap.23.2023.12.17.07.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 07:33:21 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sun, 17 Dec 2023 07:33:19 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Potin Lai <potin.lai.pt@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>, swboyd@chromium.org,
-	linux-watchdog@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Andy Gross <agross@kernel.org>,
-	Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] dt-bindings: watchdog: qcom-wdt: Make the
- interrupt example edge triggered
-Message-ID: <20231217153318.GA6196@www.linux-watchdog.org>
-References: <20231106144335.v2.1.Ic7577567baff921347d423b722de8b857602efb1@changeid>
- <20231106144335.v2.9.Ie30c1d3f780666f6906fd2fd7c437632c229d987@changeid>
- <CAD=FV=XsPGvNggpJPCpF=xhkm3dOHsStycZvuVttA=ZH6=EUmw@mail.gmail.com>
+	Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+	Mark Brown <broonie@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Peter Yin <peteryin.openbmc@gmail.com>,
+	Peter Yin <peter.yin@quantatw.com>,
+	Potin Lai <potin.lai@quantatw.com>,
+	Patrick Williams <patrick@stwcx.xyz>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] hwmon: (pmbus) Add support for MPS Multi-phase
+ mp2856/mp2857 controller
+Message-ID: <9abe3c01-f6ba-4791-9cf8-d73dfe44d899@roeck-us.net>
+References: <20231211160519.21254-1-potin.lai.pt@gmail.com>
+ <20231211160519.21254-3-potin.lai.pt@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=XsPGvNggpJPCpF=xhkm3dOHsStycZvuVttA=ZH6=EUmw@mail.gmail.com>
-User-Agent: Mutt/1.5.20 (2009-12-10)
+In-Reply-To: <20231211160519.21254-3-potin.lai.pt@gmail.com>
 
-Hi Doug,
-
-> Hi,
+On Tue, Dec 12, 2023 at 12:05:19AM +0800, Potin Lai wrote:
+> From: Peter Yin <peteryin.openbmc@gmail.com>
 > 
-> On Mon, Nov 6, 2023 at 2:44 PM Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > As described in the patch ("arm64: dts: qcom: sc7180: Make watchdog
-> > bark interrupt edge triggered"), the Qualcomm watchdog timer's bark
-> > interrupt should be configured as edge triggered.
-> >
-> > Update the example in the bindings.
-> >
-> > Fixes: 7c631cdff391 ("dt-bindings: watchdog: qcom-wdt: allow interrupts")
-> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> >
-> > (no changes since v1)
-> >
-> >  Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> Add support for mp2856/mp2857 device from Monolithic Power Systems, Inc.
+> (MPS) vendor. This is a dual-loop, digital, multi-phase,
+> modulation controller.
 > 
-> I saw Bjorn landed all of the dts patches from this series but it
-> looks like the bindings patch got left behind. Anyone want to claim it
-> for their tree, or Ack it saying that you'd prefer for it to go
-> through someone else's tree? I assume Krzysztof's Ack means he's not
-> intending for it to go through the DT tree and Bjorn doesn't seem to
-> intend for it to go through the Qualcomm tree. Guenter/Wim: it feels
-> like this could go in the watchdog tree?
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+> Signed-off-by: Potin Lai <potin.lai.pt@gmail.com>
 
-I picked it up in the watchdog tree.
+Applied, with reservations (because due to lack of datasheet it is all but
+impossible to validate the code) and several fixups. So this driver comes
+with even less warranty than usual.
 
-Kind regards,
-Wim.
+CHECK: Alignment should match open parenthesis
+#671: FILE: drivers/hwmon/pmbus/mp2856.c:413:
++	memcpy(data->max_phases, mp2856_max_phases[data->chip_id],
++		sizeof(data->max_phases));
 
+CHECK: Please don't use multiple blank lines
+#673: FILE: drivers/hwmon/pmbus/mp2856.c:415:
++
++
+
+CHECK: Please don't use multiple blank lines
+#707: FILE: drivers/hwmon/pmbus/mp2856.c:449:
++
++
+
+Fix those, and use i2c_get_match_data().
+
+_Please_ run your patches through checkpatch. The above is really
+completely unnecessary and creates unnecessary extra work for others (me).
+
+Guenter
 
