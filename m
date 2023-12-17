@@ -1,91 +1,72 @@
-Return-Path: <linux-kernel+bounces-2754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A241816156
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:40:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7E4881615A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9901C20995
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:40:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57C761F203F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A9446550;
-	Sun, 17 Dec 2023 17:40:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DFB46B81;
+	Sun, 17 Dec 2023 17:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ikXoGqEv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0635246456
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 17:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-7-Jk6djIywNsumAmg5dYKSIA-1; Sun, 17 Dec 2023 17:40:38 +0000
-X-MC-Unique: Jk6djIywNsumAmg5dYKSIA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 17 Dec
- 2023 17:40:19 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 17 Dec 2023 17:40:19 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>, Steven Rostedt
-	<rostedt@goodmis.org>
-CC: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, LKML
-	<linux-kernel@vger.kernel.org>, Linux Trace Kernel
-	<linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
-	<mathieu.desnoyers@efficios.com>
-Subject: RE: [PATCH] ring-buffer: Remove 32bit timestamp logic
-Thread-Topic: [PATCH] ring-buffer: Remove 32bit timestamp logic
-Thread-Index: AQHaLs9iaE2zzzBpbUiUb4MLlBIx7bCtvF7A
-Date: Sun, 17 Dec 2023 17:40:19 +0000
-Message-ID: <d3e5ab37839047a483212c8b3fc667e5@AcuMS.aculab.com>
-References: <20231213211126.24f8c1dd@gandalf.local.home>
- <20231213214632.15047c40@gandalf.local.home>
- <CAHk-=whESMW2v0cd0Ye+AnV0Hp9j+Mm4BO2xJo93eQcC1xghUA@mail.gmail.com>
- <20231214115614.2cf5a40e@gandalf.local.home>
- <CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
- <20231214153636.655e18ce@gandalf.local.home>
- <CAHk-=wieVSfyjTpe8L5kmwC4mk9dRge9dvyJiMZEkyz4-tOvow@mail.gmail.com>
-In-Reply-To: <CAHk-=wieVSfyjTpe8L5kmwC4mk9dRge9dvyJiMZEkyz4-tOvow@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D3445BF2;
+	Sun, 17 Dec 2023 17:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=guGfcblazAtaUH8Sd9tR5HWwfwcONlL3bp2RP/xqxcE=; b=ikXoGqEvRnTUDjveUBCQ6oINCm
+	qJuABa5ZJO9ZERcH6AKqRYR9Uk2fxNxUAgz0CeOKV43LGQS4oxWtwfik/jnwiVojmS7ud3BKPF59U
+	ICJG1eYVUgTEg5D5FBk6v+sfDIN053cK/SeBX+uNy8U6uafEMGIe/hQLFKdZaxraoZfM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rEvBj-003AF6-7U; Sun, 17 Dec 2023 18:44:27 +0100
+Date: Sun, 17 Dec 2023 18:44:27 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: Nishanth Menon <nm@ti.com>, vigneshr@ti.com, kristo@kernel.org,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	danishanwar@ti.com, r-gunasekaran@ti.com, srk@ti.com
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-icssg2: Enable PHY
+ interrupts for ICSSG2
+Message-ID: <b0ecbd1f-354a-443a-849b-b00d2f1554d5@lunn.ch>
+References: <20231213080216.1710730-1-s-vadapalli@ti.com>
+ <20231213123819.tqh3lm2ceir3qjbk@swimmer>
+ <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
 
-Li4uDQo+IE15IGd1ZXNzIGlzIHRoYXQgKm1vc3QqIDMyLWJpdCBhcmNoaXRlY3R1cmVzIGRvIG5v
-dCBoYXZlIGEgNjQtYml0DQo+IGNtcHhjaGcgLSBub3QgZXZlbiB0aGUgaXJxLXNhZmUgb25lLg0K
-DQpEb2VzIGFueSBzcGFyYzMyIGV2ZW4gaGF2ZSBhIDMyLWJpdCBjbXB4Y2hnPw0KVGhlIG9yaWdp
-bmFsIHZlcnNpb25zICh3aGljaCB3ZXJlIGRlZmluaXRlbHkgU01QIGNhcGFibGUpDQpvbmx5IGhh
-ZCBhIGJ5dGUgc2l6ZWQgYXRvbWljIGV4Y2hhbmdlIHRoYXQgYWx3YXlzIHdyb3RlIDB4ZmYuDQoN
-ClNwYXJjMzIgZG9lcyBoYXZlICdsb2FkL3N0b3JlIGRvdWJsZScgKHR3byAzMmJpdCByZWdpc3Rl
-cnMpDQpidXQgMzJiaXQgY3B1IGxpa2UgbmlvczIgYW5kIChJIHRoaW5rKSBSSVNDViAoYW5kIHBy
-b2JhYmx5DQphbnl0aGluZyBlbHNlIGxvb3NlbHkgYmFzZWQgb24gTUlQUykgb25seSBoYXZlIHNp
-bmdsZSByZWdpc3Rlcg0KbG9hZC9zdG9yZSBpbnN0cnVjdGlvbnMuDQpUaGV5J2xsIG1haW5seSBi
-ZSBVUCBvbmx5LCBJJ3ZlIG5vdCBsb29rZWQgYXQgUklTQ1YgZW5vdWdoIHRvDQpzZWUgd2hhdCBp
-dCBoYXMgd2hlbiBzdXBwb3J0aW5nIFNNUC4NCg0KPiBGb3IgdGhlIFVQIGNhc2UgeW91IGNhbiBk
-byB5b3VyIG93biwgb2YgY291cnNlLg0KDQpBIGdlbmVyaWMgdmVyc2lvbiBvZiB0aGUgc29mdCBp
-bnRlcnJ1cHQgZGlzYWJsZSBjb2RlIHdvdWxkIGhlbHAuDQpUaGVuIGl0IHdvdWxkIGp1c3QgYmUg
-YW4gaW5jL2RlYyBvZiBtZW1vcnkgcmF0aGVyIHRoYW4gaGF2aW5nDQp0byBzYXZlIHRoZSBjdXJy
-ZW50IGludGVycnVwdCBlbmFibGUgc3RhdGUuDQpFc3BlY2lhbGx5IGZvciBjb2RlIHRoYXQgb25s
-eSBkaXNhYmxlcyBpbnRlcnJ1cHRzIGZvciBhIGZldw0KaW5zdHJ1Y3Rpb25zIC0gc28gdGhlIGNv
-c3RzIG9mIGRlZmVycmluZyB0aGUgaW50ZXJydXB0IGRvbid0DQpoYXBwZW4gb2Z0ZW4uDQoNCglE
-YXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
-bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
-NzM4NiAoV2FsZXMpDQo=
+> Yes, you are right! Edge-Triggered interrupts shouldn't be shared. I missed
+> noticing this. Thank you for pointing it out. Since the SoC only supports
+> Edge-Triggered interrupts, I believe that the correct decision would be to use
+> the interrupt for only one of the two PHYs, while leaving the other PHY in
+> polled mode of operation which is the default.
 
+No, if the PHY is using level interrupts, you need the SoC to use
+level interrupts. Otherwise you are going to miss interrupts.
+
+The board design is just broken and you cannot use interrupts at all.
+
+    Andrew
 
