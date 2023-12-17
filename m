@@ -1,58 +1,62 @@
-Return-Path: <linux-kernel+bounces-2836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EB28162A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B3D8162AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2B551F21BBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:51:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17CAA1F21D33
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0440349F80;
-	Sun, 17 Dec 2023 21:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D6C4AF93;
+	Sun, 17 Dec 2023 21:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XSo3Kbk8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16F549F8C;
-	Sun, 17 Dec 2023 21:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rEz1d-0001ST-2p;
-	Sun, 17 Dec 2023 21:50:19 +0000
-Date: Sun, 17 Dec 2023 21:50:15 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Sabrina Dubroca <sd@queasysnail.net>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Chen-Yu Tsai <wenst@chromium.org>,
-	"Garmin.Chang" <Garmin.Chang@mediatek.com>,
-	Sam Shih <sam.shih@mediatek.com>,
-	Frank Wunderlich <frank-w@public-files.de>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	James Liao <jamesjj.liao@mediatek.com>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
-Subject: [PATCH v7 5/5] clk: mediatek: add drivers for MT7988 SoC
-Message-ID: <c7574d808e2da1a530182f0fd790c1337c336e1b.1702849494.git.daniel@makrotopia.org>
-References: <27f99db432e9ccc804cc5b6501d7d17d72cae879.1702849494.git.daniel@makrotopia.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF49495D6
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 21:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702850093; x=1734386093;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=uHyQaaZSslPLnXZAcBUwwNABa4fZhUmYJ+r+YeeMVq0=;
+  b=XSo3Kbk8fApTd5brXk0uhb7qq4DD0MHghNja1c7KsUUbqMCeufKRMSYF
+   DsB11jU4aHjOVhFyLWr6+DrcRiVIaFJlfU9BRU7p71U6tvFliEiyQ3KW2
+   rW4ihOEvNfAfxQnS+LPRpTv/3XfiZ1Zki2xOnRrd0Gy47ofJpjgdAsKlg
+   yxmTkzilTQezeCYpJHCC2NTl+JHcRsAbY7i2OKoKBwBQNap0KuEBz7ZTF
+   fdaFroyc2ylxsIkpw0j3hN01r0e2hyGm/NHzFm8C7FNMzgkQw16M9Dzio
+   0NThdtQ2mDSqkD3cWuuVCV/KWWUUAPX0J1vj7EW0aBtzddAKUwNutq6mn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="392603619"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="392603619"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 13:54:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="809604904"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="809604904"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 17 Dec 2023 13:54:48 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEz5y-0003Ro-2L;
+	Sun, 17 Dec 2023 21:54:46 +0000
+Date: Mon, 18 Dec 2023 05:53:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alex Deucher <alexander.deucher@amd.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Subject: drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_rq_dlg_calc_31.c:709:34:
+ sparse: sparse: dubious: !x & y
+Message-ID: <202312180525.2zRaMHSQ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,1059 +65,384 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <27f99db432e9ccc804cc5b6501d7d17d72cae879.1702849494.git.daniel@makrotopia.org>
 
-From: Sam Shih <sam.shih@mediatek.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0e389834672c723435a44818ed2cabc4dad24429
+commit: 8fe44c080a53ac0ccbe88053a2e40f9acca33091 drm/amdgpu/display: fold DRM_AMD_DC_DCN3_1 into DRM_AMD_DC_DCN
+date:   2 years, 6 months ago
+config: x86_64-randconfig-121-20231101 (https://download.01.org/0day-ci/archive/20231218/202312180525.2zRaMHSQ-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312180525.2zRaMHSQ-lkp@intel.com/reproduce)
 
-Add APMIXED, ETH, INFRACFG and TOPCKGEN clock drivers which are
-typical MediaTek designs.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312180525.2zRaMHSQ-lkp@intel.com/
 
-Also add driver for XFIPLL clock generating the 156.25MHz clock for
-the XFI SerDes. It needs an undocumented software workaround and has
-an unknown internal design.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_rq_dlg_calc_31.c:709:34: sparse: sparse: dubious: !x & y
 
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
-v7: no changes
-v6: no changes
-v5:
- * more nicely format macro defintions
- * register reset controller for ethwarp clock controller
- * drop redundant GATE_SGMII1 which is indentical to GATE_SGMII0
-   in favor of single GATE_SGMII macro
+vim +709 drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_rq_dlg_calc_31.c
 
-v4:
- * make use of existing GATE_MTK_FLAGS macro
- * reformat to max. 100 columns
- * cosmetics
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  385  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  386  static void get_meta_and_pte_attr(
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  387  		struct display_mode_lib *mode_lib,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  388  		display_data_rq_dlg_params_st *rq_dlg_param,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  389  		display_data_rq_misc_params_st *rq_misc_param,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  390  		display_data_rq_sizing_params_st *rq_sizing_param,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  391  		unsigned int vp_width,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  392  		unsigned int vp_height,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  393  		unsigned int data_pitch,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  394  		unsigned int meta_pitch,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  395  		unsigned int source_format,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  396  		unsigned int tiling,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  397  		unsigned int macro_tile_size,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  398  		unsigned int source_scan,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  399  		unsigned int hostvm_enable,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  400  		unsigned int is_chroma,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  401  		unsigned int surface_height)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  402  {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  403  	bool surf_linear = (tiling == dm_sw_linear);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  404  	bool surf_vert = (source_scan == dm_vert);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  405  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  406  	unsigned int bytes_per_element;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  407  	unsigned int bytes_per_element_y;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  408  	unsigned int bytes_per_element_c;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  409  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  410  	unsigned int blk256_width = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  411  	unsigned int blk256_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  412  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  413  	unsigned int blk256_width_y = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  414  	unsigned int blk256_height_y = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  415  	unsigned int blk256_width_c = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  416  	unsigned int blk256_height_c = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  417  	unsigned int log2_bytes_per_element;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  418  	unsigned int log2_blk256_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  419  	unsigned int log2_blk256_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  420  	unsigned int blk_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  421  	unsigned int log2_blk_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  422  	unsigned int log2_blk_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  423  	unsigned int log2_blk_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  424  	unsigned int log2_meta_req_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  425  	unsigned int log2_meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  426  	unsigned int log2_meta_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  427  	unsigned int meta_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  428  	unsigned int meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  429  	unsigned int log2_meta_row_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  430  	unsigned int meta_row_width_ub;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  431  	unsigned int log2_meta_chunk_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  432  	unsigned int log2_meta_chunk_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  433  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  434  	//full sized meta chunk width in unit of data elements
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  435  	unsigned int log2_meta_chunk_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  436  	unsigned int log2_min_meta_chunk_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  437  	unsigned int min_meta_chunk_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  438  	unsigned int meta_chunk_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  439  	unsigned int meta_chunk_per_row_int;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  440  	unsigned int meta_row_remainder;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  441  	unsigned int meta_chunk_threshold;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  442  	unsigned int meta_blk_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  443  	unsigned int meta_surface_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  444  	unsigned int vmpg_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  445  	unsigned int meta_pte_req_per_frame_ub;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  446  	unsigned int meta_pte_bytes_per_frame_ub;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  447  	const unsigned int log2_vmpg_bytes = dml_log2(mode_lib->soc.gpuvm_min_page_size_bytes);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  448  	const bool dual_plane_en = is_dual_plane((enum source_format_class) (source_format));
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  449  	const unsigned int dpte_buf_in_pte_reqs =
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  450  			dual_plane_en ? (is_chroma ? mode_lib->ip.dpte_buffer_size_in_pte_reqs_chroma : mode_lib->ip.dpte_buffer_size_in_pte_reqs_luma) : (mode_lib->ip.dpte_buffer_size_in_pte_reqs_luma
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  451  							+ mode_lib->ip.dpte_buffer_size_in_pte_reqs_chroma);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  452  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  453  	unsigned int log2_vmpg_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  454  	unsigned int log2_vmpg_width = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  455  	unsigned int log2_dpte_req_height_ptes = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  456  	unsigned int log2_dpte_req_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  457  	unsigned int log2_dpte_req_width = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  458  	unsigned int log2_dpte_row_height_linear = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  459  	unsigned int log2_dpte_row_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  460  	unsigned int log2_dpte_group_width = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  461  	unsigned int dpte_row_width_ub = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  462  	unsigned int dpte_req_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  463  	unsigned int dpte_req_width = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  464  	unsigned int dpte_group_width = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  465  	unsigned int log2_dpte_group_bytes = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  466  	unsigned int log2_dpte_group_length = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  467  	double byte_per_pixel_det_y;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  468  	double byte_per_pixel_det_c;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  469  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  470  	CalculateBytePerPixelAnd256BBlockSizes(
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  471  			(enum source_format_class) (source_format),
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  472  			(enum dm_swizzle_mode) (tiling),
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  473  			&bytes_per_element_y,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  474  			&bytes_per_element_c,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  475  			&byte_per_pixel_det_y,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  476  			&byte_per_pixel_det_c,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  477  			&blk256_height_y,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  478  			&blk256_height_c,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  479  			&blk256_width_y,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  480  			&blk256_width_c);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  481  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  482  	if (!is_chroma) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  483  		blk256_width = blk256_width_y;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  484  		blk256_height = blk256_height_y;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  485  		bytes_per_element = bytes_per_element_y;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  486  	} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  487  		blk256_width = blk256_width_c;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  488  		blk256_height = blk256_height_c;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  489  		bytes_per_element = bytes_per_element_c;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  490  	}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  491  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  492  	log2_bytes_per_element = dml_log2(bytes_per_element);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  493  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  494  	dml_print("DML_DLG: %s: surf_linear        = %d\n", __func__, surf_linear);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  495  	dml_print("DML_DLG: %s: surf_vert          = %d\n", __func__, surf_vert);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  496  	dml_print("DML_DLG: %s: blk256_width       = %d\n", __func__, blk256_width);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  497  	dml_print("DML_DLG: %s: blk256_height      = %d\n", __func__, blk256_height);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  498  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  499  	log2_blk256_width = dml_log2((double) blk256_width);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  500  	log2_blk256_height = dml_log2((double) blk256_height);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  501  	blk_bytes = surf_linear ? 256 : get_blk_size_bytes((enum source_macro_tile_size) macro_tile_size);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  502  	log2_blk_bytes = dml_log2((double) blk_bytes);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  503  	log2_blk_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  504  	log2_blk_width = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  505  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  506  	// remember log rule
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  507  	// "+" in log is multiply
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  508  	// "-" in log is divide
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  509  	// "/2" is like square root
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  510  	// blk is vertical biased
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  511  	if (tiling != dm_sw_linear)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  512  		log2_blk_height = log2_blk256_height + dml_ceil((double) (log2_blk_bytes - 8) / 2.0, 1);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  513  	else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  514  		log2_blk_height = 0;	// blk height of 1
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  515  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  516  	log2_blk_width = log2_blk_bytes - log2_bytes_per_element - log2_blk_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  517  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  518  	if (!surf_vert) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  519  		int unsigned temp;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  520  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  521  		temp = dml_round_to_multiple(vp_width - 1, blk256_width, 1) + blk256_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  522  		if (data_pitch < blk256_width) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  523  			dml_print("WARNING: DML_DLG: %s: swath_size calculation ignoring data_pitch=%u < blk256_width=%u\n", __func__, data_pitch, blk256_width);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  524  		} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  525  			if (temp > data_pitch) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  526  				if (data_pitch >= vp_width)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  527  					temp = data_pitch;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  528  				else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  529  					dml_print("WARNING: DML_DLG: %s: swath_size calculation ignoring data_pitch=%u < vp_width=%u\n", __func__, data_pitch, vp_width);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  530  			}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  531  		}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  532  		rq_dlg_param->swath_width_ub = temp;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  533  		rq_dlg_param->req_per_swath_ub = temp >> log2_blk256_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  534  	} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  535  		int unsigned temp;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  536  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  537  		temp = dml_round_to_multiple(vp_height - 1, blk256_height, 1) + blk256_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  538  		if (surface_height < blk256_height) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  539  			dml_print("WARNING: DML_DLG: %s swath_size calculation ignored surface_height=%u < blk256_height=%u\n", __func__, surface_height, blk256_height);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  540  		} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  541  			if (temp > surface_height) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  542  				if (surface_height >= vp_height)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  543  					temp = surface_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  544  				else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  545  					dml_print("WARNING: DML_DLG: %s swath_size calculation ignored surface_height=%u < vp_height=%u\n", __func__, surface_height, vp_height);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  546  			}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  547  		}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  548  		rq_dlg_param->swath_width_ub = temp;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  549  		rq_dlg_param->req_per_swath_ub = temp >> log2_blk256_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  550  	}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  551  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  552  	if (!surf_vert)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  553  		rq_misc_param->full_swath_bytes = rq_dlg_param->swath_width_ub * blk256_height * bytes_per_element;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  554  	else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  555  		rq_misc_param->full_swath_bytes = rq_dlg_param->swath_width_ub * blk256_width * bytes_per_element;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  556  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  557  	rq_misc_param->blk256_height = blk256_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  558  	rq_misc_param->blk256_width = blk256_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  559  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  560  	// -------
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  561  	// meta
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  562  	// -------
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  563  	log2_meta_req_bytes = 6;	// meta request is 64b and is 8x8byte meta element
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  564  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  565  	// each 64b meta request for dcn is 8x8 meta elements and
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  566  	// a meta element covers one 256b block of the the data surface.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  567  	log2_meta_req_height = log2_blk256_height + 3;	// meta req is 8x8 byte, each byte represent 1 blk256
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  568  	log2_meta_req_width = log2_meta_req_bytes + 8 - log2_bytes_per_element - log2_meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  569  	meta_req_width = 1 << log2_meta_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  570  	meta_req_height = 1 << log2_meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  571  	log2_meta_row_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  572  	meta_row_width_ub = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  573  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  574  	// the dimensions of a meta row are meta_row_width x meta_row_height in elements.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  575  	// calculate upper bound of the meta_row_width
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  576  	if (!surf_vert) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  577  		log2_meta_row_height = log2_meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  578  		meta_row_width_ub = dml_round_to_multiple(vp_width - 1, meta_req_width, 1) + meta_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  579  		rq_dlg_param->meta_req_per_row_ub = meta_row_width_ub / meta_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  580  	} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  581  		log2_meta_row_height = log2_meta_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  582  		meta_row_width_ub = dml_round_to_multiple(vp_height - 1, meta_req_height, 1) + meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  583  		rq_dlg_param->meta_req_per_row_ub = meta_row_width_ub / meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  584  	}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  585  	rq_dlg_param->meta_bytes_per_row_ub = rq_dlg_param->meta_req_per_row_ub * 64;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  586  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  587  	rq_dlg_param->meta_row_height = 1 << log2_meta_row_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  588  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  589  	log2_meta_chunk_bytes = dml_log2(rq_sizing_param->meta_chunk_bytes);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  590  	log2_meta_chunk_height = log2_meta_row_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  591  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  592  	//full sized meta chunk width in unit of data elements
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  593  	log2_meta_chunk_width = log2_meta_chunk_bytes + 8 - log2_bytes_per_element - log2_meta_chunk_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  594  	log2_min_meta_chunk_bytes = dml_log2(rq_sizing_param->min_meta_chunk_bytes);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  595  	min_meta_chunk_width = 1 << (log2_min_meta_chunk_bytes + 8 - log2_bytes_per_element - log2_meta_chunk_height);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  596  	meta_chunk_width = 1 << log2_meta_chunk_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  597  	meta_chunk_per_row_int = (unsigned int) (meta_row_width_ub / meta_chunk_width);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  598  	meta_row_remainder = meta_row_width_ub % meta_chunk_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  599  	meta_chunk_threshold = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  600  	meta_blk_height = blk256_height * 64;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  601  	meta_surface_bytes = meta_pitch * (dml_round_to_multiple(vp_height - 1, meta_blk_height, 1) + meta_blk_height) * bytes_per_element / 256;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  602  	vmpg_bytes = mode_lib->soc.gpuvm_min_page_size_bytes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  603  	meta_pte_req_per_frame_ub = (dml_round_to_multiple(meta_surface_bytes - vmpg_bytes, 8 * vmpg_bytes, 1) + 8 * vmpg_bytes) / (8 * vmpg_bytes);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  604  	meta_pte_bytes_per_frame_ub = meta_pte_req_per_frame_ub * 64;	//64B mpte request
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  605  	rq_dlg_param->meta_pte_bytes_per_frame_ub = meta_pte_bytes_per_frame_ub;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  606  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  607  	dml_print("DML_DLG: %s: meta_blk_height             = %d\n", __func__, meta_blk_height);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  608  	dml_print("DML_DLG: %s: meta_surface_bytes          = %d\n", __func__, meta_surface_bytes);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  609  	dml_print("DML_DLG: %s: meta_pte_req_per_frame_ub   = %d\n", __func__, meta_pte_req_per_frame_ub);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  610  	dml_print("DML_DLG: %s: meta_pte_bytes_per_frame_ub = %d\n", __func__, meta_pte_bytes_per_frame_ub);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  611  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  612  	if (!surf_vert)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  613  		meta_chunk_threshold = 2 * min_meta_chunk_width - meta_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  614  	else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  615  		meta_chunk_threshold = 2 * min_meta_chunk_width - meta_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  616  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  617  	if (meta_row_remainder <= meta_chunk_threshold)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  618  		rq_dlg_param->meta_chunks_per_row_ub = meta_chunk_per_row_int + 1;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  619  	else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  620  		rq_dlg_param->meta_chunks_per_row_ub = meta_chunk_per_row_int + 2;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  621  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  622  	// ------
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  623  	// dpte
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  624  	// ------
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  625  	if (surf_linear) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  626  		log2_vmpg_height = 0;   // one line high
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  627  	} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  628  		log2_vmpg_height = (log2_vmpg_bytes - 8) / 2 + log2_blk256_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  629  	}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  630  	log2_vmpg_width = log2_vmpg_bytes - log2_bytes_per_element - log2_vmpg_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  631  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  632  	// only 3 possible shapes for dpte request in dimensions of ptes: 8x1, 4x2, 2x4.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  633  	if (surf_linear) { //one 64B PTE request returns 8 PTEs
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  634  		log2_dpte_req_height_ptes = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  635  		log2_dpte_req_width = log2_vmpg_width + 3;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  636  		log2_dpte_req_height = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  637  	} else if (log2_blk_bytes == 12) { //4KB tile means 4kB page size
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  638  		//one 64B req gives 8x1 PTEs for 4KB tile
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  639  		log2_dpte_req_height_ptes = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  640  		log2_dpte_req_width = log2_blk_width + 3;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  641  		log2_dpte_req_height = log2_blk_height + 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  642  	} else if ((log2_blk_bytes >= 16) && (log2_vmpg_bytes == 12)) { // tile block >= 64KB
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  643  		//two 64B reqs of 2x4 PTEs give 16 PTEs to cover 64KB
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  644  		log2_dpte_req_height_ptes = 4;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  645  		log2_dpte_req_width = log2_blk256_width + 4;		// log2_64KB_width
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  646  		log2_dpte_req_height = log2_blk256_height + 4;		// log2_64KB_height
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  647  	} else { //64KB page size and must 64KB tile block
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  648  		 //one 64B req gives 8x1 PTEs for 64KB tile
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  649  		log2_dpte_req_height_ptes = 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  650  		log2_dpte_req_width = log2_blk_width + 3;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  651  		log2_dpte_req_height = log2_blk_height + 0;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  652  	}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  653  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  654  	// The dpte request dimensions in data elements is dpte_req_width x dpte_req_height
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  655  	// log2_vmpg_width is how much 1 pte represent, now calculating how much a 64b pte req represent
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  656  	// That depends on the pte shape (i.e. 8x1, 4x2, 2x4)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  657  	//log2_dpte_req_height    = log2_vmpg_height + log2_dpte_req_height_ptes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  658  	//log2_dpte_req_width     = log2_vmpg_width + log2_dpte_req_width_ptes;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  659  	dpte_req_height = 1 << log2_dpte_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  660  	dpte_req_width = 1 << log2_dpte_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  661  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  662  	// calculate pitch dpte row buffer can hold
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  663  	// round the result down to a power of two.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  664  	if (surf_linear) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  665  		unsigned int dpte_row_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  666  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  667  		log2_dpte_row_height_linear = dml_floor(dml_log2(dpte_buf_in_pte_reqs * dpte_req_width / data_pitch), 1);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  668  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  669  		dml_print("DML_DLG: %s: is_chroma                   = %d\n", __func__, is_chroma);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  670  		dml_print("DML_DLG: %s: dpte_buf_in_pte_reqs        = %d\n", __func__, dpte_buf_in_pte_reqs);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  671  		dml_print("DML_DLG: %s: log2_dpte_row_height_linear = %d\n", __func__, log2_dpte_row_height_linear);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  672  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  673  		ASSERT(log2_dpte_row_height_linear >= 3);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  674  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  675  		if (log2_dpte_row_height_linear > 7)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  676  			log2_dpte_row_height_linear = 7;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  677  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  678  		log2_dpte_row_height = log2_dpte_row_height_linear;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  679  		// For linear, the dpte row is pitch dependent and the pte requests wrap at the pitch boundary.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  680  		// the dpte_row_width_ub is the upper bound of data_pitch*dpte_row_height in elements with this unique buffering.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  681  		dpte_row_height = 1 << log2_dpte_row_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  682  		dpte_row_width_ub = dml_round_to_multiple(data_pitch * dpte_row_height - 1, dpte_req_width, 1) + dpte_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  683  		rq_dlg_param->dpte_req_per_row_ub = dpte_row_width_ub / dpte_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  684  	} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  685  		// the upper bound of the dpte_row_width without dependency on viewport position follows.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  686  		// for tiled mode, row height is the same as req height and row store up to vp size upper bound
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  687  		if (!surf_vert) {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  688  			log2_dpte_row_height = log2_dpte_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  689  			dpte_row_width_ub = dml_round_to_multiple(vp_width - 1, dpte_req_width, 1) + dpte_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  690  			rq_dlg_param->dpte_req_per_row_ub = dpte_row_width_ub / dpte_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  691  		} else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  692  			log2_dpte_row_height = (log2_blk_width < log2_dpte_req_width) ? log2_blk_width : log2_dpte_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  693  			dpte_row_width_ub = dml_round_to_multiple(vp_height - 1, dpte_req_height, 1) + dpte_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  694  			rq_dlg_param->dpte_req_per_row_ub = dpte_row_width_ub / dpte_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  695  		}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  696  	}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  697  	if (log2_blk_bytes >= 16 && log2_vmpg_bytes == 12) // tile block >= 64KB
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  698  		rq_dlg_param->dpte_bytes_per_row_ub = rq_dlg_param->dpte_req_per_row_ub * 128; //2*64B dpte request
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  699  	else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  700  		rq_dlg_param->dpte_bytes_per_row_ub = rq_dlg_param->dpte_req_per_row_ub * 64; //64B dpte request
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  701  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  702  	rq_dlg_param->dpte_row_height = 1 << log2_dpte_row_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  703  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  704  	// the dpte_group_bytes is reduced for the specific case of vertical
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  705  	// access of a tile surface that has dpte request of 8x1 ptes.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  706  	if (hostvm_enable)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  707  		rq_sizing_param->dpte_group_bytes = 512;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  708  	else {
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19 @709  		if (!surf_linear & (log2_dpte_req_height_ptes == 0) & surf_vert) //reduced, in this case, will have page fault within a group
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  710  			rq_sizing_param->dpte_group_bytes = 512;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  711  		else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  712  			rq_sizing_param->dpte_group_bytes = 2048;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  713  	}
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  714  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  715  	//since pte request size is 64byte, the number of data pte requests per full sized group is as follows.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  716  	log2_dpte_group_bytes = dml_log2(rq_sizing_param->dpte_group_bytes);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  717  	log2_dpte_group_length = log2_dpte_group_bytes - 6; //length in 64b requests
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  718  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  719  	// full sized data pte group width in elements
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  720  	if (!surf_vert)
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  721  		log2_dpte_group_width = log2_dpte_group_length + log2_dpte_req_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  722  	else
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  723  		log2_dpte_group_width = log2_dpte_group_length + log2_dpte_req_height;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  724  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  725  	//But if the tile block >=64KB and the page size is 4KB, then each dPTE request is 2*64B
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  726  	if ((log2_blk_bytes >= 16) && (log2_vmpg_bytes == 12)) // tile block >= 64KB
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  727  		log2_dpte_group_width = log2_dpte_group_width - 1;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  728  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  729  	dpte_group_width = 1 << log2_dpte_group_width;
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  730  
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  731  	// since dpte groups are only aligned to dpte_req_width and not dpte_group_width,
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  732  	// the upper bound for the dpte groups per row is as follows.
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  733  	rq_dlg_param->dpte_groups_per_row_ub = dml_ceil((double) dpte_row_width_ub / dpte_group_width, 1);
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  734  }
+74458c081fcfb0 Nicholas Kazlauskas 2021-05-19  735  
 
- drivers/clk/mediatek/Kconfig               |   9 +
- drivers/clk/mediatek/Makefile              |   5 +
- drivers/clk/mediatek/clk-mt7988-apmixed.c  | 114 ++++++++
- drivers/clk/mediatek/clk-mt7988-eth.c      | 150 ++++++++++
- drivers/clk/mediatek/clk-mt7988-infracfg.c | 274 +++++++++++++++++
- drivers/clk/mediatek/clk-mt7988-topckgen.c | 325 +++++++++++++++++++++
- drivers/clk/mediatek/clk-mt7988-xfipll.c   |  82 ++++++
- 7 files changed, 959 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt7988-apmixed.c
- create mode 100644 drivers/clk/mediatek/clk-mt7988-eth.c
- create mode 100644 drivers/clk/mediatek/clk-mt7988-infracfg.c
- create mode 100644 drivers/clk/mediatek/clk-mt7988-topckgen.c
- create mode 100644 drivers/clk/mediatek/clk-mt7988-xfipll.c
+:::::: The code at line 709 was first introduced by commit
+:::::: 74458c081fcfb0423877e630de2746daefdb16e4 drm/amd/display: Add DCN3.1 DML calculation support
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 48b42d11111cd..70a005e7e1b18 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -423,6 +423,15 @@ config COMMON_CLK_MT7986_ETHSYS
- 	  This driver adds support for clocks for Ethernet and SGMII
- 	  required on MediaTek MT7986 SoC.
- 
-+config COMMON_CLK_MT7988
-+	tristate "Clock driver for MediaTek MT7988"
-+	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	select COMMON_CLK_MEDIATEK
-+	default ARCH_MEDIATEK
-+	help
-+	  This driver supports MediaTek MT7988 basic clocks and clocks
-+	  required for various periperals found on this SoC.
-+
- config COMMON_CLK_MT8135
- 	tristate "Clock driver for MediaTek MT8135"
- 	depends on (ARCH_MEDIATEK && ARM) || COMPILE_TEST
-diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index dbeaa5b41177d..eeccfa039896f 100644
---- a/drivers/clk/mediatek/Makefile
-+++ b/drivers/clk/mediatek/Makefile
-@@ -62,6 +62,11 @@ obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-apmixed.o
- obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-topckgen.o
- obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-infracfg.o
- obj-$(CONFIG_COMMON_CLK_MT7986_ETHSYS) += clk-mt7986-eth.o
-+obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-apmixed.o
-+obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-topckgen.o
-+obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-infracfg.o
-+obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-eth.o
-+obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-xfipll.o
- obj-$(CONFIG_COMMON_CLK_MT8135) += clk-mt8135-apmixedsys.o clk-mt8135.o
- obj-$(CONFIG_COMMON_CLK_MT8167) += clk-mt8167-apmixedsys.o clk-mt8167.o
- obj-$(CONFIG_COMMON_CLK_MT8167_AUDSYS) += clk-mt8167-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt7988-apmixed.c b/drivers/clk/mediatek/clk-mt7988-apmixed.c
-new file mode 100644
-index 0000000000000..baf9564351a33
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt7988-apmixed.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 MediaTek Inc.
-+ * Author: Sam Shih <sam.shih@mediatek.com>
-+ * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+#include "clk-mux.h"
-+#include "clk-pll.h"
-+#include <dt-bindings/clock/mediatek,mt7988-clk.h>
-+
-+#define MT7988_PLL_FMAX (2500UL * MHZ)
-+#define MT7988_PCW_CHG_BIT 2
-+
-+#define PLL(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _rst_bar_mask, _pcwbits, _pd_reg,	\
-+	    _pd_shift, _tuner_reg, _tuner_en_reg, _tuner_en_bit, _pcw_reg, _pcw_shift,		\
-+	    _pcw_chg_reg)									\
-+	{											\
-+		.id = _id,									\
-+		.name = _name,									\
-+		.reg = _reg,									\
-+		.pwr_reg = _pwr_reg,								\
-+		.en_mask = _en_mask,								\
-+		.flags = _flags,								\
-+		.rst_bar_mask = BIT(_rst_bar_mask),						\
-+		.fmax = MT7988_PLL_FMAX,							\
-+		.pcwbits = _pcwbits,								\
-+		.pd_reg = _pd_reg,								\
-+		.pd_shift = _pd_shift,								\
-+		.tuner_reg = _tuner_reg,							\
-+		.tuner_en_reg = _tuner_en_reg,							\
-+		.tuner_en_bit = _tuner_en_bit,							\
-+		.pcw_reg = _pcw_reg,								\
-+		.pcw_shift = _pcw_shift,							\
-+		.pcw_chg_reg = _pcw_chg_reg,							\
-+		.pcw_chg_bit = MT7988_PCW_CHG_BIT,						\
-+		.parent_name = "clkxtal",							\
-+	}
-+
-+static const struct mtk_pll_data plls[] = {
-+	PLL(CLK_APMIXED_NETSYSPLL, "netsyspll", 0x0104, 0x0110, 0x00000001, 0, 0, 32, 0x0104, 4, 0,
-+	    0, 0, 0x0108, 0, 0x0104),
-+	PLL(CLK_APMIXED_MPLL, "mpll", 0x0114, 0x0120, 0xff000001, HAVE_RST_BAR, 23, 32, 0x0114, 4,
-+	    0, 0, 0, 0x0118, 0, 0x0114),
-+	PLL(CLK_APMIXED_MMPLL, "mmpll", 0x0124, 0x0130, 0xff000001, HAVE_RST_BAR, 23, 32, 0x0124, 4,
-+	    0, 0, 0, 0x0128, 0, 0x0124),
-+	PLL(CLK_APMIXED_APLL2, "apll2", 0x0134, 0x0140, 0x00000001, 0, 0, 32, 0x0134, 4, 0x0704,
-+	    0x0700, 1, 0x0138, 0, 0x0134),
-+	PLL(CLK_APMIXED_NET1PLL, "net1pll", 0x0144, 0x0150, 0xff000001, HAVE_RST_BAR, 23, 32,
-+	    0x0144, 4, 0, 0, 0, 0x0148, 0, 0x0144),
-+	PLL(CLK_APMIXED_NET2PLL, "net2pll", 0x0154, 0x0160, 0xff000001, (HAVE_RST_BAR | PLL_AO), 23,
-+	    32, 0x0154, 4, 0, 0, 0, 0x0158, 0, 0x0154),
-+	PLL(CLK_APMIXED_WEDMCUPLL, "wedmcupll", 0x0164, 0x0170, 0x00000001, 0, 0, 32, 0x0164, 4, 0,
-+	    0, 0, 0x0168, 0, 0x0164),
-+	PLL(CLK_APMIXED_SGMPLL, "sgmpll", 0x0174, 0x0180, 0x00000001, 0, 0, 32, 0x0174, 4, 0, 0, 0,
-+	    0x0178, 0, 0x0174),
-+	PLL(CLK_APMIXED_ARM_B, "arm_b", 0x0204, 0x0210, 0xff000001, (HAVE_RST_BAR | PLL_AO), 23, 32,
-+	    0x0204, 4, 0, 0, 0, 0x0208, 0, 0x0204),
-+	PLL(CLK_APMIXED_CCIPLL2_B, "ccipll2_b", 0x0214, 0x0220, 0xff000001, HAVE_RST_BAR, 23, 32,
-+	    0x0214, 4, 0, 0, 0, 0x0218, 0, 0x0214),
-+	PLL(CLK_APMIXED_USXGMIIPLL, "usxgmiipll", 0x0304, 0x0310, 0xff000001, HAVE_RST_BAR, 23, 32,
-+	    0x0304, 4, 0, 0, 0, 0x0308, 0, 0x0304),
-+	PLL(CLK_APMIXED_MSDCPLL, "msdcpll", 0x0314, 0x0320, 0x00000001, 0, 0, 32, 0x0314, 4, 0, 0,
-+	    0, 0x0318, 0, 0x0314),
-+};
-+
-+static const struct of_device_id of_match_clk_mt7988_apmixed[] = {
-+	{ .compatible = "mediatek,mt7988-apmixedsys" },
-+	{ /* sentinel */ }
-+};
-+
-+static int clk_mt7988_apmixed_probe(struct platform_device *pdev)
-+{
-+	struct clk_hw_onecell_data *clk_data;
-+	struct device_node *node = pdev->dev.of_node;
-+	int r;
-+
-+	clk_data = mtk_alloc_clk_data(ARRAY_SIZE(plls));
-+	if (!clk_data)
-+		return -ENOMEM;
-+
-+	r = mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
-+	if (r)
-+		goto free_apmixed_data;
-+
-+	r = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, clk_data);
-+	if (r)
-+		goto unregister_plls;
-+
-+	return r;
-+
-+unregister_plls:
-+	mtk_clk_unregister_plls(plls, ARRAY_SIZE(plls), clk_data);
-+free_apmixed_data:
-+	mtk_free_clk_data(clk_data);
-+	return r;
-+}
-+
-+static struct platform_driver clk_mt7988_apmixed_drv = {
-+	.probe = clk_mt7988_apmixed_probe,
-+	.driver = {
-+		.name = "clk-mt7988-apmixed",
-+		.of_match_table = of_match_clk_mt7988_apmixed,
-+	},
-+};
-+builtin_platform_driver(clk_mt7988_apmixed_drv);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/mediatek/clk-mt7988-eth.c b/drivers/clk/mediatek/clk-mt7988-eth.c
-new file mode 100644
-index 0000000000000..adf4a9d39b38f
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt7988-eth.c
-@@ -0,0 +1,150 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 MediaTek Inc.
-+ * Author: Sam Shih <sam.shih@mediatek.com>
-+ * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+#include "reset.h"
-+#include <dt-bindings/clock/mediatek,mt7988-clk.h>
-+#include <dt-bindings/reset/mediatek,mt7988-resets.h>
-+
-+static const struct mtk_gate_regs ethdma_cg_regs = {
-+	.set_ofs = 0x30,
-+	.clr_ofs = 0x30,
-+	.sta_ofs = 0x30,
-+};
-+
-+#define GATE_ETHDMA(_id, _name, _parent, _shift)		\
-+	{							\
-+		.id = _id,					\
-+		.name = _name,					\
-+		.parent_name = _parent,				\
-+		.regs = &ethdma_cg_regs,			\
-+		.shift = _shift,				\
-+		.ops = &mtk_clk_gate_ops_no_setclr_inv,		\
-+	}
-+
-+static const struct mtk_gate ethdma_clks[] = {
-+	GATE_ETHDMA(CLK_ETHDMA_XGP1_EN, "ethdma_xgp1_en", "top_xtal", 0),
-+	GATE_ETHDMA(CLK_ETHDMA_XGP2_EN, "ethdma_xgp2_en", "top_xtal", 1),
-+	GATE_ETHDMA(CLK_ETHDMA_XGP3_EN, "ethdma_xgp3_en", "top_xtal", 2),
-+	GATE_ETHDMA(CLK_ETHDMA_FE_EN, "ethdma_fe_en", "netsys_2x_sel", 6),
-+	GATE_ETHDMA(CLK_ETHDMA_GP2_EN, "ethdma_gp2_en", "top_xtal", 7),
-+	GATE_ETHDMA(CLK_ETHDMA_GP1_EN, "ethdma_gp1_en", "top_xtal", 8),
-+	GATE_ETHDMA(CLK_ETHDMA_GP3_EN, "ethdma_gp3_en", "top_xtal", 10),
-+	GATE_ETHDMA(CLK_ETHDMA_ESW_EN, "ethdma_esw_en", "netsys_gsw_sel", 16),
-+	GATE_ETHDMA(CLK_ETHDMA_CRYPT0_EN, "ethdma_crypt0_en", "eip197_sel", 29),
-+};
-+
-+static const struct mtk_clk_desc ethdma_desc = {
-+	.clks = ethdma_clks,
-+	.num_clks = ARRAY_SIZE(ethdma_clks),
-+};
-+
-+static const struct mtk_gate_regs sgmii_cg_regs = {
-+	.set_ofs = 0xe4,
-+	.clr_ofs = 0xe4,
-+	.sta_ofs = 0xe4,
-+};
-+
-+#define GATE_SGMII(_id, _name, _parent, _shift)			\
-+	{							\
-+		.id = _id,					\
-+		.name = _name,					\
-+		.parent_name = _parent,				\
-+		.regs = &sgmii_cg_regs,				\
-+		.shift = _shift,				\
-+		.ops = &mtk_clk_gate_ops_no_setclr_inv,		\
-+	}
-+
-+static const struct mtk_gate sgmii0_clks[] = {
-+	GATE_SGMII(CLK_SGM0_TX_EN, "sgm0_tx_en", "top_xtal", 2),
-+	GATE_SGMII(CLK_SGM0_RX_EN, "sgm0_rx_en", "top_xtal", 3),
-+};
-+
-+static const struct mtk_clk_desc sgmii0_desc = {
-+	.clks = sgmii0_clks,
-+	.num_clks = ARRAY_SIZE(sgmii0_clks),
-+};
-+
-+static const struct mtk_gate sgmii1_clks[] = {
-+	GATE_SGMII(CLK_SGM1_TX_EN, "sgm1_tx_en", "top_xtal", 2),
-+	GATE_SGMII(CLK_SGM1_RX_EN, "sgm1_rx_en", "top_xtal", 3),
-+};
-+
-+static const struct mtk_clk_desc sgmii1_desc = {
-+	.clks = sgmii1_clks,
-+	.num_clks = ARRAY_SIZE(sgmii1_clks),
-+};
-+
-+static const struct mtk_gate_regs ethwarp_cg_regs = {
-+	.set_ofs = 0x14,
-+	.clr_ofs = 0x14,
-+	.sta_ofs = 0x14,
-+};
-+
-+#define GATE_ETHWARP(_id, _name, _parent, _shift)		\
-+	{							\
-+		.id = _id,					\
-+		.name = _name,					\
-+		.parent_name = _parent,				\
-+		.regs = &ethwarp_cg_regs,			\
-+		.shift = _shift,				\
-+		.ops = &mtk_clk_gate_ops_no_setclr_inv,		\
-+	}
-+
-+static const struct mtk_gate ethwarp_clks[] = {
-+	GATE_ETHWARP(CLK_ETHWARP_WOCPU2_EN, "ethwarp_wocpu2_en", "netsys_mcu_sel", 13),
-+	GATE_ETHWARP(CLK_ETHWARP_WOCPU1_EN, "ethwarp_wocpu1_en", "netsys_mcu_sel", 14),
-+	GATE_ETHWARP(CLK_ETHWARP_WOCPU0_EN, "ethwarp_wocpu0_en", "netsys_mcu_sel", 15),
-+};
-+
-+static u16 ethwarp_rst_ofs[] = { 0x8 };
-+
-+static u16 ethwarp_idx_map[] = {
-+	[MT7988_ETHWARP_RST_SWITCH] = 9,
-+};
-+
-+static const struct mtk_clk_rst_desc ethwarp_rst_desc = {
-+	.version = MTK_RST_SIMPLE,
-+	.rst_bank_ofs = ethwarp_rst_ofs,
-+	.rst_bank_nr = ARRAY_SIZE(ethwarp_rst_ofs),
-+	.rst_idx_map = ethwarp_idx_map,
-+	.rst_idx_map_nr = ARRAY_SIZE(ethwarp_idx_map),
-+};
-+
-+static const struct mtk_clk_desc ethwarp_desc = {
-+	.clks = ethwarp_clks,
-+	.num_clks = ARRAY_SIZE(ethwarp_clks),
-+	.rst_desc = &ethwarp_rst_desc,
-+};
-+
-+static const struct of_device_id of_match_clk_mt7988_eth[] = {
-+	{ .compatible = "mediatek,mt7988-ethsys", .data = &ethdma_desc },
-+	{ .compatible = "mediatek,mt7988-sgmiisys0", .data = &sgmii0_desc },
-+	{ .compatible = "mediatek,mt7988-sgmiisys1", .data = &sgmii1_desc },
-+	{ .compatible = "mediatek,mt7988-ethwarp", .data = &ethwarp_desc },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, of_match_clk_mt7988_eth);
-+
-+static struct platform_driver clk_mt7988_eth_drv = {
-+	.driver = {
-+		.name = "clk-mt7988-eth",
-+		.of_match_table = of_match_clk_mt7988_eth,
-+	},
-+	.probe = mtk_clk_simple_probe,
-+	.remove_new = mtk_clk_simple_remove,
-+};
-+module_platform_driver(clk_mt7988_eth_drv);
-+
-+MODULE_DESCRIPTION("MediaTek MT7988 Ethernet clocks driver");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/mediatek/clk-mt7988-infracfg.c b/drivers/clk/mediatek/clk-mt7988-infracfg.c
-new file mode 100644
-index 0000000000000..b7b4f7626d3d6
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt7988-infracfg.c
-@@ -0,0 +1,274 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 MediaTek Inc.
-+ * Author: Sam Shih <sam.shih@mediatek.com>
-+ * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+#include "clk-mux.h"
-+#include <dt-bindings/clock/mediatek,mt7988-clk.h>
-+
-+static DEFINE_SPINLOCK(mt7988_clk_lock);
-+
-+static const char *const infra_mux_uart0_parents[] __initconst = { "csw_infra_f26m_sel",
-+								   "uart_sel" };
-+
-+static const char *const infra_mux_uart1_parents[] __initconst = { "csw_infra_f26m_sel",
-+								   "uart_sel" };
-+
-+static const char *const infra_mux_uart2_parents[] __initconst = { "csw_infra_f26m_sel",
-+								   "uart_sel" };
-+
-+static const char *const infra_mux_spi0_parents[] __initconst = { "i2c_sel", "spi_sel" };
-+
-+static const char *const infra_mux_spi1_parents[] __initconst = { "i2c_sel", "spim_mst_sel" };
-+
-+static const char *const infra_pwm_bck_parents[] __initconst = { "top_rtc_32p7k",
-+								 "csw_infra_f26m_sel", "sysaxi_sel",
-+								 "pwm_sel" };
-+
-+static const char *const infra_pcie_gfmux_tl_ck_o_p0_parents[] __initconst = {
-+	"top_rtc_32p7k", "csw_infra_f26m_sel", "csw_infra_f26m_sel", "pextp_tl_sel"
-+};
-+
-+static const char *const infra_pcie_gfmux_tl_ck_o_p1_parents[] __initconst = {
-+	"top_rtc_32p7k", "csw_infra_f26m_sel", "csw_infra_f26m_sel", "pextp_tl_p1_sel"
-+};
-+
-+static const char *const infra_pcie_gfmux_tl_ck_o_p2_parents[] __initconst = {
-+	"top_rtc_32p7k", "csw_infra_f26m_sel", "csw_infra_f26m_sel", "pextp_tl_p2_sel"
-+};
-+
-+static const char *const infra_pcie_gfmux_tl_ck_o_p3_parents[] __initconst = {
-+	"top_rtc_32p7k", "csw_infra_f26m_sel", "csw_infra_f26m_sel", "pextp_tl_p3_sel"
-+};
-+
-+static const struct mtk_mux infra_muxes[] = {
-+	/* MODULE_CLK_SEL_0 */
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_MUX_UART0_SEL, "infra_mux_uart0_sel",
-+			     infra_mux_uart0_parents, 0x0018, 0x0010, 0x0014, 0, 1, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_MUX_UART1_SEL, "infra_mux_uart1_sel",
-+			     infra_mux_uart1_parents, 0x0018, 0x0010, 0x0014, 1, 1, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_MUX_UART2_SEL, "infra_mux_uart2_sel",
-+			     infra_mux_uart2_parents, 0x0018, 0x0010, 0x0014, 2, 1, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_MUX_SPI0_SEL, "infra_mux_spi0_sel", infra_mux_spi0_parents,
-+			     0x0018, 0x0010, 0x0014, 4, 1, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_MUX_SPI1_SEL, "infra_mux_spi1_sel", infra_mux_spi1_parents,
-+			     0x0018, 0x0010, 0x0014, 5, 1, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_MUX_SPI2_SEL, "infra_mux_spi2_sel", infra_mux_spi0_parents,
-+			     0x0018, 0x0010, 0x0014, 6, 1, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_SEL, "infra_pwm_sel", infra_pwm_bck_parents, 0x0018,
-+			     0x0010, 0x0014, 14, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK1_SEL, "infra_pwm_ck1_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 16, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK2_SEL, "infra_pwm_ck2_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 18, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK3_SEL, "infra_pwm_ck3_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 20, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK4_SEL, "infra_pwm_ck4_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 22, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK5_SEL, "infra_pwm_ck5_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 24, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK6_SEL, "infra_pwm_ck6_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 26, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK7_SEL, "infra_pwm_ck7_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 28, 2, -1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_CK8_SEL, "infra_pwm_ck8_sel", infra_pwm_bck_parents,
-+			     0x0018, 0x0010, 0x0014, 30, 2, -1, -1, -1),
-+	/* MODULE_CLK_SEL_1 */
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PCIE_GFMUX_TL_O_P0_SEL, "infra_pcie_gfmux_tl_o_p0_sel",
-+			     infra_pcie_gfmux_tl_ck_o_p0_parents, 0x0028, 0x0020, 0x0024, 0, 2, -1,
-+			     -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PCIE_GFMUX_TL_O_P1_SEL, "infra_pcie_gfmux_tl_o_p1_sel",
-+			     infra_pcie_gfmux_tl_ck_o_p1_parents, 0x0028, 0x0020, 0x0024, 2, 2, -1,
-+			     -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PCIE_GFMUX_TL_O_P2_SEL, "infra_pcie_gfmux_tl_o_p2_sel",
-+			     infra_pcie_gfmux_tl_ck_o_p2_parents, 0x0028, 0x0020, 0x0024, 4, 2, -1,
-+			     -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PCIE_GFMUX_TL_O_P3_SEL, "infra_pcie_gfmux_tl_o_p3_sel",
-+			     infra_pcie_gfmux_tl_ck_o_p3_parents, 0x0028, 0x0020, 0x0024, 6, 2, -1,
-+			     -1, -1),
-+};
-+
-+static const struct mtk_gate_regs infra0_cg_regs = {
-+	.set_ofs = 0x10,
-+	.clr_ofs = 0x14,
-+	.sta_ofs = 0x18,
-+};
-+
-+static const struct mtk_gate_regs infra1_cg_regs = {
-+	.set_ofs = 0x40,
-+	.clr_ofs = 0x44,
-+	.sta_ofs = 0x48,
-+};
-+
-+static const struct mtk_gate_regs infra2_cg_regs = {
-+	.set_ofs = 0x50,
-+	.clr_ofs = 0x54,
-+	.sta_ofs = 0x58,
-+};
-+
-+static const struct mtk_gate_regs infra3_cg_regs = {
-+	.set_ofs = 0x60,
-+	.clr_ofs = 0x64,
-+	.sta_ofs = 0x68,
-+};
-+
-+#define GATE_INFRA0_FLAGS(_id, _name, _parent, _shift, _flags)                                 \
-+	GATE_MTK_FLAGS(_id, _name, _parent, &infra0_cg_regs, _shift, &mtk_clk_gate_ops_setclr, \
-+		       _flags)
-+
-+#define GATE_INFRA1_FLAGS(_id, _name, _parent, _shift, _flags)                                 \
-+	GATE_MTK_FLAGS(_id, _name, _parent, &infra1_cg_regs, _shift, &mtk_clk_gate_ops_setclr, \
-+		       _flags)
-+
-+#define GATE_INFRA2_FLAGS(_id, _name, _parent, _shift, _flags)                                 \
-+	GATE_MTK_FLAGS(_id, _name, _parent, &infra2_cg_regs, _shift, &mtk_clk_gate_ops_setclr, \
-+		       _flags)
-+
-+#define GATE_INFRA3_FLAGS(_id, _name, _parent, _shift, _flags)                                 \
-+	GATE_MTK_FLAGS(_id, _name, _parent, &infra3_cg_regs, _shift, &mtk_clk_gate_ops_setclr, \
-+		       _flags)
-+
-+#define GATE_INFRA0(_id, _name, _parent, _shift) GATE_INFRA0_FLAGS(_id, _name, _parent, _shift, 0)
-+
-+#define GATE_INFRA1(_id, _name, _parent, _shift) GATE_INFRA1_FLAGS(_id, _name, _parent, _shift, 0)
-+
-+#define GATE_INFRA2(_id, _name, _parent, _shift) GATE_INFRA2_FLAGS(_id, _name, _parent, _shift, 0)
-+
-+#define GATE_INFRA3(_id, _name, _parent, _shift) GATE_INFRA3_FLAGS(_id, _name, _parent, _shift, 0)
-+
-+static const struct mtk_gate infra_clks[] = {
-+	/* INFRA0 */
-+	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P0, "infra_pcie_peri_ck_26m_ck_p0",
-+		    "csw_infra_f26m_sel", 7),
-+	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P1, "infra_pcie_peri_ck_26m_ck_p1",
-+		    "csw_infra_f26m_sel", 8),
-+	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P2, "infra_pcie_peri_ck_26m_ck_p2",
-+		    "csw_infra_f26m_sel", 9),
-+	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P3, "infra_pcie_peri_ck_26m_ck_p3",
-+		    "csw_infra_f26m_sel", 10),
-+	/* INFRA1 */
-+	GATE_INFRA1(CLK_INFRA_66M_GPT_BCK, "infra_hf_66m_gpt_bck", "sysaxi_sel", 0),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_HCK, "infra_hf_66m_pwm_hck", "sysaxi_sel", 1),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_BCK, "infra_hf_66m_pwm_bck", "infra_pwm_sel", 2),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK1, "infra_hf_66m_pwm_ck1", "infra_pwm_ck1_sel", 3),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK2, "infra_hf_66m_pwm_ck2", "infra_pwm_ck2_sel", 4),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK3, "infra_hf_66m_pwm_ck3", "infra_pwm_ck3_sel", 5),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK4, "infra_hf_66m_pwm_ck4", "infra_pwm_ck4_sel", 6),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK5, "infra_hf_66m_pwm_ck5", "infra_pwm_ck5_sel", 7),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK6, "infra_hf_66m_pwm_ck6", "infra_pwm_ck6_sel", 8),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK7, "infra_hf_66m_pwm_ck7", "infra_pwm_ck7_sel", 9),
-+	GATE_INFRA1(CLK_INFRA_66M_PWM_CK8, "infra_hf_66m_pwm_ck8", "infra_pwm_ck8_sel", 10),
-+	GATE_INFRA1(CLK_INFRA_133M_CQDMA_BCK, "infra_hf_133m_cqdma_bck", "sysaxi_sel", 12),
-+	GATE_INFRA1(CLK_INFRA_66M_AUD_SLV_BCK, "infra_66m_aud_slv_bck", "sysaxi_sel", 13),
-+	GATE_INFRA1(CLK_INFRA_AUD_26M, "infra_f_faud_26m", "csw_infra_f26m_sel", 14),
-+	GATE_INFRA1(CLK_INFRA_AUD_L, "infra_f_faud_l", "aud_l_sel", 15),
-+	GATE_INFRA1(CLK_INFRA_AUD_AUD, "infra_f_aud_aud", "a1sys_sel", 16),
-+	GATE_INFRA1(CLK_INFRA_AUD_EG2, "infra_f_faud_eg2", "a_tuner_sel", 18),
-+	GATE_INFRA1_FLAGS(CLK_INFRA_DRAMC_F26M, "infra_dramc_f26m", "csw_infra_f26m_sel", 19,
-+			  CLK_IS_CRITICAL),
-+	/* JTAG */
-+	GATE_INFRA1_FLAGS(CLK_INFRA_133M_DBG_ACKM, "infra_hf_133m_dbg_ackm", "sysaxi_sel", 20,
-+			  CLK_IS_CRITICAL),
-+	GATE_INFRA1(CLK_INFRA_66M_AP_DMA_BCK, "infra_66m_ap_dma_bck", "sysaxi_sel", 21),
-+	GATE_INFRA1(CLK_INFRA_66M_SEJ_BCK, "infra_hf_66m_sej_bck", "sysaxi_sel", 29),
-+	GATE_INFRA1(CLK_INFRA_PRE_CK_SEJ_F13M, "infra_pre_ck_sej_f13m", "csw_infra_f26m_sel", 30),
-+	/* INFRA2 */
-+	GATE_INFRA2(CLK_INFRA_26M_THERM_SYSTEM, "infra_hf_26m_therm_system", "csw_infra_f26m_sel",
-+		    0),
-+	GATE_INFRA2(CLK_INFRA_I2C_BCK, "infra_i2c_bck", "i2c_sel", 1),
-+	GATE_INFRA2(CLK_INFRA_52M_UART0_CK, "infra_f_52m_uart0", "infra_mux_uart0_sel", 3),
-+	GATE_INFRA2(CLK_INFRA_52M_UART1_CK, "infra_f_52m_uart1", "infra_mux_uart1_sel", 4),
-+	GATE_INFRA2(CLK_INFRA_52M_UART2_CK, "infra_f_52m_uart2", "infra_mux_uart2_sel", 5),
-+	GATE_INFRA2(CLK_INFRA_NFI, "infra_f_fnfi", "nfi1x_sel", 9),
-+	GATE_INFRA2(CLK_INFRA_SPINFI, "infra_f_fspinfi", "spinfi_sel", 10),
-+	GATE_INFRA2_FLAGS(CLK_INFRA_66M_NFI_HCK, "infra_hf_66m_nfi_hck", "sysaxi_sel", 11,
-+			  CLK_IS_CRITICAL),
-+	GATE_INFRA2_FLAGS(CLK_INFRA_104M_SPI0, "infra_hf_104m_spi0", "infra_mux_spi0_sel", 12,
-+			  CLK_IS_CRITICAL),
-+	GATE_INFRA2(CLK_INFRA_104M_SPI1, "infra_hf_104m_spi1", "infra_mux_spi1_sel", 13),
-+	GATE_INFRA2(CLK_INFRA_104M_SPI2_BCK, "infra_hf_104m_spi2_bck", "infra_mux_spi2_sel", 14),
-+	GATE_INFRA2_FLAGS(CLK_INFRA_66M_SPI0_HCK, "infra_hf_66m_spi0_hck", "sysaxi_sel", 15,
-+			  CLK_IS_CRITICAL),
-+	GATE_INFRA2(CLK_INFRA_66M_SPI1_HCK, "infra_hf_66m_spi1_hck", "sysaxi_sel", 16),
-+	GATE_INFRA2(CLK_INFRA_66M_SPI2_HCK, "infra_hf_66m_spi2_hck", "sysaxi_sel", 17),
-+	GATE_INFRA2(CLK_INFRA_66M_FLASHIF_AXI, "infra_hf_66m_flashif_axi", "sysaxi_sel", 18),
-+	GATE_INFRA2_FLAGS(CLK_INFRA_RTC, "infra_f_frtc", "top_rtc_32k", 19, CLK_IS_CRITICAL),
-+	GATE_INFRA2(CLK_INFRA_26M_ADC_BCK, "infra_f_26m_adc_bck", "csw_infra_f26m_sel", 20),
-+	GATE_INFRA2(CLK_INFRA_RC_ADC, "infra_f_frc_adc", "infra_f_26m_adc_bck", 21),
-+	GATE_INFRA2(CLK_INFRA_MSDC400, "infra_f_fmsdc400", "emmc_400m_sel", 22),
-+	GATE_INFRA2(CLK_INFRA_MSDC2_HCK, "infra_f_fmsdc2_hck", "emmc_250m_sel", 23),
-+	GATE_INFRA2(CLK_INFRA_133M_MSDC_0_HCK, "infra_hf_133m_msdc_0_hck", "sysaxi_sel", 24),
-+	GATE_INFRA2(CLK_INFRA_66M_MSDC_0_HCK, "infra_66m_msdc_0_hck", "sysaxi_sel", 25),
-+	GATE_INFRA2(CLK_INFRA_133M_CPUM_BCK, "infra_hf_133m_cpum_bck", "sysaxi_sel", 26),
-+	GATE_INFRA2(CLK_INFRA_BIST2FPC, "infra_hf_fbist2fpc", "nfi1x_sel", 27),
-+	GATE_INFRA2(CLK_INFRA_I2C_X16W_MCK_CK_P1, "infra_hf_i2c_x16w_mck_ck_p1", "sysaxi_sel", 29),
-+	GATE_INFRA2(CLK_INFRA_I2C_X16W_PCK_CK_P1, "infra_hf_i2c_x16w_pck_ck_p1", "sysaxi_sel", 31),
-+	/* INFRA3 */
-+	GATE_INFRA3(CLK_INFRA_133M_USB_HCK, "infra_133m_usb_hck", "sysaxi_sel", 0),
-+	GATE_INFRA3(CLK_INFRA_133M_USB_HCK_CK_P1, "infra_133m_usb_hck_ck_p1", "sysaxi_sel", 1),
-+	GATE_INFRA3(CLK_INFRA_66M_USB_HCK, "infra_66m_usb_hck", "sysaxi_sel", 2),
-+	GATE_INFRA3(CLK_INFRA_66M_USB_HCK_CK_P1, "infra_66m_usb_hck_ck_p1", "sysaxi_sel", 3),
-+	GATE_INFRA3(CLK_INFRA_USB_SYS, "infra_usb_sys", "usb_sys_sel", 4),
-+	GATE_INFRA3(CLK_INFRA_USB_SYS_CK_P1, "infra_usb_sys_ck_p1", "usb_sys_p1_sel", 5),
-+	GATE_INFRA3(CLK_INFRA_USB_REF, "infra_usb_ref", "top_xtal", 6),
-+	GATE_INFRA3(CLK_INFRA_USB_CK_P1, "infra_usb_ck_p1", "top_xtal", 7),
-+	GATE_INFRA3_FLAGS(CLK_INFRA_USB_FRMCNT, "infra_usb_frmcnt", "usb_frmcnt_sel", 8,
-+			  CLK_IS_CRITICAL),
-+	GATE_INFRA3_FLAGS(CLK_INFRA_USB_FRMCNT_CK_P1, "infra_usb_frmcnt_ck_p1", "usb_frmcnt_p1_sel",
-+			  9, CLK_IS_CRITICAL),
-+	GATE_INFRA3(CLK_INFRA_USB_PIPE, "infra_usb_pipe", "sspxtp_sel", 10),
-+	GATE_INFRA3(CLK_INFRA_USB_PIPE_CK_P1, "infra_usb_pipe_ck_p1", "usb_phy_sel", 11),
-+	GATE_INFRA3(CLK_INFRA_USB_UTMI, "infra_usb_utmi", "top_xtal", 12),
-+	GATE_INFRA3(CLK_INFRA_USB_UTMI_CK_P1, "infra_usb_utmi_ck_p1", "top_xtal", 13),
-+	GATE_INFRA3(CLK_INFRA_USB_XHCI, "infra_usb_xhci", "usb_xhci_sel", 14),
-+	GATE_INFRA3(CLK_INFRA_USB_XHCI_CK_P1, "infra_usb_xhci_ck_p1", "usb_xhci_p1_sel", 15),
-+	GATE_INFRA3(CLK_INFRA_PCIE_GFMUX_TL_P0, "infra_pcie_gfmux_tl_ck_p0",
-+		    "infra_pcie_gfmux_tl_o_p0_sel", 20),
-+	GATE_INFRA3(CLK_INFRA_PCIE_GFMUX_TL_P1, "infra_pcie_gfmux_tl_ck_p1",
-+		    "infra_pcie_gfmux_tl_o_p1_sel", 21),
-+	GATE_INFRA3(CLK_INFRA_PCIE_GFMUX_TL_P2, "infra_pcie_gfmux_tl_ck_p2",
-+		    "infra_pcie_gfmux_tl_o_p2_sel", 22),
-+	GATE_INFRA3(CLK_INFRA_PCIE_GFMUX_TL_P3, "infra_pcie_gfmux_tl_ck_p3",
-+		    "infra_pcie_gfmux_tl_o_p3_sel", 23),
-+	GATE_INFRA3(CLK_INFRA_PCIE_PIPE_P0, "infra_pcie_pipe_ck_p0", "top_xtal", 24),
-+	GATE_INFRA3(CLK_INFRA_PCIE_PIPE_P1, "infra_pcie_pipe_ck_p1", "top_xtal", 25),
-+	GATE_INFRA3(CLK_INFRA_PCIE_PIPE_P2, "infra_pcie_pipe_ck_p2", "top_xtal", 26),
-+	GATE_INFRA3(CLK_INFRA_PCIE_PIPE_P3, "infra_pcie_pipe_ck_p3", "top_xtal", 27),
-+	GATE_INFRA3(CLK_INFRA_133M_PCIE_CK_P0, "infra_133m_pcie_ck_p0", "sysaxi_sel", 28),
-+	GATE_INFRA3(CLK_INFRA_133M_PCIE_CK_P1, "infra_133m_pcie_ck_p1", "sysaxi_sel", 29),
-+	GATE_INFRA3(CLK_INFRA_133M_PCIE_CK_P2, "infra_133m_pcie_ck_p2", "sysaxi_sel", 30),
-+	GATE_INFRA3(CLK_INFRA_133M_PCIE_CK_P3, "infra_133m_pcie_ck_p3", "sysaxi_sel", 31),
-+};
-+
-+static const struct mtk_clk_desc infra_desc = {
-+	.clks = infra_clks,
-+	.num_clks = ARRAY_SIZE(infra_clks),
-+	.mux_clks = infra_muxes,
-+	.num_mux_clks = ARRAY_SIZE(infra_muxes),
-+	.clk_lock = &mt7988_clk_lock,
-+};
-+
-+static const struct of_device_id of_match_clk_mt7988_infracfg[] = {
-+	{ .compatible = "mediatek,mt7988-infracfg", .data = &infra_desc },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, of_match_clk_mt7988_infracfg);
-+
-+static struct platform_driver clk_mt7988_infracfg_drv = {
-+	.driver = {
-+		.name = "clk-mt7988-infracfg",
-+		.of_match_table = of_match_clk_mt7988_infracfg,
-+	},
-+	.probe = mtk_clk_simple_probe,
-+	.remove_new = mtk_clk_simple_remove,
-+};
-+module_platform_driver(clk_mt7988_infracfg_drv);
-diff --git a/drivers/clk/mediatek/clk-mt7988-topckgen.c b/drivers/clk/mediatek/clk-mt7988-topckgen.c
-new file mode 100644
-index 0000000000000..760f8e0d2f26a
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt7988-topckgen.c
-@@ -0,0 +1,325 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 MediaTek Inc.
-+ * Author: Sam Shih <sam.shih@mediatek.com>
-+ * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+#include "clk-mux.h"
-+#include <dt-bindings/clock/mediatek,mt7988-clk.h>
-+
-+static DEFINE_SPINLOCK(mt7988_clk_lock);
-+
-+static const struct mtk_fixed_clk top_fixed_clks[] = {
-+	FIXED_CLK(CLK_TOP_XTAL, "top_xtal", "clkxtal", 40000000),
-+};
-+
-+static const struct mtk_fixed_factor top_divs[] = {
-+	FACTOR(CLK_TOP_XTAL_D2, "top_xtal_d2", "top_xtal", 1, 2),
-+	FACTOR(CLK_TOP_RTC_32K, "top_rtc_32k", "top_xtal", 1, 1250),
-+	FACTOR(CLK_TOP_RTC_32P7K, "top_rtc_32p7k", "top_xtal", 1, 1220),
-+	FACTOR(CLK_TOP_MPLL_D2, "mpll_d2", "mpll", 1, 2),
-+	FACTOR(CLK_TOP_MPLL_D3_D2, "mpll_d3_d2", "mpll", 1, 2),
-+	FACTOR(CLK_TOP_MPLL_D4, "mpll_d4", "mpll", 1, 4),
-+	FACTOR(CLK_TOP_MPLL_D8, "mpll_d8", "mpll", 1, 8),
-+	FACTOR(CLK_TOP_MPLL_D8_D2, "mpll_d8_d2", "mpll", 1, 16),
-+	FACTOR(CLK_TOP_MMPLL_D2, "mmpll_d2", "mmpll", 1, 2),
-+	FACTOR(CLK_TOP_MMPLL_D3_D5, "mmpll_d3_d5", "mmpll", 1, 15),
-+	FACTOR(CLK_TOP_MMPLL_D4, "mmpll_d4", "mmpll", 1, 4),
-+	FACTOR(CLK_TOP_MMPLL_D6_D2, "mmpll_d6_d2", "mmpll", 1, 12),
-+	FACTOR(CLK_TOP_MMPLL_D8, "mmpll_d8", "mmpll", 1, 8),
-+	FACTOR(CLK_TOP_APLL2_D4, "apll2_d4", "apll2", 1, 4),
-+	FACTOR(CLK_TOP_NET1PLL_D4, "net1pll_d4", "net1pll", 1, 4),
-+	FACTOR(CLK_TOP_NET1PLL_D5, "net1pll_d5", "net1pll", 1, 5),
-+	FACTOR(CLK_TOP_NET1PLL_D5_D2, "net1pll_d5_d2", "net1pll", 1, 10),
-+	FACTOR(CLK_TOP_NET1PLL_D5_D4, "net1pll_d5_d4", "net1pll", 1, 20),
-+	FACTOR(CLK_TOP_NET1PLL_D8, "net1pll_d8", "net1pll", 1, 8),
-+	FACTOR(CLK_TOP_NET1PLL_D8_D2, "net1pll_d8_d2", "net1pll", 1, 16),
-+	FACTOR(CLK_TOP_NET1PLL_D8_D4, "net1pll_d8_d4", "net1pll", 1, 32),
-+	FACTOR(CLK_TOP_NET1PLL_D8_D8, "net1pll_d8_d8", "net1pll", 1, 64),
-+	FACTOR(CLK_TOP_NET1PLL_D8_D16, "net1pll_d8_d16", "net1pll", 1, 128),
-+	FACTOR(CLK_TOP_NET2PLL_D2, "net2pll_d2", "net2pll", 1, 2),
-+	FACTOR(CLK_TOP_NET2PLL_D4, "net2pll_d4", "net2pll", 1, 4),
-+	FACTOR(CLK_TOP_NET2PLL_D4_D4, "net2pll_d4_d4", "net2pll", 1, 16),
-+	FACTOR(CLK_TOP_NET2PLL_D4_D8, "net2pll_d4_d8", "net2pll", 1, 32),
-+	FACTOR(CLK_TOP_NET2PLL_D6, "net2pll_d6", "net2pll", 1, 6),
-+	FACTOR(CLK_TOP_NET2PLL_D8, "net2pll_d8", "net2pll", 1, 8),
-+};
-+
-+static const char *const netsys_parents[] = { "top_xtal", "net2pll_d2", "mmpll_d2" };
-+static const char *const netsys_500m_parents[] = { "top_xtal", "net1pll_d5", "net1pll_d5_d2" };
-+static const char *const netsys_2x_parents[] = { "top_xtal", "net2pll", "mmpll" };
-+static const char *const netsys_gsw_parents[] = { "top_xtal", "net1pll_d4", "net1pll_d5" };
-+static const char *const eth_gmii_parents[] = { "top_xtal", "net1pll_d5_d4" };
-+static const char *const netsys_mcu_parents[] = { "top_xtal",	"net2pll",    "mmpll",
-+						  "net1pll_d4", "net1pll_d5", "mpll" };
-+static const char *const eip197_parents[] = { "top_xtal", "netsyspll",	"net2pll",
-+					      "mmpll",	  "net1pll_d4", "net1pll_d5" };
-+static const char *const axi_infra_parents[] = { "top_xtal", "net1pll_d8_d2" };
-+static const char *const uart_parents[] = { "top_xtal", "mpll_d8", "mpll_d8_d2" };
-+static const char *const emmc_250m_parents[] = { "top_xtal", "net1pll_d5_d2", "mmpll_d4" };
-+static const char *const emmc_400m_parents[] = { "top_xtal", "msdcpll",	 "mmpll_d2",
-+						 "mpll_d2",  "mmpll_d4", "net1pll_d8_d2" };
-+static const char *const spi_parents[] = { "top_xtal",	    "mpll_d2",	    "mmpll_d4",
-+					   "net1pll_d8_d2", "net2pll_d6",   "net1pll_d5_d4",
-+					   "mpll_d4",	    "net1pll_d8_d4" };
-+static const char *const nfi1x_parents[] = { "top_xtal", "mmpll_d4", "net1pll_d8_d2", "net2pll_d6",
-+					     "mpll_d4",	 "mmpll_d8", "net1pll_d8_d4", "mpll_d8" };
-+static const char *const spinfi_parents[] = { "top_xtal_d2", "top_xtal", "net1pll_d5_d4",
-+					      "mpll_d4",     "mmpll_d8", "net1pll_d8_d4",
-+					      "mmpll_d6_d2", "mpll_d8" };
-+static const char *const pwm_parents[] = { "top_xtal", "net1pll_d8_d2", "net1pll_d5_d4",
-+					   "mpll_d4",  "mpll_d8_d2",	"top_rtc_32k" };
-+static const char *const i2c_parents[] = { "top_xtal", "net1pll_d5_d4", "mpll_d4",
-+					   "net1pll_d8_d4" };
-+static const char *const pcie_mbist_250m_parents[] = { "top_xtal", "net1pll_d5_d2" };
-+static const char *const pextp_tl_ck_parents[] = { "top_xtal", "net2pll_d6", "mmpll_d8",
-+						   "mpll_d8_d2", "top_rtc_32k" };
-+static const char *const usb_frmcnt_parents[] = { "top_xtal", "mmpll_d3_d5" };
-+static const char *const aud_parents[] = { "top_xtal", "apll2" };
-+static const char *const a1sys_parents[] = { "top_xtal", "apll2_d4" };
-+static const char *const aud_l_parents[] = { "top_xtal", "apll2", "mpll_d8_d2" };
-+static const char *const sspxtp_parents[] = { "top_xtal_d2", "mpll_d8_d2" };
-+static const char *const usxgmii_sbus_0_parents[] = { "top_xtal", "net1pll_d8_d4" };
-+static const char *const sgm_0_parents[] = { "top_xtal", "sgmpll" };
-+static const char *const sysapb_parents[] = { "top_xtal", "mpll_d3_d2" };
-+static const char *const eth_refck_50m_parents[] = { "top_xtal", "net2pll_d4_d4" };
-+static const char *const eth_sys_200m_parents[] = { "top_xtal", "net2pll_d4" };
-+static const char *const eth_xgmii_parents[] = { "top_xtal_d2", "net1pll_d8_d8", "net1pll_d8_d16" };
-+static const char *const bus_tops_parents[] = { "top_xtal", "net1pll_d5", "net2pll_d2" };
-+static const char *const npu_tops_parents[] = { "top_xtal", "net2pll" };
-+static const char *const dramc_md32_parents[] = { "top_xtal", "mpll_d2", "wedmcupll" };
-+static const char *const da_xtp_glb_p0_parents[] = { "top_xtal", "net2pll_d8" };
-+static const char *const mcusys_backup_625m_parents[] = { "top_xtal", "net1pll_d4" };
-+static const char *const macsec_parents[] = { "top_xtal", "sgmpll", "net1pll_d8" };
-+static const char *const netsys_tops_400m_parents[] = { "top_xtal", "net2pll_d2" };
-+static const char *const eth_mii_parents[] = { "top_xtal_d2", "net2pll_d4_d8" };
-+
-+static const struct mtk_mux top_muxes[] = {
-+	/* CLK_CFG_0 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_SEL, "netsys_sel", netsys_parents, 0x000, 0x004, 0x008,
-+			     0, 2, 7, 0x1c0, 0),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_500M_SEL, "netsys_500m_sel", netsys_500m_parents, 0x000,
-+			     0x004, 0x008, 8, 2, 15, 0x1C0, 1),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_2X_SEL, "netsys_2x_sel", netsys_2x_parents, 0x000,
-+			     0x004, 0x008, 16, 2, 23, 0x1C0, 2),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_GSW_SEL, "netsys_gsw_sel", netsys_gsw_parents, 0x000,
-+			     0x004, 0x008, 24, 2, 31, 0x1C0, 3),
-+	/* CLK_CFG_1 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_ETH_GMII_SEL, "eth_gmii_sel", eth_gmii_parents, 0x010, 0x014,
-+			     0x018, 0, 1, 7, 0x1C0, 4),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_MCU_SEL, "netsys_mcu_sel", netsys_mcu_parents, 0x010,
-+			     0x014, 0x018, 8, 3, 15, 0x1C0, 5),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_PAO_2X_SEL, "netsys_pao_2x_sel", netsys_mcu_parents,
-+			     0x010, 0x014, 0x018, 16, 3, 23, 0x1C0, 6),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_EIP197_SEL, "eip197_sel", eip197_parents, 0x010, 0x014, 0x018,
-+			     24, 3, 31, 0x1c0, 7),
-+	/* CLK_CFG_2 */
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_AXI_INFRA_SEL, "axi_infra_sel", axi_infra_parents, 0x020,
-+				   0x024, 0x028, 0, 1, 7, 0x1C0, 8, CLK_IS_CRITICAL),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_UART_SEL, "uart_sel", uart_parents, 0x020, 0x024, 0x028, 8, 2,
-+			     15, 0x1c0, 9),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_EMMC_250M_SEL, "emmc_250m_sel", emmc_250m_parents, 0x020,
-+			     0x024, 0x028, 16, 2, 23, 0x1C0, 10),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_EMMC_400M_SEL, "emmc_400m_sel", emmc_400m_parents, 0x020,
-+			     0x024, 0x028, 24, 3, 31, 0x1C0, 11),
-+	/* CLK_CFG_3 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_SPI_SEL, "spi_sel", spi_parents, 0x030, 0x034, 0x038, 0, 3, 7,
-+			     0x1c0, 12),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_SPIM_MST_SEL, "spim_mst_sel", spi_parents, 0x030, 0x034, 0x038,
-+			     8, 3, 15, 0x1c0, 13),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NFI1X_SEL, "nfi1x_sel", nfi1x_parents, 0x030, 0x034, 0x038, 16,
-+			     3, 23, 0x1c0, 14),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_SPINFI_SEL, "spinfi_sel", spinfi_parents, 0x030, 0x034, 0x038,
-+			     24, 3, 31, 0x1c0, 15),
-+	/* CLK_CFG_4 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PWM_SEL, "pwm_sel", pwm_parents, 0x040, 0x044, 0x048, 0, 3, 7,
-+			     0x1c0, 16),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_I2C_SEL, "i2c_sel", i2c_parents, 0x040, 0x044, 0x048, 8, 2, 15,
-+			     0x1c0, 17),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PCIE_MBIST_250M_SEL, "pcie_mbist_250m_sel",
-+			     pcie_mbist_250m_parents, 0x040, 0x044, 0x048, 16, 1, 23, 0x1C0, 18),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_TL_SEL, "pextp_tl_sel", pextp_tl_ck_parents, 0x040,
-+			     0x044, 0x048, 24, 3, 31, 0x1C0, 19),
-+	/* CLK_CFG_5 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_TL_P1_SEL, "pextp_tl_p1_sel", pextp_tl_ck_parents, 0x050,
-+			     0x054, 0x058, 0, 3, 7, 0x1C0, 20),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_TL_P2_SEL, "pextp_tl_p2_sel", pextp_tl_ck_parents, 0x050,
-+			     0x054, 0x058, 8, 3, 15, 0x1C0, 21),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_TL_P3_SEL, "pextp_tl_p3_sel", pextp_tl_ck_parents, 0x050,
-+			     0x054, 0x058, 16, 3, 23, 0x1C0, 22),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB_SYS_SEL, "usb_sys_sel", eth_gmii_parents, 0x050, 0x054,
-+			     0x058, 24, 1, 31, 0x1C0, 23),
-+	/* CLK_CFG_6 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB_SYS_P1_SEL, "usb_sys_p1_sel", eth_gmii_parents, 0x060,
-+			     0x064, 0x068, 0, 1, 7, 0x1C0, 24),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB_XHCI_SEL, "usb_xhci_sel", eth_gmii_parents, 0x060, 0x064,
-+			     0x068, 8, 1, 15, 0x1C0, 25),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB_XHCI_P1_SEL, "usb_xhci_p1_sel", eth_gmii_parents, 0x060,
-+			     0x064, 0x068, 16, 1, 23, 0x1C0, 26),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB_FRMCNT_SEL, "usb_frmcnt_sel", usb_frmcnt_parents, 0x060,
-+			     0x064, 0x068, 24, 1, 31, 0x1C0, 27),
-+	/* CLK_CFG_7 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB_FRMCNT_P1_SEL, "usb_frmcnt_p1_sel", usb_frmcnt_parents,
-+			     0x070, 0x074, 0x078, 0, 1, 7, 0x1C0, 28),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_AUD_SEL, "aud_sel", aud_parents, 0x070, 0x074, 0x078, 8, 1, 15,
-+			     0x1c0, 29),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_A1SYS_SEL, "a1sys_sel", a1sys_parents, 0x070, 0x074, 0x078, 16,
-+			     1, 23, 0x1c0, 30),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_AUD_L_SEL, "aud_l_sel", aud_l_parents, 0x070, 0x074, 0x078, 24,
-+			     2, 31, 0x1c4, 0),
-+	/* CLK_CFG_8 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_A_TUNER_SEL, "a_tuner_sel", a1sys_parents, 0x080, 0x084, 0x088,
-+			     0, 1, 7, 0x1c4, 1),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_SSPXTP_SEL, "sspxtp_sel", sspxtp_parents, 0x080, 0x084, 0x088,
-+			     8, 1, 15, 0x1c4, 2),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB_PHY_SEL, "usb_phy_sel", sspxtp_parents, 0x080, 0x084,
-+			     0x088, 16, 1, 23, 0x1c4, 3),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USXGMII_SBUS_0_SEL, "usxgmii_sbus_0_sel",
-+			     usxgmii_sbus_0_parents, 0x080, 0x084, 0x088, 24, 1, 31, 0x1C4, 4),
-+	/* CLK_CFG_9 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_USXGMII_SBUS_1_SEL, "usxgmii_sbus_1_sel",
-+			     usxgmii_sbus_0_parents, 0x090, 0x094, 0x098, 0, 1, 7, 0x1C4, 5),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_SGM_0_SEL, "sgm_0_sel", sgm_0_parents, 0x090, 0x094, 0x098, 8,
-+			     1, 15, 0x1c4, 6),
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_SGM_SBUS_0_SEL, "sgm_sbus_0_sel", usxgmii_sbus_0_parents,
-+				   0x090, 0x094, 0x098, 16, 1, 23, 0x1C4, 7, CLK_IS_CRITICAL),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_SGM_1_SEL, "sgm_1_sel", sgm_0_parents, 0x090, 0x094, 0x098, 24,
-+			     1, 31, 0x1c4, 8),
-+	/* CLK_CFG_10 */
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_SGM_SBUS_1_SEL, "sgm_sbus_1_sel", usxgmii_sbus_0_parents,
-+				   0x0a0, 0x0a4, 0x0a8, 0, 1, 7, 0x1C4, 9, CLK_IS_CRITICAL),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_XFI_PHY_0_XTAL_SEL, "xfi_phy_0_xtal_sel", sspxtp_parents,
-+			     0x0a0, 0x0a4, 0x0a8, 8, 1, 15, 0x1C4, 10),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_XFI_PHY_1_XTAL_SEL, "xfi_phy_1_xtal_sel", sspxtp_parents,
-+			     0x0a0, 0x0a4, 0x0a8, 16, 1, 23, 0x1C4, 11),
-+	/* CLK_CFG_11 */
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_SYSAXI_SEL, "sysaxi_sel", axi_infra_parents, 0x0a0,
-+				   0x0a4, 0x0a8, 24, 1, 31, 0x1C4, 12, CLK_IS_CRITICAL),
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_SYSAPB_SEL, "sysapb_sel", sysapb_parents, 0x0b0, 0x0b4,
-+				   0x0b8, 0, 1, 7, 0x1c4, 13, CLK_IS_CRITICAL),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_ETH_REFCK_50M_SEL, "eth_refck_50m_sel", eth_refck_50m_parents,
-+			     0x0b0, 0x0b4, 0x0b8, 8, 1, 15, 0x1C4, 14),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_ETH_SYS_200M_SEL, "eth_sys_200m_sel", eth_sys_200m_parents,
-+			     0x0b0, 0x0b4, 0x0b8, 16, 1, 23, 0x1C4, 15),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_ETH_SYS_SEL, "eth_sys_sel", pcie_mbist_250m_parents, 0x0b0,
-+			     0x0b4, 0x0b8, 24, 1, 31, 0x1C4, 16),
-+	/* CLK_CFG_12 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_ETH_XGMII_SEL, "eth_xgmii_sel", eth_xgmii_parents, 0x0c0,
-+			     0x0c4, 0x0c8, 0, 2, 7, 0x1C4, 17),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_BUS_TOPS_SEL, "bus_tops_sel", bus_tops_parents, 0x0c0, 0x0c4,
-+			     0x0c8, 8, 2, 15, 0x1C4, 18),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NPU_TOPS_SEL, "npu_tops_sel", npu_tops_parents, 0x0c0, 0x0c4,
-+			     0x0c8, 16, 1, 23, 0x1C4, 19),
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_DRAMC_SEL, "dramc_sel", sspxtp_parents, 0x0c0, 0x0c4,
-+				   0x0c8, 24, 1, 31, 0x1C4, 20, CLK_IS_CRITICAL),
-+	/* CLK_CFG_13 */
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_DRAMC_MD32_SEL, "dramc_md32_sel", dramc_md32_parents,
-+				   0x0d0, 0x0d4, 0x0d8, 0, 2, 7, 0x1C4, 21, CLK_IS_CRITICAL),
-+	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_INFRA_F26M_SEL, "csw_infra_f26m_sel", sspxtp_parents,
-+				   0x0d0, 0x0d4, 0x0d8, 8, 1, 15, 0x1C4, 22, CLK_IS_CRITICAL),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_P0_SEL, "pextp_p0_sel", sspxtp_parents, 0x0d0, 0x0d4,
-+			     0x0d8, 16, 1, 23, 0x1C4, 23),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_P1_SEL, "pextp_p1_sel", sspxtp_parents, 0x0d0, 0x0d4,
-+			     0x0d8, 24, 1, 31, 0x1C4, 24),
-+	/* CLK_CFG_14 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_P2_SEL, "pextp_p2_sel", sspxtp_parents, 0x0e0, 0x0e4,
-+			     0x0e8, 0, 1, 7, 0x1C4, 25),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_P3_SEL, "pextp_p3_sel", sspxtp_parents, 0x0e0, 0x0e4,
-+			     0x0e8, 8, 1, 15, 0x1C4, 26),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DA_XTP_GLB_P0_SEL, "da_xtp_glb_p0_sel", da_xtp_glb_p0_parents,
-+			     0x0e0, 0x0e4, 0x0e8, 16, 1, 23, 0x1C4, 27),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DA_XTP_GLB_P1_SEL, "da_xtp_glb_p1_sel", da_xtp_glb_p0_parents,
-+			     0x0e0, 0x0e4, 0x0e8, 24, 1, 31, 0x1C4, 28),
-+	/* CLK_CFG_15 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DA_XTP_GLB_P2_SEL, "da_xtp_glb_p2_sel", da_xtp_glb_p0_parents,
-+			     0x0f0, 0x0f4, 0x0f8, 0, 1, 7, 0x1C4, 29),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DA_XTP_GLB_P3_SEL, "da_xtp_glb_p3_sel", da_xtp_glb_p0_parents,
-+			     0x0f0, 0x0f4, 0x0f8, 8, 1, 15, 0x1C4, 30),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_CKM_SEL, "ckm_sel", sspxtp_parents, 0x0F0, 0x0f4, 0x0f8, 16, 1,
-+			     23, 0x1c8, 0),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DA_SEL, "da_sel", sspxtp_parents, 0x0f0, 0x0f4, 0x0f8, 24, 1,
-+			     31, 0x1C8, 1),
-+	/* CLK_CFG_16 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_SEL, "pextp_sel", sspxtp_parents, 0x0100, 0x104, 0x108,
-+			     0, 1, 7, 0x1c8, 2),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_TOPS_P2_26M_SEL, "tops_p2_26m_sel", sspxtp_parents, 0x0100,
-+			     0x104, 0x108, 8, 1, 15, 0x1C8, 3),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_MCUSYS_BACKUP_625M_SEL, "mcusys_backup_625m_sel",
-+			     mcusys_backup_625m_parents, 0x0100, 0x104, 0x108, 16, 1, 23, 0x1C8, 4),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_SYNC_250M_SEL, "netsys_sync_250m_sel",
-+			     pcie_mbist_250m_parents, 0x0100, 0x104, 0x108, 24, 1, 31, 0x1c8, 5),
-+	/* CLK_CFG_17 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_MACSEC_SEL, "macsec_sel", macsec_parents, 0x0110, 0x114, 0x118,
-+			     0, 2, 7, 0x1c8, 6),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_TOPS_400M_SEL, "netsys_tops_400m_sel",
-+			     netsys_tops_400m_parents, 0x0110, 0x114, 0x118, 8, 1, 15, 0x1c8, 7),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_PPEFB_250M_SEL, "netsys_ppefb_250m_sel",
-+			     pcie_mbist_250m_parents, 0x0110, 0x114, 0x118, 16, 1, 23, 0x1c8, 8),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_WARP_SEL, "netsys_warp_sel", netsys_parents, 0x0110,
-+			     0x114, 0x118, 24, 2, 31, 0x1C8, 9),
-+	/* CLK_CFG_18 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_ETH_MII_SEL, "eth_mii_sel", eth_mii_parents, 0x0120, 0x124,
-+			     0x128, 0, 1, 7, 0x1c8, 10),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_NPU_SEL, "ck_npu_sel", netsys_2x_parents, 0x0120, 0x124, 0x128,
-+			     8, 2, 15, 0x1c8, 11),
-+};
-+
-+static const struct mtk_composite top_aud_divs[] = {
-+	DIV_GATE(CLK_TOP_AUD_I2S_M, "aud_i2s_m", "aud_sel", 0x0420, 0, 0x0420, 8, 8),
-+};
-+
-+static const struct mtk_clk_desc topck_desc = {
-+	.fixed_clks = top_fixed_clks,
-+	.num_fixed_clks = ARRAY_SIZE(top_fixed_clks),
-+	.factor_clks = top_divs,
-+	.num_factor_clks = ARRAY_SIZE(top_divs),
-+	.mux_clks = top_muxes,
-+	.num_mux_clks = ARRAY_SIZE(top_muxes),
-+	.composite_clks = top_aud_divs,
-+	.num_composite_clks = ARRAY_SIZE(top_aud_divs),
-+	.clk_lock = &mt7988_clk_lock,
-+};
-+
-+static const char *const mcu_bus_div_parents[] = { "top_xtal", "ccipll2_b", "net1pll_d4" };
-+
-+static const char *const mcu_arm_div_parents[] = { "top_xtal", "arm_b", "net1pll_d4" };
-+
-+static struct mtk_composite mcu_muxes[] = {
-+	/* bus_pll_divider_cfg */
-+	MUX_GATE_FLAGS(CLK_MCU_BUS_DIV_SEL, "mcu_bus_div_sel", mcu_bus_div_parents, 0x7C0, 9, 2, -1,
-+		       CLK_IS_CRITICAL),
-+	/* mp2_pll_divider_cfg */
-+	MUX_GATE_FLAGS(CLK_MCU_ARM_DIV_SEL, "mcu_arm_div_sel", mcu_arm_div_parents, 0x7A8, 9, 2, -1,
-+		       CLK_IS_CRITICAL),
-+};
-+
-+static const struct mtk_clk_desc mcusys_desc = {
-+	.composite_clks = mcu_muxes,
-+	.num_composite_clks = ARRAY_SIZE(mcu_muxes),
-+};
-+
-+static const struct of_device_id of_match_clk_mt7988_topckgen[] = {
-+	{ .compatible = "mediatek,mt7988-topckgen", .data = &topck_desc },
-+	{ .compatible = "mediatek,mt7988-mcusys", .data = &mcusys_desc },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, of_match_clk_mt7988_topckgen);
-+
-+static struct platform_driver clk_mt7988_topckgen_drv = {
-+	.probe = mtk_clk_simple_probe,
-+	.remove_new = mtk_clk_simple_remove,
-+	.driver = {
-+		.name = "clk-mt7988-topckgen",
-+		.of_match_table = of_match_clk_mt7988_topckgen,
-+	},
-+};
-+module_platform_driver(clk_mt7988_topckgen_drv);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/mediatek/clk-mt7988-xfipll.c b/drivers/clk/mediatek/clk-mt7988-xfipll.c
-new file mode 100644
-index 0000000000000..9b9ca5471158b
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt7988-xfipll.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+#include <dt-bindings/clock/mediatek,mt7988-clk.h>
-+
-+/* Register to control USXGMII XFI PLL analog */
-+#define XFI_PLL_ANA_GLB8		0x108
-+#define RG_XFI_PLL_ANA_SWWA		0x02283248
-+
-+static const struct mtk_gate_regs xfipll_cg_regs = {
-+	.set_ofs = 0x8,
-+	.clr_ofs = 0x8,
-+	.sta_ofs = 0x8,
-+};
-+
-+#define GATE_XFIPLL(_id, _name, _parent, _shift)		\
-+	{							\
-+		.id = _id,					\
-+		.name = _name,					\
-+		.parent_name = _parent,				\
-+		.regs = &xfipll_cg_regs,			\
-+		.shift = _shift,				\
-+		.ops = &mtk_clk_gate_ops_no_setclr_inv,		\
-+	}
-+
-+static const struct mtk_fixed_factor xfipll_divs[] = {
-+	FACTOR(CLK_XFIPLL_PLL, "xfipll_pll", "top_xtal", 125, 32),
-+};
-+
-+static const struct mtk_gate xfipll_clks[] = {
-+	GATE_XFIPLL(CLK_XFIPLL_PLL_EN, "xfipll_pll_en", "xfipll_pll", 31),
-+};
-+
-+static const struct mtk_clk_desc xfipll_desc = {
-+	.clks = xfipll_clks,
-+	.num_clks = ARRAY_SIZE(xfipll_clks),
-+	.factor_clks = xfipll_divs,
-+	.num_factor_clks = ARRAY_SIZE(xfipll_divs),
-+};
-+
-+static int clk_mt7988_xfipll_probe(struct platform_device *pdev)
-+{
-+	struct device_node *node = pdev->dev.of_node;
-+	void __iomem *base = of_iomap(node, 0);
-+
-+	if (!base)
-+		return -ENOMEM;
-+
-+	/* Apply software workaround for USXGMII PLL TCL issue */
-+	writel(RG_XFI_PLL_ANA_SWWA, base + XFI_PLL_ANA_GLB8);
-+	iounmap(base);
-+
-+	return mtk_clk_simple_probe(pdev);
-+};
-+
-+static const struct of_device_id of_match_clk_mt7988_xfipll[] = {
-+	{ .compatible = "mediatek,mt7988-xfi-pll", .data = &xfipll_desc },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, of_match_clk_mt7988_xfipll);
-+
-+static struct platform_driver clk_mt7988_xfipll_drv = {
-+	.driver = {
-+		.name = "clk-mt7988-xfipll",
-+		.of_match_table = of_match_clk_mt7988_xfipll,
-+	},
-+	.probe = clk_mt7988_xfipll_probe,
-+	.remove_new = mtk_clk_simple_remove,
-+};
-+module_platform_driver(clk_mt7988_xfipll_drv);
-+
-+MODULE_DESCRIPTION("MediaTek MT7988 XFI PLL clock driver");
-+MODULE_LICENSE("GPL");
+:::::: TO: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+:::::: CC: Alex Deucher <alexander.deucher@amd.com>
+
 -- 
-2.43.0
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
