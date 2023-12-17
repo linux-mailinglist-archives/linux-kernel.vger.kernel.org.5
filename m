@@ -1,248 +1,244 @@
-Return-Path: <linux-kernel+bounces-2547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3A2C815EB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:26:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1521B815EB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:29:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A6CBB2201D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:26:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42A5F1C2107D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430C9328DD;
-	Sun, 17 Dec 2023 11:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A019632197;
+	Sun, 17 Dec 2023 11:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwOg1YzV"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ec0Y8lpG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8331E3219A;
-	Sun, 17 Dec 2023 11:26:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76B49C433C7;
-	Sun, 17 Dec 2023 11:26:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702812383;
-	bh=RyZFvFJ+ALGNyHMWUvbkqjcQLUmcXZtzeRYDSGpYI3s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bwOg1YzVOP6Pmx60xNxvbqRoFse5NJmoPOsJTTUvgFezZ0LojWpbP0s3kfyrvXynj
-	 s0/BgpVDvE6TtgAA3EzHMl5clql2reSfvIvND08VQoBxvg/ahXxwcw0dN8Y1PPfFmf
-	 ZAZIqvT93tAh4Zuffz9pjsi4dmbDC3TKAHXeOrLLq9Vnc6iHFe5ORuLOQMEE6bHDhW
-	 qNeGn8YlOqjXb17UdrZCgDDTbJjrdCD1bty/U85jYwja0c0pcJq4ZljIv4snEPU6zm
-	 NkvDHUrlRG/F56ZbNLs88UzjBAozUSFeHSY1JDCXREl1XNanpuRLV1XS5Nw11oM5U2
-	 AvzAWCwPUj9Uw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rEpHo-004oS6-RN;
-	Sun, 17 Dec 2023 11:26:20 +0000
-Date: Sun, 17 Dec 2023 11:26:15 +0000
-Message-ID: <87a5q983zc.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Kunkun Jiang <jiangkunkun@huawei.com>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Jean-Philippe Brucker
-	<jean-philippe@linaro.org>,
-	"moderated list:ARM SMMU DRIVERS" <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>,
-	open list <linux-kernel@vger.kernel.org>,
-	"wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-Subject: Re: [bug report] GICv4.1: vSGI remains pending across the guest reset
-In-Reply-To: <7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com>
-References: <7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C37F31A8F;
+	Sun, 17 Dec 2023 11:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702812554; x=1734348554;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KmM9pqOmCREmKotr0V+MAxDIg6r8li0pNuJmocpsTUo=;
+  b=Ec0Y8lpGpIuvw7woYiEZ3jlZlcFInN6qea5+2BQUfdi+MHSiBxpOg1qO
+   aUnbFr3l8W2mKQ22P38u5Mgr2C7h0P+Ocnpt9QsPvWa3hAfXDXRJwyKYF
+   pNezn0EMoTmFydJEndaDjEUtydD+OfNTSmSygaG4eG5UNreIeQI9G03LF
+   MMB5YOoz9GPj7MQJHfv0s9fVsy4oKHrfBN1qBdXcGNbik33DDZW4iWFEu
+   sSb2pakH2xvjAqIOipY8XXLd6jYmvokY7oL94b2M0MNjneYNBUCbfYiZv
+   6Vkef4xNNyCyDRcKfMzKXuAAvijfijpW46dCogxsPtYcP8DclYMNwhRs3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="392582743"
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="392582743"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 03:29:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="893470086"
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="893470086"
+Received: from ply01-vm-store.bj.intel.com ([10.238.153.201])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Dec 2023 03:29:10 -0800
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: bhelgaas@google.com,
+	baolu.lu@linux.intel.com,
+	dwmw2@infradead.org,
+	will@kernel.org,
+	robin.murphy@arm.com,
+	lukas@wunner.de
+Cc: linux-pci@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Ethan Zhao <haifeng.zhao@linux.intel.com>
+Subject: [PATCH v2 0/2] fix vt-d hard lockup when hotplug ATS capable device
+Date: Sun, 17 Dec 2023 06:29:02 -0500
+Message-Id: <20231217112904.3835559-1-haifeng.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: jiangkunkun@huawei.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, jean-philippe@linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 14 Dec 2023 12:13:57 +0000,
-Kunkun Jiang <jiangkunkun@huawei.com> wrote:
->=20
-> Hi list,
->=20
-> We have observed on GICv4.1 systems that, after a guest reset, the
-> secondary VCPU would receive an IPI_CPU_STOP accidently and failed to
-> come online eventually.
->=20
-> | Guest User-space
+ This patchset is used to fix vt-d hard lockup reported when surpprise
+ unplug ATS capable endpoint device connects to system via PCIe switch
+ as following topology.
 
-Guest userspace????
+     +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d
+     |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe
+     |           +-00.2  Intel Corporation Ice Lake RAS
+     |           +-00.4  Intel Corporation Device 0b23
+     |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0 
+                                           NVIDIA Corporation Device 2324
+     |                                           +-01.0-[19]----00.0
+                          Mellanox Technologies MT2910 Family [ConnectX-7]
 
-> |
-> | reset (with a vSGI pending in the
-> | hardware) [0]
-> |
-> | disable the distributor (write 0
-> | into GICD_CTLR) [1]
-> |
-> | clear pending status (write 0 into
-> | GICR_ISPENDR0 for each RD) [2]
+ User brought endpoint device 19:00.0's link down by flap it's hotplug 
+ capable slot 17:01.0 link control register, as sequence DLLSC response, 
+ pciehp_ist() will unload device driver and power it off, durning device
+ driver is unloading an iommu devTlb flush request issued to that link 
+ down device, thus a long time completion/timeout waiting in interrupt
+ context causes continuous hard lockup warnning and system hang.
 
-This cannot clear the pending bits. Writing 0 to any of the
-ISPEND/ICPEND registers is effectively a NOP.
+[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
+[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
+[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
+[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+         OE    kernel version xxxx
+[ 4223.822623] Hardware name: vendorname xxxx 666-106,
+BIOS 01.01.02.03.01 05/15/2023
+[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
+[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
+0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
+knlGS:0000000000000000
+[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
+[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[ 4223.822628] PKRU: 55555554
+[ 4223.822628] Call Trace:
+[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
+[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
+[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
+[ 4223.822629]  intel_iommu_release_device+0x1f/0x30
+[ 4223.822629]  iommu_release_device+0x33/0x60
+[ 4223.822629]  iommu_bus_notifier+0x7f/0x90
+[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
+[ 4223.822630]  device_del+0x2e5/0x420
+[ 4223.822630]  pci_remove_bus_device+0x70/0x110
+[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
+[ 4223.822631]  pciehp_disable_slot+0x6b/0x100
+[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
+[ 4223.822631]  pciehp_ist+0x176/0x180
+[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
+[ 4223.822632]  irq_thread_fn+0x19/0x50
+[ 4223.822632]  irq_thread+0x104/0x190
+[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
+[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
+[ 4223.822633]  kthread+0x114/0x130
+[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
+[ 4223.822633]  ret_from_fork+0x1f/0x30
+[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
+[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+         OE     kernel version xxxx
+[ 4223.822634] Hardware name: vendorname xxxx 666-106,
+BIOS 01.01.02.03.01 05/15/2023
+[ 4223.822634] Call Trace:
+[ 4223.822634]  <NMI>
+[ 4223.822635]  dump_stack+0x6d/0x88
+[ 4223.822635]  panic+0x101/0x2d0
+[ 4223.822635]  ? ret_from_fork+0x11/0x30
+[ 4223.822635]  nmi_panic.cold.14+0xc/0xc
+[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
+[ 4223.822636]  __perf_event_overflow+0x4f/0xf0
+[ 4223.822636]  handle_pmi_common+0x1ef/0x290
+[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
+[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
+[ 4223.822637]  ? __native_set_fixmap+0x24/0x30
+[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
+[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
+[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
+[ 4223.822638]  perf_event_nmi_handler+0x24/0x40
+[ 4223.822638]  nmi_handle+0x4d/0xf0
+[ 4223.822638]  default_do_nmi+0x49/0x100
+[ 4223.822638]  exc_nmi+0x134/0x180
+[ 4223.822639]  end_repeat_nmi+0x16/0x67
+[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
+[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
+ 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
+[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
+[ 4223.822642]  </NMI>
+[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
+[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
+[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
+[ 4223.822643]  intel_iommu_release_device+0x1f/0x30
+[ 4223.822643]  iommu_release_device+0x33/0x60
+[ 4223.822643]  iommu_bus_notifier+0x7f/0x90
+[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
+[ 4223.822644]  device_del+0x2e5/0x420
+[ 4223.822644]  pci_remove_bus_device+0x70/0x110
+[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
+[ 4223.822644]  pciehp_disable_slot+0x6b/0x100
+[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
+[ 4223.822645]  pciehp_ist+0x176/0x180
+[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
+[ 4223.822645]  irq_thread_fn+0x19/0x50
+[ 4223.822646]  irq_thread+0x104/0x190
+[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
+[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
+[ 4223.822646]  kthread+0x114/0x130
+[ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
+[ 4223.822647]  ret_from_fork+0x1f/0x30
+[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
+range: 0xffffffff80000000-0xffffffffbfffffff)
 
-If you want to remove the pending SGIs, you need to write a bunch of
-1s to ICPENDR0.
+Make a quick fix by checking the device's error_state in
+devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB flush
+request to link down device that is set to pci_channel_io_perm_failure and
+then powered off in
 
-> |
-> | disable the distributor (write 0
-> | into GICD_CTLR) [3]
-> |
-> | enable the distributor with ARE,
-> | Group1 and nASSGIreq [4]
->=20
-> The problem is that even if user-space tries to disable the distributor
+pciehp_ist()
+   pciehp_handle_presence_or_link_change()
+     pciehp_disable_slot()
+       remove_board()
+         pciehp_unconfigure_device()
+ 
+safe_removal unplug doesn't trigger such issue. 
+and this fix works for all supprise_removal unplug operations.
 
-I don't understand what userspace does here. Why is it significant
-that it is an EL0 access? I don't know of any SW doing that, but even
-if it existed, this should make no difference.
+This patchset was tested by yehaorong@bytedance.com on stable-6.7rc4.
 
-> and clear pending bits for all SGIs, we don't actually propogate it into
-> HW (we only record it via vgic_dist->{enabled, nassgireq} and
-> vgic_irq->pending_latch) and the vSGI remains pending across the guest
-> reset.
->
-> And when we're at [4], all vSGI's vgic_irq->hw are *true* and
-> vgic_v4_enable_vsgis() becomes a nop.. That's not good.
->=20
-> The following solution can solve the problem. Not sure if this is a good
-> solution.Sent out early for suggestions or solutions.
->=20
-> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> index 89117ba2528a..3678ab33f5b9 100644
-> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> @@ -374,6 +374,10 @@ static int vgic_v3_uaccess_write_pending(struct
-> kvm_vcpu *vcpu,
-> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 irq->pendi=
-ng_latch =3D true;
-> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 vgic_queue=
-_irq_unlock(vcpu->kvm, irq, flags);
-> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 } else {
-> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (irq->hw &&=
- vgic_irq_is_sgi(irq->intid))
-> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=
-=C2=A0 irq_set_irqchip_state(irq->host_irq,
-> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=
-=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 IRQCH=
-IP_STATE_PENDING,
-> + =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=
-=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 false=
-);
-> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 irq->pendi=
-ng_latch =3D false;
-> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 raw_spin_u=
-nlock_irqrestore(&irq->irq_lock, flags);
-> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 }
->=20
 
-But this has *nothing* to do with the guest. This is the *host*
-userspace performing a write to the redistributor view, which has
-different semantics. Which is why your earlier description made no
-sense to me.
+change log:
 
-I think the problem is slightly larger than what you describe. A write
-to ISPENDR0 should be propagated to the ITS for any values of the
-latch, just like this happens on enabling HW-backed SGIs.
+v2:
+- revise commit[1] description part accoring to Lukas' suggestion.
+- revise commit[2] description to clarify the issue's impact.
+v1:
+- https://lore.kernel.org/lkml/20231213034637.2603013-1-haifeng.zhao@linux.intel.com/T/
 
-Can you please give this a go?
+
 
 Thanks,
-
-	M.
-
-=46rom 9932d74392d969057e84bc3c18bd15f1769b6211 Mon Sep 17 00:00:00 2001
-From: Marc Zyngier <maz@kernel.org>
-Date: Sun, 17 Dec 2023 11:15:09 +0000
-Subject: [PATCH] KVM: arm64: vgic-v4: Restore pending state on host userspa=
-ce
- write
-
-When the VMM writes to ISPENDR0 to set the state pending state of
-an SGI, we fail to convey this to the HW if this SGI is already
-backed by a GICv4.1 vSGI.
-
-This is a bit of a corner case, as this would only occur if the
-vgic state is changed on an already running VM, but this can
-apparently happen across a guest reset driven by the VMM.
-
-Fix this by always writing out the pending_latch value to the
-HW, and reseting it to false.
-
-Reported-by: Kunkun Jiang <jiangkunkun@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei=
-.com
----
- arch/arm64/kvm/vgic/vgic-mmio-v3.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-=
-mmio-v3.c
-index a764b0ab8bf9..2533f264b954 100644
---- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-+++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-@@ -365,19 +365,26 @@ static int vgic_v3_uaccess_write_pending(struct kvm_v=
-cpu *vcpu,
- 		struct vgic_irq *irq =3D vgic_get_irq(vcpu->kvm, vcpu, intid + i);
-=20
- 		raw_spin_lock_irqsave(&irq->irq_lock, flags);
--		if (test_bit(i, &val)) {
--			/*
--			 * pending_latch is set irrespective of irq type
--			 * (level or edge) to avoid dependency that VM should
--			 * restore irq config before pending info.
--			 */
--			irq->pending_latch =3D true;
--			vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
--		} else {
-+
-+		/*
-+		 * pending_latch is set irrespective of irq type
-+		 * (level or edge) to avoid dependency that VM should
-+		 * restore irq config before pending info.
-+		 */
-+		irq->pending_latch =3D test_bit(i, &val);
-+
-+		if (irq->hw && vgic_irq_is_sgi(irq->intid)) {
-+			irq_set_irqchip_state(irq->host_irq,
-+					      IRQCHIP_STATE_PENDING,
-+					      irq->pending_latch);
- 			irq->pending_latch =3D false;
--			raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
- 		}
-=20
-+		if (irq->pending_latch)
-+			vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
-+		else
-+			raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
-+
- 		vgic_put_irq(vcpu->kvm, irq);
- 	}
-=20
---=20
-2.39.2
+Ethan
 
 
---=20
-Without deviation from the norm, progress is not possible.
+Ethan Zhao (2):
+  PCI: make pci_dev_is_disconnected() helper public for other drivers
+  iommu/vt-d: don's issue devTLB flush request when device is
+    disconnected
+
+ drivers/iommu/intel/pasid.c | 21 ++++++++++++++++++++-
+ drivers/pci/pci.h           |  5 -----
+ include/linux/pci.h         |  5 +++++
+ 3 files changed, 25 insertions(+), 6 deletions(-)
+
+-- 
+2.31.1
+
 
