@@ -1,96 +1,1253 @@
-Return-Path: <linux-kernel+bounces-2542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E257F815EAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:17:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D49A0815EAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:18:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E6B81C2106C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:17:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD1C21C2101E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE58134C5;
-	Sun, 17 Dec 2023 11:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D1112B9D;
+	Sun, 17 Dec 2023 11:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nilvsnOw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gp3RWFSu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0937F12B8C;
-	Sun, 17 Dec 2023 11:17:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DE04C433C7;
-	Sun, 17 Dec 2023 11:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702811839;
-	bh=Sk2qe/uIHfzrqXwB7Gd/4Uel6P7DxOF+HQ9SsHoeciY=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=nilvsnOw4ynfGElnT481GCb04X9uZGXegbEKJs11zjB03awEgRdsiInGe9prJyfnN
-	 nSFKipw2g85ljD9h0ZElOgR2f71CzM6ruVZQ/+TOlM0gYOY8Ujq5dQdyyViNOrOYhF
-	 r1Ii5TB2+5Mcbkv8ECSSstKtcKSTudEDX8igiXRipOcUVH0INVrW9/Jf88quofTdZc
-	 4tEnt16Tnv7IX+vHwKKXTDPMkYa2D83se/ZY5VOe8/QSlO8RbTJ6BKB3LYq2fI2BPr
-	 mYfhnVPQvcaPdh2KFID7rFWHAxQycy0yAT+W9MkxLuNYOvQYogb21zUNaSezubzU5X
-	 ETiKqqthhx6DA==
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44EEB14A84
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 11:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702811891; x=1734347891;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=J2oGxbnv01EliyMI92d+G5CRm2oCRiSgi+l8+m+i3KE=;
+  b=gp3RWFSuyYZRZ6Rc9phhLQTeSRZysP958ckMDyIKzwMqa6VG6zBNl7Xs
+   ckqm0Leok0hKmLx3ISW2v1SMHwXiLbrg7jOee3smHASclbBMTxV8AobEj
+   hru8hWSH7inM+5/2UK81YatZ5XQJTj/dI3TTLFfqpOaQTIsWF89y/H36f
+   vKzIJNbScP5nCDWselUfHSHxEBlCTtROwN6vPths6hyGPJxQ0S/X/dydK
+   iT6GNmmJshEIu+UI+0dS+MrobjvZqi3iEIAbZ/615Muo3CQyBxGyUK8+y
+   NRfK+xCUWRA/iUiXelb24jczRgJNd7SRMgkeBTqEBB56HdbPfYdQTEquw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="2605039"
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="2605039"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 03:18:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
+   d="scan'208";a="16841760"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 17 Dec 2023 03:18:07 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEp9o-0002yW-1w;
+	Sun, 17 Dec 2023 11:18:04 +0000
+Date: Sun, 17 Dec 2023 19:17:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Michael Ellerman <mpe@ellerman.id.au>
+Subject: drivers/soc/fsl/qe/tsa.c:663:22: sparse: sparse: incorrect type in
+ assignment (different address spaces)
+Message-ID: <202312171939.ryfzfDMc-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2][wireless-next/for-next] wifi: mt76: mt7996: Use
- DECLARE_FLEX_ARRAY() and fix -Warray-bounds warnings
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <ZXiU9ayVCslt3qiI@work>
-References: <ZXiU9ayVCslt3qiI@work>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>,
- Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>,
- Sean Wang <sean.wang@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170281183364.2255653.11348778745254559115.kvalo@kernel.org>
-Date: Sun, 17 Dec 2023 11:17:16 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+Hi Christophe,
 
-> Transform zero-length arrays `rate`, `adm_stat` and `msdu_cnt` into
-> proper flexible-array members in anonymous union in `struct
-> mt7996_mcu_all_sta_info_event` via the DECLARE_FLEX_ARRAY()
-> helper; and fix multiple -Warray-bounds warnings:
-> 
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:544:61: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:551:58: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:553:58: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:530:61: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:538:66: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:540:66: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:520:57: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:526:76: warning: array subscript <unknown> is outside array bounds of 'struct all_sta_trx_rate[0]' [-Warray-bounds=]
-> 
-> This results in no differences in binary output, helps with the ongoing
-> efforts to globally enable -Warray-bounds.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+First bad commit (maybe != root cause):
 
-Patch applied to wireless-next.git, thanks.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3b8a9b2e6809d281890dd0a1102dc14d2cd11caf
+commit: eb5aa2137275da82052586f9bd405a1358b48139 powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272
+date:   4 months ago
+config: powerpc-randconfig-r121-20231107 (https://download.01.org/0day-ci/archive/20231217/202312171939.ryfzfDMc-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231217/202312171939.ryfzfDMc-lkp@intel.com/reproduce)
 
-40d51f70f082 wifi: mt76: mt7996: Use DECLARE_FLEX_ARRAY() and fix -Warray-bounds warnings
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312171939.ryfzfDMc-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/soc/fsl/qe/tsa.c:663:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] si_regs @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/tsa.c:663:22: sparse:     expected void *[noderef] si_regs
+   drivers/soc/fsl/qe/tsa.c:663:22: sparse:     got void [noderef] __iomem *
+>> drivers/soc/fsl/qe/tsa.c:673:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] si_ram @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/tsa.c:673:21: sparse:     expected void *[noderef] si_ram
+   drivers/soc/fsl/qe/tsa.c:673:21: sparse:     got void [noderef] __iomem *
+>> drivers/soc/fsl/qe/tsa.c:189:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:189:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:160:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:218:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:218:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:160:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:245:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:245:47: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:246:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:246:46: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:247:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:250:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:250:47: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:251:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:251:46: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:252:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:259:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:259:55: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:260:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:260:54: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:261:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:264:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:264:55: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:265:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:265:54: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:266:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:271:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:271:55: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:272:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:272:54: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:273:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:276:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:276:55: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:277:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:277:54: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:278:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:322:9: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:322:16: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:322:35: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:322:58: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:325:14: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:325:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:330:13: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:332:31: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:332:31: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:155:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:155:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:155:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:155:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:155:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:344:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:344:44: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:348:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:348:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:349:17: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:640:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:640:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:664:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:664:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:665:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:665:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:674:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:674:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:675:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:675:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:690:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:690:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:160:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:160:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:150:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:140:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:702:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:145:23: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/tsa.c:145:23: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/soc/fsl/qe/tsa.c:145:23: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/tsa.c:702:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:145:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/tsa.c:145:23: sparse: sparse: dereference of noderef expression
+--
+>> drivers/soc/fsl/qe/qmc.c:334:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free @@
+   drivers/soc/fsl/qe/qmc.c:334:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:334:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
+>> drivers/soc/fsl/qe/qmc.c:346:39: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:389:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_done @@
+   drivers/soc/fsl/qe/qmc.c:389:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:389:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_done
+   drivers/soc/fsl/qe/qmc.c:396:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:441:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_free @@
+   drivers/soc/fsl/qe/qmc.c:453:39: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:505:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_done @@
+   drivers/soc/fsl/qe/qmc.c:505:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:505:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_done
+   drivers/soc/fsl/qe/qmc.c:512:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:670:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbds @@
+   drivers/soc/fsl/qe/qmc.c:675:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:705:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbds @@
+   drivers/soc/fsl/qe/qmc.c:705:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:705:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbds
+   drivers/soc/fsl/qe/qmc.c:710:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+>> drivers/soc/fsl/qe/qmc.c:1108:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1108:30: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1108:30: sparse:     got unsigned short [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1111:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1111:22: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1111:22: sparse:     got unsigned short [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1120:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1120:30: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1120:30: sparse:     got unsigned short [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1123:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1123:22: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1123:22: sparse:     got unsigned short [noderef] __iomem *
+>> drivers/soc/fsl/qe/qmc.c:1176:44: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1176:44: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1176:44: sparse:     got unsigned short [noderef] [usertype] __iomem *
+>> drivers/soc/fsl/qe/qmc.c:1181:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *[assigned] last @@
+   drivers/soc/fsl/qe/qmc.c:1181:29: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1181:29: sparse:     got unsigned short [noderef] [usertype] __iomem *[assigned] last
+>> drivers/soc/fsl/qe/qmc.c:1194:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
+   drivers/soc/fsl/qe/qmc.c:1194:35: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1194:35: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
+   drivers/soc/fsl/qe/qmc.c:1197:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
+   drivers/soc/fsl/qe/qmc.c:1197:32: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1197:32: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
+   drivers/soc/fsl/qe/qmc.c:1242:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
+   drivers/soc/fsl/qe/qmc.c:1242:43: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1242:43: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
+>> drivers/soc/fsl/qe/qmc.c:1286:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] scc_regs @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1286:23: sparse:     expected void *[noderef] scc_regs
+   drivers/soc/fsl/qe/qmc.c:1286:23: sparse:     got void [noderef] __iomem *
+>> drivers/soc/fsl/qe/qmc.c:1295:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] scc_pram @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1295:23: sparse:     expected void *[noderef] scc_pram
+   drivers/soc/fsl/qe/qmc.c:1295:23: sparse:     got void [noderef] __iomem *
+>> drivers/soc/fsl/qe/qmc.c:1299:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] dpram @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1299:21: sparse:     expected void *[noderef] dpram
+   drivers/soc/fsl/qe/qmc.c:1299:21: sparse:     got void [noderef] __iomem *
+>> drivers/soc/fsl/qe/qmc.c:1335:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@     got void * @@
+   drivers/soc/fsl/qe/qmc.c:1335:23: sparse:     expected struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
+   drivers/soc/fsl/qe/qmc.c:1335:23: sparse:     got void *
+>> drivers/soc/fsl/qe/qmc.c:1342:19: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@
+   drivers/soc/fsl/qe/qmc.c:1342:19: sparse:     expected void *
+   drivers/soc/fsl/qe/qmc.c:1342:19: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
+>> drivers/soc/fsl/qe/qmc.c:1348:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned short [noderef] [usertype] __iomem *int_table @@     got void * @@
+   drivers/soc/fsl/qe/qmc.c:1348:24: sparse:     expected unsigned short [noderef] [usertype] __iomem *int_table
+   drivers/soc/fsl/qe/qmc.c:1348:24: sparse:     got void *
+>> drivers/soc/fsl/qe/qmc.c:1355:19: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned short [noderef] [usertype] __iomem *int_table @@
+   drivers/soc/fsl/qe/qmc.c:1355:19: sparse:     expected void *
+   drivers/soc/fsl/qe/qmc.c:1355:19: sparse:     got unsigned short [noderef] [usertype] __iomem *int_table
+>> drivers/soc/fsl/qe/qmc.c:290:33: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+>> drivers/soc/fsl/qe/qmc.c:290:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:292:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:292:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:295:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:295:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:298:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:298:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:304:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:304:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:336:28: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:336:28: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:343:22: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:343:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:344:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:344:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:346:36: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:353:22: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:353:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:356:31: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:356:31: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:391:28: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:391:28: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:396:44: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:402:30: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:402:30: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:416:36: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:416:36: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:443:28: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:443:28: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:450:22: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:450:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:451:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:451:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:453:36: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:460:22: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:460:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:466:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:466:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:468:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:468:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:469:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:469:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:507:28: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:507:28: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:512:44: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:518:39: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:518:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:519:30: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:519:30: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:535:36: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:535:36: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:619:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:619:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:621:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:621:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:622:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:622:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:640:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:640:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:643:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:643:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:672:36: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:672:36: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:673:30: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:673:30: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:675:44: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:679:17: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:684:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:685:32: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:685:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:684:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:685:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:703:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:703:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:707:36: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:707:36: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:708:30: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:708:30: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:710:44: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:714:17: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:719:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:720:32: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:720:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:719:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:720:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:723:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:723:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:724:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:724:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:912:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:912:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:922:37: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:922:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:927:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:927:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:932:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:932:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:933:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:933:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:934:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:934:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:935:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:935:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:953:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:953:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:954:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:954:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:966:37: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:966:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:975:37: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:975:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:980:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:980:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:982:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:982:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:987:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:987:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:988:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:988:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:992:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:992:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:993:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:993:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1041:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1041:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1061:9: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1061:25: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1073:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1073:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1074:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1074:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1078:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1078:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1079:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1079:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1080:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1080:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1081:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1081:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1082:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1082:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1084:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1084:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1085:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1085:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1089:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1089:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1094:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1094:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1095:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1095:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1096:29: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1096:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1101:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1101:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1150:37: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1150:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1155:37: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1155:37: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1223:53: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1223:53: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1225:53: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1225:53: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1226:45: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1226:45: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1251:27: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1251:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1252:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1252:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1287:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1287:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1288:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1288:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1296:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1296:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1297:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1297:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1300:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1300:20: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1301:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1301:32: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1324:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1324:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1328:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1328:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1344:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1344:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1358:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1358:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1359:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1359:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1362:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1362:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1364:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1364:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1365:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1365:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1367:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1367:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1368:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1368:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1374:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1374:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1386:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1386:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1387:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1387:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1396:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1396:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1404:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1404:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:253:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:253:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:253:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:253:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:253:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1411:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1411:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1423:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1423:23: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:253:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:253:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:253:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:253:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:253:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:248:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:1426:21: sparse: sparse: dereference of noderef expression
+>> drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1426:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+
+vim +663 drivers/soc/fsl/qe/tsa.c
+
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  642  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  643  static int tsa_probe(struct platform_device *pdev)
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  644  {
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  645  	struct device_node *np = pdev->dev.of_node;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  646  	struct resource *res;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  647  	struct tsa *tsa;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  648  	unsigned int i;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  649  	u32 val;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  650  	int ret;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  651  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  652  	tsa = devm_kzalloc(&pdev->dev, sizeof(*tsa), GFP_KERNEL);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  653  	if (!tsa)
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  654  		return -ENOMEM;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  655  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  656  	tsa->dev = &pdev->dev;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  657  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  658  	for (i = 0; i < ARRAY_SIZE(tsa->serials); i++)
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  659  		tsa->serials[i].id = i;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  660  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  661  	spin_lock_init(&tsa->lock);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  662  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17 @663  	tsa->si_regs = devm_platform_ioremap_resource_byname(pdev, "si_regs");
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  664  	if (IS_ERR(tsa->si_regs))
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  665  		return PTR_ERR(tsa->si_regs);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  666  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  667  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "si_ram");
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  668  	if (!res) {
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  669  		dev_err(tsa->dev, "si_ram resource missing\n");
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  670  		return -EINVAL;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  671  	}
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  672  	tsa->si_ram_sz = resource_size(res);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17 @673  	tsa->si_ram = devm_ioremap_resource(&pdev->dev, res);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  674  	if (IS_ERR(tsa->si_ram))
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  675  		return PTR_ERR(tsa->si_ram);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  676  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  677  	tsa_init_si_ram(tsa);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  678  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  679  	ret = tsa_of_parse_tdms(tsa, np);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  680  	if (ret)
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  681  		return ret;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  682  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  683  	/* Set SIMODE */
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  684  	val = 0;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  685  	if (tsa->tdm[0].is_enable)
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  686  		val |= TSA_SIMODE_TDMA(tsa->tdm[0].simode_tdm);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  687  	if (tsa->tdm[1].is_enable)
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  688  		val |= TSA_SIMODE_TDMB(tsa->tdm[1].simode_tdm);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  689  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  690  	tsa_clrsetbits32(tsa->si_regs + TSA_SIMODE,
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  691  			 TSA_SIMODE_TDMA(TSA_SIMODE_TDM_MASK) |
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  692  			 TSA_SIMODE_TDMB(TSA_SIMODE_TDM_MASK),
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  693  			 val);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  694  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  695  	/* Set SIGMR */
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  696  	val = (tsa->tdms == BIT(TSA_TDMA)) ?
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  697  		TSA_SIGMR_RDM_STATIC_TDMA : TSA_SIGMR_RDM_STATIC_TDMAB;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  698  	if (tsa->tdms & BIT(TSA_TDMA))
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  699  		val |= TSA_SIGMR_ENA;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  700  	if (tsa->tdms & BIT(TSA_TDMB))
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  701  		val |= TSA_SIGMR_ENB;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  702  	tsa_write8(tsa->si_regs + TSA_SIGMR, val);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  703  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  704  	platform_set_drvdata(pdev, tsa);
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  705  
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  706  	return 0;
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  707  }
+1d4ba0b81c1cf2 Herve Codina 2023-02-17  708  
+
+:::::: The code at line 663 was first introduced by commit
+:::::: 1d4ba0b81c1cf2bfc0c55658f53809846ae9de52 soc: fsl: cpm1: Add support for TSA
+
+:::::: TO: Herve Codina <herve.codina@bootlin.com>
+:::::: CC: Mark Brown <broonie@kernel.org>
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/ZXiU9ayVCslt3qiI@work/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
