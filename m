@@ -1,165 +1,224 @@
-Return-Path: <linux-kernel+bounces-2617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E74B8815F82
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:50:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC8A2815F85
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62B59B21B83
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:50:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63E9728285D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFE644396;
-	Sun, 17 Dec 2023 13:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4E54439F;
+	Sun, 17 Dec 2023 13:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EHw12kjq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X5LJdFJ/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDDA44373;
-	Sun, 17 Dec 2023 13:50:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58FF6C433C8;
-	Sun, 17 Dec 2023 13:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702821027;
-	bh=/CcuNmqN52zYvPRkUzjQtGuO/nnq5PUkRpKVWAUrwCQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EHw12kjqfyJ85oNK19fgeKkhrLzPr70n75sZmTed5fSHrcsEddvcjDFWhQ+FqBooK
-	 5/YY9glFS+MzDHgvXz9p5QHq7eiBPh3CmDWf6zsap1N5AxxEANwaGlo03FKJEFGZKu
-	 gq8E7Sk94Z1d3HsfEAtiuNIVwTLD7fZYeCm11ky2gMC2mmfe8HcN/84MAQfjjmI5DN
-	 jTET0cerEcVlU5KNMKzehjQE+m3aAYURM4WwYYdvMAQAM6BW6dbf3fojeRD40utbsX
-	 Rn5Rl1DVY42RS9rBYhH6uIxEEwgU8IicP20Yx2HhOvTZmJiuHN1lejYjn+FyI+SOtV
-	 UVMp6N8/UOHXg==
-Date: Sun, 17 Dec 2023 13:50:07 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Ceclan Dumitru <mitrutzceclan@gmail.com>
-Cc: David Lechner <dlechner@baylibre.com>, linus.walleij@linaro.org,
- brgl@bgdev.pl, andy@kernel.org, linux-gpio@vger.kernel.org, Lars-Peter
- Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Michael Walle <michael@walle.cc>, Andy Shevchenko
- <andy.shevchenko@gmail.com>, Arnd Bergmann <arnd@arndb.de>, ChiaEn Wu
- <chiaen_wu@richtek.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Leonard
- =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>, Mike Looijmans
- <mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>, Ceclan Dumitru <dumitru.ceclan@analog.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v8 1/2] dt-bindings: adc: add AD7173
-Message-ID: <20231217135007.3e5d959a@jic23-huawei>
-In-Reply-To: <a1f60bf6-5fb6-4814-b3b5-799fb8ffb847@gmail.com>
-References: <20231212104451.22522-1-mitrutzceclan@gmail.com>
-	<CAMknhBEfisaSbHhnnei=gT1HZvHNWHrJD3O2y4b_TikkH=v2Ag@mail.gmail.com>
-	<e4a9dde7-dca6-4862-bfb3-a93b879c9a1f@gmail.com>
-	<CAMknhBFQ56SwMvOni6UDqvaq8t0iydHcggiL0biUeLQ6OV1ONA@mail.gmail.com>
-	<a1f60bf6-5fb6-4814-b3b5-799fb8ffb847@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF99444398;
+	Sun, 17 Dec 2023 13:50:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c6736d10fso27574055e9.1;
+        Sun, 17 Dec 2023 05:50:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702821052; x=1703425852; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ICvtQdGfPaFWjFHYx5GmMKJ3nabe2JosWfeIvlfNizg=;
+        b=X5LJdFJ/c5RIBpBIXUWzggBXKcJJxVu+pFH8VYt8ljcUold8kNnASB/zSQZKitgRR2
+         27id93pEG9Gch2KMXJwB9HrzmS+pAFEFBRWq6d7lpGUjwZq7Es/6EkOWqi0ZFMYFt27g
+         5wQX6QpoBTlnhI+sRmoyGopKb5zcGAhYhkLg+VMqWhvsjA72B8l8KBODYD9yRIprv0+E
+         0rePJsr7FsDpTkiWxWn1KRaqmqn5wwux/vWXp58+cksztbUbhznA7qqLX2umcXu/Q4Qf
+         eYS/50gBTc9bo+7kv2vIUEN782aOKmdzIvFNaBJ1Bic0p80XHAgUiiNIcSUPfORgSCON
+         sUcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702821052; x=1703425852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ICvtQdGfPaFWjFHYx5GmMKJ3nabe2JosWfeIvlfNizg=;
+        b=Gc9nJQkwgxLSSe4Ru6zis5hWt9uOAqsZNps9LvamYi5fOa9IKDZ5E4VKD+LeS9Uxzn
+         Hol9FeSHdH5NaoAV8RgPymLxgni/Bf8JMWX1SQXexjeayYaH0JInzl4OLH+Cmjfd7VxX
+         UcVGcx8SZk6Jx6LA9Zu5K1Y7W6r0q0TAW5r7igqu3EXbcwjp287J1IrXMMqxjg06teV4
+         IA79V8Tpiua8+mChCxm4+Gv0raEY5xpMpXFL2lndJdcQaRpPJ8+AoZSxM2eoy5NpnWAr
+         7/mCpi2OKysu7QMkcJH0fgi4mNEMQRflYbpDPs/SkQqVchrn74wPXJ0wL5isxUl4uNcX
+         tWPw==
+X-Gm-Message-State: AOJu0Yw0+gjB+ji17fojbLP2w+6Dc08dTK5tqGJTigfbBGBfoIvx/Xww
+	3IkpIl+nL+fuJanMOl+clio=
+X-Google-Smtp-Source: AGHT+IHic1xpcdt6VSPIjMTyJqvegeP17Kyhl5kC32DwWbYTrOCh5a6a1pc20yCFd/ntgBtc5y9uUA==
+X-Received: by 2002:a05:600c:1384:b0:40c:521a:5d11 with SMTP id u4-20020a05600c138400b0040c521a5d11mr5104466wmf.39.1702821051594;
+        Sun, 17 Dec 2023 05:50:51 -0800 (PST)
+Received: from eichest-laptop ([2a02:168:af72:0:ba4e:4805:1a67:13c2])
+        by smtp.gmail.com with ESMTPSA id fa17-20020a05600c519100b0040c46719966sm28658569wmb.25.2023.12.17.05.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 05:50:51 -0800 (PST)
+Date: Sun, 17 Dec 2023 14:50:49 +0100
+From: Stefan Eichenberger <eichest@gmail.com>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: marvell-88q2xxx: add driver for the Marvell
+ 88Q2220 PHY
+Message-ID: <ZX78ucHcNyEatXLD@eichest-laptop>
+References: <20231215213102.35994-1-dima.fedrau@gmail.com>
+ <74d4b8f9-700e-45bc-af59-95a40a777b00@lunn.ch>
+ <20231216221151.GA143483@debian>
+ <28cc73bf-ed6d-49d8-b80b-4fbf5fa0442f@lunn.ch>
+ <20231217111538.GA3591@debian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231217111538.GA3591@debian>
 
-On Thu, 14 Dec 2023 19:03:28 +0200
-Ceclan Dumitru <mitrutzceclan@gmail.com> wrote:
+Hi Dimitri,
 
-> On 12/14/23 18:12, David Lechner wrote:
-> > On Thu, Dec 14, 2023 at 1:43=E2=80=AFPM Ceclan Dumitru <mitrutzceclan@g=
-mail.com> wrote: =20
-> >> On 12/12/23 17:09, David Lechner wrote: =20
-> >>> On Tue, Dec 12, 2023 at 11:45=E2=80=AFAM Dumitru Ceclan <mitrutzcecla=
-n@gmail.com> wrote: =20
->=20
-> >> ...
-> >> =20
-> >>>> +  interrupts:
-> >>>> +    maxItems: 1 =20
-> >>>
-> >>> Shouldn't this be 2? The datasheet says there is a "Data Output Ready"
-> >>> signal on the DOUT/RDY pin and an "Error Output" on the SYNC/ERROR
-> >>> pin. Although I could see how RDY could be considered part of the SPI
-> >>> bus. In any case, a description explaining what the interrupt is would
-> >>> be useful.
-> >>> =20
-> >>
-> >> I do not see how there could be 2 interrupts. DOUT/RDY is used as an
-> >> interrupt when waiting for a conversion to finalize.
-> >>
-> >> Sync and Error are sepparate pins, Sync(if enabled) works only as an
-> >> input that resets the modulator and the digital filter. =20
-> >=20
-> > I only looked at the AD7172-2 datasheet and pin 15 is labeled
-> > SYNC/ERROR. Maybe they are separate pins on other chips? =20
->=20
-> Yep, sorry, missed that. All other supported models have them separate.
+On Sun, Dec 17, 2023 at 12:15:38PM +0100, Dimitri Fedrau wrote:
+> Am Sun, Dec 17, 2023 at 10:22:54AM +0100 schrieb Andrew Lunn:
+> > > > > +	/* Set IEEE power down */
+> > > > > +	ret = phy_write_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1, 0x840);
+> > > > 
+> > > > 0x800 is MDIO_CTRL1_LPOWER. What is the other? It seems like a speed
+> > > > selection bit?
+> > > >
+> > > The other is MDIO_PMA_CTRL1_SPEED1000. Will fix this in V2.
+> > 
+> > It seems odd to set a speed, and power it down. But i guess you have
+> > blindly copied the reference code, so have no idea why?
+> >
+> I agree, absolutely no idea. I already asked the Marvell support for
+> any document describing the init sequence, but they couldn't help me.
+> So I have to stick to the reference code. At least I copied the comments
+> that were part of the init sequence, trying to give some meaning to it.
 
-=20
-> >  =20
-> >>
-> >> Error can be configured as input, output or ERROR output (OR between a=
-ll
-> >> internal error sources).
-> >>
-> >> Would this be alright
-> >>   interrupts:
-> >>
-> >>     description: Conversion completion interrupt.
-> >>                  Pin is shared with SPI DOUT.
-> >>     maxItems: 1 =20
-> >=20
-> > Since ERROR is an output, I would expect it to be an interrupt. The
-> > RDY output, on the other hand, would be wired to a SPI controller with
-> > the SPI_READY feature (I use the Linux flag name here because I'm not
-> > aware of a corresponding devicetree flag). So I don't think the RDY
-> > signal would be an interrupt.
-> >  =20
->=20
-> Error does not have the purpose to be an interrupt. The only interrupt
-> used from this chip is the one from the DOUT/~RDY pin. Sure, it is wired
-> to the SPI controller, but when you can't also receive interrupts on
-> that very same CPU pin an issue arises. So that pin is also wired to
-> another GPIO with interrupt support.
+I also tried to make the 88Q2221 work but didn't find the time yet to
+write a clean version yet. My last minimal patch looks as attached
+bellow.
 
-You've lost me.  It's a pin that has a state change when an error condition
-occurs.  Why not an interrupt?  Doesn't matter that the driver doesn't
-use this functionality. dt-bindings should be as comprehensive as possible.
-Given it's a multipurpose pin you'd also want to support it as a gpio to be
-complete alongside the other GPIOs.
+I think the main thing to make the PHY work is to call this
+sequence to set the master/slave detection threshold:
 
->=20
-> This is the same way that ad4130.yaml is written for example (with the
-> exception that ad4130 supports configuring where the interrupt is routed).
->=20
-> In regards to SPI_READY _BITUL(7) /* slave pulls low to pause */: the
-> ad_sigma_delta framework (if it can be called that) is written to expect
-> a pin interrupt, not to use SPI_READY controller feature.
+/* Set detection threshold slave master */
+phy_write_mmd(phydev, MDIO_MMD_AN, 0x8032, 0x2020);
+phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0x0a28);
+phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0x0c28);
 
-SPI_READY is supported by only a couple of controllers. I'm not even that
-sure exactly how it is defined and whether that lines up with this usecase.
-=46rom some old asci art. https://lore.kernel.org/all/1456747459-8559-1-git-s=
-end-email-linux@rempel-privat.de/
+Without this sequence the PHY does not work. I was also wondering as
+Andrew wrote why we write twice to the same register. My assumption is
+that 0x8032 is some kind of selector for a subregister while 0x8031 will
+set a 32 bit value. Unforunately, I also didn't get that information
+from Marvell and it is just a wild guess. Please also note that calling
+the sequence in the probe function (as I do it in the example below) is
+definitely wrong, it was just a quick and dirty test I did because I
+wanted to know if it is enough to call it only once.
 
-Flow control: Ready Sequence
-Master CS   |-----1\_______________________|
-Slave  FC   |--------2\____________________|
-DATA        |-----------3\_________________|
+Are you able to test everyting with the upstream kernel? I'm asking
+because I have to backport a lot of stuff to a downstream kernel 5.15
+from NXP to test the 88Q2221. 
 
-So you set master and then wait for a flow control pin (the ready signal) b=
-efore
-you can actually talk to the device.
+Further, are you able to verify that autonegotion works? Somehow for me
+this never really worked even when using the example sequence from
+Marvell.
 
-Here we are indicating data is ready to be be read out.
+Best regards,
+Stefan
 
-So I don't 'think' SPI_READY applies.
-
-Jonathan
-
-
->=20
-
+diff --git a/drivers/net/phy/marvell-88q2xxx.c b/drivers/net/phy/marvell-88q2xxx.c
+index 94a8c99b58da..15e82e8ff8f4 100644
+--- a/drivers/net/phy/marvell-88q2xxx.c
++++ b/drivers/net/phy/marvell-88q2xxx.c
+@@ -208,17 +214,26 @@ static int mv88q2xxxx_get_sqi(struct phy_device *phydev)
+ 
+ 		ret = ret >> 12;
+ 	} else {
+-		/* Read from vendor specific registers, they are not documented
+-		 * but can be found in the Software Initialization Guide. Only
+-		 * revisions >= A0 are supported.
+-		 */
+-		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, 0xFC5D, 0x00FF, 0x00AC);
+-		if (ret < 0)
+-			return ret;
++		if (phydev->drv->phy_id == MARVELL_PHY_ID_88Q2221) {
++			/* Read from vendor specific register, they can be
++			 * found in the sample source code of the Q222X API
++			 */
++			ret = phy_read_mmd(phydev, MDIO_MMD_PCS, 0xfcd9);
++			if (ret < 0)
++				return ret;
++		} else {
++			/* Read from vendor specific registers, they are not documented
++			 * but can be found in the Software Initialization Guide. Only
++			 * revisions >= A0 are supported.
++			 */
++			ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, 0xFC5D, 0x00FF, 0x00AC);
++			if (ret < 0)
++				return ret;
+ 
+-		ret = phy_read_mmd(phydev, MDIO_MMD_PCS, 0xfc88);
+-		if (ret < 0)
+-			return ret;
++			ret = phy_read_mmd(phydev, MDIO_MMD_PCS, 0xfc88);
++			if (ret < 0)
++				return ret;
++		}
+ 	}
+ 
+ 	return ret & 0x0F;
+@@ -229,6 +244,16 @@ static int mv88q2xxxx_get_sqi_max(struct phy_device *phydev)
+ 	return 15;
+ }
+ 
++static int mv88q2221_probe(struct phy_device *phydev)
++{
++	/* Set detection threshold slave master */
++	phy_write_mmd(phydev, MDIO_MMD_AN, 0x8032, 0x2020);
++	phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0x0a28);
++	phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0x0c28);
++
++	return 0;
++}
++
+ static struct phy_driver mv88q2xxx_driver[] = {
+ 	{
+ 		.phy_id			= MARVELL_PHY_ID_88Q2110,
+@@ -243,12 +268,27 @@ static struct phy_driver mv88q2xxx_driver[] = {
+ 		.get_sqi		= mv88q2xxxx_get_sqi,
+ 		.get_sqi_max		= mv88q2xxxx_get_sqi_max,
+ 	},
++	{
++		.phy_id			= MARVELL_PHY_ID_88Q2221,
++		.phy_id_mask		= MARVELL_PHY_ID_MASK,
++		.name			= "mv88q2221",
++		.get_features		= mv88q2xxx_get_features,
++		.config_aneg		= mv88q2xxx_config_aneg,
++		.config_init		= mv88q2xxx_config_init,
++		.read_status		= mv88q2xxx_read_status,
++		.soft_reset		= mv88q2xxx_soft_reset,
++		.set_loopback		= genphy_c45_loopback,
++		.get_sqi		= mv88q2xxxx_get_sqi,
++		.get_sqi_max		= mv88q2xxxx_get_sqi_max,
++		.probe			= mv88q2221_probe,
++	},
+ };
+ 
+ module_phy_driver(mv88q2xxx_driver);
+ 
+ static struct mdio_device_id __maybe_unused mv88q2xxx_tbl[] = {
+ 	{ MARVELL_PHY_ID_88Q2110, MARVELL_PHY_ID_MASK },
++	{ MARVELL_PHY_ID_88Q2221, MARVELL_PHY_ID_MASK },
+ 	{ /*sentinel*/ }
+ };
+ MODULE_DEVICE_TABLE(mdio, mv88q2xxx_tbl);
 
