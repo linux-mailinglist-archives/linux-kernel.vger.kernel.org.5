@@ -1,160 +1,143 @@
-Return-Path: <linux-kernel+bounces-2569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A22815EE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:14:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46391815EED
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:20:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C962C1C2132E
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:14:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01BA2282C37
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 12:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA0832C7A;
-	Sun, 17 Dec 2023 12:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEC332C80;
+	Sun, 17 Dec 2023 12:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQfyH7hN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M4CFEQ3k"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCD635267;
-	Sun, 17 Dec 2023 12:13:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F14EADB;
+	Sun, 17 Dec 2023 12:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40c38de1ee4so20769355e9.0;
-        Sun, 17 Dec 2023 04:13:49 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-551c03ae050so2162096a12.2;
+        Sun, 17 Dec 2023 04:20:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702815228; x=1703420028; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=JE7dOMH1nRocIYdSdGHxkcV4ltVmVneKSFcLQT234uE=;
-        b=TQfyH7hNSb24KCaYuwv1B97qW1UM13lWLdjldi6cesJ8IBE1q48o6UH4KSTlWmieoK
-         +rsOgpnCA5/JSlpNyGXm0nyGDRm+HClAu1wz1zAY6aiAMC+0X1xs9kJJDwZfinbvawNY
-         HirLbV+UKTF+6yUVtQMKq43dmvAFI0VuHwbgDYlS09r0H3okvtRN9VemWW1x16LNkiNN
-         WHhT6q4QjOdCg/G1HQ3Z0VaYDU831vlgNhmZVvRg4CIlt697+xGfuRjqxQBxc9ZKrYHK
-         S9m48yvqZimVZl7HkNyZIeqWgWe0MbltRC2GIigzE04Q9jX4a1/Ya2opub0ACweRHhxK
-         1dew==
+        d=gmail.com; s=20230601; t=1702815642; x=1703420442; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6xMyvQ0D0+nEZ9Gai87Uhvht57Iu3iXC8pPekH44If4=;
+        b=M4CFEQ3kVnOPO0sqWQWu+rNURTI2SFCcyN4fKjpIGstSQemT0lZJQi0BBA5GLP8ti7
+         t9qVrWBhkAkjUzi6+pN16FzGqoJjM4i66rFPp54IxzP1uKWvl0z0WLxKKULdnceUCU4W
+         K2+cmqx8ZnC5mqSOD1FtuMQaopgzgUh6FRBZ4TOsy4XbdqW19oeVCp6p38H+UekmfNia
+         VmKF9uaBOAeJCRmdfm9lq5K7TZcd5pFbR8JbodO3/e7eE7pbQFmsktav/vWAGG+G/59R
+         cZO+wQfdxgCCTxs4bBPb6b/JV3xozvO1+y4vN3T2QHmZIs+lNXFlRh/xNY+lHlJdrz5w
+         zLCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702815228; x=1703420028;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JE7dOMH1nRocIYdSdGHxkcV4ltVmVneKSFcLQT234uE=;
-        b=KgZQn7JgvNmDid2+KaOi6gorM2Zj5Gnqf36urWUK4EEbGYX7YUw5HM9nKXdJFhTdr2
-         dy+vjBR0qhW4nAFlU+CQf53FqHkn9NDvM6s8rk+AM/JLFZN5C0YONqPp11vHZB7Ti71P
-         lZseIfmpmk/5sOnepGlUmVvfJ9upz9MENFAQligOBh7Ysp5H/i76TNtOuMkPw0j8Fx7+
-         jQ+qtJ1uirvAidxXPEgzWO5q/yOTqA4cTlwFnPan7l6MGnVBABn/JRiCI+vo5nNMXkkH
-         3MXObX+X0nMzrUBgP2O6U2yjw9tR/3BvXuGFF6i941Mmss5+2EMq3uyAOuWDI0XjNtkZ
-         6x6g==
-X-Gm-Message-State: AOJu0YzA4z+p1G76EacwOx38qIEn1/4yBLWUiCd9ZhZPYfOtk8r71TJ0
-	ZBQPtRomSkjV8LmThPtqxh99Hwh1DL8=
-X-Google-Smtp-Source: AGHT+IEdbWMb886XiB+Q0uoh9ts9fkqR69ux7NW4Dy1aSAVyKaEw+WWmuwC6j6n3jhxkAszye6nNQw==
-X-Received: by 2002:a05:600c:2106:b0:40c:3270:ecb4 with SMTP id u6-20020a05600c210600b0040c3270ecb4mr6982773wml.181.1702815227847;
-        Sun, 17 Dec 2023 04:13:47 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id s13-20020a05600c384d00b004030e8ff964sm39747867wmr.34.2023.12.17.04.13.46
+        d=1e100.net; s=20230601; t=1702815642; x=1703420442;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6xMyvQ0D0+nEZ9Gai87Uhvht57Iu3iXC8pPekH44If4=;
+        b=I6HroWnXOYqZHNsq9KiwlseTd6j3tmNRiiZGBRTEcXktF+C3n8pTN7cmKV6K6X9R0s
+         aU31Oe98FYZrgGjn3HBaPkwb3GZ8OQgnJATVkROmeK9U1gWfSZ0JD1yykMk3JniYzbqg
+         aZjERxBsMuLg0hOMX8edvCCsopFsitwY9QhcvBnVeTL2U/U02rSjBe+jtZwQAQbh2n5B
+         i1DvSNAfUKEvqk62+6gWSHSTRPl2ARu0+Egxa+vs6WBHxEE2C3Szu1qOYWcRvmDtUixK
+         i+iuPbrBxEkYh4IZBzvxgWjUBUiY1KB9C8XZLA3ZHcGjKi6ImPwvIsalS/W6s184aevW
+         4YCA==
+X-Gm-Message-State: AOJu0YxC6dGm8Tknn0cfcv6iDLLRlDitiuBokKMfwBCxwC0AfYbW+3YH
+	cx0ISaKLqKAq6MtwCZ+nKA2EKmxGm8EqYQ==
+X-Google-Smtp-Source: AGHT+IF8tBF81mVrLJRXLBc0CJHYJ8+mpwFKXqaSPEhBWtum8EU0q3MnMciWOn80wXXHftsNScwoUg==
+X-Received: by 2002:a50:ccd0:0:b0:54b:f6f7:9c4d with SMTP id b16-20020a50ccd0000000b0054bf6f79c4dmr7435314edj.38.1702815642009;
+        Sun, 17 Dec 2023 04:20:42 -0800 (PST)
+Received: from localhost.localdomain (2a02-8388-0502-f480-6c32-186a-368b-d6a9.cable.dynamic.v6.surfer.at. [2a02:8388:502:f480:6c32:186a:368b:d6a9])
+        by smtp.gmail.com with ESMTPSA id es21-20020a056402381500b0055267663784sm3495621edb.11.2023.12.17.04.20.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 04:13:47 -0800 (PST)
-Message-ID: <657ee5fb.050a0220.37aa0.36a3@mx.google.com>
-X-Google-Original-Message-ID: <ZX7l-YA8gD_4SEqo@Ansuel-xps.>
-Date: Sun, 17 Dec 2023 13:13:45 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: kernel test robot <lkp@intel.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-leds@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] leds: trigger: netdev: display only supported
- link speed attribute
-References: <20231214122041.17439-1-ansuelsmth@gmail.com>
- <202312170606.NWH5SzQD-lkp@intel.com>
+        Sun, 17 Dec 2023 04:20:41 -0800 (PST)
+From: Christoph Winklhofer <cj.winklhofer@gmail.com>
+To: krzysztof.kozlowski@linaro.org,
+	robh+dt@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Christoph Winklhofer <cj.winklhofer@gmail.com>
+Subject: [PATCH 0/2] w1: add UART w1 bus driver
+Date: Sun, 17 Dec 2023 13:20:02 +0100
+Message-ID: <20231217122004.42795-1-cj.winklhofer@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202312170606.NWH5SzQD-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Sun, Dec 17, 2023 at 06:23:05AM +0800, kernel test robot wrote:
-> Hi Christian,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on lee-leds/for-leds-next]
-> [cannot apply to net-next/main net/main linus/master v6.7-rc5 next-20231215]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/docs-ABI-sysfs-class-led-trigger-netdev-Document-now-hidable-link_/20231214-202215
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git for-leds-next
-> patch link:    https://lore.kernel.org/r/20231214122041.17439-1-ansuelsmth%40gmail.com
-> patch subject: [PATCH v3 1/2] leds: trigger: netdev: display only supported link speed attribute
-> config: i386-randconfig-011-20231217 (https://download.01.org/0day-ci/archive/20231217/202312170606.NWH5SzQD-lkp@intel.com/config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231217/202312170606.NWH5SzQD-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312170606.NWH5SzQD-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
->    ld: drivers/leds/trigger/ledtrig-netdev.o: in function `get_device_state':
-> >> drivers/leds/trigger/ledtrig-netdev.c:230: undefined reference to `phy_speeds'
-> 
-> 
-> vim +230 drivers/leds/trigger/ledtrig-netdev.c
-> 
->    211	
->    212	static void get_device_state(struct led_netdev_data *trigger_data)
->    213	{
->    214		struct ethtool_link_ksettings cmd;
->    215		int speeds_num;
->    216	
->    217		trigger_data->carrier_link_up = netif_carrier_ok(trigger_data->net_dev);
->    218	
->    219		if (__ethtool_get_link_ksettings(trigger_data->net_dev, &cmd))
->    220			return;
->    221	
->    222		if (trigger_data->carrier_link_up) {
->    223			trigger_data->link_speed = cmd.base.speed;
->    224			trigger_data->duplex = cmd.base.duplex;
->    225		}
->    226	
->    227		/* Have a local copy of the link speed supported to not rtnl lock every time
->    228		 * Modes are refreshed on any change event to handle mode changes
->    229		 */
->  > 230		speeds_num = phy_speeds(trigger_data->supported_link_speeds,
->    231					ARRAY_SIZE(trigger_data->supported_link_speeds),
->    232					cmd.link_modes.supported);
->    233		trigger_data->supported_link_speeds_num = speeds_num;
->    234	}
->    235	
+Hello!
 
-Ugh didn't think that LEDs netdev trigger doesn't have a dependency on
-PHY...
+This patch set contains a driver for a 1-Wire bus over UART. The driver
+utilizes the UART interface via the Serial Device Bus to create the
+1-Wire timing patterns.
 
-Andrew any idea about this?
+It was tested on a "Raspberry Pi 3 Model B+" with a DS18B20 and on a
+"Variscite DART-6UL" with a DS18S20 temperature sensor.
 
-I can see 2 solution (or maybe 3???):
+Content:
+- Patch 1: device tree binding
+- Patch 2: driver and documentation
 
-- Add the dependency for PHY
-- Move phy_speeds net_utils.c (with the settings table moved there)
-- Implement a custom function in ledtrig-netdev.c
+The patch was created against the w1 subsytem tree (branch w1-next):
+  Link: https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-w1.git/
 
-It's sad since the phy_speed was just what we needed to implement this
-ins a ""clean way"".
+The checkpatch.pl script reported the following error - which I am not
+sure how to fix:
+  WARNING: added, moved or deleted file(s), does MAINTAINERS need
+  updating?
 
+The technical details for 1-Wire over UART are in the document:
+  Link: https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
+
+  In short, the UART peripheral must support full-duplex and operate in
+open-drain mode. The timing patterns are generated by a specific
+combination of baud-rate and transmitted byte, which corresponds to a
+1-Wire read bit, write bit or reset pulse.
+
+For instance the timing pattern for a 1-Wire reset and presence detect
+uses the baud-rate 9600, i.e. 104.2 us per bit. The transmitted byte
+0xf0 over UART (least significant bit first, start-bit low) sets the
+reset low time for 1-Wire to 521 us. A present 1-Wire device changes the
+received byte by pulling the line low, which is used by the driver to
+evaluate the result of the 1-Wire operation.
+
+Similar for a 1-Wire read bit or write bit, which uses the baud-rate
+115200, i.e. 8.7 us per bit. The transmitted byte 0x00 is used for a
+Write-0 operation and the byte 0xff for Read-0, Read-1 and Write-1.
+
+Hope the driver is helpful.
+
+Thanks,
+Christoph
+
+Christoph Winklhofer (2):
+  dt-bindings: w1: UART 1-wire bus
+  w1: add UART w1 bus driver
+
+ .../devicetree/bindings/w1/w1-uart.yaml       |  27 +++
+ Documentation/w1/masters/index.rst            |   1 +
+ Documentation/w1/masters/w1-uart.rst          |  48 +++++
+ drivers/w1/masters/Kconfig                    |  10 +
+ drivers/w1/masters/Makefile                   |   1 +
+ drivers/w1/masters/w1-uart.c                  | 189 ++++++++++++++++++
+ 6 files changed, 276 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/w1/w1-uart.yaml
+ create mode 100644 Documentation/w1/masters/w1-uart.rst
+ create mode 100644 drivers/w1/masters/w1-uart.c
+
+
+base-commit: efc19c44aa442197ddcbb157c6ca54a56eba8c4e
 -- 
-	Ansuel
+2.43.0
+
 
