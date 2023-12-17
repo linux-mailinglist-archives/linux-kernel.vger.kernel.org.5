@@ -1,132 +1,174 @@
-Return-Path: <linux-kernel+bounces-2456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC53D815D64
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 05:56:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68791815D69
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 06:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4273A1F222F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 04:56:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F86E1C21670
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 05:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321C415B3;
-	Sun, 17 Dec 2023 04:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF31E15BE;
+	Sun, 17 Dec 2023 05:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ScLsAVgl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mi/usC7l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500F7643;
-	Sun, 17 Dec 2023 04:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E22A40;
+	Sun, 17 Dec 2023 04:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5c6839373f8so1283006a12.0;
-        Sat, 16 Dec 2023 20:56:46 -0800 (PST)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-77f3159d822so157769485a.2;
+        Sat, 16 Dec 2023 20:59:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702789005; x=1703393805; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702789197; x=1703393997; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GIlO6BSBXPMCEu/D89Xxu5tjbOcoGhj9piMmi9W/enc=;
-        b=ScLsAVglt8U+jbCsW0SW4mxV5+qgds0IOTRIDqe49W+kglN7HqODKdhLNgnT29WRyJ
-         jQ4ZEL7j97eZ7/2acEw1QpIwxcGNBZmF8sqBJipWYpxqPNxyKiBDDF4zBHRhQO6XihUs
-         14hFNd46fFHmpbfb5kDGbHnbvea/oV9ign6Sw2EeK06GiRQa1Pqu0J5kxQME2inDhkFc
-         Pz8VteTh1aqXfO3g0pSRr28ephzcn619/+rewe57iLRamZxfIzkguGFlWjxG67MVYr7Z
-         tLdqx6xwovqzkOZh0wziR46EZRORx9u33+Bveb/M6Nibm7eSmnpqubuaz5KPnfn4CALe
-         MwUA==
+        bh=1+UltNrsyGWSVcT46lR5ejKknw3QMITEfIA00sFphM4=;
+        b=Mi/usC7lhKQluoYFi9oF63FIbqrEhrIG4c3R/pMFIDTEesgq4+N1haW7usWHbDr9nA
+         MgyNDmObZQlAPtaD16f7os21XtBkVEuVZF47slWHbWbniFiQmvYNkWlcK76HBlBpmphY
+         eMOJ9B4HJJw0QuUSK05nGeIfVdi4S+pbrJbiVpkZlXf7RZ88/q0gLDl+5tUOBRhlSPjd
+         6yJKCCiSOff3Yu9Uo6B6BvxnXhJYa3TqH7qnKIqQS0wp4HrBqHeGp2rxIsWOyS+vVcqr
+         wF1J6fUwpVcdTtxopQsK4YVf+85TdJ/bvMUaOpiYcMfNITzMSMNU8PoH9biRXrJqwZ8r
+         7UJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702789005; x=1703393805;
+        d=1e100.net; s=20230601; t=1702789197; x=1703393997;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GIlO6BSBXPMCEu/D89Xxu5tjbOcoGhj9piMmi9W/enc=;
-        b=FwfY1CKHNCUSxjr+I5uVb7rM0s87fYUdxWQhVRqmi2Z4hjfL3ckbuiWTiaX+lX+W5X
-         ulqz04g73XCdTL+8Csi2HYT1NUzW9OQRNl+JZyjL3D07KVNuvXwBWDzKsILOv1hW2JyA
-         JofsIGbo4VzlnvkvzgFxrgQfBlw9MEEyDHwJg5FZzSN0UhSIx0aviOrMHopiR/SjBIw1
-         qSpDWa7jCHizVJGj32Fjoh7ynFvdxHupM+yZeif6fAT4r4t8KTqIXfvdNq9KZ4XLz0Fh
-         1dEc48txv0GMXqmqNzOv0D0LMDhod66ZXf9HaF3AsfQ4jgSkL7m5hUgoTo42qqb1oSGs
-         VTdA==
-X-Gm-Message-State: AOJu0YytgMYXPLi3Bbfus263ocBfGCtQnTX7ebof/hDXrAJ63KlPqLpf
-	+aLnQHreMsz6jrdLhy87xYY=
-X-Google-Smtp-Source: AGHT+IEadLchqeaBK4f6Cs9ojVhRzTESzHTfrIXVC+gwCJT6QHFqTaioPcFujG3pUELCaNNUWLuS3A==
-X-Received: by 2002:a05:6a20:158b:b0:18f:c3c8:effb with SMTP id h11-20020a056a20158b00b0018fc3c8effbmr18937858pzj.21.1702789005501;
-        Sat, 16 Dec 2023 20:56:45 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id d8-20020a056a00198800b006cee656cb35sm14665800pfl.156.2023.12.16.20.56.44
+        bh=1+UltNrsyGWSVcT46lR5ejKknw3QMITEfIA00sFphM4=;
+        b=uYZbUViZKD3FFQYYZE1CRw8cWDR0n3kOoDndYjD23Yov7BwWiI2LIoXLQJ435syNUq
+         zI79Q43QzB6o9wVAuamBSvxQAxqB879g79KgRuJnIIw+A1K5Ou3U/sz3Z8Xn6EsAh5Bc
+         /vO/ZEjSiICvi2qJzikAFRbZhsnjz6pvLUSwuyqIQ0F13ZLqdUs+X4/7f/0EkMFkzylP
+         0aF7sXePT5kz79YgEUFnOX6GazfKDKZlL5Ylf+eNDE739gu+MQBty7xvPifEiFnXy4uE
+         k4OzOC+kea2EAYzTCbuAA1v5q53Ue97ASO1NCx+zu+bDca0VMeZelypehSpskRXTCtKb
+         /l4w==
+X-Gm-Message-State: AOJu0Yzuium0iBSr0/+nJD5h+T6HesBN7Mw3cq4JNv2ZG3Viuvqq4rhk
+	ntMT/Ne6ypszwExn93ltpISwvLhcq+3OsQ==
+X-Google-Smtp-Source: AGHT+IFKJJbsIK9fuyNGgNZuSaHKM+ohjM8BhwnIAryW0TJHEnQCLhkedKn1UdldO2ou4tQIup8nsw==
+X-Received: by 2002:a05:620a:4591:b0:77e:fba3:58e2 with SMTP id bp17-20020a05620a459100b0077efba358e2mr18292087qkb.115.1702789197601;
+        Sat, 16 Dec 2023 20:59:57 -0800 (PST)
+Received: from abdel ([174.95.13.129])
+        by smtp.gmail.com with ESMTPSA id m1-20020ae9e701000000b007759a81d88esm7217485qka.50.2023.12.16.20.59.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 20:56:44 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 363B2102106F4; Sun, 17 Dec 2023 11:56:40 +0700 (WIB)
-Date: Sun, 17 Dec 2023 11:56:39 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Ohad Ben Cohen <ohad@wizery.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux RPC <linux-remoteproc@vger.kernel.org>,
-	Linux OMAP <linux-omap@vger.kernel.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] MAINTAINERS: Remove Ohad Ben-Cohen from hwspinlock
- subsystem
-Message-ID: <ZX5_h_hE7PLedYye@archie.me>
-References: <20231216111017.17624-2-bagasdotme@gmail.com>
- <CAK=WgbZcM8qEm6EOT2FFLNLoJC986UYpjEWK2O6-js0P=4No4w@mail.gmail.com>
+        Sat, 16 Dec 2023 20:59:57 -0800 (PST)
+Date: Sat, 16 Dec 2023 23:59:46 -0500
+From: Abdel Alkuor <alkuor@gmail.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/2] hwmon: Add AMS AS6200 temperature sensor
+Message-ID: <ZX6AQg1vz/Zz6JeG@abdel>
+References: <149032e99136a9fe47c3533b57a71092646e497d.1702744180.git.alkuor@gmail.com>
+ <63e352150ed51eefce90ca4058af5459730174b2.1702744180.git.alkuor@gmail.com>
+ <aa93010a-7ab0-4b9d-bb5d-25ea15b81120@roeck-us.net>
+ <ZX4frjGqOGb4zMmx@abdel>
+ <c606c40b-8571-4618-827a-555ceab3ae74@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RwfsyGJJCk9Gbjoj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK=WgbZcM8qEm6EOT2FFLNLoJC986UYpjEWK2O6-js0P=4No4w@mail.gmail.com>
+In-Reply-To: <c606c40b-8571-4618-827a-555ceab3ae74@roeck-us.net>
 
+On Sat, Dec 16, 2023 at 05:40:35PM -0800, Guenter Roeck wrote:
+> On 12/16/23 14:07, Abdel Alkuor wrote:
+> > On Sat, Dec 16, 2023 at 10:46:53AM -0800, Guenter Roeck wrote:
+> > > On 12/16/23 08:39, Abdel Alkuor wrote:
+> > Should I use tmp112 params for as6200?
+> > 
+> 
+> Sure, or just add a separate entry for as6200.
+>
+I think some modifications need to be done regarding setting the default
+configuration for chips with config reg of 16 bits.
 
---RwfsyGJJCk9Gbjoj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently, tmp112 set_mask and clr_mask look like this
 
-On Sat, Dec 16, 2023 at 08:59:50PM +0200, Ohad Ben Cohen wrote:
-> Hi Bagas,
->=20
-> On Sat, Dec 16, 2023 at 1:10=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.c=
-om> wrote:
-> > --- a/CREDITS
-> > +++ b/CREDITS
-> > @@ -323,6 +323,7 @@ N: Ohad Ben Cohen
-> >  E: ohad@wizery.com
-> >  D: Remote Processor (remoteproc) subsystem
-> >  D: Remote Processor Messaging (rpmsg) subsystem
-> > +D: Hardware spinlock (hwspinlock) subsystem
->=20
-> Please also add:
->=20
-> D: OMAP hwspinlock driver
-> D: OMAP remoteproc driver
->=20
+   [tmp112] = {
+   	 .set_mask = 3 << 5,	/* 8 samples / second */
+   	 .clr_mask = 1 << 7,	/* no one-shot mode*/
+   	 ...
+   }
 
-OK, will do in v2.
+and in probe function, we are using i2c_smbus_read_byte_data which
+basically reads byte 1 of tmp112 config reg and in lm75_write_config
+it writes byte 1 of tmp112 config reg. Now based on tmp112 set_mask,
+we want to set the sample rate but we actually setting R0 and R1 instead.
+According to tmp112 datasheet on pg. 16, byte 1 is written first then
+byte 2, where byte 2 has the conversion rate at bit 6 and 7 (CR0/CR1).
 
-Thanks.
+tmp112 datasheet: https://www.ti.com/lit/ds/symlink/tmp112.pdf?ts=1702713491401&ref_url=https%253A%252F%252Fwww.google.com%252F
 
---=20
-An old man doll... just what I always wanted! - Clara
+Now, to accommodate 16 bit config register read/write, something along these lines can
+be done:
+- In struct lm75_params,
+  - change set_mask and clr_mask from u8 to u16 
+  - Add config reg two bytes size flag
+- Use the proper function to read the config reg based on config reg size i.e
+  For one byte config reg, use i2c_smbus_read_byte_data, and for 2 bytes
+  config reg, use regmap_read.
 
---RwfsyGJJCk9Gbjoj
-Content-Type: application/pgp-signature; name="signature.asc"
+  static int lm75_probe(struct i2c_client *client)
+  {
+   	...
+	if (data->params->config_reg_16bits)
+  		status = regmap_read(client, LM75_REG_CONF, &regval);
+		if (status < 0) {
+			dev_dbg(dev, "Can't read config? %d\n", status);
+			return status;
+		}
+		data->orig_conf = regval;
+		data->current_conf = regval;
+	} else {
+  		status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
+		if (status < 0) {
+			dev_dbg(dev, "Can't read config? %d\n", status);
+			return status;
+		}
+		data->orig_conf = status;
+		data->current_conf = status;
+	}
+	...
+   }
 
------BEGIN PGP SIGNATURE-----
+   static int lm75_write_config(struct lm75_data *data, u16 set_mask,
+   			     u16 clr_mask)
+   {
+     
+     if (data->params->config_reg_16bits)
+     	clr_mask |= LM75_SHUTDOWN << 8;
+     else
+     	clr_mask |= LM75_SHUTDOWN;
+     ... 
+     	if (data->params->config_reg_16bits)
+     		err = regmap_write(data->regmap, LM75_REG_CONF, value);
+     	else
+     		err = i2c_smbus_write_byte_data(data->client,
+     			       			LM75_REG_CONF,
+     						value);
+     ...
+   }
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZX5/gwAKCRD2uYlJVVFO
-oyLpAP9wlT8tloZGb1zyitMjaC7tRYzOvw5dQyDZeVyelxez9QEA5eeeUmBFtLD8
-2TywiWXg14qMNWKnBRNbIAFr4hYcYwU=
-=evH6
------END PGP SIGNATURE-----
+Based on that, the new tmp112 set_mask and clr_mask would look like this instead,
+  [tmp112] = {
+  	.set_mask = 3 << 6,	/* 8 samples / second */
+  	.clr_mask = 1 << 15,	/* no one-shot mode*/
+	.config_reg_16bits = 1,
+  	...
+  }
 
---RwfsyGJJCk9Gbjoj--
+Thanks,
+Abdel
 
