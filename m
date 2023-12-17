@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-2533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E684815E88
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:32:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 256DE815E89
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 11:33:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BC8C1C2122C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 10:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFA741F2216B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 10:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF99C111B5;
-	Sun, 17 Dec 2023 10:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E9612E7D;
+	Sun, 17 Dec 2023 10:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="EO4DA1b2";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yWh4dFAt"
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="OuHjnjhi";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="S9rUBTE4"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D731E1118B
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 10:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC8111CA7
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 10:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id DDB6B5C0124;
-	Sun, 17 Dec 2023 05:30:29 -0500 (EST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 783955C0125;
+	Sun, 17 Dec 2023 05:30:31 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sun, 17 Dec 2023 05:30:29 -0500
+  by compute1.internal (MEProxy); Sun, 17 Dec 2023 05:30:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
 	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
 	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1702809029; x=
-	1702895429; bh=GNxJtnuCREIc3LKzjvgp8+1jNOAQR7t6+8ZOIjGQVww=; b=E
-	O4DA1b28hTv8vuM4/sfmjKgMAmMuWZrqriu/6NQl9JMM5QC+Aszgzs6m+lldEYBx
-	m5jUtQBlX109BSNbB2vKL8PWSpRoKc/QdtFNNl3P1SatbZaiAB7d9/eTejJr54WT
-	ZHlYcCt265eUmfwTSELEDlx3qqe55yBfmEnoqNSu/QM3j5Ix24G7iFo1XKOTIO1R
-	+FVRGBCpbT3PU7d2SwY+FNQKzYOd1uh35SQ3UGnJ8TAtA1h0P8nvo7HksbY3VpTi
-	5w3L1BGaWu4sevgVW7nF4/kT/fKhGkHuhHxwgu5oNvAWhyWRzVx8MddzAwhkEfJf
-	xuqq+ugOhciCWpdsF3xaQ==
+	:reply-to:subject:subject:to:to; s=fm2; t=1702809031; x=
+	1702895431; bh=GNxJtnuCREIc3LKzjvgp8+1jNOAQR7t6+8ZOIjGQVww=; b=O
+	uHjnjhi0jaHqKYj1X++SCg0PM+W9vd9wJmjYUN5XX87JUwnDzPLmkU9wxzhubLLu
+	oML5gYlSlIGgkzftVYIT/rJMI/V2rYr/FyK9OdmdNqoGQrl3lMBSekFlSRQXIYBs
+	csOyzmg+ZS9nC94Iv8ERLX4bcdNV1idhwiyDoMBWJqJ8SnAaj+ygmjdV9oJH9ZRJ
+	gd9NyYb4MU7UEDUCiRG9EsEh+y46UxhS7KQns5tx3XVhHhzqhcvcgpHaOMjnIei7
+	sXJ2XEIFe+N+3vbt3qY4JOS5woqQKU4EvJ76n07hUV+1t6pTBnAQvCu/dqzlaeVw
+	7gbMP1+dsOv2s6IPDM1XQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702809029; x=
-	1702895429; bh=GNxJtnuCREIc3LKzjvgp8+1jNOAQR7t6+8ZOIjGQVww=; b=y
-	Wh4dFAtNDIymNi8RauPDjeCH6rnCALqBmJE+ydH7D4LPZuQuI/OD3Yhqrjs9afSd
-	2h+XE9SxC51Yr1HUomOrvTquFKawgjzrfZyh5qmfNzFG+ZqHQ06ciPZw/uXwT47B
-	tso1Oyx6oHJlvi2WvgzmioryQwpADJCiM1xiG3h7W03iVZC8LWEb5qFKSj58aJ4C
-	wbSrdX/g8GWwcA82ekzIx/NP5idKnXgQB6q9ILS2WBDOH1CYoGh6X6Ddfu1DK70u
-	X16wb4jiQjA9mf0p1/Q9dzEeJjS/rHZeSEkQfW9UM/OEjhZsNtXdymqtJrw6pHWI
-	0wWbP73aIo57hGQcgbK+Q==
-X-ME-Sender: <xms:xc1-ZSvaIljZNAjFN4HaDurIGA-n9HwsHfQCXUiMi28w9bae2HSxWg>
-    <xme:xc1-ZXeic4hJFsRlNoY8XJjRxCYxjq_Qtle3_D5tQVp_Qa1hz20O_YUt7tAZhEk1M
-    MfPCgFc0cWwCVBItB4>
-X-ME-Received: <xmr:xc1-ZdxuR-wSnkk9yFJKhfcs940lVuv723C5aE4LgqVG8OqLM_TabU1utWd971Ntz0I8_TvRQZeegK-Yod2CwHPg_eq2uOprAoW1a31rEwasDzU>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702809031; x=
+	1702895431; bh=GNxJtnuCREIc3LKzjvgp8+1jNOAQR7t6+8ZOIjGQVww=; b=S
+	9rUBTE4Ri6Ccm+RtAKvzgTfQqVnaPLoaobNM3jrvWbmXl6hXiEk5dDFH8TbnUmHf
+	P3UolBM9AWABQvSgqVP++zpvRNXlG18w+ugcbFWRWybHqdCI34xrX2ut5dZ5L4/e
+	6L9FtlTxpWP+ViWcouR8XnO1Z3+QeTMfv2SBA2NEXJ9aGzIAALUKrQWP9yLKc+k7
+	7codyjuszBI5JlojiN2gDZ5P6D93Lg/ru1SBBGYyYo3Ak1rZAWuQE11LnBgkDJvh
+	d0bNyWfUOfsHun2HoWbdWT4eITNqdgmTw19+F7HPGrWQfgBmyYU308UX8h3Roo9G
+	J0pQptyboMcciwZUhyH5Q==
+X-ME-Sender: <xms:x81-ZRmhcmgluIQVuRNXzfKP_Jqd58nPBu_78XfF0kCT8gDdxq_sHA>
+    <xme:x81-Zc0pje4rPbwfiuOsqn0T3FHqWZ1jjXn9-HsB_eUeEwi6dwY8-EzvudCyQt-DC
+    NDwEXiBaQT0nbASmBc>
+X-ME-Received: <xmr:x81-ZXpSBawnCM8U8Jk_lcZX1gD2dynlBUBlutlE4QfLa_zAx9B0xWkJ9yfo4yBTHeL-2ePFw8p7x3ve9pQ57XKRyLFo6EnKYtAxjsrgeMBmLHY>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtiedgudehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
@@ -64,20 +64,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtiedgudehucetufdoteggod
     euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
     vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
     hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:xc1-ZdNHtweWftRuwm4nl58gBGSzT6zYjYk1G89yOsxNgAF50YU-HQ>
-    <xmx:xc1-ZS_rWGAIh5465vPpUjJLnfbBXYKvI_Iyi8MbwFYu2FmDMr7W-A>
-    <xmx:xc1-ZVX5Yvv5QFU6MI4isJ8VucguY2eRqRPsiaGgAxjf3SndqEuzYw>
-    <xmx:xc1-ZYlaEl4tuXcwMDtHXIGekdYXMuWHiZAosFwohbs-Y_4oI0_e3w>
+X-ME-Proxy: <xmx:x81-ZRkmuR-qlJ8NJJLnhalG9ELl5JCwJ7XMxlWsB65qdRWHnm3Wug>
+    <xmx:x81-Zf1yX-Pe0PgRgyCqnEBkiN8Kzf3x_3bt2qToDm1vtHdncRFLRQ>
+    <xmx:x81-ZQvgFXnNskG5GOh3CjGl7HUzjIMBd6Cz1uttd4fg6uRzY33UIA>
+    <xmx:x81-ZY97ezlF-h5Q2QffM2QH9tMeYXEKCG9jEdUvDdQFhPT1CI3TVg>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 17 Dec 2023 05:30:28 -0500 (EST)
+ 17 Dec 2023 05:30:30 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: linux1394-devel@lists.sourceforge.net,
 	linux-kernel@vger.kernel.org
 Cc: adamg@pobox.com
-Subject: [RFC PATCH 8/8] firewire: core: change modalias of unit device and loss of backward compatibility
-Date: Sun, 17 Dec 2023 19:30:11 +0900
-Message-Id: <20231217103012.41273-9-o-takashi@sakamocchi.jp>
+Subject: [RFC PATCH 8/8] firewire: core: change modalias of unit device with backward incompatibility
+Date: Sun, 17 Dec 2023 19:30:12 +0900
+Message-Id: <20231217103012.41273-10-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231217103012.41273-1-o-takashi@sakamocchi.jp>
 References: <20231217103012.41273-1-o-takashi@sakamocchi.jp>
