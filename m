@@ -1,299 +1,170 @@
-Return-Path: <linux-kernel+bounces-2852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8AFA8162D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:21:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D528162D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F084B22ACB
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:21:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD2321F215D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4C34B155;
-	Sun, 17 Dec 2023 22:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8020344C75;
+	Sun, 17 Dec 2023 22:32:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GfKaHtAp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C27349F98;
-	Sun, 17 Dec 2023 22:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rEzUf-0001dI-1w;
-	Sun, 17 Dec 2023 22:20:18 +0000
-Date: Sun, 17 Dec 2023 22:20:16 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DCD1E49D;
+	Sun, 17 Dec 2023 22:32:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43FC0C433C7;
+	Sun, 17 Dec 2023 22:32:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702852356;
+	bh=N3sSswueORYzvAOU+uyz4bjbbUS1XZg7OxyIMbEBeiQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GfKaHtApHCxP6V6JQqphAN0TMo7tzLbkXADzl0G1lO+c1cALVDk++1HfXdKjRI0zw
+	 rwiacjVKaP4wRPHE0INCBxFEw10zFvvYHqutW99JUkSqISd0yajsqDFSqWe3jwivSN
+	 gRdmFT/tK15KuKtdKwa95hARjELWAfbnq9yoiGOcpzsUO5HjYzS4CbFX5zf5hfvMSj
+	 UpN6gjrHtJmtf5t+rIASIFzupBi+HaKGa0EgfWO8EhY0x/r3Kvrkco44vWhQCMciy0
+	 iFtED/2gdJXF/8s7Hf/XNyEIyXvUwY3GiSV+xjFQdxfQAMqEiKLcxnqQdVxbQGT5/h
+	 arY5fm+i3RzmA==
+Date: Sun, 17 Dec 2023 22:32:30 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Javier Martinez Canillas <javierm@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh@kernel.org>,
+	Peter Robinson <pbrobinson@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Conor Dooley <conor+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 7/7] mtd: ubi: provide NVMEM layer over UBI volumes
-Message-ID: <15382021bef544111e9544236d125e3621dc4b42.1702850093.git.daniel@makrotopia.org>
-References: <cover.1702850093.git.daniel@makrotopia.org>
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/2] dt-bindings: display: Add SSD133x OLED controllers
+Message-ID: <20231217-catcall-turbulent-0a4072eaba43@spud>
+References: <20231217100741.1943932-1-javierm@redhat.com>
+ <20231217100741.1943932-2-javierm@redhat.com>
+ <20231217-bacteria-amusable-77efb05770a4@spud>
+ <87fs00ms4b.fsf@minerva.mail-host-address-is-not-set>
+ <20231217-hunk-cross-4bf51740957c@spud>
+ <87cyv4mqvs.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TC9NmRtTLpYSAbHx"
+Content-Disposition: inline
+In-Reply-To: <87cyv4mqvs.fsf@minerva.mail-host-address-is-not-set>
+
+
+--TC9NmRtTLpYSAbHx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1702850093.git.daniel@makrotopia.org>
+Content-Transfer-Encoding: quoted-printable
 
-In an ideal world we would like UBI to be used where ever possible on a
-NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
-is possible to achieve an (almost-)all-UBI flash layout. Hence the need
-for a way to also use UBI volumes to store board-level constants, such
-as MAC addresses and calibration data of wireless interfaces.
+On Sun, Dec 17, 2023 at 11:00:07PM +0100, Javier Martinez Canillas wrote:
+> Conor Dooley <conor@kernel.org> writes:
+>=20
+> Hello Conor,
+>=20
+> > On Sun, Dec 17, 2023 at 10:33:24PM +0100, Javier Martinez Canillas wrot=
+e:
+>=20
+> [...]
+>=20
+> >> >> +    then:
+> >> >> +      properties:
+> >> >> +        width:
+> >> >> +          default: 96
+> >> >> +        height:
+> >> >> +          default: 64
+> >> >
+> >> > Do you envisage a rake of devices that are going to end up in this
+> >> > binding? Otherwise, why not unconditionally set the constraints?
+> >> >
+> >>=20
+> >> Because these are only for the default width and height, there can be
+> >> panels using the same controller but that have a different resolution.
+> >>=20
+> >> For example, there are panels using the SSD1306 controller that have
+> >> 128x32 [0], 64x32 [1] or 128x64 [2] resolutions.
+> >
+> > This, as you know, does not matter here.
+> >
+>=20
+> Are you sure? What I tried to say is that the SSD133x are just OLED
+> controllers and manufacturers use those chips to attach a panel that
+> has a certain resolution.
+>=20
+> While it makes sense to use all the supported width and height, some
+> manufacturers chose to have a smaller panel instead (I used SSD1306
+> as an example because I knew about these but the same might be true
+> for let's say SSD1331).
+>=20
+> Or saying another way, are you sure that every manufacturer selling
+> RGB OLED panels using the SSD1331 chip will use the default resolution
+> and users won't have to set a custom width and height ?
 
-Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
-providers. Allow UBI devices to have a "volumes" firmware subnode with
-volumes which may be compatible with "nvmem-cells".
-Access to UBI volumes via the NVMEM interface at this point is
-read-only, and it is slow, opening and closing the UBI volume for each
-access due to limitations of the NVMEM provider API.
+That's not at all what I was saying. I just meant unconditionally set
+the constraints on the property (in this case the default) since you
+only have one compatible. Not unconditionally set the height and width.
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/Kconfig  |  12 +++
- drivers/mtd/ubi/Makefile |   1 +
- drivers/mtd/ubi/nvmem.c  | 188 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 201 insertions(+)
- create mode 100644 drivers/mtd/ubi/nvmem.c
+Apologies if if that was unclear.
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 2ed77b7b3fcb5..45d939bbfa853 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
- 
- 	   If in doubt, say "N".
- 
-+config MTD_UBI_NVMEM
-+	tristate "UBI virtual NVMEM"
-+	default n
-+	depends on NVMEM
-+	help
-+	   This option enabled an additional driver exposing UBI volumes as NVMEM
-+	   providers, intended for platforms where UBI is part of the firmware
-+	   specification and used to store also e.g. MAC addresses or board-
-+	   specific Wi-Fi calibration data.
-+
-+	   If in doubt, say "N".
-+
- endif # MTD_UBI
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index 543673605ca72..4b51aaf00d1a2 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
- ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
- 
- obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
-+obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-new file mode 100644
-index 0000000000000..b7a93c495d172
---- /dev/null
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ */
-+
-+/* UBI NVMEM provider */
-+#include "ubi.h"
-+#include <linux/nvmem-provider.h>
-+#include <asm/div64.h>
-+
-+/* List of all NVMEM devices */
-+static LIST_HEAD(nvmem_devices);
-+static DEFINE_MUTEX(devices_mutex);
-+
-+struct ubi_nvmem {
-+	struct nvmem_device *nvmem;
-+	int ubi_num;
-+	int vol_id;
-+	int usable_leb_size;
-+	struct list_head list;
-+};
-+
-+static int ubi_nvmem_reg_read(void *priv, unsigned int from,
-+			      void *val, size_t bytes)
-+{
-+	int err = 0, lnum = from, offs, bytes_left = bytes, to_read;
-+	struct ubi_nvmem *unv = priv;
-+	struct ubi_volume_desc *desc;
-+
-+	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	offs = do_div(lnum, unv->usable_leb_size);
-+	while (bytes_left) {
-+		to_read = unv->usable_leb_size - offs;
-+
-+		if (to_read > bytes_left)
-+			to_read = bytes_left;
-+
-+		err = ubi_read(desc, lnum, val, offs, to_read);
-+		if (err)
-+			break;
-+
-+		lnum += 1;
-+		offs = 0;
-+		bytes_left -= to_read;
-+		val += to_read;
-+	}
-+	ubi_close_volume(desc);
-+
-+	if (err)
-+		return err;
-+
-+	return bytes_left == 0 ? 0 : -EIO;
-+}
-+
-+static int ubi_nvmem_add(struct ubi_volume_info *vi)
-+{
-+	struct device_node *np = dev_of_node(vi->dev);
-+	struct nvmem_config config = {};
-+	struct ubi_nvmem *unv;
-+	int ret;
-+
-+	if (!np)
-+		return 0;
-+
-+	if (!of_get_child_by_name(np, "nvmem-layout"))
-+		return 0;
-+
-+	if (WARN_ON_ONCE(vi->usable_leb_size <= 0) ||
-+	    WARN_ON_ONCE(vi->size <= 0))
-+		return -EINVAL;
-+
-+	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
-+	if (!unv)
-+		return -ENOMEM;
-+
-+	config.id = NVMEM_DEVID_NONE;
-+	config.dev = vi->dev;
-+	config.name = dev_name(vi->dev);
-+	config.owner = THIS_MODULE;
-+	config.priv = unv;
-+	config.reg_read = ubi_nvmem_reg_read;
-+	config.size = vi->usable_leb_size * vi->size;
-+	config.word_size = 1;
-+	config.stride = 1;
-+	config.read_only = true;
-+	config.root_only = true;
-+	config.ignore_wp = true;
-+	config.of_node = np;
-+
-+	unv->ubi_num = vi->ubi_num;
-+	unv->vol_id = vi->vol_id;
-+	unv->usable_leb_size = vi->usable_leb_size;
-+	unv->nvmem = nvmem_register(&config);
-+	if (IS_ERR(unv->nvmem)) {
-+		ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
-+				    "Failed to register NVMEM device\n");
-+		kfree(unv);
-+		return ret;
-+	}
-+
-+	mutex_lock(&devices_mutex);
-+	list_add_tail(&unv->list, &nvmem_devices);
-+	mutex_unlock(&devices_mutex);
-+
-+	return 0;
-+}
-+
-+static void ubi_nvmem_remove(struct ubi_volume_info *vi)
-+{
-+	struct ubi_nvmem *unv_c, *unv = NULL;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry(unv_c, &nvmem_devices, list)
-+		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
-+			unv = unv_c;
-+			break;
-+		}
-+
-+	if (!unv) {
-+		mutex_unlock(&devices_mutex);
-+		return;
-+	}
-+
-+	list_del(&unv->list);
-+	mutex_unlock(&devices_mutex);
-+	nvmem_unregister(unv->nvmem);
-+	kfree(unv);
-+}
-+
-+/**
-+ * nvmem_notify - UBI notification handler.
-+ * @nb: registered notifier block
-+ * @l: notification type
-+ * @ns_ptr: pointer to the &struct ubi_notification object
-+ */
-+static int nvmem_notify(struct notifier_block *nb, unsigned long l,
-+			 void *ns_ptr)
-+{
-+	struct ubi_notification *nt = ns_ptr;
-+
-+	switch (l) {
-+	case UBI_VOLUME_RESIZED:
-+		ubi_nvmem_remove(&nt->vi);
-+		fallthrough;
-+	case UBI_VOLUME_ADDED:
-+		ubi_nvmem_add(&nt->vi);
-+		break;
-+	case UBI_VOLUME_SHUTDOWN:
-+		ubi_nvmem_remove(&nt->vi);
-+		break;
-+	default:
-+		break;
-+	}
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block nvmem_notifier = {
-+	.notifier_call = nvmem_notify,
-+};
-+
-+static int __init ubi_nvmem_init(void)
-+{
-+	return ubi_register_volume_notifier(&nvmem_notifier, 0);
-+}
-+
-+static void __exit ubi_nvmem_exit(void)
-+{
-+	struct ubi_nvmem *unv, *tmp;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
-+		nvmem_unregister(unv->nvmem);
-+		list_del(&unv->list);
-+		kfree(unv);
-+	}
-+	mutex_unlock(&devices_mutex);
-+
-+	ubi_unregister_volume_notifier(&nvmem_notifier);
-+}
-+
-+module_init(ubi_nvmem_init);
-+module_exit(ubi_nvmem_exit);
-+MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
-+MODULE_AUTHOR("Daniel Golle");
-+MODULE_LICENSE("GPL");
--- 
-2.43.0
+Thanks,
+Conor.
+
+> I have already chosen to make the DT binding as simple as possible to
+> prevent what happened with the SSD1306 "solomon,page-offset" property
+> that has a broken default [0] but I think that not allowing to set the
+> resolution is already too restrictive and would make it unusable for
+> any panel that doesn't have the default width and height.
+>=20
+> [0]: https://lists.freedesktop.org/archives/dri-devel/2023-November/43115=
+0.html
+>=20
+> >> But answering your question, yes I think that more devices for this
+> >> SSD133x family are going to be added later. Looking at [3], there is
+> >> at least SSD1333 that has a different default resolutions (176x176).
+> >
+> > That's fair enough though. I'd probably err on the side of introducing
+> > this complexity when the other users actually show up though.
+> >
+>=20
+> Agree and the reason why I did not include entries for the SSD1332 and
+> SSD1333. I was planning to add those only if there were users since it
+> seems that the SSD1331 is the most popular controller from this family.
+>=20
+> But as explained, even for the SSD1331 it may be needed to set a width
+> and height that is different than the default of this panel controller.
+>=20
+> --=20
+> Best regards,
+>=20
+> Javier Martinez Canillas
+> Core Platforms
+> Red Hat
+>=20
+
+--TC9NmRtTLpYSAbHx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZX92/gAKCRB4tDGHoIJi
+0husAQDSENwV0d8UhOR0UCiNhQ00elCy87Ks6qVzuFEWEtgTqgD/bnXfe9j54Ohl
+QqQwm807NwnbgesrXBS+xxH/Czb4Vww=
+=BghX
+-----END PGP SIGNATURE-----
+
+--TC9NmRtTLpYSAbHx--
 
