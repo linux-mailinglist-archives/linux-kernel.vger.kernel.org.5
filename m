@@ -1,109 +1,67 @@
-Return-Path: <linux-kernel+bounces-2771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FE0681618F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ACA7816191
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:14:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 406331F21DA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:11:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5F9F1F21E27
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCEF47F51;
-	Sun, 17 Dec 2023 18:11:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC1D47F47;
+	Sun, 17 Dec 2023 18:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Q6Uixddx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7767A481BE
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 18:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mtapsc-8-8i7rSkpZMKS305nSrnFEhQ-1; Sun, 17 Dec 2023 18:11:13 +0000
-X-MC-Unique: 8i7rSkpZMKS305nSrnFEhQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 17 Dec
- 2023 18:10:54 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 17 Dec 2023 18:10:54 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Ivan Orlov' <ivan.orlov0322@gmail.com>, "paul.walmsley@sifive.com"
-	<paul.walmsley@sifive.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
-CC: "conor.dooley@microchip.com" <conor.dooley@microchip.com>,
-	"ajones@ventanamicro.com" <ajones@ventanamicro.com>, "samuel@sholland.org"
-	<samuel@sholland.org>, "alexghiti@rivosinc.com" <alexghiti@rivosinc.com>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"skhan@linuxfoundation.org" <skhan@linuxfoundation.org>
-Subject: RE: [PATCH] riscv: lib: Optimize 'strlen' function
-Thread-Topic: [PATCH] riscv: lib: Optimize 'strlen' function
-Thread-Index: AQHaLduBo9lhsHug1EOTPi9OJpSM+LCtyBWA
-Date: Sun, 17 Dec 2023 18:10:54 +0000
-Message-ID: <a210197c479e48778672aa13287eef88@AcuMS.aculab.com>
-References: <20231213154530.1970216-1-ivan.orlov0322@gmail.com>
-In-Reply-To: <20231213154530.1970216-1-ivan.orlov0322@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EA9315B6;
+	Sun, 17 Dec 2023 18:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=H3Yg9Ks44h9xKxHznRP1HbmjN2e0OY+H92vAnJ0cCh0=; b=Q6UixddxCDy7gVGAHV27qsheGf
+	Jd7EFu86koHVAIv7bZFLthsnvAftOIxQh4UtTzhOfPcsqmAZ+TZNvXGBGr2GrrMk3fK7jIl6QWyVA
+	Ld+EoMuLG3+RXOg5ZWFFtSKxh1GqGoldy526reoKJMgBgZ6EORoh31GgUVM0b542unKU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rEvel-003AIp-Ax; Sun, 17 Dec 2023 19:14:27 +0100
+Date: Sun, 17 Dec 2023 19:14:27 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/12 net-next] qca_spi: Improve SPI IRQ handling
+Message-ID: <c5b81005-e309-46df-b534-b24814d10006@lunn.ch>
+References: <20231214150944.55808-1-wahrenst@gmx.net>
+ <20231214150944.55808-3-wahrenst@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214150944.55808-3-wahrenst@gmx.net>
 
-From: Ivan Orlov
-> Sent: 13 December 2023 15:46
+On Thu, Dec 14, 2023 at 04:09:34PM +0100, Stefan Wahren wrote:
+> The functions qcaspi_netdev_open/close are responsible of request &
+> free of the SPI interrupt, which wasn't the best choice because
+> allocation problems are discovered not during probe. So let us split
+> IRQ allocation & enabling, so we can take advantage of a device
+> managed IRQ.
 
-Looking at the old code...
+Could you replace the kernel thread with a threaded interrupt handler?
 
->  1:
-> -=09lbu=09t0, 0(t1)
-> -=09beqz=09t0, 2f
-> -=09addi=09t1, t1, 1
-> -=09j=091b
-
-I suspect there is (at least) a two clock stall between
-the 'ldu' and 'beqz'.
-Allowing for one clock for the 'predicted taken' branch
-that is 7 clocks/byte.
-
-Try this one - especially on 32bit:
-
-=09mov=09t0, a0
-=09and=09t1, t0, 1
-=09sub=09t0, t0, t1
-=09bnez=09t1, 2f
-1:
-=09ldb=09t1, 0(t0)
-2:=09ldb=09t2, 1(t0)
-=09add=09t0, t0, 2
-=09beqz=09t1, 3f
-=09bnez=09t2, 1b
-=09add=09t0, t0, 1
-3:=09sub=09t0, t0, 2
-=09sub=09a0, t0, a0
-=09ret
-
-Might be 6 clocks for 2 bytes.
-The much smaller cache footprint will also help.
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
-
+      Andrew
 
