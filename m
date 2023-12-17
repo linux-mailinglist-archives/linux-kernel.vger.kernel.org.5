@@ -1,52 +1,49 @@
-Return-Path: <linux-kernel+bounces-2810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38CC2816247
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:06:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5432E816249
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 22:06:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A13C4281013
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:06:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2ACD280C92
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1E4481DC;
-	Sun, 17 Dec 2023 21:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FAA48CDA;
+	Sun, 17 Dec 2023 21:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GSVU8scq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LKXdpEHu"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05A945971
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 21:06:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A330C433C7;
-	Sun, 17 Dec 2023 21:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92EC2482C7;
+	Sun, 17 Dec 2023 21:06:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CCA2C433C9;
+	Sun, 17 Dec 2023 21:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702847169;
-	bh=FEqWQOKEDrvpzw/e2igB/WDaW/GhDc1u0Hj1MEpXZno=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GSVU8scqdY5ObJ3ttzkHLGkVAUmIscqq3/S7S5ZASSO4FLKMTTnvYx/z2EWNjl8ON
-	 kGuzk4MVnR0JNn6x8KMCz3zuaxFqrU6JkJYQbhffbuAZhRlm38aSgT8giEjefQudqk
-	 nMdDFHPoryaLnip3ab9ngHQ17DPBqmPeyhX/BjHyS4A03eKTxo/SGQW+etvKFiO+Io
-	 6/Z29+YGWfDc3SO0xD5/1GCxXictF+H9E6z+p6rcHndpgp7yv0akis9McWR+JLR1zT
-	 SPmQHcNtU3tObTwSffH+wt9p8Rz7k4rqbMc1j4+u2/QAPPm++je9Snrrl+wvma1Ahl
-	 CeR8k/ZkeCOSw==
+	s=k20201202; t=1702847170;
+	bh=1GHVArQI/I2o104sYcABaTbfwOYpIu7WAXvx1z3OIGI=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=LKXdpEHuVNem/xKInFYGeoPwEr1DxPwV587tmcsNryhgaCdfir2nUbQjibPkc3OV+
+	 JnpTgBZ0C4hzSIkn+Zt+P4bWDcK7ry/hhvQR7rYctfx5O4cssUXeUioyxGVqnadr4e
+	 0RUpNigzshaWiN4x9mxj6MQ/XIAcHrotPed86djMD/uedsB/z/Ud3S/DnrZflrqOVe
+	 AMvgA1fPqa6goQpWZTZqplnGSX3+2Xl3BsJDXK0f9V+2tA0OGdPeUALz8tJWDXEQfk
+	 n1WLhHZga/BwKI4xZLMJsxIl3vAKpz95zhgId6YCYMN91Pu5beTAxfj+ucLOz0agdb
+	 0EkyKC/lhHOGg==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Johan Hovold <johan+linaro@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: defconfig: enable drivers for the Lenovo ThinkPad X13s
-Date: Sun, 17 Dec 2023 15:06:05 -0600
-Message-ID: <170284716296.78529.6640577574918372135.b4-ty@kernel.org>
+To: Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH RESEND] arm64: defconfig: enable newer Qualcomm sound drivers
+Date: Sun, 17 Dec 2023 15:06:06 -0600
+Message-ID: <170284716297.78529.7971341363459719102.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231012080157.4616-1-johan+linaro@kernel.org>
-References: <20231012080157.4616-1-johan+linaro@kernel.org>
+In-Reply-To: <20231106073048.24553-1-krzysztof.kozlowski@linaro.org>
+References: <20231106073048.24553-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,22 +54,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 12 Oct 2023 10:01:55 +0200, Johan Hovold wrote:
-> Enable some more drivers for Qualcomm sc8280xp based machines like the
-> Lenovo ThinkPad X13s so that sound and EFI variables work with the
-> defconfig.
-> 
-> Johan
+On Mon, 06 Nov 2023 08:30:48 +0100, Krzysztof Kozlowski wrote:
+> Enable the sound machine driver for Qualcomm SC8280xp soundcard (used on
+> Lenovo Thinkpad X13s laptop), Qualcomm WSA883x (speakers on X13s) and
+> Qualcomm WSA884x (speakers on boards with Qualcomm SM8550 like QRD8550).
 > 
 > 
-> [...]
 
 Applied, thanks!
 
-[1/2] arm64: defconfig: enable Qualcomm sc8280xp sound drivers
-      commit: 223e8af324985de9e0b5b4cda2ec29783410f13f
-[2/2] arm64: defconfig: enable Qualcomm UEFI Secure App driver
-      commit: 48490899007ae98faf8a0071a602174502b8eefc
+[1/1] arm64: defconfig: enable newer Qualcomm sound drivers
+      commit: 48a9ba5eb4d720c6e21c6e4d2a6fb6e1a97f5f2a
 
 Best regards,
 -- 
