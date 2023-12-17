@@ -1,132 +1,138 @@
-Return-Path: <linux-kernel+bounces-2650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9BAF815FE4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:43:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE05F815FD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB2281C21EFA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:43:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5960AB2261E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8610945BF1;
-	Sun, 17 Dec 2023 14:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="c4s2eGx8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D759D4AF8D;
+	Sun, 17 Dec 2023 14:30:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.199])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7481045BE8
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tfEK8
-	34hFhHWJL3vUn8/GMuXyS9juv8wssBC4nzLML0=; b=c4s2eGx8Fwq9hYgGuVbTN
-	fGEKBAkhZXLaLljjFpTvE5DnrPB8pm+P+hqxFDuNNaGO06FjvzQNhwcGkBG3/qEJ
-	ceP6XZpEnwMmiL8eFuN7J7oaNmNI7pUX4D1D+cVv4thLfXnslDVGILgYontbkxxT
-	jFm+9fzeEELK5fBVv8SGOI=
-Received: from ubuntu.lan (unknown [120.229.19.33])
-	by zwqz-smtp-mta-g5-0 (Coremail) with SMTP id _____wB3f0JABX9l13BJCA--.53408S2;
-	Sun, 17 Dec 2023 22:27:14 +0800 (CST)
-From: Junwen Wu <wudaemon@163.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	bsegall@google.com,
-	vschneid@redhat.com
-Cc: mgorman@suse.de,
-	bristot@redhat.com,
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BF332C86
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rEs9f-0006VJ-OC; Sun, 17 Dec 2023 15:30:07 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rEs9b-00GUh4-VU; Sun, 17 Dec 2023 15:30:03 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rEs9b-004hyq-J9; Sun, 17 Dec 2023 15:30:03 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: kernel@pengutronix.de,
+	Markus Mayer <mmayer@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Junwen Wu <wudaemon@163.com>
-Subject: [PATCH v2] sched/debug: Update print_task format in sched_debug node
-Date: Sun, 17 Dec 2023 14:27:10 +0000
-Message-Id: <20231217142710.771888-1-wudaemon@163.com>
-X-Mailer: git-send-email 2.34.1
+	Santosh Shilimkar <ssantosh@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	linux-mips@vger.kernel.org,
+	Yong Wu <yong.wu@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mediatek@lists.infradead.org,
+	Roger Quadros <rogerq@kernel.org>,
+	Tony Lindgren <tony@atomide.com>,
+	linux-omap@vger.kernel.org,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	linux-pm@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Sumit Gupta <sumitg@nvidia.com>,
+	Nick Alcock <nick.alcock@oracle.com>,
+	linux-tegra@vger.kernel.org,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH 00/15] memory: Convert to platform remove callback returning void
+Date: Sun, 17 Dec 2023 15:29:26 +0100
+Message-ID: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2631; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=FyuyHaIj5jd4bPxOXQjJ+ozo7s7sihGMLWkkNmVGnME=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlfwXFp0yrTZyYp2KFK2fwTyu80UmXy69MORJAs wm48iAIgimJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZX8FxQAKCRCPgPtYfRL+ TgNJB/9eFZpgOAoyZMQMzWGucpEqIvWX6W0eNcnXBmurNkaFQmk9v1UHmj1xyNFW24mvDrwXPRz PaBLdyRO1QyT7ZOOWdkxvvYU+/g6yBUmpw+P5lihn0tefw+vl6Ej1suMnbs2tMdJ0FTQYQZRyQL ZnZyl3AYPprWtaCsKyu9b4pRwdQGJ4KG1NnvRkE562N+Wg7eXkwU5ah9EQWW4t+Jcs6SgvZHMhp 1quJkD1SA//uBFFZXLUV5UysntvLZwazuV3zLV81y6r02+H5X8Y3mcj7mX2qPf8Ubh9GWDrcybC h8kJTYL4+I5P2Hh+7xPkiTW8Rt32gZGaprL2X8zZ8V/x9QkC
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wB3f0JABX9l13BJCA--.53408S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGr43XF1ftF4fJw1xtrykGrg_yoW5GF1fpw
-	nxAF13Jr4DXw1Ygw17ArykZr15Kry8t34UWrn7Ar18JF10y345Kr17tr1xtry5Gryxtw1a
-	qFs8tr17G3WDXrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piNzV8UUUUU=
-X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/xtbBlA5JbVgi4+fJZQAAss
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-For the sched_debug interface, print_task function  has  output
-sum_exec_runtime twice, and the promt message not align with
-the output, so optimize the output.
+Hello,
 
-Signed-off-by: Junwen Wu <wudaemon@163.com>
----
+this series converts the platform drivers below drivers/memory to make
+use of .remove_new. See commit 5c5a7680e67b ("platform: Provide a remove
+callback that returns no value") for an extended explanation and the
+eventual goal. The TL;DR; is to make it harder for driver authors to
+leak resources without noticing.
 
-V1 -> V2: fix  compile error
- kernel/sched/debug.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+This is merge window material. All patches are pairwise independent of
+each other so they can be applied individually. Still it would be great
+to let them go in all together.
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 4580a450700e..342a2a942d51 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -579,13 +579,12 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
- 	else
- 		SEQ_printf(m, " %c", task_state_to_char(p));
- 
--	SEQ_printf(m, "%15s %5d %9Ld.%06ld %c %9Ld.%06ld %9Ld.%06ld %9Ld.%06ld %9Ld %5d ",
-+	SEQ_printf(m, "%15s %5d %9Ld.%06ld %c %9Ld.%06ld %9Ld.%06ld %9Ld %5d ",
- 		p->comm, task_pid_nr(p),
- 		SPLIT_NS(p->se.vruntime),
- 		entity_eligible(cfs_rq_of(&p->se), &p->se) ? 'E' : 'N',
- 		SPLIT_NS(p->se.deadline),
- 		SPLIT_NS(p->se.slice),
--		SPLIT_NS(p->se.sum_exec_runtime),
- 		(long long)(p->nvcsw + p->nivcsw),
- 		p->prio);
- 
-@@ -596,10 +595,10 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
- 		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_block_runtime)));
- 
- #ifdef CONFIG_NUMA_BALANCING
--	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
-+	SEQ_printf(m, "   %d   %d", task_node(p), task_numa_group_id(p));
- #endif
- #ifdef CONFIG_CGROUP_SCHED
--	SEQ_printf_task_group_path(m, task_group(p), " %s")
-+	SEQ_printf_task_group_path(m, task_group(p), "   %s")
- #endif
- 
- 	SEQ_printf(m, "\n");
-@@ -611,11 +610,19 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
- 
- 	SEQ_printf(m, "\n");
- 	SEQ_printf(m, "runnable tasks:\n");
--	SEQ_printf(m, " S            task   PID         tree-key  switches  prio"
--		   "     wait-time             sum-exec        sum-sleep\n");
--	SEQ_printf(m, "-------------------------------------------------------"
--		   "------------------------------------------------------\n");
--
-+	SEQ_printf(m, " S            task   PID         tree-key          deadline"
-+		"            slice  switches   prio"
-+		"       wait-time         sum-exec        sum-sleep        sum-block"
-+#ifdef CONFIG_NUMA_BALANCING
-+		"  node_id"
-+#endif
-+#ifdef CONFIG_CGROUP_SCHED
-+		"  group\n"
-+#endif
-+	);
-+	SEQ_printf(m, "-----------------------------------------------------------------"
-+			"--------------------------------------------------------------------"
-+			"------------------------------------------\n");
- 	rcu_read_lock();
- 	for_each_process_thread(g, p) {
- 		if (task_cpu(p) != rq_cpu)
+Best regards
+Uwe
+
+Uwe Kleine-König (15):
+  memory: brcmstb_dpfe: Convert to platform remove callback returning void
+  memory: brcmstb_memc: Convert to platform remove callback returning void
+  memory: emif: Convert to platform remove callback returning void
+  memory: fsl-corenet-cf: Convert to platform remove callback returning void
+  memory: fsl_ifc: Convert to platform remove callback returning void
+  memory: jz4780-nemc: Convert to platform remove callback returning void
+  memory: mtk-smi: Convert to platform remove callback returning void
+  memory: omap-gpmc: Convert to platform remove callback returning void
+  memory: renesas-rpc-if: Convert to platform remove callback returning void
+  memory: exynos5422-dmc: Convert to platform remove callback returning void
+  memory: stm32-fmc2-ebi: Convert to platform remove callback returning void
+  memory: tegra186-emc: Convert to platform remove callback returning void
+  memory: tegra210-emc: Convert to platform remove callback returning void
+  memory: ti-aemif: Convert to platform remove callback returning void
+  memory: ti-emif-pm: Convert to platform remove callback returning void
+
+ drivers/memory/brcmstb_dpfe.c            |  6 ++----
+ drivers/memory/brcmstb_memc.c            |  6 ++----
+ drivers/memory/emif.c                    |  6 ++----
+ drivers/memory/fsl-corenet-cf.c          |  6 ++----
+ drivers/memory/fsl_ifc.c                 |  6 ++----
+ drivers/memory/jz4780-nemc.c             |  5 ++---
+ drivers/memory/mtk-smi.c                 | 10 ++++------
+ drivers/memory/omap-gpmc.c               |  6 ++----
+ drivers/memory/renesas-rpc-if.c          |  6 ++----
+ drivers/memory/samsung/exynos5422-dmc.c  |  6 ++----
+ drivers/memory/stm32-fmc2-ebi.c          |  6 ++----
+ drivers/memory/tegra/tegra186-emc.c      |  6 ++----
+ drivers/memory/tegra/tegra210-emc-core.c |  6 ++----
+ drivers/memory/ti-aemif.c                |  5 ++---
+ drivers/memory/ti-emif-pm.c              |  6 ++----
+ 15 files changed, 32 insertions(+), 60 deletions(-)
+
+base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
 -- 
-2.34.1
-
+2.42.0
 
