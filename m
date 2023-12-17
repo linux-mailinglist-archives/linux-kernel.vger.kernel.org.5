@@ -1,80 +1,101 @@
-Return-Path: <linux-kernel+bounces-2507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE16C815E21
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 09:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3AC815E3E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 09:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 865691F22176
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 08:29:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77C131F221DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 08:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC511FB4;
-	Sun, 17 Dec 2023 08:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289091FDB;
+	Sun, 17 Dec 2023 08:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="UHcv0zw7"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="c8u6Ajyy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39721863;
-	Sun, 17 Dec 2023 08:29:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6375C433C7;
-	Sun, 17 Dec 2023 08:29:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1702801762;
-	bh=kQM/bmkve4FFOjpxeer7XYIDa+l+sAEjNV1l4XEdtH8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UHcv0zw71GsvKYeqFqqoat+RMD/uEuoS/YYpy/gOEdbVIKZ+NXANM86TvFDhNtqbA
-	 cmeS5e625lMzEsBR9LUwUwFjD1cjJMtT4nhYFu9HjzNxxBZF2XgFTQaIpTwYIBkuo4
-	 L/Hw7lX5k+cgRtzZe8u3ZdMaPMJw4p35tQ6ON8wQ=
-Date: Sun, 17 Dec 2023 09:29:18 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Yinghua Yang Yang <yinghua.yang@motorolasolutions.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>,
-	zachary.zuzzio@motorolasolutions.com,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Oliver Neukum <oneukum@suse.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Wentong Wu <wentong.wu@intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: misc: Add driver for Motorola Solutions security
- accessories
-Message-ID: <2023121712-gigabyte-oppressed-b8f4@gregkh>
-References: <20231215211218.2313996-1-Yinghua.Yang@motorolasolutions.com>
- <26c70a69-f18f-4c82-a520-7943be0e1961@rowland.harvard.edu>
- <CAHhS5zZzHzZBADHkKyzCzr5FJ0zdTvsaQUE0ygjU1FG3vocrCA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6BC01C17;
+	Sun, 17 Dec 2023 08:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1702802246; bh=Cu0nA0cgoDEd9tG8+d+j50FSTxVeILTQkKFvK9DqtUM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=c8u6AjyyLwuw/cwAd//5d6Ts+Rokd2xosKplpbJeXFMed2SZYBabFSnHloObEStjM
+	 n+hc4Ob6rlcGpMzIbPEGOKJgwVcVEJ9pdsuBSHY+DSO/h76nyAsWPa2htoQsFvHckc
+	 ju7kEIjZw2eibsdLeWCN0JA8/ywc3PYyaFcDDZe0=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 881A00AA; Sun, 17 Dec 2023 16:34:01 +0800
+X-QQ-mid: xmsmtpt1702802041tao8s72lf
+Message-ID: <tencent_AB577926C13364C3696965A3A2244B776605@qq.com>
+X-QQ-XMAILINFO: OKkKo7I1HxIe+6yMR1GxFSCIgL66rhyDgy4IYmyvPR/d+QQ8fRyhjEbRyYCdlN
+	 TLsxTG1YWgseAAebyOzN4p2aVvm+Qv9dUyHdR0JCMpVpRIHlFA1xovgq5IluZnIAQNc0E6XEiFaK
+	 l8j6+krtL9tqBLC1uvaySDUBML6aECEzLVx7YfiVCFTwdyVaQ+ufunlI4AJCECVpQ8deqdP4hm2X
+	 J3n3eJdNZLPlv6v8qyRqXBET4L7kiiCQtIGns6SLeUdeaZ/we84Iz3pl6gRggDxnJVDWLBrJNDbL
+	 SlVRLtXzVc146/CbTW//UljvPWqkffbQkq0/L7tq/zI/vQPXEFnJsL8e5TmhuYdpucT4xAj2ADSv
+	 K2l68VecFyGFGuX7KpRosQkPCKsnoNLa9ihuxtf1QjCgpnWbQyTFFWWXzdKiJZYnqiH7oyjZ+BTs
+	 Kre2VQBcpP3SGdOQK9jPSkUDiT8H5TGxXNDysokQdQoeS8VUwLv+rAw5rdyRlCZlzyWVr/kJuG2W
+	 SbHnPFFDnJKFMezBMwuEYsHLt+eNZ0mJBLot/+0vgETNP/7JfKGENVrnHGrfcudv5UfsljL7nY7g
+	 6mlrSi4otzU0xQadPwJFhqPP7VZ7LRe5COjxjt+UNyEgRhoUdFkmcvCgzrKEiMB6pvQ1C3SjWBQp
+	 IUhyRNb+GyJk1DsQqNHFnhB5Ykw2A0cOeHoOvq8vNIryL4d/3d+Hj88OScYcjUwZjaSPQzJf+ET6
+	 9+xjhPYRWMZfxBHO90ubXQlsjKzZIzJYvoUcTUdvtBuvoG4wfs5xPjm9dkWpsP4VTXLWNP/PD4MN
+	 t5VIJDmFGWktb8NXozZs1BBlR/4LNj+vWLI5q0c/XavmE2bu7m0xybUUxXxAf1G7SxiM0l5hNG0B
+	 Vq2koLZWtFwtFzsOkWa8JaLEUETK0LIQ4+RyPhbpf8PNXrWyFja5nwdCQpFjkEO0KnVY7skWdnsC
+	 RHbRJl5Mk=
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com
+Cc: axboe@kernel.dk,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH next] nbd: fix task hung in bdev_release
+Date: Sun, 17 Dec 2023 16:34:02 +0800
+X-OQ-MSGID: <20231217083401.4160650-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000098af2060b5ff161@google.com>
+References: <000000000000098af2060b5ff161@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHhS5zZzHzZBADHkKyzCzr5FJ0zdTvsaQUE0ygjU1FG3vocrCA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Dec 16, 2023 at 12:15:35PM -0600, Yinghua Yang Yang wrote:
-> I would prefer an easier way too. On a linux platform where udev
-> is supported, a udev rule can be used to set the power/control flag. But on
-> the platform I am using, the udev is not available and I don't have
-> root access.
-> If this driver is accepted by the Linux kernel, we hope the driver will
-> subsequently be picked up by the platform's hardware vendor. With that, any
-> USB device that is specified by this driver when plugged into the platform,
-> auto suspend will be enabled on it.
-> 
-> Any suggestions will be appreciated.
+If the nbd timeout value is not set before calling nbd_start_device_ioctl(),
+so the socket will be disabled disconnection, which will cause the timer to 
+only be reset and cause this 143 second timeout issue.
 
-As Alan says, please just fix your userspace to properly enable the
-correct setting, no need for a kernel change at all.
+The solution I have provided here is to set the default timeout value for nbd in
+nbd_start_device() to avoid problems from occurring.
 
-You have the contacts and interactions to work with the hardware vendor,
-don't use the kernel community as a "back door" to circumvent that.
+Reported-and-tested-by: syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ drivers/block/nbd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-thanks,
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index b6414e1e645b..31656364d8a3 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1394,6 +1394,9 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 	}
+ 	set_bit(NBD_RT_HAS_PID_FILE, &config->runtime_flags);
+ 
++	if (num_connections == 1 && !nbd->tag_set.timeout)
++		nbd->tag_set.timeout = HZ * 1024;
++
+ 	nbd_dev_dbg_init(nbd);
+ 	for (i = 0; i < num_connections; i++) {
+ 		struct recv_thread_args *args;
+-- 
+2.43.0
 
-greg k-h
 
