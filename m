@@ -1,81 +1,194 @@
-Return-Path: <linux-kernel+bounces-2861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4832816342
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:05:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC5281634D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 230611C2139B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:05:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D1EC1C20C0E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9B049F9D;
-	Sun, 17 Dec 2023 23:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FE04A9B5;
+	Sun, 17 Dec 2023 23:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="caqjKKMZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gVE6QyMA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6901E49D;
-	Sun, 17 Dec 2023 23:05:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A8FC433C7;
-	Sun, 17 Dec 2023 23:05:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702854303;
-	bh=C31/vdIwlOG4/RQpDKhURj/OwqcINur5NKr6OP5ZcBY=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=caqjKKMZzNHtUE0k7JGP35K97SrxPimgNRsRVIJWxbjG1a00XoKn/0+6ZnN89afve
-	 PIBAxXW8bxMrKeUs+DTNEf5gXZnCr4QZvlvWU+9uYUhn8hDW3nyYmQlTQJ1YpG36zn
-	 CUYH4ZjWdNwIOt9h2GICr9xgmZVbfoG1VW+kPLf96DYm3hE9cwBJ+pU/5Dn4tJjUN+
-	 9y0OpSVS4eBouTH5fVXb7cBzIiM2xBIa/GQq2jsqRrdhewFJG6oU5Zz/opuLCgtrt0
-	 lr0ISwKr0/aUkOPgwzNWluAXdwOsnl/IBG7obL957qQpuvRPCK76VaMuKUJU2BFe0b
-	 vEooQ6HNn55/w==
-Message-ID: <883a61872f94c972cc410da84eaf7b97.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561BD49F8D;
+	Sun, 17 Dec 2023 23:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-553338313a0so644129a12.2;
+        Sun, 17 Dec 2023 15:23:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702855386; x=1703460186; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GFKLHnzI1MkQMFN4aygtqwkY70T4csRqR2mODluuL4g=;
+        b=gVE6QyMAhBi0KMKfBWeqoDDY3SclvTQ7IRulluPIVybfMUbjuFR1jphoG5cMzlFGaG
+         njUG29+KEATkt9JPNIFJelw1BVtsSIRogk4LvyNm2tlLIRI0t6o1rTt4/PAM4TP1bTKC
+         agmAMYovR/Ylkvo9sQICc7tUL3msuIQx/uYBoPDR7FHaxtXCdC7ASIaOw+hmV/2xrtF3
+         DHkU9+5KS6nYJBKo3+O2zblhse4uTrqKqy3AM5agPIeOsOff2bj17J1ncTuzMqRCi9p5
+         tTF3xvogHCc2AorvAd2EyQZ0Qns0l0l4ZdL4IR/FLNI9War1u6eRcPGQ0zahrV/v+5JG
+         Jqbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702855386; x=1703460186;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GFKLHnzI1MkQMFN4aygtqwkY70T4csRqR2mODluuL4g=;
+        b=rbm0JU4CLGqM2ipVB6d8PONM1mAiFw9XYjfa161WFNQjohY1xSiKdYekCDYsx+3tY7
+         rcnpa3efkO4vXXhOT1IL2JRY6Wes/a9MBmDEud1f7cWZMsl43rdouj1IKW+ubYHJGM6c
+         PoJ6N3pcwj5yUDvLZwazkaJWY31OFPsMEYgW9r9VAOi93HEfZf5yPKkXnNMe0sk//Jna
+         BO/9lwDbcYI3ze9xbntb7e5S4KLDrHL+PQsTAn3+rdmPzCqOonJvWxCpRfaftsW5ecSW
+         xLLKg/1IeSoLxAOjNMm0UV3SQmhpK0kiq1SitbQfLUtoincLwL0o+SgyR1C38c1FIbRy
+         ey4w==
+X-Gm-Message-State: AOJu0YxZE5+NjEPgBBCh24OFprSBzpvcgzQJTIaVxlJa9C2kwI2OxCYf
+	eln1PIUQFkWFpJsRu0azHFCalk9Zg26dd2p7D5s=
+X-Google-Smtp-Source: AGHT+IFRPhyRTKuojMsil2yKkL04/71aHlgb7+G4YVmuDXz/+pcBvd2/+IfbASuI78uWL89BWkqU5LDRdph2b3LCdCY=
+X-Received: by 2002:a50:d78b:0:b0:54b:687f:446c with SMTP id
+ w11-20020a50d78b000000b0054b687f446cmr8075776edi.31.1702855386340; Sun, 17
+ Dec 2023 15:23:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231002180854.1603452-2-ben.wolsieffer@hefring.com>
-References: <20231002180854.1603452-1-ben.wolsieffer@hefring.com> <20231002180854.1603452-2-ben.wolsieffer@hefring.com>
-Subject: Re: [PATCH 1/2] clk: stm32: initialize syscon after clocks are registered
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Michael Turquette <mturquette@baylibre.com>, Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To: Ben Wolsieffer <ben.wolsieffer@hefring.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-Date: Sun, 17 Dec 2023 15:05:01 -0800
-User-Agent: alot/0.10
+References: <20231215132132.169628-1-laura.nao@collabora.com>
+In-Reply-To: <20231215132132.169628-1-laura.nao@collabora.com>
+From: =?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>
+Date: Mon, 18 Dec 2023 00:22:30 +0100
+Message-ID: <CAA76j90YdSaAQYBKNwge5jpsexn_KG-qD89+V0_e4vumjLqEDQ@mail.gmail.com>
+Subject: Re: [PATCH] kselftest: Add basic test for probing the rust sample modules
+To: Laura Nao <laura.nao@collabora.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Shuah Khan <shuah@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 
-Quoting Ben Wolsieffer (2023-10-02 11:08:53)
-> The stm32-power-config syscon (PWR peripheral) is used in this driver
-> and the STM32 RTC driver to enable write access to backup domain
-> registers. The syscon's clock has a gate controlled by this clock
-> driver, but this clock is currently not registered in the device tree.
-> This only happens to work currently because all relevant clock setup and
-> RTC initialization happens before clk_disabled_unused(). After this
-> point, all syscon register writes are ignored.
+On Fri, 15 Dec 2023 at 14:25, Laura Nao <laura.nao@collabora.com> wrote:
+>
+> Add new basic kselftest that checks if the available rust sample modules
+> can be added and removed correctly.
+>
+> Signed-off-by: Laura Nao <laura.nao@collabora.com>
+> ---
+>  MAINTAINERS                                   |  1 +
+>  tools/testing/selftests/Makefile              |  1 +
+>  tools/testing/selftests/rust/.gitignore       |  1 +
+>  tools/testing/selftests/rust/Makefile         |  8 ++++
+>  .../selftests/rust/test_probe_samples.sh      | 42 +++++++++++++++++++
+>  5 files changed, 53 insertions(+)
+>  create mode 100644 tools/testing/selftests/rust/.gitignore
+>  create mode 100644 tools/testing/selftests/rust/Makefile
+>  create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e2c6187a3ac8..acf283a5d2c0 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18847,6 +18847,7 @@ F:      Documentation/rust/
+>  F:     rust/
+>  F:     samples/rust/
+>  F:     scripts/*rust*
+> +F:     tools/testing/selftests/rust/
+>  K:     \b(?i:rust)\b
+>
+>  RXRPC SOCKETS (AF_RXRPC)
+> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+> index 3b2061d1c1a5..26140426c849 100644
+> --- a/tools/testing/selftests/Makefile
+> +++ b/tools/testing/selftests/Makefile
+> @@ -74,6 +74,7 @@ TARGETS += riscv
+>  TARGETS += rlimits
+>  TARGETS += rseq
+>  TARGETS += rtc
+> +TARGETS += rust
+>  TARGETS += seccomp
+>  TARGETS += sgx
+>  TARGETS += sigaltstack
+> diff --git a/tools/testing/selftests/rust/.gitignore b/tools/testing/selftests/rust/.gitignore
+> new file mode 100644
+> index 000000000000..e3c5c04d1b19
+> --- /dev/null
+> +++ b/tools/testing/selftests/rust/.gitignore
+> @@ -0,0 +1 @@
+> +ktap_helpers.sh
+> diff --git a/tools/testing/selftests/rust/Makefile b/tools/testing/selftests/rust/Makefile
+> new file mode 100644
+> index 000000000000..ccaa50f35b5b
+> --- /dev/null
+> +++ b/tools/testing/selftests/rust/Makefile
+> @@ -0,0 +1,8 @@
+> +
+> +TEST_PROGS += test_probe_samples.sh
+> +TEST_GEN_FILES := ktap_helpers.sh
+> +
+> +include ../lib.mk
+> +
+> +$(OUTPUT)/ktap_helpers.sh:
+> +       cp $(top_srcdir)/tools/testing/selftests/dt/ktap_helpers.sh $@
+> diff --git a/tools/testing/selftests/rust/test_probe_samples.sh b/tools/testing/selftests/rust/test_probe_samples.sh
+> new file mode 100755
+> index 000000000000..a46550543f73
+> --- /dev/null
+> +++ b/tools/testing/selftests/rust/test_probe_samples.sh
+> @@ -0,0 +1,42 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (c) 2023 Collabora Ltd
+> +#
+> +# This script tests whether the rust sample modules can
+> +# be added and removed correctly.
+> +#
+> +
+> +DIR="$(dirname "$(readlink -f "$0")")"
+> +
+> +source "${DIR}"/ktap_helpers.sh
+> +
+> +rust_sample_modules=("rust_minimal" "rust_print")
+> +
+> +KSFT_PASS=0
+> +KSFT_FAIL=1
+> +KSFT_SKIP=4
+> +
+> +ret="${KSFT_PASS}"
+> +
+> +ktap_print_header
+> +
+> +ktap_set_plan "${#rust_sample_modules[@]}"
+> +
+> +for sample in "${rust_sample_modules[@]}"; do
+> +    if ! /sbin/modprobe -n -q "$sample"; then
+> +        ktap_test_skip "module $sample is not found in /lib/modules/$(uname -r)"
+> +        continue
+> +    fi
+> +
+> +    if /sbin/modprobe -q "$sample"; then
+> +        /sbin/modprobe -q -r "$sample"
+> +        ktap_test_pass "$sample"
+> +    else
+> +        ret="${KSFT_FAIL}"
+> +        ktap_test_fail "$sample"
+> +    fi
+> +done
+> +
+> +ktap_print_totals
+> +exit "${ret}"
+> --
+> 2.30.2
+>
+>
 
-Seems like we should mark those clks as CLK_IGNORE_UNUSED and add a
-comment to that fact.
-
->=20
-> If we simply add the syscon clock in the device tree, we end up with a
-> circular dependency because the clock has not been registered at the
-> point this driver requests the syscon.
->=20
-> This patch avoids this circular dependency by moving the syscon lookup
-> after the clocks are registered. This does appear to create a possible
-> race condition where someone could attempt to perform an operation on a
-> backup domain clock before the syscon has been initialized. This would
-> result in the operation having no effect because backup domain writes
-> could not be enabled. I'm not sure if this is a problem or if there is
-> a way to avoid it.
-
-There's no comment in the code that says the regmap must be set there
-instead of earlier. What's to stop someone from tripping over this
-problem later? At the least, please add a comment.
+Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
 
