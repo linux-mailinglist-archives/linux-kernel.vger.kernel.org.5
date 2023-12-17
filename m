@@ -1,100 +1,162 @@
-Return-Path: <linux-kernel+bounces-2592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE722815F30
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:12:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF446815F36
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:15:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F4A2B21EBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:12:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E8E31F21F9B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 13:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBEFF44380;
-	Sun, 17 Dec 2023 13:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A89E44374;
+	Sun, 17 Dec 2023 13:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siddh.me header.i=code@siddh.me header.b="jaJKRVZz"
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Eo1hNjZ4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981814317A;
-	Sun, 17 Dec 2023 13:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=siddh.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siddh.me
-ARC-Seal: i=1; a=rsa-sha256; t=1702818675; cv=none; 
-	d=zohomail.in; s=zohoarc; 
-	b=AQdENfINNapZlrC/EctTnMZUARzUjwqbKHHbdEEIS+PA/YJq9Kr7O1NZFI/0CjCG9HNKGuBKx6jj7a9S5baUa/ElWre7+dGz5AiN1iCDebo4hOAojZCx+c4WI458hKsH2utYDcwJXDkSFJR5GguCBcu3srbWSBPiG/tqzspomMo=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-	t=1702818675; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=Scp3IrJnE67ltgIhAprfULm6HsQ/s5KxrhhmK7w7AQs=; 
-	b=RnMOfZmQGs6b+piHKyDlptYaeFtNUGn/VMBA0li+cpBYo4RoyAjFTb6QaFQ/QE19T2AAarLo69XjQ+A0AXp+8VOOEmZf25rvAYj4qOHEQBT/0N0cLZYhgcZ3YaxP/UGrKhg+q+PsXrZRIq747QSemHYzlChItQpMFHIXewCHScg=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-	dkim=pass  header.i=siddh.me;
-	spf=pass  smtp.mailfrom=code@siddh.me;
-	dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1702818675;
-	s=zmail; d=siddh.me; i=code@siddh.me;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=Scp3IrJnE67ltgIhAprfULm6HsQ/s5KxrhhmK7w7AQs=;
-	b=jaJKRVZzCRbtac7qltv2l3keyMs1H8djk4xukyoEvvldO4gHlQB+2ZaM8m4ybNSg
-	IY+MFe+jnwoU0p74HFXy6VvahDRpCQIkXcLOYKKG0j/6XKcWVGbbxOkEU71OM3AgVSI
-	OU/VVQH77liZRBQ1Vgt47cjBXciQUwM/8e9nkmLo=
-Received: from kampyooter.. (122.170.167.40 [122.170.167.40]) by mx.zoho.in
-	with SMTPS id 1702818674595848.1274981870353; Sun, 17 Dec 2023 18:41:14 +0530 (IST)
-From: Siddh Raman Pant <code@siddh.me>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Suman Ghosh <sumang@marvell.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v6 2/2] nfc: Do not send datagram if socket state isn't LLCP_BOUND
-Date: Sun, 17 Dec 2023 18:41:04 +0530
-Message-ID: <c4e2435c57cff7f650c0a82c2ded12c0d1843b80.1702816635.git.code@siddh.me>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1702816635.git.code@siddh.me>
-References: <cover.1702816635.git.code@siddh.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997934314E
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 13:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso2331978a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 05:15:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1702818905; x=1703423705; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LHXWjrSlj1U/EaS6SsHAe5QV70YZbTbi+3v3DGkj4PY=;
+        b=Eo1hNjZ4t3sZAE0qtO56lRARknNwaALRnDjeSiLKq9uVqB9idn0f19sUFrMfsL4fjO
+         wRqh5uPEwZUShhnlReo/tpqZaBxazzyXo/x9q+mWJ0kHJ3UC2dzyH2V4zJpOeKTTrOW0
+         SIeA4Kfj/kiMLS6UEHEgbbPgYo2iYmrKTD2qxD5laYfsRVLfg+dF5bYAW52xSviTBDLc
+         1hFt1ec7BLpCLwwx9z3iMEIA1Y0oLQQtPgOjRPWSw8y+z05Kr9VRGM7Tw+t6AZUNIfkP
+         nnVE8yk6y5JYVGnHuo9XsBMdc2p4v8FHVTyxAYCKB1ycugQgLvCizjuEO/GaRKeHmsh8
+         EbSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702818905; x=1703423705;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LHXWjrSlj1U/EaS6SsHAe5QV70YZbTbi+3v3DGkj4PY=;
+        b=lPxbnvpvJMy27SRoAzrKwPoC2x3HN2Vp5RHlAJjsHrc47hG6S3T+xRxRkco/HCmPQa
+         kkAik+hogh+4ZDdJtj3uWmNMR2z/O/X+Hm0J2Y85mpLJrPhs7qbIzPte7LAAKJWpVAie
+         OLJqOmyYL0F7oFEI4zN43p+F6TPL4y6e34x9HXLnFQkBHko5cBsSyb6U9BfKvatjqslE
+         P39B+i31D7k7iTwa2MHL1Vr5PxTNrMkaNXeK7shz74UmzUta/lTXZFUD+IQY1pfNAnRJ
+         PYMPSuWoC26vBgWHmrVfafwNpyIvN3v+RS84VXeJegSI9b62+vyxv/pHMzHuvwmlhbGO
+         6chw==
+X-Gm-Message-State: AOJu0YwpSip7+rjFRdMTkHdgB2dgOMKHGrjywc6tm8j8RyOLyPIjVaAs
+	KWY/rOAq5eTDPQNpCOSU5likOvpxMZLwXi1kkZQ=
+X-Google-Smtp-Source: AGHT+IGQ++bHMqUg6tjerPuRVUO/S+HMFsxSFGEN9NHX5/OUlH55jAaz3GemmVsVA1cJJd+8Elgx2A==
+X-Received: by 2002:a50:cd16:0:b0:552:391c:c8e1 with SMTP id z22-20020a50cd16000000b00552391cc8e1mr1239635edi.107.1702818904868;
+        Sun, 17 Dec 2023 05:15:04 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.103])
+        by smtp.gmail.com with ESMTPSA id el13-20020a056402360d00b005527de2aecfsm3183456edb.42.2023.12.17.05.15.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Dec 2023 05:15:04 -0800 (PST)
+Message-ID: <ba18b668-94c0-4cab-9d2c-87ac6c3f8f8e@tuxon.dev>
+Date: Sun, 17 Dec 2023 15:15:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 13/21] net: ravb: Set config mode in ndo_open
+ and reset mode in ndo_close
+Content-Language: en-US
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de,
+ yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
+ geert+renesas@glider.be
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-14-claudiu.beznea.uj@bp.renesas.com>
+ <78688143-e777-c98b-01eb-813f0fe67491@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <78688143-e777-c98b-01eb-813f0fe67491@omp.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-As we know we cannot send the datagram (state can be set to LLCP_CLOSED
-by nfc_llcp_socket_release()), there is no need to proceed further.
 
-Thus, bail out early from llcp_sock_sendmsg().
 
-Signed-off-by: Siddh Raman Pant <code@siddh.me>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Suman Ghosh <sumang@marvell.com>
----
- net/nfc/llcp_sock.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On 16.12.2023 19:28, Sergey Shtylyov wrote:
+> On 12/14/23 2:45 PM, Claudiu wrote:
+> 
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> As some IP variants switch to reset mode (and thus registers' content is
+> 
+>    Register.
+> 
+>> lost) when setting clocks (due to module standby functionality) to be able
+>> to implement runtime PM and save more power, set the IP's operation mode to
+> 
+>    Operating.
+> 
+>> reset at the end of the probe. Along with it, in the ndo_open API the IP
+>> will be switched to configuration, then operational mode. In the ndo_close
+>> API, the IP will be switched back to reset mode. This allows implementing
+>> runtime PM and, along with it, save more power when the IP is not used.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> [..]
+> 
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index db9222fc57c2..31a1f8a83652 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> [...]
+>> @@ -1821,13 +1845,19 @@ static int ravb_open(struct net_device *ndev)
+>>  	if (info->nc_queues)
+>>  		napi_enable(&priv->napi[RAVB_NC]);
+>>  
+>> +	/* Set AVB config mode */
+>> +	error = ravb_set_config_mode(ndev);
+>> +	if (error)
+>> +		goto out_napi_off;
+>> +
+> 
+>    I suspect this too belongs in ravb_dmac_init() now...
 
-diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c
-index 645677f84dba..819157bbb5a2 100644
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -796,6 +796,11 @@ static int llcp_sock_sendmsg(struct socket *sock, struct msghdr *msg,
- 	}
- 
- 	if (sk->sk_type == SOCK_DGRAM) {
-+		if (sk->sk_state != LLCP_BOUND) {
-+			release_sock(sk);
-+			return -ENOTCONN;
-+		}
-+
- 		DECLARE_SOCKADDR(struct sockaddr_nfc_llcp *, addr,
- 				 msg->msg_name);
- 
--- 
-2.42.0
+What I can do here is to keep PTP/GAC specific settings from
+ravb_set_config_mode() in a separate function close to PTP setup and remove
+ravb_set_config_mode() at all as ravb_dmac_init() switches anyway the IP to
+config mode. But with this I don't know how the PTP/GAC will be influenced
+as I don't have a setup to check it. From my memories, the commit that
+introduces the setup of PTP when switching to config mode did this by
+intention, so I'm not sure weather playing around with this is the way to
+go forward. Do you remember something specific about this?
 
+> 
+> [...]
+>> @@ -2875,19 +2886,30 @@ static int ravb_probe(struct platform_device *pdev)
+>>  
+>>  	device_set_wakeup_capable(&pdev->dev, 1);
+>>  
+>> +	/* Reset MAC as the module will be runtime disabled at this moment.
+>> +	 * This saves power. MAC will be switched back to configuration mode
+>> +	 * in ravb_open().
+>> +	 */
+>> +	error = ravb_set_reset_mode(ndev);
+>> +	if (error)
+>> +		goto out_netdev_unregister;
+>> +
+> 
+>    I think this now races with the register_netdev() call above (the device
+> can be opened before it returns)! Should be called before register_netdev()...
+> 
+
+Good point! Thanks!
+
+> [...]
+> 
+> MBR, Sergey
 
