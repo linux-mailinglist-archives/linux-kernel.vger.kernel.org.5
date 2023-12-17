@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-2644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9C8815FD0
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:32:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2D2F815FCD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4C921F211E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:32:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E858286856
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C12A45972;
-	Sun, 17 Dec 2023 14:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07490481CA;
+	Sun, 17 Dec 2023 14:30:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B7746545
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE9A45BF0
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9f-0006WW-9b; Sun, 17 Dec 2023 15:30:07 +0100
+	id 1rEs9f-0006XQ-MC; Sun, 17 Dec 2023 15:30:07 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9e-00GUhc-2u; Sun, 17 Dec 2023 15:30:06 +0100
+	id 1rEs9e-00GUhg-AA; Sun, 17 Dec 2023 15:30:06 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9d-004hzT-Pr; Sun, 17 Dec 2023 15:30:05 +0100
+	id 1rEs9e-004hzc-0q; Sun, 17 Dec 2023 15:30:06 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: kernel@pengutronix.de,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	linux-pm@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 10/15] memory: exynos5422-dmc: Convert to platform remove callback returning void
-Date: Sun, 17 Dec 2023 15:29:36 +0100
-Message-ID:  <167dbda286584eafec07da8c11673da07ba72362.1702822744.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 11/15] memory: stm32-fmc2-ebi: Convert to platform remove callback returning void
+Date: Sun, 17 Dec 2023 15:29:37 +0100
+Message-ID:  <fa74d4ae3cbf337dcae66db8479125fec8078153.1702822744.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
@@ -55,7 +54,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2061; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=FHOjgtzRIN9XHjUcxCP7MGMz7yRB1JuZQ6LGi2PE66k=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlfwXQmW+Q6PEK4vacr/EoUiA1qF6qrGQu4k8BB 9+ceA0cHFWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZX8F0AAKCRCPgPtYfRL+ TibiCAC1uo4RR6+/cFLGqWwewyu7CjBqgCgdaQNtmQtdcpP2BuwkSLign+vU7FxZOYvzOomdeb7 Kbha57cN1prbQpTJKp03UX5Y1TyYuVy9YkkPh+Ac2Xi2b98vREFLjfHkN36A2dnfUjLBm4v34+7 vE1YzF5TRy+eKezWaP/iCLmnv85eU9Sn5FMf6SYKYcOEWOuesQzWE+LzP4pM+h4Qsu7IkMOMtgl Hp8SNhDVJklZXTzVGDXH1qQETrw545SnVH1mjxL044eXLlp+mYtBnJhB160GOkhvLz6Z/jZmBgh 50xvY3amw2c7RHVnhGLOYfeiqWmVuYPjiebx2NauufYrlzb+
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1981; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=vnXMNpPc4CNH6yHCGy/VEkrbe/7SkdFU6zjQKAFNmw4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlfwXRzgYeIa1M6T02trXcwbebDDAXRteH/aASJ EIeTmDpO4CJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZX8F0QAKCRCPgPtYfRL+ Tlm4B/9oZRXDNti3I91lE3SnU/Anh5vxwqoEOcMKmojlJ6DMKjre9S0FWbf7LQ6tIOgJChGdJfI 5DJb4OZKt42SL/tFDSzqh/EIvKdDcV6WF4wuBJzQFCqTE7aRfQOmeuQZPVa1gyZwV44OR23niIj 4I10JoIIcuAKjKIWXa8Z4H/lV/048Q8W1IMiMvPG9bGFpkim7ypa/edmlbt5Nt49YU7qZB2+1/b GOxAwmrXq8yWvc3cKNRiNHA3xmgZtva1Q5qt8yg7E+rUC1yhzKYW5MJBy4UAipDxk5R9ZZv5k5s HJuw65+ON7MO74lTZicb9ZGvxEyXS8f+od6/Urr+eAKk7vEd
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -78,40 +77,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/memory/samsung/exynos5422-dmc.c | 6 ++----
+ drivers/memory/stm32-fmc2-ebi.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
-index 6d019dbd721c..da7ecd921c72 100644
---- a/drivers/memory/samsung/exynos5422-dmc.c
-+++ b/drivers/memory/samsung/exynos5422-dmc.c
-@@ -1558,7 +1558,7 @@ static int exynos5_dmc_probe(struct platform_device *pdev)
-  * clean the device's resources. It just calls explicitly disable function for
-  * the performance counters.
-  */
--static int exynos5_dmc_remove(struct platform_device *pdev)
-+static void exynos5_dmc_remove(struct platform_device *pdev)
+diff --git a/drivers/memory/stm32-fmc2-ebi.c b/drivers/memory/stm32-fmc2-ebi.c
+index 9015e8277dc8..47d0ea5f1616 100644
+--- a/drivers/memory/stm32-fmc2-ebi.c
++++ b/drivers/memory/stm32-fmc2-ebi.c
+@@ -1146,7 +1146,7 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int stm32_fmc2_ebi_remove(struct platform_device *pdev)
++static void stm32_fmc2_ebi_remove(struct platform_device *pdev)
  {
- 	struct exynos5_dmc *dmc = dev_get_drvdata(&pdev->dev);
+ 	struct stm32_fmc2_ebi *ebi = platform_get_drvdata(pdev);
  
-@@ -1569,8 +1569,6 @@ static int exynos5_dmc_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(dmc->mout_bpll);
- 	clk_disable_unprepare(dmc->fout_bpll);
+@@ -1154,8 +1154,6 @@ static int stm32_fmc2_ebi_remove(struct platform_device *pdev)
+ 	stm32_fmc2_ebi_disable_banks(ebi);
+ 	stm32_fmc2_ebi_disable(ebi);
+ 	clk_disable_unprepare(ebi->clk);
 -
 -	return 0;
  }
  
- static const struct of_device_id exynos5_dmc_of_match[] = {
-@@ -1581,7 +1579,7 @@ MODULE_DEVICE_TABLE(of, exynos5_dmc_of_match);
+ static int __maybe_unused stm32_fmc2_ebi_suspend(struct device *dev)
+@@ -1197,7 +1195,7 @@ MODULE_DEVICE_TABLE(of, stm32_fmc2_ebi_match);
  
- static struct platform_driver exynos5_dmc_platdrv = {
- 	.probe	= exynos5_dmc_probe,
--	.remove = exynos5_dmc_remove,
-+	.remove_new = exynos5_dmc_remove,
- 	.driver = {
- 		.name	= "exynos5-dmc",
- 		.of_match_table = exynos5_dmc_of_match,
+ static struct platform_driver stm32_fmc2_ebi_driver = {
+ 	.probe	= stm32_fmc2_ebi_probe,
+-	.remove	= stm32_fmc2_ebi_remove,
++	.remove_new = stm32_fmc2_ebi_remove,
+ 	.driver	= {
+ 		.name = "stm32_fmc2_ebi",
+ 		.of_match_table = stm32_fmc2_ebi_match,
 -- 
 2.42.0
 
