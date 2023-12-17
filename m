@@ -1,108 +1,145 @@
-Return-Path: <linux-kernel+bounces-2417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DC72815CCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 01:27:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCAC0815CD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 01:28:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 059D61C21793
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:27:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99BEB286558
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 00:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5397D7F4;
-	Sun, 17 Dec 2023 00:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3033A35;
+	Sun, 17 Dec 2023 00:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XAhLRpzB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QfOyjAO3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57375366;
-	Sun, 17 Dec 2023 00:26:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=UmhjuIC+i3niD7s22hOLxzfyohGKz2fOc8wk4Hhr30o=; b=XAhLRpzB623ksRVtLDlHFWBDbZ
-	EtIZFtTiaEAe/aAGXYsnvPuxT2dfKCyqllfO1r7aioBpBREOnBdlTHSe7mgzHJjl+15eDYcrREtM6
-	t6NKdS1iFYmOMxz7cvLBi42OYGOW+Kjlc66SGaBAhCDgAArJ46ehcEnOiuUPsdN+E9KH61Bx8YnUc
-	14ZaSU371BZKcZAF6KzKp9VLPNGq5P5ESWtonHbxx+ADY6tXh5RWfHkVPpmPu+/3RSuUtaL8dey1I
-	oOOk9HOLf6wryCKv09JFMD/IayYdoxsUVkvsymy97nMiUiOiM7kPudKtcyPbVekLdbb7MTThSUouL
-	H+EB/Rrw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEezZ-006ukF-1A;
-	Sun, 17 Dec 2023 00:26:49 +0000
-Message-ID: <90558702-2d94-4396-8e85-2ffa7777e87c@infradead.org>
-Date: Sat, 16 Dec 2023 16:26:48 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB9436E;
+	Sun, 17 Dec 2023 00:28:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74A96C433C7;
+	Sun, 17 Dec 2023 00:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702772905;
+	bh=h2sz8/dtn/sHq1qOGU4fOqWx6jU4GBXGdvx3X6TskjI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QfOyjAO3Ynvi8JGe+6JpF0MRhhbQIQv/Qo5LgeXRZl0WxMIgHUssSGsFGEI6gu+r9
+	 19JkJv8KNXty2F/o1vusOVekAnH5KAFMMZlklb/C+wGZDzFDsp/pqyPcgt+V2T9flE
+	 0t5yidAH+hRIEDV2bkmshyiYabfuYMG/ID0UIX6pI2FKPytv2WDSZk+xZ9VO5+XuCl
+	 U4xv/cjlj+7N8jHI0KZOYJBdoFByvFzQLMDaXEbhIfNYYzXl4rg7bm7kotgj36JB9r
+	 HEaHpD6/BTLmVcYAvWFc/n9wSrztmosoZZAaSlS6O6tV4DHuZPFNZNhYEQ9ocARtsn
+	 IfpCPGasVbBVw==
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ca1e6a94a4so21717051fa.0;
+        Sat, 16 Dec 2023 16:28:25 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz9P0TWGZLbt2xPE6tW/9UhGTCNoMt3VGoXl4ca8+CT6Ig03A8E
+	Gp3nwg7Z8XvAk+aL/mMs4VgTZwpmZ9qwZjaz9Qg=
+X-Google-Smtp-Source: AGHT+IGEdZWD6qEzZOAoX3ZcDKN8EJFuv4Nn4W8FsCrhE7zJJ5BDgJwr3IKUz17DVeBG5rVGrsQWyfFF2rcVPqUqIbw=
+X-Received: by 2002:a2e:b74b:0:b0:2cc:2f4e:a146 with SMTP id
+ k11-20020a2eb74b000000b002cc2f4ea146mr3510864ljo.53.1702772903626; Sat, 16
+ Dec 2023 16:28:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 46/50] preempt.h: Kill dependency on list.h
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, tglx@linutronix.de,
- x86@kernel.org, tj@kernel.org, peterz@infradead.org,
- mathieu.desnoyers@efficios.com, paulmck@kernel.org, keescook@chromium.org,
- dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
- longman@redhat.com, boqun.feng@gmail.com, brauner@kernel.org
-References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
- <20231216033552.3553579-1-kent.overstreet@linux.dev>
- <20231216033552.3553579-3-kent.overstreet@linux.dev>
- <ZX1AFVAWXMfbo+Ry@casper.infradead.org>
- <20231216223522.s4skrclervsskx32@moria.home.lan>
- <82ed43c2-2a9d-4c5e-8ccd-8078397b7953@infradead.org>
- <20231217001849.hmilfx63q44tv3vj@moria.home.lan>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231217001849.hmilfx63q44tv3vj@moria.home.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231215013931.3329455-1-linan666@huaweicloud.com>
+ <20231215013931.3329455-2-linan666@huaweicloud.com> <CAPhsuW6VTvXy3L9CUhTrSC3+_-_n9FDVrtdzQ7SWWkukoQg13Q@mail.gmail.com>
+ <be8d9147-4f7f-2fab-da2a-bb4cde46fd12@huaweicloud.com>
+In-Reply-To: <be8d9147-4f7f-2fab-da2a-bb4cde46fd12@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Sat, 16 Dec 2023 16:28:11 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6kv7FRB_1NoheiDqvmLmongiJ-ty9mYRNvFw3yecE_Ug@mail.gmail.com>
+Message-ID: <CAPhsuW6kv7FRB_1NoheiDqvmLmongiJ-ty9mYRNvFw3yecE_Ug@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] md: Fix overflow in is_mddev_idle
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: linan666@huaweicloud.com, axboe@kernel.dk, linux-raid@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, 
+	yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com, 
+	"yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Dec 15, 2023 at 6:24=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+[...]
+> >>   static inline void md_sync_acct_bio(struct bio *bio, unsigned long n=
+r_sectors)
+> >> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> >> index 3f8a21cd9233..d28b98adf457 100644
+> >> --- a/include/linux/blkdev.h
+> >> +++ b/include/linux/blkdev.h
+> >> @@ -170,7 +170,7 @@ struct gendisk {
+> >>          struct list_head slave_bdevs;
+> >>   #endif
+> >>          struct timer_rand_state *random;
+> >> -       atomic_t sync_io;               /* RAID */
+> >> +       atomic64_t sync_io;             /* RAID */
+> >>          struct disk_events *ev;
+> >
+> > As we are on this, I wonder whether we really need this.
+> > AFAICT, is_mddev_idle() is the only consumer of sync_io.
+> > We can probably do the same check in is_mddev_idle()
+> > without sync_io.
+>
+> After reviewing some code, what I'm understand is following:
+>
+> I think 'sync_io' is used to distinguish 'sync io' from raid(this can
+> from different raid, for example, different partition is used for
+> different array) and other io(any io, even it's not from raid). And
+> if there are any other IO, sync speed is limited to min, otherwise it's
+> limited to max.
+>
+> If we want to keep this behaviour, I can't think of any other way for
+> now...
 
+Thanks for looking into this. To keep current behavior, we will need it
+in gendisk.
 
-On 12/16/23 16:18, Kent Overstreet wrote:
-> On Sat, Dec 16, 2023 at 04:04:43PM -0800, Randy Dunlap wrote:
->>
->>
->> On 12/16/23 14:35, Kent Overstreet wrote:
->>> On Sat, Dec 16, 2023 at 06:13:41AM +0000, Matthew Wilcox wrote:
->>>> On Fri, Dec 15, 2023 at 10:35:47PM -0500, Kent Overstreet wrote:
->>>>> -	INIT_HLIST_NODE(&notifier->link);
->>>>> +	/* INIT_HLIST_NODE() open coded, to avoid dependency on list.h */
->>>>> +	notifier->link.next = NULL;
->>>>> +	notifier->link.pprev = NULL;
->>>>
->>>> Arguably INIT_HLIST_NODE() belongs in types.h -- we already have
->>>> RCUREF_INIT() and ATOMIC_INIT() in there.
->>>
->>> I think I'd prefer to keep types.h as minimal as possible - as soon as
->>> we start putting non type stuff in there people won't know what the
->>> distinction is and it'll grow.
->>>
->>> preempt.h is a bit unusual too, normally we'd just split out a _types.h
->>> header there but it's not so easy to split up usefully.
->>>
->>
->> I don't feel like I have NAK power, but if I did, I would NAK
->> open coding of INIT_HLIST_HEAD() or anything like it.
->> I would expect some $maintainer to do likewise, but I could be
->> surprised.
-> 
-> It's INIT_HLIST_HEAD(), there's approximately zero chance of the
-> implementation changing, and there's a comment.
+[...]
 
-s/_HEAD/_NODE/ for both of us.  :)
+> >> @@ -8496,14 +8496,15 @@ static int is_mddev_idle(struct mddev *mddev, =
+int init)
+> >>   {
+> >>          struct md_rdev *rdev;
+> >>          int idle;
+> >> -       int curr_events;
+> >> +       long long curr_events;
+> >>
+> >>          idle =3D 1;
+> >>          rcu_read_lock();
+> >>          rdev_for_each_rcu(rdev, mddev) {
+> >>                  struct gendisk *disk =3D rdev->bdev->bd_disk;
+> >> -               curr_events =3D (int)part_stat_read_accum(disk->part0,=
+ sectors) -
+> >> -                             atomic_read(&disk->sync_io);
+> >> +               curr_events =3D
+> >> +                       (long long)part_stat_read_accum(disk->part0, s=
+ectors) -
+> >> +                             atomic64_read(&disk->sync_io);
+>
+> By the way, I don't think this overflow is problematic, assume that
+> sectors accumulate by 'A' and sync_io accumulate by 'B':
+>
+> (setros + A) - (sync_io + B) -(sectors - sync_io) =3D (A - B)
+>
+> Nomatter overflow or truncation happened of not in the abouve addition
+> and subtraction, the result is correct.
+>
+> And even if io accounting is disabled, which means sectors and A is
+> always 0, the result will always be -B that is <=3D 0, hence
+> is_mddev_idle() will always return true, and sync_speed will be limited
+> to max in this case.
 
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+We only use  this for idle or not check, the behavior is OK (I think).
+However, this logic is error prone.
+
+On 64-bit systems, there is a 4-byte hole behind sync_io. I think we can
+just use it for atomic64_t so that we don't have to worry about overflow.
+
+Thanks,
+Song
 
