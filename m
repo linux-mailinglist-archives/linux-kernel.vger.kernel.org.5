@@ -1,174 +1,124 @@
-Return-Path: <linux-kernel+bounces-2647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F482815FDE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:36:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A06815FE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:40:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 361DA2892D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:36:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42A86B21FB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FEA44C74;
-	Sun, 17 Dec 2023 14:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50941446DF;
+	Sun, 17 Dec 2023 14:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ER6anyDg"
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="uy1KddWp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from aposti.net (aposti.net [89.234.176.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857341DFD7;
-	Sun, 17 Dec 2023 14:36:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF555C433C8;
-	Sun, 17 Dec 2023 14:36:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702823770;
-	bh=ZJHYl2x/5sOZYR/DGxvRXI5eEW8wCSGNtFDh8x+V5bA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ER6anyDg+jhiNEW1JfE8yrcTvOcyVAP0Abw8SQdsCjpjoqLLjgS5jMoiATdIloM46
-	 b/FhcviIxYDHyZntmQy5Qc70SgkXtcVdjUeCjFthZJaW0wtLse26fS7MoCrrhmf3Tc
-	 c1zs2CeJaoqfs/KY7ZYaHCyIRIn0riKBffgxuMh4gHwk+ILaKNGM30u7y5musRZRhn
-	 ThtSw78tFbwtYsdpqlZaLqPv44W/4lUMbm2zO0byt/gSz76j/23SB30K1C6VFyq7Jj
-	 WZGKqHkTyDzXB2FCd/+AAQ6Az06U9s66pD8rF/Onv5x/NaL5lruOo7Mfv2gOXCbyFT
-	 sldL/41dId8CA==
-Date: Sun, 17 Dec 2023 14:35:55 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: jikos@kernel.org, lars@metafoo.de, Basavaraj.Natikar@amd.com,
- linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
- <thomas@t-8ch.de>, stable@vger.kernel.org
-Subject: Re: [PATCH] iio: light: hid-sensor-als: Avoid failure for
- chromaticity support
-Message-ID: <20231217143555.1f89ddaa@jic23-huawei>
-In-Reply-To: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
-References: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49BD44373;
+	Sun, 17 Dec 2023 14:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1702824030;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3UMKMOKGFl2fsIk9JhzL3lZuepQtAoYkfTj1MeKujzM=;
+	b=uy1KddWps0AePYoqIJQe60Ly9AIztA/27M7bgs1tRIE82KoJhxbQwp5Gcay+lASSadjIFg
+	idLEPWloaFPGPsR7u5J6MTK/boVNts1tBFg2vpQ3jp0xzsGVU0hwZtggKmD6LFbO7cnL37
+	1h5GxTev4lKjD3Gfzn3DDXbfCzZmcYc=
+Message-ID: <11e0d8b13cc835d8f99046110842d6bc569ff7a8.camel@crapouillou.net>
+Subject: Re: [PATCH 06/15] memory: jz4780-nemc: Convert to platform remove
+ callback returning void
+From: Paul Cercueil <paul@crapouillou.net>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: kernel@pengutronix.de, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Sun, 17 Dec 2023 15:40:29 +0100
+In-Reply-To: <fa609b805a7ed6e4c6ce81464528ea4163625d67.1702822744.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
+	 <fa609b805a7ed6e4c6ce81464528ea4163625d67.1702822744.git.u.kleine-koenig@pengutronix.de>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 15 Dec 2023 08:01:59 -0800
-Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+Hi,
 
-> With the commit ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity
-> support"), there is an assumption that the every HID ALS descriptor has
-> support of usage ids for chromaticity support. If they are not present,
-> probe fails for the driver . This breaks ALS functionality on majority of
-> platforms.
+Le dimanche 17 d=C3=A9cembre 2023 =C3=A0 15:29 +0100, Uwe Kleine-K=C3=B6nig=
+ a =C3=A9crit=C2=A0:
+> The .remove() callback for a platform driver returns an int which
+> makes
+> many driver authors wrongly assume it's possible to do error handling
+> by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource
+> leaks.
 >=20
-> It is possible that chromaticity usage ids are not present. When not
-> present, restrict number of IIO channels to not include support for
-> chromaticity and continue.
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all
+> drivers
+> are converted, .remove_new() will be renamed to .remove().
 >=20
-> Fixes: ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity support=
-")
-> Reported-by: Thomas Wei=C3=9Fschuh <thomas@t-8ch.de>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218223
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: stable@vger.kernel.org
+> Trivially convert this driver from always returning zero in the
+> remove
+> callback to the void returning variant.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
 > ---
->  drivers/iio/light/hid-sensor-als.c | 24 ++++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
+> =C2=A0drivers/memory/jz4780-nemc.c | 5 ++---
+> =C2=A01 file changed, 2 insertions(+), 3 deletions(-)
 >=20
-> diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-s=
-ensor-als.c
-> index f17304b54468..9941b0b927c7 100644
-> --- a/drivers/iio/light/hid-sensor-als.c
-> +++ b/drivers/iio/light/hid-sensor-als.c
-> @@ -303,11 +303,14 @@ static int als_parse_report(struct platform_device =
-*pdev,
->  				struct hid_sensor_hub_device *hsdev,
->  				struct iio_chan_spec *channels,
->  				unsigned usage_id,
-> -				struct als_state *st)
-> +				struct als_state *st,
-> +				int *max_channels)
->  {
->  	int ret;
->  	int i;
-> =20
-> +	*max_channels =3D CHANNEL_SCAN_INDEX_MAX;
-> +
->  	for (i =3D 0; i <=3D CHANNEL_SCAN_INDEX_ILLUM; ++i) {
->  		ret =3D sensor_hub_input_get_attribute_info(hsdev,
->  						HID_INPUT_REPORT,
-> @@ -326,8 +329,12 @@ static int als_parse_report(struct platform_device *=
-pdev,
->  				usage_id,
->  				HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE,
->  				&st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP]);
-> -	if (ret < 0)
-> -		return ret;
-> +	if (ret < 0) {
-> +		*max_channels =3D CHANNEL_SCAN_INDEX_ILLUM;
-> +		ret =3D 0;
-> +		goto skip_color_chromaticity;
-> +	}
-> +
->  	als_adjust_channel_bit_mask(channels, CHANNEL_SCAN_INDEX_COLOR_TEMP,
->  				st->als[CHANNEL_SCAN_INDEX_COLOR_TEMP].size);
-> =20
-> @@ -354,6 +361,7 @@ static int als_parse_report(struct platform_device *p=
-dev,
->  			st->als[next_scan_index].report_id);
->  	}
-> =20
-> +skip_color_chromaticity:
->  	st->scale_precision =3D hid_sensor_format_scale(usage_id,
->  				&st->als[CHANNEL_SCAN_INDEX_INTENSITY],
->  				&st->scale_pre_decml, &st->scale_post_decml);
-> @@ -364,7 +372,7 @@ static int als_parse_report(struct platform_device *p=
-dev,
->  /* Function to initialize the processing for usage id */
->  static int hid_als_probe(struct platform_device *pdev)
->  {
-> -	int ret =3D 0;
-> +	int ret =3D 0, max_channels;
->  	static const char *name =3D "als";
->  	struct iio_dev *indio_dev;
->  	struct als_state *als_state;
-> @@ -398,15 +406,15 @@ static int hid_als_probe(struct platform_device *pd=
-ev)
-> =20
->  	ret =3D als_parse_report(pdev, hsdev,
->  			       (struct iio_chan_spec *)indio_dev->channels,
-> -			       hsdev->usage,
-> -			       als_state);
-> +			       hsdev->usage, als_state, &max_channels);
->  	if (ret) {
->  		dev_err(&pdev->dev, "failed to setup attributes\n");
->  		return ret;
->  	}
-> =20
-> -	indio_dev->num_channels =3D
-> -				ARRAY_SIZE(als_channels);
-> +	/* +1 to include time stamp */
-> +	indio_dev->num_channels =3D max_channels + 1;
-
-In the current array the timestamp channel isn't the next one, so how does =
-this work?
-
-I think we either have to form the channel array dynamically or pick between
-one that does have the colour info and one that doesn't for the original ca=
-se.
-
-Given timing we may just need to revert the broken patch and revisit this n=
-ext
-cycle.
-
-Jonathan
-
-
-> +
->  	indio_dev->info =3D &als_info;
->  	indio_dev->name =3D name;
->  	indio_dev->modes =3D INDIO_DIRECT_MODE;
+> diff --git a/drivers/memory/jz4780-nemc.c b/drivers/memory/jz4780-
+> nemc.c
+> index e5a93e7da15f..fb6db2ffe71b 100644
+> --- a/drivers/memory/jz4780-nemc.c
+> +++ b/drivers/memory/jz4780-nemc.c
+> @@ -384,12 +384,11 @@ static int jz4780_nemc_probe(struct
+> platform_device *pdev)
+> =C2=A0	return 0;
+> =C2=A0}
+> =C2=A0
+> -static int jz4780_nemc_remove(struct platform_device *pdev)
+> +static void jz4780_nemc_remove(struct platform_device *pdev)
+> =C2=A0{
+> =C2=A0	struct jz4780_nemc *nemc =3D platform_get_drvdata(pdev);
+> =C2=A0
+> =C2=A0	clk_disable_unprepare(nemc->clk);
+> -	return 0;
+> =C2=A0}
+> =C2=A0
+> =C2=A0static const struct jz_soc_info jz4740_soc_info =3D {
+> @@ -408,7 +407,7 @@ static const struct of_device_id
+> jz4780_nemc_dt_match[] =3D {
+> =C2=A0
+> =C2=A0static struct platform_driver jz4780_nemc_driver =3D {
+> =C2=A0	.probe		=3D jz4780_nemc_probe,
+> -	.remove		=3D jz4780_nemc_remove,
+> +	.remove_new	=3D jz4780_nemc_remove,
+> =C2=A0	.driver	=3D {
+> =C2=A0		.name	=3D "jz4780-nemc",
+> =C2=A0		.of_match_table =3D
+> of_match_ptr(jz4780_nemc_dt_match),
 
 
