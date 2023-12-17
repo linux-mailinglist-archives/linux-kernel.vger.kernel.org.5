@@ -1,48 +1,45 @@
-Return-Path: <linux-kernel+bounces-2642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2C71815FCE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:32:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0698815FBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 15:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 308D21C21EC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:32:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55D8A1F21E6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 14:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62888481D5;
-	Sun, 17 Dec 2023 14:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F39045BFE;
+	Sun, 17 Dec 2023 14:30:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6855646445
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5401444C8C
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 14:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9e-0006W7-5x; Sun, 17 Dec 2023 15:30:06 +0100
+	id 1rEs9e-0006WA-83; Sun, 17 Dec 2023 15:30:06 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9d-00GUhV-Lt; Sun, 17 Dec 2023 15:30:05 +0100
+	id 1rEs9d-00GUhZ-Ri; Sun, 17 Dec 2023 15:30:05 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9d-004hzL-CW; Sun, 17 Dec 2023 15:30:05 +0100
+	id 1rEs9d-004hzO-Ic; Sun, 17 Dec 2023 15:30:05 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: kernel@pengutronix.de,
-	Roger Quadros <rogerq@kernel.org>,
-	Tony Lindgren <tony@atomide.com>,
-	linux-omap@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 08/15] memory: omap-gpmc: Convert to platform remove callback returning void
-Date: Sun, 17 Dec 2023 15:29:34 +0100
-Message-ID:  <019d9dc31af9b30a6b675fec219e64b667475efd.1702822744.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 09/15] memory: renesas-rpc-if: Convert to platform remove callback returning void
+Date: Sun, 17 Dec 2023 15:29:35 +0100
+Message-ID:  <a7d47700879e10384080b20728aa13ff349fc321.1702822744.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
@@ -53,7 +50,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1813; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=U5CGeCdz6QSAvrFQlhj98hj1wRRaTXzuJdwPMd0OWnY=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlfwXOgeJ/I+MLCCzaRR2S0hAuUidKX2H7fnV+l jyp10wIe56JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZX8FzgAKCRCPgPtYfRL+ Th6oCACtPZCoIo+uH4FSx41yvLOR8wWQbzWGm9FpXYZXVzaWiiGYx6ommIRZqHHnhfz8L/bsbOJ /L6QVHQUGm+FaQFwgHndv3F0h30XiAbDgT7+z+7WSo8fntdsBhUJPgfjcI4TNt4Avcjt0cMf36j nJ23HdfmZqiQm3psRAgSdfkGn8FjYu+6KeeBqC/1asWM0dHPj041s24BJ52kZfif8R8fwE0VWbr h+/zdtOCNgWAE8TndXGCrkz9FbNpD0d0EMBpUnkMZfDmK+4qKVIqD/Cj7HuoQc6cJLsL+4reqzV UilU2v/he3wH8BxMi2LOUcFhFqg6cbMvAF0VVyIeUucdVK11
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1725; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=ZMDbiRa3FGTihhO4tO5ODGE29OSsGDt4kVGBu1a2R44=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlfwXPj3UhNZgDNyg4+9bkx2WCA2L43Uy2kWkf2 vpluzZRuM2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZX8FzwAKCRCPgPtYfRL+ TiKUB/9qljxV2MeMzDUCTbF/CisoK5J7jGBMJKNKmSczc/ZId0wNcKIE/ZII9SiOa0sXgMqooq2 hdXWYXREWg4OuL+Q6yATWPNRJbgu8AcnTbBzxW5mdOnDUVjyH7XYjNdBeoddZQ4pO/c7GDbsJA9 9CXDI67v2k0lSPlOdxGxcw5FHk4jIV45aIdEVvr3YMxoAsM8TkKU8GU5hEyushutaxsNLJybyK5 06XicsJma81Z0Pxc/yJoTw3FJGgjhPQhkJyYpMPnHsEkDeSgQWmeJ+em1rCWYx+ldaoogQ+12FC 6oEs0QakXakB0gOgxA88WgRQdXWMH+NxXbJ/J+AYFLn9x/mv
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -76,40 +73,37 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/memory/omap-gpmc.c | 6 ++----
+ drivers/memory/renesas-rpc-if.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index d78f73db37c8..80d038884207 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -2690,7 +2690,7 @@ static int gpmc_probe(struct platform_device *pdev)
- 	return rc;
+diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+index 9695b2d3ae59..3167826b236a 100644
+--- a/drivers/memory/renesas-rpc-if.c
++++ b/drivers/memory/renesas-rpc-if.c
+@@ -777,13 +777,11 @@ static int rpcif_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static int gpmc_remove(struct platform_device *pdev)
-+static void gpmc_remove(struct platform_device *pdev)
+-static int rpcif_remove(struct platform_device *pdev)
++static void rpcif_remove(struct platform_device *pdev)
  {
- 	int i;
- 	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
-@@ -2702,8 +2702,6 @@ static int gpmc_remove(struct platform_device *pdev)
- 	gpmc_mem_exit();
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+ 	struct rpcif_priv *rpc = platform_get_drvdata(pdev);
+ 
+ 	platform_device_unregister(rpc->vdev);
 -
 -	return 0;
  }
  
- #ifdef CONFIG_PM_SLEEP
-@@ -2747,7 +2745,7 @@ MODULE_DEVICE_TABLE(of, gpmc_dt_ids);
+ static const struct of_device_id rpcif_of_match[] = {
+@@ -797,7 +795,7 @@ MODULE_DEVICE_TABLE(of, rpcif_of_match);
  
- static struct platform_driver gpmc_driver = {
- 	.probe		= gpmc_probe,
--	.remove		= gpmc_remove,
-+	.remove_new	= gpmc_remove,
- 	.driver		= {
- 		.name	= DEVICE_NAME,
- 		.of_match_table = of_match_ptr(gpmc_dt_ids),
+ static struct platform_driver rpcif_driver = {
+ 	.probe	= rpcif_probe,
+-	.remove	= rpcif_remove,
++	.remove_new = rpcif_remove,
+ 	.driver = {
+ 		.name =	"rpc-if",
+ 		.of_match_table = rpcif_of_match,
 -- 
 2.42.0
 
