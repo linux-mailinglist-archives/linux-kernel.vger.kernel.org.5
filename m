@@ -1,132 +1,117 @@
-Return-Path: <linux-kernel+bounces-2690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3290816096
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:58:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B41816098
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCD39B22419
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 16:57:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E0E01F22BC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 17:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AEDF46421;
-	Sun, 17 Dec 2023 16:57:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A1245BF2;
+	Sun, 17 Dec 2023 17:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="EaKGOjUm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ust00oYs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DDE47F5E;
-	Sun, 17 Dec 2023 16:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=gQ4VXb6aTdqcaOkXb5g9GnK1Q/37tTNEjG1RRH6Dcn0=; b=EaKGOjUm/Lmqo4HWwoN5DYsu9V
-	cR4Xv0Rpt0TZSVgkRoBB0REzy+MCPnFok4MnDE8pQtr9mZg4X/9EiSk7WJwhTVBWa7xpRImVdEwLq
-	pT63WDfGl9guNcHF3SexzzyXxp/ccpD6BIefUN0W9Tjt6ptTHf5t/hp1oUUSEvoyagM8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rEuRy-003A5K-R1; Sun, 17 Dec 2023 17:57:10 +0100
-Date: Sun, 17 Dec 2023 17:57:10 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com, Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	=?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>
-Subject: Re: [PATCH net-next v4 01/13] net: phy: Introduce ethernet link
- topology representation
-Message-ID: <ede222d4-11da-4b95-a685-17cb480694dd@lunn.ch>
-References: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
- <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
- <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
- <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
- <20231215214523.ntk5kec32mb5vqjs@skbuf>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0872A44C88
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 17:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDD0BC433C7;
+	Sun, 17 Dec 2023 17:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702832424;
+	bh=GogW5D6Y+SD+UASLvms8cf2y1R4KcoAWaiuqM0Z6DwI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Ust00oYs0gcEWXRpCp8L/UvCrPYnBgp83scsvKpRMBzytnlO+De4AxL114308f6bb
+	 RSezZYWrEuSk748m5deLa/vIDdxjvY8VqPh7afReAvxBoFJQqpIaNGZUw/ITSiOzDl
+	 CYIJAryeVFzHGwJti5CnxLKfMpJAa/E8bw2wO/ZVBHnLrNqyri+oR48EgIX/kUXSQO
+	 ZQdFG24LChVRYyvo/qllL7Q7jmdMMYWNS6Gs/uXsm/ZHCynsZTBQLTOnHcef/JEged
+	 53qyPJiyqgKO+U9qQUTNOJ/DsjiipASUdCyGVaTrFvWlb8jmM+0UdsDzWSL3eGhvpu
+	 Oebaka17540AA==
+Date: Sun, 17 Dec 2023 22:30:19 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: soundwire fixes for v6.7
+Message-ID: <ZX8pI+hOq9Tg5H2A@matsya>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="B0p2wfdWhnStDON3"
+Content-Disposition: inline
+
+
+--B0p2wfdWhnStDON3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231215214523.ntk5kec32mb5vqjs@skbuf>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 11:45:23PM +0200, Vladimir Oltean wrote:
-> On Fri, Dec 15, 2023 at 06:12:23PM +0100, Maxime Chevallier wrote:
-> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > index d8e9335d415c..89daaccc9276 100644
-> > --- a/drivers/net/phy/phy_device.c
-> > +++ b/drivers/net/phy/phy_device.c
-> > @@ -1491,6 +1500,11 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
-> >  
-> >  		if (phydev->sfp_bus_attached)
-> >  			dev->sfp_bus = phydev->sfp_bus;
-> > +
-> > +		err = phy_link_topo_add_phy(&dev->link_topo, phydev,
-> > +					    PHY_UPSTREAM_MAC, dev);
-> > +		if (err)
-> > +			goto error;
-> >  	}
-> >  
-> >  	/* Some Ethernet drivers try to connect to a PHY device before
-> > @@ -1816,6 +1830,7 @@ void phy_detach(struct phy_device *phydev)
-> >  	if (dev) {
-> >  		phydev->attached_dev->phydev = NULL;
-> >  		phydev->attached_dev = NULL;
-> > +		phy_link_topo_del_phy(&dev->link_topo, phydev);
-> >  	}
-> >  	phydev->phylink = NULL;
-> >  
-> > diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
-> > new file mode 100644
-> > index 000000000000..22f6372d002c
-> > --- /dev/null
-> > +++ b/drivers/net/phy/phy_link_topology.c
-> > +int phy_link_topo_add_phy(struct phy_link_topology *topo,
-> > +			  struct phy_device *phy,
-> > +			  enum phy_upstream upt, void *upstream)
-> > +{
-> > +	struct phy_device_node *pdn;
-> > +	int ret;
-> > +
-> > +	/* Protects phy and upstream */
-> > +	ASSERT_RTNL();
-> 
-> Something to think for the PHY library maintainers. This is probably
-> the first time when the rtnl_lock() requirement is asserted at
-> phy_attach_direct() time.
+Hello Linus,
 
-There are two use cases here for plain MAC drivers.
+Please pull to receive the soundwire subsystem fix for 6.7 containing
+intel driver fix and a core fix in case of multi-link.
 
-1) phy_attach_direct() is called from probe. RTNL is normally not
-held, the driver would have to take it before making the call.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-2) phy_attach_direct() is called from ndo_open. In that case,
-__dev_open() has a ASSERT_RTNL() so we can assume RTNL has been taken.
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-So i don't think we can assume RTNL is held, but it might be held.
+are available in the Git repository at:
 
-We need a better understanding what is being protected here.
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-6.7-fixes
 
-   Andrew
+for you to fetch changes up to 393cae5f32d640b9798903702018a48c7a45e59f:
+
+  soundwire: intel_ace2x: fix AC timing setting for ACE2.x (2023-11-28 15:2=
+7:27 +0530)
+
+----------------------------------------------------------------
+soundwire fixes for 6.7
+
+ - Null pointer dereference for mult link in core
+ - AC timing fix in intel driver
+
+----------------------------------------------------------------
+Chao Song (1):
+      soundwire: intel_ace2x: fix AC timing setting for ACE2.x
+
+Krzysztof Kozlowski (1):
+      soundwire: stream: fix NULL pointer dereference for multi_link
+
+ drivers/soundwire/intel_ace2x.c | 3 ++-
+ drivers/soundwire/stream.c      | 7 ++++---
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+--=20
+~Vinod
+
+--B0p2wfdWhnStDON3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmV/KSMACgkQfBQHDyUj
+g0fNMhAAvGCRHgz8S/KSCIYDwqRBo8LeZCGWKR9oiVlCPC3lZ1u762OZDhXhc0c4
+ZcMYc0pyQqQdYVpqqUOV/5AAAz3bADcIeI4L0Lw/kA/WNseaSHf2gpY0xXvRfvBK
+3xRsvDjZz+WShoTbQwcC9ykThL3xNlg0awto9Kz/aF+jQkAwA+sY6w5Qrwglel8x
+znWHzFz1W/nBh3Ozn0k6dG+8mOX032du0Agj+selkWgCCtuUQxaeVZMmfu/ZmTdX
+qMPjI6ij5e9tCajrLb1/KtThPsKZC+p8wLylln74x2YgXRCKkYUb+39FOdXQ21s0
+eIqkJO1LU2cyAfk8/ZF+QuysCZYqomR+kvyMxTZBT2rU+EexjowCnKyITB1Rgzzr
+Ox362ZzlaOABbz4j68gecq9u3xDn20AvrKpc7Pt9Y6AYKEnvbnlHODLljqSQnxfb
+4YeaIEzwCGwcqzl2BJwAMPPr4gAeuHtxMigtX+5fQpPNIRsnBYpzzxbRw3nqlgrU
+RGVG8J8WLvYr3rNArYxWyapIr4m3RrgVkTe/5W4ua/03Q+mV+pFEfh6g5pi+l6VE
+wBs1LJVz0N0XQmsnFJQhEjMc7ZNQu47TTleoHwgPrxX3266KGhuMFpSMNF1IblyW
+Cba3AEslmifL4i73JbP1Z133RUs9O2HZE1uOefrgY4zshMWAETo=
+=WkZf
+-----END PGP SIGNATURE-----
+
+--B0p2wfdWhnStDON3--
 
