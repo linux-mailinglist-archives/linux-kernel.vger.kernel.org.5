@@ -1,71 +1,72 @@
-Return-Path: <linux-kernel+bounces-2423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCA8815CEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 02:06:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74CDF815CF1
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 02:08:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E8DA28472D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 01:06:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34DB21F222E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 01:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D741863;
-	Sun, 17 Dec 2023 01:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC6DA35;
+	Sun, 17 Dec 2023 01:08:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="amZUIfDT"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AtICvnj/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6647E17EB
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 01:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0BBD7F4
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 01:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e2786e71fso934005e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 17:06:18 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cc63b3ed71so6894991fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Dec 2023 17:08:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702775176; x=1703379976; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1702775298; x=1703380098; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:user-agent:from:references
          :in-reply-to:mime-version:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=k4WycKPSFzunUdkSJRY1N3XmhnoQWoEYL5xkeoe24vI=;
-        b=amZUIfDTyJkLgazRup7wqFQS11NgBMNH61g3pUbyHBxO/XWFj1EKmR1Om3tByV2WAq
-         i9+GdH3hc4tUgiWvb6OnLqfxshTeNbm3iCbsJzL+/kivFZfGtWGn/g9RFoSvINXxHaus
-         qu/V3UqzMZq3zzA+nRcr3Pdqdjtol80Be1hsY=
+        bh=KZvP4fL3Nz75ZyOFfSnsYpgH0MiazCjRnOKU1EHMPm8=;
+        b=AtICvnj/OVGwwOt5zt4wNyDHbEdWlRqakgbuQ6TZxvOS32jXk6boHfvMdZJxhRdfYb
+         XYfdSGO/1BqJVgI6Ci3IswEpTFidvF3k4T47EZJa2xYExVMAFs/Mq4vwsI5H6rZpkURF
+         DGpYLJXC307vegjMxV6fbPwooYP6ZorFnc7oM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702775176; x=1703379976;
+        d=1e100.net; s=20230601; t=1702775298; x=1703380098;
         h=cc:to:subject:message-id:date:user-agent:from:references
          :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=k4WycKPSFzunUdkSJRY1N3XmhnoQWoEYL5xkeoe24vI=;
-        b=jZq2aYhXE60H4bB02vNetssJ5vi5ZfdAcW9TUhEjdXOwtobgqvC8x2f7sTwH1Tk6id
-         SCdGgcod3bLSJqzyI1N0+FUgjO+DTanUbHXlnCr/R3a2Z6zvtdORrm/icLpC/Yhi4KYb
-         ySopLi7dLqDYPqaqaE0hUnLXCZLHuCeq5mImXBAmNFQqATyAAtgitUNAHiNrzUcnzSWW
-         eJdJ2szChcAnXVQ/+WRJBcQNcK1NDT8Q/ElZ3oxnRjzUInisXQyQyfuKuzMbr/JfFc0C
-         KQwGmvAt+AwVe4lQnVmB0B3piXzl8ug8kT0kO++17EpOo8oDMjxZYBi10w5YS1r0RB/1
-         9P8g==
-X-Gm-Message-State: AOJu0Yz4Ww03jySv5SHLI1AJTcVbrfNN9vY+LTUqy7hqfqHL7mq/N6OD
-	OCoYhBorZfm9pb9vVj1A5n0Fm5ci6v1urWz4JGlRgw==
-X-Google-Smtp-Source: AGHT+IFO9xNmf66MdIUeGEiEWBXaFelFHf4mK55JIAy/3AVccBXR5tgQMzTNwFyMQT05VUEWPQ2FtQBbNhcIVJ+J328=
-X-Received: by 2002:a05:6512:33c2:b0:50e:1a9f:3c36 with SMTP id
- d2-20020a05651233c200b0050e1a9f3c36mr2788651lfg.15.1702775176464; Sat, 16 Dec
- 2023 17:06:16 -0800 (PST)
+        bh=KZvP4fL3Nz75ZyOFfSnsYpgH0MiazCjRnOKU1EHMPm8=;
+        b=mf4R20nIH8WJ2KKT4FwroS6E0N0aoWYFUPFdfpVVaC2Uwy70Rhg5LmB4zBYlleVdg2
+         dO1zTB1nQwmZsq3tahIf1olNYVgwjjp/rynn3AkitkGPtf0O1xcyshKILn14QtBvKIQy
+         2+cPs4nn44Ow7ZQMcJMm5ZprjlMIXL0Y9bNFCr/H9x7ti8FrJtwXgTnYptXyLcMyIu9L
+         ZGWasDfswMbnFcYq4ix8gJtdiQB33DDVC/CGE8fCGRpBS0qQXAyuj1ZtKInSyHa4H78o
+         JR9gA9VScb7qM6CawW3zk6uCB6kfvfiF1HqeHUU83nJrdCo5h1oEwK8IioGpZ6MUSekS
+         9/HQ==
+X-Gm-Message-State: AOJu0YyteQPrh3d2qB4lpN+pNF+TjUTutx1qLSFYzBO8Pa8DPSqF3ewG
+	elreiO+qM6dr6MMhBnRZ+XuttguDWqMs3JttTse6EQ==
+X-Google-Smtp-Source: AGHT+IEtsTVdo91RRo/T0ysvJXNkeuxkKFctEkemIJaU/LFJ344lorZ2hh3+CSEcbgLa2Zg87ZJvzN4cpfivGY6x0e4=
+X-Received: by 2002:a05:651c:2002:b0:2cc:30dd:1b59 with SMTP id
+ s2-20020a05651c200200b002cc30dd1b59mr3443489ljo.84.1702775297334; Sat, 16 Dec
+ 2023 17:08:17 -0800 (PST)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 17 Dec 2023 01:06:16 +0000
+ HTTPREST; Sun, 17 Dec 2023 01:08:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231214123752.v3.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
+In-Reply-To: <20231214123752.v3.2.I7b83c0f31aeedc6b1dc98c7c741d3e1f94f040f8@changeid>
 References: <20231214123752.v3.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
+ <20231214123752.v3.2.I7b83c0f31aeedc6b1dc98c7c741d3e1f94f040f8@changeid>
 From: Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.10
-Date: Sun, 17 Dec 2023 01:06:16 +0000
-Message-ID: <CAE-0n51EkQt2FbwJUaXqkohwEGRzZ1qYw8c3+cY3o_ubj+YN2w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] drm/bridge: parade-ps8640: Never store more than
+Date: Sun, 17 Dec 2023 01:08:16 +0000
+Message-ID: <CAE-0n52nK6fs_K8s1pfwGw0K_6HCzAMPfjNruxkVmWZfbEUTDA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] drm/bridge: ti-sn65dsi86: Never store more than
  msg->size bytes in AUX xfer
 To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
 Cc: Guenter Roeck <groeck@chromium.org>, Andrzej Hajda <andrzej.hajda@intel.com>, 
@@ -73,37 +74,22 @@ Cc: Guenter Roeck <groeck@chromium.org>, Andrzej Hajda <andrzej.hajda@intel.com>
 	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
 	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Philip Chen <philipchen@chromium.org>, 
-	Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Sam Ravnborg <sam@ravnborg.org>, Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Quoting Douglas Anderson (2023-12-14 12:37:51)
-> While testing, I happened to notice a random crash that looked like:
+Quoting Douglas Anderson (2023-12-14 12:37:52)
+> For aux reads, the value `msg->size` indicates the size of the buffer
+> provided by `msg->buffer`. We should never in any circumstances write
+> more bytes to the buffer since it may overflow the buffer.
 >
->   Kernel panic - not syncing: stack-protector:
->   Kernel stack is corrupted in: drm_dp_dpcd_probe+0x120/0x120
+> In the ti-sn65dsi86 driver there is one code path that reads the
+> transfer length from hardware. Even though it's never been seen to be
+> a problem, we should make extra sure that the hardware isn't
+> increasing the length since doing so would cause us to overrun the
+> buffer.
 >
-> Analysis of drm_dp_dpcd_probe() shows that we pass in a 1-byte buffer
-> (allocated on the stack) to the aux->transfer() function. Presumably
-> if the aux->transfer() writes more than one byte to this buffer then
-> we're in a bad shape.
->
-> Dropping into kgdb, I noticed that "aux->transfer" pointed at
-> ps8640_aux_transfer().
->
-> Reading through ps8640_aux_transfer(), I can see that there are cases
-> where it could write more bytes to msg->buffer than were specified by
-> msg->size. This could happen if the hardware reported back something
-> bogus to us. Let's fix this so we never write more than msg->size
-> bytes. We'll still read all the bytes from the hardware just in case
-> the hardware requires it since the aux transfer data comes through an
-> auto-incrementing register.
->
-> NOTE: I have no actual way to reproduce this issue but it seems likely
-> this is what was happening in the crash I looked at.
->
-> Fixes: 13afcdd7277e ("drm/bridge: parade-ps8640: Add support for AUX channel")
+> Fixes: 982f589bde7a ("drm/bridge: ti-sn65dsi86: Update reply on aux failures")
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
 
