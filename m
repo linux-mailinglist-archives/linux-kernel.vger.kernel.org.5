@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-2881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4D10816397
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:56:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F4EC816398
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:56:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60E1F28287A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:56:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15713282ADA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 23:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A63EE4C3BF;
-	Sun, 17 Dec 2023 23:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8525E4CB4F;
+	Sun, 17 Dec 2023 23:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="NxK/XjPv"
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="dqsqn104"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6624B13E
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6320A4B5A1
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-28b400f08a4so1575795a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 15:55:26 -0800 (PST)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-591487a1941so2005775eaf.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 15:55:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1702857326; x=1703462126; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1702857327; x=1703462127; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QcmVbJydKEcWtYX1J4gYneDAG9W0JB3UC1M7ZuIvgfA=;
-        b=NxK/XjPvWKohdqojctlmYy7e0VsuGNvlpy6DKPlTLmKA8VJAoArRbMJQcnqxUon/BP
-         CJN9ikgha0lQAURv9ZF5Vi7r0bPPxwK4JwovUPOGrly/AiGCBqodp7WHoEcAhNfJj7LL
-         Q0d2/jhEx4bsaJR4HBuefvzHVPLA3I8QE1Cur/Tii+LqKYVTheEa60ZUhu9xMwSA21Ct
-         WqCNXetc6+E5objqLiFjZgKtIQtVZ2QugG/h2XL+2eS4eQ51m4tCgWs3sfGftaUWasA2
-         YiMEt44MKHZZBOV/0yfmFJGN7PaY3uiRrMcnYeuEGFdkUE1Ao9LivHEzJKFttwA5RoSx
-         8uJw==
+        bh=CQyqLl2j3iLvLgdglWKcDF464BuHW+ufozKe2II4NWc=;
+        b=dqsqn104P1z9YybVvsH/FXBBTYq2TR5kbgKoXsemv4QCYCfkBnUR/0HTU/Z4sElVTD
+         RIyW/WzriGjIiqDgPvcKPgI/aQpIo8UvEBf8WFIaDv1jBqrh1DeLaqagWI7XK3eIcdvp
+         dQBzA2zvGmdaN4X0ckkHqzPLdQTJVZIjTd/PSicrQ5ear1gRLjvOmtH57mq2RbkIvOld
+         kPgqxoXlayla/cAkK8GdfL5Lbnd/mGzsz1IhiipqhDhesDL2RuJPB+UMlFD8SU+wgbSK
+         cPk0zMsxytTp2HM5Oou11j8cy4ALZF5MxH2/syGdBPjnQfUwwvkcnck3mfDCjYGxV2dM
+         2SKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702857326; x=1703462126;
+        d=1e100.net; s=20230601; t=1702857327; x=1703462127;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QcmVbJydKEcWtYX1J4gYneDAG9W0JB3UC1M7ZuIvgfA=;
-        b=JDErcqynVjYWLsUuShyM/6hX0FgAoiyM61QjUrEvqlVbRH84LPj8+3T6U24pNAAhrV
-         hb909lRlqlZTtP/o//vbhT3Zxv9MgK+uek9z/0rC7pOaqgcXUfihcXAFnqp5JaPMXUMj
-         mLSSHBIerNb6ONuf85J7B+Ovx7HatGql7JvwUI8hEGkqzAYs39mb8DFkFtats+vkerFw
-         +5BW8GvzyxuJCNVVm7qi8bbnBtrLZ+C0rjK2qNlnsE/h5yXMRIjvCHTjIHcxu0oO6gkg
-         Cqnz1pA3XLbNNm8p0bnLTIkV3/ksxUSfvdcX3T1QjyMV3WOgPyE1RSdvLKH0UHz3aVSW
-         RTGw==
-X-Gm-Message-State: AOJu0YyDoQkMUEPgcxniguysorO2ZgYMLjVhby3naKIRnpHektsfx0iv
-	88plFxqKt3IAG/Yg0hGEbVHlUg==
-X-Google-Smtp-Source: AGHT+IGzG4RbwFRuq9imJKDCMJ+xVKs77Du/FtG5Jl2kjnXKqAUalU71OA38gz2W8J5ijf7XBOmkcQ==
-X-Received: by 2002:a17:903:2b10:b0:1d3:4d31:6e3a with SMTP id mc16-20020a1709032b1000b001d34d316e3amr11271032plb.47.1702857326256;
-        Sun, 17 Dec 2023 15:55:26 -0800 (PST)
+        bh=CQyqLl2j3iLvLgdglWKcDF464BuHW+ufozKe2II4NWc=;
+        b=mZqf2y//67uN8rE1IsqrtMiqpdXr1y4/jhM+IVgfeI701e+1jWLm6FiDMh631SbEgQ
+         5yW0dXCVtqZgXxZyOH5QGNwHXkPhy4EV0YPIw91o/2RAfqATM5iY0XlMtE5QejZSz5ky
+         fkFNsazjZnDI0qs+e8ie4UeZblas7hK6ufGVGEe3xuBiJb5aeNtY/kMeJ2Q5q7fohxCg
+         z0NZRQUM5oEtVKqcNSksSdbNvjBEesjxeY5+hy+MMc0uAGm3HZfhjcrRDSOdaPyFhXrV
+         5ajBQiLOzjULUn4omB/hmMVwNobpJrGY3OCTARPl3dwPH2/K1B2hX955ZhQNHkPJEk9+
+         2Y3A==
+X-Gm-Message-State: AOJu0Yy7vyc0iNBdLW6/ovdbb+e7LZEChn/yJZzKWhV4rVHTVXd1F4RA
+	8nDXX1C/2lNn0HqnHFGrHQATJQ==
+X-Google-Smtp-Source: AGHT+IH1/iDKHIOawiUcbaHza/A6Vm6/Ocp+IYfmYobaksQrUQHzUGiA5K0lhGSEfy1ZtFqAsZyMXw==
+X-Received: by 2002:a05:6358:419d:b0:170:4168:8b91 with SMTP id w29-20020a056358419d00b0017041688b91mr17715132rwc.24.1702857327426;
+        Sun, 17 Dec 2023 15:55:27 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id f11-20020a17090aec8b00b0028ae8284840sm9036176pjy.10.2023.12.17.15.55.25
+        by smtp.gmail.com with ESMTPSA id f11-20020a17090aec8b00b0028ae8284840sm9036176pjy.10.2023.12.17.15.55.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 15:55:25 -0800 (PST)
+        Sun, 17 Dec 2023 15:55:26 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -64,9 +64,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 3/6] Staging: rtl8192e: Rename variable ucTSID
-Date: Sun, 17 Dec 2023 15:55:17 -0800
-Message-Id: <20231217235520.30377-4-tdavies@darkphysics.net>
+Subject: [PATCH 4/6] Staging: rtl8192e: Rename variable pDelBaParamSet
+Date: Sun, 17 Dec 2023 15:55:18 -0800
+Message-Id: <20231217235520.30377-5-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231217235520.30377-1-tdavies@darkphysics.net>
 References: <20231217235520.30377-1-tdavies@darkphysics.net>
@@ -78,64 +78,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename variable ucTSID to ts_id to fix checkpatch
+Rename variable pDelBaParamSet to del_ba_param_set to fix checkpatch
 warning Avoid CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 2 +-
- drivers/staging/rtl8192e/rtl819x_Qos.h    | 2 +-
- drivers/staging/rtl8192e/rtl819x_TSProc.c | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index cdbda65b4d50..fd0149d3f717 100644
+index fd0149d3f717..2fd54312c04f 100644
 --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -474,7 +474,7 @@ void rtllib_ts_init_add_ba(struct rtllib_device *ieee, struct tx_ts_record *ts,
- 	ba->dialog_token++;
- 	ba->ba_param_set.field.amsdu_support = 0;
- 	ba->ba_param_set.field.ba_policy = policy;
--	ba->ba_param_set.field.tid = ts->ts_common_info.tspec.ucTSID;
-+	ba->ba_param_set.field.tid = ts->ts_common_info.tspec.ts_id;
- 	ba->ba_param_set.field.buffer_size = 32;
- 	ba->ba_timeout_value = 0;
- 	ba->ba_start_seq_ctrl.field.seq_num = (ts->tx_cur_seq + 3) % 4096;
-diff --git a/drivers/staging/rtl8192e/rtl819x_Qos.h b/drivers/staging/rtl8192e/rtl819x_Qos.h
-index 1c00092ea3a5..50e01ca49a4c 100644
---- a/drivers/staging/rtl8192e/rtl819x_Qos.h
-+++ b/drivers/staging/rtl8192e/rtl819x_Qos.h
-@@ -8,7 +8,7 @@
- #define __INC_QOS_TYPE_H
+@@ -402,7 +402,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb)
+ {
+ 	struct ieee80211_hdr_3addr *delba = NULL;
+-	union delba_param_set *pDelBaParamSet = NULL;
++	union delba_param_set *del_ba_param_set = NULL;
+ 	u8 *dst = NULL;
  
- struct qos_tsinfo {
--	u8		ucTSID:4;
-+	u8		ts_id:4;
- 	u8		ucDirection:2;
- };
+ 	if (skb->len < sizeof(struct ieee80211_hdr_3addr) + 6) {
+@@ -427,17 +427,17 @@ int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb)
+ #endif
+ 	delba = (struct ieee80211_hdr_3addr *)skb->data;
+ 	dst = (u8 *)(&delba->addr2[0]);
+-	pDelBaParamSet = (union delba_param_set *)&delba->seq_ctrl + 2;
++	del_ba_param_set = (union delba_param_set *)&delba->seq_ctrl + 2;
  
-diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-index 489261831462..ad4d9e4c9b63 100644
---- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-@@ -198,7 +198,7 @@ static struct ts_common_info *SearchAdmitTRStream(struct rtllib_device *ieee,
- 			continue;
- 		list_for_each_entry(pRet, psearch_list, List) {
- 			if (memcmp(pRet->addr, addr, 6) == 0 &&
--			    pRet->tspec.ucTSID == TID &&
-+			    pRet->tspec.ts_id == TID &&
- 			    pRet->tspec.ucDirection == dir)
- 				break;
+-	if (pDelBaParamSet->field.initiator == 1) {
++	if (del_ba_param_set->field.initiator == 1) {
+ 		struct rx_ts_record *ts;
+ 
+ 		if (!rtllib_get_ts(ieee, (struct ts_common_info **)&ts, dst,
+-			   (u8)pDelBaParamSet->field.tid, RX_DIR, false)) {
++			   (u8)del_ba_param_set->field.tid, RX_DIR, false)) {
+ 			netdev_warn(ieee->dev,
+ 				    "%s(): can't get TS for RXTS. dst:%pM TID:%d\n",
+ 				    __func__, dst,
+-				    (u8)pDelBaParamSet->field.tid);
++				    (u8)del_ba_param_set->field.tid);
+ 			return -1;
  		}
-@@ -305,7 +305,7 @@ bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS,
- 		netdev_dbg(ieee->dev,
- 			   "to init current TS, UP:%d, Dir:%d, addr: %pM ppTs=%p\n",
- 			   UP, Dir, addr, *ppTS);
--		ts_info->ucTSID = UP;
-+		ts_info->ts_id = UP;
- 		ts_info->ucDirection = Dir;
  
- 		MakeTSEntry(*ppTS, addr, &tspec);
+@@ -446,7 +446,7 @@ int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		struct tx_ts_record *ts;
+ 
+ 		if (!rtllib_get_ts(ieee, (struct ts_common_info **)&ts, dst,
+-			   (u8)pDelBaParamSet->field.tid, TX_DIR, false)) {
++			   (u8)del_ba_param_set->field.tid, TX_DIR, false)) {
+ 			netdev_warn(ieee->dev, "%s(): can't get TS for TXTS\n",
+ 				    __func__);
+ 			return -1;
 -- 
 2.39.2
 
