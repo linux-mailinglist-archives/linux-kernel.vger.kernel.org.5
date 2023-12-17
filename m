@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-2766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7B3816184
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:00:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4F8816186
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78D901F21A75
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:00:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC4211F21C54
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F70D47A66;
-	Sun, 17 Dec 2023 18:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0889B47F55;
+	Sun, 17 Dec 2023 18:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="hoDrg9cJ"
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="qf2/Lnt/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55D347A78
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 18:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2130047A57
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 18:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33668cdb982so59892f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 10:00:19 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40b5155e154so28614465e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 10:00:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702836018; x=1703440818; darn=vger.kernel.org;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702836040; x=1703440840; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DjTCpnUGn4KBlZ0Ywyu5H1cv+f2lB6j5TM6mv3JNV0I=;
-        b=hoDrg9cJXlVpL6hgzpuT5WaNlmEQ9O4uJ3GNmydCGdeEFNo11IaQ3Va5iPZVhplEbL
-         emIqzBrhTZVtQvp4Hqg6Aw4zblP+PKsoGeixXWMKoZBNasQtExRXk/nAhTJd2PH8EzKg
-         8MzvLhhyc1T1Fgu3w2ZsjFkj/O/D6VyF7LYGh4EJtC9L7pRUH432rTeBVeI3eBQKlh97
-         awhI3sGQ2Kuj5MhwmKQRF90t16DaOHKr6de51Nvv2sDv1DI0BbCnE222XcRP5MI3TYff
-         UP7UJixjBxRip1cPD9M3jDheeCvO201QR9O76OYqXSTx3vpnEq78e0XYnDPebRNt0wWZ
-         XEQg==
+        bh=8MOpwItWBsHYymvYej4FDwDnmAuo53HAqT3OQ9IvZgA=;
+        b=qf2/Lnt/eISxvS+ZM7W6iw/xdwzXmrklZ4MB94nI/gA98P8EEdB8SZX/j4jIZAlmei
+         3LbMSTQ5AiCgPQacrTbvG35WThVqYljRSDTF+osnZfzKtVsZX1sBzy+lhHBwiuISUKDd
+         YB2xATtMUolu+tU8d8nngQXhwlDQFs5o6qbTl/bRK/AoUD3ke6UXV++Q04hY2xphmd7/
+         LjT7jKOXg3RUTZOtlML2ftqoUVOhmloMBOahkhzIISBMrjnv3NI0Q4yaaQsDf0YlbYVY
+         JLVeBzvoKTWFyXaN74XUHGXq1uOHL8yihoJTqQd33yMTB1FK4MyuAaWHimT9XY2aooWk
+         dZdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702836018; x=1703440818;
+        d=1e100.net; s=20230601; t=1702836040; x=1703440840;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DjTCpnUGn4KBlZ0Ywyu5H1cv+f2lB6j5TM6mv3JNV0I=;
-        b=NQ/E9vOBYC+MMPWmZQdMMmZkNQ57D1C3X+djfXlNOIB6coFAbD5MwWG6eCf0YDF2lZ
-         /tM7IykoOCEblIgMDD1cuvN4Vit9guIJKEmfGbuTCqxrzHIWOT794XXBdKrz3E01GMkX
-         PMHHsV/bnLoDp41/ZPdjFNm52iaTJMaE6/ubv4oeIQU32mpRBQVY5HzzWO8DuosXTmOc
-         KRyCdpNMhsDuPd4hjuZpo0H8MNpwk0893VEsoAYySBP+S+2L6AcW+DwkiYn86K2Gcr6r
-         vjGfMnup0YD1bIjmiDkkYT7yX7fBZ6zO/7ymAH2sfn42zLJAKJTb2e2qpua3rJH/52v8
-         +W7g==
-X-Gm-Message-State: AOJu0YyzcCFURiT3n1f+7BC8HtJjZX3r/h6piBtoWTWVjfrokpWgW8XH
-	aYZofx8Id4uBDrC1oGuUyQIPaw==
-X-Google-Smtp-Source: AGHT+IGfozpQr3KKqaJ1UK2NQKXWnaZvIuddDDjwDFgis6eUGTO4PaiwnyHzZ0hPXGFxJIlNXmilzA==
-X-Received: by 2002:a5d:4486:0:b0:336:64fd:72e7 with SMTP id j6-20020a5d4486000000b0033664fd72e7mr536883wrq.52.1702836018138;
-        Sun, 17 Dec 2023 10:00:18 -0800 (PST)
+        bh=8MOpwItWBsHYymvYej4FDwDnmAuo53HAqT3OQ9IvZgA=;
+        b=k/yej257a5JSjtI5yn1leFc+enLXlbSQLXEVyWMqKPuekjoPDR7W7KXUvwgCoIPk/Z
+         K7MBAIjukt/xYwKwmCOyatVeTbsBfmm6JKmqGMgIadiDbH4ghu6nwVpOXIAE6fBB/zxQ
+         i4lG9tkPwF9XVceIO1Qzz8Kv+vNIqKIeOs4B62kafHkFUJpXGqIAxtIk3r4BZMfCsC4D
+         ej7KD+R6PcEXnyJLwPEFYZaSvOlyoWVlffyIZLb7TGG4iaT6ERyZn/vcDwmxYlw9HvmW
+         ollIUlLqAPfzf907NQgwXYJvm+pGjup9FkMgFgfwVPe8BZJ3iDnXAp64RNPdyeX5IoQ+
+         bBOw==
+X-Gm-Message-State: AOJu0YwxqB21n2hzhqj4MTvNF6uTmPIldKPqZNxbl/bioFiWRDDEsdlr
+	Yt99CS2iS0+OlT//2o/zO1DHOg==
+X-Google-Smtp-Source: AGHT+IHwheY/rHa12G+ia3nNLKUnQG1KK1+g37BPE3XZeZ9ZgajPBvcoWAWHtH++FIqChraDc2YieQ==
+X-Received: by 2002:a7b:c388:0:b0:40b:5e1f:6fd5 with SMTP id s8-20020a7bc388000000b0040b5e1f6fd5mr6705877wmj.42.1702836040341;
+        Sun, 17 Dec 2023 10:00:40 -0800 (PST)
 Received: from airbuntu (host86-135-101-43.range86-135.btcentralplus.com. [86.135.101.43])
-        by smtp.gmail.com with ESMTPSA id h15-20020a5d504f000000b00336566b885csm6591930wrt.87.2023.12.17.10.00.17
+        by smtp.gmail.com with ESMTPSA id be9-20020a05600c1e8900b0040596352951sm41152643wmb.5.2023.12.17.10.00.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 10:00:17 -0800 (PST)
-Date: Sun, 17 Dec 2023 18:00:16 +0000
+        Sun, 17 Dec 2023 10:00:40 -0800 (PST)
+Date: Sun, 17 Dec 2023 18:00:38 +0000
 From: Qais Yousef <qyousef@layalina.io>
 To: Lukasz Luba <lukasz.luba@arm.com>
 Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
@@ -65,11 +65,11 @@ Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
 	daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
 	len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
 	wvw@google.com
-Subject: Re: [PATCH v5 13/23] PM: EM: Add performance field to struct
- em_perf_state
-Message-ID: <20231217180016.wkkatrjuanuk5x52@airbuntu>
+Subject: Re: [PATCH v5 14/23] PM: EM: Support late CPUs booting and capacity
+ adjustment
+Message-ID: <20231217180038.vcyaaoni3nvmlf6f@airbuntu>
 References: <20231129110853.94344-1-lukasz.luba@arm.com>
- <20231129110853.94344-14-lukasz.luba@arm.com>
+ <20231129110853.94344-15-lukasz.luba@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,133 +78,115 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231129110853.94344-14-lukasz.luba@arm.com>
+In-Reply-To: <20231129110853.94344-15-lukasz.luba@arm.com>
 
 On 11/29/23 11:08, Lukasz Luba wrote:
-> The performance doesn't scale linearly with the frequency. Also, it may
-> be different in different workloads. Some CPUs are designed to be
-> particularly good at some applications e.g. images or video processing
-> and other CPUs in different. When those different types of CPUs are
-> combined in one SoC they should be properly modeled to get max of the HW
-> in Energy Aware Scheduler (EAS). The Energy Model (EM) provides the
-> power vs. performance curves to the EAS, but assumes the CPUs capacity
-> is fixed and scales linearly with the frequency. This patch allows to
-> adjust the curve on the 'performance' axis as well.
+> The patch adds needed infrastructure to handle the late CPUs boot, which
+> might change the previous CPUs capacity values. With this changes the new
+> CPUs which try to register EM will trigger the needed re-calculations for
+> other CPUs EMs. Thanks to that the em_per_state::performance values will
+> be aligned with the CPU capacity information after all CPUs finish the
+> boot and EM registrations.
 > 
 > Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 > ---
->  include/linux/energy_model.h | 11 ++++++-----
->  kernel/power/energy_model.c  | 27 +++++++++++++++++++++++++++
->  2 files changed, 33 insertions(+), 5 deletions(-)
+>  kernel/power/energy_model.c | 121 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 121 insertions(+)
 > 
-> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> index ae3ccc8b9f44..e30750500b10 100644
-> --- a/include/linux/energy_model.h
-> +++ b/include/linux/energy_model.h
-> @@ -13,6 +13,7 @@
->  
->  /**
->   * struct em_perf_state - Performance state of a performance domain
-> + * @performance:	Non-linear CPU performance at a given frequency
->   * @frequency:	The frequency in KHz, for consistency with CPUFreq
->   * @power:	The power consumed at this level (by 1 CPU or by a registered
->   *		device). It can be a total power: static and dynamic.
-> @@ -21,6 +22,7 @@
->   * @flags:	see "em_perf_state flags" description below.
->   */
->  struct em_perf_state {
-> +	unsigned long performance;
->  	unsigned long frequency;
->  	unsigned long power;
->  	unsigned long cost;
-> @@ -207,14 +209,14 @@ void em_free_table(struct em_perf_table __rcu *table);
->   */
->  static inline int
->  em_pd_get_efficient_state(struct em_perf_state *table, int nr_perf_states,
-> -			  unsigned long freq, unsigned long pd_flags)
-> +			  unsigned long max_util, unsigned long pd_flags)
->  {
->  	struct em_perf_state *ps;
->  	int i;
->  
->  	for (i = 0; i < nr_perf_states; i++) {
->  		ps = &table[i];
-> -		if (ps->frequency >= freq) {
-> +		if (ps->performance >= max_util) {
->  			if (pd_flags & EM_PERF_DOMAIN_SKIP_INEFFICIENCIES &&
->  			    ps->flags & EM_PERF_STATE_INEFFICIENT)
->  				continue;
-> @@ -246,8 +248,8 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->  				unsigned long allowed_cpu_cap)
->  {
->  	struct em_perf_table *runtime_table;
-> -	unsigned long freq, scale_cpu;
->  	struct em_perf_state *ps;
-> +	unsigned long scale_cpu;
->  	int cpu, i;
->  
->  	if (!sum_util)
-> @@ -274,14 +276,13 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->  
->  	max_util = map_util_perf(max_util);
->  	max_util = min(max_util, allowed_cpu_cap);
-> -	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
->  
->  	/*
->  	 * Find the lowest performance state of the Energy Model above the
->  	 * requested frequency.
->  	 */
->  	i = em_pd_get_efficient_state(runtime_table->state, pd->nr_perf_states,
-> -				      freq, pd->flags);
-> +				      max_util, pd->flags);
->  	ps = &runtime_table->state[i];
->  
->  	/*
 > diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> index 614891fde8df..b5016afe6a19 100644
+> index b5016afe6a19..d3fa5a77de80 100644
 > --- a/kernel/power/energy_model.c
 > +++ b/kernel/power/energy_model.c
-> @@ -46,6 +46,7 @@ static void em_debug_create_ps(struct em_perf_state *ps, struct dentry *pd)
->  	debugfs_create_ulong("frequency", 0444, d, &ps->frequency);
->  	debugfs_create_ulong("power", 0444, d, &ps->power);
->  	debugfs_create_ulong("cost", 0444, d, &ps->cost);
-> +	debugfs_create_ulong("performance", 0444, d, &ps->performance);
->  	debugfs_create_ulong("inefficient", 0444, d, &ps->flags);
->  }
+> @@ -25,6 +25,9 @@ static DEFINE_MUTEX(em_pd_mutex);
 >  
-> @@ -171,6 +172,30 @@ em_allocate_table(struct em_perf_domain *pd)
->  	return table;
->  }
+>  static void em_cpufreq_update_efficiencies(struct device *dev,
+>  					   struct em_perf_state *table);
+> +static void em_check_capacity_update(void);
+> +static void em_update_workfn(struct work_struct *work);
+> +static DECLARE_DELAYED_WORK(em_update_work, em_update_workfn);
 >  
-> +static void em_init_performance(struct device *dev, struct em_perf_domain *pd,
-> +				struct em_perf_state *table, int nr_states)
+>  static bool _is_cpu_device(struct device *dev)
+>  {
+> @@ -596,6 +599,10 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+>  
+>  unlock:
+>  	mutex_unlock(&em_pd_mutex);
+> +
+> +	if (_is_cpu_device(dev))
+> +		em_check_capacity_update();
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(em_dev_register_perf_domain);
+> @@ -631,3 +638,117 @@ void em_dev_unregister_perf_domain(struct device *dev)
+>  	mutex_unlock(&em_pd_mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(em_dev_unregister_perf_domain);
+> +
+> +/*
+> + * Adjustment of CPU performance values after boot, when all CPUs capacites
+> + * are correctly calculated.
+> + */
+> +static void em_adjust_new_capacity(struct device *dev,
+> +				   struct em_perf_domain *pd,
+> +				   u64 max_cap)
 > +{
-> +	u64 fmax, max_cap;
-> +	int i, cpu;
+> +	struct em_perf_table __rcu *runtime_table;
+> +	struct em_perf_state *table, *new_table;
+> +	int ret, table_size;
 > +
-> +	/* This is needed only for CPUs and EAS skip other devices */
-> +	if (!_is_cpu_device(dev))
+> +	runtime_table = em_allocate_table(pd);
+> +	if (!runtime_table) {
+> +		dev_warn(dev, "EM: allocation failed\n");
 > +		return;
+> +	}
 > +
-> +	cpu = cpumask_first(em_span_cpus(pd));
+> +	new_table = runtime_table->state;
+> +
+> +	table = em_get_table(pd);
+> +	/* Initialize data based on older runtime table */
+> +	table_size = sizeof(struct em_perf_state) * pd->nr_perf_states;
+> +	memcpy(new_table, table, table_size);
+> +
+> +	em_put_table();
+> +
+> +	em_init_performance(dev, pd, new_table, pd->nr_perf_states);
+> +	ret = em_compute_costs(dev, new_table, NULL, pd->nr_perf_states,
+> +			       pd->flags);
+> +	if (ret) {
+> +		em_free_table(runtime_table);
+> +		return;
+> +	}
+> +
+> +	ret = em_dev_update_perf_domain(dev, runtime_table);
+> +	if (ret)
+> +		dev_warn(dev, "EM: update failed %d\n", ret);
 > +
 > +	/*
-> +	 * Calculate the performance value for each frequency with
-> +	 * linear relationship. The final CPU capacity might not be ready at
-> +	 * boot time, but the EM will be updated a bit later with correct one.
+> +	 * This is one-time-update, so give up the ownership in this updater.
+> +	 * The EM fwk will keep the reference and free the memory when needed.
 > +	 */
-> +	fmax = (u64) table[nr_states - 1].frequency;
-> +	max_cap = (u64) arch_scale_cpu_capacity(cpu);
-> +	for (i = 0; i < nr_states; i++)
-> +		table[i].performance = div64_u64(max_cap * table[i].frequency,
-> +						 fmax);
+> +	em_free_table(runtime_table);
+> +}
+> +
+> +static void em_check_capacity_update(void)
+> +{
+> +	cpumask_var_t cpu_done_mask;
+> +	struct em_perf_state *table;
+> +	struct em_perf_domain *pd;
+> +	unsigned long cpu_capacity;
+> +	int cpu;
+> +
+> +	if (!zalloc_cpumask_var(&cpu_done_mask, GFP_KERNEL)) {
+> +		pr_warn("no free memory\n");
+> +		return;
+> +	}
+> +
+> +	/* Check if CPUs capacity has changed than update EM */
+> +	for_each_possible_cpu(cpu) {
 
-Should we sanity check the returned performance value is correct in case we got
-passed a malformed table? Maybe the table is sanity checked and sorted before
-we get here; I didn't check to be honest.
-
-I think a warning that performance is always <= max_cap would be helpful in
-general as code evolved in the future.
+Can't we instead hook into cpufreq_online/offline() to check if we need to
+do any em related update for this policy?
 
 
 Cheers
@@ -212,20 +194,58 @@ Cheers
 --
 Qais Yousef
 
+> +		struct cpufreq_policy *policy;
+> +		unsigned long em_max_perf;
+> +		struct device *dev;
+> +		int nr_states;
+> +
+> +		if (cpumask_test_cpu(cpu, cpu_done_mask))
+> +			continue;
+> +
+> +		policy = cpufreq_cpu_get(cpu);
+> +		if (!policy) {
+> +			pr_debug("Accessing cpu%d policy failed\n", cpu);
+> +			schedule_delayed_work(&em_update_work,
+> +					      msecs_to_jiffies(1000));
+> +			break;
+> +		}
+> +		cpufreq_cpu_put(policy);
+> +
+> +		pd = em_cpu_get(cpu);
+> +		if (!pd || em_is_artificial(pd))
+> +			continue;
+> +
+> +		cpumask_or(cpu_done_mask, cpu_done_mask,
+> +			   em_span_cpus(pd));
+> +
+> +		nr_states = pd->nr_perf_states;
+> +		cpu_capacity = arch_scale_cpu_capacity(cpu);
+> +
+> +		table = em_get_table(pd);
+> +		em_max_perf = table[pd->nr_perf_states - 1].performance;
+> +		em_put_table();
+> +
+> +		/*
+> +		 * Check if the CPU capacity has been adjusted during boot
+> +		 * and trigger the update for new performance values.
+> +		 */
+> +		if (em_max_perf == cpu_capacity)
+> +			continue;
+> +
+> +		pr_debug("updating cpu%d cpu_cap=%lu old capacity=%lu\n",
+> +			 cpu, cpu_capacity, em_max_perf);
+> +
+> +		dev = get_cpu_device(cpu);
+> +		em_adjust_new_capacity(dev, pd, cpu_capacity);
+> +	}
+> +
+> +	free_cpumask_var(cpu_done_mask);
 > +}
 > +
->  static int em_compute_costs(struct device *dev, struct em_perf_state *table,
->  			    struct em_data_callback *cb, int nr_states,
->  			    unsigned long flags)
-> @@ -331,6 +356,8 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
->  		table[i].frequency = prev_freq = freq;
->  	}
->  
-> +	em_init_performance(dev, pd, table, nr_states);
-> +
->  	ret = em_compute_costs(dev, table, cb, nr_states, flags);
->  	if (ret)
->  		return -EINVAL;
+> +static void em_update_workfn(struct work_struct *work)
+> +{
+> +	em_check_capacity_update();
+> +}
 > -- 
 > 2.25.1
 > 
