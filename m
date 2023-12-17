@@ -1,118 +1,85 @@
-Return-Path: <linux-kernel+bounces-2777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1CD38161AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 19:53:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 749B08161E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 21:03:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7A3F1C21CD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 18:53:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B17B1C210C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Dec 2023 20:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D700947F63;
-	Sun, 17 Dec 2023 18:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D220481B1;
+	Sun, 17 Dec 2023 20:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zkwv67ry"
+	dkim=pass (1024-bit key) header.d=renenyffenegger.ch header.i=@renenyffenegger.ch header.b="fcxFUIbI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from belinda3.kreativmedia.ch (belinda3.kreativmedia.ch [80.74.158.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB1F47F43;
-	Sun, 17 Dec 2023 18:52:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B7CC433C8;
-	Sun, 17 Dec 2023 18:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702839178;
-	bh=h3U7iqYMSSXE3PLLsIKv7FMGZUFaSTPMFTW4G0Ip/kA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Zkwv67ry4jM9CrEDBCo8NgGmOjYoDUnAqgtuY0r9ceizWfkrO2uDiCA5ZoGQ2es2k
-	 JaZA5uIBcV3EI1gWgo/hI4iWAvVXO2ILW49yDGTmDjOLP6EG0e3G6gj6jSNMT0fHoS
-	 1c0ZM6LQ5oFNpLeVzIOB+S/SeHeqUU7UntUOKl+/qBFq+85Nx07N0cH2ZsE5fMw4TT
-	 IZB1OPvjHXrHlDilVw/XOIdfmWEqlUZBwMrF+AZcBQADBhMfEroMybeZ0bW2senamY
-	 GMA8gq/WZusrHSgFECPH/nOqBqHV/90HIhvoasUg76Lxqqs+lSEngDNGZRfLt/o56e
-	 nSdgTHUz5GCFg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rEwFz-004rnx-TY;
-	Sun, 17 Dec 2023 18:52:56 +0000
-Date: Sun, 17 Dec 2023 18:52:55 +0000
-Message-ID: <878r5s8xvc.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Kunkun Jiang <jiangkunkun@huawei.com>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	"moderated list:ARM SMMU DRIVERS" <linux-arm-kernel@lists.infradead.org>,
-	kvmarm@lists.linux.dev,
-	open list <linux-kernel@vger.kernel.org>,
-	"wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-Subject: Re: [bug report] GICv4.1: vSGI remains pending across the guest reset
-In-Reply-To: <ZX8xLhFFqTXRFQtd@linux.dev>
-References: <7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com>
-	<87a5q983zc.wl-maz@kernel.org>
-	<ZX8w1vfQzeXP5klL@linux.dev>
-	<ZX8xLhFFqTXRFQtd@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E2E481A0
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 20:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=renenyffenegger.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=renenyffenegger.ch
+Received: from localhost.localdomain (localhost [127.0.0.1]) by belinda3.kreativmedia.ch (Postfix) with ESMTPSA id F415A52C117F;
+	Sun, 17 Dec 2023 21:03:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renenyffenegger.ch;
+	s=default; t=1702843398;
+	bh=B/bryHy8sOFhgzvuWK91HuVG4+9anT7IYo8PB05dxR0=; h=From:To:Subject;
+	b=fcxFUIbIMOd61t1OrZqZp/o/gfMedDr4dUKaT2wJatw37mdHGg6P95/XGSbgOsxuF
+	 C+3GJwTXBqbVp20OW2Hs0Z7j9J9Gj9fnNcaHaH02dW+BUqioTSVDxsgjiAoN9OUNXu
+	 xqg8eB4Gm8WCMc4C3bE38FyEn2gQs0YFZ4zmbD2U=
+Authentication-Results: belinda.kreativmedia.ch;
+	spf=pass (sender IP is 31.10.136.22) smtp.mailfrom=mail@renenyffenegger.ch smtp.helo=localhost.localdomain
+Received-SPF: pass (belinda.kreativmedia.ch: connection is authenticated)
+From: =?UTF-8?q?Ren=C3=A9=20Nyffenegger?= <mail@renenyffenegger.ch>
+To: gregkh@linuxfoundation.org,
+	cristian.ciocaltea@gmail.com,
+	masahiroy@kernel.org,
+	cmllamas@google.com
+Cc: linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Ren=C3=A9=20Nyffenegger?= <mail@renenyffenegger.ch>
+Subject: [PATCH v2] Update comment (addition of gtags) in scripts/tags.sh
+Date: Sun, 17 Dec 2023 09:27:19 +0100
+Message-Id: <20231217082719.4747-1-mail@renenyffenegger.ch>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, jiangkunkun@huawei.com, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, jean-philippe@linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, 17 Dec 2023 17:34:38 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
-> 
-> On Sun, Dec 17, 2023 at 05:33:16PM +0000, Oliver Upton wrote:
-> > On Sun, Dec 17, 2023 at 11:26:15AM +0000, Marc Zyngier wrote:
-> > 
-> > [...]
-> > 
-> > > But this has *nothing* to do with the guest. This is the *host*
-> > > userspace performing a write to the redistributor view, which has
-> > > different semantics. Which is why your earlier description made no
-> > > sense to me.
-> > > 
-> > > I think the problem is slightly larger than what you describe. A write
-> > > to ISPENDR0 should be propagated to the ITS for any values of the
-> > > latch, just like this happens on enabling HW-backed SGIs.
-> > > 
-> > > Can you please give this a go?
-> > 
-> > What do you think about using this as an opportunity for a bit of
-> > cleanup? It'd be nice unify the various MMIO and uaccess handlers for
-> > SPENDING + CPENDING while being careful about the arch_timer interrupt.
+Commit f4ed1009fcea ("kbuild: add GNU GLOBAL tags generation") added
+support for the GNU Global source tagging system. However, this addition
+was not reflected in the script's header comment.
 
-What is special about the timer interrupt?
+Fixes: f4ed1009fcea ("kbuild: add GNU GLOBAL tags generation")
+Signed-off-by: René Nyffenegger <mail@renenyffenegger.ch>
+---
+v2 of this patch adds the "Fixes:" tag that was missing in
+https://lore.kernel.org/all/20231215134246.6352-1-mail@renenyffenegger.ch/
 
-> Cut myself off... Meant to say that user writes to SPENDING for GICv3
-> can then be treated as:
-> 
-> > 	clear = ~val;
-> > 	vgic_uaccess_write_spending(val);
-> > 	vgic_uaccess_write_cpending(clear);
+ scripts/tags.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Could be. But I'd rather have separate fixes from more invasive
-reworks.  Specially given that we have had multiple ugly bugs around
-this code in the past, which is why we ended up splitting userspace
-from guest accessors.
-
-	M.
-
+diff --git a/scripts/tags.sh b/scripts/tags.sh
+index a70d43723..cb9696134 100755
+--- a/scripts/tags.sh
++++ b/scripts/tags.sh
+@@ -3,7 +3,7 @@
+ # Generate tags or cscope files
+ # Usage tags.sh <mode>
+ #
+-# mode may be any of: tags, TAGS, cscope
++# mode may be any of: tags, gtags, TAGS, cscope
+ #
+ # Uses the following environment variables:
+ # SUBARCH, SRCARCH, srctree
 -- 
-Without deviation from the norm, progress is not possible.
+2.30.2
+
 
