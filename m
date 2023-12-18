@@ -1,129 +1,149 @@
-Return-Path: <linux-kernel+bounces-4362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C0C817C0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:36:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 605D6817C03
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:35:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A948B22394
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:36:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A071C218BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BF94C3B2;
-	Mon, 18 Dec 2023 20:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529C273462;
+	Mon, 18 Dec 2023 20:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="HB2ZDIZH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QS/Q8n0H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33041DA21;
-	Mon, 18 Dec 2023 20:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1702931774; x=1703536574; i=w_armin@gmx.de;
-	bh=EWjs6RVH6Mv2uVAzaW7fNSkAiU6ccq0fUtiP//qCDt0=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=HB2ZDIZH1Kwb3aNwVXeISgVHt849Kufilp+OqD8DfH72HQyLbSn1ZpqaZQ8ILDMD
-	 +tVejZG8JLDxA+6EM0AOCd5L376A1MV+D7IIqjQhmzfbPmlK5rueg8dlIEgbT2hMm
-	 +QRhkCXxqhll7MtvBAQIamXK0vs1GWdojYIsEwihL+jjYx3Sj0N4LvT+Uj1iD+m7N
-	 m90tSUAjvzSsJJaeHupjZNkzU4yxV+RS0FBtKExjnqvDq49XtRchhRvD286egNrjM
-	 juK76DNw8pNwuqTbtSWYQJvX84084mb8sd7BD3B7Y5fwPLK/HveQAq9ItJhLv/mAl
-	 7WMZe6HKSMefikt8GQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N6sit-1rExGr3Yy7-018Kyz; Mon, 18
- Dec 2023 21:36:14 +0100
-Message-ID: <6f4de52e-2aff-4f56-8407-e9caf81d4a54@gmx.de>
-Date: Mon, 18 Dec 2023 21:34:50 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993521DA29;
+	Mon, 18 Dec 2023 20:34:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F25F5C433C8;
+	Mon, 18 Dec 2023 20:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702931697;
+	bh=XgCl1gqQm6Hy5BOss5zz/mULMH3Fu6AXj/W8dxIHYHg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QS/Q8n0HomxDBTx2LKKlbPGNDImEA97qdRUmVuqa5R8EuNIxsUl7LRL/bjK83zntp
+	 NGzkbF7nTBSH3f2cPbPeNSQYAdI88+ovZeV1M6URpnZaAricEZK3rZYVPSBNcDAgOW
+	 tJy2o9+D6LGkBued47DuFDUxWuoyX7Ro/ahqgnTaCBg/1MmoXlwiThIjVmM7COY2Yq
+	 Tqg8WBZVsKTkxG0r6StGxQQzphrdhOqa2TzWxORnL5Leiw/xwGu0jrbikLtKDkVHja
+	 IBrIAiVxAAzAA3fqHxyYCDdIbM0C5UM/2dm6nRZd12YUrlXVSsW5vzKZKqRZGSxuM8
+	 lCqvo/eiCDM6Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 81F6D403EF; Mon, 18 Dec 2023 17:34:54 -0300 (-03)
+Date: Mon, 18 Dec 2023 17:34:54 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: James Clark <james.clark@arm.com>
+Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Darren Hart <dvhart@infradead.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Kajol Jain <kjain@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Atish Patra <atishp@rivosinc.com>,
+	"Steinar H. Gunderson" <sesse@google.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	Sandipan Das <sandipan.das@amd.com>,
+	Ravi Bangoria <ravi.bangoria@amd.com>,
+	Paran Lee <p4ranlee@gmail.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v1 10/14] perf top: Avoid repeated function calls
+Message-ID: <ZYCs7mh3GgvNz2-A@kernel.org>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-11-irogers@google.com>
+ <e067c360-56ac-1756-3b3b-4bf5f663be87@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v2 2/6] platform/x86: wmi: Remove ACPI handlers
- after WMI devices
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231218201844.2860-1-W_Armin@gmx.de>
- <20231218201844.2860-3-W_Armin@gmx.de>
-Content-Language: en-US
-In-Reply-To: <20231218201844.2860-3-W_Armin@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:tGq217jpvXij+c3f1sTBkw44rdv7PqgBvn8hLMxiFoABKA+hFqE
- 3zbhftY5qb3OeOm0wX/gFvAG9n9+Q4KywcoPjUo4ScZwhKceDVjvFf6xoDQIfsj1RPxa0L6
- SXTgwrca3aCbUbtSoIVu9ipz9ylalDrw+1Vf+WN9rNTojQPTfjgnm7w3Sea7FK+Tawaz2FA
- LP2Rpk7C4hbVu1L5i1QyA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:qNS6FHYQqRY=;/vpsnJLI8pUJNlUs+TBarbscDao
- 4sBnURXaJCgYc/LibQen9E4oZ0sV5oS3rb2Rph9AwPBAAL2a5VZr/UZv81Y3EjIoPLf7lM723
- 81j0bxs01WlmnAs7ZGpjocwqS31DLxlk/g4dSDP7Awl/rNP8j/MMc0YnA0QoJfZHIhVvqEIZj
- IpVD79nP+v7ljbvYBFBzEiScpRD554OOaX+kwexwCTEGPJMmS9HvmAy4iVUJeS4qEj4gw5PSm
- MVd6De05ju+xVknO6NMwfWt3vcZmJB9evGcvROt16QCiI8hZ5Wupxrbole6BhuuPV+sn/AwxU
- 2Q2z+stbFhbCKFCXNj0LGBwupAhJjioqE+7RivlLa/oqfM5r3ymhIbKz/lPLmnpTMHJJOwMiI
- mDFXqhIRG6CSktfKUUiDMIlR6KkD0Xn5I2EFS6ruJJUt3h8I0TQJbzHtM8xya39MfJI3Tr8WN
- S+Bsd7H71xUa/UXmZhF8uJbxoSgjHzNrdL94W9Ubf5fJOfIfw9t2bDdvfADn/L9ACPY+9drEf
- Jbho0tN0A9psTI2VH++dm8OVTA6zyJWTQEGRviF0kn9EReZ0hP8lpqCsiabH0WGC5O4GOWVuD
- Ccmd8uHSvzzaiBUOkVhv9mUb+pFaoVufP6MfPUu8lRbUxEx9J9fu0SMkvyPnNxDjo+x+Y327O
- 8/SHPi/2avanjQOt6xQEO5FuZ6IZw+GN34FQcAc8Z1XIKIbjo1NSgKMVeRs2j75xFzHnBBKIH
- U0UK3HLu4z+jMYXE5hS4ewKziMWMLbkxNxcuPAP/Jh4VwYJK3k3CLI3EbRq3tpAioRIjOE23v
- yIJG/SKjGJnJ2KY6bytn3sWVRprwS5L4Hhc9e9QtPKZAgKqRucTW1eCi+p4zsq7KaaoED8780
- 04DAlCtMDBpknDGyTxwCqG3H82p+nnYBXSVPlwu8xW3ew87p3dR5D7UK0IahJkHNvDkhgRYCG
- e6djVkWuG+BK3//e4ZhHNIqXe8E=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e067c360-56ac-1756-3b3b-4bf5f663be87@arm.com>
+X-Url: http://acmel.wordpress.com
 
-Am 18.12.23 um 21:18 schrieb Armin Wolf:
+Em Tue, Dec 12, 2023 at 03:11:53PM +0000, James Clark escreveu:
+> 
+> 
+> On 29/11/2023 06:02, Ian Rogers wrote:
+> > Add a local variable to avoid repeated calls to perf_cpu_map__nr.
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> 
+> Reviewed-by: James Clark <james.clark@arm.com>
 
-> When removing the ACPI notify/address space handlers, the WMI devices
-> are still active and might still depend on ACPI EC access or
-> WMI events.
-> Fix this by removing the ACPI handlers after all WMI devices
-> associated with an ACPI device have been removed.
+Thanks, applied to perf-tools-next.
 
-Sorry for sending the patch series multiple times, it seems my mail provider has
-some kind of issue which prevents me from receiving mail from this list (this is
-the only patch i received from my series so far). Because this i thought that my
-patch series got lost somehow.
+- Arnaldo
 
-Armin Wolf
+ 
+> > ---
+> >  tools/perf/util/top.c | 9 ++++-----
+> >  1 file changed, 4 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/top.c b/tools/perf/util/top.c
+> > index be7157de0451..4db3d1bd686c 100644
+> > --- a/tools/perf/util/top.c
+> > +++ b/tools/perf/util/top.c
+> > @@ -28,6 +28,7 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
+> >  	struct record_opts *opts = &top->record_opts;
+> >  	struct target *target = &opts->target;
+> >  	size_t ret = 0;
+> > +	int nr_cpus;
+> >  
+> >  	if (top->samples) {
+> >  		samples_per_sec = top->samples / top->delay_secs;
+> > @@ -93,19 +94,17 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
+> >  	else
+> >  		ret += SNPRINTF(bf + ret, size - ret, " (all");
+> >  
+> > +	nr_cpus = perf_cpu_map__nr(top->evlist->core.user_requested_cpus);
+> >  	if (target->cpu_list)
+> >  		ret += SNPRINTF(bf + ret, size - ret, ", CPU%s: %s)",
+> > -				perf_cpu_map__nr(top->evlist->core.user_requested_cpus) > 1
+> > -				? "s" : "",
+> > +				nr_cpus > 1 ? "s" : "",
+> >  				target->cpu_list);
+> >  	else {
+> >  		if (target->tid)
+> >  			ret += SNPRINTF(bf + ret, size - ret, ")");
+> >  		else
+> >  			ret += SNPRINTF(bf + ret, size - ret, ", %d CPU%s)",
+> > -					perf_cpu_map__nr(top->evlist->core.user_requested_cpus),
+> > -					perf_cpu_map__nr(top->evlist->core.user_requested_cpus) > 1
+> > -					? "s" : "");
+> > +					nr_cpus, nr_cpus > 1 ? "s" : "");
+> >  	}
+> >  
+> >  	perf_top__reset_sample_counters(top);
+> 
 
->
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
->   drivers/platform/x86/wmi.c | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index 906d3a2831ae..2120c13e1676 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -1239,13 +1239,12 @@ static void acpi_wmi_remove(struct platform_device *device)
->   	struct acpi_device *acpi_device = ACPI_COMPANION(&device->dev);
->   	struct device *wmi_bus_device = dev_get_drvdata(&device->dev);
->
-> -	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY,
-> -				   acpi_wmi_notify_handler);
-> -	acpi_remove_address_space_handler(acpi_device->handle,
-> -				ACPI_ADR_SPACE_EC, &acpi_wmi_ec_space_handler);
-> -
->   	device_for_each_child_reverse(wmi_bus_device, NULL, wmi_remove_device);
->   	device_unregister(wmi_bus_device);
-> +
-> +	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY, acpi_wmi_notify_handler);
-> +	acpi_remove_address_space_handler(acpi_device->handle, ACPI_ADR_SPACE_EC,
-> +					  &acpi_wmi_ec_space_handler);
->   }
->
->   static int acpi_wmi_probe(struct platform_device *device)
-> --
-> 2.39.2
->
->
+-- 
+
+- Arnaldo
 
