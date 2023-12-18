@@ -1,166 +1,122 @@
-Return-Path: <linux-kernel+bounces-4384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F529817C55
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:58:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D605817C59
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2175283675
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:58:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 821A61C223B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFE573481;
-	Mon, 18 Dec 2023 20:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599E57346C;
+	Mon, 18 Dec 2023 21:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HO49Nx56"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="YIfzEHM+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67F1A2D;
-	Mon, 18 Dec 2023 20:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4260ba19a57so36045071cf.3;
-        Mon, 18 Dec 2023 12:57:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9B11E4B7
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 21:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-28659348677so2535544a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:00:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702933069; x=1703537869; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=GcKJMFjfcbU8CE9s/X+zGwudMjtKyfz7guJTf6gd0KU=;
-        b=HO49Nx56HpXHqAtdQPepO05sEeWDsrgJ/AyLkqN1ZwoW6mQvfg0n+S+AfmaV8SMZu/
-         /gkIOx3GCaka1tv0blDwfyXL1Y5cR/JRAwy39kUKDpy0DCSCFN1iEgTy3mZKRsnGBEJq
-         e0529u52e8zX31ETqfOqp8Z5shIcitmVJb4SsTPKFd99KOxea/6ZK8yaVmfj054NDTS4
-         CbiNj9fJ/FtG0ICJwcpO6foQq9CGTmhCtAAxgvN9JSH83WxQGTTVY4O3NvZe4QU42S4e
-         mvi0EMFyX1bZSW2XcR1o07+6/ZvcUjTuyAbow9SO9Yi5EKFJWY+1QKo1bQ9zyVy6ZDyd
-         4L4w==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1702933256; x=1703538056; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yCl70P2eXwsD32MiqrmB1dJU3mIh1ffQIY/OsyTsmc0=;
+        b=YIfzEHM+joXJA0KroR1tlepEpaEEtwx3YNIoTwcAOssJtY2DBaMpSVe/99rJvzP1GW
+         4vhYsfIt5IUNmJkwZ254MtnQSKibPrA3lSAEpd8/capeZiA2R5SzsAAOlc93WtFzR+cF
+         Sw6eCJ5xI487j2fqG8bJr+HDQwfdAJExTTqPOYhQZJYGSZbooJ3Ds0yAPIE1IbhaLgaT
+         hQx4d08oswccFwYC/AF2LPUftZ45WyKsDH6xfO915PYOx9jED9tB5Fdm7/YjWxnZmMJF
+         /3KxAhtJpbRlu8Y1NN2I3FYHD14lk7oEewD+HZGsPqXWK/iOB6U2fjAz6pvoZtpHBoQF
+         ASjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702933069; x=1703537869;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GcKJMFjfcbU8CE9s/X+zGwudMjtKyfz7guJTf6gd0KU=;
-        b=kw3Vcleyl8oAr2lj756BcHZI/cXgiayogkMJvQ/gxMasRR5k90Gw5rltbsewrN6Cnp
-         21KFbsX19wPaYbwH/pFoqk1dYr6vhBzryW9zbs2a92Jv6U5OzuWW5YHiGjUFKX5KTQIU
-         C2gcb8RN+07Rhcu5zXk5xUM9Fuo3/hiw72R4SvXj0vtMDhYxb4tLB94OFzwAeClQhbQ3
-         HAfb9tcK22hVRjWlGjp+5TKxy9IHdhLhnLRcIDt+1L7p/0okiVRSmg9xj7T8QvEfopxG
-         5ppSnmnhIXqdNeSqiSDHNDosXQw8CrVA8K21xwan4fuFneqfwIUlK5cNbocThivYcuLf
-         js5g==
-X-Gm-Message-State: AOJu0YzujmJbOPI0PxKyc3PYNkSH4U/X3EOJm0CPBi17xDXJxq+bTzbJ
-	ZYSAgY5bOW5ACpkLxUgUydQ=
-X-Google-Smtp-Source: AGHT+IGSAVojbk4OAnmD9VMdQbaMwOC5DCFv1TO7rbwVegXqFehkf0EbaCeJdyW4EtUGSO6JH8+zAw==
-X-Received: by 2002:a05:622a:1889:b0:425:4043:5f16 with SMTP id v9-20020a05622a188900b0042540435f16mr22434099qtc.84.1702933069601;
-        Mon, 18 Dec 2023 12:57:49 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id x3-20020ac87303000000b0042551dce749sm9644808qto.46.2023.12.18.12.57.48
+        d=1e100.net; s=20230601; t=1702933256; x=1703538056;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yCl70P2eXwsD32MiqrmB1dJU3mIh1ffQIY/OsyTsmc0=;
+        b=lu95sCE2pPg9yFWVlwPkWdyhTjKyPjASCpvfXuwtEK/BNSbkkgQa9CiDr57ozjRssI
+         cWTwM3bO/zkxpl3RIJiJnz0tSRjZPU6uPEixuzKuIgMD56NPJJ0crm6plaMwROquXb6z
+         4r7EnOTYlomOpxX8buiqeDlVw9DWbA5hPFJD2NlQEtoopr/TQQ9ysUyaU3sqNtzL8c0W
+         5vayLJA70MjLC1UJU8UasmIjZzdhE7Xz63M7BtgtAH3gB0a/wZNBNC39Puxe7hSIZLO3
+         BJrw3JppDCbkvmlMgj5r5QOea+HaGBqX+9XFz1px8Exwkyl4n49ZB/P3w+IZVGkoWAZS
+         bdjg==
+X-Gm-Message-State: AOJu0YxrQAfZkUghPMjO8+4iGEp1oUuLwgfgEJfdyZNBCkxdKER86zv/
+	CWdVDHCoSvr5N4cMM9gTcbqVHw==
+X-Google-Smtp-Source: AGHT+IFRkQHZVHpggsuenU8/ddppEpd5S2UPqIefRShVpVOZW68bvcOoHhDR4JetnCX3kBkUOmYAtA==
+X-Received: by 2002:a17:90a:4b4f:b0:28b:5fc3:36c9 with SMTP id o15-20020a17090a4b4f00b0028b5fc336c9mr2440pjl.29.1702933256147;
+        Mon, 18 Dec 2023 13:00:56 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id sh18-20020a17090b525200b00286e0c91d73sm20565584pjb.55.2023.12.18.13.00.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 12:57:49 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id B13B127C005A;
-	Mon, 18 Dec 2023 15:57:48 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 18 Dec 2023 15:57:48 -0500
-X-ME-Sender: <xms:S7KAZZSUZg3xuRyPO5B4CrV70gxJC_9f-UKYl-YwYFMAi47B5qew6A>
-    <xme:S7KAZSxXkHYVEBqfmhQrbv1L8bf1-St7BCCe5LCji_ywyNf_6Moz9dqun-JfHNms1
-    wW4BjhAJiRulDfCvw>
-X-ME-Received: <xmr:S7KAZe39tqUtjkQNz_D0YGYnICAnuYEvB011ALiimKGtDrqx6-7ZnuJMgyE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedgudegtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
-    qhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtf
-    frrghtthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudek
-    hffggeelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
-    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
-    hfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:S7KAZRB4bNiA0D1BGs2AoUxUtFLiRYCDIh4nQ_-IzajUzr264DoUyQ>
-    <xmx:S7KAZShDEWU6utv6-ydWGQ51w53NyX-uIt2f9ViZABw-TXQkhP_SqA>
-    <xmx:S7KAZVokdqQw-3oQ8gn-zw9yv1KDgrnm4anJoxgWJWYOO7nSzGFjhQ>
-    <xmx:TLKAZWw1ETvHQ9usJXclEf4hkDRVNq-sIxjfN2h4MynJiYUcE-riHw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Dec 2023 15:57:47 -0500 (EST)
-Date: Mon, 18 Dec 2023 12:57:30 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Tiago Lam <tiagolam@gmail.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Subject: Re: [PATCH] rust: sync: Makes `CondVar::wait()` an uninterruptible
- wait
-Message-ID: <ZYCyOuChFYf_J_o1@boqun-archlinux>
-References: <ZXtebif2S1CyJRik@boqun-archlinux>
- <20231214200421.690629-1-boqun.feng@gmail.com>
- <CAH5fLggriMBLWVx5i1efHdiNveVutvRfcA6mydNV9egzEFnnxw@mail.gmail.com>
- <ZXzlGM1xV-VlUkeh@boqun-archlinux>
- <b2d69a27-d791-4455-843b-d946512beb78@proton.me>
+        Mon, 18 Dec 2023 13:00:55 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rFKjM-00A8r7-12;
+	Tue, 19 Dec 2023 08:00:52 +1100
+Date: Tue, 19 Dec 2023 08:00:52 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: Convert write_cache_pages() to an iterator v3
+Message-ID: <ZYCzBCqetc+tLmq+@dread.disaster.area>
+References: <20231218153553.807799-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b2d69a27-d791-4455-843b-d946512beb78@proton.me>
+In-Reply-To: <20231218153553.807799-1-hch@lst.de>
 
-On Mon, Dec 18, 2023 at 05:39:14PM +0000, Benno Lossin wrote:
-> On 12/16/23 00:45, Boqun Feng wrote:
-> > On Fri, Dec 15, 2023 at 11:27:56AM +0100, Alice Ryhl wrote:
-> >> On Thu, Dec 14, 2023 at 9:04 PM Boqun Feng <boqun.feng@gmail.com> wrote:
-> >>>
-> >>> Currently, `CondVar::wait()` is an interruptible wait, and this is
-> >>> different than `wait_event()` in include/linux/wait.h (which is an
-> >>> uninterruptible wait). To avoid confusion between different APIs on the
-> >>> interruptible/uninterruptible, make `CondVar::wait()` an uninterruptible
-> >>> wait same as `wait_event()`, also rename the old `wait()` to
-> >>> `CondVar::wait_interruptible()`.
-> >>>
-> >>> Spotted-by: Tiago Lam <tiagolam@gmail.com>
-> >>> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> >>
-> >> The diff is a bit hard to read because you swapped the order of the
-> >> functions, but LGTM.
-> >>
-> > 
-> > Yeah, I did that because `wait_interruptible` metioned `wait`, so I had
-> > to make `wait` still before `wait_interruptible`.
+On Mon, Dec 18, 2023 at 04:35:36PM +0100, Christoph Hellwig wrote:
+> Hi all,
 > 
-> What do you mean? If you are talking about the doclink, then
-
-I meant I prefer to keeping `wait` text-order-before
-`wait_interruptible`, so that readers will first read it.
-
-> that should not matter.
-
-Yeah, I know the ordering doesn't matter for generating doc. However,
-the ordering still matters for readers, I'd like them to learn about
-`wait` first since according to the existing API in kernel, they are the
-major usage.
-
-Thanks for pointing it out anyway! ;-)
-
-Regards,
-Boqun
-
+> this is basically a evolution of the series Matthew Wilcox originally
+> set in June.  Based on comments from Jan a Brian this now actually
+> untangles some of the more confusing conditional in the writeback code
+> before refactoring it into the iterator.  Because of that all the
+> later patches need a fair amount of rebasing and I've not carried any
+> reviewed-by over.
 > 
-> -- 
-> Cheers,
-> Benno
+> The original cover letter is below:
 > 
+> Dave Howells doesn't like the indirect function call imposed by
+> write_cache_pages(), so refactor it into an iterator.  I took the
+> opportunity to add the ability to iterate a folio_batch without having
+> an external variable.
 > 
+> This is against next-20230623.  If you try to apply it on top of a tree
+> which doesn't include the pagevec removal series, IT WILL CRASH because
+> it won't reinitialise folio_batch->i and the iteration will index out
+> of bounds.
+> 
+> I have a feeling the 'done' parameter could have a better name, but I
+> can't think what it might be.
+> 
+> Diffstat:
+>  include/linux/pagevec.h   |   18 ++
+>  include/linux/writeback.h |   19 ++
+>  mm/page-writeback.c       |  333 +++++++++++++++++++++++++---------------------
+>  3 files changed, 220 insertions(+), 150 deletions(-)
+
+I've just done a quick scan of the code - nothing stands out to me
+as problematic, and I like how much cleaner the result is.
+
+Acked-by: Dave Chinner <dchinner@redhat.com>
+
+-- 
+Dave Chinner
+david@fromorbit.com
 
