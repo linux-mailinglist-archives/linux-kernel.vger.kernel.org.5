@@ -1,263 +1,278 @@
-Return-Path: <linux-kernel+bounces-4257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EEF08179F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89A108179EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:46:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 859171C2309C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:46:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 252A71C23059
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C09271465;
-	Mon, 18 Dec 2023 18:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E826F495DE;
+	Mon, 18 Dec 2023 18:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jtNcNnx6"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e8W5B4K9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 868A771454
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702925174; x=1734461174;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2n7rEdQG/7oHLpk+IKtiKKxC3nrQgzl83tSimJJpOAg=;
-  b=jtNcNnx6LU5nd8wSf4Amgdv7dtlDWANQPTVGKuqTBKlw2ONkboFPATEn
-   OLIcklY0TcrfY44oqmy5JcTEmct40ihYPI5crYxxfvgnwXb188bFG4tfs
-   OCgnjrPbQDsRo00Hra23YUijUDOOb/3R+c7jKpa0U/pHB/12lm1VlBvC3
-   1fy2clt1XvwUATTEiXd7lek0X1DN2g8SN3bIhRAxFTP4bAC5vToJl6keQ
-   ecYVDVnsvaAaJmS0Cd/87CUtDqYvoVrXkczjN2WIlXU6iajIaY8o+NJu+
-   0GQpnUcM/6Z24xloeuZvVDk0J+S+sjGVstAYb5y9K/pO1LpVqKma27SmW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="395277778"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="395277778"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 10:46:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="866323818"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="866323818"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 Dec 2023 10:46:11 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFIcz-0004RF-1m;
-	Mon, 18 Dec 2023 18:46:09 +0000
-Date: Tue, 19 Dec 2023 02:45:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Alastair D'Silva <alastair@d-silva.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Michael Ellerman <mpe@ellerman.id.au>, Greg Kurz <groug@kaod.org>
-Subject: drivers/misc/ocxl/mmio.c:20:34: sparse: sparse: cast removes address
- space '__iomem' of expression
-Message-ID: <202312190208.xrAsnOMZ-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA721DDC9
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e3845abdaso1938706e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:46:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702925167; x=1703529967; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PKuUeeYRiFZIeE9DKLxhDuMUgkn5IEn3SbKqv7Joz+8=;
+        b=e8W5B4K9OfYJarxuY2t0dnN3fcmOrcyAQ/546bUNwrupBjph54daDlL79OzBNHm8LC
+         NigFTm014+/42jdmzMuFfHTOgP1DODwxNc/8M8R5IG3aWGMGvE11GeR5NS/3OHwqDl8c
+         iyWi0++TBycvMtKR0ozdt8mSyfU0p6e/tsMlhS6TONck5/8Khj3/gK1NTJ8PkNbcTS4j
+         rFYMod0bzMIMbCCdX1eIBw55XxXpZpzeIHOIordne8JC9P8zbppChN8BrLlN3dJt2MR9
+         xjQ/33rTPsbzlb5yZy8mVFLAJTKxXfn5UIr/hio9VLHaVk3uCGW0N0LR4mfVg4my5183
+         QutQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702925167; x=1703529967;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PKuUeeYRiFZIeE9DKLxhDuMUgkn5IEn3SbKqv7Joz+8=;
+        b=o4R4SmvAErWR6JdIVs9o3EFP2oKep5/zIDB53zpzlJrSxWJFhHs0we0n5YKyqttG+t
+         xmg0/EuEK67gs9Q6Np5/EYu5SE1eXy5t5Jpo5wbisafOp20K/zHxqDZwdAX69U0lxYWJ
+         vIuAW2z4tpOUtMHCuW+hlIGIcquUlQ+dIrh1bq0T94tSKUejInBeGF+aoEA0UnJcFAQG
+         1UeMNPwQWwDL7yoxLRKTS/5Y54YC5RMEeL09RvpqFbrd5OM0WPz8PZCTaXd7id1eUjJO
+         SaXCx7Kf+s/k4KQsAcJkmRYgVLMXCOILYy/0/2Pul1cxL3r0SbbYohGrkVD+zo0Go6UJ
+         67Ag==
+X-Gm-Message-State: AOJu0YwRatft0btI+gV3Ar2zyAp6mcAzqAVM9FMn0ySSR21aG52IClhz
+	NstyH1QXLfPwbfJjsCTjmWNi2g==
+X-Google-Smtp-Source: AGHT+IHN1Gm+widUIz/rI5/OQn2BgTwAUJHmk8WW0nae4w2ZvnCYStS80T4ivSFEhOTtPHOid0rofw==
+X-Received: by 2002:ac2:538e:0:b0:50e:3601:cf29 with SMTP id g14-20020ac2538e000000b0050e3601cf29mr1423385lfh.71.1702925167539;
+        Mon, 18 Dec 2023 10:46:07 -0800 (PST)
+Received: from ?IPV6:2001:14ba:a0db:1f00::227? (dzdqv0yyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::227])
+        by smtp.gmail.com with ESMTPSA id f16-20020a0565123b1000b0050e3364b5aasm532294lfv.207.2023.12.18.10.46.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 10:46:07 -0800 (PST)
+Message-ID: <62de5467-a979-4739-aee3-e00472ab192a@linaro.org>
+Date: Mon, 18 Dec 2023 20:46:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 08/34] media: iris: introduce state machine for iris
+ core
+Content-Language: en-GB
+To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
+ andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+ bryan.odonoghue@linaro.org
+Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-9-git-send-email-quic_dikshita@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <1702899149-21321-9-git-send-email-quic_dikshita@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
-commit: 7e462c2a8a6d00d3c240cac9f5626eff96d8e641 ocxl: Provide global MMIO accessors for external drivers
-date:   4 years, 8 months ago
-config: powerpc64-randconfig-r113-20231118 (https://download.01.org/0day-ci/archive/20231219/202312190208.xrAsnOMZ-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231219/202312190208.xrAsnOMZ-lkp@intel.com/reproduce)
+On 18/12/2023 13:32, Dikshita Agarwal wrote:
+> Introduces different states for core. State transitions
+> are defined, based on which they would be allowed/rejected/ignored.
+> 
+> IRIS_CORE_DEINIT - default state.
+> IRIS_CORE_INIT_WAIT -  wait state for video core to complete
+> initialization.
+> IRIS_CORE_INIT - core state with core initialized. FW loaded and
+> HW brought out of reset, shared queues established between host
+> driver and firmware.
+> IRIS_CORE_ERROR - error state.
+> 
+>              |
+>              v
+>         -----------
+>    +--->| DEINIT  |<---+
+>    |    -----------    |
+>    |         |         |
+>    |         v         |
+>    |    -----------    |
+>    |    |INIT_WAIT|    |
+>    |    -----------    |
+>    |      /     \      |
+>    |     /       \     |
+>    |    /         \    |
+>    |   v           v   v
+>   -----------   ----------.
+>   |  INIT   |-->|  ERROR |
+>   -----------   ----------.
+> 
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312190208.xrAsnOMZ-lkp@intel.com/
+Can we see users for this API please? Otherwise it's just a dead code.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/misc/ocxl/mmio.c:20:34: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/misc/ocxl/mmio.c:20:62: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:20:62: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:20:62: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:24:31: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:24:59: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:24:59: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:24:59: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:45:34: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:45:62: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:45:62: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:45:62: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:49:31: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:49:59: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:49:59: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:49:59: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:70:33: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/misc/ocxl/mmio.c:70:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:70:61: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:70:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:74:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:74:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:74:58: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:74:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:96:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:96:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:96:61: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:96:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:100:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:100:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:100:58: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:100:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:124:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:124:61: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:124:61: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:124:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:126:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:126:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:126:61: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:126:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:130:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:130:58: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:130:58: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:130:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:132:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:132:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:132:58: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:132:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:155:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:155:61: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:155:61: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:155:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:157:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:157:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:157:61: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:157:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:161:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:161:58: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:161:58: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:161:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:163:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:163:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:163:58: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:163:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:186:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:186:61: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:186:61: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:186:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:188:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:188:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:188:61: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:188:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:192:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:192:58: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:192:58: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:192:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:194:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:194:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:194:58: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:194:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:218:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:218:61: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:218:61: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:218:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:220:33: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:220:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:220:61: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:220:61: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:224:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:224:58: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:224:58: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:224:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:226:30: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:226:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:226:58: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:226:58: sparse:     got char *
-   drivers/misc/ocxl/mmio.c:230:22: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/misc/ocxl/mmio.c:230:50: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   drivers/misc/ocxl/mmio.c:230:50: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/misc/ocxl/mmio.c:230:50: sparse:     got char *
-   drivers/misc/ocxl/mmio.c: note: in included file (through include/linux/io.h, include/linux/irq.h, arch/powerpc/include/asm/hardirq.h, ...):
-   arch/powerpc/include/asm/io.h:157:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:162:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:157:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:162:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:157:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:162:1: sparse: sparse: dereference of noderef expression
+> ---
+>   drivers/media/platform/qcom/vcodec/iris/Makefile   |  3 +-
+>   .../media/platform/qcom/vcodec/iris/iris_core.h    |  4 ++
+>   .../media/platform/qcom/vcodec/iris/iris_state.c   | 64 ++++++++++++++++++++++
+>   .../media/platform/qcom/vcodec/iris/iris_state.h   | 22 ++++++++
+>   4 files changed, 92 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_state.c
+>   create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_state.h
+> 
+> diff --git a/drivers/media/platform/qcom/vcodec/iris/Makefile b/drivers/media/platform/qcom/vcodec/iris/Makefile
+> index 0748819..12a74de 100644
+> --- a/drivers/media/platform/qcom/vcodec/iris/Makefile
+> +++ b/drivers/media/platform/qcom/vcodec/iris/Makefile
+> @@ -1,4 +1,5 @@
+>   iris-objs += iris_probe.o \
+> -             resources.o
+> +             resources.o \
+> +             iris_state.o
+>   
+>   obj-$(CONFIG_VIDEO_QCOM_IRIS) += iris.o
+> diff --git a/drivers/media/platform/qcom/vcodec/iris/iris_core.h b/drivers/media/platform/qcom/vcodec/iris/iris_core.h
+> index c2bc95d..56a5b7d 100644
+> --- a/drivers/media/platform/qcom/vcodec/iris/iris_core.h
+> +++ b/drivers/media/platform/qcom/vcodec/iris/iris_core.h
+> @@ -9,6 +9,8 @@
+>   #include <linux/types.h>
+>   #include <media/v4l2-device.h>
+>   
+> +#include "iris_state.h"
+> +
+>   /**
+>    * struct iris_core - holds core parameters valid for all instances
+>    *
+> @@ -27,6 +29,7 @@
+>    * @clk_count: count of iris clocks
+>    * @reset_tbl: table of iris reset clocks
+>    * @reset_count: count of iris reset clocks
+> + * @state: current state of core
+>    */
+>   
+>   struct iris_core {
+> @@ -45,6 +48,7 @@ struct iris_core {
+>   	u32					clk_count;
+>   	struct reset_info			*reset_tbl;
+>   	u32					reset_count;
+> +	enum iris_core_state			state;
+>   };
+>   
+>   #endif
+> diff --git a/drivers/media/platform/qcom/vcodec/iris/iris_state.c b/drivers/media/platform/qcom/vcodec/iris/iris_state.c
+> new file mode 100644
+> index 0000000..22557af
+> --- /dev/null
+> +++ b/drivers/media/platform/qcom/vcodec/iris/iris_state.c
+> @@ -0,0 +1,64 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#include "iris_core.h"
+> +#include "iris_state.h"
+> +
+> +#define IRIS_STATE(name)[IRIS_CORE_##name] = "CORE_"#name
 
-vim +/__iomem +20 drivers/misc/ocxl/mmio.c
+Inline this please.
 
-    17	
-    18		switch (endian) {
-    19		case OCXL_BIG_ENDIAN:
-  > 20			*val = readl_be((char *)afu->global_mmio_ptr + offset);
-    21			break;
-    22	
-    23		default:
-    24			*val = readl((char *)afu->global_mmio_ptr + offset);
-    25			break;
-    26		}
-    27	
-    28		return 0;
-    29	}
-    30	EXPORT_SYMBOL_GPL(ocxl_global_mmio_read32);
-    31	
-    32	int ocxl_global_mmio_read64(struct ocxl_afu *afu, size_t offset,
-    33					enum ocxl_endian endian, u64 *val)
-    34	{
-    35		if (offset > afu->config.global_mmio_size - 8)
-    36			return -EINVAL;
-    37	
-    38	#ifdef __BIG_ENDIAN__
-    39		if (endian == OCXL_HOST_ENDIAN)
-    40			endian = OCXL_BIG_ENDIAN;
-    41	#endif
-    42	
-    43		switch (endian) {
-    44		case OCXL_BIG_ENDIAN:
-    45			*val = readq_be((char *)afu->global_mmio_ptr + offset);
-    46			break;
-    47	
-    48		default:
-    49			*val = readq((char *)afu->global_mmio_ptr + offset);
-    50			break;
-    51		}
-    52	
-    53		return 0;
-    54	}
-    55	EXPORT_SYMBOL_GPL(ocxl_global_mmio_read64);
-    56	
-    57	int ocxl_global_mmio_write32(struct ocxl_afu *afu, size_t offset,
-    58					enum ocxl_endian endian, u32 val)
-    59	{
-    60		if (offset > afu->config.global_mmio_size - 4)
-    61			return -EINVAL;
-    62	
-    63	#ifdef __BIG_ENDIAN__
-    64		if (endian == OCXL_HOST_ENDIAN)
-    65			endian = OCXL_BIG_ENDIAN;
-    66	#endif
-    67	
-    68		switch (endian) {
-    69		case OCXL_BIG_ENDIAN:
-  > 70			writel_be(val, (char *)afu->global_mmio_ptr + offset);
-    71			break;
-    72	
-    73		default:
-    74			writel(val, (char *)afu->global_mmio_ptr + offset);
-    75			break;
-    76		}
-    77	
-    78	
-    79		return 0;
-    80	}
-    81	EXPORT_SYMBOL_GPL(ocxl_global_mmio_write32);
-    82	
+> +
+> +static const char * const core_state_names[] = {
+> +	IRIS_STATE(DEINIT),
+> +	IRIS_STATE(INIT_WAIT),
+> +	IRIS_STATE(INIT),
+> +	IRIS_STATE(ERROR),
+> +};
+> +
+> +#undef IRIS_STATE
+> +
+> +bool core_in_valid_state(struct iris_core *core)
+
+So, even in your driver you have global names? That's really ugh. Please 
+fix them.
+
+> +{
+> +	return core->state == IRIS_CORE_INIT ||
+> +		core->state == IRIS_CORE_INIT_WAIT;
+> +}
+> +
+> +static const char *core_state_name(enum iris_core_state state)
+> +{
+> +	if ((unsigned int)state < ARRAY_SIZE(core_state_names))
+> +		return core_state_names[state];
+> +
+> +	return "UNKNOWN_STATE";
+> +}
+> +
+> +static bool iris_allow_core_state_change(struct iris_core *core,
+> +					 enum iris_core_state req_state)
+> +{
+> +	if (core->state == IRIS_CORE_DEINIT)
+> +		return req_state == IRIS_CORE_INIT_WAIT || req_state == IRIS_CORE_ERROR;
+> +	else if (core->state == IRIS_CORE_INIT_WAIT)
+> +		return req_state == IRIS_CORE_INIT || req_state == IRIS_CORE_ERROR;
+> +	else if (core->state == IRIS_CORE_INIT)
+> +		return req_state == IRIS_CORE_DEINIT || req_state == IRIS_CORE_ERROR;
+> +	else if (core->state == IRIS_CORE_ERROR)
+> +		return req_state == IRIS_CORE_DEINIT;
+> +
+> +	dev_warn(core->dev, "core state change %s -> %s is not allowed\n",
+> +		 core_state_name(core->state), core_state_name(req_state));
+> +
+> +	return false;
+> +}
+> +
+> +int iris_change_core_state(struct iris_core *core,
+> +			   enum iris_core_state request_state)
+> +{
+> +	if (core->state == request_state)
+> +		return 0;
+> +
+> +	if (!iris_allow_core_state_change(core, request_state))
+> +		return -EINVAL;
+> +
+> +	core->state = request_state;
+> +
+> +	return 0;
+> +}
+> diff --git a/drivers/media/platform/qcom/vcodec/iris/iris_state.h b/drivers/media/platform/qcom/vcodec/iris/iris_state.h
+> new file mode 100644
+> index 0000000..ee20842
+> --- /dev/null
+> +++ b/drivers/media/platform/qcom/vcodec/iris/iris_state.h
+> @@ -0,0 +1,22 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#ifndef _IRIS_STATE_H_
+> +#define _IRIS_STATE_H_
+> +
+> +struct iris_core;
+> +
+> +enum iris_core_state {
+> +	IRIS_CORE_DEINIT,
+> +	IRIS_CORE_INIT_WAIT,
+> +	IRIS_CORE_INIT,
+> +	IRIS_CORE_ERROR,
+> +};
+> +
+> +bool core_in_valid_state(struct iris_core *core);
+> +int iris_change_core_state(struct iris_core *core,
+> +			   enum iris_core_state request_state);
+> +
+> +#endif
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With best wishes
+Dmitry
+
 
