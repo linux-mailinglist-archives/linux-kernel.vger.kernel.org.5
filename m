@@ -1,145 +1,273 @@
-Return-Path: <linux-kernel+bounces-3849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF7958173EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 227828173EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:42:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87FF92817BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:41:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51F99281DD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1BA37860;
-	Mon, 18 Dec 2023 14:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868171D14B;
+	Mon, 18 Dec 2023 14:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XtEwqtBW"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ehDwO2IC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D296F13FE6
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEA33064A
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a234dc0984fso146566566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:41:41 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e270639d9so2517600e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:41:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702910500; x=1703515300; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=r/kafWXlBuq+FNgnU9qerb7ytxC06Fahl6CcuKGTXow=;
-        b=XtEwqtBW2peWToJca2qKQcH/GyCwslGmYIDSM+rqMwF2UicAJ5SmP0xBDlNJz8vNAw
-         OkHpT5wd9t9BhUu5v2swikfv2kFpts8G8KTBCIeIQFNhOpmzJVNlrKiQVeyZDPOkCNVH
-         L+iKvqUHqToNFaAJL9p9rLA7pmXcp3hFH11KFWjU3Pp3d9C9rsg2cIXRfzSwWlKllUyz
-         8+r6LoYNOA4kgcvT6NecBHoXbgQtF0dnhFM8SsyNrGuySBbcKYs+4cY+NUQsia1kWhUD
-         Gf5nziLTnIhU0PSQBPUrc7g1hfeFRdT9DWCVgtBJu/hREN/eAG+p5LnxVdnkqWlJiLav
-         lxnA==
+        d=linaro.org; s=google; t=1702910515; x=1703515315; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EC790w2wBtofMurLZCa3vCoI4IR1rVBptqvIo5PdSdA=;
+        b=ehDwO2ICdTRht7kIi0uWYg934PVEmWfOw3SlYUDh8pOpTITEdX6ZAP8/0j7ZjvHa/j
+         CRCeHIZvsH6r81ouscSd+bwr8i312HofPBZ55cVRFfc/r35DGemKp4mb10BHc7wNmbuC
+         nT0GnY7Kv2J5YsSZ+KcXXfWSZA3ih3wqxWWQj+VoJjeQtrqElN5LrUUt8z8Fpj5RSkUQ
+         /rjG187eEsLOtGQMrZ7MK9vOi7DiWSNI9dxnIc2YdkbRg8jz1FHDOEdLw7iqKZ89fHPi
+         74Pae8hEKXMRCTHf7gAeMU7dtzJXcp5UwK+97KO9KxfUJbl+kr3RjJKLw7jAFVJIsjCO
+         fHdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702910500; x=1703515300;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r/kafWXlBuq+FNgnU9qerb7ytxC06Fahl6CcuKGTXow=;
-        b=IxYkQqbAp7wU+u3BB7mRt9JZTZdnGxSbh+5s9KfOHqVkYNSuHTsmdiHqZoCFhC02P4
-         snJ/D1vht0J6bBHjx1Od5ixAC7xEufWJTkN0jcnGGgRt/XLWTrgr5WFH9/cx+9x9GDkn
-         9KGqKWBJvBMUNq1UkHzFfNAQIwdPsyUdLtbJXS+6SGmqzij15UD4ABuBNUrirX5W4Y6Z
-         QCbihu7V17cE3iYh8SfbNmRoA2xkfALkjYPf5EwAn7WcP+Kj1logz0Z7VJVnXpIRh0NB
-         1H15YOFUA6si3e1SdsuPcw1lqLxxbBLB4VLhNlGD685689b0kfSYFxvL+dVYUOmNLMG9
-         Jikg==
-X-Gm-Message-State: AOJu0YzSGHTZmA+Sg6stSpMcUhaDEwYa4IStgFUhbzxsHg2KdFv1lFbr
-	FCk+rsJ+Nw2hnKl6l/rIFhB0YA==
-X-Google-Smtp-Source: AGHT+IHejKurGuH+DP1QIsnkcv4JC6AQkyiQjGLP2BgBBvnvX3fgHC6mAgyurLCRpft5HoDPrGRoHg==
-X-Received: by 2002:a17:907:2d8f:b0:a23:5666:db39 with SMTP id gt15-20020a1709072d8f00b00a235666db39mr1152302ejc.88.1702910499851;
-        Mon, 18 Dec 2023 06:41:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id tx17-20020a1709078e9100b00a1b75e0e061sm14290564ejc.130.2023.12.18.06.41.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 06:41:39 -0800 (PST)
-Message-ID: <1d7f9cbe-9ca1-4ccb-b90f-6e474c0740ad@linaro.org>
-Date: Mon, 18 Dec 2023 15:41:37 +0100
+        d=1e100.net; s=20230601; t=1702910515; x=1703515315;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EC790w2wBtofMurLZCa3vCoI4IR1rVBptqvIo5PdSdA=;
+        b=MwqMuritKD1iOMh0rz7F4fb24r7IhlGyoxq+byPw9dAO+JH6Bn4FJSGraLRUQBs8m8
+         F6yyab0BsdKREV/d3ZIfxfHqIj2pFvEhcBT79F3MeprQw9TIjgzMc4pHQl3wmV143R3K
+         QW5JWDVme5Qr6ye9ul3H0j+YkxEpBK1UvJemn3p7kS9HhlKCFYRJVK1orNF8UBctUThT
+         PBlsRhF72RKbS313jrK0bYhVVcVgvCa2LpnlohGCA1Ay5Y7tmqQ3pBRloqDQsTmzKqJN
+         s7Rp5bLBwr8qsEg8YsQLF4+1sheTZevE8uC4WcsuTUG6qyqMo/gKvcPHcqJmdcj3Zfm7
+         VL6g==
+X-Gm-Message-State: AOJu0YxyZMhXoXlSlGOqKiLaTZidKoCA77ettod09Qv6jAvnmh1Ngit5
+	QmUn70OAYcm0j0Vn85VlgI9synr19saGMz0Kl4o=
+X-Google-Smtp-Source: AGHT+IFjR4I4pOL61ywCzQqF3sg9naj5KMUspwmMQUBNDlEyn/0gZEg+ARarTPzvcRHkT/8K/I6Z0A==
+X-Received: by 2002:a05:6512:e94:b0:50b:f9b5:b4de with SMTP id bi20-20020a0565120e9400b0050bf9b5b4demr9600773lfb.40.1702910514782;
+        Mon, 18 Dec 2023 06:41:54 -0800 (PST)
+Received: from [10.167.154.1] (178235179137.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.137])
+        by smtp.gmail.com with ESMTPSA id hg12-20020a1709072ccc00b00a2359f95ad8sm1145917ejc.37.2023.12.18.06.41.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 06:41:54 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Date: Mon, 18 Dec 2023 15:41:52 +0100
+Subject: [PATCH RFC] power: supply: qcom_battmgr: Register the power
+ supplies after PDR is up
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/1] dt-bindings: watchdog: starfive,jh7100-wdt: Add
- compatible for JH8100
-Content-Language: en-US
-To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
- krzysztof.kozlowski+dt@linaro.org, leyfoon.tan@starfivetech.com,
- linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
- linux@roeck-us.net, robh+dt@kernel.org, samin.guo@starfivetech.com,
- wim@linux-watchdog.org, xingyu.wu@starfivetech.com
-References: <cb16753d-ebec-4342-bed7-ee9a895c8547@linaro.org>
- <20231218142711.961120-1-jisheng.teoh@starfivetech.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231218142711.961120-1-jisheng.teoh@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20231218-topic-battmgr_fixture_attempt-v1-1-6145745f34fe@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAC9agGUC/x2NUQqDMBAFryL73UAToQ29SimSxI0uaAybVQri3
+ bv0cwbevBMaMmGDV3cC40GNtqJgbx2kOZQJDY3K4O6ut856I1ulZGIQWSceMn1lZxwUca1iMPk
+ HZj/mJ/agjRgamsihpFkrZV8WlZVRd//T9+e6frbbnkaEAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Sebastian Reichel <sre@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Johan Hovold <johan+linaro@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702910513; l=7109;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=mgbHzQ/f6XWdmkp7t66704b+Nemu5GXGAe2cOFY3kSY=;
+ b=5H6JfwMomIpo9Wi+N1T6ORl8MGtVbT8fuhohEuHl77wXXH5A08OIij6mUO0xDNJ8w5Y1p0b2r
+ SfZASp6NigiCLTM94RHTaJSb6G4fIz2RZbs7U5ZicH6XSYtYUCmwTVo
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On 18/12/2023 15:27, Ji Sheng Teoh wrote:
->>
->> I have real doubts that you ever tested your entire solution with this
->> binding. Where is the DTS?
->>
-> 
-> Currently, the DTS is still in internal and yet to upstream as it depends
-> on [1].
+Currently, a not-yet-entirely-initialized battmgr (e.g. with pd-mapper
+not having yet started or ADSP not being up etc.) results in a couple of
+zombie power supply devices hanging around.
 
-Yeah, so you send untested code which cannot work or pass tests.  If you
-do not test your code, we need to be able to at least verify it, so send
-your DTS. Otherwise I cannot trust that this works at all.
+This is particularly noticeable when trying to suspend the device (even
+s2idle): the PSY-internal thermal zone is inaccessible and returns
+-ENODEV, which causes log spam.
+
+Register the power supplies only after we received some notification
+indicating battmgr is ready to take off.
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/power/supply/qcom_battmgr.c | 109 ++++++++++++++++++++----------------
+ 1 file changed, 60 insertions(+), 49 deletions(-)
+
+diff --git a/drivers/power/supply/qcom_battmgr.c b/drivers/power/supply/qcom_battmgr.c
+index ec163d1bcd18..a12e2a66d516 100644
+--- a/drivers/power/supply/qcom_battmgr.c
++++ b/drivers/power/supply/qcom_battmgr.c
+@@ -282,6 +282,7 @@ struct qcom_battmgr_wireless {
+ 
+ struct qcom_battmgr {
+ 	struct device *dev;
++	struct auxiliary_device *adev;
+ 	struct pmic_glink_client *client;
+ 
+ 	enum qcom_battmgr_variant variant;
+@@ -1293,11 +1294,69 @@ static void qcom_battmgr_enable_worker(struct work_struct *work)
+ 		dev_err(battmgr->dev, "failed to request power notifications\n");
+ }
+ 
++static char *qcom_battmgr_battery[] = { "battery" };
++
++static void qcom_battmgr_register_psy(struct qcom_battmgr *battmgr)
++{
++	struct power_supply_config psy_cfg_supply = {};
++	struct auxiliary_device *adev = battmgr->adev;
++	struct power_supply_config psy_cfg = {};
++	struct device *dev = &adev->dev;
++
++	psy_cfg.drv_data = battmgr;
++	psy_cfg.of_node = adev->dev.of_node;
++
++	psy_cfg_supply.drv_data = battmgr;
++	psy_cfg_supply.of_node = adev->dev.of_node;
++	psy_cfg_supply.supplied_to = qcom_battmgr_battery;
++	psy_cfg_supply.num_supplicants = 1;
++
++	if (battmgr->variant == QCOM_BATTMGR_SC8280XP) {
++		battmgr->bat_psy = devm_power_supply_register(dev, &sc8280xp_bat_psy_desc, &psy_cfg);
++		if (IS_ERR(battmgr->bat_psy))
++			dev_err(dev, "failed to register battery power supply (%ld)\n",
++				PTR_ERR(battmgr->bat_psy));
++
++		battmgr->ac_psy = devm_power_supply_register(dev, &sc8280xp_ac_psy_desc, &psy_cfg_supply);
++		if (IS_ERR(battmgr->ac_psy))
++			dev_err(dev, "failed to register AC power supply (%ld)\n",
++				PTR_ERR(battmgr->ac_psy));
++
++		battmgr->usb_psy = devm_power_supply_register(dev, &sc8280xp_usb_psy_desc, &psy_cfg_supply);
++		if (IS_ERR(battmgr->usb_psy))
++			dev_err(dev, "failed to register USB power supply (%ld)\n",
++				PTR_ERR(battmgr->usb_psy));
++
++		battmgr->wls_psy = devm_power_supply_register(dev, &sc8280xp_wls_psy_desc, &psy_cfg_supply);
++		if (IS_ERR(battmgr->wls_psy))
++			dev_err(dev, "failed to register wireless charing power supply (%ld)\n",
++				PTR_ERR(battmgr->wls_psy));
++	} else {
++		battmgr->bat_psy = devm_power_supply_register(dev, &sm8350_bat_psy_desc, &psy_cfg);
++		if (IS_ERR(battmgr->bat_psy))
++			dev_err(dev, "failed to register battery power supply (%ld)\n",
++				PTR_ERR(battmgr->bat_psy));
++
++		battmgr->usb_psy = devm_power_supply_register(dev, &sm8350_usb_psy_desc, &psy_cfg_supply);
++		if (IS_ERR(battmgr->usb_psy))
++			dev_err(dev, "failed to register USB power supply (%ld)\n",
++				PTR_ERR(battmgr->usb_psy));
++
++		battmgr->wls_psy = devm_power_supply_register(dev, &sm8350_wls_psy_desc, &psy_cfg_supply);
++		if (IS_ERR(battmgr->wls_psy))
++			dev_err(dev, "failed to register wireless charing power supply (%ld)\n",
++				PTR_ERR(battmgr->wls_psy));
++	}
++}
++
+ static void qcom_battmgr_pdr_notify(void *priv, int state)
+ {
+ 	struct qcom_battmgr *battmgr = priv;
+ 
+ 	if (state == SERVREG_SERVICE_STATE_UP) {
++		if (!battmgr->bat_psy)
++			qcom_battmgr_register_psy(battmgr);
++
+ 		battmgr->service_up = true;
+ 		schedule_work(&battmgr->enable_work);
+ 	} else {
+@@ -1312,13 +1371,9 @@ static const struct of_device_id qcom_battmgr_of_variants[] = {
+ 	{}
+ };
+ 
+-static char *qcom_battmgr_battery[] = { "battery" };
+-
+ static int qcom_battmgr_probe(struct auxiliary_device *adev,
+ 			      const struct auxiliary_device_id *id)
+ {
+-	struct power_supply_config psy_cfg_supply = {};
+-	struct power_supply_config psy_cfg = {};
+ 	const struct of_device_id *match;
+ 	struct qcom_battmgr *battmgr;
+ 	struct device *dev = &adev->dev;
+@@ -1328,14 +1383,7 @@ static int qcom_battmgr_probe(struct auxiliary_device *adev,
+ 		return -ENOMEM;
+ 
+ 	battmgr->dev = dev;
+-
+-	psy_cfg.drv_data = battmgr;
+-	psy_cfg.of_node = adev->dev.of_node;
+-
+-	psy_cfg_supply.drv_data = battmgr;
+-	psy_cfg_supply.of_node = adev->dev.of_node;
+-	psy_cfg_supply.supplied_to = qcom_battmgr_battery;
+-	psy_cfg_supply.num_supplicants = 1;
++	battmgr->adev = adev;
+ 
+ 	INIT_WORK(&battmgr->enable_work, qcom_battmgr_enable_worker);
+ 	mutex_init(&battmgr->lock);
+@@ -1347,43 +1395,6 @@ static int qcom_battmgr_probe(struct auxiliary_device *adev,
+ 	else
+ 		battmgr->variant = QCOM_BATTMGR_SM8350;
+ 
+-	if (battmgr->variant == QCOM_BATTMGR_SC8280XP) {
+-		battmgr->bat_psy = devm_power_supply_register(dev, &sc8280xp_bat_psy_desc, &psy_cfg);
+-		if (IS_ERR(battmgr->bat_psy))
+-			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
+-					     "failed to register battery power supply\n");
+-
+-		battmgr->ac_psy = devm_power_supply_register(dev, &sc8280xp_ac_psy_desc, &psy_cfg_supply);
+-		if (IS_ERR(battmgr->ac_psy))
+-			return dev_err_probe(dev, PTR_ERR(battmgr->ac_psy),
+-					     "failed to register AC power supply\n");
+-
+-		battmgr->usb_psy = devm_power_supply_register(dev, &sc8280xp_usb_psy_desc, &psy_cfg_supply);
+-		if (IS_ERR(battmgr->usb_psy))
+-			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
+-					     "failed to register USB power supply\n");
+-
+-		battmgr->wls_psy = devm_power_supply_register(dev, &sc8280xp_wls_psy_desc, &psy_cfg_supply);
+-		if (IS_ERR(battmgr->wls_psy))
+-			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
+-					     "failed to register wireless charing power supply\n");
+-	} else {
+-		battmgr->bat_psy = devm_power_supply_register(dev, &sm8350_bat_psy_desc, &psy_cfg);
+-		if (IS_ERR(battmgr->bat_psy))
+-			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
+-					     "failed to register battery power supply\n");
+-
+-		battmgr->usb_psy = devm_power_supply_register(dev, &sm8350_usb_psy_desc, &psy_cfg_supply);
+-		if (IS_ERR(battmgr->usb_psy))
+-			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
+-					     "failed to register USB power supply\n");
+-
+-		battmgr->wls_psy = devm_power_supply_register(dev, &sm8350_wls_psy_desc, &psy_cfg_supply);
+-		if (IS_ERR(battmgr->wls_psy))
+-			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
+-					     "failed to register wireless charing power supply\n");
+-	}
+-
+ 	battmgr->client = devm_pmic_glink_register_client(dev,
+ 							  PMIC_GLINK_OWNER_BATTMGR,
+ 							  qcom_battmgr_callback,
+
+---
+base-commit: ceb2fe0d438644e1de06b9a6468a1fb8e2199c70
+change-id: 20231218-topic-battmgr_fixture_attempt-ec86ef8df7e3
 
 Best regards,
-Krzysztof
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
 
