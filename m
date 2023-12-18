@@ -1,91 +1,81 @@
-Return-Path: <linux-kernel+bounces-3811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A198C8172BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:11:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 324EA8172C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44984B22D79
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:11:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C602D1F23626
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E44949888;
-	Mon, 18 Dec 2023 14:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CwfmekGU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A804FF7E;
+	Mon, 18 Dec 2023 14:10:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 870193788E
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-35d74cf427cso13146715ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:09:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702908576; x=1703513376; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2QqXSmTnTtT3Od7GmRltkqUPr4ByKUT9ybKktXPVKvg=;
-        b=CwfmekGUkzyeJX97NoAfw1ZBZveJosaJsuOA7JOn/0dDLJ2I6JvpwhjNLhCG2CA9yE
-         DirIuVMRgm0ACNJ8VQPTVx0j9JlLPjQGLHWL6ntgqHrpzo6tTGgw3cZXlyCIwz2kMcEz
-         JVIIuZwTqb9PdjsFOD0bUpwzCI9W07Xw9Njq3zH/RK+fDw34fuhbrqkBoiBIZzCBo2va
-         dLjJZYI/KhuVKOxQXM5a0s0p2czUV+ZkeEFzyeN8zbT4qR2R7zTiWpZgLhu3fYWEpNVS
-         h7Y8H/OGZvMdlJemwN9SGNryz6waCYQN9jdYvKr2QUQ6DDpwfYr6m7vHlMpiu+X0Qmbk
-         6XXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702908576; x=1703513376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2QqXSmTnTtT3Od7GmRltkqUPr4ByKUT9ybKktXPVKvg=;
-        b=NIR3rd+4St6Iob2ne6ICMcgiIkofeiMQ5AzsMwjcfbJrjnZZwJvG8OYWBhZH6n39cB
-         J86pJJx//FumlQnnoGz0h9Rat/3fkXi8iOP7e2Ft4R/FpsmyEX8CxfkkQL2Csijd8yeH
-         HFP0d4q5sJJZylzvPl5CrIV6KR32pS6QVImwtE3upYuwjb74Qiym5pBzFBCWPqppmD9i
-         QinDDbkpWq+1d69S3rt5rNGExThYeTXEzhhcbvWeKerlmScQnwclnCK5Tv0ObBXYb3zX
-         UZ8WRqaUPWOnwpBujPZ19VHlepSO9Jb4GWDww/RxRqaNxY6na1t6fKiY9xsDNGnHfjMe
-         Eclg==
-X-Gm-Message-State: AOJu0YxbP+UyDN3KdQSjhjQM8DRGdt0h2JXTl5oEXCrKHsgv2M+WfpWZ
-	q0YBXhR/PISQe+WaXnEIN1zCycYh5P41SMWyVRZhEg==
-X-Google-Smtp-Source: AGHT+IFYjruUvqVZXDvbXT4LNhRX+qeEr6xvnJELdCnoTBR7EBrvWnDtSE1Zyb2YKZ0Fu9zHGj9ZHRrOE2/7mu+2rhs=
-X-Received: by 2002:a05:6e02:194f:b0:35d:5553:7427 with SMTP id
- x15-20020a056e02194f00b0035d55537427mr21641253ilu.8.1702908576714; Mon, 18
- Dec 2023 06:09:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688A74FF74;
+	Mon, 18 Dec 2023 14:10:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73F3DC433CA;
+	Mon, 18 Dec 2023 14:10:03 +0000 (UTC)
+Date: Mon, 18 Dec 2023 09:10:01 -0500
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] tools: counter: add counter_watch_events
+Message-ID: <ZYBSuYFJxrB35dWv@ishi>
+References: <20231213173117.4174511-1-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218094548.37105-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231218094548.37105-1-krzysztof.kozlowski@linaro.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 18 Dec 2023 15:09:25 +0100
-Message-ID: <CACRpkdZwRJ1U8n=HP8TzqNVK4J5RqhiJYBdH0COexMH7TyDknw@mail.gmail.com>
-Subject: Re: [GIT PULL] pinctrl: samsung: drivers for v6.8
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Tomasz Figa <tomasz.figa@gmail.com>, Sylwester Nawrocki <snawrocki@kernel.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Peter Griffin <peter.griffin@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="A2lP8TohNjdXxZ+d"
+Content-Disposition: inline
+In-Reply-To: <20231213173117.4174511-1-fabrice.gasnier@foss.st.com>
+
+
+--A2lP8TohNjdXxZ+d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 10:45=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Wed, 13 Dec 2023 18:31:15 +0100, Fabrice Gasnier wrote:
+> Introduces a new tool that can be used for testing. Also
+> add MAINTAINERS entry as per William's recommendations.
+>=20
+> Changelog:
+> Changes in V4:
+> - Specify linux-iio mailing list in MAINTAINERS
+> - Revisit error path and handling in counter_watch_events
+>=20
+> [...]
 
-> Google and Samsung SoC pinctrl changes for v6.8.
+Applied, thanks!
 
-Pulled in to my "devel" branch for V6.8!
+[1/2] tools/counter: add a flexible watch events tool
+      commit: 1e73427f66353b7fe21c138787ff2b711ca1c0dd
+[2/2] MAINTAINERS: add myself as counter watch events tool maintainer
+      commit: 8e21e4693d8502ee31ef7984e16c3d9cab6c926a
 
-Excellent work as always, thanks for keeping the Samsung Exynos in order,
-there are so many users of this SoC now that without your coordination
-it would be complete chaos.
+Best regards,
+--=20
+William Breathitt Gray <william.gray@linaro.org>
 
-Yours,
-Linus Walleij
+--A2lP8TohNjdXxZ+d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZYBSuQAKCRC1SFbKvhIj
+K9gSAP0RG0UhlRKT9wnoi8jza4fKM8q1uCcClJ94Ed431gL+zgEA0z+e62MqVtVX
+cnpBZxF6tbxiJdtrnGTYcPDkil5wZw0=
+=FnWo
+-----END PGP SIGNATURE-----
+
+--A2lP8TohNjdXxZ+d--
 
