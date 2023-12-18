@@ -1,198 +1,120 @@
-Return-Path: <linux-kernel+bounces-4159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B294581789D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:24:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1F6F8178A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDFC2B23BA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:24:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44253B23034
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDCA5D730;
-	Mon, 18 Dec 2023 17:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3CD5A852;
+	Mon, 18 Dec 2023 17:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="E8Zr2gQH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fcFiiycG"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="H/3pqxVe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CC75A860;
-	Mon, 18 Dec 2023 17:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 18 Dec 2023 18:23:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702920214;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P1XgGZYPjy8h7WYBBhi2vRaDTtl2GOwX8g4rRNZ63x8=;
-	b=E8Zr2gQHS1RTIapRpz9bYE2YgbOVxJsDMiTk+cC8+ZD8ze7eBR7efXe6vNMqWB6LZr2QjR
-	eNWaKXEt+h+o/u48gjxbMCLoZPFF+ZcU8dgh4lek+ljyY/tZnGKfZPBoXYdJCBZaCEiISI
-	XIR3q1eJFpAdi0EHGkFXs9ZnSunMxNF5m4KPotSLxsbwhyXRrMePD5UyxUxhloy6cToCjv
-	24rJkXVwYfybx+WTsstsA/j9x42Y94EOxAcnDVoFcceNQVR1fLK0NkK3oT2tJQ1pfxfym9
-	LM4LjwaKaMMrnbN0K7uuUC23xL7yOgYPEKQseoFspzQTCnTdjhRoHMFduzv0iw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702920214;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P1XgGZYPjy8h7WYBBhi2vRaDTtl2GOwX8g4rRNZ63x8=;
-	b=fcFiiycGeLxLFabKrK2qZ5LMXyUpYcjlq8IuIdoaeVfiBxDpG08imbK97Iw0WNey9/NMnb
-	9OfewZGtfacEQMDg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH net-next 00/24] locking: Introduce nested-BH locking.
-Message-ID: <20231218172331.fp-nC_Nr@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
- <20231215145059.3b42ee35@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6334878F
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5534abbc637so1723060a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:25:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702920304; x=1703525104; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FsmrM2oHtRClB02QA8pjdjW9Wbdn73CBnuj1SfAdY/I=;
+        b=H/3pqxVeoWDxSZohDemKe0annUfP0d8fGUsUeitPxiFlsBqxhyZwdAjwFjG+umFayD
+         ZmXXlCDTuzawCKqIS+RdRQWyrjESSnbkycQsc3Kr5sO0MioTbhIy8Jbn7d+P0uIexL27
+         4f+fVwBMJIw8RCzcbGESkPkoyrFTDdTKzSKSg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702920304; x=1703525104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FsmrM2oHtRClB02QA8pjdjW9Wbdn73CBnuj1SfAdY/I=;
+        b=b29Tyf4C6hw9EsTixhwh0QJHWlDAsM5w2SBRQ9tBDm7kqW/pPMclDElaHax5sIFcjx
+         BesuTpxKy00pKHLai7GMiBLel4XX3bOZZ/tBmvVrUKJGJbXECS/R0tQ4XcJVfIokeMvB
+         t8gpa/lPUDwOtC/Gq78ApOC8gY141J+W1A6yZhq/pI1UvCZ9WuzzgXNXc8iWrTErMAqf
+         rGEccI0G5viL3RIYTrEPLsrOTA/Q209m26p228dX0JX+jvtJjamNjgkfaePqy6LYJKO+
+         geK3xpWs39DbQCUKPzpnvBVtqFvjGKptRsbDKY9RjB7M/UbE8gqTZYLAyAyRyxaSeQhs
+         Q4TA==
+X-Gm-Message-State: AOJu0YxfmATwkgy9D3Y0CDdrsf6AXE61zPYmtcP2bV3zsLjhpctbS92+
+	xXbLA9UgBKm5QD1G9uAzn1KxxnDqtRmcJi54FaMh3pE6
+X-Google-Smtp-Source: AGHT+IHwRpiecl4p65DvWOGT/H/4dxIwU+brSNiZYtGjmwx8Rt9P6OJKVxNBpNXTfINz2cNN8o3ASA==
+X-Received: by 2002:a05:6402:1342:b0:54f:5017:e54b with SMTP id y2-20020a056402134200b0054f5017e54bmr8478537edw.34.1702920304461;
+        Mon, 18 Dec 2023 09:25:04 -0800 (PST)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id t16-20020a056402241000b00552743342c8sm4616652eda.59.2023.12.18.09.25.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 09:25:04 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40c38e520e2so103875e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:25:04 -0800 (PST)
+X-Received: by 2002:a05:600c:3550:b0:40b:4355:a04b with SMTP id
+ i16-20020a05600c355000b0040b4355a04bmr365476wmq.6.1702920303831; Mon, 18 Dec
+ 2023 09:25:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20231218090454.1.I5c6eb80b2f746439c4b58efab788e00701d08759@changeid>
+In-Reply-To: <20231218090454.1.I5c6eb80b2f746439c4b58efab788e00701d08759@changeid>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 18 Dec 2023 09:24:46 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Xpp16ptOuQz=5UYfgm8B-WbNXF95YwA1t-FTkzOYRE_A@mail.gmail.com>
+Message-ID: <CAD=FV=Xpp16ptOuQz=5UYfgm8B-WbNXF95YwA1t-FTkzOYRE_A@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: ps8640: Fix size mismatch warning w/ len
+To: dri-devel@lists.freedesktop.org
+Cc: Guenter Roeck <groeck@chromium.org>, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Sam Ravnborg <sam@ravnborg.org>, Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231215145059.3b42ee35@kernel.org>
 
-On 2023-12-15 14:50:59 [-0800], Jakub Kicinski wrote:
-> On Fri, 15 Dec 2023 18:07:19 +0100 Sebastian Andrzej Siewior wrote:
-> > The proposed way out is to introduce explicit per-CPU locks for
-> > resources which are protected by local_bh_disable() and use those only
-> > on PREEMPT_RT so there is no additional overhead for !PREEMPT_RT builds.
->=20
-> As I said at LPC, complicating drivers with odd locking constructs
-> is a no go for me.
+Hi,
 
-I misunderstood it then as I assumed you wanted to ease the work while I
-was done which every driver after (hopefully) understanding what is
-possible/ needed and what not. We do speak here about 15++?
+On Mon, Dec 18, 2023 at 9:05=E2=80=AFAM Douglas Anderson <dianders@chromium=
+.org> wrote:
+>
+> After commit 26195af57798 ("drm/bridge: ps8640: Drop the ability of
+> ps8640 to fetch the EDID"), I got an error compiling:
+>
+>   error: comparison of distinct pointer types
+>   ('typeof (len) *' (aka 'unsigned int *') and
+>    'typeof (msg->size) *' (aka 'unsigned long *'))
+>   [-Werror,-Wcompare-distinct-pointer-types]
+>
+> Fix it by declaring the `len` as size_t.
+>
+> Fixes: 26195af57798 ("drm/bridge: ps8640: Drop the ability of ps8640 to f=
+etch the EDID")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> Sorry for sending this hot on the heels of the other patch, but for
+> some reason that other patch compiled fine for me until I picked it
+> back to my downstream tree. I'll see if I can track down why. In any
+> case, as soon as I see a Reviewed-by tag I'll land this.
 
-Now. The pattern is usually
-|	act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
-|	switch (act) {
-|	case XDP_REDIRECT:
-|		ret =3D xdp_do_redirect(netdev, &xdp, xdp_prog)))
-|		if (ret)
-|			goto XDP_ABORTED;
-|		xdp_redir++ or so;
+Ah, I found it! <Phew> this makes me less worried that I had some
+failure in my testing. I believe that upstream things weren't a
+problem because of commit d03eba99f5bf ("minmax: allow
+min()/max()/clamp() if the arguments have the same signedness.").
+...so at least what's landed isn't actually broken upstream, just
+downstream. It still feels reasonable to change this to "size_t",
+though.
 
-so we might be able to turn this into something that covers both and
-returns either XDP_REDIRECT or XDP_ABORTED. So this could be merged
-into
-
-| u32 bpf_prog_run_xdp_and_redirect(struct net_device *dev, const struct
-| 				  bpf_prog *prog, struct xdp_buff *xdp)
-| {
-| 	u32 act;
-| 	int ret;
-|=20
-| 	act =3D bpf_prog_run_xdp(prog, xdp);
-| 	if (act =3D=3D XDP_REDIRECT) {
-| 		ret =3D xdp_do_redirect(netdev, xdp, prog);
-| 		if (ret < 0)
-| 			act =3D XDP_ABORTED;
-| 	}
-| 	return act;
-| }
-
-so the lock can be put inside the function and all drivers use this
-function.
-
-=46rom looking through drivers/net/ethernet/, this should work for most
-drivers:
-- amazon/ena
-- aquantia/atlantic
-- engleder/tsnep
-- freescale/enetc
-- freescale/fec
-- intel/igb
-- intel/igc
-- marvell/mvneta
-- marvell/mvpp2
-- marvell/octeontx2
-- mediatek/mtk
-- mellanox/mlx5
-- microchip/lan966x
-- microsoft/mana
-- netronome/nfp (two call paths with no support XDP_REDIRECT)
-- sfc/rx
-- sfc/siena (that offset pointer can be moved)
-- socionext/netsec
-- stmicro/stmmac
-
-A few do something custom/ additionally between bpf_prog_run_xdp() and
-  xdp_do_redirect():
-
-- broadcom/bnxt
-  calculates length, offset, data pointer. DMA unmaps + memory
-  allocations before redirect.
-
-- freescale/dpaa2
-- freescale/dpaa
-  sets xdp.data_hard_start + frame_sz, unmaps DMA.
-
-- fungible/funeth
-  conditional redirect.
-
-- google/gve
-  Allocates a new packet for redirect.
-
-- intel/ixgbe
-- intel/i40e
-- intel/ice
-  Failure in the ZC case is different from XDP_ABORTED, depends on the
-  error from xdp_do_redirect())
-
-- mellanox/mlx4/
-  calculates page_offset.
-
-- qlogic/qede
-  DMA unmap and buffer alloc.
-
-- ti/cpsw_priv
-  recalculates length (pointer).
-
-and a few more don't support XDP_REDIRECT:
-
-- cavium/thunder
-  does not support XDP_REDIRECT, calculates length, offset.
-
-- intel/ixgbevf
-  does not support XDP_REDIRECT
-
-I don't understand why some driver need to recalculate data_hard_start,
-length and so on and others don't. This might be only needed for the
-XDP_TX case or not needed=E2=80=A6
-Also I'm not sure about the dma unmaps and skb allocations. The new skb
-allocation can be probably handled before running the bpf prog but then
-in the XDP_PASS case it is a waste=E2=80=A6
-And the DMA unmaps. Only a few seem to need it. Maybe it can be done
-before running the BPF program. After all the bpf may look into the skb.
-
-
-If that is no go, then the only thing that comes to mind is (as you
-mentioned on LPC) to acquire the lock in bpf_prog_run_xdp() and drop it
-in xdp_do_redirect(). This would require that every driver invokes
-xdp_do_redirect() even not if it is not supporting it (by setting netdev
-to NULL or so).
-
-Sebastian
+-Doug
 
