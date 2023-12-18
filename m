@@ -1,142 +1,72 @@
-Return-Path: <linux-kernel+bounces-3939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515C281754E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:34:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E92F81755E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4AFE1F257E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F2051C232C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07773D55D;
-	Mon, 18 Dec 2023 15:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097CF3D568;
+	Mon, 18 Dec 2023 15:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VAQNKWcE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WutFymaG"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3870B1D137;
-	Mon, 18 Dec 2023 15:34:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D5B7C433C7;
-	Mon, 18 Dec 2023 15:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E2E3A1B6;
+	Mon, 18 Dec 2023 15:35:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 325FEC433C9;
+	Mon, 18 Dec 2023 15:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702913672;
-	bh=JcaGFOxBdAWGxXi0BmXm9oDYVTLNqgQcR2Pq85HZItc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VAQNKWcEUkRWFjq6tpWYpQJzK2EUmIc9yeAFj8v+mWi4FsWAhIil3Jh8aBpZgvqPh
-	 0uQptdIHnawvGbZR1g93gc79o4LGnarrfoHFCWCYBLx2Ffgk2WHm3iGH2Hcfm5BVHu
-	 QlF8lC+M72l0dssDpPTrklriIUEfDVOZKgMHannI56uzru7PwMhLoXGKkuksDcVek7
-	 PxhuJ7PlZTzhPxpeQrx5K/T0WGdBaPWi2X/zDWM687OlJPfyawMCAGx5DjRV79esJC
-	 hnuLhOkFntCahq7G7Mas8avhe2rKd4+TgjYrAzZYssZ5TJxvf5j3wz94PYPqj98kog
-	 brUGx8y70iY5Q==
-Message-ID: <239a5cbc-126f-4c27-bbbc-2b8b102716d5@kernel.org>
-Date: Mon, 18 Dec 2023 17:34:26 +0200
+	s=k20201202; t=1702913739;
+	bh=/PRzWW+61bm8JeOBeRvqEJXgxir+CIm2dpn3TWN4lv8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WutFymaGf0kheSzw6iK7t4JsxJsPTWfvgOABhP380FO7j6yCB08/b4ALn9Br1doXg
+	 hnz9gmt5M5m07rN+2po3GKTfcr8BZ4Zyb+/A8V76pR/QKXh09RiJTAymWYm9UpXJIN
+	 ORqbujQcMxIt3uyHz0QczEzh9AsjpsH5cVhdNcklYgebLPJHmxLFE2n7CDntE1ZyNG
+	 ZDMkrgnh4NaK86wgeYywwS5KrvbieFmPdaKRIKqnvj5lNH9TbNhM6ELglU+EL0lVXk
+	 4LEjySawQ4F3lX02rdymekEIaGkAOjT645We7aGKsfI6ld2eoiA7gNNE3piMdw/3+F
+	 4r7DsUVT8hTGw==
+Date: Mon, 18 Dec 2023 15:35:33 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jijie Shao <shaojijie@huawei.com>
+Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	shenjian15@huawei.com, wangjie125@huawei.com,
+	liuyonglong@huawei.com, lanhao@huawei.com, wangpeiyang1@huawei.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 net-next 4/4] net: hns3: move constants from
+ hclge_debugfs.h to hclge_debugfs.c
+Message-ID: <20231218153533.GE6288@kernel.org>
+References: <20231216070018.222798-1-shaojijie@huawei.com>
+ <20231216070018.222798-5-shaojijie@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 08/10] net: ethernet: ti: am65-cpsw: add
- mqprio qdisc offload in channel mode
-To: Simon Horman <horms@kernel.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, shuah@kernel.org, vladimir.oltean@nxp.com,
- s-vadapalli@ti.com, r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com,
- p-varis@ti.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20231215132048.43727-1-rogerq@kernel.org>
- <20231215132048.43727-9-rogerq@kernel.org> <20231218134326.GD6288@kernel.org>
-Content-Language: en-US
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231218134326.GD6288@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231216070018.222798-5-shaojijie@huawei.com>
 
-Hi Simon,
+On Sat, Dec 16, 2023 at 03:00:18PM +0800, Jijie Shao wrote:
+> some constants are defined in hclge_debugfs.h,
+> but only used in hclge_debugfs.c.
+> so move them from hclge_debugfs.h to hclge_debugfs.c.
+> 
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 
-On 18/12/2023 15:43, Simon Horman wrote:
-> On Fri, Dec 15, 2023 at 03:20:46PM +0200, Roger Quadros wrote:
->> From: Grygorii Strashko <grygorii.strashko@ti.com>
->>
->> This patch adds MQPRIO Qdisc offload in full 'channel' mode which allows
->> not only setting up pri:tc mapping, but also configuring TX shapers
->> (rate-limiting) on external port FIFOs.
->>
->> The MQPRIO Qdisc offload is expected to work with or without VLAN/priority
->> tagged packets.
->>
->> The CPSW external Port FIFO has 8 Priority queues. The rate-limit can be
->> set for each of these priority queues. Which Priority queue a packet is
->> assigned to depends on PN_REG_TX_PRI_MAP register which maps header
->> priority to switch priority.
->>
->> The header priority of a packet is assigned via the RX_PRI_MAP_REG which
->> maps packet priority to header priority.
->>
->> The packet priority is either the VLAN priority (for VLAN tagged packets)
->> or the thread/channel offset.
->>
->> For simplicity, we assign the same priority queue to all queues of a
->> Traffic Class so it can be rate-limited correctly.
->>
->> Configuration example:
->>  ethtool -L eth1 tx 5
->>  ethtool --set-priv-flags eth1 p0-rx-ptype-rrobin off
->>
->>  tc qdisc add dev eth1 parent root handle 100: mqprio num_tc 3 \
->>  map 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 \
->>  queues 1@0 1@1 1@2 hw 1 mode channel \
->>  shaper bw_rlimit min_rate 0 100mbit 200mbit max_rate 0 101mbit 202mbit
->>
->>  tc qdisc replace dev eth2 handle 100: parent root mqprio num_tc 1 \
->>  map 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 hw 1
->>
->>  ip link add link eth1 name eth1.100 type vlan id 100
->>  ip link set eth1.100 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7
->>
->> In the above example two ports share the same TX CPPI queue 0 for low
->> priority traffic. 3 traffic classes are defined for eth1 and mapped to:
->> TC0 - low priority, TX CPPI queue 0 -> ext Port 1 fifo0, no rate limit
->> TC1 - prio 2, TX CPPI queue 1 -> ext Port 1 fifo1, CIR=100Mbit/s, EIR=1Mbit/s
->> TC2 - prio 3, TX CPPI queue 2 -> ext Port 1 fifo2, CIR=200Mbit/s, EIR=2Mbit/s
->>
->> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> 
-> ...
-> 
->> diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
->> index 9f0a05e763d1..7ad7af3b3c60 100644
->> --- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
->> +++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
->> @@ -7,6 +7,7 @@
->>   */
->>  
->>  #include <linux/pm_runtime.h>
->> +#include <linux/math.h>
->>  #include <linux/time.h>
->>  #include <net/pkt_cls.h>
->>  
->> @@ -15,6 +16,8 @@
->>  #include "am65-cpts.h"
->>  #include "cpsw_ale.h"
->>  
->> +#define TO_MBPS(x)	DIV_ROUND_UP((x), BYTES_PER_MBIT)
-> 
-> Hi Grygorii and Roger,
-> 
-> a minor nit from my side: in order for BYTES_PER_MBIT to be defined
-> linux/units.h needs to be included. But that isn't added until
-> the next patch.
+Thanks Jijie,
 
-Thanks for the catch. I'll fix it in next spin.
+this looks good, but I think it should come before patch 2/4,
+to avoid warnings about unused symbols being flagged until this patch is
+applied.
 
--- 
-cheers,
--roger
+...
 
