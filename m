@@ -1,178 +1,159 @@
-Return-Path: <linux-kernel+bounces-3869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6215B817467
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:58:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 949E381747B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:59:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E25351F23321
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:58:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34064B23324
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2F73787E;
-	Mon, 18 Dec 2023 14:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70FF3D576;
+	Mon, 18 Dec 2023 14:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Snbz/lT8"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VwOE0JWN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA294101DB
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40b5155e154so39565505e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:58:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1702911501; x=1703516301; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=T2lzs4wznIp2xbwMuaXpnCrk161AzmSWNsE1VAdzIps=;
-        b=Snbz/lT8TAYspcrvTfdUQqIZ/Jot3FdNmVC4AHRmZ8n+RolcvOmMJUjVXoL6ek8GFn
-         tCk6vIpYuuDLotIOWlCZ08zSG1sb+CqdHU8ZFl7IUB4xHY08I3XD2CerRXN+uzixodJz
-         bUekW1G4+tO4F/MyaA518U9BlXggTRy0LXO0dNLGdBY4jKNfUZcKCd0UIzVGvjaZEhCR
-         6GGFJGE1CGXo5lNyjrpfb3wF65zOjRP6oYAQIsz6xTlAXb7CiPKSsvxKTVPGtj9l+zQs
-         PajDOpUf6beg7cB/SV+mYmTZ/7GfKqAEr5AHUKFCK5cLW0yRemxNJGYcVN7Pk+iGyyPE
-         qgkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702911501; x=1703516301;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T2lzs4wznIp2xbwMuaXpnCrk161AzmSWNsE1VAdzIps=;
-        b=Des/7VQJNkhiWKvBZok4vWwlRB7omdKhOfKq5fj7gDmDjR/D6KQYqwguTQ1IS1X4oD
-         faXjecGM1clqq8HbotryP27uv71JR4bD/fKBBo2VT3lIkVIWYk7v+YLYliYk1TqDsCD0
-         nsYhTCR+Ygat0xwkoJQ7ZOn9SW58zs1FUQKp3gBSVcbJR4pHDYv2S339J6PbPJHGZ4wm
-         aOzJNTqi2/kc3po/ywSGk8tePq3aBi8YZoSkvVpvbaaNFE3qTWaJW4zI1YofQI0P3ZN8
-         fn2tJWlzek4/MvATws9aOyCCOrWkowzEGKxi6K0poZGaTtwlCIe6alQC2AqfrOH1i/aL
-         DrBw==
-X-Gm-Message-State: AOJu0Ywq6vmwFnB3sMeB0IL25kcFueQ0YvnOc3h03K2wDDtJiLQ9Ln8W
-	gjVFHz44XCS7aNuJU6OqAgGCdw==
-X-Google-Smtp-Source: AGHT+IHm5i4U4iCbK1WO2wBoHSz6xtDXsSSWbqr+KjfCPJ/PiFtLd2RWtKwkraO4kBXCUu/g7w6Hvg==
-X-Received: by 2002:a1c:6a1a:0:b0:40c:6a3f:6bc2 with SMTP id f26-20020a1c6a1a000000b0040c6a3f6bc2mr2796111wmc.30.1702911500633;
-        Mon, 18 Dec 2023 06:58:20 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:bfe6])
-        by smtp.gmail.com with ESMTPSA id f18-20020a05600c4e9200b0040d18ffbeeasm5305205wmq.31.2023.12.18.06.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 06:58:20 -0800 (PST)
-Date: Mon, 18 Dec 2023 15:58:15 +0100
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	Nhat Pham <nphamcs@gmail.com>, Chris Li <chriscli@google.com>,
-	Seth Jennings <sjenning@redhat.com>,
-	Dan Streetman <ddstreet@ieee.org>,
-	Vitaly Wool <vitaly.wool@konsulko.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 5/5] mm/zswap: cleanup zswap_reclaim_entry()
-Message-ID: <20231218145815.GA21073@cmpxchg.org>
-References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
- <20231213-zswap-dstmem-v1-5-896763369d04@bytedance.com>
- <CAJD7tkb5cKopA-Lfvtsn7sqgqjRf2kyaMwZhhp6SkveNEwArGw@mail.gmail.com>
- <20231214142320.f5cf319e619dbb2127c423e9@linux-foundation.org>
- <CAJD7tkaJVB+BoYmcO3MtGD7Ku88Sjk-VAK640h9B-aQzyGPdZQ@mail.gmail.com>
- <20231218140313.GA19167@cmpxchg.org>
- <CAJD7tkbdCv7CMy71UOCefR2Y1BXevJ2eMmYwk+=e=GPcCqn3+w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BA13A1D3;
+	Mon, 18 Dec 2023 14:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BIDlPlk031382;
+	Mon, 18 Dec 2023 14:59:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1K/ldSBpqvmUpzKM7qL6iZlu4kgIL+gWWCt58O6ZgKM=;
+ b=VwOE0JWNROqyj9LOc+TF7Vt9mUQFpVPm1dWu0pLtB9T6JejStF5Av3yB1wL7WBY50q8F
+ a1tLbJZC2WvpLYlLYSPqY5PPfDAbysKmuRH5gSk2Xrii2CuZ3IFgUX12oHFfoKxsNKFP
+ hl91OlJhY/jz5wsyIVfM9kaxVdd5ZBs8Y1086dAzng0vOBPt4yhn6xaPZssBzCyuQhij
+ ZfWqQp3GiKUFg7dUMbYgsciJ0ZE0MVFocaBkpGhyWlZW2GQM07tFNev0UmEvseXJ0rru
+ K/nkrlE4aDY2hjNoqfPF/7U+jfF2PY4hBp5bHcItRIykm/Rf3XPU9bKG5sYraWdn7uFH BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2q93stwb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 14:59:06 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BIDmYFI001759;
+	Mon, 18 Dec 2023 14:59:06 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2q93stvv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 14:59:05 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BIE1JLE027076;
+	Mon, 18 Dec 2023 14:59:05 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v1rejs3n4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 14:59:04 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BIEx2NM41812704
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Dec 2023 14:59:02 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1C48020043;
+	Mon, 18 Dec 2023 14:59:02 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9465720040;
+	Mon, 18 Dec 2023 14:59:01 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.171.92.197])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Mon, 18 Dec 2023 14:59:01 +0000 (GMT)
+Date: Mon, 18 Dec 2023 15:58:59 +0100
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+To: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: s390: selftest: memop: Fix undefined behavior
+Message-ID: <20231218153358.14acb611@p-imbrenda>
+In-Reply-To: <59621e88c5c29bdff8bc06f68b02b2c7a420a09a.camel@linux.ibm.com>
+References: <20231215161125.943551-1-nsg@linux.ibm.com>
+	<20231215180206.740df738@p-imbrenda>
+	<59621e88c5c29bdff8bc06f68b02b2c7a420a09a.camel@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkbdCv7CMy71UOCefR2Y1BXevJ2eMmYwk+=e=GPcCqn3+w@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: puXqm3mI9E2kD8Nrm3NTqq7KtU-NhgJB
+X-Proofpoint-ORIG-GUID: 6OtjiZE-V-I4wm8dogwuxslZvV8tlwUn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-18_10,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 adultscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=857
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312180109
 
-On Mon, Dec 18, 2023 at 06:39:13AM -0800, Yosry Ahmed wrote:
-> On Mon, Dec 18, 2023 at 6:03 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Thu, Dec 14, 2023 at 02:41:26PM -0800, Yosry Ahmed wrote:
-> > > On Thu, Dec 14, 2023 at 2:23 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > >
-> > > > On Wed, 13 Dec 2023 17:02:25 -0800 Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > >
-> > > > > On Tue, Dec 12, 2023 at 8:18 PM Chengming Zhou
-> > > > > <zhouchengming@bytedance.com> wrote:
-> > > > > >
-> > > > > > Also after the common decompress part goes to __zswap_load(), we can
-> > > > > > cleanup the zswap_reclaim_entry() a little.
-> > > > >
-> > > > > I think you mean zswap_writeback_entry(), same for the commit title.
-> > > >
-> > > > I updated my copy of the changelog, thanks.
-> > > >
-> > > > > > -       /*
-> > > > > > -        * If we get here because the page is already in swapcache, a
-> > > > > > -        * load may be happening concurrently. It is safe and okay to
-> > > > > > -        * not free the entry. It is also okay to return !0.
-> > > > > > -        */
-> > > > >
-> > > > > This comment should be moved above the failure check of
-> > > > > __read_swap_cache_async() above, not completely removed.
-> > > >
-> > > > This?
-> > >
-> > > Yes, thanks a lot. Although I think a new version is needed anyway to
-> > > address other comments.
-> > >
-> > > >
-> > > > --- a/mm/zswap.c~mm-zswap-cleanup-zswap_reclaim_entry-fix
-> > > > +++ a/mm/zswap.c
-> > > > @@ -1457,8 +1457,14 @@ static int zswap_writeback_entry(struct
-> > > >         mpol = get_task_policy(current);
-> > > >         page = __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
-> > > >                                 NO_INTERLEAVE_INDEX, &page_was_allocated, true);
-> > > > -       if (!page)
-> > > > +       if (!page) {
-> > > > +               /*
-> > > > +                * If we get here because the page is already in swapcache, a
-> > > > +                * load may be happening concurrently. It is safe and okay to
-> > > > +                * not free the entry. It is also okay to return !0.
-> > > > +                */
-> > > >                 return -ENOMEM;
-> > > > +       }
-> > > >
-> > > >         /* Found an existing page, we raced with load/swapin */
-> > > >         if (!page_was_allocated) {
-> >
-> > That's the wrong branch, no?
-> >
-> > !page -> -ENOMEM
-> >
-> > page && !page_was_allocated -> already in swapcache
-> 
-> Ah yes, my bad.
-> 
-> >
-> > Personally, I don't really get the comment. What does it mean that
-> > it's "okay" not to free the entry? There is a put, which may or may
-> > not free the entry if somebody else is using it. Is it explaining how
-> > lifetime works for refcounted objects? I'm similarly confused by the
-> > "it's okay" to return non-zero. What is that trying to convey?
-> >
-> > Deletion seemed like the right choice here, IMO ;)
-> 
-> It's not the clearest of comments for sure. I think it is just trying
-> to say that it is okay not to write back the entry from zswap and to
-> fail, because the caller will just try another page. I did not like
-> silently deleting the comment during the refactoring. How about
-> rewriting it to something like:
-> 
-> /*
->  * If we get here because the page is already in the swapcache, a
->  * load may be happening concurrently. Skip this page, the caller
->  * will move on to a different page.
->  */
+On Mon, 18 Dec 2023 13:18:14 +0100
+Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
 
-Well there is this one already on the branch:
+[...]
 
-/* Found an existing page, we raced with load/swapin */
+> > > diff --git a/tools/testing/selftests/kvm/s390x/memop.c b/tools/testing/selftests/kvm/s390x/memop.c
+> > > index bb3ca9a5d731..2eba9575828e 100644
+> > > --- a/tools/testing/selftests/kvm/s390x/memop.c
+> > > +++ b/tools/testing/selftests/kvm/s390x/memop.c
+> > > @@ -485,11 +485,13 @@ static bool popcount_eq(__uint128_t a, __uint128_t b)
+> > >  
+> > >  static __uint128_t rotate(int size, __uint128_t val, int amount)
+> > >  {
+> > > -	unsigned int bits = size * 8;
+> > > +	unsigned int left, right, bits = size * 8;
+> > >    
+> > 
+> > ...why not just:
+> > 
+> > if (!amount)
+> > 	return val;
+> > 
+> > ?  
+> 
+> That works if you move it one statement down (128 would also trigger UB).
 
-which covers the first half. The unspoken assumption there is that
-writeback is an operation for an aged out page, while swapin means the
-age just got reset to 0. Maybe it makes sense to elaborate on that?
+oops, yes it has to be after
+
+> % 128 does the trick, is branchless and there is a bit of a symmetry going
+> on between right and left.
+> But I can use an early return if you want.
+
+I think it's more readable, and furthermore...
+
+> 
+> >   
+> > > -	amount = (amount + bits) % bits;
+> > > +	right = (amount + bits) % bits;
+> > > +	/* % 128 prevents left shift UB if size == 16 && right == 0 */
+> > > +	left = (bits - right) % 128;
+> > >  	val = cut_to_size(size, val);
+> > > -	return (val << (bits - amount)) | (val >> amount);
+
+...this is a more idiomatic syntax for a rotate operation 
+
+> > > +	return (val << left) | (val >> right);
+> > >  }
+> > >  
+> > >  const unsigned int max_block = 16;
+> > > 
+> > > base-commit: 305230142ae0637213bf6e04f6d9f10bbcb74af8  
+> >   
+> 
+
 
