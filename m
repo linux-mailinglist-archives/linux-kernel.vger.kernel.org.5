@@ -1,128 +1,201 @@
-Return-Path: <linux-kernel+bounces-4106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3921E817800
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:59:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F69817802
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:00:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCF1DB22221
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:59:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D4F9283B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E83A4FF65;
-	Mon, 18 Dec 2023 16:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EF04FF8E;
+	Mon, 18 Dec 2023 17:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="FEMLD3Ak"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="cAxXR+pH";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="52DZ6vTd";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DppdkvQi";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nYGz42lR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D9D4FF68;
-	Mon, 18 Dec 2023 16:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BIBVg9Y013320;
-	Mon, 18 Dec 2023 17:58:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=2LbVD48cs9SSVdEVF6CGBiY28dgdHPu6RAlKrCsGHvc=; b=FE
-	MLD3Ak4teHPbI6Xwmixwvt1711SnapOzLBJPaPaM6624+zpH5+YWl2XfqFNzewIZ
-	w+35RSS/Uo3m9NXyvNDVl4Na4gUFdyT3AfIeH/3Vt//5qFiCwW4i06M7B5lTQqyj
-	texq/5p3BUdH1T3nII+sCUwgv20eZpGs5baKWtY0lkuemCz2Q9DIU+JSbCcsjmZT
-	nnXAKEAn9L2jlQhPypRp8EWMM4YA5/gG2IDFZ3OyYiwx3uSAP3YH/clUFQy+gzbd
-	BEmMAmB47/k4xxR2xRTk7iZOcVei1HKItH3fqIsL89oVBP8s25H126qZrIP+Fx9Y
-	py4hnheNXyxIjppjnPyw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v13nh8w9d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 17:58:37 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0B72510005E;
-	Mon, 18 Dec 2023 17:58:36 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0168B26A472;
-	Mon, 18 Dec 2023 17:58:36 +0100 (CET)
-Received: from [10.201.20.59] (10.201.20.59) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 18 Dec
- 2023 17:58:33 +0100
-Message-ID: <abf4725b-8569-47f8-a06d-c06285595625@foss.st.com>
-Date: Mon, 18 Dec 2023 17:58:32 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389A842042
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D39FA21EF5;
+	Mon, 18 Dec 2023 16:59:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702918800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MWYDStw9L70g5Zod1mNSFlqE3RQHs5nnHmAPxDPRssE=;
+	b=cAxXR+pHWkRuzuTKvZFWyo6rfT0PC0drfIqS8xOMKZ0hzdVX4xW2VlUgntgl1C1UqSif1k
+	eTbT+LZox0Uy/+g/b0YwNjsRlfJGGZhjjTbZ7kom/m19WPH2n/1ExpGwRKbwvHPtvLv9ye
+	jTkdg/NEX9SqMX8CHJ+XxrEnNM5970Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702918800;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MWYDStw9L70g5Zod1mNSFlqE3RQHs5nnHmAPxDPRssE=;
+	b=52DZ6vTdaqtPqXSlsmvasQ/oW8UedV9sVs2T7bAAeIV1m8iZpMRmO7CABH2lZMOLYoG4aU
+	D8Dg0uJ5BxiutGDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702918799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MWYDStw9L70g5Zod1mNSFlqE3RQHs5nnHmAPxDPRssE=;
+	b=DppdkvQigj7Q4wD3rzocvUIo5UYpYKHMrbS2FdqGRipEAhYtNII6kq2EDF5t0fsLPSGHZm
+	TIXecfcGTw9QbNu0oBb0TNPaobQFX4ojdf9jvUAa+2CeAbC/7in0GQlezT0jhikSyc9M4g
+	xohH4ap0jx0SPkULDG65qmQZ7qChaFk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702918799;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MWYDStw9L70g5Zod1mNSFlqE3RQHs5nnHmAPxDPRssE=;
+	b=nYGz42lRbI8gFvP2HXoZ8wAI7L0eWd/31XM431AcKXegqekv4fJ8ln8xr3BleZuS/eTew+
+	b/mYTwsJSExoNHBA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B6D8A13927;
+	Mon, 18 Dec 2023 16:59:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id OR9PLI96gGU6DwAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Mon, 18 Dec 2023 16:59:59 +0000
+From: Daniel Wagner <dwagner@suse.de>
+To: linux-nvme@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Hannes Reinecke <hare@suse.de>,
+	Max Gurtovoy <mgurtovoy@nvidia.com>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v6 0/6] nvme: add csi, ms and nuse to sysfs
+Date: Mon, 18 Dec 2023 17:59:48 +0100
+Message-ID: <20231218165954.29652-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] dt-bindings: spi: stm32: add st,stm32mp25-spi
- compatible
-Content-Language: en-US
-To: Alain Volmat <alain.volmat@foss.st.com>, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Erwan Leray <erwan.leray@foss.st.com>
-CC: Valentin Caron <valentin.caron@foss.st.com>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20231218155721.359198-1-alain.volmat@foss.st.com>
- <20231218155721.359198-3-alain.volmat@foss.st.com>
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-In-Reply-To: <20231218155721.359198-3-alain.volmat@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-18_11,2023-12-14_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: ******
+X-Spamd-Bar: ++++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=DppdkvQi;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=nYGz42lR
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [6.59 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 6.59
+X-Rspamd-Queue-Id: D39FA21EF5
+X-Spam-Flag: NO
 
-On 12/18/23 16:57, Alain Volmat wrote:
-> From: Valentin Caron <valentin.caron@foss.st.com>
-> 
-> Add st,stm32mp25-spi compatible in dt-bindings.  STM32MP25 spi is similar
+Rebased on the current nvme/nvme-6.8 branch and added the Review tags. Also
+addressed the printk format issue pointed out by Chaitanya.
 
-Hi Alain,
-In case you re-submit,
-Nitpicking, extra space here could be removed    ^
-Capital letters for SPI could also be used here             ^
+About PI: I've added a note to the first commit pointing on this topic. I
+understood from the discussion, that yes it is an issue but it already exists
+and we will address this in future.
 
-Appart from that, you can add my:
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Thanks,
+Daniel
 
-Best Regards,
-Fabrice
+libnvme changes:
+  https://github.com/igaw/libnvme/tree/tree-no-cmd
+  
+changes:
+v6:
+ - rebased on nvme/nvme-6.8
+ - collected Reviewed tags
+ - updated printk format
 
-> to the STM32H7 except for the following two points:
->   - Burst should not be enabled with the new DMA used on STM32MP25.
->   - STM32MP25 SPI8 has a limited feature set, it can only send words of
->     8 or 16 bits and with a maximum words number of 1024.
-> 
-> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> ---
->  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-> index 5754d603f34f..4bd9aeb81208 100644
-> --- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-> @@ -25,6 +25,7 @@ properties:
->        - st,stm32f4-spi
->        - st,stm32f7-spi
->        - st,stm32h7-spi
-> +      - st,stm32mp25-spi
->  
->    reg:
->      maxItems: 1
+v5:
+ - reverted trigger happy conversion to nvme_ns_head in
+   nvme_zns_alloc_report_buffer
+ - removed debug output
+ - added refactoring patches
+ - ratelimit silence suppress messages
+ - added reviewed tags
+ - https://lore.kernel.org/linux-nvme/20231208105337.23409-1-dwagner@suse.de/
+
+v4:
+ - drop 'use nvme_ns_head instead nvme_ns' patches
+ - ratelimit nuse update per namespace not globally
+ - rename ns attribute group
+ - added non-multipath nuse update logic
+ - added cacheline optimization
+ - https://lore.kernel.org/linux-nvme/20231207123624.29959-1-dwagner@suse.de/
+
+v3:
+ - cut overlong lines shorter
+ - fixed disk (queuedata) initialization order
+ - more testing with blktest
+ - added nuse ratelimit
+ - added reviewed tags
+ - https://lore.kernel.org/linux-nvme/20231206081244.32733-1-dwagner@suse.de/
+
+v2:
+ - moved ns id data to nvme_ns_head
+ - dropped ds, nsze
+ - https://lore.kernel.org/linux-nvme/20231201092735.28592-1-dwagner@suse.de/
+
+v1:
+ - initial version
+ - https://lore.kernel.org/linux-nvme/20231127103208.25748-1-dwagner@suse.de/
+
+Daniel Wagner (6):
+  nvme: move ns id info to struct nvme_ns_head
+  nvme: refactor ns info helpers
+  nvme: refactor ns info setup function
+  nvme: rename ns attribute group
+  nvme: add csi, ms and nuse to sysfs
+  nvme: repack struct nvme_ns_head
+
+ drivers/nvme/host/core.c      | 168 ++++++++++++++++++----------------
+ drivers/nvme/host/ioctl.c     |   8 +-
+ drivers/nvme/host/multipath.c |   2 +-
+ drivers/nvme/host/nvme.h      |  44 +++++----
+ drivers/nvme/host/rdma.c      |   4 +-
+ drivers/nvme/host/sysfs.c     |  99 ++++++++++++++++++--
+ drivers/nvme/host/zns.c       |  35 +++----
+ 7 files changed, 233 insertions(+), 127 deletions(-)
+
+-- 
+2.43.0
+
 
