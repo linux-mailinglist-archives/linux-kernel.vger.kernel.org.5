@@ -1,101 +1,96 @@
-Return-Path: <linux-kernel+bounces-4462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7E50817DD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:03:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 876B3817DD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:05:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66D71B221FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:03:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A4F21F2462F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D7B760AA;
-	Mon, 18 Dec 2023 23:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84768760AD;
+	Mon, 18 Dec 2023 23:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pWGfAo/7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ywPnYzld"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E077576082;
-	Mon, 18 Dec 2023 23:03:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 792A2C433C8;
-	Mon, 18 Dec 2023 23:03:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702940626;
-	bh=xaDz0t77rbGC6Oqii2udQGnriFl0a1oeeg/6m2BRWEA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=pWGfAo/7yIaVRlwY6pXSYqfpeuoMvcjQVqHBjueNGbzgyBgQlpxKYiujhVSFlvcBG
-	 F2eDaUndBRg4pr1UnZgCTnJWiWIB/Ziy+6HYtm04Ts5ileHXEvUrmfDm2UIKIrrS66
-	 VFuVyUdw9R9duvnOWkXGgn46i6nnm4Rw7UXqBEOKXWg6YdncqXVHXNatTeGf+nubha
-	 j/oN1rIFw4NGt8ftZxlguXjpZhwDbwZBhKjnlENXOgjLgYhPY54dXVj+pUaqL7x8cf
-	 9KF5SxF8hHFKr311pb33PMFuKE8Eixvb+J++lY1ujOEZpN/EmINRUR1rMX4kGoPjt9
-	 mfi/5nSDW0ZHw==
-Message-ID: <918945b6-8959-4228-b642-396ae346b20a@kernel.org>
-Date: Tue, 19 Dec 2023 08:03:44 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F71876096
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d20831f21so16275e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702940740; x=1703545540; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+SN12il5ik6cWNDdw9fL8yyeZEss9E6x81jqC6dArM4=;
+        b=ywPnYzld0rBMoq2j4ctOl/jiTkZxPMQ3Jb814gZNpN861UR3rz0wG/jSXCu/wGRsMm
+         aOOI72wyDAXPUJKTOuh0cNZZLTU6DlWVTpaT73EhtisfnZVn9wxpUsjSIfWMsqGIc5ay
+         2RZcxcmLpELmRhJAmxf5rGCwpf/QdvJq2JCrzg3197FqyoRwODpE/4/66WljpcDlCIq9
+         svfGETYaQKA7eVz6WTB7pM8phewIYWZylTopEriEsSIrct51PTJ16Fzc2wicSpQopKl8
+         pGLXNzmvqk01uXSQTVkooXwrUqUIqUpb4WLw5XFqDKk1E/d4ytYtHNcJ6TBwNNNdBlU3
+         cOhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702940740; x=1703545540;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+SN12il5ik6cWNDdw9fL8yyeZEss9E6x81jqC6dArM4=;
+        b=W5XNUCMBJOk88W+V71M2xOoqicry7VRp68JTpELRpedcONnnbvp6LJHWAtMxHtB3db
+         BdQV+lc9+GFMMZmwbJpoxNWWSvtY2s5sweWZJaHmKftnCeiB4bAUR2f2mkjEpYFajO0i
+         MMRewKKFvPdfcNrffeU8z+BD7Jy/EB/ErL5hrNQGYQ7KhWkc+SmOHwnhyReiFnBS0N/6
+         5CFJLWqiryk/GZZw99klhy3pzx3YSwYgC0AayQRek0ly/9ixl61nj9O76rcgmtBTyqqk
+         vhnQYiCE82bE7jUKI0grak+LJG3JzxZ/+khxUQjQkgGn+NvnjeOu+Cuy0WxO7xVlva9A
+         v37w==
+X-Gm-Message-State: AOJu0YyiAGz4wF4BWlrY2jJutKVz1Wo/jhrzO9SiG3wtYf2PVJlTDbFz
+	JRYY0xtK0+iccEINALPqooDEK45IXw2WNG0RUkJpMyN7Bawn
+X-Google-Smtp-Source: AGHT+IGMOM3LPYj6duqgFMQpU/sRxW2c92eaacVQ5j02hlMrJxsQiJ5p6r8R1iKWvqGXXa2WKsmd/d4YW/xB4awXn9U=
+X-Received: by 2002:a1c:7406:0:b0:40c:4ed3:8d1f with SMTP id
+ p6-20020a1c7406000000b0040c4ed38d1fmr26310wmc.7.1702940740206; Mon, 18 Dec
+ 2023 15:05:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Chanwoo Choi <chanwoo@kernel.org>
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Chanwoo Choi <cw00.choi@samsung.com>, Chanwoo Choi <chanwoo@kernel.org>,
- MyungJoo Ham <myungjoo.ham@samsung.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [GIT PULL] devfreq next for 6.8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231218095933.2487360-1-xuxinxiong@huaqin.corp-partner.google.com>
+In-Reply-To: <20231218095933.2487360-1-xuxinxiong@huaqin.corp-partner.google.com>
+From: Doug Anderson <dianders@google.com>
+Date: Mon, 18 Dec 2023 15:05:27 -0800
+Message-ID: <CAD=FV=XE+k3PTXMY7gU789HnGKVQdJMwJt8gqowxT6x0zj-A4w@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel-edp: Add several generic edp panels
+To: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
+	hsinyi@google.com, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dear Rafael,
+Hi,
 
-This is devfreq-next pull request for v6.8. I add detailed description of
-this pull request on the following tag. Please pull devfreq with
-following updates.
+On Mon, Dec 18, 2023 at 1:59=E2=80=AFAM Xuxin Xiong
+<xuxinxiong@huaqin.corp-partner.google.com> wrote:
+>
+> Add support for the following 3 panels:
+> 1. BOE NV116WHM-N49 V8.0
+> 2. BOE NV122WUM-N41
+> 3. CSO MNC207QS1-1
+>
+> Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+> ---
+>  drivers/gpu/drm/panel/panel-edp.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Best Regards,
-Chanwoo Choi
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
+Pushed to drm-misc-next:
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-6.8
-
-for you to fetch changes up to aed5ed595960c6d301dcd4ed31aeaa7a8054c0c6:
-
-  PM / devfreq: Synchronize devfreq_monitor_[start/stop] (2023-12-19 07:58:27 +0900)
-
-----------------------------------------------------------------
-Update devfreq next for v6.8
-
-Detailed description for this pull request:
-1. Fix buffer overflow of trans_stat_show sysfs node on devfreq core
-- Fix buffer overflow of trans_stat_show sysfs node to replace
-  sprintf with scnprintf and then replace it with sysfs_emit
-  according to the syfs guide.
-
-2. Fix the timer list corruption when frequent switching of governor
-by synchronizing the devfreq_moniotr_start and _stop function.
-----------------------------------------------------------------
-
-Christian Marangi (2):
-      PM / devfreq: Fix buffer overflow in trans_stat_show
-      PM / devfreq: Convert to use sysfs_emit_at() API
-
-Mukesh Ojha (1):
-      PM / devfreq: Synchronize devfreq_monitor_[start/stop]
-
- Documentation/ABI/testing/sysfs-class-devfreq |  3 +
- drivers/devfreq/devfreq.c                     | 80 ++++++++++++++++++++-------
- 2 files changed, 62 insertions(+), 21 deletions(-)
+0547692ac146 drm/panel-edp: Add several generic edp panels
 
