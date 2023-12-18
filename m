@@ -1,309 +1,132 @@
-Return-Path: <linux-kernel+bounces-4252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 681208179E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:44:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB5B68179E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:45:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DA261C22A04
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:44:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39DB7284288
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C3022091;
-	Mon, 18 Dec 2023 18:44:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBEF1DDD1;
+	Mon, 18 Dec 2023 18:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="r+ctA05I";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="hWa+gcKQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tbau4Ucg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1935D8470;
-	Mon, 18 Dec 2023 18:43:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1702925037;
-	bh=arHniq/TP/FYi3pR5hTUhKg3jdumjz26l2eJ5S8yDwc=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=r+ctA05INxpMxAToOnyQPIiqXYsMA9bOK/dtsQUKrOC73ANqFbSUcMv3Av0vLmxZV
-	 wcY+2V/qSNTfdGmcSrJZrtRsv5EOEQgrOm/lzD0LrXAbii75eHlnv3gyZ2RHsBhq/y
-	 r3lZTNuUxRxLOzfcIUlPq44RymLCzm1lxka5OMQ8=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 10F5F1280440;
-	Mon, 18 Dec 2023 13:43:57 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id Kuvza7Xtm_zD; Mon, 18 Dec 2023 13:43:56 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1702925036;
-	bh=arHniq/TP/FYi3pR5hTUhKg3jdumjz26l2eJ5S8yDwc=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=hWa+gcKQvRhtFQ1tdavdIVorcZykXjH2yXw2QL+IaSXo2vOFhAm+lEVr7OcklfeiN
-	 aklswWQiMgH7mVToj+/IqdxQ83S8XdGO9VTYNPJQiATKUrfal2F6yadYKhNp29oXL4
-	 nB+IQSssx1AeyZN7qjFDXUBKzqAFY8mra4dlZrKY=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 634E7128023A;
-	Mon, 18 Dec 2023 13:43:56 -0500 (EST)
-Message-ID: <6edb005530947b752d1a84c9ea69df0da6c85cf5.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 6.7-rc6
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds
-	 <torvalds@linux-foundation.org>
-Cc: linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel
-	 <linux-kernel@vger.kernel.org>
-Date: Mon, 18 Dec 2023 13:43:54 -0500
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803161DDF8
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5c1b986082dso2338301a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:44:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702925091; x=1703529891; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Umcq9pE2qVMi4A7br5lqgMwWQo55dWONwlMYoYlXcJc=;
+        b=tbau4Ucg+1TSUNp8jNMUSJsGz+aUm+qOHGKLlgp78HyMP16dUN0uQ4avAIwQsExeH3
+         zrs2fwKJBV/HnAhUhzN42cdgYp8qA+LxJojrBB+EglGlI1nOceHTkL8KWXsv9Yct4Zxc
+         RQGMuhaQVJ7kPdNIvOF5iilSSkzxk+QHqcnH1d0sL8uybgTyeRRtNFsCq5NmpLfifGxK
+         vBghrJf1qxarj7+wUDRPVy3xn905zbcrQrFGUminaDVpPeAUxTGUoYPfFILvMZ6JoWpb
+         tsXl5vhtEqxw7d9WscB/hRfAH6x6RtsBGDhP+1QGDmOwS+Cu+ClIp9dqhomF8e4I0C1B
+         BZ0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702925091; x=1703529891;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Umcq9pE2qVMi4A7br5lqgMwWQo55dWONwlMYoYlXcJc=;
+        b=lkMq6JbvoZLpU7pNknbebwPS+IAWhB8n0Sem75mlpz5AZOc1Oq/jm7X/LKyi0lCC9a
+         cuGIihW1nMR0rJmqnN0vGx4h2Dk89+JzMBraU8TcPEujJCka7zCEj3OqDC5RgrFb5TG6
+         lsJQFAlYJcrDNQkq9mvTeE8pNhSxnaA/t3GL5fnF57tuZM3ouLTUWPYQ6mwTV9qxVmtS
+         OggIrgYIGxmnZ/NuMV0uX46aGI5kJs3WbiScCWNpCzLgQNGuqt3MBJuf+XuE3rh6x2kB
+         Ltx/seeixBYwKEvIcR36uZaKCT1V1s00UW+pI21SBu+orymIdq53hv9WR4ozytAf5/YM
+         VFIw==
+X-Gm-Message-State: AOJu0YwRApdR9FD6hKNozskWVAl4Pha9dLvd8J+Mx3G2nhBXG96qvah2
+	ABlptjqMZNIRaz8zwF9bI5CSIupzJeDF
+X-Google-Smtp-Source: AGHT+IFE5E5xs9/zAhH8vcnygkkfl0PCpr5tsTnZBHzOIorNrVpXpn3X2Q2hh1/CdP4PLIOh1kQR2Ti1FTom
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a65:6a43:0:b0:5cd:9db5:bea with SMTP id
+ o3-20020a656a43000000b005cd9db50beamr67169pgu.5.1702925090774; Mon, 18 Dec
+ 2023 10:44:50 -0800 (PST)
+Date: Mon, 18 Dec 2023 18:44:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAB6TgGUC/4XSTWrDMBAF4KsEr+ui0f90lXuULix5xhEkcbGDa
+ Qm5e2VTSuo4aDmG782T5Gs10pBorN5212qgKY2pP+dBveyqeGjOHdWpzXMlhVQgha6PKYyXIZ2
+ 7AzUtDTVJ5Uk2bIhildXnQJy+lsT3jzwf0njph+9lwQTz1+dZE9RQR9sqbRsZ0OG+6/vuSK+xP
+ 83Zv9BsQ8cYjVPCqMbtu1OTjoubS0yysFjOiwMrF6UGYfSd/9sLm07UKrAjp4IFu134GRQMaNr
+ InCvdw6WxKjRWubE23gnfssdg1ifWBa9nzwF0BHSaae1NwZvsmcGjxnxybdfe3vuNF7Ozl5Ykg
+ 2Afce1dwbvsyQoJyoKn2K69L3ifvWwiYvQIIT6cHwsesxeK8+MyKY1x7UEUAkDkBLQNSiusJ+s fEqCUMP/11ptAxonQtv/u4Ha7/QDw4iUK3QMAAA==
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702925089; l=1752;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=RDM8JOpRAJHGe23evuBZKylujjf7/Qb+zvnBcMz4jJs=; b=EEkbJY4feebHBYM69j9pAsvv38o2vJRW6XvSDPqCCEOT19ZRXkDrfelwZHecR/aI/ZfyTTqmn
+ VhWknFpcrqbD4c74Bz7DycdCrOCDvDb1BCDJTNZ87dmBQUQl5wTvmrz
+X-Mailer: b4 0.12.3
+Message-ID: <20231218-libstringheader-v3-0-500bd58f0f75@google.com>
+Subject: [PATCH v3 0/2] shrink lib/string.i via IWYU
+From: tanzirh@google.com
+To: Kees Cook <keescook@chromium.org>
+Cc: Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-Two medium sized fixes, both in drivers.  The UFS one adds parsing of
-clock info structures, which is required by some host drivers and the
-aacraid one reverts the IRQ affinity mapping patch which has been
-causing regressions noted in kernel bugzilla 217599.
-
-The patch is available here:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-
-The short changelog is:
-
-Martin K. Petersen (1):
-      Revert "scsi: aacraid: Reply queue mapping to CPUs based on IRQ affinity"
-
-Nitin Rawat (1):
-      scsi: ufs: core: Store min and max clk freq from OPP table
-
-
-And the diffstat:
-
- drivers/scsi/aacraid/aacraid.h   |  1 -
- drivers/scsi/aacraid/commsup.c   |  6 +----
- drivers/scsi/aacraid/linit.c     | 14 -----------
- drivers/scsi/aacraid/src.c       | 25 ++-----------------
- drivers/ufs/host/ufshcd-pltfrm.c | 54 ++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 57 insertions(+), 43 deletions(-)
-
-With full diff below.
-
-James
+This patch series changes the include list of string.c to minimize
+the preprocessing size. The patch series intends to remove REPEAT_BYE
+from kernel.h and move it into its own header file because
+word-at-a-time.h has an implicit dependancy on it but it is declared
+in kernel.h which is bloated.
 
 ---
 
-diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
-index 73b6ac0c01f5..7d5a155073c6 100644
---- a/drivers/scsi/aacraid/aacraid.h
-+++ b/drivers/scsi/aacraid/aacraid.h
-@@ -1678,7 +1678,6 @@ struct aac_dev
- 	u32			handle_pci_error;
- 	bool			init_reset;
- 	u8			soft_reset_support;
--	u8			use_map_queue;
- };
- 
- #define aac_adapter_interrupt(dev) \
-diff --git a/drivers/scsi/aacraid/commsup.c b/drivers/scsi/aacraid/commsup.c
-index 013a9a334972..25cee03d7f97 100644
---- a/drivers/scsi/aacraid/commsup.c
-+++ b/drivers/scsi/aacraid/commsup.c
-@@ -223,12 +223,8 @@ int aac_fib_setup(struct aac_dev * dev)
- struct fib *aac_fib_alloc_tag(struct aac_dev *dev, struct scsi_cmnd *scmd)
- {
- 	struct fib *fibptr;
--	u32 blk_tag;
--	int i;
- 
--	blk_tag = blk_mq_unique_tag(scsi_cmd_to_rq(scmd));
--	i = blk_mq_unique_tag_to_tag(blk_tag);
--	fibptr = &dev->fibs[i];
-+	fibptr = &dev->fibs[scsi_cmd_to_rq(scmd)->tag];
- 	/*
- 	 *	Null out fields that depend on being zero at the start of
- 	 *	each I/O
-diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
-index c4a36c0be527..68f4dbcfff49 100644
---- a/drivers/scsi/aacraid/linit.c
-+++ b/drivers/scsi/aacraid/linit.c
-@@ -19,7 +19,6 @@
- 
- #include <linux/compat.h>
- #include <linux/blkdev.h>
--#include <linux/blk-mq-pci.h>
- #include <linux/completion.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-@@ -505,15 +504,6 @@ static int aac_slave_configure(struct scsi_device *sdev)
- 	return 0;
- }
- 
--static void aac_map_queues(struct Scsi_Host *shost)
--{
--	struct aac_dev *aac = (struct aac_dev *)shost->hostdata;
--
--	blk_mq_pci_map_queues(&shost->tag_set.map[HCTX_TYPE_DEFAULT],
--			      aac->pdev, 0);
--	aac->use_map_queue = true;
--}
--
- /**
-  *	aac_change_queue_depth		-	alter queue depths
-  *	@sdev:	SCSI device we are considering
-@@ -1498,7 +1488,6 @@ static const struct scsi_host_template aac_driver_template = {
- 	.bios_param			= aac_biosparm,
- 	.shost_groups			= aac_host_groups,
- 	.slave_configure		= aac_slave_configure,
--	.map_queues			= aac_map_queues,
- 	.change_queue_depth		= aac_change_queue_depth,
- 	.sdev_groups			= aac_dev_groups,
- 	.eh_abort_handler		= aac_eh_abort,
-@@ -1786,8 +1775,6 @@ static int aac_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	shost->max_lun = AAC_MAX_LUN;
- 
- 	pci_set_drvdata(pdev, shost);
--	shost->nr_hw_queues = aac->max_msix;
--	shost->host_tagset = 1;
- 
- 	error = scsi_add_host(shost, &pdev->dev);
- 	if (error)
-@@ -1919,7 +1906,6 @@ static void aac_remove_one(struct pci_dev *pdev)
- 	struct aac_dev *aac = (struct aac_dev *)shost->hostdata;
- 
- 	aac_cancel_rescan_worker(aac);
--	aac->use_map_queue = false;
- 	scsi_remove_host(shost);
- 
- 	__aac_shutdown(aac);
-diff --git a/drivers/scsi/aacraid/src.c b/drivers/scsi/aacraid/src.c
-index 61949f374188..11ef58204e96 100644
---- a/drivers/scsi/aacraid/src.c
-+++ b/drivers/scsi/aacraid/src.c
-@@ -493,10 +493,6 @@ static int aac_src_deliver_message(struct fib *fib)
- #endif
- 
- 	u16 vector_no;
--	struct scsi_cmnd *scmd;
--	u32 blk_tag;
--	struct Scsi_Host *shost = dev->scsi_host_ptr;
--	struct blk_mq_queue_map *qmap;
- 
- 	atomic_inc(&q->numpending);
- 
-@@ -509,25 +505,8 @@ static int aac_src_deliver_message(struct fib *fib)
- 		if ((dev->comm_interface == AAC_COMM_MESSAGE_TYPE3)
- 			&& dev->sa_firmware)
- 			vector_no = aac_get_vector(dev);
--		else {
--			if (!fib->vector_no || !fib->callback_data) {
--				if (shost && dev->use_map_queue) {
--					qmap = &shost->tag_set.map[HCTX_TYPE_DEFAULT];
--					vector_no = qmap->mq_map[raw_smp_processor_id()];
--				}
--				/*
--				 *	We hardcode the vector_no for
--				 *	reserved commands as a valid shost is
--				 *	absent during the init
--				 */
--				else
--					vector_no = 0;
--			} else {
--				scmd = (struct scsi_cmnd *)fib->callback_data;
--				blk_tag = blk_mq_unique_tag(scsi_cmd_to_rq(scmd));
--				vector_no = blk_mq_unique_tag_to_hwq(blk_tag);
--			}
--		}
-+		else
-+			vector_no = fib->vector_no;
- 
- 		if (native_hba) {
- 			if (fib->flags & FIB_CONTEXT_FLAG_NATIVE_HBA_TMF) {
-diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
-index da2558e274b4..db9d9365ff55 100644
---- a/drivers/ufs/host/ufshcd-pltfrm.c
-+++ b/drivers/ufs/host/ufshcd-pltfrm.c
-@@ -8,6 +8,7 @@
-  *	Vinayak Holikatti <h.vinayak@samsung.com>
-  */
- 
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
-@@ -213,6 +214,55 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
- 	}
- }
- 
-+/**
-+ * ufshcd_parse_clock_min_max_freq  - Parse MIN and MAX clocks freq
-+ * @hba: per adapter instance
-+ *
-+ * This function parses MIN and MAX frequencies of all clocks required
-+ * by the host drivers.
-+ *
-+ * Returns 0 for success and non-zero for failure
-+ */
-+static int ufshcd_parse_clock_min_max_freq(struct ufs_hba *hba)
-+{
-+	struct list_head *head = &hba->clk_list_head;
-+	struct ufs_clk_info *clki;
-+	struct dev_pm_opp *opp;
-+	unsigned long freq;
-+	u8 idx = 0;
-+
-+	list_for_each_entry(clki, head, list) {
-+		if (!clki->name)
-+			continue;
-+
-+		clki->clk = devm_clk_get(hba->dev, clki->name);
-+		if (IS_ERR(clki->clk))
-+			continue;
-+
-+		/* Find Max Freq */
-+		freq = ULONG_MAX;
-+		opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
-+		if (IS_ERR(opp)) {
-+			dev_err(hba->dev, "Failed to find OPP for MAX frequency\n");
-+			return PTR_ERR(opp);
-+		}
-+		clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
-+		dev_pm_opp_put(opp);
-+
-+		/* Find Min Freq */
-+		freq = 0;
-+		opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx);
-+		if (IS_ERR(opp)) {
-+			dev_err(hba->dev, "Failed to find OPP for MIN frequency\n");
-+			return PTR_ERR(opp);
-+		}
-+		clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx++);
-+		dev_pm_opp_put(opp);
-+	}
-+
-+	return 0;
-+}
-+
- static int ufshcd_parse_operating_points(struct ufs_hba *hba)
- {
- 	struct device *dev = hba->dev;
-@@ -279,6 +329,10 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
- 		return ret;
- 	}
- 
-+	ret = ufshcd_parse_clock_min_max_freq(hba);
-+	if (ret)
-+		return ret;
-+
- 	hba->use_pm_opp = true;
- 
- 	return 0;
+---
+Changes in v3:
+- Moved REPEAT_BYTE out of kernel.h and into wordpart.h.
+- Included wordpart.h where REPEAT_BYTE was necessary.
+- Link to v2: https://lore.kernel.org/r/20231214-libstringheader-v2-0-0f195dcff204@google.com
+
+Changes in v2:
+- Transformed into a patch series
+- Changed asm inclusions to linux inclusions
+- added a patch to sh
+- Link to v1: https://lore.kernel.org/r/20231205-libstringheader-v1-1-7f9c573053a7@gmail.com
+
+---
+Tanzir Hasan (2):
+      kernel.h: removed REPEAT_BYTE from kernel.h
+      lib/string: shrink lib/string.i via IWYU
+
+ arch/arm/include/asm/word-at-a-time.h     |  1 +
+ arch/arm64/include/asm/word-at-a-time.h   |  1 +
+ arch/powerpc/include/asm/word-at-a-time.h |  1 +
+ arch/riscv/include/asm/word-at-a-time.h   |  1 +
+ arch/s390/include/asm/word-at-a-time.h    |  1 +
+ arch/sh/include/asm/word-at-a-time.h      |  2 ++
+ arch/x86/include/asm/word-at-a-time.h     |  1 +
+ fs/namei.c                                |  2 +-
+ include/asm-generic/word-at-a-time.h      |  1 +
+ include/linux/kernel.h                    |  7 -------
+ include/linux/wordpart.h                  | 17 +++++++++++++++++
+ lib/string.c                              | 14 +++++++-------
+ 12 files changed, 34 insertions(+), 15 deletions(-)
+---
+base-commit: ceb6a6f023fd3e8b07761ed900352ef574010bcb
+change-id: 20231204-libstringheader-e238e2af5eec
+
+Best regards,
+-- 
+Tanzir Hasan <tanzirh@google.com>
 
 
