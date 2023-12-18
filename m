@@ -1,84 +1,75 @@
-Return-Path: <linux-kernel+bounces-3328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 673C2816B0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:28:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86AEB816B10
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:28:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11DC7B20C80
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:28:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E2BD2833B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9241815497;
-	Mon, 18 Dec 2023 10:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2B614A99;
+	Mon, 18 Dec 2023 10:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="VchwbyIN";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="5rlpHeeR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d9oxPUn+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2132414F7E;
-	Mon, 18 Dec 2023 10:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 37A185C0059;
-	Mon, 18 Dec 2023 05:26:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 18 Dec 2023 05:26:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1702895217; x=1702981617; bh=y+588vbJz/
-	1rdmr2IwKe5cF2pGAKNDklWn4J6v5J2i8=; b=VchwbyINCvvDfDO4j+trtljVQU
-	xrW6ZB04zg1bGCYm3XrpWvouNUPGgCzIbDBYjKezq3d343Oqia/2CRjz5qeS55Gk
-	Fe4meGSz+zR7qQJw5npIINwRKID6muJo15I+v7zuYTumBLZ3g+GCeBms2Ts8aWUd
-	5ueBFVeqX9SHQzZCFP5dlpDciYUEuHg76uPyo7KUWNKcvzU0OSugciGycENaFH4b
-	ST6kIzpF6VGW8M5aA2blJD6J1ppbJBP7FfZ/MUY7INmCwtxAigKHpv/Ko5hAhYKg
-	tGuAiPeg524YyjCB+7uqptt+at6HSG6TV6PLk3rvPBg/E4XOTSLvBZqfT8lA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1702895217; x=1702981617; bh=y+588vbJz/1rdmr2IwKe5cF2pGAK
-	NDklWn4J6v5J2i8=; b=5rlpHeeR9+TvVoCBBym1rPuiPf7RgbQCjZYjvljSyDzD
-	U8bIxLQteSoQWg+z1OJK2CYS6pisg23ld1ig+RMYnJYurJway7HlyR501avneDBy
-	uf3YfAQ1throdDUlG6GKYvLooxGR8eSP10kjUW1WtPc+bZTZ8lP6sT8dxzJZQ84f
-	EbzKy9RM9vszSN4sjqZFWFBeu92bOQwvZoJBS61JfCf2b/6Zw42CPzGpXPb4JBT5
-	JbYi163udwyU5bF2n/mypQ87A9hBdd0g3BV3NiEaoqkIDSD2StmlPKuuQzCQKsfQ
-	ZJ753oZbHZ2Pz+ZW3RU71Vmi3TWxyWZgPRnRwRXOKA==
-X-ME-Sender: <xms:cR6AZZItlRMW66xc_Sfr0XIRxRQTMreXCQza5tIVTHfAUh35BZ3b5w>
-    <xme:cR6AZVKvA0Qg9W5t5cN7v2iQ6ta_jMvlAQHViKhrNckwaqIqrK7WoP6_pMbP1BZLL
-    BOBt7pBux5dXQ>
-X-ME-Received: <xmr:cR6AZRuqDfj1jH0q3xL49nE446DQB-GNcftar-V7i_B28e2OlGsv_Eu3WUV9L3HSr1lZOFyNGEA5W6ollpkQjBpp-tXvT_Ng6g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:cR6AZaYbbWR0NsCNqSPJmy7Pb-u3tQcHYdiRNuZcYlpDnNisk32hPg>
-    <xmx:cR6AZQaul3YDx_We2DwUFC9BUGfRqK-8wKJo_OkFRyo8fPqz_WpvKA>
-    <xmx:cR6AZeAYXeevjuLUSE15Itke2WFzy7_Y8ppNZolGdEAYrAix_IiEdg>
-    <xmx:cR6AZWNPt4KhbKW37igqj-6Yp8Mxmf_48PwkCx18X9av9EOSQYvzyQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Dec 2023 05:26:56 -0500 (EST)
-Date: Mon, 18 Dec 2023 11:26:55 +0100
-From: Greg KH <greg@kroah.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the nvmem tree
-Message-ID: <2023121838-factual-unvalued-3e01@gregkh>
-References: <20231218161238.59ce255d@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE178182A4;
+	Mon, 18 Dec 2023 10:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so3440933a12.3;
+        Mon, 18 Dec 2023 02:27:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702895221; x=1703500021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8sRNZCx3Fepkk/1p+2V5Nj6L+xJzRr/Wtz906o7085o=;
+        b=d9oxPUn+h5PSx98ZZoHK0ilk5f/jw4fsEJpa8bX2FfnTx2KT12sEfz8kZcbO4zjwyc
+         Ouwcc3WMY2bs3OLBXVKLnlTe8Tnjoo125JOLi1ImlbYKaMJEPgjd137awuBgdFPRGPjb
+         XQ19weST/GJwE5sS0s7sfuyObGwyfMSJWqyDGFVXMSveDlzu2UgPmRzEhYc3za1mhAzn
+         I6pgOr5Yvmk2st6OIw6UHyDIdOiYWnb4KfcNY7Nkgb+jVuWp9t8qube5veILi6NZ174A
+         ahC3FJIBQH8h3TkBlJ9vemCCMkgIZAZpMxl5e6g8GG0dfPGQA23u9oiw+gMAKmIC5qPA
+         6mNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702895221; x=1703500021;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8sRNZCx3Fepkk/1p+2V5Nj6L+xJzRr/Wtz906o7085o=;
+        b=R9IM8wxjXJSeCmnfsgH87FhlZD14GCJ+za7Oce93G4SyoiJw1zNEQXfWes3UPBEfeA
+         qcx+8Tv+ppS87KO22D85mwK0a5Eko0lvr1SBr1GOOJ6KwEhA+dZYEj5WhINbpTnQwVb2
+         WPT3h5hnQH/xYoDv++S9WWSRbUhkBcTZmyz86TZdFfGFtBTwbrMajYKx+3DiJERgQ9KV
+         YLLE93zhYxjB2uXZTPMXcrre7O9GwHkd+3GoYfTPmuAVvS1st+RdAdvZ9fn+8y/Fivte
+         /rT51ZuZiARFqZWLIBXl3NbbxA2D7tqlMsdgU7pPzkioYU2R5E2c7rSgatStAM0uXYMX
+         6UZw==
+X-Gm-Message-State: AOJu0YwIvfPHlsYB78EdJf78JVdAROMG2bfIPqJNemBA2qkKqLciDUJI
+	C2SbDtYKebb+EGTznJg/Hy0=
+X-Google-Smtp-Source: AGHT+IEkTx7EHKlSteq88pnqILHeDAl6HejLs+ZNVsHSL1QYZBen2E4N7XQ0FVKejjE+xHT0D/tiUA==
+X-Received: by 2002:a50:c34c:0:b0:553:74b4:5ad5 with SMTP id q12-20020a50c34c000000b0055374b45ad5mr169126edb.31.1702895220922;
+        Mon, 18 Dec 2023 02:27:00 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
+        by smtp.gmail.com with ESMTPSA id ef13-20020a05640228cd00b00552d45bd8e7sm3023687edb.77.2023.12.18.02.27.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 02:27:00 -0800 (PST)
+Date: Mon, 18 Dec 2023 11:26:58 +0100
+From: Tommaso Merciai <tomm.merciai@gmail.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
+	Martin Hecht <martin.hecht@avnet.eu>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] media: i2c: alvium: removal of dft_fr, min_fr and
+ max_fr
+Message-ID: <ZYAecvgGSZ99GlHk@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
+ <20231215082452.1720481-2-tomm.merciai@gmail.com>
+ <20231218025044.GH5290@pendragon.ideasonboard.com>
+ <20231218025430.GA9012@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,45 +78,206 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231218161238.59ce255d@canb.auug.org.au>
+In-Reply-To: <20231218025430.GA9012@pendragon.ideasonboard.com>
 
-On Mon, Dec 18, 2023 at 04:12:38PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> The following commits are also in Linus Torvalds' tree as different
-> commits (but the same patches):
-> 
->   82c6ba6a7d96 ("nvmem: brcm_nvram: store a copy of NVRAM content")
->   a9d68bd9fc7a ("nvmem: stm32: add support for STM32MP25 BSEC to control OTP data")
->   5bc8339a8af8 ("dt-bindings: nvmem: add new stm32mp25 compatible for stm32-romem")
->   6deccfa25e3d ("dt-bindings: nvmem: mxs-ocotp: Document fsl,ocotp")
->   e15e05ed845a ("nvmem: core: Expose cells through sysfs")
->   38ebc72019b9 ("ABI: sysfs-nvmem-cells: Expose cells through sysfs")
->   fc334e722496 ("nvmem: core: Rework layouts to become regular devices")
->   d5827449f96c ("nvmem: Move and rename ->fixup_cell_info()")
->   52be3c1543c4 ("nvmem: Simplify the ->add_cells() hook")
->   26378491d343 ("nvmem: Create a header for internal sharing")
->   c016e72f9346 ("nvmem: Move of_nvmem_layout_get_container() in another header")
->   0e7ceb1551ee ("of: device: Export of_device_make_bus_id()")
-> 
-> These are commits
-> 
->   1e37bf84afac ("nvmem: brcm_nvram: store a copy of NVRAM content")
->   f0ac5b230396 ("nvmem: stm32: add support for STM32MP25 BSEC to control OTP data")
->   a729c0f57dc8 ("dt-bindings: nvmem: add new stm32mp25 compatible for stm32-romem")
->   a2a8aefecbd0 ("dt-bindings: nvmem: mxs-ocotp: Document fsl,ocotp")
->   0331c611949f ("nvmem: core: Expose cells through sysfs")
->   192048e5a5b6 ("ABI: sysfs-nvmem-cells: Expose cells through sysfs")
->   fc29fd821d9a ("nvmem: core: Rework layouts to become regular devices")
->   1172460e7167 ("nvmem: Move and rename ->fixup_cell_info()")
->   1b7c298a4ecb ("nvmem: Simplify the ->add_cells() hook")
->   ec9c08a1cb8d ("nvmem: Create a header for internal sharing")
->   4a1a40233b4a ("nvmem: Move of_nvmem_layout_get_container() in another header")
->   7f38b70042fc ("of: device: Export of_device_make_bus_id()")
-> 
-> in the char-misc tree.
+Hi Laurent,
+Thanks for your review.
 
-That's because the nvmem maintainer sent these to me for inclusion, odd.
+On Mon, Dec 18, 2023 at 04:54:30AM +0200, Laurent Pinchart wrote:
+> On Mon, Dec 18, 2023 at 04:50:46AM +0200, Laurent Pinchart wrote:
+> > Hi Tommaso,
+> > 
+> > Thank you for the patch.
+> > 
+> > On Fri, Dec 15, 2023 at 09:24:50AM +0100, Tommaso Merciai wrote:
+> > > Remove driver private data dft_fr, min_fr and max_fr.
+> > > Those are used only in alvium_set_frame_interval function.
+> > > Use local ones instead.
+> > 
+> > The fields are used to pass data from alvium_get_frame_interval() to its
+> > caller, not just in alvium_get_frame_interval(). You can write
+> > 
+> > The dft_fr, min_fr and max_fr fields of the alvium_dev structure are
+> > only used to pass results from alvium_get_frame_interval() to its
+> > caller. Replace them with function parameters.
 
-greg k-h
+Thanks for the hint.
+
+> > 
+> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > > ---
+> > >  drivers/media/i2c/alvium-csi2.c | 45 +++++++++++++++------------------
+> > >  drivers/media/i2c/alvium-csi2.h |  3 ---
+> > >  2 files changed, 21 insertions(+), 27 deletions(-)
+> > > 
+> > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> > > index 34ff7fad3877..c4b7851045a1 100644
+> > > --- a/drivers/media/i2c/alvium-csi2.c
+> > > +++ b/drivers/media/i2c/alvium-csi2.c
+> > > @@ -1170,40 +1170,36 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static int alvium_get_frame_interval(struct alvium_dev *alvium)
+> > > +static int alvium_get_frame_interval(struct alvium_dev *alvium,
+> > > +				     u64 *dft_fr, u64 *min_fr, u64 *max_fr)
+> > >  {
+> > > -	u64 dft_fr, min_fr, max_fr;
+> > >  	int ret = 0;
+> > >  
+> > >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
+> > > -		    &dft_fr, &ret);
+> > > +		    dft_fr, &ret);
+> > >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
+> > > -		    &min_fr, &ret);
+> > > +		    min_fr, &ret);
+> > >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
+> > > -		    &max_fr, &ret);
+> > > +		    max_fr, &ret);
+> > >  	if (ret)
+> > >  		return ret;
+> > 
+> > You can just
+> > 
+> > 	return ret;
+
+I'll do this in v2, thanks.
+
+> > 
+> > >  
+> > > -	alvium->dft_fr = dft_fr;
+> > > -	alvium->min_fr = min_fr;
+> > > -	alvium->max_fr = max_fr;
+> > > -
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
+> > > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
+> > >  {
+> > >  	struct device *dev = &alvium->i2c_client->dev;
+> > >  	int ret;
+> > >  
+> > >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
+> > > -				  alvium->fr);
+> > > +				  fr);
+> > 
+> > This is unrelated to the commit message. Please split handling of the fr
+> > field to a separate patch. One change, one patch.
+
+Right..
+
+> > 
+> > >  	if (ret) {
+> > >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
+> > >  		return ret;
+> > >  	}
+> > >  
+> > > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
+> > > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
+> > >  
+> > >  	return 0;
+> > >  }
+> > > @@ -1667,36 +1663,36 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
+> > >  }
+> > >  
+> > >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
+> > > -				     struct v4l2_subdev_frame_interval *fi)
+> > > +				     struct v4l2_subdev *sd,
+> > > +				     struct v4l2_subdev_state *sd_state,
+> 
+> This is also unrelated to this patch.
+> 
+> > > +				     struct v4l2_subdev_frame_interval *fi,
+> > > +				     u64 *req_fr)
+> > >  {
+> > >  	struct device *dev = &alvium->i2c_client->dev;
+> > > -	u64 req_fr, min_fr, max_fr;
+> > > +	u64 dft_fr, min_fr, max_fr;
+> > >  	int ret;
+> > >  
+> > >  	if (fi->interval.denominator == 0)
+> > >  		return -EINVAL;
+> > >  
+> > > -	ret = alvium_get_frame_interval(alvium);
+> > > +	ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
+> > >  	if (ret) {
+> > >  		dev_err(dev, "Fail to get frame interval\n");
+> > >  		return ret;
+> > >  	}
+> > >  
+> > > -	min_fr = alvium->min_fr;
+> > > -	max_fr = alvium->max_fr;
+> > > -
+> > >  	dev_dbg(dev, "fi->interval.numerator = %d\n",
+> > >  		fi->interval.numerator);
+> > >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
+> > >  		fi->interval.denominator);
+> > >  
+> > > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
+> > > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
+> > >  		       fi->interval.numerator);
+> > >  
+> > > -	if (req_fr >= max_fr && req_fr <= min_fr)
+> > > -		req_fr = alvium->dft_fr;
+> > > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
+> > > +		*req_fr = dft_fr;
+> > >  
+> > > -	alvium->fr = req_fr;
+> > > +	alvium->fr = *req_fr;
+> > >  	alvium->frame_interval.numerator = fi->interval.numerator;
+> > >  	alvium->frame_interval.denominator = fi->interval.denominator;
+> > >  
+> > > @@ -1708,6 +1704,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > >  				   struct v4l2_subdev_frame_interval *fi)
+> > >  {
+> > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > +	u64 req_fr;
+> > >  	int ret;
+> > >  
+> > >  	/*
+> > > @@ -1720,9 +1717,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > >  	if (alvium->streaming)
+> > >  		return -EBUSY;
+> > >  
+> > > -	ret = alvium_set_frame_interval(alvium, fi);
+> > > +	ret = alvium_set_frame_interval(alvium, sd, sd_state, fi, &req_fr);
+> > >  	if (!ret)
+> > > -		ret = alvium_set_frame_rate(alvium);
+> > > +		ret = alvium_set_frame_rate(alvium, req_fr);
+> > >  
+> > >  	return ret;
+> > >  }
+> > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
+> > > index 8b554bffdc39..a6529b28e7dd 100644
+> > > --- a/drivers/media/i2c/alvium-csi2.h
+> > > +++ b/drivers/media/i2c/alvium-csi2.h
+> > > @@ -443,9 +443,6 @@ struct alvium_dev {
+> > >  
+> > >  	struct alvium_mode mode;
+> > >  	struct v4l2_fract frame_interval;
+> > > -	u64 dft_fr;
+> > > -	u64 min_fr;
+> > > -	u64 max_fr;
+> > >  	u64 fr;
+> > >  
+> > >  	u8 h_sup_csi_lanes;
+
+Plan for v2 is splitting this series
+into another patch as you suggest:
+
+media: i2c: alvium: removal of dft_fr, min_fr and max_fr
++ media: i2c: alvium: removal of fr field
+media: i2c: alvium: store frame interval in subdev state
+media: i2c: alvium: inline set_frame_interval into s_frame_interval
+
+Thanks & Regards,
+Tommaso
+
+
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
 
