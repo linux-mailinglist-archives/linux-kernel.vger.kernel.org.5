@@ -1,236 +1,216 @@
-Return-Path: <linux-kernel+bounces-4450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28C6817D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:34:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E448A817D4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:34:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 063181C22C6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:34:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DF161F23187
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4D076084;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CF176080;
 	Mon, 18 Dec 2023 22:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HTKrGbBO"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="whjQNCXt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D001949893
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898AE1DFC1
 	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 22:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-54f4f7e88feso5094301a12.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d3d7873796so18935ad.1
         for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:34:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702938879; x=1703543679; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j775zdStwoFQYQMkXt4HFx0DeDqilzNZA8Ur98U7dD0=;
-        b=HTKrGbBO62Vsui4T+upy9lZ5sFG28esvKaDUL6L8C1reRpssME/oOecWdQY/48xMOS
-         haYs0Tb3gIGEHwWaidWj9aZQjWOVHj35yBPfacq1vtzHoUvEO0ydzw58NtyntkWdNh32
-         ZMMjlmKo3Fzi0lFdFl4s+Vm3q3e9n1OFYs2KI=
+        d=google.com; s=20230601; t=1702938882; x=1703543682; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mGdD/5IEfD8p7+cvvZG2CNSCawN+QXNticMsrF0mEfY=;
+        b=whjQNCXtn9aQNuuf0248KdTP6Rh85x0rOd5S40DYlIEPUj5QERfNo0575bPiBkeEFL
+         C3WAX8GN57fkvOyTLQVGVoNXiP50UUX6+/umJG6EMvnBUcLr9MAWZJr2me8vVZs0M/SI
+         SO2MmIA2DYj2XQqWzvsySbm0l6TF9fE/qgT61TLMXZiLltuPgu/4kEwAF8KBNTevMTHR
+         CFf1+awOkqBQmj2tpvZXwAJ5Hv094Obc8zG1xRTFM3aZnKrfTKc9+XD6FD+UiPbN2Ny5
+         OPodRmOpVEO6h1XIT6ZLmwj6vsHdlF0DR8ac1X8GVDQLzZiVq/YkE1PXhAQXcbgoClGt
+         0trA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702938879; x=1703543679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j775zdStwoFQYQMkXt4HFx0DeDqilzNZA8Ur98U7dD0=;
-        b=qdI017G8KE9Ren6Heernq9TuxN/cuzpxSGVvGoApAUjjAIgYSGFe+fYL1liUvRylCR
-         UqGrWKL22U3UvQtJnhQUA6JuVDJFxkehoQpodgZKADvBaSvWJUgb0PmfL/ZL7FoH/Hul
-         nLD0Vcv6nJtfCgNVbTrD7ufTAAD9b/PcGu71Jk9wWdyv8EHbHYa4jCNJhZmyhjG0kvbO
-         rXf0DyDlNQKyCdX7yZ2pzwfwgOf2qKPzuSDM9ArVrvGwChiSBKLQN5mkPiWN5WALO7qY
-         9oAdusH5XnHCmMwOI3Fi9nudg5CldMX9em9TOh8MEHRul+HwUdZbIdWy/BLGOUj79OYa
-         ovbA==
-X-Gm-Message-State: AOJu0YyTO1f5UXX+4S5DyrFtvd8I8gUaUqaxuvW7+te1YXJ5dWj1xKko
-	ZKhTQwk5SIEviWqIs/Geuune5oKzjhvBqTsoWSzFkGSk
-X-Google-Smtp-Source: AGHT+IFRvgL5EJ89GRVPUVTLB10lchxswPvxxo+CEZKuXwMGv714rAn6wQodyQ2o8keXFQ5XRvN5zw==
-X-Received: by 2002:a17:906:51d5:b0:a23:7578:94a1 with SMTP id v21-20020a17090651d500b00a23757894a1mr24696ejk.81.1702938879337;
-        Mon, 18 Dec 2023 14:34:39 -0800 (PST)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id o24-20020a1709061d5800b00a2350a75dc0sm2130387ejh.207.2023.12.18.14.34.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 14:34:38 -0800 (PST)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso1811a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:34:38 -0800 (PST)
-X-Received: by 2002:a50:c307:0:b0:54c:9996:7833 with SMTP id
- a7-20020a50c307000000b0054c99967833mr22018edb.7.1702938878434; Mon, 18 Dec
- 2023 14:34:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702938882; x=1703543682;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mGdD/5IEfD8p7+cvvZG2CNSCawN+QXNticMsrF0mEfY=;
+        b=UYbMGFXzRtJvnXchKnyV59ziAIWbBOWe5qBxIpqHZgo4Hs1gddmSVLH5QP3K5KU6xo
+         DwirJ/oncbK5BGS4vfgXSzPz11tJX/uVKfwzl+VN9R8YhXZsqEHCOZ1BnfcQAuYgGiXu
+         qOySOB9LtSuLjV5Z1/2uF6Y3VM1qR2KFyhEF7rBzWjqzTBae6pbQROesit4OEdS+N92e
+         RoUNdF+p2C8w3YdPds8JHIeqd5fGmdbnur23JcmtGsE0McTHKWqjVCVXZxtrL9pRS6vj
+         khomSF7706nrZewhTgLcI75rZW8qxyzSOb28cSiPLayE0UB/n9jZ1NPtaVTQmIzBL5G6
+         0VPA==
+X-Gm-Message-State: AOJu0YyUKu5m9eA1GY45Odtyb1gdB8dgiXBbiFA69Q60k5sNhLJsmpKx
+	WuS+Yw5nL0kXg5PJVVVYMKIEHl58K+6m
+X-Google-Smtp-Source: AGHT+IEVlrk47vBAjXn5AAJYXmCa9G8zb7wk9x+1SMEQdAYgsdRllc8yqlR933BkzGKNxMQ+Yfux9Q==
+X-Received: by 2002:a17:902:d48f:b0:1d3:dc24:31c with SMTP id c15-20020a170902d48f00b001d3dc24031cmr24664plg.3.1702938881600;
+        Mon, 18 Dec 2023 14:34:41 -0800 (PST)
+Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
+        by smtp.gmail.com with ESMTPSA id ju2-20020a170903428200b001d3a9e20b79sm3457934plb.120.2023.12.18.14.34.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 14:34:40 -0800 (PST)
+From: Benjamin Segall <bsegall@google.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org,  Peter Zijlstra <peterz@infradead.org>,
+  Ingo Molnar <mingo@redhat.com>,  Juri Lelli <juri.lelli@redhat.com>,
+  Vincent Guittot <vincent.guittot@linaro.org>,  Dietmar Eggemann
+ <dietmar.eggemann@arm.com>,  Steven Rostedt <rostedt@goodmis.org>,  Mel
+ Gorman <mgorman@suse.de>,  Daniel Bristot de Oliveira
+ <bristot@redhat.com>,  Phil Auld <pauld@redhat.com>,  Clark Williams
+ <williams@redhat.com>,  Tomas Glozar <tglozar@redhat.com>
+Subject: Re: [RFC PATCH 1/2] sched/fair: Only throttle CFS tasks on return
+ to userspace
+In-Reply-To: <xhsmhy1dr9ygf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	(Valentin Schneider's message of "Mon, 18 Dec 2023 19:07:12 +0100")
+References: <20231130161245.3894682-1-vschneid@redhat.com>
+	<20231130161245.3894682-2-vschneid@redhat.com>
+	<xm26sf4n2ar6.fsf@google.com>
+	<xhsmhfs0maw49.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	<xm26edfxpock.fsf@bsegall-linux.svl.corp.google.com>
+	<xhsmhy1dr9ygf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Date: Mon, 18 Dec 2023 14:34:38 -0800
+Message-ID: <xm26edfj2l8h.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231216173409.1264655-1-michael@amarulasolutions.com> <20231218073407.300982-1-michael@amarulasolutions.com>
-In-Reply-To: <20231218073407.300982-1-michael@amarulasolutions.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 18 Dec 2023 14:34:26 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VaDJSXt5kyfzZ=qv9ZHRNerHFs7izXZbgudvfcOThc_Q@mail.gmail.com>
-Message-ID: <CAD=FV=VaDJSXt5kyfzZ=qv9ZHRNerHFs7izXZbgudvfcOThc_Q@mail.gmail.com>
-Subject: Re: [PATCH V2] tty: serial: kgdboc: Fix 8250_* kgd over serial
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: daniel.thompson@linaro.org, gregkh@linuxfoundation.org, 
-	jason.wessel@windriver.com, jirislaby@kernel.org, 
-	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Hi,
+Valentin Schneider <vschneid@redhat.com> writes:
 
-On Sun, Dec 17, 2023 at 11:34=E2=80=AFPM Michael Trimarchi
-<michael@amarulasolutions.com> wrote:
+> On 07/12/23 15:47, Benjamin Segall wrote:
+>> Alright, this took longer than I intended, but here's the basic version
+>> with the duplicate "runqueue" just being a list rather than actual EEVDF
+>> or anything sensible.
+>>
+>> I also wasn't actually able to adapt it to work via task_work like I
+>> thought I could; flagging the entry to the relevant schedule() calls is
+>> too critical.
+>>
 >
-> Check if port type is not PORT_UNKNOWN during poll_init.
-> The kgdboc calls the tty_find_polling_driver that check
-> if the serial is able to use poll_init. The poll_init calls
-> the uart uart_poll_init that try to configure the uart with the
-> selected boot parameters. The uart must be ready before setting
-> parameters. Seems that PORT_UNKNOWN is already used by other
-> functions in serial_core to detect uart status, so use the same
-> to avoid to use it in invalid state.
+> Thanks for sharing this! Have a first set of comments.
 >
-> The crash happen for instance in am62x architecture where the 8250
-> register the platform driver after the 8250 core is initialized.
+>> --------
+>>
+>> Subject: [RFC PATCH] sched/fair: only throttle CFS tasks in userspace
+>>
+>> The basic idea of this implementation is to maintain duplicate runqueues
+>> in each cfs_rq that contain duplicate pointers to sched_entitys which
+>> should bypass throttling. Then we can skip throttling cfs_rqs that have
+>> any such children, and when we pick inside any not-actually-throttled
+>> cfs_rq, we only look at this duplicated list.
+>>
+>> "Which tasks should bypass throttling" here is "all schedule() calls
+>> that don't set a special flag", but could instead involve the lockdep
+>> markers (except for the problem of percpu-rwsem and similar) or explicit
+>> flags around syscalls and faults, or something else.
+>>
+>> This approach avoids any O(tasks) loops, but leaves partially-throttled
+>> cfs_rqs still contributing their full h_nr_running to their parents,
+>> which might result in worse balancing. Also it adds more (generally
+>> still small) overhead to the common enqueue/dequeue/pick paths.
+>>
+>> The very basic debug test added is to run a cpusoaker and "cat
+>> /sys/kernel/debug/sched_locked_spin" pinned to the same cpu in the same
+>> cgroup with a quota < 1 cpu.
 >
-> Follow the report crash coming from KGDB
+> So if I'm trying to compare notes:
 >
-> Thread 2 received signal SIGSEGV, Segmentation fault.
-> [Switching to Thread 1]
-> _outb (addr=3D<optimized out>, value=3D<optimized out>) at ./include/asm-=
-generic/io.h:584
-> 584             __raw_writeb(value, PCI_IOBASE + addr);
-> (gdb) bt
+> The dual tree:
+> - Can actually throttle cfs_rq's once all tasks are in userspace
+> - Adds (light-ish) overhead to enqueue/dequeue
+> - Doesn't keep *nr_running updated when not fully throttled
 >
-> This section of the code is too early because in this case
-> the omap serial is not probed
->
-> Thread 2 received signal SIGSEGV, Segmentation fault.
-> [Switching to Thread 1]
-> _outb (addr=3D<optimized out>, value=3D<optimized out>) at ./include/asm-=
-generic/io.h:584
-> 584             __raw_writeb(value, PCI_IOBASE + addr);
-> (gdb) bt
->
-> Thread 2 received signal SIGSEGV, Segmentation fault.
-> [Switching to Thread 1]
-> _outb (addr=3D<optimized out>, value=3D<optimized out>) at ./include/asm-=
-generic/io.h:584
-> 584             __raw_writeb(value, PCI_IOBASE + addr);
-> (gdb) bt
-> 0  _outb (addr=3D<optimized out>, value=3D<optimized out>) at ./include/a=
-sm-generic/io.h:584
-> 1  logic_outb (value=3D0 '\000', addr=3D18446739675637874689) at lib/logi=
-c_pio.c:299
-> 2  0xffff80008082dfcc in io_serial_out (p=3D0x0, offset=3D16760830, value=
-=3D0) at drivers/tty/serial/8250/8250_port.c:416
-> 3  0xffff80008082fe34 in serial_port_out (value=3D<optimized out>, offset=
-=3D<optimized out>, up=3D<optimized out>)
->     at ./include/linux/serial_core.h:677
-> 4  serial8250_do_set_termios (port=3D0xffff8000828ee940 <serial8250_ports=
-+1568>, termios=3D0xffff80008292b93c, old=3D0x0)
->     at drivers/tty/serial/8250/8250_port.c:2860
-> 5  0xffff800080830064 in serial8250_set_termios (port=3D0xfffffbfffe80000=
-0, termios=3D0xffbffe, old=3D0x0)
->     at drivers/tty/serial/8250/8250_port.c:2912
-> 6  0xffff80008082571c in uart_set_options (port=3D0xffff8000828ee940 <ser=
-ial8250_ports+1568>, co=3D0x0, baud=3D115200, parity=3D110, bits=3D8, flow=
-=3D110)
->     at drivers/tty/serial/serial_core.c:2285
-> 7  0xffff800080828434 in uart_poll_init (driver=3D0xfffffbfffe800000, lin=
-e=3D16760830, options=3D0xffff8000828f7506 <config+6> "115200n8")
->     at drivers/tty/serial/serial_core.c:2656
-> 8  0xffff800080801690 in tty_find_polling_driver (name=3D0xffff8000828f75=
-00 <config> "ttyS2,115200n8", line=3D0xffff80008292ba90)
->     at drivers/tty/tty_io.c:410
-> 9  0xffff80008086c0b0 in configure_kgdboc () at drivers/tty/serial/kgdboc=
-.c:194
-> 10 0xffff80008086c1ec in kgdboc_probe (pdev=3D0xfffffbfffe800000) at driv=
-ers/tty/serial/kgdboc.c:249
-> 11 0xffff8000808b399c in platform_probe (_dev=3D0xffff000000ebb810) at dr=
-ivers/base/platform.c:1404
-> 12 0xffff8000808b0b44 in call_driver_probe (drv=3D<optimized out>, dev=3D=
-<optimized out>) at drivers/base/dd.c:579
-> 13 really_probe (dev=3D0xffff000000ebb810, drv=3D0xffff80008277f138 <kgdb=
-oc_platform_driver+48>) at drivers/base/dd.c:658
-> 14 0xffff8000808b0d2c in __driver_probe_device (drv=3D0xffff80008277f138 =
-<kgdboc_platform_driver+48>, dev=3D0xffff000000ebb810)
->     at drivers/base/dd.c:800
-> 15 0xffff8000808b0eb8 in driver_probe_device (drv=3D0xfffffbfffe800000, d=
-ev=3D0xffff000000ebb810) at drivers/base/dd.c:830
-> 16 0xffff8000808b0ff4 in __device_attach_driver (drv=3D0xffff80008277f138=
- <kgdboc_platform_driver+48>, _data=3D0xffff80008292bc48)
->     at drivers/base/dd.c:958
-> 17 0xffff8000808ae970 in bus_for_each_drv (bus=3D0xfffffbfffe800000, star=
-t=3D0x0, data=3D0xffff80008292bc48,
->     fn=3D0xffff8000808b0f3c <__device_attach_driver>) at drivers/base/bus=
-.c:457
-> 18 0xffff8000808b1408 in __device_attach (dev=3D0xffff000000ebb810, allow=
-_async=3Dtrue) at drivers/base/dd.c:1030
-> 19 0xffff8000808b16d8 in device_initial_probe (dev=3D0xfffffbfffe800000) =
-at drivers/base/dd.c:1079
-> 20 0xffff8000808af9f4 in bus_probe_device (dev=3D0xffff000000ebb810) at d=
-rivers/base/bus.c:532
-> 21 0xffff8000808ac77c in device_add (dev=3D0xfffffbfffe800000) at drivers=
-/base/core.c:3625
-> 22 0xffff8000808b3428 in platform_device_add (pdev=3D0xffff000000ebb800) =
-at drivers/base/platform.c:716
-> 23 0xffff800081b5dc0c in init_kgdboc () at drivers/tty/serial/kgdboc.c:29=
-2
-> 24 0xffff800080014db0 in do_one_initcall (fn=3D0xffff800081b5dba4 <init_k=
-gdboc>) at init/main.c:1236
-> 25 0xffff800081b0114c in do_initcall_level (command_line=3D<optimized out=
->, level=3D<optimized out>) at init/main.c:1298
-> 26 do_initcalls () at init/main.c:1314
-> 27 do_basic_setup () at init/main.c:1333
-> 28 kernel_init_freeable () at init/main.c:1551
-> 29 0xffff8000810271ec in kernel_init (unused=3D0xfffffbfffe800000) at ini=
-t/main.c:1441
-> 30 0xffff800080015e80 in ret_from_fork () at arch/arm64/kernel/entry.S:85=
-7
->
-> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-> ---
-> v1 -> v2:
->         - fix if condition during submission
->         - improve a bit the commit message
-> RFC -> v1:
->         - refuse uart that has type PORT_UNKNOWN
->
-> ---
->  drivers/tty/serial/serial_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Whereas dequeue via task_work:
+> - Can never fully throttle a cfs_rq
+> - Adds (not so light) overhead to unthrottle
+> - Keeps *nr_running updated
 
-I'm not a total expert on this code, but this seems reasonable to me.
-One nit is ${SUBJECT} should probably be "kgdb over serial" instead of
-"kgd over serial"
+Yeah, this sounds right. (Though for the task_work version once all the
+tasks are throttled, the cfs_rq is dequeued like normal, so it doesn't
+seem like a big deal to me)
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-
-
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial=
-_core.c
-> index f1348a509552..9b7ed4aac77a 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -2633,7 +2633,7 @@ static int uart_poll_init(struct tty_driver *driver=
-, int line, char *options)
->         mutex_lock(&tport->mutex);
 >
->         port =3D uart_port_check(state);
-> -       if (!port || !(port->ops->poll_get_char && port->ops->poll_put_ch=
-ar)) {
-> +       if (!port || port->type =3D=3D PORT_UNKNOWN || !(port->ops->poll_=
-get_char && port->ops->poll_put_char)) {
+> My thoughts right now are that there might be a way to mix both worlds: go
+> with the dual tree, but subtract from h_nr_running at dequeue_kernel()
+> (sort of doing the count update in throttle_cfs_rq() early) and keep track
+> of in-user tasks via handle_kernel_task_prev() to add this back when
+> unthrottling a not-fully-throttled cfs_rq. I need to actually think about
+> it though :-)
 
-Another slight nit is that the above line feels a little long,
-clocking in at 110 columns. I know the 80 column limit isn't so firm
-these days, but if it were me I'd split it across 2 lines.
+Probably, but I had tons of trouble getting the accounting correct as it
+was :P
 
--Doug
+>> +#ifdef CONFIG_CFS_BANDWIDTH
+>> +	/*
+>> +	 * TODO: This might trigger, I'm not sure/don't remember. Regardless,
+>> +	 * while we do not explicitly handle the case where h_kernel_running
+>> +	 * goes to 0, we will call account/check_cfs_rq_runtime at worst in
+>> +	 * entity_tick and notice that we can now properly do the full
+>> +	 * throttle_cfs_rq.
+>> +	 */
+>> +	WARN_ON_ONCE(list_empty(&cfs_rq->kernel_children));
+>
+> FWIW this triggers pretty much immediately in my environment (buildroot
+> over QEMU).
+
+Good to know; I feel like this should be avoidable (and definitely
+should be avoided if it can be), but I might be forgetting some case
+that's mostly unavoidable. I'll have to poke it when I have more time.
+
+>> @@ -8316,15 +8471,44 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
+>>
+>>  preempt:
+>>       resched_curr(rq);
+>>  }
+>>
+>> +static void handle_kernel_task_prev(struct task_struct *prev)
+>> +{
+>> +#ifdef CONFIG_CFS_BANDWIDTH
+>> +	struct sched_entity *se = &prev->se;
+>> +	bool new_kernel = is_kernel_task(prev);
+>> +	bool prev_kernel = !list_empty(&se->kernel_node);
+>> +	/*
+>> +	 * These extra loops are bad and against the whole point of the merged
+>> +	 * PNT, but it's a pain to merge, particularly since we want it to occur
+>> +	 * before check_cfs_runtime.
+>> +	 */
+>> +	if (prev_kernel && !new_kernel) {
+>> +		WARN_ON_ONCE(!se->on_rq); /* dequeue should have removed us */
+>> +		for_each_sched_entity(se) {
+>> +			dequeue_kernel(cfs_rq_of(se), se, 1);
+>> +			if (cfs_rq_throttled(cfs_rq_of(se)))
+>> +				break;
+>> +		}
+>> +	} else if (!prev_kernel && new_kernel && se->on_rq) {
+>> +		for_each_sched_entity(se) {
+>> +			enqueue_kernel(cfs_rq_of(se), se, 1);
+>> +			if (cfs_rq_throttled(cfs_rq_of(se)))
+>> +				break;
+>> +		}
+>> +	}
+>> +#endif
+>> +}
+>
+>
+> I'm trying to grok what the implications of a second tasks_timeline would
+> be on picking - we'd want a RBtree update equivalent to put_prev_entity()'s
+> __enqueue_entity(), but that second tree doesn't follow the same
+> enqueue/dequeue cycle as the first one. Would a __dequeue_entity() +
+> __enqueue_entity() to force a rebalance make sense? That'd also take care
+> of updating the min_vruntime.
+
+Yeah, the most sensible thing to do would probably be to just have curr
+not be in the queue, the same as the normal rbtree, and save the "on
+kernel list" as an on_rq-equivalent bool instead of as !list_empty(kernel_node).
 
