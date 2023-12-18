@@ -1,436 +1,89 @@
-Return-Path: <linux-kernel+bounces-4205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4BD7817918
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:48:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E74F78178E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B41EB20E2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:48:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52DF228536F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC277EFC1;
-	Mon, 18 Dec 2023 17:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4514B5BFBF;
+	Mon, 18 Dec 2023 17:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VC63NQrh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kRMrPstA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831AE7CCF4;
-	Mon, 18 Dec 2023 17:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e2bd8c396so2411634e87.0;
-        Mon, 18 Dec 2023 09:41:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702921287; x=1703526087; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IRiTnlqS+wDESwMpvXxncwcX1oS8JZsmO8J22z01ivM=;
-        b=VC63NQrhnZwQKYmC7rk7p1GF5bwCUgshILv4fqKp9c5VUhe3wJbNOoQV71mI6Uv28B
-         ytDmUVMsbvrWMGC+D5XRs1xvcsAW49w8q1vQUn33M0eI5eXJKHqBJcfojNsdY9EKOnql
-         cWFkIHDXdcWZ5F+gXIror/WmgLDKMZ7lbzdCWbNF1g6rFi0HA+12IcIFl1jAiNpcdzqD
-         T8YbaBsIrUI/lxK2CqZz5grhyZuJ6oyaVf6st6oYBJXb/SftRl3jdNqHPyQDYPaue7s5
-         l0XAwkdJwYGgXsW53tgHIgwvHSglXdCnpntpRoiAObvqSHrftHBYBQNJ1yOWxy9pEn7/
-         DPfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702921287; x=1703526087;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IRiTnlqS+wDESwMpvXxncwcX1oS8JZsmO8J22z01ivM=;
-        b=MZIdYrgYxpaQDL4q05o+nRMOrymWXR7Po4hvWR8XzMJnLdieNcosJzdB8FZldxY+wE
-         jFaaC+9n31e20T9O7teWTS8ReUFmBDYkg0NhPk+sCJwWZAKdeNO2Lcj41ncoYY8IzDPh
-         aFSPAigr0UXYK8WjYV2uf0UmykbBrJj1FzqiUXIpNzA8eMpIEkypXh1BdURgNWX2zEMT
-         Lqz2KeVkPkDvR4oOXZLkfiA/gnGh4uinUGhkihXk8IG+9NAYZduzlo2UvVueZLLTNrkA
-         3QT12jAf8eW/LZV7K3WPgoAiaE+V9BGzQ8QuBf4keMcgBL5TJhoNxrngbQUndH5O5ZFT
-         63kg==
-X-Gm-Message-State: AOJu0YyhDRGRA5vRKBJBFmW/xUk2SW8EYOBVVV+uGGz84mu6fis4Rukw
-	s1KEinL9+/IaeQn6H/Y0Wk+gmoNmTlkRBQ==
-X-Google-Smtp-Source: AGHT+IE1+8r4WKMTSPM85YrKNtt+V8K49GkE7Mk39ZvalLb9gXcJVxYyW28dHNt67xFJMGolSMUBJA==
-X-Received: by 2002:a05:6512:280c:b0:50e:34e3:8f76 with SMTP id cf12-20020a056512280c00b0050e34e38f76mr1612302lfb.11.1702921286700;
-        Mon, 18 Dec 2023 09:41:26 -0800 (PST)
-Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id u10-20020a056512128a00b0050bbb90533bsm2977651lfs.186.2023.12.18.09.41.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 09:41:26 -0800 (PST)
-From: Mikhail Rudenko <mike.rudenko@gmail.com>
-To: linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Jacopo Mondi <jacopo@jmondi.org>,
-	Tommaso Merciai <tomm.merciai@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v2 20/20] media: i2c: ov4689: Implement 2x2 binning
-Date: Mon, 18 Dec 2023 20:40:41 +0300
-Message-ID: <20231218174042.794012-21-mike.rudenko@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231218174042.794012-1-mike.rudenko@gmail.com>
-References: <20231218174042.794012-1-mike.rudenko@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938685A879;
+	Mon, 18 Dec 2023 17:40:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8487C433C7;
+	Mon, 18 Dec 2023 17:40:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702921251;
+	bh=8FLxMT/12hOBAOH3xUDzESjmyuLa9nkg9wK3icSyows=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kRMrPstAHiOsYXUjdnAErJpq942EjMDI/CjGw2oEiL8c2X/vszV6TTzXfjqvvuiYL
+	 ZeTMU+bkjGyTlsPT/9vAcmG05lmemcL2wO2bf9EPRr90FZvnDZyYZhYwY8oMJ4vKDC
+	 IUt02vApB93eH0e6t/EZOq5FMW7hnuuAZVZeDgqPqD/htUgBZ6KA3fMnkKXzZpLV/R
+	 rM64ZqbzcceXy2nfm8BnS4npLSOk05vrr2MVhY53bH+K0aSLsezoT3yR4plz3EjRKF
+	 duJdg5CfYF1mtz44d+MbMaIJJHQtRV6lKGQPHPQlPOnf8UZkAeyqoF9wTXKwWEeuBa
+	 OiIUQBHFRmVJw==
+From: Mark Brown <broonie@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI fixes for v6.7-rc7
+Date: Mon, 18 Dec 2023 17:40:47 +0000
+Message-Id: <20231218174050.A8487C433C7@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Implement 2x2 binning support. Compute best binning mode (none or 2x2)
-from pad crop and pad format in ov4689_set_fmt. Use output frame size
-instead of analogue crop to compute control ranges and BLC anchors.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Also move ov4689_hts_min and ov4689_update_ctrl_ranges, since they are
-now also called from ov4689_set_fmt. Update frame timings to
-accommodate the requirements of binning mode and avoid visual
-artefacts. Additionally, report 2x2 binned mode in addition to
-non-binned one in ov4689_enum_frame_sizes.
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
----
- drivers/media/i2c/ov4689.c | 192 +++++++++++++++++++++++++------------
- 1 file changed, 130 insertions(+), 62 deletions(-)
+are available in the Git repository at:
 
-diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 884761d02119..ca4e116bed0e 100644
---- a/drivers/media/i2c/ov4689.c
-+++ b/drivers/media/i2c/ov4689.c
-@@ -114,7 +114,7 @@
-  * Minimum working vertical blanking value. Found experimentally at
-  * minimum HTS values.
-  */
--#define OV4689_VBLANK_MIN		31
-+#define OV4689_VBLANK_MIN		35
- 
- static const char *const ov4689_supply_names[] = {
- 	"avdd", /* Analog power */
-@@ -256,6 +256,18 @@ static const struct cci_reg_sequence ov4689_common_regs[] = {
- 	{CCI_REG8(0x5503), 0x0f}, /* OTP_DPC_END_L otp_end_address[7:0] = 0x0f */
- };
- 
-+static const struct cci_reg_sequence ov4689_2x2_binning_regs[] = {
-+	{CCI_REG8(0x3632), 0x05}, /* ADC */
-+	{CCI_REG8(0x376b), 0x40}, /* Sensor control */
-+	{CCI_REG8(0x3814), 0x03}, /* H_INC_ODD */
-+	{CCI_REG8(0x3821), 0x07}, /* TIMING_FORMAT_2 hor_binning = 1*/
-+	{CCI_REG8(0x382a), 0x03}, /* V_INC_ODD */
-+	{CCI_REG8(0x3830), 0x08}, /* BLC_NUM_OPTION blc_use_num_2 = 1 */
-+	{CCI_REG8(0x3836), 0x02}, /* TIMING_REG_36 r_zline_use_num_2 = 1 */
-+	{CCI_REG8(0x4001), 0x50}, /* BLC DEBUG MODE */
-+	{CCI_REG8(0x4502), 0x44}, /* ADC synch control*/
-+};
-+
- static const u64 link_freq_menu_items[] = { 504000000 };
- 
- static const char *const ov4689_test_pattern_menu[] = {
-@@ -305,18 +317,96 @@ static const struct ov4689_gain_range ov4689_gain_ranges[] = {
- 	},
- };
- 
-+/*
-+ * For now, only 2x2 binning implemented in this driver.
-+ */
-+static int ov4689_best_binning(struct ov4689 *ov4689,
-+			       const struct v4l2_mbus_framefmt *format,
-+			       const struct v4l2_rect *crop,
-+			       unsigned int *binning)
-+{
-+	const struct v4l2_area candidates[] = {
-+		{ crop->width, crop->height },
-+		{ crop->width / 2, crop->height / 2 },
-+	};
-+
-+	const struct v4l2_area *best;
-+	int index;
-+
-+	best = v4l2_find_nearest_size(candidates, ARRAY_SIZE(candidates), width,
-+				      height, format->width, format->height);
-+	if (!best) {
-+		dev_err(ov4689->dev,
-+			"failed to find best binning for requested mode\n");
-+		return -EINVAL;
-+	}
-+
-+	index = best - candidates;
-+	*binning = index + 1;
-+
-+	dev_dbg(ov4689->dev,
-+		"best_binning: crop=%dx%d format=%dx%d binning=%d\n",
-+		crop->width, crop->height, format->width, format->height,
-+		*binning);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Minimum working HTS value for given output width (found
-+ * experimentally).
-+ */
-+static unsigned int ov4689_hts_min(unsigned int width)
-+{
-+	return max_t(unsigned int, 3156, 224 + width * 19 / 16);
-+}
-+
-+static void ov4689_update_ctrl_ranges(struct ov4689 *ov4689, unsigned int width,
-+				      unsigned int height)
-+{
-+	struct v4l2_ctrl *exposure = ov4689->exposure;
-+	struct v4l2_ctrl *vblank = ov4689->vblank;
-+	struct v4l2_ctrl *hblank = ov4689->hblank;
-+	s64 def_val, min_val, max_val;
-+
-+	min_val = ov4689_hts_min(width) - width;
-+	max_val = OV4689_HTS_MAX - width;
-+	def_val = clamp_t(s64, hblank->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(hblank, min_val, max_val, hblank->step,
-+				 def_val);
-+
-+	min_val = OV4689_VBLANK_MIN;
-+	max_val = OV4689_HTS_MAX - width;
-+	def_val = clamp_t(s64, vblank->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(vblank, min_val, max_val, vblank->step,
-+				 def_val);
-+
-+	min_val = exposure->minimum;
-+	max_val = height + vblank->val - 4;
-+	def_val = clamp_t(s64, exposure->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(exposure, min_val, max_val, exposure->step,
-+				 def_val);
-+}
-+
- static int ov4689_set_fmt(struct v4l2_subdev *sd,
- 			  struct v4l2_subdev_state *sd_state,
- 			  struct v4l2_subdev_format *fmt)
- {
-+	struct ov4689 *ov4689 = to_ov4689(sd);
- 	struct v4l2_mbus_framefmt *format;
- 	struct v4l2_rect *crop;
-+	unsigned int binning;
-+	int ret;
- 
- 	crop = v4l2_subdev_state_get_crop(sd_state, fmt->pad);
- 	format = v4l2_subdev_state_get_format(sd_state, fmt->pad);
- 
--	format->width = crop->width;
--	format->height = crop->height;
-+	ret = ov4689_best_binning(ov4689, &fmt->format, crop, &binning);
-+	if (ret)
-+		return ret;
-+
-+	format->width = crop->width / binning;
-+	format->height = crop->height / binning;
- 
- 	format->code = MEDIA_BUS_FMT_SBGGR10_1X10;
- 	format->field = V4L2_FIELD_NONE;
-@@ -327,6 +417,9 @@ static int ov4689_set_fmt(struct v4l2_subdev *sd,
- 
- 	fmt->format = *format;
- 
-+	if (fmt->which == V4L2_SUBDEV_FORMAT_ACTIVE)
-+		ov4689_update_ctrl_ranges(ov4689, format->width, format->height);
-+
- 	return 0;
- }
- 
-@@ -346,8 +439,9 @@ static int ov4689_enum_frame_sizes(struct v4l2_subdev *sd,
- 				   struct v4l2_subdev_frame_size_enum *fse)
- {
- 	const struct v4l2_rect *crop;
-+	int binning;
- 
--	if (fse->index >= 1)
-+	if (fse->index >= 2)
- 		return -EINVAL;
- 
- 	if (fse->code != MEDIA_BUS_FMT_SBGGR10_1X10)
-@@ -355,10 +449,11 @@ static int ov4689_enum_frame_sizes(struct v4l2_subdev *sd,
- 
- 	crop = v4l2_subdev_state_get_crop(sd_state, 0);
- 
--	fse->min_width = crop->width;
--	fse->max_width = crop->width;
--	fse->max_height = crop->height;
--	fse->min_height = crop->height;
-+	binning = fse->index + 1;
-+	fse->min_width = crop->width / binning;
-+	fse->max_width = crop->width / binning;
-+	fse->max_height = crop->height / binning;
-+	fse->min_height = crop->height / binning;
- 
- 	return 0;
- }
-@@ -398,42 +493,6 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- 	return -EINVAL;
- }
- 
--/*
-- * Minimum working HTS value for given output width (found
-- * experimentally).
-- */
--static unsigned int ov4689_hts_min(unsigned int width)
--{
--	return max_t(unsigned int, 3156, 224 + width * 19 / 16);
--}
--
--static void ov4689_update_ctrl_ranges(struct ov4689 *ov4689,
--				      struct v4l2_rect *crop)
--{
--	struct v4l2_ctrl *exposure = ov4689->exposure;
--	struct v4l2_ctrl *vblank = ov4689->vblank;
--	struct v4l2_ctrl *hblank = ov4689->hblank;
--	s64 def_val, min_val, max_val;
--
--	min_val = ov4689_hts_min(crop->width) - crop->width;
--	max_val = OV4689_HTS_MAX - crop->width;
--	def_val = clamp_t(s64, hblank->default_value, min_val, max_val);
--	__v4l2_ctrl_modify_range(hblank, min_val, max_val, hblank->step,
--				 def_val);
--
--	min_val = OV4689_VBLANK_MIN;
--	max_val = OV4689_HTS_MAX - crop->width;
--	def_val = clamp_t(s64, vblank->default_value, min_val, max_val);
--	__v4l2_ctrl_modify_range(vblank, min_val, max_val, vblank->step,
--				 def_val);
--
--	min_val = exposure->minimum;
--	max_val = crop->height + vblank->val - 4;
--	def_val = clamp_t(s64, exposure->default_value, min_val, max_val);
--	__v4l2_ctrl_modify_range(exposure, min_val, max_val, exposure->step,
--				 def_val);
--}
--
- static int ov4689_set_selection(struct v4l2_subdev *sd,
- 				struct v4l2_subdev_state *state,
- 				struct v4l2_subdev_selection *sel)
-@@ -470,7 +529,8 @@ static int ov4689_set_selection(struct v4l2_subdev *sd,
- 		format->height = rect.height;
- 
- 		if (sel->which == V4L2_SUBDEV_FORMAT_ACTIVE)
--			ov4689_update_ctrl_ranges(ov4689, &rect);
-+			ov4689_update_ctrl_ranges(ov4689, rect.width,
-+						  rect.height);
- 	}
- 
- 	*crop = rect;
-@@ -485,21 +545,27 @@ static int ov4689_setup_timings(struct ov4689 *ov4689,
- 	const struct v4l2_mbus_framefmt *format;
- 	struct regmap *rm = ov4689->regmap;
- 	const struct v4l2_rect *crop;
-+	const int v_offset = 2;
-+	unsigned int binning;
- 	int ret = 0;
- 
- 	format = v4l2_subdev_state_get_format(state, 0);
- 	crop = v4l2_subdev_state_get_crop(state, 0);
- 
-+	ret = ov4689_best_binning(ov4689, format, crop, &binning);
-+	if (ret)
-+		return ret;
-+
- 	cci_write(rm, OV4689_REG_H_CROP_START, crop->left, &ret);
--	cci_write(rm, OV4689_REG_V_CROP_START, crop->top, &ret);
--	cci_write(rm, OV4689_REG_H_CROP_END, crop->left + crop->width + 1, &ret);
--	cci_write(rm, OV4689_REG_V_CROP_END, crop->top + crop->height + 1, &ret);
-+	cci_write(rm, OV4689_REG_V_CROP_START, crop->top - v_offset, &ret);
-+	cci_write(rm, OV4689_REG_H_CROP_END, crop->left + crop->width + 3, &ret);
-+	cci_write(rm, OV4689_REG_V_CROP_END, crop->top + crop->height + 7, &ret);
- 
- 	cci_write(rm, OV4689_REG_H_OUTPUT_SIZE, format->width, &ret);
- 	cci_write(rm, OV4689_REG_V_OUTPUT_SIZE, format->height, &ret);
- 
- 	cci_write(rm, OV4689_REG_H_WIN_OFF, 0, &ret);
--	cci_write(rm, OV4689_REG_V_WIN_OFF, 0, &ret);
-+	cci_write(rm, OV4689_REG_V_WIN_OFF, v_offset, &ret);
- 
- 	/*
- 	 * Maximum working value of vfifo_read_start for given output
-@@ -507,6 +573,10 @@ static int ov4689_setup_timings(struct ov4689 *ov4689,
- 	 */
- 	cci_write(rm, OV4689_REG_VFIFO_CTRL_01, format->width / 16 - 1, &ret);
- 
-+	if (binning == 2)
-+		cci_multi_reg_write(ov4689->regmap, ov4689_2x2_binning_regs,
-+				    ARRAY_SIZE(ov4689_2x2_binning_regs),
-+				    &ret);
- 	return ret;
- }
- 
-@@ -519,20 +589,20 @@ static int ov4689_setup_blc_anchors(struct ov4689 *ov4689,
- 				    struct v4l2_subdev_state *state)
- {
- 	unsigned int width_def = OV4689_H_OUTPUT_SIZE_DEFAULT;
-+	const struct v4l2_mbus_framefmt *format;
- 	struct regmap *rm = ov4689->regmap;
--	const struct v4l2_rect *crop;
- 	int ret = 0;
- 
--	crop = v4l2_subdev_state_get_crop(state, 0);
-+	format = v4l2_subdev_state_get_format(state, 0);
- 
- 	cci_write(rm, OV4689_REG_ANCHOR_LEFT_START,
--		  OV4689_ANCHOR_LEFT_START_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_LEFT_START_DEF * format->width / width_def, &ret);
- 	cci_write(rm, OV4689_REG_ANCHOR_LEFT_END,
--		  OV4689_ANCHOR_LEFT_END_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_LEFT_END_DEF * format->width / width_def, &ret);
- 	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_START,
--		  OV4689_ANCHOR_RIGHT_START_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_RIGHT_START_DEF * format->width / width_def, &ret);
- 	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_END,
--		  OV4689_ANCHOR_RIGHT_END_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_RIGHT_END_DEF * format->width / width_def, &ret);
- 
- 	return ret;
- }
-@@ -734,19 +804,19 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 	struct regmap *regmap = ov4689->regmap;
- 	struct v4l2_subdev_state *sd_state;
- 	struct device *dev = ov4689->dev;
--	struct v4l2_rect *crop;
-+	struct v4l2_mbus_framefmt *fmt;
- 	s64 max_expo, def_expo;
- 	int sensor_gain;
- 	int ret;
- 
- 	sd_state = v4l2_subdev_get_locked_active_state(&ov4689->subdev);
--	crop = v4l2_subdev_state_get_crop(sd_state, 0);
-+	fmt = v4l2_subdev_state_get_format(sd_state, 0);
- 
- 	/* Propagate change of current control to all related controls */
- 	switch (ctrl->id) {
- 	case V4L2_CID_VBLANK:
- 		/* Update max exposure while meeting expected vblanking */
--		max_expo = crop->height + ctrl->val - 4;
-+		max_expo = fmt->height + ctrl->val - 4;
- 		def_expo = clamp_t(s64, ov4689->exposure->default_value,
- 				   ov4689->exposure->minimum, max_expo);
- 
-@@ -770,16 +840,14 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 		cci_write(regmap, OV4689_REG_GAIN, sensor_gain, &ret);
- 		break;
- 	case V4L2_CID_VBLANK:
--		cci_write(regmap, OV4689_REG_VTS,
--			  ctrl->val + crop->height, &ret);
-+		cci_write(regmap, OV4689_REG_VTS, ctrl->val + fmt->height, &ret);
- 		break;
- 	case V4L2_CID_TEST_PATTERN:
- 		ret = ov4689_enable_test_pattern(ov4689, ctrl->val);
- 		break;
- 	case V4L2_CID_HBLANK:
- 		cci_write(regmap, OV4689_REG_HTS,
--			  (ctrl->val + crop->width) /
--			  OV4689_HTS_DIVIDER, &ret);
-+			  (ctrl->val + fmt->width) / OV4689_HTS_DIVIDER, &ret);
- 		break;
- 	case V4L2_CID_VFLIP:
- 		cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT1,
--- 
-2.43.0
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v6.7-rc7
 
+for you to fetch changes up to fc70d643a2f6678cbe0f5c86433c1aeb4d613fcc:
+
+  spi: atmel: Fix clock issue when using devices with different polarities (2023-12-14 10:56:37 +0000)
+
+----------------------------------------------------------------
+spi: Fixes for v6.7
+
+A few bigger things here, the main one being that there were changes to
+the atmel driver in this cycle which made it possible to kill transfers
+being used for filesystem I/O which turned out to be very disruptive,
+the series of patches here undoes that and hardens things up further.
+
+There's also a few smaller driver specific changes, the main one being
+to revert a change that duplicted delays.
+
+----------------------------------------------------------------
+Benjamin Bigler (1):
+      spi: spi-imx: correctly configure burst length when using dma
+
+Louis Chauvet (1):
+      spi: atmel: Fix clock issue when using devices with different polarities
+
+Miquel Raynal (3):
+      spi: atmel: Do not cancel a transfer upon any signal
+      spi: atmel: Drop unused defines
+      spi: atmel: Prevent spi transfers from being killed
+
+Nam Cao (1):
+      spi: cadence: revert "Add SPI transfer delays"
+
+ drivers/spi/spi-atmel.c   | 95 ++++++++++++++++++++++++++++++++++++++++++-----
+ drivers/spi/spi-cadence.c |  1 -
+ drivers/spi/spi-imx.c     | 15 ++++++--
+ 3 files changed, 96 insertions(+), 15 deletions(-)
 
