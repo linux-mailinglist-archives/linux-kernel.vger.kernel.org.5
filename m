@@ -1,102 +1,208 @@
-Return-Path: <linux-kernel+bounces-3769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47FD38170BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:45:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 068888170C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:46:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB92728345F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:45:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DC791F210AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4D01D122;
-	Mon, 18 Dec 2023 13:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22141D13D;
+	Mon, 18 Dec 2023 13:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SAiaqNnm"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VXtv+iR+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D7911185
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702907133;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ixXR3XKTH39hKKYBoKlldaXP+hnNl1nKybCK1Edi+M=;
-	b=SAiaqNnmKlUCIdzeHzpnaEJlcETnsapzVS0/1eJrbelLEvmXr0pK5WbMklOS3zg3TN+rhc
-	LfDRCI0LJSj/F5QbURo4ow2nzQcpTGXjNtxEVjZn9NkbCEblvYPunWg0Ht+6G2hk7DGLYP
-	Qnpg/rvr+GM376vwX8KuahIW77n3w0s=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-689-D2zy3ttpM2yrOdXBVjGhbg-1; Mon,
- 18 Dec 2023 08:45:30 -0500
-X-MC-Unique: D2zy3ttpM2yrOdXBVjGhbg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CAFDA1C3B641;
-	Mon, 18 Dec 2023 13:45:28 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.38])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 73714C159B0;
-	Mon, 18 Dec 2023 13:45:27 +0000 (UTC)
-Date: Mon, 18 Dec 2023 21:45:24 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Yuntao Wang <ytcoode@gmail.com>
-Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Vivek Goyal <vgoyal@redhat.com>,
-	Dave Young <dyoung@redhat.com>,
-	Hari Bathini <hbathini@linux.ibm.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 0/2] crash: fix potential cmem->ranges array overflow
-Message-ID: <ZYBM9MG1rjCDPykI@MiWiFi-R3L-srv>
-References: <20231218081915.24120-1-ytcoode@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710671D141
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a236456fee1so67932466b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:45:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702907142; x=1703511942; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eKhb1wuaASLimxbRARfMv02XJ8Pn6jccWBoKn7oICEU=;
+        b=VXtv+iR+1rhIM5lKiKV7A5Ht/Ro0bFSmXMOKNm5SJENTv9rT1PJFM2BoRPoxFv3z2C
+         8DDTDspIBmvvPG0VU1A9ZXrcmduYOqXGsCUeycQ5G7lAHu+5Q/SDQ+ZYgoAysqWffGOi
+         Rm5W5ltnW0StsBEosBycqS/Nzy8yeRReCip08pNx4eiwFnz9qT/y1lxTMlICxDBqr8zP
+         Z72Ytg6p3VyO+RQvXdyBxf7DMmcuEzfJJfzllLS1POj+B3Mxjs8m4a70hDIs2Wy7YlGV
+         y6XzSf/jMtczDOixmPMPIQvlHQG0LvFvp3DXciVQ7D7qmIkov1/6Zkz9py1Gd6RM/71D
+         Yr+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702907142; x=1703511942;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eKhb1wuaASLimxbRARfMv02XJ8Pn6jccWBoKn7oICEU=;
+        b=CEnFRi4T2MtJgizwnwPEEEftmfRzVqOS77VZpW/auunzV6JZJa/KTbzUlyTmsyv41I
+         Xn/vQ/nn0ZEflBhLhOuV1GX6l3QGKSB5W5o4F6d8sJ+Kys//KsNTnMeUPkUf2EttMSNP
+         JFuboR8yWFEWuAWvlLGjSeLi256QQlhp5otyX8EeZlhoiCAmecNDwIKVenpBWttzyZ17
+         /trtLqTwNGxyjESPZj8TzhnogzFNdLjWppaIhmj1WsF/ADQgtIg/nExcJL14+hGqszaq
+         MMU+fbBMoYqYiGp/9S9fMzjVxknmjJ8pAhXhGGuaiwJ6p4cgsjt5CYjY8uCeSv3fs379
+         NgBw==
+X-Gm-Message-State: AOJu0YzdVZGLTUju3EkcFhS7PZyUcbneuks/ysYW0XYyscBk5jqhP1Wd
+	6cklQTJ2/fzG/TXE5VyEdSPD3A==
+X-Google-Smtp-Source: AGHT+IFs7wt3ToRlnwY7EWDI6F7umGuxxvB8rQGh/rKbHCiv45OnY0HarLfW0BWd14nFz1qBMlhM9Q==
+X-Received: by 2002:a17:907:d1b:b0:a23:614d:37c7 with SMTP id gn27-20020a1709070d1b00b00a23614d37c7mr587185ejc.141.1702907142528;
+        Mon, 18 Dec 2023 05:45:42 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id lm11-20020a17090718cb00b00a1db76f99c8sm14345334ejc.93.2023.12.18.05.45.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 05:45:42 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	arm@kernel.org,
+	soc@kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Olof Johansson <olof@lixom.net>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Lennert Buytenhek <kernel@wantstofly.org>,
+	Steve Sakoman <sakoman@gmail.com>,
+	"Mark F . Brown" <mark.brown314@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Florian Fainelli <florian@openwrt.org>,
+	Simtec Linux Team <linux@simtec.co.uk>
+Subject: [PATCH] ARM: MAINTAINERS: drop empty entries for removed boards
+Date: Mon, 18 Dec 2023 14:45:32 +0100
+Message-Id: <20231218134532.50599-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218081915.24120-1-ytcoode@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Yuntao,
+Drop empty and redundant maintainer entries for boards which were
+removed to fix `scripts/get_maintainer.pl --self-test=sections` errors
+like:
 
-On 12/18/23 at 04:19pm, Yuntao Wang wrote:
-> This series tries to fix the potential cmem->ranges array overflow.
+  ./MAINTAINERS:2021: warning: section without file pattern	ARM/CIRRUS LOGIC EDB9315A MACHINE SUPPORT
 
-This series looks good to me. While you'd better talk to fuqiang to ask
-if he wants to post these or wants to give up. He posted patch to raise
-the potention issue and I suggested him to do these during the
-discussion. Without consulting him for opinion to take over a discussing
-work, it's not suggested, I would say.
+Cc: Lennert Buytenhek <kernel@wantstofly.org>
+Cc: Steve Sakoman <sakoman@gmail.com>
+Cc: Mark F. Brown <mark.brown314@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Florian Fainelli <florian@openwrt.org>
+Cc: Simtec Linux Team <linux@simtec.co.uk>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ MAINTAINERS | 42 ------------------------------------------
+ 1 file changed, 42 deletions(-)
 
-https://lore.kernel.org/all/ZXrY7QbXAlxydsSC@MiWiFi-R3L-srv/T/#u
-
-> 
-> Yuntao Wang (2):
->   x86/crash: fix potential cmem->ranges array overflow
->   crash_core: fix out-of-bounds access check in
->     crash_exclude_mem_range()
-> 
->  arch/x86/kernel/crash.c | 9 +++++----
->  kernel/crash_core.c     | 2 +-
->  2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0d26c5311fb1..cdf1575dc851 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2018,11 +2018,6 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Odd Fixes
+ N:	clps711x
+ 
+-ARM/CIRRUS LOGIC EDB9315A MACHINE SUPPORT
+-M:	Lennert Buytenhek <kernel@wantstofly.org>
+-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-
+ ARM/CIRRUS LOGIC EP93XX ARM ARCHITECTURE
+ M:	Hartley Sweeten <hsweeten@visionengravers.com>
+ M:	Alexander Sverdlin <alexander.sverdlin@gmail.com>
+@@ -2171,11 +2166,6 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git
+ F:	arch/arm/boot/dts/nxp/vf/
+ F:	arch/arm/mach-imx/*vf610*
+ 
+-ARM/GUMSTIX MACHINE SUPPORT
+-M:	Steve Sakoman <sakoman@gmail.com>
+-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-
+ ARM/HISILICON SOC SUPPORT
+ M:	Wei Xu <xuwei5@hisilicon.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+@@ -2254,11 +2244,6 @@ F:	Documentation/devicetree/bindings/arm/intel,keembay.yaml
+ F:	arch/arm64/boot/dts/intel/keembay-evm.dts
+ F:	arch/arm64/boot/dts/intel/keembay-soc.dtsi
+ 
+-ARM/INTEL XSC3 (MANZANO) ARM CORE
+-M:	Lennert Buytenhek <kernel@wantstofly.org>
+-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-
+ ARM/LG1K ARCHITECTURE
+ M:	Chanho Min <chanho.min@lge.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+@@ -2840,11 +2825,6 @@ F:	arch/arm/boot/dts/synaptics/
+ F:	arch/arm/mach-berlin/
+ F:	arch/arm64/boot/dts/synaptics/
+ 
+-ARM/TECHNOLOGIC SYSTEMS TS7250 MACHINE SUPPORT
+-M:	Lennert Buytenhek <kernel@wantstofly.org>
+-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-
+ ARM/TEGRA HDMI CEC SUBSYSTEM SUPPORT
+ M:	Hans Verkuil <hverkuil-cisco@xs4all.nl>
+ L:	linux-tegra@vger.kernel.org
+@@ -2861,11 +2841,6 @@ L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+ F:	arch/arm64/boot/dts/tesla/
+ 
+-ARM/TETON BGA MACHINE SUPPORT
+-M:	"Mark F. Brown" <mark.brown314@gmail.com>
+-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-
+ ARM/TEXAS INSTRUMENT AEMIF/EMIF DRIVERS
+ M:	Santosh Shilimkar <ssantosh@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+@@ -17674,14 +17649,6 @@ L:	linux-gpio@vger.kernel.org
+ S:	Maintained
+ F:	drivers/gpio/gpio-pxa.c
+ 
+-PXA MMCI DRIVER
+-S:	Orphan
+-
+-PXA RTC DRIVER
+-M:	Robert Jarzmik <robert.jarzmik@free.fr>
+-L:	linux-rtc@vger.kernel.org
+-S:	Maintained
+-
+ PXA2xx/PXA3xx SUPPORT
+ M:	Daniel Mack <daniel@zonque.org>
+ M:	Haojian Zhuang <haojian.zhuang@gmail.com>
+@@ -18320,10 +18287,6 @@ F:	drivers/media/i2c/max9271.c
+ F:	drivers/media/i2c/max9271.h
+ F:	drivers/media/i2c/rdacm21.c
+ 
+-RDC R-321X SoC
+-M:	Florian Fainelli <florian@openwrt.org>
+-S:	Maintained
+-
+ RDC R6040 FAST ETHERNET DRIVER
+ M:	Florian Fainelli <f.fainelli@gmail.com>
+ L:	netdev@vger.kernel.org
+@@ -19930,11 +19893,6 @@ F:	Documentation/devicetree/bindings/display/simple-framebuffer.yaml
+ F:	drivers/video/fbdev/simplefb.c
+ F:	include/linux/platform_data/simplefb.h
+ 
+-SIMTEC EB110ATX (Chalice CATS)
+-M:	Simtec Linux Team <linux@simtec.co.uk>
+-S:	Supported
+-W:	http://www.simtec.co.uk/products/EB110ATX/
+-
+ SIOX
+ M:	Thorsten Scherer <t.scherer@eckelmann.de>
+ M:	Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+-- 
+2.34.1
 
 
