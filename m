@@ -1,175 +1,371 @@
-Return-Path: <linux-kernel+bounces-3693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1F34816FDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:11:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC575816FE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C34E284681
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:11:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62C03281E7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493C57408B;
-	Mon, 18 Dec 2023 12:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7A5740A5;
+	Mon, 18 Dec 2023 13:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NIubbbkw"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NjQoozoi";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kRg4eUEW";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NjQoozoi";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kRg4eUEW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E98E7207C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702904361; x=1734440361;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8c4k3yVqvUoYiJDSJqmPDHUmf9ylCe7iJg6nNHwOfVQ=;
-  b=NIubbbkwUD7AeQynpdJVN1R/tVuT6OlA/F90qFpNAxNdI5olrnJXwPVL
-   YPP+ugyF/YYWMKbD0y8nxVLMp5PQOCVI/MTWR46KMZ5WELeoO70lo6fnh
-   WWrMDTSTNAluXbUoySHEfSjeH+7OALC0cWX9mbSzso1dQRhxo6nC484+j
-   AXzgVk8z9sWmwO2/N+QD3oVtMC1DNTjs+rdp1eu7BCr4YXX4K0eXYV84/
-   l2RCKDOadJ4llmPy8QZiASL+w2BFx3C97MrKPjYGqbfmqj5EpOZFS8cSz
-   IZUSD3N3fr/YBgQZSmZ/CfCPSg/lrT6STtuAnYmI3fUH4OKmCdHogUOrc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="459826074"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="459826074"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 04:59:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="866208754"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="866208754"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 Dec 2023 04:59:19 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFDDD-000457-2i;
-	Mon, 18 Dec 2023 12:59:17 +0000
-Date: Mon, 18 Dec 2023 20:58:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kent Overstreet <kmo@daterainc.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/io_write.c:1570: warning: Function parameter or struct
- member 'bch2_write' not described in 'CLOSURE_CALLBACK'
-Message-ID: <202312182040.naGasU5s-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6CC7207C;
+	Mon, 18 Dec 2023 13:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1F9D2222E3;
+	Mon, 18 Dec 2023 13:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702904413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wa1drJ9kvwPNwGrFYZA6AQkMFI1n+Wy4qJgVFHb+Cbc=;
+	b=NjQoozoiYGmznZj/xaMaAAIEKHUAcrIjMSroVZK7V+4n99cSipFJNzSLZ0J+9dQY34DBy4
+	cR18vv2eeWyaogqcGocGuv229FuwRgRMBxWNYhrJPYbJKVpbtGID7LNbboHN8uVNYkKMd0
+	K6GNt10IkaBzv1CCBrQ7No1ls/iPN1o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702904413;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wa1drJ9kvwPNwGrFYZA6AQkMFI1n+Wy4qJgVFHb+Cbc=;
+	b=kRg4eUEWurPzeMFzTbcgHr7FR/DuF6I/Qz6jvgM6mZFnVq3TGT+1sUJJ6zaEPkNZY2wbBH
+	p7Ybh4/B8w4g/1DQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702904413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wa1drJ9kvwPNwGrFYZA6AQkMFI1n+Wy4qJgVFHb+Cbc=;
+	b=NjQoozoiYGmznZj/xaMaAAIEKHUAcrIjMSroVZK7V+4n99cSipFJNzSLZ0J+9dQY34DBy4
+	cR18vv2eeWyaogqcGocGuv229FuwRgRMBxWNYhrJPYbJKVpbtGID7LNbboHN8uVNYkKMd0
+	K6GNt10IkaBzv1CCBrQ7No1ls/iPN1o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702904413;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wa1drJ9kvwPNwGrFYZA6AQkMFI1n+Wy4qJgVFHb+Cbc=;
+	b=kRg4eUEWurPzeMFzTbcgHr7FR/DuF6I/Qz6jvgM6mZFnVq3TGT+1sUJJ6zaEPkNZY2wbBH
+	p7Ybh4/B8w4g/1DQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E3B4B13927;
+	Mon, 18 Dec 2023 13:00:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id whQxH1lCgGUoVAAAn2gu4w
+	(envelope-from <ddiss@suse.de>); Mon, 18 Dec 2023 13:00:09 +0000
+Date: Mon, 18 Dec 2023 23:59:46 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
+Message-ID: <20231218235946.32ab7a69@echidna>
+In-Reply-To: <11da10b4d07bf472cd47410db65dc0e222d61e83.1702628925.git.wqu@suse.com>
+References: <cover.1702628925.git.wqu@suse.com>
+ <11da10b4d07bf472cd47410db65dc0e222d61e83.1702628925.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-6.31 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=NjQoozoi;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=kRg4eUEW
+X-Spam-Score: -6.31
+X-Rspamd-Queue-Id: 1F9D2222E3
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
-commit: d4e3b928ab487a8aecd1f6a140b40ac365116cfb closures: CLOSURE_CALLBACK() to fix type punning
-date:   3 weeks ago
-config: x86_64-buildonly-randconfig-001-20231218 (https://download.01.org/0day-ci/archive/20231218/202312182040.naGasU5s-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312182040.naGasU5s-lkp@intel.com/reproduce)
+Hi Qu,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312182040.naGasU5s-lkp@intel.com/
+On Fri, 15 Dec 2023 19:09:23 +1030, Qu Wenruo wrote:
 
-All warnings (new ones prefixed by >>):
+> Just as mentioned in the comment of memparse(), the simple_stroull()
+> usage can lead to overflow all by itself.
+> 
+> Furthermore, the suffix calculation is also super overflow prone because
+> that some suffix like "E" itself would eat 60bits, leaving only 4 bits
+> available.
+> 
+> And that suffix "E" can also lead to confusion since it's using the same
+> char of hex Ox'E'.
+> 
+> One simple example to expose all the problem is to use memparse() on
+> "25E".
+> The correct value should be 28823037615171174400, but the suffix E makes
+> it super simple to overflow, resulting the incorrect value
+> 10376293541461622784 (9E).
+> 
+> So here we introduce a new helper to address the problem,
+> kstrtoull_suffix():
+> 
+> - Enhance _kstrtoull()
+>   This allow _kstrtoull() to return even if it hits an invalid char, as
+>   long as the optional parameter @retptr is provided.
+> 
+>   If @retptr is provided, _kstrtoull() would try its best to parse the
+>   valid part, and leave the remaining to be handled by the caller.
+> 
+>   If @retptr is not provided, the behavior is not altered.
+> 
+> - New kstrtoull_suffix() helper
+>   This new helper utilize the new @retptr capability of _kstrtoull(),
+>   and provides 2 new ability:
+> 
+>   * Allow certain suffixes to be chosen
+>     The recommended suffix list is "KkMmGgTtPp", excluding the overflow
+>     prone "Ee". Undermost cases there is really no need to use "E" suffix
+>     anyway.
+>     And for those who really need that exabytes suffix, they can enable
+>     that suffix pretty easily.
+> 
+>   * Add overflow checks for the suffixes
+>     If the original number string is fine, but with the extra left
+>     shift overflow happens, then -EOVERFLOW is returned.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  include/linux/kstrtox.h |   7 +++
+>  lib/kstrtox.c           | 113 ++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 115 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
+> index 7fcf29a4e0de..12c754152c15 100644
+> --- a/include/linux/kstrtox.h
+> +++ b/include/linux/kstrtox.h
+> @@ -9,6 +9,13 @@
+>  int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
+>  int __must_check _kstrtol(const char *s, unsigned int base, long *res);
+>  
+> +/*
+> + * The default suffix list would not include "E" since it's too easy to overflow
+> + * and not much real world usage.
+> + */
+> +#define KSTRTOULL_SUFFIX_DEFAULT		("KkMmGgTtPp")
+> +int kstrtoull_suffix(const char *s, unsigned int base, unsigned long long *res,
+> +		     const char *suffixes);
+>  int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
+>  int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
+>  
+> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+> index d586e6af5e5a..63831207dfdd 100644
+> --- a/lib/kstrtox.c
+> +++ b/lib/kstrtox.c
+> @@ -93,7 +93,8 @@ unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long
+>  	return _parse_integer_limit(s, base, p, INT_MAX);
+>  }
+>  
+> -static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+> +static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res,
+> +		      char **retptr)
+>  {
+>  	unsigned long long _res;
+>  	unsigned int rv;
+> @@ -105,11 +106,19 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+>  	if (rv == 0)
+>  		return -EINVAL;
+>  	s += rv;
+> -	if (*s == '\n')
+> +
+> +	/*
+> +	 * If @retptr is provided, caller is responsible to detect
+> +	 * the extra chars, otherwise we can skip one newline.
+> +	 */
+> +	if (!retptr && *s == '\n')
+>  		s++;
+> -	if (*s)
+> +	if (!retptr && *s)
+>  		return -EINVAL;
+> +
+>  	*res = _res;
+> +	if (retptr)
+> +		*retptr = (char *)s;
+>  	return 0;
+>  }
+>  
+> @@ -133,10 +142,104 @@ int kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+>  {
+>  	if (s[0] == '+')
+>  		s++;
+> -	return _kstrtoull(s, base, res);
+> +	return _kstrtoull(s, base, res, NULL);
+>  }
+>  EXPORT_SYMBOL(kstrtoull);
+>  
+> +/**
+> + * kstrtoull_suffix - convert a string to ull with suffixes support
+> + * @s: The start of the string. The string must be null-terminated, and may also
+> + *  include a single newline before its terminating null.
+> + * @base: The number base to use. The maximum supported base is 16. If base is
+> + *  given as 0, then the base of the string is automatically detected with the
+> + *  conventional semantics - If it begins with 0x the number will be parsed as a
+> + *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
+> + *  parsed as an octal number. Otherwise it will be parsed as a decimal.
+> + * @res: Where to write the result of the conversion on success.
+> + * @suffixes: A string of acceptable suffixes, must be provided. Or caller
+> + *  should use kstrtoull() directly.
 
->> fs/bcachefs/io_write.c:1570: warning: Function parameter or struct member 'bch2_write' not described in 'CLOSURE_CALLBACK'
-   fs/bcachefs/io_write.c:1570: warning: expecting prototype for bch2_write(). Prototype was for CLOSURE_CALLBACK() instead
+The suffixes parameter seems a bit cumbersome; callers need to provide
+both upper and lower cases, and unsupported characters aren't checked
+for. However, I can't think of any better suggestions at this stage.
+
+> + *
+> + *
+> + * Return 0 on success.
+> + *
+> + * Return -ERANGE on overflow or -EINVAL if invalid chars found.
+> + * Return value must be checked.
+> + */
+> +int kstrtoull_suffix(const char *s, unsigned int base, unsigned long long *res,
+> +		     const char *suffixes)
+> +{
+> +	unsigned long long init_value;
+> +	unsigned long long final_value;
+> +	char *endptr;
+> +	int ret;
+> +
+> +	ret = _kstrtoull(s, base, &init_value, &endptr);
+> +	/* Either already overflow or no number string at all. */
+> +	if (ret < 0)
+> +		return ret;
+> +	final_value = init_value;
+> +	/* No suffixes. */
+> +	if (!*endptr)
+> +		goto done;
+> +
+> +	switch (*endptr) {
+> +	case 'K':
+> +	case 'k':
+> +		if (!strchr(suffixes, *endptr))
+> +			return -EINVAL;
+> +		final_value <<= 10;
+> +		endptr++;
+> +		break;
+> +	case 'M':
+> +	case 'm':
+> +		if (!strchr(suffixes, *endptr))
+> +			return -EINVAL;
+> +		final_value <<= 20;
+> +		endptr++;
+> +		break;
+> +	case 'G':
+> +	case 'g':
+> +		if (!strchr(suffixes, *endptr))
+> +			return -EINVAL;
+> +		final_value <<= 30;
+> +		endptr++;
+> +		break;
+> +	case 'T':
+> +	case 't':
+> +		if (!strchr(suffixes, *endptr))
+> +			return -EINVAL;
+> +		final_value <<= 40;
+> +		endptr++;
+> +		break;
+> +	case 'P':
+> +	case 'p':
+> +		if (!strchr(suffixes, *endptr))
+> +			return -EINVAL;
+> +		final_value <<= 50;
+> +		endptr++;
+> +		break;
+> +	case 'E':
+> +	case 'e':
+> +		if (!strchr(suffixes, *endptr))
+> +			return -EINVAL;
+> +		final_value <<= 60;
+> +		endptr++;
+> +		break;
+> +	}
+> +	if (*endptr == '\n')
+
+Nit: the per-case logic could be simplified to a single "shift_val = X"
+if you initialise and handle !shift_val.
+
+> +		endptr++;
+> +	if (*endptr)
+> +		return -EINVAL;
+> +
+> +	/* Overflow check. */
+> +	if (final_value < init_value)
+> +		return -EOVERFLOW;
+> +done:
+> +	*res = final_value;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(kstrtoull_suffix);
+> +
+>  /**
+>   * kstrtoll - convert a string to a long long
+>   * @s: The start of the string. The string must be null-terminated, and may also
+> @@ -159,7 +262,7 @@ int kstrtoll(const char *s, unsigned int base, long long *res)
+>  	int rv;
+>  
+>  	if (s[0] == '-') {
+> -		rv = _kstrtoull(s + 1, base, &tmp);
+> +		rv = _kstrtoull(s + 1, base, &tmp, NULL);
+>  		if (rv < 0)
+>  			return rv;
+>  		if ((long long)-tmp > 0)
 
 
-vim +1570 fs/bcachefs/io_write.c
-
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1551  
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1552  /**
-96dea3d599dbc3 fs/bcachefs/io_write.c Kent Overstreet 2023-09-12  1553   * bch2_write() - handle a write to a cache device or flash only volume
-96dea3d599dbc3 fs/bcachefs/io_write.c Kent Overstreet 2023-09-12  1554   * @cl:		&bch_write_op->cl
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1555   *
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1556   * This is the starting point for any data to end up in a cache device; it could
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1557   * be from a normal write, or a writeback write, or a write to a flash only
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1558   * volume - it's also used by the moving garbage collector to compact data in
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1559   * mostly empty buckets.
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1560   *
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1561   * It first writes the data to the cache, creating a list of keys to be inserted
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1562   * (if the data won't fit in a single open bucket, there will be multiple keys);
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1563   * after the data is written it calls bch_journal, and after the keys have been
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1564   * added to the next journal write they're inserted into the btree.
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1565   *
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1566   * If op->discard is true, instead of inserting the data it invalidates the
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1567   * region of the cache represented by op->bio and op->inode.
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1568   */
-d4e3b928ab487a fs/bcachefs/io_write.c Kent Overstreet 2023-11-17  1569  CLOSURE_CALLBACK(bch2_write)
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16 @1570  {
-d4e3b928ab487a fs/bcachefs/io_write.c Kent Overstreet 2023-11-17  1571  	closure_type(op, struct bch_write_op, cl);
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1572  	struct bio *bio = &op->wbio.bio;
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1573  	struct bch_fs *c = op->c;
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1574  	unsigned data_len;
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1575  
-b17d3cec14b487 fs/bcachefs/io.c       Kent Overstreet 2022-10-31  1576  	EBUG_ON(op->cl.parent);
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1577  	BUG_ON(!op->nr_replicas);
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1578  	BUG_ON(!op->write_point.v);
-e88a75ebe86c1d fs/bcachefs/io.c       Kent Overstreet 2022-11-24  1579  	BUG_ON(bkey_eq(op->pos, POS_MAX));
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1580  
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1581  	op->start_time = local_clock();
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1582  	bch2_keylist_init(&op->insert_keys, op->inline_keys);
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1583  	wbio_init(bio)->put_bio = false;
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1584  
-8244f3209b5b49 fs/bcachefs/io.c       Kent Overstreet 2021-12-14  1585  	if (bio->bi_iter.bi_size & (c->opts.block_size - 1)) {
-7fec8266af12b6 fs/bcachefs/io.c       Kent Overstreet 2022-11-15  1586  		bch_err_inum_offset_ratelimited(c,
-7fec8266af12b6 fs/bcachefs/io.c       Kent Overstreet 2022-11-15  1587  			op->pos.inode,
-7fec8266af12b6 fs/bcachefs/io.c       Kent Overstreet 2022-11-15  1588  			op->pos.offset << 9,
-0fefe8d8ef7402 fs/bcachefs/io.c       Kent Overstreet 2020-12-03  1589  			"misaligned write");
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1590  		op->error = -EIO;
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1591  		goto err;
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1592  	}
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1593  
-b40901b0f71825 fs/bcachefs/io.c       Kent Overstreet 2023-03-13  1594  	if (c->opts.nochanges) {
-b40901b0f71825 fs/bcachefs/io.c       Kent Overstreet 2023-03-13  1595  		op->error = -BCH_ERR_erofs_no_writes;
-b40901b0f71825 fs/bcachefs/io.c       Kent Overstreet 2023-03-13  1596  		goto err;
-b40901b0f71825 fs/bcachefs/io.c       Kent Overstreet 2023-03-13  1597  	}
-b40901b0f71825 fs/bcachefs/io.c       Kent Overstreet 2023-03-13  1598  
-b40901b0f71825 fs/bcachefs/io.c       Kent Overstreet 2023-03-13  1599  	if (!(op->flags & BCH_WRITE_MOVE) &&
-d94189ad568f6c fs/bcachefs/io.c       Kent Overstreet 2023-02-09  1600  	    !bch2_write_ref_tryget(c, BCH_WRITE_REF_write)) {
-858536c7cea8bb fs/bcachefs/io.c       Kent Overstreet 2022-12-11  1601  		op->error = -BCH_ERR_erofs_no_writes;
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1602  		goto err;
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1603  	}
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1604  
-104c69745fdf7e fs/bcachefs/io.c       Daniel Hill     2022-03-15  1605  	this_cpu_add(c->counters[BCH_COUNTER_io_write], bio_sectors(bio));
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1606  	bch2_increment_clock(c, bio_sectors(bio), WRITE);
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1607  
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1608  	data_len = min_t(u64, bio->bi_iter.bi_size,
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1609  			 op->new_i_size - (op->pos.offset << 9));
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1610  
-07358a82bb36ff fs/bcachefs/io.c       Kent Overstreet 2019-11-29  1611  	if (c->opts.inline_data &&
-07358a82bb36ff fs/bcachefs/io.c       Kent Overstreet 2019-11-29  1612  	    data_len <= min(block_bytes(c) / 2, 1024U)) {
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1613  		bch2_write_data_inline(op, data_len);
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1614  		return;
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1615  	}
-4be1a412ea3492 fs/bcachefs/io.c       Kent Overstreet 2019-11-09  1616  
-b17d3cec14b487 fs/bcachefs/io.c       Kent Overstreet 2022-10-31  1617  	__bch2_write(op);
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1618  	return;
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1619  err:
-4b0a66d508d7bf fs/bcachefs/io.c       Kent Overstreet 2019-08-21  1620  	bch2_disk_reservation_put(c, &op->res);
-46e4bb1c378248 fs/bcachefs/io.c       Kent Overstreet 2019-12-27  1621  
-b17d3cec14b487 fs/bcachefs/io.c       Kent Overstreet 2022-10-31  1622  	closure_debug_destroy(&op->cl);
-b17d3cec14b487 fs/bcachefs/io.c       Kent Overstreet 2022-10-31  1623  	if (op->end_io)
-c32bd3ad1fe595 fs/bcachefs/io.c       Kent Overstreet 2019-11-11  1624  		op->end_io(op);
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1625  }
-1c6fdbd8f2465d fs/bcachefs/io.c       Kent Overstreet 2017-03-16  1626  
-
-:::::: The code at line 1570 was first introduced by commit
-:::::: 1c6fdbd8f2465ddfb73a01ec620cbf3d14044e1a bcachefs: Initial commit
-
-:::::: TO: Kent Overstreet <kent.overstreet@gmail.com>
-:::::: CC: Kent Overstreet <kent.overstreet@linux.dev>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
