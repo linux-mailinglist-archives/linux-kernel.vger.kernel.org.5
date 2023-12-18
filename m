@@ -1,103 +1,82 @@
-Return-Path: <linux-kernel+bounces-3960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C3A8175A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:42:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F3D8175BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:43:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BF6E2821A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:42:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC99E1F2219E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B6C76098;
-	Mon, 18 Dec 2023 15:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ta/ZLMIs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1FAC5A841;
+	Mon, 18 Dec 2023 15:38:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D347608C;
-	Mon, 18 Dec 2023 15:36:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=Yv9NEALRhhPVlldz2t/Fuz2oV/CBEjy/kwNcSSKy2c0=; b=Ta/ZLMIsSHqIp2kIeOMq/K8hB2
-	zFZCr1dwmBjJEP7zd40V7gPNrS8Qq8UdpAP4HvpFibJa7PnELaGjiXIkJgs9LbZfhxzMLiZxR19/Z
-	++ITeDX1dp9VlPnF7QA5rPA1D7yzo/KssnWGNQfL8BiIiooj5jmwq4zPBo9jPWNrxYSz0+JvXqQzt
-	PcEtGKUqDiewhkGM0ONfc2onosXMtAAhLVUhezlbdzmUWnT4EE50UjXRKfAWvUhEtjA4PLGZp0qYc
-	a8UXrSBukXbauIaVN5VwADLcnX3Mq8vOHhtXGAGyXTGZLBBIcMALFeurlzETNild+N+rdYR7/ZYiq
-	U19LWeWQ==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFFfh-00BEdJ-09;
-	Mon, 18 Dec 2023 15:36:45 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 17/17] writeback: update the kerneldoc comment for tag_pages_for_writeback
-Date: Mon, 18 Dec 2023 16:35:53 +0100
-Message-Id: <20231218153553.807799-18-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231218153553.807799-1-hch@lst.de>
-References: <20231218153553.807799-1-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278AD42388;
+	Mon, 18 Dec 2023 15:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id C7E607FD6;
+	Mon, 18 Dec 2023 23:37:56 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 18 Dec
+ 2023 23:37:56 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 18 Dec
+ 2023 23:37:50 +0800
+From: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To: <krzysztof.kozlowski@linaro.org>
+CC: <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
+	<jisheng.teoh@starfivetech.com>, <krzysztof.kozlowski+dt@linaro.org>,
+	<leyfoon.tan@starfivetech.com>, <linux-kernel@vger.kernel.org>,
+	<linux-watchdog@vger.kernel.org>, <linux@roeck-us.net>, <robh+dt@kernel.org>,
+	<samin.guo@starfivetech.com>, <wim@linux-watchdog.org>,
+	<xingyu.wu@starfivetech.com>
+Subject: Re: [PATCH v4 1/1] dt-bindings: watchdog: starfive,jh7100-wdt: Add compatible for JH8100
+Date: Mon, 18 Dec 2023 23:37:38 +0800
+Message-ID: <20231218153738.1054393-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <1d7f9cbe-9ca1-4ccb-b90f-6e474c0740ad@linaro.org>
+References: <1d7f9cbe-9ca1-4ccb-b90f-6e474c0740ad@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
 
-Don't refer to write_cache_pages, which now is just a wrapper for the
-writeback iterator.
+On Mon, 18 Dec 2023 15:41:37 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/page-writeback.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+> On 18/12/2023 15:27, Ji Sheng Teoh wrote:
+> >>
+> >> I have real doubts that you ever tested your entire solution with
+> >> this binding. Where is the DTS?
+> >> =20
+> >=20
+> > Currently, the DTS is still in internal and yet to upstream as it
+> > depends on [1]. =20
+>=20
+> Yeah, so you send untested code which cannot work or pass tests.  If
+> you do not test your code, we need to be able to at least verify it,
+> so send your DTS. Otherwise I cannot trust that this works at all.
+>
+Will submit it with DTS once things have cleared up.
+Thanks for the comment.=20
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index d3c2c78e0c67ce..bc69044fd063e8 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2325,18 +2325,18 @@ void __init page_writeback_init(void)
- }
- 
- /**
-- * tag_pages_for_writeback - tag pages to be written by write_cache_pages
-+ * tag_pages_for_writeback - tag pages to be written by writeback
-  * @mapping: address space structure to write
-  * @start: starting page index
-  * @end: ending page index (inclusive)
-  *
-  * This function scans the page range from @start to @end (inclusive) and tags
-- * all pages that have DIRTY tag set with a special TOWRITE tag. The idea is
-- * that write_cache_pages (or whoever calls this function) will then use
-- * TOWRITE tag to identify pages eligible for writeback.  This mechanism is
-- * used to avoid livelocking of writeback by a process steadily creating new
-- * dirty pages in the file (thus it is important for this function to be quick
-- * so that it can tag pages faster than a dirtying process can create them).
-+ * all pages that have DIRTY tag set with a special TOWRITE tag.  The caller
-+ * can then use the TOWRITE tag to identify pages eligible for writeback.
-+ * This mechanism is used to avoid livelocking of writeback by a process
-+ * steadily creating new dirty pages in the file (thus it is important for this
-+ * function to be quick so that it can tag pages faster than a dirtying process
-+ * can create them).
-  */
- void tag_pages_for_writeback(struct address_space *mapping,
- 			     pgoff_t start, pgoff_t end)
--- 
-2.39.2
-
+> Best regards,
+> Krzysztof
+>=20
 
