@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-4439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A71817D1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:08:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08339817D1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 282BDB23E05
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:08:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60AFCB23CC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F09B740BC;
-	Mon, 18 Dec 2023 22:08:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36B674E10;
+	Mon, 18 Dec 2023 22:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z0wNal1V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+LabR89"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30B8740B0
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 22:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e297d0692so2553792e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:08:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E070740B0;
+	Mon, 18 Dec 2023 22:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40c68c1990dso43893535e9.0;
+        Mon, 18 Dec 2023 14:10:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702937307; x=1703542107; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702937422; x=1703542222; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wsJa9VdYDRrbXCF+P/wnlKDM0XN+e4MY7opB/mrRfg8=;
-        b=Z0wNal1VQ7Kdy/7b8yGl7s+thny0Aqm1eWmiURw2eSY/YQcsRYa479ySRHP+nkrU5d
-         75fT0L+dyz9VNlWGQCsryiGrCuQvjtnQLzyxhHY7fY5MdF4VOIeSD5TzJaW3c/WrZt6F
-         VD6RNtW4h3jRNzeMveulAdbVxj/0Y1BzoJqdevAGrBJsjZGst6vy+Iumn192oU6eXZSa
-         otL5OOZ+SILo9zzhksHcmDTBe89I7BeGYpc+TIkxpt/iRt+dAKGCBxyi5PwR41vPOJ/3
-         RPmPM52d+TA3MT/RuElliEO3GY1222T/WljQVPhia3FBtg2u9qf0ZAejNCaviBKdfaIx
-         1HLw==
+        bh=ZGd5eZtf8Hv14giEbllgU0p0iNlUw0xe+ZL+XhV0YwA=;
+        b=D+LabR89zs8XtEyVkwCoB8K+aNQ42FAcRXkOhDyG7o6lWYwpE75oCM7utjU7LhW0Cz
+         eWRoBSUPOxv4ZNVtMPcUOHz49kYiRIllR8Jj+cxGXWciF+PmuFzudiR48rM/k3iHI31E
+         7tE2zRLahDcJP676QL3vJztwiOwukmzS4+MUYL76lSqiDqa2ENevgMbbD6JFaSw0cxFD
+         4FYXX+AXWVbiSPPlefwh91DxYAiyTL543CSf9c98xZ0YjkNKV/M2sZ81YaYejGNfOKyA
+         zrmGeE+Bwx84cnPL2ifWc/1UK/pptLD6V95vD+vAdw/UmbkfXAALIEmw2hRixxbbzPuH
+         3Daw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702937307; x=1703542107;
+        d=1e100.net; s=20230601; t=1702937422; x=1703542222;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wsJa9VdYDRrbXCF+P/wnlKDM0XN+e4MY7opB/mrRfg8=;
-        b=Uz9tmvhlWEEtWhPezbVXXYrxbPqSiGn6KltTiXXtjP/2258whl4xOylErBWCcjXXMl
-         D8kT0MDzC3sFRlreoU9A2mN5NR42KNewogvpiSei21VkrAedW3+7JOecqbRZP4ThOIiX
-         VPnwZ6rJJT1cikxYwgn8TxJRdWJFqP5jwfr+bf/a2zbTWyhq6AWjMraeC6QZBj6fGuNV
-         InvYJ7geItbR74ehTKPDjnCUWZvzy0vbIZY5yUXEg3RxG0Pt/1uFKj5Lrg6Wwl1MzKZF
-         GXVjZp0KNZ9tPG3xZF+M8vd3V8RJsLHRZdL4gP5Q7EB73EZwjOSWBdA6d9C9AcIomCoO
-         C46Q==
-X-Gm-Message-State: AOJu0YwIf2TkJIyP/2Wm92T0JLH4m5okmzh4ewnhHcXAWUT8NWvvJ/62
-	lV2F9IRwG0HpYHrSdUI9IXLaQ1PbWcIV/A==
-X-Google-Smtp-Source: AGHT+IEdfj+yQB03trrUmdxVJSj7D983Xg4QmP/J8O1XsOxdm8nbN0BEDhzbXyO11tY5JZQGk3Z7zw==
-X-Received: by 2002:a05:6512:33d4:b0:50e:3007:620f with SMTP id d20-20020a05651233d400b0050e3007620fmr42489lfg.7.1702937306906;
-        Mon, 18 Dec 2023 14:08:26 -0800 (PST)
-Received: from [172.30.205.119] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id c16-20020a197610000000b0050bf30083b2sm2998297lff.142.2023.12.18.14.08.25
+        bh=ZGd5eZtf8Hv14giEbllgU0p0iNlUw0xe+ZL+XhV0YwA=;
+        b=edYZFozzI/f2/b7zxbamdBvokYOS5cu76nLHqezan4Qf5TMN7DUaXEZcR5zRq+ysiG
+         9T6Vqi6bWlm0ls4jw6b3lnBTLoM7C33+0OygoMJL8otJYd8sBdB5z3Kud95kHrmS9rsZ
+         wKWJdUlFgPUIwzWOWgoFt1wbvZ10WiY+BsVh8J6JMewUIYNvobp/78F9xn7wM+XoWzPY
+         X2TUhEtNjYr+pSsj5AisDn7tmahoYzEQJuk0WSDwRiXHoZDdM6/iINfyV7qDJXPlhSGc
+         Av93cy4uuvvFo+cuMy7sma+ApCwc//2X8pz6hIGM03bZ/8i+hNiwxdJuntJD64iU5e5Z
+         ++cA==
+X-Gm-Message-State: AOJu0YxMHf22whOr92VrdP+l31PRI1uQPFmEj+t6oLP4O8rDo+mQbETG
+	LlnUGS4ybpw0YeDvx9xcd+M=
+X-Google-Smtp-Source: AGHT+IEBbcmVZ5J1up2cuYJCebaOe8ZMt+KkRSENCjqveVZvpvJnjm6IWHNe5Kipr+m+yLqv2VxZYg==
+X-Received: by 2002:a05:600c:4e8d:b0:40c:2787:571e with SMTP id f13-20020a05600c4e8d00b0040c2787571emr6555783wmq.7.1702937421627;
+        Mon, 18 Dec 2023 14:10:21 -0800 (PST)
+Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.googlemail.com with ESMTPSA id vs6-20020a170907a58600b00a1f99e749dasm11859919ejc.210.2023.12.18.14.10.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 14:08:26 -0800 (PST)
-Message-ID: <8e587947-4ae1-49c0-9d54-b95f9d539a7c@linaro.org>
-Date: Mon, 18 Dec 2023 23:08:25 +0100
+        Mon, 18 Dec 2023 14:10:21 -0800 (PST)
+Message-ID: <13bc621c-5fcb-4710-912c-06e3e80d7337@gmail.com>
+Date: Mon, 18 Dec 2023 23:10:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,147 +66,188 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/34] media: iris: introduce platform specific
- capabilities for core and instance
+Subject: Re: [PATCH 4/4] nvmem: layouts: add U-Boot env layout
 Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
- andersson@kernel.org, mchehab@kernel.org, bryan.odonoghue@linaro.org
-Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
-References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
- <1702899149-21321-14-git-send-email-quic_dikshita@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <1702899149-21321-14-git-send-email-quic_dikshita@quicinc.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, u-boot@lists.denx.de,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20231218133722.16150-1-zajec5@gmail.com>
+ <20231218133722.16150-4-zajec5@gmail.com> <20231218152116.59d59bad@xps-13>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <20231218152116.59d59bad@xps-13>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-
-
-On 12/18/23 12:32, Dikshita Agarwal wrote:
-> Capabilities are set of video specifications and features supported
-> by a specific platform(SOC). Each capability is defined with
-> min, max, range, default value and corresponding HFI.
+On 18.12.2023 15:21, Miquel Raynal wrote:
+> Hi Rafał,
 > 
-> Also, platform data defines different resource details for
-> a specific platform(SOC). This change defines resource tables
-> for sm8550 platform data and use for initializing these resources.
+> zajec5@gmail.com wrote on Mon, 18 Dec 2023 14:37:22 +0100:
 > 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> ---
-[...]
-[...]
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>>
+>> This patch moves all generic (NVMEM devices independent) code from NVMEM
+>> device driver to NVMEM layout driver. Then it adds a simple NVMEM layout
+>> code on top of it.
+>>
+>> Thanks to proper layout it's possible to support U-Boot env data stored
+>> on any kind of NVMEM device.
+>>
+>> For backward compatibility with old DT bindings we need to keep old
+>> NVMEM device driver functional. To avoid code duplication a parsing
+>> function is exported and reused in it.
+>>
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+> 
+> I have a couple of comments about the original driver which gets
+> copy-pasted in the new layout driver, maybe you could clean these
+> (the memory leak should be fixed before the migration so it can be
+> backported easily, the others are just style so it can be done after, I
+> don't mind).
+> 
+> ...
+> 
+>> +int u_boot_env_parse(struct device *dev, struct nvmem_device *nvmem,
+>> +		     enum u_boot_env_format format)
+>> +{
+>> +	size_t crc32_data_offset;
+>> +	size_t crc32_data_len;
+>> +	size_t crc32_offset;
+>> +	size_t data_offset;
+>> +	size_t data_len;
+>> +	size_t dev_size;
+>> +	uint32_t crc32;
+>> +	uint32_t calc;
+>> +	uint8_t *buf;
+>> +	int bytes;
+>> +	int err;
+>> +
+>> +	dev_size = nvmem_dev_size(nvmem);
+>> +
+>> +	buf = kcalloc(1, dev_size, GFP_KERNEL);
+> 
+> Out of curiosity, why kcalloc(1,...) rather than kzalloc() ?
 
-> -	ret = protect_secure_region(CP_START, CP_SIZE, CP_NONPIXEL_START,
-> -				    CP_NONPIXEL_SIZE, IRIS_PAS_ID);
-> +	cp_start = core->cap[CP_START].value;
-> +	cp_size = core->cap[CP_SIZE].value;
-> +	cp_nonpixel_start = core->cap[CP_NONPIXEL_START].value;
-> +	cp_nonpixel_size = core->cap[CP_NONPIXEL_SIZE].value;
-but you just hardcoded these a couple patches ago.. are they
-variable after all?
+I used kcalloc() initially as I didn't need buffer to be zeroed.
 
-[...]
+I see that memory-allocation.rst however says:
+ > And, to be on the safe side it's best to use routines that set memory to zero, like kzalloc().
 
-> +	{DEC_CODECS, H264 | HEVC | VP9},
-> +	{MAX_SESSION_COUNT, 16},
-> +	{MAX_MBPF, 278528}, /* ((8192x4352)/256) * 2 */
-> +	{MAX_MBPS, 7833600}, /* max_load 7680x4320@60fps */
-> +	{NUM_VPP_PIPE, 4},
-> +	{HW_RESPONSE_TIMEOUT, HW_RESPONSE_TIMEOUT_VALUE},
-> +	{DMA_MASK, GENMASK(31, 29) - 1},
-> +	{CP_START, 0},
-> +	{CP_SIZE, 0x25800000},
-> +	{CP_NONPIXEL_START, 0x01000000},
-> +	{CP_NONPIXEL_SIZE, 0x24800000},
-Why this and not an array of enum-indexed u32s?
+It's probably close to zero cost to zero that buffer so it could be kzalloc().
 
-> +};
-> +
-> +static struct plat_inst_cap instance_cap_data_sm8550[] = {
-you know all of the possible members here as well, you can just
-create a struct of actual configurations instead of turning them
-into generic capabilities that you have to parse either way at
-some point
 
-[...]
+>> +	if (!buf) {
+>> +		err = -ENOMEM;
+>> +		goto err_out;
+> 
+> We could directly return ENOMEM here I guess.
+> 
+>> +	}
+>> +
+>> +	bytes = nvmem_device_read(nvmem, 0, dev_size, buf);
+>> +	if (bytes < 0)
+>> +		return bytes;
+>> +	else if (bytes != dev_size)
+>> +		return -EIO;
+> 
+> Don't we need to free buf in the above cases?
+> 
+>> +	switch (format) {
+>> +	case U_BOOT_FORMAT_SINGLE:
+>> +		crc32_offset = offsetof(struct u_boot_env_image_single, crc32);
+>> +		crc32_data_offset = offsetof(struct u_boot_env_image_single, data);
+>> +		data_offset = offsetof(struct u_boot_env_image_single, data);
+>> +		break;
+>> +	case U_BOOT_FORMAT_REDUNDANT:
+>> +		crc32_offset = offsetof(struct u_boot_env_image_redundant, crc32);
+>> +		crc32_data_offset = offsetof(struct u_boot_env_image_redundant, data);
+>> +		data_offset = offsetof(struct u_boot_env_image_redundant, data);
+>> +		break;
+>> +	case U_BOOT_FORMAT_BROADCOM:
+>> +		crc32_offset = offsetof(struct u_boot_env_image_broadcom, crc32);
+>> +		crc32_data_offset = offsetof(struct u_boot_env_image_broadcom, data);
+>> +		data_offset = offsetof(struct u_boot_env_image_broadcom, data);
+>> +		break;
+>> +	}
+>> +	crc32 = le32_to_cpu(*(__le32 *)(buf + crc32_offset));
+> 
+> Looks a bit convoluted, any chances we can use intermediate variables
+> to help decipher this?
+> 
+>> +	crc32_data_len = dev_size - crc32_data_offset;
+>> +	data_len = dev_size - data_offset;
+>> +
+>> +	calc = crc32(~0, buf + crc32_data_offset, crc32_data_len) ^ ~0L;
+>> +	if (calc != crc32) {
+>> +		dev_err(dev, "Invalid calculated CRC32: 0x%08x (expected: 0x%08x)\n", calc, crc32);
+>> +		err = -EINVAL;
+>> +		goto err_kfree;
+>> +	}
+>> +
+>> +	buf[dev_size - 1] = '\0';
+>> +	err = u_boot_env_parse_cells(dev, nvmem, buf, data_offset, data_len);
+>> +	if (err)
+>> +		dev_err(dev, "Failed to add cells: %d\n", err);
+> 
+> Please drop this error message, the only reason for which the function
+> call would fail is apparently an ENOMEM case.
+> 
+>> +
+>> +err_kfree:
+>> +	kfree(buf);
+>> +err_out:
+>> +	return err;
+>> +}
+>> +EXPORT_SYMBOL_GPL(u_boot_env_parse);
+>> +
+>> +static int u_boot_env_add_cells(struct device *dev, struct nvmem_device *nvmem)
+>> +{
+>> +	const struct of_device_id *match;
+>> +	struct device_node *layout_np;
+>> +	enum u_boot_env_format format;
+>> +
+>> +	layout_np = of_nvmem_layout_get_container(nvmem);
+>> +	if (!layout_np)
+>> +		return -ENOENT;
+>> +
+>> +	match = of_match_node(u_boot_env_of_match_table, layout_np);
+>> +	if (!match)
+>> +		return -ENOENT;
+>> +
+>> +	format = (uintptr_t)match->data;
+> 
+> In the core there is currently an unused helper called
+> nvmem_layout_get_match_data() which does that. I think the original
+> intent of this function was to be used in this driver, so depending on
+> your preference, can you please either use it or remove it?
 
-> +
-> +static const struct bus_info sm8550_bus_table[] = {
-> +	{ NULL, "iris-cnoc", 1000, 1000     },
-> +	{ NULL, "iris-ddr",  1000, 15000000 },
-This is a copy of the common data from the previous patches that you're
-now dropping (why was it there in the first place then?). Is it specific
-to this platform, or can it be reused?
-> +};
-> +
-> +static const struct clock_info sm8550_clk_table[] = {
-> +	{ NULL, "gcc_video_axi0", GCC_VIDEO_AXI0_CLK, 0 },
-> +	{ NULL, "core_clk",       VIDEO_CC_MVS0C_CLK, 0 },
-> +	{ NULL, "vcodec_core",    VIDEO_CC_MVS0_CLK,  1 },
-> +};
-Are these the input pad names?
+The problem is that nvmem_layout_get_match_data() uses:
+layout->dev.driver
 
-> +
-> +static const char * const sm8550_clk_reset_table[] = { "video_axi_reset", NULL };
-Ditto
+It doesn't work with layouts driver (since refactoring?) as driver is
+NULL. That results in NULL pointer dereference when trying to reach
+of_match_table.
 
-> +
-> +static const char * const sm8550_pd_table[] = { "iris-ctl", "vcodec", NULL };
-Ditto
+That is why I used u_boot_env_of_match_table directly.
 
-> +
-> +static const char * const sm8550_opp_pd_table[] = { "mxc", "mmcx", NULL };
-Ditto
+If you know how to fix nvmem_layout_get_match_data() that would be
+great. Do we need driver_register() somewhere in NVMEM core?
 
-> +
-> +static const struct bw_info sm8550_bw_table_dec[] = {
-> +	{ 2073600, 1608000, 2742000 },	/* 4096x2160@60 */
-> +	{ 1036800,  826000, 1393000 },	/* 4096x2160@30 */
-> +	{  489600,  567000,  723000 },	/* 1920x1080@60 */
-> +	{  244800,  294000,  372000 },	/* 1920x1080@30 */
-> +};
-> +
-> +static const struct reg_preset_info sm8550_reg_preset_table[] = {
-> +	{ 0xB0088, 0x0, 0x11 },
-lowercase hex for non-defines, please
-> +};
-> +
-> +static struct ubwc_config_data ubwc_config_sm8550[] = {
-> +	UBWC_CONFIG(8, 32, 16, 0, 1, 1, 1),
-I think it would be far more telling to drop this #define and fill
-in the values inline
 
-> +};
-> +
-> +struct platform_data sm8550_data = {
-> +	.bus_tbl = sm8550_bus_table,
-> +	.bus_tbl_size = ARRAY_SIZE(sm8550_bus_table),
-> +	.clk_tbl = sm8550_clk_table,
-> +	.clk_tbl_size = ARRAY_SIZE(sm8550_clk_table),
-> +	.clk_rst_tbl = sm8550_clk_reset_table,
-> +	.clk_rst_tbl_size = ARRAY_SIZE(sm8550_clk_reset_table),
-> +
-> +	.bw_tbl_dec = sm8550_bw_table_dec,
-> +	.bw_tbl_dec_size = ARRAY_SIZE(sm8550_bw_table_dec),
-> +
-> +	.pd_tbl = sm8550_pd_table,
-> +	.pd_tbl_size = ARRAY_SIZE(sm8550_pd_table),
-> +	.opp_pd_tbl = sm8550_opp_pd_table,
-> +	.opp_pd_tbl_size = ARRAY_SIZE(sm8550_opp_pd_table),
-> +
-> +	.reg_prst_tbl = sm8550_reg_preset_table,
-> +	.reg_prst_tbl_size = ARRAY_SIZE(sm8550_reg_preset_table),
-> +	.fwname = "vpu30_4v.mbn",
-> +	.pas_id = 9,
-> +
-> +	.core_data = core_data_sm8550,
-> +	.core_data_size = ARRAY_SIZE(core_data_sm8550),
-> +	.inst_cap_data = instance_cap_data_sm8550,
-> +	.inst_cap_data_size = ARRAY_SIZE(instance_cap_data_sm8550),
-> +	.ubwc_config = ubwc_config_sm8550,
-Unless any of these are going to be reused, please inline all of the
-values here..
+>> +
+>> +	of_node_put(layout_np);
+>> +
+>> +	return u_boot_env_parse(dev, nvmem, format);
+>> +}
+> 
+> Thanks,
+> Miquèl
 
-Konrad
 
