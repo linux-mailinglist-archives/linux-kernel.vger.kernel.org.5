@@ -1,127 +1,200 @@
-Return-Path: <linux-kernel+bounces-4069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6D6817795
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:34:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F998177A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C97E7284BAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:34:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 460CA1F2567A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438121E520;
-	Mon, 18 Dec 2023 16:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43AE95A866;
+	Mon, 18 Dec 2023 16:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gBNGgbyo"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Sy8DltGQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B051498BC
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so36876805e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:34:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1702917254; x=1703522054; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/rOppEuE9fe8jK025Yd36IdkiDsieSocMieD2PWZmg8=;
-        b=gBNGgbyoUVijHfkMRibg3eWKqGWsqzlwR99xEr8v1/i07O0NW9XMK+CdWUzLAFBeDk
-         3RaxsPpsX8Kj5cY52QVXjP2pCDzT4f3L5WxYoYSROoi/lVNcg6ym9WemLY12XYAA3Hb4
-         L4fknAj2sifpanUvHjqzBfIxvegqKLF4NmpIJnOegcsIYRa7U75B5xgOIpgHZxyasQLE
-         WbxrTkw+UaIJXN1EKKwmXCi+tGL4cVe96JGvdqEw+a09DT5v4S4q4zRPERhCOraFwDOn
-         i4RN9iMULFBUlEJDpM2LnTHCHu1k+zMS1Dx0UUdpucsFGr2vc55EvAPDqHTc8ATD1aQ4
-         81Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702917254; x=1703522054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/rOppEuE9fe8jK025Yd36IdkiDsieSocMieD2PWZmg8=;
-        b=I/iIBKZPDBJr5NjYe6NUt4IYI4eHwYfTl/0NNjjjcTXxCnHb2n8hRoGnw5yyd0oKra
-         5jtYZ/Stc0c9HLQHvcWPVfj3z/6EkiIqb5NNDWeyXIiDqJZlo+/skmNYUqBFylDJcttG
-         D9iiGxGyWSlf1mA7nfQXQux68xWzs6IiJ4XAfHDiLxeHAJ9NfY6+vXR2m46D/OTbCIR2
-         Tu/K1cHuTcFWH0lfrmGAV1+M4MQvhWDGyF1tfi4zHIgseyvWT5e/mjoUCy5+ZCVIL5Sy
-         Ht8swBHeE7jhh9maDlD7SZA+BG42TyuImAZLuTuExjvGpQ6zD0MKP7aDuKIO7nGKQw4n
-         p7hA==
-X-Gm-Message-State: AOJu0YzDAC1EDk4R+knUdYw87xboiXreZCVRakgsKI1SplmoCPanWmSt
-	84VzEYtIhVHwQPsB6gs/aC+IYw==
-X-Google-Smtp-Source: AGHT+IFgaUxBTqFKKtJeHzKpC/cBQB8gSB2dVjVuKhQguEwkv9LiA+Ha7V379VzvROHOEZGQbuAe9A==
-X-Received: by 2002:a05:600c:54c1:b0:40b:5e21:e263 with SMTP id iw1-20020a05600c54c100b0040b5e21e263mr8508945wmb.80.1702917254225;
-        Mon, 18 Dec 2023 08:34:14 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id ts7-20020a170907c5c700b00a1b65cd1957sm14343131ejc.107.2023.12.18.08.34.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 08:34:13 -0800 (PST)
-Date: Mon, 18 Dec 2023 17:34:11 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Jim Cromie <jim.cromie@gmail.com>
-Cc: lb@semihalf.com, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, bleung@google.com, contact@emersion.fr,
-	daniel@ffwll.ch, dianders@chromium.org, groeck@google.com,
-	jbaron@akamai.com, john.ogness@linutronix.de, keescook@chromium.org,
-	ppaalanen@gmail.com, rostedt@goodmis.org, seanpaul@chromium.org,
-	sergey.senozhatsky@gmail.com, upstream@semihalf.com,
-	vincent.whitchurch@axis.com, yanivt@google.com,
-	gregkh@linuxfoundation.org
-Subject: Re: [re: PATCH v2 00/15 -  03/11] dyndbg: disambiguate quoting in a
- debug msg
-Message-ID: <ZYB0gyz-2M3k2kbD@alley>
-References: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com>
- <cover.1701993656.git.jim.cromie@gmail.com>
- <674f65e71c5c3e874b6b72b6f9d8cdd7a091b6d0.1701993656.git.jim.cromie@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C091E486;
+	Mon, 18 Dec 2023 16:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BIFOOuJ003249;
+	Mon, 18 Dec 2023 16:36:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=IHfTQFFYLuLy3cTDmFjjPBUfltLSx/Aj2CKesx6gsbk=; b=Sy
+	8DltGQFUuEQbss79u3fqU0GdSLM2yPD1nMqRfPA7b+DJZ4OjGqoOQYhvdFn1yT2B
+	KsqL94sBLP+XoBdxHpO+CPwQycBZPqKAlaEaenrp/nmbkPxwyGSNexwHHU8CVDLf
+	C1Mq/d+r/zI/lax6eqHKeYtlk/dhJ5I2UyF2Me/tLMeJJmlXmHkN/cbqOj1Div2F
+	mGPZPDb0X6ntkx+rYIZ9H/TZVOS3t8itOiRShcQaXeFx3r1Vrb1yLvW5KQOAt8fb
+	myZRlrGr3AzYlGnMrGusidwvmU+0YLJ9WunEHnumzCcIVBhPvTg+KYZ3tzuAG3eS
+	SDkioQkBOkl5fewVJAWw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2gw0sdgu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 16:36:15 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BIGYhZF004722
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 16:36:13 GMT
+Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
+ 2023 08:35:42 -0800
+Message-ID: <62f0c623-3819-f6be-115f-6b471ab79a58@quicinc.com>
+Date: Mon, 18 Dec 2023 22:05:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <674f65e71c5c3e874b6b72b6f9d8cdd7a091b6d0.1701993656.git.jim.cromie@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH 10/12] arm64: dts: qcom: sm8550: Switch UFS from
+ opp-table-hz to opp-v2
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>, Abel Vesa
+	<abel.vesa@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "Stephen
+ Boyd" <sboyd@kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
+        Jagadeesh Kona
+	<quic_jkona@quicinc.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        "Rob
+ Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Sai
+ Prakash Ranjan" <quic_saipraka@quicinc.com>
+CC: Marijn Suijten <marijn.suijten@somainline.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20231218-topic-8550_fixes-v1-0-ce1272d77540@linaro.org>
+ <20231218-topic-8550_fixes-v1-10-ce1272d77540@linaro.org>
+Content-Language: en-US
+From: Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <20231218-topic-8550_fixes-v1-10-ce1272d77540@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aGzfgsGo_ofvxbl9o9p8Z-YLf-qIgeU8
+X-Proofpoint-ORIG-GUID: aGzfgsGo_ofvxbl9o9p8Z-YLf-qIgeU8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312180122
 
-On Thu 2023-12-07 17:15:06, Jim Cromie wrote:
-> When debugging a query parsing error, the debug message wraps the
-> query in escaped-double-quotes.  This is confusing when mixed with any
-> quoted args where quotes are stripped by the shell.
+
+
+On 12/18/2023 9:32 PM, Konrad Dybcio wrote:
+> Now that the non-legacy form of OPP is supported within the UFS driver,
+> go ahead and switch to it, adding support for more intermediate freq/power
+> states.
 > 
-> So this replaces the \"%s\" with <%s> in the format string, allowing a
-> user to see how the shell strips quotes:
+> In doing so, add the CX RPMhPD under GCC to make sure at least some of
+> the power state requirements are *actually* propagated up the stack.
 > 
-> lx]# echo  module "foo" format ,_ -f > /proc/dynamic_debug/control
-> [  716.037430] dyndbg: read 26 bytes from userspace
-> [  716.037966] dyndbg: query 0: <module foo format ,_ -f> on module: <*>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>   arch/arm64/boot/dts/qcom/sm8550.dtsi | 50 +++++++++++++++++++++++++++++-------
+>   1 file changed, 41 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index d707d15cea5b..d6edd54f3ad3 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -1930,6 +1930,7 @@ ufs_mem_hc: ufs@1d84000 {
+>   			iommus = <&apps_smmu 0x60 0x0>;
+>   			dma-coherent;
+>   
+> +			operating-points-v2 = <&ufs_opp_table>;
+>   			interconnects = <&aggre1_noc MASTER_UFS_MEM 0 &mc_virt SLAVE_EBI1 0>,
+>   					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_UFS_MEM_CFG 0>;
+>   
+> @@ -1950,18 +1951,49 @@ ufs_mem_hc: ufs@1d84000 {
+>   				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
+>   				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
+>   				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
+> -			freq-table-hz =
+> -				<75000000 300000000>,
+> -				<0 0>,
+> -				<0 0>,
+> -				<75000000 300000000>,
+> -				<100000000 403000000>,
+> -				<0 0>,
+> -				<0 0>,
+> -				<0 0>;
+>   			qcom,ice = <&ice>;
+>   
+>   			status = "disabled";
+> +
+> +			ufs_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-75000000 {
+> +					opp-hz = /bits/ 64 <75000000>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <75000000>,
+> +						 /bits/ 64 <100000000>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +				};
+> +
+> +				opp-150000000 {
+> +					opp-hz = /bits/ 64 <150000000>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <150000000>,
+> +						 /bits/ 64 <100000000> > +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>;
+> +					required-opps = <&rpmhpd_opp_svs>;
+> +				};
+> +
+> +				opp-300000000 {
+> +					opp-hz = /bits/ 64 <300000000>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <300000000>,
+> +						 /bits/ 64 <100000000>,
+Hi Konrad,
 
-Could you provide a real life example, please? It is hard to imagine
-what '"foo" format' means in a real life.
+This entry is for ICE clock ? Shouldn't the entry be 403000000 ?
+Same for svs as well ?
 
-Also could you please provide output before and after?
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>,
+> +						 /bits/ 64 <0>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +				};
+> +			};
+>   		};
+>   
+>   		ice: crypto@1d88000 {
+> 
 
-Honestly, Using <> as quotes looks pretty non-standard and confusing
-to me. Also this changes only one place but '\"' is used in many
-other locations which would make dyndbg messages even more confusing.
-
-I do not understand how this would help. The double quote is gone
-even in this variant.
-
-BTW: It is a bit funny that this patch is supposed to make the debug
-     message better readable. For me, the echo command is hard
-     to read in the first place. I would use:
-
-lx]# echo "module $my_module ,_ -f" > /proc/dynamic_debug/control
-
-Maybe, this change fixes the output to match some personal style.
-I wonder how common is the style. I can't remember seeing:
-
-    $> echo param param param
-
-Instead I frequently see:
-
-    $> echo "bla bla bla".
-
-Best Regards,
-Petr
+Regards,
+Nitin
 
