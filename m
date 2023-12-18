@@ -1,78 +1,48 @@
-Return-Path: <linux-kernel+bounces-4208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EC35817920
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:49:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F190A81791C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01148285C64
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:49:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0B9A1C2597A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BD65D74B;
-	Mon, 18 Dec 2023 17:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365455D753;
+	Mon, 18 Dec 2023 17:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Up7Ng5oa"
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="QxEwqZXa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8825C72069;
-	Mon, 18 Dec 2023 17:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 853C040E00A9;
-	Mon, 18 Dec 2023 17:44:00 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id m9dl5PpHaaR0; Mon, 18 Dec 2023 17:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1702921437; bh=Z3gLK2hvl7+MxZT0PYqx203zqjrTJn7QqrwGTsrc/p0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Up7Ng5oayew1nPDTS0jZMKdUCZRcJGusLwfhWKwuqbsptAuhc8CEsSU+T/NNbADem
-	 U9TXTld+nlWGfR3r/Gl8dsDw3L7tUlsWL3E55mpZnfNz0oF/3mIIa8WLoCpZrewYvz
-	 4zHzHJgJsC+ziQexo2dVq1aHs5wTaL1BvC4MotTUFzD6AaSbsITmmDNEVJdbVJZjEI
-	 huOu5B5UXtVvxvGiCcSfHdie7WnkrD6XyAws6gQUp6al3cF3K6vcXa/LG8rM0IsHJC
-	 6aK3MDZ+VNwbPWwT/jkclDKCOJW/XKIsGlUXJkN4Rc0r/lfBp6lBIlAjfbOF5WBWio
-	 Zjl2o6R8oV8YAsek34ZsWiFyldI3lnEN1BoEdMj/tNDLwaVEo707D+rgOaonrxaK+N
-	 1KW8Vmqn05yPH+i1kKC9N191sEjyEubZPbiVaHtMwTqIYVXPAsvjIyzIFJjqAydhvM
-	 eKJSFsiYrYY4PMu7vLOJQcdWL8gBwwxwSTo6P5+NtGl8FjMfdCCGbd9XXXIiNDeEYa
-	 60+s3aYP9FB2hb57qqyWV6PSBaRAqq+2L775+nzV4Sgs5uH23dLGl20KHYSQ8fDHmw
-	 0XDAyTBR1TeVLiOrDj7Nk6H7bwDvIMx74gnIpVFVWBi8m7FUqyic2ZjqodnfPUDl0C
-	 jf0z7QWWclQVjf7G/k32LP6U=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 39F9A40E0030;
-	Mon, 18 Dec 2023 17:43:18 +0000 (UTC)
-Date: Mon, 18 Dec 2023 18:43:11 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-	tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-	alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
-	nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-	liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 24/50] KVM: SEV: Add initial SEV-SNP support
-Message-ID: <20231218174258.GRZYCEomVKa9J+EvHh@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-25-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B265D742
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1702921420; x=1703180620;
+	bh=AMsd/DeY8JjSzCht1IKdSI8OtsIMJA5U5odDT72i3pA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=QxEwqZXa0tmDYud7wF9bUqEciSqWNsCKG5H4jkqMK2AIbbEZT0NpnaSYr0dFDsivK
+	 UVp1IDbDS+3+e1BMrU8i3Bx6CBZUUd3DVv3/SnHOKK4hQ+kVw5jvp4wzRYNG1vWRBE
+	 m2rC1ZvlVmEC7pvRECnsADhgKAV7bQJfKfLCwIiHRM98/lzfPelI6lEDpMcFA3GBaz
+	 3D5UkTLo/3OJmOcFiogUTjZiHkRrAtDFwKffyA9TxnX48NTOtd//wz/S8wkYUMRp2/
+	 ayroAPvjYgceiKxN8YHovvXuyQdz4vIjN+NgcjCB7iYQIPiJ85pRfmTi4pWm9shBkR
+	 R0qxYDGb/OzrA==
+Date: Mon, 18 Dec 2023 17:43:32 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>, Thomas Gleixner <tglx@linutronix.de>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] rust: time: add msecs to jiffies conversion
+Message-ID: <1ee0ed2f-fc1f-4fad-9faf-8cc4e8b47819@proton.me>
+In-Reply-To: <20231216-rb-new-condvar-methods-v2-2-b05ab61e6d5b@google.com>
+References: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com> <20231216-rb-new-condvar-methods-v2-2-b05ab61e6d5b@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,90 +50,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231016132819.1002933-25-michael.roth@amd.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 16, 2023 at 08:27:53AM -0500, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> The next generation of SEV is called SEV-SNP (Secure Nested Paging).
-> SEV-SNP builds upon existing SEV and SEV-ES functionality  while adding new
-> hardware based security protection. SEV-SNP adds strong memory encryption
-> integrity protection to help prevent malicious hypervisor-based attacks
-> such as data replay, memory re-mapping, and more, to create an isolated
-> execution environment.
-> 
-> The SNP feature is added incrementally, the later patches adds a new module
-> parameters that can be used to enabled SEV-SNP in the KVM.
+On 12/16/23 16:31, Alice Ryhl wrote:
+> Defines type aliases and conversions for msecs and jiffies.
+>=20
+> This is used by Rust Binder for process freezing. There, we want to
+> sleep until the freeze operation completes, but we want to be able to
+> abort the process freezing if it doesn't complete within some timeout.
+> The freeze timeout is supplied in msecs.
+>=20
+> Note that we need to convert to jiffies in Binder. It is not enough to
+> introduce a variant of `CondVar::wait_timeout` that takes the timeout in
+> msecs because we need to be able to restart the sleep with the remaining
+> sleep duration if it is interrupted, and if the API takes msecs rather
+> than jiffies, then that would require a conversion roundtrip jiffies->
+> msecs->jiffies that is best avoided.
+>=20
+> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 
-This sentence can simply go to /dev/null.
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 10 ++++++++++
->  arch/x86/kvm/svm/svm.h |  8 ++++++++
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 1cfb9232fc74..4eefc168ebb3 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -59,10 +59,14 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
->  /* enable/disable SEV-ES DebugSwap support */
->  static bool sev_es_debug_swap_enabled = true;
->  module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
-> +
-> +/* enable/disable SEV-SNP support */
+--=20
+Cheers,
+Benno
 
-Useless comment.
-
-> +static bool sev_snp_enabled;
->  #else
->  #define sev_enabled false
->  #define sev_es_enabled false
->  #define sev_es_debug_swap_enabled false
-> +#define sev_snp_enabled false
->  #endif /* CONFIG_KVM_AMD_SEV */
->  
->  #define AP_RESET_HOLD_NONE		0
-> @@ -2186,6 +2190,7 @@ void __init sev_hardware_setup(void)
->  {
->  #ifdef CONFIG_KVM_AMD_SEV
->  	unsigned int eax, ebx, ecx, edx, sev_asid_count, sev_es_asid_count;
-> +	bool sev_snp_supported = false;
->  	bool sev_es_supported = false;
->  	bool sev_supported = false;
->  
-> @@ -2261,6 +2266,10 @@ void __init sev_hardware_setup(void)
->  	sev_es_asid_count = min_sev_asid - 1;
->  	WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV_ES, sev_es_asid_count));
->  	sev_es_supported = true;
-> +	sev_snp_supported = sev_snp_enabled && cpu_feature_enabled(X86_FEATURE_SEV_SNP);
-> +
-> +	pr_info("SEV-ES %ssupported: %u ASIDs\n",
-> +		sev_snp_supported ? "and SEV-SNP " : "", sev_es_asid_count);
-
-Why like this?
-
->  
->  out:
-
-Here, below the "out:" label you're already dumping SEV and -ES status.
-Just do SNP exactly the same.
-
->  	if (boot_cpu_has(X86_FEATURE_SEV))
-> @@ -2277,6 +2286,7 @@ void __init sev_hardware_setup(void)
->  	if (!sev_es_enabled || !cpu_feature_enabled(X86_FEATURE_DEBUG_SWAP) ||
->  	    !cpu_feature_enabled(X86_FEATURE_NO_NESTED_DATA_BP))
->  		sev_es_debug_swap_enabled = false;
-> +	sev_snp_enabled = sev_snp_supported;
->  #endif
->  }
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
