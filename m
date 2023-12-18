@@ -1,224 +1,95 @@
-Return-Path: <linux-kernel+bounces-4122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0AA9817820
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:06:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F659817823
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DAF51F22B16
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:06:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C6711C21738
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17FC14FF8E;
-	Mon, 18 Dec 2023 17:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500FA5A845;
+	Mon, 18 Dec 2023 17:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q1lvtujs"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ji60oT4V"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D0C4FF9F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702919157;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZHVXfapFaNpskuHSl3q7oII90SEseCDPP+ervZTtQgI=;
-	b=Q1lvtujsR9Nx2rhZh1f8KpZ2X47TO0sGGSej425/1wQD3d6APiEmYfsfKkYtblVYqWskSi
-	kNVRexgb03lkLAXFRHNMBWAAaWzX7JITz66MQ59h2lVFdzYKXVvUXkWPyCnWM40E9POBbf
-	9XjRTJ051ylrAV3FJL+pVp3V2e0SIAM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-686-uYJsyWyCNqG8vqZW-oOiJw-1; Mon, 18 Dec 2023 12:05:55 -0500
-X-MC-Unique: uYJsyWyCNqG8vqZW-oOiJw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 53A27863E88;
-	Mon, 18 Dec 2023 17:05:54 +0000 (UTC)
-Received: from [10.22.32.252] (unknown [10.22.32.252])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 7A88E492BF0;
-	Mon, 18 Dec 2023 17:05:53 +0000 (UTC)
-Message-ID: <91824e90-0319-467c-a7a7-acda9464a542@redhat.com>
-Date: Mon, 18 Dec 2023 12:05:53 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1787E4FF66
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-425c1d7d72eso592891cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:06:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702919169; x=1703523969; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=x29irrX3xXEqtqEYM+OJ0BBAXCsgyxR+RF6i+7rkCJM=;
+        b=ji60oT4Vcsqo7jzTWIo6QJ6uerOj4XZVpVEHrcAoMWqX9g+CkG+gY3CRs2mUgvwbhq
+         nCBmW/7KBihr0qqrB35aTAkJbbUO/+SZ+XFoqtqAH7sn2iC0eJzvhTxyzx0RzDVWxuw5
+         qgOneRa/P3a3YwgEoH5nX+wT1Uc75IumOLZxXtHqWB96DmTTZ2khsouYndU0L8QGE+r1
+         3flJGYKCOfQi/nkDTrraFZyG3Ux+dFi7Rw4FmfRDm7R0B2i473VoYnVqug4QnJJamkUM
+         1Dxj3lvP+3aiTIICZYTjBc/LKMcYuyN68Llj3E8SSWBysrgeCR7i4HdIVWtnXSpkQKkn
+         +U+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702919169; x=1703523969;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x29irrX3xXEqtqEYM+OJ0BBAXCsgyxR+RF6i+7rkCJM=;
+        b=jaCARvBmt0tpQGLCHBHP1oXdP5OCSTzWWRATZQOzLJyMcwbSoCgDF6TJ6l/LJmN6Ah
+         wNSZotAQPbT9sgGZqPa3jWMZ6kM7SnzyHqhJm9nbSRhUJjQxhj87ZHG6JNnkjbaYBK13
+         aus5s+QQtwu7ahOfmzAcaK2gJlwMOTxKo1nDx9DBUVIiQmjWyOrtpxtckkF7ZPDXQqQg
+         /Tfe0CeUYDDBoY4ngDnwrFxnpz1vwnQBEtLYkdRsMG1LgMpBNl5N10Uw4FUCARiMzI8U
+         ZwIlP9cieWlquJsZCBtMITyXviWHt0iD9IWKaQhDlRg5sqRdi5xMaTRGOJZ7U5rZUp5r
+         nNCA==
+X-Gm-Message-State: AOJu0YwMMnZTPtaquFiftIWElQttaWd3ZGlhs+e1tpx3K1P2CB1xq688
+	uZRJ25x2unGQye/DrK4LRnNaqTZVwlHX1tbuF4VCKhS3ipds
+X-Google-Smtp-Source: AGHT+IHDcKVJi48DWxUiRF0cSlxxE9luXr2JxmQw2R42ge6ILA0VXUS7myKPno4BTplV6A8qHqw1BOYXjCT3w8L6d/E=
+X-Received: by 2002:ac8:570e:0:b0:423:8dd5:338 with SMTP id
+ 14-20020ac8570e000000b004238dd50338mr451777qtw.14.1702919168821; Mon, 18 Dec
+ 2023 09:06:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 43/50] lockdep: move held_lock to lockdep_types.h
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org
-Cc: tglx@linutronix.de, x86@kernel.org, tj@kernel.org, peterz@infradead.org,
- mathieu.desnoyers@efficios.com, paulmck@kernel.org, keescook@chromium.org,
- dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
- boqun.feng@gmail.com, brauner@kernel.org
-References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
- <20231216033300.3553457-1-kent.overstreet@linux.dev>
- <20231216033300.3553457-11-kent.overstreet@linux.dev>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20231216033300.3553457-11-kent.overstreet@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
+ <20231214-libstringheader-v2-1-0f195dcff204@google.com> <ZXx5DyidpHFhRevy@smile.fi.intel.com>
+ <CAE-cH4p5VJ_A91BAkURBN67ACA0_u7T8UhApUYLQDWeeRY6FWA@mail.gmail.com>
+ <CAHp75Vdo=g7ZBAuk79PtLOYs-YHo5sCTp1WVFESHA0xN0zGEmQ@mail.gmail.com> <CAKwvOdmMqJacYRfwohY-DXBbmNmz_M4EKUL1KuTv=tT2dO_p1g@mail.gmail.com>
+In-Reply-To: <CAKwvOdmMqJacYRfwohY-DXBbmNmz_M4EKUL1KuTv=tT2dO_p1g@mail.gmail.com>
+From: Tanzir Hasan <tanzirh@google.com>
+Date: Mon, 18 Dec 2023 09:05:56 -0800
+Message-ID: <CAE-cH4oQ+nM6G897PaUwd8zaaAvqq3QL77=4739sZovVgkG9XA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] sh: Added kernel.h to word-at-a-time
+To: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Andy Shevchenko <andy@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev, 
+	Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/15/23 22:32, Kent Overstreet wrote:
-> held_lock is embedded in task_struct, and we don't want sched.h pulling
-> in all of lockdep.h
->
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> ---
->   include/linux/lockdep.h       | 57 -----------------------------------
->   include/linux/lockdep_types.h | 57 +++++++++++++++++++++++++++++++++++
->   2 files changed, 57 insertions(+), 57 deletions(-)
->
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index dc2844b071c2..08b0d1d9d78b 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -82,63 +82,6 @@ struct lock_chain {
->   	u64				chain_key;
->   };
->   
-> -#define MAX_LOCKDEP_KEYS_BITS		13
-> -#define MAX_LOCKDEP_KEYS		(1UL << MAX_LOCKDEP_KEYS_BITS)
-> -#define INITIAL_CHAIN_KEY		-1
-> -
-> -struct held_lock {
-> -	/*
-> -	 * One-way hash of the dependency chain up to this point. We
-> -	 * hash the hashes step by step as the dependency chain grows.
-> -	 *
-> -	 * We use it for dependency-caching and we skip detection
-> -	 * passes and dependency-updates if there is a cache-hit, so
-> -	 * it is absolutely critical for 100% coverage of the validator
-> -	 * to have a unique key value for every unique dependency path
-> -	 * that can occur in the system, to make a unique hash value
-> -	 * as likely as possible - hence the 64-bit width.
-> -	 *
-> -	 * The task struct holds the current hash value (initialized
-> -	 * with zero), here we store the previous hash value:
-> -	 */
-> -	u64				prev_chain_key;
-> -	unsigned long			acquire_ip;
-> -	struct lockdep_map		*instance;
-> -	struct lockdep_map		*nest_lock;
-> -#ifdef CONFIG_LOCK_STAT
-> -	u64 				waittime_stamp;
-> -	u64				holdtime_stamp;
-> -#endif
-> -	/*
-> -	 * class_idx is zero-indexed; it points to the element in
-> -	 * lock_classes this held lock instance belongs to. class_idx is in
-> -	 * the range from 0 to (MAX_LOCKDEP_KEYS-1) inclusive.
-> -	 */
-> -	unsigned int			class_idx:MAX_LOCKDEP_KEYS_BITS;
-> -	/*
-> -	 * The lock-stack is unified in that the lock chains of interrupt
-> -	 * contexts nest ontop of process context chains, but we 'separate'
-> -	 * the hashes by starting with 0 if we cross into an interrupt
-> -	 * context, and we also keep do not add cross-context lock
-> -	 * dependencies - the lock usage graph walking covers that area
-> -	 * anyway, and we'd just unnecessarily increase the number of
-> -	 * dependencies otherwise. [Note: hardirq and softirq contexts
-> -	 * are separated from each other too.]
-> -	 *
-> -	 * The following field is used to detect when we cross into an
-> -	 * interrupt context:
-> -	 */
-> -	unsigned int irq_context:2; /* bit 0 - soft, bit 1 - hard */
-> -	unsigned int trylock:1;						/* 16 bits */
-> -
-> -	unsigned int read:2;        /* see lock_acquire() comment */
-> -	unsigned int check:1;       /* see lock_acquire() comment */
-> -	unsigned int hardirqs_off:1;
-> -	unsigned int sync:1;
-> -	unsigned int references:11;					/* 32 bits */
-> -	unsigned int pin_count;
-> -};
-> -
->   /*
->    * Initialization, self-test and debugging-output methods:
->    */
-> diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-> index 2ebc323d345a..9c533c8d701e 100644
-> --- a/include/linux/lockdep_types.h
-> +++ b/include/linux/lockdep_types.h
-> @@ -198,6 +198,63 @@ struct lockdep_map {
->   
->   struct pin_cookie { unsigned int val; };
->   
-> +#define MAX_LOCKDEP_KEYS_BITS		13
-> +#define MAX_LOCKDEP_KEYS		(1UL << MAX_LOCKDEP_KEYS_BITS)
-> +#define INITIAL_CHAIN_KEY		-1
-> +
-> +struct held_lock {
-> +	/*
-> +	 * One-way hash of the dependency chain up to this point. We
-> +	 * hash the hashes step by step as the dependency chain grows.
-> +	 *
-> +	 * We use it for dependency-caching and we skip detection
-> +	 * passes and dependency-updates if there is a cache-hit, so
-> +	 * it is absolutely critical for 100% coverage of the validator
-> +	 * to have a unique key value for every unique dependency path
-> +	 * that can occur in the system, to make a unique hash value
-> +	 * as likely as possible - hence the 64-bit width.
-> +	 *
-> +	 * The task struct holds the current hash value (initialized
-> +	 * with zero), here we store the previous hash value:
-> +	 */
-> +	u64				prev_chain_key;
-> +	unsigned long			acquire_ip;
-> +	struct lockdep_map		*instance;
-> +	struct lockdep_map		*nest_lock;
-> +#ifdef CONFIG_LOCK_STAT
-> +	u64 				waittime_stamp;
-> +	u64				holdtime_stamp;
-> +#endif
-> +	/*
-> +	 * class_idx is zero-indexed; it points to the element in
-> +	 * lock_classes this held lock instance belongs to. class_idx is in
-> +	 * the range from 0 to (MAX_LOCKDEP_KEYS-1) inclusive.
-> +	 */
-> +	unsigned int			class_idx:MAX_LOCKDEP_KEYS_BITS;
-> +	/*
-> +	 * The lock-stack is unified in that the lock chains of interrupt
-> +	 * contexts nest ontop of process context chains, but we 'separate'
-> +	 * the hashes by starting with 0 if we cross into an interrupt
-> +	 * context, and we also keep do not add cross-context lock
-> +	 * dependencies - the lock usage graph walking covers that area
-> +	 * anyway, and we'd just unnecessarily increase the number of
-> +	 * dependencies otherwise. [Note: hardirq and softirq contexts
-> +	 * are separated from each other too.]
-> +	 *
-> +	 * The following field is used to detect when we cross into an
-> +	 * interrupt context:
-> +	 */
-> +	unsigned int irq_context:2; /* bit 0 - soft, bit 1 - hard */
-> +	unsigned int trylock:1;						/* 16 bits */
-> +
-> +	unsigned int read:2;        /* see lock_acquire() comment */
-> +	unsigned int check:1;       /* see lock_acquire() comment */
-> +	unsigned int hardirqs_off:1;
-> +	unsigned int sync:1;
-> +	unsigned int references:11;					/* 32 bits */
-> +	unsigned int pin_count;
-> +};
-> +
->   #else /* !CONFIG_LOCKDEP */
->   
->   /*
-Acked-by: Waiman Long <longman@redhat.com>
+> While REPEAT_BYTE has a manageable number of users, upper_* and
+> lower_* have significantly more; I worry about moving those causing
+> regressions.  We can move them, but such changes would need
+> significantly more soak time than this series IMO.  Tanzir is also
+> working on statistical analysis; I suspect if he analyzes
+> include/linux/kernel.h, he can comment on whether the usage of
+> REPEAT_BYTE is correlated with the usage of upper_* and lower_* in
+> order to inform whether they should be grouped together or not.
 
+Removing REPEAT_BYTE is manageable and I have already moved it. I will
+be pushing a patch that moves just that into another file called wordpart.h.
+There are too many instances of the other functions for it to make sense to
+remove them all in this patch.
+
+Best,
+Tanzir
 
