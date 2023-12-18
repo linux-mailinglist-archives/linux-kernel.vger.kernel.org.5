@@ -1,55 +1,45 @@
-Return-Path: <linux-kernel+bounces-4358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC747817BF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:32:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF013817C00
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:33:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17BC9B221EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:32:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72D4FB21E96
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2261C42361;
-	Mon, 18 Dec 2023 20:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0127942361;
+	Mon, 18 Dec 2023 20:33:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FAqGpUqb"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aAaNF9Gx"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6857B740AB;
-	Mon, 18 Dec 2023 20:31:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1B30C433C8;
-	Mon, 18 Dec 2023 20:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702931508;
-	bh=3faOPrO+Vz+rLFKkSkQXxX3AWNfnSd028J3inec7y3o=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 488511DA27;
+	Mon, 18 Dec 2023 20:33:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 334CAC433C8;
+	Mon, 18 Dec 2023 20:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702931626;
+	bh=1boN5Sa2fUXDliSwKANgC1UGa1HVdAijXd4ulUQ0DyU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FAqGpUqb7QgG5ESz3XiaFW/dVAMzThIcUFlj3cgxOhsZysXhOBRRuamyG3jFCiM+e
-	 XmxE2WkHC6FjXyx8yBo6UlqPsVp9A6R9RTeQfCZyDrXRgg69G3V27xQcE8KWX8zxrm
-	 aaE1xLarIJ1ndE2elglGlunkzOQtUXd4F/Ul+aDqzY5TJfyomSzdNOJEOgyQ5ulZ2v
-	 wVoF+7XFiUulmwRnG1APVB45iFq3Tp2cc6SuAs4zXX/LQ0gs7pBYACGl8yrlbvkZDn
-	 2N4qBxvC3vbU3r3Vft7YZ+Dh81eIxPxrFXhlQl3YWsvWnJEDPjrPSpPsbMnMoer2Dx
-	 iw4Vx3uTYR7nA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 23E18403EF; Mon, 18 Dec 2023 17:31:46 -0300 (-03)
-Date: Mon, 18 Dec 2023 17:31:46 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@arm.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf tests: Make DSO tests a suite rather than
- individual
-Message-ID: <ZYCsMpYtmsQr1_Ed@kernel.org>
-References: <20231128194624.1419260-1-irogers@google.com>
+	b=aAaNF9Gx2Igc9pGydY/HVX8/niCAp/y8J6soYiRlBqHvz6ef3trhhtli1TY5Bzixi
+	 r6AnWQjNFJM22dYsi5hAK6S8kRQkGmthuXOk5SIU2ijj3crz9aQLKcwb/KshhymRgC
+	 4cQPUkKDO4yVthjmRJdnG+hWJ7XPELNqR4uz11fU=
+Date: Mon, 18 Dec 2023 21:33:43 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/2] fpga: set owner of fpga_manager_ops for
+ existing low-level modules
+Message-ID: <2023121829-zealous-prissy-99cc@gregkh>
+References: <20231218202809.84253-1-marpagan@redhat.com>
+ <20231218202809.84253-3-marpagan@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,65 +48,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231128194624.1419260-1-irogers@google.com>
-X-Url: http://acmel.wordpress.com
+In-Reply-To: <20231218202809.84253-3-marpagan@redhat.com>
 
-Em Tue, Nov 28, 2023 at 11:46:24AM -0800, Ian Rogers escreveu:
-> Make the DSO data tests a suite rather than individual so their output
-> is grouped.
-
-Thanks, applied to perf-tools-next.
-
-- Arnaldo
-
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Mon, Dec 18, 2023 at 09:28:09PM +0100, Marco Pagani wrote:
+> This patch tentatively set the owner field of fpga_manager_ops to
+> THIS_MODULE for existing fpga manager low-level control modules.
+> 
+> Signed-off-by: Marco Pagani <marpagan@redhat.com>
 > ---
->  tools/perf/tests/builtin-test.c |  2 --
->  tools/perf/tests/dso-data.c     | 15 ++++++++++++---
->  2 files changed, 12 insertions(+), 5 deletions(-)
+>  drivers/fpga/altera-cvp.c             | 1 +
+>  drivers/fpga/altera-pr-ip-core.c      | 1 +
+>  drivers/fpga/altera-ps-spi.c          | 1 +
+>  drivers/fpga/dfl-fme-mgr.c            | 1 +
+>  drivers/fpga/ice40-spi.c              | 1 +
+>  drivers/fpga/lattice-sysconfig.c      | 1 +
+>  drivers/fpga/machxo2-spi.c            | 1 +
+>  drivers/fpga/microchip-spi.c          | 1 +
+>  drivers/fpga/socfpga-a10.c            | 1 +
+>  drivers/fpga/socfpga.c                | 1 +
+>  drivers/fpga/stratix10-soc.c          | 1 +
+>  drivers/fpga/tests/fpga-mgr-test.c    | 1 +
+>  drivers/fpga/tests/fpga-region-test.c | 1 +
+>  drivers/fpga/ts73xx-fpga.c            | 1 +
+>  drivers/fpga/versal-fpga.c            | 1 +
+>  drivers/fpga/xilinx-spi.c             | 1 +
+>  drivers/fpga/zynq-fpga.c              | 1 +
+>  drivers/fpga/zynqmp-fpga.c            | 1 +
+>  18 files changed, 18 insertions(+)
 > 
-> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> index 113e92119e1d..9c09e4681c3a 100644
-> --- a/tools/perf/tests/builtin-test.c
-> +++ b/tools/perf/tests/builtin-test.c
-> @@ -62,8 +62,6 @@ static struct test_suite *generic_tests[] = {
->  	&suite__pmu,
->  	&suite__pmu_events,
->  	&suite__dso_data,
-> -	&suite__dso_data_cache,
-> -	&suite__dso_data_reopen,
->  	&suite__perf_evsel__roundtrip_name_test,
->  #ifdef HAVE_LIBTRACEEVENT
->  	&suite__perf_evsel__tp_sched_test,
-> diff --git a/tools/perf/tests/dso-data.c b/tools/perf/tests/dso-data.c
-> index deaefcdd8f09..5286ae8bd2d7 100644
-> --- a/tools/perf/tests/dso-data.c
-> +++ b/tools/perf/tests/dso-data.c
-> @@ -393,6 +393,15 @@ static int test__dso_data_reopen(struct test_suite *test __maybe_unused, int sub
->  	return 0;
->  }
->  
-> -DEFINE_SUITE("DSO data read", dso_data);
-> -DEFINE_SUITE("DSO data cache", dso_data_cache);
-> -DEFINE_SUITE("DSO data reopen", dso_data_reopen);
-> +
-> +static struct test_case tests__dso_data[] = {
-> +	TEST_CASE("read", dso_data),
-> +	TEST_CASE("cache", dso_data_cache),
-> +	TEST_CASE("reopen", dso_data_reopen),
-> +	{	.name = NULL, }
-> +};
-> +
-> +struct test_suite suite__dso_data = {
-> +	.desc = "DSO data tests",
-> +	.test_cases = tests__dso_data,
-> +};
-> -- 
-> 2.43.0.rc1.413.gea7ed67945-goog
-> 
+> diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
+> index 4ffb9da537d8..aeb913547dd8 100644
+> --- a/drivers/fpga/altera-cvp.c
+> +++ b/drivers/fpga/altera-cvp.c
+> @@ -520,6 +520,7 @@ static const struct fpga_manager_ops altera_cvp_ops = {
+>  	.write_init	= altera_cvp_write_init,
+>  	.write		= altera_cvp_write,
+>  	.write_complete	= altera_cvp_write_complete,
+> +	.owner		= THIS_MODULE,
 
--- 
+Note, this is not how to do this, force the compiler to set this for you
+automatically, otherwise everyone will always forget to do it.  Look at
+how functions like usb_register_driver() works.
 
-- Arnaldo
+Also, are you _sure_ that you need a module owner in this structure?  I
+still don't know why...
+
+thanks,
+
+greg k-h
 
