@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-4206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB4B581791B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:48:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC35817920
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A9151F27851
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:48:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01148285C64
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CEE5D74C;
-	Mon, 18 Dec 2023 17:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BD65D74B;
+	Mon, 18 Dec 2023 17:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="naM/PjGX"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Up7Ng5oa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7084A5D73B;
-	Mon, 18 Dec 2023 17:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d3ac28ae81so13783315ad.0;
-        Mon, 18 Dec 2023 09:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702921331; x=1703526131; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MGc3H1mZH6buwISmfip+JfxIDpEG4RSu3DvfL7xLHYM=;
-        b=naM/PjGXR+ZvuuwwNlrNflE4mn1iPSGtvi0kA6Pswm793wmWZm5PMI37LZwLW7Fm4A
-         tLOjwa0wl3JyLcpKOViFUry+TQEY/yg4QnJeQYKDRGUdinxhKSTGiFsw+H8W+QMzX3kI
-         Vi7ZOA3uJhFevYnyuMn/mZD7CsniUuaRw9RfdDqGOqQ5Zk+EFM1FJo1kTi2STd0QnK1r
-         8MK62oVw8jLSvsu6xhChBZC6QxtKztSVtOqTaI25Bl2wrCjqaVIj53UTkHRd4bwRbo3D
-         rTF8wx2/SDtHrMnX2ndDvkYDy3sFBwaKgespEKePPos6CoEaZamFNGDTOHiissDAzjfP
-         7GfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702921331; x=1703526131;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MGc3H1mZH6buwISmfip+JfxIDpEG4RSu3DvfL7xLHYM=;
-        b=HPzYHYsS/mQSaNMnnLhy6Px5C3z/hhDrwJROF+5wP0+zviML+zZ27cri1h2UWiRHc1
-         YffDwOqGZ48CrqqUNLlzjZjlh9+6iT8RqsVSUqFmwH1zYch0N6BY3RyI4ZZ5X1GtvYb6
-         hjUFvOiAkMBueca+IFqOhzIVLOcnsKxPpHdyKDypJWEZRHyUkZTGD48tl0pSsFuNaNMX
-         2jDYnCTVwp94Zahq3KqARxBduhFSmvA9Cdk3rxNlo8PH8KosHiDVtZtk+9Z/5Nukdzzq
-         MQnqWppLKz3KZTxJE+uq+S2itnFZIFt6nT2YHEPvZZKYsMIgGaVJiV1gxYdIqOy1OPwV
-         Jb6Q==
-X-Gm-Message-State: AOJu0YzY4eI3sVj0c0FnVoAwl2Uw65Xb7fNjDazDnTshUwqWYguhtIpH
-	eS+qqMpbCfnNfyg+gCg5hn8=
-X-Google-Smtp-Source: AGHT+IED5rEnW8aoqaiiA/2rqOwUboP7/NHnORKUO0aZalPEfPHyGBYCERMEgw6AFHRANrIrYLaoFg==
-X-Received: by 2002:a17:902:ab83:b0:1d0:6ffd:e2ef with SMTP id f3-20020a170902ab8300b001d06ffde2efmr15136709plr.137.1702921330684;
-        Mon, 18 Dec 2023 09:42:10 -0800 (PST)
-Received: from localhost ([2804:30c:160d:b800:be05:2c5b:24c0:12aa])
-        by smtp.gmail.com with ESMTPSA id a21-20020a1709027d9500b001cfed5524easm19233051plm.288.2023.12.18.09.42.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 09:42:10 -0800 (PST)
-Date: Mon, 18 Dec 2023 14:42:01 -0300
-From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
-	joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-	paul.cercueil@analog.com, Michael.Hennerich@analog.com,
-	lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	dan.carpenter@linaro.org, linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 09/15] iio: adc: ad7091r: Enable internal vref if
- external vref is not supplied
-Message-ID: <ZYCEaXAm53X_Vig-@debian-BULLSEYE-live-builder-AMD64>
-References: <cover.1702746240.git.marcelo.schmitt1@gmail.com>
- <ce92ae93b1c2e36b20a9881b145c8c2c85acb1dd.1702746240.git.marcelo.schmitt1@gmail.com>
- <CAMknhBF7Ab0FZCKYkSq8siDMPtX5VRRn04FS7XiYLtK-1TJa3A@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8825C72069;
+	Mon, 18 Dec 2023 17:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 853C040E00A9;
+	Mon, 18 Dec 2023 17:44:00 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id m9dl5PpHaaR0; Mon, 18 Dec 2023 17:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1702921437; bh=Z3gLK2hvl7+MxZT0PYqx203zqjrTJn7QqrwGTsrc/p0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Up7Ng5oayew1nPDTS0jZMKdUCZRcJGusLwfhWKwuqbsptAuhc8CEsSU+T/NNbADem
+	 U9TXTld+nlWGfR3r/Gl8dsDw3L7tUlsWL3E55mpZnfNz0oF/3mIIa8WLoCpZrewYvz
+	 4zHzHJgJsC+ziQexo2dVq1aHs5wTaL1BvC4MotTUFzD6AaSbsITmmDNEVJdbVJZjEI
+	 huOu5B5UXtVvxvGiCcSfHdie7WnkrD6XyAws6gQUp6al3cF3K6vcXa/LG8rM0IsHJC
+	 6aK3MDZ+VNwbPWwT/jkclDKCOJW/XKIsGlUXJkN4Rc0r/lfBp6lBIlAjfbOF5WBWio
+	 Zjl2o6R8oV8YAsek34ZsWiFyldI3lnEN1BoEdMj/tNDLwaVEo707D+rgOaonrxaK+N
+	 1KW8Vmqn05yPH+i1kKC9N191sEjyEubZPbiVaHtMwTqIYVXPAsvjIyzIFJjqAydhvM
+	 eKJSFsiYrYY4PMu7vLOJQcdWL8gBwwxwSTo6P5+NtGl8FjMfdCCGbd9XXXIiNDeEYa
+	 60+s3aYP9FB2hb57qqyWV6PSBaRAqq+2L775+nzV4Sgs5uH23dLGl20KHYSQ8fDHmw
+	 0XDAyTBR1TeVLiOrDj7Nk6H7bwDvIMx74gnIpVFVWBi8m7FUqyic2ZjqodnfPUDl0C
+	 jf0z7QWWclQVjf7G/k32LP6U=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 39F9A40E0030;
+	Mon, 18 Dec 2023 17:43:18 +0000 (UTC)
+Date: Mon, 18 Dec 2023 18:43:11 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+	linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+	tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+	nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+	liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 24/50] KVM: SEV: Add initial SEV-SNP support
+Message-ID: <20231218174258.GRZYCEomVKa9J+EvHh@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-25-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,64 +81,89 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMknhBF7Ab0FZCKYkSq8siDMPtX5VRRn04FS7XiYLtK-1TJa3A@mail.gmail.com>
+In-Reply-To: <20231016132819.1002933-25-michael.roth@amd.com>
 
-On 12/17, David Lechner wrote:
-> On Sat, Dec 16, 2023 at 11:49 AM Marcelo Schmitt
-> <marcelo.schmitt@analog.com> wrote:
-> >
-> > The ADC needs a voltage reference to work correctly.
-> > Enable AD7091R internal voltage reference if no external vref is supplied.
-> >
-> > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
-> > ---
-> >  drivers/iio/adc/ad7091r-base.c | 7 +++++++
-> >  drivers/iio/adc/ad7091r-base.h | 1 +
-> >  2 files changed, 8 insertions(+)
-> >
-> > diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
-> > index aead72ef55b6..9d0b489966f5 100644
-> > --- a/drivers/iio/adc/ad7091r-base.c
-> > +++ b/drivers/iio/adc/ad7091r-base.c
-> > @@ -217,7 +217,14 @@ int ad7091r_probe(struct device *dev, const struct ad7091r_init_info *init_info,
-> >         if (IS_ERR(st->vref)) {
-> >                 if (PTR_ERR(st->vref) == -EPROBE_DEFER)
-> >                         return -EPROBE_DEFER;
-> > +
-> >                 st->vref = NULL;
-> > +               /* Enable internal vref */
-> > +               ret = regmap_update_bits(st->map, AD7091R_REG_CONF,
-> > +                                        AD7091R_REG_CONF_INT_VREF, BIT(0));
+On Mon, Oct 16, 2023 at 08:27:53AM -0500, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
 > 
-> Can we use regmap_set_bits() here to avoid the BIT(0)?
+> The next generation of SEV is called SEV-SNP (Secure Nested Paging).
+> SEV-SNP builds upon existing SEV and SEV-ES functionality  while adding new
+> hardware based security protection. SEV-SNP adds strong memory encryption
+> integrity protection to help prevent malicious hypervisor-based attacks
+> such as data replay, memory re-mapping, and more, to create an isolated
+> execution environment.
 > 
-> The same comment applies to other patches in this series.
+> The SNP feature is added incrementally, the later patches adds a new module
+> parameters that can be used to enabled SEV-SNP in the KVM.
 
-Looks good, will do.
+This sentence can simply go to /dev/null.
 
-Thanks
-
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 10 ++++++++++
+>  arch/x86/kvm/svm/svm.h |  8 ++++++++
+>  2 files changed, 18 insertions(+)
 > 
-> > +               if (ret)
-> > +                       return dev_err_probe(st->dev, ret,
-> > +                                            "Error on enable internal reference\n");
-> >         } else {
-> >                 ret = regulator_enable(st->vref);
-> >                 if (ret)
-> > diff --git a/drivers/iio/adc/ad7091r-base.h b/drivers/iio/adc/ad7091r-base.h
-> > index 81b8a4bbb929..9cfb362a00a4 100644
-> > --- a/drivers/iio/adc/ad7091r-base.h
-> > +++ b/drivers/iio/adc/ad7091r-base.h
-> > @@ -20,6 +20,7 @@
-> >  #define AD7091R_REG_CH_HYSTERESIS(ch) ((ch) * 3 + 6)
-> >
-> >  /* AD7091R_REG_CONF */
-> > +#define AD7091R_REG_CONF_INT_VREF      BIT(0)
-> >  #define AD7091R_REG_CONF_ALERT_EN      BIT(4)
-> >  #define AD7091R_REG_CONF_AUTO          BIT(8)
-> >  #define AD7091R_REG_CONF_CMD           BIT(10)
-> > --
-> > 2.42.0
-> >
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 1cfb9232fc74..4eefc168ebb3 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -59,10 +59,14 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
+>  /* enable/disable SEV-ES DebugSwap support */
+>  static bool sev_es_debug_swap_enabled = true;
+>  module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
+> +
+> +/* enable/disable SEV-SNP support */
+
+Useless comment.
+
+> +static bool sev_snp_enabled;
+>  #else
+>  #define sev_enabled false
+>  #define sev_es_enabled false
+>  #define sev_es_debug_swap_enabled false
+> +#define sev_snp_enabled false
+>  #endif /* CONFIG_KVM_AMD_SEV */
+>  
+>  #define AP_RESET_HOLD_NONE		0
+> @@ -2186,6 +2190,7 @@ void __init sev_hardware_setup(void)
+>  {
+>  #ifdef CONFIG_KVM_AMD_SEV
+>  	unsigned int eax, ebx, ecx, edx, sev_asid_count, sev_es_asid_count;
+> +	bool sev_snp_supported = false;
+>  	bool sev_es_supported = false;
+>  	bool sev_supported = false;
+>  
+> @@ -2261,6 +2266,10 @@ void __init sev_hardware_setup(void)
+>  	sev_es_asid_count = min_sev_asid - 1;
+>  	WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV_ES, sev_es_asid_count));
+>  	sev_es_supported = true;
+> +	sev_snp_supported = sev_snp_enabled && cpu_feature_enabled(X86_FEATURE_SEV_SNP);
+> +
+> +	pr_info("SEV-ES %ssupported: %u ASIDs\n",
+> +		sev_snp_supported ? "and SEV-SNP " : "", sev_es_asid_count);
+
+Why like this?
+
+>  
+>  out:
+
+Here, below the "out:" label you're already dumping SEV and -ES status.
+Just do SNP exactly the same.
+
+>  	if (boot_cpu_has(X86_FEATURE_SEV))
+> @@ -2277,6 +2286,7 @@ void __init sev_hardware_setup(void)
+>  	if (!sev_es_enabled || !cpu_feature_enabled(X86_FEATURE_DEBUG_SWAP) ||
+>  	    !cpu_feature_enabled(X86_FEATURE_NO_NESTED_DATA_BP))
+>  		sev_es_debug_swap_enabled = false;
+> +	sev_snp_enabled = sev_snp_supported;
+>  #endif
+>  }
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
