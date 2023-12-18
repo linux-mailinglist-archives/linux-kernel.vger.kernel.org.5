@@ -1,151 +1,194 @@
-Return-Path: <linux-kernel+bounces-4330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66637817B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 599C0817BA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:18:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 067BAB23949
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:12:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFBE1B23CD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E169672062;
-	Mon, 18 Dec 2023 20:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="mb/useEv";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LF1Xkp2v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEC273467;
+	Mon, 18 Dec 2023 20:17:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9BD495DE;
-	Mon, 18 Dec 2023 20:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id B69CA5C020B;
-	Mon, 18 Dec 2023 15:12:25 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 18 Dec 2023 15:12:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1702930345;
-	 x=1703016745; bh=LWYyWkDsY/Zi8FphFf+H4zFoydBDiorSz1khQkPdMEE=; b=
-	mb/useEvR5Rr6NLotqJE7xJWNLJ+871ZGy2/uYtuW2wQXO4yYeUTVbM0SsBzoj0r
-	CzGNA7FvC0317zUMQnG6wLHyTcPZdpmpSSHQCi7sEgM1nTWuk8DpTkQSrtUrwfz2
-	Ih7R0NjNdsj8fZ2CT0HzxSuaqNB2a/9Z5IwFFR5lJIm4TZHt7WpRbqupcfWk+flg
-	hLIzRnHovyAEpOu9WtoLABYKqYR7Y0CXXqmZIldqSaRaTix89BeZTc8sxEWnjycc
-	Szx0VnfX3lvp9K9yPvWFh5v0nX5cFfN8FrvZ3x8fAspjwEm2u/6gURTjdQix3Z6w
-	6FJnphYvBziTP5qGbFYYaQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702930345; x=
-	1703016745; bh=LWYyWkDsY/Zi8FphFf+H4zFoydBDiorSz1khQkPdMEE=; b=L
-	F1Xkp2vIwgqV/4OdisyCGMQFVTW5IFoaaqJj3kCayBQNrYZM9ndbo+Y9cmAmjwcx
-	pbbFhfdrnZqf/fzmntpD/WaxjdiGgE8nMhJbjvvzVnmJl4ijveL5KGerpFgWMNJU
-	Are/Hdy33E1sKsJ0S4ythvV85FNpLYyD8n5+bp4mW7zFAOKZBEe824d0YIuYXtgQ
-	0ChzimvOs/bpWkN+6D/6YZymwuFEBu+yLOcsFZ0JVCAEapToQ0FETVfpOKt+utHM
-	WmEwpFVZ6QkZMZEy8TptfwHDwJf0XtfeC1Ejti5cCaoJc3wMZ013i+NlGX2A8oea
-	gB9EEedZVnqrgai433oBQ==
-X-ME-Sender: <xms:qaeAZVNU9jc9V7p_xXLit5xJB7G8mRHv_3ZA2nCGZ8ny4ifmovULOA>
-    <xme:qaeAZX-VHiIKbDAN6kZVWW-E3xDR5_-vJ0q5PiabrgANmOeI8F7J8ioFwWK5ic3Y8
-    dKU3hDueUpu6XH2Ip4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedgudefvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
-    grthhtvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeu
-    feefieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:qaeAZUQZyuvtnu9jG9ZCE373jnslc6O9xHM9fgvua2oHX0tj1zoerA>
-    <xmx:qaeAZRtGU3-JqMbkcdE_Qxt1dyMekmGFHGzqJQwMY9vDqDT-YNVqOw>
-    <xmx:qaeAZdffmE7gyHKDv0fAB6a4Heq0I1HVzJOhzTQ4MCVo2OS1d_C1ag>
-    <xmx:qaeAZXt95DbkWPruTOYNUd6HK2gC3gt8H4Pw8fmCaN_8MTgdIqvU2A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 2CAD3B6008D; Mon, 18 Dec 2023 15:12:25 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429C67146E;
+	Mon, 18 Dec 2023 20:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-20394042a45so279477fac.0;
+        Mon, 18 Dec 2023 12:17:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702930666; x=1703535466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BVggm/k7h51uGokCDrYG9yM8ij6+ByTlCjSSiz9AMHU=;
+        b=j+cpQAhZ5EEyQhYmHr0vMjlkHiWBOE0Q/mGiu/JrTWX3qqoOAf6hORYIKIinCVwTs5
+         yGKbLcrk1gb1WNZXe2/vxOagVXtwV/rS5PCw7qIxss954TuXeTvQTCjQedRKZo6ax/iF
+         ixU/rvy+geguv/CA8mXBpdmLFWJVZX/cyuWXHVxTtvHBtc33H4PCnzO1BQBlVXYs/RyI
+         pWuro8Q0MgyN8tTfY+/BvgDPYnC8Nz2ryFqJa4oluvzZD4bU+OOk3IIF5vWD/rYPJFxE
+         DDx5EvLJEPMuzC7wtX77BRNscywfc+PvfMViCfUK2XIBGgrcvu/tar1LDm9MJboLITK7
+         Qk9Q==
+X-Gm-Message-State: AOJu0YxMLBTv2B7NYmm5chKSElGEU03qGjummiquhPRJIYWOWFm7GmnM
+	WqtLANJtUi/8XlT8a9wv5575rJGDGHpuEsNZY1U=
+X-Google-Smtp-Source: AGHT+IFMjefUSNquEpPstcFy8KIyactI5mxHoAdfHlD4qq0J99AZZDv3tX1Y2M6bLJ1U3Iv5VjAbiMgTsk/u/KcBObU=
+X-Received: by 2002:a05:6870:9591:b0:203:e5bc:154a with SMTP id
+ k17-20020a056870959100b00203e5bc154amr834085oao.2.1702930665760; Mon, 18 Dec
+ 2023 12:17:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <0877a767-dea5-4c49-8125-d1995ef55407@app.fastmail.com>
-In-Reply-To: <20231218-net-skbuff-build-bug-v1-1-eefc2fb0a7d3@weissschuh.net>
-References: <20231218-net-skbuff-build-bug-v1-1-eefc2fb0a7d3@weissschuh.net>
-Date: Mon, 18 Dec 2023 20:12:07 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Simon Horman" <horms@kernel.org>
-Cc: Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
- "kernel test robot" <lkp@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] net: avoid build bug in skb extension length calculation
-Content-Type: text/plain;charset=utf-8
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 18 Dec 2023 21:17:34 +0100
+Message-ID: <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
+ described as container packages
+To: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023, at 17:06, Thomas Wei=C3=9Fschuh wrote:
-> GCC seems to incorrectly fail to evaluate skb_ext_total_length() at
-> compile time under certain conditions.
+On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux.o=
+rg.uk> wrote:
 >
-> The issue even occurs if all values in skb_ext_type_len[] are "0",
-> ruling out the possibility of an actual overflow.
+> From: James Morse <james.morse@arm.com>
 >
-> As the patch has been in mainline since v6.6 without triggering the
-> problem it seems to be a very uncommon occurrence.
+> ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+> 5.2.12:
 >
-> As the issue only occurs when -fno-tree-loop-im is specified as part of
-> CFLAGS_GCOV, disable the BUILD_BUG_ON() only when building with covera=
-ge
-> reporting enabled.
+> "Starting with ACPI Specification 6.3, the use of the Processor() object
+> was deprecated. Only legacy systems should continue with this usage. On
+> the Itanium architecture only, a _UID is provided for the Processor()
+> that is a string object. This usage of _UID is also deprecated since it
+> can preclude an OSPM from being able to match a processor to a
+> non-enumerable device, such as those defined in the MADT. From ACPI
+> Specification 6.3 onward, all processor objects for all architectures
+> except Itanium must now use Device() objects with an _HID of ACPI0007,
+> and use only integer _UID values."
 >
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes:=20
-> https://lore.kernel.org/oe-kbuild-all/202312171924.4FozI5FG-lkp@intel.=
-com/
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Link:=20
-> https://lore.kernel.org/lkml/487cfd35-fe68-416f-9bfd-6bb417f98304@app.=
-fastmail.com/
-> Fixes: 5d21d0a65b57 ("net: generalize calculation of skb extensions=20
-> length")
-> Cc:  <stable@vger.kernel.org>
-> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_C=
+ontrol.html#declaring-processors
+>
+> Duplicate descriptions are not allowed, the ACPI processor driver already
+> parses the UID from both devices and containers. acpi_processor_get_info(=
+)
+> returns an error if the UID exists twice in the DSDT.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+I'm not really sure how the above is related to the actual patch.
 
+> The missing probe for CPUs described as packages
+
+It is unclear what exactly is meant by "CPUs described as packages".
+
+From the patch, it looks like those would be Processor() objects
+defined under a processor container device.
+
+> creates a problem for
+> moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> described like this don't get registered, leading to errors from other
+> subsystems when they try to add new sysfs entries to the CPU node.
+> (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+>
+> To fix this, parse the processor container and call acpi_processor_add()
+> for each processor that is discovered like this.
+
+Discovered like what?
+
+> The processor container
+> handler is added with acpi_scan_add_handler(), so no detach call will
+> arrive.
+
+The above requires clarification too.
+
+> Qemu TCG describes CPUs using processor devices in a processor container.
+> For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
+> https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.ht=
+ml#processor-container-device
+>
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
 > ---
->  net/core/skbuff.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Outstanding comments:
+>  https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
+>  https://lore.kernel.org/r/50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.co=
+m
+> ---
+>  drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 >
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 83af8aaeb893..94cc40a6f797 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -4825,7 +4825,9 @@ static __always_inline unsigned int=20
-> skb_ext_total_length(void)
->  static void skb_extensions_init(void)
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
+c
+> index 4fe2ef54088c..6a542e0ce396 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -626,9 +626,31 @@ static struct acpi_scan_handler processor_handler =
+=3D {
+>         },
+>  };
+>
+> +static acpi_status acpi_processor_container_walk(acpi_handle handle,
+> +                                                u32 lvl,
+> +                                                void *context,
+> +                                                void **rv)
+> +{
+> +       struct acpi_device *adev;
+> +       acpi_status status;
+> +
+> +       adev =3D acpi_get_acpi_dev(handle);
+> +       if (!adev)
+> +               return AE_ERROR;
+
+Why is the reference counting needed here?
+
+Wouldn't acpi_fetch_acpi_dev() suffice?
+
+Also, should the walk really be terminated on the first error?
+
+> +
+> +       status =3D acpi_processor_add(adev, &processor_device_ids[0]);
+> +       acpi_put_acpi_dev(adev);
+> +
+> +       return status;
+> +}
+> +
+>  static int acpi_processor_container_attach(struct acpi_device *dev,
+>                                            const struct acpi_device_id *i=
+d)
 >  {
->  	BUILD_BUG_ON(SKB_EXT_NUM >=3D 8);
-> +#if !IS_ENABLED(CONFIG_KCOV_INSTRUMENT_ALL)
->  	BUILD_BUG_ON(skb_ext_total_length() > 255);
-> +#endif
+> +       acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
+> +                           ACPI_UINT32_MAX, acpi_processor_container_wal=
+k,
+> +                           NULL, NULL, NULL);
 
-The way I would write this is
+This covers processor objects only, so why is this not needed for
+processor devices defined under a processor container object?
 
-BUILD_BUG_ON(!IS_ENABLED(CONFIG_KCOV_INSTRUMENT_ALL) &&
-             skb_ext_total_length() > 255);
+It is not obvious, so it would be nice to add a comment explaining the
+difference.
 
-but of course the effect is the same.
-
-     Arnd
+> +
+>         return 1;
+>  }
+>
+> --
 
