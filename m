@@ -1,151 +1,96 @@
-Return-Path: <linux-kernel+bounces-3206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC05C81692B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:05:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 114F481692E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E1D8B21149
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:05:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4B991F223A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC7F1119F;
-	Mon, 18 Dec 2023 09:04:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8469311197;
+	Mon, 18 Dec 2023 09:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fgtT/IY4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DbjhWmQv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D131412B6C;
-	Mon, 18 Dec 2023 09:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d04c097e34so20541605ad.0;
-        Mon, 18 Dec 2023 01:04:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702890287; x=1703495087; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8YU1reJ9K3iukGIMAlWDnrpIVtAk/bboD9gXjUJSYOQ=;
-        b=fgtT/IY4dLvX8ahW5kmvZNrHEY2hFJ72OMBd2lq2T8oIxjQC38Vsr0VhXOCuQLOYST
-         OZVth1nc/iwrxueiwFSDd7fBTlqqS2GEPskPKKWfux25L2pFAeTAqp9o3qRWdiSCvruR
-         eahF+n6ay9/kef7YNY2O8LwsJyUa+5NUEsGhHzTf3P5yFkQGI9iz7l5fie8Q4NdPSgMD
-         EoUI5I37g33YtXnG6B3kX/9Xue7b5nWE01ifDX5kb3zAkUR7hM3WiJc9pi3lobby84Eo
-         z43QrfEyGRO2o+b5BoeV767i5FRUQjE0n7Z+qtdFfLonActZOojcHvfEgYjiFMM+Aqkr
-         WWPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702890287; x=1703495087;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8YU1reJ9K3iukGIMAlWDnrpIVtAk/bboD9gXjUJSYOQ=;
-        b=faeGhQdtjj9S0sZV0Xg69Go0vc+50Ex2Enp7K4HXiibjc2fFD0uLWBAhmSQ50X83xk
-         aRnWXV7uAZ4lgDgNuqsX9Rm8BP8jDSH9gH/pzIJHhd5aVVXRpIJ5yWCi/zjNG+04S282
-         8bmitQylfv0BDP5ANQ/6siUXrz+wBvZAtF4cAMwkBRUhP5i2I5L6JEhXSF/9NhcsfYfw
-         aZMVEqzSUiLy+Z50V0Selz8L3AF0zKNjE1R5v19PqeyhGZ8b/cjOiF2w9AdmtrtiXGox
-         Fay8FAUAyrj8cmGXMxNlJLEeSh3sPjsWe4q33/t0oe2mQEU92Y+qOuUXLOrOnH/mLsgX
-         pFEA==
-X-Gm-Message-State: AOJu0YzWXAb97uobZ2Zzzr22gn28hhYD+m6HcEy9WZ5jHmNcPbyOUOTQ
-	ByfhbRg1+bWe+K3BodU1A7k=
-X-Google-Smtp-Source: AGHT+IEYtZJkpuaQCy6F85uGc0t/zB4XAkh9CanuyYqHbEGu2p4qs3yLw/2+PTY0aW5BZI4g9Z6Z7Q==
-X-Received: by 2002:a17:902:c3c6:b0:1d3:a674:6da6 with SMTP id j6-20020a170902c3c600b001d3a6746da6mr2766688plj.49.1702890287101;
-        Mon, 18 Dec 2023 01:04:47 -0800 (PST)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id b2-20020a170902bd4200b001d369beee67sm4196951plx.131.2023.12.18.01.04.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 01:04:46 -0800 (PST)
-Date: Mon, 18 Dec 2023 17:04:41 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Dmitry Safonov <dima@arista.com>
-Cc: Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Salam Noureddine <noureddine@arista.com>,
-	Bob Gilligan <gilligan@arista.com>, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-	Dmitry Safonov <0x7f454c46@gmail.com>
-Subject: Re: [PATCH 03/12] selftests/net: Add TCP-AO ICMPs accept test
-Message-ID: <ZYALKQGYuRrpOo_A@Laptop-X1>
-References: <20231215-tcp-ao-selftests-v1-0-f6c08180b985@arista.com>
- <20231215-tcp-ao-selftests-v1-3-f6c08180b985@arista.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24E611C91;
+	Mon, 18 Dec 2023 09:05:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF990C433C7;
+	Mon, 18 Dec 2023 09:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702890310;
+	bh=yAr4KLt08A7Iall+6S1OSy+IFrkOCzjW+AgOrCIVPKA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DbjhWmQvIZQyVfYOkuJm8tHcyZGWKsv9OSBNiZq31GpFDSNrmj6IgTFqSkvkSMgfn
+	 +nCjAAhsczAAma4vp42q/dCqJozoRxZMeF7cMgdTjNKOXkHIerUIbeJeMNuJN3q/Qu
+	 rCe+WdEyOoCgGsS3nt1B5vSVNQ7w7141J/DRAI/stPKR2mG/GLsU+1ylIArQL/PvIk
+	 RJheNYZxKmhuC1/IHXHsIif9QERvDPYQFwu3cCF0TA3QGHPqO33eAarcagtA71p0DH
+	 cb5CqNQIYLqPErT8KehTNCSRiljhSJy345vACn3bUGNU74NZdflBt7MDuu9vLw52Mt
+	 gT8Oy6c/Hgw0Q==
+Date: Mon, 18 Dec 2023 10:05:07 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Alex Bee <knaerzche@gmail.com>
+Cc: Sandy Huang <hjc@rock-chips.com>, 
+	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Andy Yan <andyshrk@163.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 20/27] drm/rockchip: inno_hdmi: Correctly setup HDMI
+ quantization range
+Message-ID: <rrtknir3vizvcyamp3kfy47r6uppn3wwevb6a5gln2k533t52z@otm6vum6pg43>
+References: <20231216162639.125215-1-knaerzche@gmail.com>
+ <20231216162639.125215-21-knaerzche@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="syuqoz5ybbowf3nd"
+Content-Disposition: inline
+In-Reply-To: <20231216162639.125215-21-knaerzche@gmail.com>
+
+
+--syuqoz5ybbowf3nd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231215-tcp-ao-selftests-v1-3-f6c08180b985@arista.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 02:36:17AM +0000, Dmitry Safonov wrote:
-> Reverse to icmps-discard test: the server accepts ICMPs, using
-> TCP_AO_CMDF_ACCEPT_ICMP and it is expected to fail under ICMP
-> flood from client. Test that the default pre-TCP-AO behaviour functions
-> when TCP_AO_CMDF_ACCEPT_ICMP is set.
-> 
-> Expected output for ipv4 version (in case it receives ICMP_PROT_UNREACH):
-> > # ./icmps-accept_ipv4
-> > 1..3
-> > # 3209[lib/setup.c:166] rand seed 1642623870
-> > TAP version 13
-> > # 3209[lib/proc.c:207]    Snmp6             Ip6InReceives: 0 => 1
-> > # 3209[lib/proc.c:207]    Snmp6             Ip6InNoRoutes: 0 => 1
-> > # 3209[lib/proc.c:207]    Snmp6               Ip6InOctets: 0 => 76
-> > # 3209[lib/proc.c:207]    Snmp6            Ip6InNoECTPkts: 0 => 1
-> > # 3209[lib/proc.c:207]      Tcp                    InSegs: 3 => 23
-> > # 3209[lib/proc.c:207]      Tcp                   OutSegs: 2 => 22
-> > # 3209[lib/proc.c:207]  IcmpMsg                   InType3: 0 => 4
-> > # 3209[lib/proc.c:207]     Icmp                    InMsgs: 0 => 4
-> > # 3209[lib/proc.c:207]     Icmp            InDestUnreachs: 0 => 4
-> > # 3209[lib/proc.c:207]       Ip                InReceives: 3 => 27
-> > # 3209[lib/proc.c:207]       Ip                InDelivers: 3 => 27
-> > # 3209[lib/proc.c:207]       Ip               OutRequests: 2 => 22
-> > # 3209[lib/proc.c:207]    IpExt                  InOctets: 288 => 3420
-> > # 3209[lib/proc.c:207]    IpExt                 OutOctets: 124 => 3244
-> > # 3209[lib/proc.c:207]    IpExt               InNoECTPkts: 3 => 25
-> > # 3209[lib/proc.c:207]   TcpExt               TCPPureAcks: 1 => 2
-> > # 3209[lib/proc.c:207]   TcpExt           TCPOrigDataSent: 0 => 20
-> > # 3209[lib/proc.c:207]   TcpExt              TCPDelivered: 0 => 19
-> > # 3209[lib/proc.c:207]   TcpExt                 TCPAOGood: 3 => 23
-> > ok 1 InDestUnreachs delivered 4
-> > ok 2 server failed with -92: Protocol not available
-> > ok 3 TCPAODroppedIcmps counter didn't change: 0 >= 0
-> > # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
-> 
-> Expected output for ipv6 version (in case it receives ADM_PROHIBITED):
-> > # ./icmps-accept_ipv6
-> > 1..3
-> > # 3277[lib/setup.c:166] rand seed 1642624035
-> > TAP version 13
-> > # 3277[lib/proc.c:207]    Snmp6             Ip6InReceives: 6 => 31
-> > # 3277[lib/proc.c:207]    Snmp6             Ip6InDelivers: 4 => 29
-> > # 3277[lib/proc.c:207]    Snmp6            Ip6OutRequests: 4 => 24
-> > # 3277[lib/proc.c:207]    Snmp6               Ip6InOctets: 592 => 4492
-> > # 3277[lib/proc.c:207]    Snmp6              Ip6OutOctets: 332 => 3852
-> > # 3277[lib/proc.c:207]    Snmp6            Ip6InNoECTPkts: 6 => 31
-> > # 3277[lib/proc.c:207]    Snmp6               Icmp6InMsgs: 1 => 6
-> > # 3277[lib/proc.c:207]    Snmp6       Icmp6InDestUnreachs: 0 => 5
-> > # 3277[lib/proc.c:207]    Snmp6              Icmp6InType1: 0 => 5
-> > # 3277[lib/proc.c:207]      Tcp                    InSegs: 3 => 23
-> > # 3277[lib/proc.c:207]      Tcp                   OutSegs: 2 => 22
-> > # 3277[lib/proc.c:207]   TcpExt               TCPPureAcks: 1 => 2
-> > # 3277[lib/proc.c:207]   TcpExt           TCPOrigDataSent: 0 => 20
-> > # 3277[lib/proc.c:207]   TcpExt              TCPDelivered: 0 => 19
-> > # 3277[lib/proc.c:207]   TcpExt                 TCPAOGood: 3 => 23
-> > ok 1 Icmp6InDestUnreachs delivered 5
-> > ok 2 server failed with -13: Permission denied
-> > ok 3 TCPAODroppedIcmps counter didn't change: 0 >= 0
-> > # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
-> 
-> With some luck the server may fail with ECONNREFUSED (depending on what
-> icmp packet was delivered firstly).
-> For the kernel error handlers see: tab_unreach[] and icmp_err_convert[].
-> 
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
+On Sat, Dec 16, 2023 at 05:26:31PM +0100, Alex Bee wrote:
+> @@ -431,6 +452,9 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+>  	else
+>  		inno_conn_state->colorimetry =3D HDMI_COLORIMETRY_ITU_709;
+> =20
+> +	inno_conn_state->rgb_limited_range =3D
+> +		drm_default_rgb_quant_range(mode) =3D=3D HDMI_QUANTIZATION_RANGE_LIMIT=
+ED;
+> +
+>  	/* Mute video and audio output */
+>  	hdmi_modb(hdmi, HDMI_AV_MUTE, m_AUDIO_MUTE | m_VIDEO_BLACK,
+>  		  v_AUDIO_MUTE(1) | v_VIDEO_MUTE(1));
 
-Tested-by: Hangbin Liu <liuhangbin@gmail.com>
+This needs to be done at atomic_check time: the expectation is that by
+the time you commit the state, everything is prepared for it.
+
+Maxime
+
+--syuqoz5ybbowf3nd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZYALQwAKCRDj7w1vZxhR
+xQzzAP0YVFac7ehXKiTwVJRxtQYeIMZmYW1VoSFT4wGJVIk8ZAD+PBIYdoQZJl7b
+X7Gv0oBzZzU9IKJ+0sxAUitZEgq+5w8=
+=+z9c
+-----END PGP SIGNATURE-----
+
+--syuqoz5ybbowf3nd--
 
