@@ -1,136 +1,128 @@
-Return-Path: <linux-kernel+bounces-4105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEFA08177FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:58:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3921E817800
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:59:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3BC01F22BC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:58:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCF1DB22221
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690254FF68;
-	Mon, 18 Dec 2023 16:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E83A4FF65;
+	Mon, 18 Dec 2023 16:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YqkW/uJa"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="FEMLD3Ak"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B95742392
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3365e85a4easo1986904f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702918691; x=1703523491; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d+zh+2q3MwXuVdLRjXTJZI4JkIaqitTixEyhaPMNfTc=;
-        b=YqkW/uJaHkOZdMfcdlmgvRNQgzJIKSeZx9AHqDX4tW6XnJxt3fnoJ8pU64DoDFBFun
-         1tQZBB2nyFmjQIuAPa4U+O96YTF6F6l9MjVZNDM1xfoOXT2FSLifG8R0dD7b/UtiNmv/
-         rTVPjMfpD94H0JfuGXKRY8En08HeheOXVYQaL4NjatcIrwI/MyrwBNObYW/1AvHVvovO
-         y4Nu/vxk/ozCDeYaF8owD1NAhljq0P8lSyuY9F+7RTL+ydenHghs11b6FnECURgEYmIa
-         9n/ZvBj9pT3g0m0g1SQFNAVmbZQI438uyJ9106BMekE5+ThWlXqd+5bu59wwIcWoWpl5
-         m6yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702918691; x=1703523491;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d+zh+2q3MwXuVdLRjXTJZI4JkIaqitTixEyhaPMNfTc=;
-        b=ESHSU61R3dBdPxR6Raw7ZarlFV05niIZQaUfTNQclkqCOeumm7A+vMSerQ/de0KjTC
-         67BlY94xrhkI+uRAwaX2ttvdbfA/8FdglkmKWtZTO55Q2jfZJSVlPWb30P7tqdLWnPFs
-         2yN2f6wbp37LlYRmGvbkGcHET6vCczCgNK7TUYrB/TajQ8HEnQ9an5S/3/P/mR/cTPC+
-         w0NiibkGncxn9KkAu3NHk+g2/dWZzD8hMltVU7aGOk9A5FGlu0cuwso73pU0Z5GS4Sr8
-         bRAgVR6utU9+pNLGmbLTm7mTp3tU5MXv1JYC+ck6WBVHWqD6ww7RfUWcoIcyv+VhtvPd
-         Xs1Q==
-X-Gm-Message-State: AOJu0YwwWf5dA4eWbYt6MN9Wrr+aBHVJfPE7tLJh1GL3fZNf1a92TtHC
-	JuftTHu6ETcigVyc/dYMzwpX/Pg0/GMZ+m+3n/8fzQ==
-X-Google-Smtp-Source: AGHT+IFChuEHlZwlMDTWLGHUh6HXy10BpvXeAadBWV8pWnZyYA1TdhfpH2w2v0z8e/FNeEuXgwglDmYDNbTy1g+Wmz0=
-X-Received: by 2002:a05:6000:cd1:b0:332:e2b0:c217 with SMTP id
- dq17-20020a0560000cd100b00332e2b0c217mr8371467wrb.62.1702918691137; Mon, 18
- Dec 2023 08:58:11 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D9D4FF68;
+	Mon, 18 Dec 2023 16:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BIBVg9Y013320;
+	Mon, 18 Dec 2023 17:58:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=2LbVD48cs9SSVdEVF6CGBiY28dgdHPu6RAlKrCsGHvc=; b=FE
+	MLD3Ak4teHPbI6Xwmixwvt1711SnapOzLBJPaPaM6624+zpH5+YWl2XfqFNzewIZ
+	w+35RSS/Uo3m9NXyvNDVl4Na4gUFdyT3AfIeH/3Vt//5qFiCwW4i06M7B5lTQqyj
+	texq/5p3BUdH1T3nII+sCUwgv20eZpGs5baKWtY0lkuemCz2Q9DIU+JSbCcsjmZT
+	nnXAKEAn9L2jlQhPypRp8EWMM4YA5/gG2IDFZ3OyYiwx3uSAP3YH/clUFQy+gzbd
+	BEmMAmB47/k4xxR2xRTk7iZOcVei1HKItH3fqIsL89oVBP8s25H126qZrIP+Fx9Y
+	py4hnheNXyxIjppjnPyw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v13nh8w9d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 17:58:37 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0B72510005E;
+	Mon, 18 Dec 2023 17:58:36 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0168B26A472;
+	Mon, 18 Dec 2023 17:58:36 +0100 (CET)
+Received: from [10.201.20.59] (10.201.20.59) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 18 Dec
+ 2023 17:58:33 +0100
+Message-ID: <abf4725b-8569-47f8-a06d-c06285595625@foss.st.com>
+Date: Mon, 18 Dec 2023 17:58:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
- <20231214-libstringheader-v2-1-0f195dcff204@google.com> <ZXx5DyidpHFhRevy@smile.fi.intel.com>
- <CAE-cH4p5VJ_A91BAkURBN67ACA0_u7T8UhApUYLQDWeeRY6FWA@mail.gmail.com> <CAHp75Vdo=g7ZBAuk79PtLOYs-YHo5sCTp1WVFESHA0xN0zGEmQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vdo=g7ZBAuk79PtLOYs-YHo5sCTp1WVFESHA0xN0zGEmQ@mail.gmail.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 18 Dec 2023 08:57:59 -0800
-Message-ID: <CAKwvOdmMqJacYRfwohY-DXBbmNmz_M4EKUL1KuTv=tT2dO_p1g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] sh: Added kernel.h to word-at-a-time
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Tanzir Hasan <tanzirh@google.com>, Andy Shevchenko <andy@kernel.org>, 
-	Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev, 
-	Al Viro <viro@zeniv.linux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] dt-bindings: spi: stm32: add st,stm32mp25-spi
+ compatible
+Content-Language: en-US
+To: Alain Volmat <alain.volmat@foss.st.com>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Erwan Leray <erwan.leray@foss.st.com>
+CC: Valentin Caron <valentin.caron@foss.st.com>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20231218155721.359198-1-alain.volmat@foss.st.com>
+ <20231218155721.359198-3-alain.volmat@foss.st.com>
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+In-Reply-To: <20231218155721.359198-3-alain.volmat@foss.st.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-18_11,2023-12-14_01,2023-05-22_02
 
-On Fri, Dec 15, 2023 at 11:09=E2=80=AFAM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Fri, Dec 15, 2023 at 8:31=E2=80=AFPM Tanzir Hasan <tanzirh@google.com>=
- wrote:
-> > On Fri, Dec 15, 2023 at 8:04=E2=80=AFAM Andy Shevchenko <andy@kernel.or=
-g> wrote:
-> >> On Thu, Dec 14, 2023 at 09:06:12PM +0000, tanzirh@google.com wrote:
->
-> ...
->
-> >> > +#include <linux/kernel.h>
-> >>
-> >> I highly discourage from doing that. Instead, split what is needed to
-> >> the separate (new) header and include that one.
-> >
-> >
-> > I think it would make the most sense to do this in a separate patch.
-> > What word-at-a-time.h needs from kernel.h is REPEAT_BYTE and to my know=
-ledge,
-> > almost every other version of word-at-a-time.h includes kernel.h gets t=
-his by
-> > including kernel.h. A future change could be removing REPEAT_BYTE
-> > out of kernel.h
->
-> Just create a patch that either moves that macro (along with upper_*()
-> and lower_*() APIs) to a more distinguishable header
-> (maybe bytes.h or words.h or wordpart.h, etc) and use it in your case
-> and fix others.
+On 12/18/23 16:57, Alain Volmat wrote:
+> From: Valentin Caron <valentin.caron@foss.st.com>
+> 
+> Add st,stm32mp25-spi compatible in dt-bindings.  STM32MP25 spi is similar
 
-Andy,
-These are good suggestions and we should do them...
+Hi Alain,
+In case you re-submit,
+Nitpicking, extra space here could be removed    ^
+Capital letters for SPI could also be used here             ^
 
-...and Tanzir only has 3 weeks left of his internship.  I don't want
-him to get bogged down chasing build regressions from modifying the
-headers themselves.  I think what's best for him from here through the
-remainder of his internship is to stay focused on applying suggestions
-from IWYU to just modify the #include list of .c files, and not start
-splitting .h files.  Splitting the .h files will be the next step, and
-is made easier by having the codebase not have so many indirect
-includes (via IWYU), but we need time to soak header changes, and time
-Tanzir does not have.  Please can we keep the suggestions focused on
-whether the modifications to the header includes (and the tangential
-cleanups) are correct?
+Appart from that, you can add my:
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-While REPEAT_BYTE has a manageable number of users, upper_* and
-lower_* have significantly more; I worry about moving those causing
-regressions.  We can move them, but such changes would need
-significantly more soak time than this series IMO.  Tanzir is also
-working on statistical analysis; I suspect if he analyzes
-include/linux/kernel.h, he can comment on whether the usage of
-REPEAT_BYTE is correlated with the usage of upper_* and lower_* in
-order to inform whether they should be grouped together or not.
---=20
-Thanks,
-~Nick Desaulniers
+Best Regards,
+Fabrice
+
+> to the STM32H7 except for the following two points:
+>   - Burst should not be enabled with the new DMA used on STM32MP25.
+>   - STM32MP25 SPI8 has a limited feature set, it can only send words of
+>     8 or 16 bits and with a maximum words number of 1024.
+> 
+> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> ---
+>  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+> index 5754d603f34f..4bd9aeb81208 100644
+> --- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+> @@ -25,6 +25,7 @@ properties:
+>        - st,stm32f4-spi
+>        - st,stm32f7-spi
+>        - st,stm32h7-spi
+> +      - st,stm32mp25-spi
+>  
+>    reg:
+>      maxItems: 1
 
