@@ -1,102 +1,100 @@
-Return-Path: <linux-kernel+bounces-3070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E53D38166ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:54:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EE5D8166EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E61BA1C222CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:54:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54DFD1F22DB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EAA79F9;
-	Mon, 18 Dec 2023 06:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A8B79C3;
+	Mon, 18 Dec 2023 06:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="iyTclJ8/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFJLIIDE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB62101C9;
-	Mon, 18 Dec 2023 06:54:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04D47C433C7;
-	Mon, 18 Dec 2023 06:54:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1702882462;
-	bh=WqSdOGaMwSBPoEtUznslg5s7PXAyzsMtO2SlEkxyWGY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iyTclJ8/wMW+zu7NPf5HxB+KPpilY4WTl38/pGkHfTLt355xwMgIZfyU7dIReIUB9
-	 dCraaErrmnktGo/N4KrHf0CS0DGxi1/eP5nKRH7eu1y0DlGqJ5zZxRNe0WyMz10aw4
-	 v4zHkvihss/8toJXCHaAJxfTfER2aI8wyDGUJs78=
-Date: Mon, 18 Dec 2023 07:54:20 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Shuai Xue <xueshuai@linux.alibaba.com>
-Cc: bp@alien8.de, rafael@kernel.org, wangkefeng.wang@huawei.com,
-	tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
-	linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com,
-	will@kernel.org, jarkko@kernel.org, linux-acpi@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, linux-edac@vger.kernel.org,
-	acpica-devel@lists.linuxfoundation.org, stable@vger.kernel.org,
-	x86@kernel.org, justin.he@arm.com, ardb@kernel.org,
-	ying.huang@intel.com, ashish.kalra@amd.com,
-	baolin.wang@linux.alibaba.com, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, lenb@kernel.org, hpa@zytor.com,
-	robert.moore@intel.com, lvying6@huawei.com, xiexiuqi@huawei.com,
-	zhuo.song@linux.alibaba.com
-Subject: Re: [PATCH v10 4/4] ACPI: APEI: handle synchronous exceptions in
- task work
-Message-ID: <2023121813-monthly-matriarch-2df4@gregkh>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231218064521.37324-5-xueshuai@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E15101E8;
+	Mon, 18 Dec 2023 06:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3b66733a9so1496075ad.2;
+        Sun, 17 Dec 2023 22:55:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702882502; x=1703487302; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6sLJbuu7UBEfIkGSNFUZOPei/Q1sobyICLTnqyuxq9Q=;
+        b=eFJLIIDEm8jVg6bEIxIfYzRR2DhHgBeKI/esulH9b43+yVh7kU8xIlVPh6VFITma5u
+         VEh7U7SLovtDBHS8PU2uv921qUrCVl+7bK0n0RxOk8MDw2e885OYMoKdS8nAt5ARgpKU
+         rEjGJHl+77G5TZcvXdf/S+925dQQvEA739QAdLD4bI0BlVYqqqA2ay2U/YY6EVxPf+un
+         6ephcm9wxWbPTKqiLRGuWObdf+hfaoUAFAJUXlW3dxXnCjghVtbVA484nJhnjXMSufBT
+         h3c5ixuo02lSp+Ce9cln3yNuDgdlI5k6yqwUJT5w1eaEtUE8o4jU/W0ymBFLQ+3vh+nt
+         EMqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702882502; x=1703487302;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6sLJbuu7UBEfIkGSNFUZOPei/Q1sobyICLTnqyuxq9Q=;
+        b=ob8FJzHWNAvL0XXye9uNmtxZqvW7Vxx8OI1fjjtlrTEV7y7TPjd8fwY5pgnYzPf6wo
+         xS+S9mzhNDFFkHBToNVEchhAVzg0sghI/gBPj4JoOzWxpyM1W0dApHdUpiltZ/tS/j4m
+         5YSnaiGbhBeEy/tUsnXIpJ/4pfuZLjj+NSJSmP5Rzv6w1Qacqmu7mHzB1op5nVeYe9y3
+         o2dL5pYaJbz5JdizkMrTeYF81amCXX88Z+Luc1Z/AaD8lcS9QPvY7XArJQ0IahtAWnox
+         8XeCJMKLVAnJD1NMzs7WvgIDIyzrNcEoaY/DjlO7lt2+t/jW9eG2SOwKA/9eDicbxo1R
+         WxmQ==
+X-Gm-Message-State: AOJu0YysnwwdA/G1HVN5EaOrR0qS7VMc5bQ3fyqE5ZNS607Og3gr2NgH
+	gDON1J4wZB9rMNozT2flmwfMmZfRpExHG0nC
+X-Google-Smtp-Source: AGHT+IG30+15ZjuA4qLQnFqfc8h8Ih/wWvAEX8uTWLGZfNKq0Sy9R6Ci3UoOy5NSUEExZpkKsVGAkw==
+X-Received: by 2002:a17:902:fc4e:b0:1d3:9b9a:2ed9 with SMTP id me14-20020a170902fc4e00b001d39b9a2ed9mr794758plb.9.1702882501599;
+        Sun, 17 Dec 2023 22:55:01 -0800 (PST)
+Received: from localhost.localdomain ([202.137.218.19])
+        by smtp.gmail.com with ESMTPSA id c10-20020a170902aa4a00b001b86dd825e7sm18211742plr.108.2023.12.17.22.54.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 22:55:01 -0800 (PST)
+From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: au88x0: fixed a typo
+Date: Mon, 18 Dec 2023 12:24:42 +0530
+Message-Id: <20231218065442.43523-1-ghanshyam1898@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218064521.37324-5-xueshuai@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 18, 2023 at 02:45:21PM +0800, Shuai Xue wrote:
-> Hardware errors could be signaled by asynchronous interrupt, e.g. when an
-> error is detected by a background scrubber, or signaled by synchronous
-> exception, e.g. when a CPU tries to access a poisoned cache line. Both
-> synchronous and asynchronous error are queued as a memory_failure() work
-> and handled by a dedicated kthread in workqueue.
-> 
-> However, the memory failure recovery sends SIBUS with wrong BUS_MCEERR_AO
-> si_code for synchronous errors in early kill mode, even MF_ACTION_REQUIRED
-> is set. The main problem is that the memory failure work is handled in
-> kthread context but not the user-space process which is accessing the
-> corrupt memory location, so it will send SIGBUS with BUS_MCEERR_AO si_code
-> to the user-space process instead of BUS_MCEERR_AR in kill_proc().
-> 
-> To this end, queue memory_failure() as a task_work so that the current
-> context in memory_failure() is exactly belongs to the process consuming
-> poison data and it will send SIBBUS with proper si_code.
-> 
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
-> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  drivers/acpi/apei/ghes.c | 77 +++++++++++++++++++++++-----------------
->  include/acpi/ghes.h      |  3 --
->  mm/memory-failure.c      | 13 -------
->  3 files changed, 44 insertions(+), 49 deletions(-)
-> 
+Fixed typo in the word communicate
 
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+---
+ sound/pci/au88x0/au88x0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-<formletter>
+diff --git a/sound/pci/au88x0/au88x0.c b/sound/pci/au88x0/au88x0.c
+index eb234153691b..62b10b0e07b1 100644
+--- a/sound/pci/au88x0/au88x0.c
++++ b/sound/pci/au88x0/au88x0.c
+@@ -10,7 +10,7 @@
+  *   Thanks to the ALSA developers, they helped a lot working out
+  * the ALSA part.
+  *   Thanks also to Sourceforge for maintaining the old binary drivers,
+- * and the forum, where developers could comunicate.
++ * and the forum, where developers could communicate.
+  *
+  * Now at least i can play Legacy DOOM with MIDI music :-)
+  */
+-- 
+2.25.1
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
-
-</formletter>
 
