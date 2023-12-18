@@ -1,141 +1,135 @@
-Return-Path: <linux-kernel+bounces-4171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86EE38178C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:30:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B96C18178C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:30:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F15D28532B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:30:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7BB91C24A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E7F5D729;
-	Mon, 18 Dec 2023 17:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3384D5BFA2;
+	Mon, 18 Dec 2023 17:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g5n4paOl"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="g/6q6EZB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188C85BFAE;
-	Mon, 18 Dec 2023 17:29:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1A76C433C8;
-	Mon, 18 Dec 2023 17:29:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702920590;
-	bh=C5WyAAOndAR8UwN5Lk4RjxcNZZKDcXr2Gv0zWrp9jvE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=g5n4paOl/XTn4kF5V1GTVnAgJTrvITqdFgotD68Fm4l6anGCltOd0lBnx+XhjjYKa
-	 ITbM+JjZK5/lnZQCvImsmVekn+Y/qCWgMWMHRDDktmlPdsceqpz5xK7dE94BzkkDOI
-	 0jSYwhj0oddXFyuYiA5nCYBh3XfDvJCmq1Br9WKnAOiqIfFQ/AZNDPUrnXak8j+LZ9
-	 q/I1+I8PdsJQbDRuKVMyN4hktLLJd51eYsNEhBdHxPw/yDOR2lsrXX5qlro/bdO8cB
-	 wsEb1bypi83T/GFgocb5LF6KPRzNId11e5F0EU9A6RrI48cexAmFRsOUv6hipusqbz
-	 Lg9NqeFuLSIOQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rFHR6-0058CE-LU;
-	Mon, 18 Dec 2023 17:29:48 +0000
-Date: Mon, 18 Dec 2023 17:29:48 +0000
-Message-ID: <86r0jja06r.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Kunkun Jiang <jiangkunkun@huawei.com>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	"moderated list:ARM SMMU DRIVERS" <linux-arm-kernel@lists.infradead.org>,
-	kvmarm@lists.linux.dev,
-	open list <linux-kernel@vger.kernel.org>,
-	"wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-Subject: Re: [bug report] GICv4.1: vSGI remains pending across the guest reset
-In-Reply-To: <ZYB_RKR5CqlVS-lV@linux.dev>
-References: <7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com>
-	<87a5q983zc.wl-maz@kernel.org>
-	<ZX8w1vfQzeXP5klL@linux.dev>
-	<ZX8xLhFFqTXRFQtd@linux.dev>
-	<878r5s8xvc.wl-maz@kernel.org>
-	<ZYB_RKR5CqlVS-lV@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280655BF93
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c2bb872e2so39764405e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:29:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1702920598; x=1703525398; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fs4PeLX+sTsxEfE9JWWvETdWRfgtXAd+hsb7EMzfzZY=;
+        b=g/6q6EZB+WjHJGN2Zjf0bKdXE1QISkxRoQTx3ri6be9kLTjLJYl840Ip257xNF16J9
+         rrUu3MeTZmZeVTAqpEqGVHAqkEKkTC7nl00ZEsnhwCqQhvzmK5H5OJqmvDwaWq15PUj+
+         5Q1SAZQWX/V8JAU3ix4fiUCy0ucZa/+aFDOm8oRf0eQ5+oi4o5y6AtYyAbxaj593eF4+
+         NHEtjMPpCvm0zpQ1x1CQ9AdQV38ULYmrJDzP6uT9pUJrOimbSQ8N+cm88ESvlpOE7oGc
+         qNVVRK/tDAYIiBYxSBKvSPNMlWUM2OXBsg1uW1XlMZDTcvffkey+O1f+h0S3Omb/NXuc
+         l4mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702920598; x=1703525398;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fs4PeLX+sTsxEfE9JWWvETdWRfgtXAd+hsb7EMzfzZY=;
+        b=OjtmAmmXRH4xfaB1yYGAtGQcT2iNir9EUB6zWV0JVRMY0jd5tQaeSDkNCg2abErELd
+         fcooa7QhLpkZ5oIdQ5Az1jnTDcr4zyEgmoET5ZxGKB3FO5LdJ21XUtc9uG09tEpJNncb
+         0PltZHLrVYNaqsulhFdVWKtE2hf6sDzInpNqp7DqEx/Pbg3/qRWPQB75WrfJlV6RUkWp
+         7d+ZFcEH1WAY8LMg7sqHoj7IKVn5JzroD0bUujTMyEstJpBkCDMzhe7YBeTyK8GPWnA4
+         dDY5+3u30KMBXt5sEe4VwZLZX2T/OpOVzOprF7NJ6g9rnOFOABNK0TbPg/WU4B5pFnWU
+         a81Q==
+X-Gm-Message-State: AOJu0YwLHAegXnOOikYsEjVt5X8UoCL1RsVXd/qREusG6VktYHWh7Md1
+	OCAgESYeTWXKdoA9m2JVgTdTQQ==
+X-Google-Smtp-Source: AGHT+IFZW3zce2+UNUMbSECCaMNdkD3J4utubpXbLJ3MtTK3HEC5MqbzeHyJw5JqLSDbUXz/s9Ojsw==
+X-Received: by 2002:a05:600c:22c3:b0:40c:61fe:383c with SMTP id 3-20020a05600c22c300b0040c61fe383cmr1874449wmg.198.1702920598358;
+        Mon, 18 Dec 2023 09:29:58 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id o18-20020a17090611d200b00a2362ef4387sm810515eja.49.2023.12.18.09.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 09:29:58 -0800 (PST)
+Date: Mon, 18 Dec 2023 18:29:56 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Jim Cromie <jim.cromie@gmail.com>
+Cc: lb@semihalf.com, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, bleung@google.com, contact@emersion.fr,
+	daniel@ffwll.ch, dianders@chromium.org, groeck@google.com,
+	jbaron@akamai.com, john.ogness@linutronix.de, keescook@chromium.org,
+	ppaalanen@gmail.com, rostedt@goodmis.org, seanpaul@chromium.org,
+	sergey.senozhatsky@gmail.com, upstream@semihalf.com,
+	vincent.whitchurch@axis.com, yanivt@google.com,
+	gregkh@linuxfoundation.org
+Subject: Re: [re: PATCH v2 00/15 -  05/11] dyndbg: change +T:name_terminator
+ to dot
+Message-ID: <ZYCBlI56kmDMew6U@alley>
+References: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com>
+ <cover.1701993656.git.jim.cromie@gmail.com>
+ <7cb5c8b6c6efba7e437595266638be39f23361fc.1701993656.git.jim.cromie@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, jiangkunkun@huawei.com, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, jean-philippe@linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7cb5c8b6c6efba7e437595266638be39f23361fc.1701993656.git.jim.cromie@gmail.com>
 
-On Mon, 18 Dec 2023 17:20:04 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
+On Thu 2023-12-07 17:15:08, Jim Cromie wrote:
+> This replaces ',' with '.' as the char that ends the +T:name.
 > 
-> On Sun, Dec 17, 2023 at 06:52:55PM +0000, Marc Zyngier wrote:
-> > On Sun, 17 Dec 2023 17:34:38 +0000,
-> > Oliver Upton <oliver.upton@linux.dev> wrote:
-> > > 
-> > > On Sun, Dec 17, 2023 at 05:33:16PM +0000, Oliver Upton wrote:
-> > > > On Sun, Dec 17, 2023 at 11:26:15AM +0000, Marc Zyngier wrote:
-> > > > 
-> > > > [...]
-> > > > 
-> > > > > But this has *nothing* to do with the guest. This is the *host*
-> > > > > userspace performing a write to the redistributor view, which has
-> > > > > different semantics. Which is why your earlier description made no
-> > > > > sense to me.
-> > > > > 
-> > > > > I think the problem is slightly larger than what you describe. A write
-> > > > > to ISPENDR0 should be propagated to the ITS for any values of the
-> > > > > latch, just like this happens on enabling HW-backed SGIs.
-> > > > > 
-> > > > > Can you please give this a go?
-> > > > 
-> > > > What do you think about using this as an opportunity for a bit of
-> > > > cleanup? It'd be nice unify the various MMIO and uaccess handlers for
-> > > > SPENDING + CPENDING while being careful about the arch_timer interrupt.
-> > 
-> > What is special about the timer interrupt?
+> This allows a later patch to treat ',' as a space, which mostly
+> eliminates the need to quote query/rules.  And this in turn avoids
+> quoting hassles:
 > 
-> Isn't that the case where we have a physical IRQ mapped and wind up
-> forwarding state to the physical GIC?
-
-Indeed. But that's not specific to the timer. That's a general
-infrastructure that NV also uses it for the GIC maintenance interrupt.
-
+>   modprobe test_dynamic_debug dyndbg=class,D2_CORE,+p
 > 
-> > Could be. But I'd rather have separate fixes from more invasive
-> > reworks.  Specially given that we have had multiple ugly bugs around
-> > this code in the past, which is why we ended up splitting userspace
-> > from guest accessors.
+> It is particularly good for passing boot-args into test-scripts.
 > 
-> Fine by me. I had felt like a common helper w/ the user v. guest
-> exclusions is a bit easier to understand than diffing two very similar
-> functions, but it isn't a big deal.
+>   vng -p 4 -v \
+>   -a test_dynamic_debug.dyndbg=class,D2_CORE,+p
 
-To be clear, I'm not objecting to that rework. It's just that we
-should carefully review these patches on the list, as they would have
-a wider ranging impact than a pure GICv4.1 change.
+Could you please add example how it looked before and after?
+Is this format documented somewhere?
+Will the documentation get updated?
+Could it break existing scripts? [*]
 
-> Anyway, I'm happy with your fix. I'd like Kunkun to give it a go but
-> either way I can pick it up for 6.7.
+The dynamic debug interface is really hard to use for me
+as an occasional user. I always have to look into
+Documentation/admin-guide/dynamic-debug-howto.rst
 
-Yup, same here. But we also shouldn't hold the 6.7 fixes for too long.
-If we don't get feedback from Kunkun shortly, I'd suggest to move this
-patch to 6.8, and at this point your approach makes complete sense.
+Anyway, there should be a good reason to change the interface.
+And the exaplantion:
 
-Thanks,
+   "Let's use '.' instead of ',' so that we could later
+    treat ',' as space"
 
-	M.
+sounds scarry. It does not explain what is the advantage at all.
 
--- 
-Without deviation from the norm, progress is not possible.
+
+[*] Some scripts are using the interface even in the mainline,
+for example:
+
+$> git grep "dynamic_debug" tools/testing/
+tools/testing/selftests/bpf/test_tunnel.sh:     echo 'file ip_gre.c +p' > /sys/kernel/debug/dynamic_debug/control
+tools/testing/selftests/bpf/test_tunnel.sh:     echo 'file ip6_gre.c +p' > /sys/kernel/debug/dynamic_debug/control
+tools/testing/selftests/bpf/test_tunnel.sh:     echo 'file geneve.c +p' > /sys/kernel/debug/dynamic_debug/control
+tools/testing/selftests/bpf/test_tunnel.sh:     echo 'file ipip.c +p' > /sys/kernel/debug/dynamic_debug/control
+tools/testing/selftests/livepatch/functions.sh: DYNAMIC_DEBUG=$(grep '^kernel/livepatch' /sys/kernel/debug/dynamic_debug/control | \
+tools/testing/selftests/livepatch/functions.sh:         echo -n "$DYNAMIC_DEBUG" > /sys/kernel/debug/dynamic_debug/control
+tools/testing/selftests/livepatch/functions.sh:function set_dynamic_debug() {
+tools/testing/selftests/livepatch/functions.sh:        cat <<-EOF > /sys/kernel/debug/dynamic_debug/control
+tools/testing/selftests/livepatch/functions.sh: set_dynamic_debug
+
+
+Best Regards,
+Petr
 
