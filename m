@@ -1,208 +1,188 @@
-Return-Path: <linux-kernel+bounces-3358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475D5816B67
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:45:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 358BC816B59
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD3C41F22C47
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:45:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94FCBB21A82
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41909225CD;
-	Mon, 18 Dec 2023 10:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F5D1B279;
+	Mon, 18 Dec 2023 10:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="RLenRxYF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cT7+lcIk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4473120B1B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-58d1b767b2bso1988974eaf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:41:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53CEE19BCC
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2c9f559b82cso27624131fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702896093; x=1703500893; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702896082; x=1703500882; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bgKUGLZYGcoLOqmpRwG/psCt/ko1c3dSc+eXyp7wwIo=;
-        b=RLenRxYFw6A3fZx+0Zx3eiixfBQAkmV3OATc9TLtr3Fs9PQfjF5EV3hZVb/fsL1s6B
-         3+brTwthsveYi74Enw6Q1HUOP9WYamPPxpAO2xiJvDN9YxnZrFEIpI4u1cUVyxt8n3Yt
-         /o2hx3DrQLKddLANqOMSDGv0wX0eqkEwipcd5IOay8lMlMwpBTFxXrLWA/AhZd5ttpqL
-         78ufyhSWwmlpNHFELjfi4wGORrMjUXLAOxRBOtX0iH+X+XX9KX1H7RLWcBYG4+SxrOQo
-         NG9ViV0qwipTqV6LrGp9bWjviFDGCjBBc1rWAABo60V/9jJcJmbT/l2YXj3FqwDPjFuA
-         /sMA==
+        bh=kabXGROfWSJocyHAan/aB6JGxykPaPjYqavx3rQXmbE=;
+        b=cT7+lcIkSO+lwKMmfd9+D7XxgUR3IHFOxKO8ZO6phYYOBpDYM1JfpiOTMlU2c3t5fR
+         2NxpcyvdeDpBLMVjigqHIqSxfTUHr8mO++fL/2VMIeu26DVpj3C3GNNZ20AD8P8XWwxR
+         x9X1UWLhSZHq6gXKUuTGYmVcPiJWU3zMjEd9FQw8QULpbOaiW2zVLwq9csgdVOb90syb
+         BUGPrwc+Z33hKE06ETlJRcmBx6CpgnL2rWLeZQQMNq3Fuu+O1Ihn4QxlS+PCNR/bJhPp
+         PHnQHMaqnjWetv9nxHJGoJ97mdyFC31TB19W/fw9r0hvmZHdM4B3nbHofz4IJUWsW/0Z
+         TzFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702896093; x=1703500893;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702896082; x=1703500882;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bgKUGLZYGcoLOqmpRwG/psCt/ko1c3dSc+eXyp7wwIo=;
-        b=K0ZtK7I1mIhiP6Zgxl63nbVffRG0em4AiatEHZz8otavQGqxSounC6mUuD/xwMtoo7
-         xszDkDxQglpkeCMBYGysW9KvAAebe3m9+D529gRDnNmjO5YCmJ+XjgjnhC6R8zoRUlP/
-         SE1C17KbjoarnkI+6wvvhJbKxhwkP4Q5RIgXUrivps4AcvodX6PMLrIPzgwuAYGhKAkZ
-         kYPO8LfFtXll/ciQIgGFO/gw3NGwJMEKuXPXm2dU9XtaKqe0ml1SoFCAabPQXt4dM4pg
-         zwjt/QZ0f0Av7ObwY/e+w5ct5tYw58vSUQ1psmGOA4POD1g4zNh15xlIgz56nqWzfCO6
-         xgaQ==
-X-Gm-Message-State: AOJu0YwrlUZ6YnHZESLfKGBvHM6+U+qHMIGYtvrVVtpSvYRepQlCJeej
-	ipx5L20wtaJGlY1oRn8uLz1k0lPRrqNGUXV+yfs=
-X-Google-Smtp-Source: AGHT+IEBb0RG9MLmiB4GFclqVcg7m58Aqj85ARHZP5CDG+c2IRjV9jKFX8F79mAp266/vcfC4kRB4Q==
-X-Received: by 2002:a4a:ab8e:0:b0:591:98d0:c5e0 with SMTP id m14-20020a4aab8e000000b0059198d0c5e0mr2860672oon.11.1702896093564;
-        Mon, 18 Dec 2023 02:41:33 -0800 (PST)
-Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id 185-20020a4a1ac2000000b005907ad9f302sm574970oof.37.2023.12.18.02.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 02:41:33 -0800 (PST)
-From: Atish Patra <atishp@rivosinc.com>
-To: linux-kernel@vger.kernel.org
-Cc: Atish Patra <atishp@rivosinc.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Guo Ren <guoren@kernel.org>,
-	Icenowy Zheng <uwu@icenowy.me>,
-	kvm-riscv@lists.infradead.org,
-	kvm@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Will Deacon <will@kernel.org>
-Subject: [v1 10/10] RISC-V: KVM: Support 64 bit firmware counters on RV32
-Date: Mon, 18 Dec 2023 02:41:07 -0800
-Message-Id: <20231218104107.2976925-11-atishp@rivosinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231218104107.2976925-1-atishp@rivosinc.com>
-References: <20231218104107.2976925-1-atishp@rivosinc.com>
+        bh=kabXGROfWSJocyHAan/aB6JGxykPaPjYqavx3rQXmbE=;
+        b=tEKKOsurzM21twJScDGodpnFVx+vJtH51K4f/l8lsNstq9a7A8WiQySSzHNxL6SXxE
+         8WFWccsT4hzFQS0+SWcNzT4VVYevY0XpbBJQHkUQOimftaz3GKHxiOHKFgCnx4gUJgI5
+         wE5Xmwy8Da1CGb+Q6f27aFgdk/57iZZRsng3gFXAUvDtlcdA9S6Rznh0yrnQWIFmyN1D
+         kSHi5o9BV9Z+cS8ml537D2tNRtR8IAd7OMPNd4hqNXAJCIZNGYj9A4YL4bVNxq0+Ik84
+         jYtTJGfawykQKpBuIsOhB9lDizqnN/Z6Y6VAYV7iRliPo0HV+/YfX7jUKkW++oHo4ZHD
+         lOBg==
+X-Gm-Message-State: AOJu0Yw3a7uXe9th3kQcU315dYbfFvz8KpZaViVOaRBEXLjLcT+qQIQM
+	vs4nIHRNCkTyOmoEKU9AGk0lp1yc4X6yqtpbGBA=
+X-Google-Smtp-Source: AGHT+IGiyAaJxskQA50ell8K062yOX0m9VtEKQ7s3kTlZDkXY7gmBsv9ZVjFbRsiLYRnhjCc/VEmEax6p9+t5TjvEAI=
+X-Received: by 2002:a05:651c:2220:b0:2cb:2cb1:6789 with SMTP id
+ y32-20020a05651c222000b002cb2cb16789mr6340574ljq.25.1702896082050; Mon, 18
+ Dec 2023 02:41:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231218024403.1076134-1-chunyan.zhang@unisoc.com> <2023121830-proxy-washed-ae4d@gregkh>
+In-Reply-To: <2023121830-proxy-washed-ae4d@gregkh>
+From: jing xia <jing.xia.mail@gmail.com>
+Date: Mon, 18 Dec 2023 18:41:09 +0800
+Message-ID: <CAN=25QNcd3y+9VmRk_L7JYZTYD++bgZ=YizpdWncmNnfoDD1cA@mail.gmail.com>
+Subject: Re: [PATCH] class: fix use-after-free in class_register()
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Chunyan Zhang <chunyan.zhang@unisoc.com>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Jing Xia <jing.xia@unisoc.com>, 
+	Xuewen Yan <xuewen.yan@unisoc.com>, Ke Wang <ke.wang@unisoc.com>, 
+	Chunyan Zhang <zhang.lyra@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The SBI v2.0 introduced a fw_read_hi function to read 64 bit firmware
-counters for RV32 based systems.
+On Mon, Dec 18, 2023 at 2:52=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Dec 18, 2023 at 10:44:03AM +0800, Chunyan Zhang wrote:
+> > From: Jing Xia <jing.xia@unisoc.com>
+> >
+> > The lock_class_key is still registered and can be found in
+> > lock_keys_hash hlist after subsys_private is freed in error
+> > handler path.A task who iterate over the lock_keys_hash
+> > later may cause use-after-free.So fix that up and unregister
+> > the lock_class_key before kfree(cp).
+>
+> What task iterates over all hashes?
+>
+> And can you put ' ' after your '.'?
+>
+> And how was this found?
+>
+Thanks for your comments. I'll add more information in the changelog.
 
-Add infrastructure to support that.
+On our platform, a driver fails to kset_register because of creating
+duplicate filename '/class/xxx'.And we got serval kernel panic issues
+about alignment fault on stability tests.All backtraces show that it is
+manipulating the corrupted lock_keys_hash hlish when a workqueue is
+created or released.
 
-Signed-off-by: Atish Patra <atishp@rivosinc.com>
----
- arch/riscv/include/asm/kvm_vcpu_pmu.h |  4 ++-
- arch/riscv/kvm/vcpu_pmu.c             | 37 ++++++++++++++++++++++++++-
- arch/riscv/kvm/vcpu_sbi_pmu.c         |  6 +++++
- 3 files changed, 45 insertions(+), 2 deletions(-)
+Here is one backtrace:
 
-diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-index 931887e07a66..5da5df21ec54 100644
---- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
-+++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-@@ -20,7 +20,7 @@ static_assert(RISCV_KVM_MAX_COUNTERS <= 64);
- 
- struct kvm_fw_event {
- 	/* Current value of the event */
--	unsigned long value;
-+	uint64_t value;
- 
- 	/* Event monitoring status */
- 	bool started;
-@@ -91,6 +91,8 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
- 				     struct kvm_vcpu_sbi_return *retdata);
- int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
- 				struct kvm_vcpu_sbi_return *retdata);
-+int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
-+				struct kvm_vcpu_sbi_return *retdata);
- void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu);
- int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned long saddr_low,
- 				       unsigned long saddr_high, unsigned long flags,
-diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-index 368c3a8a8d4a..5c21035e284d 100644
---- a/arch/riscv/kvm/vcpu_pmu.c
-+++ b/arch/riscv/kvm/vcpu_pmu.c
-@@ -196,6 +196,29 @@ static int pmu_get_pmc_index(struct kvm_pmu *pmu, unsigned long eidx,
- 	return kvm_pmu_get_programmable_pmc_index(pmu, eidx, cbase, cmask);
- }
- 
-+static int pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
-+			      unsigned long *out_val)
-+{
-+	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
-+	struct kvm_pmc *pmc;
-+	int fevent_code;
-+
-+	if (!IS_ENABLED(CONFIG_32BIT))
-+		return -EINVAL;
-+
-+	pmc = &kvpmu->pmc[cidx];
-+
-+	if (pmc->cinfo.type != SBI_PMU_CTR_TYPE_FW)
-+		return -EINVAL;
-+
-+	fevent_code = get_event_code(pmc->event_idx);
-+	pmc->counter_val = kvpmu->fw_event[fevent_code].value;
-+
-+	*out_val = pmc->counter_val >> 32;
-+
-+	return 0;
-+}
-+
- static int pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
- 			unsigned long *out_val)
- {
-@@ -701,6 +724,18 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
- 	return 0;
- }
- 
-+int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
-+				   struct kvm_vcpu_sbi_return *retdata)
-+{
-+	int ret;
-+
-+	ret = pmu_fw_ctr_read_hi(vcpu, cidx, &retdata->out_val);
-+	if (ret == -EINVAL)
-+		retdata->err_val = SBI_ERR_INVALID_PARAM;
-+
-+	return 0;
-+}
-+
- int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
- 				struct kvm_vcpu_sbi_return *retdata)
- {
-@@ -774,7 +809,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
- 			pmc->cinfo.csr = CSR_CYCLE + i;
- 		} else {
- 			pmc->cinfo.type = SBI_PMU_CTR_TYPE_FW;
--			pmc->cinfo.width = BITS_PER_LONG - 1;
-+			pmc->cinfo.width = 63;
- 		}
- 	}
- 
-diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pmu.c
-index 9f61136e4bb1..58a0e5587e2a 100644
---- a/arch/riscv/kvm/vcpu_sbi_pmu.c
-+++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
-@@ -64,6 +64,12 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
- 	case SBI_EXT_PMU_COUNTER_FW_READ:
- 		ret = kvm_riscv_vcpu_pmu_ctr_read(vcpu, cp->a0, retdata);
- 		break;
-+	case SBI_EXT_PMU_COUNTER_FW_READ_HI:
-+		if (IS_ENABLED(CONFIG_32BIT))
-+			ret = kvm_riscv_vcpu_pmu_fw_ctr_read_hi(vcpu, cp->a0, retdata);
-+		else
-+			retdata->out_val = 0;
-+		break;
- 	case SBI_EXT_PMU_SNAPSHOT_SET_SHMEM:
- 		ret = kvm_riscv_vcpu_pmu_setup_snapshot(vcpu, cp->a0, cp->a1, cp->a2, retdata);
- 		break;
--- 
-2.34.1
+Unable to handle kernel paging request at virtual address ffffffc081480bae
+ Mem abort info:
+   ESR =3D 0x0000000096000021
+   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+   SET =3D 0, FnV =3D 0
+   EA =3D 0, S1PTW =3D 0
+   FSC =3D 0x21: alignment fault
+...
+ Call trace:
+  lockdep_register_key+0x128/0x22c
+  alloc_workqueue+0x190/0x640
+  loop_configure+0x2f0/0x560
+  lo_ioctl+0x70c/0xf60
+  blkdev_ioctl+0x290/0x88c
+  __arm64_sys_ioctl+0xa8/0xe4
 
+And we are aware of the fact that it might be a use-after-free issue.
+So we enable Kasan and it gives a invalid-access bug report.
+
+BUG: KASAN: invalid-access in lockdep_register_key+0x19c/0x1bc
+Write of size 8 at addr 15ffff808b8c0368 by task modprobe/252
+Pointer tag: [15], memory tag: [fe]
+
+CPU: 7 PID: 252 Comm: modprobe Tainted: G        W
+6.6.0-mainline-maybe-dirty #1
+
+Call trace:
+dump_backtrace+0x1b0/0x1e4
+show_stack+0x2c/0x40
+dump_stack_lvl+0xac/0xe0
+print_report+0x18c/0x4d8
+kasan_report+0xe8/0x148
+__hwasan_store8_noabort+0x88/0x98
+lockdep_register_key+0x19c/0x1bc
+class_register+0x94/0x1ec
+init_module+0xbc/0xf48 [rfkill]
+do_one_initcall+0x17c/0x72c
+do_init_module+0x19c/0x3f8
+load_module+0x2300/0x2394
+__arm64_sys_finit_module+0x350/0x4d8
+invoke_syscall+0x88/0x1f0
+el0_svc_common+0xe8/0x1c0
+do_el0_svc+0x34/0x44
+el0_svc+0x50/0xb8
+el0t_64_sync_handler+0x68/0xbc
+el0t_64_sync+0x19c/0x1a0
+
+The buggy address belongs to the object at ffffff808b8c0000
+which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 232 bytes to the right of
+640-byte region [ffffff808b8c0000, ffffff808b8c0280)
+
+The buggy address belongs to the physical page:
+page:00000000918c4834 refcount:1 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x10b8c0
+head:00000000918c4834 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:=
+0
+anon flags: 0x4000000000000840(slab|head|zone=3D1|kasantag=3D0x0)
+page_type: 0xffffffff()
+raw: 4000000000000840 80ffff8080002a00 0000000000000000 0000000000000001
+raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ffffff808b8c0100: 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a
+ffffff808b8c0200: 8a 8a 8a 8a 8a 8a 8a 8a fe fe fe fe fe fe fe fe
+>ffffff808b8c0300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+                                     ^
+
+> >
+> > Signed-off-by: Jing Xia <jing.xia@unisoc.com>
+> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+>
+> What commit id does this fix?
+>
+> Also note in the changelog that this only can happen if lockdep is
+> enabled, which is not true for normal systems.
+>
+I'll fix it on v1.Thanks.
+
+> thanks,
+>
+> greg k-h
 
