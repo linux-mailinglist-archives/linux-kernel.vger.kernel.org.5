@@ -1,128 +1,151 @@
-Return-Path: <linux-kernel+bounces-4095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA3BA8177DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:48:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7CAA8177E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DB5728566D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:48:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4A71C23AB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFBBA4FF61;
-	Mon, 18 Dec 2023 16:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B69498A2;
+	Mon, 18 Dec 2023 16:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gIHlwzk2"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Dyym2sDt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674671E520
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55365730863so1385131a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:48:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808524FF66
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d32c5ce32eso31538295ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:48:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702918093; x=1703522893; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i6y3ll1JV4kECb7ETSXvUzgYXA9pzoacjYnpy2l56Ho=;
-        b=gIHlwzk2OG6nGYkdTStHcjILMuQijdE9ppnAcueEX52QvBlMwAj9hcaGcxtqC6RlTN
-         WVII5h+3uyN1jcisfLWrnHT4UwV/8opQoPae7VSyun9Jt0eIVf+Do5GZo/DtSeH4z7b8
-         cGmyxuS6i17DKy9k0HKNvXw1gYZBOboaI+mWc=
+        d=linaro.org; s=google; t=1702918131; x=1703522931; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jMaYOj60MeA1wo8ZfKzowtN5dTe49uBMZepjxPs8KMA=;
+        b=Dyym2sDteFnWUXd8OrDZDuaCrPPWMK6SFcTFQ9hT0S546nsI/R73g1U1j5wVgKUNSq
+         lryO73tPsAhNOt8D9Sfu7983Mx0uMrw9Uz0Jxg9M9JXofmr9SiMp1tYXDxd/7Yvb7dAV
+         9V/+eAZ9PlxUW8ncCaniYoaQnULCz7xLF1DrkJzLM6oJap3NM3FJUMqxZYu2eQJ9jHk+
+         lE/Um5TLqAMr0L9Q8XIzxPwdEZVzjcmTiDtlr20hHb+ftiVsb+21iPGL2Viq23LxUpFn
+         X2Y0K6VhrH5UxQx5HBcT9jnmnoxkHU4IGEaM1o1FoIDaJ3xQklgKpv0rA/cySxYvg7ik
+         7D0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702918093; x=1703522893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i6y3ll1JV4kECb7ETSXvUzgYXA9pzoacjYnpy2l56Ho=;
-        b=AxINYjA8KewIWVq6bR5PqHMwmU1kqVsRZhuYv1xH6daqDBv6s2gRvfCYGAa/yj0uAg
-         SP7/owrTyOOUBMl6po68bNlvvcz5mtdfVks2i4ZwEzjxYS2+9+lM+IpCHIenroSTzXgX
-         QE9hajJlchWP7t05awQjtgU+MFbCfUIHfXbGWnizYB9s+T6Mlicz/PSLVshjahUiNQfg
-         prgsmRBYxS+lrg8ZrGRDdSDi/FpnYN7fu8fCMH97vpPUERa3pX9sganOyfAohHRjyYcd
-         Bkk4+NmeLym2tqPnxh6awKse0pPEGGq7+Lyb/ao2Uh+RlvFSFtaO/MsBsVEQ7tFEz/Hm
-         IaOQ==
-X-Gm-Message-State: AOJu0YxSuFMUkIq+lvGY85IvdZohfOsuyx85U9EyCN+Y6L/bu0wmHMlY
-	WRKx5QpoFkIi8WuAO+Zb5IlzPveeJWSrLVbNJn8Fv5f4
-X-Google-Smtp-Source: AGHT+IEKeGWOlJl+q3xhM29JUVagW4nFrW6FepDbXLP0y8R44Wap+cWhG0oWy9tlXRUY66CNK1XOCA==
-X-Received: by 2002:a17:907:944e:b0:a19:a1ba:da5f with SMTP id dl14-20020a170907944e00b00a19a1bada5fmr11747329ejc.134.1702918093543;
-        Mon, 18 Dec 2023 08:48:13 -0800 (PST)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id u5-20020a1709063b8500b00a23499cbb1asm2038976ejf.189.2023.12.18.08.48.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 08:48:13 -0800 (PST)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40c3963f9fcso92475e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:48:12 -0800 (PST)
-X-Received: by 2002:a05:600c:1ca7:b0:40c:6557:733d with SMTP id
- k39-20020a05600c1ca700b0040c6557733dmr366346wms.0.1702918092382; Mon, 18 Dec
- 2023 08:48:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702918131; x=1703522931;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jMaYOj60MeA1wo8ZfKzowtN5dTe49uBMZepjxPs8KMA=;
+        b=IX6jwwNS7ahpSmAA8kvAIqTML0qbkoy6668NE3NPZDzJOh7hacc6kj/XRi26PuuEIe
+         7Hoq6KHKE7vIOCYjAxh6k+Wk266kVfTLCk5eNZgBVJzXbzA1cULdnNa/jp137seJqWyP
+         9csGKMOrk2oDH4R0aI4iJddFMYKuADIXhqHkUMZ3Gt2hkR4XEjFY7R+rKx7alAZQv2wk
+         EL2eQhqXrEONKypkjjezA/ei2V2/u0/cDrVevwZIGA9GHbs5ojZ3yZlwhRuS4JL/cBWs
+         jxEjVHBEAAuPl6iOZaI61fYHhzSD45WZaAEaGmr8n0BKq3X7uyvsdUt+iVl7CUk6hX9l
+         pqhw==
+X-Gm-Message-State: AOJu0Yxp7g1bZzDghfkfaOpY/lbkJiisbwsgZkdXE60s6JnNWhj7WOGk
+	8BNb91V5a7oBMDjEmXS+VY7Sg2LOBHPj70/Yoxv2ew==
+X-Google-Smtp-Source: AGHT+IH/8sbNZzhWaYmnYMwm88uEZmBMPtY16kgSNicniac5INBPCupxnLP2b7xwFu7EcHbopxuWFo5CYGaX1Jmmf/0=
+X-Received: by 2002:a17:90a:d143:b0:286:6cd8:ef04 with SMTP id
+ t3-20020a17090ad14300b002866cd8ef04mr21128337pjw.28.1702918130794; Mon, 18
+ Dec 2023 08:48:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214123752.v3.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
- <20231214123752.v3.2.I7b83c0f31aeedc6b1dc98c7c741d3e1f94f040f8@changeid>
-In-Reply-To: <20231214123752.v3.2.I7b83c0f31aeedc6b1dc98c7c741d3e1f94f040f8@changeid>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 18 Dec 2023 08:48:00 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=U8eJ3J_zY2uaCYGcEjuxkNeTUd1ir33r1f0Xdk+nD3sQ@mail.gmail.com>
-Message-ID: <CAD=FV=U8eJ3J_zY2uaCYGcEjuxkNeTUd1ir33r1f0Xdk+nD3sQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] drm/bridge: ti-sn65dsi86: Never store more than
- msg->size bytes in AUX xfer
-To: dri-devel@lists.freedesktop.org
-Cc: Guenter Roeck <groeck@chromium.org>, Andrzej Hajda <andrzej.hajda@intel.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
-	Sam Ravnborg <sam@ravnborg.org>, Stephen Boyd <swboyd@chromium.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+References: <20231214144204.2179345-1-khorenko@virtuozzo.com>
+In-Reply-To: <20231214144204.2179345-1-khorenko@virtuozzo.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Mon, 18 Dec 2023 17:48:39 +0100
+Message-ID: <CAKfTPtAqkY+attpekOyjeY10dcwgK0eND5_385cH6+wjR3EkTw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Do not scan non-movable tasks several times
+To: Konstantin Khorenko <khorenko@virtuozzo.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
+	Alexander Atanasov <alexander.atanasov@virtuozzo.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, 14 Dec 2023 at 15:42, Konstantin Khorenko
+<khorenko@virtuozzo.com> wrote:
+>
+> If busiest rq is small, nr_running < SCHED_NR_MIGRATE_BREAK and all
+> tasks are not movable, detach_tasks() should not iterate more than tasks
+> available in the busiest rq.
+>
+> Previously the (env->loop > env->loop_max) condition prevented us from
 
-On Thu, Dec 14, 2023 at 12:38=E2=80=AFPM Douglas Anderson <dianders@chromiu=
-m.org> wrote:
+It's usually better to give the commit directly when we know it :
+Before commit : b0defa7ae03e ("sched/fair: Make sure to try to detach
+at least one movable task"),
+the (env->loop > env->loop_max) condition prevented us from ...
+
+> scanning non-movable tasks more than rq size times, but after we start
+> checking the LBF_ALL_PINNED flag, the "all tasks are not movable" case
+> is under threat.
 >
-> For aux reads, the value `msg->size` indicates the size of the buffer
-> provided by `msg->buffer`. We should never in any circumstances write
-> more bytes to the buffer since it may overflow the buffer.
->
-> In the ti-sn65dsi86 driver there is one code path that reads the
-> transfer length from hardware. Even though it's never been seen to be
-> a problem, we should make extra sure that the hardware isn't
-> increasing the length since doing so would cause us to overrun the
-> buffer.
->
-> Fixes: 982f589bde7a ("drm/bridge: ti-sn65dsi86: Update reply on aux failu=
-res")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+
+Fixes: b0defa7ae03e ("sched/fair: Make sure to try to detach at least
+one movable task")
+
+> Signed-off-by: Konstantin Khorenko <khorenko@virtuozzo.com>
 > ---
+>  kernel/sched/fair.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> (no changes since v2)
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d7a3c63a2171..faa2a765e899 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -11219,7 +11219,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>                 .dst_rq         = this_rq,
+>                 .dst_grpmask    = group_balance_mask(sd->groups),
+>                 .idle           = idle,
+> -               .loop_break     = SCHED_NR_MIGRATE_BREAK,
+>                 .cpus           = cpus,
+>                 .fbq_type       = all,
+>                 .tasks          = LIST_HEAD_INIT(env.tasks),
+> @@ -11265,6 +11264,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>                  * correctly treated as an imbalance.
+>                  */
+>                 env.loop_max  = min(sysctl_sched_nr_migrate, busiest->nr_running);
+> +               /*
+> +                * If busiest rq is small, nr_running < SCHED_NR_MIGRATE_BREAK
+> +                * and all tasks are not movable, detach_tasks() should not
+> +                * iterate more than tasks available in rq.
+> +                */
+> +               env.loop_break = min(SCHED_NR_MIGRATE_BREAK, busiest->nr_running);
+
+Should it be after more_balance: ?
+In case we do "more_balance:" on a new_dst_cpu and it ends up that
+finally there is no more movable task as we released the lock of
+busiest rq in the meantime ?
+
+Also you can remove one more superfluous init of loop_break:
+
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11361,7 +11361,6 @@ static int load_balance(int this_cpu, struct
+rq *this_rq,
+                         */
+                        if (!cpumask_subset(cpus, env.dst_grpmask)) {
+                                env.loop = 0;
+-                               env.loop_break = SCHED_NR_MIGRATE_BREAK;
+                                goto redo;
+                        }
+                        goto out_all_pinned;
+
 >
-> Changes in v2:
-> - Updated patch subject to match ps8640 patch.
+>  more_balance:
+>                 rq_lock_irqsave(busiest, &rf);
+> --
+> 2.39.3
 >
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-
-Since the patch fixes a potential crash, has two Reviews (even if
-they're both from @chromium), and doesn't seem controversial, I didn't
-want a full week and just landed it in drm-misc-fixes. If anyone is
-upset by this then please shout and we can revert or I can post a
-followup patch.
-
-Pushed to drm-misc-fixes:
-
-aca58eac52b8 drm/bridge: ti-sn65dsi86: Never store more than msg->size
-bytes in AUX xfer
 
