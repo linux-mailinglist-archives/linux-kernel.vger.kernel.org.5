@@ -1,94 +1,160 @@
-Return-Path: <linux-kernel+bounces-3249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3828B8169E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:34:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E93C8169EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E75B228317D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43F9C1C227FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D2211CB9;
-	Mon, 18 Dec 2023 09:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2F5125B3;
+	Mon, 18 Dec 2023 09:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="uYDD1Zf2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ixzIFM8A"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2835D12B61;
-	Mon, 18 Dec 2023 09:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Kn4zmaFBjozESWwWrKfESsTCFZ/blBS5KRsj7FAUpT0=; b=uYDD1Zf2+rVDnY4JLZf2awm+dP
-	Nvwdtr9XH3ac4S/0D1GWjUeFg5i3cT4+7nIVquTQ4MNB2Wc7XISjwImK2ixEFci9VLhrXOK++0oUo
-	FlqToatihkMOqW0NPVNhFKpQXYrbv9qZkeMH5e5TEQEyVYZd+lRH/Q4YIiJCl3Gr1KYk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rFA0n-003EBi-V6; Mon, 18 Dec 2023 10:34:09 +0100
-Date: Mon, 18 Dec 2023 10:34:09 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	hkallweit1@gmail.com, corbet@lwn.net, p.zabel@pengutronix.de,
-	f.fainelli@gmail.com, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Message-ID: <b4fe4ac4-9b28-4dba-8287-1af4804eb0be@lunn.ch>
-References: <20231215074005.26976-1-quic_luoj@quicinc.com>
- <20231215074005.26976-15-quic_luoj@quicinc.com>
- <bdfba8a7-9197-4aae-a7f9-6075a375f60b@linaro.org>
- <c3391e33-e770-4c61-855e-d90e82b95f75@quicinc.com>
- <4cb2bd57-f3d3-49f9-9c02-a922fd270572@lunn.ch>
- <ed0dd288-be8a-4161-a19f-2d4d2d17b3ec@quicinc.com>
- <ZXxXzm8hP68KrXYs@shell.armlinux.org.uk>
- <3a40570b-40bf-4609-b1f4-a0a6974accea@quicinc.com>
- <b5ff9f69-e341-4846-bc5a-ebe636b7a71a@lunn.ch>
- <27ee13e7-5073-413c-8481-52b92d7c3687@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4148C11C91;
+	Mon, 18 Dec 2023 09:35:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C3ACC433C7;
+	Mon, 18 Dec 2023 09:35:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702892133;
+	bh=PdHvoka0eRTRzrIhBD8Y+azqZmjNt6H86o7Q4PS3jto=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ixzIFM8AXAn2cja/sTESRTfJoPsg4QgxKJKyvmiQM1CWZvFLAr5MOkpcMN5Ys5906
+	 T8lUM+06OuvSGYR1vOezMXxxqsQquG8879ZlIu4jDA+oxOiue63P+nt0QAXJLhWxjj
+	 3bwrmS3JwSRWLln1vScF91Vne6aa858bo9b3C3EZBPaGmRIS91eu5THp6C1F1xCrAa
+	 kClzMKYkkxYj2vY6CDTStAonyBqcFheLWMSCSp+Zwqk7HBKDH0ghgzyyugA2cOtdny
+	 xgjGGTAbU9lsmnyRKUvlHqbIU27gfNYWiNkdsKdroDVxWtstQUzQM1ztQt6soO5+pJ
+	 4u5RYHjamVwZw==
+Message-ID: <7d3c7ab1-490a-498c-9e15-a33a36788b61@kernel.org>
+Date: Mon, 18 Dec 2023 18:35:30 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <27ee13e7-5073-413c-8481-52b92d7c3687@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] virtio_blk: cleanup zoned device probing
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi
+ <stefanha@redhat.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
+ dm-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-nvme@lists.infradead.org,
+ linux-scsi@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20231217165359.604246-1-hch@lst.de>
+ <20231217165359.604246-2-hch@lst.de>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20231217165359.604246-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> Thanks Andrew for the proposal.
-> For the pure PHY chip qca8084, there is no driver to parse the package
-> level device tree node for common clocks and resets.
+On 2023/12/18 1:53, Christoph Hellwig wrote:
+> Move reading and checking the zoned model from virtblk_probe_zoned_device
+> into the caller, leaving only the code to perform the actual setup for
+> host managed zoned devices in virtblk_probe_zoned_device.
+> 
+> This allows to share the model reading and sharing between builds with
+> and without CONFIG_BLK_DEV_ZONED, and improve it for the
+> !CONFIG_BLK_DEV_ZONED case.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-So you still have not look at the work Christian is doing. You must
-work together with Christian. This driver is not going to be accepted
-unless you do.
+Looks good.
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 
-> > >          ethernet-phy@0 {
-> > >              compatible = "ethernet-phy-id004d.d180";
-> > >              reg = <0>;
-> > >              clocks = <qca8k_nsscc NSS_CC_GEPHY0_SYS_CLK>,
-> > >              clock-names = <"gephy_sys">;
-> > >              resets = <&qca8k_nsscc NSS_CC_GEPHY0_SYS_ARES>,
-> > >                       <&qca8k_nsscc NSS_CC_GEPHY0_ARES>;
-> > >              reset-names = "gephy_sys", "gephy_soft";
+> ---
+>  drivers/block/virtio_blk.c | 50 +++++++++++++++++---------------------
+>  1 file changed, 22 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index d53d6aa8ee69a4..aeead732a24dc9 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -748,22 +748,6 @@ static int virtblk_probe_zoned_device(struct virtio_device *vdev,
+>  				       struct request_queue *q)
+>  {
+>  	u32 v, wg;
+> -	u8 model;
+> -
+> -	virtio_cread(vdev, struct virtio_blk_config,
+> -		     zoned.model, &model);
+> -
+> -	switch (model) {
+> -	case VIRTIO_BLK_Z_NONE:
+> -	case VIRTIO_BLK_Z_HA:
+> -		/* Present the host-aware device as non-zoned */
+> -		return 0;
+> -	case VIRTIO_BLK_Z_HM:
+> -		break;
+> -	default:
+> -		dev_err(&vdev->dev, "unsupported zone model %d\n", model);
+> -		return -EINVAL;
+> -	}
+>  
+>  	dev_dbg(&vdev->dev, "probing host-managed zoned device\n");
+>  
+> @@ -846,16 +830,9 @@ static inline void virtblk_revalidate_zones(struct virtio_blk *vblk)
+>  static inline int virtblk_probe_zoned_device(struct virtio_device *vdev,
+>  			struct virtio_blk *vblk, struct request_queue *q)
+>  {
+> -	u8 model;
+> -
+> -	virtio_cread(vdev, struct virtio_blk_config, zoned.model, &model);
+> -	if (model == VIRTIO_BLK_Z_HM) {
+> -		dev_err(&vdev->dev,
+> -			"virtio_blk: zoned devices are not supported");
+> -		return -EOPNOTSUPP;
+> -	}
+> -
+> -	return 0;
+> +	dev_err(&vdev->dev,
+> +		"virtio_blk: zoned devices are not supported");
+> +	return -EOPNOTSUPP;
+>  }
+>  #endif /* CONFIG_BLK_DEV_ZONED */
+>  
+> @@ -1570,9 +1547,26 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  	 * placed after the virtio_device_ready() call above.
+>  	 */
+>  	if (virtio_has_feature(vdev, VIRTIO_BLK_F_ZONED)) {
+> -		err = virtblk_probe_zoned_device(vdev, vblk, q);
+> -		if (err)
+> +		u8 model;
+> +
+> +		virtio_cread(vdev, struct virtio_blk_config, zoned.model,
+> +				&model);
+> +		switch (model) {
+> +		case VIRTIO_BLK_Z_NONE:
+> +		case VIRTIO_BLK_Z_HA:
+> +			/* Present the host-aware device as non-zoned */
+> +			break;
+> +		case VIRTIO_BLK_Z_HM:
+> +			err = virtblk_probe_zoned_device(vdev, vblk, q);
+> +			if (err)
+> +				goto out_cleanup_disk;
+> +			break;
+> +		default:
+> +			dev_err(&vdev->dev, "unsupported zone model %d\n",
+> +				model);
+> +			err = -EINVAL;
+>  			goto out_cleanup_disk;
+> +		}
+>  	}
+>  
+>  	err = device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
 
-Which of these properties exist for the Pure PHY device? Which exist
-for the integrated switch? And by that, i mean which are actual pins
-on the PHY device? We need the device tree binding to list which
-properties are required for each use case.
+-- 
+Damien Le Moal
+Western Digital Research
 
-	   Andrew
 
