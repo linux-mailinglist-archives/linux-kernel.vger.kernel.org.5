@@ -1,129 +1,120 @@
-Return-Path: <linux-kernel+bounces-3894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D29F8174DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:10:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75B568174ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F7972849E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:10:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6D301C23A74
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5781D14B;
-	Mon, 18 Dec 2023 15:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92FE42372;
+	Mon, 18 Dec 2023 15:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FCeuPAZQ"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Wm6IcXzh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FD83A1C7;
-	Mon, 18 Dec 2023 15:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702912203; x=1734448203;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=H2JiMZF2Ij39VAVR9TnJ4A+j9YTlsOjpmC1hsIFWk04=;
-  b=FCeuPAZQXo6EDHVAwk6JCXJV49ZKDukliJ15s4RuAwlsX/NwLC2h6uf8
-   eNfToHwPPKk0ew9ELhGgAK0eRq4QhNNVf8ZlkpqhdapBGuaLlhJ9YfG64
-   o3ZZamaLrFGoN+0yP0i1qo/7ViwxwBSb+CRtD2B4cd6VUGGbVf9Nwv1PG
-   PAPkM9J6hOUQ7Bwci6ezN+I1ig4KtntJUYtRuQJf2Ckc72/54/5Hs3gHk
-   MTNu6+kJBbZH07+UvTMYUxiaEKNTCyi9ZGZZ9cI/APYtbGLYOyVF6Ygx0
-   PWC8QCxjpvd0wLlk10KSovu11+n+47a5fWUgOIyIh9sOE7GKUnWyCbfBS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="14203970"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="14203970"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 07:10:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="1106975744"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="1106975744"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 07:09:57 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rFFFh-00000006yC9-47z3;
-	Mon, 18 Dec 2023 17:09:53 +0200
-Date: Mon, 18 Dec 2023 17:09:53 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Dhruva Gole <d-gole@ti.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Johan Hovold <johan@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: Re: [RFC PATCH v5 1/6] printk: Save console options for
- add_preferred_console_match()
-Message-ID: <ZYBgwbYmF5WsFVic@smile.fi.intel.com>
-References: <20231218071020.21805-1-tony@atomide.com>
- <20231218071020.21805-2-tony@atomide.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F9A3A1B6;
+	Mon, 18 Dec 2023 15:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI8qL59016655;
+	Mon, 18 Dec 2023 09:12:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=d
+	unokV4spakSd7d2fILB4jcGfewzshlj//5mWZatk7M=; b=Wm6IcXzhaol1k7S4B
+	avshHTAzPuA76hwx7sT3P1kSLTONNHDHniT+rrul14emGe5Mp7/SlUu95MoG3bcu
+	RT7/K59DyhU3YqZ+jul+hE14wRncxEgdJVg9zyr+Y+ae3f/Vzz9hcZEayurhfOvw
+	5ELOCVzGo2oQD1hGcc1jtiTf4ZJCncLHBT67z57vbSEWfYw/Qcn7KDDJyVLd/MGg
+	lAJZ6ym9ytk18WOJpUfXnwNzXn00+kefq5O22sXkGA3yE8K2h8dcGjGKMMKnW+Xu
+	CHMiDRimLoSvJz3NZzojwYyRHKByzGtuDiD7BPanVd0YwsHWnHWVEUt/LbGIME9U
+	1zpdg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3v196natsr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 09:12:48 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
+ 2023 15:12:47 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Mon, 18 Dec 2023 15:12:47 +0000
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.77])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E471615A0;
+	Mon, 18 Dec 2023 15:12:46 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Stefan
+ Binding" <sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 0/7] Add support for various laptops using CS35L41 HDA without _DSD
+Date: Mon, 18 Dec 2023 15:12:14 +0000
+Message-ID: <20231218151221.388745-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218071020.21805-2-tony@atomide.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: QpRVrcYfWWlre1f6BRHgOCDEVys8zboe
+X-Proofpoint-GUID: QpRVrcYfWWlre1f6BRHgOCDEVys8zboe
+X-Proofpoint-Spam-Reason: safe
 
-On Mon, Dec 18, 2023 at 09:09:48AM +0200, Tony Lindgren wrote:
-> Driver subsystems may need to translate the preferred console name to the
-> character device name used. We already do some of this in console_setup()
-> with a few hardcoded names, but that does not scale well.
-> 
-> The console options are parsed early in console_setup(), and the consoles
-> are added with __add_preferred_console(). At this point we don't know much
-> about the character device names and device drivers getting probed.
-> 
-> To allow driver subsystems to set up a preferred console, let's save the
-> kernel command line console options. To add a preferred console from a
-> driver subsystem with optional character device name translation, let's
-> add a new function add_preferred_console_match().
-> 
-> This allows the serial core layer to support console=DEVNAME:0.0 style
-> hardware based addressing in addition to the current console=ttyS0 style
-> naming. And we can start moving console_setup() character device parsing
-> to the driver subsystem specific code.
-> 
-> We use a separate array from the console_cmdline array as the character
-> device name and index may be unknown at the console_setup() time. And
-> eventually there's no need to call __add_preferred_console() until the
-> subsystem is ready to handle the console.
-> 
-> Adding the console name in addition to the character device name, and a
-> flag for an added console, could be added to the struct console_cmdline.
-> And the console_cmdline array handling could be modified accordingly. But
-> that complicates things compared saving the console options, and then
-> adding the consoles when the subsystems handling the consoles are ready.
+The CS35L41 HDA driver requires various system defined properties to configure
+the driver for an individual system. For some laptops, these properties are
+missing in the BIOS. To be able to support these laptops, there is a mechanism
+in the driver to get this configuration from a lookup table, to be able to add
+or patch _DSD as necessary.
 
-...
+However this mechanism currently only allows for laptops to be patched one at
+a time, however, in the case where there are many laptops which need to be
+configured generically, a generic function has been added, with an additional
+lookup table to the individual laptops, indexed by SSID.
 
-> +#include <linux/console.h>
-> +#include <linux/init.h>
-> +#include <linux/string.h>
+To support laptops using SPI without _DSD, an additional workaround is needed
+to be able to support the SPI Chip Select GPIOs whose resources are defined
+inside the _CRS for the Speaker ACPI Node. This workaround only works for
+SPI laptops which contain up to 2 amps, since the SPI controller would not
+allow more than 2 amps to be instantiated without the cs-gpios entry in
+_DSD.
 
-A nit: uXX require types.h.
+These patches add support for various ASUS laptops without _DSD, but the
+framework added here allows for support for more laptops in the future
+for other manufacturers. Support for laptops without _DSD from other
+manufacturers is coming in the future.
 
-> +#include <asm/errno.h>
+Note: for systems which use modified _DSD to emulate the missing _DSD,
+these patches are incompatible, and the modified _DSD must be removed in
+order for the support through this framework to work for those laptops.
+
+Stefan Binding (7):
+  ALSA: hda: cs35l41: Add config table to support many laptops without
+    _DSD
+  ALSA: hda: cs35l41: Support additional ASUS ROG 2023 models
+  ALSA: hda/realtek: Add quirks for ASUS ROG 2023 models
+  ALSA: hda: cs35l41: Support additional ASUS Zenbook 2022 Models
+  ALSA: hda/realtek: Add quirks for ASUS Zenbook 2022 Models
+  ALSA: hda: cs35l41: Support additional ASUS Zenbook 2023 Models
+  ALSA: hda/realtek: Add quirks for ASUS Zenbook 2023 Models
+
+ sound/pci/hda/cs35l41_hda.c          |   2 +
+ sound/pci/hda/cs35l41_hda.h          |   5 +-
+ sound/pci/hda/cs35l41_hda_property.c | 362 ++++++++++++++++++++++++---
+ sound/pci/hda/patch_realtek.c        |  39 ++-
+ 4 files changed, 353 insertions(+), 55 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
 
