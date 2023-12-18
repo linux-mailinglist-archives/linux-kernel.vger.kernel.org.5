@@ -1,104 +1,153 @@
-Return-Path: <linux-kernel+bounces-3831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DBBC81737C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE4E581737E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 422D61C251E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:23:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64641C231EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD13E1D13B;
-	Mon, 18 Dec 2023 14:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9026C1D141;
+	Mon, 18 Dec 2023 14:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gr0maGAL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fx6rk/Y8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE66C129ED2
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c2308faedso37107915e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:23:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702909408; x=1703514208; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LzQc1yULZChaDLQ9G/ihl8REJbHZhov+DE7MK87TVb0=;
-        b=gr0maGALSR52Eyn6HZ0rH2WG9HnEzVFbQ2nQoUbJlErLmPLZrJ5rn+w8wH3L7hr5f1
-         uyeuM/Kqz2jJb9uVfttqB3VMiff1lJvGo88GJKTHjtj0cIgFsme++XIE422ZRZytO97F
-         T8CjJOoC3KyuZLAknDZ1/JRHefSV0HYfhF+UBtJkBCQJxSpJV7b4c8YJdDOLRTI+sM+E
-         +yIRReU4VzDux188nZBBepttBd1sYYfD+u8rD1FSLQwIfC+HnT7MN1u98fUhwS68U/HV
-         tBvfICpNi1I1WcrdbAEM9KL7HG9X/wWmq2vNj9900Xat8rbkx9s+QNiK1jCx3JHFYbJt
-         8bpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702909408; x=1703514208;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LzQc1yULZChaDLQ9G/ihl8REJbHZhov+DE7MK87TVb0=;
-        b=SdJokm268tgcYEkv3ETOLQvG+35WU2HkYuntr0DYF6FApakBkBqCWWrCHKg4HzBWw6
-         P2Fp1t3lXRRdfMhDcDSgk9HhHFMJI1Qo2Ae/UFSe0xFEE6nHSKGmApmK707Gy8gY+64y
-         7SngtGtOlI7Pz81b0GzyX63HhB7lu1AK63fnadrRGpDv/cU7LwG/Hf80sj2nGSSh3yJv
-         12cGn4NbxGSzcVGZI4MneqmpksWfKB+Avr8EVXI6JNIk7ZjJPCEN+8D4VFUSPAfQ6qwx
-         iLExdgGdIe4jGwzA7j7UeGnWTvXnnArh1x/B92/CmyQ4GykWQvOCCBFxxcRmRXPf7YJ7
-         iAZw==
-X-Gm-Message-State: AOJu0YwA84jrKgt+b4FcRehO/+ZcUTDfwHuPnMGy68HXXZu6qZtAIAkb
-	7Ydr0NQaeToj3f2OcWgzpLF8MV9axgnc4+cdVuNl3w==
-X-Google-Smtp-Source: AGHT+IFjfzSrKy1VCxahCZN8bB8Pt2jUcoyta7zgHgxmTr6TUO/ufFtIA/WrJxi9JIIbR7og9rPgwtArG7ubGMx13Uk=
-X-Received: by 2002:a05:600c:4d0e:b0:40b:5e1e:cf1 with SMTP id
- u14-20020a05600c4d0e00b0040b5e1e0cf1mr7965342wmp.44.1702909408123; Mon, 18
- Dec 2023 06:23:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7EE129EFB;
+	Mon, 18 Dec 2023 14:25:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA25C433C8;
+	Mon, 18 Dec 2023 14:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702909500;
+	bh=SUEB88NGJGLKREuACm730d4dCH16uYesDGk4fSzM/pI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fx6rk/Y84L5VDkdCG25uAnfxUxGjEcOFVXTvOGMBCVS/6FOHNblv75dzsh5kQ0B3d
+	 9d7tRccUF0l2vUl5jHiukNqelBSbN2uwowEfcAngwvLwsDVxoOGv0SNtidnjjKh7Vm
+	 AooJ+1b1GALB9Uq9CIdoGnEhJC1Xw50ZBICpwBseGudCoDvc3UPgsl0HTfZ3VKL6t7
+	 EGw0VNhhNHimWD/KiqGfKAekZ9msIZTf+5naPVywq+NnClHzinDEt8KEy3QIUeGHGk
+	 9tilaN5KFJxpn/h1959jo/3Bzp5lZbwJqmRGi8X9f6mdposr3ud7Jxe5TQEuqoMsHR
+	 oqstgebKZ++lQ==
+Date: Mon, 18 Dec 2023 23:24:55 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/2] ring-buffer: Replace rb_time_cmpxchg() with
+ rb_time_cmp_and_update()
+Message-Id: <20231218232455.03aa6506f855109476e34212@kernel.org>
+In-Reply-To: <20231215165628.096822746@goodmis.org>
+References: <20231215165512.280088765@goodmis.org>
+	<20231215165628.096822746@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231218141645.2548743-1-alpic@google.com>
-In-Reply-To: <20231218141645.2548743-1-alpic@google.com>
-From: Alfred Piccioni <alpic@google.com>
-Date: Mon, 18 Dec 2023 15:22:50 +0100
-Message-ID: <CALcwBGDoEjyfAnYHaCCqULa+dwRyw3spHijUXwJ_LAQp=oV-pg@mail.gmail.com>
-Subject: Re: [PATCH] SELinux: Introduce security_file_ioctl_compat hook
-To: Paul Moore <paul@paul-moore.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Eric Paris <eparis@parisplace.org>
-Cc: stable@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> s/emmits/emits/
+On Fri, 15 Dec 2023 11:55:13 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Fixed.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> There's only one place that performs a 64-bit cmpxchg for the timestamp
+> processing. The cmpxchg is only to set the write_stamp equal to the
+> before_stamp, and if it doesn't get set, then the next event will simply
+> be forced to add an absolute timestamp.
+> 
+> Given that 64-bit cmpxchg is expensive on 32-bit, and the current
+> workaround uses 3 consecutive 32-bit cmpxchg doesn't make it any faster.
+> It's best to just not do the cmpxchg as a simple compare works for the
+> accuracy of the timestamp. The only thing that will happen without the
+> cmpxchg is the prepended absolute timestamp on the next event which is not
+> that big of a deal as the path where this happens is seldom hit because it
+> requires an interrupt to happen between a few lines of code that also
+> writes an event into the same buffer.
+> 
+> With this change, the 32-bit rb_time_t workaround can be removed.
+> 
 
-> It doesn't (or shouldn't) replace security_file_ioctl, and the hook
-> doesn't appear to be conditional on CONFIG_COMPAT per se.
-> It is a new hook that is called from the compat ioctl syscall. The old
-> hook continues to be used from the regular ioctl syscall and
-> elsewhere.
+Hmm, but this patch itself is just moving rb_time_cmpxchg() in the new
+rb_time_cmp_and_update() function. The actual change has been done
+in the next patch. I think there is no reason to split this from the
+second one...
 
-Yup, reworded to be more correct. Partially lack of understanding on
-my part of how the ioctl syscalls were being made.
+Isn't this part actual change?
 
-> I don't understand why you made this change, possibly a leftover of an
-> earlier version of the patch that tried to replace
-> security_file_ioctl() everywhere?
+>  static bool rb_time_cmp_and_update(rb_time_t *t, u64 expect, u64 set)
+>  {
+> -	return rb_time_cmpxchg(t, expect, set);
+> +#ifdef RB_TIME_32
+> +	return expect == READ_ONCE(t->time);
+> +#else
+> +	return local64_try_cmpxchg(&t->time, &expect, set);
+> +#endif
+>  }
 
-Correct. Forgot to go back and remove it. Fixed.
+Thank you,
 
-> By the way, for extra credit, you could augment the ioctl tests in the
-> selinux-testsuite to also exercise this new hook and confirm that it
-> works correctly. See
-> https://github.com/SELinuxProject/selinux-testsuite particularly
-> tests/ioctl and policy/test_ioctl.te. Feel free to ask for help on
-> that.
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ring_buffer.c | 23 ++++++++++++++++++++---
+>  1 file changed, 20 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 1a26b3a1901f..c6842a4331a9 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -762,6 +762,15 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+>  }
+>  #endif
+>  
+> +/*
+> + * Returns true if t == expect, and if possible will update with set,
+> + * but t is not guaranteed to be updated even if this returns true
+> + */
+> +static bool rb_time_cmp_and_update(rb_time_t *t, u64 expect, u64 set)
+> +{
+> +	return rb_time_cmpxchg(t, expect, set);
+> +}
+> +
+>  /*
+>   * Enable this to make sure that the event passed to
+>   * ring_buffer_event_time_stamp() is not committed and also
+> @@ -3622,9 +3631,17 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+>  		barrier();
+>   /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+>  		    info->after < ts &&
+> -		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
+> -				    info->after, ts)) {
+> -			/* Nothing came after this event between C and E */
+> +		    rb_time_cmp_and_update(&cpu_buffer->write_stamp,
+> +					   info->after, ts)) {
+> +			/*
+> +			 * Nothing came after this event between C and E it is
+> +			 * safe to use info->after for the delta.
+> +			 * The above rb_time_cmp_and_update() may or may not
+> +			 * have updated the write_stamp. If it did not then
+> +			 * the next event will simply add an absolute timestamp
+> +			 * as the write_stamp will be different than the
+> +			 * before_stamp.
+> +			 */
+>  			info->delta = ts - info->after;
+>  		} else {
+>  			/*
+> -- 
+> 2.42.0
+> 
+> 
 
-I do like extra credit. I'll take a look and see if it's something I
-can tackle. I'm primarily doing ad hoc checks on Android devices, so
-I'm unsure how easy it will be for me to run the suite. I'll get back
-to you shortly on that.
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
