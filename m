@@ -1,86 +1,173 @@
-Return-Path: <linux-kernel+bounces-3012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 354BD816619
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:47:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7027F81661C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDB43B21ADE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:47:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3003C1F21798
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2892A63D6;
-	Mon, 18 Dec 2023 05:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51FD63DD;
+	Mon, 18 Dec 2023 05:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="VPQUMJca"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="AWD1oy6q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D95263C9
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:46:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D594C433C8;
-	Mon, 18 Dec 2023 05:46:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1702878417;
-	bh=Aitsqp9o/OwmXfDwBOhtyQ3t1dhttz5cuHNKGQ3/Lq0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=VPQUMJcaXqkA6kWtQFYNOCoUb70Yg8hE3wmM4LgkM6VkCgKVGs4KvRQ9/KuRM5C/F
-	 aGCCSNuKoRCcWD6LA60b3Bd/2fL7ectZLVtfa2QyXKAU+WHPvcddnLcOL1NzgSOGyW
-	 EDCfAQwGDTpFV8QKiqsQr+Fb/u6LNLr4v3Bi0m+w=
-Date: Sun, 17 Dec 2023 21:46:56 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Yu Zhao
- <yuzhao@google.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Jesse Barnes <jsbarnes@google.com>, Suren Baghdasaryan <surenb@google.com>,
- Guru Anbalagane <gurua@google.com>, David Rientjes <rientjes@google.com>
-Subject: Re: [GIT PULL] hotfixes for 6.7-rc6
-Message-Id: <20231217214656.ee095a1df467b745ad1ca75e@linux-foundation.org>
-In-Reply-To: <ZX8WY7s76KYr3jRE@casper.infradead.org>
-References: <20231215071604.946a433bbc05a6409faf5a33@linux-foundation.org>
-	<CAHk-=wjWJgWzOf9MCuiE0oDsF6cCCn7KKDc_xDN6Q3kWNEHKLQ@mail.gmail.com>
-	<20231215122251.bad09400b337dfb1965f6976@linux-foundation.org>
-	<CAOUHufbcB9Lxeez=NcUY4uzxyX6x71dy2N0SMgj=ALooq+MetQ@mail.gmail.com>
-	<CAHk-=wgWwyvzcG9YiEAv2X7XivH-zqLLxeJ+A6EpMp+EA3o_iw@mail.gmail.com>
-	<ZX8WY7s76KYr3jRE@casper.infradead.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F7D63AA;
+	Mon, 18 Dec 2023 05:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1702878493;
+	bh=6EkdkOoPvJi8d4K4K1G/cZM8HRKq5yRNGdpX+aZ6Yjc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=AWD1oy6qUt+uq+WdrOBJGVSWoBWcE8iN1lRseSLkdXdjT3Dg3RBcRkquxcNNR2ptw
+	 Zt1TNoLujVn4cH9w0TxgFERKNiNColD9ZA/9jRILLqgRBICquQAH+j6Cjq2Qc9M6hq
+	 WLT8ZHQo7NH+2fN0Pry2G0wS+DjuEwrs9R+K/zA77PnUIHXDsjwK0oxdupHDk+OHwe
+	 zuIkPvvk+kgwTSwqA88mxNQhR0OWitMux3EKrMjRhGSpOnwSST5qHBurWXdkJhqQH5
+	 65SXfU+sMNw+vl7fCYHE2o/Mw1h3ilsRKFHKaWT0aDrm2Q1CV+m4niwetyib5PAG5T
+	 vxAT3EAOu87VQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4StplK15nmz4xCp;
+	Mon, 18 Dec 2023 16:48:13 +1100 (AEDT)
+Date: Mon, 18 Dec 2023 16:48:12 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Rob Herring <robh@kernel.org>, Greg KH <greg@kroah.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Kyle Tso <kyletso@google.com>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the devicetree tree with the usb tree
+Message-ID: <20231218164812.327db2af@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/TpXr3zQnUF_Qfml_0=hY_HS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/TpXr3zQnUF_Qfml_0=hY_HS
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 17 Dec 2023 15:40:19 +0000 Matthew Wilcox <willy@infradead.org> wrote:
+Hi all,
 
-> On Sat, Dec 16, 2023 at 04:16:45PM -0800, Linus Torvalds wrote:
-> > On Fri, 15 Dec 2023 at 20:57, Yu Zhao <yuzhao@google.com> wrote:
-> > >
-> > > There has been a short-term plan, i.e., moving some of folio->flags to
-> > > the lower bits of folio->lru so that we can drop the Kconfig
-> > > constraint. I have discussed this with Willy but never acted on it. My
-> > > priority has been to surface more of our ideas that can potentially
-> > > save users money on memory to the community. I'm CC'ing our team
-> > > leads. Please feel free to let us know your preference on the
-> > > priority.
-> > 
-> > This is definitely a "eventually" thing on my wishlist, so I was more
-> > just wanting to hear that there is a plan, and somebody working on
-> > it..
-> 
-> "eventually" we should get rid of LRUs altogether.  They're no good for
-> a modern CPU.
-> 
-> https://lore.kernel.org/linux-mm/ZTc7SHQ4RbPkD3eZ@casper.infradead.org/
-> 
+Today's linux-next merge of the devicetree tree got a conflict in:
 
-OK, but...
+  Documentation/devicetree/bindings/connector/usb-connector.yaml
 
-What of the cost of physical I/O?  If a computationally more expensive
-scan results in less I/O (hopefully) then the balance is altered?
+between commits:
 
+  76cd718a9ffd ("dt-bindings: connector: usb: add accessory mode descriptio=
+n")
+  d1756ac67e7f ("dt-bindings: connector: usb: add altmodes description")
+
+from the usb tree and commit:
+
+  0d3a771610d0 ("dt-bindings: connector: Add child nodes for multiple PD ca=
+pabilities")
+
+from the devicetree tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc Documentation/devicetree/bindings/connector/usb-connector.yaml
+index f5966b3a2d9a,5a93cdb9fdbc..000000000000
+--- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
++++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+@@@ -166,49 -141,6 +141,44 @@@ properties
+      maxItems: 6
+      $ref: /schemas/types.yaml#/definitions/uint32-array
+ =20
+-   op-sink-microwatt:
+-     description: Sink required operating power in microwatt, if source ca=
+n't
+-       offer the power, Capability Mismatch is set. Required for power sin=
+k and
+-       power dual role.
+-=20
+ +  accessory-mode-audio:
+ +    type: boolean
+ +    description: Whether the device supports Audio Adapter Accessory Mode=
+. This
+ +      is only necessary if there are no other means to discover supported
+ +      alternative modes (e.g. through the UCSI firmware interface).
+ +
+ +  accessory-mode-debug:
+ +    type: boolean
+ +    description: Whether the device supports Debug Accessory Mode. This
+ +      is only necessary if there are no other means to discover supported
+ +      alternative modes (e.g. through the UCSI firmware interface).
+ +
+ +  altmodes:
+ +    type: object
+ +    description: List of Alternative Modes supported by the schematics on=
+ the
+ +      particular device. This is only necessary if there are no other mea=
+ns to
+ +      discover supported alternative modes (e.g. through the UCSI firmware
+ +      interface).
+ +
+ +    additionalProperties: false
+ +
+ +    patternProperties:
+ +      "^(displayport)$":
+ +        type: object
+ +        description:
+ +          A single USB-C Alternative Mode as supported by the USB-C conne=
+ctor logic.
+ +
+ +        additionalProperties: false
+ +
+ +        properties:
+ +          svid:
+ +            $ref: /schemas/types.yaml#/definitions/uint16
+ +            description: Unique value assigned by USB-IF to the Vendor / =
+AltMode.
+ +            enum: [ 0xff01 ]
+ +          vdo:
+ +            $ref: /schemas/types.yaml#/definitions/uint32
+ +            description: VDO returned by Discover Modes USB PD command.
+ +
+    port:
+      $ref: /schemas/graph.yaml#/properties/port
+      description: OF graph bindings modeling a data bus to the connector, =
+e.g.
+
+--Sig_/TpXr3zQnUF_Qfml_0=hY_HS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV/3RwACgkQAVBC80lX
+0GzA7Qf+Lo4E+AtV95EJ9wbkn8X8Lqlfa/tf45BG+CiononD0HBknFipzc26RiUa
+ap1lzfDg9zzP1CRStffg5XzLxBJMloENVGjT/biAk7JEg+tqBZ2AGwDdKExr7Qdn
+chiH7vscqgGi+JO8i3bnz+OLxZWRIYL8WyQ9f1Hjo+0e3non32XRP+rN9Wn/M3v7
+emgRqvEQENj2Q5WpAFRdyIMLBS4IXN/0NvQq1WSaA+P9ovqVlXwQeLs4dMXL75Yc
+KrO3aHAQ7nICA+1ToeERvJt9abAHUBO+6+PDDn7qAEqQuIGYDm63mDh+l2F61M8b
+1Y++4qOl3wY5s0G/9CEULRGDRe2NIQ==
+=9+k4
+-----END PGP SIGNATURE-----
+
+--Sig_/TpXr3zQnUF_Qfml_0=hY_HS--
 
