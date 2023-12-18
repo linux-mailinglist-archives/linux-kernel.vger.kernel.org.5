@@ -1,122 +1,95 @@
-Return-Path: <linux-kernel+bounces-4154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACFD181788D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:22:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF79817892
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C433B23274
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:22:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B5701C24042
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FE75D72D;
-	Mon, 18 Dec 2023 17:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03BF5D742;
+	Mon, 18 Dec 2023 17:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y2yQkEnF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BfAB2A/H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A220B5BF9C;
-	Mon, 18 Dec 2023 17:20:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3A77C433C7;
-	Mon, 18 Dec 2023 17:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702920039;
-	bh=mxQodVK8Qo9iWtDoh+f+wkylLrmy3Zyz6oU2mXSN1t0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Y2yQkEnF95YPtGg+mLklR/7o4FtDTIxrwVBi4PYmUk+YTwLBqcT7WpUmFm/jV8+sv
-	 VNScfR1KSaABDVNP9JzH40oMDEgbQr6DSyb42bkfc528E8CibzpjHYXJG8Su61gz1/
-	 YCQZu5B7CIfpOK+Uyafa7Xqlub6I9MSbItN2deXY6MgKddE3LyJymziUMMLS8Sqp+W
-	 wqLFfV48vB88DppDq3YBH7TBO5i/ieDZ8991cFtCCivIAKmn1og8tkYY+RmZlitg3H
-	 ifkaTN7jH9ze3QcF9+ZwBiUXiQIFApfhUskYpeIsCm+wuJlAMRpB33E9blOO8K2kbF
-	 ovcDOXfb5uHIw==
-Message-ID: <a205c24f-f170-47eb-a21e-1809290fa7b2@kernel.org>
-Date: Mon, 18 Dec 2023 19:20:33 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3F45A867;
+	Mon, 18 Dec 2023 17:21:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-28b4563a03aso927175a91.0;
+        Mon, 18 Dec 2023 09:21:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702920090; x=1703524890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IQ+d8lXK8t7tOQUPKwNZqHs+rv31L7RvHxCGty4EDjQ=;
+        b=BfAB2A/H2yDFX6dJgfiiISJ4I/auxguCWTmKfZI4t4s+TQD7foHIFtgoXapgbWJ+rQ
+         zxDYabstJyzK4lZaXKk1ena+9z5QRuKUpBddkKRqDtDdk35qUlcVxP29okMLZXe7TEs/
+         1jOOIJ5gFKqG1So7PJNiTE5vggbQuCR+JM17IYdjGncOw0AA3nXWIvol6L79OzeaFidr
+         ummEMXPw/ScrUbZ/mGFSGO7tQr5xatS2G6WwKWreaUTHGa9jCr1XzJG4yv5vq/ITz94p
+         9WByGpWEnYSXzhFWbZzG0r5fjkJrezeP3b2Z3qO6nBKJoyfGxkjalr6qMO6z0L/a65G1
+         31FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702920090; x=1703524890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IQ+d8lXK8t7tOQUPKwNZqHs+rv31L7RvHxCGty4EDjQ=;
+        b=asAVnCW5EuDmf33HylUkiD1sPyer0C1e0VIWaxtrVfcbJz6ulz/rcDA1b906A+oWc/
+         VAkCvV8Cj8B3AJds2JgtHxhd7WCMpzuG1KECzMFik9/3+DZu7mmIvL6ra6N99E5DCQWS
+         YSXj5l599jGet/NkA/YAwkHJFnT307aHzk9daiKFSIRduVJO22aqvf0pa0rdxgrQ8Kh0
+         IQsgjnn71vDFzo0hs90uN6wyCNehxuk3hhrRST2BSD0AWPYxS0NDH2iTP6zpMyL4sYDm
+         wVpn9FsjI2O1siqMuoWEPecZklL2KhHy+TZvsxglRJMtCIOLR2TINI3gjfqxyeLSkJOB
+         fKCg==
+X-Gm-Message-State: AOJu0YwmVP8JTzG/QTd/VOtA4il/YXrEhe78fLiD3qs4dIsUK5iTdspe
+	/P7ZozLnuPDamRk6H7RX6NQQyRP6Z/6fnIA0J8k=
+X-Google-Smtp-Source: AGHT+IGJW2/B2t4Qp6LNhtCnwLtLP+FY/akR5Dr+slxmOtIJLVsP964rNYKe6kurtd9STJLyyUO3NKHkMR6dwVBC5Jw=
+X-Received: by 2002:a17:90b:1495:b0:28b:4d97:e53c with SMTP id
+ js21-20020a17090b149500b0028b4d97e53cmr978070pjb.99.1702920089836; Mon, 18
+ Dec 2023 09:21:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v10 08/10] net: ethernet: ti: am65-cpsw: add
- mqprio qdisc offload in channel mode
-Content-Language: en-US
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, shuah@kernel.org, vladimir.oltean@nxp.com
-Cc: s-vadapalli@ti.com, r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com,
- horms@kernel.org, p-varis@ti.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20231218125513.52337-1-rogerq@kernel.org>
- <20231218125513.52337-9-rogerq@kernel.org>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231218125513.52337-9-rogerq@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231212131712.1816324-1-maxime.coquelin@redhat.com> <20231212131712.1816324-5-maxime.coquelin@redhat.com>
+In-Reply-To: <20231212131712.1816324-5-maxime.coquelin@redhat.com>
+From: Stephen Smalley <stephen.smalley.work@gmail.com>
+Date: Mon, 18 Dec 2023 12:21:18 -0500
+Message-ID: <CAEjxPJ6zMbM5jPkLC_wDHsXWXofWcDntHRDWQTS6hojECVJPTw@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] vduse: Add LSM hook to check Virtio device type
+To: Maxime Coquelin <maxime.coquelin@redhat.com>
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, 
+	eparis@parisplace.org, xieyongji@bytedance.com, 
+	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
+	david.marchand@redhat.com, lulu@redhat.com, casey@schaufler-ca.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Dec 12, 2023 at 8:17=E2=80=AFAM Maxime Coquelin
+<maxime.coquelin@redhat.com> wrote:
+>
+> This patch introduces a LSM hook for devices creation,
+> destruction (ioctl()) and opening (open()) operations,
+> checking the application is allowed to perform these
+> operations for the Virtio device type.
 
-
-On 18/12/2023 14:55, Roger Quadros wrote:
-> From: Grygorii Strashko <grygorii.strashko@ti.com>
-> 
-> This patch adds MQPRIO Qdisc offload in full 'channel' mode which allows
-> not only setting up pri:tc mapping, but also configuring TX shapers
-> (rate-limiting) on external port FIFOs.
-> 
-> The MQPRIO Qdisc offload is expected to work with or without VLAN/priority
-> tagged packets.
-> 
-> The CPSW external Port FIFO has 8 Priority queues. The rate-limit can be
-> set for each of these priority queues. Which Priority queue a packet is
-> assigned to depends on PN_REG_TX_PRI_MAP register which maps header
-> priority to switch priority.
-> 
-> The header priority of a packet is assigned via the RX_PRI_MAP_REG which
-> maps packet priority to header priority.
-> 
-> The packet priority is either the VLAN priority (for VLAN tagged packets)
-> or the thread/channel offset.
-> 
-> For simplicity, we assign the same priority queue to all queues of a
-> Traffic Class so it can be rate-limited correctly.
-> 
-> Configuration example:
->  ethtool -L eth1 tx 5
->  ethtool --set-priv-flags eth1 p0-rx-ptype-rrobin off
-> 
->  tc qdisc add dev eth1 parent root handle 100: mqprio num_tc 3 \
->  map 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 \
->  queues 1@0 1@1 1@2 hw 1 mode channel \
->  shaper bw_rlimit min_rate 0 100mbit 200mbit max_rate 0 101mbit 202mbit
-> 
->  tc qdisc replace dev eth2 handle 100: parent root mqprio num_tc 1 \
->  map 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 hw 1
-> 
->  ip link add link eth1 name eth1.100 type vlan id 100
->  ip link set eth1.100 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7
-> 
-> In the above example two ports share the same TX CPPI queue 0 for low
-> priority traffic. 3 traffic classes are defined for eth1 and mapped to:
-> TC0 - low priority, TX CPPI queue 0 -> ext Port 1 fifo0, no rate limit
-> TC1 - prio 2, TX CPPI queue 1 -> ext Port 1 fifo1, CIR=100Mbit/s, EIR=1Mbit/s
-> TC2 - prio 3, TX CPPI queue 2 -> ext Port 1 fifo2, CIR=200Mbit/s, EIR=2Mbit/s
-> 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
->  drivers/net/ethernet/ti/Kconfig          |   3 +-
->  drivers/net/ethernet/ti/am65-cpsw-nuss.c |   3 +
->  drivers/net/ethernet/ti/am65-cpsw-qos.c  | 255 ++++++++++++++++++++++-
->  drivers/net/ethernet/ti/am65-cpsw-qos.h  |  20 ++
->  4 files changed, 277 insertions(+), 4 deletions(-)
-
-This breaks build due to undefined BYTES_PER_MBIT.
-I'll fix it up and send another revision.
-
--- 
-cheers,
--roger
+Can you explain why the existing LSM hooks and SELinux implementation
+are not sufficient? We already control the ability to open device
+nodes via selinux_inode_permission() and selinux_file_open(), and can
+support fine-grained per-cmd ioctl checking via selinux_file_ioctl().
+And it should already be possible to label these nodes distinctly
+through existing mechanisms (file_contexts if udev-created/labeled,
+genfs_contexts if kernel-created). What exactly can't you do today
+that this hook enables?
 
