@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-4140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB26581785F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:16:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD2C817861
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:17:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15358B23699
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:16:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95B69B2362A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336555D734;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A9C5D732;
 	Mon, 18 Dec 2023 17:16:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SFohura8"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eBb2c7Kh"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75534FF6D;
-	Mon, 18 Dec 2023 17:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878D15A868;
+	Mon, 18 Dec 2023 17:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3874AE000A;
-	Mon, 18 Dec 2023 17:16:21 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0EE63E000B;
+	Mon, 18 Dec 2023 17:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702919781;
+	t=1702919782;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=M/269SREveuMrY7DCSLC6z4qyIspt2wftuz4Mfih0Tk=;
-	b=SFohura81X2ZS5XNQOFijfGbI9eOFRq4FktH0AtA1UAfLlezPF1Ii277hBAjETVjSwq47C
-	jDaH9zDFKm1P8XbcCeypsKLcafiQQ8bXPvE/L2hy4QsXawnMkezJ2d3X7mct5D0c0ngcwj
-	mwBzjZ5ZZeMpSPURWbulcksAUZ5Rw0B4N8HJg9cL8dU8zV+s5PwYyu5HuRCxVpuqHq5exu
-	rXcQohJq9g9yKlaN73vVMkZme8j1mlhT3McLtJCNPghc8ufH0+YLIUkyF1C95HSqmskygZ
-	5MVy7GO0CGaYNSnnwmrtjYndzRn+oZljryKvcDU5KSL4/EV2DJYlAsMrOA4Iqw==
+	bh=IcQ+ZwdjsR2qUvOXqxO2KP460AYbXa+jRxB0yyqWL8I=;
+	b=eBb2c7Kh3sr38amUDFAh4Fd6lr2noQU+kbSnBgSaXAfwFwXFNkbdMmHbC+w+8aiceUyl8v
+	Jo0BjGOfNP+zn0g7e0T2FQzyXQOu3OL03kmvj2BeCyk/YAXyxYKwJX8DcOcDwGG0V01fy8
+	49/lWUmGIH6TC/8Y8JpNzOwocjk+uaG3nm0ddecHLAJTe6lULufxu2dUZDdPUiY5hLOx9j
+	+bWnhbGYAyyGe/+U7c86Ju+s4wRkx/6U7x+uPOVUSXl09yzSnLZhNUopHG488nXxCJCnu9
+	wdaSYXAGnJU9OObN+1sz8PdW4EHcOH30cnYDSKUKBYVvBfzqOSjkobKCSFnkJQ==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Mon, 18 Dec 2023 18:16:12 +0100
-Subject: [PATCH 1/4] dt-bindings: reset: mobileye,eyeq5-reset: add bindings
+Date: Mon, 18 Dec 2023 18:16:13 +0100
+Subject: [PATCH 2/4] reset: eyeq5: add driver
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,7 +47,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231218-mbly-reset-v1-1-b4688b916213@bootlin.com>
+Message-Id: <20231218-mbly-reset-v1-2-b4688b916213@bootlin.com>
 References: <20231218-mbly-reset-v1-0-b4688b916213@bootlin.com>
 In-Reply-To: <20231218-mbly-reset-v1-0-b4688b916213@bootlin.com>
 To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
@@ -64,192 +64,396 @@ Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
 X-Mailer: b4 0.12.4
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Add DT-Schema bindings for the EyeQ5 reset controller.
+Add the Mobileye EyeQ5 reset controller driver. See the header comment
+for more information on how it works. This driver is specific to this
+platform; it might grow to add later support of other platforms from
+Mobileye.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- .../bindings/reset/mobileye,eyeq5-reset.yaml       | 69 +++++++++++++++++++
- MAINTAINERS                                        |  2 +
- include/dt-bindings/reset/mobileye,eyeq5-reset.h   | 80 ++++++++++++++++++++++
- 3 files changed, 151 insertions(+)
+ MAINTAINERS                 |   1 +
+ drivers/reset/Kconfig       |  13 ++
+ drivers/reset/Makefile      |   1 +
+ drivers/reset/reset-eyeq5.c | 323 ++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 338 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml b/Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
-new file mode 100644
-index 000000000000..cab6a75ba59d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
-@@ -0,0 +1,69 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/reset/mobileye,eyeq5-reset.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mobileye EyeQ5 reset controller
-+
-+description:
-+  The EyeQ5 reset driver handles three reset domains. It is custom to this
-+  platform, its registers live in a shared region called OLB.
-+
-+maintainers:
-+  - Grégory Clement <gregory.clement@bootlin.com>
-+  - Théo Lebrun <theo.lebrun@bootlin.com>
-+  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-+
-+properties:
-+  $nodename:
-+    pattern: "^reset-controller$"
-+    description:
-+      We have no unique address, we rely on OLB.
-+
-+  compatible:
-+    const: mobileye,eyeq5-reset
-+
-+  "#reset-cells":
-+    const: 2
-+    description:
-+      The first cell is the domain (0 to 2 inclusive) and the second one is the
-+      reset index inside that domain.
-+
-+  mobileye,olb:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      A phandle to the OLB syscon. This is a fallback to using the parent as
-+      syscon node.
-+
-+required:
-+  - compatible
-+  - "#reset-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    olb@e00000 {
-+      compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-+      reg = <0xe00000 0x400>;
-+      reg-io-width = <4>;
-+
-+      reset-controller {
-+        compatible = "mobileye,eyeq5-reset";
-+        #reset-cells = <2>;
-+      };
-+    };
-+
-+  - |
-+    olb: olb@e00000 {
-+      compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-+      reg = <0xe00000 0x400>;
-+      reg-io-width = <4>;
-+    };
-+
-+    reset-controller {
-+      compatible = "mobileye,eyeq5-reset";
-+      #reset-cells = <2>;
-+      mobileye,olb = <&olb>;
-+    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 4a7bd6b40d74..9096a940b425 100644
+index 9096a940b425..138e0303c5da 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -14553,9 +14553,11 @@ M:	Théo Lebrun <theo.lebrun@bootlin.com>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/mips/mobileye.yaml
-+F:	Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
+@@ -14557,6 +14557,7 @@ F:	Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
  F:	arch/mips/boot/dts/mobileye/
  F:	arch/mips/configs/generic/board-eyeq5.config
  F:	arch/mips/generic/board-epm5.its.S
-+F:	include/dt-bindings/reset/mobileye,eyeq5-reset.h
++F:	drivers/reset/reset-eyeq5.c
+ F:	include/dt-bindings/reset/mobileye,eyeq5-reset.h
  F:	include/dt-bindings/soc/mobileye,eyeq5.h
  
- MODULE SUPPORT
-diff --git a/include/dt-bindings/reset/mobileye,eyeq5-reset.h b/include/dt-bindings/reset/mobileye,eyeq5-reset.h
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index ccd59ddd7610..488f2f38a2e2 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -66,6 +66,19 @@ config RESET_BRCMSTB_RESCAL
+ 	  This enables the RESCAL reset controller for SATA, PCIe0, or PCIe1 on
+ 	  BCM7216.
+ 
++config RESET_EYEQ5
++	bool "Mobileye EyeQ5 reset controller"
++	depends on MFD_SYSCON
++	depends on SOC_EYEQ5 || COMPILE_TEST
++	default SOC_EYEQ5
++	help
++	  This enables the Mobileye EyeQ5 reset controller; a custom IP block
++	  for this platform.
++
++	  It has three domains, with a varying number of resets in each of them.
++	  Registers are located in a shared register region called OLB accessed
++	  through a syscon & regmap.
++
+ config RESET_HSDK
+ 	bool "Synopsys HSDK Reset Driver"
+ 	depends on HAS_IOMEM
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index 8270da8a4baa..4fabe0070390 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_RESET_BCM6345) += reset-bcm6345.o
+ obj-$(CONFIG_RESET_BERLIN) += reset-berlin.o
+ obj-$(CONFIG_RESET_BRCMSTB) += reset-brcmstb.o
+ obj-$(CONFIG_RESET_BRCMSTB_RESCAL) += reset-brcmstb-rescal.o
++obj-$(CONFIG_RESET_EYEQ5) += reset-eyeq5.o
+ obj-$(CONFIG_RESET_HSDK) += reset-hsdk.o
+ obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
+ obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
+diff --git a/drivers/reset/reset-eyeq5.c b/drivers/reset/reset-eyeq5.c
 new file mode 100644
-index 000000000000..ce59fe5409ac
+index 000000000000..45bb330f35ed
 --- /dev/null
-+++ b/include/dt-bindings/reset/mobileye,eyeq5-reset.h
-@@ -0,0 +1,80 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++++ b/drivers/reset/reset-eyeq5.c
+@@ -0,0 +1,323 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
++ * Reset driver for the Mobileye EyeQ5 platform.
++ *
++ * The registers are located in a syscon region called OLB. We handle three
++ * reset domains. Domains 0 and 2 look similar in that they both use one bit
++ * per reset line. Domain 1 has a register per reset.
++ *
++ * We busy-wait after updating a reset in domains 0 or 1. The reason is hardware
++ * logic built-in self-test (LBIST) that might be enabled.
++ *
++ * We use eq5r_ as prefix, as-in "EyeQ5 Reset", but way shorter.
++ *
 + * Copyright (C) 2023 Mobileye Vision Technologies Ltd.
 + */
 +
-+#ifndef _DT_BINDINGS_RESET_MOBILEYE_EYEQ5_RESET_H
-+#define _DT_BINDINGS_RESET_MOBILEYE_EYEQ5_RESET_H
++#include <linux/mfd/syscon.h>
++#include <linux/of_device.h>
++#include <linux/regmap.h>
++#include <linux/reset-controller.h>
++#include <linux/mutex.h>
 +
-+/* Domain 0 */
++/* Offsets into the OLB region as well as masks for domain 1 registers. */
++#define EQ5R_OLB_SARCR0			(0x004)
++#define EQ5R_OLB_SARCR1			(0x008)
++#define EQ5R_OLB_PCIE_GP		(0x120)
++#define EQ5R_OLB_ACRP_REG(n)		(0x200 + 4 * (n)) // n=0..12
++#define EQ5R_OLB_ACRP_PD_REQ		BIT(0)
++#define EQ5R_OLB_ACRP_ST_POWER_DOWN	BIT(27)
++#define EQ5R_OLB_ACRP_ST_ACTIVE		BIT(29)
 +
-+/* 0..2 are reserved */
-+#define EQ5R_D0_CAN0				3
-+#define EQ5R_D0_CAN1				4
-+#define EQ5R_D0_CAN2				5
-+#define EQ5R_D0_SPI0				6
-+#define EQ5R_D0_SPI1				7
-+#define EQ5R_D0_SPI2				8
-+#define EQ5R_D0_SPI3				9
-+#define EQ5R_D0_UART0				10
-+#define EQ5R_D0_UART1				11
-+#define EQ5R_D0_UART2				12
-+#define EQ5R_D0_I2C0				13
-+#define EQ5R_D0_I2C1				14
-+#define EQ5R_D0_I2C2				15
-+#define EQ5R_D0_I2C3				16
-+#define EQ5R_D0_I2C4				17
-+#define EQ5R_D0_TIMER0				18
-+#define EQ5R_D0_TIMER1				19
-+#define EQ5R_D0_TIMER2				20
-+#define EQ5R_D0_TIMER3				21
-+#define EQ5R_D0_TIMER4				22
-+#define EQ5R_D0_WD0				23
-+#define EQ5R_D0_EXT0				24
-+#define EQ5R_D0_EXT1				25
-+#define EQ5R_D0_GPIO				26
-+#define EQ5R_D0_WD1				27
-+/* 28..31 are reserved */
++/* Vendor-provided values. D1 has a long timeout because of LBIST. */
++#define D0_TIMEOUT_POLL			10
++#define D1_TIMEOUT_POLL			40000
 +
-+/* Domain 1 */
++/* Masks for valid reset lines in each domain. This array is also used to get
++ * the domain and reset counts.
++ */
++static const u32 eq5r_valid_masks[] = { 0x0FFFFFF8, 0x00001FFF, 0x0007BFFF };
 +
-+/* Vector Microcode Processors */
-+#define EQ5R_D1_VMP0				0
-+#define EQ5R_D1_VMP1				1
-+#define EQ5R_D1_VMP2				2
-+#define EQ5R_D1_VMP3				3
-+/* Programmable Macro Array */
-+#define EQ5R_D1_PMA0				4
-+#define EQ5R_D1_PMA1				5
-+#define EQ5R_D1_PMAC0				6
-+#define EQ5R_D1_PMAC1				7
-+/* Multi-threaded Processing Clusters */
-+#define EQ5R_D1_MPC0				8
-+#define EQ5R_D1_MPC1				9
++#define EQ5R_DOMAIN_COUNT ARRAY_SIZE(eq5r_valid_masks)
 +
-+/* Domain 2 */
++struct eq5r_private {
++	struct mutex mutexes[EQ5R_DOMAIN_COUNT]; /* We serialize all reset operations. */
++	struct regmap *olb;			 /* Writes go to a syscon regmap. */
++	struct reset_controller_dev rcdev;
++};
 +
-+#define EQ5R_D2_PCIE0_CORE_SWRST_DIS		0
-+#define EQ5R_D2_PCIE0_APB_SWRST_DIS		1
-+#define EQ5R_D2_PCIE0_LINK_AXI_RST_DIS		2
-+#define EQ5R_D2_PCIE0_LINK_MGMT_RST_DIS		3
-+#define EQ5R_D2_PCIE0_LINK_HOT_RST_DIS		4
-+#define EQ5R_D2_PCIE0_LINK_PIPE_RST_DIS		5
++static int _eq5r_busy_wait(struct eq5r_private *priv, struct device *dev,
++			   u32 domain, u32 offset, bool assert)
++{
++	unsigned int val, mask;
++	int i;
 +
-+#define EQ5R_D2_PCIE1_CORE_SWRST_DIS		6
-+#define EQ5R_D2_PCIE1_APB_SWRST_DIS		7
-+#define EQ5R_D2_PCIE1_LINK_AXI_RST_DIS		8
-+#define EQ5R_D2_PCIE1_LINK_MGMT_RST_DIS		9
-+#define EQ5R_D2_PCIE1_LINK_HOT_RST_DIS		10
-+#define EQ5R_D2_PCIE1_LINK_PIPE_RST_DIS		11
++	lockdep_assert_held(&priv->mutexes[domain]);
 +
-+#define EQ5R_D2_MULTIPHY_SWRST_DIS		12
-+#define EQ5R_D2_MULTIPHY_APB_RST_DIS		13
-+/* 14 is refclk select, ie not a reset */
-+#define EQ5R_D2_PCIE0_LINK_MGMT_RST		15
-+#define EQ5R_D2_PCIE1_LINK_MGMT_RST		16
-+#define EQ5R_D2_PCIE0_LINK_PM_RST		17
-+#define EQ5R_D2_PCIE1_LINK_PM_RST		18
-+/* 19..31 are unknown */
++	switch (domain) {
++	case 0:
++		for (i = 0; i < D0_TIMEOUT_POLL; i++) {
++			regmap_read(priv->olb, EQ5R_OLB_SARCR1, &val);
++			val = !(val & BIT(offset));
++			if (val == assert)
++				return 0;
++			__udelay(1);
++		}
++		break;
++	case 1:
++		mask = assert ? EQ5R_OLB_ACRP_ST_POWER_DOWN : EQ5R_OLB_ACRP_ST_ACTIVE;
++		for (i = 0; i < D1_TIMEOUT_POLL; i++) {
++			regmap_read(priv->olb, EQ5R_OLB_ACRP_REG(offset), &val);
++			if (val & mask)
++				return 0;
++			__udelay(1);
++		}
++		break;
++	case 2:
++		return 0; /* No busy waiting for domain 2. */
++	default:
++		WARN_ON(1);
++		return -EINVAL;
++	}
 +
-+#endif
++	dev_dbg(dev, "%u-%u: timeout\n", domain, offset);
++	return -ETIMEDOUT;
++}
++
++static void _eq5r_assert(struct eq5r_private *priv, u32 domain, u32 offset)
++{
++	lockdep_assert_held(&priv->mutexes[domain]);
++
++	switch (domain) {
++	case 0:
++		regmap_clear_bits(priv->olb, EQ5R_OLB_SARCR0, BIT(offset));
++		break;
++	case 1:
++		regmap_set_bits(priv->olb, EQ5R_OLB_ACRP_REG(offset),
++				EQ5R_OLB_ACRP_PD_REQ);
++		break;
++	case 2:
++		regmap_clear_bits(priv->olb, EQ5R_OLB_PCIE_GP, BIT(offset));
++		break;
++	default:
++		WARN_ON(1);
++	}
++}
++
++static int eq5r_assert(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	struct eq5r_private *priv = dev_get_drvdata(rcdev->dev);
++	u32 offset = id & GENMASK(7, 0);
++	u32 domain = id >> 8;
++	int ret;
++
++	if (WARN_ON(domain >= EQ5R_DOMAIN_COUNT))
++		return -EINVAL;
++
++	dev_dbg(rcdev->dev, "%u-%u: assert request\n", domain, offset);
++
++	mutex_lock(&priv->mutexes[domain]);
++	_eq5r_assert(priv, domain, offset);
++	ret = _eq5r_busy_wait(priv, rcdev->dev, domain, offset, true);
++	mutex_unlock(&priv->mutexes[domain]);
++
++	return ret;
++}
++
++static void _eq5r_deassert(struct eq5r_private *priv, u32 domain, u32 offset)
++{
++	lockdep_assert_held(&priv->mutexes[domain]);
++
++	switch (domain) {
++	case 0:
++		regmap_set_bits(priv->olb, EQ5R_OLB_SARCR0, BIT(offset));
++		break;
++	case 1:
++		regmap_clear_bits(priv->olb, EQ5R_OLB_ACRP_REG(offset),
++				  EQ5R_OLB_ACRP_PD_REQ);
++		break;
++	case 2:
++		regmap_set_bits(priv->olb, EQ5R_OLB_PCIE_GP, BIT(offset));
++		break;
++	default:
++		WARN_ON(1);
++	}
++}
++
++static int eq5r_deassert(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	struct eq5r_private *priv = dev_get_drvdata(rcdev->dev);
++	u32 offset = id & GENMASK(7, 0);
++	u32 domain = id >> 8;
++	int ret;
++
++	if (WARN_ON(domain >= EQ5R_DOMAIN_COUNT))
++		return -EINVAL;
++
++	dev_dbg(rcdev->dev, "%u-%u: deassert request\n", domain, offset);
++
++	mutex_lock(&priv->mutexes[domain]);
++	_eq5r_deassert(priv, domain, offset);
++	ret = _eq5r_busy_wait(priv, rcdev->dev, domain, offset, false);
++	mutex_unlock(&priv->mutexes[domain]);
++
++	return ret;
++}
++
++static int eq5r_reset(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	struct device *dev = rcdev->dev;
++	struct eq5r_private *priv = dev_get_drvdata(dev);
++	u32 offset = id & GENMASK(7, 0);
++	u32 domain = id >> 8;
++	int ret;
++
++	if (WARN_ON(domain >= EQ5R_DOMAIN_COUNT))
++		return -EINVAL;
++
++	dev_dbg(dev, "%u-%u: reset request\n", domain, offset);
++
++	mutex_lock(&priv->mutexes[domain]);
++
++	_eq5r_assert(priv, domain, offset);
++	ret = _eq5r_busy_wait(priv, dev, domain, offset, true);
++	if (ret) /* don't let an error disappear silently */
++		dev_warn(dev, "%u-%u: reset assert failed: %d\n",
++			 domain, offset, ret);
++
++	_eq5r_deassert(priv, domain, offset);
++	ret = _eq5r_busy_wait(priv, dev, domain, offset, false);
++
++	mutex_unlock(&priv->mutexes[domain]);
++
++	return ret;
++}
++
++static int eq5r_status(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	struct eq5r_private *priv = dev_get_drvdata(rcdev->dev);
++	u32 offset = id & GENMASK(7, 0);
++	u32 domain = id >> 8;
++	unsigned int val;
++	int ret;
++
++	if (WARN_ON(domain >= EQ5R_DOMAIN_COUNT))
++		return -EINVAL;
++
++	dev_dbg(rcdev->dev, "%u-%u: status request\n", domain, offset);
++
++	mutex_lock(&priv->mutexes[domain]);
++
++	switch (domain) {
++	case 0:
++		regmap_read(priv->olb, EQ5R_OLB_SARCR1, &val);
++		ret = !(val & BIT(offset));
++		break;
++	case 1:
++		regmap_read(priv->olb, EQ5R_OLB_ACRP_REG(offset), &val);
++		ret = !(val & EQ5R_OLB_ACRP_ST_ACTIVE);
++		break;
++	case 2:
++		regmap_read(priv->olb, EQ5R_OLB_PCIE_GP, &val);
++		ret = !(val & BIT(offset));
++		break;
++	}
++
++	mutex_unlock(&priv->mutexes[domain]);
++
++	return ret;
++}
++
++static const struct reset_control_ops eq5r_ops = {
++	.reset	  = eq5r_reset,
++	.assert	  = eq5r_assert,
++	.deassert = eq5r_deassert,
++	.status	  = eq5r_status,
++};
++
++static int eq5r_of_xlate(struct reset_controller_dev *rcdev,
++			 const struct of_phandle_args *reset_spec)
++{
++	u32 domain, offset;
++
++	if (WARN_ON(reset_spec->args_count != 2))
++		return -EINVAL;
++
++	domain = reset_spec->args[0];
++	offset = reset_spec->args[1];
++
++	if (domain >= EQ5R_DOMAIN_COUNT || offset > 31 ||
++	    !(eq5r_valid_masks[domain] & BIT(offset))) {
++		dev_err(rcdev->dev, "%u-%u: invalid reset\n", domain, offset);
++		return -EINVAL;
++	}
++
++	return (domain << 8) | offset;
++}
++
++static int eq5r_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	struct device_node *parent_np = of_get_parent(np);
++	struct eq5r_private *priv;
++	int ret, i;
++
++	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	dev_set_drvdata(dev, priv);
++
++	priv->olb = ERR_PTR(-ENODEV);
++	if (parent_np)
++		priv->olb = syscon_node_to_regmap(parent_np);
++	if (IS_ERR(priv->olb))
++		priv->olb = syscon_regmap_lookup_by_phandle(np, "mobileye,olb");
++	if (IS_ERR(priv->olb))
++		return PTR_ERR(priv->olb);
++
++	for (i = 0; i < EQ5R_DOMAIN_COUNT; i++)
++		mutex_init(&priv->mutexes[i]);
++
++	priv->rcdev.ops = &eq5r_ops;
++	priv->rcdev.owner = THIS_MODULE;
++	priv->rcdev.dev = dev;
++	priv->rcdev.of_node = np;
++	priv->rcdev.of_reset_n_cells = 2;
++	priv->rcdev.of_xlate = eq5r_of_xlate;
++
++	priv->rcdev.nr_resets = 0;
++	for (i = 0; i < EQ5R_DOMAIN_COUNT; i++)
++		priv->rcdev.nr_resets += __builtin_popcount(eq5r_valid_masks[i]);
++
++	ret = reset_controller_register(&priv->rcdev);
++	if (ret) {
++		dev_err(dev, "Failed registering reset controller: %d\n", ret);
++		return ret;
++	}
++
++	dev_info(dev, "probed\n");
++
++	return 0;
++}
++
++static const struct of_device_id eq5r_match_table[] = {
++	{ .compatible = "mobileye,eyeq5-reset" },
++	{}
++};
++
++static struct platform_driver eq5r_driver = {
++	.probe = eq5r_probe,
++	.driver = {
++		.name = "eyeq5-reset",
++		.of_match_table = eq5r_match_table,
++	},
++};
++
++static int __init eq5r_init(void)
++{
++	return platform_driver_register(&eq5r_driver);
++}
++
++arch_initcall(eq5r_init);
 
 -- 
 2.43.0
