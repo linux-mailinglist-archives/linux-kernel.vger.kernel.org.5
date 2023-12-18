@@ -1,51 +1,49 @@
-Return-Path: <linux-kernel+bounces-3602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 523F9816E4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:46:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0136816E4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:46:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 009932866C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:46:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64B7F1F24774
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BEC83B07;
-	Mon, 18 Dec 2023 12:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B688138D34;
+	Mon, 18 Dec 2023 12:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UU+M6omd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ij+JTDF2"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D29382EC0;
-	Mon, 18 Dec 2023 12:44:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3D04C433CA;
-	Mon, 18 Dec 2023 12:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C83113877C;
+	Mon, 18 Dec 2023 12:44:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CAC0C433C8;
+	Mon, 18 Dec 2023 12:44:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903460;
-	bh=XvYnOA+in5yAmnoh4pfmxu/13fVJ3JQ4auQotg/2IuU=;
+	s=k20201202; t=1702903462;
+	bh=dDN46ecZEAy2OD4iXawXY7EQooHgbdoIMOokrSC7xxI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UU+M6omdHllfd6ifniXOmKKQQ4q8p7dBuTrMGrlZGHKYgIl5l9owasU69RaVoX+zi
-	 Q+vqptuQooVpRnFSsLPaFMal5ekNVmwZ3O7SgD76G487Y/a+NzoJlsx1RVp6L2f/Qy
-	 suDIXMvmq92VPIR7M89iFlx7WM8Mhq0wG1JqRAEHsBYevhibssk6fQBDoWF87uvYBJ
-	 QIPfmDvr6xQgRVKP92rJOWusZ5RpTnbXwOP91GRxeWpA7zO+VYdJDgH/mRIjeiOt70
-	 5LE3ZCkyHOO+8eToXzP5wSLn5M5MO10TaIkyYj2yK3ScHQsMcDV8/dDzw9bkWUughQ
-	 Wbenp495Ac9TA==
+	b=ij+JTDF2dMEDldN9ayZn01MeHm1+1nmSibQz3/FcofQaH2lxvT9YLXPnqVdOQDcTw
+	 gt/4QoMi0tv/ZyPcx1c6UFAEKzPep2kCCkzNs0kvEJBOCSMAsf6vIyK+Tb9cNDfq0Q
+	 Mgut4LgLv8+h3rvEWO7GTO/42j2IIjB0ZVn4DudCkHiHZlok1nptxApdX/1wueJ7YG
+	 OUPSdR7/DNklDiVyK3/1ejM92ORwF0Dc8gL2BUyVtg+B+LU1BeIkpbMsPF7qR+gNxa
+	 o2ZQBDDGgWNISjRy37T+P/E2Lm5fDkCruzVGkoaUKzlJiGKk2SIq8/Lj5vGMAeERYU
+	 2BBGIT9FH1buw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Weihao Li <cn.liweihao@gmail.com>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: Chao Song <chao.song@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 02/18] clk: rockchip: rk3128: Fix HCLK_OTG gate register
-Date: Mon, 18 Dec 2023 07:43:36 -0500
-Message-ID: <20231218124415.1379060-2-sashal@kernel.org>
+	alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.6 03/18] soundwire: intel_ace2x: fix AC timing setting for ACE2.x
+Date: Mon, 18 Dec 2023 07:43:37 -0500
+Message-ID: <20231218124415.1379060-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124415.1379060-1-sashal@kernel.org>
 References: <20231218124415.1379060-1-sashal@kernel.org>
@@ -60,33 +58,50 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.7
 Content-Transfer-Encoding: 8bit
 
-From: Weihao Li <cn.liweihao@gmail.com>
+From: Chao Song <chao.song@linux.intel.com>
 
-[ Upstream commit c6c5a5580dcb6631aa6369dabe12ef3ce784d1d2 ]
+[ Upstream commit 393cae5f32d640b9798903702018a48c7a45e59f ]
 
-The HCLK_OTG gate control is in CRU_CLKGATE5_CON, not CRU_CLKGATE3_CON.
+Start from ACE1.x, DOAISE is added to AC timing control
+register bit 5, it combines with DOAIS to get effective
+timing, and has the default value 1.
 
-Signed-off-by: Weihao Li <cn.liweihao@gmail.com>
-Link: https://lore.kernel.org/r/20231031111816.8777-1-cn.liweihao@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+The current code fills DOAIS, DACTQE and DODS bits to a
+variable initialized to zero, and updates the variable
+to AC timing control register. With this operation, We
+change DOAISE to 0, and force a much more aggressive
+timing. The timing is even unable to form a working
+waveform on SDA pin.
+
+This patch uses read-modify-write operation for the AC
+timing control register access, thus makes sure those
+bits not supposed and intended to change are not touched.
+
+Signed-off-by: Chao Song <chao.song@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20231127124735.2080562-1-yung-chuan.liao@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/rockchip/clk-rk3128.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soundwire/intel_ace2x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/rockchip/clk-rk3128.c b/drivers/clk/rockchip/clk-rk3128.c
-index aa53797dbfc14..7782785a86e69 100644
---- a/drivers/clk/rockchip/clk-rk3128.c
-+++ b/drivers/clk/rockchip/clk-rk3128.c
-@@ -490,7 +490,7 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
- 	GATE(HCLK_I2S_2CH, "hclk_i2s_2ch", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
- 	GATE(0, "hclk_usb_peri", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 13, GFLAGS),
- 	GATE(HCLK_HOST2, "hclk_host2", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 3, GFLAGS),
--	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 13, GFLAGS),
-+	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(5), 13, GFLAGS),
- 	GATE(0, "hclk_peri_ahb", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 14, GFLAGS),
- 	GATE(HCLK_SPDIF, "hclk_spdif", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 9, GFLAGS),
- 	GATE(HCLK_TSP, "hclk_tsp", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 12, GFLAGS),
+diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
+index a9d25ae0b73fe..e320c91289135 100644
+--- a/drivers/soundwire/intel_ace2x.c
++++ b/drivers/soundwire/intel_ace2x.c
+@@ -23,8 +23,9 @@
+ static void intel_shim_vs_init(struct sdw_intel *sdw)
+ {
+ 	void __iomem *shim_vs = sdw->link_res->shim_vs;
+-	u16 act = 0;
++	u16 act;
+ 
++	act = intel_readw(shim_vs, SDW_SHIM2_INTEL_VS_ACTMCTL);
+ 	u16p_replace_bits(&act, 0x1, SDW_SHIM2_INTEL_VS_ACTMCTL_DOAIS);
+ 	act |= SDW_SHIM2_INTEL_VS_ACTMCTL_DACTQE;
+ 	act |=  SDW_SHIM2_INTEL_VS_ACTMCTL_DODS;
 -- 
 2.43.0
 
