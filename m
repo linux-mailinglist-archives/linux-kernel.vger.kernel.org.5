@@ -1,171 +1,192 @@
-Return-Path: <linux-kernel+bounces-3088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85C11816732
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:15:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9CE8816722
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42892280D21
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:15:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38C551F213C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A3879EB;
-	Mon, 18 Dec 2023 07:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C826179F7;
+	Mon, 18 Dec 2023 07:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="ndXogUuI"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gO4kYuKu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B3CF9C1;
-	Mon, 18 Dec 2023 07:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id D2F55603E6;
-	Mon, 18 Dec 2023 07:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1702883696;
-	bh=uFBmtVSwmPLt0wPwCU7cDBhUtKLWh7AsC+S0n1T9l/Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ndXogUuI9gQ7MSv6nnSm1nCRDOfn6//M3fDHZ9Es31/TLhdgyzB+yBP6CQCIZkIu+
-	 XBth8x4UXUpkjKSP7L8cIqrasBtGg4Lq4j4sPBBeHkCb3v9QDJNQQcH4+0cUxAla0T
-	 roX1oaGQTsKMmAj684PhtrcVk6PyqNC0W7j0HEnvQVRS5axIPycRcev3wMw1W8CGVw
-	 q7/zLsBaAq8+fJ6o9vKHvVJDZxhnpO+HJoN/Bz+xpgRwmJOAnb9fnhUGk/avqMzrjb
-	 bCZtBNopPhwfWTqLwHvKOgtS6nomMifunZQLFHgT5Z6dJPPnMLGflp3Pu6NP2J7V24
-	 3x8UttRCCFxFQ==
-From: Tony Lindgren <tony@atomide.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Andy Shevchenko <andriy.shevchenko@intel.com>,
-	Dhruva Gole <d-gole@ti.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Johan Hovold <johan@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [RFC PATCH v5 6/6] serial: 8250: Add preferred console in serial8250_isa_init_ports()
-Date: Mon, 18 Dec 2023 09:09:53 +0200
-Message-ID: <20231218071020.21805-7-tony@atomide.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231218071020.21805-1-tony@atomide.com>
-References: <20231218071020.21805-1-tony@atomide.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC2F1FB2;
+	Mon, 18 Dec 2023 07:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI6W2th032313;
+	Mon, 18 Dec 2023 07:11:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=V3p1JFE4C6ua
+	8k53+rwVOsLfLC5EdBhsrQCkXO9H+28=; b=gO4kYuKujzcT8NP7HPlW1SoJGLXV
+	fY/lcdE3Jq65e0NtDOh7zqKB7ZRcKU3coLW4fQ9R2srjwKCcRlQim8MaZn095+/f
+	3pNUP+TNFRkGGg7Y0+gcw262YMTCoSTX/AdwphqLGlaYx3614qRHNqb+Mm9xDKDr
+	ULNIS97+q7eXM1TuN5Y2430/7PBqUw6VXVHxL1+1ZVXeMvWB8bhjgYH5UJEaDl4x
+	wuVDE+XN2HpRQNQYwRPPhk7ZqT2ADxQYF+StnMW7TLwXfzCLD9ZsAzFdPf6rctr9
+	JwFXHtcZjel4nqOuXV0eLaf8X0RzXjci9/ILR0cT0UfZ9+Ms4ronnLrLVg==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2gw0r2gu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 07:11:24 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BI7BLno004919;
+	Mon, 18 Dec 2023 07:11:21 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3v14ykxp2e-1;
+	Mon, 18 Dec 2023 07:11:21 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BI7BLPF004913;
+	Mon, 18 Dec 2023 07:11:21 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3BI7BKnM004911;
+	Mon, 18 Dec 2023 07:11:21 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
+	id 9CACB5001DB; Mon, 18 Dec 2023 12:41:19 +0530 (+0530)
+From: Sneh Shah <quic_snehshah@quicinc.com>
+To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andrew Halaney <ahalaney@redhat.com>
+Cc: Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com
+Subject: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for 2.5G SGMII
+Date: Mon, 18 Dec 2023 12:41:18 +0530
+Message-Id: <20231218071118.21879-1-quic_snehshah@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: oXJQX_IlBXkALNAjyU-vo8QDVoD6Vehy
+X-Proofpoint-ORIG-GUID: oXJQX_IlBXkALNAjyU-vo8QDVoD6Vehy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312180049
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Prepare 8250 ISA ports to drop kernel command line serial console
-handling from console_setup().
+Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
+mode for 1G/100M/10M speed.
+Added changes to configure serdes phy and mac based on link speed.
 
-We need to set the preferred console in serial8250_isa_init_ports()
-to drop a dependency to setup_console() handling the ttyS related
-quirks. Otherwise when console_setup() handles the ttyS related
-options, console gets enabled only at driver probe time.
-
-Note that this mostly affects x86 as this happens based on define
-SERIAL_PORT_DFNS.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
 ---
- drivers/tty/serial/8250/8250_core.c  |  5 +++++
- drivers/tty/serial/serial_base.h     |  8 ++++++++
- drivers/tty/serial/serial_base_bus.c | 21 +++++++++++++++++++++
- 3 files changed, 34 insertions(+)
+ .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 +++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -15,6 +15,7 @@
-  */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index d3bf42d0fceb..b3a28dc19161 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -21,6 +21,7 @@
+ #define RGMII_IO_MACRO_CONFIG2		0x1C
+ #define RGMII_IO_MACRO_DEBUG1		0x20
+ #define EMAC_SYSTEM_LOW_POWER_DEBUG	0x28
++#define ETHQOS_MAC_AN_CTRL		0xE0
  
- #include <linux/acpi.h>
-+#include <linux/cleanup.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/ioport.h>
-@@ -41,6 +42,8 @@
+ /* RGMII_IO_MACRO_CONFIG fields */
+ #define RGMII_CONFIG_FUNC_CLK_EN		BIT(30)
+@@ -78,6 +79,10 @@
+ #define ETHQOS_MAC_CTRL_SPEED_MODE		BIT(14)
+ #define ETHQOS_MAC_CTRL_PORT_SEL		BIT(15)
  
- #include <asm/irq.h>
- 
-+#include "../serial_base.h"	/* For serial_base_add_isa_preferred_console() */
++/*ETHQOS_MAC_AN_CTRL bits */
++#define ETHQOS_MAC_AN_CTRL_RAN			BIT(9)
++#define ETHQOS_MAC_AN_CTRL_ANE			BIT(12)
 +
- #include "8250.h"
+ struct ethqos_emac_por {
+ 	unsigned int offset;
+ 	unsigned int value;
+@@ -109,6 +114,7 @@ struct qcom_ethqos {
+ 	unsigned int num_por;
+ 	bool rgmii_config_loopback_en;
+ 	bool has_emac_ge_3;
++	unsigned int serdes_speed;
+ };
  
- /*
-@@ -563,6 +566,8 @@ static void __init serial8250_isa_init_ports(void)
- 		port->irqflags |= irqflag;
- 		if (serial8250_isa_config != NULL)
- 			serial8250_isa_config(i, &up->port, &up->capabilities);
-+
-+		serial_base_add_isa_preferred_console(serial8250_reg.dev_name, i);
+ static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
+@@ -600,27 +606,47 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
+ 
+ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+ {
+-	int val;
+-
++	int val, mac_an_value;
+ 	val = readl(ethqos->mac_base + MAC_CTRL_REG);
++	mac_an_value = readl(ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
+ 
+ 	switch (ethqos->speed) {
++	case SPEED_2500:
++		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
++		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
++			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
++			      RGMII_IO_MACRO_CONFIG2);
++		if (ethqos->serdes_speed != SPEED_2500)
++			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
++		mac_an_value &= ~ETHQOS_MAC_AN_CTRL_ANE;
++		break;
+ 	case SPEED_1000:
+ 		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+ 		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+ 			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+ 			      RGMII_IO_MACRO_CONFIG2);
++		if (ethqos->serdes_speed != SPEED_1000)
++			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
++		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+ 		break;
+ 	case SPEED_100:
+ 		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
++		if (ethqos->serdes_speed != SPEED_1000)
++			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
++		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+ 		break;
+ 	case SPEED_10:
+ 		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+ 		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
++		if (ethqos->serdes_speed != SPEED_1000)
++			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
++		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+ 		break;
  	}
+ 
+ 	writel(val, ethqos->mac_base + MAC_CTRL_REG);
++	writel(mac_an_value, ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
++	ethqos->serdes_speed = ethqos->speed;
+ 
+ 	return val;
  }
+@@ -789,6 +815,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 				     "Failed to get serdes phy\n");
  
-diff --git a/drivers/tty/serial/serial_base.h b/drivers/tty/serial/serial_base.h
---- a/drivers/tty/serial/serial_base.h
-+++ b/drivers/tty/serial/serial_base.h
-@@ -51,6 +51,8 @@ void serial_core_unregister_port(struct uart_driver *drv, struct uart_port *port
- int serial_base_add_preferred_console(struct uart_driver *drv,
- 				      struct uart_port *port);
+ 	ethqos->speed = SPEED_1000;
++	ethqos->serdes_speed = SPEED_1000;
+ 	ethqos_update_link_clk(ethqos, SPEED_1000);
+ 	ethqos_set_func_clk_en(ethqos);
  
-+int serial_base_add_isa_preferred_console(const char *name, int idx);
-+
- #else
- 
- static inline
-@@ -60,4 +62,10 @@ int serial_base_add_preferred_console(struct uart_driver *drv,
- 	return 0;
- }
- 
-+static inline
-+int serial_base_add_isa_preferred_console(const char *name, int idx)
-+{
-+	return 0;
-+}
-+
- #endif
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -317,6 +317,27 @@ int serial_base_add_preferred_console(struct uart_driver *drv,
- 	return serial_base_add_one_prefcon(port_match, drv->dev_name, port->line);
- }
- 
-+#ifdef CONFIG_SERIAL_8250_CONSOLE
-+
-+/*
-+ * Early ISA ports initialize the console before there is no struct device.
-+ * This should be only called from serial8250_isa_init_preferred_console(),
-+ * other callers are likely wrong and should rely on earlycon instead.
-+ */
-+int serial_base_add_isa_preferred_console(const char *name, int idx)
-+{
-+	return serial_base_add_prefcon(name, idx);
-+}
-+
-+#else
-+
-+int serial_base_add_isa_preferred_console(const char *name, int idx)
-+{
-+	return 0;
-+}
-+
-+#endif
-+
- #endif
- 
- static int serial_base_init(void)
 -- 
-2.43.0
+2.17.1
+
 
