@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-4202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84B30817912
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:47:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3367B817914
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C8BD1C258AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:47:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E6AB1F26B26
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5337CCE7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2F117CCF9;
 	Mon, 18 Dec 2023 17:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cEh5l6Eh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KqYJWlQA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04CBD74E11;
-	Mon, 18 Dec 2023 17:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6570F7BF1E;
+	Mon, 18 Dec 2023 17:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e2bd8c396so2411514e87.0;
-        Mon, 18 Dec 2023 09:41:24 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50bf3efe2cbso3902119e87.2;
+        Mon, 18 Dec 2023 09:41:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702921283; x=1703526083; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702921284; x=1703526084; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KTzwxcQOtEUgdARmaClunNggauUXTYf3+l9k/4G0WNY=;
-        b=cEh5l6EhPDNzOS9ufLgylh0QR3O65Hrq3Q8513vqg2WhQ3Y36xndHvjciIBSMiX8YZ
-         3uGGd4qzLI9G1jgPFYcDWoPd6NjQWOYUgW4hcl4fDu/+x6lLDJ1p7ycSzEGhJysKyaF4
-         Y4r/leZ36rN8kSZAa8QGPBG8gYnfSHJFNSYyiaBd35yHBgIL0K75Vbo2IMm4oZNspi19
-         z0P/zKhh53sq167zpY6YDyDfDEMe+CUUGBEfqis/SwUFKHEpigbVyUxosG9e+cggT3ec
-         lykRuDcygR6zdCAQO4oKmSKg2FAhMQLo7N66HjJKAuRB7Lrc1aa8Aux6bNBR2SM1/WEq
-         vfcw==
+        bh=SHqK0z9IV6ZOZWTMnd7JXt+0Ad1t2MqCYHzreFmr3TI=;
+        b=KqYJWlQAqXL44D+SgOZTUKoAR9vXNBoYIPumTOB52XCdswIemi9CDqWxgZWVzg9zvJ
+         HxpfhSiShEToEKVBUZzm/GrCWpxaA/P99Nq7/Qo6SfjRufz58TwVpg4FW6oCSE3w9fmQ
+         IuQyLvp0BCo4S4GY+hxwiD/qvHWutHZaDl8uPlyjzmI4ml2xrJpFnT/D1Ig8zX8mbQD6
+         EA7WSZJcb2jbJQ1u66HvlnZzEKwX+B1UBNxepsRK89A57psoweL8cCE8g+SUkOlsX+uZ
+         k7jQls4MHC85fyAe3uqhYgP7wyMD92NU3ClqqcYZV8MmlMjCN+fI2WxsUgQZ2bdVy/VE
+         LM9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702921283; x=1703526083;
+        d=1e100.net; s=20230601; t=1702921284; x=1703526084;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KTzwxcQOtEUgdARmaClunNggauUXTYf3+l9k/4G0WNY=;
-        b=Ho4TzWTgjbDPg7Iyagoj0MapJqwiOW9Ewl+g8edEwwDpeKI1HHMDPxjcgsNQQ68SGN
-         xVaxCOx7da86rpQLERplDr5qrdrqGdvNj/ZZbtG0Ydc25BMkuldb/bBLL/vf79Qvv1dI
-         p1bgxjUIRrEL+HXq4SrsA0mgmcLD1YEW3KpyMnVgHaie0Dl0mqwl5c4BPRsNpsnrIFoK
-         guCXWubNCRXCbWKGSNKx/cA3gNsx5sSd+Pw0RPhw8bhY4kc4Qf8zre6XnKIVXfD5sN3v
-         C1S4RDyOF7qIqbmd++JnKkSTvK2ZnT2UuxqiR5fl9SGj6kO9nKn9PCVF4kJPzAhdAbAU
-         juXw==
-X-Gm-Message-State: AOJu0Yw0BefNjCMzW6pPyn+afT4wCRilflclpZ1Chbo1O+QGr/d439wm
-	abTy/T0y2TeBK79MPm8OT22BfEQPaMCMUg==
-X-Google-Smtp-Source: AGHT+IFDvucPOD3vVTUe7QGw2qRtwiLqwDJh3p+oGlTMd9PTfm9uN3xmQC7Kc6JCsLFK4DdpB07hOA==
-X-Received: by 2002:ac2:428b:0:b0:50d:ae2:2a9f with SMTP id m11-20020ac2428b000000b0050d0ae22a9fmr6827246lfh.24.1702921282838;
-        Mon, 18 Dec 2023 09:41:22 -0800 (PST)
+        bh=SHqK0z9IV6ZOZWTMnd7JXt+0Ad1t2MqCYHzreFmr3TI=;
+        b=Y7SkKP+ghhjTpN7F7dbW209nsYbMVkEtdC90W4F7v1hTof7YO+6ch8gxtUCXLkOn5K
+         K6I2ktIVYdqZjEFjLLDgdzPI6iWjMP83tpkJ+pCvD3oLqH7mC9CZ4QfXv1tAj6stFDm4
+         lv06pPoxUrmFdc5uhWMoki95DfCMBS91sMJYgpvOzBFlul1DiCMdrRaWtlVlhmLh/WVV
+         ZkXscd4aF/zdgWSPtOSAQSnWwFsyI6K/2jbuYz9ls5EPCGkIEHvHLoLkUze+bptx/gUS
+         lQCKF0lH5SqxRnQOQoBT6XZEussWYS9kUjmNqJIgMMGU7SPrFpkDNqd3ud6ny11QHmBt
+         cAPA==
+X-Gm-Message-State: AOJu0YyhMHrlENDptJioij/WjHRBYXppac+/IdT8BSZv+EXlWiApxJfh
+	vt8iz2C9ImolcLODECXIbSjRijPNbR9jHQ==
+X-Google-Smtp-Source: AGHT+IEpb4sp6Kfh0nmEz0ULo0Gw9gQBAtjjzpl6Cjjh4YC8PN0rOvZ8HtxbANHht7INMJlMwxwMug==
+X-Received: by 2002:a05:6512:21cf:b0:50b:e29b:2f01 with SMTP id d15-20020a05651221cf00b0050be29b2f01mr3241140lft.264.1702921284219;
+        Mon, 18 Dec 2023 09:41:24 -0800 (PST)
 Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id i18-20020a056512225200b0050bfbb6a388sm2967537lfu.22.2023.12.18.09.41.22
+        by smtp.gmail.com with ESMTPSA id b8-20020ac25628000000b0050bfd8cc09bsm2958946lff.149.2023.12.18.09.41.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 09:41:22 -0800 (PST)
+        Mon, 18 Dec 2023 09:41:23 -0800 (PST)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -68,9 +68,9 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v2 17/20] media: i2c: ov4689: Configurable analogue crop
-Date: Mon, 18 Dec 2023 20:40:38 +0300
-Message-ID: <20231218174042.794012-18-mike.rudenko@gmail.com>
+Subject: [PATCH v2 18/20] media: i2c: ov4689: Eliminate struct ov4689_mode
+Date: Mon, 18 Dec 2023 20:40:39 +0300
+Message-ID: <20231218174042.794012-19-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218174042.794012-1-mike.rudenko@gmail.com>
 References: <20231218174042.794012-1-mike.rudenko@gmail.com>
@@ -82,452 +82,175 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement configurable analogue crop via .set_selectiong call.
-ov4689_init_cfg is modified to initialize default subdev selection.
-Offsets are aligned to 2 to preserve Bayer order, selection width is
-aligned to 4 and height to 2 to meet hardware requirements.
-
-Experimentally discovered values of the cropping-related registers and
-vfifo_read_start for various output sizes are used. Default BLC anchor
-positions are used for the default analogue crop, scaling down
-proportionally for the smaller crop sizes.
-
-When analogue crop is adjusted, several consequential actions take
-place: the output format is reset, exposure/vblank/hblank control
-ranges and default values are adjusted accordingly. Additionally,
-ov4689_set_ctrl utilizes pad crop instead of cur_mode width and
-height for HTS and VTS calculation. Also, ov4689_enum_frame_sizes is
-modified to report crop size as available frame size.
+With the output frame size now controlled by selection rather than
+cur_mode, this commit relocates pixel rate and default VTS to
+defines. Consequently, it removes struct ov4689_mode and the cur_mode
+field from struct ov4689.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 ---
- drivers/media/i2c/ov4689.c | 276 ++++++++++++++++++++++++++++---------
- 1 file changed, 212 insertions(+), 64 deletions(-)
+ drivers/media/i2c/ov4689.c | 70 +++++++++-----------------------------
+ 1 file changed, 17 insertions(+), 53 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 3b73ee282761..d2d3e5517576 100644
+index d2d3e5517576..e997c3231e85 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -45,8 +45,12 @@
- #define OV4689_REG_V_CROP_START		CCI_REG16(0x3802)
- #define OV4689_REG_H_CROP_END		CCI_REG16(0x3804)
- #define OV4689_REG_V_CROP_END		CCI_REG16(0x3806)
-+
- #define OV4689_REG_H_OUTPUT_SIZE	CCI_REG16(0x3808)
-+#define OV4689_H_OUTPUT_SIZE_DEFAULT	2688
-+
- #define OV4689_REG_V_OUTPUT_SIZE	CCI_REG16(0x380a)
-+#define OV4689_V_OUTPUT_SIZE_DEFAULT	1520
+@@ -57,6 +57,8 @@
+ #define OV4689_HTS_MAX			0x7fff
  
- #define OV4689_REG_HTS			CCI_REG16(0x380c)
- #define OV4689_HTS_DIVIDER		4
-@@ -96,6 +100,19 @@
- #define OV4689_DUMMY_ROWS		8
- #define OV4689_DUMMY_COLUMNS		16
+ #define OV4689_REG_VTS			CCI_REG16(0x380e)
++/* Default VTS corresponds to 30 fps at default crop and minimal HTS */
++#define OV4689_VTS_DEF			4683
+ #define OV4689_VTS_MAX			0x7fff
  
-+/*
-+ * These values are not hardware limits, but rather the minimums that
-+ * the driver has been tested to.
-+ */
-+#define OV4689_H_CROP_MIN		128
-+#define OV4689_V_CROP_MIN		128
-+
-+/*
-+ * Minimum working vertical blanking value. Found experimentally at
-+ * minimum HTS values.
-+ */
-+#define OV4689_VBLANK_MIN		31
-+
- static const char *const ov4689_supply_names[] = {
- 	"avdd", /* Analog power */
- 	"dovdd", /* Digital I/O power */
-@@ -134,7 +151,7 @@ struct ov4689 {
- 	u32 clock_rate;
+ #define OV4689_REG_H_WIN_OFF		CCI_REG16(0x3810)
+@@ -94,6 +96,7 @@
+ 
+ #define OV4689_LANES			4
+ #define OV4689_XVCLK_FREQ		24000000
++#define OV4689_PIXEL_RATE		480000000
+ 
+ #define OV4689_PIXEL_ARRAY_WIDTH	2720
+ #define OV4689_PIXEL_ARRAY_HEIGHT	1536
+@@ -119,24 +122,6 @@ static const char *const ov4689_supply_names[] = {
+ 	"dvdd", /* Digital core power */
+ };
+ 
+-enum ov4689_mode_id {
+-	OV4689_MODE_2688_1520 = 0,
+-	OV4689_NUM_MODES,
+-};
+-
+-struct ov4689_mode {
+-	enum ov4689_mode_id id;
+-	u32 width;
+-	u32 height;
+-	u32 hts_def;
+-	u32 hts_min;
+-	u32 vts_def;
+-	u32 exp_def;
+-	u32 pixel_rate;
+-	const struct cci_reg_sequence *reg_list;
+-	unsigned int num_regs;
+-};
+-
+ struct ov4689 {
+ 	struct device *dev;
+ 	struct regmap *regmap;
+@@ -152,8 +137,6 @@ struct ov4689 {
  
  	struct v4l2_ctrl_handler ctrl_handler;
--	struct v4l2_ctrl *exposure;
-+	struct v4l2_ctrl *exposure, *hblank, *vblank;
- 
- 	const struct ov4689_mode *cur_mode;
- };
-@@ -320,24 +337,27 @@ static const struct ov4689_gain_range ov4689_gain_ranges[] = {
- 	},
- };
- 
--static void ov4689_fill_fmt(const struct ov4689_mode *mode,
--			    struct v4l2_mbus_framefmt *fmt)
--{
--	fmt->code = MEDIA_BUS_FMT_SBGGR10_1X10;
--	fmt->width = mode->width;
--	fmt->height = mode->height;
--	fmt->field = V4L2_FIELD_NONE;
--}
+ 	struct v4l2_ctrl *exposure, *hblank, *vblank;
 -
- static int ov4689_set_fmt(struct v4l2_subdev *sd,
- 			  struct v4l2_subdev_state *sd_state,
- 			  struct v4l2_subdev_format *fmt)
- {
--	struct v4l2_mbus_framefmt *mbus_fmt = &fmt->format;
--	struct ov4689 *ov4689 = to_ov4689(sd);
-+	struct v4l2_mbus_framefmt *format;
-+	struct v4l2_rect *crop;
-+
-+	crop = v4l2_subdev_state_get_crop(sd_state, fmt->pad);
-+	format = v4l2_subdev_state_get_format(sd_state, fmt->pad);
-+
-+	format->width = crop->width;
-+	format->height = crop->height;
- 
--	/* only one mode supported for now */
--	ov4689_fill_fmt(ov4689->cur_mode, mbus_fmt);
-+	format->code = MEDIA_BUS_FMT_SBGGR10_1X10;
-+	format->field = V4L2_FIELD_NONE;
-+	format->colorspace = V4L2_COLORSPACE_RAW;
-+	format->ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
-+	format->quantization = V4L2_QUANTIZATION_FULL_RANGE;
-+	format->xfer_func = V4L2_XFER_FUNC_NONE;
-+
-+	fmt->format = *format;
- 
- 	return 0;
- }
-@@ -357,16 +377,20 @@ static int ov4689_enum_frame_sizes(struct v4l2_subdev *sd,
- 				   struct v4l2_subdev_state *sd_state,
- 				   struct v4l2_subdev_frame_size_enum *fse)
- {
--	if (fse->index >= ARRAY_SIZE(supported_modes))
-+	const struct v4l2_rect *crop;
-+
-+	if (fse->index >= 1)
- 		return -EINVAL;
- 
- 	if (fse->code != MEDIA_BUS_FMT_SBGGR10_1X10)
- 		return -EINVAL;
- 
--	fse->min_width = supported_modes[fse->index].width;
--	fse->max_width = supported_modes[fse->index].width;
--	fse->max_height = supported_modes[fse->index].height;
--	fse->min_height = supported_modes[fse->index].height;
-+	crop = v4l2_subdev_state_get_crop(sd_state, 0);
-+
-+	fse->min_width = crop->width;
-+	fse->max_width = crop->width;
-+	fse->max_height = crop->height;
-+	fse->min_height = crop->height;
- 
- 	return 0;
- }
-@@ -388,20 +412,14 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- 				struct v4l2_subdev_state *state,
- 				struct v4l2_subdev_selection *sel)
- {
--	if (sel->which != V4L2_SUBDEV_FORMAT_ACTIVE)
--		return -EINVAL;
--
- 	switch (sel->target) {
--	case V4L2_SEL_TGT_CROP_BOUNDS:
--		sel->r.top = 0;
--		sel->r.left = 0;
--		sel->r.width = OV4689_PIXEL_ARRAY_WIDTH;
--		sel->r.height = OV4689_PIXEL_ARRAY_HEIGHT;
--		return 0;
- 	case V4L2_SEL_TGT_CROP:
-+		sel->r = *v4l2_subdev_state_get_crop(state, sel->pad);
-+		return 0;
-+	case V4L2_SEL_TGT_CROP_BOUNDS:
- 	case V4L2_SEL_TGT_CROP_DEFAULT:
--		sel->r.top = OV4689_DUMMY_ROWS;
- 		sel->r.left = OV4689_DUMMY_COLUMNS;
-+		sel->r.top = OV4689_DUMMY_ROWS;
- 		sel->r.width =
- 			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_COLUMNS;
- 		sel->r.height =
-@@ -412,37 +430,141 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- 	return -EINVAL;
- }
- 
--static int ov4689_setup_timings(struct ov4689 *ov4689)
-+/*
-+ * Minimum working HTS value for given output width (found
-+ * experimentally).
-+ */
-+static unsigned int ov4689_hts_min(unsigned int width)
-+{
-+	return max_t(unsigned int, 3156, 224 + width * 19 / 16);
-+}
-+
-+static void ov4689_update_ctrl_ranges(struct ov4689 *ov4689,
-+				      struct v4l2_rect *crop)
-+{
-+	struct v4l2_ctrl *exposure = ov4689->exposure;
-+	struct v4l2_ctrl *vblank = ov4689->vblank;
-+	struct v4l2_ctrl *hblank = ov4689->hblank;
-+	s64 def_val, min_val, max_val;
-+
-+	min_val = ov4689_hts_min(crop->width) - crop->width;
-+	max_val = OV4689_HTS_MAX - crop->width;
-+	def_val = clamp_t(s64, hblank->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(hblank, min_val, max_val, hblank->step,
-+				 def_val);
-+
-+	min_val = OV4689_VBLANK_MIN;
-+	max_val = OV4689_HTS_MAX - crop->width;
-+	def_val = clamp_t(s64, vblank->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(vblank, min_val, max_val, vblank->step,
-+				 def_val);
-+
-+	min_val = exposure->minimum;
-+	max_val = crop->height + vblank->val - 4;
-+	def_val = clamp_t(s64, exposure->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(exposure, min_val, max_val, exposure->step,
-+				 def_val);
-+}
-+
-+static int ov4689_set_selection(struct v4l2_subdev *sd,
-+				struct v4l2_subdev_state *state,
-+				struct v4l2_subdev_selection *sel)
- {
--	const struct ov4689_mode *mode = ov4689->cur_mode;
-+	struct ov4689 *ov4689 = to_ov4689(sd);
-+	struct v4l2_mbus_framefmt *format;
-+	struct v4l2_rect *crop;
-+	struct v4l2_rect rect;
-+
-+	if (sel->target != V4L2_SEL_TGT_CROP)
-+		return -EINVAL;
-+
-+	rect.left = clamp(ALIGN(sel->r.left, 2), OV4689_DUMMY_COLUMNS,
-+			  OV4689_PIXEL_ARRAY_WIDTH);
-+	rect.top = clamp(ALIGN(sel->r.top, 2), OV4689_DUMMY_ROWS,
-+			 OV4689_PIXEL_ARRAY_HEIGHT);
-+
-+	rect.width = clamp_t(unsigned int, ALIGN(sel->r.width, 4),
-+			     OV4689_H_CROP_MIN, OV4689_PIXEL_ARRAY_WIDTH -
-+			     2 * OV4689_DUMMY_COLUMNS);
-+	rect.height = clamp_t(unsigned int, ALIGN(sel->r.height, 2),
-+			      OV4689_V_CROP_MIN, OV4689_PIXEL_ARRAY_HEIGHT -
-+			      2 * OV4689_DUMMY_ROWS);
-+
-+	crop = v4l2_subdev_state_get_crop(state, sel->pad);
-+
-+	if (rect.width != crop->width || rect.height != crop->height) {
-+		/*
-+		 * Reset the output image size if the crop rectangle size has
-+		 * been modified.
-+		 */
-+		format = v4l2_subdev_state_get_format(state, sel->pad);
-+		format->width = rect.width;
-+		format->height = rect.height;
-+
-+		if (sel->which == V4L2_SUBDEV_FORMAT_ACTIVE)
-+			ov4689_update_ctrl_ranges(ov4689, &rect);
-+	}
-+
-+	*crop = rect;
-+	sel->r = rect;
-+
-+	return 0;
-+}
-+
-+static int ov4689_setup_timings(struct ov4689 *ov4689,
-+				struct v4l2_subdev_state *state)
-+{
-+	const struct v4l2_mbus_framefmt *format;
- 	struct regmap *rm = ov4689->regmap;
-+	const struct v4l2_rect *crop;
- 	int ret = 0;
- 
--	cci_write(rm, OV4689_REG_H_CROP_START, 8, &ret);
--	cci_write(rm, OV4689_REG_V_CROP_START, 8, &ret);
--	cci_write(rm, OV4689_REG_H_CROP_END, 2711, &ret);
--	cci_write(rm, OV4689_REG_V_CROP_END, 1531, &ret);
-+	format = v4l2_subdev_state_get_format(state, 0);
-+	crop = v4l2_subdev_state_get_crop(state, 0);
-+
-+	cci_write(rm, OV4689_REG_H_CROP_START, crop->left, &ret);
-+	cci_write(rm, OV4689_REG_V_CROP_START, crop->top, &ret);
-+	cci_write(rm, OV4689_REG_H_CROP_END, crop->left + crop->width + 1, &ret);
-+	cci_write(rm, OV4689_REG_V_CROP_END, crop->top + crop->height + 1, &ret);
- 
--	cci_write(rm, OV4689_REG_H_OUTPUT_SIZE, mode->width, &ret);
--	cci_write(rm, OV4689_REG_V_OUTPUT_SIZE, mode->height, &ret);
-+	cci_write(rm, OV4689_REG_H_OUTPUT_SIZE, format->width, &ret);
-+	cci_write(rm, OV4689_REG_V_OUTPUT_SIZE, format->height, &ret);
- 
--	cci_write(rm, OV4689_REG_H_WIN_OFF, 8, &ret);
--	cci_write(rm, OV4689_REG_V_WIN_OFF, 4, &ret);
-+	cci_write(rm, OV4689_REG_H_WIN_OFF, 0, &ret);
-+	cci_write(rm, OV4689_REG_V_WIN_OFF, 0, &ret);
- 
--	cci_write(rm, OV4689_REG_VFIFO_CTRL_01, 167, &ret);
-+	/*
-+	 * Maximum working value of vfifo_read_start for given output
-+	 * width (found experimentally).
-+	 */
-+	cci_write(rm, OV4689_REG_VFIFO_CTRL_01, format->width / 16 - 1, &ret);
- 
- 	return ret;
- }
- 
--static int ov4689_setup_blc_anchors(struct ov4689 *ov4689)
-+/*
-+ * Setup black level compensation anchors. For the default frame width
-+ * default anchors positions are used. For smaller crop sizes they are
-+ * scaled accordingly.
-+ */
-+static int ov4689_setup_blc_anchors(struct ov4689 *ov4689,
-+				    struct v4l2_subdev_state *state)
- {
-+	unsigned int width_def = OV4689_H_OUTPUT_SIZE_DEFAULT;
- 	struct regmap *rm = ov4689->regmap;
-+	const struct v4l2_rect *crop;
- 	int ret = 0;
- 
--	cci_write(rm, OV4689_REG_ANCHOR_LEFT_START, 16, &ret);
--	cci_write(rm, OV4689_REG_ANCHOR_LEFT_END, 1999, &ret);
--	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_START, 2400, &ret);
--	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_END, 2415, &ret);
-+	crop = v4l2_subdev_state_get_crop(state, 0);
-+
-+	cci_write(rm, OV4689_REG_ANCHOR_LEFT_START,
-+		  OV4689_ANCHOR_LEFT_START_DEF * crop->width / width_def, &ret);
-+	cci_write(rm, OV4689_REG_ANCHOR_LEFT_END,
-+		  OV4689_ANCHOR_LEFT_END_DEF * crop->width / width_def, &ret);
-+	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_START,
-+		  OV4689_ANCHOR_RIGHT_START_DEF * crop->width / width_def, &ret);
-+	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_END,
-+		  OV4689_ANCHOR_RIGHT_END_DEF * crop->width / width_def, &ret);
- 
- 	return ret;
- }
-@@ -470,13 +592,13 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
- 			goto unlock_and_return;
- 		}
- 
--		ret = ov4689_setup_timings(ov4689);
-+		ret = ov4689_setup_timings(ov4689, sd_state);
- 		if (ret) {
- 			pm_runtime_put(dev);
- 			goto unlock_and_return;
- 		}
- 
--		ret = ov4689_setup_blc_anchors(ov4689);
-+		ret = ov4689_setup_blc_anchors(ov4689, sd_state);
- 		if (ret) {
- 			pm_runtime_put(dev);
- 			goto unlock_and_return;
-@@ -568,10 +690,25 @@ static int __maybe_unused ov4689_power_off(struct device *dev)
- static int ov4689_init_state(struct v4l2_subdev *sd,
- 			     struct v4l2_subdev_state *sd_state)
- {
--	struct v4l2_mbus_framefmt *fmt =
--		v4l2_subdev_state_get_format(sd_state, 0);
-+	u32 width_def = OV4689_H_OUTPUT_SIZE_DEFAULT;
-+	u32 height_def = OV4689_V_OUTPUT_SIZE_DEFAULT;
-+
-+	struct v4l2_subdev_selection sel  = {
-+		.target = V4L2_SEL_TGT_CROP,
-+		.r.left = OV4689_DUMMY_COLUMNS,
-+		.r.top = OV4689_DUMMY_ROWS,
-+		.r.width = width_def,
-+		.r.height = height_def,
-+	};
-+	struct v4l2_subdev_format format = {
-+		.format = {
-+			.width = width_def,
-+			.height = height_def,
-+		},
-+	};
- 
--	ov4689_fill_fmt(&supported_modes[OV4689_MODE_2688_1520], fmt);
-+	ov4689_set_selection(sd, sd_state, &sel);
-+	ov4689_set_fmt(sd, sd_state, &format);
- 
- 	return 0;
- }
-@@ -590,6 +727,7 @@ static const struct v4l2_subdev_pad_ops ov4689_pad_ops = {
- 	.get_fmt = v4l2_subdev_get_fmt,
- 	.set_fmt = ov4689_set_fmt,
- 	.get_selection = ov4689_get_selection,
-+	.set_selection = ov4689_set_selection,
+-	const struct ov4689_mode *cur_mode;
  };
  
- static const struct v4l2_subdev_internal_ops ov4689_internal_ops = {
-@@ -635,20 +773,28 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 	struct ov4689 *ov4689 =
- 		container_of(ctrl->handler, struct ov4689, ctrl_handler);
- 	struct regmap *regmap = ov4689->regmap;
-+	struct v4l2_subdev_state *sd_state;
- 	struct device *dev = ov4689->dev;
-+	struct v4l2_rect *crop;
-+	s64 max_expo, def_expo;
- 	int sensor_gain;
--	s64 max_expo;
+ #define to_ov4689(sd) container_of(sd, struct ov4689, subdev)
+@@ -172,7 +155,7 @@ struct ov4689_gain_range {
+  * max_framerate 90fps
+  * mipi_datarate per lane 1008Mbps
+  */
+-static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
++static const struct cci_reg_sequence ov4689_common_regs[] = {
+ 	/* System control*/
+ 	{CCI_REG8(0x0103), 0x01}, /* SC_CTRL0103 software_reset = 1 */
+ 	{CCI_REG8(0x3000), 0x20}, /* SC_CMMN_PAD_OEN0 FSIN_output_enable = 1 */
+@@ -273,21 +256,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+ 	{CCI_REG8(0x5503), 0x0f}, /* OTP_DPC_END_L otp_end_address[7:0] = 0x0f */
+ };
+ 
+-static const struct ov4689_mode supported_modes[] = {
+-	{
+-		.id = OV4689_MODE_2688_1520,
+-		.width = 2688,
+-		.height = 1520,
+-		.exp_def = 1536,
+-		.hts_def = 10296,
+-		.hts_min = 3432,
+-		.vts_def = 1554,
+-		.pixel_rate = 480000000,
+-		.reg_list = ov4689_2688x1520_regs,
+-		.num_regs = ARRAY_SIZE(ov4689_2688x1520_regs),
+-	},
+-};
+-
+ static const u64 link_freq_menu_items[] = { 504000000 };
+ 
+ static const char *const ov4689_test_pattern_menu[] = {
+@@ -584,8 +552,8 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+ 			goto unlock_and_return;
+ 
+ 		ret = cci_multi_reg_write(ov4689->regmap,
+-					  ov4689->cur_mode->reg_list,
+-					  ov4689->cur_mode->num_regs,
++					  ov4689_common_regs,
++					  ARRAY_SIZE(ov4689_common_regs),
+ 					  NULL);
+ 		if (ret) {
+ 			pm_runtime_put_sync(dev);
+@@ -863,14 +831,12 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+ 	struct i2c_client *client = v4l2_get_subdevdata(&ov4689->subdev);
+ 	struct v4l2_fwnode_device_properties props;
+ 	struct v4l2_ctrl_handler *handler;
+-	const struct ov4689_mode *mode;
+ 	s64 exposure_max, vblank_def;
+-	s64 hblank_def, hblank_min;
+ 	struct v4l2_ctrl *ctrl;
++	s64 hblank_def;
  	int ret;
  
-+	sd_state = v4l2_subdev_get_locked_active_state(&ov4689->subdev);
-+	crop = v4l2_subdev_state_get_crop(sd_state, 0);
-+
- 	/* Propagate change of current control to all related controls */
- 	switch (ctrl->id) {
- 	case V4L2_CID_VBLANK:
- 		/* Update max exposure while meeting expected vblanking */
--		max_expo = ov4689->cur_mode->height + ctrl->val - 4;
--		__v4l2_ctrl_modify_range(ov4689->exposure,
--					 ov4689->exposure->minimum, max_expo,
--					 ov4689->exposure->step,
--					 ov4689->exposure->default_value);
-+		max_expo = crop->height + ctrl->val - 4;
-+		def_expo = clamp_t(s64, ov4689->exposure->default_value,
-+				   ov4689->exposure->minimum, max_expo);
-+
-+		ret = __v4l2_ctrl_modify_range(ov4689->exposure,
-+					       ov4689->exposure->minimum,
-+					       max_expo, ov4689->exposure->step,
-+					       def_expo);
- 		break;
- 	}
+ 	handler = &ov4689->ctrl_handler;
+-	mode = ov4689->cur_mode;
+ 	ret = v4l2_ctrl_handler_init(handler, 15);
+ 	if (ret)
+ 		return ret;
+@@ -881,26 +847,26 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+ 		ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
  
-@@ -666,14 +812,14 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 		break;
- 	case V4L2_CID_VBLANK:
- 		cci_write(regmap, OV4689_REG_VTS,
--			  ctrl->val + ov4689->cur_mode->height, &ret);
-+			  ctrl->val + crop->height, &ret);
- 		break;
- 	case V4L2_CID_TEST_PATTERN:
- 		ret = ov4689_enable_test_pattern(ov4689, ctrl->val);
- 		break;
- 	case V4L2_CID_HBLANK:
- 		cci_write(regmap, OV4689_REG_HTS,
--			  (ctrl->val + ov4689->cur_mode->width) /
-+			  (ctrl->val + crop->width) /
- 			  OV4689_HTS_DIVIDER, &ret);
- 		break;
- 	case V4L2_CID_VFLIP:
-@@ -739,14 +885,16 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+ 	v4l2_ctrl_new_std(handler, NULL, V4L2_CID_PIXEL_RATE, 0,
+-			  mode->pixel_rate, 1, mode->pixel_rate);
++			  OV4689_PIXEL_RATE, 1, OV4689_PIXEL_RATE);
  
- 	hblank_def = mode->hts_def - mode->width;
- 	hblank_min = mode->hts_min - mode->width;
--	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HBLANK,
--			  hblank_min, OV4689_HTS_MAX - mode->width,
--			  OV4689_HTS_DIVIDER, hblank_def);
-+	ov4689->hblank = v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops,
-+					   V4L2_CID_HBLANK, hblank_min,
-+					   OV4689_HTS_MAX - mode->width,
-+					   OV4689_HTS_DIVIDER, hblank_def);
+-	hblank_def = mode->hts_def - mode->width;
+-	hblank_min = mode->hts_min - mode->width;
++	hblank_def = ov4689_hts_min(OV4689_H_OUTPUT_SIZE_DEFAULT) -
++		     OV4689_H_OUTPUT_SIZE_DEFAULT;
+ 	ov4689->hblank = v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops,
+-					   V4L2_CID_HBLANK, hblank_min,
+-					   OV4689_HTS_MAX - mode->width,
++					   V4L2_CID_HBLANK, hblank_def,
++					   OV4689_HTS_MAX - OV4689_H_OUTPUT_SIZE_DEFAULT,
+ 					   OV4689_HTS_DIVIDER, hblank_def);
  
- 	vblank_def = mode->vts_def - mode->height;
--	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VBLANK,
--			  vblank_def, OV4689_VTS_MAX - mode->height, 1,
--			  vblank_def);
-+	ov4689->vblank = v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops,
-+					   V4L2_CID_VBLANK, OV4689_VBLANK_MIN,
-+					   OV4689_VTS_MAX - mode->height, 1,
-+					   vblank_def);
+-	vblank_def = mode->vts_def - mode->height;
++	vblank_def = OV4689_VTS_DEF - OV4689_V_OUTPUT_SIZE_DEFAULT;
+ 	ov4689->vblank = v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops,
+ 					   V4L2_CID_VBLANK, OV4689_VBLANK_MIN,
+-					   OV4689_VTS_MAX - mode->height, 1,
+-					   vblank_def);
++					   OV4689_VTS_MAX - OV4689_V_OUTPUT_SIZE_DEFAULT,
++					   1, vblank_def);
  
- 	exposure_max = mode->vts_def - 4;
+-	exposure_max = mode->vts_def - 4;
++	exposure_max = OV4689_VTS_DEF - 4;
  	ov4689->exposure =
+ 		v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_EXPOSURE,
+ 				  OV4689_EXPOSURE_MIN, exposure_max,
+-				  OV4689_EXPOSURE_STEP, mode->exp_def);
++				  OV4689_EXPOSURE_STEP, exposure_max);
+ 
+ 	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_ANALOGUE_GAIN,
+ 			  ov4689_gain_ranges[0].logical_min,
+@@ -1055,8 +1021,6 @@ static int ov4689_probe(struct i2c_client *client)
+ 
+ 	ov4689->dev = dev;
+ 
+-	ov4689->cur_mode = &supported_modes[OV4689_MODE_2688_1520];
+-
+ 	ov4689->xvclk = devm_clk_get_optional(dev, NULL);
+ 	if (IS_ERR(ov4689->xvclk))
+ 		return dev_err_probe(dev, PTR_ERR(ov4689->xvclk),
 -- 
 2.43.0
 
