@@ -1,166 +1,131 @@
-Return-Path: <linux-kernel+bounces-3520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A685C816D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:03:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E8CE816D4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC7D11C2350B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:03:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E9711F22A7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDED1A73B;
-	Mon, 18 Dec 2023 12:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC2C1B281;
+	Mon, 18 Dec 2023 12:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="WAjo/lhL"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="C6ud4NCV";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TgCOrFzC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BAF19BCA;
-	Mon, 18 Dec 2023 12:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702900929;
-	bh=3MhTuYEHVtxN6jKjyXhSlPpArK287YLadDQAYGZC2IM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=WAjo/lhLjeb8QX9nhEkYkVMVLqUSZk0KhaW86DWjRscg1t1rqpDL6UgDyuXZBEib8
-	 Ci7E8H3tLkD70CRdGg0eSS1VnFEM0Nj/gvKAzDywOemmEZoeiH+Tjfp8tp/B27PTh3
-	 UUNdANTQxyo5PM3OQE9Aq9rE0oTMgaPislp6Kj24xvkuIv5TcCvWduUOpzJyAS0acS
-	 kY97/jAxbHDL/4N6YJ26aqmMKIzev+lxd494O0Ww4QohGj4VicDrZuqYGz/QCWR9jN
-	 4NyZbdlHkWHXxfj0Dq4SDadU+ddRs6Jtjw4A784SmPRLR65yeLVPQkrNx2Dw8wGxYh
-	 DqNxp7CNl0DPQ==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 97C7037814A4;
-	Mon, 18 Dec 2023 12:02:07 +0000 (UTC)
-Message-ID: <fa4b9c1d-6033-4b35-b03c-e03419edb5dc@collabora.com>
-Date: Mon, 18 Dec 2023 14:02:06 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CBFE47F55
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 780655C00C3;
+	Mon, 18 Dec 2023 07:04:12 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 18 Dec 2023 07:04:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1702901052;
+	 x=1702987452; bh=TJvghgd2GT0U8gbW8eh0n+GYx6gyP4lfuYSZLcygGD8=; b=
+	C6ud4NCV1Lil6O1w/uNBWMckLfddsiZHNSTb67P6DFP7hJrUmUfLzIjxlWgmRAOx
+	xa5joMPdupYgLFnVMXzl584t6geMAfnyea7MF3YO3GIoLm2ETJx0OdlBUEPVsIit
+	lawBQ2rsb4+iutfvY78+Q/sAaum3CZNgND/qeK8t5UyaS4gnxAF9aRVHex7lIzyy
+	tT+Vxxhy56PYqYCTw+TFTjnbvBPab6bv366Mv2cs9Bjri6jHfb9kl2n02VFlzuw5
+	QUKEgTOGt/3oNCu0Adh/5GWm67P/DX/qwNeH/aqFwMSBJrE8IeBYxgvjgCb4U/wJ
+	HcdLiSEXhYrl54J3jE7F1Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702901052; x=
+	1702987452; bh=TJvghgd2GT0U8gbW8eh0n+GYx6gyP4lfuYSZLcygGD8=; b=T
+	gCOrFzCFp+6QnP7BPNt0/Hxs0GjmQ4zTxr05TmYA2ys2E2fhxPQJEECaVipqp3AC
+	p/HQ2Ojap56r9YfeePhGn2CGlQJXxfWT4HUvZqun9A0XULSlnoVD8yBiEB4DIjQt
+	z//CImX2RPBtXqNNefUtzdop05ZIBEZSau2xYhTlJo6LWSy1chNvkvzirzPub56+
+	hufVKdU6XRvTKT0uU7pbI4R4NFnZlpNK6zGEdn03nTNZPX5iKBb0Fyd1zkFzpcMs
+	/u801jXtZ23H70/6QUqMPLHI1KulYAy81uWIwJ0RdNnIrTTwWAs9H5o7uo6iZr9i
+	hO28gJCSMDYUVRUenSILA==
+X-ME-Sender: <xms:PDWAZeI6sZPhsIIRQzeD4ymoUDhVB-IaCGNC6kKImW-PISuu8j6SXg>
+    <xme:PDWAZWI6q6mBMh3wIrF8Vg4nG6zukNu9ZZ9HjdFsOMl-CUE1y_EhsgSaj5kSt6gIc
+    2Z45E7RWQ-ATWpDjdU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:PDWAZes_FNrhuRG7fDZflhU8ZYFPOTuuHrxlPfPZu6lB7ffCC3NEbw>
+    <xmx:PDWAZTbFkwc8ZP6x7jTdUDtWjnlEGEuq2zo9_NMgiDeG4ex-2UpO2Q>
+    <xmx:PDWAZVZAJduZ805DDNDU-dTPj-LW4v6YCxD95voi2pgmMCbbel76ZA>
+    <xmx:PDWAZZFYCsV7CVXMOvM6LWRrH9m-pJYSovig7HmdBcmHH5FutNupxA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id E10CBB6008D; Mon, 18 Dec 2023 07:04:11 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/9] dt-bindings: net: starfive,jh7110-dwmac: Add
- JH7100 SoC compatible
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
- Jessica Clarke <jrtc27@jrtc27.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
- Samin Guo <samin.guo@starfivetech.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Hal Feng <hal.feng@starfivetech.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>, netdev@vger.kernel.org,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-riscv <linux-riscv@lists.infradead.org>, linux-clk@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20231215204050.2296404-1-cristian.ciocaltea@collabora.com>
- <20231215204050.2296404-3-cristian.ciocaltea@collabora.com>
- <A7C96942-07CB-40FD-AAAA-4A8947DEE7CA@jrtc27.com>
- <65fd52f1-6861-42b0-9148-266766d054b1@sifive.com>
- <6c62e3b2-acde-4580-9b67-56683289e45e@collabora.com>
- <20231217-spray-livestock-a59d630b751e@spud>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <20231217-spray-livestock-a59d630b751e@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-Id: <487cfd35-fe68-416f-9bfd-6bb417f98304@app.fastmail.com>
+In-Reply-To: <bfe530f9-d3d4-4cdf-b92b-2fab95f44522@t-8ch.de>
+References: <202312171924.4FozI5FG-lkp@intel.com>
+ <3fb66648-5581-4371-b15e-23e52e6469ba@t-8ch.de>
+ <b091f9d3-14e9-4f2c-bf98-9a207cef412a@app.fastmail.com>
+ <bfe530f9-d3d4-4cdf-b92b-2fab95f44522@t-8ch.de>
+Date: Mon, 18 Dec 2023 12:03:53 +0000
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: "kernel test robot" <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+ linux-kernel@vger.kernel.org, "Jakub Kicinski" <kuba@kernel.org>,
+ "Simon Horman" <horms@kernel.org>
+Subject: Re: include/linux/compiler_types.h:397:45: error: call to
+ '__compiletime_assert_810' declared with attribute error: BUILD_BUG_ON
+ failed: skb_ext_total_length() > 255
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 12/17/23 23:09, Conor Dooley wrote:
-> On Fri, Dec 15, 2023 at 11:03:24PM +0200, Cristian Ciocaltea wrote:
->> On 12/15/23 22:59, Samuel Holland wrote:
->>> On 2023-12-15 2:47 PM, Jessica Clarke wrote:
->>>> On 15 Dec 2023, at 20:40, Cristian Ciocaltea <cristian.ciocaltea@collabora.com> wrote:
->>>>>
->>>>> The Synopsys DesignWare MAC found on StarFive JH7100 SoC is mostly
->>>>> similar to the newer JH7110, but it requires only two interrupts and a
->>>>> single reset line, which is 'ahb' instead of the commonly used
->>>>> 'stmmaceth'.
->>>>>
->>>>> Since the common binding 'snps,dwmac' allows selecting 'ahb' only in
->>>>> conjunction with 'stmmaceth', extend the logic to also permit exclusive
->>>>> usage of the 'ahb' reset name.  This ensures the following use cases are
->>>>> supported:
->>>>>
->>>>>  JH7110: reset-names = "stmmaceth", "ahb";
->>>>>  JH7100: reset-names = "ahb";
->>>>>  other:  reset-names = "stmmaceth";
->>>>>
->>>>> Also note the need to use a different dwmac fallback, as v5.20 applies
->>>>> to JH7110 only, while JH7100 relies on v3.7x.
->>>>>
->>>>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
->>>>> ---
->>>>> .../devicetree/bindings/net/snps,dwmac.yaml   |  3 +-
->>>>> .../bindings/net/starfive,jh7110-dwmac.yaml   | 74 +++++++++++++------
->>>>> 2 files changed, 55 insertions(+), 22 deletions(-)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>>>> index 5c2769dc689a..c1380ff1c054 100644
->>>>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>>>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>>>> @@ -95,6 +95,7 @@ properties:
->>>>>         - snps,dwmac-5.20
->>>>>         - snps,dwxgmac
->>>>>         - snps,dwxgmac-2.10
->>>>> +        - starfive,jh7100-dwmac
->>>>>         - starfive,jh7110-dwmac
->>>>>
->>>>>   reg:
->>>>> @@ -146,7 +147,7 @@ properties:
->>>>>   reset-names:
->>>>>     minItems: 1
->>>>>     items:
->>>>> -      - const: stmmaceth
->>>>> +      - enum: [stmmaceth, ahb]
->>>>>       - const: ahb
->>>>
->>>> I’m not so well-versed in the YAML bindings, but would this not allow
->>>> reset-names = "ahb", "ahb"?
->>>
->>> Yes, it would. You need something like:
->>>
->>> reset-names:
->>>   oneOf:
->>>     - enum: [stmmaceth, ahb]
->>>     - items:
->>>         - const: stmmaceth
->>>         - const: ahb
->>
->> Oh yes, I always forget about the "oneOf" thing. Thanks!
-> 
-> Won't this also relax the naming for all devices that allow a single
-> reset, but expect the stmmaceth one? I'm not sure that that actually
-> matters, I think the consumer bindings have constraints themselves.
+On Mon, Dec 18, 2023, at 11:11, Thomas Wei=C3=9Fschuh wrote:
+> On 2023-12-18 10:12:03+0000, Arnd Bergmann wrote:
+>> On Sun, Dec 17, 2023, at 17:13, Thomas Wei=C3=9Fschuh wrote:
 
-Before commit 843f603762a5 ("dt-bindings: net: snps,dwmac: Add 'ahb'
-reset/reset-name"), the 'stmmaceth' was the only possible option, hence
-there was no need for any constraints on the consumer bindings.  But
-afterwards it was allowed to use both resets, hence I think the bindings
-should have been updated at that time by adding 'maxItems: 1' to prevent
-using the 2nd reset.
+>>=20
+>> The -fno-tree-loop-im option would likely stop the loop from getting
+>> unrolled, which is how the skb_ext_total_length() return code is no
+>> longer constant.
+>>=20
+>> Does manually unrolling this loop avoid the problem?
+>
+> That also works.
+>
+> The offending commit was a change from a manually unrolled loop to the
+> current code.
 
-I could fix this in a separate series, if it's not something mandatory
-to be handled here.
+Ah, I missed that.
 
-Thanks for reviewing,
-Cristian
+I also see that I added -fno-tree-loop-im back in 2016 as a workaround
+for gcc-4.9 and higher, but I don't know if it's still required
+with modern compilers and I'm currently unable to do large scale
+testing of this until maybe early January. My guess would be that it's
+still needed.
+
+If you want to fix it sooner and not revert your earlier patch,
+I would suggest changing the BUILD_BUG_ON to only evaluate the
+length argument if CONFIG_GCOV_PROFILE_ALL is disabled. It's not great
+but if we ever exceed the limit for real it would still be caught
+in normal defconfig and allmodconfig builds since they disable
+the option.
+
+    Arnd
 
