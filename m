@@ -1,71 +1,131 @@
-Return-Path: <linux-kernel+bounces-3270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 050B4816A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:47:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D31A4816A28
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3432C1C2290A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:47:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0491C22912
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF776125C8;
-	Mon, 18 Dec 2023 09:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9D7125CE;
+	Mon, 18 Dec 2023 09:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="5CN8TGCe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="as+YGjvF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEAC3125B8;
-	Mon, 18 Dec 2023 09:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=wkh8YJ3wBxewaxhmG595MYw9wblEahtpkevwIeB20ls=; b=5CN8TGCeFx6r4f7jCOz1p+V+ma
-	Ewb94703UD4Lx8UCclBPYcXNVPMR5UBcRSBMBzjEA35TtchZJyEaBSxgpXxn6fn52xvPVN1a8qVdO
-	mFDswrlMUOV1n2vGVsvB9BifO5c0bbnCkExNSn6I5oSmgYb3WfgeBG5BuzAUw7yxdaEc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rFADV-003EJE-KM; Mon, 18 Dec 2023 10:47:17 +0100
-Date: Mon, 18 Dec 2023 10:47:17 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH] net: phy: at803x: better align function
- varibles to open parenthesis
-Message-ID: <15d9a48d-73cf-4e30-82ce-606c1c2955e9@lunn.ch>
-References: <20231217235011.2070-1-ansuelsmth@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DAB11CBD;
+	Mon, 18 Dec 2023 09:48:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 877CBC433C8;
+	Mon, 18 Dec 2023 09:48:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702892926;
+	bh=w3Wuzja30oOGu0utwKgnSd8xLtm5mDiuTxMgEorAXbI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=as+YGjvFQQHCp0vG4DpCpN+b/lQQcLdoRqqACk87PvDIKzXnIuGjJy4Y0UnVEkzvg
+	 W27e3J1lmjujffQ0WLuvrrYYi29etk3JdlJ1yjGO+LAN/oWe5WrMGjTe44kFDWraEU
+	 /WceoHYRnuBBo/kqBMPLs1FpitywHmoBgwrEvPH0JTmvwxB754j20bS453Pj0x6WeD
+	 1ozC6QlkLCKH+mwqBTISxTymRT9hnit6pAFPWpQ+GGturAnfoh1wxKbf6GWE4zrlYT
+	 aJbSfp34v/UjaYcB1vVc9jlpS1qqLFUQIqu0mTHZ+5RwSqmJFeqwd9URZqp/WViOzl
+	 9FjPCS9lb0JgQ==
+Message-ID: <09f1adfe-90b5-445c-b7f6-ae4fc7a9666a@kernel.org>
+Date: Mon, 18 Dec 2023 18:48:43 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231217235011.2070-1-ansuelsmth@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/5] block: remove support for the host aware zone model
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi
+ <stefanha@redhat.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
+ dm-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-nvme@lists.infradead.org,
+ linux-scsi@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20231217165359.604246-1-hch@lst.de>
+ <20231217165359.604246-4-hch@lst.de>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20231217165359.604246-4-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 18, 2023 at 12:50:11AM +0100, Christian Marangi wrote:
-> Better align function variables to open parenthesis as suggested by
-> checkpatch script for qca808x function to make code cleaner.
+On 2023/12/18 1:53, Christoph Hellwig wrote:
+> When zones were first added the SCSI and ATA specs, two different
+> models were supported (in addition to the drive managed one that
+> is invisible to the host):
 > 
-> For cable_test_get_status function some additional rework was needed to
-> handle too long functions.
+>  - host managed where non-conventional zones there is strict requirement
+>    to write at the write pointer, or else an error is returned
+>  - host aware where a write point is maintained if writes always happen
+>    at it, otherwise it is left in an under-defined state and the
+>    sequential write preferred zones behave like conventional zones
+>    (probably very badly performing ones, though)
 > 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Not surprisingly this lukewarm model didn't prove to be very useful and
+> was finally removed from the ZBC and SBC specs (NVMe never implemented
+> it).  Due to to the easily disappearing write pointer host software
+> could never rely on the write pointer to actually be useful for say
+> recovery.
+> 
+> Fortunately only a few HDD prototypes shipped using this model which
+> never made it to mass production.  Drop the support before it is too
+> late.  Note that any such host aware prototype HDD can still be used
+> with Linux as we'll now treat it as a conventional HDD.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+[...]
 
-    Andrew
+> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+> index 6d8218a4412264..d03d66f1149301 100644
+> --- a/drivers/scsi/scsi_debug.c
+> +++ b/drivers/scsi/scsi_debug.c
+> @@ -339,7 +339,7 @@ struct sdebug_dev_info {
+>  	bool used;
+>  
+>  	/* For ZBC devices */
+> -	enum blk_zoned_model zmodel;
+> +	bool zoned;
+>  	unsigned int zcap;
+>  	unsigned int zsize;
+>  	unsigned int zsize_shift;
+> @@ -844,8 +844,11 @@ static bool write_since_sync;
+>  static bool sdebug_statistics = DEF_STATISTICS;
+>  static bool sdebug_wp;
+>  static bool sdebug_allow_restart;
+> -/* Following enum: 0: no zbc, def; 1: host aware; 2: host managed */
+> -static enum blk_zoned_model sdeb_zbc_model = BLK_ZONED_NONE;
+> +static enum {
+> +	BLK_ZONED_NONE	= 0,
+> +	BLK_ZONED_HA	= 1,
+> +	BLK_ZONED_HM	= 2,
+> +} sdeb_zbc_model = BLK_ZONED_NONE;
+>  static char *sdeb_zbc_model_s;
+>  
+>  enum sam_lun_addr_method {SAM_LUN_AM_PERIPHERAL = 0x0,
+> @@ -1815,8 +1818,6 @@ static int inquiry_vpd_b1(struct sdebug_dev_info *devip, unsigned char *arr)
+>  	arr[1] = 1;	/* non rotating medium (e.g. solid state) */
+>  	arr[2] = 0;
+>  	arr[3] = 5;	/* less than 1.8" */
+> -	if (devip->zmodel == BLK_ZONED_HA)
+> -		arr[4] = 1 << 4;	/* zoned field = 01b */
+
+I think we should keep everything related to HA in scsi debug as that is an easy
+way to test the block layer and scsi. no ?
+
+Other than this, very nice cleanup !
+
+-- 
+Damien Le Moal
+Western Digital Research
+
 
