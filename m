@@ -1,292 +1,166 @@
-Return-Path: <linux-kernel+bounces-4383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77D70817C53
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:57:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F529817C55
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:58:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2FC51F24359
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:57:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2175283675
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC2473481;
-	Mon, 18 Dec 2023 20:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFE573481;
+	Mon, 18 Dec 2023 20:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KBrrRMzq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HO49Nx56"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28E1101E2;
-	Mon, 18 Dec 2023 20:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702933027; x=1734469027;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=FGjfUAv8O9adH+cJKApZT98kcHhD4shY13oGae/rCBE=;
-  b=KBrrRMzqJHDnYu0s6r/e5WJSNqngugPBWSryHxH+ckn7OI2kMlfSfJqw
-   diy6y0A7AwCVP1JH4Ze3tp4dGHujaZ+1Vuk8I5ty4B/SjsHFpJKokwYOj
-   UyHzOkKpq4Pu8MiDvG6UoQpiST4s6PFI/UpBAuoNhpBk0rooVcDIQ6PaA
-   CR3sqPOobeRMsD3zyp/zK7kt3yjA/JR3oMOu0b7volCzbrjjLfevFpdkj
-   rakemM+NQwTRo0XFoGxaVTZIQAdHC7q7/nanqFvxFx2hFqK7eFPRUHX1k
-   wm4b4dJ74rtHSBNKs0qMuv76AVfRssyjUUZCjhBKlEpa+RLklYt3WSJtX
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="380548025"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="380548025"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 12:57:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="779234904"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="779234904"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Dec 2023 12:57:02 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Dec 2023 12:57:02 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 18 Dec 2023 12:57:02 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 18 Dec 2023 12:57:00 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TfPd28aIjV5jp7jxWHzL8YhJIxE06S5aiOLtRXM8VuY9woqEfh78GUUhQirRmKqUlEygyj/p54iHWyOTAZr8MpDqdQ9CdEAwhOJp4gyiqYVOwfmrmslmfZfWD8u0Jd6dlfr9yXcvdnS47bcQ511X0u+ncvuwuiWE8sWAE9HyWEWI05yi/qSPupIMUHuRUOMr/w4zPDKeoQ7+xKHgDvaLuQvo7DPdRUJPXSRW+45YrUI2nC7nC4CdYFiEC7x+2BymnUva3s0nNp+SXZ89eYXhJLsHqBmMHf2xe6LuE9LSDB04MnofSN98ahj4IXz2MM6ifHJnZSX3FrXGFqO8sLikdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4ym6x8sbyK89GDq7pWfu9SKf94Q/BZd+rrjQYoaSY3I=;
- b=VLajCKfusatxid3t8mBE7g+o4P3RlYQ5Fp+oxGMWDzFtihh2buO04aCJSjU3xySjHpTTIA8AV0hhbRStt+qc/+Lq38JsmP5F4sfk9Eq66ji/NYcOm0OGVwc8thd1wR9F+Gr21xn30XZtwAOPGSy51QoFXqZH2qL/G5yfVGsB0InnKOm5iO7lVvbjYfOHIrayLIlQjNs7AW2fm99mme1IFgAjfBbpqObU8zjS39fBngPmhuq8Hrx7iUp9TRj5BCxILnDJikXWLeCXBZ8ut57kBoI28zdgdtY3APZcaSiMsTBjj1VPfUY/5lg3x+XkyX6f6hr98Ff18VhftTIzcU//6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SJ0PR11MB4782.namprd11.prod.outlook.com (2603:10b6:a03:2df::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Mon, 18 Dec
- 2023 20:56:58 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 20:56:58 +0000
-Date: Mon, 18 Dec 2023 12:56:55 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, Ira Weiny
-	<ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>, "Jonathan
- Cameron" <jonathan.cameron@huawei.com>, Shiju Jose <shiju.jose@huawei.com>
-CC: Yazen Ghannam <yazen.ghannam@amd.com>, Davidlohr Bueso
-	<dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Ard
- Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>
-Subject: Re: [PATCH v4 7/7] cxl/memdev: Register for and process CPER events
-Message-ID: <6580b21723b2c_269bd294f8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20231215-cxl-cper-v4-0-01b6dab44fcd@intel.com>
- <20231215-cxl-cper-v4-7-01b6dab44fcd@intel.com>
- <4cb5c275-566c-9414-7088-1e91378a409a@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4cb5c275-566c-9414-7088-1e91378a409a@amd.com>
-X-ClientProxiedBy: MW4PR04CA0246.namprd04.prod.outlook.com
- (2603:10b6:303:88::11) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67F1A2D;
+	Mon, 18 Dec 2023 20:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4260ba19a57so36045071cf.3;
+        Mon, 18 Dec 2023 12:57:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702933069; x=1703537869; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=GcKJMFjfcbU8CE9s/X+zGwudMjtKyfz7guJTf6gd0KU=;
+        b=HO49Nx56HpXHqAtdQPepO05sEeWDsrgJ/AyLkqN1ZwoW6mQvfg0n+S+AfmaV8SMZu/
+         /gkIOx3GCaka1tv0blDwfyXL1Y5cR/JRAwy39kUKDpy0DCSCFN1iEgTy3mZKRsnGBEJq
+         e0529u52e8zX31ETqfOqp8Z5shIcitmVJb4SsTPKFd99KOxea/6ZK8yaVmfj054NDTS4
+         CbiNj9fJ/FtG0ICJwcpO6foQq9CGTmhCtAAxgvN9JSH83WxQGTTVY4O3NvZe4QU42S4e
+         mvi0EMFyX1bZSW2XcR1o07+6/ZvcUjTuyAbow9SO9Yi5EKFJWY+1QKo1bQ9zyVy6ZDyd
+         4L4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702933069; x=1703537869;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GcKJMFjfcbU8CE9s/X+zGwudMjtKyfz7guJTf6gd0KU=;
+        b=kw3Vcleyl8oAr2lj756BcHZI/cXgiayogkMJvQ/gxMasRR5k90Gw5rltbsewrN6Cnp
+         21KFbsX19wPaYbwH/pFoqk1dYr6vhBzryW9zbs2a92Jv6U5OzuWW5YHiGjUFKX5KTQIU
+         C2gcb8RN+07Rhcu5zXk5xUM9Fuo3/hiw72R4SvXj0vtMDhYxb4tLB94OFzwAeClQhbQ3
+         HAfb9tcK22hVRjWlGjp+5TKxy9IHdhLhnLRcIDt+1L7p/0okiVRSmg9xj7T8QvEfopxG
+         5ppSnmnhIXqdNeSqiSDHNDosXQw8CrVA8K21xwan4fuFneqfwIUlK5cNbocThivYcuLf
+         js5g==
+X-Gm-Message-State: AOJu0YzujmJbOPI0PxKyc3PYNkSH4U/X3EOJm0CPBi17xDXJxq+bTzbJ
+	ZYSAgY5bOW5ACpkLxUgUydQ=
+X-Google-Smtp-Source: AGHT+IGSAVojbk4OAnmD9VMdQbaMwOC5DCFv1TO7rbwVegXqFehkf0EbaCeJdyW4EtUGSO6JH8+zAw==
+X-Received: by 2002:a05:622a:1889:b0:425:4043:5f16 with SMTP id v9-20020a05622a188900b0042540435f16mr22434099qtc.84.1702933069601;
+        Mon, 18 Dec 2023 12:57:49 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id x3-20020ac87303000000b0042551dce749sm9644808qto.46.2023.12.18.12.57.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 12:57:49 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailauth.nyi.internal (Postfix) with ESMTP id B13B127C005A;
+	Mon, 18 Dec 2023 15:57:48 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 18 Dec 2023 15:57:48 -0500
+X-ME-Sender: <xms:S7KAZZSUZg3xuRyPO5B4CrV70gxJC_9f-UKYl-YwYFMAi47B5qew6A>
+    <xme:S7KAZSxXkHYVEBqfmhQrbv1L8bf1-St7BCCe5LCji_ywyNf_6Moz9dqun-JfHNms1
+    wW4BjhAJiRulDfCvw>
+X-ME-Received: <xmr:S7KAZe39tqUtjkQNz_D0YGYnICAnuYEvB011ALiimKGtDrqx6-7ZnuJMgyE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedgudegtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
+    qhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtf
+    frrghtthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudek
+    hffggeelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
+    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
+    hfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:S7KAZRB4bNiA0D1BGs2AoUxUtFLiRYCDIh4nQ_-IzajUzr264DoUyQ>
+    <xmx:S7KAZShDEWU6utv6-ydWGQ51w53NyX-uIt2f9ViZABw-TXQkhP_SqA>
+    <xmx:S7KAZVokdqQw-3oQ8gn-zw9yv1KDgrnm4anJoxgWJWYOO7nSzGFjhQ>
+    <xmx:TLKAZWw1ETvHQ9usJXclEf4hkDRVNq-sIxjfN2h4MynJiYUcE-riHw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Dec 2023 15:57:47 -0500 (EST)
+Date: Mon, 18 Dec 2023 12:57:30 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Tiago Lam <tiagolam@gmail.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Subject: Re: [PATCH] rust: sync: Makes `CondVar::wait()` an uninterruptible
+ wait
+Message-ID: <ZYCyOuChFYf_J_o1@boqun-archlinux>
+References: <ZXtebif2S1CyJRik@boqun-archlinux>
+ <20231214200421.690629-1-boqun.feng@gmail.com>
+ <CAH5fLggriMBLWVx5i1efHdiNveVutvRfcA6mydNV9egzEFnnxw@mail.gmail.com>
+ <ZXzlGM1xV-VlUkeh@boqun-archlinux>
+ <b2d69a27-d791-4455-843b-d946512beb78@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ0PR11MB4782:EE_
-X-MS-Office365-Filtering-Correlation-Id: d7f7cfb4-5f08-441a-2015-08dc000be010
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kie7J3YtDghQQXzW/bwNrCBmVkWe2gb2DEdMeQwhM74WdFT5qXcEduGxnwoD8Pz49d1zihCJChlXYazPo0APlD/wNi0iqXiJc0lb1+Qmdthmoche3bqV4s091eIb7MMU8j/zyDtXe1MI2LxdSid/fpS5Wva0XXgPNe+UXlPzaubC9dhdqz6JK3+N1e3N3kh8mrL8seYCDJGF7Nm0pz8La2ZPu5hpaUugcqJlnGwTrNyk7P1DUVvmKy+jiIMJbkngHYbVwwsWmqQ1Holv6vAkMHBKGQIgPrhsNl31ACQ7F4eJ9EBm6soWr3LEn3bylJZAvNPmiPWzVtXukMLfa3lsg7BVgPdQ5WpmEzL/bywLz30k2j2ORQxHpuntg515rK6dvblBllik39q7ZyeFHK6juSYjJVy3oFVPvJztsftbFZL13T65pw8i0IFTcMErfQHpweR/wCwL6Nfy6iGMMOTxZ+H2nlBY1nE+IHv4JPquzMixvs8emYEV9+/af1fRAg/OcDjGiDnbGZpnZuX83ByOBvvV/zyTaVT/JszXyzKB5JFFiX75pjOsUQrDGSRiK7ec
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(396003)(376002)(136003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(26005)(82960400001)(38100700002)(86362001)(83380400001)(5660300002)(6512007)(9686003)(53546011)(6506007)(66946007)(8936002)(8676002)(54906003)(66556008)(316002)(6486002)(4326008)(110136005)(66476007)(2906002)(7416002)(6666004)(41300700001)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?InxHJvccsbQldYozWDWhALbt2Q7CxQnOD3CFDLHG4bKX79ED/ixk7II5celC?=
- =?us-ascii?Q?78Og7JApXGdoILvVWcZe6Ljt3YJp0ZC4s5kTPCsr6R+1srVQpAiDqAM5ZVN3?=
- =?us-ascii?Q?FDPLEVPb2jCifBSljGmJ24RgpyMwV+g5c9by2pNA6pFQwT7VK6KKwpyYCFTm?=
- =?us-ascii?Q?tKJrlaFQHKC05n9ZdSJm9VTuzFAjyRM+lpr+pXbjkyGsE83DnVB/tt0R7eiT?=
- =?us-ascii?Q?q1rncdfmtBQfLxfI0SjZ9Jf98PgGAc97bL5LHEg5h6d567TtBqdobH6O7V/4?=
- =?us-ascii?Q?elIO7x2liayBE3aFT2wsePkG0mRwy/oWTLWtKIbt5+venmQlYdHukNtwQJlM?=
- =?us-ascii?Q?554OzZZ0ZAQmCXc+YXG7csQRhkkxfEXGcvdTi0tzSCZwY5K4fs+jFwWtsn3l?=
- =?us-ascii?Q?3nISKf9g8eS2lmpUNAYiy6url/m55dTeCuut+I9teCxK29KEHGDjpKSfSDZl?=
- =?us-ascii?Q?JEi3RNsxNwysTYedQsTcEwTqH3gNt0yXi3YMdyhKQUqi/NiDFfww/K1p9i13?=
- =?us-ascii?Q?ZBsMTjMKDTu4z8GA0Qhpz11KeD4rVc9YjszK9/WrJs9mxUSOzeIB4m7uOKHI?=
- =?us-ascii?Q?mmvviqhh+vBpyjcLavhmTfdOKwk1w5Ge2bbfbH5ennqy+5h2aftO4gQsoSRX?=
- =?us-ascii?Q?+WJcxUf4bx5hVMwzfpAQgzlurAdH6MFao4CUZhGrB3vJuYw0qOewHnMygXaT?=
- =?us-ascii?Q?5CJw4545PZ9I6sskTdSrpVMxV60mLLYVvDBL6ycVusJ1wLatyoLG2GRPvlv2?=
- =?us-ascii?Q?OCNwsIVBQjxnspKQHBkM6qkgb0pQvqp4yLupYSpy+5BB55F51coaPYNzECBG?=
- =?us-ascii?Q?1wIzFlA87EgkkBy3AGnkqPMUMqpYsaVYLt4wgcV3xnc/VEeVAu7Z4I521zoz?=
- =?us-ascii?Q?ktMup6Xz5KsgRb77ZcSDShPw9lRbFJtCeNWB7CTqtx4HRmxlwXpmqglqwXSu?=
- =?us-ascii?Q?zAOWAlI1KnqzMiZCOHmls8AsywYKxZ2FPGpL7N+AZ5LwjZ+dBB8CjiaBcHEi?=
- =?us-ascii?Q?O2lTFIkfPk4+u9O3SDQ8IQ8jx7OjpBCM7Vl8Jf5N0iDxEQRN/Xx58f7XHnnV?=
- =?us-ascii?Q?QoqgeiGki4X60vnOvdJEqV31Ly16gJ9SyMyzunfznl/d/8/VCc6FeOuEvgMQ?=
- =?us-ascii?Q?i1T+pFt3zZAbFjkKN3K0X9E7iNNMcRBjv5EK7aGVSn07viVm7osbnBn+lypV?=
- =?us-ascii?Q?+4V/Pc923AWNIYTioVDIeMPsBURpWD1Z23zvVYlJvV884GukaJJxs+c4O1/d?=
- =?us-ascii?Q?sjW4FaShBiE2MjhDJl/2r1nVK1C9t9oLgfKOilF8zdr6hYXW3lP4zIy8XNR4?=
- =?us-ascii?Q?J7fy/UuKXApg38tJgwn+WlPZi9GMG/BcwDw+V55OgIdb74czIp7PY6cwP+Rn?=
- =?us-ascii?Q?mDtrp+h0MjRMPglxoKPjgKAKnswaZvoaUNVIF5li8ln9VeEdeX3Xh0UWmNR8?=
- =?us-ascii?Q?Y2kNVnmt5CdyQag812OCEqb3Hsh+ndBEleU3XMOZrX7PysmzTF7m4bctX6od?=
- =?us-ascii?Q?NiEA7U1/ESDckcdcpkyvpv8bbxDyauFgJlU4k4+lPz1Ypwq/rKV1AgDTbxRE?=
- =?us-ascii?Q?BYqCcyUa5hOtQkv4YsxJJozFsY+8cIjb9WVCt2dzO2DDfI6nsOr/P/rzTgUO?=
- =?us-ascii?Q?dA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7f7cfb4-5f08-441a-2015-08dc000be010
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 20:56:58.5689
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YNrIme2jXGJimU9V9nUV39Sbml1fj79LAiCloJ3qOxEGkFt/VxEv8h9gZEqOrq5Y4QxQvttZkilgA80cAZsSeeBMPI+ag54cElcl2j4uPTo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4782
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b2d69a27-d791-4455-843b-d946512beb78@proton.me>
 
-Smita Koralahalli wrote:
-> On 12/15/2023 3:26 PM, Ira Weiny wrote:
-> > If the firmware has configured CXL event support to be firmware first
-> > the OS can process those events through CPER records.  The CXL layer has
-> > unique DPA to HPA knowledge and standard event trace parsing in place.
+On Mon, Dec 18, 2023 at 05:39:14PM +0000, Benno Lossin wrote:
+> On 12/16/23 00:45, Boqun Feng wrote:
+> > On Fri, Dec 15, 2023 at 11:27:56AM +0100, Alice Ryhl wrote:
+> >> On Thu, Dec 14, 2023 at 9:04 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >>>
+> >>> Currently, `CondVar::wait()` is an interruptible wait, and this is
+> >>> different than `wait_event()` in include/linux/wait.h (which is an
+> >>> uninterruptible wait). To avoid confusion between different APIs on the
+> >>> interruptible/uninterruptible, make `CondVar::wait()` an uninterruptible
+> >>> wait same as `wait_event()`, also rename the old `wait()` to
+> >>> `CondVar::wait_interruptible()`.
+> >>>
+> >>> Spotted-by: Tiago Lam <tiagolam@gmail.com>
+> >>> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> >>
+> >> The diff is a bit hard to read because you swapped the order of the
+> >> functions, but LGTM.
+> >>
 > > 
-> > CPER records contain Bus, Device, Function information which can be used
-> > to identify the PCI device which is sending the event.
-> > 
-> > Change pci driver registration to include registration for a CXL CPER
-> > notifier to process the events through the trace subsystem.
-> > 
-> > Define and use scoped based management to simplify the handling of the
-> > pci device object.
-> > 
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
+> > Yeah, I did that because `wait_interruptible` metioned `wait`, so I had
+> > to make `wait` still before `wait_interruptible`.
 > 
-> [snip]
+> What do you mean? If you are talking about the doclink, then
+
+I meant I prefer to keeping `wait` text-order-before
+`wait_interruptible`, so that readers will first read it.
+
+> that should not matter.
+
+Yeah, I know the ordering doesn't matter for generating doc. However,
+the ordering still matters for readers, I'd like them to learn about
+`wait` first since according to the existing API in kernel, they are the
+major usage.
+
+Thanks for pointing it out anyway! ;-)
+
+Regards,
+Boqun
+
+> 
+> -- 
+> Cheers,
+> Benno
 > 
 > 
-> > +	switch (event_type) {
-> > +	case CXL_CPER_EVENT_GEN_MEDIA:
-> > +		trace_cxl_general_media(cxlmd, type, &gen_media_event_uuid,
-> > +					&event->gen_media);
-> > +		break;
-> > +	case CXL_CPER_EVENT_DRAM:
-> > +		trace_cxl_dram(cxlmd, type, &dram_event_uuid, &event->dram);
-> > +		break;
-> > +	case CXL_CPER_EVENT_MEM_MODULE:
-> > +		trace_cxl_memory_module(cxlmd, type, &mem_mod_event_uuid,
-> > +					&event->mem_module);
-> > +		break;
-> > +	}
-> > +}
-> 
-> Is default case needed here?
-
-Yeah, it looks like an uninitialized @type value can be passed through
-the stack here.
-
-[..]
-> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> > index 0155fb66b580..638275569d63 100644
-> > --- a/drivers/cxl/pci.c
-> > +++ b/drivers/cxl/pci.c
-> > @@ -1,5 +1,6 @@
-> >   // SPDX-License-Identifier: GPL-2.0-only
-> >   /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-> > +#include <asm-generic/unaligned.h>
-> >   #include <linux/io-64-nonatomic-lo-hi.h>
-> >   #include <linux/moduleparam.h>
-> >   #include <linux/module.h>
-> > @@ -969,6 +970,58 @@ static struct pci_driver cxl_pci_driver = {
-> >   	},
-> >   };
-> >   
-> > +#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-> > +static void cxl_cper_event_call(enum cxl_event_type ev_type,
-> > +				struct cxl_cper_event_rec *rec)
-> > +{
-> > +	struct cper_cxl_event_devid *device_id = &rec->hdr.device_id;
-> > +	struct pci_dev *pdev __free(pci_dev_put) = NULL;
-> > +	struct cxl_dev_state *cxlds = NULL;
-> > +	enum cxl_event_log_type log_type;
-> > +	unsigned int devfn;
-> > +	u32 hdr_flags;
-> > +
-> > +	devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-> > +	pdev = pci_get_domain_bus_and_slot(device_id->segment_num,
-> > +					   device_id->bus_num, devfn);
-> > +	if (!pdev)
-> > +		return;
-> > +
-> > +	guard(device)(&pdev->dev);
-> > +	if (pdev->driver == &cxl_pci_driver)
-> > +		cxlds = pci_get_drvdata(pdev);
-> > +	if (!cxlds)
-> > +		return;
-> > +
-> > +	/* Fabricate a log type */
-> > +	hdr_flags = get_unaligned_le24(rec->event.generic.hdr.flags);
-> > +	log_type = FIELD_GET(CXL_EVENT_HDR_FLAGS_REC_SEVERITY, hdr_flags);
-> > +
-> > +	cxl_event_trace_record(cxlds->cxlmd, log_type, ev_type, &rec->event);
-> 
-> Currently, when I run this, I see two trace events printed. One from 
-> here, and another as a non_standard_event from ghes. I think both should 
-> be unified?
-> 
-> I remember Dan pointing out to me this when I sent decoding for protocol 
-> errors and its still pending on me for protocol errors.
-
-Good point, so I think the responsibility to trace CXL events should
-belong to ghes_do_proc() and ghes_print_estatus() can just ignore CXL
-events.
-
-Notice how ghes_proc() sometimes skips ghes_print_estatus(), but
-uncoditionally emits a trace event in ghes_do_proc()? To me that means
-that the cper_estatus_print() inside ghes_print_estatus() can just defer
-to the ghes code to do the hookup to the trace code.
-
-For example, ras_userspace_consumers() was introduced to skip emitting
-events to the kernel log when the trace event might be handled. My
-assumption is that was for historical reasons, but since CXL events are
-new, just never emit them to the kernel log and always require the trace
-path.
-
-I am open to other thoughts here, but it seems like ghes_do_proc() is
-where the callback needs to be triggered.
-
-
-> Thanks,
-> Smita
-> 
-> > +}
-> > +
-> > +static int __init cxl_pci_driver_init(void)
-> > +{
-> > +	int rc;
-> > +
-> > +	rc = pci_register_driver(&cxl_pci_driver);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	rc = cxl_cper_register_notifier(cxl_cper_event_call);
-
-Quick aside as I am reading through this, the "notifier" name is
-misleading since this callback has nothing to do with the
-include/linux/notifier.h API.
 
