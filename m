@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-4191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 899208178FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:43:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547178178FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:43:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E5BC1C25572
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:43:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B1F1F21296
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F0A74E29;
-	Mon, 18 Dec 2023 17:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F275D72D;
+	Mon, 18 Dec 2023 17:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqvXmH1u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xff4szit"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F2971477;
-	Mon, 18 Dec 2023 17:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F38F7144B;
+	Mon, 18 Dec 2023 17:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50bf3efe2cbso3901608e87.2;
-        Mon, 18 Dec 2023 09:41:08 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cc690a3712so21501661fa.3;
+        Mon, 18 Dec 2023 09:41:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702921266; x=1703526066; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702921268; x=1703526068; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M0/5NCPPEP08dxHiHIezXLBrilHL+5rztH1UO29obAo=;
-        b=PqvXmH1uUnkEz93haJsEFNRHyvGppMKE/C31snNWw6Mp2zk47O8wZP1wcH4bHbjkIX
-         0qA81yYknYGq5sQJ9HWHX/qI82mBOhPSnjVWnv5UTIajDY7Q/V0060zW2U96H8MiNbYW
-         3iOMbj75ja5rQr6QOtEU3gzGZ5uLGSL5kzgWIUOPuH1VuFAf0+9ukeegFq7laIxcUQss
-         HNBLAHu4HL5ETFSkKgsgAKkPU9oT4qvlsSarJ+mIf4MmrHJ2y5qWHAh1lCCh18n3d2dB
-         n2VTlI/cK8gXT/fqituofYxwGA+XBkAzof1zj5CgbXdFNrrVkBo7RNlclIQZryh63Obk
-         5W5g==
+        bh=/lcZDt5QGRhe9n/LLDxuh6IIVZbIKKGFKFqVIvYPe3o=;
+        b=Xff4szitaYWeBor/vHoMfDqoUga6kFfxCFtVavBW2qNnhTwNPQkuakCopuNh4/o0Mx
+         aJ8RuJ9i+9+bZ3j4YxsMbh7jq1WaaJVIy6y+rhLZ+mVs6wUxybIj8z83ismvI84ZsQ4y
+         an0Ss8XfXziyKGKKoG7H/s7A3A4JGDLSRhQwp0s42KWwbrHwj/ckZJVo0SVIkjVm3SbK
+         yimKP/cDeTeMiFGHG4TdGP0hJNbfOAiumEb8xNMoxigzd9tSdnimnaU6Msq5yaBIv6ba
+         wlfwTmgVbQXhuq9yh1Bx/s3CkwdFiznydtwUKbWmv+o11eCnxyizxPTzJkhJ6nYENgmQ
+         WTqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702921266; x=1703526066;
+        d=1e100.net; s=20230601; t=1702921268; x=1703526068;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M0/5NCPPEP08dxHiHIezXLBrilHL+5rztH1UO29obAo=;
-        b=o1pnAVNq/7bbzufwbMKt8P7MO03r85nJfqJLn7vqogwSvCF7rGYKkOf7ijt72KmJwV
-         vpPl0EkYnKUf5J1fPcRZ4rQ6G7mGZNdhKX1RhPTNhc/EOBHjFXnRg9mwDPu+mUPiECfF
-         I2Phe6mBthvxckYOhMzIyCOpetfqE+8sytZJ3PHgZBCm+kMAVZOT5WY55SZ4wffDk8yi
-         EA07YoRCqdt6/6wdomtOUnYJcGh/WF98R7FvE9ujJ8uYLULT+zmx1l4Lpw8Q5NioTXlh
-         OoL0VZbIjOxQEj3Vddm+wBvjRMc0dbE6B1B58nrtOHtIvf2mohWAO+8vAlG4ROD/8K6L
-         aYlw==
-X-Gm-Message-State: AOJu0Yw+8cETf0IrCn5BYJsllb8t6e8JVKUIIPCWvYyDxKCiO8IN0VlO
-	bFDtdjneZQuRi+DXWTwiuDR3OGQcbYpFdw==
-X-Google-Smtp-Source: AGHT+IF9ey4UQ6SUMpAGvUqYRTmdaHtMtctv+O6YHO1u0m2u4Rue0WRtBrlpVqU33PMFNKB4V2vFxg==
-X-Received: by 2002:a05:6512:1586:b0:50e:719:6feb with SMTP id bp6-20020a056512158600b0050e07196febmr4040180lfb.213.1702921266432;
-        Mon, 18 Dec 2023 09:41:06 -0800 (PST)
+        bh=/lcZDt5QGRhe9n/LLDxuh6IIVZbIKKGFKFqVIvYPe3o=;
+        b=nS39qulgPNrkmM7DU+NVwroJm82ef0QG8/sArfoqz9pHRqh+AsfgylGgSFdZm8y/z1
+         5965BhKtQiXgXsbngcGzxxdvyVqWRzaReoq/OPoBPsqVWfm1q3EadbCsSSKbI61Y4Jib
+         Oal/yBteQ6px1ps3tDTMkeQlau1qibYQRWd3Own9G+OR0wgGxqNB9dI2CCDq+UrZW2fD
+         XV1C1E/LdFllJ2kkG42b7ZqSY6WMJOwHzmI6WUUXZyN7XujtshocW5hK+VR66uOBOsgF
+         pKClOeKaQ+5SnkZPxwL/50G5LYaVycbnnKBOox27c9jbbhZiT6y8uB3//YUggvQSShOG
+         44Mg==
+X-Gm-Message-State: AOJu0YzfFOQdaREyzEBvomdS9sVVQTNPTmMW+tkcvXSoLvj8dKTgJkYs
+	7dxXn618oiI4Gups4xRUSgCpZJK4L7PFkQ==
+X-Google-Smtp-Source: AGHT+IFJ7DMdENSn1mXdrbi/Y7ERcM2t2FtjbfFdZg9Evs/GZ/Fr4tWkWnnVSiXj7M98mEb+GPNomQ==
+X-Received: by 2002:a2e:9857:0:b0:2cc:7c8c:5748 with SMTP id e23-20020a2e9857000000b002cc7c8c5748mr18239ljj.63.1702921267816;
+        Mon, 18 Dec 2023 09:41:07 -0800 (PST)
 Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id f8-20020a193808000000b0050d12fe487bsm1077566lfa.277.2023.12.18.09.41.05
+        by smtp.gmail.com with ESMTPSA id z5-20020a2ebcc5000000b002cc259a574esm2497812ljp.117.2023.12.18.09.41.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 09:41:06 -0800 (PST)
+        Mon, 18 Dec 2023 09:41:07 -0800 (PST)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -68,9 +68,9 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v2 07/20] media: i2c: ov4689: Use sub-device active state
-Date: Mon, 18 Dec 2023 20:40:28 +0300
-Message-ID: <20231218174042.794012-8-mike.rudenko@gmail.com>
+Subject: [PATCH v2 08/20] media: i2c: ov4689: Enable runtime PM before registering sub-device
+Date: Mon, 18 Dec 2023 20:40:29 +0300
+Message-ID: <20231218174042.794012-9-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218174042.794012-1-mike.rudenko@gmail.com>
 References: <20231218174042.794012-1-mike.rudenko@gmail.com>
@@ -82,206 +82,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use sub-device active state. Employ control handler lock to
-synchronize access to the active state and s_stream.
+As the sensor may be accessible right after its async sub-device is
+registered, enable runtime PM before doing so.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 ---
- drivers/media/i2c/ov4689.c | 75 ++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 43 deletions(-)
+ drivers/media/i2c/ov4689.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index d42f5d1a1ba8..501901aad4ae 100644
+index 501901aad4ae..5300e621ff90 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -86,7 +86,6 @@ struct ov4689 {
- 
- 	u32 clock_rate;
- 
--	struct mutex mutex; /* lock to protect ctrls and cur_mode */
- 	struct v4l2_ctrl_handler ctrl_handler;
- 	struct v4l2_ctrl *exposure;
- 
-@@ -319,19 +318,6 @@ static int ov4689_set_fmt(struct v4l2_subdev *sd,
- 	return 0;
- }
- 
--static int ov4689_get_fmt(struct v4l2_subdev *sd,
--			  struct v4l2_subdev_state *sd_state,
--			  struct v4l2_subdev_format *fmt)
--{
--	struct v4l2_mbus_framefmt *mbus_fmt = &fmt->format;
--	struct ov4689 *ov4689 = to_ov4689(sd);
--
--	/* only one mode supported for now */
--	ov4689_fill_fmt(ov4689->cur_mode, mbus_fmt);
--
--	return 0;
--}
--
- static int ov4689_enum_mbus_code(struct v4l2_subdev *sd,
- 				 struct v4l2_subdev_state *sd_state,
- 				 struct v4l2_subdev_mbus_code_enum *code)
-@@ -405,10 +391,11 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
- {
- 	struct ov4689 *ov4689 = to_ov4689(sd);
-+	struct v4l2_subdev_state *sd_state;
- 	struct device *dev = ov4689->dev;
- 	int ret = 0;
- 
--	mutex_lock(&ov4689->mutex);
-+	sd_state = v4l2_subdev_lock_and_get_active_state(&ov4689->subdev);
- 
- 	if (on) {
- 		ret = pm_runtime_resume_and_get(dev);
-@@ -443,7 +430,7 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+@@ -876,19 +876,21 @@ static int ov4689_probe(struct i2c_client *client)
+ 		goto err_clean_entity;
  	}
  
- unlock_and_return:
--	mutex_unlock(&ov4689->mutex);
-+	v4l2_subdev_unlock_state(sd_state);
- 
- 	return ret;
- }
-@@ -506,18 +493,13 @@ static int __maybe_unused ov4689_power_off(struct device *dev)
- 	return 0;
- }
- 
--static int ov4689_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
-+static int ov4689_init_state(struct v4l2_subdev *sd,
-+			     struct v4l2_subdev_state *sd_state)
- {
--	struct ov4689 *ov4689 = to_ov4689(sd);
--	struct v4l2_mbus_framefmt *try_fmt;
--
--	mutex_lock(&ov4689->mutex);
--
--	try_fmt = v4l2_subdev_state_get_format(fh->state, 0);
--	/* Initialize try_fmt */
--	ov4689_fill_fmt(&supported_modes[OV4689_MODE_2688_1520], try_fmt);
-+	struct v4l2_mbus_framefmt *fmt =
-+		v4l2_subdev_state_get_format(sd_state, 0);
- 
--	mutex_unlock(&ov4689->mutex);
-+	ov4689_fill_fmt(&supported_modes[OV4689_MODE_2688_1520], fmt);
- 
- 	return 0;
- }
-@@ -526,10 +508,6 @@ static const struct dev_pm_ops ov4689_pm_ops = {
- 	SET_RUNTIME_PM_OPS(ov4689_power_off, ov4689_power_on, NULL)
- };
- 
--static const struct v4l2_subdev_internal_ops ov4689_internal_ops = {
--	.open = ov4689_open,
--};
--
- static const struct v4l2_subdev_video_ops ov4689_video_ops = {
- 	.s_stream = ov4689_s_stream,
- };
-@@ -537,11 +515,15 @@ static const struct v4l2_subdev_video_ops ov4689_video_ops = {
- static const struct v4l2_subdev_pad_ops ov4689_pad_ops = {
- 	.enum_mbus_code = ov4689_enum_mbus_code,
- 	.enum_frame_size = ov4689_enum_frame_sizes,
--	.get_fmt = ov4689_get_fmt,
-+	.get_fmt = v4l2_subdev_get_fmt,
- 	.set_fmt = ov4689_set_fmt,
- 	.get_selection = ov4689_get_selection,
- };
- 
-+static const struct v4l2_subdev_internal_ops ov4689_internal_ops = {
-+	.init_state = ov4689_init_state,
-+};
-+
- static const struct v4l2_subdev_ops ov4689_subdev_ops = {
- 	.video = &ov4689_video_ops,
- 	.pad = &ov4689_pad_ops,
-@@ -648,7 +630,6 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
- 	ret = v4l2_ctrl_handler_init(handler, 10);
- 	if (ret)
- 		return ret;
--	handler->lock = &ov4689->mutex;
- 
- 	ctrl = v4l2_ctrl_new_int_menu(handler, NULL, V4L2_CID_LINK_FREQ, 0, 0,
- 				      link_freq_menu_items);
-@@ -861,13 +842,15 @@ static int ov4689_probe(struct i2c_client *client)
- 		return dev_err_probe(dev, ret,
- 				     "Failed to get power regulators\n");
- 
--	mutex_init(&ov4689->mutex);
--
- 	sd = &ov4689->subdev;
- 	v4l2_i2c_subdev_init(sd, client, &ov4689_subdev_ops);
-+	sd->internal_ops = &ov4689_internal_ops;
-+
- 	ret = ov4689_initialize_controls(ov4689);
--	if (ret)
--		goto err_destroy_mutex;
-+	if (ret) {
-+		dev_err(dev, "Failed to initialize controls\n");
-+		return ret;
-+	}
- 
- 	ret = ov4689_power_on(dev);
- 	if (ret)
-@@ -877,19 +860,26 @@ static int ov4689_probe(struct i2c_client *client)
- 	if (ret)
- 		goto err_power_off;
- 
--	sd->internal_ops = &ov4689_internal_ops;
- 	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
-+	sd->entity.function = MEDIA_ENT_F_CAM_SENSOR;
- 
- 	ov4689->pad.flags = MEDIA_PAD_FL_SOURCE;
--	sd->entity.function = MEDIA_ENT_F_CAM_SENSOR;
- 	ret = media_entity_pads_init(&sd->entity, 1, &ov4689->pad);
- 	if (ret < 0)
- 		goto err_power_off;
- 
-+	sd->state_lock = ov4689->ctrl_handler.lock;
-+	ret = v4l2_subdev_init_finalize(sd);
-+
-+	if (ret) {
-+		dev_err(dev, "Could not register v4l2 device\n");
-+		goto err_clean_entity;
-+	}
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++	pm_runtime_idle(dev);
 +
  	ret = v4l2_async_register_subdev_sensor(sd);
  	if (ret) {
  		dev_err(dev, "v4l2 async register subdev failed\n");
--		goto err_clean_entity;
-+		goto err_clean_subdev;
+-		goto err_clean_subdev;
++		goto err_clean_subdev_pm;
  	}
  
- 	pm_runtime_set_active(dev);
-@@ -898,14 +888,14 @@ static int ov4689_probe(struct i2c_client *client)
- 
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-	pm_runtime_idle(dev);
+-
  	return 0;
  
-+err_clean_subdev:
-+	v4l2_subdev_cleanup(sd);
+-err_clean_subdev:
++err_clean_subdev_pm:
++	pm_runtime_disable(dev);
++	pm_runtime_set_suspended(dev);
+ 	v4l2_subdev_cleanup(sd);
  err_clean_entity:
  	media_entity_cleanup(&sd->entity);
- err_power_off:
- 	ov4689_power_off(dev);
- err_free_handler:
- 	v4l2_ctrl_handler_free(&ov4689->ctrl_handler);
--err_destroy_mutex:
--	mutex_destroy(&ov4689->mutex);
- 
- 	return ret;
- }
-@@ -917,9 +907,8 @@ static void ov4689_remove(struct i2c_client *client)
- 
- 	v4l2_async_unregister_subdev(sd);
- 	media_entity_cleanup(&sd->entity);
--
-+	v4l2_subdev_cleanup(sd);
- 	v4l2_ctrl_handler_free(&ov4689->ctrl_handler);
--	mutex_destroy(&ov4689->mutex);
- 
- 	pm_runtime_disable(&client->dev);
- 	if (!pm_runtime_status_suspended(&client->dev))
 -- 
 2.43.0
 
