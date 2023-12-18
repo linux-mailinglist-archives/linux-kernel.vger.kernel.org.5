@@ -1,149 +1,94 @@
-Return-Path: <linux-kernel+bounces-4360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 605D6817C03
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:35:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44ED3817C0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A071C218BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:35:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43EAF1C21A12
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529C273462;
-	Mon, 18 Dec 2023 20:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QS/Q8n0H"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32CF73492;
+	Mon, 18 Dec 2023 20:35:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993521DA29;
-	Mon, 18 Dec 2023 20:34:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F25F5C433C8;
-	Mon, 18 Dec 2023 20:34:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702931697;
-	bh=XgCl1gqQm6Hy5BOss5zz/mULMH3Fu6AXj/W8dxIHYHg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QS/Q8n0HomxDBTx2LKKlbPGNDImEA97qdRUmVuqa5R8EuNIxsUl7LRL/bjK83zntp
-	 NGzkbF7nTBSH3f2cPbPeNSQYAdI88+ovZeV1M6URpnZaAricEZK3rZYVPSBNcDAgOW
-	 tJy2o9+D6LGkBued47DuFDUxWuoyX7Ro/ahqgnTaCBg/1MmoXlwiThIjVmM7COY2Yq
-	 Tqg8WBZVsKTkxG0r6StGxQQzphrdhOqa2TzWxORnL5Leiw/xwGu0jrbikLtKDkVHja
-	 IBrIAiVxAAzAA3fqHxyYCDdIbM0C5UM/2dm6nRZd12YUrlXVSsW5vzKZKqRZGSxuM8
-	 lCqvo/eiCDM6Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 81F6D403EF; Mon, 18 Dec 2023 17:34:54 -0300 (-03)
-Date: Mon, 18 Dec 2023 17:34:54 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: James Clark <james.clark@arm.com>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Darren Hart <dvhart@infradead.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Atish Patra <atishp@rivosinc.com>,
-	"Steinar H. Gunderson" <sesse@google.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Yang Li <yang.lee@linux.alibaba.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	Sandipan Das <sandipan.das@amd.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	Paran Lee <p4ranlee@gmail.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v1 10/14] perf top: Avoid repeated function calls
-Message-ID: <ZYCs7mh3GgvNz2-A@kernel.org>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-11-irogers@google.com>
- <e067c360-56ac-1756-3b3b-4bf5f663be87@arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7691DA29;
+	Mon, 18 Dec 2023 20:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-203223f3299so111013fac.0;
+        Mon, 18 Dec 2023 12:35:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702931727; x=1703536527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w5muLLdvnEWK5GQ123Z96eJyI+5glad1JcNNdF8H1Jg=;
+        b=QFjCXzQjZLmVr4iO9XA2sgrkBVSpB8/GIMU085B3NW5V+8rluMFDr1vI1KCwliLpTM
+         TBb2jTYT6bR9KtAYwVdPjxwxiPozX015k8UgcEgfVSTc0k/gHFgelSGI58eA7U8SDLw1
+         pBZZt5qY2doVjOnI2y9QVrFSBUSCp9pXOGmTHCOVuQ15o9BxmvgxKUcIwjzfxwwL45ry
+         LzQsblDBGcQgwQiZw+hUKJRiFDDMEQsoTfe94joVIGlM9TQAr6mMxDkz9HWYzVu5gtme
+         MhMCQa/hevzK9U1lLvU8SNBtcdvikQZZfSyjMo3yuRr6fuWGRyLXMleY91eScM8ZixbA
+         xMpg==
+X-Gm-Message-State: AOJu0YyeIJgMFO0elQr12OxlmdapBT8d0yvrHi556SzcPZfQXFCDfnxS
+	A1Op+EXK9gV1bhHf1Z9QUgE9bO3NxwhhOv1LM1s=
+X-Google-Smtp-Source: AGHT+IF1MjB6QbmwWfc3T+5pLabp0AF+8g7RLCoeqeEABS9CAvETyoAN6o6rB15S5OlZOByT2E647igWVuJN9yCJ/4I=
+X-Received: by 2002:a05:6870:71ca:b0:203:e75d:a2c2 with SMTP id
+ p10-20020a05687071ca00b00203e75da2c2mr729668oag.1.1702931727130; Mon, 18 Dec
+ 2023 12:35:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e067c360-56ac-1756-3b3b-4bf5f663be87@arm.com>
-X-Url: http://acmel.wordpress.com
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 18 Dec 2023 21:35:16 +0100
+Message-ID: <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'
+To: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Em Tue, Dec 12, 2023 at 03:11:53PM +0000, James Clark escreveu:
-> 
-> 
-> On 29/11/2023 06:02, Ian Rogers wrote:
-> > Add a local variable to avoid repeated calls to perf_cpu_map__nr.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Reviewed-by: James Clark <james.clark@arm.com>
+On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux.o=
+rg.uk> wrote:
+>
+> From: James Morse <james.morse@arm.com>
+>
+> The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+> present.
 
-Thanks, applied to perf-tools-next.
+Right.
 
-- Arnaldo
+> This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+> CPUs can be taken offline as a power saving measure.
 
- 
-> > ---
-> >  tools/perf/util/top.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/top.c b/tools/perf/util/top.c
-> > index be7157de0451..4db3d1bd686c 100644
-> > --- a/tools/perf/util/top.c
-> > +++ b/tools/perf/util/top.c
-> > @@ -28,6 +28,7 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
-> >  	struct record_opts *opts = &top->record_opts;
-> >  	struct target *target = &opts->target;
-> >  	size_t ret = 0;
-> > +	int nr_cpus;
-> >  
-> >  	if (top->samples) {
-> >  		samples_per_sec = top->samples / top->delay_secs;
-> > @@ -93,19 +94,17 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
-> >  	else
-> >  		ret += SNPRINTF(bf + ret, size - ret, " (all");
-> >  
-> > +	nr_cpus = perf_cpu_map__nr(top->evlist->core.user_requested_cpus);
-> >  	if (target->cpu_list)
-> >  		ret += SNPRINTF(bf + ret, size - ret, ", CPU%s: %s)",
-> > -				perf_cpu_map__nr(top->evlist->core.user_requested_cpus) > 1
-> > -				? "s" : "",
-> > +				nr_cpus > 1 ? "s" : "",
-> >  				target->cpu_list);
-> >  	else {
-> >  		if (target->tid)
-> >  			ret += SNPRINTF(bf + ret, size - ret, ")");
-> >  		else
-> >  			ret += SNPRINTF(bf + ret, size - ret, ", %d CPU%s)",
-> > -					perf_cpu_map__nr(top->evlist->core.user_requested_cpus),
-> > -					perf_cpu_map__nr(top->evlist->core.user_requested_cpus) > 1
-> > -					? "s" : "");
-> > +					nr_cpus, nr_cpus > 1 ? "s" : "");
-> >  	}
-> >  
-> >  	perf_top__reset_sample_counters(top);
-> 
+But still there is the case in which a non-present CPU can become
+present, isn't it there?
 
--- 
+> On arm64 an offline CPU may be disabled by firmware, preventing it from
+> being brought back online, but it remains present throughout.
+>
+> Adding code to prevent user-space trying to online these disabled CPUs
+> needs some additional terminology.
+>
+> Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+> that it makes possible CPUs present.
 
-- Arnaldo
+Honestly, I don't think that this change is necessary or even useful.
 
