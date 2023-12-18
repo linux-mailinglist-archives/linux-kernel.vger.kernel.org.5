@@ -1,193 +1,219 @@
-Return-Path: <linux-kernel+bounces-4465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEB8817DDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E595817DE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:11:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 645451C219B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:06:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7721B1C219B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22ED3760B0;
-	Mon, 18 Dec 2023 23:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="F95aym8v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290B7760B3;
+	Mon, 18 Dec 2023 23:11:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FA47608B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:06:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbccbdacb9eso3147980276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:06:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1702940798; x=1703545598; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3ISbTIIGiRfCmq/xufZ2VhS6krg/p4Uisq2A0AgAr0o=;
-        b=F95aym8v+e/B7FHOGKUzdNBrNJ4LU0XQODj6QLv6aSqDo1YrmjywRZfTWtthIi/ZnJ
-         jl7fUBacAyUKKNaR90UvTFVrgI6O+zFHCl+UshXYXmm2XAoZM6c2YTDYOaHG+yHBmNQm
-         pc3gkptqarYRjJZ0xul48F98hspNKqpHejgIx2CBCyDfIzV3oP+bB3Fi4ucGqdc+pJf3
-         Z+kZW/W5fxp5zHLSN/YcyXQXqBkvKzK4Fcc35XGLiF7tRat+DrACuduTn0O6ZtRmbs87
-         akAL6FDi5+Z8/ghkg8TMsod+4G5PwvaH1cokErMCuDQhoUYJQ0fjhAYtgDEGIpQ7ZcB5
-         oGyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702940798; x=1703545598;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3ISbTIIGiRfCmq/xufZ2VhS6krg/p4Uisq2A0AgAr0o=;
-        b=e5bchtEA8fDLKJChGAoFhW5qxXng0EmGBijS5pJwijdF8jJPuN+jYmyrBynf28J4gl
-         NMCn8VYu5/YZ+TO/F0aRs0uoh3kamT6ZrxTn9f+06ol6RQw3F2GGMAewSv2KE0UyL6TU
-         eNc0Iz38sK/aykQBZGmvWJiwmcPJJclh5vmVriKrfIu6PD7ElHUs3zqfX6+PneeoTTsK
-         tCT7q3aktIl/vQj0kgIL/3LhnVPU90smc3rm00yUHz3nDZ4Syt08Qcio0RwYrlwKNahG
-         rYjfBayLifsVzI+Yk5hw3MkO2gSPkNgg/zPi37SnqtG01rYhTKAQPQ3PbPJ4DYpIsInS
-         XqAw==
-X-Gm-Message-State: AOJu0YzYNhsfoNI3WDl85/F7siZM71RxnoupYS2wer89/ECIVe7ZObwH
-	Oy99p5wGncP2T87Lp/lmqtR5z71mb6jvj6mkVs34
-X-Google-Smtp-Source: AGHT+IF9tvbbBtBESqqHaSUt2obipOpR1nDsNFSA0VBd9FiKyVi8ta2GbNjZyjCOzpO6p39Z4BPWa3ZnsyADLzk/ssU=
-X-Received: by 2002:a5b:5cf:0:b0:db5:4532:8ea6 with SMTP id
- w15-20020a5b05cf000000b00db545328ea6mr10626822ybp.51.1702940798137; Mon, 18
- Dec 2023 15:06:38 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEAE76096
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:11:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=devkernel.io
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=devkernel.io
+Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
+	id AAA42111427A7; Mon, 18 Dec 2023 15:10:56 -0800 (PST)
+From: Stefan Roesch <shr@devkernel.io>
+To: kernel-team@fb.com
+Cc: shr@devkernel.io,
+	akpm@linux-foundation.org,
+	david@redhat.com,
+	hannes@cmpxchg.org,
+	riel@surriel.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v5 0/4] mm/ksm: Add ksm advisor
+Date: Mon, 18 Dec 2023 15:10:50 -0800
+Message-Id: <20231218231054.1625219-1-shr@devkernel.io>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CADN=F_ke996vNXDNz6vZ_As0Ms5Q2X7aT3t-SSGRiqdeKd6gCQ@mail.gmail.com>
- <20231216041116.GA78578@mail.hallyn.com>
-In-Reply-To: <20231216041116.GA78578@mail.hallyn.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 18 Dec 2023 18:06:27 -0500
-Message-ID: <CAHC9VhRmaT=gYM1qNaZ2D=9mz7vyhZLxU32gx11SpS2dNj_w5Q@mail.gmail.com>
-Subject: Re: [PATCH] fixing userspace memory dereference in security.c
-To: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: "T. Williams" <tdwilliamsiv@gmail.com>, jmorris@namei.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 11:11=E2=80=AFPM Serge E. Hallyn <serge@hallyn.com>=
- wrote:
-> On Wed, Oct 06, 2021 at 07:03:56PM -0400, T. Williams wrote:
-> >  security/security.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/security/security.c b/security/security.c
-> > index 9ffa9e9c5c55..7c41b5d732ab 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -1737,6 +1737,8 @@ int security_kernel_read_file(struct file *file, =
-enum
-> > kernel_read_file_id id,
-> >         int ret;
-> >
-> >         ret =3D call_int_hook(kernel_read_file, 0, file, id, contents);
-> > +       if (ret > 0)
-> > +               return -EINVAL;
-> >         if (ret)
-> >                 return ret;
-> >         return ima_read_file(file, id, contents);
-> > --
-> > 2.25.1
-> >
-> > This commit is to fix a userspace address dereference found by
-> > syzkaller.
-> > The crash is triggered by passing a file descriptor to an incorrectly
-> > formed kernel module to finit_module.
-> >
-> > Kernel/module.c:4175 : Within the finit_module, info.len is set to the
-> > return value from kernel_read_file_from_fd. This value is then
-> > dereferenced by memcmp within module_sig_check from inside load_module.
-> > The value is 0xb000000 so the kernel dereferences user memory and kerne=
-l
-> > panics.
->
-> Hi,
->
-> thanks for sending this.  For some reason, I can't seem to find this
-> message-id in lore.kernel.org to see if there were ever any replies.
+What is the KSM advisor?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The ksm advisor automatically manages the pages_to_scan setting to
+achieve a target scan time. The target scan time defines how many seconds
+it should take to scan all the candidate KSM pages. In other words the
+pages_to_scan rate is changed by the advisor to achieve the target scan
+time.
 
-I'm not sure where the original email/patch was sent, but I don't seem
-to have a copy in my inbox either.  Odd.
+Why do we need a KSM advisor?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+The number of candidate pages for KSM is dynamic. It can often be observe=
+d
+that during the startup of an application more candidate pages need to be
+processed. Without an advisor the pages_to_scan parameter needs to be
+sized for the maximum number of candidate pages. With the scan time
+advisor the pages_to_scan parameter based can be changed based on demand.
 
-> There is indeed a problem, although I think a more concise explanation
-> is:
->
-> 1. security_kernel_read_file() returns any non-zero return value to mean
-> permission denied
-> 2. kernel_read_file() returns > 0 meaning number of bytes read
-> 3. hen kernel_read_file() gets any non-zero rv from security_kernel_read_=
-file(),
-> it returns that value unchanged.
->
-> Since kernel_read_file() is the only caller of security_kernel_read_file(=
-),
-> I think your patch is good, except you should also change the comment abo=
-ve
-> it to read
->
->  * Return: Returns 0 if permission is granted, < 0 on error.
->
-> Reviewed-by: Serge Hallyn <serge@hallyn.com>
->
-> I think the reason it's not been a practical problem is because while
-> security_kernel_read_file() will honor a >0 error from an LSM, no
-> LSM implementation of that hook does that.  (Only loadpin and selinux
-> implement it)
+Algorithm
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The algorithm calculates the change value based on the target scan time
+and the previous scan time. To avoid pertubations an exponentially
+weighted moving average is applied.
 
-The SELinux implementation should only ever return 0 or a negative
-value, and based on a quick look at Loadpin I would say the same
-applies there as well.  This patch doesn't address the IMA hook, but
-according to the comments in the IMA code, it too should only return 0
-or a negative value.  While it is theoretically possible that
-security_kernel_read_file() could return a positive value, I'm missing
-where/how that might happen.  Help?
+The algorithm has a max and min
+value to:
+- guarantee responsiveness to changes
+- to limit CPU resource consumption
 
-That said, I agree with Serge that this is worth fixing, and in
-addition to the comment suggestion from Serge, I would ask that you
-fix the IMA hook too.  I would expect the patch to look something like
-this:
+Parameters to influence the KSM scan advisor
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The respective parameters are:
+- ksm_advisor_mode
+  0: None (default), 1: scan time advisor
+- ksm_advisor_target_scan_time
+  how many seconds a scan should of all candidate pages take
+- ksm_advisor_max_cpu
+  upper limit for the cpu usage in percent of the ksmd background thread
 
-diff --git a/security/security.c b/security/security.c
-index dcb3e7014f9b..dd8bdda166f3 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -3043,7 +3043,7 @@ int security_kernel_module_request(char *kmod_name)
- *
- * Read a file specified by userspace.
- *
-- * Return: Returns 0 if permission is granted.
-+ * Return: Returns 0 if permission is granted, negative values on failure.
- */
-int security_kernel_read_file(struct file *file, enum kernel_read_file_id i=
-d,
-                             bool contents)
-@@ -3052,8 +3052,15 @@ int security_kernel_read_file(struct file *file, enu=
-m ker
-nel_read_file_id id,
+The initial value and the max value for the pages_to_scan parameter can
+be limited with:
+- ksm_advisor_min_pages_to_scan
+  minimum value for pages_to_scan per batch
+- ksm_advisor_max_pages_to_scan
+  maximum value for pages_to_scan per batch
 
-       ret =3D call_int_hook(kernel_read_file, 0, file, id, contents);
-       if (ret)
-+               goto out;
-+       ret =3D ima_read_file(file, id, contents);
-+
-+out:
-+       if (ret > 0)
-+               return -EINVAL;
-+       if (ret < 0)
-               return ret;
--       return ima_read_file(file, id, contents);
-+       return 0;
-}
-EXPORT_SYMBOL_GPL(security_kernel_read_file);
+The default settings for the above two parameters should be suitable for
+most workloads.
 
+The parameters are exposed as knobs in /sys/kernel/mm/ksm. By default the
+scan time advisor is disabled.
+
+Currently there are two advisors:
+- none and
+- scan-time.
+
+Resource savings
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Tests with various workloads have shown considerable CPU savings. Most
+of the workloads I have investigated have more candidate pages during
+startup. Once the workload is stable in terms of memory, the number of
+candidate pages is reduced. Without the advisor, the pages_to_scan needs
+to be sized for the maximum number of candidate pages. So having this
+advisor definitely helps in reducing CPU consumption.
+
+For the instagram workload, the advisor achieves a 25% CPU reduction.
+Once the memory is stable, the pages_to_scan parameter gets reduced to
+about 40% of its max value.
+
+The new advisor works especially well if the smart scan feature is also
+enabled.
+
+How is defining a target scan time better?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+For an administrator it is more logical to set a target scan time.. The
+administrator can determine how many pages are scanned on each scan.
+Therefore setting a target scan time makes more sense.
+
+In addition the administrator might have a good idea about the memory
+sizing of its respective workloads.
+
+Setting cpu limits is easier than setting The pages_to_scan parameter. Th=
+e
+pages_to_scan parameter is per batch. For the administrator it is difficu=
+lt
+to set the pages_to_scan parameter.
+
+Tracing
+=3D=3D=3D=3D=3D=3D=3D
+A new tracing event has been added for the scan time advisor. The new
+trace event is called ksm_advisor. It reports the scan time, the new
+pages_to_scan setting and the cpu usage of the ksmd background thread.
+
+Other approaches
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Approach 1: Adapt pages_to_scan after processing each batch. If KSM
+  merges pages, increase the scan rate, if less KSM pages, reduce the
+  the pages_to_scan rate. This doesn't work too well. While it increases
+  the pages_to_scan for a short period, but generally it ends up with a
+  too low pages_to_scan rate.
+
+Approach 2: Adapt pages_to_scan after each scan. The problem with that
+  approach is that the calculated scan rate tends to be high. The more
+  aggressive KSM scans, the more pages it can de-duplicate.
+
+There have been earlier attempts at an advisor:
+  propose auto-run mode of ksm and its tests
+  (https://marc.info/?l=3Dlinux-mm&m=3D166029880214485&w=3D2)
+
+
+Changes:
+=3D=3D=3D=3D=3D=3D=3D=3D
+V5:
+  - Changed ksm_advisor_min_cpu to use a define and uppercased it
+  - Removed ksm_advisor_min_pages_to_scan from first patch, its only
+    needed in the second patch
+  - Only reset defaults in advisor_mode_store() when mode changes
+  - Add #ifdef CONFIG_SYSFS for set_advisor_defaults()
+
+V4:=20
+  - rename ksm_advisor_min_pages to ksm_advisor_min_pages_to_scan
+  - rename ksm_advisor_max_pages to ksm_advisor_max_pages_to_scan
+  - folded init_advisor() into set_advisor_defaults()
+  - moved set_advisor_defaults() to second patch
+  - Fixed long division for 32 bit platforms in scan_time_advisor()
+  - folded stop_advisor_scan() into scan_time_advisor()
+  - renamed run_advisor() to stop_advisor_scan()
+  - Fixed typo
+  - Added documentation for min and max cpu and how they are used in
+    the scan time advisor calculation
+
+V3:
+  - Use string parameters for advisor mode
+  - Removed min cpu load sysfs knob
+  - dropped unused enums in ksm_advisor_type
+  - renamed KSM_ADVISOR_LAST to KSM_ADVISOR_COUNT
+  - init_advisor() is needed but changed how it is initialized
+  - don't allow to change pages_to_scan parameter when scan-time advisor
+    is enabled
+  - add ksm_advisor_start_scan() and ksm_advisor_stop_scan() functions
+    to calculate scan time
+  - removed scan time parameter to scan_time_advisor() function
+
+V2:
+  - Use functions for long long calculations to support 32 bit platforms
+  - Use cpu min and cpu max settings for the advisor instead of the pages
+    min and max parameters.
+  - pages min and max values are now used for the initial and max values.
+    Generally they are not required to be changed.
+  - Add cpu percent usage value to tracepoint definition
+  - Update documentation for cpu min and cpu max values=20
+  - Update commit messages for the above changes
+
+
+Stefan Roesch (4):
+  mm/ksm: add ksm advisor
+  mm/ksm: add sysfs knobs for advisor
+  mm/ksm: add tracepoint for ksm advisor
+  mm/ksm: document ksm advisor and its sysfs knobs
+
+ Documentation/admin-guide/mm/ksm.rst |  55 +++++
+ include/trace/events/ksm.h           |  33 +++
+ mm/ksm.c                             | 307 ++++++++++++++++++++++++++-
+ 3 files changed, 394 insertions(+), 1 deletion(-)
+
+
+base-commit: 4d9256c0c56bafd76b8b1517916451e168fae495
 --=20
-paul-moore.com
+2.39.3
+
 
