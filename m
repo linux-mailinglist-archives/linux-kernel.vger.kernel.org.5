@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-3646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 629BF816EFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:57:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D31816EFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B361287331
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:57:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0018B1F2406D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE11479978;
-	Mon, 18 Dec 2023 12:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADB58182D;
+	Mon, 18 Dec 2023 12:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nYPB0U0c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wk1/jasA"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F96D7996A;
-	Mon, 18 Dec 2023 12:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6DCFC433CA;
-	Mon, 18 Dec 2023 12:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE8C7997D;
+	Mon, 18 Dec 2023 12:46:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 311ADC433C9;
+	Mon, 18 Dec 2023 12:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903586;
-	bh=WrATzRdUUvpZf1Aeco6jEA68OrR8Z+AwPiOGc70syME=;
+	s=k20201202; t=1702903588;
+	bh=VWnIu+WkNZks4LOZn/vhtaKKcUgKASqWyWvf8hOEb64=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nYPB0U0c3LurH3wj1V4VVxm/kuswrq5LYLJ3BxaQIxpIzu+b0c4tsX/wEvkYjK45o
-	 ObpWTFjhJrjNuYEoqKuCN/tEvdDJ/MgSO+dRcmFdER4l/X0PqXFVkAreO0heciOC7i
-	 jbEQlv82Hluc+U7Nba3T6H2RzReis2yLz9Uok4pnBSKq1tQXYKUbarJhftP+zqDEnk
-	 TdthgQwlhyl/GbBnHbZ8vn+9oDFgIjFbY8Gz3YodPjITAnhNK46YVv7GPBS99Vcjfb
-	 KUIhybi68xMv9YhaCK6xSnA90rnCeXA9jUZ2TEMHl7GpcWVPH6L2OoULGH23eQRBsa
-	 KI4Z6J+2JQr3Q==
+	b=Wk1/jasAv/J2W4CErPcP0NmLSnQT2SRf92g0M/BtUsGtY0RsfPBfb1twaCf7ObO2x
+	 6d2Hb+xgsY+y/wACGdtHTK/yaF4z1OL0W1Yd3WZxcC3E6tM0+vIEJXw0MO+PpXH1QH
+	 6yIuU64EzEPSnRN9bqWAD7rAQzJQEf+qhBKdcOsMx7RV5wMYLH9LP8U/AT6R00GlWO
+	 oKenw4g2XXxT8uASar0pD692mMJCVln3KjUHlCu685fNmVps+Ek6xbvyPP8OjhSRB2
+	 O3sld40Tt1qjZV/RnieAc10IvXYC5ypeD45ltPHZ4TW4JATnulWT949yijlswR/cje
+	 JRfSWdWRKuyKw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zheng Yejian <zhengyejian1@huawei.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
+Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Sasha Levin <sashal@kernel.org>,
-	mhiramat@kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 12/13] tracing: Fix uaf issue when open the hist or hist_debug file
-Date: Mon, 18 Dec 2023 07:45:45 -0500
-Message-ID: <20231218124557.1380724-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 13/13] ring-buffer: Do not record in NMI if the arch does not support cmpxchg in NMI
+Date: Mon, 18 Dec 2023 07:45:46 -0500
+Message-ID: <20231218124557.1380724-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124557.1380724-1-sashal@kernel.org>
 References: <20231218124557.1380724-1-sashal@kernel.org>
@@ -57,177 +58,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.143
 Content-Transfer-Encoding: 8bit
 
-From: Zheng Yejian <zhengyejian1@huawei.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-[ Upstream commit 1cc111b9cddc71ce161cd388f11f0e9048edffdb ]
+[ Upstream commit 712292308af2265cd9b126aedfa987f10f452a33 ]
 
-KASAN report following issue. The root cause is when opening 'hist'
-file of an instance and accessing 'trace_event_file' in hist_show(),
-but 'trace_event_file' has been freed due to the instance being removed.
-'hist_debug' file has the same problem. To fix it, call
-tracing_{open,release}_file_tr() in file_operations callback to have
-the ref count and avoid 'trace_event_file' being freed.
+As the ring buffer recording requires cmpxchg() to work, if the
+architecture does not support cmpxchg in NMI, then do not do any recording
+within an NMI.
 
-  BUG: KASAN: slab-use-after-free in hist_show+0x11e0/0x1278
-  Read of size 8 at addr ffff242541e336b8 by task head/190
+Link: https://lore.kernel.org/linux-trace-kernel/20231213175403.6fc18540@gandalf.local.home
 
-  CPU: 4 PID: 190 Comm: head Not tainted 6.7.0-rc5-g26aff849438c #133
-  Hardware name: linux,dummy-virt (DT)
-  Call trace:
-   dump_backtrace+0x98/0xf8
-   show_stack+0x1c/0x30
-   dump_stack_lvl+0x44/0x58
-   print_report+0xf0/0x5a0
-   kasan_report+0x80/0xc0
-   __asan_report_load8_noabort+0x1c/0x28
-   hist_show+0x11e0/0x1278
-   seq_read_iter+0x344/0xd78
-   seq_read+0x128/0x1c0
-   vfs_read+0x198/0x6c8
-   ksys_read+0xf4/0x1e0
-   __arm64_sys_read+0x70/0xa8
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
-
-  Allocated by task 188:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_alloc_info+0x20/0x30
-   __kasan_slab_alloc+0x6c/0x80
-   kmem_cache_alloc+0x15c/0x4a8
-   trace_create_new_event+0x84/0x348
-   __trace_add_new_event+0x18/0x88
-   event_trace_add_tracer+0xc4/0x1a0
-   trace_array_create_dir+0x6c/0x100
-   trace_array_create+0x2e8/0x568
-   instance_mkdir+0x48/0x80
-   tracefs_syscall_mkdir+0x90/0xe8
-   vfs_mkdir+0x3c4/0x610
-   do_mkdirat+0x144/0x200
-   __arm64_sys_mkdirat+0x8c/0xc0
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
-
-  Freed by task 191:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_free_info+0x34/0x58
-   __kasan_slab_free+0xe4/0x158
-   kmem_cache_free+0x19c/0x508
-   event_file_put+0xa0/0x120
-   remove_event_file_dir+0x180/0x320
-   event_trace_del_tracer+0xb0/0x180
-   __remove_instance+0x224/0x508
-   instance_rmdir+0x44/0x78
-   tracefs_syscall_rmdir+0xbc/0x140
-   vfs_rmdir+0x1cc/0x4c8
-   do_rmdir+0x220/0x2b8
-   __arm64_sys_unlinkat+0xc0/0x100
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
-
-Link: https://lore.kernel.org/linux-trace-kernel/20231214012153.676155-1-zhengyejian1@huawei.com
-
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c             |  6 ++++++
- kernel/trace/trace.h             |  1 +
- kernel/trace/trace_events_hist.c | 12 ++++++++----
- 3 files changed, 15 insertions(+), 4 deletions(-)
+ kernel/trace/ring_buffer.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 79b1bc4501dce..76d7b7519405c 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -4890,6 +4890,12 @@ int tracing_release_file_tr(struct inode *inode, struct file *filp)
- 	return 0;
- }
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 16fce72a7601c..3f80497ac60ff 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3668,6 +3668,12 @@ rb_reserve_next_event(struct trace_buffer *buffer,
+ 	int nr_loops = 0;
+ 	int add_ts_default;
  
-+int tracing_single_release_file_tr(struct inode *inode, struct file *filp)
-+{
-+	tracing_release_file_tr(inode, filp);
-+	return single_release(inode, filp);
-+}
++	/* ring buffer does cmpxchg, make sure it is safe in NMI context */
++	if (!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) &&
++	    (unlikely(in_nmi()))) {
++		return NULL;
++	}
 +
- static int tracing_mark_open(struct inode *inode, struct file *filp)
- {
- 	stream_open(inode, filp);
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index c6eb116dc279d..449a8bd873cf7 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -593,6 +593,7 @@ int tracing_open_generic(struct inode *inode, struct file *filp);
- int tracing_open_generic_tr(struct inode *inode, struct file *filp);
- int tracing_open_file_tr(struct inode *inode, struct file *filp);
- int tracing_release_file_tr(struct inode *inode, struct file *filp);
-+int tracing_single_release_file_tr(struct inode *inode, struct file *filp);
- bool tracing_is_disabled(void);
- bool tracer_tracing_is_on(struct trace_array *tr);
- void tracer_tracing_on(struct trace_array *tr);
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index c32a53f089229..e7799814a3c8a 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -4946,10 +4946,12 @@ static int event_hist_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open() */
-+	file->private_data = NULL;
- 	return single_open(file, hist_show, file);
- }
- 
-@@ -4957,7 +4959,7 @@ const struct file_operations event_hist_fops = {
- 	.open = event_hist_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_single_release_file_tr,
- };
- 
- #ifdef CONFIG_HIST_TRIGGERS_DEBUG
-@@ -5218,10 +5220,12 @@ static int event_hist_debug_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open() */
-+	file->private_data = NULL;
- 	return single_open(file, hist_debug_show, file);
- }
- 
-@@ -5229,7 +5233,7 @@ const struct file_operations event_hist_debug_fops = {
- 	.open = event_hist_debug_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_single_release_file_tr,
- };
- #endif
+ 	rb_start_commit(cpu_buffer);
+ 	/* The commit page can not change after this */
  
 -- 
 2.43.0
