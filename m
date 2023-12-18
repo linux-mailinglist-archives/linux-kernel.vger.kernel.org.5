@@ -1,1211 +1,618 @@
-Return-Path: <linux-kernel+bounces-3977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E806817647
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:49:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64EF3817649
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58C1A1C21794
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF00C1F26362
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:50:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE685D72D;
-	Mon, 18 Dec 2023 15:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E7B5D75A;
+	Mon, 18 Dec 2023 15:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OxzhKKIR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="n+d92z8f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f73.google.com (mail-wr1-f73.google.com [209.85.221.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6DE49886
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702914369;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qE58Iyt4ieyHgCB0J7mbfm6qUfvo4Ia92ji4r99oP2g=;
-	b=OxzhKKIRQk2pkY/nkw8sZM3RDa7XG96ApjGVcrDvnxUcq2T5wd4Cbis6dHchJ6JyNv1pmf
-	8Th/fIgR9bIdvqCg8m69WOoHqjkBTxJ0OxQKsOx6UImxHTWeZspdszCWSsbdJxYryNFj6r
-	xwY9Qa/IBX7wUZQR3zu8yPmEBgzj8Kk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-570-dQTkL577O22_B5wP2mLN2w-1; Mon, 18 Dec 2023 10:46:07 -0500
-X-MC-Unique: dQTkL577O22_B5wP2mLN2w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33667fef12aso601084f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:46:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182635D758
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
+Received: by mail-wr1-f73.google.com with SMTP id ffacd0b85a97d-3365791d24eso1803993f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:46:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702914382; x=1703519182; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2D6Ryuz+miPb2vPk7MGTz0ShxBxzAIGszX/sP4CX3M=;
+        b=n+d92z8faLW9ZZ1pQVxqwRBy91uAk9CmiUtW3QMVzxXvw9O7A1EJCS29w1DTnzbyNb
+         zNabx8Jkk78BuHTfF8hXoNqwqqnYARjnjxlBg4Yz5Lkvu41q36Mg41SpqdIkNNJZr+Yw
+         aDBPkFVDOnWGc8cfF56K2xucwrxaNitjfjmTMT6JCtFCszIqGD3f/vbdFXo/I7ENL4ec
+         t9yP2phfdvHiqXWdFbZlJ0E2hWJXf+m73QAKj1VAcngrPEClfKSoGCdxKAcFpDArKL63
+         lBYvXjgbMR9RBCWY26hJE1o4uv7B0KAljQYkhOplsMH9Y9lJhZDAe2IL720FVWh6fzUO
+         3cFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702914366; x=1703519166;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qE58Iyt4ieyHgCB0J7mbfm6qUfvo4Ia92ji4r99oP2g=;
-        b=kr0fyFq3g6yYhMIopF7Jqwdsoq+QfNrH3lR2BuGr4OEZE6fPdU+HtAgKydxtpjfMiT
-         ShwplNCx+PENGRJVYbQDHvj2WwQzQkCAIxsQGI18ShaQBe2LgluxJrq0c6W6GGFu1swY
-         5GiiFujj4hndN6r73azL0LGW4QH82cnwQmCAJ1eS/5iaUm5wdF9nNDHcnvMs/4mLwwHz
-         bc9izZWozk7dwFEjrQklQF+5Y9gecjvApwAbhmCyZBZVuUVS8QDzdFqmTyHk7Rd7Ayry
-         3gMox7ElBV0EgUbqnv00X+B6bCBJSGqdz8aqxYTwkyEZXFiD5EAuaTEJDn0WQGtIX+8o
-         JeMw==
-X-Gm-Message-State: AOJu0Yy+AGmGhUCWLRssboFJSCTxKqiwneU8qzzE1ni7Od6mTjj11oer
-	EbSxMbDzMNgYhU6dEubPaF6LW1oxgLAMDZ6V3lbFZ1g57KazlGVNKlwdKNLmL5/XYMO12cZNN3s
-	bf9whG/CABqFTYsZ8MwX8CjZv
-X-Received: by 2002:adf:e684:0:b0:336:613e:ada with SMTP id r4-20020adfe684000000b00336613e0adamr2278778wrm.3.1702914365750;
-        Mon, 18 Dec 2023 07:46:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFBkkx+bp2I175obL+0JUnu3L0ncwXnQN9VgUvXg+bodxH2f23vzTjKUi0CNim6a46TKUhzWw==
-X-Received: by 2002:adf:e684:0:b0:336:613e:ada with SMTP id r4-20020adfe684000000b00336613e0adamr2278733wrm.3.1702914364998;
-        Mon, 18 Dec 2023 07:46:04 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:280:24f0:3f78:514a:4f03:fdc0? ([2a01:e0a:280:24f0:3f78:514a:4f03:fdc0])
-        by smtp.gmail.com with ESMTPSA id d5-20020a5d5385000000b0033662cf5e51sm5048029wrv.93.2023.12.18.07.46.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 07:46:04 -0800 (PST)
-Message-ID: <1430f453-f22f-4f83-8d65-35eeb470aebd@redhat.com>
-Date: Mon, 18 Dec 2023 16:46:03 +0100
+        d=1e100.net; s=20230601; t=1702914382; x=1703519182;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2D6Ryuz+miPb2vPk7MGTz0ShxBxzAIGszX/sP4CX3M=;
+        b=jLjL2O5xlundTK/vIrDH7nRI+ehoU3Gw1QfF+EP0R/gPYozvP1fUPPmymubEgWlWc/
+         JrNtWQGC5s+CD5lqa3jt/5STu6eeTYQheRWnie+X1l/xv7jleOz4zo9tHEfVPLfRjiwU
+         6LXiT+tWhYaH/VZzFrO9bp1uU7HNzyeCK3ftHjxEuctTUqIjb8fByl1JNe5acx7j6bHA
+         dv0MgRBdybG3H4StxLqEm3lToMEKe38rAm4Bf997SXo/ug6yzT3P9NjKJGkcZB1+O5Tu
+         DgmhYq0v6gKCMLZ7gnuo7N0WK0DLkPGDLnhl/Izrkc8YX0aZDMOf+jIeVN9Nw2FVXlk+
+         exQg==
+X-Gm-Message-State: AOJu0YyZVoy/M+0bvZ4oUFTDgA+Ar0IODNOv3Q1YCf2rJQ9j+CxQSY5c
+	3h3D6nc8woo/hH+fvqdAZOmN3+Qc9cRSMqUP
+X-Google-Smtp-Source: AGHT+IF2hGFiHPNDbYEE1Sqnb349kM05Z5dzOF5FvIDOY+l1HWZMXv1p79dPBk1KTNVBle4W4/7UqzXZrnXbyeNK
+X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
+ (user=vdonnefort job=sendgmr) by 2002:a5d:6352:0:b0:336:5fb0:330c with SMTP
+ id b18-20020a5d6352000000b003365fb0330cmr15582wrw.6.1702914382174; Mon, 18
+ Dec 2023 07:46:22 -0800 (PST)
+Date: Mon, 18 Dec 2023 15:46:18 +0000
+In-Reply-To: <20231218151451.944907-1-vdonnefort@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 1/1] vfio/nvgrace-gpu: Add vfio pci variant module for
- grace hopper
-Content-Language: en-US
-To: ankita@nvidia.com, jgg@nvidia.com, alex.williamson@redhat.com,
- yishaih@nvidia.com, shameerali.kolothum.thodi@huawei.com,
- kevin.tian@intel.com, eric.auger@redhat.com, brett.creeley@amd.com,
- horms@kernel.org
-Cc: aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
- targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
- apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
- anuaggarwal@nvidia.com, mochs@nvidia.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231217191031.19476-1-ankita@nvidia.com>
-From: =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@redhat.com>
-In-Reply-To: <20231217191031.19476-1-ankita@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20231218151451.944907-1-vdonnefort@google.com>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231218154618.954997-1-vdonnefort@google.com>
+Subject: [PATCH v7 0/2] ring-buffer: Rename sub-buffer into buffer page
+From: Vincent Donnefort <vdonnefort@google.com>
+To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Cc: kernel-team@android.com, Vincent Donnefort <vdonnefort@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello Ankit,
+Previously was introduced the ability to change the ring-buffer page
+size. It also introduced the concept of sub-buffer that is, a contiguous
+virtual memory space which can now be bigger than the system page size
+(4K on most systems). But behind the scene this is really just a page
+with an order > 0 and a struct buffer_page (often refered as "bpage")
+already exists. We have then an unnecessary duplicate subbuffer ==
+bpage.
 
-On 12/17/23 20:10, ankita@nvidia.com wrote:
-> From: Ankit Agrawal <ankita@nvidia.com>
-> 
-> NVIDIA's upcoming Grace Hopper Superchip provides a PCI-like device
-> for the on-chip GPU that is the logical OS representation of the
-> internal proprietary chip-to-chip cache coherent interconnect.
-> 
-> The device is peculiar compared to a real PCI device in that whilst
-> there is a real 64b PCI BAR1 (comprising region 2 & region 3) on the
-> device, it is not used to access device memory once the faster
-> chip-to-chip interconnect is initialized (occurs at the time of host
-> system boot). The device memory is accessed instead using the chip-to-chip
-> interconnect that is exposed as a contiguous physically addressable
-> region on the host. This device memory aperture can be obtained from host
-> ACPI table using device_property_read_u64(), according to the FW
-> specification. Since the device memory is cache coherent with the CPU,
-> it can be mmap into the user VMA with a cacheable mapping using
-> remap_pfn_range() and used like a regular RAM. The device memory
-> is not added to the host kernel, but mapped directly as this reduces
-> memory wastage due to struct pages.
-> 
-> There is also a requirement of a reserved 1G uncached region (termed as
-> resmem) to support the Multi-Instance GPU (MIG) feature [1]. Based on [2],
-> the requisite properties (uncached, unaligned access) can be achieved
-> through a VM mapping (S1) of NORMAL_NC and host (S2) mapping with
-> MemAttr[2:0]=0b101. To provide a different non-cached property to the
-> reserved 1G region, it needs to be carved out from the device memory and
-> mapped as a separate region in Qemu VMA with pgprot_writecombine().
-> pgprot_writecombine() sets the Qemu VMA page properties (pgprot) as
-> NORMAL_NC.
-> 
-> Provide a VFIO PCI variant driver that adapts the unique device memory
-> representation into a more standard PCI representation facing userspace.
-> 
-> The variant driver exposes these two regions - the non-cached reserved
-> (resmem) and the cached rest of the device memory (termed as usemem) as
-> separate VFIO 64b BAR regions. Since the device implements 64-bit BAR0,
-> the VFIO PCI variant driver maps the uncached carved out region to the
-> next available PCI BAR (i.e. comprising of region 2 and 3). The cached
-> device memory aperture is assigned BAR region 4 and 5. Qemu will then
-> naturally generate a PCI device in the VM with the uncached aperture
-> reported as BAR2 region, the cacheable as BAR4. The variant driver provides
-> emulation for these fake BARs' PCI config space offset registers. The
-> BAR can also be enabled/disabled through PCI_COMMAND config space register.
-> The VM driver should enable the BARs (as it does already) to make use
-> of the device memory.
-> 
-> The memory layout on the host looks like the following:
->                 devmem (memlength)
-> |--------------------------------------------------|
-> |-------------cached------------------------|--NC--|
-> |                                           |
-> usemem.phys/memphys                         resmem.phys
-> 
-> PCI BARs need to be aligned to the power-of-2, but the actual memory on the
-> device may not. A read or write access to the physical address from the
-> last device PFN up to the next power-of-2 aligned physical address
-> results in reading ~0 and dropped writes. Note that the GPU device
-> driver [6] is capable of knowing the exact device memory size through
-> separate means. The device memory size is primarily kept in the system
-> ACPI tables for use by the VFIO PCI variant module.
-> 
-> Note that the usemem memory is added by the VM Nvidia device driver [5]
-> to the VM kernel as memblocks. Hence make the usable memory size memblock
-> aligned.
-> 
-> Currently there is no provision in KVM for a S2 mapping with
-> MemAttr[2:0]=0b101, but there is an ongoing effort to provide the same [3].
-> As previously mentioned, resmem is mapped pgprot_writecombine(), that
-> sets the Qemu VMA page properties (pgprot) as NORMAL_NC. Using the
-> proposed changes in [4] and [3], KVM marks the region with
-> MemAttr[2:0]=0b101 in S2.
-> 
-> This goes along with a qemu series [6] to provides the necessary
-> implementation of the Grace Hopper Superchip firmware specification so
-> that the guest operating system can see the correct ACPI modeling for
-> the coherent GPU device. Verified with the CUDA workload in the VM.
-> 
-> [1] https://www.nvidia.com/en-in/technologies/multi-instance-gpu/
-> [2] section D8.5.5 of https://developer.arm.com/documentation/ddi0487/latest/
-> [3] https://lore.kernel.org/all/20231205033015.10044-1-ankita@nvidia.com/
-> [4] https://lore.kernel.org/all/20230907181459.18145-2-ankita@nvidia.com/
-> [5] https://github.com/NVIDIA/open-gpu-kernel-modules
-> [6] https://lore.kernel.org/all/20231203060245.31593-1-ankita@nvidia.com/
-> 
-> Applied over next-20231211.
-> ---
-> Link for variant driver v14:
-> https://lore.kernel.org/all/20231212184613.3237-1-ankita@nvidia.com/
-> 
-> v14 -> v15
-> - Added case to handle VFIO_DEVICE_IOEVENTFD to return -EIO as it
->    is not required on the device.
-> - Updated the BAR config space handling code to closely resemble
->    by Yishai Hadas (using range_intersect_range) in
->    https://lore.kernel.org/all/20231207102820.74820-10-yishaih@nvidia.com
-> - Changed the bar pci config register from union to u64.
-> - Adapted the code to disable BAR when it is disabled through
->    PCI_COMMAND.
-> - Exported and reused the do_io_rw to do mmio accesses.
-> - Added a new header file to keep the newly declared structures.
-> - Miscellaneous code fixes suggested by Alex Williamson in v14.
+Remove all references to sub-buffer and replace them with either bpage
+or ring_buffer_page.
 
-./scripts/checkpatch.pl --strict will give you some tips on how to
-improve the changes furthermore.
+Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
 
+---
 
-> v13 -> v14
-> - Merged the changes for second BAR implementation for MIG support
->    on the device driver.
->    https://lore.kernel.org/all/20231115080751.4558-1-ankita@nvidia.com/
-> - Added the missing implementation of sub-word access to fake BARs'
->    PCI config access. Implemented access algorithm suggested by
->    Alex Williamson in the comments (Thanks!)
-> - Added support to BAR accesses on the reserved memory with
->    Qemu device param x-no-mmap=on.
-> - Handled endian-ness in the PCI config space access.
-> - Git commit message change
-> 
-> v12 -> v13
-> - Added emulation for the PCI config space BAR offset register for
-> the fake BAR.
-> - commit message updated with more details on the BAR offset emulation.
-> 
-> v11 -> v12
-> - More details in commit message on device memory size
-> 
-> v10 -> v11
-> - Removed sysfs attribute to expose the CPU coherent memory feature
-> - Addressed review comments
-> 
-> v9 -> v10
-> - Add new sysfs attribute to expose the CPU coherent memory feature.
-> 
-> v8 -> v9
-> - Minor code adjustment suggested in v8.
-> 
-> v7 -> v8
-> - Various field names updated.
-> - Added a new function to handle VFIO_DEVICE_GET_REGION_INFO ioctl.
-> - Locking protection for memremap to bar region and other changes
->    recommended in v7.
-> - Added code to fail if the devmem size advertized is 0 in system DSDT.
-> 
-> v6 -> v7
-> - Handled out-of-bound and overflow conditions at various places to validate
->    input offset and length.
-> - Added code to return EINVAL for offset beyond region size.
-> 
-> v5 -> v6
-> - Added the code to handle BAR2 read/write using memremap to the device
->    memory.
-> 
-> v4 -> v5
-> - Changed the module name from nvgpu-vfio-pci to nvgrace-gpu-vfio-pci.
-> - Fixed memory leak and added suggested boundary checks on device memory
->    mapping.
-> - Added code to read all Fs and ignored write on region outside of the
->    physical memory.
-> - Other miscellaneous cleanup suggestions.
-> 
-> v3 -> v4
-> - Mapping the available device memory using sparse mmap. The region outside
->    the device memory is handled by read/write ops.
-> - Removed the fault handler added in v3.
-> 
-> v2 -> v3
-> - Added fault handler to map the region outside the physical GPU memory
->    up to the next power-of-2 to a dummy PFN.
-> - Changed to select instead of "depends on" VFIO_PCI_CORE for all the
->    vfio-pci variant driver.
-> - Code cleanup based on feedback comments.
-> - Code implemented and tested against v6.4-rc4.
-> 
-> v1 -> v2
-> - Updated the wording of reference to BAR offset and replaced with
->    index.
-> - The GPU memory is exposed at the fixed BAR2_REGION_INDEX.
-> - Code cleanup based on feedback comments.
-> 
-> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
-> Signed-off-by: Aniket Agashe <aniketa@nvidia.com>
-> Tested-by: Ankit Agrawal <ankita@nvidia.com>
-> ---
->   MAINTAINERS                           |   6 +
->   drivers/vfio/pci/Kconfig              |   2 +
->   drivers/vfio/pci/Makefile             |   2 +
->   drivers/vfio/pci/nvgrace-gpu/Kconfig  |  10 +
->   drivers/vfio/pci/nvgrace-gpu/Makefile |   3 +
->   drivers/vfio/pci/nvgrace-gpu/main.c   | 806 ++++++++++++++++++++++++++
->   drivers/vfio/pci/vfio_pci_rdwr.c      |   9 +-
->   7 files changed, 834 insertions(+), 4 deletions(-)
->   create mode 100644 drivers/vfio/pci/nvgrace-gpu/Kconfig
->   create mode 100644 drivers/vfio/pci/nvgrace-gpu/Makefile
->   create mode 100644 drivers/vfio/pci/nvgrace-gpu/main.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 98f7dd0499f1..6f8f3a6daa43 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -22877,6 +22877,12 @@ L:	kvm@vger.kernel.org
->   S:	Maintained
->   F:	drivers/vfio/platform/
->   
-> +VFIO NVIDIA GRACE GPU DRIVER
-> +M:	Ankit Agrawal <ankita@nvidia.com>
-> +L:	kvm@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/vfio/pci/nvgrace-gpu/
-> +
->   VGA_SWITCHEROO
->   R:	Lukas Wunner <lukas@wunner.de>
->   S:	Maintained
-> diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-> index 8125e5f37832..2456210e85f1 100644
-> --- a/drivers/vfio/pci/Kconfig
-> +++ b/drivers/vfio/pci/Kconfig
-> @@ -65,4 +65,6 @@ source "drivers/vfio/pci/hisilicon/Kconfig"
->   
->   source "drivers/vfio/pci/pds/Kconfig"
->   
-> +source "drivers/vfio/pci/nvgrace-gpu/Kconfig"
-> +
->   endmenu
-> diff --git a/drivers/vfio/pci/Makefile b/drivers/vfio/pci/Makefile
-> index 45167be462d8..1352c65e568a 100644
-> --- a/drivers/vfio/pci/Makefile
-> +++ b/drivers/vfio/pci/Makefile
-> @@ -13,3 +13,5 @@ obj-$(CONFIG_MLX5_VFIO_PCI)           += mlx5/
->   obj-$(CONFIG_HISI_ACC_VFIO_PCI) += hisilicon/
->   
->   obj-$(CONFIG_PDS_VFIO_PCI) += pds/
-> +
-> +obj-$(CONFIG_NVGRACE_GPU_VFIO_PCI) += nvgrace-gpu/
-> diff --git a/drivers/vfio/pci/nvgrace-gpu/Kconfig b/drivers/vfio/pci/nvgrace-gpu/Kconfig
-> new file mode 100644
-> index 000000000000..936e88d8d41d
-> --- /dev/null
-> +++ b/drivers/vfio/pci/nvgrace-gpu/Kconfig
-> @@ -0,0 +1,10 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config NVGRACE_GPU_VFIO_PCI
-> +	tristate "VFIO support for the GPU in the NVIDIA Grace Hopper Superchip"
-> +	depends on ARM64 || (COMPILE_TEST && 64BIT)
-> +	select VFIO_PCI_CORE
-> +	help
-> +	  VFIO support for the GPU in the NVIDIA Grace Hopper Superchip is
-> +	  required to assign the GPU device using KVM/qemu/etc.
-> +
-> +	  If you don't know what to do here, say N.
-> diff --git a/drivers/vfio/pci/nvgrace-gpu/Makefile b/drivers/vfio/pci/nvgrace-gpu/Makefile
-> new file mode 100644
-> index 000000000000..3ca8c187897a
-> --- /dev/null
-> +++ b/drivers/vfio/pci/nvgrace-gpu/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-$(CONFIG_NVGRACE_GPU_VFIO_PCI) += nvgrace-gpu-vfio-pci.o
-> +nvgrace-gpu-vfio-pci-y := main.o
-> diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c b/drivers/vfio/pci/nvgrace-gpu/main.c
-> new file mode 100644
-> index 000000000000..43387a800c41
-> --- /dev/null
-> +++ b/drivers/vfio/pci/nvgrace-gpu/main.c
-> @@ -0,0 +1,806 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved
-> + */
-> +
-> +#include "nvgrace_gpu_vfio_pci.h"
+I forgot this patch when sending the v7 :-(
 
-
-This file doesn't exist.
-
-> +
-> +static bool nvgrace_gpu_vfio_pci_is_fake_bar(int index)
-> +{
-> +	return (index == RESMEM_REGION_INDEX ||
-> +	    index == USEMEM_REGION_INDEX);
-> +}
-> +
-> +static void nvgrace_gpu_init_fake_bar_emu_regs(struct vfio_device *core_vdev)
-> +{
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device,
-> +		core_device.vdev);
-> +
-> +	nvdev->resmem.u64_reg = 0;
-> +	nvdev->usemem.u64_reg = 0;
-> +}
-> +
-> +/* Choose the structure corresponding to the fake BAR with a given index. */
-> +struct mem_region *
-> +nvgrace_gpu_vfio_pci_fake_bar_mem_region(int index,
-> +			struct nvgrace_gpu_vfio_pci_core_device *nvdev)
-> +{
-> +	if (index == USEMEM_REGION_INDEX)
-> +		return &(nvdev->usemem);
-> +
-> +	if (index == RESMEM_REGION_INDEX)
-> +		return &(nvdev->resmem);
-> +
-> +	return NULL;
-> +}
-> +
-> +static int nvgrace_gpu_vfio_pci_open_device(struct vfio_device *core_vdev)
-> +{
-> +	struct vfio_pci_core_device *vdev =
-> +		container_of(core_vdev, struct vfio_pci_core_device, vdev);
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device,
-> +		core_device.vdev);
-> +	int ret;
-> +
-> +	ret = vfio_pci_core_enable(vdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	vfio_pci_core_finish_enable(vdev);
-> +
-> +	nvgrace_gpu_init_fake_bar_emu_regs(core_vdev);
-> +
-> +	mutex_init(&nvdev->remap_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static void nvgrace_gpu_vfio_pci_close_device(struct vfio_device *core_vdev)
-> +{
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device,
-> +		core_device.vdev);
-> +
-> +	/* Unmap the mapping to the device memory cached region */
-> +	if (nvdev->usemem.bar_remap.memaddr) {
-> +		memunmap(nvdev->usemem.bar_remap.memaddr);
-> +		nvdev->usemem.bar_remap.memaddr = NULL;
-> +	}
-> +
-> +	/* Unmap the mapping to the device memory non-cached region */
-> +	if (nvdev->resmem.bar_remap.ioaddr) {
-> +		iounmap(nvdev->resmem.bar_remap.ioaddr);
-> +		nvdev->resmem.bar_remap.ioaddr = NULL;
-> +	}
-> +
-> +	mutex_destroy(&nvdev->remap_lock);
-> +
-> +	vfio_pci_core_close_device(core_vdev);
-> +}
-> +
-> +static int nvgrace_gpu_vfio_pci_mmap(struct vfio_device *core_vdev,
-> +				     struct vm_area_struct *vma)
-> +{
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
-> +
-> +	unsigned long start_pfn;
-> +	unsigned int index;
-> +	u64 req_len, pgoff, end;
-> +	int ret = 0;
-> +	struct mem_region *memregion;
-> +
-> +	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT);
-> +
-> +	memregion = nvgrace_gpu_vfio_pci_fake_bar_mem_region(index, nvdev);
-> +	if (!memregion)
-> +		return vfio_pci_core_mmap(core_vdev, vma);
-> +
-> +	/*
-> +	 * Request to mmap the BAR. Map to the CPU accessible memory on the
-> +	 * GPU using the memory information gathered from the system ACPI
-> +	 * tables.
-> +	 */
-> +	pgoff = vma->vm_pgoff &
-> +		((1U << (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT)) - 1);
-> +
-> +	if (check_sub_overflow(vma->vm_end, vma->vm_start, &req_len) ||
-> +		check_add_overflow(PHYS_PFN(memregion->memphys), pgoff, &start_pfn) ||
-> +		check_add_overflow(PFN_PHYS(pgoff), req_len, &end))
-> +		return -EOVERFLOW;
-> +
-> +	/*
-> +	 * Check that the mapping request does not go beyond available device
-> +	 * memory size
-> +	 */
-> +	if (end > memregion->memlength)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * The carved out region of the device memory needs the NORMAL_NC
-> +	 * property. Communicate as such to the hypervisor.
-> +	 */
-> +	if (index == RESMEM_REGION_INDEX)
-> +		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-> +
-> +	/*
-> +	 * Perform a PFN map to the memory and back the device BAR by the
-> +	 * GPU memory.
-> +	 *
-> +	 * The available GPU memory size may not be power-of-2 aligned. Map up
-> +	 * to the size of the device memory. If the memory access is beyond the
-> +	 * actual GPU memory size, it will be handled by the vfio_device_ops
-> +	 * read/write.
-> +	 *
-> +	 * During device reset, the GPU is safely disconnected to the CPU
-> +	 * and access to the BAR will be immediately returned preventing
-> +	 * machine check.
-> +	 */
-> +	ret = remap_pfn_range(vma, vma->vm_start, start_pfn,
-> +			      req_len, vma->vm_page_prot);
-> +	if (ret)
-> +		return ret;
-> +
-> +	vma->vm_pgoff = start_pfn;
-> +
-> +	return 0;
-> +}
-> +
-> +static long
-> +nvgrace_gpu_vfio_pci_ioctl_get_region_info(struct vfio_device *core_vdev,
-> +					    unsigned long arg)
-> +{
-> +	unsigned long minsz = offsetofend(struct vfio_region_info, offset);
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
-> +	struct vfio_region_info_cap_sparse_mmap *sparse;
-> +	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
-> +	struct vfio_region_info info;
-> +	struct mem_region *memregion;
-> +	uint32_t size;
-> +	int ret;
-> +
-> +	if (copy_from_user(&info, (void __user *)arg, minsz))
-> +		return -EFAULT;
-> +
-> +	if (info.argsz < minsz)
-> +		return -EINVAL;
-> +
-> +	memregion = nvgrace_gpu_vfio_pci_fake_bar_mem_region(info.index, nvdev);
-> +	if (!memregion)
-> +		return vfio_pci_core_ioctl(core_vdev,
-> +					   VFIO_DEVICE_GET_REGION_INFO, arg);
-> +
-> +	/*
-> +	 * Request to determine the BAR region information. Send the
-> +	 * GPU memory information.
-> +	 */
-> +	size = struct_size(sparse, areas, 1);
-> +
-> +	/*
-> +	 * Setup for sparse mapping for the device memory. Only the
-> +	 * available device memory on the hardware is shown as a
-> +	 * mappable region.
-> +	 */
-> +	sparse = kzalloc(size, GFP_KERNEL);
-> +	if (!sparse)
-> +		return -ENOMEM;
-> +
-> +	sparse->nr_areas = 1;
-> +	sparse->areas[0].offset = 0;
-> +	sparse->areas[0].size = memregion->memlength;
-> +	sparse->header.id = VFIO_REGION_INFO_CAP_SPARSE_MMAP;
-> +	sparse->header.version = 1;
-> +
-> +	ret = vfio_info_add_capability(&caps, &sparse->header, size);
-> +	kfree(sparse);
-> +	if (ret)
-> +		return ret;
-> +
-> +	info.offset = VFIO_PCI_INDEX_TO_OFFSET(info.index);
-> +	/*
-> +	 * The region memory size may not be power-of-2 aligned.
-> +	 * Given that the memory  as a BAR and may not be
-> +	 * aligned, roundup to the next power-of-2.
-> +	 */
-> +	info.size = roundup_pow_of_two(memregion->memlength);
-> +	info.flags = VFIO_REGION_INFO_FLAG_READ |
-> +		VFIO_REGION_INFO_FLAG_WRITE |
-> +		VFIO_REGION_INFO_FLAG_MMAP;
-> +
-> +	if (caps.size) {
-> +		info.flags |= VFIO_REGION_INFO_FLAG_CAPS;
-> +		if (info.argsz < sizeof(info) + caps.size) {
-> +			info.argsz = sizeof(info) + caps.size;
-> +			info.cap_offset = 0;
-> +		} else {
-> +			vfio_info_cap_shift(&caps, sizeof(info));
-> +			if (copy_to_user((void __user *)arg +
-> +					 sizeof(info), caps.buf,
-> +					 caps.size)) {
-> +				kfree(caps.buf);
-> +				return -EFAULT;
-> +			}
-> +			info.cap_offset = sizeof(info);
-> +		}
-> +		kfree(caps.buf);
-> +	}
-> +	return copy_to_user((void __user *)arg, &info, minsz) ?
-> +			    -EFAULT : 0;
-> +}
-> +
-> +static long nvgrace_gpu_vfio_pci_ioctl(struct vfio_device *core_vdev,
-> +					unsigned int cmd, unsigned long arg)
-> +{
-> +	switch (cmd) {
-> +	case VFIO_DEVICE_GET_REGION_INFO:
-> +		return nvgrace_gpu_vfio_pci_ioctl_get_region_info(core_vdev, arg);
-> +	case VFIO_DEVICE_IOEVENTFD:
-> +		return -ENOTTY;
-> +	case VFIO_DEVICE_RESET:
-> +		nvgrace_gpu_init_fake_bar_emu_regs(core_vdev);
-> +		fallthrough;
-> +	default:
-> +		return vfio_pci_core_ioctl(core_vdev, cmd, arg);
-> +	}
-> +}
-> +
-> +static bool range_intersect_range(loff_t range1_start, size_t count1,
-> +				  loff_t range2_start, size_t count2,
-> +				  loff_t *start_offset,
-> +				  size_t *intersect_count,
-> +				  size_t *register_offset)
-> +{
-> +	if (range1_start <= range2_start &&
-> +	    range1_start + count1 > range2_start) {
-> +		*start_offset = range2_start - range1_start;
-> +		*intersect_count = min_t(size_t, count2,
-> +					 range1_start + count1 - range2_start);
-> +		*register_offset = 0;
-> +		return true;
-> +	}
-> +
-> +	if (range1_start > range2_start &&
-> +	    range1_start < range2_start + count2) {
-> +		*start_offset = 0;
-> +		*intersect_count = min_t(size_t, count1,
-> +					 range2_start + count2 - range1_start);
-> +		*register_offset = range1_start - range2_start;
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +/*
-> + * Both the usable (usemem) and the reserved (resmem) device memory region
-> + * are exposed as a 64b fake BARs in the VM. These fake BARs must respond
-> + * to the accesses on their respective PCI config space offsets.
-> + *
-> + * resmem BAR owns PCI_BASE_ADDRESS_2 & PCI_BASE_ADDRESS_3.
-> + * usemem BAR owns PCI_BASE_ADDRESS_4 & PCI_BASE_ADDRESS_5.
-> + */
-> +static ssize_t
-> +nvgrace_gpu_read_config_emu(struct vfio_device *core_vdev,
-> +			     char __user *buf, size_t count, loff_t *ppos)
-> +{
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
-> +	u64 pos = *ppos & VFIO_PCI_OFFSET_MASK;
-> +	__le64 val64;
-> +	size_t bar_size;
-> +	size_t register_offset;
-> +	loff_t copy_offset;
-> +	size_t copy_count;
-> +	int ret;
-> +
-> +	ret = vfio_pci_core_read(core_vdev, buf, count, ppos);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (range_intersect_range(pos, count, PCI_BASE_ADDRESS_2, sizeof(val64),
-> +				  &copy_offset, &copy_count, &register_offset)) {
-> +		bar_size = roundup_pow_of_two(nvdev->resmem.memlength);
-> +		nvdev->resmem.u64_reg &= ~(bar_size - 1);
-> +		nvdev->resmem.u64_reg |= PCI_BASE_ADDRESS_MEM_TYPE_64 |
-> +					 PCI_BASE_ADDRESS_MEM_PREFETCH;
-> +		val64 = cpu_to_le64(nvdev->resmem.u64_reg);
-> +		if (copy_to_user(buf + copy_offset, (void *)&val64 + register_offset, copy_count))
-> +			return -EFAULT;
-> +	}
-> +
-> +	if (range_intersect_range(pos, count, PCI_BASE_ADDRESS_4, sizeof(val64),
-> +				  &copy_offset, &copy_count, &register_offset)) {
-> +		bar_size = roundup_pow_of_two(nvdev->usemem.memlength);
-> +		nvdev->usemem.u64_reg &= ~(bar_size - 1);
-> +		nvdev->usemem.u64_reg |= PCI_BASE_ADDRESS_MEM_TYPE_64 |
-> +					 PCI_BASE_ADDRESS_MEM_PREFETCH;
-> +		val64 = cpu_to_le64(nvdev->usemem.u64_reg);
-> +		if (copy_to_user(buf + copy_offset, (void *)&val64 + register_offset, copy_count))
-> +			return -EFAULT;
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static ssize_t
-> +nvgrace_gpu_write_config_emu(struct vfio_device *core_vdev,
-> +			      const char __user *buf, size_t count, loff_t *ppos)
-> +{
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
-> +	u64 pos = *ppos & VFIO_PCI_OFFSET_MASK;
-> +	__le64 val64 = 0;
-> +	__le16 val16 = 0;
-> +	u64 tmp_val;
-> +	size_t register_offset;
-> +	loff_t copy_offset;
-> +	size_t copy_count;
-> +
-> +	if (range_intersect_range(pos, count, PCI_BASE_ADDRESS_2, sizeof(val64),
-> +				  &copy_offset, &copy_count, &register_offset)) {
-> +		if (copy_from_user((void *)&val64, buf + copy_offset, copy_count))
-> +			return -EFAULT;
-> +		tmp_val = le64_to_cpu(val64);
-> +		memcpy((void *)&(nvdev->resmem.u64_reg) + register_offset,
-> +			(void *)&tmp_val + copy_offset, copy_count);
-> +		*ppos += copy_count;
-> +		return copy_count;
-> +	}
-> +
-> +	if (range_intersect_range(pos, count, PCI_BASE_ADDRESS_4, sizeof(val64),
-> +				  &copy_offset, &copy_count, &register_offset)) {
-> +		if (copy_from_user((void *)&val64, buf + copy_offset, copy_count))
-> +			return -EFAULT;
-> +		tmp_val = le64_to_cpu(val64);
-> +		memcpy((void *)&(nvdev->usemem.u64_reg) + register_offset,
-> +			(void *)&tmp_val + copy_offset, copy_count);
-> +		*ppos += copy_count;
-> +		return copy_count;
-> +	}
-> +
-> +	if (range_intersect_range(pos, count, PCI_COMMAND, sizeof(val16),
-> +				  &copy_offset, &copy_count, &register_offset)) {
-> +		if (copy_from_user((void *)&val16, buf + copy_offset, copy_count))
-> +			return -EFAULT;
-> +
-> +		if (le16_to_cpu(val16) & PCI_COMMAND_MEMORY)
-> +			nvdev->bars_disabled = false;
-> +		else
-> +			nvdev->bars_disabled = true;
-> +	}
-> +
-> +	return vfio_pci_core_write(core_vdev, buf, count, ppos);
-> +}
-> +
-> +/*
-> + * Ad hoc map the device memory in the module kernel VA space. Primarily needed
-> + * to support Qemu's device x-no-mmap=on option.
-> + *
-> + * The usemem region is cacheable memory and hence is memremaped.
-> + * The resmem region is non-cached and is mapped using ioremap_wc (NORMAL_NC).
-> + */
-> +static int
-> +nvgrace_gpu_map_device_mem(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
-> +			    int index)
-> +{
-> +	int ret = 0;
-> +
-> +	mutex_lock(&nvdev->remap_lock);
-> +	if (index == USEMEM_REGION_INDEX &&
-> +		!nvdev->usemem.bar_remap.memaddr) {
-> +		nvdev->usemem.bar_remap.memaddr
-> +			= memremap(nvdev->usemem.memphys, nvdev->usemem.memlength, MEMREMAP_WB);
-> +		if (!nvdev->usemem.bar_remap.memaddr)
-> +			ret = -ENOMEM;
-> +	} else if (index == RESMEM_REGION_INDEX &&
-> +		!nvdev->resmem.bar_remap.ioaddr) {
-> +		nvdev->resmem.bar_remap.ioaddr
-> +			= ioremap_wc(nvdev->resmem.memphys, nvdev->resmem.memlength);
-> +		if (!nvdev->resmem.bar_remap.ioaddr)
-> +			ret = -ENOMEM;
-> +	}
-> +	mutex_unlock(&nvdev->remap_lock);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Read the data from the device memory (mapped either through ioremap
-> + * or memremap) into the user buffer.
-> + */
-> +static int
-> +nvgrace_gpu_map_and_read(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
-> +		void __user *buf, size_t mem_count, loff_t *ppos)
-> +{
-> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
-> +	int ret = 0;
-> +
-> +	/*
-> +	 * Handle read on the BAR regions. Map to the target device memory
-> +	 * physical address and copy to the request read buffer.
-> +	 */
-> +	ret = nvgrace_gpu_map_device_mem(nvdev, index);
-> +	if (ret)
-> +		goto read_exit;
-> +
-> +	if (index == USEMEM_REGION_INDEX) {
-> +		if (copy_to_user(buf, (u8 *)nvdev->usemem.bar_remap.memaddr + offset, mem_count))
-> +			ret = -EFAULT;
-> +	} else {
-> +		return do_io_rw(&nvdev->core_device, false, nvdev->resmem.bar_remap.ioaddr,
-> +				(char __user *) buf, offset, mem_count, 0, 0, false);
-> +	}
-> +
-> +read_exit:
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Read count bytes from the device memory at an offset. The actual device
-> + * memory size (available) may not be a power-of-2. So the driver fakes
-> + * the size to a power-of-2 (reported) when exposing to a user space driver.
-> + *
-> + * Read request beyond the actual device size is filled with ~0, while
-> + * those beyond the actual reported size is skipped.
-> + *
-> + * A read from a negative or an offset greater than reported size, a negative
-> + * count are considered error conditions and returned with an -EINVAL.
-> + */
-> +static ssize_t
-> +nvgrace_gpu_read_mem(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
-> +		      void __user *buf, size_t count, loff_t *ppos)
-> +{
-> +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
-> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> +	struct mem_region *memregion;
-> +	size_t mem_count, i, bar_size;
-> +	u8 val = 0xFF;
-> +	int ret;
-> +
-> +	memregion = nvgrace_gpu_vfio_pci_fake_bar_mem_region(index, nvdev);
-> +	if (!memregion)
-> +		return -EINVAL;
-> +
-> +	bar_size = roundup_pow_of_two(memregion->memlength);
-> +
-> +	if (offset >= bar_size)
-> +		return -EINVAL;
-> +
-> +	/* Clip short the read request beyond reported BAR size */
-> +	count = min(count, bar_size - (size_t)offset);
-> +
-> +	/*
-> +	 * Determine how many bytes to be actually read from the device memory.
-> +	 * Read request beyond the actual device memory size is filled with ~0,
-> +	 * while those beyond the actual reported size is skipped.
-> +	 */
-> +	if (offset >= memregion->memlength)
-> +		mem_count = 0;
-> +	else
-> +		mem_count = min(count, memregion->memlength - (size_t)offset);
-> +
-> +	ret = nvgrace_gpu_map_and_read(nvdev, buf, mem_count, ppos);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * Only the device memory present on the hardware is mapped, which may
-> +	 * not be power-of-2 aligned. A read to an offset beyond the device memory
-> +	 * size is filled with ~0.
-> +	 */
-> +	for (i = mem_count; i < count; i++)
-> +		put_user(val, (unsigned char __user *)(buf + i));
-> +
-> +	*ppos += count;
-> +	return count;
-> +}
-> +
-> +static ssize_t
-> +nvgrace_gpu_vfio_pci_read(struct vfio_device *core_vdev,
-> +			   char __user *buf, size_t count, loff_t *ppos)
-> +{
-> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> +	ssize_t read_count;
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device,
-> +		core_device.vdev);
-> +
-> +	if (nvgrace_gpu_vfio_pci_is_fake_bar(index)) {
-> +		/* Check if the bars are disabled, allow access otherwise */
-> +		down_read(&nvdev->core_device.memory_lock);
-> +		if (nvdev->bars_disabled) {
-> +			up_read(&nvdev->core_device.memory_lock);
-> +			return -EIO;
-> +		}
-> +		read_count = nvgrace_gpu_read_mem(nvdev, buf, count, ppos);
-> +		up_read(&nvdev->core_device.memory_lock);
-> +
-> +		return read_count;
-> +	}
-> +
-> +	if (index == VFIO_PCI_CONFIG_REGION_INDEX)
-> +		return nvgrace_gpu_read_config_emu(core_vdev, buf, count, ppos);
-> +
-> +	return vfio_pci_core_read(core_vdev, buf, count, ppos);
-> +}
-> +
-> +/*
-> + * Write the data to the device memory (mapped either through ioremap
-> + * or memremap) from the user buffer.
-> + */
-> +static int nvgrace_gpu_map_and_write(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
-> +		const void __user *buf, size_t mem_count, loff_t *ppos)
-> +{
-> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> +	loff_t pos = *ppos & VFIO_PCI_OFFSET_MASK;
-> +	int ret = 0;
-> +
-> +	ret = nvgrace_gpu_map_device_mem(nvdev, index);
-> +	if (ret)
-> +		goto write_exit;
-> +
-> +	if (index == USEMEM_REGION_INDEX) {
-> +		if (copy_from_user((u8 *)nvdev->usemem.bar_remap.memaddr + pos,
-> +				   buf, mem_count))
-> +			return -EFAULT;
-> +	} else {
-> +		return do_io_rw(&nvdev->core_device, false, nvdev->resmem.bar_remap.ioaddr,
-> +				(char __user *) buf, pos, mem_count, 0, 0, true);
-> +	}
-> +
-> +write_exit:
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Write count bytes to the device memory at a given offset. The actual device
-> + * memory size (available) may not be a power-of-2. So the driver fakes the
-> + * size to a power-of-2 (reported) when exposing to a user space driver.
-> + *
-> + * Write request beyond the actual device size are dropped, while those
-> + * beyond the actual reported size are skipped entirely.
-> + *
-> + * A write to a negative or an offset greater than the reported size, a
-> + * negative count are considered error conditions and returned with an -EINVAL.
-> + */
-> +static ssize_t
-> +nvgrace_gpu_write_mem(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
-> +			size_t count, loff_t *ppos, const void __user *buf)
-> +{
-> +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
-> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> +	struct mem_region *memregion;
-> +	size_t mem_count, bar_size;
-> +	int ret = 0;
-> +
-> +	memregion = nvgrace_gpu_vfio_pci_fake_bar_mem_region(index, nvdev);
-> +	if (!memregion)
-> +		return -EINVAL;
-> +
-> +	bar_size = roundup_pow_of_two(memregion->memlength);
-> +
-> +	if (offset >= bar_size)
-> +		return -EINVAL;
-> +
-> +	/* Clip short the write request beyond reported BAR size */
-> +	count = min(count, bar_size - (size_t)offset);
-> +
-> +	/*
-> +	 * Determine how many bytes to be actually written to the device memory.
-> +	 * Do not write to the offset beyond available size.
-> +	 */
-> +	if (offset >= memregion->memlength)
-> +		goto exitfn;
-> +
-> +	/*
-> +	 * Only the device memory present on the hardware is mapped, which may
-> +	 * not be power-of-2 aligned. Drop access outside the available device
-> +	 * memory on the hardware.
-> +	 */
-> +	mem_count = min(count, memregion->memlength - (size_t)offset);
-> +
-> +	ret = nvgrace_gpu_map_and_write(nvdev, buf, mem_count, ppos);
-> +	if (ret)
-> +		return ret;
-> +
-> +exitfn:
-> +	*ppos += count;
-> +	return count;
-> +}
-> +
-> +static ssize_t
-> +nvgrace_gpu_vfio_pci_write(struct vfio_device *core_vdev,
-> +			    const char __user *buf, size_t count, loff_t *ppos)
-> +{
-> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
-> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
-> +	size_t write_count;
-> +
-> +	if (nvgrace_gpu_vfio_pci_is_fake_bar(index)) {
-> +		/* Check if the bars are disabled, allow access otherwise */
-> +		down_read(&nvdev->core_device.memory_lock);
-> +		if (nvdev->bars_disabled) {
-> +			up_read(&nvdev->core_device.memory_lock);
-> +			return -EIO;
-> +		}
-> +		write_count = nvgrace_gpu_write_mem(nvdev, count, ppos, buf);
-> +		up_read(&nvdev->core_device.memory_lock);
-> +		return write_count;
-> +	}
-> +
-> +	if (index == VFIO_PCI_CONFIG_REGION_INDEX)
-> +		return nvgrace_gpu_write_config_emu(core_vdev, buf, count, ppos);
-> +
-> +	return vfio_pci_core_write(core_vdev, buf, count, ppos);
-> +}
-> +
-> +static const struct vfio_device_ops nvgrace_gpu_vfio_pci_ops = {
-> +	.name = "nvgrace-gpu-vfio-pci",
-> +	.init = vfio_pci_core_init_dev,
-> +	.release = vfio_pci_core_release_dev,
-> +	.open_device = nvgrace_gpu_vfio_pci_open_device,
-> +	.close_device = nvgrace_gpu_vfio_pci_close_device,
-> +	.ioctl = nvgrace_gpu_vfio_pci_ioctl,
-> +	.read = nvgrace_gpu_vfio_pci_read,
-> +	.write = nvgrace_gpu_vfio_pci_write,
-> +	.mmap = nvgrace_gpu_vfio_pci_mmap,
-> +	.request = vfio_pci_core_request,
-> +	.match = vfio_pci_core_match,
-> +	.bind_iommufd = vfio_iommufd_physical_bind,
-> +	.unbind_iommufd = vfio_iommufd_physical_unbind,
-> +	.attach_ioas = vfio_iommufd_physical_attach_ioas,
-> +	.detach_ioas = vfio_iommufd_physical_detach_ioas,
-> +};
-> +
-> +static struct
-> +nvgrace_gpu_vfio_pci_core_device *nvgrace_gpu_drvdata(struct pci_dev *pdev)
-> +{
-> +	struct vfio_pci_core_device *core_device = dev_get_drvdata(&pdev->dev);
-> +
-> +	return container_of(core_device, struct nvgrace_gpu_vfio_pci_core_device,
-> +			    core_device);
-> +}
-> +
-> +static int
-> +nvgrace_gpu_vfio_pci_fetch_memory_property(struct pci_dev *pdev,
-> +					    struct nvgrace_gpu_vfio_pci_core_device *nvdev)
-> +{
-> +	int ret;
-> +	u64 memphys, memlength;
-> +
-> +	/*
-> +	 * The memory information is present in the system ACPI tables as DSD
-> +	 * properties nvidia,gpu-mem-base-pa and nvidia,gpu-mem-size.
-> +	 */
-> +	ret = device_property_read_u64(&pdev->dev, "nvidia,gpu-mem-base-pa",
-> +				       &(memphys));
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (memphys > type_max(phys_addr_t))
-> +		return -EOVERFLOW;
-> +
-> +	ret = device_property_read_u64(&pdev->dev, "nvidia,gpu-mem-size",
-> +				       &(memlength));
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (memlength > type_max(size_t))
-> +		return -EOVERFLOW;
-> +
-> +	/*
-> +	 * If the C2C link is not up due to an error, the coherent device
-> +	 * memory size is returned as 0. Fail in such case.
-> +	 */
-> +	if (memlength == 0)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * The VM GPU device driver needs a non-cacheable region to support
-> +	 * the MIG feature. Since the device memory is mapped as NORMAL cached,
-> +	 * carve out a region from the end with a different NORMAL_NC
-> +	 * property (called as reserved memory and represented as resmem). This
-> +	 * region then is exposed as a 64b BAR (region 2 and 3) to the VM, while
-> +	 * exposing the rest (termed as usable memory and represented using usemem)
-> +	 * as cacheable 64b BAR (region 4 and 5).
-> +	 *
-> +	 *               devmem (memlength)
-> +	 * |-------------------------------------------------|
-> +	 * |                                           |
-> +	 * usemem.phys/memphys                         resmem.phys
-> +	 */
-> +	nvdev->usemem.memphys = memphys;
-> +
-> +	/*
-> +	 * The device memory exposed to the VM is added to the kernel by the
-> +	 * VM driver module in chunks of memory block size. Only the usable
-> +	 * memory (usemem) is added to the kernel for usage by the VM
-> +	 * workloads. Make the usable memory size memblock aligned.
-> +	 */
-> +	if (check_sub_overflow(memlength, RESMEM_SIZE,
-> +			       &nvdev->usemem.memlength)) {
-> +		ret = -EOVERFLOW;
-> +		goto done;
-> +	}
-> +	nvdev->usemem.memlength = round_down(nvdev->usemem.memlength,
-> +					     MEMBLK_SIZE);
-> +	if ((check_add_overflow(nvdev->usemem.memphys,
-> +	     nvdev->usemem.memlength, &nvdev->resmem.memphys)) ||
-> +	    (check_sub_overflow(memlength, nvdev->usemem.memlength,
-> +	     &nvdev->resmem.memlength))) {
-> +		ret = -EOVERFLOW;
-> +		goto done;
-> +	}
-> +
-> +done:
-> +	return ret;
-> +}
-> +
-> +static int nvgrace_gpu_vfio_pci_probe(struct pci_dev *pdev,
-> +				       const struct pci_device_id *id)
-> +{
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev;
-> +	int ret;
-> +
-> +	nvdev = vfio_alloc_device(nvgrace_gpu_vfio_pci_core_device, core_device.vdev,
-> +				  &pdev->dev, &nvgrace_gpu_vfio_pci_ops);
-> +	if (IS_ERR(nvdev))
-> +		return PTR_ERR(nvdev);
-> +
-> +	dev_set_drvdata(&pdev->dev, nvdev);
-> +
-> +	ret = nvgrace_gpu_vfio_pci_fetch_memory_property(pdev, nvdev);
-> +	if (ret)
-> +		goto out_put_vdev;
-> +
-> +	ret = vfio_pci_core_register_device(&nvdev->core_device);
-> +	if (ret)
-> +		goto out_put_vdev;
-> +
-> +	return ret;
-> +
-> +out_put_vdev:
-> +	vfio_put_device(&nvdev->core_device.vdev);
-> +	return ret;
-> +}
-> +
-> +static void nvgrace_gpu_vfio_pci_remove(struct pci_dev *pdev)
-> +{
-> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = nvgrace_gpu_drvdata(pdev);
-> +	struct vfio_pci_core_device *vdev = &nvdev->core_device;
-> +
-> +	vfio_pci_core_unregister_device(vdev);
-> +	vfio_put_device(&vdev->vdev);
-> +}
-> +
-> +static const struct pci_device_id nvgrace_gpu_vfio_pci_table[] = {
-> +	/* GH200 120GB */
-> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_NVIDIA, 0x2342) },
-> +	/* GH200 480GB */
-> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_NVIDIA, 0x2345) },
-> +	{}
-> +};
-> +
-> +MODULE_DEVICE_TABLE(pci, nvgrace_gpu_vfio_pci_table);
-> +
-> +static struct pci_driver nvgrace_gpu_vfio_pci_driver = {
-> +	.name = KBUILD_MODNAME,
-> +	.id_table = nvgrace_gpu_vfio_pci_table,
-> +	.probe = nvgrace_gpu_vfio_pci_probe,
-> +	.remove = nvgrace_gpu_vfio_pci_remove,
-> +	.err_handler = &vfio_pci_core_err_handlers,
-> +	.driver_managed_dma = true,
-> +};
-> +
-> +module_pci_driver(nvgrace_gpu_vfio_pci_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Ankit Agrawal <ankita@nvidia.com>");
-> +MODULE_AUTHOR("Aniket Agashe <aniketa@nvidia.com>");
-> +MODULE_DESCRIPTION(
-> +	"VFIO NVGRACE GPU PF - User Level driver for NVIDIA devices with CPU coherently accessible device memory");
-> diff --git a/drivers/vfio/pci/vfio_pci_rdwr.c b/drivers/vfio/pci/vfio_pci_rdwr.c
-> index e27de61ac9fe..ca20440b442d 100644
-> --- a/drivers/vfio/pci/vfio_pci_rdwr.c
-> +++ b/drivers/vfio/pci/vfio_pci_rdwr.c
-> @@ -94,10 +94,10 @@ VFIO_IOREAD(32)
->    * reads with -1.  This is intended for handling MSI-X vector tables and
->    * leftover space for ROM BARs.
->    */
-> -static ssize_t do_io_rw(struct vfio_pci_core_device *vdev, bool test_mem,
-> -			void __iomem *io, char __user *buf,
-> -			loff_t off, size_t count, size_t x_start,
-> -			size_t x_end, bool iswrite)
-> +ssize_t do_io_rw(struct vfio_pci_core_device *vdev, bool test_mem,
-> +		  void __iomem *io, char __user *buf,
-> +		  loff_t off, size_t count, size_t x_start,
-> +		  size_t x_end, bool iswrite)
->   {
->   	ssize_t done = 0;
->   	int ret;
-> @@ -199,6 +199,7 @@ static ssize_t do_io_rw(struct vfio_pci_core_device *vdev, bool test_mem,
->   
->   	return done;
->   }
-> +EXPORT_SYMBOL(do_io_rw);
-
-You should rename this routime with a vfio_ prefix and include its
-declaration in include/linux/vfio_pci_core.h. I suppose we want
-it to be GPL, right ?
-
-See https://lore.kernel.org/all/20231218083755.96281-9-yishaih@nvidia.com/
-
-Thanks,
-
-C.
-
-
-
->   
->   static int vfio_pci_setup_barmap(struct vfio_pci_core_device *vdev, int bar)
->   {
+diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+index 8571d84d129b..4cd1d89b4ac6 100644
+--- a/Documentation/trace/ftrace.rst
++++ b/Documentation/trace/ftrace.rst
+@@ -203,26 +203,26 @@ of ftrace. Here is a list of some of the key files:
+ 
+ 	This displays the total combined size of all the trace buffers.
+ 
+-  buffer_subbuf_size_kb:
+-
+-	This sets or displays the sub buffer size. The ring buffer is broken up
+-	into several same size "sub buffers". An event can not be bigger than
+-	the size of the sub buffer. Normally, the sub buffer is the size of the
+-	architecture's page (4K on x86). The sub buffer also contains meta data
+-	at the start which also limits the size of an event.  That means when
+-	the sub buffer is a page size, no event can be larger than the page
+-	size minus the sub buffer meta data.
+-
+-	Note, the buffer_subbuf_size_kb is a way for the user to specify the
+-	minimum size of the subbuffer. The kernel may make it bigger due to the
+-	implementation details, or simply fail the operation if the kernel can
+-	not handle the request.
+-
+-	Changing the sub buffer size allows for events to be larger than the
+-	page size.
+-
+-	Note: When changing the sub-buffer size, tracing is stopped and any
+-	data in the ring buffer and the snapshot buffer will be discarded.
++  buffer_page_size_kb:
++
++        This sets or displays the ring-buffer page size. The ring buffer is
++        broken up into several same size "buffer pages". An event can not be
++        bigger than the size of the buffer page. Normally, the buffer page is
++        the size of the architecture's page (4K on x86). The buffer page also
++        contains meta data at the start which also limits the size of an event.
++        That means when the buffer page is a system page size, no event can be
++        larger than the system page size minus the buffer page meta data.
++
++        Note, the buffer_page_size_kb is a way for the user to specify the
++        minimum size for each buffer page. The kernel may make it bigger due to
++        the implementation details, or simply fail the operation if the kernel
++        can not handle the request.
++
++        Changing the ring-buffer page size allows for events to be larger than
++        the system page size.
++
++        Note: When changing the buffer page size, tracing is stopped and any
++        data in the ring buffer and the snapshot buffer will be discarded.
+ 
+   free_buffer:
+ 
+diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
+index fa802db216f9..929ed54dd651 100644
+--- a/include/linux/ring_buffer.h
++++ b/include/linux/ring_buffer.h
+@@ -207,9 +207,9 @@ struct trace_seq;
+ int ring_buffer_print_entry_header(struct trace_seq *s);
+ int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
+ 
+-int ring_buffer_subbuf_order_get(struct trace_buffer *buffer);
+-int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order);
+-int ring_buffer_subbuf_size_get(struct trace_buffer *buffer);
++int ring_buffer_page_order_get(struct trace_buffer *buffer);
++int ring_buffer_page_order_set(struct trace_buffer *buffer, int order);
++int ring_buffer_page_size_get(struct trace_buffer *buffer);
+ 
+ enum ring_buffer_flags {
+ 	RB_FL_OVERWRITE		= 1 << 0,
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 9b95297339b6..f95ad0f5be1b 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -511,8 +511,8 @@ struct trace_buffer {
+ 	struct rb_irq_work		irq_work;
+ 	bool				time_stamp_abs;
+ 
+-	unsigned int			subbuf_size;
+-	unsigned int			subbuf_order;
++	unsigned int			bpage_size;
++	unsigned int			bpage_order;
+ 	unsigned int			max_data_size;
+ };
+ 
+@@ -555,7 +555,7 @@ int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq
+ 	trace_seq_printf(s, "\tfield: char data;\t"
+ 			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+ 			 (unsigned int)offsetof(typeof(field), data),
+-			 (unsigned int)buffer->subbuf_size,
++			 (unsigned int)buffer->bpage_size,
+ 			 (unsigned int)is_signed_type(char));
+ 
+ 	return !trace_seq_has_overflowed(s);
+@@ -1488,11 +1488,11 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
+ 		list_add(&bpage->list, pages);
+ 
+ 		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags,
+-					cpu_buffer->buffer->subbuf_order);
++					cpu_buffer->buffer->bpage_order);
+ 		if (!page)
+ 			goto free_pages;
+ 		bpage->page = page_address(page);
+-		bpage->order = cpu_buffer->buffer->subbuf_order;
++		bpage->order = cpu_buffer->buffer->bpage_order;
+ 		rb_init_page(bpage->page);
+ 
+ 		if (user_thread && fatal_signal_pending(current))
+@@ -1572,7 +1572,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
+ 
+ 	cpu_buffer->reader_page = bpage;
+ 
+-	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, cpu_buffer->buffer->subbuf_order);
++	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, cpu_buffer->buffer->bpage_order);
+ 	if (!page)
+ 		goto fail_free_reader;
+ 	bpage->page = page_address(page);
+@@ -1656,13 +1656,13 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
+ 		goto fail_free_buffer;
+ 
+ 	/* Default buffer page size - one system page */
+-	buffer->subbuf_order = 0;
+-	buffer->subbuf_size = PAGE_SIZE - BUF_PAGE_HDR_SIZE;
++	buffer->bpage_order = 0;
++	buffer->bpage_size = PAGE_SIZE - BUF_PAGE_HDR_SIZE;
+ 
+ 	/* Max payload is buffer page size - header (8bytes) */
+-	buffer->max_data_size = buffer->subbuf_size - (sizeof(u32) * 2);
++	buffer->max_data_size = buffer->bpage_size - (sizeof(u32) * 2);
+ 
+-	nr_pages = DIV_ROUND_UP(size, buffer->subbuf_size);
++	nr_pages = DIV_ROUND_UP(size, buffer->bpage_size);
+ 	buffer->flags = flags;
+ 	buffer->clock = trace_clock_local;
+ 	buffer->reader_lock_key = key;
+@@ -1981,7 +1981,7 @@ static void update_pages_handler(struct work_struct *work)
+  * @size: the new size.
+  * @cpu_id: the cpu buffer to resize
+  *
+- * Minimum size is 2 * buffer->subbuf_size.
++ * Minimum size is 2 * buffer->bpage_size.
+  *
+  * Returns 0 on success and < 0 on failure.
+  */
+@@ -2003,7 +2003,7 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
+ 	    !cpumask_test_cpu(cpu_id, buffer->cpumask))
+ 		return 0;
+ 
+-	nr_pages = DIV_ROUND_UP(size, buffer->subbuf_size);
++	nr_pages = DIV_ROUND_UP(size, buffer->bpage_size);
+ 
+ 	/* we need a minimum of two pages */
+ 	if (nr_pages < 2)
+@@ -2483,7 +2483,7 @@ static inline void
+ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
+ 	      unsigned long tail, struct rb_event_info *info)
+ {
+-	unsigned long bsize = READ_ONCE(cpu_buffer->buffer->subbuf_size);
++	unsigned long bsize = READ_ONCE(cpu_buffer->buffer->bpage_size);
+ 	struct buffer_page *tail_page = info->tail_page;
+ 	struct ring_buffer_event *event;
+ 	unsigned long length = info->length;
+@@ -3426,7 +3426,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	tail = write - info->length;
+ 
+ 	/* See if we shot pass the end of this buffer page */
+-	if (unlikely(write > cpu_buffer->buffer->subbuf_size)) {
++	if (unlikely(write > cpu_buffer->buffer->bpage_size)) {
+ 		check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
+ 		return rb_move_tail(cpu_buffer, tail, info);
+ 	}
+@@ -4355,7 +4355,7 @@ static struct buffer_page *
+ rb_get_reader_page(struct ring_buffer_per_cpu *cpu_buffer)
+ {
+ 	struct buffer_page *reader = NULL;
+-	unsigned long bsize = READ_ONCE(cpu_buffer->buffer->subbuf_size);
++	unsigned long bsize = READ_ONCE(cpu_buffer->buffer->bpage_size);
+ 	unsigned long overwrite;
+ 	unsigned long flags;
+ 	int nr_loops = 0;
+@@ -4935,7 +4935,7 @@ ring_buffer_read_prepare(struct trace_buffer *buffer, int cpu, gfp_t flags)
+ 		return NULL;
+ 
+ 	/* Holds the entire event: data and meta data */
+-	iter->event_size = buffer->subbuf_size;
++	iter->event_size = buffer->bpage_size;
+ 	iter->event = kmalloc(iter->event_size, flags);
+ 	if (!iter->event) {
+ 		kfree(iter);
+@@ -5054,14 +5054,14 @@ unsigned long ring_buffer_size(struct trace_buffer *buffer, int cpu)
+ {
+ 	/*
+ 	 * Earlier, this method returned
+-	 *	buffer->subbuf_size * buffer->nr_pages
++	 *	buffer->bpage_size * buffer->nr_pages
+ 	 * Since the nr_pages field is now removed, we have converted this to
+ 	 * return the per cpu buffer value.
+ 	 */
+ 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+ 		return 0;
+ 
+-	return buffer->subbuf_size * buffer->buffers[cpu]->nr_pages;
++	return buffer->bpage_size * buffer->buffers[cpu]->nr_pages;
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_size);
+ 
+@@ -5350,7 +5350,7 @@ int ring_buffer_swap_cpu(struct trace_buffer *buffer_a,
+ 	if (cpu_buffer_a->nr_pages != cpu_buffer_b->nr_pages)
+ 		goto out;
+ 
+-	if (buffer_a->subbuf_order != buffer_b->subbuf_order)
++	if (buffer_a->bpage_order != buffer_b->bpage_order)
+ 		goto out;
+ 
+ 	ret = -EAGAIN;
+@@ -5439,7 +5439,7 @@ ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
+ 	if (!bpage)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	bpage->order = buffer->subbuf_order;
++	bpage->order = buffer->bpage_order;
+ 	cpu_buffer = buffer->buffers[cpu];
+ 	local_irq_save(flags);
+ 	arch_spin_lock(&cpu_buffer->lock);
+@@ -5456,7 +5456,7 @@ ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
+ 		goto out;
+ 
+ 	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_NORETRY,
+-				cpu_buffer->buffer->subbuf_order);
++				cpu_buffer->buffer->bpage_order);
+ 	if (!page) {
+ 		kfree(bpage);
+ 		return ERR_PTR(-ENOMEM);
+@@ -5494,10 +5494,10 @@ void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu,
+ 
+ 	/*
+ 	 * If the page is still in use someplace else, or order of the page
+-	 * is different from the subbuffer order of the buffer -
++	 * is different from the bpage order of the buffer -
+ 	 * we can't reuse it
+ 	 */
+-	if (page_ref_count(page) > 1 || data_page->order != buffer->subbuf_order)
++	if (page_ref_count(page) > 1 || data_page->order != buffer->bpage_order)
+ 		goto out;
+ 
+ 	local_irq_save(flags);
+@@ -5580,7 +5580,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 
+ 	if (!data_page || !data_page->data)
+ 		goto out;
+-	if (data_page->order != buffer->subbuf_order)
++	if (data_page->order != buffer->bpage_order)
+ 		goto out;
+ 
+ 	bpage = data_page->data;
+@@ -5703,7 +5703,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 		/* If there is room at the end of the page to save the
+ 		 * missed events, then record it there.
+ 		 */
+-		if (buffer->subbuf_size - commit >= sizeof(missed_events)) {
++		if (buffer->bpage_size - commit >= sizeof(missed_events)) {
+ 			memcpy(&bpage->data[commit], &missed_events,
+ 			       sizeof(missed_events));
+ 			local_add(RB_MISSED_STORED, &bpage->commit);
+@@ -5715,8 +5715,8 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 	/*
+ 	 * This page may be off to user land. Zero it out here.
+ 	 */
+-	if (commit < buffer->subbuf_size)
+-		memset(&bpage->data[commit], 0, buffer->subbuf_size - commit);
++	if (commit < buffer->bpage_size)
++		memset(&bpage->data[commit], 0, buffer->bpage_size - commit);
+ 
+  out_unlock:
+ 	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+@@ -5739,19 +5739,19 @@ void *ring_buffer_read_page_data(struct buffer_data_read_page *page)
+ EXPORT_SYMBOL_GPL(ring_buffer_read_page_data);
+ 
+ /**
+- * ring_buffer_subbuf_size_get - get size of the sub buffer.
++ * ring_buffer_page_size_get - get size of the sub buffer.
+  * @buffer: the buffer to get the sub buffer size from
+  *
+  * Returns size of the sub buffer, in bytes.
+  */
+-int ring_buffer_subbuf_size_get(struct trace_buffer *buffer)
++int ring_buffer_page_size_get(struct trace_buffer *buffer)
+ {
+-	return buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
++	return buffer->bpage_size + BUF_PAGE_HDR_SIZE;
+ }
+-EXPORT_SYMBOL_GPL(ring_buffer_subbuf_size_get);
++EXPORT_SYMBOL_GPL(ring_buffer_page_size_get);
+ 
+ /**
+- * ring_buffer_subbuf_order_get - get order of system sub pages in one buffer page.
++ * ring_buffer_page_order_get - get order of system sub pages in one buffer page.
+  * @buffer: The ring_buffer to get the system sub page order from
+  *
+  * By default, one ring buffer sub page equals to one system page. This parameter
+@@ -5762,17 +5762,17 @@ EXPORT_SYMBOL_GPL(ring_buffer_subbuf_size_get);
+  * 0 means the sub buffer size is 1 system page and so forth.
+  * In case of an error < 0 is returned.
+  */
+-int ring_buffer_subbuf_order_get(struct trace_buffer *buffer)
++int ring_buffer_page_order_get(struct trace_buffer *buffer)
+ {
+ 	if (!buffer)
+ 		return -EINVAL;
+ 
+-	return buffer->subbuf_order;
++	return buffer->bpage_order;
+ }
+-EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_get);
++EXPORT_SYMBOL_GPL(ring_buffer_page_order_get);
+ 
+ /**
+- * ring_buffer_subbuf_order_set - set the size of ring buffer sub page.
++ * ring_buffer_page_order_set - set the size of ring buffer sub page.
+  * @buffer: The ring_buffer to set the new page size.
+  * @order: Order of the system pages in one sub buffer page
+  *
+@@ -5787,7 +5787,7 @@ EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_get);
+  *
+  * Returns 0 on success or < 0 in case of an error.
+  */
+-int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
++int ring_buffer_page_order_set(struct trace_buffer *buffer, int order)
+ {
+ 	struct ring_buffer_per_cpu *cpu_buffer;
+ 	struct buffer_page *bpage, *tmp;
+@@ -5800,15 +5800,15 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+ 	if (!buffer || order < 0)
+ 		return -EINVAL;
+ 
+-	if (buffer->subbuf_order == order)
++	if (buffer->bpage_order == order)
+ 		return 0;
+ 
+ 	psize = (1 << order) * PAGE_SIZE;
+ 	if (psize <= BUF_PAGE_HDR_SIZE)
+ 		return -EINVAL;
+ 
+-	old_order = buffer->subbuf_order;
+-	old_size = buffer->subbuf_size;
++	old_order = buffer->bpage_order;
++	old_size = buffer->bpage_size;
+ 
+ 	/* prevent another thread from changing buffer sizes */
+ 	mutex_lock(&buffer->mutex);
+@@ -5817,8 +5817,8 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+ 	/* Make sure all commits have finished */
+ 	synchronize_rcu();
+ 
+-	buffer->subbuf_order = order;
+-	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
++	buffer->bpage_order = order;
++	buffer->bpage_size = psize - BUF_PAGE_HDR_SIZE;
+ 
+ 	/* Make sure all new buffers are allocated, before deleting the old ones */
+ 	for_each_buffer_cpu(buffer, cpu) {
+@@ -5830,7 +5830,7 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+ 
+ 		/* Update the number of pages to match the new size */
+ 		nr_pages = old_size * buffer->buffers[cpu]->nr_pages;
+-		nr_pages = DIV_ROUND_UP(nr_pages, buffer->subbuf_size);
++		nr_pages = DIV_ROUND_UP(nr_pages, buffer->bpage_size);
+ 
+ 		/* we need a minimum of two pages */
+ 		if (nr_pages < 2)
+@@ -5907,8 +5907,8 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+ 	return 0;
+ 
+ error:
+-	buffer->subbuf_order = old_order;
+-	buffer->subbuf_size = old_size;
++	buffer->bpage_order = old_order;
++	buffer->bpage_size = old_size;
+ 
+ 	atomic_dec(&buffer->record_disabled);
+ 	mutex_unlock(&buffer->mutex);
+@@ -5927,7 +5927,7 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+ 
+ 	return err;
+ }
+-EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
++EXPORT_SYMBOL_GPL(ring_buffer_page_order_set);
+ 
+ /*
+  * We only allocate new buffers, never free them if the CPU goes down.
+diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
+index 008187ebd7fe..b58ced8f4626 100644
+--- a/kernel/trace/ring_buffer_benchmark.c
++++ b/kernel/trace/ring_buffer_benchmark.c
+@@ -118,7 +118,7 @@ static enum event_status read_page(int cpu)
+ 	if (IS_ERR(bpage))
+ 		return EVENT_DROPPED;
+ 
+-	page_size = ring_buffer_subbuf_size_get(buffer);
++	page_size = ring_buffer_page_size_get(buffer);
+ 	ret = ring_buffer_read_page(buffer, bpage, page_size, cpu, 1);
+ 	if (ret >= 0) {
+ 		rpage = ring_buffer_read_page_data(bpage);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index b35c85edbb49..c17dd849e6f1 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -1269,8 +1269,8 @@ int tracing_alloc_snapshot_instance(struct trace_array *tr)
+ 	if (!tr->allocated_snapshot) {
+ 
+ 		/* Make the snapshot buffer have the same order as main buffer */
+-		order = ring_buffer_subbuf_order_get(tr->array_buffer.buffer);
+-		ret = ring_buffer_subbuf_order_set(tr->max_buffer.buffer, order);
++		order = ring_buffer_page_order_get(tr->array_buffer.buffer);
++		ret = ring_buffer_page_order_set(tr->max_buffer.buffer, order);
+ 		if (ret < 0)
+ 			return ret;
+ 
+@@ -1293,7 +1293,7 @@ static void free_snapshot(struct trace_array *tr)
+ 	 * The max_tr ring buffer has some state (e.g. ring->clock) and
+ 	 * we want preserve it.
+ 	 */
+-	ring_buffer_subbuf_order_set(tr->max_buffer.buffer, 0);
++	ring_buffer_page_order_set(tr->max_buffer.buffer, 0);
+ 	ring_buffer_resize(tr->max_buffer.buffer, 1, RING_BUFFER_ALL_CPUS);
+ 	set_buffer_entries(&tr->max_buffer, 1);
+ 	tracing_reset_online_cpus(&tr->max_buffer);
+@@ -8315,7 +8315,7 @@ tracing_buffers_read(struct file *filp, char __user *ubuf,
+ 		return -EBUSY;
+ #endif
+ 
+-	page_size = ring_buffer_subbuf_size_get(iter->array_buffer->buffer);
++	page_size = ring_buffer_page_size_get(iter->array_buffer->buffer);
+ 
+ 	/* Make sure the spare matches the current sub buffer size */
+ 	if (info->spare) {
+@@ -8492,7 +8492,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
+ 		return -EBUSY;
+ #endif
+ 
+-	page_size = ring_buffer_subbuf_size_get(iter->array_buffer->buffer);
++	page_size = ring_buffer_page_size_get(iter->array_buffer->buffer);
+ 	if (*ppos & (page_size - 1))
+ 		return -EINVAL;
+ 
+@@ -9391,7 +9391,7 @@ static const struct file_operations buffer_percent_fops = {
+ };
+ 
+ static ssize_t
+-buffer_subbuf_size_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
++buffer_page_size_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
+ {
+ 	struct trace_array *tr = filp->private_data;
+ 	size_t size;
+@@ -9399,7 +9399,7 @@ buffer_subbuf_size_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t
+ 	int order;
+ 	int r;
+ 
+-	order = ring_buffer_subbuf_order_get(tr->array_buffer.buffer);
++	order = ring_buffer_page_order_get(tr->array_buffer.buffer);
+ 	size = (PAGE_SIZE << order) / 1024;
+ 
+ 	r = sprintf(buf, "%zd\n", size);
+@@ -9408,8 +9408,8 @@ buffer_subbuf_size_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t
+ }
+ 
+ static ssize_t
+-buffer_subbuf_size_write(struct file *filp, const char __user *ubuf,
+-			 size_t cnt, loff_t *ppos)
++buffer_page_size_write(struct file *filp, const char __user *ubuf,
++		       size_t cnt, loff_t *ppos)
+ {
+ 	struct trace_array *tr = filp->private_data;
+ 	unsigned long val;
+@@ -9434,11 +9434,11 @@ buffer_subbuf_size_write(struct file *filp, const char __user *ubuf,
+ 	/* Do not allow tracing while changing the order of the ring buffer */
+ 	tracing_stop_tr(tr);
+ 
+-	old_order = ring_buffer_subbuf_order_get(tr->array_buffer.buffer);
++	old_order = ring_buffer_page_order_get(tr->array_buffer.buffer);
+ 	if (old_order == order)
+ 		goto out;
+ 
+-	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, order);
++	ret = ring_buffer_page_order_set(tr->array_buffer.buffer, order);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -9447,10 +9447,10 @@ buffer_subbuf_size_write(struct file *filp, const char __user *ubuf,
+ 	if (!tr->allocated_snapshot)
+ 		goto out_max;
+ 
+-	ret = ring_buffer_subbuf_order_set(tr->max_buffer.buffer, order);
++	ret = ring_buffer_page_order_set(tr->max_buffer.buffer, order);
+ 	if (ret) {
+ 		/* Put back the old order */
+-		cnt = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, old_order);
++		cnt = ring_buffer_page_order_set(tr->array_buffer.buffer, old_order);
+ 		if (WARN_ON_ONCE(cnt)) {
+ 			/*
+ 			 * AARGH! We are left with different orders!
+@@ -9479,10 +9479,10 @@ buffer_subbuf_size_write(struct file *filp, const char __user *ubuf,
+ 	return cnt;
+ }
+ 
+-static const struct file_operations buffer_subbuf_size_fops = {
++static const struct file_operations buffer_page_size_fops = {
+ 	.open		= tracing_open_generic_tr,
+-	.read		= buffer_subbuf_size_read,
+-	.write		= buffer_subbuf_size_write,
++	.read		= buffer_page_size_read,
++	.write		= buffer_page_size_write,
+ 	.release	= tracing_release_generic_tr,
+ 	.llseek		= default_llseek,
+ };
+@@ -9953,8 +9953,8 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
+ 	trace_create_file("buffer_percent", TRACE_MODE_WRITE, d_tracer,
+ 			tr, &buffer_percent_fops);
+ 
+-	trace_create_file("buffer_subbuf_size_kb", TRACE_MODE_WRITE, d_tracer,
+-			  tr, &buffer_subbuf_size_fops);
++	trace_create_file("buffer_page_size_kb", TRACE_MODE_WRITE, d_tracer,
++			  tr, &buffer_page_size_fops);
+ 
+ 	create_trace_options_dir(tr);
+ 
+-- 
+2.43.0.472.g3155946c3a-goog
 
 
