@@ -1,49 +1,53 @@
-Return-Path: <linux-kernel+bounces-3623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8204816E96
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:51:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C1D5816E99
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:52:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35DD8B23513
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:51:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2D241C24792
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F195D5757D;
-	Mon, 18 Dec 2023 12:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645095A84A;
+	Mon, 18 Dec 2023 12:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HYErIuSD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MkHd+m4l"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FF357560;
-	Mon, 18 Dec 2023 12:45:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9735CC43391;
-	Mon, 18 Dec 2023 12:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13725754F;
+	Mon, 18 Dec 2023 12:45:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1917BC433C8;
+	Mon, 18 Dec 2023 12:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903520;
-	bh=f2ehjjORm+uQZf0e8aS+3TjHgMGxdngRVgsuOT7wEuo=;
+	s=k20201202; t=1702903522;
+	bh=2iwNU4oThQUd0yeP7a35z2BoHThYhHlJhvnTtyhpVTQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HYErIuSDVCdccAH8j6Ii0krDyXIqe2uUNtJJ/0GZj2I5RYKu87uSdS9YOjK/yBuWH
-	 laggsK4wJWP5XyOWkpcOgzimV+qOxYz1bFhoKxFkZkfRaYmlqRrx1P1W7AHpmsFCBb
-	 sOYBt0Crlgo3fm8PPTVE9ES9Ec1RgI2Je+L+86nL6hPN/jUJ2lmlcFsX1iGUKwQSyv
-	 JYjBUdszBcFRqmbVrUkY5V2BJdYV5AoMZ7Fe9hHXHRObRN/rKVB5zhuVC0It64itFZ
-	 puitz/A1mWo3l8GTlCxPDgDXZCeJrYkzdmsCOM7YBXi0olhEXJB4bfHYgADjqCWoF+
-	 B0yjx5G7V+pcA==
+	b=MkHd+m4l9nJBRAgcvvUkjWA1MbPRdJu6p84w8Vgm88uxdLjF7U79lDnN4VObI0jiO
+	 bVJz+lvNu4qvjQMfiMv4WvqJ0URRUCGo7qBPZoLmgn1rczr+XbhL+yqHlgC4WXfoGu
+	 sa0A0gh5DA4vb4U8/TnDc+rIEh0n7GzSQyTctV8ctBja4fXucisp4XsvJBkWIpIc9G
+	 eqCOmfRZfwRPxXQaXErKbuno5AdXT7wSkJZGTSwT8CouRjEPzrQO3iTQjtXv+iCjmu
+	 cUvW88u8hVAJFZxk4VR0kq/9d4tZaita8PWZuip2guylQOBCIQ4dRtauzP9B0PcPNz
+	 vO5TfQSar289g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhang Yi <yi.zhang@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+Cc: Ziqi Zhao <astrajoan@yahoo.com>,
+	syzbot+4fad2e57beb6397ab2fc@syzkaller.appspotmail.com,
+	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	Maxime Ripard <mripard@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jack@suse.com,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 04/15] jbd2: increase the journal IO's priority
-Date: Mon, 18 Dec 2023 07:44:51 -0500
-Message-ID: <20231218124513.1380056-4-sashal@kernel.org>
+	maarten.lankhorst@linux.intel.com,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 05/15] drm/crtc: Fix uninit-value bug in drm_mode_setcrtc
+Date: Mon, 18 Dec 2023 07:44:52 -0500
+Message-ID: <20231218124513.1380056-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124513.1380056-1-sashal@kernel.org>
 References: <20231218124513.1380056-1-sashal@kernel.org>
@@ -58,158 +62,77 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.68
 Content-Transfer-Encoding: 8bit
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Ziqi Zhao <astrajoan@yahoo.com>
 
-[ Upstream commit 6a3afb6ac6dfab158ebdd4b87941178f58c8939f ]
+[ Upstream commit 3823119b9c2b5f9e9b760336f75bc989b805cde6 ]
 
-Current jbd2 only add REQ_SYNC for descriptor block, metadata log
-buffer, commit buffer and superblock buffer, the submitted IO could be
-throttled by writeback throttle in block layer, that could lead to
-priority inversion in some cases. The log IO looks like a kind of high
-priority metadata IO, so it should not be throttled by WBT like QOS
-policies in block layer, let's add REQ_SYNC | REQ_IDLE to exempt from
-writeback throttle, and also add REQ_META together indicates it's a
-metadata IO.
+The connector_set contains uninitialized values when allocated with
+kmalloc_array. However, in the "out" branch, the logic assumes that any
+element in connector_set would be equal to NULL if failed to
+initialize, which causes the bug reported by Syzbot. The fix is to use
+an extra variable to keep track of how many connectors are initialized
+indeed, and use that variable to decrease any refcounts in the "out"
+branch.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20231129114740.2686201-2-yi.zhang@huaweicloud.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Reported-by: syzbot+4fad2e57beb6397ab2fc@syzkaller.appspotmail.com
+Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
+Reported-and-tested-by: syzbot+4fad2e57beb6397ab2fc@syzkaller.appspotmail.com
+Tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Link: https://lore.kernel.org/r/20230721161446.8602-1-astrajoan@yahoo.com
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/commit.c     |  9 +++++----
- fs/jbd2/journal.c    | 20 +++++++++++---------
- include/linux/jbd2.h |  3 +++
- 3 files changed, 19 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/drm_crtc.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index f1d9db6686e31..447c6972a6d37 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -123,7 +123,7 @@ static int journal_submit_commit_record(journal_t *journal,
- 	struct commit_header *tmp;
- 	struct buffer_head *bh;
- 	struct timespec64 now;
--	blk_opf_t write_flags = REQ_OP_WRITE | REQ_SYNC;
-+	blk_opf_t write_flags = REQ_OP_WRITE | JBD2_JOURNAL_REQ_FLAGS;
+diff --git a/drivers/gpu/drm/drm_crtc.c b/drivers/gpu/drm/drm_crtc.c
+index df9bf3c9206e7..d718c17ab1e9f 100644
+--- a/drivers/gpu/drm/drm_crtc.c
++++ b/drivers/gpu/drm/drm_crtc.c
+@@ -715,8 +715,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+ 	struct drm_mode_set set;
+ 	uint32_t __user *set_connectors_ptr;
+ 	struct drm_modeset_acquire_ctx ctx;
+-	int ret;
+-	int i;
++	int ret, i, num_connectors;
  
- 	*cbh = NULL;
+ 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+ 		return -EOPNOTSUPP;
+@@ -851,6 +850,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+ 			goto out;
+ 		}
  
-@@ -429,8 +429,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC);
-+						journal->j_tail, 0);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	} else {
- 		jbd2_debug(3, "superblock not updated\n");
-@@ -749,6 +748,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
++		num_connectors = 0;
+ 		for (i = 0; i < crtc_req->count_connectors; i++) {
+ 			connector_set[i] = NULL;
+ 			set_connectors_ptr = (uint32_t __user *)(unsigned long)crtc_req->set_connectors_ptr;
+@@ -871,6 +871,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+ 					connector->name);
  
- 			for (i = 0; i < bufs; i++) {
- 				struct buffer_head *bh = wbuf[i];
-+
- 				/*
- 				 * Compute checksum.
- 				 */
-@@ -761,7 +761,8 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 				clear_buffer_dirty(bh);
- 				set_buffer_uptodate(bh);
- 				bh->b_end_io = journal_end_buffer_io_sync;
--				submit_bh(REQ_OP_WRITE | REQ_SYNC, bh);
-+				submit_bh(REQ_OP_WRITE | JBD2_JOURNAL_REQ_FLAGS,
-+					  bh);
- 			}
- 			cond_resched();
- 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 611337b0b5ad4..3df45e4699f10 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1109,8 +1109,7 @@ int __jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block)
- 	 * space and if we lose sb update during power failure we'd replay
- 	 * old transaction with possibly newly overwritten data.
- 	 */
--	ret = jbd2_journal_update_sb_log_tail(journal, tid, block,
--					      REQ_SYNC | REQ_FUA);
-+	ret = jbd2_journal_update_sb_log_tail(journal, tid, block, REQ_FUA);
- 	if (ret)
- 		goto out;
- 
-@@ -1597,8 +1596,7 @@ static int journal_reset(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC | REQ_FUA);
-+						journal->j_tail, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 	return jbd2_journal_start_thread(journal);
-@@ -1620,6 +1618,11 @@ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
- 		return -EIO;
+ 			connector_set[i] = connector;
++			num_connectors++;
+ 		}
  	}
  
-+	/*
-+	 * Always set high priority flags to exempt from block layer's
-+	 * QOS policies, e.g. writeback throttle.
-+	 */
-+	write_flags |= JBD2_JOURNAL_REQ_FLAGS;
- 	if (!(journal->j_flags & JBD2_BARRIER))
- 		write_flags &= ~(REQ_FUA | REQ_PREFLUSH);
+@@ -879,7 +880,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+ 	set.y = crtc_req->y;
+ 	set.mode = mode;
+ 	set.connectors = connector_set;
+-	set.num_connectors = crtc_req->count_connectors;
++	set.num_connectors = num_connectors;
+ 	set.fb = fb;
  
-@@ -1873,7 +1876,7 @@ void jbd2_journal_update_sb_errno(journal_t *journal)
- 	jbd2_debug(1, "JBD2: updating superblock error (errno %d)\n", errcode);
- 	sb->s_errno    = cpu_to_be32(errcode);
+ 	if (drm_drv_uses_atomic_modeset(dev))
+@@ -892,7 +893,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+ 		drm_framebuffer_put(fb);
  
--	jbd2_write_superblock(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_write_superblock(journal, REQ_FUA);
- }
- EXPORT_SYMBOL(jbd2_journal_update_sb_errno);
- 
-@@ -2178,8 +2181,7 @@ int jbd2_journal_destroy(journal_t *journal)
- 				++journal->j_transaction_sequence;
- 			write_unlock(&journal->j_state_lock);
- 
--			jbd2_mark_journal_empty(journal,
--					REQ_SYNC | REQ_PREFLUSH | REQ_FUA);
-+			jbd2_mark_journal_empty(journal, REQ_PREFLUSH | REQ_FUA);
- 			mutex_unlock(&journal->j_checkpoint_mutex);
- 		} else
- 			err = -EIO;
-@@ -2488,7 +2490,7 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
- 	 * the magic code for a fully-recovered superblock.  Any future
- 	 * commits of data to the journal will restore the current
- 	 * s_start value. */
--	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_mark_journal_empty(journal, REQ_FUA);
- 
- 	if (flags)
- 		err = __jbd2_journal_erase(journal, flags);
-@@ -2538,7 +2540,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
- 	if (write) {
- 		/* Lock to make assertions happy... */
- 		mutex_lock_io(&journal->j_checkpoint_mutex);
--		jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+		jbd2_mark_journal_empty(journal, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index ebb1608d9dcd2..6611af5f1d0c6 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1374,6 +1374,9 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
- JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
- JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
- 
-+/* Journal high priority write IO operation flags */
-+#define JBD2_JOURNAL_REQ_FLAGS		(REQ_META | REQ_SYNC | REQ_IDLE)
-+
- /*
-  * Journal flag definitions
-  */
+ 	if (connector_set) {
+-		for (i = 0; i < crtc_req->count_connectors; i++) {
++		for (i = 0; i < num_connectors; i++) {
+ 			if (connector_set[i])
+ 				drm_connector_put(connector_set[i]);
+ 		}
 -- 
 2.43.0
 
