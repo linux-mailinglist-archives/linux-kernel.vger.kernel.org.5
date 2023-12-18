@@ -1,194 +1,104 @@
-Return-Path: <linux-kernel+bounces-4331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599C0817BA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:18:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A4DF817BAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFBE1B23CD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:18:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608EF1C23109
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEC273467;
-	Mon, 18 Dec 2023 20:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5B772069;
+	Mon, 18 Dec 2023 20:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="t9D//caF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429C67146E;
-	Mon, 18 Dec 2023 20:17:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-20394042a45so279477fac.0;
-        Mon, 18 Dec 2023 12:17:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702930666; x=1703535466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BVggm/k7h51uGokCDrYG9yM8ij6+ByTlCjSSiz9AMHU=;
-        b=j+cpQAhZ5EEyQhYmHr0vMjlkHiWBOE0Q/mGiu/JrTWX3qqoOAf6hORYIKIinCVwTs5
-         yGKbLcrk1gb1WNZXe2/vxOagVXtwV/rS5PCw7qIxss954TuXeTvQTCjQedRKZo6ax/iF
-         ixU/rvy+geguv/CA8mXBpdmLFWJVZX/cyuWXHVxTtvHBtc33H4PCnzO1BQBlVXYs/RyI
-         pWuro8Q0MgyN8tTfY+/BvgDPYnC8Nz2ryFqJa4oluvzZD4bU+OOk3IIF5vWD/rYPJFxE
-         DDx5EvLJEPMuzC7wtX77BRNscywfc+PvfMViCfUK2XIBGgrcvu/tar1LDm9MJboLITK7
-         Qk9Q==
-X-Gm-Message-State: AOJu0YxMLBTv2B7NYmm5chKSElGEU03qGjummiquhPRJIYWOWFm7GmnM
-	WqtLANJtUi/8XlT8a9wv5575rJGDGHpuEsNZY1U=
-X-Google-Smtp-Source: AGHT+IFMjefUSNquEpPstcFy8KIyactI5mxHoAdfHlD4qq0J99AZZDv3tX1Y2M6bLJ1U3Iv5VjAbiMgTsk/u/KcBObU=
-X-Received: by 2002:a05:6870:9591:b0:203:e5bc:154a with SMTP id
- k17-20020a056870959100b00203e5bc154amr834085oao.2.1702930665760; Mon, 18 Dec
- 2023 12:17:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF714239A;
+	Mon, 18 Dec 2023 20:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1702930743; x=1703535543; i=w_armin@gmx.de;
+	bh=q9wL0sOP60Ja7H4IQatHbqL5WFADfzE9WTyOrzpo5n4=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=t9D//caF0Yy3sAnH6zA4ICqi0afZWMWlc/IrLDM46nuVhKQOfqYUNJkQyJ+Yx3qU
+	 F3pASgnk6HOb0ajNSPoqaBFn5pDBziwZFI9rxdo3VnogPdudCS8cwpuKp++JhxRa0
+	 T4q5ymddC+NuZqg6ocEPcZLOvVL6xTh0Nd33zLhqVoPWKB9H+U/aBQzkQ5uI+Qb+3
+	 WA4v2BPQEj+GBnO+HntWrmbF/FEOXtKGpWhi9MXo0KH+TM4V18mNg6u2+JxFMaC86
+	 EnYoXfocPLjTCIS24nDZuef5uJ8xlIejzRhp9Dplh7PG7qDbprG2WHMBjEKkrzsM7
+	 mRRw0tiSgKnZLr9P6Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1M6Daq-1rLvmZ2vgO-006ehp; Mon, 18 Dec 2023 21:19:03 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND v2 0/6] platform/x86: wmi: ACPI improvements
+Date: Mon, 18 Dec 2023 21:18:39 +0100
+Message-Id: <20231218201844.2860-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
-In-Reply-To: <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 18 Dec 2023 21:17:34 +0100
-Message-ID: <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
- described as container packages
-To: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1HKcbLmgC/4UC4x94Q3rYinHRyvyZBup2IskAZUhduSzecLUxX5
+ OWBQO9gg3fDL95xfd8ve+gOCWeEg/DaISOnINt28MIfxwPZWzWe8mS5jgIsEMfxcqy2U6j5
+ xBF9R7cPKAKZYjM2Og1Q0X1DCbm1rN31ikuEl+NZmkEYwCNIyPOxcC3EgtBIhjK/zqDFmGC
+ +KIC6stijwNk/embzgRTA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:cGTfvJ2G2JE=;Cn7C5n3bmHcGeVxB6LnsoT5IkGm
+ nY5kJ66wrSR4Y6m44ZLbVRx4CaIromJaMkUjRI3hovkuRXB+T9/1TxIDB0i3w04n7C2bacZEJ
+ /fkUlurU6j5JD5R2GskxcUOEGm164w3naDUwoy7j9so8OIM51CBd4NinAqEp7xc3x/lZeCBcn
+ lIg6sRMZcDaHSWGuEm/gcIUhvZY0jfq33g/7mnU/JNqGD3FNWXWgx492/Ougv16pnNbqmYub5
+ RXag4iAy+mDVgkEBeqLKlmo8boUGoGZjDat6aR30UNMXLlz30dpTSm6oHjhs8MMlPrF7McFp3
+ 668hF8mwOCoLwaD149qeH3CdGHyzjmJKPZeD1aZCwcHe2la6yQj/KSCZNSqcfaOF/qlTTEy6l
+ T0YsA8wVYh6ODQVCoegh9DPxS1fb8imXBydNnHjTG6LAflRIve2Jhp4YcIsAB0VhCBQK/u2eT
+ //sjGODVPLhuNfsNxIdcomLyEgbeRCK67oXP1juGcGQ/wr4HwtWEV+e9CTm5AkhrMc9I90QGS
+ WgCYUhmKNnKe5HthRhUW75gzEdi/UGwfI3CDFSp50iM+gP/LByytlE1ArFwcqxVLCN2d2eRFG
+ 8asUgR7qsohStSt89O8Cy8WaOEDtddVJAGroK4Z9bztM5jLfmEh9QZVxPFIO5b9FjoHW6NvxN
+ cj36ni2DnYwJhUFY2si7ya4pvMAYD8Vu7X7h073SGcw1t+OKW7XYeec+8gs7K+O1cHqxJd2gr
+ ifyl4mk0xldt4R+LDzazrL58kBZYhzpXmv0D5uxu/osLAf7kiz1ODR2T42dd5w6ShW0E2rCuV
+ tAj9Na8XIr7VEGeDJeDjnfFTnq7yM43QRAKkUJs7ix/jeN4eapUkgyRKhZ9n1/qLiwQVkMMpk
+ 7XwJ0zmpalXc3TLKd3vi4gJkWzghdMEyg/jbBfQ99fnkmvck+WuvRMCWKeWZgEaezbO/VP2Ko
+ 77DuKtYUCGPv9sghlutJ+xCVJiE=
 
-On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux.o=
-rg.uk> wrote:
->
-> From: James Morse <james.morse@arm.com>
->
-> ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
-> 5.2.12:
->
-> "Starting with ACPI Specification 6.3, the use of the Processor() object
-> was deprecated. Only legacy systems should continue with this usage. On
-> the Itanium architecture only, a _UID is provided for the Processor()
-> that is a string object. This usage of _UID is also deprecated since it
-> can preclude an OSPM from being able to match a processor to a
-> non-enumerable device, such as those defined in the MADT. From ACPI
-> Specification 6.3 onward, all processor objects for all architectures
-> except Itanium must now use Device() objects with an _HID of ACPI0007,
-> and use only integer _UID values."
->
-> Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_C=
-ontrol.html#declaring-processors
->
-> Duplicate descriptions are not allowed, the ACPI processor driver already
-> parses the UID from both devices and containers. acpi_processor_get_info(=
-)
-> returns an error if the UID exists twice in the DSDT.
+This patch series improves the ACPI handling inside the ACPI WMI driver.
+The first patch removes an unused variable, while the second patch
+changes the order in which the ACPI handlers are removed on shutdown.
+The third patch simplifies the error handling during probe by using
+devres to manage devie resources, while the next two patches decouple
+the ACPI notify handler from the wmi_block_list. The last patch
+simplifies yet another ACPI-related function.
 
-I'm not really sure how the above is related to the actual patch.
+All patches have been tested on a Dell Inspiron 3505 and appear to work.
 
-> The missing probe for CPUs described as packages
+Changes since v1:
+- fix ACPI handler devres ordering
 
-It is unclear what exactly is meant by "CPUs described as packages".
+Armin Wolf (6):
+  platform/x86: wmi: Remove unused variable in address space handler
+  platform/x86: wmi: Remove ACPI handlers after WMI devices
+  platform/x86: wmi: Use devres for resource handling
+  platform/x86: wmi: Create WMI bus device first
+  platform/x86: wmi: Decouple ACPI notify handler from wmi_block_list
+  platform/x86: wmi: Simplify get_subobj_info()
 
-From the patch, it looks like those would be Processor() objects
-defined under a processor container device.
+ drivers/platform/x86/wmi.c | 143 ++++++++++++++++++-------------------
+ 1 file changed, 71 insertions(+), 72 deletions(-)
 
-> creates a problem for
-> moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> described like this don't get registered, leading to errors from other
-> subsystems when they try to add new sysfs entries to the CPU node.
-> (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
->
-> To fix this, parse the processor container and call acpi_processor_add()
-> for each processor that is discovered like this.
+=2D-
+2.39.2
 
-Discovered like what?
-
-> The processor container
-> handler is added with acpi_scan_add_handler(), so no detach call will
-> arrive.
-
-The above requires clarification too.
-
-> Qemu TCG describes CPUs using processor devices in a processor container.
-> For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
-> https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.ht=
-ml#processor-container-device
->
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> ---
-> Outstanding comments:
->  https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
->  https://lore.kernel.org/r/50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.co=
-m
-> ---
->  drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
-c
-> index 4fe2ef54088c..6a542e0ce396 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -626,9 +626,31 @@ static struct acpi_scan_handler processor_handler =
-=3D {
->         },
->  };
->
-> +static acpi_status acpi_processor_container_walk(acpi_handle handle,
-> +                                                u32 lvl,
-> +                                                void *context,
-> +                                                void **rv)
-> +{
-> +       struct acpi_device *adev;
-> +       acpi_status status;
-> +
-> +       adev =3D acpi_get_acpi_dev(handle);
-> +       if (!adev)
-> +               return AE_ERROR;
-
-Why is the reference counting needed here?
-
-Wouldn't acpi_fetch_acpi_dev() suffice?
-
-Also, should the walk really be terminated on the first error?
-
-> +
-> +       status =3D acpi_processor_add(adev, &processor_device_ids[0]);
-> +       acpi_put_acpi_dev(adev);
-> +
-> +       return status;
-> +}
-> +
->  static int acpi_processor_container_attach(struct acpi_device *dev,
->                                            const struct acpi_device_id *i=
-d)
->  {
-> +       acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
-> +                           ACPI_UINT32_MAX, acpi_processor_container_wal=
-k,
-> +                           NULL, NULL, NULL);
-
-This covers processor objects only, so why is this not needed for
-processor devices defined under a processor container object?
-
-It is not obvious, so it would be nice to add a comment explaining the
-difference.
-
-> +
->         return 1;
->  }
->
-> --
 
