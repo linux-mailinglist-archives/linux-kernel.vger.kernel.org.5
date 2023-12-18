@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-4199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED72981790C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:46:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65F2F81790D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D17B1F25E67
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:46:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 111762850BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD0A7BEF3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8626B7BF0D;
 	Mon, 18 Dec 2023 17:41:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDib+SPD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NzD3u9KZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28BC740BC;
-	Mon, 18 Dec 2023 17:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7826B79955;
+	Mon, 18 Dec 2023 17:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cc4e15605aso39825581fa.0;
-        Mon, 18 Dec 2023 09:41:17 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50bf2d9b3fdso4627940e87.3;
+        Mon, 18 Dec 2023 09:41:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702921276; x=1703526076; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702921277; x=1703526077; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7dk2TKVbYraAu74v7NaSM1t18f6z4SZSFZ1EWmH7B+A=;
-        b=CDib+SPD87rYhO6EsoDjcOkOa9D5nY3ajlJLmrSUA0wyDAIf6YousNX5lf1isnD/d2
-         ZmmGogeQoyj+JEcE2c9U/K/4j/WYgJfNWsCkgq74f8QMaO9Vbco6QeYyCvC0b8IIll9M
-         1ooU2RrDH3ci9apPmbbno5VzK1241YK4MM7UFzN0RfcsG92av9ddt+8iJYPsUUeqhiKM
-         1AOFGqGOICeHEuB5WOy/2V503t2nlGcPLYXn9CIAuAuO/L71cG8jwFma829vE/gSJvY0
-         31Gw/yKPGPpe8A4yrpKZ3jfKFM/cgzwWN4LFpZ7pB38hqEFhFfVvAjZes1V/kz2IEjE9
-         haeQ==
+        bh=4SjlvAuV+ITVZU87l8JftGavoBHWbV2WagI03hZeup4=;
+        b=NzD3u9KZ6UbCKI8H7DB1Z3O7fH8g3PkrclL6XA/Wn8Gp4jCt4ozpGz1fQRdG7ykA9c
+         /s4gAaTORzIqOiduM403whLdWgr0dXbK8YHoyVm7oSPjoNU3k5WBkpWkB9/gH7v7OloP
+         mGtM2kc6SEWZSDslkfncHQhnx8vHtZr2ks+nYAc/pbK2h9wLWWuW77bNiRc5HT3TRPRM
+         g2UdkNFe4XP0o6cfaDHakr38O783eQhJQeAtpXn4vU7rcoHR3H5A/f2ufevoO0Nq5SUx
+         nPZPOQ2ct03xuK5BzRd4Bi04xljL4hITeVSwTvGKr/SZlj5oCZ+gvYf/WLrFTL7wAq9t
+         ksdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702921276; x=1703526076;
+        d=1e100.net; s=20230601; t=1702921277; x=1703526077;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7dk2TKVbYraAu74v7NaSM1t18f6z4SZSFZ1EWmH7B+A=;
-        b=pDYOZAdKJj052vjHI8ZNN43oUdtnSzPG4yc95OH/TkUei9QiBvj1evXE+P0yP0TTws
-         Y2oQrGPxc536h2FOQEZKiYgNwkfuiD9KUODwEgIy+MGjVry49CewiTuCip3fuLOBGtNQ
-         GJ2usShDtuF5omwl5lUv3tM1KVIsaRwZ5jixuVNtNPAw3OeBnXrRXYBofObS+OObUHS6
-         qEArH3VEM5xQDe5hNa2kShXxFElPkJuljzjTa03TY1R6Gh2rd3Sq8PV499gl96vC5YLu
-         5XP2EtV+yd+QNmIWl8MEcJaO43ywS9FiwZQkvNi1tVOwCQxNiozWW7A/Ffxr2LMYMR8n
-         SXtw==
-X-Gm-Message-State: AOJu0YzfwLhjDCGQuSeNSFRX1QcVaWNdkFoZla+9ZVs+nRUgKLDtUI15
-	QF9SbwAguXOzPACnRwimQu7sSgWA6dbfJg==
-X-Google-Smtp-Source: AGHT+IGKWDiozrtpr6qFpU+ktcXW+LOrfaN4oJ191M+u5ciwj+4UpK4tleOWT5p4t+1Nr+FPWXmtRA==
-X-Received: by 2002:a2e:998f:0:b0:2cc:4547:1892 with SMTP id w15-20020a2e998f000000b002cc45471892mr3267791lji.34.1702921275695;
-        Mon, 18 Dec 2023 09:41:15 -0800 (PST)
+        bh=4SjlvAuV+ITVZU87l8JftGavoBHWbV2WagI03hZeup4=;
+        b=Ca3YdSxwHNcqjksxti0zSct4SFbCJAS3unlCIKXOr6YrRCt0kDCfTJCqoVbXqTQb2x
+         mDBdPf+N6iz8nQuWSx6hSHiFo9PF5TuaR7/unq5Kzg/d/GmCcMhJpKBtW1SJ2HYPHJw7
+         ZwnS9h8m2F4q4b/CgQYg83TlQwLeR32qifHIq6W6DBP9n2X6FSUDOceF00w5jCwJoY/X
+         XDK+Bymk+F619qDkT+62okgs22iHtVoXh9eBberecydnPz0MhlezZWWx7tXRNiK+xax6
+         tlWt5TtX8uFfm2txN7zF7cX5vSeegreLpq8eY5YUcgu9HQIUfJF3MU/nZneIBivoUcwr
+         uwjg==
+X-Gm-Message-State: AOJu0YxkLZnLCF4I/s8Web6HdWrwWoGxKkOAVjGiOi8T71lYGZCzsqur
+	25GHnU0XxIqFkrTTDKojTTMGh05MvGd5xg==
+X-Google-Smtp-Source: AGHT+IEpHBMcQFNgHrRtF7STxyBad7yeoLMk3qAFvX+/l/O6so3UTpn9p3QJpE9w7exXQyhfLJ9k9w==
+X-Received: by 2002:ac2:419a:0:b0:50c:222b:2489 with SMTP id z26-20020ac2419a000000b0050c222b2489mr6965947lfh.135.1702921276912;
+        Mon, 18 Dec 2023 09:41:16 -0800 (PST)
 Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id d8-20020a05651c01c800b002ca34ad9e8bsm3563871ljn.138.2023.12.18.09.41.15
+        by smtp.gmail.com with ESMTPSA id f9-20020a0565123b0900b0050e3b2646a0sm265645lfv.152.2023.12.18.09.41.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 09:41:15 -0800 (PST)
+        Mon, 18 Dec 2023 09:41:16 -0800 (PST)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -68,9 +68,9 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v2 14/20] media: i2c: ov4689: Implement manual color balance controls
-Date: Mon, 18 Dec 2023 20:40:35 +0300
-Message-ID: <20231218174042.794012-15-mike.rudenko@gmail.com>
+Subject: [PATCH v2 15/20] media: i2c: ov4689: Move pixel array size out of struct ov4689_mode
+Date: Mon, 18 Dec 2023 20:40:36 +0300
+Message-ID: <20231218174042.794012-16-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218174042.794012-1-mike.rudenko@gmail.com>
 References: <20231218174042.794012-1-mike.rudenko@gmail.com>
@@ -82,70 +82,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The OV4689 sensor has separate red and blue gain settings (up to 4x).
-Implement appropriate controls in the driver. Default gain values
-are not modified.
+Pixel array dimensions and default crop size do not belong to the
+ov4689_mode structure, since they are mode independent. Make them
+defines instead.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 ---
- drivers/media/i2c/ov4689.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ drivers/media/i2c/ov4689.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 579362570ba4..b43fb1d7b15f 100644
+index b43fb1d7b15f..475508559e3e 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -56,6 +56,13 @@
- #define OV4689_TIMING_FLIP_BOTH		(OV4689_TIMING_FLIP_ARRAY |\
- 					 OV4689_TIMING_FLIP_DIGITAL)
+@@ -70,6 +70,11 @@
+ #define OV4689_LANES			4
+ #define OV4689_XVCLK_FREQ		24000000
  
-+#define OV4689_REG_WB_GAIN_RED		CCI_REG16(0x500c)
-+#define OV4689_REG_WB_GAIN_BLUE		CCI_REG16(0x5010)
-+#define OV4689_WB_GAIN_MIN		1
-+#define OV4689_WB_GAIN_MAX		0xfff
-+#define OV4689_WB_GAIN_STEP		1
-+#define OV4689_WB_GAIN_DEFAULT		0x400
++#define OV4689_PIXEL_ARRAY_WIDTH	2720
++#define OV4689_PIXEL_ARRAY_HEIGHT	1536
++#define OV4689_DUMMY_ROWS		8
++#define OV4689_DUMMY_COLUMNS		16
 +
- #define OV4689_REG_TEST_PATTERN		CCI_REG8(0x5040)
- #define OV4689_TEST_PATTERN_ENABLE	0x80
- #define OV4689_TEST_PATTERN_DISABLE	0x0
-@@ -632,6 +639,12 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_DIGITAL_GAIN:
- 		cci_write(regmap, OV4689_REG_DIG_GAIN, ctrl->val, &ret);
- 		break;
-+	case V4L2_CID_RED_BALANCE:
-+		cci_write(regmap, OV4689_REG_WB_GAIN_RED, ctrl->val, &ret);
-+		break;
-+	case V4L2_CID_BLUE_BALANCE:
-+		cci_write(regmap, OV4689_REG_WB_GAIN_BLUE, ctrl->val, &ret);
-+		break;
- 	default:
- 		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
- 			 __func__, ctrl->id, ctrl->val);
-@@ -662,7 +675,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+ static const char *const ov4689_supply_names[] = {
+ 	"avdd", /* Analog power */
+ 	"dovdd", /* Digital I/O power */
+@@ -90,10 +95,6 @@ struct ov4689_mode {
+ 	u32 vts_def;
+ 	u32 exp_def;
+ 	u32 pixel_rate;
+-	u32 sensor_width;
+-	u32 sensor_height;
+-	u32 crop_top;
+-	u32 crop_left;
+ 	const struct cci_reg_sequence *reg_list;
+ 	unsigned int num_regs;
+ };
+@@ -254,10 +255,6 @@ static const struct ov4689_mode supported_modes[] = {
+ 		.id = OV4689_MODE_2688_1520,
+ 		.width = 2688,
+ 		.height = 1520,
+-		.sensor_width = 2720,
+-		.sensor_height = 1536,
+-		.crop_top = 8,
+-		.crop_left = 16,
+ 		.exp_def = 1536,
+ 		.hts_def = 10296,
+ 		.hts_min = 3432,
+@@ -385,8 +382,6 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
+ 				struct v4l2_subdev_state *state,
+ 				struct v4l2_subdev_selection *sel)
+ {
+-	const struct ov4689_mode *mode = to_ov4689(sd)->cur_mode;
+-
+ 	if (sel->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+ 		return -EINVAL;
  
- 	handler = &ov4689->ctrl_handler;
- 	mode = ov4689->cur_mode;
--	ret = v4l2_ctrl_handler_init(handler, 13);
-+	ret = v4l2_ctrl_handler_init(handler, 15);
- 	if (ret)
- 		return ret;
+@@ -394,15 +389,17 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
+ 	case V4L2_SEL_TGT_CROP_BOUNDS:
+ 		sel->r.top = 0;
+ 		sel->r.left = 0;
+-		sel->r.width = mode->sensor_width;
+-		sel->r.height = mode->sensor_height;
++		sel->r.width = OV4689_PIXEL_ARRAY_WIDTH;
++		sel->r.height = OV4689_PIXEL_ARRAY_HEIGHT;
+ 		return 0;
+ 	case V4L2_SEL_TGT_CROP:
+ 	case V4L2_SEL_TGT_CROP_DEFAULT:
+-		sel->r.top = mode->crop_top;
+-		sel->r.left = mode->crop_left;
+-		sel->r.width = mode->width;
+-		sel->r.height = mode->height;
++		sel->r.top = OV4689_DUMMY_ROWS;
++		sel->r.left = OV4689_DUMMY_COLUMNS;
++		sel->r.width =
++			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_COLUMNS;
++		sel->r.height =
++			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_ROWS;
+ 		return 0;
+ 	}
  
-@@ -709,6 +722,14 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
- 			  OV4689_DIG_GAIN_MIN, OV4689_DIG_GAIN_MAX,
- 			  OV4689_DIG_GAIN_STEP, OV4689_DIG_GAIN_DEFAULT);
- 
-+	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_RED_BALANCE,
-+			  OV4689_WB_GAIN_MIN, OV4689_WB_GAIN_MAX,
-+			  OV4689_WB_GAIN_STEP, OV4689_WB_GAIN_DEFAULT);
-+
-+	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_BLUE_BALANCE,
-+			  OV4689_WB_GAIN_MIN, OV4689_WB_GAIN_MAX,
-+			  OV4689_WB_GAIN_STEP, OV4689_WB_GAIN_DEFAULT);
-+
- 	if (handler->error) {
- 		ret = handler->error;
- 		dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
 -- 
 2.43.0
 
