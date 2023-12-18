@@ -1,139 +1,144 @@
-Return-Path: <linux-kernel+bounces-4194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2778A817901
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB4B581791B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:48:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7FF61F2440A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A9151F27851
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0B774E38;
-	Mon, 18 Dec 2023 17:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CEE5D74C;
+	Mon, 18 Dec 2023 17:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hmSeaqZe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="naM/PjGX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE261740A4
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702921272; x=1734457272;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ov/jK2kG2bZtdxr2hpYJXzxrYdYQjsR6Ue03ZFeYysY=;
-  b=hmSeaqZe2sYq6Vgar+SMyr702IDjw8Uj3l2QOPZYr5aFW1sLnYd8EkdV
-   OHBKXeMRtbKwdf8b6oi2ZvtRGZXIxizxqLPtrnJSsrv776mN/lukfdjOL
-   weiKozbERoAJ7XhrGMH7YMEyBLWMvvnnRt2nNwwS2nQy3VxUSGaFseZx9
-   f2Kc1cr55NKGAM4KHZ9GkbzcoKiE+fYDg+ObEYfxfGHSwT2cEYgsTreEs
-   UB2fMrY3qhG03RAGP8h+2DsU4xmLU+1FtlbSPdJolK7HE4oBM01wZcCHj
-   3wlQ722eaR7rZKEv0OrqV2Z6BWZYNbeumbvU9BQy5FHgV47nzOQhpOV+U
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="394417796"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="394417796"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 09:41:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="809915495"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="809915495"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 18 Dec 2023 09:41:10 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFHc4-0004O3-0D;
-	Mon, 18 Dec 2023 17:41:08 +0000
-Date: Tue, 19 Dec 2023 01:40:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/arm/mach-sa1100/ssp.c:89: warning: Function parameter or struct
- member 'data' not described in 'ssp_read_word'
-Message-ID: <202312190124.XlzGTotA-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7084A5D73B;
+	Mon, 18 Dec 2023 17:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d3ac28ae81so13783315ad.0;
+        Mon, 18 Dec 2023 09:42:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702921331; x=1703526131; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MGc3H1mZH6buwISmfip+JfxIDpEG4RSu3DvfL7xLHYM=;
+        b=naM/PjGXR+ZvuuwwNlrNflE4mn1iPSGtvi0kA6Pswm793wmWZm5PMI37LZwLW7Fm4A
+         tLOjwa0wl3JyLcpKOViFUry+TQEY/yg4QnJeQYKDRGUdinxhKSTGiFsw+H8W+QMzX3kI
+         Vi7ZOA3uJhFevYnyuMn/mZD7CsniUuaRw9RfdDqGOqQ5Zk+EFM1FJo1kTi2STd0QnK1r
+         8MK62oVw8jLSvsu6xhChBZC6QxtKztSVtOqTaI25Bl2wrCjqaVIj53UTkHRd4bwRbo3D
+         rTF8wx2/SDtHrMnX2ndDvkYDy3sFBwaKgespEKePPos6CoEaZamFNGDTOHiissDAzjfP
+         7GfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702921331; x=1703526131;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MGc3H1mZH6buwISmfip+JfxIDpEG4RSu3DvfL7xLHYM=;
+        b=HPzYHYsS/mQSaNMnnLhy6Px5C3z/hhDrwJROF+5wP0+zviML+zZ27cri1h2UWiRHc1
+         YffDwOqGZ48CrqqUNLlzjZjlh9+6iT8RqsVSUqFmwH1zYch0N6BY3RyI4ZZ5X1GtvYb6
+         hjUFvOiAkMBueca+IFqOhzIVLOcnsKxPpHdyKDypJWEZRHyUkZTGD48tl0pSsFuNaNMX
+         2jDYnCTVwp94Zahq3KqARxBduhFSmvA9Cdk3rxNlo8PH8KosHiDVtZtk+9Z/5Nukdzzq
+         MQnqWppLKz3KZTxJE+uq+S2itnFZIFt6nT2YHEPvZZKYsMIgGaVJiV1gxYdIqOy1OPwV
+         Jb6Q==
+X-Gm-Message-State: AOJu0YzY4eI3sVj0c0FnVoAwl2Uw65Xb7fNjDazDnTshUwqWYguhtIpH
+	eS+qqMpbCfnNfyg+gCg5hn8=
+X-Google-Smtp-Source: AGHT+IED5rEnW8aoqaiiA/2rqOwUboP7/NHnORKUO0aZalPEfPHyGBYCERMEgw6AFHRANrIrYLaoFg==
+X-Received: by 2002:a17:902:ab83:b0:1d0:6ffd:e2ef with SMTP id f3-20020a170902ab8300b001d06ffde2efmr15136709plr.137.1702921330684;
+        Mon, 18 Dec 2023 09:42:10 -0800 (PST)
+Received: from localhost ([2804:30c:160d:b800:be05:2c5b:24c0:12aa])
+        by smtp.gmail.com with ESMTPSA id a21-20020a1709027d9500b001cfed5524easm19233051plm.288.2023.12.18.09.42.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 09:42:10 -0800 (PST)
+Date: Mon, 18 Dec 2023 14:42:01 -0300
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
+	joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+	paul.cercueil@analog.com, Michael.Hennerich@analog.com,
+	lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	dan.carpenter@linaro.org, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 09/15] iio: adc: ad7091r: Enable internal vref if
+ external vref is not supplied
+Message-ID: <ZYCEaXAm53X_Vig-@debian-BULLSEYE-live-builder-AMD64>
+References: <cover.1702746240.git.marcelo.schmitt1@gmail.com>
+ <ce92ae93b1c2e36b20a9881b145c8c2c85acb1dd.1702746240.git.marcelo.schmitt1@gmail.com>
+ <CAMknhBF7Ab0FZCKYkSq8siDMPtX5VRRn04FS7XiYLtK-1TJa3A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMknhBF7Ab0FZCKYkSq8siDMPtX5VRRn04FS7XiYLtK-1TJa3A@mail.gmail.com>
 
-Hi Arnd,
+On 12/17, David Lechner wrote:
+> On Sat, Dec 16, 2023 at 11:49 AM Marcelo Schmitt
+> <marcelo.schmitt@analog.com> wrote:
+> >
+> > The ADC needs a voltage reference to work correctly.
+> > Enable AD7091R internal voltage reference if no external vref is supplied.
+> >
+> > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+> > ---
+> >  drivers/iio/adc/ad7091r-base.c | 7 +++++++
+> >  drivers/iio/adc/ad7091r-base.h | 1 +
+> >  2 files changed, 8 insertions(+)
+> >
+> > diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
+> > index aead72ef55b6..9d0b489966f5 100644
+> > --- a/drivers/iio/adc/ad7091r-base.c
+> > +++ b/drivers/iio/adc/ad7091r-base.c
+> > @@ -217,7 +217,14 @@ int ad7091r_probe(struct device *dev, const struct ad7091r_init_info *init_info,
+> >         if (IS_ERR(st->vref)) {
+> >                 if (PTR_ERR(st->vref) == -EPROBE_DEFER)
+> >                         return -EPROBE_DEFER;
+> > +
+> >                 st->vref = NULL;
+> > +               /* Enable internal vref */
+> > +               ret = regmap_update_bits(st->map, AD7091R_REG_CONF,
+> > +                                        AD7091R_REG_CONF_INT_VREF, BIT(0));
+> 
+> Can we use regmap_set_bits() here to avoid the BIT(0)?
+> 
+> The same comment applies to other patches in this series.
 
-First bad commit (maybe != root cause):
+Looks good, will do.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
-commit: 8faf91c48ca20c714e0dd8cc5f510e3819852912 ARM: sa1100: un-deprecate jornada720
-date:   11 months ago
-config: arm-jornada720_defconfig (https://download.01.org/0day-ci/archive/20231219/202312190124.XlzGTotA-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231219/202312190124.XlzGTotA-lkp@intel.com/reproduce)
+Thanks
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312190124.XlzGTotA-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> arch/arm/mach-sa1100/ssp.c:89: warning: Function parameter or struct member 'data' not described in 'ssp_read_word'
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for SA1100_SSP
-   Depends on [n]: ARCH_SA1100 [=y] && UNUSED_BOARD_FILES [=n]
-   Selected by [y]:
-   - SA1100_JORNADA720_SSP [=y] && ARCH_SA1100 [=y] && SA1100_JORNADA720 [=y]
-
-
-vim +89 arch/arm/mach-sa1100/ssp.c
-
-^1da177e4c3f41 Linus Torvalds  2005-04-16   72  
-^1da177e4c3f41 Linus Torvalds  2005-04-16   73  /**
-^1da177e4c3f41 Linus Torvalds  2005-04-16   74   * ssp_read_word - read a word from the SSP port
-^1da177e4c3f41 Linus Torvalds  2005-04-16   75   *
-^1da177e4c3f41 Linus Torvalds  2005-04-16   76   * Wait for a data word in the SSP receive FIFO, and return the
-^1da177e4c3f41 Linus Torvalds  2005-04-16   77   * received data.  Data is LSB justified.
-^1da177e4c3f41 Linus Torvalds  2005-04-16   78   *
-^1da177e4c3f41 Linus Torvalds  2005-04-16   79   * Note: Currently, if data is not expected to be received, this
-^1da177e4c3f41 Linus Torvalds  2005-04-16   80   * function will wait for ever.
-^1da177e4c3f41 Linus Torvalds  2005-04-16   81   *
-^1da177e4c3f41 Linus Torvalds  2005-04-16   82   * The caller is expected to perform the necessary locking.
-^1da177e4c3f41 Linus Torvalds  2005-04-16   83   *
-^1da177e4c3f41 Linus Torvalds  2005-04-16   84   * Returns:
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   85   *   %-ETIMEDOUT	timeout occurred
-^1da177e4c3f41 Linus Torvalds  2005-04-16   86   *   16-bit data	success
-^1da177e4c3f41 Linus Torvalds  2005-04-16   87   */
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   88  int ssp_read_word(u16 *data)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  @89  {
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   90  	int timeout = TIMEOUT;
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   91  
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   92  	while (!(Ser4SSSR & SSSR_RNE)) {
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   93  	        if (!--timeout)
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   94  	        	return -ETIMEDOUT;
-^1da177e4c3f41 Linus Torvalds  2005-04-16   95  		cpu_relax();
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   96  	}
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   97  
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27   98  	*data = (u16)Ser4SSDR;
-^1da177e4c3f41 Linus Torvalds  2005-04-16   99  
-8f1bf8743c4593 Paul Sokolovsky 2006-08-27  100  	return 0;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  101  }
-^1da177e4c3f41 Linus Torvalds  2005-04-16  102  
-
-:::::: The code at line 89 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
-
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> > +               if (ret)
+> > +                       return dev_err_probe(st->dev, ret,
+> > +                                            "Error on enable internal reference\n");
+> >         } else {
+> >                 ret = regulator_enable(st->vref);
+> >                 if (ret)
+> > diff --git a/drivers/iio/adc/ad7091r-base.h b/drivers/iio/adc/ad7091r-base.h
+> > index 81b8a4bbb929..9cfb362a00a4 100644
+> > --- a/drivers/iio/adc/ad7091r-base.h
+> > +++ b/drivers/iio/adc/ad7091r-base.h
+> > @@ -20,6 +20,7 @@
+> >  #define AD7091R_REG_CH_HYSTERESIS(ch) ((ch) * 3 + 6)
+> >
+> >  /* AD7091R_REG_CONF */
+> > +#define AD7091R_REG_CONF_INT_VREF      BIT(0)
+> >  #define AD7091R_REG_CONF_ALERT_EN      BIT(4)
+> >  #define AD7091R_REG_CONF_AUTO          BIT(8)
+> >  #define AD7091R_REG_CONF_CMD           BIT(10)
+> > --
+> > 2.42.0
+> >
 
