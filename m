@@ -1,110 +1,119 @@
-Return-Path: <linux-kernel+bounces-4299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C06AA817B20
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:40:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFE6D817B22
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:41:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B28E2844A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:40:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A201F1F228CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BAB71469;
-	Mon, 18 Dec 2023 19:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2DC7146B;
+	Mon, 18 Dec 2023 19:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="uUJOg5b8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE7F1E530;
-	Mon, 18 Dec 2023 19:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59158202d22so816588eaf.0;
-        Mon, 18 Dec 2023 11:40:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702928448; x=1703533248;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fqCIyrV80aQe/xoEqMj06Wb1LCcYSvkWNPSdUnD3As8=;
-        b=ISu3/3/LiXkAW/i7y7Rf0rBn1Lz/nDn0wjKxM5UJQJ/A0McbdeEBEi39thjqI+1BYs
-         4p611R5qSXFtGQCEp1s2Cr7GM0/tUJBlsdSMoIaKmWqlAAYdX1iVK3BtfRzh3a0lAPZN
-         v9I6Vbbl2SWMiyBRMw17hVYlLcn0ZUmtV9wM3A1mbPkPm9KGT+QeGdHjzSXxVPhjJNpX
-         oBkCDevJVdr0jE/hdUyZ4tgztmuWsitk4U+ZAiVVSAbefJbfL1FKyGVTVoiHnsd9dqsK
-         qS0aWdOrHdo3NaAR6dJe0ardcHxL9b+nx95YH67yvtSCCCr5MmklbyCOVauox3OV5Unq
-         O1hg==
-X-Gm-Message-State: AOJu0YwVIcz/ZVMbCctMJGfjiWOOemCUBaUOK8JXav4+cO4QCizhyCu5
-	feeNDgbn+XNbor4OnI4WDZFpKxQp6LSdGQuv0iM=
-X-Google-Smtp-Source: AGHT+IFw6ui7RKvOySfqcNYWm/9KsHzVK8NCh6DrCyO+hgtaUUqYO5d9lQ5UTiAmONH8I1X7ZbYO4U+ycwbN2h9KA0g=
-X-Received: by 2002:a05:6820:2a18:b0:590:9027:7ab0 with SMTP id
- dr24-20020a0568202a1800b0059090277ab0mr24739293oob.0.1702928448299; Mon, 18
- Dec 2023 11:40:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DADC3A1A2;
+	Mon, 18 Dec 2023 19:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BIJfWZs081573;
+	Mon, 18 Dec 2023 13:41:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1702928492;
+	bh=E3j5o1r3WSzePVAnSx4kOs/CvdmQUVjtTNc59nKgzBs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=uUJOg5b81K27loH39xfCaJelvQNn3J7+0g9om4FEZ61JiabaoDaURgkcpEtyopk1J
+	 5M1f5Wp7v2CTS+cElMttkDu8bavO0YgnqXesVyIjVwDLdfagIcrYJL58MvHBl8Rcw1
+	 cfQwRPokjURtZg9rMOx3bRVuGFve+rBjOK9CeLNA=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BIJfWqY020295
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 18 Dec 2023 13:41:32 -0600
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 18
+ Dec 2023 13:41:32 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 18 Dec 2023 13:41:32 -0600
+Received: from [10.249.40.136] ([10.249.40.136])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BIJfVAw020221;
+	Mon, 18 Dec 2023 13:41:31 -0600
+Message-ID: <849f7785-547c-4add-8bfd-c04608b3fbab@ti.com>
+Date: Mon, 18 Dec 2023 13:41:31 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218-topic-thermaldbg-v1-1-451bcb723e1d@linaro.org>
-In-Reply-To: <20231218-topic-thermaldbg-v1-1-451bcb723e1d@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 18 Dec 2023 20:40:37 +0100
-Message-ID: <CAJZ5v0gkko7nWH2ePwEhbfXR-jAb9+f+rsfYXKBMSz04uW4rYg@mail.gmail.com>
-Subject: Re: [PATCH] thermal: core: Print out thermal zone name on
- update_temperature error
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] *** Add fixed-paritions to phyCORE-AM62x and
+ phyCORE-AM64x ***
+To: Nathan Morrisson <nmorrisson@phytec.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <upstream@lists.phytec.de>,
+        <w.egorov@phytec.de>
+References: <20231215191838.1925082-1-nmorrisson@phytec.com>
+ <9f86870c-88cc-43ea-800c-3a05482953aa@ti.com>
+ <d03e3dfc-ba3c-4474-8094-94c5557021f2@phytec.com>
+Content-Language: en-US
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <d03e3dfc-ba3c-4474-8094-94c5557021f2@phytec.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Dec 18, 2023 at 3:40=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
-.org> wrote:
->
-> Currently, we can encounter an error like this:
->
->   thermal thermal_zone48: failed to read out thermal zone (-19)
->
-> It's good to know that there's been an issue, but on some occasions
-> (like the error happening in the middle of a platform crash), one may
-> not be able to look up what kind of thermal zone that is.
->
-> Add the TZ name to the error message in order to speed up debugging.
+On 12/18/23 12:47 PM, Nathan Morrisson wrote:
+> Hi Andrew,
+> 
+> We are adding the nodes directly to the device tree to match what is done in other device trees, for example: k3-am642-tqma64xxl.dtsi. You are correct that this could be done by the bootloader instead though. Why do you prefer having the bootloader add the nodes?
+> 
 
-s/name/type/ ?  It looks like that's what you mean.
+k3-am642-tqma64xxl.dtsi should be fixed, it slipped past me and
+shouldn't be used as a reference.
 
-First, the tz type is not its name (because there may be multiple
-zones of the same type) and it would be consistent with the first
-paragraph above.
+The bootloader might not fill it out at all, what if we start
+using the new MTD GPT partitions? Then the new bootloaders
+will have to start *removing* these stale half-nodes.
 
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/thermal/thermal_core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_cor=
-e.c
-> index 2415dc50c31d..a6ccf93eb34e 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -403,8 +403,8 @@ static void update_temperature(struct thermal_zone_de=
-vice *tz)
->         if (ret) {
->                 if (ret !=3D -EAGAIN)
->                         dev_warn(&tz->device,
-> -                                "failed to read out thermal zone (%d)\n"=
-,
-> -                                ret);
-> +                                "failed to read out thermal zone %s (%d)=
-\n",
-> +                                tz->type, ret);
->                 return;
->         }
->
->
-> ---
+If the bootloader is going to add fixed partitions it should do
+the whole job. There is no good reason to have a half complete
+nodes here.
+
+Andrew
+
+> Regards,
+> 
+> Nathan
+> 
+> On 12/15/23 11:20 AM, Andrew Davis wrote:
+>> On 12/15/23 1:18 PM, Nathan Morrisson wrote:
+>>> Add a fixed-partitions node to the NOR flash of the phyCORE-AM62x
+>>> and phyCORE-AM64x to enable the bootloader to fixup the partitions
+>>> during boot.
+>>>
+>>
+>> Why can't your bootloader add these nodes?
+>>
+>> Andrew
+>>
+>>> Nathan Morrisson (2):
+>>>    arm64: dts: ti: k3-am62-phycore-som: Add fixed-partitions to NOR Flash
+>>>    arm64: dts: ti: k3-am64-phycore-som: Add fixed-partitions to NOR Flash
+>>>
+>>>   arch/arm64/boot/dts/ti/k3-am62-phycore-som.dtsi | 6 ++++++
+>>>   arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi | 6 ++++++
+>>>   2 files changed, 12 insertions(+)
+>>>
 
