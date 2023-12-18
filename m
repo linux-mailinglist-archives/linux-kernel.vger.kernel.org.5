@@ -1,127 +1,126 @@
-Return-Path: <linux-kernel+bounces-3985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7911C817655
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4F881765B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:53:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19803B23F90
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:51:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ED00B241C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1C35A84A;
-	Mon, 18 Dec 2023 15:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153103D540;
+	Mon, 18 Dec 2023 15:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0ZipNc7"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="AMYpCpTJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7904FF89
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55372c1338bso886696a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:49:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DC015485
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ce3281a307so354202b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:53:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702914548; x=1703519348; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DCQzgc7HZIXkjhrSZNLJQoxchuiI/YLWggopgdNCG/w=;
-        b=V0ZipNc7cYu/D0tASq6sGcfXmUAg1wuUB8WeTm1QuibrxV6JZt0dB6pVGzf2pBiAje
-         CtIqoaXerxLBIFjyv62RAmqLs3sJMGMfhc3Q2d0xnP9Z5UUH+HxxbBr4bROimIhBGV4u
-         y3x7GUWTa9pK3Omsle12Pkyeb9CD+fDNTu0e13Wc1OFMNV/f1S0oBL7r3867waV/1wZz
-         wGHtQkUSwyOe7UYrywlBOyXsD/HflOeSlnDecNTzzS0lbZvRKxFAm3sVc/qLjVTHvwAU
-         bGMZkuqi2SUcrZlUh9tpSY2NqllX2zLqnthhkEFAOXjmSBbxmyVNzBNus52NTvDccDKD
-         jn6Q==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1702914807; x=1703519607; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MRJXPN9O4/CpOZnMeEgtK0YlDCygbQS02k98b3ChV80=;
+        b=AMYpCpTJkw8WVXUIJq3RIuo1aMIT9bztZhcL/Wirf1bIMZ19koM88XRc990Kh9XXSo
+         AAQ9cFJluAjUKtAQh5rha6s9DxMme7M5m3M8chFVHU8S3DdHag3zi7AIukh6JI6qD2Jb
+         OatoPXCZq+o/ET464Z+HeAzBBzkvZ3sWZe27rUWuhJEXqktAZysQP1cmW82xAcVJdYgL
+         oLyHanouUUlZn2x5Re4t7iRz2HhImDEKRS5n/ZfsgB2G4q/mWtfKdD8vVmuHo6r7FXgw
+         PWiMf1hBojZOwMNm4IAdP5G+KEDGtyAnI/9OBxh0RQpuyw7hFjROLTBHEIh2cMWzcEXF
+         U+RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702914548; x=1703519348;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702914807; x=1703519607;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DCQzgc7HZIXkjhrSZNLJQoxchuiI/YLWggopgdNCG/w=;
-        b=s8llZ/G9shUV9VhpQK4W4l96iKLpdy9gJ6A+vnErN9xyL6ixHIYPhwXWdPzcdz/tHo
-         aOKD0RTG52zQVoXPXywKbipybFlpgKN3CyDWBHZpffV5ovSKRIdseFawleK0lzPniUTT
-         hy6oaJwaE4hn6uCyDj8cr1oMvj3JTgawod7XkauDlxKOBcBkKWBN35X5D7t5/MVwGSdt
-         U9lyvEnOjTvRAQRnQRGd09UQpuJATYeckwpu2vxfWxM+u7m9drK+n6KGx9/6KBcOLicI
-         9hxKAEAj99oYRIm/EDfIUii0V8BEuFohgv2FImg9/WphZz0pWrETe7xoThL/B1p6uzVW
-         O00Q==
-X-Gm-Message-State: AOJu0Yw0/JN/SMzUlWYaHhUNZVWzgCx0W9gVMzriI4imDp9NYGE5LH2m
-	MsiHTpoCf7DD5wiX9ngo0WI=
-X-Google-Smtp-Source: AGHT+IE0dLdHYhpXc1l9yUsJLLTeyu7fPpLWHCXq007NrPDn70yB+TVn+T7YKt5u3Yd3coevCH6ExA==
-X-Received: by 2002:a17:906:da08:b0:a19:a19a:eadf with SMTP id fi8-20020a170906da0800b00a19a19aeadfmr7048806ejb.152.1702914547563;
-        Mon, 18 Dec 2023 07:49:07 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id v19-20020a170906489300b00a236378a43fsm654118ejq.62.2023.12.18.07.49.06
+        bh=MRJXPN9O4/CpOZnMeEgtK0YlDCygbQS02k98b3ChV80=;
+        b=tyFNr9OgIdIFWpkROVf1/4Qyju1kI9Gl78wvtRaG2ONrkNDrBwpSmQR1j33caKF3v1
+         L+vaqUWMmYaukUoPr6wRzUHYneGRj0hnk84ZS6My0L3NtT1/rOeL/WCNKHWWLurVHMyB
+         D5t0qLBxOYRbnX9b96ZY9S7SLpkpImiKV+rmrtdST5MXEcAl28gv89aNN5r3HUoQ0Au2
+         YkklaWW05V3nlNHrOp7h4sUizeeaUnqEMkWAjangonz/l51KVDh8QKCZnACJnwijFYS+
+         WvH3dspjePqk2yaaQWVZMcOynMd9u2NxRIQg/AD5/6DKpJhXyfPGYLyvCCRNkkT0vUlM
+         MBPw==
+X-Gm-Message-State: AOJu0Yy261Z6Kq53hTffQUDJAfKLZE2swqdKs6LWxl2XdtI2yTuWRqV/
+	F8s26yICmyJpAnHvGPWNkISoDQ==
+X-Google-Smtp-Source: AGHT+IHOPzlKZzfjcHLPIAKjSKNL5VE8URtgM0ualokd4xuKT1TvslSddBgUr2EJ03QC/sxqKxV1Lw==
+X-Received: by 2002:a05:6a00:6816:b0:6d7:e74b:a517 with SMTP id hq22-20020a056a00681600b006d7e74ba517mr2837965pfb.3.1702914807323;
+        Mon, 18 Dec 2023 07:53:27 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id o20-20020a056a001b5400b006cea17d08ebsm1107914pfv.120.2023.12.18.07.53.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 07:49:07 -0800 (PST)
-Message-ID: <410b116b-cb63-7ba7-3689-4f0832ab5796@gmail.com>
-Date: Mon, 18 Dec 2023 16:49:06 +0100
+        Mon, 18 Dec 2023 07:53:26 -0800 (PST)
+Message-ID: <c3995796-8aab-45e1-ad59-d970373a4fab@kernel.dk>
+Date: Mon, 18 Dec 2023 08:53:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v2 2/2] drm/rockchip: rk3066_hdmi: drop custom fill_modes hook
-To: hjc@rock-chips.com, heiko@sntech.de, andy.yan@rock-chips.com
-Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <f86ec29f-194a-800d-0aaf-9e16e551b37d@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] io_uring: Statistics of the true utilization of sq
+ threads.
 Content-Language: en-US
-In-Reply-To: <f86ec29f-194a-800d-0aaf-9e16e551b37d@gmail.com>
+To: Xiaobing Li <xiaobing.li@samsung.com>, asml.silence@gmail.com
+Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+ kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
+ kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
+ cliang01.li@samsung.com, xue01.he@samsung.com
+References: <CGME20231218085950epcas5p4171efba84d8c14bf1307aa16c48414ca@epcas5p4.samsung.com>
+ <20231218085152.14720-1-xiaobing.li@samsung.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231218085152.14720-1-xiaobing.li@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-CRTC size validation for the display controller has been added with
-Commit 8e140cb60270 ("drm/rockchip: vop: limit maximum resolution to
-hardware capabilities"), so we can drop the custom fill_modes hook.
+On 12/18/23 1:51 AM, Xiaobing Li wrote:
+> The running time of the sq thread and the actual IO processing time are
+> counted, and the proportion of time actually used to process IO is
+> output as a percentage.
+> 
+> Variable description:
+> "work_time" in the code represents the sum of the jiffies of the sq
+> thread actually processing IO, that is, how many milliseconds it
+> actually takes to process IO. "total_time" represents the total time
+> that the sq thread has elapsed from the beginning of the loop to the
+> current time point, that is, how many milliseconds it has spent in
+> total.
+> The output "SqBusy" represents the percentage of time utilization that
+> the sq thread actually uses to process IO.> 
+> The test results are as follows:
+> Every 0.5s: cat /proc/23112/fdinfo/6 | grep Sq
+> SqMask: 0x3
+> SqHead: 1168417
+> SqTail: 1168418
+> CachedSqHead:   1168418
+> SqThread:       23112
+> SqThreadCpu:    55
+> SqBusy: 97%
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- drivers/gpu/drm/rockchip/rk3066_hdmi.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+I think I'm convinced that the effectiveness of the chosen SQPOLL
+settings being exposed is useful, I'm just not sure fdinfo is the right
+place to do it. Is it going to be a problem that these are just
+perpetual stats, with no way to reset them? This means there's no way to
+monitor it for a period of time and get effectiveness for something
+specific, it'll always just count from when the ring was created.
 
-diff --git a/drivers/gpu/drm/rockchip/rk3066_hdmi.c b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
-index 0dac6d133767..6dadd753985c 100644
---- a/drivers/gpu/drm/rockchip/rk3066_hdmi.c
-+++ b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
-@@ -501,18 +501,6 @@ rk3066_hdmi_connector_best_encoder(struct drm_connector *connector)
- 	return &hdmi->encoder.encoder;
- }
+We could of course have the act of reading the stat also reset it, but
+maybe that'd be a bit odd?
 
--static int
--rk3066_hdmi_probe_single_connector_modes(struct drm_connector *connector,
--					 uint32_t maxX, uint32_t maxY)
--{
--	if (maxX > 1920)
--		maxX = 1920;
--	if (maxY > 1080)
--		maxY = 1080;
--
--	return drm_helper_probe_single_connector_modes(connector, maxX, maxY);
--}
--
- static void rk3066_hdmi_connector_destroy(struct drm_connector *connector)
- {
- 	drm_connector_unregister(connector);
-@@ -520,7 +508,7 @@ static void rk3066_hdmi_connector_destroy(struct drm_connector *connector)
- }
+Alternatively, it could be exported differently, eg as a register opcode
+perhaps.
 
- static const struct drm_connector_funcs rk3066_hdmi_connector_funcs = {
--	.fill_modes = rk3066_hdmi_probe_single_connector_modes,
-+	.fill_modes = drm_helper_probe_single_connector_modes,
- 	.detect = rk3066_hdmi_connector_detect,
- 	.destroy = rk3066_hdmi_connector_destroy,
- 	.reset = drm_atomic_helper_connector_reset,
---
-2.39.2
+Open to suggestions...
+
+-- 
+Jens Axboe
 
 
