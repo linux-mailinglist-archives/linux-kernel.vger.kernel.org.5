@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-3143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCF2E8167EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:20:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1548167ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79D6B282DD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:20:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83A7C282EE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C20310795;
-	Mon, 18 Dec 2023 08:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5FB10A09;
+	Mon, 18 Dec 2023 08:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QzXmsz00"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iReT5LRV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2883D101C2
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC9310945
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cd870422c8so150678a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 00:20:10 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d5c4cb8a4cso338788b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 00:20:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702887610; x=1703492410; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702887617; x=1703492417; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hGXJfJUC6+i72m0QAwIpuYVASGrOzqEaIU/ssLgkxys=;
-        b=QzXmsz00IbtbrMT/EePyvRpumxd/aCtyrwZurD0InPTjCV5Cs4P9a8C908EP1bJZxU
-         SR7rzyeqMtmoZP/a6sZTpOEenIt9CLJzW6z+4w0EkSKWWzD+MqeIpafXcRL+ozBQH+Tm
-         7CfPmHWAJRFlaO9rrEu/QTQBY+zaNPvUiA9BThyU6MJuDQ1NKHaXBM/uH30To6rknOpH
-         02HFiQWwKrnQLXckyP92POSBhdgJjkDG2Ui/K2UaQLAWVfY4KvFmE1xXbFWWA4R9Cw5j
-         38rkg5ElM6WDDEu0X6amg0ja7jYIt6Z80KPZlTyvSNLgCz2Sl/iRxyRMQ9HMsFDeVe2u
-         OJLA==
+        bh=LvtwbkM/YdjgqaGJqTGdamlOh6hMCrBAljky/y7FuDQ=;
+        b=iReT5LRVYLLmKpreD/LcQELXOFWPbdMrbKpFm+5qEGGA0/ILCRKucrH+a2fAv5dZLN
+         +AFxwN66+kjAmspEEQar7vJHa8Tg2ZldSdoKZwyYP6dEwCE4kE+SNMlr5HR0IYqePpq1
+         IhsA3x7eBBLCkMmPZfhL1tp+2KEAnN5FmDMFOKjjqBJ+6odFdMCGH2hSjHC1Xa7KAL3j
+         Xfn4MIhfGYdOO4SVgfwSFuXafhlz2H63im0a0KBcxrneoxLzXqkpwY+3NZJMuXgCI3P6
+         Wkpy7MCsKdf9dTyqB3ir1UUhL81LaBTcoUhS/TdrF7hPji+BGO6FqKNfU7Hu70SF/rb0
+         HZVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702887610; x=1703492410;
+        d=1e100.net; s=20230601; t=1702887617; x=1703492417;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hGXJfJUC6+i72m0QAwIpuYVASGrOzqEaIU/ssLgkxys=;
-        b=CP1GJSIh4Zof6fIwmsFQ14QWUpVFDz1UTfOPxhwE27nWzKbCV9Xh4M7iWX8W36uEhJ
-         5Vvv8nVUGN+IHPWOxZ10a8bhD3SaRHRmHlzbknSaJ1JCeAkY1jE8nPQdEPJufRuggK4l
-         4/W5uUzilmSCJcQpaUDAsAPLEqmvtR9GeGZzCpG0OSk3gfw602xb/IwwR48XLhM/EUmY
-         7v7/6ntGR1mouV9VcVFPew3jsU+5twmw032AQeRnCuo2FAu+E45OsPyCDwlqxC1DTiA5
-         MnWgZIeVls4rcUaMv4ckkg8CJMTAeDm4XOV0EAej7mrjb9+/ujfNCE12PKr+I+nrxDRT
-         Fgiw==
-X-Gm-Message-State: AOJu0YxD0IAKgL/SOD5ilf/3z5qykUvEWjKLJRmVExh8EeaFNk7LTt3m
-	JdCnyF+mMrayBP2SRlivaEY6E1SzJrA=
-X-Google-Smtp-Source: AGHT+IEKvVYdPp68O5SMLi09JSS6ZiB8EJPj5nr/rrg/BFpl7pNHLPjglrvlKg1U1yk+zb4Au0xJjA==
-X-Received: by 2002:a05:6a21:627:b0:190:354d:f90f with SMTP id ll39-20020a056a21062700b00190354df90fmr7340264pzb.117.1702887610090;
-        Mon, 18 Dec 2023 00:20:10 -0800 (PST)
+        bh=LvtwbkM/YdjgqaGJqTGdamlOh6hMCrBAljky/y7FuDQ=;
+        b=uQ2eteC2h4BnSAV0R9/vGyZjlfQ3pcZFKgiS07xrMUVkpVI4VoILt0NSOOqAktsO6j
+         MkVGUmxfRtG3sOfJEqMGsdboZbRMEUmAc/klTagSyB5x098jtzsNyHWC1bdq4I1WJlC/
+         adbSKcy9cFPkagesjXaBpydpMWRGYGZjlOjWCC74OMh1Be5SqZdyTcGGg8zBKHl36Ff2
+         IuiK4VLtpmGjgceEDjxV+PxO0TYsAcF7aId7StcxypoubqSXo8nQjuqfzBjmMELDCB1e
+         vGvdTWa9Ga8TTKuKnnmVS41umrFKx8NhtlQ1EMlnG2nbnNKo2+Hl4Se/sN+8u6+3qGMP
+         vyMw==
+X-Gm-Message-State: AOJu0Yz3JFcR59bnEJyu5k3YMHXOm2YImWibLi/MD56HBv9Zoyx+Im2o
+	lD+l/Jm5hWVU24ZDFcwuFv/nDsHhc3U=
+X-Google-Smtp-Source: AGHT+IFS47iWKp0aLsUcouQ18fn+/N7PUVISE2ITXf0MrXj8Wa2enO5fz+9dQOTuj96z+0IEcN1Yag==
+X-Received: by 2002:a05:6a21:6da1:b0:18b:8e3d:ed2 with SMTP id wl33-20020a056a216da100b0018b8e3d0ed2mr8903752pzb.31.1702887617285;
+        Mon, 18 Dec 2023 00:20:17 -0800 (PST)
 Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id h2-20020a170902704200b001d06b63bb98sm18426954plt.71.2023.12.18.00.20.04
+        by smtp.gmail.com with ESMTPSA id h2-20020a170902704200b001d06b63bb98sm18426954plt.71.2023.12.18.00.20.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 00:20:09 -0800 (PST)
+        Mon, 18 Dec 2023 00:20:17 -0800 (PST)
 From: Yuntao Wang <ytcoode@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	kexec@lists.infradead.org,
@@ -74,9 +74,9 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Sean Christopherson <seanjc@google.com>,
 	Takashi Iwai <tiwai@suse.de>,
 	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH 1/2] x86/crash: fix potential cmem->ranges array overflow
-Date: Mon, 18 Dec 2023 16:19:14 +0800
-Message-ID: <20231218081915.24120-2-ytcoode@gmail.com>
+Subject: [PATCH 2/2] crash_core: fix out-of-bounds access check in crash_exclude_mem_range()
+Date: Mon, 18 Dec 2023 16:19:15 +0800
+Message-ID: <20231218081915.24120-3-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218081915.24120-1-ytcoode@gmail.com>
 References: <20231218081915.24120-1-ytcoode@gmail.com>
@@ -88,52 +88,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The max_nr_ranges field of cmem allocated in crash_setup_memmap_entries()
-is not initialized, its default value is 0.
-
-When elfcorehdr is allocated from the middle of crashk_res due to any
-potential reason, that is, `image->elf_load_addr > crashk_res.start &&
-image->elf_load_addr + image->elf_headers_sz - 1 < crashk_res.end`,
-executing memmap_exclude_ranges() will cause a range split to occur in
-crash_exclude_mem_range(), which eventually leads to an overflow of the
-cmem->ranges array.
-
-Set cmem->max_nr_ranges to 1 to make crash_exclude_mem_range() return
--ENOMEM instead of causing cmem->ranges array overflow even when a split
-happens.
+mem->nr_ranges represents the current number of elements stored in
+the mem->ranges array, and mem->max_nr_ranges represents the maximum number
+of elements that the mem->ranges array can hold. Therefore, the correct
+array out-of-bounds check should be mem->nr_ranges >= mem->max_nr_ranges.
 
 Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- arch/x86/kernel/crash.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/crash_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index c92d88680dbf..3be46f4b441e 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -282,10 +282,6 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
- 	struct crash_memmap_data cmd;
- 	struct crash_mem *cmem;
+diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+index d4313b53837e..991494d4cf43 100644
+--- a/kernel/crash_core.c
++++ b/kernel/crash_core.c
+@@ -627,7 +627,7 @@ int crash_exclude_mem_range(struct crash_mem *mem,
+ 		return 0;
  
--	cmem = vzalloc(struct_size(cmem, ranges, 1));
--	if (!cmem)
--		return -ENOMEM;
--
- 	memset(&cmd, 0, sizeof(struct crash_memmap_data));
- 	cmd.params = params;
+ 	/* Split happened */
+-	if (i == mem->max_nr_ranges - 1)
++	if (mem->nr_ranges >= mem->max_nr_ranges)
+ 		return -ENOMEM;
  
-@@ -321,6 +317,11 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
- 	}
- 
- 	/* Exclude some ranges from crashk_res and add rest to memmap */
-+	cmem = vzalloc(struct_size(cmem, ranges, 1));
-+	if (!cmem)
-+		return -ENOMEM;
-+	cmem->max_nr_ranges = 1;
-+
- 	ret = memmap_exclude_ranges(image, cmem, crashk_res.start, crashk_res.end);
- 	if (ret)
- 		goto out;
+ 	/* Location where new range should go */
 -- 
 2.43.0
 
