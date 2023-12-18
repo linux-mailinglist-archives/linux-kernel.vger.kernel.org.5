@@ -1,198 +1,193 @@
-Return-Path: <linux-kernel+bounces-4464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5EFD817DDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:06:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AEB8817DDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:06:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC1221C21929
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:06:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 645451C219B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9858768F1;
-	Mon, 18 Dec 2023 23:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22ED3760B0;
+	Mon, 18 Dec 2023 23:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Ri+wefoJ"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="F95aym8v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB23A7609D;
-	Mon, 18 Dec 2023 23:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: f63aea3e9df911eeba30773df0976c77-20231219
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=v9sJxu+peZKEvGLvTmMpiV6Tv/puBAp7n/rM5sIpeRQ=;
-	b=Ri+wefoJkTLb2OxPhBxPR4szvHZ6zGawmGO+kyQcPof40+uD26P2cz0MFfpwxKI0y9NH7S5AWHmY6lXLRB594B4zraB4If1M//DWvL170Pk1dbR+XZCx6hzhZqrSoPo2+R4JyFulfaQ5+JopT01I1BD4VlsgLdW0ixSO+NCBmjQ=;
-X-CID-CACHE: Type:Local,Time:202312190648+08,HitQuantity:1
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:94aeeec4-f4ae-4976-9889-77135e8203e9,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:c62eef73-1bd3-4f48-b671-ada88705968c,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-	NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: f63aea3e9df911eeba30773df0976c77-20231219
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
-	(envelope-from <bo.ye@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2084125728; Tue, 19 Dec 2023 07:05:39 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 19 Dec 2023 07:05:38 +0800
-Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 19 Dec 2023 07:05:36 +0800
-From: Bo Ye <bo.ye@mediatek.com>
-To: <avri.altman@wdc.com>, <dominique.martinet@atmark-techno.com>,
-	<rafael.beims@toradex.com>, <vincent.whitchurch@axis.com>, Ulf Hansson
-	<ulf.hansson@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-CC: <yongdong.zhang@mediatek.com>, lin.gui <lin.gui@mediatek.com>, Bo Ye
-	<bo.ye@mediatek.com>, <linux-mmc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>
-Subject: [PATCH v2] mmc: add wp_grp_size node
-Date: Tue, 19 Dec 2023 07:05:32 +0800
-Message-ID: <20231218230532.82427-1-bo.ye@mediatek.com>
-X-Mailer: git-send-email 2.17.0
-In-Reply-To: <20231218224832.81347-1-bo.ye@mediatek.com>
-References: <20231218224832.81347-1-bo.ye@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FA47608B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbccbdacb9eso3147980276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:06:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1702940798; x=1703545598; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ISbTIIGiRfCmq/xufZ2VhS6krg/p4Uisq2A0AgAr0o=;
+        b=F95aym8v+e/B7FHOGKUzdNBrNJ4LU0XQODj6QLv6aSqDo1YrmjywRZfTWtthIi/ZnJ
+         jl7fUBacAyUKKNaR90UvTFVrgI6O+zFHCl+UshXYXmm2XAoZM6c2YTDYOaHG+yHBmNQm
+         pc3gkptqarYRjJZ0xul48F98hspNKqpHejgIx2CBCyDfIzV3oP+bB3Fi4ucGqdc+pJf3
+         Z+kZW/W5fxp5zHLSN/YcyXQXqBkvKzK4Fcc35XGLiF7tRat+DrACuduTn0O6ZtRmbs87
+         akAL6FDi5+Z8/ghkg8TMsod+4G5PwvaH1cokErMCuDQhoUYJQ0fjhAYtgDEGIpQ7ZcB5
+         oGyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702940798; x=1703545598;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3ISbTIIGiRfCmq/xufZ2VhS6krg/p4Uisq2A0AgAr0o=;
+        b=e5bchtEA8fDLKJChGAoFhW5qxXng0EmGBijS5pJwijdF8jJPuN+jYmyrBynf28J4gl
+         NMCn8VYu5/YZ+TO/F0aRs0uoh3kamT6ZrxTn9f+06ol6RQw3F2GGMAewSv2KE0UyL6TU
+         eNc0Iz38sK/aykQBZGmvWJiwmcPJJclh5vmVriKrfIu6PD7ElHUs3zqfX6+PneeoTTsK
+         tCT7q3aktIl/vQj0kgIL/3LhnVPU90smc3rm00yUHz3nDZ4Syt08Qcio0RwYrlwKNahG
+         rYjfBayLifsVzI+Yk5hw3MkO2gSPkNgg/zPi37SnqtG01rYhTKAQPQ3PbPJ4DYpIsInS
+         XqAw==
+X-Gm-Message-State: AOJu0YzYNhsfoNI3WDl85/F7siZM71RxnoupYS2wer89/ECIVe7ZObwH
+	Oy99p5wGncP2T87Lp/lmqtR5z71mb6jvj6mkVs34
+X-Google-Smtp-Source: AGHT+IF9tvbbBtBESqqHaSUt2obipOpR1nDsNFSA0VBd9FiKyVi8ta2GbNjZyjCOzpO6p39Z4BPWa3ZnsyADLzk/ssU=
+X-Received: by 2002:a5b:5cf:0:b0:db5:4532:8ea6 with SMTP id
+ w15-20020a5b05cf000000b00db545328ea6mr10626822ybp.51.1702940798137; Mon, 18
+ Dec 2023 15:06:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--8.793700-8.000000
-X-TMASE-MatchedRID: HI0v3Fgc2rNGlhjnipkGEAwfhKwa9GwD+lX/RcQoG2FX4H/AHZTAKiQH
-	YX2qyjfSlB6IdnaWhV1I7JPsZpNRgcL2WgOVZLNHhDqIQb7sQecK3n1SHen81VeilmPI7oJlf8S
-	IQrqULYwLYtJsevMdjZZLxtyQINIcxzvHgMQjo/aEryjhqiyzyitovaaHxlUrXFNHTRKzg/r5WK
-	Feqf3EsSNfw7OZ1vFwDx215gVwcojLJhhr8sBh+jNdJzhXekT2r4ukWaaTegDdPCHlFNPO/7K3o
-	/jvHhd/z0if0vMXZ3Thyvjhw0nKvqtL0wBaA/G+syw+ZJnFumTeDOoY8z6DT8gYL9oUjHj+EPrQ
-	9ei0HsbGhcwVapF2+oAy6p60ZV62fJ5/bZ6npdg7AFczfjr/7DBO8LavgWJ5Hm17+SOHjgqwxZ+
-	f6eSsGVBAmUDF4FZTXrw8q3AM+fg=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--8.793700-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 5727A99A606388E051883DC4B6203A1CA60EBC100F0EC10313FF828558596EF02000:8
-X-MTK: N
+References: <CADN=F_ke996vNXDNz6vZ_As0Ms5Q2X7aT3t-SSGRiqdeKd6gCQ@mail.gmail.com>
+ <20231216041116.GA78578@mail.hallyn.com>
+In-Reply-To: <20231216041116.GA78578@mail.hallyn.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Mon, 18 Dec 2023 18:06:27 -0500
+Message-ID: <CAHC9VhRmaT=gYM1qNaZ2D=9mz7vyhZLxU32gx11SpS2dNj_w5Q@mail.gmail.com>
+Subject: Re: [PATCH] fixing userspace memory dereference in security.c
+To: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: "T. Williams" <tdwilliamsiv@gmail.com>, jmorris@namei.org, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "lin.gui" <lin.gui@mediatek.com>
+On Fri, Dec 15, 2023 at 11:11=E2=80=AFPM Serge E. Hallyn <serge@hallyn.com>=
+ wrote:
+> On Wed, Oct 06, 2021 at 07:03:56PM -0400, T. Williams wrote:
+> >  security/security.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/security/security.c b/security/security.c
+> > index 9ffa9e9c5c55..7c41b5d732ab 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -1737,6 +1737,8 @@ int security_kernel_read_file(struct file *file, =
+enum
+> > kernel_read_file_id id,
+> >         int ret;
+> >
+> >         ret =3D call_int_hook(kernel_read_file, 0, file, id, contents);
+> > +       if (ret > 0)
+> > +               return -EINVAL;
+> >         if (ret)
+> >                 return ret;
+> >         return ima_read_file(file, id, contents);
+> > --
+> > 2.25.1
+> >
+> > This commit is to fix a userspace address dereference found by
+> > syzkaller.
+> > The crash is triggered by passing a file descriptor to an incorrectly
+> > formed kernel module to finit_module.
+> >
+> > Kernel/module.c:4175 : Within the finit_module, info.len is set to the
+> > return value from kernel_read_file_from_fd. This value is then
+> > dereferenced by memcmp within module_sig_check from inside load_module.
+> > The value is 0xb000000 so the kernel dereferences user memory and kerne=
+l
+> > panics.
+>
+> Hi,
+>
+> thanks for sending this.  For some reason, I can't seem to find this
+> message-id in lore.kernel.org to see if there were ever any replies.
 
-Detail:
-Add node "wp_grp_size", corresponding to WP_GRP_SIZE
-(write protect group size) of eMMC's CSD register.
+I'm not sure where the original email/patch was sent, but I don't seem
+to have a copy in my inbox either.  Odd.
 
-Scenario:
-The eMMC card can be set into write-protected mode to
-prevent data from being accidentally modified or deleted.
-Wp_grp_size (Write Protect Group Size) refers to an
-attribute of the eMMC card, used to manage write protection,
-and is the CSD register  [36:32] of the eMMC device.
-Wp_grp_size (Write Protect Group Size) indicates how many
-eMMC blocks are contained in each write protection group on the eMMC card.
+> There is indeed a problem, although I think a more concise explanation
+> is:
+>
+> 1. security_kernel_read_file() returns any non-zero return value to mean
+> permission denied
+> 2. kernel_read_file() returns > 0 meaning number of bytes read
+> 3. hen kernel_read_file() gets any non-zero rv from security_kernel_read_=
+file(),
+> it returns that value unchanged.
+>
+> Since kernel_read_file() is the only caller of security_kernel_read_file(=
+),
+> I think your patch is good, except you should also change the comment abo=
+ve
+> it to read
+>
+>  * Return: Returns 0 if permission is granted, < 0 on error.
+>
+> Reviewed-by: Serge Hallyn <serge@hallyn.com>
+>
+> I think the reason it's not been a practical problem is because while
+> security_kernel_read_file() will honor a >0 error from an LSM, no
+> LSM implementation of that hook does that.  (Only loadpin and selinux
+> implement it)
 
-Final rendered file:
-"/sys/class/mmc_host/mmc0/mmc0:0001/wp_grp_size"
+The SELinux implementation should only ever return 0 or a negative
+value, and based on a quick look at Loadpin I would say the same
+applies there as well.  This patch doesn't address the IMA hook, but
+according to the comments in the IMA code, it too should only return 0
+or a negative value.  While it is theoretically possible that
+security_kernel_read_file() could return a positive value, I'm missing
+where/how that might happen.  Help?
 
-Signed-off-by: Lin Gui <lin.gui@mediatek.com>
-Signed-off-by: Bo Ye <bo.ye@mediatek.com>
----
-Change in v2: 
--remove Change-Id
--replace space with tabulation
----
- drivers/mmc/core/mmc.c   | 16 +++++++++++++++-
- include/linux/mmc/card.h |  2 ++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+That said, I agree with Serge that this is worth fixing, and in
+addition to the comment suggestion from Serge, I would ask that you
+fix the IMA hook too.  I would expect the patch to look something like
+this:
 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 705942edacc6..e0d72378ac77 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -136,6 +136,17 @@ static void mmc_set_erase_size(struct mmc_card *card)
- 	mmc_init_erase(card);
- }
- 
+diff --git a/security/security.c b/security/security.c
+index dcb3e7014f9b..dd8bdda166f3 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -3043,7 +3043,7 @@ int security_kernel_module_request(char *kmod_name)
+ *
+ * Read a file specified by userspace.
+ *
+- * Return: Returns 0 if permission is granted.
++ * Return: Returns 0 if permission is granted, negative values on failure.
+ */
+int security_kernel_read_file(struct file *file, enum kernel_read_file_id i=
+d,
+                             bool contents)
+@@ -3052,8 +3052,15 @@ int security_kernel_read_file(struct file *file, enu=
+m ker
+nel_read_file_id id,
+
+       ret =3D call_int_hook(kernel_read_file, 0, file, id, contents);
+       if (ret)
++               goto out;
++       ret =3D ima_read_file(file, id, contents);
 +
-+static void mmc_set_wp_grp_size(struct mmc_card *card)
-+{
-+	if (card->ext_csd.erase_group_def & 1)
-+		card->wp_grp_size = card->ext_csd.hc_erase_size *
-+			card->ext_csd.raw_hc_erase_gap_size;
-+	else
-+		card->wp_grp_size = card->csd.erase_size *
-+			(card->csd.wp_grp_size + 1);
-+}
-+
- /*
-  * Given a 128-bit response, decode to our card CSD structure.
-  */
-@@ -186,6 +197,7 @@ static int mmc_decode_csd(struct mmc_card *card)
- 		b = UNSTUFF_BITS(resp, 37, 5);
- 		csd->erase_size = (a + 1) * (b + 1);
- 		csd->erase_size <<= csd->write_blkbits - 9;
-+		csd->wp_grp_size = UNSTUFF_BITS(resp, 32, 5);
- 	}
- 
- 	return 0;
-@@ -790,6 +802,7 @@ MMC_DEV_ATTR(csd, "%08x%08x%08x%08x\n", card->raw_csd[0], card->raw_csd[1],
- MMC_DEV_ATTR(date, "%02d/%04d\n", card->cid.month, card->cid.year);
- MMC_DEV_ATTR(erase_size, "%u\n", card->erase_size << 9);
- MMC_DEV_ATTR(preferred_erase_size, "%u\n", card->pref_erase << 9);
-+MMC_DEV_ATTR(wp_grp_size, "%u\n", card->wp_grp_size << 9);
- MMC_DEV_ATTR(ffu_capable, "%d\n", card->ext_csd.ffu_capable);
- MMC_DEV_ATTR(hwrev, "0x%x\n", card->cid.hwrev);
- MMC_DEV_ATTR(manfid, "0x%06x\n", card->cid.manfid);
-@@ -850,6 +863,7 @@ static struct attribute *mmc_std_attrs[] = {
- 	&dev_attr_date.attr,
- 	&dev_attr_erase_size.attr,
- 	&dev_attr_preferred_erase_size.attr,
-+	&dev_attr_wp_grp_size.attr,
- 	&dev_attr_fwrev.attr,
- 	&dev_attr_ffu_capable.attr,
- 	&dev_attr_hwrev.attr,
-@@ -1764,7 +1778,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 			mmc_set_erase_size(card);
- 		}
- 	}
--
-+	mmc_set_wp_grp_size(card);
- 	/*
- 	 * Ensure eMMC user default partition is enabled
- 	 */
-diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-index 7b12eebc5586..b9c3c6303a22 100644
---- a/include/linux/mmc/card.h
-+++ b/include/linux/mmc/card.h
-@@ -32,6 +32,7 @@ struct mmc_csd {
- 	unsigned int		r2w_factor;
- 	unsigned int		max_dtr;
- 	unsigned int		erase_size;		/* In sectors */
-+	unsigned int		wp_grp_size;
- 	unsigned int		read_blkbits;
- 	unsigned int		write_blkbits;
- 	unsigned int		capacity;
-@@ -306,6 +307,7 @@ struct mmc_card {
- 	unsigned int		eg_boundary;	/* don't cross erase-group boundaries */
- 	unsigned int		erase_arg;	/* erase / trim / discard */
-  	u8			erased_byte;	/* value of erased bytes */
-+	unsigned int		wp_grp_size;	/* write group size in sectors */
- 
- 	u32			raw_cid[4];	/* raw card CID */
- 	u32			raw_csd[4];	/* raw card CSD */
--- 
-2.18.0
++out:
++       if (ret > 0)
++               return -EINVAL;
++       if (ret < 0)
+               return ret;
+-       return ima_read_file(file, id, contents);
++       return 0;
+}
+EXPORT_SYMBOL_GPL(security_kernel_read_file);
 
+--=20
+paul-moore.com
 
