@@ -1,100 +1,304 @@
-Return-Path: <linux-kernel+bounces-3331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D069F816B15
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:28:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DADF3816B13
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D695283D83
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:28:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 678C51F217EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEBA14F9A;
-	Mon, 18 Dec 2023 10:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FFC14A89;
+	Mon, 18 Dec 2023 10:27:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5E418643;
-	Mon, 18 Dec 2023 10:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BIARif063383341, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BIARif063383341
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 18 Dec 2023 18:27:44 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 18 Dec 2023 18:27:44 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Mon, 18 Dec 2023 18:27:43 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Mon, 18 Dec 2023 18:27:42 +0800
-From: Justin Lai <justinlai0215@realtek.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com"
-	<edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "andrew@lunn.ch"
-	<andrew@lunn.ch>, Ping-Ke Shih <pkshih@realtek.com>,
-        Larry Chiu
-	<larry.chiu@realtek.com>
-Subject: RE: [PATCH net-next v14 06/13] rtase: Implement .ndo_start_xmit function
-Thread-Topic: [PATCH net-next v14 06/13] rtase: Implement .ndo_start_xmit
- function
-Thread-Index: AQHaKbubsEorOK9BY0aC7C+4Ofl+iLClijsAgAlZf5A=
-Date: Mon, 18 Dec 2023 10:27:42 +0000
-Message-ID: <1855bbf9885e4cae86aa32d401296b1e@realtek.com>
-References: <20231208094733.1671296-1-justinlai0215@realtek.com>
-	<20231208094733.1671296-7-justinlai0215@realtek.com>
- <20231212113212.1cfb9e19@kernel.org>
-In-Reply-To: <20231212113212.1cfb9e19@kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C90718E07;
+	Mon, 18 Dec 2023 10:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B30C31FB;
+	Mon, 18 Dec 2023 02:28:31 -0800 (PST)
+Received: from [10.57.46.32] (unknown [10.57.46.32])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABA6E3F738;
+	Mon, 18 Dec 2023 02:27:44 -0800 (PST)
+Message-ID: <88e51407-344e-4584-8711-29cc014c782b@arm.com>
+Date: Mon, 18 Dec 2023 10:27:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/8] coresight-tpda: Add support to configure CMB
+ element
+Content-Language: en-GB
+To: Tao Zhang <quic_taozha@quicinc.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-3-git-send-email-quic_taozha@quicinc.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <1700533494-19276-3-git-send-email-quic_taozha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
->=20
-> > +             if (ring->cur_idx !=3D dirty_tx)
-> > +                     rtase_w8(tp, RTASE_TPPOLL, BIT(ring->index));
-> > +     }
-> > +
-> > +     return workdone;
-> > +}
->=20
-> > +     /* multiqueues */
-> > +     q_idx =3D skb_get_queue_mapping(skb);
-> > +     ring =3D &tp->tx_ring[q_idx];
->=20
-> As Paolo pointed out elsewhere you seem to only support one queue.
-> Remove this indirection, please, and always use queue 0, otherwise it's a=
- bit
-> confusing.
+On 21/11/2023 02:24, Tao Zhang wrote:
+> Read the CMB element size from the device tree. Set the register
+> bit that controls the CMB element size of the corresponding port.
+> 
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+> ---
+>   drivers/hwtracing/coresight/coresight-tpda.c | 117 +++++++++++--------
+>   drivers/hwtracing/coresight/coresight-tpda.h |   6 +
+>   2 files changed, 74 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
+> index 5f82737c37bb..e3762f38abb3 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpda.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
+> @@ -28,24 +28,54 @@ static bool coresight_device_is_tpdm(struct coresight_device *csdev)
+>   			CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
+>   }
+>   
+> +static void tpdm_clear_element_size(struct coresight_device *csdev)
+> +{
+> +	struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +
+> +	if (drvdata->dsb_esize)
+> +		drvdata->dsb_esize = 0;
+> +	if (drvdata->cmb_esize)
+> +		drvdata->cmb_esize = 0;
 
-Hi Jakub,
+Why do we need the if (...) check here ?
 
-This device supports Multi-Queue.
+> +}
+> +
+> +static void tpda_set_element_size(struct tpda_drvdata *drvdata, u32 *val)
+> +{
+> +
+> +	if (drvdata->dsb_esize == 64)
+> +		*val |= TPDA_Pn_CR_DSBSIZE;
+> +	else if (drvdata->dsb_esize == 32)
+> +		*val &= ~TPDA_Pn_CR_DSBSIZE;
+> +
+> +	if (drvdata->cmb_esize == 64)
+> +		*val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
+> +	else if (drvdata->cmb_esize == 32)
+> +		*val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
+> +	else if (drvdata->cmb_esize == 8)
+> +		*val &= ~TPDA_Pn_CR_CMBSIZE;
+> +}
+> +
+
+
+>   /*
+> - * Read the DSB element size from the TPDM device
+> + * Read the element size from the TPDM device
+>    * Returns
+> - *    The dsb element size read from the devicetree if available.
+> + *    The element size read from the devicetree if available.
+>    *    0 - Otherwise, with a warning once.
+
+This doesn't match the function ? It return 0 on success and
+error (-EINVAL) on failure ?
+
+>    */
+> -static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
+> +static int tpdm_read_element_size(struct tpda_drvdata *drvdata,
+> +				  struct coresight_device *csdev)
+>   {
+> -	int rc = 0;
+> -	u8 size = 0;
+> -
+> -	rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+> -			"qcom,dsb-element-size", &size);
+> +	int rc = -EINVAL;
+> +
+> +	if (!fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+> +			"qcom,dsb-element-size", &drvdata->dsb_esize))
+> +		rc = 0;
+> +	if (!fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+> +			"qcom,cmb-element-size", &drvdata->cmb_esize))
+> +		rc = 0;
+
+Are we not silently resetting the error if the former failed ?
+
+Could we not :
+
+	rc |= fwnode_...
+
+	rc |= fwnode_...
+
+instead ?
+
+Also what is the expectation here ? Are these properties a MUST for
+TPDM ?
+
+>   	if (rc)
+>   		dev_warn_once(&csdev->dev,
+> -			"Failed to read TPDM DSB Element size: %d\n", rc);
+> +			"Failed to read TPDM Element size: %d\n", rc);
+>   
+> -	return size;
+> +	return rc;
+>   }
+>   
+>   /*
+> @@ -56,11 +86,12 @@ static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
+>    * Parameter "inport" is used to pass in the input port number
+>    * of TPDA, and it is set to -1 in the recursize call.
+>    */
+> -static int tpda_get_element_size(struct coresight_device *csdev,
+> +static int tpda_get_element_size(struct tpda_drvdata *drvdata,
+> +				 struct coresight_device *csdev,
+>   				 int inport)
+>   {
+> -	int dsb_size = -ENOENT;
+> -	int i, size;
+> +	int rc = 0;
+> +	int i;
+>   	struct coresight_device *in;
+>   
+>   	for (i = 0; i < csdev->pdata->nr_inconns; i++) {
+> @@ -74,25 +105,21 @@ static int tpda_get_element_size(struct coresight_device *csdev,
+>   			continue;
+>   
+>   		if (coresight_device_is_tpdm(in)) {
+> -			size = tpdm_read_dsb_element_size(in);
+> +			if ((drvdata->dsb_esize) || (drvdata->cmb_esize))
+> +				return -EEXIST;
+> +			rc = tpdm_read_element_size(drvdata, in);
+> +			if (rc)
+> +				return rc;
+>   		} else {
+>   			/* Recurse down the path */
+> -			size = tpda_get_element_size(in, -1);
+> -		}
+> -
+> -		if (size < 0)
+> -			return size;
+> -
+> -		if (dsb_size < 0) {
+> -			/* Found a size, save it. */
+> -			dsb_size = size;
+> -		} else {
+> -			/* Found duplicate TPDMs */
+> -			return -EEXIST;
+> +			rc = tpda_get_element_size(drvdata, in, -1);
+> +			if (rc)
+> +				return rc;
+>   		}
+>   	}
+>   
+> -	return dsb_size;
+> +
+> +	return rc;
+>   }
+>   
+>   /* Settings pre enabling port control register */
+> @@ -109,7 +136,7 @@ static void tpda_enable_pre_port(struct tpda_drvdata *drvdata)
+>   static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+>   {
+>   	u32 val;
+> -	int size;
+> +	int rc;
+>   
+>   	val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
+>   	/*
+> @@ -117,29 +144,21 @@ static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+>   	 * Set the bit to 0 if the size is 32
+>   	 * Set the bit to 1 if the size is 64
+>   	 */
+> -	size = tpda_get_element_size(drvdata->csdev, port);
+> -	switch (size) {
+> -	case 32:
+> -		val &= ~TPDA_Pn_CR_DSBSIZE;
+> -		break;
+> -	case 64:
+> -		val |= TPDA_Pn_CR_DSBSIZE;
+> -		break;
+> -	case 0:
+> -		return -EEXIST;
+> -	case -EEXIST:
+> +	tpdm_clear_element_size(drvdata->csdev);
+> +	rc = tpda_get_element_size(drvdata, drvdata->csdev, port);
+> +	if (!rc && ((drvdata->dsb_esize) || (drvdata->cmb_esize))) {
+> +		tpda_set_element_size(drvdata, &val);
+> +		/* Enable the port */
+> +		val |= TPDA_Pn_CR_ENA;
+> +		writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+> +	} else if (rc == -EEXIST)
+>   		dev_warn_once(&drvdata->csdev->dev,
+> -			"Detected multiple TPDMs on port %d", -EEXIST);
+> -		return -EEXIST;
+> -	default:
+> -		return -EINVAL;
+> -	}
+> -
+> -	/* Enable the port */
+> -	val |= TPDA_Pn_CR_ENA;
+> -	writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+> +			      "Detected multiple TPDMs on port %d", -EEXIST);
+> +	else
+> +		dev_warn_once(&drvdata->csdev->dev,
+> +			      "Didn't find TPDM elem size");
+
+"element size"
+
+>   
+> -	return 0;
+> +	return rc;
+>   }
+>   
+>   static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
+> diff --git a/drivers/hwtracing/coresight/coresight-tpda.h b/drivers/hwtracing/coresight/coresight-tpda.h
+> index b3b38fd41b64..29164fd9711f 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpda.h
+> +++ b/drivers/hwtracing/coresight/coresight-tpda.h
+> @@ -10,6 +10,8 @@
+>   #define TPDA_Pn_CR(n)		(0x004 + (n * 4))
+>   /* Aggregator port enable bit */
+>   #define TPDA_Pn_CR_ENA		BIT(0)
+> +/* Aggregator port CMB data set element size bit */
+> +#define TPDA_Pn_CR_CMBSIZE		GENMASK(7, 6)
+>   /* Aggregator port DSB data set element size bit */
+>   #define TPDA_Pn_CR_DSBSIZE		BIT(8)
+>   
+> @@ -25,6 +27,8 @@
+>    * @csdev:      component vitals needed by the framework.
+>    * @spinlock:   lock for the drvdata value.
+>    * @enable:     enable status of the component.
+> + * @dsb_esize   Record the DSB element size.
+> + * @cmb_esize   Record the CMB element size.
+>    */
+>   struct tpda_drvdata {
+>   	void __iomem		*base;
+> @@ -32,6 +36,8 @@ struct tpda_drvdata {
+>   	struct coresight_device	*csdev;
+>   	spinlock_t		spinlock;
+>   	u8			atid;
+> +	u8			dsb_esize;
+> +	u8			cmb_esize;
+>   };
+>   
+>   #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
+
+Suzuki
+
+
 
