@@ -1,104 +1,155 @@
-Return-Path: <linux-kernel+bounces-3203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10A8E81691B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DAC2816920
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 445D21C22587
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:03:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42BAA1C225A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1E211188;
-	Mon, 18 Dec 2023 09:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A46D1119A;
+	Mon, 18 Dec 2023 09:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZagKMmn9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UZx0lTU6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C0911C9B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a1ca24776c3so721396866b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:02:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF7D1118B;
+	Mon, 18 Dec 2023 09:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28ade227850so2224160a91.2;
+        Mon, 18 Dec 2023 01:03:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702890172; x=1703494972; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8oj5BsM/xGdC3KN8KGTSJH/xUgeBwNL/Afk9gki+yN4=;
-        b=ZagKMmn965hsrkwxh82v6nHzBduiyW5gLhVj4fqJiFzkFDlKcAs6cqf34oepW9E2tv
-         PeD7ogoqbczjEbTTtf4FRaa0QhQtBkPZetSqjJ79JI7pVApHp/rXDEjHNT9baUbzoESH
-         YyFofvfrGnhPuspyocT19lOosLE4t7vk5BCYJyQfoO3AGbj4XXEi+667SDWaS3Yrr1eG
-         9X1LJ3MKQrGwpXpjKf6UE2aUtB+ivzZKVg50tpzR1fRIUidXWgKKDsXbbyRcFpjQAIVy
-         1Dm1gP5QrnauFC3tYMhf83wxLmRBfmHkp2PMajiu4IkVr0Hq8YPL9Kspgc4zk92tIyUR
-         slLQ==
+        d=gmail.com; s=20230601; t=1702890207; x=1703495007; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ak/uY7ctjUJpG2EB2nkOjy7ocgBtOBfLnLR5sFh/TJA=;
+        b=UZx0lTU6r0W3/ufBdYUXIHGdWXJEh/NkCb9gPxwZLOLh8Gv7TCz0qmg5DqNm9zxOep
+         s3yBmKET0O8yelwNkRH6N9ZwVt94Ks7fW6ra/9wRgT7FaQyXcreI1W3KahS6hzKGeHfh
+         RSA4SoW4G4qdlqipNzgroxgY1iKiuJm7MXyy773HIfgt0dQoEQ6KTrWjPHYUKcaj0Mg2
+         DXyoTE03N61j4Phli2mG14GGLPtDSJdgnssYDAq2LPFBa+U4Vh7xs725bp4qmegkB/Td
+         YMuwmnaIaJkdKqOiaqFwmD464Wep5F92k4XQTfEhjUWpRCltZiSptrihB11NR85Rkd7b
+         kSHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702890172; x=1703494972;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8oj5BsM/xGdC3KN8KGTSJH/xUgeBwNL/Afk9gki+yN4=;
-        b=Ln2SD6eS8sk33aeuuUqCxSunkPLSHq0cKET4yIgmu4v6XO5f8lvBvxYaMELU6hyooO
-         VUrMcDvp1b3znZ38iqyiGHT48iCgJXYhtvPI3vcNZWz8QiFeGr1xnhZdrptrOYlMmzE3
-         6E0N6MuyDPX4tSUW4iOWYrF5xW0KudFQEvHFhy/noWk6G0s414ks7AUPBHcw2ZFeIsi2
-         De0T9tvEOVr8BLc8Xnc8ApXuzyT6SIv1HN7OzmRtx3j1Cx2up3lFbos+RbuhKVfiakmM
-         CeAGe+LlddMuHrmfHlOhFFRF9ce+hN+saSup8ubeIdNPSnmYBG1WQGeaGb2q6viRt+jQ
-         WZFw==
-X-Gm-Message-State: AOJu0YxRV8rSvWS7ZZVZpcz5vkvm9FTfd15V5FrHt4RGB2CWt07WTL/V
-	c7AHlWg1kpiUhRcX9ZxHvqOVDQ==
-X-Google-Smtp-Source: AGHT+IHS0mtHIvUG2u9ha9s798b2XIZD4KdzteJIQM8j9zcnguqcNxT/VI6ojy355UDA/EKpSNJeeQ==
-X-Received: by 2002:a17:907:6d0f:b0:a23:4cab:a076 with SMTP id sa15-20020a1709076d0f00b00a234caba076mr1970270ejc.33.1702890172710;
-        Mon, 18 Dec 2023 01:02:52 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vh6-20020a170907d38600b00a0180de2797sm13884771ejc.74.2023.12.18.01.02.50
+        d=1e100.net; s=20230601; t=1702890207; x=1703495007;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ak/uY7ctjUJpG2EB2nkOjy7ocgBtOBfLnLR5sFh/TJA=;
+        b=UXzHq+cqRz//A6xQBgpPLF8pG5DIgN3p9bgkv/8U7iUu7MtdJMb1b861kxCXSxvfTv
+         tkgw5CtyOZHYW3rzKBEUar+mOtxKlotI7nob7TZx7QxffY66amUaLFS/3IMIYczrkWye
+         gIUOlQRRzAL+FwuKqpD4Ny7/1MVULtBHJrAwxEEIQHsX71K1zEn2XOqc9kuVzFRkJ7uA
+         oM+gvB9dF8fEFDDuVEwnjcp7UFAtecedxoES6J5soPEwEPdvrViStT/UeA3XFLi7ER7/
+         ZTamsinjxmovpK71SpMsJemyakqmpYZVSatq9NIGNPtCnOCalwGzR7tqz5hNKqXgNH2B
+         BUHA==
+X-Gm-Message-State: AOJu0Yx3Fd2LxiBNWVRCLPWmBJegrpajeTE2+7vwexfmd2m7mu+0SW1v
+	E4M1n7pbNIDecYUxxRHjC3Y=
+X-Google-Smtp-Source: AGHT+IFSKH+fRCqgmyE2xogsVWKfTvVyijpoHCjNrGMowybsup8w1lOtkHbMsO62D3YfJrmRDEKNIA==
+X-Received: by 2002:a17:90b:1d8b:b0:28b:5a99:c02e with SMTP id pf11-20020a17090b1d8b00b0028b5a99c02emr931913pjb.83.1702890207418;
+        Mon, 18 Dec 2023 01:03:27 -0800 (PST)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id si6-20020a17090b528600b0028aefb5fa05sm3892619pjb.40.2023.12.18.01.03.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 01:02:52 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: peter.griffin@linaro.org, Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com, 
- alim.akhtar@samsung.com, mturquette@baylibre.com, sboyd@kernel.org, 
- robh+dt@kernel.org, conor+dt@kernel.org, semen.protsenko@linaro.org, 
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, kernel-team@android.com
-In-Reply-To: <20231218064333.479885-1-tudor.ambarus@linaro.org>
-References: <20231218064333.479885-1-tudor.ambarus@linaro.org>
-Subject: Re: [PATCH v2] dt-bindings: clock: google,gs101: rename CMU_TOP
- gate defines
-Message-Id: <170289017091.18651.1346933339464153967.b4-ty@linaro.org>
-Date: Mon, 18 Dec 2023 10:02:50 +0100
+        Mon, 18 Dec 2023 01:03:26 -0800 (PST)
+Date: Mon, 18 Dec 2023 17:03:21 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Dmitry Safonov <dima@arista.com>
+Cc: Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Salam Noureddine <noureddine@arista.com>,
+	Bob Gilligan <gilligan@arista.com>, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+	Dmitry Safonov <0x7f454c46@gmail.com>
+Subject: Re: [PATCH 02/12] selftests/net: Verify that TCP-AO complies with
+ ignoring ICMPs
+Message-ID: <ZYAK2U4GikRKFLQs@Laptop-X1>
+References: <20231215-tcp-ao-selftests-v1-0-f6c08180b985@arista.com>
+ <20231215-tcp-ao-selftests-v1-2-f6c08180b985@arista.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215-tcp-ao-selftests-v1-2-f6c08180b985@arista.com>
 
-
-On Mon, 18 Dec 2023 06:43:33 +0000, Tudor Ambarus wrote:
-> The gs101 clock defines from the bindings header are derived from the
-> clock register names found in the datasheet under some certain rules.
+On Fri, Dec 15, 2023 at 02:36:16AM +0000, Dmitry Safonov wrote:
+> Hand-crafted ICMP packets are sent to the server, the server checks for
+> hard/soft errors and fails if any.
 > 
-> The CMU TOP gate clock defines missed to include the required "CMU"
-> differentiator which will cause collisions with the gate clock defines
-> of other clock units. Rename the TOP gate clock defines to include "CMU".
+> Expected output for ipv4 version:
+> > # ./icmps-discard_ipv4
+> > 1..3
+> > # 3164[lib/setup.c:166] rand seed 1642623745
+> > TAP version 13
+> > # 3164[lib/proc.c:207]    Snmp6             Ip6InReceives: 0 => 1
+> > # 3164[lib/proc.c:207]    Snmp6             Ip6InNoRoutes: 0 => 1
+> > # 3164[lib/proc.c:207]    Snmp6               Ip6InOctets: 0 => 76
+> > # 3164[lib/proc.c:207]    Snmp6            Ip6InNoECTPkts: 0 => 1
+> > # 3164[lib/proc.c:207]      Tcp                    InSegs: 2 => 203
+> > # 3164[lib/proc.c:207]      Tcp                   OutSegs: 1 => 202
+> > # 3164[lib/proc.c:207]  IcmpMsg                   InType3: 0 => 543
+> > # 3164[lib/proc.c:207]     Icmp                    InMsgs: 0 => 543
+> > # 3164[lib/proc.c:207]     Icmp            InDestUnreachs: 0 => 543
+> > # 3164[lib/proc.c:207]       Ip                InReceives: 2 => 746
+> > # 3164[lib/proc.c:207]       Ip                InDelivers: 2 => 746
+> > # 3164[lib/proc.c:207]       Ip               OutRequests: 1 => 202
+> > # 3164[lib/proc.c:207]    IpExt                  InOctets: 132 => 61684
+> > # 3164[lib/proc.c:207]    IpExt                 OutOctets: 68 => 31324
+> > # 3164[lib/proc.c:207]    IpExt               InNoECTPkts: 2 => 744
+> > # 3164[lib/proc.c:207]   TcpExt               TCPPureAcks: 1 => 2
+> > # 3164[lib/proc.c:207]   TcpExt           TCPOrigDataSent: 0 => 200
+> > # 3164[lib/proc.c:207]   TcpExt              TCPDelivered: 0 => 199
+> > # 3164[lib/proc.c:207]   TcpExt                 TCPAOGood: 2 => 203
+> > # 3164[lib/proc.c:207]   TcpExt         TCPAODroppedIcmps: 0 => 541
+> > ok 1 InDestUnreachs delivered 543
+> > ok 2 Server survived 20000 bytes of traffic
+> > ok 3 ICMPs ignored 541
+> > # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
 > 
-> [...]
+> Expected output for ipv6 version:
+> > # ./icmps-discard_ipv6
+> > 1..3
+> > # 3186[lib/setup.c:166] rand seed 1642623803
+> > TAP version 13
+> > # 3186[lib/proc.c:207]    Snmp6             Ip6InReceives: 4 => 568
+> > # 3186[lib/proc.c:207]    Snmp6             Ip6InDelivers: 3 => 564
+> > # 3186[lib/proc.c:207]    Snmp6            Ip6OutRequests: 2 => 204
+> > # 3186[lib/proc.c:207]    Snmp6            Ip6InMcastPkts: 1 => 4
+> > # 3186[lib/proc.c:207]    Snmp6           Ip6OutMcastPkts: 0 => 1
+> > # 3186[lib/proc.c:207]    Snmp6               Ip6InOctets: 320 => 70420
+> > # 3186[lib/proc.c:207]    Snmp6              Ip6OutOctets: 160 => 35512
+> > # 3186[lib/proc.c:207]    Snmp6          Ip6InMcastOctets: 72 => 336
+> > # 3186[lib/proc.c:207]    Snmp6         Ip6OutMcastOctets: 0 => 76
+> > # 3186[lib/proc.c:207]    Snmp6            Ip6InNoECTPkts: 4 => 568
+> > # 3186[lib/proc.c:207]    Snmp6               Icmp6InMsgs: 1 => 361
+> > # 3186[lib/proc.c:207]    Snmp6              Icmp6OutMsgs: 1 => 2
+> > # 3186[lib/proc.c:207]    Snmp6       Icmp6InDestUnreachs: 0 => 360
+> > # 3186[lib/proc.c:207]    Snmp6      Icmp6OutMLDv2Reports: 0 => 1
+> > # 3186[lib/proc.c:207]    Snmp6              Icmp6InType1: 0 => 360
+> > # 3186[lib/proc.c:207]    Snmp6           Icmp6OutType143: 0 => 1
+> > # 3186[lib/proc.c:207]      Tcp                    InSegs: 2 => 203
+> > # 3186[lib/proc.c:207]      Tcp                   OutSegs: 1 => 202
+> > # 3186[lib/proc.c:207]   TcpExt               TCPPureAcks: 1 => 2
+> > # 3186[lib/proc.c:207]   TcpExt           TCPOrigDataSent: 0 => 200
+> > # 3186[lib/proc.c:207]   TcpExt              TCPDelivered: 0 => 199
+> > # 3186[lib/proc.c:207]   TcpExt                 TCPAOGood: 2 => 203
+> > # 3186[lib/proc.c:207]   TcpExt         TCPAODroppedIcmps: 0 => 360
+> > ok 1 Icmp6InDestUnreachs delivered 360
+> > ok 2 Server survived 20000 bytes of traffic
+> > ok 3 ICMPs ignored 360
+> > # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
+> 
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
 
-Applied, thanks!
-
-[1/1] dt-bindings: clock: google,gs101: rename CMU_TOP gate defines
-      https://git.kernel.org/krzk/linux/c/35f32e39b4d9b436354c2a37623c393a2ac7cf87
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+Tested-by: Hangbin Liu <liuhangbin@gmail.com>
 
