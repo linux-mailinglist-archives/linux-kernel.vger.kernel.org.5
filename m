@@ -1,103 +1,131 @@
-Return-Path: <linux-kernel+bounces-4412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0107817CB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:41:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0BB817CBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C63401C21D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:41:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99057285574
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8623740B2;
-	Mon, 18 Dec 2023 21:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8284D6FB6;
+	Mon, 18 Dec 2023 21:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gp17vnOo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A8C51DA3A;
-	Mon, 18 Dec 2023 21:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E00273467;
+	Mon, 18 Dec 2023 21:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-58e256505f7so2537406eaf.3;
-        Mon, 18 Dec 2023 13:41:40 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28659348677so2561511a91.0;
+        Mon, 18 Dec 2023 13:44:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702935882; x=1703540682; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hsIQRoDMyAO/1DgxQjK7hg35wfAQDmgiayboWw066aQ=;
+        b=Gp17vnOoU0YRBcRwYY6sIP/lzFDxecnFZCWWG5n4lkj9+u5aik8Cm+Jo3Ziho//TT0
+         f+Gh7Dez8xhAy9zSZm0EcvYg2FZ3nhMXWfB4t4WAJaFE8heuC+Fu7VA7hyDQH7aalEaf
+         pQXZxR5ebfnsdRUxdGofrGEpKr8S1mLgSqCx1+QVdUYTfqgbCdcewCUE8kppbRSuE6G1
+         U+xy9EWkA6ylgiX8RSzkOMVhGrxT3DzTX9KJAtUZs1NFa3D9jVJi2t5F2RVwz7RDygds
+         bN94SRKmlC4SKzfyH0ltOll2xQ8Bq0bwgv2FpSq5STEM87+Dbjb0Wcdw7uv3oPJa+H4f
+         dR2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702935700; x=1703540500;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Lf6x/s/QNuvXO3/maFmMWf//6tmMOSX9Okk2scVa1c=;
-        b=LcewoDHFMKU2Y0ff8fEFmnakzg9oFuextUFVB/e4hwggKflD6cQLzU40kcgzLPpDzP
-         Mo+I7S6JUBCaE2sB6CGxRo0WIf3bkrMZKBciC3IclRbiQLry1rVXMlvMK5BLXs7rM9ca
-         l2/S59ZnfDkM9vWUz5TmDcWDSpuYN9toqEHq7oe1yIsXp5ehk4Ysr8ch6yTMibRP+SQR
-         vQhx5nS/6AtfiXQyt/7jtwkzh5E8TOgncZGo6zERFv9jgpoYNGtYhA9Zkfwaszl5j/w6
-         OeXWH8qv5Jtx2s7qDKeMzt98LDOLu24VyIGswoxau+TV+vNvIK+n5zP8agskr7t67pvp
-         L3Tg==
-X-Gm-Message-State: AOJu0YyMY1BUOwA1a3uPi3FpouOjjGsV8vjbUydmA2KvDwtpOHbQPO41
-	5pCyvdcDVwKQpHvt1J/AyBI=
-X-Google-Smtp-Source: AGHT+IHRHJGjIg8FP0kWYFL8Nk9kN/wFY5Y7MonQIYe8IKswbaMMMSgMs9IHvnKqpDP+LztsZih95g==
-X-Received: by 2002:a05:6358:e4a1:b0:172:d67c:61f1 with SMTP id by33-20020a056358e4a100b00172d67c61f1mr1664629rwb.14.1702935699775;
-        Mon, 18 Dec 2023 13:41:39 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:e67:7ba6:36a9:8cd5? ([2620:0:1000:8411:e67:7ba6:36a9:8cd5])
-        by smtp.gmail.com with ESMTPSA id a21-20020a62e215000000b006d63ace8508sm3075061pfi.70.2023.12.18.13.41.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 13:41:39 -0800 (PST)
-Message-ID: <7cdfa93b-70f7-4912-bda7-a6b50b93c665@acm.org>
-Date: Mon, 18 Dec 2023 13:41:35 -0800
+        d=1e100.net; s=20230601; t=1702935882; x=1703540682;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hsIQRoDMyAO/1DgxQjK7hg35wfAQDmgiayboWw066aQ=;
+        b=VxgVNXkMo2TLMG3Ok+l/qOkVx0RU18EAx0B/yxBGxcxdujr6dq4os1zdrfcLaCo/21
+         b9bfDTZFO/uGy8QLEW8zVLL2Z8DNWjV4z9uuAWeVTqLga2JatSc6y1LH7PyP5NtB74XT
+         MkHsWfZMZ5VFNy4vuhAjCpNErqM3L1u7r6CBHWNHkaGwCGgHEmNRNOTDidaZB/6m2Mns
+         Aeraax46AVJA5fJUQaCqIRvQ95JGAixJj0DXXILDLKIM3Jw4Vn1d63dS66FxC1QM6HQF
+         8lP60Ez1T1gApZVzfkkpCwS1JcRuVxmWODvb7zfgegA6Tr12nlZD7uAkPpqHXXakQmtS
+         JoJw==
+X-Gm-Message-State: AOJu0YyJKNVkJjDmvkpq71V8OgPvm6ax6y6gMQ2TfpH0GqB/iWN2FnKy
+	hoLSuyGWHKAFZXkj6uoiHZY=
+X-Google-Smtp-Source: AGHT+IFovrmEbJoaKAuL0WhPM+7iXQ84uNI1T6Ho3Ro2axd+SDJpSLOBetddAyB1nl1YYc1ub8pO1Q==
+X-Received: by 2002:a17:90a:f3ca:b0:28b:664a:807d with SMTP id ha10-20020a17090af3ca00b0028b664a807dmr77347pjb.25.1702935881851;
+        Mon, 18 Dec 2023 13:44:41 -0800 (PST)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id x14-20020a170902820e00b001d2ffeac9d3sm8253339pln.186.2023.12.18.13.44.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 13:44:41 -0800 (PST)
+Date: Mon, 18 Dec 2023 13:42:25 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Jacob Keller <jacob.e.keller@intel.com>
+Cc: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
+	vkuznets@redhat.com, tglx@linutronix.de,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	schakrabarti@microsoft.com, paulros@microsoft.com
+Subject: Re: [PATCH 3/3] net: mana: add a function to spread IRQs per CPUs
+Message-ID: <ZYC8wYdyHi3KA3Bp@yury-ThinkPad>
+References: <20231217213214.1905481-1-yury.norov@gmail.com>
+ <20231217213214.1905481-4-yury.norov@gmail.com>
+ <9ba04aef-ba13-4366-8709-ea1808dd4270@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: ufs: core: Let the sq_lock protect sq_tail_slot
- access
-Content-Language: en-US
-To: Can Guo <quic_cang@quicinc.com>, mani@kernel.org,
- adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
- junwoo80.lee@samsung.com, martin.petersen@oracle.com
-Cc: linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- Alim Akhtar <alim.akhtar@samsung.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- Stanley Chu <stanley.chu@mediatek.com>,
- Asutosh Das <quic_asutoshd@quicinc.com>, Peter Wang
- <peter.wang@mediatek.com>, "Bao D. Nguyen" <quic_nguyenb@quicinc.com>,
- Arthur Simchaev <Arthur.Simchaev@wdc.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <1702913550-20631-1-git-send-email-quic_cang@quicinc.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1702913550-20631-1-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ba04aef-ba13-4366-8709-ea1808dd4270@intel.com>
 
-On 12/18/23 07:32, Can Guo wrote:
-> If access sq_tail_slot without the protection from the sq_lock, race
-> condition can have multiple SQEs copied to duplicate SQE slot(s), which can
-> lead to multiple incredible stability issues. Fix it by moving the *dest
-> initialization, in ufshcd_send_command(), back under protection from the
-> sq_lock.
+On Mon, Dec 18, 2023 at 01:17:53PM -0800, Jacob Keller wrote:
 > 
-> Fixes: 3c85f087faec ("scsi: ufs: mcq: Use pointer arithmetic in ufshcd_send_command()")
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
 > 
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index ae9936f..2994aac 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -2274,9 +2274,10 @@ void ufshcd_send_command(struct ufs_hba *hba, unsigned int task_tag,
->   	if (is_mcq_enabled(hba)) {
->   		int utrd_size = sizeof(struct utp_transfer_req_desc);
->   		struct utp_transfer_req_desc *src = lrbp->utr_descriptor_ptr;
-> -		struct utp_transfer_req_desc *dest = hwq->sqe_base_addr + hwq->sq_tail_slot;
-> +		struct utp_transfer_req_desc *dest;
->   
->   		spin_lock(&hwq->sq_lock);
-> +		dest = hwq->sqe_base_addr + hwq->sq_tail_slot;
->   		memcpy(dest, src, utrd_size);
->   		ufshcd_inc_sq_tail(hwq);
->   		spin_unlock(&hwq->sq_lock);
+> On 12/17/2023 1:32 PM, Yury Norov wrote:
+> > +static __maybe_unused int irq_setup(unsigned int *irqs, unsigned int len, int node)
+> > +{
+> > +	const struct cpumask *next, *prev = cpu_none_mask;
+> > +	cpumask_var_t cpus __free(free_cpumask_var);
+> > +	int cpu, weight;
+> > +
+> > +	if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
+> > +		return -ENOMEM;
+> > +
+> > +	rcu_read_lock();
+> > +	for_each_numa_hop_mask(next, node) {
+> > +		weight = cpumask_weight_andnot(next, prev);
+> > +		while (weight-- > 0) {
+> > +			cpumask_andnot(cpus, next, prev);
+> > +			for_each_cpu(cpu, cpus) {
+> > +				if (len-- == 0)
+> > +					goto done;
+> > +				irq_set_affinity_and_hint(*irqs++, topology_sibling_cpumask(cpu));
+> > +				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
+> > +			}
+> > +		}
+> > +		prev = next;
+> > +	}
+> > +done:
+> > +	rcu_read_unlock();
+> > +	return 0;
+> > +}
+> > +
+> 
+> You're adding a function here but its not called and even marked as
+> __maybe_unused?
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+I expect that Souradeep would build his driver improvement on top of
+this function. cpumask API is somewhat tricky to use it properly here,
+so this is an attempt help him, instead of moving back and forth on
+review.
+
+Sorry, I had to be more explicit.
+
+Thanks,
+Yury
 
