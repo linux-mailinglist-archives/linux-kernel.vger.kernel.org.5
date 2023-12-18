@@ -1,147 +1,128 @@
-Return-Path: <linux-kernel+bounces-3119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0EC28167A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:43:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2C18167A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:46:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E4EC1F22B39
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:43:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD5DB1C2242B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF75101C8;
-	Mon, 18 Dec 2023 07:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4799FBF4;
+	Mon, 18 Dec 2023 07:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aYzmR0RU"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qnbU9We8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97628F9C1
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702885397; x=1734421397;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7Gc3/ULM8ZNFEtImVaXY8oOyBtpfOhXWd6gLC4ljbAE=;
-  b=aYzmR0RUhgWLdAEvDlwJ4cSSYunGnXBx/EtnnojCqxCMKtcqTz1F2LBp
-   7gnpcf5urZO+BOpdxdWVrk3wQoKbGHCV2ZyB6KcJVk5vPPgQhB6jgtza/
-   gX4bk1LL7v0sQYgnu0sYCrEsiMxgnRfIdqqEF+Fs//QKnLtSr9e2NNuVk
-   eDw6fJX8WDblTDbM8fQIy8AKbOBQrPWSoDetjy/UdMEPPHnbl7hUnakNT
-   ZbyNsMvv4xOWib6W+dOSVmeZOohbi0oewsgPiy/R8eLjAXJ0ixP4VeV3D
-   WSWk7Qgsdg1hB0j7UHKfjjbXbfRRlRUrRcv7N+eSl6QXHj5nWUD/xK6M2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="398252167"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="398252167"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 23:43:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="768744930"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="768744930"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.7.27])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 23:43:14 -0800
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH] mm/memory: Replace kmap() with kmap_local_page()
-Date: Mon, 18 Dec 2023 08:43:11 +0100
-Message-ID: <4255260.irdbgypaU6@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <657fbdb5db945_126a129483@iweiny-mobl.notmuch>
-References:
- <20231215084417.2002370-1-fabio.maria.de.francesco@linux.intel.com>
- <657fbdb5db945_126a129483@iweiny-mobl.notmuch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EE1E55E
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI7MqMJ003639;
+	Mon, 18 Dec 2023 07:45:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=g8jCvGvl4swyr2RjaobjzQiBxqTOe7z3ifMluGI4T24=;
+ b=qnbU9We8Tn9xyh/1HpEQofhyzEJAoCcl9R+BqChPLz7xSAibnzDRshgjGqHNl1Sj1Cx1
+ i3M1JEcbpFp8wXWJednDy4B9Xw6uE1dAuEf4Z4sX+tndk/DJANagDhnBqm4DSO4D54b0
+ PISepuTc0/Fl3/NOKvd486bokOvGyd2nWBHsvx9jqDKQ5ChiSLX/TZrxr+E70LB285PB
+ YbIC95baNhrGPM1EmZ/P8LgcdQlv4ajiYVnl2dhBBZImup+fVWmdMZPBxdAkEDl8oz9v
+ EPdznzxukk5ysgx2o1zlQPq5vdyyxPiTFzFYY6VXC8m2p3Qwn1ypVb/jg8/Oj62HOtKS gQ== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2grf9xrk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 07:45:26 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI7Bi3s027074;
+	Mon, 18 Dec 2023 07:45:26 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v1rejq3ka-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 07:45:26 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BI7jORn18416314
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Dec 2023 07:45:24 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 513D720043;
+	Mon, 18 Dec 2023 07:45:24 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4135620040;
+	Mon, 18 Dec 2023 07:45:24 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 18 Dec 2023 07:45:24 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
+	id 0FC38E03E5; Mon, 18 Dec 2023 08:45:24 +0100 (CET)
+From: Sven Schnelle <svens@linux.ibm.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH v2 0/3] entry: inline syscall enter/exit functions
+Date: Mon, 18 Dec 2023 08:45:17 +0100
+Message-Id: <20231218074520.1998026-1-svens@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: a3nYW5KOmwB-hoR-5UizNSzH3mnAnght
+X-Proofpoint-ORIG-GUID: a3nYW5KOmwB-hoR-5UizNSzH3mnAnght
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-18_04,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxlogscore=498 spamscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312180054
 
-On Monday, 18 December 2023 04:34:13 CET Ira Weiny wrote:
-> Fabio M. De Francesco wrote:
-> 
-> [snip]
-> 
-> > Cc: Ira Weiny <ira.weiny@intel.com>
-> > Signed-off-by: Fabio M. De Francesco
-> > <fabio.maria.de.francesco@linux.intel.com> ---
-> > 
-> >  mm/memory.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index 7d9f6b685032..88377a107fbe 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -5852,7 +5852,7 @@ static int __access_remote_vm(struct mm_struct *mm,
-> > unsigned long addr,> 
-> >  			if (bytes > PAGE_SIZE-offset)
-> >  			
-> >  				bytes = PAGE_SIZE-offset;
-> > 
-> > -			maddr = kmap(page);
-> > +			maddr = kmap_local_page(page);
-> > 
-> >  			if (write) {
-> >  			
-> >  				copy_to_user_page(vma, page, addr,
-> >  				
-> >  						  maddr + offset, buf, 
-bytes);
-> > 
-> > @@ -5861,8 +5861,7 @@ static int __access_remote_vm(struct mm_struct *mm,
-> > unsigned long addr,> 
-> >  				copy_from_user_page(vma, page, addr,
-> >  				
-> >  						    buf, maddr + offset, 
-bytes);
-> >  			
-> >  			}
-> > 
-> > -			kunmap(page);
-> > -			put_page(page);
-> > +			unmap_and_put_page(page, maddr);
-> 
-> Does this really have the same functionality?
-> 
-> Ira
+Hi List,
 
-Do you have any specific reasons to say that? 
+looking into the performance of syscall entry/exit after s390 switched
+to generic entry showed that there's quite some overhead calling some
+of the entry/exit work functions even when there's nothing to do.
+This patchset moves the entry and exit function to entry-common.h, so
+non inlined code gets only called when there is some work pending.
 
-The unmap_and_put_page() helper was created by Al Viro (it initially was 
-put_and_unmap_page() and I sent a patch to rename it to the current name). He 
-noticed that we have lots of kunmap_local() followed by put_page(). 
+I wrote a small program that just issues invalid syscalls in a loop.
+On an s390 machine, this results in the following numbers:
 
-The current implementation has then been changed (Matthew did it, if I 
-remember correctly).
+without this series:
 
-My understanding of the current implementation is that unmap_and_put_page() 
-calls folio_release_kmap(), taking as arguments the folio which the page 
-belongs to and the kernel virtual address returned by kmap_local_page().
+$ ./syscall 1000000000
+runtime: 94.886581s / per-syscall 9.488658e-08s
 
-folio_release_kmap() calls kunmap_local() and then folio_put(). The last is 
-called on the folio obtained by the unmap_and_put_page() wrapper and, if I'm 
-not wrong, it releases refcounts on folios like put_page() does on pages.
+with this series:
 
-Am I missing something?
+$ ./syscall 1000000000
+runtime: 84.732391s / per-syscall 8.473239e-08s
 
-For further reference, please take a look at the following path from Al Viro 
-that is modelled after my conversions in fs/sysv: https://lore.kernel.org/all/
-20231213000849.2748576-4-viro@zeniv.linux.org.uk/
+so the time required for one syscall dropped from 94.8ns to
+84.7ns, which is a drop of about 11%.
 
-Thanks,
+Sven Schnelle (3):
+  entry: move exit to usermode functions to header file
+  entry: move enter_from_user_mode() to header file
+  entry: move syscall_enter_from_user_mode() to header file
 
-Fabio 
+ include/linux/entry-common.h |  94 +++++++++++++++++++++++++++++--
+ kernel/entry/common.c        | 106 ++++-------------------------------
+ 2 files changed, 100 insertions(+), 100 deletions(-)
 
+Changes in v2:
+- don't move of exit_to_user_mode_loop() to header file
+-- 
+2.40.1
 
 
