@@ -1,115 +1,105 @@
-Return-Path: <linux-kernel+bounces-3761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5837B8170AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:42:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D89518170AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D0C61F22663
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:42:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86837282BC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C81AF1D127;
-	Mon, 18 Dec 2023 13:42:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED63F11CA6;
+	Mon, 18 Dec 2023 13:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a9L11gZ8"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YquedR+o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E44129EEA;
-	Mon, 18 Dec 2023 13:42:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9F8C433C7;
-	Mon, 18 Dec 2023 13:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702906956;
-	bh=lf87cY+sfrIGjZkc0yfpM2ITygYwk1dUMUryBA2JhoY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=a9L11gZ8UROh/ThiFrLMjNPiDbo17oq6krV4C7pe/JzEFp7XMBBKu8V5FSmeg2zRU
-	 ZhXgnYteQbbOwn/wHcsBj7EXKtUMtxrRMdqJYLX8cF4CcduKBh4xLjfXapI5lffJmI
-	 U0/rSSvID1n4IFT4LOrItWBNm+mKenZ3pdZ2jAVwM7dsnnfC3dbnoS7Znd9pNu4ueE
-	 GHAplv3p2RSphWZH9nSjFN0C+Ge2+K8qj1FFAG8QGDdUnbnUqilsVr1+uZ/sPhYfLI
-	 wZ4jg5rjikeD5hQADzDYT2Trs0Rv8WYE/wptKEyxcaf6+3Yk9rjRVZk84l0BGSEyYF
-	 lC40sp6lJ4/Rw==
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-20335dcec64so2238237fac.3;
-        Mon, 18 Dec 2023 05:42:36 -0800 (PST)
-X-Gm-Message-State: AOJu0YwYnQo6q8EaDGGCxOGOqYgSA8uZIyWGPTbkReUj9scW7YfJ/BBP
-	p+tWblkPznP47EJ8RxF/EoJ25gLvm5bDFe4kGJs=
-X-Google-Smtp-Source: AGHT+IEax6a8dfMz1OgvnNbIRX/bddzrjFMnk7yxuDXueEFsyquXiEKQlFi+GF6HR8EeIpvU51fp3FHRMi9zqNMBNIE=
-X-Received: by 2002:a05:6870:ac0f:b0:203:c9b1:fe8a with SMTP id
- kw15-20020a056870ac0f00b00203c9b1fe8amr1625883oab.12.1702906955958; Mon, 18
- Dec 2023 05:42:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E041D158
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c38de1ee4so29486375e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:42:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702906965; x=1703511765; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xyEG4+5CWlynpKgbnqEksNZUKPX7fzBsT3XPQGSore8=;
+        b=YquedR+oCDpFK2QO1vifa6qmqchNGSs6FM34pFufOPCCqjZ5n3nXHrH2UQsgQqUI7Y
+         Jn2gjr6+Fy1MZRnrUmICAAZdQ3lWF4szuqHFGY4OVCLErUoexf1NzhCCZaxuQTRhxwq3
+         PMer1zr6X/hjNDi26Z3AWlz2A450Lv+8U0IqjN63zW0n7rGFjatz8M/ZxohqvgHqOs8n
+         YNnZNrQ88N3kzMTn3BPwRgiuZaqq6SSguX+jMi9FbY7MI/V+da0Ku4ZcKMKA8E3Vussi
+         DJXvX8vGldWHg7uwHEzXOLRmirBDXvm0oye+QPbQrO2q43DoeGETTad/O7Qnp/EmRFQP
+         VCwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702906965; x=1703511765;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xyEG4+5CWlynpKgbnqEksNZUKPX7fzBsT3XPQGSore8=;
+        b=RitDI37xnvMKFDBDZFPQuHSpQl9f6E/SSQDSd8MxM7bftXl8zJo+cAGczD/RsnB8Wv
+         lh2Bn9cNB9eBIA2Exr3E2AZGzYYm8KYmQYQZNkZOhH9s9nNNfIyro25rIZT5HnElawqs
+         eOudv86N+X8xEnlkch+lnwsOu8yLQzOREXSM7lbV7B9Cog95VdVWAdfn7upJmviclpcr
+         D9bQvsB6NtagDs7evoCOLQKffZHzAKujmMhLfum/oN81hPU0f6I3hWD+I2mA98R4+ygx
+         lUEWWliVnk2n+URizfuLLQ9CsZImAMxRbitL0GrU7AlcQL6eAAg/WDP9Rm3qQS0egJBr
+         +8sg==
+X-Gm-Message-State: AOJu0Yxhw+pu2H/sod1qGLJ9SOSr3Y53jVWWysuqM6mRofQdOov/b6gA
+	spNiTg09OjQMpxg6oeRQOrqwyA==
+X-Google-Smtp-Source: AGHT+IFEsHmQvoI+lwVFUNs2ikaUGdgRgCy7+Zn0cnWHJ6oZBH16pyO7uuiglM/OBqgJBBq7eFjBgg==
+X-Received: by 2002:a7b:cd12:0:b0:40c:33aa:4ef5 with SMTP id f18-20020a7bcd12000000b0040c33aa4ef5mr8025674wmj.91.1702906964902;
+        Mon, 18 Dec 2023 05:42:44 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id h7-20020a170906530700b00a1b32663d7csm14242327ejo.102.2023.12.18.05.42.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 05:42:44 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] power: supply: drop maintainer-less BQ27XXX
+Date: Mon, 18 Dec 2023 14:42:41 +0100
+Message-Id: <20231218134241.50284-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214222253.116734-1-ojeda@kernel.org> <CABVgOS=LXUzRD-c63sxn0FMfGWvxCPP1t_8nY5Xgk30Y9qMAcw@mail.gmail.com>
- <CANiq72kw326HyrDM0v0mFNu5jfb=eL1a+k-idr-5Vbc6_gmY2A@mail.gmail.com>
- <CAK7LNAQ7A79fMg3Teh7H+NRwnztrNU73s5C_fybUVH+vEX0YeQ@mail.gmail.com> <CANiq72mjSVqLNrdhK6H+X2=9ydwzX3RM2jBf1AwRFngSJ2kQ9Q@mail.gmail.com>
-In-Reply-To: <CANiq72mjSVqLNrdhK6H+X2=9ydwzX3RM2jBf1AwRFngSJ2kQ9Q@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 18 Dec 2023 22:41:59 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQT2y4qGgvr5+GbougTMaq2ZQB=P6aLppB0PudyegpXaw@mail.gmail.com>
-Message-ID: <CAK7LNAQT2y4qGgvr5+GbougTMaq2ZQB=P6aLppB0PudyegpXaw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: rust: add `rustupoverride` target
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: David Gow <davidgow@google.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, linux-kbuild@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 18, 2023 at 10:33=E2=80=AFPM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Mon, Dec 18, 2023 at 1:10=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
-.org> wrote:
-> >
-> > In principle, Kbuild does not require internet connection,
-> > or proactively change the system setting.
->
-> Yeah, that was what I thought. I agree it can be surprising to have
-> Make targets that modify environment/system-level bits (i.e. affecting
-> things outside the build).
->
-> > Rather, I will manually do this one time for the parent directory:
->
-> That can work for many people, yeah. Though I imagine some people may
-> want to keep builds (and sources) of different kernel versions in the
-> same parent folder (or even other projects). But one can use nested
-> overrides too.
->
-> > If you want to provide a way for automated settings,
-> > you can do it in a script you maintain.
->
-> Sounds good. In that case, we can send to the list your patch from the
-> `rust` branch if that is OK with you (i.e. I understand you would
-> prefer to avoid not just `rustsetup` but also `rustupoverride`).
->
-> Thanks Masahiro!
->
-> Cheers,
-> Miguel
+BQ27XXX charger driver does not have maintainers nor status:
 
+  ./MAINTAINERS:21808: warning: section without status 	TI BQ27XXX POWER SUPPLY DRIVER
 
-Viresh's v2 was written without relying on this patch.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ MAINTAINERS | 5 -----
+ 1 file changed, 5 deletions(-)
 
-If that one is better described, that is OK too.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cdf1575dc851..28b98fc4637c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21763,11 +21763,6 @@ L:	linux-omap@vger.kernel.org
+ S:	Maintained
+ F:	drivers/thermal/ti-soc-thermal/
+ 
+-TI BQ27XXX POWER SUPPLY DRIVER
+-F:	drivers/power/supply/bq27xxx_battery.c
+-F:	drivers/power/supply/bq27xxx_battery_i2c.c
+-F:	include/linux/power/bq27xxx_battery.h
+-
+ TI CDCE706 CLOCK DRIVER
+ M:	Max Filippov <jcmvbkbc@gmail.com>
+ S:	Maintained
+-- 
+2.34.1
 
-
-
-
-
---
-Best Regards
-Masahiro Yamada
 
