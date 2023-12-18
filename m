@@ -1,114 +1,128 @@
-Return-Path: <linux-kernel+bounces-3905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C39768174FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:15:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E5D081750A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 786BF1F2488D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:15:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE2AAB23B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F87842379;
-	Mon, 18 Dec 2023 15:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3982242377;
+	Mon, 18 Dec 2023 15:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KGuuxqfn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E835B3D540;
-	Mon, 18 Dec 2023 15:14:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D92AC433C7;
-	Mon, 18 Dec 2023 15:14:35 +0000 (UTC)
-Date: Mon, 18 Dec 2023 10:15:31 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] ring-buffer: Replace rb_time_cmpxchg() with
- rb_time_cmp_and_update()
-Message-ID: <20231218101531.63d138df@gandalf.local.home>
-In-Reply-To: <20231218232455.03aa6506f855109476e34212@kernel.org>
-References: <20231215165512.280088765@goodmis.org>
-	<20231215165628.096822746@goodmis.org>
-	<20231218232455.03aa6506f855109476e34212@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556F83D568
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cc6eecd319so15462771fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:16:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702912596; x=1703517396; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PY60PN5C+lwGGC6WWMv45aexAZDh9La78/eVT3cI7Yo=;
+        b=KGuuxqfnE2Fl9AWYcrhHSiYQ+vtdOHIwxPZExWiiadgMJw7pOrsbnrQosVW/DVt1D2
+         g2XgiwedLoyts7jYZ1FUiBqXsHsBMo4Tp7w84vqjHS0YzhzsHnrxbm0YELq5bK2gYmKy
+         VXRLhhKdKlN/28FBFPCJW75sV2/ZSeZIhxj2E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702912596; x=1703517396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PY60PN5C+lwGGC6WWMv45aexAZDh9La78/eVT3cI7Yo=;
+        b=wqpNqlHfqeCZUTvrrl9urKSw3VmAj0frg+b89fCMlJ0WJFRIBxCvXyiD9OhYwN+0Yo
+         EFUuqtlMCjrlBXol3Zhj4XK8K90nMSEuooNyimSKJoSvQbO9oRahWijEEU0AdQfBtDNy
+         c/zXiy1oV7rEPRNkq1xUkJSIac8kSlRsqcEkHewwTXWVzuhOIV5Ci8FYGTw/dy8EsWpe
+         +FDUROI2rnfnxxfrTBirOgqELW7uvNrcXMff22Im1TAybW+FbkWXu8nmLDJLlW3GbCk2
+         9EL+SNxPEuA+pmZTJjA5jPJl+BGqZu5dIpwtuM0+6Ie20qNX8UVa9Kap+YFtLIaT51V+
+         bxzw==
+X-Gm-Message-State: AOJu0YwaujTvDIVJdrUsCmKB9hpl7uM1w4AmHVzX1IAOsyHa/rLdUHUF
+	ypYg1RAuJWn1Cz6jY+iGSZ0YeOWebCR+JLDu74ZZzRZ02ij8LeoN
+X-Google-Smtp-Source: AGHT+IGjJop7oEsSX/3Ak4U+fYL3wpoY4UCc7Na0tU4gVge+P2pqeifmcNy+8SAGPVeT1XXEXmz03GvHhC95mdyNcWo=
+X-Received: by 2002:a2e:95d8:0:b0:2cc:67ad:4153 with SMTP id
+ y24-20020a2e95d8000000b002cc67ad4153mr1326894ljh.25.1702912596293; Mon, 18
+ Dec 2023 07:16:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231211114346.1132386-1-stevensd@google.com> <2146e48d-5fb3-4444-81c5-9c8d8cb18811@redhat.com>
+ <CAD=HUj7e9NaaYhos82JZoxhyX6J0bu+m0i7-_TqNbXiCDZ-Uxg@mail.gmail.com> <bc88dab5-e65a-401f-a44d-ad0c707c0f74@redhat.com>
+In-Reply-To: <bc88dab5-e65a-401f-a44d-ad0c707c0f74@redhat.com>
+From: David Stevens <stevensd@chromium.org>
+Date: Mon, 18 Dec 2023 10:16:24 -0500
+Message-ID: <CAD=HUj7h-cF929AbSL0bmZE7J=G1aQjZuYSgChPBkSGJ+wfoyQ@mail.gmail.com>
+Subject: Re: [PATCH] virtio_balloon: stay awake while adjusting balloon
+To: David Hildenbrand <david@redhat.com>
+Cc: "Michael S . Tsirkin" <mst@redhat.com>, virtualization@lists.linux-foundation.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 18 Dec 2023 23:24:55 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Mon, Dec 18, 2023 at 6:37=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 14.12.23 05:13, David Stevens wrote:
+> > On Wed, Dec 13, 2023 at 5:44=E2=80=AFPM David Hildenbrand <david@redhat=
+.com> wrote:
+> >>
+> >> On 11.12.23 12:43, David Stevens wrote:
+> >>> From: David Stevens <stevensd@chromium.org>
+> >>>
+> >>
+> >> Hi David,
+> >>
+> >>> Add a wakeup event for when the balloon is inflating or deflating.
+> >>> Userspace can enable this wakeup event to prevent the system from
+> >>> suspending while the balloon is being adjusted. This allows
+> >>> /sys/power/wakeup_count to be used without breaking virtio_balloon's
+> >>> cooperative memory management.
+> >>
+> >> Can you add/share some more details
+> >
+> > I'm working on enabling support for Linux s2Idle in our Android
+> > virtual machine, to restrict apps from running in the background
+> > without holding an Android partial wakelock. With the patch I recently
+> > sent out [1], since crosvm advertises native PCI power management for
+> > virtio devices, the Android guest can properly enter s2idle, and it
+> > can be woken up by incoming IO. However, one of the remaining problems
+> > is that when the host needs to reclaim memory from the guest via the
+> > virtio-balloon, there is nothing preventing the guest from entering
+> > s2idle before the balloon driver finishes returning memory to the
+> > host.
+>
+> Thanks for the information. So you also want to wakeup the VM when
+> wanting to get more memory from the VM?
+>
+> Using which mechanism would that wakeup happen? Likely not the device
+> itself?
 
-> On Fri, 15 Dec 2023 11:55:13 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > There's only one place that performs a 64-bit cmpxchg for the timestamp
-> > processing. The cmpxchg is only to set the write_stamp equal to the
-> > before_stamp, and if it doesn't get set, then the next event will simply
-> > be forced to add an absolute timestamp.
-> > 
-> > Given that 64-bit cmpxchg is expensive on 32-bit, and the current
-> > workaround uses 3 consecutive 32-bit cmpxchg doesn't make it any faster.
-> > It's best to just not do the cmpxchg as a simple compare works for the
-> > accuracy of the timestamp. The only thing that will happen without the
-> > cmpxchg is the prepended absolute timestamp on the next event which is not
-> > that big of a deal as the path where this happens is seldom hit because it
-> > requires an interrupt to happen between a few lines of code that also
-> > writes an event into the same buffer.
-> > 
-> > With this change, the 32-bit rb_time_t workaround can be removed.
-> >   
-> 
-> Hmm, but this patch itself is just moving rb_time_cmpxchg() in the new
-> rb_time_cmp_and_update() function. The actual change has been done
-> in the next patch.
+The wakeup would happen via the parent device's interrupt. I've sent a
+new version of this patch that uses the parent device's wakeup event
+instead of adding a new one.
 
-Exactly. Which is why I said above "with this change, the 32-bit rb_time_t
-workaround can be removed". It can't be removed without this change.
+> >
+> > One alternative to this approach would be to add a virtballoon_suspend
+> > callback to abort suspend if the balloon is inflating/adjusting.
+> > However, it seems cleaner to just prevent suspend in the first place.
+>
+> Also, the PM notifier could also be used with very high priority, so the
+> device would respond early to PM_SUSPEND_PREPARE.
 
-> I think there is no reason to split this from the
-> second one...
+One drawback of blocking suspend via a PM notifier is that the
+behavior isn't configurable by userspace, whereas wakeup events can be
+enabled/disabled by userspace.
 
-I originally had it as one patch, but I disliked the removal of the
-workaround touching the main logic code (which this patch does).
-
-Basically I broke it into:
-
-1. Remove workaround exposure from the main logic. (this patch)
-2. Remove the workaround. (next patch).
-
-> 
-> Isn't this part actual change?
-
-This part is abstracted out from the main logic. Which is why I made this
-patch.
-
-> 
-> >  static bool rb_time_cmp_and_update(rb_time_t *t, u64 expect, u64 set)
-> >  {
-> > -	return rb_time_cmpxchg(t, expect, set);
-> > +#ifdef RB_TIME_32
-> > +	return expect == READ_ONCE(t->time);
-
-And I need to make a v2 as the above is wrong. It should have been:
-
-	return expect == local64_read(&t->time);
-
--- Steve
-
-
-> > +#else
-> > +	return local64_try_cmpxchg(&t->time, &expect, set);
-> > +#endif
-> >  }  
+-David
 
