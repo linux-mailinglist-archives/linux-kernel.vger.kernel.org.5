@@ -1,141 +1,122 @@
-Return-Path: <linux-kernel+bounces-4048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01F8D81772E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:15:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C70868177B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9665E1F26EF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:15:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B200C28684F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7613D546;
-	Mon, 18 Dec 2023 16:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nWGuDOgc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39752498BD;
+	Mon, 18 Dec 2023 16:40:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bues.ch (bues.ch [80.190.117.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E323D576;
-	Mon, 18 Dec 2023 16:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a1fae88e66eso373701366b.3;
-        Mon, 18 Dec 2023 08:15:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702916114; x=1703520914; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NuQkvFoOE7DbmbVDS6evAusjIw9xKO/OIgcTSDhOMeo=;
-        b=nWGuDOgcCtvNi+SOoTkkdmS+J/lK4NXerT4qi9EGCJiVnZaJttVqDuf7LqIAkC4c3c
-         LuzIa/yrxQQNEPWkw5GuJm/Z4HlUP/QkOaGzgxsEVsQZCsF0aQZe+G5PNYQPAc+ZJX3F
-         G6r74FMDiuCZR4iIRATvw1Flhxa+e2tuodKTCG0Li8M+hLY5F/vsP1V7P8BdwHIXRFDE
-         bnvlZszQlB2bVCpnIobaRnsfsvcAbLR4RJDZls68Y7SRe1idJCmib4HCVhpZcydJjcXY
-         gNwagJgknmKjSpxXhn2JrwHnkAJGVuNNncgTfMS7GyZVHeCPjFTdpyvXHyZKIdbiaz+n
-         2B4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702916114; x=1703520914;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NuQkvFoOE7DbmbVDS6evAusjIw9xKO/OIgcTSDhOMeo=;
-        b=RiKJKmo3KWOQaI6NpwpO4XJTXdh84PqILPHDcczu0GhxUD+1q2oY72aGf86h4+G2C6
-         LuciRX5/njR7vWiH6NABvYk7HHfAA0UpKKecEnNyAPleHdDZ2uB33FI4FIQLsDSdZrOD
-         dZWBgSevNgtr+xub+4DT/FIso4+pf9ijF6DBt3AXZvXsoezWQPhwGuwbDzYHvdU2ORq2
-         0g2Gw8QveypG7nNGTa1CL8FsHFRndIU+jY2LqrNX0M/PwoZ8cHRaJa/VpFb2TnBIKQ2y
-         jqei4ZT7puKJ305bE5Bo1D+0bBdj7N09PS/rrPFKF6ER47sDQqvYN9R7P6c9re3suJhF
-         BGUQ==
-X-Gm-Message-State: AOJu0YwDOAVw5ixz7SZOKtEu1XhXv+6l6Jerolx81/x80yRrRujphXxS
-	ri+rx9JHwSxoMbJzcIRxuaeP3+8VMz/caQ==
-X-Google-Smtp-Source: AGHT+IFwxKikc0VD/aflFLF5hsUj2htfh9cxPznr1qHGY/nVPfC2muHIz36ghByZC6hXFA3e5iP3eQ==
-X-Received: by 2002:a17:906:51d8:b0:a23:6eb6:6b29 with SMTP id v24-20020a17090651d800b00a236eb66b29mr58860ejk.101.1702916114457;
-        Mon, 18 Dec 2023 08:15:14 -0800 (PST)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id hg12-20020a1709072ccc00b00a2359f95ad8sm1230202ejc.37.2023.12.18.08.15.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 08:15:13 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Conor Dooley <conor@kernel.org>, Andre Przywara <andre.przywara@arm.com>
-Cc: Brandon Cheo Fusi <fusibrandon13@gmail.com>,
- Yangtao Li <tiny.windzz@gmail.com>, Viresh Kumar <vireshk@kernel.org>,
- Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- "Rafael J . Wysocki" <rafael@kernel.org>, Maxime Ripard <mripard@kernel.org>,
- linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 3/5] cpufreq: sun50i: Add D1 support
-Date: Mon, 18 Dec 2023 17:15:12 +0100
-Message-ID: <2710663.mvXUDI8C0e@jernej-laptop>
-In-Reply-To: <20231218155345.476e71ea@donnerap.manchester.arm.com>
-References:
- <20231218110543.64044-1-fusibrandon13@gmail.com>
- <20231218-blabber-slapstick-ab7ae45af019@spud>
- <20231218155345.476e71ea@donnerap.manchester.arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756731E4AF;
+	Mon, 18 Dec 2023 16:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bues.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bues.ch
+Received: by bues.ch with esmtpsa (Exim 4.96)
+	(envelope-from <m@bues.ch>)
+	id 1rFGIr-000A6d-38;
+	Mon, 18 Dec 2023 17:17:13 +0100
+Date: Mon, 18 Dec 2023 17:16:29 +0100
+From: Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Kalle Valo <kvalo@kernel.org>, Johannes Berg
+ <johannes@sipsolutions.net>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Larry Finger <Larry.Finger@lwfinger.net>, Arend van
+ Spriel <aspriel@gmail.com>, Franky Lin <franky.lin@broadcom.com>, Hante
+ Meuleman <hante.meuleman@broadcom.com>, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, b43-dev@lists.infradead.org,
+ brcm80211-dev-list.pdl@broadcom.com, SHA-cyfmac-dev-list@infineon.com,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bcma,ssb: simplify dependency handling for bcma and ssb
+ drivers
+Message-ID: <20231218171629.5cf95fd3@barney>
+In-Reply-To: <CAKXUXMxh3rM8da9kJG_=Sy8fQqqf7f8xXaHDHPLvpvRiYg1e5w@mail.gmail.com>
+References: <20231218115802.15859-1-lukas.bulwahn@gmail.com>
+ <26207725d5025318b831dd5a5feca67248aaa221.camel@sipsolutions.net>
+ <87o7ensgjv.fsf@kernel.org>
+ <CAKXUXMxh3rM8da9kJG_=Sy8fQqqf7f8xXaHDHPLvpvRiYg1e5w@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; boundary="Sig_/Q7GEDofx/o0YmJSgzfmcjUH";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
 
-Dne ponedeljek, 18. december 2023 ob 16:53:45 CET je Andre Przywara napisal(a):
-> On Mon, 18 Dec 2023 14:55:30 +0000
-> Conor Dooley <conor@kernel.org> wrote:
-> 
-> Hi,
-> 
-> > On Mon, Dec 18, 2023 at 12:05:41PM +0100, Brandon Cheo Fusi wrote:
-> > > Add support for D1 based devices to the Allwinner H6 cpufreq
-> > > driver
-> > > 
-> > > Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> > > ---
-> > >  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> > > index 32a9c88f8..ccf83780f 100644
-> > > --- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> > > +++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> > > @@ -160,6 +160,7 @@ static struct platform_driver sun50i_cpufreq_driver = {
-> > >  
-> > >  static const struct of_device_id sun50i_cpufreq_match_list[] = {
-> > >  	{ .compatible = "allwinner,sun50i-h6" },
-> > > +	{ .compatible = "allwinner,sun20i-d1" },  
-> > 
-> > I thought the feedback in v2 was to drop this change, since the
-> > devicetree has the sun50i-h6 as a fallback compatible?
-> 
-> Well, this is the *board* (fallback) compatible string, so we cannot assign
-> it as we like. The whole (existing) scheme is admittedly somewhat weird,
-> because we not only match on a particular device compatible
-> (like allwinner,sun20i-d1-operating-points), but also need to blocklist and
-> re-match some parts against the *board compatible*, owing to the
-> cpufreq-dt driver. The board name is basically used as a placeholder to
-> find out the SoC, because there is (or was?) no other good way - the
-> CPU DT nodes don't work for this. Back when this was introduced, this was
-> the "least worst" solution.
-> 
-> I don't remember all the details, and didn't find time yet to look into
-> this in more detail, but fixing this is non-trivial. If this isn't 6.8
-> material, I might have a look at this later this week/month.
+--Sig_/Q7GEDofx/o0YmJSgzfmcjUH
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I would say it's 6.9 material. -rc6 already passed and it's not yet aligned
-with all maintainers.
+Hi Lukas,
 
-Best regards,
-Jernej
+thanks for your patch.
 
+On Mon, 18 Dec 2023 16:03:54 +0100
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
+> While reading through the code, I was
+> confused on what the dependencies were trying to tell me, as the
+> config symbols and conditions seemed to repeat over and over in
+> different places.
+
+The {SSB,BCMA}_POSSIBLE constants are defining the conditions under
+which it is possible to 'select' SSB/BCMA.
+SSB and BCMA are usually 'select'ed rather than depended on, for better
+user experience while configuring.
+
+> I thought it was worth a clean up and this was the patch I came up
+> with in the end.
+
+IMO this does not clean up or simplify the code.
+It rather makes it more complicated to maintain.
+
+The idea behind the POSSIBLE constants it to _not_ spread the
+conditions all across the drivers. That has significant advantages, if
+the condition changes.
+
+I also don't see the redundancy in the resulting dependency conditions
+as a bad thing. It's better if every option explicitly defines its
+dependencies rather than expecting something else to depend on it.
+That's fragile.
+
+NAK from me.
+
+--=20
+Michael B=C3=BCsch
+https://bues.ch/
+
+--Sig_/Q7GEDofx/o0YmJSgzfmcjUH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmWAcF0ACgkQ9TK+HZCN
+iw5l7BAAgpdZdzT7v2hPcLw7K9DpHS31i4y/GGlvC4rtJuMzznJNJQGs1MQDH5qM
+xo1mioY+gzeH17iRop1VCJynuzBTwOkJNz0cKPq6Iia2dS1z+YNZWwaJp0jvF0aQ
+0OQO+rzX+z2ydUmiE9jSbeS1CO9l1Pk9pvKBQhp/Axg/fq1Om+MOQSdngezPdH/7
+pgJnhM7XYnEy5xyKEjB5yPzcR3LuCC5NPnq964J7/+Y4A5HfWGtQBKLO6F0+XWBF
+xeUlNl7uvmXilz6MwSsQkiIoSmkQBJKQwpYXV1uXi4VXiz7man3cY+ZuayqlyuVL
+JfgM0pbmldVPiiXTeL0ds+LuZm+1/xiXQtmoWNp4O1VxBR+XdPKoDxL2nkC4GB4W
+Okq2+TA6n1WKPIrI4WAdhASvw+skaIx8HawIoM4jhGrc4tFaX93DA80gNOQuJ1Yt
+PH752DI0wcM03qnYoPIrkcfYxrdX/h7sYEY8BCYJfetRjWwSsZT8y7CtVz47qszE
+WhwU2E1sMSLM5rHV+W8t8RXmvzZEo2AUMNDQ2V1PFtn/FALO52cQ3HvwbOee1OjE
+HZeMAJE3m2g5xxm2O/omOXSPwm8H7QE6DhPhA3JmrSSqjFv1vSVEx/3n/DuX8DmG
+JkmrPATbaZbRYQFthprmECBBXcOgnAhCa4ZDDja1+/lL3q0ArCY=
+=fqXM
+-----END PGP SIGNATURE-----
+
+--Sig_/Q7GEDofx/o0YmJSgzfmcjUH--
 
