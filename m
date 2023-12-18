@@ -1,122 +1,90 @@
-Return-Path: <linux-kernel+bounces-3570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28077816DF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:33:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB921816DF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:34:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C61102843A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:33:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 800DB1F227F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37577D612;
-	Mon, 18 Dec 2023 12:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828B97EFA9;
+	Mon, 18 Dec 2023 12:33:55 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3AE41C7F;
-	Mon, 18 Dec 2023 12:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4StzkV4Rqlz6K6PV;
-	Mon, 18 Dec 2023 20:33:06 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id D26731400DB;
-	Mon, 18 Dec 2023 20:33:41 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 18 Dec
- 2023 12:33:41 +0000
-Date: Mon, 18 Dec 2023 12:33:39 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Fan Ni <nifan.cxl@gmail.com>, Dave Jiang <dave.jiang@intel.com>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Huai-Cheng Kuo
-	<hchkuo@avery-design.com.tw>
-Subject: Re: [PATCH v2 2/2] cxl/cdat: Fix header sum value in CDAT checksum
-Message-ID: <20231218123339.000024fc@Huawei.com>
-In-Reply-To: <20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
-References: <20231117-fix-cdat-cs-v2-0-715399976d4d@intel.com>
-	<20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC5C41C7F
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xfusion.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xfusion.com
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+	by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4Stzg94Y9Kz9xn3d;
+	Mon, 18 Dec 2023 20:30:13 +0800 (CST)
+Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 18 Dec
+ 2023 20:33:39 +0800
+Date: Mon, 18 Dec 2023 20:33:39 +0800
+From: Wang Jinchao <wangjinchao@xfusion.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+	<linux-kernel@vger.kernel.org>
+CC: <stone.xulei@xfusion.com>, <wangjinchao@xfusion.com>
+Subject: [PATCH v2] x86/setup: Remove duplicate header includes
+Message-ID: <202312182031+0800-wangjinchao@xfusion.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: wuxshcsitd00602.xfusion.com (10.32.132.250) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
 
-On Wed, 29 Nov 2023 17:33:04 -0800
-Ira Weiny <ira.weiny@intel.com> wrote:
+efi.h and spec-ctrl.h are included twice.
+Remove the duplicate entries.
 
-> The addition of the DCD support for CXL type-3 devices extended the CDAT
-> table large enough that the checksum being returned was incorrect.[1]
-> 
-> This was because the checksum value was using the header length field
-> rather than each of the 4 bytes of the length field.  This was
-> previously not seen because the length of the CDAT data was less than
-> 256 thus resulting in an equivalent checksum value.
-> 
-> Properly calculate the checksum for the CDAT header.
-> 
-> [1] https://lore.kernel.org/all/20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com/
-> 
-> Fixes: aba578bdace5 ("hw/cxl/cdat: CXL CDAT Data Object Exchange implementation")
-> Cc: Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+---
+V2:
+    Adopt Sohil's suggestion to modify the comments.
+V1: https://lore.kernel.org/lkml/202312151755+0800-wangjinchao@xfusion.com/
+ arch/x86/kernel/setup.c   | 1 -
+ arch/x86/kernel/smpboot.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-This only becomes a problem with the addition of DCDs so I'm not going to rush it in.
-Btw cc qemu-devel on qemu patches!
-
-
-I'll add it to my tree for now.
-
-Jonathan
-
-
-> 
-> ---
-> Changes from V1:
-> [djiang: Remove do {} while (0);]
-> ---
->  hw/cxl/cxl-cdat.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/hw/cxl/cxl-cdat.c b/hw/cxl/cxl-cdat.c
-> index 24829cf2428d..67e44a4f992a 100644
-> --- a/hw/cxl/cxl-cdat.c
-> +++ b/hw/cxl/cxl-cdat.c
-> @@ -49,6 +49,7 @@ static void ct3_build_cdat(CDATObject *cdat, Error **errp)
->      g_autofree CDATTableHeader *cdat_header = NULL;
->      g_autofree CDATEntry *cdat_st = NULL;
->      uint8_t sum = 0;
-> +    uint8_t *buf;
->      int ent, i;
->  
->      /* Use default table if fopen == NULL */
-> @@ -95,8 +96,12 @@ static void ct3_build_cdat(CDATObject *cdat, Error **errp)
->      /* For now, no runtime updates */
->      cdat_header->sequence = 0;
->      cdat_header->length += sizeof(CDATTableHeader);
-> -    sum += cdat_header->revision + cdat_header->sequence +
-> -        cdat_header->length;
-> +
-> +    buf = (uint8_t *)cdat_header;
-> +    for (i = 0; i < sizeof(*cdat_header); i++) {
-> +        sum += buf[i];
-> +    }
-> +
->      /* Sum of all bytes including checksum must be 0 */
->      cdat_header->checksum = ~sum + 1;
->  
-> 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 1526747bedf2..f6152c6b139a 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -37,7 +37,6 @@
+ #include <asm/bugs.h>
+ #include <asm/cacheinfo.h>
+ #include <asm/cpu.h>
+-#include <asm/efi.h>
+ #include <asm/gart.h>
+ #include <asm/hypervisor.h>
+ #include <asm/io_apic.h>
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 2cc2aa120b4b..45057860e034 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -87,7 +87,6 @@
+ #include <asm/hw_irq.h>
+ #include <asm/stackprotector.h>
+ #include <asm/sev.h>
+-#include <asm/spec-ctrl.h>
+ 
+ /* representing HT siblings of each logical CPU */
+ DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
+-- 
+2.40.0
 
 
