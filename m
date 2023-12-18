@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-4262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF49817A0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:50:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFDE6817A0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D05F285826
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:50:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 051F81C22DA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D4AB5BFAE;
-	Mon, 18 Dec 2023 18:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0CE15BF9D;
+	Mon, 18 Dec 2023 18:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l4AmxIbX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="riIBUN3U"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539141EA7D;
-	Mon, 18 Dec 2023 18:49:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82E37C433C8;
-	Mon, 18 Dec 2023 18:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140431D12F;
+	Mon, 18 Dec 2023 18:50:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71B6FC433C8;
+	Mon, 18 Dec 2023 18:50:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702925396;
-	bh=jD2fpRLaPSIWmEFGqTjQ5EneQLX6ELf+SeTb2BR36oo=;
+	s=k20201202; t=1702925443;
+	bh=mAyzULUQ/2cIyFdm96bPlxnFOJOxBk1kSyPiwW8z2kw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l4AmxIbXIk276dfyCAPwlqTUg/AepH3EV1fJXoYnBTF53nzFQ9f1rpblYEKy3KGAU
-	 Th5Ehhp1RzKgCIhFURzMvhMeK8wjOL/rwmpWMP+yATIkQDpfOQmDNIigNfbQj4bTsT
-	 e3jgnUEqbjnukGq7ixxCrDzacK3UWpoWqlpjQ6HPNdFqwAVJ06AVlKY09NvKXxlKFj
-	 VdcqXiYs3eUlAuOY+bx4hTWsnGg16qaivWv/tIPkzvtEW+/5oH/F0l5zYinYDSDBUC
-	 Zp5iHDRTCKXkpOeKJvJZO+zR4NntVpxxY7c1Slz9fLLTQclWNIfNUTwM1SJFPecpSR
-	 rB0KrRi/jMf4A==
+	b=riIBUN3UXO4MtI4onPLdmXLWlRLMFLJu6TEA/D7TTt9WOwRzQLObhB4f8tWsAG8D0
+	 AqXslIaj1ET98YTmkyH3u6R9fldkP1vbyTPdwQwtIZdbowf8jDdF3/Dz8KZF5aCcUg
+	 8lWsiGG8KU4Gl5Z5Vaz/n8EqOLNaIRQPBkh37vjQQzKMpDErZ3sEGbYnGY3hUCq9x4
+	 ZFiN0dKAy1Wbb9jp0VFG9c0eHVWPn6mvCMwDAX4WR2vn8ua2sULUuhOxLlvZCHRO0D
+	 /5+zFpIrn5KdCYz1dwOdP3A3RVSHfGkj5fUPq+L8h7MGJ3wimtKIC5ntDVf3SqO30X
+	 6OCtR+TUDapxQ==
 From: SeongJae Park <sj@kernel.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: stable@vger.kernel.org,
@@ -53,11 +53,11 @@ Cc: stable@vger.kernel.org,
 	allen.lkml@gmail.com,
 	damon@lists.linux.dev,
 	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.1 000/106] 6.1.69-rc1 review
-Date: Mon, 18 Dec 2023 18:49:54 +0000
-Message-Id: <20231218184954.99999-1-sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/166] 6.6.8-rc1 review
+Date: Mon, 18 Dec 2023 18:50:41 +0000
+Message-Id: <20231218185041.100034-1-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231218135055.005497074@linuxfoundation.org>
+In-Reply-To: <20231218135104.927894164@linuxfoundation.org>
 References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,10 +69,10 @@ Content-Transfer-Encoding: 8bit
 
 Hello,
 
-On Mon, 18 Dec 2023 14:50:14 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Mon, 18 Dec 2023 14:49:26 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.1.69 release.
-> There are 106 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.6.8 release.
+> There are 166 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -80,9 +80,9 @@ On Mon, 18 Dec 2023 14:50:14 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.or
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.69-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.8-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > and the diffstat can be found below.
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
@@ -92,7 +92,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] d4e0eced6308 ("Linux 6.1.69-rc1")
+[2] aa90f2b75bff ("Linux 6.6.8-rc1")
 
 Thanks,
 SJ
@@ -107,7 +107,11 @@ ok 3 selftests: damon: debugfs_target_ids.sh
 ok 4 selftests: damon: debugfs_empty_targets.sh
 ok 5 selftests: damon: debugfs_huge_count_read_write.sh
 ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: sysfs.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
 ok 1 selftests: damon-tests: kunit.sh
 ok 2 selftests: damon-tests: huge_count_read_write.sh
 ok 3 selftests: damon-tests: buffer_overflow.sh
