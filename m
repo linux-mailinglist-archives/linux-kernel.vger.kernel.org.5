@@ -1,121 +1,146 @@
-Return-Path: <linux-kernel+bounces-3302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 923DF816AA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:12:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 589B4816AA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B580283818
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:12:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB411C22A38
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC7F134C3;
-	Mon, 18 Dec 2023 10:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E2B14271;
+	Mon, 18 Dec 2023 10:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="RXMU++xD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PmbrQi1j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6766E14F9E
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-52-2lOzyjfMNFygAJUXwze_iw-1; Mon, 18 Dec 2023 10:12:22 +0000
-X-MC-Unique: 2lOzyjfMNFygAJUXwze_iw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 18 Dec
- 2023 10:12:00 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 18 Dec 2023 10:12:00 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Ivan Orlov' <ivan.orlov0322@gmail.com>, "paul.walmsley@sifive.com"
-	<paul.walmsley@sifive.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
-CC: "conor.dooley@microchip.com" <conor.dooley@microchip.com>,
-	"ajones@ventanamicro.com" <ajones@ventanamicro.com>, "samuel@sholland.org"
-	<samuel@sholland.org>, "alexghiti@rivosinc.com" <alexghiti@rivosinc.com>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"skhan@linuxfoundation.org" <skhan@linuxfoundation.org>
-Subject: RE: [PATCH] riscv: lib: Optimize 'strlen' function
-Thread-Topic: [PATCH] riscv: lib: Optimize 'strlen' function
-Thread-Index: AQHaLduBo9lhsHug1EOTPi9OJpSM+LCttqAAgACUUYCAAH5N8IAADeeAgAABdOA=
-Date: Mon, 18 Dec 2023 10:12:00 +0000
-Message-ID: <9b0c5afd66454c39892898dc95e7302c@AcuMS.aculab.com>
-References: <20231213154530.1970216-1-ivan.orlov0322@gmail.com>
- <86d3947bce1f49c395224998e7d65dc2@AcuMS.aculab.com>
- <de80b4c7-1ffb-478e-9117-9d5b829470bd@gmail.com>
- <bd9159806a2e4fd188a78515b58ec51e@AcuMS.aculab.com>
- <f12ef9ea-14fe-491a-890b-a645bb4827cb@gmail.com>
-In-Reply-To: <f12ef9ea-14fe-491a-890b-a645bb4827cb@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C58213FFF
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id AD92E32003F4;
+	Mon, 18 Dec 2023 05:12:32 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 18 Dec 2023 05:12:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1702894352;
+	 x=1702980752; bh=3ZyUug5xi/z8ZT7W43WlY1pfaZKNZzJDM3Pip8YjDvY=; b=
+	RXMU++xDlQ6Rrti2xmG4o9C3g0x2w29JWi+1DPsZIbZQqpOijq6KGUk4VFkVoqbu
+	bo8RxTXlEzXU+q5uVyr1YuXzdb6CptioQNC2luTSshIUfmn7LtQEvgy/zy6HfdKv
+	Lu+CTVLN9tjTF/uxm7rzdCpSO00MLXi3SPQZhk1VXY6iaFUSidResSlBdHwMhf8B
+	DeFdwPsTyP5s+LY1BlxwLyyE1E+FGKWhet/pqXsVcjOblxuLBInZhxskLifhM7W1
+	9JU8/qVp9v1NcrGu+7OY8l+ZX10s07nr3fb6A6gSIztkv20Vlb6VycgQ3ZACvRX0
+	kIRZEizPFlt407k6L0O9TQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1702894352; x=
+	1702980752; bh=3ZyUug5xi/z8ZT7W43WlY1pfaZKNZzJDM3Pip8YjDvY=; b=P
+	mbrQi1j0V9yqQ6sVCO9zM4NB7ShsVu5jg6j5DHHIHTvs+WPvNdNl6/xwhrxvTjd4
+	eAk6Kvtbj/0AfWGlHa3r7LtFfvMreZvxWwSpYbSkwvfIS9czXlrqF3oe6fEL4CZ7
+	c1USfgUc2l1qG8sRnvhKzqIVofRZ2j+W2U5MF1cKXNw9FKZenzMBULtvkdAX8yhK
+	MpOQDu+eawyBHdoBRFudmr3ttKvhKc1ks/bQv1SY9N2CVzvxOTCX8cHynM0XMFuT
+	nED0/qYShaqLq7g1kIGPL7VD8ALgWXojFbrEh4XTgXENO4pFzW019itgz62VkBGo
+	dhyxbM8SxhhA3S+nPfyYg==
+X-ME-Sender: <xms:DxuAZfKFQ-TqyMi--2tmDyyc061RA8yyuvMVsKoC5tRz4iZNa_tPbQ>
+    <xme:DxuAZTKQJXpNOWc2DuM4mmdIdArMvGMKi41rIxr6e_5dQ9ADAeZVbNAZ8t6HKT3VF
+    ppiArc5CgCli_aOkkk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpefgkeeuleegieeghfduudeltdekfeffjeeuleehleefudettddtgfevueef
+    feeigeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:DxuAZXupAwMgxNkQC57WBKjtH7vtOQ1vQISgVdB_cRgCyweFmO3f8g>
+    <xmx:DxuAZYYXG7833r3lpATp4n90r8R5DXcKDaZKnPHX7QAADG1g3bqSmg>
+    <xmx:DxuAZWYsd9WfXx3-KawZOl_CQAIAmNJF6eo2iDMXN_QGWn5qR88oNg>
+    <xmx:EBuAZWHFrVeHD0K_gBdaudyAJWuW4fGA0ObOOGkAo9cAC8ouBqUzgQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id C010FB6008D; Mon, 18 Dec 2023 05:12:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Message-Id: <b091f9d3-14e9-4f2c-bf98-9a207cef412a@app.fastmail.com>
+In-Reply-To: <3fb66648-5581-4371-b15e-23e52e6469ba@t-8ch.de>
+References: <202312171924.4FozI5FG-lkp@intel.com>
+ <3fb66648-5581-4371-b15e-23e52e6469ba@t-8ch.de>
+Date: Mon, 18 Dec 2023 10:12:03 +0000
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ "kernel test robot" <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ "Jakub Kicinski" <kuba@kernel.org>, "Simon Horman" <horms@kernel.org>
+Subject: Re: include/linux/compiler_types.h:397:45: error: call to
+ '__compiletime_assert_810' declared with attribute error: BUILD_BUG_ON
+ failed: skb_ext_total_length() > 255
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-RnJvbTogSXZhbiBPcmxvdiANCj4gU2VudDogMTggRGVjZW1iZXIgMjAyMyAxMDowMw0KPiANCj4g
-T24gMTIvMTgvMjMgMDk6MjAsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBGcm9tOiBJdmFuIE9y
-bG92DQo+ID4+IFNlbnQ6IDE4IERlY2VtYmVyIDIwMjMgMDE6NDINCj4gPj4NCj4gPj4gT24gMTIv
-MTcvMjMgMTc6MDAsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPj4+IEknZCBhbHNvIGd1ZXNzIHRo
-YXQgcHJldHR5IG11Y2ggYWxsIHRoZSBjYWxscyBpbi1rZXJuZWwgYXJlIHNob3J0Lg0KPiA+Pj4g
-WW91IG1pZ2h0IHRyeSBjb3VudGluZyBhczogaGlzdG9ncmFtW2lsb2cyKHN0cmxlbl9yZXN1bHQp
-XSsrDQo+ID4+PiBhbmQgc2VlaW5nIHdoYXQgaXQgc2hvd3MgZm9yIHNvbWUgd29ya2xvYWQuDQo+
-ID4+PiBJIGJldCB5b3UgKGEgYmVlciBpZiBJIHNlZSB5b3UhKSB0aGF0IHlvdSB3b24ndCBzZWUg
-bWFueSBvdmVyIDFrLg0KPiA+Pg0KPiA+PiBIaSBEYXZpZCwNCj4gPj4NCj4gPj4gSGVyZSBpcyB0
-aGUgc3RhdGlzdGljcyBmb3Igc3RybGVuIHJlc3VsdDoNCj4gPj4NCj4gPj4gWyAgMjIzLjE2OTU3
-NV0gQ2FsbHMgY291bnQgZm9yIDJeMDogNjE1MA0KPiA+PiBbICAyMjMuMTczMjkzXSBDYWxscyBj
-b3VudCBmb3IgMl4xOiAxODQ4NTINCj4gPj4gWyAgMjIzLjE3NzE0Ml0gQ2FsbHMgY291bnQgZm9y
-IDJeMjogMzEzODk2DQo+ID4+IFsgIDIyMy4xODA5OTBdIENhbGxzIGNvdW50IGZvciAyXjM6IDE4
-NTg0NA0KPiA+PiBbICAyMjMuMTg0ODgxXSBDYWxscyBjb3VudCBmb3IgMl40OiA4Nzg2OA0KPiA+
-PiBbICAyMjMuMTg4NjYwXSBDYWxscyBjb3VudCBmb3IgMl41OiA5OTE2DQo+ID4+IFsgIDIyMy4x
-OTIzNjhdIENhbGxzIGNvdW50IGZvciAyXjY6IDE4NjUNCj4gPj4gWyAgMjIzLjE5NjA2Ml0gQ2Fs
-bHMgY291bnQgZm9yIDJeNzogMA0KPiA+PiBbICAyMjMuMTk5NDgzXSBDYWxscyBjb3VudCBmb3Ig
-Ml44OiAwDQo+ID4+IFsgIDIyMy4yMDI5NTJdIENhbGxzIGNvdW50IGZvciAyXjk6IDANCj4gPj4g
-Li4uDQo+ID4+DQo+ID4+IExvb2tzIGxpa2UgSSd2ZSBqdXN0IGxvc3QgYSBiZWVyIDopDQo+ID4+
-DQo+ID4+IENvbnNpZGVyaW5nIHRoaXMgc3RhdGlzdGljcywgSSdkIHNheSBpbXBsZW1lbnRpbmcg
-dGhlIHdvcmQtb3JpZW50ZWQNCj4gPj4gc3RybGVuIGlzIGFuIG92ZXJjb21wbGljYXRpb24gLSB3
-ZSB3b3VsZG4ndCBnZXQgYW55IHBlcmZvcm1hbmNlIGdhaW4gYW5kDQo+ID4+IGl0IGp1c3QgZG9l
-c24ndCB3b3J0aCBpdC4NCj4gPg0KPiA+IEFuZCB0aGUgMzJiaXQgdmVyc2lvbiBpcyBhYm91dCBo
-YWxmIHRoZSBzcGVlZCBvZiB0aGUgNjRiaXQgb25lLg0KPiA+DQo+ID4gT2YgY291cnNlLCB0aGUg
-ZmFzdCB3YXkgdG8gZG8gc3RybGVuIGlzIGFkZCBhIGN1c3RvbSBpbnN0cnVjdGlvbiENCj4gPg0K
-PiA+PiBJIHNpbXBsaWZpZWQgeW91ciBjb2RlIGEgbGl0dGxlIGJpdCwgaXQgbG9va3MgbGlrZSB0
-aGUgYWxpZ25tZW50IHRoZXJlDQo+ID4+IGlzIHVubmVjZXNzYXJ5OiBRRU1VIHRlc3Qgc2hvd3Mg
-dGhlIHNhbWUgcGVyZm9ybWFuY2UgaW5kZXBlbmRlbnRseSBmcm9tDQo+ID4+IGFsaWdubWVudC4g
-VGVzdHMgb24gdGhlIGJvYXJkIGdhdmUgdGhlIHNhbWUgcmVzdWx0IChwZXJoYXBzIGJlY2F1c2Ug
-dGhlDQo+ID4+IENQVSBvbiB0aGUgYm9hcmQgaGFzIDIgRERSIGNoYW5uZWxzPykNCj4gPg0KPiA+
-IFRoZSBhbGlnbm1lbnQgaXMgdGhlcmUgYmVjYXVzZSBpdCBjYW4gb3ZlcnJlYWQgdGhlIHN0cmlu
-ZyBlbmQNCj4gPiBieSBvbmUgYnl0ZSAtIGFuZCB0aGF0IG11c3RuJ3QgY3Jvc3MgYSBwYWdlIGJv
-dW5kYXJ5Lg0KPiA+IFNvIHlvdSBlaXRoZXIgaGF2ZSB0byBtYXJrIHRoZSBzZWNvbmQgbG9hZCBh
-cyAnbWF5IGZhdWx0IHJldHVybg0KPiA+IHplcm8nIG9yIGp1c3Qgbm90IGRvIGl0Lg0KPiA+DQo+
-ID4gSWYgdGhlIGRhdGEgaXNuJ3QgaW4gY2FjaGUgdGhlIGNhY2hlIGxvYWQgd2lsbCBkb21pbmF0
-ZS4NCj4gPiBUaGUgRERSIGNoYW5uZWxzIG9ubHkgYWZmZWN0IGNhY2hlIGxvYWQgdGltZXMuDQo+
-ID4gR2V0IGEgVExCIG1pc3MgYW5kIGFkZCBhIGZldyB0aG91c2FuZCBtb3JlIGNsb2NrcyENCj4g
-Pg0KPiANCj4gQWgsIHJpZ2h0LCBzb3VuZHMgcmVhc29uYWJsZS4uLg0KPiANCj4gT3ZlcmFsbCwg
-SSBiZWxpZXZlIHlvdXIgc29sdXRpb24gaXMgYmV0dGVyIGFuZCBpdCB3b3VsZCBiZSBtb3JlIGZh
-aXIgaWYNCj4geW91IHNlbmQgaXQgYXMgYSBwYXRjaCA6KSBIZXJlIGlzIGJlbmNobWFyayByZXN1
-bHRzIGZvciB5b3VyIHZlcnNpb24gdnMNCj4gdGhlIG9yaWdpbmFsICh0aGUgb2xkKSBvbmUgb24g
-dGhlIFN0YXJmaXZlIFZpc2lvbkZpdmUyIFJJU0MtViBib2FyZDoNCg0KWW91IG1pZ2h0IHdhbnQg
-dG8gdHJ5IHJlYWRpbmcgNCBieXRlcyBiZWZvcmUgY2hlY2tpbmcgYW55Lg0KSXQgbWlnaHQgYmUg
-cXVpY2tlciBvbiB5b3VyIGNwdS4NCkl0IGlzIGhhcmQgZ3Vlc3Npbmcgd2hhdCBpcyBiZXN0IGFj
-cm9zcyBtdWx0aXBsZSBpbXBsZW1lbnRhdGlvbi4NCihGb3IgdGVzdGluZyBJJ2Qgbm90IHdvcnJ5
-IGFib3V0IGZhbGxpbmcgb2ZmIHRoZSBwYWdlLikNCg0KSSdsbCBsZXQgeW91IGRvIHRoZSBwYXRj
-aCwgSSBkb24ndCBldmVuIGhhdmUgYSB0b29sY2hhaW4sIG5ldmVyIG1pbmQNCmFueXRoaW5nIHRv
-IHRlc3QgaXQgb24uDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
-IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
-Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Sun, Dec 17, 2023, at 17:13, Thomas Wei=C3=9Fschuh wrote:
+> +Cc Arnd who was taking care of CFLAGS_GCOV in the past.
+>
+> On 2023-12-17 19:39:34+0800, kernel test robot wrote:
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202312171924.4FozI5FG=
+-lkp@intel.com/
+>>=20
+>> All errors (new ones prefixed by >>):
+>>=20
+>>    In file included from <command-line>:
+>>    In function 'skb_extensions_init',
+>>        inlined from 'skb_init' at net/core/skbuff.c:4848:2:
+>> >> include/linux/compiler_types.h:397:45: error: call to '__compileti=
+me_assert_810' declared with attribute error: BUILD_BUG_ON failed: skb_e=
+xt_total_length() > 255
 
+I tried to count the actual number of bytes and got to a worst case of 2=
+00
+bytes (for 64-bit machines), but this may have been wrong. I can think o=
+f two
+possible things that may have caused the problem:
+
+a) there is an actual overflow but gcc fails to realize it without GCOV
+b) the compile-time calculation goes wrong and is no longer a constant
+   value, so the assertion fails to evaluate
+
+We can probably elinminate a) if you can show that raising the limit does
+not avoid the problem.
+
+> [..]
+>
+> This seems to be a compiler bug/configuration issue.
+>
+> When I remove the entry for SKB_EXT_MCTP from skb_ext_type_len then the
+> error goes away. However this entry works the same as all other entrie=
+s.
+>
+> Also dropping -fno-tree-loop-im *or* -fprofile-arcs from CFLAGS_GCOV
+> makes the code compile as-is.
+>
+> Or switching to a 64bit build...
+
+The -fno-tree-loop-im option would likely stop the loop from getting
+unrolled, which is how the skb_ext_total_length() return code is no
+longer constant.
+
+Does manually unrolling this loop avoid the problem?
+
+       Arnd
 
