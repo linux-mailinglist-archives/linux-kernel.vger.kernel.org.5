@@ -1,54 +1,39 @@
-Return-Path: <linux-kernel+bounces-2964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACF84816545
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:14:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EAFD816548
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:16:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68E0B28112B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:14:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23E471F215FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1274B3D8E;
-	Mon, 18 Dec 2023 03:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186073C16;
+	Mon, 18 Dec 2023 03:16:52 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.67.179])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC623C0C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 03:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp71t1702869266tp6lsvnj
-Received: from HX09040029.powercore.com.cn ( [58.34.117.194])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 18 Dec 2023 11:14:23 +0800 (CST)
-X-QQ-SSF: 01400000000000402000000A0000000
-X-QQ-FEAT: fmY4SgAPM3slIzyLYur0WBpW/RTrgfiYkLSU8cSt6wuysWhvu08Z99fSf9eWz
-	bKG73zarUNRBOQvL6DiaJOscOyuPb1ZmFcFlLiJ/teAX/q10RRN9y80nvBtinp7zWe/ZIw0
-	uHwE/HtMpgiVNFP8CMi61za4iP61BhvHx4uxpEJqZMUgpk9i34RgHoqSoS1WAsLM/wsKlRi
-	yBt2cACO+mLQXY+IU4QlFrCo/3aMUgSTI46C8G+UkywtDtd9chmWXn1+33zcY+5fZnI5IlB
-	FZWUEwFKStcaQFspg90PzopQaRpSsFK+8/qOdcSswKgl+P6aedSms2q5g0ZQbtr28haSefF
-	wXq01TOM2x4vnSowTOm8LzRXNVC3EWgcNZ+3n7WrvkFQbFcPKKlFkvrKDd5M3ROUZHG21kB
-	842HVHETayS4DY/5L1kVwQ==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 7532627385370386625
-From: Luming Yu <luming.yu@shingroup.cn>
-To: linuxppc-dev@lists.ozlabs.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3642582
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 03:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Vye3FGX_1702869400;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Vye3FGX_1702869400)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Dec 2023 11:16:40 +0800
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+To: shr@devkernel.io,
+	akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu
-Cc: luming.yu@gmail.com,
-	ke.zhao@shingroup.cn,
-	dawei.li@shingroup.cn,
-	shenghui.qu@shingroup.cn,
-	Luming Yu <luming.yu@shingroup.cn>
-Subject: [PATCH 1/1] powerpc/io: enable dma-contiguous API
-Date: Mon, 18 Dec 2023 11:14:19 +0800
-Message-ID: <F73A5182F488C472+20231218031420.2112-1-luming.yu@shingroup.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	joseph.qi@linux.alibaba.com
+Subject: [PATCH] mm: fix arithmetic for bdi min_ratio and max_ratio
+Date: Mon, 18 Dec 2023 11:16:40 +0800
+Message-Id: <20231218031640.77983-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,51 +41,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-enable HAVE_DMA_CONTIGUOUS for general use of
-CMA on powerpc.
+bdi->[min|max]_ratio are both part per million.  Fix the wrong
+arithmetic when setting bdi's min_ratio and max_ratio.
 
-Signed-off-by: Luming Yu <luming.yu@shingroup.cn>
+Fixes: efc3e6ad53ea ("mm: split off __bdi_set_max_ratio() function")
+Fixes: 8021fb3232f2 ("mm: split off __bdi_set_min_ratio() function")
+Reported-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
 ---
- arch/powerpc/Kconfig               | 1 +
- arch/powerpc/kernel/setup-common.c | 2 ++
- 2 files changed, 3 insertions(+)
+ mm/page-writeback.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index b968068cc04a..e21f72bcb61f 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -231,6 +231,7 @@ config PPC
- 	select HAVE_C_RECORDMCOUNT
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_STACKOVERFLOW
-+	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if ARCH_USING_PATCHABLE_FUNCTION_ENTRY || MPROFILE_KERNEL || PPC32
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS	if ARCH_USING_PATCHABLE_FUNCTION_ENTRY || MPROFILE_KERNEL || PPC32
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index 9b142b9d5187..50d09363352d 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -35,6 +35,7 @@
- #include <linux/of_irq.h>
- #include <linux/hugetlb.h>
- #include <linux/pgtable.h>
-+#include <linux/dma-map-ops.h>
- #include <asm/io.h>
- #include <asm/paca.h>
- #include <asm/processor.h>
-@@ -975,6 +976,7 @@ void __init setup_arch(char **cmdline_p)
- 	 */
- 	kvm_cma_reserve();
- 	gigantic_hugetlb_cma_reserve();
-+	dma_contiguous_reserve(0);
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index ee2fd6a6af40..b393b3281ce9 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -692,7 +692,6 @@ static int __bdi_set_min_ratio(struct backing_dev_info *bdi, unsigned int min_ra
  
- 	early_memtest(min_low_pfn << PAGE_SHIFT, max_low_pfn << PAGE_SHIFT);
+ 	if (min_ratio > 100 * BDI_RATIO_SCALE)
+ 		return -EINVAL;
+-	min_ratio *= BDI_RATIO_SCALE;
+ 
+ 	spin_lock_bh(&bdi_lock);
+ 	if (min_ratio > bdi->max_ratio) {
+@@ -729,7 +728,8 @@ static int __bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ra
+ 		ret = -EINVAL;
+ 	} else {
+ 		bdi->max_ratio = max_ratio;
+-		bdi->max_prop_frac = (FPROP_FRAC_BASE * max_ratio) / 100;
++		bdi->max_prop_frac = div64_u64(FPROP_FRAC_BASE * max_ratio,
++					       100UL * BDI_RATIO_SCALE);
+ 	}
+ 	spin_unlock_bh(&bdi_lock);
  
 -- 
-2.42.0.windows.2
+2.19.1.6.gb485710b
 
 
