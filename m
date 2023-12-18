@@ -1,111 +1,179 @@
-Return-Path: <linux-kernel+bounces-3238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6C898169B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:21:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9C4D8169BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:22:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85494283995
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:21:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FB871F23098
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5B311720;
-	Mon, 18 Dec 2023 09:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D567125B0;
+	Mon, 18 Dec 2023 09:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LO0gjkCJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8CC11701
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-285-PaRQjW_lPcubI0-3L44Cyg-1; Mon, 18 Dec 2023 09:21:09 +0000
-X-MC-Unique: PaRQjW_lPcubI0-3L44Cyg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 18 Dec
- 2023 09:20:47 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 18 Dec 2023 09:20:47 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Ivan Orlov' <ivan.orlov0322@gmail.com>, "paul.walmsley@sifive.com"
-	<paul.walmsley@sifive.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
-CC: "conor.dooley@microchip.com" <conor.dooley@microchip.com>,
-	"ajones@ventanamicro.com" <ajones@ventanamicro.com>, "samuel@sholland.org"
-	<samuel@sholland.org>, "alexghiti@rivosinc.com" <alexghiti@rivosinc.com>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"skhan@linuxfoundation.org" <skhan@linuxfoundation.org>
-Subject: RE: [PATCH] riscv: lib: Optimize 'strlen' function
-Thread-Topic: [PATCH] riscv: lib: Optimize 'strlen' function
-Thread-Index: AQHaLduBo9lhsHug1EOTPi9OJpSM+LCttqAAgACUUYCAAH5N8A==
-Date: Mon, 18 Dec 2023 09:20:47 +0000
-Message-ID: <bd9159806a2e4fd188a78515b58ec51e@AcuMS.aculab.com>
-References: <20231213154530.1970216-1-ivan.orlov0322@gmail.com>
- <86d3947bce1f49c395224998e7d65dc2@AcuMS.aculab.com>
- <de80b4c7-1ffb-478e-9117-9d5b829470bd@gmail.com>
-In-Reply-To: <de80b4c7-1ffb-478e-9117-9d5b829470bd@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D96611C82;
+	Mon, 18 Dec 2023 09:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI8F7SS009591;
+	Mon, 18 Dec 2023 09:21:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=eqNU+wI7c51LjdCSDXdyX5iD4gjSXnctMsoSiFsfA7c=; b=LO
+	0gjkCJW2bJjuIo4HT7Gavs7h/cFHbfjlzWTJRxYaWnkJUd2VgGqhFcNmS6Qqr612
+	kNzvujKQQhW9wodMjmMVZnQJtdJ3SMge+lbC+y+DqNue1tYq21mGnkSCc/bu8aoH
+	eiA+KUhMWBAbwb3fQzNagLti5b8cqtUTi2BK+7naNZfpOXchPeFsAffxzoEte+Xx
+	nMf6qlxyPjtwnCzq5d8/lxi0OVg1kbd2ep8GKUh96i1zFoXMf7AJlx6spKFqf9Oz
+	GJEd7W0sHv9mTi4jnxigV738XeBP4Cp2QRd/hzY+zXr90KtptmXrjHZGvCAphkl4
+	ylYCSOHgagKOL5j6GgXg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v152qbur0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 09:21:41 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BI9Le5p011492
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 09:21:40 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
+ 2023 01:21:35 -0800
+Message-ID: <7d906e89-827f-49c7-96a2-004919218a26@quicinc.com>
+Date: Mon, 18 Dec 2023 17:21:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/8] dt-bindings: arm: Add support for CMB element size
+To: James Clark <james.clark@arm.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni
+	<quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>, Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio
+	<konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-2-git-send-email-quic_taozha@quicinc.com>
+ <09447d69-e0ce-13e9-95ea-0db475b8bb6e@arm.com>
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <09447d69-e0ce-13e9-95ea-0db475b8bb6e@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: RLdUNNWjX9wsKBgMsoNfq-2rfbODkJls
+X-Proofpoint-GUID: RLdUNNWjX9wsKBgMsoNfq-2rfbODkJls
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 phishscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 clxscore=1011 malwarescore=0 mlxlogscore=814
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312180066
 
-RnJvbTogSXZhbiBPcmxvdg0KPiBTZW50OiAxOCBEZWNlbWJlciAyMDIzIDAxOjQyDQo+IA0KPiBP
-biAxMi8xNy8yMyAxNzowMCwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0KPiA+IEknZCBhbHNvIGd1ZXNz
-IHRoYXQgcHJldHR5IG11Y2ggYWxsIHRoZSBjYWxscyBpbi1rZXJuZWwgYXJlIHNob3J0Lg0KPiA+
-IFlvdSBtaWdodCB0cnkgY291bnRpbmcgYXM6IGhpc3RvZ3JhbVtpbG9nMihzdHJsZW5fcmVzdWx0
-KV0rKw0KPiA+IGFuZCBzZWVpbmcgd2hhdCBpdCBzaG93cyBmb3Igc29tZSB3b3JrbG9hZC4NCj4g
-PiBJIGJldCB5b3UgKGEgYmVlciBpZiBJIHNlZSB5b3UhKSB0aGF0IHlvdSB3b24ndCBzZWUgbWFu
-eSBvdmVyIDFrLg0KPiANCj4gSGkgRGF2aWQsDQo+IA0KPiBIZXJlIGlzIHRoZSBzdGF0aXN0aWNz
-IGZvciBzdHJsZW4gcmVzdWx0Og0KPiANCj4gWyAgMjIzLjE2OTU3NV0gQ2FsbHMgY291bnQgZm9y
-IDJeMDogNjE1MA0KPiBbICAyMjMuMTczMjkzXSBDYWxscyBjb3VudCBmb3IgMl4xOiAxODQ4NTIN
-Cj4gWyAgMjIzLjE3NzE0Ml0gQ2FsbHMgY291bnQgZm9yIDJeMjogMzEzODk2DQo+IFsgIDIyMy4x
-ODA5OTBdIENhbGxzIGNvdW50IGZvciAyXjM6IDE4NTg0NA0KPiBbICAyMjMuMTg0ODgxXSBDYWxs
-cyBjb3VudCBmb3IgMl40OiA4Nzg2OA0KPiBbICAyMjMuMTg4NjYwXSBDYWxscyBjb3VudCBmb3Ig
-Ml41OiA5OTE2DQo+IFsgIDIyMy4xOTIzNjhdIENhbGxzIGNvdW50IGZvciAyXjY6IDE4NjUNCj4g
-WyAgMjIzLjE5NjA2Ml0gQ2FsbHMgY291bnQgZm9yIDJeNzogMA0KPiBbICAyMjMuMTk5NDgzXSBD
-YWxscyBjb3VudCBmb3IgMl44OiAwDQo+IFsgIDIyMy4yMDI5NTJdIENhbGxzIGNvdW50IGZvciAy
-Xjk6IDANCj4gLi4uDQo+IA0KPiBMb29rcyBsaWtlIEkndmUganVzdCBsb3N0IGEgYmVlciA6KQ0K
-PiANCj4gQ29uc2lkZXJpbmcgdGhpcyBzdGF0aXN0aWNzLCBJJ2Qgc2F5IGltcGxlbWVudGluZyB0
-aGUgd29yZC1vcmllbnRlZA0KPiBzdHJsZW4gaXMgYW4gb3ZlcmNvbXBsaWNhdGlvbiAtIHdlIHdv
-dWxkbid0IGdldCBhbnkgcGVyZm9ybWFuY2UgZ2FpbiBhbmQNCj4gaXQganVzdCBkb2Vzbid0IHdv
-cnRoIGl0Lg0KDQpBbmQgdGhlIDMyYml0IHZlcnNpb24gaXMgYWJvdXQgaGFsZiB0aGUgc3BlZWQg
-b2YgdGhlIDY0Yml0IG9uZS4NCg0KT2YgY291cnNlLCB0aGUgZmFzdCB3YXkgdG8gZG8gc3RybGVu
-IGlzIGFkZCBhIGN1c3RvbSBpbnN0cnVjdGlvbiENCg0KPiBJIHNpbXBsaWZpZWQgeW91ciBjb2Rl
-IGEgbGl0dGxlIGJpdCwgaXQgbG9va3MgbGlrZSB0aGUgYWxpZ25tZW50IHRoZXJlDQo+IGlzIHVu
-bmVjZXNzYXJ5OiBRRU1VIHRlc3Qgc2hvd3MgdGhlIHNhbWUgcGVyZm9ybWFuY2UgaW5kZXBlbmRl
-bnRseSBmcm9tDQo+IGFsaWdubWVudC4gVGVzdHMgb24gdGhlIGJvYXJkIGdhdmUgdGhlIHNhbWUg
-cmVzdWx0IChwZXJoYXBzIGJlY2F1c2UgdGhlDQo+IENQVSBvbiB0aGUgYm9hcmQgaGFzIDIgRERS
-IGNoYW5uZWxzPykNCg0KVGhlIGFsaWdubWVudCBpcyB0aGVyZSBiZWNhdXNlIGl0IGNhbiBvdmVy
-cmVhZCB0aGUgc3RyaW5nIGVuZA0KYnkgb25lIGJ5dGUgLSBhbmQgdGhhdCBtdXN0bid0IGNyb3Nz
-IGEgcGFnZSBib3VuZGFyeS4NClNvIHlvdSBlaXRoZXIgaGF2ZSB0byBtYXJrIHRoZSBzZWNvbmQg
-bG9hZCBhcyAnbWF5IGZhdWx0IHJldHVybg0KemVybycgb3IganVzdCBub3QgZG8gaXQuDQoNCklm
-IHRoZSBkYXRhIGlzbid0IGluIGNhY2hlIHRoZSBjYWNoZSBsb2FkIHdpbGwgZG9taW5hdGUuDQpU
-aGUgRERSIGNoYW5uZWxzIG9ubHkgYWZmZWN0IGNhY2hlIGxvYWQgdGltZXMuDQpHZXQgYSBUTEIg
-bWlzcyBhbmQgYWRkIGEgZmV3IHRob3VzYW5kIG1vcmUgY2xvY2tzIQ0KDQo+IA0KPiAJbXYgdDAs
-IGEwDQo+IDE6DQo+IAlsYnUgdDEsIDAoYTApDQo+IAlsYnUgdDIsIDEoYTApDQo+IAlhZGRpIGEw
-LCBhMCwgMg0KPiAJYmVxeiB0MSwgMmYNCj4gCWJuZXogdDIsIDFiDQo+IAlhZGRpIGEwLCBhMCwg
-MQ0KPiAyOg0KPiAJYWRkaSBhMCwgYTAsIC0yDQo+IAlzdWIgYTAsIGEwLCB0MA0KPiAJcmV0DQo+
-IA0KPiBJZiBpdCBsb29rcyBnb29kIHRvIHlvdSwgd291bGQgeW91IG1pbmQgaWYgSSBzZW5kIHRo
-ZSBwYXRjaCB3aXRoIGl0Pw0KPiBDb3VsZCBJIGFkZCB5b3UgdG8gc3VnZ2VzdGVkLWJ5IHRhZz8N
-Cg0KWWVwLi4NCg0KCURhdmlkDQoNCj4gDQo+IC0tDQo+IEtpbmQgcmVnYXJkcywNCj4gSXZhbiBP
-cmxvdg0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
-bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
-NzM4NiAoV2FsZXMpDQo=
 
+On 12/15/2023 7:19 PM, James Clark wrote:
+>
+> On 21/11/2023 02:24, Tao Zhang wrote:
+>> Add property "qcom,cmb-elem-size" to support CMB(Continuous
+>> Multi-Bit) element for TPDM. The associated aggregator will read
+>> this size before it is enabled. CMB element size currently only
+>> supports 32-bit and 64-bit.
+>>
+>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>> ---
+>>   .../bindings/arm/qcom,coresight-tpdm.yaml     | 28 +++++++++++++++++++
+>>   1 file changed, 28 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
+>> index 61ddc3b5b247..0d9fe01a8b15 100644
+>> --- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
+>> @@ -52,6 +52,15 @@ properties:
+>>       $ref: /schemas/types.yaml#/definitions/uint8
+>>       enum: [32, 64]
+>>   
+>> +  qcom,cmb-element-size:
+>> +    description:
+>> +      Specifies the CMB(Continuous Multi-Bit) element size supported by
+>> +      the monitor. The associated aggregator will read this size before it
+>> +      is enabled. CMB element size currently only supports 8-bit, 32-bit
+>> +      and 64-bit.
+>> +    $ref: /schemas/types.yaml#/definitions/uint8
+>> +    enum: [8, 32, 64]
+>> +
+>>     qcom,dsb-msrs-num:
+>>       description:
+>>         Specifies the number of DSB(Discrete Single Bit) MSR(mux select register)
+>> @@ -110,4 +119,23 @@ examples:
+>>         };
+>>       };
+>>   
+>> +    tpdm@6c29000 {
+>> +      compatible = "qcom,coresight-tpdm", "arm,primecell";
+>> +      reg = <0x06c29000 0x1000>;
+>> +      reg-names = "tpdm-base";
+> I think this one gives this error:
+>
+>   $ make dt_binding_check DT_SCHEMA_FILES=arm/qcom,coresight
+>
+>   DTC_CHK Documentation/devicetree/bindings/arm/qcom,coresight-
+>    tpdm.example.dtb
+>   qcom,coresight-tpdm.example.dtb: tpdm@6c29000: 'reg-names' does not
+>    match any of the regexes: 'pinctrl-[0-9]+'
+>          from schema $id: http://devicetree.org/schemas
+>          /arm/qcom,coresight-tpdm.yaml#
+
+I will fix this in the next patch series.
+
+
+Best,
+
+Tao
+
+>> +
+>> +      qcom,cmb-element-size = /bits/ 8 <64>;
+>> +
+>> +      clocks = <&aoss_qmp>;
+>> +      clock-names = "apb_pclk";
+>> +
+>> +      out-ports {
+>> +        port {
+>> +          tpdm_ipcc_out_funnel_center: endpoint {
+>> +            remote-endpoint =
+>> +              <&funnel_center_in_tpdm_ipcc>;
+>> +          };
+>> +        };
+>> +      };
+>> +    };
+>>   ...
 
