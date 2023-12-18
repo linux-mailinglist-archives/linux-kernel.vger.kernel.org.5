@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-3073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89B58166F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:58:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499E98166F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EE56B20D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:58:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2DC2281F04
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFA979CB;
-	Mon, 18 Dec 2023 06:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0F679EB;
+	Mon, 18 Dec 2023 07:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nJWnm1YL"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DVM1lPlN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94757490
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B606E7498
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5e4fda12ef0so12520507b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 22:58:35 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a235e394758so34877966b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:00:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702882714; x=1703487514; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1702882851; x=1703487651; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ww0M1P5mq83AgoiTq0T9S3I8YAm+W6G/Cvs6hVBdZfM=;
-        b=nJWnm1YL0WfLlqvxIcZyKQn2iAm1jqxeSQMAbieQLZSKOma8QGkYVSHTE0l2nQ6fTu
-         qMSW2u/XjFZFA5070pSXKOsT66PZWC3jCTmYAxBKSijxVxkjB0z9hr2uh5P0W+07kZ/Y
-         OGPuoA60PSF8UyJSJskRNEdqQrpw8/E3nPd3bbqRbljN9NjJ219+/VxcL24ljIUJikXz
-         yJcttrsM3Nm71jyr3bKoITMMVmLsUhxCoftytvL149YuPdVFz9rJjYNrVvKN5CB/s+Gm
-         sYjsH6sXz/YaQoKOEbxDAFONbjc9o06rmAQgDOI7AnekDphjnHHftxLiNczgRksur6T2
-         stGw==
+        bh=uG8vFckqWQO5CDd7I4Gyr/RdeaQsCH5R2o9TtzRaFsY=;
+        b=DVM1lPlNH51lF7i+1oqdPwa/ENIdvXGmZ+axRbq8Cwsda84nnDy24TBIGv2sqZQ5fe
+         unsj2GIW+UQNRWkcPyK6CgyFAb1tljlTRoVJBMYxPBBmwpHqg69BrZK4CciDrFTvmMnm
+         L4sUELQ+3gScCZlAWtKDWTf3cBoWrExzRDisdzYIG4xZc4a7Aal/IXeXnvBGC7ruAOEB
+         E9xzcsfifOMGRfLmp0trMFzheEdYOS+ej9OYgsFBv8SLHYeYShvYiGPCYCKTf1gmET7V
+         +ADEDMSFolGpp0L7Vnl5JhlGlFgTCqiJCyAkQ6nto3EPzYTXIHvSxxuM4sZJMZF1Eu/u
+         OBgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702882714; x=1703487514;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702882851; x=1703487651;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ww0M1P5mq83AgoiTq0T9S3I8YAm+W6G/Cvs6hVBdZfM=;
-        b=B9IJYO7DT67I5TTOQdrSsVsWcm5WOPHHSLwA664PV3XkrYa9Hn5hzxR+T+S5WfyEHG
-         bUs2yfW39VzxyYWMpo2ahhRguDHGNDp2xwlNZAcrdli5OuJxUiLf5E1nphpYGq8Y2tND
-         3wVyeGLt9ZU5nv011shYl+jODOYvEql8acWCZhMD3+6KsvRp/4DymBDwuZhEmVGofRwx
-         4O/IhFrLLWJ8ZxairvZAJrgd1+Sh9AMLuAe8YAxggQ1RWJUfHQPfHS5r4nsGP/uPECKB
-         LLBKbG+nJWAmRTYii8nyVaBnFV6UOeaSJF1XllWUImPoPOZ99mjYgSGoGUypghP8Aauc
-         +vJA==
-X-Gm-Message-State: AOJu0Yy5L/BieB7UY31+Rr5oG2sOUyjaWy1XMf9EU/fF+sPB/YyCTlUT
-	bMaHiSRQtXgntlxvVhd+B+wRvA==
-X-Google-Smtp-Source: AGHT+IF3XtZQxLkiu9lezaSY5Fyf48G1zPphl87rqb3Pk36Ma6BX0DjAR8MLjEuXrKewqESUg/ty4w==
-X-Received: by 2002:a81:a04c:0:b0:5e5:e91e:dcdc with SMTP id x73-20020a81a04c000000b005e5e91edcdcmr935215ywg.3.1702882714525;
-        Sun, 17 Dec 2023 22:58:34 -0800 (PST)
+        bh=uG8vFckqWQO5CDd7I4Gyr/RdeaQsCH5R2o9TtzRaFsY=;
+        b=A93SXT8R8+lfMDVYoFgkxigTr0YQUFny5WumZvDbjRDbkbsrubY3E97tp7qorowuUU
+         b6I4eCXCY/3DVuJH5X/fZ7Am3VKF6R72a0qawf7vsvlyIK0J8AImChwlfoZ9gxa1cSFv
+         qfbo5p0rhAhO8Tv8/dWnkc5jPXGzDd4wrJrC/OSIagFrrdxBh5NxhDz6Ycbw1IWgtqvb
+         lJh6/FzrsohotiXIx64+mga4/yYfw9GtyK5bt4yf29NCDqxd7tuwCWMriepIYHf7bD+g
+         waJld6lPRYQ1tWnHyxspmOBITCMFIxlvy1keiXQI+YkKwJONRjQYMcTNxYhQcKLZYyjP
+         4jLA==
+X-Gm-Message-State: AOJu0Ywojnx27UyRqvjzuBc/zAQukVw6zKqXa35WEjSa2bWABcI+nM+k
+	Y6uardsLP00vLiEoGz+i2vwEQg==
+X-Google-Smtp-Source: AGHT+IG0yhYOXW4A/32NL6zFtH/DvArca7MHmTnWQ7QWXKAQOJUn1TaKnZUZtIC9ngaxUAlLoyKxww==
+X-Received: by 2002:a17:907:7d8c:b0:9b2:cf77:a105 with SMTP id oz12-20020a1709077d8c00b009b2cf77a105mr10484950ejc.15.1702882851012;
+        Sun, 17 Dec 2023 23:00:51 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id v126-20020a818584000000b005a7aef2c1c3sm8611809ywf.132.2023.12.17.22.58.31
+        by smtp.gmail.com with ESMTPSA id k8-20020a17090646c800b00a236378a439sm174101ejs.145.2023.12.17.23.00.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Dec 2023 22:58:33 -0800 (PST)
-Message-ID: <c19efc7d-2e63-43fb-952b-a4b373bc4371@linaro.org>
-Date: Mon, 18 Dec 2023 07:58:30 +0100
+        Sun, 17 Dec 2023 23:00:49 -0800 (PST)
+Message-ID: <4faf78f5-5e57-44a1-8fdd-7b6a33b0bd19@linaro.org>
+Date: Mon, 18 Dec 2023 08:00:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,12 +66,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] w1: add UART w1 bus driver
+Subject: Re: [PATCH 4/4] arm64: dts: sprd: Add support for Unisoc's UMS9620
 Content-Language: en-US
-To: Christoph Winklhofer <cj.winklhofer@gmail.com>, robh+dt@kernel.org,
- conor+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231217122004.42795-1-cj.winklhofer@gmail.com>
- <20231217122004.42795-3-cj.winklhofer@gmail.com>
+To: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Chunyan Zhang <chunyan.zhang@unisoc.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Lee Jones <lee@kernel.org>, devicetree@vger.kernel.org,
+ linux-serial@vger.kernel.org, Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Orson Zhai <orsonzhai@gmail.com>, LKML <linux-kernel@vger.kernel.org>
+References: <20231215085630.984892-1-chunyan.zhang@unisoc.com>
+ <20231215085630.984892-5-chunyan.zhang@unisoc.com>
+ <fd927698-6aa3-4a6b-988c-fc82663235ca@linaro.org>
+ <CAAfSe-tTvxLCAdSCCgEw8HMFaVVfOytoowY_Fb2F0H-vo+cCmA@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -117,363 +124,30 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231217122004.42795-3-cj.winklhofer@gmail.com>
+In-Reply-To: <CAAfSe-tTvxLCAdSCCgEw8HMFaVVfOytoowY_Fb2F0H-vo+cCmA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 17/12/2023 13:20, Christoph Winklhofer wrote:
-> Add a UART 1-wire bus driver. The driver utilizes the UART interface via
-> the Serial Device Bus to create the 1-wire timing patterns. The driver
-> was tested on a "Raspberry Pi 3B" with a DS18B20 and on a "Variscite
-> DART-6UL" with a DS18S20 temperature sensor.
+On 18/12/2023 03:31, Chunyan Zhang wrote:
+> On Fri, 15 Dec 2023 at 18:36, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 15/12/2023 09:56, Chunyan Zhang wrote:
+>>> Add basic support for Unisoc's UMS9620, with this patch,
+>>> the board ums9620-2h10 can run into console.
+>>>
+>>
+>> ...
+>>
+>>> +
+>>> +     soc: soc {
+>>
+>> Are you sure you do not have here W=1 warnings?
 > 
-> The 1-wire timing pattern and the corresponding UART baud-rate with the
-> interpretation of the transferred bytes are described in the document:
-> 
-> Link: https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
-> 
-> In short, the UART peripheral must support full-duplex and operate in
-> open-drain mode. The timing patterns are generated by a specific
-> combination of baud-rate and transmitted byte, which corresponds to a
-> 1-Wire read bit, write bit or reset.
-> 
-> Signed-off-by: Christoph Winklhofer <cj.winklhofer@gmail.com>
-> ---
->  Documentation/w1/masters/index.rst   |   1 +
->  Documentation/w1/masters/w1-uart.rst |  48 +++++++
->  drivers/w1/masters/Kconfig           |  10 ++
->  drivers/w1/masters/Makefile          |   1 +
->  drivers/w1/masters/w1-uart.c         | 189 +++++++++++++++++++++++++++
->  5 files changed, 249 insertions(+)
->  create mode 100644 Documentation/w1/masters/w1-uart.rst
->  create mode 100644 drivers/w1/masters/w1-uart.c
-> 
-> diff --git a/Documentation/w1/masters/index.rst b/Documentation/w1/masters/index.rst
-> index 4442a98850ad..cc40189909fd 100644
-> --- a/Documentation/w1/masters/index.rst
-> +++ b/Documentation/w1/masters/index.rst
-> @@ -12,3 +12,4 @@
->     mxc-w1
->     omap-hdq
->     w1-gpio
-> +   w1-uart
-> diff --git a/Documentation/w1/masters/w1-uart.rst b/Documentation/w1/masters/w1-uart.rst
-> new file mode 100644
-> index 000000000000..0f546cf77f13
-> --- /dev/null
-> +++ b/Documentation/w1/masters/w1-uart.rst
-> @@ -0,0 +1,48 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +=====================
-> +Kernel driver w1-uart
-> +=====================
-> +
-> +Author: Christoph Winklhofer <cj.winklhofer@gmail.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +UART 1-wire bus driver. The driver utilizes the UART interface via the
-> +Serial Device Bus to create the 1-Wire timing patterns as described in
-> +the document `"Using a UART to Implement a 1-Wire Bus Master"`_.
-> +
-> +.. _"Using a UART to Implement a 1-Wire Bus Master": https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
-> +
-> +In short, the UART peripheral must support full-duplex and operate in
-> +open-drain mode. The timing patterns are generated by a specific
-> +combination of baud-rate and transmitted byte, which corresponds to a
-> +1-Wire read bit, write bit or reset pulse.
-> +
-> +For instance the timing pattern for a 1-Wire reset and presence detect uses
-> +the baud-rate 9600, i.e. 104.2 us per bit. The transmitted byte 0xf0 over
-> +UART (least significant bit first, start-bit low) sets the reset low time
-> +for 1-Wire to 521 us. A present 1-Wire device changes the received byte by
-> +pulling the line low, which is used by the driver to evaluate the result of
-> +the 1-Wire operation.
-> +
-> +Similar for a 1-Wire read bit or write bit, which uses the baud-rate
-> +115200, i.e. 8.7 us per bit. The transmitted byte 0x00 is used for a
-> +Write-0 operation and the byte 0xff for Read-0, Read-1 and Write-1.
-> +
-> +
-> +Usage
-> +-----
-> +
-> +Specify the UART 1-wire bus in the device tree by adding the single child
-> +onewire to the serial node (e.g. uart0). For example:
-> +::
-> +
-> +  @uart0 {
-> +    ...
-> +    onewire {
-> +      compatible = "w1-uart";
-> +    };
-> +  };
-> diff --git a/drivers/w1/masters/Kconfig b/drivers/w1/masters/Kconfig
-> index 513c0b114337..e6049a75b35b 100644
-> --- a/drivers/w1/masters/Kconfig
-> +++ b/drivers/w1/masters/Kconfig
-> @@ -78,5 +78,15 @@ config W1_MASTER_SGI
->  	  This support is also available as a module.  If so, the module
->  	  will be called sgi_w1.
->  
-> +config W1_MASTER_UART
-> +	tristate "UART 1-wire driver"
-> +	depends on SERIAL_DEV_BUS
-> +	help
-> +	  Say Y here if you want to communicate with your 1-wire devices using
-> +	  UART interface.
-> +
-> +	  This support is also available as a module.  If so, the module
-> +	  will be called w1-uart.
-> +
->  endmenu
->  
-> diff --git a/drivers/w1/masters/Makefile b/drivers/w1/masters/Makefile
-> index 6c5a21f9b88c..227f80987e69 100644
-> --- a/drivers/w1/masters/Makefile
-> +++ b/drivers/w1/masters/Makefile
-> @@ -12,3 +12,4 @@ obj-$(CONFIG_W1_MASTER_MXC)		+= mxc_w1.o
->  obj-$(CONFIG_W1_MASTER_GPIO)		+= w1-gpio.o
->  obj-$(CONFIG_HDQ_MASTER_OMAP)		+= omap_hdq.o
->  obj-$(CONFIG_W1_MASTER_SGI)		+= sgi_w1.o
-> +obj-$(CONFIG_W1_MASTER_UART)		+= w1-uart.o
-> diff --git a/drivers/w1/masters/w1-uart.c b/drivers/w1/masters/w1-uart.c
-> new file mode 100644
-> index 000000000000..e0da8ebfef58
-> --- /dev/null
-> +++ b/drivers/w1/masters/w1-uart.c
-> @@ -0,0 +1,189 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * w1-uart - UART 1-Wire bus driver
-> + *
-> + * Uses the UART interface (via Serial Device Bus) to create the 1-Wire
-> + * timing patterns. Implements the following 1-Wire master interface:
-> + *
-> + * - reset_bus: baud-rate 9600 (bit time 104.2 us) and tx-byte 0xf0
-> + *
-> + * - touch_bit: baud-rate 115200 (bit time 8.7 us) and tx-byte 0x00
-> + *              (Write-0) or 0xff (Read-0, Read-1, Write-1)
-> + *
-> + * Author: Christoph Winklhofer <cj.winklhofer@gmail.com>
-> + */
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/completion.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/serdev.h>
-> +#include <linux/w1.h>
-> +
-> +#define W1_UART_TIMEOUT msecs_to_jiffies(500)
-> +
-> +struct w1_uart_device {
-> +	struct serdev_device *serdev;
-> +	struct w1_bus_master bus;
-> +
-> +	struct completion buf_received;
-> +	atomic_t buf;
-> +
-> +	unsigned int baudrate;
-> +};
-> +
-> +/*
-> + * Send one byte (tx_byte) and read one byte (rx_byte) via serdev.
-> + */
-> +static int w1_uart_serdev_tx_rx(struct w1_uart_device *w1dev,
-> +				unsigned int baudrate, unsigned char tx_byte,
-> +				unsigned char *rx_byte)
-> +{
-> +	struct serdev_device *serdev = w1dev->serdev;
-> +	struct device *dev = &serdev->dev;
-> +	int ret;
-> +
-> +	serdev_device_write_flush(serdev);
-> +	if (w1dev->baudrate != baudrate) {
-> +		w1dev->baudrate = serdev_device_set_baudrate(serdev, baudrate);
-> +		if (w1dev->baudrate != baudrate) {
-> +			dev_err(dev, "set baudrate failed\n");
-> +			return -1;
+> Do you mean warnings generated by running "make W=1"? I tried just now
+> and didn't see warnings on this dts.
 
-Use errno values when applicable (e.g. for internal parts).
-
-> +		}
-> +	}
-> +
-> +	reinit_completion(&w1dev->buf_received);
-> +	ret = serdev_device_write_buf(serdev, &tx_byte, 1);
-> +	if (ret != 1) {
-> +		dev_err(dev, "write failed\n");
-
-This is going to spam the logs. Check existing usages - nothing prints
-errors on every write or read.
-
-> +		return -1;
-> +	}
-> +	ret = wait_for_completion_interruptible_timeout(&w1dev->buf_received,
-> +							W1_UART_TIMEOUT);
-> +	if (ret <= 0) {
-> +		dev_err(dev, "receive failed\n");
-
-Also problem of possible flood.
-
-> +		return -1;
-> +	}
-> +
-> +	*rx_byte = (unsigned char)atomic_read(&w1dev->buf);
-> +	return 0;
-> +}
-> +
-> +static int w1_uart_serdev_receive_buf(struct serdev_device *serdev,
-> +				      const unsigned char *buf, size_t count)
-> +{
-> +	struct w1_uart_device *w1dev = serdev_device_get_drvdata(serdev);
-> +
-> +	if (count > 0) {
-> +		atomic_set(&w1dev->buf, buf[count - 1]);
-
-I fail to understand why you use atomic here. It does not solve any
-locking problems - it's still there. Load and store tearing? But is it
-ever possible for one byte stores and loads? Doesn't C standard
-guarantee that byte writes are atomic?
-
-
-I also do not understand why you store only last byte, ignoring all the
-rest.
-
-> +		complete(&w1dev->buf_received);
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static const struct serdev_device_ops w1_uart_serdev_ops = {
-> +	.receive_buf = w1_uart_serdev_receive_buf,
-> +	.write_wakeup = serdev_device_write_wakeup,
-> +};
-> +
-> +/*
-> + * 1-wire reset and presence detect:
-> + * The baud-rate 9600 (104.2 us per bit) and the byte 0xf0 generates a
-> + * reset low time of 521 us (start-bit low). A present slave will
-> + * manipulate the received byte by pulling the 1-wire low.
-> + */
-> +static u8 w1_uart_reset_bus(void *data)
-> +{
-> +	struct w1_uart_device *w1dev = data;
-> +	unsigned char buf;
-
-This is not buffer, just a value.
-
-> +	int ret;
-> +
-> +	ret = w1_uart_serdev_tx_rx(w1dev, 9600, 0xf0, &buf);
-
-Why the rate is fixed? What if all devices support different baud rates?
-
-> +	if (ret < 0)
-> +		return -1;
-> +
-> +	/* Device present (0) or no device (1) */
-> +	return buf != 0xf0 ? 0 : 1;
-> +}
-> +
-> +/*
-> + * 1-Wire read and write cycle:
-> + * The baud-rate 115200 (8.7 us per bit) and the byte 0xff generates the
-> + * timing pattern for Read-0, Read-1 and Write-1 operation, with a low
-> + * time of 8.7 us (start-bit low). Only the Read-0 manipulates the
-> + * received byte, all others left the line untouched.
-> + */
-> +static u8 w1_uart_touch_bit(void *data, u8 bit)
-> +{
-> +	struct w1_uart_device *w1dev = data;
-> +	unsigned char buf;
-
-One character is not a buffer.
-
-> +	int ret;
-> +
-> +	ret = w1_uart_serdev_tx_rx(w1dev, 115200, bit ? 0xff : 0x00, &buf);
-
-Why the rate is fixed? What if all devices support different baud rates?
-
-> +	/* return inactive bus state on error */
-> +	if (ret < 0)
-> +		return 1;
-> +
-> +	return buf == 0xff ? 1 : 0;
-> +}
-> +
-> +static int w1_uart_probe(struct serdev_device *serdev)
-> +{
-> +	struct device *dev = &serdev->dev;
-> +	struct w1_uart_device *w1dev;
-> +	int ret;
-> +
-> +	w1dev = devm_kzalloc(dev, sizeof(struct w1_uart_device), GFP_KERNEL);
-
-sizeof(*)
-
-> +	if (!w1dev)
-> +		return -ENOMEM;
-> +	w1dev->bus.data = w1dev;
-> +	w1dev->bus.reset_bus = w1_uart_reset_bus;
-> +	w1dev->bus.touch_bit = w1_uart_touch_bit;
-> +	w1dev->serdev = serdev;
-> +
-> +	serdev_device_set_drvdata(serdev, w1dev);
-> +	serdev_device_set_client_ops(serdev, &w1_uart_serdev_ops);
-> +
-> +	init_completion(&w1dev->buf_received);
-> +
-> +	ret = devm_serdev_device_open(dev, serdev);
-> +	if (ret < 0)
-> +		return ret;
-> +	serdev_device_set_parity(serdev, SERDEV_PARITY_NONE);
-> +	serdev_device_set_flow_control(serdev, false);
-> +
-> +	return w1_add_master_device(&w1dev->bus);
-> +}
-> +
-> +static void w1_uart_remove(struct serdev_device *serdev)
-> +{
-> +	struct w1_uart_device *w1dev = serdev_device_get_drvdata(serdev);
-> +
-> +	complete(&w1dev->buf_received);
-
-This is odd - w1_uart_serdev_tx_rx() will read data on driver removal.
-You should make sure that on removal any reads do not follow usual path.
-
-> +	w1_remove_master_device(&w1dev->bus);
-> +}
-> +
-> +#ifdef CONFIG_OF
-
-Drop
-
-> +static const struct of_device_id w1_uart_of_match[] = {
-> +	{ .compatible = "w1-uart" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, w1_uart_of_match);
-> +#endif
-> +
-> +static struct serdev_device_driver w1_uart_driver = {
-> +	.driver	= {
-> +		.name		= "w1-uart",
-> +		.of_match_table	= of_match_ptr(w1_uart_of_match),
-
-Drop of_match_ptr
-
-> +	},
-> +	.probe	= w1_uart_probe,
-> +	.remove	= w1_uart_remove,
-> +};
+No, I meant `dtbs_check W=1` or W=1 coming from dtc (dtbs).
 
 Best regards,
 Krzysztof
