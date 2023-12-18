@@ -1,163 +1,134 @@
-Return-Path: <linux-kernel+bounces-4012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 096D58176A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:02:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D48D18176A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F8291C25655
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:02:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056BD1C25686
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DD94239E;
-	Mon, 18 Dec 2023 16:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97056498B7;
+	Mon, 18 Dec 2023 16:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="U94XMpT0"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O5ixwYUX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4D13D56F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:01:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7c45acb3662so299915241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:01:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8984237E
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-54f4f7e88feso4480753a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:02:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702915303; x=1703520103; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yGsftRUwsP12LQ30FBWYDs/WH5EY9TUOi7H6csPAxGw=;
-        b=U94XMpT0QLBlxq8bYxp3/sS8NKhOnDJNMoe95l8Kz6Jw2spo+XtO0leVWb4rHyjmzg
-         qm13lwpczUpYXcJxdYiy8Wjd9BwBVhTb3nireB6o1cy4c4oVvnv+Zn2UCA0rFNS7bC6X
-         Xu2UxEva3ThSP95xCHzymDKyA7yiqxdTGMNnk4jEYv4O5bcvR7nAjk3SLuaUx8u/gBya
-         7m6HuZ9b3fpu8LtmCL6DlK223mq5WWKkxYfyjd68zbOaUKXUCrVb2eoaZbcyWX5lGiBg
-         qAahpqlPzE4/QkxUU5rab3zT/oXGuvfclkvG2TPqs++68qEVf1ZMxAClva155JhoftGG
-         f7Zg==
+        d=linaro.org; s=google; t=1702915335; x=1703520135; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c4hFbIwksqnnHMFEIUpDIp2sv6C4RgN/QaxeoGjcsV4=;
+        b=O5ixwYUXcyM9DTz1Ay7bcNMrvbJduiXVJjECpndeDew2JQ+836VanTHZoCHpu4elUf
+         2po8jYki4wvqVIzrZ4LjH6hm5JLOOL6Gl3r+3CfcTZkNN6tw4jUzWhxolSwEjJQwoOFo
+         EWmvGlobwUi9UH6uDU2PszjplMFp+cdJhhesqQKDI73PbNmnqyFeJ0NEkdjHGM9ClGBz
+         Kub4fnURTIbhWt5vkYXOOm819JBFMgGqc2EGGk4VfetCprArdufE/0FvcmYdzbhxFWgj
+         dSR+/NjzR/gYV8rZZJkfDpPC9VJcHphD95wBJX1YSaLVVuI/NwMrcGv9WsPsiQuE9Erq
+         qOLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702915303; x=1703520103;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yGsftRUwsP12LQ30FBWYDs/WH5EY9TUOi7H6csPAxGw=;
-        b=Mcx9vijVDxfmwULMRqsgXjaFhvf83VU2QzR4t1iKT+4xvt5MXYTsqeS6zAlhhbtP87
-         Oucvv1jYIATx9vp1KBdokg0sxcVAlOwQPFJuxxBXJHn/QdU5+rk/XFSrX5aiP5WGDu0I
-         nuCwkl2G+9TjmPIbY36xLWiCqx+Mh4QL4qi/TCYwRHf0B/AIZJqYbWcBOLeSFVJbz5Mr
-         YVPWD9kyEzWSrVwFJaTo6k0FtYMuzPgNC98Ee30clFPZ1Zz/tY/ODjvj0yfol0NfyHQp
-         nB7OmNQ0ib1zVz8/aR9XPSMrtP0p45PYR4m+0eT+mZ/QUlIe5HYYv/adH8yJApYNxAEB
-         nBPg==
-X-Gm-Message-State: AOJu0Ywi88RtOHLkvlaGQb5PyzEq8q37riQndlbHKFv6I8SUKiEu7Yzz
-	Um2xLK3mUqCqVVCgP3OdmmMd1zvzXGKRKZuxd3B5Mw==
-X-Google-Smtp-Source: AGHT+IHc27efHm1oPrfnUlMRPn8IUs/f3CkxX/C5qBu8BNaZdCSCbdm+IytJJb9k8TJC1cMswI99IhwBc39aQg71/Z0=
-X-Received: by 2002:a05:6122:180a:b0:4b6:d379:7f5 with SMTP id
- ay10-20020a056122180a00b004b6d37907f5mr510520vkb.1.1702915303687; Mon, 18 Dec
- 2023 08:01:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702915335; x=1703520135;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c4hFbIwksqnnHMFEIUpDIp2sv6C4RgN/QaxeoGjcsV4=;
+        b=AOXqLHJBB7Fb4aqxuslkT/+v1IXF5hGBvStMDuHO35vA88WiqP1FWZj+IeohEB8ANi
+         CwlDqIKEpUNgvbqvvj2e1ZYCyJT6N7AIUxxarYR3/d2Zx4HLZjH7p8qIuYehnAFlnUZF
+         nYvSC09z3FS4rdLoeN7nNGt7nZZNE3AVxNZRx1LyL3zHGOvJQh5MTPCHana0G8pEiQs4
+         W/lnUYnVe3s1jqj9gUM3nRIckV+BL65u6gGqeJ4zEqyAZj/lcQRn0EiwGj0b6hiB/IR9
+         Ru3upJN1NRSvXEJcVdAsA8gdbu3YO2PJfkE9SEkOYCAQqSlxIjCSUxVr9F3C6KRTQZcJ
+         vjoA==
+X-Gm-Message-State: AOJu0YyDvD8U5/W16lC1B0k/aXiunapWaabKexS/OWkm6bgqUkuK/Mm/
+	ngLM6zSmEmTd9EcZrJ+WgHbi0g==
+X-Google-Smtp-Source: AGHT+IGKfxKawkNOG95ldyV5Amy0pn0orRx9Kky6oco0+fkJ1sV58/N2nFdibVGmvUe0F9sZUP8LjA==
+X-Received: by 2002:a17:907:31c3:b0:a19:a1ba:da2d with SMTP id xf3-20020a17090731c300b00a19a1bada2dmr10314351ejb.84.1702915335035;
+        Mon, 18 Dec 2023 08:02:15 -0800 (PST)
+Received: from [10.167.154.1] (178235179137.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.137])
+        by smtp.gmail.com with ESMTPSA id ts7-20020a170907c5c700b00a1dd58874b8sm14260693ejc.119.2023.12.18.08.02.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 08:02:14 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 00/12] 8550 fixups
+Date: Mon, 18 Dec 2023 17:02:01 +0100
+Message-Id: <20231218-topic-8550_fixes-v1-0-ce1272d77540@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231216001652.56276-1-warthog618@gmail.com> <20231216001652.56276-2-warthog618@gmail.com>
- <CAMRc=McBVeQ=yRpGRsnPEULfPx15PBO3kiGscdS4s6-d0URc3w@mail.gmail.com> <ZYBoA25z76uutBBI@rigel>
-In-Reply-To: <ZYBoA25z76uutBBI@rigel>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 18 Dec 2023 17:01:32 +0100
-Message-ID: <CAMRc=MdKfs1ok2KgkO0C64cA9k8bOupxsjReBMQSdZbP+MQMCQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/5] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-To: Kent Gibson <warthog618@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linus.walleij@linaro.org, andy@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPlsgGUC/x2L0QqDMAwAf0XyvICtOMRfERltms6AVGl0DMR/X
+ 9jjHXcXKFdhhbG5oPJHVLZi4B4N0BLKm1GSMfjWd867AY9tF8Kh79tXli8r+kjPjlJmlxPYFoM
+ yxhoKLTaWc11N7pX/tZlpvu8fJCfhincAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Georgi Djakov <djakov@kernel.org>, Abel Vesa <abel.vesa@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Taniya Das <quic_tdas@quicinc.com>, 
+ Jagadeesh Kona <quic_jkona@quicinc.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702915332; l=1669;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=6Yb6Qe/+BKF3DV+Lv1BhKuTvaTNyVIFwB8H4W5q8BdI=;
+ b=WN6C/G5NMRK0U5PRvi6RcGbFHGJhOq0WE7mMSQzhNKn7wyhSth6m02iTHjs3EDXx7AmQreUZ+
+ qE3T1qxAX9ED17zx28TncGmUEfwG8aEyZttWnxMiImBy7buOGhSsja0
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On Mon, Dec 18, 2023 at 4:40=E2=80=AFPM Kent Gibson <warthog618@gmail.com> =
-wrote:
->
-> On Mon, Dec 18, 2023 at 04:24:50PM +0100, Bartosz Golaszewski wrote:
-> > On Sat, Dec 16, 2023 at 1:17=E2=80=AFAM Kent Gibson <warthog618@gmail.c=
-om> wrote:
-> > >
-> > > Store the debounce period for a requested line locally, rather than i=
-n
-> > > the debounce_period_us field in the gpiolib struct gpio_desc.
-> > >
-> > > Add a global tree of lines containing supplemental line information
-> > > to make the debounce period available to be reported by the
-> > > GPIO_V2_GET_LINEINFO_IOCTL and the line change notifier.
-> > >
-> > > Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> > > Reviewed-by: Andy Shevchenko <andy@kernel.org>
-> > > ---
-> > >  drivers/gpio/gpiolib-cdev.c | 154 ++++++++++++++++++++++++++++++----=
---
-> > >  1 file changed, 132 insertions(+), 22 deletions(-)
-> > >
-> > > +static inline bool line_is_supplemental(struct line *line)
-> >
-> > Under v2 I suggested naming this line_has_suppinfo(). Any reason not
-> > to do it? I think it's more logical than saying "line is
-> > supplemental". The latter makes it seem as if certain line objects
-> > would "supplement" some third party with something. What this really
-> > checks is: does this line contain additional information.
-> >
->
->
-> My bad - responded to your first comment and then missed the rest.
->
-> Agreed - the naming could be better. Will fix for v5.
->
-> > > +{
-> > > +       return READ_ONCE(line->debounce_period_us);
-> > > +}
-> > > +
-> > > +static void line_set_debounce_period(struct line *line,
-> > > +                                    unsigned int debounce_period_us)
-> > > +{
-> > > +       bool was_suppl =3D line_is_supplemental(line);
-> > > +
-> > > +       WRITE_ONCE(line->debounce_period_us, debounce_period_us);
-> > > +
-> > > +       if (line_is_supplemental(line) =3D=3D was_suppl)
-> > > +               return;
-> > > +
-> > > +       if (was_suppl)
-> > > +               supinfo_erase(line);
-> > > +       else
-> > > +               supinfo_insert(line);
-> >
-> > Could you add a comment here saying it's called with the config mutex
-> > taken as at first glance it looks racy but actually isn't?
-> >
->
-> Sure.  Though it is also covered by the gdev->sem you added, right?
-> So the config_mutex is now redundant?
-> Should I document it is covered by both?
-> Or drop the config_mutex entirely?
->
+I found a couple of sneaky bugs concerning 8550, ranging from icc and clk,
+to some usual omissions in the dts. This series attempts to amend them to
+mostly prevent UB due to misconfiguration.
 
-No! The semaphore is a read-write semaphore and we can have multiple
-readers at once. This semaphore only protects us from the chip being
-set to NULL during a system call. It will also go away once I get the
-descriptor access serialized (or not - I'm figuring out a lockless
-approach) and finally use SRCU to protect gdev->chip.
+Patches 1-2 for icc, rest for qcom
 
-> And you wanted some comments to explain the logic?
-> I thought this is a common "has it changed" pattern, and so didn't
-> require additional explanation, but I guess not as common as I thought.
->
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (12):
+      interconnect: qcom: sm8550: Remove bogus per-RSC BCMs and nodes
+      interconnect: qcom: sm8550: Enable sync_state
+      clk: qcom: gcc-sm8550: Add the missing RETAIN_FF_ENABLE GDSC flag
+      clk: qcom: gcc-sm8550: Mark the PCIe GDSCs votable
+      clk: qcom: gcc-sm8550: use collapse-voting for PCIe GDSCs
+      clk: qcom: gcc-sm8550: Mark RCGs shared where applicable
+      clk: qcom: gpucc-sm8550: Update GPU PLL settings
+      clk: qcom: dispcc-sm8550: Update disp PLL settings
+      clk: qcom: dispcc-sm8550: Use the correct PLL configuration function
+      arm64: dts: qcom: sm8550: Switch UFS from opp-table-hz to opp-v2
+      arm64: dts: qcom: sm8550: Separate out X3 idle state
+      arm64: dts: qcom: sm8550: Update idle state time requirements
 
-If line_set_debounce_period() could be called concurrently for the
-same line, this approach would be racy. It cannot but I want a comment
-here as I fear that if in the future we add some more attributes that
-constitute "supplemental info" and which may be changed outside of the
-config lock then this would in fact become racy.
+ arch/arm64/boot/dts/qcom/sm8550.dtsi |  82 +++--
+ drivers/clk/qcom/dispcc-sm8550.c     |  12 +-
+ drivers/clk/qcom/gcc-sm8550.c        | 110 +++----
+ drivers/clk/qcom/gpucc-sm8550.c      |   6 +-
+ drivers/interconnect/qcom/sm8550.c   | 575 +----------------------------------
+ drivers/interconnect/qcom/sm8550.h   | 284 ++++++++---------
+ 6 files changed, 257 insertions(+), 812 deletions(-)
+---
+base-commit: ceb2fe0d438644e1de06b9a6468a1fb8e2199c70
+change-id: 20231218-topic-8550_fixes-2bc63cdfe1fd
 
-Bart
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> Cheers,
-> Kent.
 
