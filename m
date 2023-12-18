@@ -1,142 +1,166 @@
-Return-Path: <linux-kernel+bounces-4238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8851D81797E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:19:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CD4C81781B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:04:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7315284161
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:19:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64C741C21D34
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:04:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6CD5D746;
-	Mon, 18 Dec 2023 18:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF874FF8A;
+	Mon, 18 Dec 2023 17:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="Axs4Ivw/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VHXiYeRg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8025BFAC
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40d12ade25dso21718755e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:19:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702923575; x=1703528375; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wngOefNv+z6F34iAlT1vTTC0xRYTMvpTjWKXnGOQBpw=;
-        b=Axs4Ivw/LVR6wXDIgkeETJk8VxIH2znyzG0XGSSY5wb20qZpTkjoMTNjKy1yLysnL0
-         RZOc7uLW55tJ1Kj6W0J6I+nDtpRnN2n6Lh8/Lw3hy1Lgimm9Un3ol2fI05D7y2qthquB
-         NIwcAJyXs42v9hzhASLi6oQKzbDIOy/r9D3486ur2kNtY8kuMKE6vrP5o1bMFvHouKis
-         WJmfSRQrbUjn1vy1puM4zEd/uSOQYnREl/E/V+Ly01NqFNll3IIwGuvHwWcl4GiwABqX
-         5N7iJcUY/OIioJwVSp0ZjcjaqsTsWjFDLKNTpc5hkmvFehlM9mQ3D8i/ev7Zeraod7ly
-         sD4w==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB1537863
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702919067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=/1DYgIzwVVHIUTBZRQm0/j2Jm2pykqS7kpwFWrYvsHg=;
+	b=VHXiYeRgb23hsJHtqWClomHago/htNRHEj0maii12IpAC4M3nqKbp1ax555AblTJv+R3rT
+	5vwA159ixpaooXcy+RAovSmcujUoceIAabsGfUdPxZ+422ZBEDCzqsBr1slzXINdIg3Xcu
+	msKytXjv8QlYFdHq5gPNRQATvHZoE9E=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-544-750hOb-7PlaOCpwc9r2aAA-1; Mon, 18 Dec 2023 12:04:25 -0500
+X-MC-Unique: 750hOb-7PlaOCpwc9r2aAA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c9fdb15388so23413351fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:04:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702923575; x=1703528375;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1702919064; x=1703523864;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wngOefNv+z6F34iAlT1vTTC0xRYTMvpTjWKXnGOQBpw=;
-        b=aZUrSEBqWZzofRA9QtBHOeerLDRNMBi57Ai+S+odPJjqbFQkz3Q8+0FQbBf/Q3XJ0G
-         eM71kQD4n2r/PVGsgLm2m2p2pBIyzgXBWwWCFfKr1vSuxrA/QGXBWZYjYxSF4nVpYFV0
-         W9lGv96gkULv/6F6EEjnvRiaRNUeqA+lHLJldeFbuc6TPhIpofyRGW78mjMEsRPDyz/w
-         VTFTvJQRHMR6piRi+5XnqhcqeR4y7d9q4QSUJv28CqCTfjsa78+HkRHY0G49ZGKDADWZ
-         qdTeaA7GHt4dWLrNlkJeEaeFg0oS/icGv2XbXbk5RnIe6vjbbZGoC99N1THxbt2rJGXT
-         5e8w==
-X-Gm-Message-State: AOJu0YwU+K/BEBVCxOl2xRAWDlEQMJQHPVtSdDl70s7uy2sy6kTz09QQ
-	Fh4S7DPjZgwoYMtCNTOf7N+CpQ==
-X-Google-Smtp-Source: AGHT+IE8TGKpR7h58VoFinOm8qiIsJoctzMe6kl9K+yyn18hvEFRCCJaQY587qUcggqnBYSzX1gryg==
-X-Received: by 2002:a7b:ce08:0:b0:40c:2964:5570 with SMTP id m8-20020a7bce08000000b0040c29645570mr8591538wmc.61.1702923575256;
-        Mon, 18 Dec 2023 10:19:35 -0800 (PST)
-Received: from airbuntu (host86-135-101-43.range86-135.btcentralplus.com. [86.135.101.43])
-        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b0040c4886f254sm32817208wmn.13.2023.12.18.10.19.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 10:19:34 -0800 (PST)
-Date: Sun, 17 Dec 2023 21:44:55 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
-	Rick Yiu <rickyiu@google.com>, Chung-Kai Mei <chungkai@google.com>,
-	Hongyan Xia <hongyan.xia2@arm.com>
-Subject: Re: [PATCH 1/4] sched/fair: Be less aggressive in calling
- cpufreq_update_util()
-Message-ID: <20231217214455.5rf67ezdrwqdvwwh@airbuntu>
-References: <20231208015242.385103-1-qyousef@layalina.io>
- <20231208015242.385103-2-qyousef@layalina.io>
- <212396c7-8c36-4850-8871-ea4c757a9324@arm.com>
+        bh=/1DYgIzwVVHIUTBZRQm0/j2Jm2pykqS7kpwFWrYvsHg=;
+        b=XvjL8sbNCixw/9HATEQzAHIBZ88XcIDgTsb+k8fdFI+qSx2zdEICpfPFe1r4Vzld5e
+         widb4vYoO+yY0ghX/rmsfPc18FHIEd4phCLXB+lk2RnD54LxW7UCj2QQuRdsYgLpo3wL
+         1sCBZAvG1A3iKPCSOHImRbz98yC7gkJYkli+qEnKtE7x7FEzJLE9MoL4W6/1bkEshhxa
+         3WkvJjSKNpPKmCXHBKCjOCIwz//RXXOJ+u5a+mkyWfR7RyjZYEZD7c8ulNWpTH6u6gJb
+         ntQQXxP9eEKMMihR4dniHxSMJH3cZ90JTN4GcRK+sqZz6WWYID+YkC10mgSzFSH+ella
+         MD2Q==
+X-Gm-Message-State: AOJu0YyL5UZAYOYabCz5LjMMyQOEBqz9eCy1U1Y9ZYpgNnBnoZ/z4BUn
+	HrTRTeHBrYeviHKRY850rY/LXndm+vP3r3OMvjpJKyGNSIpLzJBBzdBfad9IB96YE2krlSxvf73
+	a/6ZuqjRZNeQkvTZ+zX9ELI7m
+X-Received: by 2002:a05:600c:3556:b0:40b:5e1e:cf9 with SMTP id i22-20020a05600c355600b0040b5e1e0cf9mr8065261wmq.52.1702918955259;
+        Mon, 18 Dec 2023 09:02:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFdWKo7SLZ9qZLZpwhuUfjr9X4Fxt0ethpIWz8nctSstfE2W+h8Ym1LbLSHz0CF+7lqYWIz0g==
+X-Received: by 2002:a05:600c:3556:b0:40b:5e1e:cf9 with SMTP id i22-20020a05600c355600b0040b5e1e0cf9mr8065077wmq.52.1702918944886;
+        Mon, 18 Dec 2023 09:02:24 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72b:b500:b53e:6e32:1408:27ac? (p200300cbc72bb500b53e6e32140827ac.dip0.t-ipconnect.de. [2003:cb:c72b:b500:b53e:6e32:1408:27ac])
+        by smtp.gmail.com with ESMTPSA id e10-20020adfe7ca000000b003335ddce799sm13919144wrn.103.2023.12.18.09.02.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 09:02:24 -0800 (PST)
+Message-ID: <1bc53fc1-fdf0-4f4b-98ab-bab53384b765@redhat.com>
+Date: Mon, 18 Dec 2023 18:02:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <212396c7-8c36-4850-8871-ea4c757a9324@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 14/39] mm/rmap: introduce
+ folio_add_anon_rmap_[pte|ptes|pmd]()
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Hugh Dickins <hughd@google.com>, Yin Fengwei <fengwei.yin@intel.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
+ Peter Xu <peterx@redhat.com>
+References: <20231211155652.131054-1-david@redhat.com>
+ <20231211155652.131054-15-david@redhat.com>
+ <593c4eb0-e430-4186-a95c-9d2ebd91235c@arm.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <593c4eb0-e430-4186-a95c-9d2ebd91235c@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 12/18/23 09:51, Dietmar Eggemann wrote:
-> On 08/12/2023 02:52, Qais Yousef wrote:
-> > Due to the way code is structured, it makes a lot of sense to trigger
-> > cpufreq_update_util() from update_load_avg(). But this is too aggressive
-> > as in most cases we are iterating through entities in a loop to
-> > update_load_avg() in the hierarchy. So we end up sending too many
-> > request in an loop as we're updating the hierarchy.
-> > 
-> > Combine this with the rate limit in schedutil, we could end up
-> > prematurely send up a wrong frequency update before we have actually
-> > updated all entities appropriately.
-> > 
-> > Be smarter about it by limiting the trigger to perform frequency updates
-> > after all accounting logic has done. This ended up being in the
+
+>> -	if (flags & RMAP_EXCLUSIVE)
+>> -		SetPageAnonExclusive(page);
+>> -	/* While PTE-mapping a THP we have a PMD and a PTE mapping. */
+>> -	VM_WARN_ON_FOLIO((atomic_read(&page->_mapcount) > 0 ||
+>> -			  (folio_test_large(folio) && folio_entire_mapcount(folio) > 1)) &&
+>> -			 PageAnonExclusive(page), folio);
+>> +
+>> +	if (flags & RMAP_EXCLUSIVE) {
+>> +		switch (mode) {
+>> +		case RMAP_MODE_PTE:
+>> +			for (i = 0; i < nr_pages; i++)
+>> +				SetPageAnonExclusive(page + i);
+>> +			break;
+>> +		case RMAP_MODE_PMD:
+>> +			SetPageAnonExclusive(page);
 > 
-> What are the boundaries of the 'accounting logic' here? Is this related
-> to the update of all sched_entities and cfs_rq's involved when a task is
-> attached/detached (or enqueued/dequeued)?
+> Just to check; I suppose only setting this on the head is ok, because it's an
+> exclusive mapping and therefore by definition it can only be mapped by pmd?
 
-Yes.
+Yes. And when PTE-remapping, we will push the flag to all tail pages. No 
+change in behavior :)
 
-> 
-> I can't see that there are any premature cfs_rq_util_change() in the
-> current code when we consider this.
+-- 
+Cheers,
 
-Thanks for checking. I'll revisit the problem as indicated previously. This
-patch is still needed; I'll update rationale at least and fix highlighted
-issues with decay.
+David / dhildenb
 
-> 
-> And avoiding updates for a smaller task to make sure updates for a
-> bigger task go through is IMHO not feasible.
-
-Where did this line of thought come from? This patch is about consolidating
-how scheduler request frequency updates. And later patches requires the single
-update at tick to pass the new SCHED_CPUFREQ_PERF_HINTS.
-
-If you're referring to the logic in later patches about ignore_short_tasks();
-then we only ignore the performance hints for this task.
-
-Why not feasible? What's the rationale?
-
-> 
-> I wonder how much influence does this patch has on the test results
-> presented the patch header?
-
-The only change of behavior is how we deal with decay. Which I thought wouldn't
-introduce a functional change, but as caught to by Christian, it did. No
-functional changes are supposed to happen that can affect the test results
-AFAICT.
-
-
-Cheers
-
---
-Qais Yousef
 
