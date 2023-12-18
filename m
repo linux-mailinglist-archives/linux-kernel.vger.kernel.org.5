@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-4476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF808817E04
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:19:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FCCB817E05
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D7CB2828A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:19:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16B441C20FFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06354768EB;
-	Mon, 18 Dec 2023 23:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9BB479956;
+	Mon, 18 Dec 2023 23:19:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i0OedXEp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L8J2LrPG"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBC87690D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED61A79944;
+	Mon, 18 Dec 2023 23:19:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02F3FC433D9;
 	Mon, 18 Dec 2023 23:19:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DF7EC433C9;
-	Mon, 18 Dec 2023 23:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702941566;
-	bh=Jj6CqcZq/pZ6jGPq5AqwOGCyrcsDTwMv9Bv+MG30lpE=;
+	s=k20201202; t=1702941569;
+	bh=FjnYKWmKazFNSVW61ol8hhKh2qDPsvgWNQgyqkISaA8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=i0OedXEpe7TdHAuEUjoZS031nMA8vIi+C1jB4UJK9EyzWV5mDKvo9vEQwWlnsKFlb
-	 VJyx6izFRylZqstyJNMQCUmi5pTjUFVDkRvtyVjkH0r2hVK4KzeVOs/u608jbuGsDY
-	 ZMGe1pG4kzPypddBqkW9FweztB4mfeP+m9NrGwisBFfWW/gMoSYDcxRTsNGT7+Bqh8
-	 HmLmbVGdpKOmgzg9+5t2CtLlOwuSksH/9RsknFHUtkyHfOhtM2YK0iWwXLx61Cb/s7
-	 bl5hxyARrPV0l9Dtw7ji0RAJN7ewXdITIXOR5JHYAcS7gEdmSWKCRra67QeVO1NyV3
-	 vEUJp6Ll1YXXw==
+	b=L8J2LrPGtoGQcZ1ZvOzNwBrc2kpjH28ttt/sL3uw0zBI2iBEVxxQfynVn3lDyDk9N
+	 1t5z5Yw4arepFW3hGmvgFTg3/DZfofyYJ4reEfO/qx9llQctX6HMLKNxOUo+Tf5hyz
+	 l7iywMPD6S3TZxGCjZhnRyo/mJbIJCJYS3h2hjbGjTQVS8J0QR0VCKYBx0KqaP3w/G
+	 EQiKFdixyevxwCsm85+DjiPdIua6uCPZVT4ucU/Nlw7gw3KdMVbLVIDiCIPBpjaGfw
+	 CHlBnagO7M2QWUAPXbzTYEf/wXU17zp1GzVwWal4b6fLKa3CTBU8Aqf9JWqCRdtHT+
+	 uL36thz7eMxvg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -44,9 +44,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 1/3] hrtimer: Report offline hrtimer enqueue
-Date: Tue, 19 Dec 2023 00:19:14 +0100
-Message-ID: <20231218231916.11719-2-frederic@kernel.org>
+Subject: [PATCH 2/3] rcu: Defer RCU kthreads wakeup when CPU is dying
+Date: Tue, 19 Dec 2023 00:19:15 +0100
+Message-ID: <20231218231916.11719-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231218231916.11719-1-frederic@kernel.org>
 References: <20231218231916.11719-1-frederic@kernel.org>
@@ -58,66 +58,132 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The hrtimers migration on CPU-down hotplug process has been moved
-earlier, before the CPU actually goes to die. This leaves a small window
-of opportunity to queue an hrtimer in a blind spot, leaving it ignored.
+When the CPU goes idle for the last time during the CPU down hotplug
+process, RCU reports a final quiescent state for the current CPU. If
+this quiescent state propagates up to the top, some tasks may then be
+woken up to complete the grace period: the main grace period kthread
+and/or the expedited main workqueue (or kworker).
 
-For example a practical case has been reported with RCU waking up a
-SCHED_FIFO task right before the CPUHP_AP_IDLE_DEAD stage, queuing that
-way a sched/rt timer to the local offline CPU.
+If those kthreads have a SCHED_FIFO policy, the wake up can indirectly
+arm the RT bandwith timer to the local offline CPU. Since this happens
+after hrtimers have been migrated at CPUHP_AP_HRTIMERS_DYING stage, the
+timer gets ignored. Therefore if the RCU kthreads are waiting for RT
+bandwidth to be available, they may never be actually scheduled.
 
-Make sure such situations never go unnoticed and warn when that happens.
+This triggers TREE03 rcutorture hangs:
+
+	 rcu: INFO: rcu_preempt self-detected stall on CPU
+	 rcu:     4-...!: (1 GPs behind) idle=9874/1/0x4000000000000000 softirq=0/0 fqs=20 rcuc=21071 jiffies(starved)
+	 rcu:     (t=21035 jiffies g=938281 q=40787 ncpus=6)
+	 rcu: rcu_preempt kthread starved for 20964 jiffies! g938281 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+	 rcu:     Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+	 rcu: RCU grace-period kthread stack dump:
+	 task:rcu_preempt     state:R  running task     stack:14896 pid:14    tgid:14    ppid:2      flags:0x00004000
+	 Call Trace:
+	  <TASK>
+	  __schedule+0x2eb/0xa80
+	  schedule+0x1f/0x90
+	  schedule_timeout+0x163/0x270
+	  ? __pfx_process_timeout+0x10/0x10
+	  rcu_gp_fqs_loop+0x37c/0x5b0
+	  ? __pfx_rcu_gp_kthread+0x10/0x10
+	  rcu_gp_kthread+0x17c/0x200
+	  kthread+0xde/0x110
+	  ? __pfx_kthread+0x10/0x10
+	  ret_from_fork+0x2b/0x40
+	  ? __pfx_kthread+0x10/0x10
+	  ret_from_fork_asm+0x1b/0x30
+	  </TASK>
+
+The situation can't be solved with just unpinning the timer. The hrtimer
+infrastructure and the nohz heuristics involved in finding the best
+remote target for an unpinned timer would then also need to handle
+enqueues from an offline CPU in the most horrendous way.
+
+So fix this on the RCU side instead and defer the wake up to an online
+CPU if it's too late for the local one.
 
 Reported-by: Paul E. McKenney <paulmck@kernel.org>
 Fixes: 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/hrtimer.h | 3 ++-
- kernel/time/hrtimer.c   | 3 +++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c     | 34 +++++++++++++++++++++++++++++++++-
+ kernel/rcu/tree_exp.h |  3 +--
+ 2 files changed, 34 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index f2044d5a652b..f0204630a443 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -219,7 +219,8 @@ struct hrtimer_cpu_base {
- 	unsigned int			hres_active		: 1,
- 					in_hrtirq		: 1,
- 					hang_detected		: 1,
--					softirq_activated       : 1;
-+					softirq_activated       : 1,
-+					online			: 1;
- #ifdef CONFIG_HIGH_RES_TIMERS
- 	unsigned int			nr_events;
- 	unsigned short			nr_retries;
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 760793998cdd..edb0f821dcea 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1085,6 +1085,7 @@ static int enqueue_hrtimer(struct hrtimer *timer,
- 			   enum hrtimer_mode mode)
- {
- 	debug_activate(timer, mode);
-+	WARN_ON_ONCE(!base->cpu_base->online);
- 
- 	base->cpu_base->active_bases |= 1 << base->index;
- 
-@@ -2183,6 +2184,7 @@ int hrtimers_prepare_cpu(unsigned int cpu)
- 	cpu_base->softirq_next_timer = NULL;
- 	cpu_base->expires_next = KTIME_MAX;
- 	cpu_base->softirq_expires_next = KTIME_MAX;
-+	cpu_base->online = 1;
- 	hrtimer_cpu_base_init_expiry_lock(cpu_base);
- 	return 0;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 3ac3c846105f..157f3ca2a9b5 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1013,6 +1013,38 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
+ 	return needmore;
  }
-@@ -2250,6 +2252,7 @@ int hrtimers_cpu_dying(unsigned int dying_cpu)
- 	smp_call_function_single(ncpu, retrigger_next_event, NULL, 0);
  
- 	raw_spin_unlock(&new_base->lock);
-+	old_base->online = 0;
- 	raw_spin_unlock(&old_base->lock);
++static void swake_up_one_online_ipi(void *arg)
++{
++	struct swait_queue_head *wqh = arg;
++
++	swake_up_one(wqh);
++}
++
++static void swake_up_one_online(struct swait_queue_head *wqh)
++{
++	int cpu = get_cpu();
++
++	/*
++	 * If called from rcutree_report_cpu_starting(), wake up
++	 * is dangerous that late in the CPU-down hotplug process. The
++	 * scheduler might queue an ignored hrtimer. Defer the wake up
++	 * to an online CPU instead.
++	 */
++	if (unlikely(cpu_is_offline(cpu))) {
++		int target;
++
++		target = cpumask_any_and(housekeeping_cpumask(HK_TYPE_RCU),
++					 cpu_online_mask);
++
++		smp_call_function_single(target, swake_up_one_online_ipi,
++					 wqh, 0);
++		put_cpu();
++	} else {
++		put_cpu();
++		swake_up_one(wqh);
++	}
++}
++
+ /*
+  * Awaken the grace-period kthread.  Don't do a self-awaken (unless in an
+  * interrupt or softirq handler, in which case we just might immediately
+@@ -1037,7 +1069,7 @@ static void rcu_gp_kthread_wake(void)
+ 		return;
+ 	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+ 	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
+-	swake_up_one(&rcu_state.gp_wq);
++	swake_up_one_online(&rcu_state.gp_wq);
+ }
  
- 	return 0;
+ /*
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 6d7cea5d591f..2ac440bc7e10 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -173,7 +173,6 @@ static bool sync_rcu_exp_done_unlocked(struct rcu_node *rnp)
+ 	return ret;
+ }
+ 
+-
+ /*
+  * Report the exit from RCU read-side critical section for the last task
+  * that queued itself during or before the current expedited preemptible-RCU
+@@ -201,7 +200,7 @@ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
+ 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 			if (wake) {
+ 				smp_mb(); /* EGP done before wake_up(). */
+-				swake_up_one(&rcu_state.expedited_wq);
++				swake_up_one_online(&rcu_state.expedited_wq);
+ 			}
+ 			break;
+ 		}
 -- 
 2.42.1
 
