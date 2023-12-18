@@ -1,144 +1,425 @@
-Return-Path: <linux-kernel+bounces-4034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E4298176FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:09:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76123817707
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2E431C22532
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:09:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C96C2852C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9659E42042;
-	Mon, 18 Dec 2023 16:08:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D524FF88;
+	Mon, 18 Dec 2023 16:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HsqVrdQl"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="L0LbqVg8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6963E3D56F;
-	Mon, 18 Dec 2023 16:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-591487a1941so2476198eaf.3;
-        Mon, 18 Dec 2023 08:08:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702915708; x=1703520508; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=sVPPzIcxJTHHwl2PGodBQ7T+AVsNaRwSVhdAPKqSJh8=;
-        b=HsqVrdQlNkvuqUXf8bZonB38t12k4Vm82uYzUKsWeJYouQ7ivb00KIpnZL9R3HEGmk
-         KV12cKgBJUNaybWLUfiJpuagjxE9+PKXBJIQlzzGYzSC7hQuOwpLWhHgNibyGF+oYLO9
-         Qvtaqnlw9WrHOG8+pF8IWW0uddSFrkF5RHSb/cADRVzL2/9i+2jRqFteo+1VlmTUKxed
-         DuFJuTIOJVUCtkNkDH2oyA5iejOY5cOFLsA3V7ChNuVmMthv87uOgkU6qXuCQL5zCE3d
-         5WFXBH7FqqlpPoRLagoCT3Nxi+vWpcbRHSoDYOYgAy10J/7vXekUN0fj+qk04b09INrJ
-         4TZA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5065A842
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CBD0F3F2B4
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1702915779;
+	bh=kNYwHiHA5JKcMtscgMvLBL38WRvjiuLJSkgC6rbFZ7U=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type;
+	b=L0LbqVg8X0B6AXGs4KkIlDvgB5Aa+IYgHpunW8J90BGflvdftqMFEhjsHwvTXb+D/
+	 yaCfBl8Y74vWSqNWt/JRkU2wDV8+v07gxd5AUhGYkE82dWOfGGBl/9vqUBuzmTqKeb
+	 LWaOERidPLYk6YuCaae+uhwnQRVO0a+WtNIe1dsiToKVjKZbWgyt93G/qT4Y0a8fka
+	 n2xHRmT/94DBbNmEy0STqIwlnTblkGNQiA67PWuyOG5wERZhyZRN42f2nbA4PvpEuD
+	 ZrlrbkV/serOcOk4NmsMYK7jHFJytQY4Q8qbaNak7mk+A4VHoZouoa8UA5HkPg3Uky
+	 ylSLC2Lf1bDXA==
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40c2c144e60so26326575e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:09:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702915708; x=1703520508;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sVPPzIcxJTHHwl2PGodBQ7T+AVsNaRwSVhdAPKqSJh8=;
-        b=eDOvExA2zOaBHBtS0j/mwbrFE7OpjydeQqVu3lYmmf92Jrofjzgtv772AD0FyZhChn
-         PEj6eGblc/HXL4DsufRSFDiTRnNV0Q4rH40vamTBUf2vuetxfI1kJMj3hyJUzA4oV+3Q
-         HH583Aoj1BAc+3SfoWGuru64SRel0m9bseyEfYw0JelczdUQ2IpVBD/r8N3z0R8dhMdb
-         1K5hJHyG+6FvPkHS/CuqMA4zhsvAi5KVP1iy5PgNZiXCXMxeISEc7g44bQx8HeS1iAzB
-         35YzmrOrGiFejZt6p3zWRJlFPS5JNgcdZ4sCmJOCXyJCHDBWClfZiOy3rB4ht70Qc13V
-         /l5g==
-X-Gm-Message-State: AOJu0YyrdNFM2KcTJSXK3zbod6nBbLSd/b9jvAmC5cVE107ua5ZhPuyp
-	U9cTlJgB6l/miNl8Ske77P0=
-X-Google-Smtp-Source: AGHT+IH3hyB/OHezF8gVk8v+Ju9d9lXTX+94o1lL+vFj9yEr44sc4odT+aLOuG8bf4wdn2R0dbmHKg==
-X-Received: by 2002:a05:6358:6f14:b0:170:68c8:1894 with SMTP id r20-20020a0563586f1400b0017068c81894mr16775514rwn.64.1702915708501;
-        Mon, 18 Dec 2023 08:08:28 -0800 (PST)
-Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id w22-20020a63c116000000b005cd9bc22bdfsm2042605pgf.87.2023.12.18.08.08.25
+        d=1e100.net; s=20230601; t=1702915779; x=1703520579;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kNYwHiHA5JKcMtscgMvLBL38WRvjiuLJSkgC6rbFZ7U=;
+        b=Ho14oSS0KfF2IqpaLUtAawhc/ChbozwCg2pqNHVLcGiUDTysa3ZLpQCImQ3UXDCt/h
+         KxI2HW32CnwFMdJlQvr+UIu4dbM7pVjLJluBgAWP0sVbcEwi2UzPQJNWZXTKQgVoM/4n
+         IlTQhcf5JGnJbH0HnJr0hqjGVTiVvFA5soN109zD0fQc7Vx7WNhCJLl0hl/oqqjQqPap
+         ijBR4EGbxbB12dePrh7TeCr2RJWD61cUzee7tFG/ll/2gn5Jc/KTIDrMXduMYbKb/vs0
+         RVWirE51+5l7+SSlnzDcn62wi9JZizI29mVVE0ZbC07QwGplH6VVCfXgmp3XPz9Bye4c
+         fnoQ==
+X-Gm-Message-State: AOJu0YzYhenpshwAPcBTgDjVnbgOsIVvImg8kjTqFqP7AVuOD2H76s6N
+	T3uCZb5xqrkjwCKWT8mnrkJRruGn/inaT5WPYnNVNI/iA8IiX4OloThpl83wg7japYBVDd1tVYQ
+	RGj5CHPtMGkFyl9iCzkMCRVTwvzDei3uNCCq5fV3J2Q==
+X-Received: by 2002:a05:6512:e9d:b0:50c:e34:aefb with SMTP id bi29-20020a0565120e9d00b0050c0e34aefbmr8832325lfb.28.1702915759319;
+        Mon, 18 Dec 2023 08:09:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH138o8H7nauPEk8k8DiVgXeX1uyyz7taOvKkvO/g6Lcsmaba+QT3xQknAbOyCb0brKGEAaXg==
+X-Received: by 2002:a05:6512:e9d:b0:50c:e34:aefb with SMTP id bi29-20020a0565120e9d00b0050c0e34aefbmr8832293lfb.28.1702915758798;
+        Mon, 18 Dec 2023 08:09:18 -0800 (PST)
+Received: from amikhalitsyn (ip5b408b16.dynamic.kabel-deutschland.de. [91.64.139.22])
+        by smtp.gmail.com with ESMTPSA id k20-20020a17090646d400b00a23640f7f23sm651738ejs.47.2023.12.18.08.09.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 08:08:28 -0800 (PST)
-Date: Tue, 19 Dec 2023 00:08:23 +0800
-From: Kent Gibson <warthog618@gmail.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linus.walleij@linaro.org, andy@kernel.org
-Subject: Re: [PATCH v4 1/5] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-Message-ID: <ZYBud4tobG3x9Zhh@rigel>
-References: <20231216001652.56276-1-warthog618@gmail.com>
- <20231216001652.56276-2-warthog618@gmail.com>
- <CAMRc=McBVeQ=yRpGRsnPEULfPx15PBO3kiGscdS4s6-d0URc3w@mail.gmail.com>
- <ZYBoA25z76uutBBI@rigel>
- <CAMRc=MdKfs1ok2KgkO0C64cA9k8bOupxsjReBMQSdZbP+MQMCQ@mail.gmail.com>
+        Mon, 18 Dec 2023 08:09:18 -0800 (PST)
+Date: Mon, 18 Dec 2023 17:09:16 +0100
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Michael =?ISO-8859-1?Q?Wei=DF?= <michael.weiss@aisec.fraunhofer.de>,
+ Alexander Mikhalitsyn <alexander@mihalicyn.com>, Alexei Starovoitov
+ <ast@kernel.org>, Paul Moore <paul@paul-moore.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Quentin Monnet
+ <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Miklos
+ Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, gyroidos@aisec.fraunhofer.de
+Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
+ non-initial userns
+Message-Id: <20231218170916.cd319dbcf83f2dd7da24e48f@canonical.com>
+In-Reply-To: <20231215-eiern-drucken-69cf4780d942@brauner>
+References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+	<20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
+	<20231215-golfanlage-beirren-f304f9dafaca@brauner>
+	<61b39199-022d-4fd8-a7bf-158ee37b3c08@aisec.fraunhofer.de>
+	<20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner>
+	<20231215-eiern-drucken-69cf4780d942@brauner>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MdKfs1ok2KgkO0C64cA9k8bOupxsjReBMQSdZbP+MQMCQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 05:01:32PM +0100, Bartosz Golaszewski wrote:
-> On Mon, Dec 18, 2023 at 4:40 PM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > On Mon, Dec 18, 2023 at 04:24:50PM +0100, Bartosz Golaszewski wrote:
-> > > On Sat, Dec 16, 2023 at 1:17 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > >
+On Fri, 15 Dec 2023 17:36:12 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
-> > > > +static void line_set_debounce_period(struct line *line,
-> > > > +                                    unsigned int debounce_period_us)
-> > > > +{
-> > > > +       bool was_suppl = line_is_supplemental(line);
-> > > > +
-> > > > +       WRITE_ONCE(line->debounce_period_us, debounce_period_us);
-> > > > +
-> > > > +       if (line_is_supplemental(line) == was_suppl)
-> > > > +               return;
-> > > > +
-> > > > +       if (was_suppl)
-> > > > +               supinfo_erase(line);
-> > > > +       else
-> > > > +               supinfo_insert(line);
-> > >
-> > > Could you add a comment here saying it's called with the config mutex
-> > > taken as at first glance it looks racy but actually isn't?
-> > >
-> >
-> > Sure.  Though it is also covered by the gdev->sem you added, right?
-> > So the config_mutex is now redundant?
-> > Should I document it is covered by both?
-> > Or drop the config_mutex entirely?
-> >
->
-> No! The semaphore is a read-write semaphore and we can have multiple
-> readers at once. This semaphore only protects us from the chip being
-> set to NULL during a system call. It will also go away once I get the
-> descriptor access serialized (or not - I'm figuring out a lockless
-> approach) and finally use SRCU to protect gdev->chip.
->
+> On Fri, Dec 15, 2023 at 03:15:33PM +0100, Christian Brauner wrote:
+> > On Fri, Dec 15, 2023 at 02:26:53PM +0100, Michael Wei=DF wrote:
+> > > On 15.12.23 13:31, Christian Brauner wrote:
+> > > > On Wed, Dec 13, 2023 at 03:38:13PM +0100, Michael Wei=DF wrote:
+> > > >> devguard is a simple LSM to allow CAP_MKNOD in non-initial user
+> > > >> namespace in cooperation of an attached cgroup device program. We
+> > > >> just need to implement the security_inode_mknod() hook for this.
+> > > >> In the hook, we check if the current task is guarded by a device
+> > > >> cgroup using the lately introduced cgroup_bpf_current_enabled()
+> > > >> helper. If so, we strip out SB_I_NODEV from the super block.
+> > > >>
+> > > >> Access decisions to those device nodes are then guarded by existing
+> > > >> device cgroups mechanism.
+> > > >>
+> > > >> Signed-off-by: Michael Wei=DF <michael.weiss@aisec.fraunhofer.de>
+> > > >> ---
+> > > >=20
+> > > > I think you misunderstood me... My point was that I believe you don=
+'t
+> > > > need an additional LSM at all and no additional LSM hook. But I mig=
+ht be
+> > > > wrong. Only a POC would show.
+> > >=20
+> > > Yeah sorry, I got your point now.
+> >=20
+> > I think I might have had a misconception about how this works.
+> > A bpf LSM program can't easily alter a kernel object such as struct
+> > super_block I've been told.
+>=20
+> Which is why you need that new hook in there. I get it now. In any case,
+> I think we can do this slightly nicer (for some definition of nice)...
+>=20
+> So the thing below moves the capability check for mknod into the
+> security_inode_mknod() hook (This should be a separate patch.).
+>=20
+> It moves raising SB_I_NODEV into security_sb_device_access() and the old
+> semantics are retained if no LSM claims device management. If an LSM
+> claims device management we raise the new flag and don't even raise
+> SB_I_NODEV. The capability check is namespace aware if device management
+> is claimed by an LSM. That's backward compatible. And we don't need any
+> sysctl.
+>=20
+> What's missing is that all devcgroup_*() calls should be moved into a
+> new, unified security_device_access() hook that's called consistently in
+> all places where that matters such as blkdev_get_by_dev() and so on. Let
+> the bpf lsm implement that new hook.
+>=20
+> Then write a sample BPF LSM as POC that this works. This would also
+> all other LSMs to do device management if they wanted to.
+>=20
+> Thoughts?
 
-Ah, so it is.
+Dear colleagues,
+Dear Christian,
 
-> > And you wanted some comments to explain the logic?
-> > I thought this is a common "has it changed" pattern, and so didn't
-> > require additional explanation, but I guess not as common as I thought.
-> >
->
-> If line_set_debounce_period() could be called concurrently for the
-> same line, this approach would be racy. It cannot but I want a comment
-> here as I fear that if in the future we add some more attributes that
-> constitute "supplemental info" and which may be changed outside of the
-> config lock then this would in fact become racy.
->
+As far as I understand Christian's idea is to remain mknod capability check=
+s decoupled from the device cgroups checks.
+It looks sane and less error prone.
 
-If any line config is going to be changed from the userspace side then
-it will be by the SET_CONFIG ioctl, and so be covered by the config_mutex,
-but it can't hurt to explicitly document it here as well.
+So we want to:
+- use BPF LSM sb_device_access hook to disable SB_I_NODEV raising for non-r=
+oot-userns superblocks
+- use BPF LSM inode_permission hook to actually filter if we want this devi=
+ce to be permitted or not (alternatively we can use device cgroup).
 
-Cheers,
-Kent.
+The only thing that is not clear to me about the sb_device_access hook is, =
+what we can check inside it practically?
+Yes, we have an access to struct super_block, but at this point this struct=
+ure is not filled with anything useful. We only
+can determine a filesystem type and that's all. It means that we can use th=
+is hook as a flag that says "ok, we do care about device permissions,
+kernel, please do not set SB_I_NODEV for us". Am I correct?
+
+Kind regards,
+Alex
+
+>=20
+> From 7f4177e4f87e0b0182022f114c0287a0f0985752 Mon Sep 17 00:00:00 2001
+> From: Christian Brauner <brauner@kernel.org>
+> Date: Fri, 15 Dec 2023 17:22:26 +0100
+> Subject: [PATCH] UNTESTED, UNCOMPILED, PROBABLY BUGGY
+>=20
+> Signed-off-and-definitely-neither-compiled-nor-tested-by: Christian Braun=
+er <brauner@kernel.org>
+> ---
+>  fs/namei.c                    |  5 -----
+>  fs/namespace.c                | 11 +++++++----
+>  fs/super.c                    |  6 ++++--
+>  include/linux/fs.h            |  1 +
+>  include/linux/lsm_hook_defs.h |  1 +
+>  include/linux/security.h      | 15 ++++++++++++---
+>  security/commoncap.c          | 19 +++++++++++++++++++
+>  security/security.c           | 22 ++++++++++++++++++++++
+>  8 files changed, 66 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 71c13b2990b4..da481e6a696c 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3959,16 +3959,11 @@ EXPORT_SYMBOL(user_path_create);
+>  int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+>  	      struct dentry *dentry, umode_t mode, dev_t dev)
+>  {
+> -	bool is_whiteout =3D S_ISCHR(mode) && dev =3D=3D WHITEOUT_DEV;
+>  	int error =3D may_create(idmap, dir, dentry);
+> =20
+>  	if (error)
+>  		return error;
+> =20
+> -	if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
+> -	    !capable(CAP_MKNOD))
+> -		return -EPERM;
+> -
+>  	if (!dir->i_op->mknod)
+>  		return -EPERM;
+> =20
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index fbf0e596fcd3..e87cc0320091 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -4887,7 +4887,6 @@ static bool mnt_already_visible(struct mnt_namespac=
+e *ns,
+> =20
+>  static bool mount_too_revealing(const struct super_block *sb, int *new_m=
+nt_flags)
+>  {
+> -	const unsigned long required_iflags =3D SB_I_NOEXEC | SB_I_NODEV;
+>  	struct mnt_namespace *ns =3D current->nsproxy->mnt_ns;
+>  	unsigned long s_iflags;
+> =20
+> @@ -4899,9 +4898,13 @@ static bool mount_too_revealing(const struct super=
+_block *sb, int *new_mnt_flags
+>  	if (!(s_iflags & SB_I_USERNS_VISIBLE))
+>  		return false;
+> =20
+> -	if ((s_iflags & required_iflags) !=3D required_iflags) {
+> -		WARN_ONCE(1, "Expected s_iflags to contain 0x%lx\n",
+> -			  required_iflags);
+> +	if (!(s_iflags & SB_I_NOEXEC)) {
+> +		WARN_ONCE(1, "Expected s_iflags to contain SB_I_NOEXEC\n");
+> +		return true;
+> +	}
+> +
+> +	if (!(s_iflags & (SB_I_NODEV | SB_I_MANAGED_DEVICES))) {
+> +		WARN_ONCE(1, "Expected s_iflags to contain device access mask\n");
+>  		return true;
+>  	}
+> =20
+> diff --git a/fs/super.c b/fs/super.c
+> index 076392396e72..7b8098db17c9 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -362,8 +362,10 @@ static struct super_block *alloc_super(struct file_s=
+ystem_type *type, int flags,
+>  	}
+>  	s->s_bdi =3D &noop_backing_dev_info;
+>  	s->s_flags =3D flags;
+> -	if (s->s_user_ns !=3D &init_user_ns)
+> -		s->s_iflags |=3D SB_I_NODEV;
+> +
+> +	if (security_sb_device_access(s))
+> +		goto fail;
+> +
+>  	INIT_HLIST_NODE(&s->s_instances);
+>  	INIT_HLIST_BL_HEAD(&s->s_roots);
+>  	mutex_init(&s->s_sync_lock);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 98b7a7a8c42e..6ca0fe922478 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1164,6 +1164,7 @@ extern int send_sigurg(struct fown_struct *fown);
+>  #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+>  #define SB_I_IMA_UNVERIFIABLE_SIGNATURE	0x00000020
+>  #define SB_I_UNTRUSTED_MOUNTER		0x00000040
+> +#define SB_I_MANAGED_DEVICES		0x00000080
+> =20
+>  #define SB_I_SKIP_SYNC	0x00000100	/* Skip superblock at global sync */
+>  #define SB_I_PERSB_BDI	0x00000200	/* has a per-sb bdi */
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 3fdd00b452ac..8c8a0d8aa71d 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -60,6 +60,7 @@ LSM_HOOK(int, 0, fs_context_dup, struct fs_context *fc,
+>  LSM_HOOK(int, -ENOPARAM, fs_context_parse_param, struct fs_context *fc,
+>  	 struct fs_parameter *param)
+>  LSM_HOOK(int, 0, sb_alloc_security, struct super_block *sb)
+> +LSM_HOOK(int, 0, sb_device_access, struct super_block *sb)
+>  LSM_HOOK(void, LSM_RET_VOID, sb_delete, struct super_block *sb)
+>  LSM_HOOK(void, LSM_RET_VOID, sb_free_security, struct super_block *sb)
+>  LSM_HOOK(void, LSM_RET_VOID, sb_free_mnt_opts, void *mnt_opts)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 00809d2d5c38..a174f8c09594 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -155,6 +155,8 @@ extern int cap_capset(struct cred *new, const struct =
+cred *old,
+>  extern int cap_bprm_creds_from_file(struct linux_binprm *bprm, const str=
+uct file *file);
+>  int cap_inode_setxattr(struct dentry *dentry, const char *name,
+>  		       const void *value, size_t size, int flags);
+> +int cap_inode_mknod(struct inode *dir, struct dentry *dentry, umode_t mo=
+de,
+> +		    dev_t dev);
+>  int cap_inode_removexattr(struct mnt_idmap *idmap,
+>  			  struct dentry *dentry, const char *name);
+>  int cap_inode_need_killpriv(struct dentry *dentry);
+> @@ -348,6 +350,7 @@ int security_inode_symlink(struct inode *dir, struct =
+dentry *dentry,
+>  int security_inode_mkdir(struct inode *dir, struct dentry *dentry, umode=
+_t mode);
+>  int security_inode_rmdir(struct inode *dir, struct dentry *dentry);
+>  int security_inode_mknod(struct inode *dir, struct dentry *dentry, umode=
+_t mode, dev_t dev);
+> +int security_sb_device_access(struct super_block *sb);
+>  int security_inode_rename(struct inode *old_dir, struct dentry *old_dent=
+ry,
+>  			  struct inode *new_dir, struct dentry *new_dentry,
+>  			  unsigned int flags);
+> @@ -823,10 +826,16 @@ static inline int security_inode_rmdir(struct inode=
+ *dir,
+>  	return 0;
+>  }
+> =20
+> -static inline int security_inode_mknod(struct inode *dir,
+> -					struct dentry *dentry,
+> -					int mode, dev_t dev)
+> +static inline int security_inode_mknod(struct inode *dir, struct dentry =
+*dentry,
+> +				       int mode, dev_t dev)
+> +{
+> +	return cap_inode_mknod(dir, dentry, mode, dev);
+> +}
+> +
+> +static inline int security_sb_device_access(struct super_block *sb)
+>  {
+> +	if (s->s_user_ns !=3D &init_user_ns)
+> +		sb->s_iflags |=3D SB_I_NODEV;
+>  	return 0;
+>  }
+> =20
+> diff --git a/security/commoncap.c b/security/commoncap.c
+> index 8e8c630ce204..f4a208fdf939 100644
+> --- a/security/commoncap.c
+> +++ b/security/commoncap.c
+> @@ -1438,6 +1438,24 @@ int cap_mmap_file(struct file *file, unsigned long=
+ reqprot,
+>  	return 0;
+>  }
+> =20
+> +int cap_inode_mknod(struct inode *dir, struct dentry *dentry, umode_t mo=
+de,
+> +		    dev_t dev)
+> +{
+> +	bool is_whiteout =3D S_ISCHR(mode) && dev =3D=3D WHITEOUT_DEV;
+> +	struct super_block *sb =3D dir->i_sb;
+> +	struct user_namespace *userns;
+> +
+> +	if (dir->i_sb->s_iflags & SB_I_MANAGED_DEVICES)
+> +		userns =3D sb->s_user_ns;
+> +	else
+> +		userns =3D &init_user_ns;
+> +	if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
+> +	    !ns_capable(userns, CAP_MKNOD))
+> +		return -EPERM;
+> +
+> +	return 0;
+> +}
+> +
+>  #ifdef CONFIG_SECURITY
+> =20
+>  static struct security_hook_list capability_hooks[] __ro_after_init =3D {
+> @@ -1448,6 +1466,7 @@ static struct security_hook_list capability_hooks[]=
+ __ro_after_init =3D {
+>  	LSM_HOOK_INIT(capget, cap_capget),
+>  	LSM_HOOK_INIT(capset, cap_capset),
+>  	LSM_HOOK_INIT(bprm_creds_from_file, cap_bprm_creds_from_file),
+> +	LSM_HOOK_INIT(inode_mknod, cap_inode_mknod),
+>  	LSM_HOOK_INIT(inode_need_killpriv, cap_inode_need_killpriv),
+>  	LSM_HOOK_INIT(inode_killpriv, cap_inode_killpriv),
+>  	LSM_HOOK_INIT(inode_getsecurity, cap_inode_getsecurity),
+> diff --git a/security/security.c b/security/security.c
+> index 088a79c35c26..192b992f1a34 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1221,6 +1221,28 @@ int security_sb_alloc(struct super_block *sb)
+>  	return rc;
+>  }
+> =20
+> +int security_sb_device_access(struct super_block *sb)
+> +{
+> +	int rc;
+> +
+> +	rc =3D call_int_hook(sb_device_access, 0, sb);
+> +	switch (rc) {
+> +	case 0:
+> +		/*
+> +		 * LSM doesn't do device access management and this is an
+> +		 * untrusted mount so block all device access.
+> +		 */
+> +		if (sb->s_user_ns !=3D &init_user_ns)
+> +			sb->s_iflags |=3D SB_I_NODEV;
+> +		return 0;
+> +	case 1:
+> +		sb->s_iflags |=3D SB_I_MANAGED_DEVICES;
+> +		return 0;
+> +	}
+> +
+> +	return rc;
+> +}
+> +
+>  /**
+>   * security_sb_delete() - Release super_block LSM associated objects
+>   * @sb: filesystem superblock
+> --=20
+> 2.42.0
+>=20
+>=20
 
 
