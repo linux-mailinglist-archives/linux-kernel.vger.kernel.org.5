@@ -1,201 +1,212 @@
-Return-Path: <linux-kernel+bounces-4434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C01817D0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:00:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49138817D13
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7C081C227F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:00:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9D101F21F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51284740B8;
-	Mon, 18 Dec 2023 22:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FDC74E01;
+	Mon, 18 Dec 2023 22:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jBwsrhjU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79FF73460;
-	Mon, 18 Dec 2023 22:00:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07C78C433C9;
-	Mon, 18 Dec 2023 22:00:09 +0000 (UTC)
-Date: Mon, 18 Dec 2023 17:01:06 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH v2] ring-buffer: Add interrupt information to dump of data
- sub-buffer
-Message-ID: <20231218170106.46fe24a7@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A18D740B0
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 22:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702936944; x=1734472944;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=/ZUA6UXCPBEuMtS5q5bfk/WmO/rGvpCr2EjyKhA7Biw=;
+  b=jBwsrhjU9nFv3GhgIRbH5TLzsqL5UCEx8VwRV1rC2SRoOLmwfumSU9fh
+   a6KvsObcvcOryQuVAin2zKmiy7YBsoVPmj7G+71GpxKOoA+W9FzksUMjk
+   se5uapW7PRJyO9Wfe5CQ/vyTkgVu3qYOK3uCO5Qf0MiYjLVzvDTosgs89
+   RkkhIPFrAXic4A5hZpU46jy0NQ1Ymku89WOyQ60hO0ADabv8smzJxisul
+   wq4X2ePmMG+qv8OzJc6bB5DQ5OmAefHSbtAOTeWPvFzh+3UO/9b6CpXTT
+   gOF5krdLEoTzzCuVn2FW8a9ejBeSokZp3fXm1ePRwtxNOZ9cMOvJ/HBqj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="2790636"
+X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
+   d="scan'208";a="2790636"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 14:02:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="725488195"
+X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
+   d="scan'208";a="725488195"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 18 Dec 2023 14:02:21 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rFLgp-0004aB-02;
+	Mon, 18 Dec 2023 22:02:19 +0000
+Date: Tue, 19 Dec 2023 06:01:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Heiko Stuebner <heiko.stuebner@vrull.eu>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: drivers/scsi/qedi/qedi_debugfs.c:109:45: sparse: sparse: incorrect
+ type in argument 2 (different address spaces)
+Message-ID: <202312190535.sXcZRYU4-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
+commit: 56e0790c7f9e59ba6a0f4b59981d1d6fbf43efb0 RISC-V: add infrastructure to allow different str* implementations
+date:   11 months ago
+config: riscv-randconfig-r133-20231218 (https://download.01.org/0day-ci/archive/20231219/202312190535.sXcZRYU4-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 5ac12951b4e9bbfcc5791282d0961ec2b65575e9)
+reproduce: (https://download.01.org/0day-ci/archive/20231219/202312190535.sXcZRYU4-lkp@intel.com/reproduce)
 
-When the ring buffer timestamp verifier triggers, it dumps the content of
-the sub-buffer. But currently it only dumps the timestamps and the offset
-of the data as well as the deltas. It would be even more informative if
-the event data also showed the interrupt context level it was in.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312190535.sXcZRYU4-lkp@intel.com/
 
-That is, if each event showed that the event was written in normal,
-softirq, irq or NMI context. Then a better idea about how the events may
-have been interrupted from each other.
+sparse warnings: (new ones prefixed by >>)
+   WARNING: invalid argument to '-march': '_zicbom_zihintpause'
+>> drivers/scsi/qedi/qedi_debugfs.c:109:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected char const *ct @@     got char const [noderef] __user *buffer @@
+   drivers/scsi/qedi/qedi_debugfs.c:109:45: sparse:     expected char const *ct
+   drivers/scsi/qedi/qedi_debugfs.c:109:45: sparse:     got char const [noderef] __user *buffer
+   drivers/scsi/qedi/qedi_debugfs.c:128:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char *buf @@     got char [noderef] __user *buffer @@
+   drivers/scsi/qedi/qedi_debugfs.c:128:23: sparse:     expected char *buf
+   drivers/scsi/qedi/qedi_debugfs.c:128:23: sparse:     got char [noderef] __user *buffer
+   drivers/scsi/qedi/qedi_debugfs.c:154:41: sparse: sparse: restricted __le16 degrades to integer
 
-As the payload of the ring buffer is really a black box of the ring
-buffer, just assume that if the payload is larger than a trace entry, that
-it is a trace entry. As trace entries have the interrupt context
-information saved in a flags field, look at that location and report the
-output of the flags.
+vim +109 drivers/scsi/qedi/qedi_debugfs.c
 
-If the payload is not a trace entry, there's no way to really know, and
-the information will be garbage. But that's OK, because this is for
-debugging only (this output is not used in production as the buffer check
-that calls it causes a huge overhead to the tracing). This information,
-when available, is crucial for debugging timestamp issues. If it's
-garbage, it will also be pretty obvious that its garbage too.
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   13  
+bd571195c9535c0 Arnd Bergmann      2017-03-02  @14  int qedi_do_not_recover;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   15  static struct dentry *qedi_dbg_root;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   16  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   17  void
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   18  qedi_dbg_host_init(struct qedi_dbg_ctx *qedi,
+779936faf4f1210 Arnd Bergmann      2018-02-02   19  		   const struct qedi_debugfs_ops *dops,
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   20  		   const struct file_operations *fops)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   21  {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   22  	char host_dirname[32];
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   23  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   24  	sprintf(host_dirname, "host%u", qedi->host_no);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   25  	qedi->bdf_dentry = debugfs_create_dir(host_dirname, qedi_dbg_root);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   26  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   27  	while (dops) {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   28  		if (!(dops->name))
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   29  			break;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   30  
+26febfb38c7d679 Greg Kroah-Hartman 2019-01-22   31  		debugfs_create_file(dops->name, 0600, qedi->bdf_dentry, qedi,
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   32  				    fops);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   33  		dops++;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   34  		fops++;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   35  	}
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   36  }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   37  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   38  void
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   39  qedi_dbg_host_exit(struct qedi_dbg_ctx *qedi)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   40  {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   41  	debugfs_remove_recursive(qedi->bdf_dentry);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   42  	qedi->bdf_dentry = NULL;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   43  }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   44  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   45  void
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   46  qedi_dbg_init(char *drv_name)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   47  {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   48  	qedi_dbg_root = debugfs_create_dir(drv_name, NULL);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   49  }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   50  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   51  void
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   52  qedi_dbg_exit(void)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   53  {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   54  	debugfs_remove_recursive(qedi_dbg_root);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   55  	qedi_dbg_root = NULL;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   56  }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   57  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   58  static ssize_t
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   59  qedi_dbg_do_not_recover_enable(struct qedi_dbg_ctx *qedi_dbg)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   60  {
+bd571195c9535c0 Arnd Bergmann      2017-03-02   61  	if (!qedi_do_not_recover)
+bd571195c9535c0 Arnd Bergmann      2017-03-02   62  		qedi_do_not_recover = 1;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   63  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   64  	QEDI_INFO(qedi_dbg, QEDI_LOG_DEBUGFS, "do_not_recover=%d\n",
+bd571195c9535c0 Arnd Bergmann      2017-03-02   65  		  qedi_do_not_recover);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   66  	return 0;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   67  }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   68  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   69  static ssize_t
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   70  qedi_dbg_do_not_recover_disable(struct qedi_dbg_ctx *qedi_dbg)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   71  {
+bd571195c9535c0 Arnd Bergmann      2017-03-02   72  	if (qedi_do_not_recover)
+bd571195c9535c0 Arnd Bergmann      2017-03-02   73  		qedi_do_not_recover = 0;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   74  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   75  	QEDI_INFO(qedi_dbg, QEDI_LOG_DEBUGFS, "do_not_recover=%d\n",
+bd571195c9535c0 Arnd Bergmann      2017-03-02   76  		  qedi_do_not_recover);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   77  	return 0;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   78  }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   79  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   80  static struct qedi_list_of_funcs qedi_dbg_do_not_recover_ops[] = {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   81  	{ "enable", qedi_dbg_do_not_recover_enable },
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   82  	{ "disable", qedi_dbg_do_not_recover_disable },
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   83  	{ NULL, NULL }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   84  };
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   85  
+779936faf4f1210 Arnd Bergmann      2018-02-02   86  const struct qedi_debugfs_ops qedi_debugfs_ops[] = {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   87  	{ "gbl_ctx", NULL },
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   88  	{ "do_not_recover", qedi_dbg_do_not_recover_ops},
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   89  	{ "io_trace", NULL },
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   90  	{ NULL, NULL }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   91  };
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   92  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   93  static ssize_t
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   94  qedi_dbg_do_not_recover_cmd_write(struct file *filp, const char __user *buffer,
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   95  				  size_t count, loff_t *ppos)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   96  {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   97  	size_t cnt = 0;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   98  	struct qedi_dbg_ctx *qedi_dbg =
+ace7f46ba5fde72 Manish Rangankar   2016-12-01   99  			(struct qedi_dbg_ctx *)filp->private_data;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  100  	struct qedi_list_of_funcs *lof = qedi_dbg_do_not_recover_ops;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  101  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  102  	if (*ppos)
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  103  		return 0;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  104  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  105  	while (lof) {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  106  		if (!(lof->oper_str))
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  107  			break;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  108  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01 @109  		if (!strncmp(lof->oper_str, buffer, strlen(lof->oper_str))) {
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  110  			cnt = lof->oper_func(qedi_dbg);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  111  			break;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  112  		}
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  113  
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  114  		lof++;
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  115  	}
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  116  	return (count - cnt);
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  117  }
+ace7f46ba5fde72 Manish Rangankar   2016-12-01  118  
 
-As this output usually happens in kselftests of the tracing code, the user
-will know what the payload is at the time.
+:::::: The code at line 109 was first introduced by commit
+:::::: ace7f46ba5fde7273207c7122b0650ceb72510e0 scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.
 
-Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/all/20231218163117.74292291@gandalf.local.home/
+:::::: TO: Manish Rangankar <manish.rangankar@cavium.com>
+:::::: CC: Martin K. Petersen <martin.petersen@oracle.com>
 
-- Added irq context for the current context (where the warning is printed)
-
-
- kernel/trace/ring_buffer.c | 82 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 77 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 3eda81ed7d7e..7841d6520998 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3225,6 +3225,76 @@ EXPORT_SYMBOL_GPL(ring_buffer_unlock_commit);
- #define CHECK_FULL_PAGE		1L
- 
- #ifdef CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS
-+
-+static const char *show_irq_str(int bits)
-+{
-+	const char *type[] = {
-+		".",	// 0
-+		"s",	// 1
-+		"h",	// 2
-+		"Hs",	// 3
-+		"n",	// 4
-+		"Ns",	// 5
-+		"Nh",	// 6
-+		"NHs",	// 7
-+	};
-+
-+	return type[bits];
-+}
-+
-+/* Assume this is an trace event */
-+static const char *show_flags(struct ring_buffer_event *event)
-+{
-+	struct trace_entry *entry;
-+	int bits = 0;
-+
-+	if (rb_event_data_length(event) - RB_EVNT_HDR_SIZE < sizeof(*entry))
-+		return "X";
-+
-+	entry = ring_buffer_event_data(event);
-+
-+	if (entry->flags & TRACE_FLAG_SOFTIRQ)
-+		bits |= 1;
-+
-+	if (entry->flags & TRACE_FLAG_HARDIRQ)
-+		bits |= 2;
-+
-+	if (entry->flags & TRACE_FLAG_NMI)
-+		bits |= 4;
-+
-+	return show_irq_str(bits);
-+}
-+
-+static const char *show_irq(struct ring_buffer_event *event)
-+{
-+	struct trace_entry *entry;
-+
-+	if (rb_event_data_length(event) - RB_EVNT_HDR_SIZE < sizeof(*entry))
-+		return "";
-+
-+	entry = ring_buffer_event_data(event);
-+	if (entry->flags & TRACE_FLAG_IRQS_OFF)
-+		return "d";
-+	return "";
-+}
-+
-+static const char *show_interrupt_level(void)
-+{
-+	unsigned long pc = preempt_count();
-+	unsigned char level = 0;
-+
-+	if (pc & SOFTIRQ_OFFSET)
-+		level |= 1;
-+
-+	if (pc & HARDIRQ_MASK)
-+		level |= 2;
-+
-+	if (pc & NMI_MASK)
-+		level |= 4;
-+
-+	return show_irq_str(level);
-+}
-+
- static void dump_buffer_page(struct buffer_data_page *bpage,
- 			     struct rb_event_info *info,
- 			     unsigned long tail)
-@@ -3264,8 +3334,9 @@ static void dump_buffer_page(struct buffer_data_page *bpage,
- 
- 		case RINGBUF_TYPE_DATA:
- 			ts += event->time_delta;
--			pr_warn(" 0x%x:  [%lld] delta:%d\n",
--				e, ts, event->time_delta);
-+			pr_warn(" 0x%x:  [%lld] delta:%d %s%s\n",
-+				e, ts, event->time_delta,
-+				show_flags(event), show_irq(event));
- 			break;
- 
- 		default:
-@@ -3347,7 +3418,8 @@ static void check_buffer(struct ring_buffer_per_cpu *cpu_buffer,
- 		}
- 	}
- 	if ((full && ts > info->ts) ||
--	    (!full && ts + info->delta != info->ts)) {
-+	    (!full && ts + info->delta != info->ts) ||
-+		e > 0xfa0) {
- 		/* If another report is happening, ignore this one */
- 		if (atomic_inc_return(&ts_dump) != 1) {
- 			atomic_dec(&ts_dump);
-@@ -3356,11 +3428,11 @@ static void check_buffer(struct ring_buffer_per_cpu *cpu_buffer,
- 		atomic_inc(&cpu_buffer->record_disabled);
- 		/* There's some cases in boot up that this can happen */
- 		WARN_ON_ONCE(system_state != SYSTEM_BOOTING);
--		pr_warn("[CPU: %d]TIME DOES NOT MATCH expected:%lld actual:%lld delta:%lld before:%lld after:%lld%s\n",
-+		pr_warn("[CPU: %d]TIME DOES NOT MATCH expected:%lld actual:%lld delta:%lld before:%lld after:%lld%s context:%s\n",
- 			cpu_buffer->cpu,
- 			ts + info->delta, info->ts, info->delta,
- 			info->before, info->after,
--			full ? " (full)" : "");
-+			full ? " (full)" : "", show_interrupt_level());
- 		dump_buffer_page(bpage, info, tail);
- 		atomic_dec(&ts_dump);
- 		/* Do not re-enable checking */
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
