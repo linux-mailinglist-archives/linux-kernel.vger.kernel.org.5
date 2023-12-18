@@ -1,259 +1,161 @@
-Return-Path: <linux-kernel+bounces-3196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48E7F816903
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:00:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E503F8168BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:52:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A3CBB2134D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:00:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 156F01C22527
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2272610A1D;
-	Mon, 18 Dec 2023 09:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E57310A3F;
+	Mon, 18 Dec 2023 08:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="agOH0Lqi"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pVnxw0u3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D7410976
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231218090005epoutp01f61a5d858ce2e6e12b241d0bb7ee4f98~h4XAFSQyX0517405174epoutp013
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:00:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231218090005epoutp01f61a5d858ce2e6e12b241d0bb7ee4f98~h4XAFSQyX0517405174epoutp013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1702890005;
-	bh=qMRcMD68CTeJ79t1IUEsQabLz4e4QQeQOGyGUvP1UYc=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=agOH0Lqixdlv/VPiBVd61pCi8tEOANCzPVm6VATSRU+DY4LFA7G69/NyLtkV9qhde
-	 cnarijL8tru995F+ItCj18XAxjZeK2qRRMW/1Vn6FfyYitJPDo13W0Aifo1acP3W8q
-	 D3QutTbaP08KYUWnBt4M80tlPdMpnbogsQSB0Aos=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20231218090004epcas5p2c7faf10ca18d5e49e4bae886c66aecca~h4W-ll6jZ1239712397epcas5p2B;
-	Mon, 18 Dec 2023 09:00:04 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.175]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4Stv0g1ncxz4x9Pv; Mon, 18 Dec
-	2023 09:00:03 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	1B.E1.10009.31A00856; Mon, 18 Dec 2023 18:00:03 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20231218085950epcas5p4171efba84d8c14bf1307aa16c48414ca~h4Wx84vKY1264712647epcas5p4U;
-	Mon, 18 Dec 2023 08:59:50 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231218085950epsmtrp170f68502b769549f1acdcbf1cd544197~h4Wx7nvhk2610226102epsmtrp19;
-	Mon, 18 Dec 2023 08:59:50 +0000 (GMT)
-X-AuditID: b6c32a4a-ff1ff70000002719-76-65800a131a9f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	D6.22.07368.60A00856; Mon, 18 Dec 2023 17:59:50 +0900 (KST)
-Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20231218085948epsmtip15b010f284672e6634ab5e8d943f102bd~h4WwXb-jR0522205222epsmtip1S;
-	Mon, 18 Dec 2023 08:59:48 +0000 (GMT)
-From: Xiaobing Li <xiaobing.li@samsung.com>
-To: axboe@kernel.dk, asml.silence@gmail.com
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-	kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-	kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
-	cliang01.li@samsung.com, xue01.he@samsung.com, Xiaobing Li
-	<xiaobing.li@samsung.com>
-Subject: [PATCH v5] io_uring: Statistics of the true utilization of sq
- threads.
-Date: Mon, 18 Dec 2023 16:51:52 +0800
-Message-Id: <20231218085152.14720-1-xiaobing.li@samsung.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED231094F;
+	Mon, 18 Dec 2023 08:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=u9rU7FfAkS1Xg3KQP7X+Uy8VuWy1sh7xNAOO2EeOmow=; b=pVnxw0u3V2KMrtdVYsexwpdnA5
+	XUz4IKQOBNxaBluhdNYzL8zwlyI8CjvzruSXco86xKeQ6QX9cV0XiRUgx1SayqkGcLFTuuCdNcreN
+	IYv72Eo9aa2ezSpHM/sq6jV2R3+vIjjFyGjsK/x2Nl8dUJj/GySOniPAkjktHMBS0gwug9YlUSVKk
+	E1ANshGn7IEXwUCrQ0edmmtKumnnePMpDfJ7tvxXWWIUvjf8OwTHC7AAiHt93l6j9w58BEch4hds3
+	CFiaDf4S4lSKklzGWwvE7xj7zzlkiYN9B3rJVXyRh4lviegYdZLL2jkzTg8CtU/F3vHY7hgsqJnoi
+	sJS6vhrQ==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rF9M8-000GMZ-Kc; Mon, 18 Dec 2023 09:52:08 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rF9M6-000DSm-B8; Mon, 18 Dec 2023 09:52:06 +0100
+Subject: Re: [PATCH net-next 16/24] net: netkit, veth, tun, virt*: Use
+ nested-BH locking for XDP redirect.
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>, Boqun Feng
+ <boqun.feng@gmail.com>, Eric Dumazet <edumazet@google.com>,
+ Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, "Michael S. Tsirkin"
+ <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Hao Luo <haoluo@google.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Juergen Gross <jgross@suse.com>,
+ KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Nikolay Aleksandrov <razor@blackwall.org>, Song Liu <song@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, Wei Liu <wei.liu@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+ virtualization@lists.linux.dev, xen-devel@lists.xenproject.org
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+ <20231215171020.687342-17-bigeasy@linutronix.de>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <74feb818-7109-cb1e-8eec-a037c17a2871@iogearbox.net>
+Date: Mon, 18 Dec 2023 09:52:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20231215171020.687342-17-bigeasy@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNJsWRmVeSWpSXmKPExsWy7bCmuq4wV0OqQfszNos5q7YxWqy+289m
-	cfrvYxaLd63nWCyO/n/LZvGr+y6jxdYvX1ktLu+aw2bxbC+nxZfD39ktpm7ZwWTR0XKZ0aLr
-	wik2B16PnbPusntcPlvq0bdlFaPH501yASxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYG
-	hrqGlhbmSgp5ibmptkouPgG6bpk5QNcpKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtS
-	cgpMCvSKE3OLS/PS9fJSS6wMDQyMTIEKE7Iz+i9+ZylYrlQx+cMmpgbGT9JdjJwcEgImEtve
-	T2TsYuTiEBLYzSix8vBZFpCEkMAnRonGS7IQiW+MEu/urWeF6fg5ZSsbRGIvo8SKJ1fYITpe
-	MkpMvW0NYrMJaEtcX9cF1iACZL9+PJUFpIFZYAmTxNZvh5lAEsICgRLXJh9hA7FZBFQlbsz5
-	xwxi8wrYSPw4eIgdYpu8xP6DZ6HighInZz4BO48ZKN68dTYzyFAJgVYOicfb57JANLhIfHn/
-	ixHCFpZ4dXwL1CApiZf9bVB2scSRnu+sEM0NjBLTb1+FSlhL/LuyB2gQB9AGTYn1u/QhwrIS
-	U0+tY4JYzCfR+/sJE0ScV2LHPBhbVWL1pYdQN0hLvG74DRX3kHj17hM0hGIltr39wDSBUX4W
-	kn9mIflnFsLmBYzMqxglUwuKc9NTi00LjPJSy+Exm5yfu4kRnEq1vHYwPnzwQe8QIxMH4yFG
-	CQ5mJRFel0X1qUK8KYmVValF+fFFpTmpxYcYTYGBPJFZSjQ5H5jM80riDU0sDUzMzMxMLI3N
-	DJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYFIvUNOdyNDwsKGwL6nHplnqRNbCefn5cwW2
-	Biqo7+RMWDP9ZOmSXRPPNPGGfO813iX1Rjjm5+QEVSt7L5mmCVzfL3fydD+z4Ux7IRYgdqp2
-	5SY7+4wtM4MZI/TOq2RrnDa6dWXDuqyq03P46zWyb4YEXPwrWpagZ/J/ewfT05OetaJz87tW
-	/GpUv9dXprzvxdl14Sn/9GZs2d3PevqBWpQa2/bQazz1NSHSUw9b+HEtW3hisblA9+v4uKbP
-	jI97Trm+P2Yk9mKlOPMZqYSyX6ItsvvL5i3foXGvcJue4WeV/Y4CTmrVtianvQ6VTI7jVDDb
-	eHlz56N4li2nXCUveu7b+/BVgnNLgETAt4W7lViKMxINtZiLihMBhs8any4EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJLMWRmVeSWpSXmKPExsWy7bCSnC4bV0OqweTtrBZzVm1jtFh9t5/N
-	4vTfxywW71rPsVgc/f+WzeJX911Gi61fvrJaXN41h83i2V5Oiy+Hv7NbTN2yg8mio+Uyo0XX
-	hVNsDrweO2fdZfe4fLbUo2/LKkaPz5vkAliiuGxSUnMyy1KL9O0SuDL6L35nKViuVDH5wyam
-	BsZP0l2MnBwSAiYSP6dsZQOxhQR2M0q8OurfxcgBFJeW+POnHKJEWGLlv+fsXYxcQCXPGSU2
-	3//LBJJgE9CWuL6uixWkXkRAV6LxrgJIDbPABiaJ/U/ngcWFBfwlHm5QASlnEVCVuDHnHzOI
-	zStgI/Hj4CF2iPnyEvsPnoWKC0qcnPmEBaSVWUBdYv08IZAwM1BJ89bZzBMY+WchqZqFUDUL
-	SdUCRuZVjJKpBcW56bnJhgWGeanlesWJucWleel6yfm5mxjBoa+lsYPx3vx/eocYmTgYDzFK
-	cDArifC6LKpPFeJNSaysSi3Kjy8qzUktPsQozcGiJM5rOGN2ipBAemJJanZqakFqEUyWiYNT
-	qoFJo7to74WSr9ObXQICLdMsDYx9d559eMCxRpPtgPBdjyfC6qIzF+jOWj372IRNS9acXZbB
-	s/W3yOm9C1QSZ/f/4dJy63lYquzVzbfKSs3eqiNB8FxesFjp77daLsFf2lgXhLyapbNCZLr3
-	0p7HjovDqswqdv6yneP/l4Gn+0HsmbPRjVeOz+k8fuXjrgRB1zX7HFsCay4Vf73YWXb16g7T
-	eQfTnb37Df4y9ui8ZNgh9bM9cVL/nYheg7C6ZqH7DE82GS949pJp0aSHDqG+/jv8L03PyX7F
-	eDJp0Y/LJ5oTZuq2Kt6f+PNbb/6iwjs/Hd497Gd87nPjyby5votu/xQoLQqSer3o9ulf0yvn
-	2EW7KrEUZyQaajEXFScCAOjmTizsAgAA
-X-CMS-MailID: 20231218085950epcas5p4171efba84d8c14bf1307aa16c48414ca
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231218085950epcas5p4171efba84d8c14bf1307aa16c48414ca
-References: <CGME20231218085950epcas5p4171efba84d8c14bf1307aa16c48414ca@epcas5p4.samsung.com>
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27126/Sun Dec 17 10:37:59 2023)
 
-The running time of the sq thread and the actual IO processing time are
-counted, and the proportion of time actually used to process IO is
-output as a percentage.
+Hi Sebastian,
 
-Variable description:
-"work_time" in the code represents the sum of the jiffies of the sq
-thread actually processing IO, that is, how many milliseconds it
-actually takes to process IO. "total_time" represents the total time
-that the sq thread has elapsed from the beginning of the loop to the
-current time point, that is, how many milliseconds it has spent in
-total.
-The output "SqBusy" represents the percentage of time utilization that
-the sq thread actually uses to process IO.
+On 12/15/23 6:07 PM, Sebastian Andrzej Siewior wrote:
+> The per-CPU variables used during bpf_prog_run_xdp() invocation and
+> later during xdp_do_redirect() rely on disabled BH for their protection.
+> Without locking in local_bh_disable() on PREEMPT_RT these data structure
+> require explicit locking.
+> 
+> This is a follow-up on the previous change which introduced
+> bpf_run_lock.redirect_lock and uses it now within drivers.
+> 
+> The simple way is to acquire the lock before bpf_prog_run_xdp() is
+> invoked and hold it until the end of function.
+> This does not always work because some drivers (cpsw, atlantic) invoke
+> xdp_do_flush() in the same context.
+> Acquiring the lock in bpf_prog_run_xdp() and dropping in
+> xdp_do_redirect() (without touching drivers) does not work because not
+> all driver, which use bpf_prog_run_xdp(), do support XDP_REDIRECT (and
+> invoke xdp_do_redirect()).
+> 
+> Ideally the minimal locking scope would be bpf_prog_run_xdp() +
+> xdp_do_redirect() and everything else (error recovery, DMA unmapping,
+> free/ alloc of memory, …) would happen outside of the locked section.
+[...]
 
-The test results are as follows:
-Every 0.5s: cat /proc/23112/fdinfo/6 | grep Sq
-SqMask: 0x3
-SqHead: 1168417
-SqTail: 1168418
-CachedSqHead:   1168418
-SqThread:       23112
-SqThreadCpu:    55
-SqBusy: 97%
+>   drivers/net/hyperv/netvsc_bpf.c |  1 +
+>   drivers/net/netkit.c            | 13 +++++++----
+>   drivers/net/tun.c               | 28 +++++++++++++----------
+>   drivers/net/veth.c              | 40 ++++++++++++++++++++-------------
+>   drivers/net/virtio_net.c        |  1 +
+>   drivers/net/xen-netfront.c      |  1 +
+>   6 files changed, 52 insertions(+), 32 deletions(-)
+[...]
 
-changes：
-v5：
- - list the changes in each iteration.
- 
-v4：
- - Resubmit the patch based on removing sq->lock
- - https://lore.kernel.org/io-uring/20231213032513.12591-1-xiaobing.li@samsung.com/T/#u
- 
-v3：
- - output actual working time as a percentage of total time
- - detailed description of the meaning of each variable
- - added test results
- - https://lore.kernel.org/io-uring/50ec567f-6b79-42ea-bf2c-2c9b2ecb427d@suswa.mountain/T/#t
- 
-v2：
- - output the total statistical time and work time to fdinfo
- - https://lore.kernel.org/io-uring/9e2b679c-fc1e-3d83-2303-e053f330a21a@gmail.com/T/#t
+Please exclude netkit from this set given it does not support XDP, but
+instead only accepts tc BPF typed programs.
 
-v1：
- - initial version
- - Statistics of total time and work time
- - https://lore.kernel.org/io-uring/2a1bdb5a-1216-45b0-a78d-5542b36ccd17@kernel.dk/T/#t
+Thanks,
+Daniel
 
-Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
----
- io_uring/fdinfo.c | 4 ++++
- io_uring/sqpoll.c | 8 ++++++++
- io_uring/sqpoll.h | 2 ++
- 3 files changed, 14 insertions(+)
-
-diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
-index 976e9500f651..b0f9d296c5aa 100644
---- a/io_uring/fdinfo.c
-+++ b/io_uring/fdinfo.c
-@@ -64,6 +64,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 	unsigned int sq_shift = 0;
- 	unsigned int sq_entries, cq_entries;
- 	int sq_pid = -1, sq_cpu = -1;
-+	int sq_busy = 0;
- 	bool has_lock;
- 	unsigned int i;
- 
-@@ -147,10 +148,13 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 
- 		sq_pid = sq->task_pid;
- 		sq_cpu = sq->sq_cpu;
-+		if (sq->total_time != 0)
-+			sq_busy = (int)(sq->work_time * 100 / sq->total_time);
- 	}
- 
- 	seq_printf(m, "SqThread:\t%d\n", sq_pid);
- 	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
-+	seq_printf(m, "SqBusy:\t%d%%\n", sq_busy);
- 	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
- 	for (i = 0; has_lock && i < ctx->nr_user_files; i++) {
- 		struct file *f = io_file_from_index(&ctx->file_table, i);
-diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-index 65b5dbe3c850..9b74e344c52a 100644
---- a/io_uring/sqpoll.c
-+++ b/io_uring/sqpoll.c
-@@ -225,6 +225,7 @@ static int io_sq_thread(void *data)
- 	struct io_ring_ctx *ctx;
- 	unsigned long timeout = 0;
- 	char buf[TASK_COMM_LEN];
-+	unsigned long sq_start, sq_work_begin, sq_work_end;
- 	DEFINE_WAIT(wait);
- 
- 	snprintf(buf, sizeof(buf), "iou-sqp-%d", sqd->task_pid);
-@@ -241,6 +242,7 @@ static int io_sq_thread(void *data)
- 	}
- 
- 	mutex_lock(&sqd->lock);
-+	sq_start = jiffies;
- 	while (1) {
- 		bool cap_entries, sqt_spin = false;
- 
-@@ -251,6 +253,7 @@ static int io_sq_thread(void *data)
- 		}
- 
- 		cap_entries = !list_is_singular(&sqd->ctx_list);
-+		sq_work_begin = jiffies;
- 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
- 			int ret = __io_sq_thread(ctx, cap_entries);
- 
-@@ -260,6 +263,11 @@ static int io_sq_thread(void *data)
- 		if (io_run_task_work())
- 			sqt_spin = true;
- 
-+		sq_work_end = jiffies;
-+		sqd->total_time = sq_work_end - sq_start;
-+		if (sqt_spin == true)
-+			sqd->work_time += sq_work_end - sq_work_begin;
-+
- 		if (sqt_spin || !time_after(jiffies, timeout)) {
- 			if (sqt_spin)
- 				timeout = jiffies + sqd->sq_thread_idle;
-diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
-index 8df37e8c9149..92b4b07220fa 100644
---- a/io_uring/sqpoll.h
-+++ b/io_uring/sqpoll.h
-@@ -16,6 +16,8 @@ struct io_sq_data {
- 	pid_t			task_pid;
- 	pid_t			task_tgid;
- 
-+	unsigned long		work_time;
-+	unsigned long		total_time;
- 	unsigned long		state;
- 	struct completion	exited;
- };
--- 
-2.34.1
-
+> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+> index 39171380ccf29..fbcf78477bda8 100644
+> --- a/drivers/net/netkit.c
+> +++ b/drivers/net/netkit.c
+> @@ -80,8 +80,15 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+>   	netkit_prep_forward(skb, !net_eq(dev_net(dev), dev_net(peer)));
+>   	skb->dev = peer;
+>   	entry = rcu_dereference(nk->active);
+> -	if (entry)
+> -		ret = netkit_run(entry, skb, ret);
+> +	if (entry) {
+> +		scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
+> +			ret = netkit_run(entry, skb, ret);
+> +			if (ret == NETKIT_REDIRECT) {
+> +				dev_sw_netstats_tx_add(dev, 1, len);
+> +				skb_do_redirect(skb);
+> +			}
+> +		}
+> +	}
+>   	switch (ret) {
+>   	case NETKIT_NEXT:
+>   	case NETKIT_PASS:
+> @@ -95,8 +102,6 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+>   		}
+>   		break;
+>   	case NETKIT_REDIRECT:
+> -		dev_sw_netstats_tx_add(dev, 1, len);
+> -		skb_do_redirect(skb);
+>   		break;
+>   	case NETKIT_DROP:
+>   	default:
 
