@@ -1,79 +1,81 @@
-Return-Path: <linux-kernel+bounces-3870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF5981746D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:58:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6215B817467
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:58:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 669511C24FCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:58:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E25351F23321
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE183A1BA;
-	Mon, 18 Dec 2023 14:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2F73787E;
+	Mon, 18 Dec 2023 14:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="f7Ico4zk"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Snbz/lT8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6EE37881;
-	Mon, 18 Dec 2023 14:58:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2115840E00A9;
-	Mon, 18 Dec 2023 14:58:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id duilsy3bKYSQ; Mon, 18 Dec 2023 14:58:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1702911518; bh=1weCWgHoOtoy2vZBHy2ouJrV4MN1BpD6yK4soKgP07A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f7Ico4zkVTqrPgNkFulLln5Nn7Rt6hd6Lducnsi8AYtG2bRm1E7fIBe6Agbk2AS6/
-	 FBDdj+dVtsq21L4WCqfqzN77iciza6p2Aazc2xTtVR3SxGuiOp0VPWoYs+A/dgTw5b
-	 FgSNf+naMbhlKqPoTH4nYKt6j/lGJTCzRFDF4XDSqBeJbwFjcBzMZA6eR0ZnvgW5aN
-	 /N2XD1CjVWWNzuNDrtaYPgb/nDgDtai+TfUQDFIVaeu0uSEwHoXEt+3JE6DkHhBz6j
-	 wvXlKb79qjR05I27rf8pvHauSbZPWHvBhI6rsPg1l8zLgirQ22GzSLcHG+dOypn41P
-	 PcoxaCOKIRq+p6J/7+9P+8OePnsL2wBeWwV1cvApZkEYjZhj6gxrQsBbuLgucPLPdh
-	 t8RC4QYZ50vBVCiyindR7gHvpBk9/KtPZSxrkHRhlg3/rkjSjF4p4Z2DMEFrl7ydMC
-	 fmG7msrfTsjutInRMdlsQJBiQI1INizVxWIRhb+u7mGKAarSV0OH67C80Lko5LTDDe
-	 srRrnXx9sapR/7cSRyPEKGogfLs/jNmNHc7T2XI9NAIVSSFtNoxs4tYoSR8TR17OpG
-	 6jEfc1CY0Pj+fXzA549HB2h4pmBSG3wjep4rqzlZPMZqBTnh5l17Nw0wYsSbaICG+w
-	 CkPBR5p/qZQ9y1BnQook8fHg=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9413440E0030;
-	Mon, 18 Dec 2023 14:57:58 +0000 (UTC)
-Date: Mon, 18 Dec 2023 15:57:52 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-	tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-	alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
-	nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-	liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 23/50] KVM: SEV: Make AVIC backing, VMSA and VMCB
- memory allocation SNP safe
-Message-ID: <20231218145752.GQZYBd8D1iJBrI3cWs@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-24-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA294101DB
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40b5155e154so39565505e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:58:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1702911501; x=1703516301; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=T2lzs4wznIp2xbwMuaXpnCrk161AzmSWNsE1VAdzIps=;
+        b=Snbz/lT8TAYspcrvTfdUQqIZ/Jot3FdNmVC4AHRmZ8n+RolcvOmMJUjVXoL6ek8GFn
+         tCk6vIpYuuDLotIOWlCZ08zSG1sb+CqdHU8ZFl7IUB4xHY08I3XD2CerRXN+uzixodJz
+         bUekW1G4+tO4F/MyaA518U9BlXggTRy0LXO0dNLGdBY4jKNfUZcKCd0UIzVGvjaZEhCR
+         6GGFJGE1CGXo5lNyjrpfb3wF65zOjRP6oYAQIsz6xTlAXb7CiPKSsvxKTVPGtj9l+zQs
+         PajDOpUf6beg7cB/SV+mYmTZ/7GfKqAEr5AHUKFCK5cLW0yRemxNJGYcVN7Pk+iGyyPE
+         qgkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702911501; x=1703516301;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T2lzs4wznIp2xbwMuaXpnCrk161AzmSWNsE1VAdzIps=;
+        b=Des/7VQJNkhiWKvBZok4vWwlRB7omdKhOfKq5fj7gDmDjR/D6KQYqwguTQ1IS1X4oD
+         faXjecGM1clqq8HbotryP27uv71JR4bD/fKBBo2VT3lIkVIWYk7v+YLYliYk1TqDsCD0
+         nsYhTCR+Ygat0xwkoJQ7ZOn9SW58zs1FUQKp3gBSVcbJR4pHDYv2S339J6PbPJHGZ4wm
+         aOzJNTqi2/kc3po/ywSGk8tePq3aBi8YZoSkvVpvbaaNFE3qTWaJW4zI1YofQI0P3ZN8
+         fn2tJWlzek4/MvATws9aOyCCOrWkowzEGKxi6K0poZGaTtwlCIe6alQC2AqfrOH1i/aL
+         DrBw==
+X-Gm-Message-State: AOJu0Ywq6vmwFnB3sMeB0IL25kcFueQ0YvnOc3h03K2wDDtJiLQ9Ln8W
+	gjVFHz44XCS7aNuJU6OqAgGCdw==
+X-Google-Smtp-Source: AGHT+IHm5i4U4iCbK1WO2wBoHSz6xtDXsSSWbqr+KjfCPJ/PiFtLd2RWtKwkraO4kBXCUu/g7w6Hvg==
+X-Received: by 2002:a1c:6a1a:0:b0:40c:6a3f:6bc2 with SMTP id f26-20020a1c6a1a000000b0040c6a3f6bc2mr2796111wmc.30.1702911500633;
+        Mon, 18 Dec 2023 06:58:20 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:bfe6])
+        by smtp.gmail.com with ESMTPSA id f18-20020a05600c4e9200b0040d18ffbeeasm5305205wmq.31.2023.12.18.06.58.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 06:58:20 -0800 (PST)
+Date: Mon, 18 Dec 2023 15:58:15 +0100
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	Nhat Pham <nphamcs@gmail.com>, Chris Li <chriscli@google.com>,
+	Seth Jennings <sjenning@redhat.com>,
+	Dan Streetman <ddstreet@ieee.org>,
+	Vitaly Wool <vitaly.wool@konsulko.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 5/5] mm/zswap: cleanup zswap_reclaim_entry()
+Message-ID: <20231218145815.GA21073@cmpxchg.org>
+References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
+ <20231213-zswap-dstmem-v1-5-896763369d04@bytedance.com>
+ <CAJD7tkb5cKopA-Lfvtsn7sqgqjRf2kyaMwZhhp6SkveNEwArGw@mail.gmail.com>
+ <20231214142320.f5cf319e619dbb2127c423e9@linux-foundation.org>
+ <CAJD7tkaJVB+BoYmcO3MtGD7Ku88Sjk-VAK640h9B-aQzyGPdZQ@mail.gmail.com>
+ <20231218140313.GA19167@cmpxchg.org>
+ <CAJD7tkbdCv7CMy71UOCefR2Y1BXevJ2eMmYwk+=e=GPcCqn3+w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,84 +84,95 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231016132819.1002933-24-michael.roth@amd.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkbdCv7CMy71UOCefR2Y1BXevJ2eMmYwk+=e=GPcCqn3+w@mail.gmail.com>
 
-
-Just typos:
-
-On Mon, Oct 16, 2023 at 08:27:52AM -0500, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
+On Mon, Dec 18, 2023 at 06:39:13AM -0800, Yosry Ahmed wrote:
+> On Mon, Dec 18, 2023 at 6:03 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Thu, Dec 14, 2023 at 02:41:26PM -0800, Yosry Ahmed wrote:
+> > > On Thu, Dec 14, 2023 at 2:23 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > >
+> > > > On Wed, 13 Dec 2023 17:02:25 -0800 Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > >
+> > > > > On Tue, Dec 12, 2023 at 8:18 PM Chengming Zhou
+> > > > > <zhouchengming@bytedance.com> wrote:
+> > > > > >
+> > > > > > Also after the common decompress part goes to __zswap_load(), we can
+> > > > > > cleanup the zswap_reclaim_entry() a little.
+> > > > >
+> > > > > I think you mean zswap_writeback_entry(), same for the commit title.
+> > > >
+> > > > I updated my copy of the changelog, thanks.
+> > > >
+> > > > > > -       /*
+> > > > > > -        * If we get here because the page is already in swapcache, a
+> > > > > > -        * load may be happening concurrently. It is safe and okay to
+> > > > > > -        * not free the entry. It is also okay to return !0.
+> > > > > > -        */
+> > > > >
+> > > > > This comment should be moved above the failure check of
+> > > > > __read_swap_cache_async() above, not completely removed.
+> > > >
+> > > > This?
+> > >
+> > > Yes, thanks a lot. Although I think a new version is needed anyway to
+> > > address other comments.
+> > >
+> > > >
+> > > > --- a/mm/zswap.c~mm-zswap-cleanup-zswap_reclaim_entry-fix
+> > > > +++ a/mm/zswap.c
+> > > > @@ -1457,8 +1457,14 @@ static int zswap_writeback_entry(struct
+> > > >         mpol = get_task_policy(current);
+> > > >         page = __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
+> > > >                                 NO_INTERLEAVE_INDEX, &page_was_allocated, true);
+> > > > -       if (!page)
+> > > > +       if (!page) {
+> > > > +               /*
+> > > > +                * If we get here because the page is already in swapcache, a
+> > > > +                * load may be happening concurrently. It is safe and okay to
+> > > > +                * not free the entry. It is also okay to return !0.
+> > > > +                */
+> > > >                 return -ENOMEM;
+> > > > +       }
+> > > >
+> > > >         /* Found an existing page, we raced with load/swapin */
+> > > >         if (!page_was_allocated) {
+> >
+> > That's the wrong branch, no?
+> >
+> > !page -> -ENOMEM
+> >
+> > page && !page_was_allocated -> already in swapcache
 > 
-> Implement a workaround for an SNP erratum where the CPU will incorrectly
-> signal an RMP violation #PF if a hugepage (2mb or 1gb) collides with the
-> RMP entry of a VMCB, VMSA or AVIC backing page.
+> Ah yes, my bad.
 > 
-> When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
-> backing pages as "in-use" via a reserved bit in the corresponding RMP
-> entry after a successful VMRUN. This is done for _all_ VMs, not just
-> SNP-Active VMs.
+> >
+> > Personally, I don't really get the comment. What does it mean that
+> > it's "okay" not to free the entry? There is a put, which may or may
+> > not free the entry if somebody else is using it. Is it explaining how
+> > lifetime works for refcounted objects? I'm similarly confused by the
+> > "it's okay" to return non-zero. What is that trying to convey?
+> >
+> > Deletion seemed like the right choice here, IMO ;)
 > 
-> If the hypervisor accesses an in-use page through a writable
-> translation, the CPU will throw an RMP violation #PF. On early SNP
-> hardware, if an in-use page is 2mb aligned and software accesses any
-> part of the associated 2mb region with a hupage, the CPU will
-
-"hugepage"
-
-> incorrectly treat the entire 2mb region as in-use and signal a spurious
-> RMP violation #PF.
+> It's not the clearest of comments for sure. I think it is just trying
+> to say that it is okay not to write back the entry from zswap and to
+> fail, because the caller will just try another page. I did not like
+> silently deleting the comment during the refactoring. How about
+> rewriting it to something like:
 > 
-> The recommended is to not use the hugepage for the VMCB, VMSA or
+> /*
+>  * If we get here because the page is already in the swapcache, a
+>  * load may be happening concurrently. Skip this page, the caller
+>  * will move on to a different page.
+>  */
 
-s/recommended/recommendation/
-s/the hugepage/a hugepage/
+Well there is this one already on the branch:
 
-> AVIC backing page for similar reasons. Add a generic allocator that will
-> ensure that the page returns is not hugepage (2mb or 1gb) and is safe to
+/* Found an existing page, we raced with load/swapin */
 
-"... the page returned is not a hugepage..."
-
-...
-
-> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
-> +{
-> +	unsigned long pfn;
-> +	struct page *p;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +
-> +	/*
-> +	 * Allocate an SNP safe page to workaround the SNP erratum where
-> +	 * the CPU will incorrectly signal an RMP violation  #PF if a
-> +	 * hugepage (2mb or 1gb) collides with the RMP entry of VMCB, VMSA
-> +	 * or AVIC backing page. The recommeded workaround is to not use the
-
-"recommended"
-
-> +	 * hugepage.
-> +	 *
-> +	 * Allocate one extra page, use a page which is not 2mb aligned
-> +	 * and free the other.
-> +	 */
-> +	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
-> +	if (!p)
-> +		return NULL;
-> +
-> +	split_page(p, 1);
-> +
-> +	pfn = page_to_pfn(p);
-> +	if (IS_ALIGNED(pfn, PTRS_PER_PMD))
-> +		__free_page(p++);
-> +	else
-> +		__free_page(p + 1);
-> +
-> +	return p;
-> +}
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+which covers the first half. The unspoken assumption there is that
+writeback is an operation for an aged out page, while swapin means the
+age just got reset to 0. Maybe it makes sense to elaborate on that?
 
