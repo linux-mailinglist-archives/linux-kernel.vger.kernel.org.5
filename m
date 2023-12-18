@@ -1,186 +1,206 @@
-Return-Path: <linux-kernel+bounces-3427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC89E816C21
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:24:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D4E816C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C65C1C20D9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:24:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8049B1F236EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7047D19BD6;
-	Mon, 18 Dec 2023 11:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245B1199C7;
+	Mon, 18 Dec 2023 11:25:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b="HlbjYTUF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W0IpaUto"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2093.outbound.protection.outlook.com [40.107.21.93])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129EF19BCC
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 11:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kontron.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qgi8F6i8FR9MBoKZIcLF3FUNQvzRenmoZ/6r8L/6Dfy7JF96vbX40DXdqBFVYLfAKF5MD7qHSo3XdoZsIFSzbdljMAj+uEujrZ/uo9xmief/50ecvyTjEPetRB3RmJwY5ws/GPxdIhAvvh4NpETZN8opBf62hOam+PzFsbSheEIdo6acbqEF+Xtu1ZfNNdBbZJtEiJmXEcAj+ZXbqxg+srHpNrA95E4gkxnSpvmyrpknXvfYciE6kwaNAwaQnUtXCTEMeOW7cJLO4L56B8lmItrSs6N3+arrS97sW1jZnU8LZfXosQHEUEGFDFjw+OOCgXPYuTNSgo4o++Cnjf5VCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xZHilhAs+RR4fven1/ncHaVu1/as4qyEPzXXD75JWSg=;
- b=S4sHmw/fxjrHBHnd9roXya+Ido6gt+hKLcltKkmsE/XwXU8LAYgEeT+OFtUZ5JeqEdh+Dof0NsovdaJvF+oTBof0k/OMvHFmyL94Um14eY16Rv558LN/DkrUQUx83sahsrFB2JM21EQjzdAA2LgohQVypa+CwrahU5CetWy7sHxx8nQOdmi0VXX9P0zl/FlPbKutv5VrjqBHUvZ6E7h/5PC/TKcYFets7+NMdIkzEWYgl/OFHE7H7R46yWCXRc1Ti/D5dmVmiqiXziHyvpC9cJUocAlJ2zuL3fKrrTQPl4EmDscSnz2NaL9g++p/3PqBE/E96jeB4KEm8u7rbp0kpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xZHilhAs+RR4fven1/ncHaVu1/as4qyEPzXXD75JWSg=;
- b=HlbjYTUFCfu1fcTiwmlGFWB6MY+c3YKeE+T5CrUXRfIhAFWrQ9hJpYVjDIq0NDW33++FopEqr5iIVmaCwfsXcO2siK19VxfsrCX3FUMyvT6hyP09S2mDMn8jKgrRGLTkSct9aAvRSLhlMtJNQjnYzhCzRm499oCOVcqydlDpRDE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
- by AS2PR10MB7346.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:606::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
- 2023 11:24:25 +0000
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 11:24:25 +0000
-Message-ID: <1ef3dad2-5f55-40e5-bba7-3c71d71c12e4@kontron.de>
-Date: Mon, 18 Dec 2023 12:24:23 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
-Content-Language: en-US, de-DE
-To: Michael Walle <mwalle@kernel.org>, Inki Dae <inki.dae@samsung.com>,
- Jagan Teki <jagan@amarulasolutions.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Tim Harvey <tharvey@gateworks.com>,
- Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231113164344.1612602-1-mwalle@kernel.org>
- <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0115.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a8::14) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:263::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D8F1B26E;
+	Mon, 18 Dec 2023 11:25:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61453C433C9;
+	Mon, 18 Dec 2023 11:25:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702898709;
+	bh=oOWqt4mzn7lpvdcD4G7rn9WQ45Li9D1HAbQ2G4vdYaE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=W0IpaUtotPuuLTTquw8XLDpxeOxMg5uKkf+Nox6BLbsHeqaqbKASQGJgZUx2+mvDn
+	 4YE0nJ0RLxIubm43H9YgCEyq6ywveExRAfkxFYoRjYODPJArv7H6kop8E+leI1YMr6
+	 ETIp1tM51CBVmn6StNSaTtlBTvB3OXZf17bodukLaTTInMN24LzCff2TJRHYx6ggIn
+	 83VuvNLh8sH8T3gmmkPiborVgqPEYTE2jgbWfk9oTcn8guC2MVC/VeNo/hRFP7bbcm
+	 odsJBtFjAeaEz0d4PjUckzySLGGsxmsn7/YM76uNQUqnx1KQPs0TX/gB7IxhRN0b1P
+	 y62S9/YBhPKiA==
+Date: Mon, 18 Dec 2023 20:25:05 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
+ <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [mhiramat:topic/fprobe-on-fgraph] [function_graph] b92a5e78c3:
+ WARNING:at_kernel/trace/trace.c:#run_tracer_selftest
+Message-Id: <20231218202505.be19ab6c5fd58cdba15c56c6@kernel.org>
+In-Reply-To: <202312181100.508f8f48-oliver.sang@intel.com>
+References: <202312181100.508f8f48-oliver.sang@intel.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|AS2PR10MB7346:EE_
-X-MS-Office365-Filtering-Correlation-Id: c50733e2-8de7-4189-4c08-08dbffbbe41e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	l9+VxAbLQhwTsZ+utkf5jM6nhXbgxhqnXCnigVFHSEatRmiLQbhFMm7Kegx8NbYpJpIKRMceFu280QLQmRMv7/+wL8w1DkPsWYZ3nE2A2s8Ajk/XFklWeVD9e0QFfLi7xibshC4956j/UQccZy8GRZBk6yfOtyCSRlYVFyy//1fjfASfpyq01F5bbGrdRdWqJMq/WLDLr+0LAd69i7jAYM63zPr39vRKcVEsfXPlapmFd40UHhhg+nISr0NeT2w85TixWvr1MjjkCCNFeeUuLkfzoDugI1HevcZkAugBeprf//Z9bQN+bxmwnEjl1+DnUn5rLu+2JtV2FJ5QJoFxNhFYc7d73nkmI1HQDdJH21XTvJPepOMogetNlH1Jm3QVV/YeS+aXoMCv09Tr9zaERgUSQ3okPn7+u+aE2FKG2Giy2HVekhI7Nz/hkR89ohNe8gtixnXGOu7xe6IRpVfJQb9lnccEowXzNwzrAY5x4uDEGd34NVVYsg/0IgYxbGym1LfshnXDh7QY1U4qJv6YUYOm6gJTdPev8B+b4UmxQ0doGf79kqGUNp1Qow1Qf+GdQG2sJmkoj3OV/KG94FCQwNp1T3PVnETiCp1SY9JnS7Z4fKVrD95jUWCiv1aKmgqT0/omDY11KPS4ZSnVfvlNqjK9Lb0100guANDyRMuSEYk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(26005)(2616005)(921008)(38100700002)(36756003)(86362001)(31696002)(83380400001)(44832011)(5660300002)(6512007)(53546011)(6506007)(8676002)(4326008)(8936002)(66946007)(66556008)(110136005)(66476007)(316002)(2906002)(6486002)(41300700001)(7416002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?KzVoWHFKVkFocTFJSjVETTM0TWM5Ykt6WVJMRXZ6MXpLNjhUZksyQ1NVTzRJ?=
- =?utf-8?B?cTN3R2NtNEd6c0JjcU9xVWhOb3lMTnJOVDhoUkVkdXNkUDE3N2FpZmx3RWdX?=
- =?utf-8?B?VUZyQnUzcTdzQmN5QTR6QURCODNUZis5cjlpOHhqZW9wUWtJTnordFBiVzNo?=
- =?utf-8?B?THRMQkRWMzh2cWROcjZsYVZZUEVzeTZtWjRoQ0UxOWJURmkvRmJ3VWNsNDJX?=
- =?utf-8?B?N3RIczNYT3FVK3A4Q2hxT2xydWxjU1BlTVZFbVI3cU53Y2xXZUJ1QTlOWTB0?=
- =?utf-8?B?WWtqZ1cvZUJOUlBvQkhkZkpiQVZKcFVnUFVNVVVQVkNPWDZhSUZ6a1dlTGcy?=
- =?utf-8?B?NkFObnplYnB0dzhRelNWQzZ4R0l0amNOZHBDeWZSYmZzQUUxQ1BLbm5xaEZG?=
- =?utf-8?B?TXA2US9HQU1xbjY2cHp4UzUzd1NpaGhRMlpjekhJRHdRL0c0aExDdVNhTktj?=
- =?utf-8?B?WXA0K2hmSUdYWWtXcFJtakw5QmlXVVR5REhjYlBkRC9jNjdwWXV0ZHgzSGdE?=
- =?utf-8?B?dkhUTjVsZmNsOWhyV3laZHJhdEVKYVV1akFmOUh4Y09QWGJDMmZFWkJxMW9F?=
- =?utf-8?B?UUJ2eEtjYmZMVUtqSUYwd2xlSE5zZzA2VGxudFhGUkRWcWRXdnFNbW1yR1hW?=
- =?utf-8?B?SEwva0dnRFVoREVQaThTMHE2VXZBTDQ0ZmUwcDk3NisxR3BMU01WQnYvU200?=
- =?utf-8?B?Z2NRNGJzeTZSUWVtYktLUzVpQ0JvYUJkM2Nza0VlRURkREpmZkhMS202T1dC?=
- =?utf-8?B?OE9YVE5UK256VWZ4aW1nTUx5MGZOZExkOU9hKzM1N2k0UlBEdHduUlRxMjVR?=
- =?utf-8?B?MnZsUGw3L09QN2R3TXltVlFyd2sxZFE5ejZTd3h0MEZEV0Z2a3NMbEprcEJx?=
- =?utf-8?B?ZStaWDRNZVVMdGdzeDdXTTczeWFzUnRmSElGNHUxUXNxSWpkY2JPUVhSRHJY?=
- =?utf-8?B?bVArUHJKTkhMZEVEMWhiNUV4Wk5nR3JjUkozMjE0VytFNWxoaHNqZ3RYUWtR?=
- =?utf-8?B?OHFib0huZ3h0ZExWQ3pFSHpta0tRQVVrN1Nqb3B3RjRmMW9JeTBOSmc0SEFz?=
- =?utf-8?B?TU5KelJraHlyRTE1TkV1TGhwR0wrUWhSS0F0SFFhbEd6MDBtY1Iwd3h1NGw5?=
- =?utf-8?B?Qis2emhpVnNNWXhyQy9vM2hXMTFpejIyN1Y4NjlJUytyQlpId29hdk52Z1pk?=
- =?utf-8?B?d0Z4S21kWjlHZit4S3E4US9ZUEsxWXlwUnFieDNyeDhBMWs1RkhxQWpiNlhT?=
- =?utf-8?B?aHRjNUdUMytiNmNDYUNsVklyZVlYMThUeVFoZ3FEaGJiVEVyYXhFdzFibmwz?=
- =?utf-8?B?L3JTd3NkcUJ1MlVGT2lyN0NQN0w2TGFsVzVnSjhNV3crZ0JvaVUxOCtLOGw0?=
- =?utf-8?B?cm9xTVl2R1IvQ0lkNjBmajlieUZoRDZjTFNKSGNlZ1R1VFM4QVZpOWdNcmg4?=
- =?utf-8?B?YWFOdTgvcFBBMGhkVThRa29qb1BkTmZVMWpQSUZrRnVyMnRkYjhkYnBEQ1pq?=
- =?utf-8?B?eElDQmhSdm15TFhBTmFGNFBRRlEvKzBOSkthUXI5bDFTN1VoTlh0Q3BuZndp?=
- =?utf-8?B?S0dyUktEYytydFhCUmdXd0hoTHdWaUlpUUlySGdSaldPOWVzQ2hCU3A1YnN2?=
- =?utf-8?B?bnpsR0FHYzdKcFkyVU1vSm1MNDhaaG9HNTYrSWZBd3J6SkU5TU9kNDE4Uyt3?=
- =?utf-8?B?SGpXaTc5eWl0TlRPUmdWcTR4bVVUbmwxTFNiMzJURUhpTEdTNFg4VnFCUnN2?=
- =?utf-8?B?ODRsOFJtUW1CUHJySklRQnI0Y2ZUNWVZRkFyQ29XRDUrWU9qZ1puaW5FUjUr?=
- =?utf-8?B?cDhnSzlLQk80R1lwUFBEUUdtYWlFUnZZM3BTSVcvYU02dTBnRmpJNGhiRlhs?=
- =?utf-8?B?aFNKSklwQmI1bnpzdFJvRjQ5aEwyNGZjMm4rL3ZsSnJMZlZycW9BZzZrUG5F?=
- =?utf-8?B?ZzBLUGxld1pqSTRzYTBqWGx4dmVPNXFYekxyOFhIVGdZTlUyakE5STdKT3l2?=
- =?utf-8?B?T04vOFJKbE9hdTM0V0cxREJmQTBhTC9acVM2Qzg2QzZPZk9rWVFZRVp0d0VN?=
- =?utf-8?B?blRMSUNHd3lqYXc1TTFPbTRndkJnajU3d253ekJWVUJyU1huMXBPei9aK3ZQ?=
- =?utf-8?B?eGU4MTVCZzlONXBzREFLR3A2VWtFenI0d0JLbmE2by9MM2QwdWtLbVF2Q1po?=
- =?utf-8?B?QlE9PQ==?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: c50733e2-8de7-4189-4c08-08dbffbbe41e
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 11:24:25.5556
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 50bXvKGvcDxKxdoofanUCdG6BEdanFKRrJcM3sHxONxp60f3MCU1KJ5AF6JClmiQ7tppWk/llvrHiAeOtHw71g1+VdbjtrM0rLzyMl//gpY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7346
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 01.12.23 10:04, Michael Walle wrote:
->> The FORCE_STOP_STATE bit is unsuitable to force the DSI link into LP-11
->> mode. It seems the bridge internally queues DSI packets and when the
->> FORCE_STOP_STATE bit is cleared, they are sent in close succession
->> without any useful timing (this also means that the DSI lanes won't go
->> into LP-11 mode). The length of this gibberish varies between 1ms and
->> 5ms. This sometimes breaks an attached bridge (TI SN65DSI84 in this
->> case). In our case, the bridge will fail in about 1 per 500 reboots.
->>
->> The FORCE_STOP_STATE handling was introduced to have the DSI lanes in
->> LP-11 state during the .pre_enable phase. But as it turns out, none of
->> this is needed at all. Between samsung_dsim_init() and
->> samsung_dsim_set_display_enable() the lanes are already in LP-11 mode.
->> The code as it was before commit 20c827683de0 ("drm: bridge:
->> samsung-dsim: Fix init during host transfer") and 0c14d3130654 ("drm:
->> bridge: samsung-dsim: Fix i.MX8M enable flow to meet spec") was correct
->> in this regard.
->>
->> This patch basically reverts both commits. It was tested on an i.MX8M
->> SoC with an SN65DSI84 bridge. The signals were probed and the DSI
->> packets were decoded during initialization and link start-up. After this
->> patch the first DSI packet on the link is a VSYNC packet and the timing
->> is correct.
->>
->> Command mode between .pre_enable and .enable was also briefly tested by
->> a quick hack. There was no DSI link partner which would have responded,
->> but it was made sure the DSI packet was send on the link. As a side
->> note, the command mode seems to just work in HS mode. I couldn't find
->> that the bridge will handle commands in LP mode.
->>
->> Fixes: 20c827683de0 ("drm: bridge: samsung-dsim: Fix init during host
->> transfer")
->> Fixes: 0c14d3130654 ("drm: bridge: samsung-dsim: Fix i.MX8M enable
->> flow to meet spec")
->> Signed-off-by: Michael Walle <mwalle@kernel.org>
->> ---
->> Let me know wether this should be two commits each reverting one, but
->> both
->> commits appeared first in kernel 6.5.
+On Mon, 18 Dec 2023 15:04:46 +0800
+kernel test robot <oliver.sang@intel.com> wrote:
+
 > 
-> Are there any news?
+> 
+> Hello,
+> 
+> kernel test robot noticed "WARNING:at_kernel/trace/trace.c:#run_tracer_selftest" on:
+> 
+> commit: b92a5e78c35fde3c1be7263b39724388482a4bd9 ("function_graph: Add a new entry handler with parent_ip and ftrace_regs")
+> https://git.kernel.org/cgit/linux/kernel/git/mhiramat/linux.git topic/fprobe-on-fgraph
+> 
+> in testcase: trinity
+> version: trinity-i386-abe9de86-1_20230429
+> with following parameters:
+> 
+> 	runtime: 600s
+> 
+> test-description: Trinity is a linux system call fuzz tester.
+> test-url: http://codemonkey.org.uk/projects/trinity/
 
-Inki, are you picking this up? Or if not, who will?
+Thanks for reporting, I confirmed my (preparing) v5 fixed this issue.
+
+[   20.788448][    T1] Testing tracer nop: PASSED
+[   20.792288][    T1] Testing tracer function_graph: PASSED
+[   37.458753][    T1] Testing fgraph storage of 1 byte: PASSED
+[   37.556119][    T1] Testing fgraph storage of 2 bytes: PASSED
+[   37.660124][    T1] Testing fgraph storage of 4 bytes: PASSED
+[   37.768140][    T1] Testing fgraph storage of 8 bytes: PASSED
+[   37.877687][    T1] prandom: seed boundary self test passed
+
+Thank you,
+
+
+> 
+> 
+> compiler: gcc-12
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> +----------------------------------------------------------------------------------+------------+------------+
+> |                                                                                  | 26fcffc6d7 | b92a5e78c3 |
+> +----------------------------------------------------------------------------------+------------+------------+
+> | WARNING:at_kernel/trace/trace.c:#run_tracer_selftest                             | 0          | 8          |
+> | EIP:run_tracer_selftest                                                          | 0          | 8          |
+> +----------------------------------------------------------------------------------+------------+------------+
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202312181100.508f8f48-oliver.sang@intel.com
+> 
+> 
+> [    5.502226][    T1] ------------[ cut here ]------------
+> [ 5.502226][ T1] WARNING: CPU: 1 PID: 1 at kernel/trace/trace.c:2031 run_tracer_selftest (kernel/trace/trace.c:2031 (discriminator 1)) 
+> [    5.502899][    T1] Modules linked in:
+> [    5.503348][    T1] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc2-00034-gb92a5e78c35f #1
+> [    5.504358][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [ 5.505125][ T1] EIP: run_tracer_selftest (kernel/trace/trace.c:2031 (discriminator 1)) 
+> [ 5.505764][ T1] Code: ff ff a3 18 30 4b c2 89 f8 89 15 1c 30 4b c2 e8 cb b1 ff ff 89 f8 e8 58 52 ff ff e9 c1 fe ff ff 68 50 d6 f9 c1 e8 2d 61 f7 ff <0f> 0b b8 ff ff ff ff 5a e9 22 ff ff ff b8 f4 ff ff ff e9 18 ff ff
+> All code
+> ========
+>    0:	ff                   	(bad)
+>    1:	ff a3 18 30 4b c2    	jmp    *-0x3db4cfe8(%rbx)
+>    7:	89 f8                	mov    %edi,%eax
+>    9:	89 15 1c 30 4b c2    	mov    %edx,-0x3db4cfe4(%rip)        # 0xffffffffc24b302b
+>    f:	e8 cb b1 ff ff       	call   0xffffffffffffb1df
+>   14:	89 f8                	mov    %edi,%eax
+>   16:	e8 58 52 ff ff       	call   0xffffffffffff5273
+>   1b:	e9 c1 fe ff ff       	jmp    0xfffffffffffffee1
+>   20:	68 50 d6 f9 c1       	push   $0xffffffffc1f9d650
+>   25:	e8 2d 61 f7 ff       	call   0xfffffffffff76157
+>   2a:*	0f 0b                	ud2		<-- trapping instruction
+>   2c:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+>   31:	5a                   	pop    %rdx
+>   32:	e9 22 ff ff ff       	jmp    0xffffffffffffff59
+>   37:	b8 f4 ff ff ff       	mov    $0xfffffff4,%eax
+>   3c:	e9                   	.byte 0xe9
+>   3d:	18 ff                	sbb    %bh,%bh
+>   3f:	ff                   	.byte 0xff
+> 
+> Code starting with the faulting instruction
+> ===========================================
+>    0:	0f 0b                	ud2
+>    2:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+>    7:	5a                   	pop    %rdx
+>    8:	e9 22 ff ff ff       	jmp    0xffffffffffffff2f
+>    d:	b8 f4 ff ff ff       	mov    $0xfffffff4,%eax
+>   12:	e9                   	.byte 0xe9
+>   13:	18 ff                	sbb    %bh,%bh
+>   15:	ff                   	.byte 0xff
+> [    5.508031][    T1] EAX: 00000007 EBX: c1f9fa5b ECX: 00000000 EDX: 00000000
+> [    5.508856][    T1] ESI: c25e18e0 EDI: c0109500 EBP: c031bed4 ESP: c031bec4
+> [    5.513135][    T1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
+> [    5.514023][    T1] CR0: 80050033 CR2: 00000000 CR3: 02763000 CR4: 000406d0
+> [    5.514855][    T1] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+> [    5.515688][    T1] DR6: fffe0ff0 DR7: 00000400
+> [    5.516235][    T1] Call Trace:
+> [ 5.516632][ T1] ? show_regs (arch/x86/kernel/dumpstack.c:479) 
+> [ 5.517125][ T1] ? run_tracer_selftest (kernel/trace/trace.c:2031 (discriminator 1)) 
+> [ 5.517722][ T1] ? __warn (kernel/panic.c:677) 
+> [ 5.518185][ T1] ? run_tracer_selftest (kernel/trace/trace.c:2031 (discriminator 1)) 
+> [ 5.518797][ T1] ? report_bug (lib/bug.c:201 lib/bug.c:219) 
+> [ 5.519323][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250) 
+> [ 5.519844][ T1] ? handle_bug (arch/x86/kernel/traps.c:216) 
+> [ 5.520351][ T1] ? exc_invalid_op (arch/x86/kernel/traps.c:258 (discriminator 1)) 
+> [ 5.521153][ T1] ? handle_exception (arch/x86/entry/entry_32.S:1049) 
+> [ 5.521153][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250) 
+> [ 5.521642][ T1] ? run_tracer_selftest (kernel/trace/trace.c:2031 (discriminator 1)) 
+> [ 5.522253][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250) 
+> [ 5.522776][ T1] ? run_tracer_selftest (kernel/trace/trace.c:2031 (discriminator 1)) 
+> [ 5.523386][ T1] register_tracer (kernel/trace/trace.c:2065 kernel/trace/trace.c:2188) 
+> [ 5.523932][ T1] ? init_graph_tracefs (kernel/trace/trace_functions_graph.c:1448) 
+> [ 5.525126][ T1] init_graph_trace (kernel/trace/trace_functions_graph.c:1462) 
+> [ 5.525126][ T1] do_one_initcall (init/main.c:1236) 
+> [ 5.525132][ T1] do_initcalls (init/main.c:1297 init/main.c:1314) 
+> [ 5.525660][ T1] kernel_init_freeable (init/main.c:1553) 
+> [ 5.526271][ T1] ? rest_init (init/main.c:1433) 
+> [ 5.526789][ T1] kernel_init (init/main.c:1443) 
+> [ 5.527291][ T1] ret_from_fork (arch/x86/kernel/process.c:153) 
+> [ 5.527828][ T1] ? rest_init (init/main.c:1433) 
+> [ 5.529154][ T1] ret_from_fork_asm (arch/x86/entry/entry_32.S:741) 
+> [ 5.529154][ T1] entry_INT80_32 (arch/x86/entry/entry_32.S:947) 
+> [    5.529154][    T1] irq event stamp: 2126727
+> [ 5.529642][ T1] hardirqs last enabled at (2126735): console_unlock (arch/x86/include/asm/irqflags.h:26 arch/x86/include/asm/irqflags.h:67 arch/x86/include/asm/irqflags.h:127 kernel/printk/printk.c:341 kernel/printk/printk.c:2706 kernel/printk/printk.c:3038) 
+> [ 5.530695][ T1] hardirqs last disabled at (2126742): console_unlock (kernel/printk/printk.c:339 kernel/printk/printk.c:2706 kernel/printk/printk.c:3038) 
+> [ 5.533126][ T1] softirqs last enabled at (2126476): __do_softirq (arch/x86/include/asm/preempt.h:27 kernel/softirq.c:400 kernel/softirq.c:582) 
+> [ 5.533126][ T1] softirqs last disabled at (2126471): do_softirq_own_stack (arch/x86/kernel/irq_32.c:57 arch/x86/kernel/irq_32.c:147) 
+> [    5.533126][    T1] ---[ end trace 0000000000000000 ]---
+> [    5.534553][    T1] prandom: seed boundary self test passed
+> [    5.537152][    T1] prandom: 100 self tests passed
+> [    5.537152][    T1] pinctrl core: initialized pinctrl subsystem
+> 
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20231218/202312181100.508f8f48-oliver.sang@intel.com
+> 
+> 
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
