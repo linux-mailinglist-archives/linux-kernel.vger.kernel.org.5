@@ -1,122 +1,99 @@
-Return-Path: <linux-kernel+bounces-4054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF42681774C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:20:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8B0A817753
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:22:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8FC91C25598
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:20:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 857BE2869D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F08495DE;
-	Mon, 18 Dec 2023 16:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ql8mNLtJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC07B49883;
+	Mon, 18 Dec 2023 16:22:36 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4063D556;
-	Mon, 18 Dec 2023 16:20:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7F76C433C8;
-	Mon, 18 Dec 2023 16:20:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702916423;
-	bh=1TJ6z/2n5yA1zKpBSS1FKvSKJzOxpKY5yqQW1tlh3co=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ql8mNLtJYBvIiyP75UozTFORi+cRvJHqYZbr7sAFqi66/8aSUlHiXNL51rrGy2dok
-	 8doZaNXnZHhNtVjjZzV6nyiJOmMQ1/cEHLxQOtHLn3tiKLyoXVbDSiyqQdEpvWrb5V
-	 TkIGqehOMGrXN0733jM7IzJtmC2Pbdo//TwYiDCY4nfGhBApRE9yEQxRtK+kRYOmhY
-	 5dtMfc5y6VIIUx+oszI1dYeATjexh3TeWf8dkME8TnJqMj/1sXCIRI0ZS9oA7T1esq
-	 xJKoCOmZkWNvuujL5cjgQ/7nvNs7fsb7X6RmlJurC7hAwem/sQmRLEc0IwcPWoG42E
-	 LkDgspBOMPyLQ==
-Date: Mon, 18 Dec 2023 16:20:16 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Cc: Yangtao Li <tiny.windzz@gmail.com>, Viresh Kumar <vireshk@kernel.org>,
-	Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Maxime Ripard <mripard@kernel.org>, linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 2/5] dt-bindings: opp: sun50i: Add binding for D1 CPUs
-Message-ID: <20231218-unsavory-private-50e5b52c632f@spud>
-References: <20231218110543.64044-1-fusibrandon13@gmail.com>
- <20231218110543.64044-3-fusibrandon13@gmail.com>
- <20231218-disprove-judgingly-ee54d39474a7@spud>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A22E336AEA;
+	Mon, 18 Dec 2023 16:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sv4pT6VLwz6K5yX;
+	Tue, 19 Dec 2023 00:21:53 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A7F3D140A77;
+	Tue, 19 Dec 2023 00:22:29 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 18 Dec
+ 2023 16:22:29 +0000
+Date: Mon, 18 Dec 2023 16:22:27 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+CC: <jikos@kernel.org>, <jic23@kernel.org>, <lars@metafoo.de>,
+	<Basavaraj.Natikar@amd.com>, <linux-input@vger.kernel.org>,
+	<linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] Fix regression in ALS
+Message-ID: <20231218162227.00002197@Huawei.com>
+In-Reply-To: <20231217200703.719876-1-srinivas.pandruvada@linux.intel.com>
+References: <20231217200703.719876-1-srinivas.pandruvada@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PwKTfaebQ6MCV6JT"
-Content-Disposition: inline
-In-Reply-To: <20231218-disprove-judgingly-ee54d39474a7@spud>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Sun, 17 Dec 2023 12:07:01 -0800
+Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
 
---PwKTfaebQ6MCV6JT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Addition of color temperature and chromaticity support breaks ALS sensor
+> on several platforms. Till we have a good solution, revert these commits
+> for 6.7 cycle.
+> 
+> Srinivas Pandruvada (2):
+>   Revert "iio: hid-sensor-als: Add light chromaticity support"
+>   Revert "iio: hid-sensor-als: Add light color temperature support"
+> 
+>  drivers/iio/light/hid-sensor-als.c | 100 +----------------------------
+>  include/linux/hid-sensor-ids.h     |   4 --
+>  2 files changed, 2 insertions(+), 102 deletions(-)
 
-On Mon, Dec 18, 2023 at 02:54:35PM +0000, Conor Dooley wrote:
-> On Mon, Dec 18, 2023 at 12:05:40PM +0100, Brandon Cheo Fusi wrote:
-> > Add binding for D1 CPU OPPs.
-> >=20
-> > Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> > ---
-> >  .../bindings/opp/allwinner,sun50i-h6-operating-points.yaml    | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-=
-operating-points.yaml b/Documentation/devicetree/bindings/opp/allwinner,sun=
-50i-h6-operating-points.yaml
-> > index 51f62c3ae..fddaa3216 100644
-> > --- a/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operati=
-ng-points.yaml
-> > +++ b/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operati=
-ng-points.yaml
-> > @@ -23,7 +23,9 @@ allOf:
-> > =20
-> >  properties:
-> >    compatible:
-> > -    const: allwinner,sun50i-h6-operating-points
-> > +    enum:
-> > +      - allwinner,sun50i-h6-operating-points
-> > +      - allwinner,sun20i-d1-operating-points
->=20
-> This doesn't match what you have in your devicetree.
++CC Greg KH.  (resent as I messed up Greg's address first time around)
 
-Per Samuel's comments in
-<aad8302d-a015-44ee-ad11-1a4c6e00074c@sholland.org>
-it looks like this binding is correct but the devicetree is wrong.
+Hi Greg,
+
+This is a regression fix that I'd like to get in asap. Currently light sensors
+on a wide range of laptops are broken.  I was hoping we'd fix the the problem
+rather than need to revert, but time is running out so revert it is.
+
+I don't have anything else that needs to be rushed in before the merge cycle,
+so if you are happy to pick these two reverts directly that would be great.
+
+Message ID of the cover letter is
+
+20231217200703.719876-1-srinivas.pandruvada@linux.intel.com
+
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+If not I should be able to do a pull request in next couple of days
+with these in.
 
 Thanks,
-Conor.
 
---PwKTfaebQ6MCV6JT
-Content-Type: application/pgp-signature; name="signature.asc"
+Jonathan
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYBxQAAKCRB4tDGHoIJi
-0vHVAP0ZNkABGZhaykdtLfenWxGy/DxKf2+/30Xy3k645aMFswD+P5h11MvaPRsk
-hQWx46DLx9lxxmCqqlWZxNdXTrfSUA0=
-=W9Bc
------END PGP SIGNATURE-----
+> 
 
---PwKTfaebQ6MCV6JT--
 
