@@ -1,77 +1,153 @@
-Return-Path: <linux-kernel+bounces-2961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68D3781653E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:07:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DBF0816542
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B2731C212AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:07:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D30281F90
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D47C4403;
-	Mon, 18 Dec 2023 03:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E813D64;
+	Mon, 18 Dec 2023 03:13:59 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+Received: from smtpbg150.qq.com (smtpbg150.qq.com [18.132.163.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE0F3C0D;
-	Mon, 18 Dec 2023 03:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vydujm._1702868817;
-Received: from 30.221.148.252(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vydujm._1702868817)
-          by smtp.aliyun-inc.com;
-          Mon, 18 Dec 2023 11:06:59 +0800
-Message-ID: <82c74693-db42-2491-868e-b6cb1cead4ec@linux.alibaba.com>
-Date: Mon, 18 Dec 2023 11:06:56 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753823C0D
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 03:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp67t1702869194tia5c1x9
+Received: from HX09040029.powercore.com.cn ( [58.34.117.194])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 18 Dec 2023 11:13:10 +0800 (CST)
+X-QQ-SSF: 01400000000000402000000A0000000
+X-QQ-FEAT: CbHyMb8VrI0YrUNQgdv8Fc3WpubobuDr6zh6jswt2V4GvALaE86ztRNRl/OBQ
+	DeMfd71HgSxRURWE7Q6u1XYIrbN9RtZKGmKw3ju1RT241YPw4vaUaYemOwzPY9XSuj6gHTc
+	deNbw8RFi2AAV1aK8RJMRuAbDl53AmNZS9h7Y26fL64+/Vj8mP/f9Ah0BYm3CtmJ95EDuwK
+	WM8OrPwATcSV8nhAeczWn7fTYW0KFXljmNTxIMv68Nf79XIBXZRnaPFceirh86MLJB9a/fX
+	9T/2qvlG4rbSWpdmpnkh7kNYC+lRzodPsoY3sHsKJApQ9lpJpY4x0NaUqw4D0+giJa/IBHE
+	+WNpD0/Z/Ho7sgw14r8Hi99OUP3CLPwpOLo/PggfDzGU8tUdu1E7u5fT8ftredu6M0N0A7E
+	Ads/GtkisX0=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 16065116552740346806
+From: Luming Yu <luming.yu@shingroup.cn>
+To: linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu
+Cc: luming.yu@gmail.com,
+	ke.zhao@shingroup.cn,
+	dawei.li@shingroup.cn,
+	shenghui.qu@shingroup.cn,
+	Luming Yu <luming.yu@shingroup.cn>
+Subject: [PATCH v1 1/2] powerpc/debug: implement HAVE_USER_RETURN_NOTIFIER
+Date: Mon, 18 Dec 2023 11:13:08 +0800
+Message-ID: <1FD36D52828D2506+20231218031309.2063-1-luming.yu@shingroup.cn>
+X-Mailer: git-send-email 2.42.0.windows.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC nf-next v1 1/2] netfilter: bpf: support prog update
-Content-Language: en-US
-To: Florian Westphal <fw@strlen.de>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org
-References: <1702609653-45835-1-git-send-email-alibuda@linux.alibaba.com>
- <1702609653-45835-2-git-send-email-alibuda@linux.alibaba.com>
- <20231215141712.GA17065@breakpoint.cc>
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <20231215141712.GA17065@breakpoint.cc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
+The support for user return notifier infrastructure
+is manually hooked into powerpc architecture.
 
+Signed-off-by: Luming Yu <luming.yu@shingroup.cn>
+---
+v0->v1: add user return notifier arch hook manually.
+---
+ arch/powerpc/Kconfig                    |  1 +
+ arch/powerpc/include/asm/entry-common.h | 16 ++++++++++++++++
+ arch/powerpc/include/asm/thread_info.h  |  2 ++
+ arch/powerpc/kernel/process.c           |  2 ++
+ 4 files changed, 21 insertions(+)
+ create mode 100644 arch/powerpc/include/asm/entry-common.h
 
-On 12/15/23 10:17 PM, Florian Westphal wrote:
-> D. Wythe <alibuda@linux.alibaba.com> wrote:
->>   	const struct nf_defrag_hook *defrag_hook;
->> +	const struct bpf_prog __rcu *nf_prog;
-> Hmm, why do we need this pointer?
-> Can't you just re-use bpf_nf_link->link.prog?
-Accessing nf_link->link.prog directly is a bit strange because it is not 
-marked as __rcu, which will generate a compilation warning,
-thus we need to perform a type conversion.
-
-But I do not intend to insist on it. I will remove it in the next version.
-
-Best wishes,
-D. Wythe
->
->> +	rcu_assign_pointer(nf_link->nf_prog, new_prog);
->> +	old_prog = xchg(&link->prog, new_prog);
-> This looks redundant, I think you can remove the nf_prog
-> pointer again.
->
-> Rest LGTM.
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index c10229c0243c..b968068cc04a 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -277,6 +277,7 @@ config PPC
+ 	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
+ 	select HAVE_STATIC_CALL			if PPC32
+ 	select HAVE_SYSCALL_TRACEPOINTS
++	select HAVE_USER_RETURN_NOTIFIER
+ 	select HAVE_VIRT_CPU_ACCOUNTING
+ 	select HAVE_VIRT_CPU_ACCOUNTING_GEN
+ 	select HOTPLUG_SMT			if HOTPLUG_CPU
+diff --git a/arch/powerpc/include/asm/entry-common.h b/arch/powerpc/include/asm/entry-common.h
+new file mode 100644
+index 000000000000..51f1eb767696
+--- /dev/null
++++ b/arch/powerpc/include/asm/entry-common.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef ARCH_POWERPC_ENTRY_COMMON_H
++#define ARCH_POWERPC_ENTRY_COMMON_H
++
++#include <linux/user-return-notifier.h>
++
++static inline void arch_exit_to_user_mode_prepare(struct pt_regs *regs,
++						  unsigned long ti_work)
++{
++	if (ti_work & _TIF_USER_RETURN_NOTIFY)
++		fire_user_return_notifiers();
++}
++
++#define arch_exit_to_user_mode_prepare arch_exit_to_user_mode_prepare
++
++#endif
+diff --git a/arch/powerpc/include/asm/thread_info.h b/arch/powerpc/include/asm/thread_info.h
+index bf5dde1a4114..47e226032f9c 100644
+--- a/arch/powerpc/include/asm/thread_info.h
++++ b/arch/powerpc/include/asm/thread_info.h
+@@ -117,6 +117,7 @@ void arch_setup_new_exec(void);
+ #endif
+ #define TIF_POLLING_NRFLAG	19	/* true if poll_idle() is polling TIF_NEED_RESCHED */
+ #define TIF_32BIT		20	/* 32 bit binary */
++#define TIF_USER_RETURN_NOTIFY	21	/* notify kernel of userspace return */
+ 
+ /* as above, but as bit values */
+ #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+@@ -125,6 +126,7 @@ void arch_setup_new_exec(void);
+ #define _TIF_NOTIFY_SIGNAL	(1<<TIF_NOTIFY_SIGNAL)
+ #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+ #define _TIF_32BIT		(1<<TIF_32BIT)
++#define _TIF_USER_RETURN_NOTIFY	(1<<TIF_USER_RETURN_NOTIFY)
+ #define _TIF_RESTORE_TM		(1<<TIF_RESTORE_TM)
+ #define _TIF_PATCH_PENDING	(1<<TIF_PATCH_PENDING)
+ #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 392404688cec..70a9ea949798 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -38,6 +38,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/pkeys.h>
+ #include <linux/seq_buf.h>
++#include <linux/user-return-notifier.h>
+ 
+ #include <asm/interrupt.h>
+ #include <asm/io.h>
+@@ -1386,6 +1387,7 @@ struct task_struct *__switch_to(struct task_struct *prev,
+ 	if (current->thread.regs)
+ 		restore_math(current->thread.regs);
+ #endif /* CONFIG_PPC_BOOK3S_64 */
++	propagate_user_return_notify(prev, new);
+ 
+ 	return last;
+ }
+-- 
+2.42.0.windows.2
 
 
