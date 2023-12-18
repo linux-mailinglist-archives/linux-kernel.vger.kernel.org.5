@@ -1,188 +1,173 @@
-Return-Path: <linux-kernel+bounces-4233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EDF481796E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:13:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7E3817970
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5433B1C22815
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:13:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90638B21743
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB93E5D74F;
-	Mon, 18 Dec 2023 18:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6695D74B;
+	Mon, 18 Dec 2023 18:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wFI/A0sv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BWtF+un6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2087.outbound.protection.outlook.com [40.107.100.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DDF5D732;
-	Mon, 18 Dec 2023 18:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WX6+dfZlekgYthzemwkbjiybg1SGDBbo6ur3KP5Y4LStMJHkTxK2+UU0ZGOH0sK5bLLdluji/3WTkyZSJSI6+Jf/dwc5/marHjWS2sPPqoFUa1hXKjeEABCm8F/retCL+4SOgm+XhFhqEt4apfEJ4lGkqft1b0dHHBkrVzYfOqcLdcOOB+s0mwAjsrOhkSwHLKFJdPjxEwpI6ReB6OiBM3VRpzIr8ErqBGUG3AY9cGRRWAW8mMzHXXmakrFTw10+Ka8NtBNDe6TLq2XtC32cDypP9wK0EyLrVtSQArF1zr8+d+gvjXmHYrzfvES2XRcocfEKzOMslFsY9P02XXQ6sA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y0TiCDvJMEelyFf584S0FTAM+I3ApNf8MZF5Mav20CE=;
- b=TYMys15Pb5UokprZzWPWvCFVIBpYGsSaFlTaO7bEg3VzJaDa7/0FmrJfz84H60c/YtLdY8EOx2hMGou+JNDm7mnnxadIdjNfeKZlTJpEUDWK2vYsDEubjI3GvtH0/oMSm3T2Z5z2R66V357Cdfggupe/cV5hDwGTT2qGrg5grSoGeDXO1MKWEGSSmHe1mxALomR82MaxzXABLRTNwXhoroX14d5nI5h52kMtwQnUGVVTEdp7XpheyYT6RAuwmiHtNaYIXkdcNu9WebtUJUYClrNkpU4mhavQh+SE2VE0JWFMeswGB4BPwSWY9v9iySVWWr7xExdfQ4mInU/FWIzQsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y0TiCDvJMEelyFf584S0FTAM+I3ApNf8MZF5Mav20CE=;
- b=wFI/A0svZmQ+tT56B22ScIETCGINDIVFSMcjfrkd3vrl1QIJ5mWd+wScJFeWnQhWJV8bYe4+JWm4c+evRNkd9QvaqsDhCPUBr2LVdf/UrR7EuBYgxSF5XHAyLw9hhcTwBZG1WHpM4bb1UhbStGQxe+Y6qI0gjQyQyIBSmwfg/Pk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com (2603:10b6:a03:132::30)
- by MW6PR12MB8959.namprd12.prod.outlook.com (2603:10b6:303:23c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
- 2023 18:13:19 +0000
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::ea10:2f7:ef14:9c]) by BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::ea10:2f7:ef14:9c%5]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 18:13:18 +0000
-Subject: Re: [PATCH v4 6/7] firmware/efi: Process CXL Component Events
-To: Ira Weiny <ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>,
- Shiju Jose <shiju.jose@huawei.com>
-Cc: Yazen Ghannam <yazen.ghannam@amd.com>, Davidlohr Bueso
- <dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>,
- Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Ard Biesheuvel <ardb@kernel.org>,
- linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-cxl@vger.kernel.org
-References: <20231215-cxl-cper-v4-0-01b6dab44fcd@intel.com>
- <20231215-cxl-cper-v4-6-01b6dab44fcd@intel.com>
-From: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Message-ID: <a32464b2-9810-ca9d-73e5-4ed4cf69fea0@amd.com>
-Date: Mon, 18 Dec 2023 10:13:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-In-Reply-To: <20231215-cxl-cper-v4-6-01b6dab44fcd@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0213.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::8) To BYAPR12MB2869.namprd12.prod.outlook.com
- (2603:10b6:a03:132::30)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5045D733
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so627a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:14:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702923263; x=1703528063; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DPggsM3NCSPNHuDW6MYkybcIgkppTmiteb7qARs7Z58=;
+        b=BWtF+un6752vqmkcElNRbra4G8AL7vWd0Q0/4iFu5IbKRN4M3aJ8E4KjKqp0TS6mE0
+         fjLc2KSlNOzadOiEl3Ik/m6tSwq//QFcSGxxm46KPA65++ucVdv53gDTNF/FRCX8Vq85
+         w6l3TYM6SAkgOkou9Xnes/rwDBDKfYOp3MJy1kI3rHIQE9t0jlRCzcR/dGuNCDEa0xP8
+         ksDXGasI+eaH/WtJTeBFH67Fe8mMsHS0Qsq3tTB33CDYfISQs56zpYZXnTOS/bZwdIvv
+         egQpsHvQAG2WH6hmn9I5+gGBIpBLAxOrc+a0WrCUOclwug3BB+MCxu0N6dKzCyF7fTuF
+         imJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702923263; x=1703528063;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DPggsM3NCSPNHuDW6MYkybcIgkppTmiteb7qARs7Z58=;
+        b=VIxkhUOUv9zcmcF3wL/J345nU+ghpQ0Z51l0XdHlqxx96jkR8okmOf5E5Us8VqzLRs
+         rAiFBANzdIqzk371JtfY66UmIXHMM5Io9yfqwpAM8MSdHWvrhQ1kbj/bochxixkDHjs7
+         gO97dZLl6ea3tdIybNUqginRREo8p3l8PlZEHxKcgxVfpYK9tROBQZz1J6XEoKA+yK8g
+         s2g3Mgz46rr2/+JBMpiRwekNKW9fQk9Z/WAcke3O+EU2Dsb+pPgTHeZBvzgKj4TXnude
+         OpnJ6TYkokwqU1zfV9AUxIRjstmqOQUtFcx3C+kZnZnsGiAe/SXtGjuE/cpL3NEUgnNG
+         IrJA==
+X-Gm-Message-State: AOJu0YxbDYfr76kA+2FfWv8QNY0uNUu8REhfOzbd2Ao+jc1vpJhTsBIC
+	+qaS55lZbU+lZUg07KGXQdEKjT/K8G8DRcVTuXr1w2HtH88=
+X-Google-Smtp-Source: AGHT+IEEzb76/Ah4Nlk8QgfziJRiEwlA6qkmZn/0hGHqfDBA43ntvwLYD5q36eVD4juH+vKRnm9fEY94vwSvJAHuo1g=
+X-Received: by 2002:a50:9e49:0:b0:553:62b4:5063 with SMTP id
+ z67-20020a509e49000000b0055362b45063mr16629ede.4.1702923263119; Mon, 18 Dec
+ 2023 10:14:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2869:EE_|MW6PR12MB8959:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6321d2c-42b4-4a2a-5652-08dbfff502c5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	XzCjr3Znh7QS1QxwYzWHVfkCdoOz2ay/m/dojWUJQNMukPwu05wjO2Mejfcmxh4E72BNz9rJDERmduwx2R5iRCsbT0dEeoGaXFFIA9+zTCGWCG5rUXFAlwASb0GyNkGqz6t45PDZHaqcdedckqdTrd9WPfHOWVTq6+hXlPT193DxhdiL02i7CEzKhnKVXIFIUVRpsHJC5mSRQAxyEnm+Hk21Pwio9NnPWBUlkhoHEeBVxRoj1QaDxWF9VA0EWEkkvDX0wpkNtaN0fiEsRsdIcdA0VChAZJykGvXRuUg/En4s9QPsjj78/F05IdJmq+oiNzzllQpd9eLAnTWTyDx294xy2hegQfYbLki7JgYz80J1nufn3m61uGpqEVYSiU4Vgq1VMiEawUqJ27ByEctR3cxKcCYbU2NKhbHAGf7Xy5UB7enXd+e9IEP1fRN7n8tOrlwm7l/wEmgo8213ZFNs14t+ZXlp0BCletvKEmSzes/488/n/4swJUNYNeiKxC0ffoiaU8V9wYW0HHt5Y/5p13q/dx5YMkC5KaiTiFEY8cdLJzknV258TLYXdpIfC1SIivTtKDrtIu8s7k7oQnKi7iu3P/T8QXNfMFignFdMHj6v4tVyCsZNsDRs38BlwzyRE573J7wFV+vEGNrSiGZYkw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(366004)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(5660300002)(54906003)(8676002)(8936002)(478600001)(66476007)(66556008)(316002)(66946007)(4326008)(41300700001)(6486002)(110136005)(36756003)(31696002)(86362001)(7416002)(38100700002)(2616005)(2906002)(6512007)(53546011)(83380400001)(26005)(6506007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VFFPMzFwcU5keHhpTWU3WitPc3BRbExXQk9Rby9aZjREcTJXR0RZWlkzMUhS?=
- =?utf-8?B?dDFrTy9yWjZ0QWZienAyblJmUHVOOE5ZKytXUk1NSzJBSkp2aTZUQXAxbWla?=
- =?utf-8?B?ZFhhMFRDZEZOb1ZVaC9aNHNDUy9iOTl2NExJT0dQNkRMbG1peTN5MUVpcURk?=
- =?utf-8?B?bnE4THRud2ZSeXB4dzViaW9iNG1tL2p5Qnk5ZTZYVkYxZkJ2RERVbmwwKzh4?=
- =?utf-8?B?aE9vVUI3aWkrUzQvQ0xySG9YZitXT2NqQ2lCZlpjUG1Ja1dlcnRqd1JrRkhM?=
- =?utf-8?B?aFh2bjVaZDhuT1l3VHBHVnN6eDBqSnRNOFk1eGJ2VEtSb0pxTnc2dXhyQ0VC?=
- =?utf-8?B?YlhhcEprWE5ETVNBcnhhemdvMzJENjFHaFByQVFTQmVDc1VFdmYwVFJwUUE3?=
- =?utf-8?B?eE5PNDBOODFkWmhtemgrMmowME10LzhNdXM4NDRpOWtKUmI1dWVCMkRnTzJv?=
- =?utf-8?B?azBOOFRLS20xSnRVaXRMaHQwL05LQVQrbkpXR2c2em9MYlBONW1CdStoQWVW?=
- =?utf-8?B?L3JCN1pjUFJVSEJXUUkxVnV3WXU5YlFCeXRwakZIRWIxWjlaVXliWExyY0Qz?=
- =?utf-8?B?NWcvbVB0Ny90bGp1N1FpUHBpbVFXL3VOMzJZWjJEWkh2Y1J6VjF6TFhsSi9X?=
- =?utf-8?B?RG1CWDdrN2JCakE5emxxSVZjK0lRNTZwZlZSQmtrOEQvVnlKSjd3N0VDdnYr?=
- =?utf-8?B?ZHFjWkhkZW15dVd1azZ3OXFKZk1xNUtzRElibjFBUnJia2dkVFNteWFaYlkx?=
- =?utf-8?B?UjRROWIzQ09SWHF3Ni82dW9mODNNUVo1bERieUZrbmcveDNhQ0ZIM0ZtMkJJ?=
- =?utf-8?B?elpWN0JvbWs3T0JjZFdjL05YWm1LMHhDWXplOXRmUVU2T3JkREtXWVE1ZnJx?=
- =?utf-8?B?VndzdHpwQlNoTldkOVJtWkt0MkNSQTAxL0Z4Mkw2Tm96R0gzWG5ydEw2T3J4?=
- =?utf-8?B?QnZPUkt2cFEweEFaOW1XSitUZTFmMVdaUEU4c3V2bG40U00xMHFBbjE1dXNQ?=
- =?utf-8?B?M0VaUTZTeGwyVXBBS3Rnelg4dDNxK1BxT2NBSFpXQ3VKRUZ4R3VnSXozUHRw?=
- =?utf-8?B?YWt4ZW5YK0Q5Q3JsZ01JTTFIOFBVZmFBVmpPN0JwU3pXZHJISGxnKzdXQ1FS?=
- =?utf-8?B?UUhvdkloc1FGWXhGUnhSWFY2eWFlM1duZW5XUEsxbFBhV0JIc1JvSVZrM0wx?=
- =?utf-8?B?QlNCd1pyVVFjdGF4UmgvR002aXlhczRzaG1FQUxzeTZHWGUyK08rVjNLVnlo?=
- =?utf-8?B?cnVTVGk4MUx3MmZjbmc1MitXa2tlaTl0TUVwNGlYd2poUjZEWmh1VzY0S09D?=
- =?utf-8?B?OS91dXNjaDZDU1dkWHAzMXpiYmtsNEVYM1NkbEgybENwelAybEVqdTh3Uzd0?=
- =?utf-8?B?a1p2QVBrUmMxQnY5WEkvNkd1RFR6WnZIS0pQRVp2bGo5aWZaQXhxeWFrVzgv?=
- =?utf-8?B?RGJXSzg5VGRNcWxzWVRrSndtUXVFTEN5U3RVTkxVNEFZSFdzU2Y0UkZaR1I4?=
- =?utf-8?B?bmVvU2Mxc2tmWEx2KzgwTDYweWEwRHB5dXVIYVhpZmIrOWdOYy9odlBub1h3?=
- =?utf-8?B?TlBhcGp3d3VWcGRTT2p6U0I4ZjMzQkdHbkZFUFVlYmJxZ2NVUS9XdHpza1pu?=
- =?utf-8?B?RE91THlJdDM2VDk2cmI4L0d3UUJnYjdRdlVaVmVoTUZ0KzNHbE9Nb0Fra1BJ?=
- =?utf-8?B?ZHpBZWFMYmV4MGdwcFBzeDZZWVpZT1BCQ3NTREtoN1U1di9nZzlSUW1pYVJM?=
- =?utf-8?B?K1ZJWWNhSFZxLzNpU0VGaHlnRFRPWXpMeXh2UDFkOCs5Y2tCakZ6c0FiL1lP?=
- =?utf-8?B?ZFRyVEVqaTRKeElTSzdic0VJV2kzZW9keUV0bXRock5kYXpZWkpVY3Y2UGxX?=
- =?utf-8?B?d0N2NCtRRGkxZ1V1a1BmS0E4WXVsUklsaHNBbTZpSTk4ZEIxRGtac0ZXcFBV?=
- =?utf-8?B?ZHFzeEhwOXUrODRXZlh2dWNUU29pd0tuSWV1cTBsZHdGSEFBRHh6aVJqY1k2?=
- =?utf-8?B?UFhEU0QrSWpCMkkwQWZQdHB3MERtUFVJUEkyU1oxaUEwN2picVEyT0FvRFo2?=
- =?utf-8?B?SWF2Z21tRFJHZm00Ym1CNmlhdlNmdFVKd2RaWGpUWFBlUDA3K0RKQkdMaUth?=
- =?utf-8?Q?4qdtQQUuyA7qp6Rw1mHLUfhNu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6321d2c-42b4-4a2a-5652-08dbfff502c5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 18:13:18.5425
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HxrIjL9fmc9RCwetU7+j8yCn54kactRDtfF02so/57JGtuMqjOfNnKRTJs96JAkL0/exx55Mss7swuf9nQncQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8959
+References: <20231214103520.7198-1-yan.y.zhao@intel.com> <BN9PR11MB5276BE04CBB6D07039086D658C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZXzx1zXfZ6GV9TgI@google.com>
+In-Reply-To: <ZXzx1zXfZ6GV9TgI@google.com>
+From: Yiwei Zhang <zzyiwei@google.com>
+Date: Mon, 18 Dec 2023 10:14:09 -0800
+Message-ID: <CAKT=dDnMaX=sxU5i=tdPDB5Wpw6TQUVrUL-JJYD3xrgxEE=acw@mail.gmail.com>
+Subject: Re: [RFC PATCH] KVM: Introduce KVM VIRTIO device
+To: Sean Christopherson <seanjc@google.com>
+Cc: Kevin Tian <kevin.tian@intel.com>, Yan Y Zhao <yan.y.zhao@intel.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "olvaffe@gmail.com" <olvaffe@gmail.com>, 
+	Zhiyuan Lv <zhiyuan.lv@intel.com>, Zhenyu Z Wang <zhenyu.z.wang@intel.com>, 
+	Yongwei Ma <yongwei.ma@intel.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>, 
+	"wanpengli@tencent.com" <wanpengli@tencent.com>, "jmattson@google.com" <jmattson@google.com>, 
+	"joro@8bytes.org" <joro@8bytes.org>, 
+	"gurchetansingh@chromium.org" <gurchetansingh@chromium.org>, "kraxel@redhat.com" <kraxel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/15/2023 3:26 PM, Ira Weiny wrote:
-> BIOS can configure memory devices as firmware first.  This will send CXL
-> events to the firmware instead of the OS.  The firmware can then send
-> these events to the OS via UEFI.
-> 
-> UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
-> format for CXL Component Events.  The format is mostly the same as the
-> CXL Common Event Record Format.  The difference is the use of a GUID in
-> the Section Type rather than a UUID as part of the event itself.
-> 
-> Add EFI support to detect CXL CPER records and call a registered
-> notifier with the event.  Enforce that only one notifier call can be
-> registered at any time.
-> 
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
+> +Yiwei
+>
+> On Fri, Dec 15, 2023, Kevin Tian wrote:
+> > > From: Zhao, Yan Y <yan.y.zhao@intel.com>
+> > > Sent: Thursday, December 14, 2023 6:35 PM
+> > >
+> > > - For host non-MMIO pages,
+> > >   * virtio guest frontend and host backend driver should be synced to use
+> > >     the same memory type to map a buffer. Otherwise, there will be
+> > >     potential problem for incorrect memory data. But this will only impact
+> > >     the buggy guest alone.
+> > >   * for live migration,
+> > >     as QEMU will read all guest memory during live migration, page aliasing
+> > >     could happen.
+> > >     Current thinking is to disable live migration if a virtio device has
+> > >     indicated its noncoherent state.
+> > >     As a follow-up, we can discuss other solutions. e.g.
+> > >     (a) switching back to coherent path before starting live migration.
+> >
+> > both guest/host switching to coherent or host-only?
+> >
+> > host-only certainly is problematic if guest is still using non-coherent.
+> >
+> > on the other hand I'm not sure whether the host/guest gfx stack is
+> > capable of switching between coherent and non-coherent path in-fly
+> > when the buffer is right being rendered.
+> >
+> > >     (b) read/write of guest memory with clflush during live migration.
+> >
+> > write is irrelevant as it's only done in the resume path where the
+> > guest is not running.
+> >
+> > >
+> > > Implementation Consideration
+> > > ===
+> > > There is a previous series [1] from google to serve the same purpose to
+> > > let KVM be aware of virtio GPU's noncoherent DMA status. That series
+> > > requires a new memslot flag, and special memslots in user space.
+> > >
+> > > We don't choose to use memslot flag to request honoring guest memory
+> > > type.
+> >
+> > memslot flag has the potential to restrict the impact e.g. when using
+> > clflush-before-read in migration?
+>
+> Yep, exactly.  E.g. if KVM needs to ensure coherency when freeing memory back to
+> the host kernel, then the memslot flag will allow for a much more targeted
+> operation.
+>
+> > Of course the implication is to honor guest type only for the selected slot
+> > in KVM instead of applying to the entire guest memory as in previous series
+> > (which selects this way because vmx_get_mt_mask() is in perf-critical path
+> > hence not good to check memslot flag?)
+>
+> Checking a memslot flag won't impact performance.  KVM already has the memslot
+> when creating SPTEs, e.g. the sole caller of vmx_get_mt_mask(), make_spte(), has
+> access to the memslot.
+>
+> That isn't coincidental, KVM _must_ have the memslot to construct the SPTE, e.g.
+> to retrieve the associated PFN, update write-tracking for shadow pages, etc.
+>
+> I added Yiwei, who I think is planning on posting another RFC for the memslot
+> idea (I actually completely forgot that the memslot idea had been thought of and
+> posted a few years back).
 
-[snip]
+We've deferred to Yan (Intel side) to drive the userspace opt-in. So
+it's up to Yan to
+revise the series to be memslot flag based. I'm okay with what
+upstream folks think
+to be safer for the opt-in. Thanks!
 
-> +	struct {
-> +		u32 length;
-> +		u64 validation_bits;
-> +		struct cper_cxl_event_devid {
-> +			u16 vendor_id;
-> +			u16 device_id;
-> +			u8 func_num;
-> +			u8 device_num;
-> +			u8 bus_num;
-> +			u16 segment_num;
-> +			u16 slot_num; /* bits 2:0 reserved */
-> +			u8 reserved;
-> +		} device_id __packed;
-> +		struct cper_cxl_event_sn {
-> +			u32 lower_dw;
-> +			u32 upper_dw;
-> +		} dev_serial_num __packed;
-> +	} hdr __packed;
-> +
-> +	union cxl_event event;
-> +} __packed;
-> +
-
-For some reason, prefixing the struct name with __packed attribute seems 
-to do the job. ("__packed device_id" and "__packed dev_serial_num").
-
-Thanks,
-Smita
+> > > Instead we hope to make the honoring request to be explicit (not tied to a
+> > > memslot flag). This is because once guest memory type is honored, not only
+> > > memory used by guest virtio device, but all guest memory is facing page
+> > > aliasing issue potentially. KVM needs a generic solution to take care of
+> > > page aliasing issue rather than counting on memory type of a special
+> > > memslot being aligned in host and guest.
+> > > (we can discuss what a generic solution to handle page aliasing issue will
+> > > look like in later follow-up series).
+> > >
+> > > On the other hand, we choose to introduce a KVM virtio device rather than
+> > > just provide an ioctl to wrap kvm_arch_[un]register_noncoherent_dma()
+> > > directly, which is based on considerations that
+> >
+> > I wonder it's over-engineered for the purpose.
+> >
+> > why not just introducing a KVM_CAP and allowing the VMM to enable?
+> > KVM doesn't need to know the exact source of requiring it...
+>
+> Agreed.  If we end up needing to grant the whole VM access for some reason, just
+> give userspace a direct toggle.
 
