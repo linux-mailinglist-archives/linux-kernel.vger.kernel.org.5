@@ -1,187 +1,288 @@
-Return-Path: <linux-kernel+bounces-3009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB52581660C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:30:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A534B816613
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F6341F220A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:30:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63695282028
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E7B63C9;
-	Mon, 18 Dec 2023 05:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A793B63D7;
+	Mon, 18 Dec 2023 05:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="iYfc9Fbt"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RdYQdNSk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089F663A3
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BoY6Q4J59kuhgCJXZYf5woohgUcmN0+v1rNgpjBf67A/ucwSThSsFsIF1xvs8FUVTw5oBQzGFoBoJSbW5y6FWwblvTXxXwvCaJYGczSZtgyy673vrl2jCHt9YUKpmfE3+zPExjWSJKIZ0FbV90vaoqraQK8KRozOsRYEd6FC52f4yOEOzAiQp6BF1e4ygtgTuAWYYGxubPCPkZPtBhcZgPmCa9zZC8XaSV3zJWdMXq2CDr9Y0nQ6AEI3ApmFl4kNT7IbDOxo54BsvQZkGQU8vzZR7cixBvyBceCC6s6BYlw0Xd4J5YrfrP7qrabNvqColui3dT7m06tsevI2pN3oSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PWIolyEP0YV6kZ598cmZFNzsxYYq8H2XW72mdEnyYRU=;
- b=lld6SucgIUc/MC0ggILWdPEuf+OTZj6RFIecUoFQsfrWxPgVIZYZLNeZB41wzXLaI1w3WfGpy9BuGdsi7iWplnfy1JvsA9lRGFyyIibq67bnYPPv024VXkqZxYprPZcJi/4sw2yZ5BjTCgfsZbZ3XLcA0zxSNgGR9YFFgT/vfsHUnGSemMij2+NxUbKim6bbJUqLXvzYJUlaEalEzHU0batzjxeF+Hr0VoTuPnBDGxLRRkr+u1Ga8od/A5s+OsBr7tmKzZ5TQKIC/yWPHbTEXYtA8OXX56RHQtjOZ4/t/hD0dlhgtU2Zao/cMiUhg3iE2U+iTR1v8+Ax5h1PwoBZVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PWIolyEP0YV6kZ598cmZFNzsxYYq8H2XW72mdEnyYRU=;
- b=iYfc9FbtauqqoOaxfdZ2h8ODTA6ov4ndkSHrQvGBCLDPc7o1NwWsQ8wwfbqKClX/uPHkQ2voslWeMZBE+BnChgKJGg7aueT0PPQOIcd83jGhpbZhIwfDI2b4g79bN8bzSXAzHPuQvt6G7iRk14SVFafat2Xc0YKbFsGu2kouQis=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
- by DS0PR12MB9422.namprd12.prod.outlook.com (2603:10b6:8:1bb::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
- 2023 05:30:19 +0000
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::87d4:680b:51ef:181]) by SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::87d4:680b:51ef:181%7]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 05:30:18 +0000
-Date: Mon, 18 Dec 2023 13:29:57 +0800
-From: Huang Rui <ray.huang@amd.com>
-To: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	David Airlie <airlied@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Daniel Vetter <daniel.vetter@ffwll.ch>,
-	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
-	Xenia Ragiadakou <xenia.ragiadakou@amd.com>
-Subject: Re: [PATCH] drm/virtio: add definition for venus capset
-Message-ID: <ZX/Y1Rp0RoFdpi1Q@amd.com>
-References: <20230915105918.3763061-1-ray.huang@amd.com>
- <a7b783c8-b1c8-90e3-b6c7-7fa8c6d24d21@collabora.com>
- <68470997-bb4c-3c11-98b5-aa75c52cbaea@collabora.com>
- <b79dcf75-c9e8-490e-644f-3b97d95f7397@collabora.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b79dcf75-c9e8-490e-644f-3b97d95f7397@collabora.com>
-X-ClientProxiedBy: SI2PR02CA0043.apcprd02.prod.outlook.com
- (2603:1096:4:196::12) To SJ2PR12MB8690.namprd12.prod.outlook.com
- (2603:10b6:a03:540::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8491063C6;
+	Mon, 18 Dec 2023 05:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI49H86008671;
+	Mon, 18 Dec 2023 05:36:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=W6mEY5ZXYd2wnNecPuwM7uyfZQerkDjjIW8pNDaWfDo=; b=Rd
+	YQdNSkj2U91uYjT5jpPn1E+yUbUOztqqVPOcD4AstSJ6iMyiS5yuYbG/DyXZbC70
+	DcGkJw4Z0RYkV0i2DdggBe6gimdTLyFKUmQ1W5Y8idv7gCd8Du0aOVv9y7SC1n3M
+	vOq/8g334pT4M4ethhlh2Dcn42O5tluJA7/k+qjkm+61BFUgGlEXpJx94Wglnhk7
+	df3YgQ/2A6my4MSPM42QLVv1UBPz9S47zafbk/5d/Ue2kFYQ5cVBNOAWtaRr/fXq
+	EGRh3I2SF4nxwlRUvK5pSK5ljLi7BenGKJZBeo5GCHksTUEf5YHk6tXOEf59T91F
+	SEegJOFyNexVTBuYcV6w==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v14vjkgbr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 05:36:43 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BI5ag4X002126
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 05:36:42 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 17 Dec
+ 2023 21:36:36 -0800
+Message-ID: <6dc509ac-8f3b-40c2-bc1d-a86b76efde76@quicinc.com>
+Date: Mon, 18 Dec 2023 11:06:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|DS0PR12MB9422:EE_
-X-MS-Office365-Filtering-Correlation-Id: c1c788d9-e276-40cf-b6cb-08dbff8a6c0a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	bNXpqQ9CiSL+3JbK7ax/+0CwHVA1YSMQOJ9E4LCjpcYnuGQr+5YXVpPbSRGeMoYcvAik5xTpUEdlbC8fzxTmBBddq29P9g/Ycr+2C5SJ2cRFyZgz+EllhZ+Z2LhjznbGiu9bpqj5tnzBbEw0V1MoeLTxtKCu6n9GsC7GYYEVokUfHZmEy9xXANZwMjXFW+FlQj5oIZ+CiWirDCZEvhTR5YmvbU1T/lF/IQHkHWRECZnsa8ptZeDtouYDGCwxe07jzi+qNRa7sgveVYP6JadTLp+8Y3cs10AtoZRZyI6IDYGZclZHVcuMVwK337ATCZUdUcmjlMzFp4uhR0rcLcwyhiO6bLFjb3LcLPCDvAv8uk6Vx7e/ookN09J16nKfuvM9/SDv8ZiKi7kNc239RAdweUcNCFNa28NfqvIo3oRn/KTmaOrgNnAONNJ5krgT1Wy1nhzksxCJoYW94iBRp/NiQZkmfe1HMqwhdj1czWfKW+/PGBNcRFr5cv5TgT4WWfPV8HjMu1MP5zfFPwXMOCQg1QAjNPAjMNsleyqrKKNPJafXubXFb/vq0pNh+TFDv98++ZQrWC+Y86ZOX4oo4lNsug==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(396003)(39860400002)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(5660300002)(38100700002)(86362001)(2906002)(2616005)(26005)(83380400001)(6506007)(53546011)(6512007)(6666004)(316002)(66556008)(66476007)(966005)(6486002)(36756003)(41300700001)(54906003)(6916009)(478600001)(66946007)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?WsWxN8OiZ8CN80qBLhy/CnCG1uvnHi7CwX6hwY7wzVQCnDf+6oWEpGnFGq7g?=
- =?us-ascii?Q?O/8UBq8kC5gs8RLKx2iqyC+hzGvksFlClI051B5Of6zi6N/BxB+8lBa5HKcF?=
- =?us-ascii?Q?3KZYT1VSf0taISbwEIqb7nskRiBODS1a0I50XYzdSGs+O6488nlbJTxKd/66?=
- =?us-ascii?Q?YbSMaZIkNBsrmsRqc1wC7M91iy/3V0mcQyE+CU19vnMyWtR/UzJciwX1GjIG?=
- =?us-ascii?Q?5IX2E2jIHI+BWlOkG/j2Tn5h+TGta2wefve8HHHNpylLDXLiHW4JGaGqO7kn?=
- =?us-ascii?Q?hHTJJOvH8btqhN0FdAaI/y5mcYPkH7JpSEa+YiB/QgB1lGRxkhek1pEwVS0K?=
- =?us-ascii?Q?x8FXXe70mKWXHixIWewpE6qd9e602nGoTTQy5aeUVwM+TDaL22qLHnJSJKGD?=
- =?us-ascii?Q?Pm1tqCvu9WupcB8+LkwvnFDYYAs6q1P7noASaDpYuCRi9gwSZyiWIskIK79W?=
- =?us-ascii?Q?EA1XTk1A1RGJ5cK0xkrh1zjjEt5E2PpyVxrNmAxQQWC9qbQ0NYDS8eYUqdca?=
- =?us-ascii?Q?ljL0O47oCvNlEv60YejQaxvmJ5X8UyZ7Aylq6zTPKaThybsOOz4Oa0fYozO1?=
- =?us-ascii?Q?/hLpqV7VHHC6xEhxtWH3m69Yj2roObhYBP/Jvtn/Hq7Db5x9jpnXDe89dD1m?=
- =?us-ascii?Q?NN97qGDYfwF9tZcJUBlQabWLSJxAhGR1HpU8ADsZeefN3+AtZOBJRWKqFSJY?=
- =?us-ascii?Q?uzXstvn6SSc/WTpBZNFpCLUdBs8+cV4juHUxFDXlSAgwC3Pc+iQxh+NS6act?=
- =?us-ascii?Q?P+uC2DK9EEWGXc7yT8GX0gscUVNbXdBo5COTE4tcKxwv/iUncM8LIEyoDu0c?=
- =?us-ascii?Q?kQozQ8WWZ2wb7U0LR40Lqe3wjum4agwjmGg/xzGlexNB1/mckEsgl7f89MQw?=
- =?us-ascii?Q?z2M3sHhv3lGg3s1lcH3Ax2X4FjpPtxeya9KsJxfHOthorJX3TUsiBu7pq3qB?=
- =?us-ascii?Q?qF0lsQlU6bHTlSs1PHpAAPXSWmYdOmdNeuLr9gfqsnzw7E2RDbC7t27dBon8?=
- =?us-ascii?Q?CvBzjFGmUAhXHohcyTAvACaEJldkiF8N3Of6NRqPUC5t3bIRoOmaj9od/iBf?=
- =?us-ascii?Q?FK0fn/KgpupMcCBcjgXSzr5SOI90WGAXTNV40VV3/wTo0coOqhz7Pb0nT62p?=
- =?us-ascii?Q?XnllUvQ4CvMQ9S0htfbISHRamtkF/esiRU37TzOoYBZ+EMDM5BQLEuUOjx21?=
- =?us-ascii?Q?m2smQHq0Kt3+lg+m9tFXTPEZ+6kXjMdaJs4P8480E7PsgldGR3LiVrfKkCAi?=
- =?us-ascii?Q?PEqiSrXZiihdRII1lysqKKNDyBN1lSN4bSI2mlo88x05BssBpG0vXsWRsYWr?=
- =?us-ascii?Q?W4jlxIg4hO0rtMTsWZwlBQW/M/Rqwu/qfOSiGsb3WW8aDD87KX2QrwTYNP9X?=
- =?us-ascii?Q?QKVVVIVu6aDtrWeumGU4OFxm06AVw3AE9dqtCX4rYfg5vMDF83CLa3mMjoYc?=
- =?us-ascii?Q?nF1EcyZazXxjxSMUdfa2sifcD7mHjC1KoOOCnl+3m56vJbGYnZbX+5jQfYeR?=
- =?us-ascii?Q?91wH4JhWQ68Mptn10bsRnKfMKCq10/0/g+pYT1xzoC76tTlSgojMTjK/eHLt?=
- =?us-ascii?Q?VkgkIrnApI9fvnLJZD7WngV2Cy6uRlJA2r93JwCT?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1c788d9-e276-40cf-b6cb-08dbff8a6c0a
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 05:30:18.7558
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0YwqD54XtJKOw8EZdVa1Mo13dHI+jj6boHuaeOeZ5EQ353f1Zdp61XleT+aEL2mMcRFp7jOcaQQFiR/+du8cUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9422
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/5] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+To: Robin Murphy <robin.murphy@arm.com>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>
+CC: <will@kernel.org>, <joro@8bytes.org>, <konrad.dybcio@linaro.org>,
+        <jsnitsel@redhat.com>, <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
+ <20231215101827.30549-4-quic_bibekkum@quicinc.com>
+ <CAA8EJppcsr1sbeD1fK0nZ+rASABNcetBK3yMvaP7OiA4JPwskw@mail.gmail.com>
+ <c9493c5f-ccf8-4e21-b00c-5fbc2a5f2edb@quicinc.com>
+ <b7f2bbf9-fb5a-430d-aa32-3a220b46c2f0@arm.com>
+Content-Language: en-US
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <b7f2bbf9-fb5a-430d-aa32-3a220b46c2f0@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: CniKGAZeFXAF4hqSTKWglvRuB0pU74v1
+X-Proofpoint-GUID: CniKGAZeFXAF4hqSTKWglvRuB0pU74v1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ bulkscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312180037
 
-On Sat, Dec 16, 2023 at 12:45:32AM +0800, Dmitry Osipenko wrote:
-> On 11/19/23 06:46, Dmitry Osipenko wrote:
-> > On 9/21/23 00:16, Dmitry Osipenko wrote:
-> >> On 9/15/23 13:59, Huang Rui wrote:
-> >>> This definition is used fro qemu, and qemu imports this marco in the
-> >>> headers to enable venus for virtio gpu. So it should add it even kernel
-> >>> doesn't use this.
-> >>>
-> >>> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> >>> ---
-> >>>
-> >>> Hi all,
-> >>>
-> >>> We would like to add a new definition for venus capset, it will be used for
-> >>> qemu. Please see details on below discussion:
-> >>>
-> >>> https://lore.kernel.org/qemu-devel/b82982aa-5b9e-481e-9491-b9313877bcaa@daynix.com/
-> >>>
-> >>> Thanks,
-> >>> Ray
-> >>>
-> >>>  include/uapi/linux/virtio_gpu.h | 2 ++
-> >>>  1 file changed, 2 insertions(+)
-> >>>
-> >>> diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
-> >>> index f556fde07b76..0e21f3998108 100644
-> >>> --- a/include/uapi/linux/virtio_gpu.h
-> >>> +++ b/include/uapi/linux/virtio_gpu.h
-> >>> @@ -309,6 +309,8 @@ struct virtio_gpu_cmd_submit {
-> >>>  
-> >>>  #define VIRTIO_GPU_CAPSET_VIRGL 1
-> >>>  #define VIRTIO_GPU_CAPSET_VIRGL2 2
-> >>> +/* 3 is reserved for gfxstream */
-> >>> +#define VIRTIO_GPU_CAPSET_VENUS 4
-> >>
-> >> Could you please add all other capsets, so we won't needed to do it
-> >> again in the future
-> > 
-> > I've opened request to update virtio-spec with the corrected/updated
-> > capsets https://github.com/oasis-tcs/virtio-spec/issues/182. I'm
-> > expecting that it will take some time until spec change will be merged
-> > and now leaning to apply this v1 patch to not hold the Venus work.
-> > 
-> > Gerd, do you have objections? R-b/ack?
+
+
+On 12/15/2023 6:24 PM, Robin Murphy wrote:
+> On 2023-12-15 12:20 pm, Bibek Kumar Patro wrote:
+>>
+>>
+>> On 12/15/2023 4:14 PM, Dmitry Baryshkov wrote:
+>>> On Fri, 15 Dec 2023 at 12:19, Bibek Kumar Patro
+>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>
+>>>> Add ACTLR data table for SM8550 along with support for
+>>>> same including SM8550 specific implementation operations.
+>>>>
+>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>> ---
+>>>>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 89 
+>>>> ++++++++++++++++++++++
+>>>>   1 file changed, 89 insertions(+)
+>>>>
+>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c 
+>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> index cb49291f5233..d2006f610243 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> @@ -20,6 +20,85 @@ struct actlr_config {
+>>>>          u32 actlr;
+>>>>   };
+>>>>
+>>>> +/*
+>>>> + * SMMU-500 TRM defines BIT(0) as CMTLB (Enable context caching in the
+>>>> + * macro TLB) and BIT(1) as CPRE (Enable context caching in the 
+>>>> prefetch
+>>>> + * buffer). The remaining bits are implementation defined and vary 
+>>>> across
+>>>> + * SoCs.
+>>>> + */
+>>>> +
+>>>> +#define PREFETCH_DEFAULT       0
+>>>> +#define PREFETCH_SHALLOW       BIT(8)
+>>>> +#define PREFETCH_MODERATE      BIT(9)
+>>>> +#define PREFETCH_DEEP          (BIT(9) | BIT(8))
+>>>
+>>> I thin the following might be more correct:
+>>>
+>>> #include <linux/bitfield.h>
+>>>
+>>> #define PREFETCH_MASK GENMASK(9, 8)
+>>> #define PREFETCH_DEFAULT FIELD_PREP(PREFETCH_MASK, 0)
+>>> #define PREFETCH_SHALLOW FIELD_PREP(PREFETCH_MASK, 1)
+>>> #define PREFETCH_MODERATE FIELD_PREP(PREFETCH_MASK, 2)
+>>> #define PREFETCH_DEEP FIELD_PREP(PREFETCH_MASK, 3)
+>>>
+>>
+>> Ack, thanks for this suggestion. Let me try this out using
+>> GENMASK. Once tested, will take care of this in next version.
 > 
-> Applied patch to misc-next with edited commit message. Updating spec
-> taking much time, not worth to hold this change longer. We'll add the
-> rest of capsets later on. Thanks, Rui!
+> FWIW the more typical usage would be to just define the named macros for 
+> the raw field values, then put the FIELD_PREP() at the point of use. 
+> However in this case that's liable to get pretty verbose, so although 
+> I'm usually a fan of bitfield.h, the most readable option here might 
+> actually be to stick with simpler definitions of "(0 << 8)", "(1 << 8)", 
+> etc. However it's not really a big deal either way, and I defer to 
+> whatever Dmitry and Konrad prefer, since they're the ones looking after 
+> arm-smmu-qcom the most :)
 > 
 
-Thank you, Dmitry! I will update corresponding patch in qemu, and send v6
-qemu patches.
+Agree, surely simple macros would be easy to understand the bits we are
+setting/resetting, but to get good verbosity bitfield would surely be
+helpful as you rightly pointed. I can see some improved suggestions form
+Konrad as well in the latest reply, the way it'd be better in arm-smmu-
+qcom. Will try to incorporate these inputs in next version.
 
-Best Regards,
-Ray
+Thanks,
+Bibek
+
+> Thanks,
+> Robin.
+> 
+>>
+>> Thanks,
+>> Bibek
+>>
+>>>> +#define PREFETCH_SWITCH_GFX    (BIT(5) | BIT(3))
+>>>> +#define CPRE                   BIT(1)
+>>>> +#define CMTLB                  BIT(0)
+>>>> +
+>>>> +static const struct actlr_config sm8550_apps_actlr_cfg[] = {
+>>>> +       { 0x18a0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x18e0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x0800, 0x0020, PREFETCH_DEFAULT | CMTLB },
+>>>> +       { 0x1800, 0x00c0, PREFETCH_DEFAULT | CMTLB },
+>>>> +       { 0x1820, 0x0000, PREFETCH_DEFAULT | CMTLB },
+>>>> +       { 0x1860, 0x0000, PREFETCH_DEFAULT | CMTLB },
+>>>> +       { 0x0c01, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c02, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c03, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c04, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c05, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c06, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c07, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c08, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c09, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c0c, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c0d, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c0e, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x0c0f, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1961, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1962, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1963, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1964, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1965, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1966, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1967, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1968, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1969, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x196c, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x196d, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x196e, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x196f, 0x0000, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c1, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c2, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c3, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c4, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c5, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c6, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c7, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c8, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19c9, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19cc, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19cd, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19ce, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x19cf, 0x0010, PREFETCH_DEEP | CPRE | CMTLB },
+>>>> +       { 0x1c00, 0x0002, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1c01, 0x0000, PREFETCH_DEFAULT | CMTLB },
+>>>> +       { 0x1920, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1923, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1924, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1940, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1941, 0x0004, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1943, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1944, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       { 0x1947, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>> +       {},
+>>>> +};
+>>>> +
+>>>> +static const struct actlr_config sm8550_gfx_actlr_cfg[] = {
+>>>> +       { 0x0000, 0x03ff, PREFETCH_SWITCH_GFX | PREFETCH_DEEP | CPRE 
+>>>> | CMTLB },
+>>>> +       {},
+>>>> +};
+>>>> +
+>>>>   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>>>>   {
+>>>>          return container_of(smmu, struct qcom_smmu, smmu);
+>>>> @@ -549,6 +628,15 @@ static const struct qcom_smmu_match_data 
+>>>> sdm845_smmu_500_data = {
+>>>>          /* Also no debug configuration. */
+>>>>   };
+>>>>
+>>>> +
+>>>> +static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data 
+>>>> = {
+>>>> +       .impl = &qcom_smmu_500_impl,
+>>>> +       .adreno_impl = &qcom_adreno_smmu_500_impl,
+>>>> +       .cfg = &qcom_smmu_impl0_cfg,
+>>>> +       .actlrcfg = sm8550_apps_actlr_cfg,
+>>>> +       .actlrcfg_gfx = sm8550_gfx_actlr_cfg,
+>>>> +};
+>>>> +
+>>>>   static const struct qcom_smmu_match_data qcom_smmu_500_impl0_data = {
+>>>>          .impl = &qcom_smmu_500_impl,
+>>>>          .adreno_impl = &qcom_adreno_smmu_500_impl,
+>>>> @@ -583,6 +671,7 @@ static const struct of_device_id __maybe_unused 
+>>>> qcom_smmu_impl_of_match[] = {
+>>>>          { .compatible = "qcom,sm8250-smmu-500", .data = 
+>>>> &qcom_smmu_500_impl0_data },
+>>>>          { .compatible = "qcom,sm8350-smmu-500", .data = 
+>>>> &qcom_smmu_500_impl0_data },
+>>>>          { .compatible = "qcom,sm8450-smmu-500", .data = 
+>>>> &qcom_smmu_500_impl0_data },
+>>>> +       { .compatible = "qcom,sm8550-smmu-500", .data = 
+>>>> &sm8550_smmu_500_impl0_data },
+>>>>          { .compatible = "qcom,smmu-500", .data = 
+>>>> &qcom_smmu_500_impl0_data },
+>>>>          { }
+>>>>   };
+>>>> -- 
+>>>> 2.17.1
+>>>>
+>>>
+>>>
 
