@@ -1,250 +1,213 @@
-Return-Path: <linux-kernel+bounces-3423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28498816C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:19:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEAA1816C1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F40B1C22EC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:19:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A6BD283F41
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC09B1947A;
-	Mon, 18 Dec 2023 11:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F7A199B0;
+	Mon, 18 Dec 2023 11:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JQr5Yf7l"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jmCi0bcb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0D619BD8;
-	Mon, 18 Dec 2023 11:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-553729ee917so389171a12.1;
-        Mon, 18 Dec 2023 03:19:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702898379; x=1703503179; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t8kHNFe/eGO0I6G9ZddI076fRWeZyLjc7sbCR2/u9Pw=;
-        b=JQr5Yf7l8NQ2SmONhmoIvSATzhD5QPnuTK9hM/+05lPXoO4BzZ/n4z6toX0lKOPBbQ
-         1edZ6MRgv39+I8H0Bx/pt0wyC1kpZwMCyT7wDNMArDfZwttEvJs23PSphIJH5eyxKBLS
-         g3HnSjQUQnI8AvDPoaNyprOa4sazBEcHqbJoAyNu4mxUMjUoiVPOzvD1tDuHbxsqfQLi
-         5yu7nS3wuO6LDAqe8Law1q0/6OsQyYZ4NjNiQdUzjMO5ANGlqgtL2nvZh5TpuawsvXDL
-         BIM735tubovi/lWSCvV6t9QJuw7q/a/zgvC28/cv4KAaO3zBjHpO9lNH4bTRRVKYWfTq
-         QlUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702898379; x=1703503179;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t8kHNFe/eGO0I6G9ZddI076fRWeZyLjc7sbCR2/u9Pw=;
-        b=XJYqILUxo9WfdArYKuaoIH5jVp5dNUyN0fL08D4J2lvCHyhvzFW5ggVURrryp9jTuy
-         FomXqrPShyfWbQVkblvLwT1LFzXAQpEBqgQ/1ysrixowiPX6tdMbMoAASmObJwrkm4TI
-         X4/lZxRAwUWIdfkrFlOo4bLhG3Y+ovHHvdwmrTIRBxe1d/Q9u0xNldFafKRGDzhgYqxE
-         xbvw62A3x2hPORUmDpkHhxgMUvQn/8CgHybA1XBqLMLdG5giy4RlM/RqD3+SzUJOf3Pe
-         csiyG/iwmX3tRxPH6EigK9LXl3vqHTryuTjltRa5f3PQeUfrUt2lG4BBn1wyJxt0xMXy
-         nQzA==
-X-Gm-Message-State: AOJu0YxOnGliS79+vPg3ik6C40iO2IDybSaGdHZCwvJTP9pIbsFhOFSm
-	Klw79xvSuJiwcfQS6LHCEnANPlqcmp4=
-X-Google-Smtp-Source: AGHT+IHga7BpTpH5bnvqOJQAMbkyQFWJOfpoHO3arczMLt9WQNaoBA4EvT7nCoRTVmA6wh7af9dE/Q==
-X-Received: by 2002:a50:a69e:0:b0:54c:c9a4:83df with SMTP id e30-20020a50a69e000000b0054cc9a483dfmr10140643edc.26.1702898378705;
-        Mon, 18 Dec 2023 03:19:38 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id k13-20020a50cb8d000000b0054cc7a4dc4csm10211082edi.13.2023.12.18.03.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 03:19:38 -0800 (PST)
-Date: Mon, 18 Dec 2023 12:19:36 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
-	Martin Hecht <martin.hecht@avnet.eu>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] media: i2c: alvium: store frame interval in subdev
- state
-Message-ID: <ZYAqyOEfKp/oiqs9@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
- <20231215082452.1720481-4-tomm.merciai@gmail.com>
- <20231218025905.GJ5290@pendragon.ideasonboard.com>
- <ZYAfThT/mHdzGdAh@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231218110331.GQ5290@pendragon.ideasonboard.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4810619458;
+	Mon, 18 Dec 2023 11:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BIAtMdE002518;
+	Mon, 18 Dec 2023 11:23:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=c+w3nU+dnT0OTs9rrWV7i15QiLV6YSlaJ4uwSedPViA=; b=jm
+	Ci0bcb6FbzG6XdMEthyFoWaGtK/P3dHKet++wMLZ5Wq0LNDDNeVz5T3iwwb4SifO
+	F2rCZQ+VLqrn64eBLufKG08NOMK0EzFYl/q+X7xlNLnIMjcFt/arDc3zcaGJwKYS
+	YZldgEXjGVRhbCqJDzqjk0FoOabpmwg3BAKGylT5Gso8wCJt+1AA0J/Xrj8CYmuV
+	kZxQ/IO1OyFA7VygAJIAoCqcRwUm7+3excwjaBLv7A/UbO/++YLjgLnJLeT8hdLA
+	xKrlepUrCtNFjnI9+GfD0FPlaQLtcXvtmFMQn09SrQG9faPj03Cp43BN3JpgrMGv
+	JZYLmKDp44nZ4gof7xTw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v14xy43g1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 11:23:14 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BIBNDli003099
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 11:23:13 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
+ 2023 03:23:06 -0800
+Message-ID: <aa8b2ccd-33da-404b-9a93-3d88cf63ec77@quicinc.com>
+Date: Mon, 18 Dec 2023 16:53:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218110331.GQ5290@pendragon.ideasonboard.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/5] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC: <will@kernel.org>, <joro@8bytes.org>, <jsnitsel@redhat.com>,
+        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
+ <20231215101827.30549-4-quic_bibekkum@quicinc.com>
+ <CAA8EJppcsr1sbeD1fK0nZ+rASABNcetBK3yMvaP7OiA4JPwskw@mail.gmail.com>
+ <c9493c5f-ccf8-4e21-b00c-5fbc2a5f2edb@quicinc.com>
+ <b7f2bbf9-fb5a-430d-aa32-3a220b46c2f0@arm.com>
+ <1eee8bae-59f0-4066-9d04-8c3a5f750d3a@linaro.org>
+ <42d627af-164b-4b50-973e-fa71d86cb84c@linaro.org>
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <42d627af-164b-4b50-973e-fa71d86cb84c@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QBSD5m6C9D6gi7dlKcU0O6ONjcXiMWL-
+X-Proofpoint-ORIG-GUID: QBSD5m6C9D6gi7dlKcU0O6ONjcXiMWL-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312180082
 
-Hi Laurent,
-Thanks for your quick reply.
 
-On Mon, Dec 18, 2023 at 01:03:31PM +0200, Laurent Pinchart wrote:
-> On Mon, Dec 18, 2023 at 11:30:38AM +0100, Tommaso Merciai wrote:
-> > Hi Laurent,
-> > 
-> > On Mon, Dec 18, 2023 at 04:59:05AM +0200, Laurent Pinchart wrote:
-> > > Hi Tommaso,
-> > > 
-> > > Thank you for the patch.
-> > > 
-> > > On Fri, Dec 15, 2023 at 09:24:52AM +0100, Tommaso Merciai wrote:
-> > > > Use the newly added storage for frame interval in the subdev state to
-> > > > simplify the driver.
-> > > > 
-> > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > > ---
-> > > >  drivers/media/i2c/alvium-csi2.c | 40 ++++++++++-----------------------
-> > > >  drivers/media/i2c/alvium-csi2.h |  2 --
-> > > >  2 files changed, 12 insertions(+), 30 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > > index fde456357be1..81f683b3c849 100644
-> > > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > > @@ -1643,25 +1643,6 @@ static int alvium_hw_init(struct alvium_dev *alvium)
-> > > >  }
-> > > >  
-> > > >  /* --------------- Subdev Operations --------------- */
-> > > > -
-> > > > -static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > > > -				   struct v4l2_subdev_state *sd_state,
-> > > > -				   struct v4l2_subdev_frame_interval *fi)
-> > > > -{
-> > > > -	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > -
-> > > > -	/*
-> > > > -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
-> > > > -	 * subdev active state API.
-> > > > -	 */
-> > > > -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-> > > > -		return -EINVAL;
-> > > > -
-> > > > -	fi->interval = alvium->frame_interval;
-> > > > -
-> > > > -	return 0;
-> > > > -}
-> > > > -
-> > > >  static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > >  				   struct v4l2_subdev_state *sd_state,
-> > > >  				   struct v4l2_subdev_frame_interval *fi)
-> > > > @@ -1669,6 +1650,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > >  	u64 req_fr, dft_fr, min_fr, max_fr;
-> > > > +	struct v4l2_fract *interval;
-> > > >  	int ret;
-> > > >  
-> > > >  	/*
-> > > 
-> > > You should drop the FIXME comment here and the ACTIVE check...
-> > 
-> > Oks, thanks.
-> > 
-> > > 
-> > > > @@ -1701,9 +1683,10 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > >  	if (req_fr >= max_fr && req_fr <= min_fr)
-> > > >  		req_fr = dft_fr;
-> > > >  
-> > > > -	alvium->fr = req_fr;
-> > > > -	alvium->frame_interval.numerator = fi->interval.numerator;
-> > > > -	alvium->frame_interval.denominator = fi->interval.denominator;
-> > > > +	interval = v4l2_subdev_state_get_interval(sd_state, 0);
-> > > > +
-> > > > +	interval->numerator = fi->interval.numerator;
-> > > > +	interval->denominator = fi->interval.denominator;
-> > > >  
-> > > 
-> > > ... and here only call alvium_set_frame_rate() for the ACTIVE frame
-> > > interval.
-> > 
-> > I don't completely got this comment, can you give me more details about
-> > please. Thanks in advance!
+
+On 12/16/2023 9:45 PM, Dmitry Baryshkov wrote:
+> On 16/12/2023 02:03, Konrad Dybcio wrote:
+>> On 15.12.2023 13:54, Robin Murphy wrote:
+>>> On 2023-12-15 12:20 pm, Bibek Kumar Patro wrote:
+>>>>
+>>>>
+>>>> On 12/15/2023 4:14 PM, Dmitry Baryshkov wrote:
+>>>>> On Fri, 15 Dec 2023 at 12:19, Bibek Kumar Patro
+>>>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>>>
+>>>>>> Add ACTLR data table for SM8550 along with support for
+>>>>>> same including SM8550 specific implementation operations.
+>>>>>>
+>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>>>> ---
+>>>>>>    drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 89 
+>>>>>> ++++++++++++++++++++++
+>>>>>>    1 file changed, 89 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c 
+>>>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> index cb49291f5233..d2006f610243 100644
+>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> @@ -20,6 +20,85 @@ struct actlr_config {
+>>>>>>           u32 actlr;
+>>>>>>    };
+>>>>>>
+>>>>>> +/*
+>>>>>> + * SMMU-500 TRM defines BIT(0) as CMTLB (Enable context caching 
+>>>>>> in the
+>>>>>> + * macro TLB) and BIT(1) as CPRE (Enable context caching in the 
+>>>>>> prefetch
+>>>>>> + * buffer). The remaining bits are implementation defined and 
+>>>>>> vary across
+>>>>>> + * SoCs.
+>>>>>> + */
+>>>>>> +
+>>>>>> +#define PREFETCH_DEFAULT       0
+>>>>>> +#define PREFETCH_SHALLOW       BIT(8)
+>>>>>> +#define PREFETCH_MODERATE      BIT(9)
+>>>>>> +#define PREFETCH_DEEP          (BIT(9) | BIT(8))
+>>>>>
+>>>>> I thin the following might be more correct:
+>>>>>
+>>>>> #include <linux/bitfield.h>
+>>>>>
+>>>>> #define PREFETCH_MASK GENMASK(9, 8)
+>>>>> #define PREFETCH_DEFAULT FIELD_PREP(PREFETCH_MASK, 0)
+>>>>> #define PREFETCH_SHALLOW FIELD_PREP(PREFETCH_MASK, 1)
+>>>>> #define PREFETCH_MODERATE FIELD_PREP(PREFETCH_MASK, 2)
+>>>>> #define PREFETCH_DEEP FIELD_PREP(PREFETCH_MASK, 3)
+>>>>>
+>>>>
+>>>> Ack, thanks for this suggestion. Let me try this out using
+>>>> GENMASK. Once tested, will take care of this in next version.
+>>>
+>>> FWIW the more typical usage would be to just define the named macros 
+>>> for the raw field values, then put the FIELD_PREP() at the point of 
+>>> use. However in this case that's liable to get pretty verbose, so 
+>>> although I'm usually a fan of bitfield.h, the most readable option 
+>>> here might actually be to stick with simpler definitions of "(0 << 
+>>> 8)", "(1 << 8)", etc. However it's not really a big deal either way, 
+>>> and I defer to whatever Dmitry and Konrad prefer, since they're the 
+>>> ones looking after arm-smmu-qcom the most :)
+>> My 5 cents would be to just use the "common" style of doing this, so:
+>>
+>> #define ACTRL_PREFETCH    GENMASK(9, 8)
+>>   #define PREFETCH_DEFAULT 0
+>>   #define PREFETCH_SHALLOW 1
+>>   #define PREFETCH_MODERATE 2
+>>   #define PREFETCH_DEEP 3
+>>
+>> and then use
+>>
+>> | FIELD_PREP(ACTRL_PREFETCH, PREFETCH_x)
+>>
+>> it can get verbose, but.. arguably that's good, since you really want
+>> to make sure the right bits are set here
 > 
-> alvium_s_frame_interval() can be called both for the TRY and ACTIVE
-> status. The hardware registers should be written only for the ACTIVE
-> state.
-
-Do you think could be sufficient an if check like this?
-
--	return alvium_set_frame_rate(alvium, req_fr);
-+	if (fi->which == V4L2_SUBDEV_FORMAT_ACTIVE)
-+		return alvium_set_frame_rate(alvium, req_fr);
-+
-+	return ret;
- }
-
-Thanks & Regards,
-Tommaso
-
-> > > > @@ -1853,6 +1836,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
-> > > >  {
-> > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > >  	struct alvium_mode *mode = &alvium->mode;
-> > > > +	struct v4l2_fract *interval;
-> > > >  	struct v4l2_subdev_format sd_fmt = {
-> > > >  		.which = V4L2_SUBDEV_FORMAT_TRY,
-> > > >  		.format = alvium_csi2_default_fmt,
-> > > > @@ -1870,6 +1854,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
-> > > >  	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
-> > > >  	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
-> > > >  
-> > > > +	/* Setup initial frame interval*/
-> > > > +	interval = v4l2_subdev_state_get_interval(state, 0);
-> > > > +	interval->numerator = 1;
-> > > > +	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > > +
-> > > >  	return 0;
-> > > >  }
-> > > >  
-> > > > @@ -2239,7 +2228,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
-> > > >  	.set_fmt = alvium_set_fmt,
-> > > >  	.get_selection = alvium_get_selection,
-> > > >  	.set_selection = alvium_set_selection,
-> > > > -	.get_frame_interval = alvium_g_frame_interval,
-> > > > +	.get_frame_interval = v4l2_subdev_get_frame_interval,
-> > > >  	.set_frame_interval = alvium_s_frame_interval,
-> > > >  };
-> > > >  
-> > > > @@ -2260,11 +2249,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> > > >  	struct v4l2_subdev *sd = &alvium->sd;
-> > > >  	int ret;
-> > > >  
-> > > > -	/* Setup initial frame interval*/
-> > > > -	alvium->frame_interval.numerator = 1;
-> > > > -	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > > > -
-> > > >  	/* Setup the initial mode */
-> > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > > >  	alvium->mode.width = alvium_csi2_default_fmt.width;
-> > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > > index a6529b28e7dd..f5e26257b042 100644
-> > > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > > @@ -442,8 +442,6 @@ struct alvium_dev {
-> > > >  	s32 inc_sharp;
-> > > >  
-> > > >  	struct alvium_mode mode;
-> > > > -	struct v4l2_fract frame_interval;
-> > > > -	u64 fr;
-> > > 
-> > > The fr field should have been removed by a previous patch (the one that
-> > > will go between 1/3 an 2/3, see my review of 1/3) as shown by the fact
-> > > that this patch only removes two locations where the field is set but
-> > > none where it's read.
-> > > 
-> > > >  
-> > > >  	u8 h_sup_csi_lanes;
-> > > >  	u64 link_freq;
+> Sounds good to me.
 > 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+
+Konrad, Dimitry, just checked FIELD_PREP() implementation
+
+#define FIELD_FIT(_mask, _val)
+({                                                              \
+                  __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");  \
+                  ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask); \
+})
+
+since it is defined as a block, it won't be possible to use FIELD_PREP
+in macro or as a structure value, and can only be used inside a 
+block/function. Orelse would show compilation errors as following
+
+kernel/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c:94:20: note: in 
+expansion of macro 'PREFETCH_SHALLOW'
+   { 0x1947, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+                     ^
+kernel/include/linux/bitfield.h:113:2: error: braced-group within 
+expression allowed only inside a function
+   ({        \
+   ^
+
+So as per my understanding I think, we might need to go ahead with the
+generic implementation only. Let me know if I missed something.
+
+Thanks,
+Bibek
+
+
 
