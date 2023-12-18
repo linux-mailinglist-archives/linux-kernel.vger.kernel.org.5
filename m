@@ -1,170 +1,100 @@
-Return-Path: <linux-kernel+bounces-3738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECAEC817063
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:26:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72F2E81706C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:26:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BDECB24959
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:26:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F329282DB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD2D129EE3;
-	Mon, 18 Dec 2023 13:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD333768F0;
+	Mon, 18 Dec 2023 13:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeiJZhzd"
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="AcDH1kEU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE1B05BF99;
-	Mon, 18 Dec 2023 13:17:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7375BC433C8;
-	Mon, 18 Dec 2023 13:17:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702905473;
-	bh=uaiQ0NlnGDpVimzHf7hc4bouD6LM9m4Fjq8sHDW6itc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LeiJZhzdZ+Vkly6pi4nXcOQTenffS1Ylrd10bBNSluPRXzr6O0kXJ0zsxS9ikhBOp
-	 eJocFIJ3p42lIE9n6a0h2/3teG4xH3wDGVqnZMfBKcIGDXdpvEX45eZCGWmsCC0CTN
-	 B/CLk3tO9y48V0UMeuyiH/shvF7TwrZJWrCM644ZDvyJUxDnHTxl34fKJW7fXsQ36v
-	 gbi6h42RKoIQmDfLusYAIxKVpCAMVuGMkE0ks6ucwmpG3sIog3whvpOWGp5eVvVB/n
-	 y3O/S/nSHPs3CFW0cWZQZRj4vkP1wNwEKJo4jYbWzrcBZpEoRwxPm5fF1dQ7cirlxK
-	 ZMKp6bdWYnnYw==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v5 31/34] bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
-Date: Mon, 18 Dec 2023 22:17:47 +0900
-Message-Id: <170290546656.220107.4705582913827924737.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170290509018.220107.1347127510564358608.stgit@devnote2>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-User-Agent: StGit/0.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4767B129ED9;
+	Mon, 18 Dec 2023 13:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=CbJYyBnHSJO5HpsM1rF1MdLZBV/rqZTitFQxv3HNgg4=;
+	t=1702905496; x=1704115096; b=AcDH1kEUKaxt8lKZRCfQ5cFR1//iEBJV6PdxXPYUNWUIQ0/
+	/kr5IkqwjsWTdTGpb7rCYRlnsEjz1YWqeraGkuv7ipRzu1j/x1JIi49y2QTtpsPKBJZCrBBKpZ5uG
+	NJfEILTqzbVmKpf8JGMJ2LUofZLYaBKwtJ4Fy1qalX+PVCrZ9YGprDPn2biaI5jJirmv6E7XVaGI9
+	apsMZxZqf8E7esShfqSKyFmsXGp2XSvROrN5PkXVSojGIj4NRficzE2Vmzxm2Sq2O7JiNLh6x8pds
+	hz0sqfe6zrZEq/6567MDaiIL8hWxyHQaw+gbiprCLORGHsrngEQ7bU6wG2j7PQ2g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rFDVR-0000000GE7Q-0yMv;
+	Mon, 18 Dec 2023 14:18:01 +0100
+Message-ID: <26207725d5025318b831dd5a5feca67248aaa221.camel@sipsolutions.net>
+Subject: Re: [PATCH] bcma,ssb: simplify dependency handling for bcma and ssb
+ drivers
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
+ =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Kalle Valo
+ <kvalo@kernel.org>, Larry Finger <Larry.Finger@lwfinger.net>, Arend van
+ Spriel <aspriel@gmail.com>, Franky Lin <franky.lin@broadcom.com>, Hante
+ Meuleman <hante.meuleman@broadcom.com>,  Michael Buesch <m@bues.ch>,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org, 
+ b43-dev@lists.infradead.org, brcm80211-dev-list.pdl@broadcom.com, 
+ SHA-cyfmac-dev-list@infineon.com
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Mon, 18 Dec 2023 14:17:59 +0100
+In-Reply-To: <20231218115802.15859-1-lukas.bulwahn@gmail.com>
+References: <20231218115802.15859-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Mon, 2023-12-18 at 12:58 +0100, Lukas Bulwahn wrote:
 
-Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
-converted from ftrace_regs by ftrace_partial_regs(), thus some registers
-may always returns 0. But it should be enough for function entry (access
-arguments) and exit (access return value).
+Dunno, I'm not super involved with this but ...
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Acked-by: Florent Revest <revest@chromium.org>
----
- Changes from previous series: NOTHING, Update against the new series.
----
- kernel/trace/bpf_trace.c |   22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+> +++ b/drivers/bcma/Kconfig
+> @@ -1,12 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -config BCMA_POSSIBLE
+> -	bool
+> -	depends on HAS_IOMEM && HAS_DMA
+> -	default y
+> -
+>  menuconfig BCMA
+>  	tristate "Broadcom specific AMBA"
+> -	depends on BCMA_POSSIBLE
+> +	depends on HAS_IOMEM && HAS_DMA
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index efb792f8f2ea..24ee4e960f1d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2503,7 +2503,7 @@ static int __init bpf_event_init(void)
- fs_initcall(bpf_event_init);
- #endif /* CONFIG_MODULES */
- 
--#if defined(CONFIG_FPROBE) && defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS)
-+#ifdef CONFIG_FPROBE
- struct bpf_kprobe_multi_link {
- 	struct bpf_link link;
- 	struct fprobe fp;
-@@ -2526,6 +2526,8 @@ struct user_syms {
- 	char *buf;
- };
- 
-+static DEFINE_PER_CPU(struct pt_regs, bpf_kprobe_multi_pt_regs);
-+
- static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
- {
- 	unsigned long __user usymbol;
-@@ -2703,13 +2705,14 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- 
- static int
- kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
--			   unsigned long entry_ip, struct pt_regs *regs)
-+			   unsigned long entry_ip, struct ftrace_regs *fregs)
- {
- 	struct bpf_kprobe_multi_run_ctx run_ctx = {
- 		.link = link,
- 		.entry_ip = entry_ip,
- 	};
- 	struct bpf_run_ctx *old_run_ctx;
-+	struct pt_regs *regs;
- 	int err;
- 
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-@@ -2720,6 +2723,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
- 
- 	migrate_disable();
- 	rcu_read_lock();
-+	regs = ftrace_partial_regs(fregs, this_cpu_ptr(&bpf_kprobe_multi_pt_regs));
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	err = bpf_prog_run(link->link.prog, regs);
- 	bpf_reset_run_ctx(old_run_ctx);
-@@ -2737,13 +2741,9 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
- 			  void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
--	struct pt_regs *regs = ftrace_get_regs(fregs);
--
--	if (!regs)
--		return 0;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
--	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-+	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
- 	return 0;
- }
- 
-@@ -2753,13 +2753,9 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
- 			       void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
--	struct pt_regs *regs = ftrace_get_regs(fregs);
--
--	if (!regs)
--		return;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
--	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-+	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
- }
- 
- static int symbols_cmp_r(const void *a, const void *b, const void *priv)
-@@ -3016,7 +3012,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	kvfree(cookies);
- 	return err;
- }
--#else /* !CONFIG_FPROBE || !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
-+#else /* !CONFIG_FPROBE */
- int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- {
- 	return -EOPNOTSUPP;
+[...]
+>  config BRCMSMAC
+>  	tristate "Broadcom IEEE802.11n PCIe SoftMAC WLAN driver"
+> -	depends on MAC80211
+> -	depends on BCMA_POSSIBLE
+> +	depends on HAS_IOMEM && HAS_DMA && MAC80211
+>  	select BCMA
 
+to me it kind of seems more obvious for example in this case to say
+"depend on BCMA_POSSIBLE and select BCMA" rather than open-coding the
+BCMA dependencies both here and in BCMA? Now granted, they're rather
+unlikely to _change_, but it still seems more obvious?
+
+johannes
 
