@@ -1,107 +1,92 @@
-Return-Path: <linux-kernel+bounces-3284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D6D3816A60
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:59:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269FE816A50
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A17821F21D4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:59:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5932C1C22911
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87D513FF9;
-	Mon, 18 Dec 2023 09:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E217125C8;
+	Mon, 18 Dec 2023 09:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qJt0FVa+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iULYsgGL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3032E13FE7
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from spb1wst022.omp.ru (109.73.39.18) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 18 Dec
- 2023 12:59:19 +0300
-From: Karina Yankevich <k.yankevich@omp.ru>
-To: Liam Girdwood <lgirdwood@gmail.com>
-CC: Karina Yankevich <k.yankevich@omp.ru>, Mark Brown <broonie@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] regulator: of: Remove redundant check in of_get_regulation_constraints
-Date: Mon, 18 Dec 2023 12:57:07 +0300
-Message-ID: <20231218095707.2625407-1-k.yankevich@omp.ru>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B907125A3;
+	Mon, 18 Dec 2023 09:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Nam Cao <namcao@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702893460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=b9B/dJhmZ1FQU1Ml+AeFKF1QKF+vHETnd8Coz1FtEOs=;
+	b=qJt0FVa+T5xF0c23SDHgq6oH8efKsuOHIpvSGOh5PZh7sS18QYv9sYs+rbCl2hUlt3bKmB
+	vMKNOYTXB0HhUvBInth1H/Dz4ip7T0Mh7Ta3Wwe6WMM4s7ZXcWm3IJShUMtQ9wX1vReAwD
+	8Z5QG2XWpBSiVwGStwFmROYr7j//Lpb6RlSmiXamssiwsr+Ike4vHqKWhbJIVukrL1vkvO
+	srdJ1GQEVfHoUUvmpvvPF3r3ohT78Cx69DJ+dR7Exc/R/O5er64Z7Ufh8cw/Ana6aFfZob
+	UElghQGblGLF+FUvqxBzbjl7GHC4ACR3fw1xGHR06RcgiZcDh+w9M2g/MRMx+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702893460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=b9B/dJhmZ1FQU1Ml+AeFKF1QKF+vHETnd8Coz1FtEOs=;
+	b=iULYsgGLAjpNxsywH3DLqbO9R6yfT8uCby5NXhu/LjersaoceyLj+bMy8mKBmPQYycXE37
+	onivXZO+3yellrBg==
+To: Jaya Kumar <jayalk@intworks.biz>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Helge Deller <deller@gmx.de>,
+	Antonino Daplas <adaplas@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Paul Mundt <lethal@linux-sh.org>,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Cc: bigeasy@linutronix.de,
+	Nam Cao <namcao@linutronix.de>
+Subject: [PATCH 0/2] fix LCD diplays sporadically not work
+Date: Mon, 18 Dec 2023 10:57:29 +0100
+Message-Id: <cover.1702890493.git.namcao@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/18/2023 09:32:49
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 19
-X-KSE-AntiSpam-Info: Lua profiles 182159 [Dec 18 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: k.yankevich@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 109.73.39.18 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;spb1wst022.omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 109.73.39.18
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 19
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/18/2023 09:37:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/18/2023 7:00:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Transfer-Encoding: quoted-printable
 
-The pointer 'suspend_state' cannot be NULL after the switch statement
-so remove the redundant check.
+Hi,
 
-Found by Linux Verification Center (linuxtesting.org) with the Svace static
-analysis tool.
+While working with a framebuffer displays, I noticed that the displays
+sporadically do not show the image as I expect.
 
-Signed-off-by: Karina Yankevich <k.yankevich@omp.ru>
----
- drivers/regulator/of_regulator.c | 4 ----
- 1 file changed, 4 deletions(-)
+After investigation: this is because my devices use deferred IO, and by
+closing the framebuffers, all pending deferred IO get cancelled. This
+causes the image I sent to the devices to just vanish. Using fsync() does
+not always help, because the driver's implementation of fsync() does not
+guarantee that all pending work is flushed on return.
 
-diff --git a/drivers/regulator/of_regulator.c b/drivers/regulator/of_regulator.c
-index 1b65e5e4e40f..c926779523ca 100644
---- a/drivers/regulator/of_regulator.c
-+++ b/drivers/regulator/of_regulator.c
-@@ -266,10 +266,6 @@ static int of_get_regulation_constraints(struct device *dev,
- 		suspend_np = of_get_child_by_name(np, regulator_states[i]);
- 		if (!suspend_np)
- 			continue;
--		if (!suspend_state) {
--			of_node_put(suspend_np);
--			continue;
--		}
- 
- 		if (!of_property_read_u32(suspend_np, "regulator-mode",
- 					  &pval)) {
--- 
-2.25.1
+This series solves the problem by flush the workqueue in .release(). Also
+flush the workqueue in .fsync(), as it is supposed to do.
+
+Nam Cao (2):
+  fb: flush deferred work in fb_deferred_io_fsync()
+  fb: flush deferred IO before closing
+
+ drivers/video/fbdev/core/fb_defio.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+--=20
+2.39.2
 
 
