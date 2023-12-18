@@ -1,149 +1,182 @@
-Return-Path: <linux-kernel+bounces-3418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92612816C00
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 77380816C09
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:17:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF1691C22EE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:14:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A78E91C22F08
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:17:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D9519463;
-	Mon, 18 Dec 2023 11:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CA319459;
+	Mon, 18 Dec 2023 11:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O+QCe0tq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2492D18E2D;
-	Mon, 18 Dec 2023 11:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11C991FB;
-	Mon, 18 Dec 2023 03:14:53 -0800 (PST)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFCA53F738;
-	Mon, 18 Dec 2023 03:14:06 -0800 (PST)
-Date: Mon, 18 Dec 2023 11:14:04 +0000
-From: Andre Przywara <andre.przywara@arm.com>
-To: Maksim Kiselev <bigunclemax@gmail.com>
-Cc: Martin Botka <martin.botka@somainline.org>, Vasily Khoruzhick
- <anarsoul@gmail.com>, Yangtao Li <tiny.windzz@gmail.com>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
- Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Chen-Yu
- Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel
- Holland <samuel@sholland.org>, linux-pm@vger.kernel.org (open
- list:ALLWINNER THERMAL DRIVER), linux-arm-kernel@lists.infradead.org
- (moderated list:ARM/Allwinner sunXi SoC support),
- linux-sunxi@lists.linux.dev (open list:ARM/Allwinner sunXi SoC support),
- linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH v1] thermal: sun8i: extend H6 calibration function to
- support 4 sensors
-Message-ID: <20231218111404.5f08a4c4@donnerap.manchester.arm.com>
-In-Reply-To: <20231217133637.54773-1-bigunclemax@gmail.com>
-References: <20231217133637.54773-1-bigunclemax@gmail.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05BF19447;
+	Mon, 18 Dec 2023 11:17:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 886C4C433C8;
+	Mon, 18 Dec 2023 11:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702898240;
+	bh=jhT+AlpmCfyK9JZxXxSNykpbsTEk5+SjdjTlfBVIDyc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O+QCe0tqd2vCDzVikw7J9kmofQTYq3GGZXkDl0HrxHbP1Csw36LyitHS1Fl3/fn4f
+	 X5BlFoR5vj6mSuaRKiIFqYBaHds9gAO0Y0KwFHSUDWtN1BmbV70TSciYR4o8q7p9Nu
+	 IPrsqG2MlzFfWaqSuRZjdheUCQu18z8ek6PjY7tX9LvBlb9vDKajJCWsUEEJ0H7SSl
+	 /M3CaAd/COStCa5jev190of+EqNRFOJDciB+Qz3/mEC7YSTF1wraxrvY+pJc+n6FPn
+	 ipb0gXtTglGe5lIfg2DW62WORWLnqgbxlcS8m/SA72azZfkd6AJEqjFeCQCB7FSh1U
+	 7LMWLxFyMB0ig==
+Date: Mon, 18 Dec 2023 11:17:16 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Joshua Yeong <joshua.yeong@starfivetech.com>
+Cc: jeeheng.sia@starfivetech.com, leyfoon.tan@starfivetech.com,
+	jassisinghbrar@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: mailbox: starfive: Add StarFive Meu
+ Mailbox Driver
+Message-ID: <20231218-pawing-unripe-e45ad62ff8c7@spud>
+References: <20231218061201.98136-1-joshua.yeong@starfivetech.com>
+ <20231218061201.98136-3-joshua.yeong@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aQrXQ+3ue3EP+Cq/"
+Content-Disposition: inline
+In-Reply-To: <20231218061201.98136-3-joshua.yeong@starfivetech.com>
 
-On Sun, 17 Dec 2023 16:36:36 +0300
-Maksim Kiselev <bigunclemax@gmail.com> wrote:
 
-Hi Maksim,
+--aQrXQ+3ue3EP+Cq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-many thanks for sending this!
+On Mon, Dec 18, 2023 at 02:12:00PM +0800, Joshua Yeong wrote:
+> The StarFive Meu Mailbox allow communication between AP and SCP cores
+> through mailbox doorbell.
+>=20
+> Co-developed-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> ---
+>  .../bindings/mailbox/starfive-meu.yaml        | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/starfive-me=
+u.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/mailbox/starfive-meu.yaml =
+b/Documentation/devicetree/bindings/mailbox/starfive-meu.yaml
+> new file mode 100644
+> index 000000000000..dbc5cfdb90ff
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/starfive-meu.yaml
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mailbox/starfive-meu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: StarFive MEU Mailbox Controller
+> +
+> +maintainers:
+> +  - Jee Heng Sia <jeeheng.sia@starfivetech.com>
+> +  - Joshua Yeong <joshua.yeong@starfivetech.com>
+> +
+> +description: |
+> +  StarFive's Message-Exchange-Unit (MEU) is a mailbox controller that ha=
+s 62
+> +  independent doorbells. Each MEU channel consist of 31 doorbells and co=
+nsist of
+> +  a pair of Tx/Rx links that shall communicates with remote processor. T=
+he
+> +  sender set the bit in the SET register to indicate data readiness for =
+the
+> +  receiver. An interrupt will be raised whenever receiving notification =
+doorbell
+> +  from remote processor. The receiver will clear the bit in the CLR regi=
+ster
+> +  upon handling the doorbell notification. The sender should poll the ST=
+AT
+> +  register before starting any transaction to ensure all on-going doorbe=
+lls are
+> +  processed.
 
-> The H616 SoC resembles the H6 thermal sensor controller, with a few
-> changes like four sensors.
-> 
-> Extend sun50i_h6_ths_calibrate() function to support calibration of
-> these sensors.
-
-Oh wow, I didn't expect that, but it's indeed that simple: we just need to
-cater for the 4th sensor's data to be cramped into the other bits, the
-rest is exactly the same! Well spotted!
-
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-
-I don't think the Signed-off-by:s are accurate here. Please replace those
-two with just:
-Co-developed-by: Martin Botka <martin.botka@somainline.org>
-(I didn't really do anything in those parts)
-
-> Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
-
-I compared the two routines and came to the same solution as you, so:
-
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-
-I will incorporate this patch into the next submission of the H616 THS
-series, so there is no need to merge this patch as is.
+What is/are the consumer(s) of this mailbox?
+Is part of your RPMI implementation?
 
 Cheers,
-Andre
+Conor.
 
-> ---
->  drivers/thermal/sun8i_thermal.c | 28 ++++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-> index f989b55a8aa8..9af95b4785be 100644
-> --- a/drivers/thermal/sun8i_thermal.c
-> +++ b/drivers/thermal/sun8i_thermal.c
-> @@ -221,16 +221,21 @@ static int sun50i_h6_ths_calibrate(struct ths_device *tmdev,
->  	struct device *dev = tmdev->dev;
->  	int i, ft_temp;
->  
-> -	if (!caldata[0] || callen < 2 + 2 * tmdev->chip->sensor_num)
-> +	if (!caldata[0])
->  		return -EINVAL;
->  
->  	/*
->  	 * efuse layout:
->  	 *
-> -	 *	0   11  16	 32
-> -	 *	+-------+-------+-------+
-> -	 *	|temp|  |sensor0|sensor1|
-> -	 *	+-------+-------+-------+
-> +	 * 0      11  16     27   32     43   48    57
-> +	 * +----------+-----------+-----------+-----------+
-> +	 * |  temp |  |sensor0|   |sensor1|   |sensor2|   |
-> +	 * +----------+-----------+-----------+-----------+
-> +	 *                      ^           ^           ^
-> +	 *                      |           |           |
-> +	 *                      |           |           sensor3[11:8]
-> +	 *                      |           sensor3[7:4]
-> +	 *                      sensor3[3:0]
->  	 *
->  	 * The calibration data on the H6 is the ambient temperature and
->  	 * sensor values that are filled during the factory test stage.
-> @@ -243,9 +248,16 @@ static int sun50i_h6_ths_calibrate(struct ths_device *tmdev,
->  	ft_temp = (caldata[0] & FT_TEMP_MASK) * 100;
->  
->  	for (i = 0; i < tmdev->chip->sensor_num; i++) {
-> -		int sensor_reg = caldata[i + 1] & TEMP_CALIB_MASK;
-> -		int cdata, offset;
-> -		int sensor_temp = tmdev->chip->calc_temp(tmdev, i, sensor_reg);
-> +		int sensor_reg, sensor_temp, cdata, offset;
 > +
-> +		if (i == 3)
-> +			sensor_reg = (caldata[1] >> 12)
-> +				     | ((caldata[2] >> 12) << 4)
-> +				     | ((caldata[3] >> 12) << 8);
-> +		else
-> +			sensor_reg = caldata[i + 1] & TEMP_CALIB_MASK;
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - starfive,jh8100-meu
 > +
-> +		sensor_temp = tmdev->chip->calc_temp(tmdev, i, sensor_reg);
->  
->  		/*
->  		 * Calibration data is CALIBRATE_DEFAULT - (calculated
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    items:
+> +      - description: mailbox0
+> +      - description: mailbox1
+> +
+> +  '#mbox-cells':
+> +    description: represents index of the mailbox/doorbell paired channel
+> +      channel  0 - 30 for mailbox0 doorbell
+> +      channel 31 - 61 for mailbox1 doorbell
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - '#mbox-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +        #address-cells =3D <2>;
+> +        #size-cells =3D <2>;
+> +
+> +        meu: mailbox@1f370000 {
+> +            compatible =3D "starfive,jh8100-meu";
+> +            reg =3D <0x0 0x1f370000 0 0x8000>;
+> +            interrupts =3D <170>, /* Mailbox0 */
+> +                         <171>; /* Mailbox1 */
+> +            #mbox-cells =3D <1>;
+> +        };
+> +    };
+> +
+> +...
+> --=20
+> 2.25.1
+>=20
 
+--aQrXQ+3ue3EP+Cq/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYAqPAAKCRB4tDGHoIJi
+0pAWAP0UxVroFOC8+v7rhvp42LiCfmH/2N8IRe7QzwShM9OO+wD/ZYMubBEEwj3W
+kqYsynjngk1KxjeF1Ez0nidDqz9ndgQ=
+=vSfH
+-----END PGP SIGNATURE-----
+
+--aQrXQ+3ue3EP+Cq/--
 
