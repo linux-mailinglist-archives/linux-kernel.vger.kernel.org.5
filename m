@@ -1,177 +1,179 @@
-Return-Path: <linux-kernel+bounces-4437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7975B817D15
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 468BF817D1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 067281F20CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:02:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99BB1F243EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579CB740B0;
-	Mon, 18 Dec 2023 22:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861A71DA3A;
+	Mon, 18 Dec 2023 22:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bklji33K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n7H9+Sby"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA1E740B2;
-	Mon, 18 Dec 2023 22:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so432762566b.1;
-        Mon, 18 Dec 2023 14:02:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702936945; x=1703541745; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j78u/AxbFW/PvB7ob0xH35r+RLxqVn7NFYykJEfCNm4=;
-        b=bklji33KAfGRayu3WeeoF2gNBQubDvJJ3YXQwnFBbQdSEDTa++BzKMRheAezkjQlvq
-         e2u+7LFcAbI8P8QTK3dtFMQax/0zqzI042H0CKUM2+5W1haHRmqN0ZpibJS9DyvEnaxt
-         FG8A+inDwhJZlBhicL8hzP7GcrVvck0310iwINCSpQLDs1ttbQXdEfUc0BZU52xHGPJ+
-         G2funOpAFb89peO/oc/ByERN8/+QiotFQV8d/hK1/b6uFIJLS+j04LSBcOVWEyrHs5NM
-         y0rlidS1Fx+JVl1nKsr4ZWNK4QpZ51kBDcuCZ/nvrv/LoxdxJo7buMfhpKGkGDRx3ofa
-         ZXyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702936945; x=1703541745;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j78u/AxbFW/PvB7ob0xH35r+RLxqVn7NFYykJEfCNm4=;
-        b=DEZxRNV8juvAykrrVMTtrZdFun5WIwQc6zULjexCkiGjCpmo27uBM8NM5hfkdRt+0Q
-         sqDmzDMNlGRrYd7XcEas6tnapywHatkjYQLo0Sl5wPvI3S7VfkXJ+L0rFf8QierMmTq8
-         vxjlzS/MaXFuKbKZi4Tc1/Ve3AwlhIjyqCwoB7esXfR6dUezHl1zinlGq+013J6kYMeZ
-         r9s7OAyB372C63hZVFEG3bQ0PXHXiIoSUT0Djv8zgiThYdghqT7SJtHloSLRXYfaG++X
-         OaXGhmjhe+d5AAp8FIMRvVX93B7gc57wjkllc0GRYXItTkxiALHwWOnhUW0y1JoMCQmJ
-         C8Og==
-X-Gm-Message-State: AOJu0YyZdk/IxtPzVshOU/IHPx6GGeckjM+0qJ+fDv26jt09siV7c643
-	MV4jknikbhivfP+FgqA1Mc8=
-X-Google-Smtp-Source: AGHT+IEPZqXlfacA0u2n1vljM6X29jA54J6/WAEvQI9gh7KtlZMgF3FICfR713o6WiYGui2vKNrWNQ==
-X-Received: by 2002:a17:906:7386:b0:a14:b151:72e6 with SMTP id f6-20020a170906738600b00a14b15172e6mr7515981ejl.21.1702936945048;
-        Mon, 18 Dec 2023 14:02:25 -0800 (PST)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id tg10-20020a1709078dca00b00a178b965899sm14647993ejc.100.2023.12.18.14.02.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 14:02:24 -0800 (PST)
-Message-ID: <1b4feb5d-f03c-44b3-9474-901534db5eb7@gmail.com>
-Date: Mon, 18 Dec 2023 23:02:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16A4740A3;
+	Mon, 18 Dec 2023 22:06:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24844C433C8;
+	Mon, 18 Dec 2023 22:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702937210;
+	bh=JRDQObUf/WROaXC2TkDgUYKUAbVrKHE0oead3omIraI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=n7H9+SbylKmNBllkPLk67C+s3qBTkN5kg5IPuij3RSIzvCYvgw7DQlXuvaxgWwfe5
+	 4bWmsjcsK/3oJqHmJyx5Bwf5Z4Wa6uI7UXg/oks+Rs7b8lz8uoXraQdKPGZcptPa0c
+	 YKdYevBe3Mlqs0xnIhqUGvL0ttlgOH+VAuzZWuvI/N88D7qli3aAOq1bS57nwyB3dU
+	 40bHJ5lHG2gn1WCXcr8kRC153hBcvSC9WEWaEpGFa1wrS+GtvSmMs6PgULVfu5NcVh
+	 fvhX63egnA2LysXBZEoIheB4FzM5Yd1AKC2WYUrIzTGDMmZfmAIhETuKuHDKFeEboT
+	 fWR115dNc4f4w==
+Date: Mon, 18 Dec 2023 14:06:45 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Michael Chan <michael.chan@broadcom.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei
+ Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+ <xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de
+ Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ Shailend Chand <shailend@google.com>, Yisen Zhuang
+ <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, Jesse
+ Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
+ <anthony.l.nguyen@intel.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Russell
+ King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, Geetha
+ sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
+ hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin
+ <john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>, Mark Lee
+ <Mark-MC.Lee@mediatek.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
+ <jaswinder.singh@linaro.org>, Ilias Apalodimas
+ <ilias.apalodimas@linaro.org>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli
+ <s-vadapalli@ti.com>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger
+ Quadros <rogerq@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan
+ Lou <mengyuanlou@net-swift.com>, Ronak Doshi <doshir@vmware.com>, VMware
+ PV-Drivers Reviewers <pv-drivers@vmware.com>, Ryder Lee
+ <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, Kalle
+ Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, Stefano
+ Stabellini <sstabellini@kernel.org>, Oleksandr Tyshchenko
+ <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>, Stefano
+ Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, Nathan Chancellor
+ <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Bill
+ Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Jason
+ Gunthorpe <jgg@nvidia.com>, Shakeel Butt <shakeelb@google.com>, Yunsheng
+ Lin <linyunsheng@huawei.com>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>
+Subject: Re: [RFC PATCH net-next v1 2/4] net: introduce abstraction for
+ network memory
+Message-ID: <20231218140645.461169a7@kernel.org>
+In-Reply-To: <CAHS8izOeCdA+WVRYbieTqaCyadARsOpYttAXh7Lhu-B7RC3Tmg@mail.gmail.com>
+References: <20231214020530.2267499-1-almasrymina@google.com>
+	<20231214020530.2267499-3-almasrymina@google.com>
+	<20231215185159.7bada9a7@kernel.org>
+	<CAHS8izMcFWu7zSuX9q8QgVNLiOiE5RKsb_yh5LoTKA1K8FUu1w@mail.gmail.com>
+	<84787af3-aa5e-4202-8578-7a9f14283d87@kernel.org>
+	<CAHS8izOeCdA+WVRYbieTqaCyadARsOpYttAXh7Lhu-B7RC3Tmg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] dt-bindings: nvmem: u-boot, env: add any-name MAC
- cells compatible
-To: Simon Glass <sjg@chromium.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- u-boot@lists.denx.de, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20231214153620.23998-1-zajec5@gmail.com>
- <CAPnjgZ31AAauR876W1RmU4JPzKUD8XAMCZrJDumE+Dr4miqABQ@mail.gmail.com>
-Content-Language: en-US
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <CAPnjgZ31AAauR876W1RmU4JPzKUD8XAMCZrJDumE+Dr4miqABQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 14.12.2023 22:27, Simon Glass wrote:
-> On Thu, 14 Dec 2023 at 08:36, Rafał Miłecki <zajec5@gmail.com> wrote:
->>
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> So far we had a property for "ethaddr" NVMEM cell containing base
->> Ethernet MAC address. The problem is vendors often pick non-standard
->> names for storing MAC(s) (other than "ethaddr"). A few names were
->> noticed over years:
->> 1. "wanaddr" (Edimax, ELECOM, EnGenius, I-O DATA, Sitecom)
->> 2. "et1macaddr" (ASUS)
->> 3. "eth1addr" (Buffalo)
->> 4. "athaddr" (EnGenius)
->> 5. "baseMAC" (Netgear)
->> 6. "mac" (Netgear)
->> 7. "mac_addr" (Moxa)
->> and more ("HW_LAN_MAC", "HW_WAN_MAC", "INIC_MAC_ADDR", "LAN_MAC_ADDR",
->> "RADIOADDR0", "RADIOADDR1", "WAN_MAC_ADDR", "lan1_mac_addr", "wanmac",
->> "wmac1", "wmac2").
->>
->> It doesn't make sense to add property for every possible MAC cell name.
->> Instead allow specifying cells with "mac" compatible.
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
->> List of devices and their U-Boot MAC variables:
->> alphanetworks,asl56026) wanmac
->> asus,rt-ac65p) et1macaddr
->> asus,rt-ac85p) et1macaddr
->> belkin,f9k1109v1) HW_WAN_MAC + HW_LAN_MAC
->> buffalo,ls220de) eth1addr
->> buffalo,ls421de) eth1addr
->> checkpoint,l-50) lan1_mac_addr
->> dovado,tiny-ac) INIC_MAC_ADDR
->> dovado,tiny-ac) LAN_MAC_ADDR + WAN_MAC_ADDR
->> edimax,ra21s) wanaddr
->> edimax,rg21s) wanaddr
->> elecom,wrc-2533ghbk-i) wanaddr
->> elecom,wrc-2533ghbk2-t) wanaddr
->> engenius,ecb1200) athaddr
->> engenius,ecb1750) athaddr
->> engenius,epg5000) wanaddr
->> engenius,epg600) wanaddr
->> engenius,esr1200) wanaddr
->> engenius,esr1750) wanaddr
->> engenius,esr600) wanaddr
->> engenius,esr600h) wanaddr
->> engenius,esr900) wanaddr
->> enterasys,ws-ap3705i) RADIOADDR0 + RADIOADDR1
->> iodata,wn-ac1167dgr) wanaddr
->> iodata,wn-ac1167gr) wanaddr
->> iodata,wn-ac1600dgr) wanaddr
->> iodata,wn-ac1600dgr2) wanaddr
->> iodata,wn-ac733gr3) wanaddr
->> iodata,wn-ag300dgr) wanaddr
->> iodata,wnpr2600g) wanaddr
->> moxa,awk-1137c) mac_addr
->> netgear,wax220) mac
->> netgear,wndap620) baseMAC
->> netgear,wndap660) baseMAC
->> ocedo,panda) wmac1 + wmac2
->> sitecom,wlr-7100) wanaddr
->> sitecom,wlr-8100) wanaddr
->>
->>   .../devicetree/bindings/nvmem/u-boot,env.yaml | 33 +++++++++++++++++++
->>   1 file changed, 33 insertions(+)
->>
+On Sun, 17 Dec 2023 00:14:59 -0800 Mina Almasry wrote:
+> > > Sure thing I can do that. Is it better to do something like:
+> > >
+> > > struct netmem_ref;
+> > >
+> > > like in this patch:
+> > >
+> > > https://lore.kernel.org/linux-mm/20221108194139.57604-1-torvalds@linux-foundation.org/
+> > >
+> > > Asking because checkpatch tells me not to add typedefs to the kernel,
+> > > but checkpatch can be ignored if you think it's OK.
+> > >
+> > > Also with this approach I can't use container_of and I need to do a
+> > > cast, I assume that's fine.
+> > >  
+> >
+> > Isn't that the whole point of this set - to introduce a new data type
+> > and avoid casts?  
+
+I don't see how we can avoid casts if the type of the referenced object
+is encoded on the low bits of the pointer. If we had a separate member
+we could so something like:
+
+struct netmem_ref {
+	enum netmem_type type;
+	union {
+		struct page *p;
+		struct page_pool_iov *pi;
+	};
+};
+
+barring crazy things with endian-aware bitfields, we need at least one
+cast.
+
+> My understanding here the requirements from Jason are:
 > 
-> Are these upstream U-Boots, or just vendor forks?
+> 1. Never pass a non-page to an mm api.
+> 2. If a mangle a pointer to indicate it's not a page, then I must not
+> call it mm's struct page*, I must add a new type.
+> 
+> I think both requirements are met regardless of whether
+> netmem_to_page() is implemented using union/container_of or straight
+> casts. folios implemented something similar being unioned with struct
+> page to avoid casts. 
 
-I guess most of those devices don't have upstream U-Boot support. Please
-note that while upstreaming vendors changes would be great in most cases
-it doesn't happen. Most vendors sadly don't care and most end users
-don't have enough time for that. In practice we often stick with vendor
-provided bootloader to flash and boot self build Linux system (like
-OpenWrt).
+Folios overlay a real struct page. It's completely different.
 
-I'm not sure if/how does it help with this PATCH but please note that
-upstream U-Boot code also supports few extra variables.
+> I honestly could go either way on this. The union
+> provides some self documenting code and avoids casts. 
 
-There is generic eth_env_get_enetaddr_by_index() that supports variables
-like "<%s><%d>addr" and "<%s>addr". Right now it's used only for
-"eth<%d>addr" and "ethaddr" so that mostly limits us to "ethaddr",
-"eth1addr", "eth2addr" and "eth3addr".
+Maybe you guys know some trick to mask out the bottom bit :S
 
- From some rare cases: there are also "usbnet_devaddr" and "wolpassword".
+> The implementation without the union obfuscates the type and makes it much
+> more opaque.
 
-So given that U-Boot oficially supports at least 6 env variables for
-MAC and there are many used with custom U-Boots and firmwares this
-binding would help a lot.
+Some would say that that's the damn point of the wrapping..
+
+You don't want non-core code futzing with the inside of the struct.
+
+> I finished addressing the rest of the comments and I have this series
+> and the next devmem TCP series ready to go, so I fired v2 of this
+> patchset. If one feels strongly about this let me know and I will
+> re-spin.
+
+You didn't address my feedback :|
+
+struct netmem which contains struct page by value is almost as bad
+as passing around pretend struct page pointers.
 
