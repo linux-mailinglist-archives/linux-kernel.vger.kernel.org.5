@@ -1,136 +1,91 @@
-Return-Path: <linux-kernel+bounces-4498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE268817E35
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:39:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 564D2817E3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFEBE1C21FC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:39:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ADBF1C228D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E7F740AB;
-	Mon, 18 Dec 2023 23:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A48760BB;
+	Mon, 18 Dec 2023 23:44:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DwFSCxq+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Gb9uImLn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1FB1D14D;
-	Mon, 18 Dec 2023 23:39:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8325C433C7;
-	Mon, 18 Dec 2023 23:39:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702942779;
-	bh=OcRwwaGGPxRicGDvk46gVxGH6DVGcgRe9WWBzbdRGGM=;
-	h=From:Date:Subject:To:Cc:From;
-	b=DwFSCxq+IoCWYsleB/Bj3cyZYXmVUJ1ld5+sAbfQOmHgN+6bEtEUc0IOowBrzcpYQ
-	 lgQZWWjZPabP6jsPQKNHOCPdOpDVXjaC2Cpa4bhV+DBcvV/VdJ8QzEQproTRmdihVm
-	 Rx5NYYn9v+JprVYNzfdOMOKVAk6Tn2+NKJeFV6zp1/4jN7Ogk+yw5omG/dE5WJVAnc
-	 qIoxYEwqTY5q4XFBWeU0m+kUYtJ6aVUZZ+0mKxS5QLV2vIG3G4QktQDU8S3PA4wS99
-	 6qNXijpCaEZ3AzkOtqo8LEI/viRbEgdXdYaEP5DnmdFDDhrG17TMeauqRaZOlZw/p4
-	 H1naZ3K+7raLQ==
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 18 Dec 2023 23:39:32 +0000
-Subject: [PATCH] kselftest/arm64: Don't probe the current VL for
- unsupported vector types
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EEC1D685
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5df49931b4eso29834677b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:44:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702943056; x=1703547856; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v7VDVlzaCtIvv9IgKTwUyhOaFAx2Ep1sXTET+2Pb//w=;
+        b=Gb9uImLnr3jbTfNiKiVQ2ErR6qUW3tgG74GzbXDzMnhwGz3hDhutsBjke+F0xXTyu1
+         xLsIeLLM0LIIfw/F6sLkt5DsgA1VGBq/KBVhieyqJJg8pzyXyUSbF1hoyDSKBASADW5I
+         xmN7ZnjyI5AveeG2pXHMoj1w5o5GTy1kgohvBt89gNCOqztsqWfajg0kr712RoawDfeA
+         V4IXL1jms2/vCrfWx8n63+LWS3aqy4QbOmvAxpWJiXzIPG9C1xzfFFPf1c4NP2WPn/Pp
+         nbBOkHQaoEaZaH4pW4j7cFx6brg6XpUGYsKU9zKufpp/xnH7NbdGlloToCPIh4iyk6tv
+         7nGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702943056; x=1703547856;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v7VDVlzaCtIvv9IgKTwUyhOaFAx2Ep1sXTET+2Pb//w=;
+        b=ozqBwre5ilnoNyQtqxk926Rj8QYYDKUv1PdAv7rkTv58pP8NUBxUslBVexiX02RlAE
+         udCh4RUDIpCXeTD3zsvgsvwM3OJ4zJRSPBRUjzoW82IkVMZ0HLkaAbZu050ooJYCBUMp
+         x0yo6X4JjV+tUPovwmTYwGBhWmd4hQiQ9euv9xnjlaUMzTj+tMdOrUIYc4/fC7f/DGpb
+         rzTaGrdzWa46fEOVp61hmXIXzqltJoJd6LelvCjb+bfhEpXomL5m0siAqoeNN0OE03BS
+         EN240IJ/ODvxgLz2UElNAQnXX1xYNWp8WV96AR4vWd5Yn2FDWgrb1arSo2lzvj1OCpzw
+         c6lw==
+X-Gm-Message-State: AOJu0YyOGKeHNLFuw0u8qWvmqY1QdJ2to1jffyxGF6fEMSH3KfmXC1cO
+	Auedn3hExbqD4EuwCCg5mD+D4+kvebASVVEVF/Ox1A==
+X-Google-Smtp-Source: AGHT+IFqzjkHF9wgqmxHy8DQwxyutO8m5gh5rPIBl+hj9RrqElTuK1IgZmdRiOhINEBB7SAzHZD5sB2OFYSltMLOTGg=
+X-Received: by 2002:a81:6d8c:0:b0:5e5:7647:3b32 with SMTP id
+ i134-20020a816d8c000000b005e576473b32mr3142800ywc.60.1702943056756; Mon, 18
+ Dec 2023 15:44:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231218-kselftest-arm64-vec-syscfg-rdvl-v1-1-0ac22d47e81f@kernel.org>
-X-B4-Tracking: v=1; b=H4sIADPYgGUC/x3NQQ6CMBBG4auQWTuJrRWDVzEsmvIXJyKaGdJIC
- Hencflt3tvIoAKje7ORoojJZ65wp4bSM84jWIZq8md/cd5d+WWY8gJbOOq7DVyQ2FZLeWQdysS
- 3LgS4LqY2ZKqVryLL73949Pt+AGmRVcFxAAAA
-To: Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-5c066
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2217; i=broonie@kernel.org;
- h=from:subject:message-id; bh=OcRwwaGGPxRicGDvk46gVxGH6DVGcgRe9WWBzbdRGGM=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlgNg4KHZ2pT1ckQPky4CBUbPiGTOrGmXr2vzLyyfh
- S9O7o+KJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZYDYOAAKCRAk1otyXVSH0CWZB/
- 4xFWcfFuKsRc3GM3Qca5XgAyj0mt0s2/BrDYnFcb6qZH74/ugBfR8JbCLlQgHwDWRYpEanyvckehrj
- VCuySg5d5xRuouwJQOeq2uvvFPruFGWSn3vluFrqtyX+gaAewnoWVyZGhrcZiFVbBVruAYrQUuJjB5
- zbkJwMgbYD9E9O6nzsYXiHmxa3x22hWlzXzzvu7qRySXs3SMr8xZQJacWjcLMSGDsMx13laMv94yB3
- h/34XnAMtOvmHkQbFV353HWh5nWmCMNtcyWd6T2/C8hZFSca2m8uUgrB1QeA+CfZtQxZ8vG4X/4Vm6
- AB/1jC/675E60GZmemgC7CrthdsKC/
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+References: <20231218164649.2492465-1-ovidiu.panait@windriver.com> <20231218164649.2492465-5-ovidiu.panait@windriver.com>
+In-Reply-To: <20231218164649.2492465-5-ovidiu.panait@windriver.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 19 Dec 2023 00:44:06 +0100
+Message-ID: <CACRpkdaNTdKu9QgvDqFH8sAzJRMaDARwXNa+a5ddHotUw3k_3g@mail.gmail.com>
+Subject: Re: [PATCH 5/7] crypto: sl3516 - Use helper to set reqsize
+To: ovidiu.panait@windriver.com
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	herbert@gondor.apana.org.au, davem@davemloft.net, 
+	Hans Ulli Kroll <ulli.kroll@googlemail.com>, Corentin Labbe <clabbe@baylibre.com>, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The vec-syscfg selftest verifies that setting the VL of the currently
-tested vector type does not disrupt the VL of the other vector type. To do
-this it records the current vector length for each type but neglects to
-guard this with a check for that vector type actually being supported. Add
-one, using a helper function which we also update all the other instances
-of this pattern.
+On Mon, Dec 18, 2023 at 5:46=E2=80=AFPM <ovidiu.panait@windriver.com> wrote=
+:
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/arm64/fp/vec-syscfg.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+> From: Ovidiu Panait <ovidiu.panait@windriver.com>
+>
+> The value of reqsize must only be changed through the helper.
+>
+> Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 
-diff --git a/tools/testing/selftests/arm64/fp/vec-syscfg.c b/tools/testing/selftests/arm64/fp/vec-syscfg.c
-index 5f648b97a06f..ea9c7d47790f 100644
---- a/tools/testing/selftests/arm64/fp/vec-syscfg.c
-+++ b/tools/testing/selftests/arm64/fp/vec-syscfg.c
-@@ -66,6 +66,11 @@ static struct vec_data vec_data[] = {
- 	},
- };
- 
-+static bool vec_type_supported(struct vec_data *data)
-+{
-+	return getauxval(data->hwcap_type) & data->hwcap;
-+}
-+
- static int stdio_read_integer(FILE *f, const char *what, int *val)
- {
- 	int n = 0;
-@@ -564,8 +569,11 @@ static void prctl_set_all_vqs(struct vec_data *data)
- 		return;
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(vec_data); i++)
-+	for (i = 0; i < ARRAY_SIZE(vec_data); i++) {
-+		if (!vec_type_supported(&vec_data[i]))
-+			continue;
- 		orig_vls[i] = vec_data[i].rdvl();
-+	}
- 
- 	for (vq = SVE_VQ_MIN; vq <= SVE_VQ_MAX; vq++) {
- 		vl = sve_vl_from_vq(vq);
-@@ -594,7 +602,7 @@ static void prctl_set_all_vqs(struct vec_data *data)
- 			if (&vec_data[i] == data)
- 				continue;
- 
--			if (!(getauxval(vec_data[i].hwcap_type) & vec_data[i].hwcap))
-+			if (!vec_type_supported(&vec_data[i]))
- 				continue;
- 
- 			if (vec_data[i].rdvl() != orig_vls[i]) {
-@@ -765,7 +773,7 @@ int main(void)
- 		struct vec_data *data = &vec_data[i];
- 		unsigned long supported;
- 
--		supported = getauxval(data->hwcap_type) & data->hwcap;
-+		supported = vec_type_supported(data);
- 		if (!supported)
- 			all_supported = false;
- 
+Looks right to me:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
----
-base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
-change-id: 20231215-kselftest-arm64-vec-syscfg-rdvl-7944e19ac64f
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+Yours,
+Linus Walleij
 
