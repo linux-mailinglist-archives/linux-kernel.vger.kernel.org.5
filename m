@@ -1,179 +1,212 @@
-Return-Path: <linux-kernel+bounces-4438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 468BF817D1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:07:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A71817D1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99BB1F243EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:07:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 282BDB23E05
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861A71DA3A;
-	Mon, 18 Dec 2023 22:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F09B740BC;
+	Mon, 18 Dec 2023 22:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n7H9+Sby"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z0wNal1V"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16A4740A3;
-	Mon, 18 Dec 2023 22:06:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24844C433C8;
-	Mon, 18 Dec 2023 22:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702937210;
-	bh=JRDQObUf/WROaXC2TkDgUYKUAbVrKHE0oead3omIraI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=n7H9+SbylKmNBllkPLk67C+s3qBTkN5kg5IPuij3RSIzvCYvgw7DQlXuvaxgWwfe5
-	 4bWmsjcsK/3oJqHmJyx5Bwf5Z4Wa6uI7UXg/oks+Rs7b8lz8uoXraQdKPGZcptPa0c
-	 YKdYevBe3Mlqs0xnIhqUGvL0ttlgOH+VAuzZWuvI/N88D7qli3aAOq1bS57nwyB3dU
-	 40bHJ5lHG2gn1WCXcr8kRC153hBcvSC9WEWaEpGFa1wrS+GtvSmMs6PgULVfu5NcVh
-	 fvhX63egnA2LysXBZEoIheB4FzM5Yd1AKC2WYUrIzTGDMmZfmAIhETuKuHDKFeEboT
-	 fWR115dNc4f4w==
-Date: Mon, 18 Dec 2023 14:06:45 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Michael Chan <michael.chan@broadcom.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
- Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei
- Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
- <xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de
- Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Shailend Chand <shailend@google.com>, Yisen Zhuang
- <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, Jesse
- Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Russell
- King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, Geetha
- sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
- hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin
- <john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>, Mark Lee
- <Mark-MC.Lee@mediatek.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
- <jaswinder.singh@linaro.org>, Ilias Apalodimas
- <ilias.apalodimas@linaro.org>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli
- <s-vadapalli@ti.com>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger
- Quadros <rogerq@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan
- Lou <mengyuanlou@net-swift.com>, Ronak Doshi <doshir@vmware.com>, VMware
- PV-Drivers Reviewers <pv-drivers@vmware.com>, Ryder Lee
- <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, Kalle
- Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, Stefano
- Stabellini <sstabellini@kernel.org>, Oleksandr Tyshchenko
- <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>, Stefano
- Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>,
- =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, Nathan Chancellor
- <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Bill
- Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Jason
- Gunthorpe <jgg@nvidia.com>, Shakeel Butt <shakeelb@google.com>, Yunsheng
- Lin <linyunsheng@huawei.com>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>
-Subject: Re: [RFC PATCH net-next v1 2/4] net: introduce abstraction for
- network memory
-Message-ID: <20231218140645.461169a7@kernel.org>
-In-Reply-To: <CAHS8izOeCdA+WVRYbieTqaCyadARsOpYttAXh7Lhu-B7RC3Tmg@mail.gmail.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
-	<20231214020530.2267499-3-almasrymina@google.com>
-	<20231215185159.7bada9a7@kernel.org>
-	<CAHS8izMcFWu7zSuX9q8QgVNLiOiE5RKsb_yh5LoTKA1K8FUu1w@mail.gmail.com>
-	<84787af3-aa5e-4202-8578-7a9f14283d87@kernel.org>
-	<CAHS8izOeCdA+WVRYbieTqaCyadARsOpYttAXh7Lhu-B7RC3Tmg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30B8740B0
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 22:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e297d0692so2553792e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:08:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702937307; x=1703542107; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wsJa9VdYDRrbXCF+P/wnlKDM0XN+e4MY7opB/mrRfg8=;
+        b=Z0wNal1VQ7Kdy/7b8yGl7s+thny0Aqm1eWmiURw2eSY/YQcsRYa479ySRHP+nkrU5d
+         75fT0L+dyz9VNlWGQCsryiGrCuQvjtnQLzyxhHY7fY5MdF4VOIeSD5TzJaW3c/WrZt6F
+         VD6RNtW4h3jRNzeMveulAdbVxj/0Y1BzoJqdevAGrBJsjZGst6vy+Iumn192oU6eXZSa
+         otL5OOZ+SILo9zzhksHcmDTBe89I7BeGYpc+TIkxpt/iRt+dAKGCBxyi5PwR41vPOJ/3
+         RPmPM52d+TA3MT/RuElliEO3GY1222T/WljQVPhia3FBtg2u9qf0ZAejNCaviBKdfaIx
+         1HLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702937307; x=1703542107;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wsJa9VdYDRrbXCF+P/wnlKDM0XN+e4MY7opB/mrRfg8=;
+        b=Uz9tmvhlWEEtWhPezbVXXYrxbPqSiGn6KltTiXXtjP/2258whl4xOylErBWCcjXXMl
+         D8kT0MDzC3sFRlreoU9A2mN5NR42KNewogvpiSei21VkrAedW3+7JOecqbRZP4ThOIiX
+         VPnwZ6rJJT1cikxYwgn8TxJRdWJFqP5jwfr+bf/a2zbTWyhq6AWjMraeC6QZBj6fGuNV
+         InvYJ7geItbR74ehTKPDjnCUWZvzy0vbIZY5yUXEg3RxG0Pt/1uFKj5Lrg6Wwl1MzKZF
+         GXVjZp0KNZ9tPG3xZF+M8vd3V8RJsLHRZdL4gP5Q7EB73EZwjOSWBdA6d9C9AcIomCoO
+         C46Q==
+X-Gm-Message-State: AOJu0YwIf2TkJIyP/2Wm92T0JLH4m5okmzh4ewnhHcXAWUT8NWvvJ/62
+	lV2F9IRwG0HpYHrSdUI9IXLaQ1PbWcIV/A==
+X-Google-Smtp-Source: AGHT+IEdfj+yQB03trrUmdxVJSj7D983Xg4QmP/J8O1XsOxdm8nbN0BEDhzbXyO11tY5JZQGk3Z7zw==
+X-Received: by 2002:a05:6512:33d4:b0:50e:3007:620f with SMTP id d20-20020a05651233d400b0050e3007620fmr42489lfg.7.1702937306906;
+        Mon, 18 Dec 2023 14:08:26 -0800 (PST)
+Received: from [172.30.205.119] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id c16-20020a197610000000b0050bf30083b2sm2998297lff.142.2023.12.18.14.08.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 14:08:26 -0800 (PST)
+Message-ID: <8e587947-4ae1-49c0-9d54-b95f9d539a7c@linaro.org>
+Date: Mon, 18 Dec 2023 23:08:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 13/34] media: iris: introduce platform specific
+ capabilities for core and instance
+Content-Language: en-US
+To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
+ andersson@kernel.org, mchehab@kernel.org, bryan.odonoghue@linaro.org
+Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-14-git-send-email-quic_dikshita@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <1702899149-21321-14-git-send-email-quic_dikshita@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Sun, 17 Dec 2023 00:14:59 -0800 Mina Almasry wrote:
-> > > Sure thing I can do that. Is it better to do something like:
-> > >
-> > > struct netmem_ref;
-> > >
-> > > like in this patch:
-> > >
-> > > https://lore.kernel.org/linux-mm/20221108194139.57604-1-torvalds@linux-foundation.org/
-> > >
-> > > Asking because checkpatch tells me not to add typedefs to the kernel,
-> > > but checkpatch can be ignored if you think it's OK.
-> > >
-> > > Also with this approach I can't use container_of and I need to do a
-> > > cast, I assume that's fine.
-> > >  
-> >
-> > Isn't that the whole point of this set - to introduce a new data type
-> > and avoid casts?  
 
-I don't see how we can avoid casts if the type of the referenced object
-is encoded on the low bits of the pointer. If we had a separate member
-we could so something like:
 
-struct netmem_ref {
-	enum netmem_type type;
-	union {
-		struct page *p;
-		struct page_pool_iov *pi;
-	};
-};
-
-barring crazy things with endian-aware bitfields, we need at least one
-cast.
-
-> My understanding here the requirements from Jason are:
+On 12/18/23 12:32, Dikshita Agarwal wrote:
+> Capabilities are set of video specifications and features supported
+> by a specific platform(SOC). Each capability is defined with
+> min, max, range, default value and corresponding HFI.
 > 
-> 1. Never pass a non-page to an mm api.
-> 2. If a mangle a pointer to indicate it's not a page, then I must not
-> call it mm's struct page*, I must add a new type.
+> Also, platform data defines different resource details for
+> a specific platform(SOC). This change defines resource tables
+> for sm8550 platform data and use for initializing these resources.
 > 
-> I think both requirements are met regardless of whether
-> netmem_to_page() is implemented using union/container_of or straight
-> casts. folios implemented something similar being unioned with struct
-> page to avoid casts. 
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> ---
+[...]
+[...]
 
-Folios overlay a real struct page. It's completely different.
+> -	ret = protect_secure_region(CP_START, CP_SIZE, CP_NONPIXEL_START,
+> -				    CP_NONPIXEL_SIZE, IRIS_PAS_ID);
+> +	cp_start = core->cap[CP_START].value;
+> +	cp_size = core->cap[CP_SIZE].value;
+> +	cp_nonpixel_start = core->cap[CP_NONPIXEL_START].value;
+> +	cp_nonpixel_size = core->cap[CP_NONPIXEL_SIZE].value;
+but you just hardcoded these a couple patches ago.. are they
+variable after all?
 
-> I honestly could go either way on this. The union
-> provides some self documenting code and avoids casts. 
+[...]
 
-Maybe you guys know some trick to mask out the bottom bit :S
+> +	{DEC_CODECS, H264 | HEVC | VP9},
+> +	{MAX_SESSION_COUNT, 16},
+> +	{MAX_MBPF, 278528}, /* ((8192x4352)/256) * 2 */
+> +	{MAX_MBPS, 7833600}, /* max_load 7680x4320@60fps */
+> +	{NUM_VPP_PIPE, 4},
+> +	{HW_RESPONSE_TIMEOUT, HW_RESPONSE_TIMEOUT_VALUE},
+> +	{DMA_MASK, GENMASK(31, 29) - 1},
+> +	{CP_START, 0},
+> +	{CP_SIZE, 0x25800000},
+> +	{CP_NONPIXEL_START, 0x01000000},
+> +	{CP_NONPIXEL_SIZE, 0x24800000},
+Why this and not an array of enum-indexed u32s?
 
-> The implementation without the union obfuscates the type and makes it much
-> more opaque.
+> +};
+> +
+> +static struct plat_inst_cap instance_cap_data_sm8550[] = {
+you know all of the possible members here as well, you can just
+create a struct of actual configurations instead of turning them
+into generic capabilities that you have to parse either way at
+some point
 
-Some would say that that's the damn point of the wrapping..
+[...]
 
-You don't want non-core code futzing with the inside of the struct.
+> +
+> +static const struct bus_info sm8550_bus_table[] = {
+> +	{ NULL, "iris-cnoc", 1000, 1000     },
+> +	{ NULL, "iris-ddr",  1000, 15000000 },
+This is a copy of the common data from the previous patches that you're
+now dropping (why was it there in the first place then?). Is it specific
+to this platform, or can it be reused?
+> +};
+> +
+> +static const struct clock_info sm8550_clk_table[] = {
+> +	{ NULL, "gcc_video_axi0", GCC_VIDEO_AXI0_CLK, 0 },
+> +	{ NULL, "core_clk",       VIDEO_CC_MVS0C_CLK, 0 },
+> +	{ NULL, "vcodec_core",    VIDEO_CC_MVS0_CLK,  1 },
+> +};
+Are these the input pad names?
 
-> I finished addressing the rest of the comments and I have this series
-> and the next devmem TCP series ready to go, so I fired v2 of this
-> patchset. If one feels strongly about this let me know and I will
-> re-spin.
+> +
+> +static const char * const sm8550_clk_reset_table[] = { "video_axi_reset", NULL };
+Ditto
 
-You didn't address my feedback :|
+> +
+> +static const char * const sm8550_pd_table[] = { "iris-ctl", "vcodec", NULL };
+Ditto
 
-struct netmem which contains struct page by value is almost as bad
-as passing around pretend struct page pointers.
+> +
+> +static const char * const sm8550_opp_pd_table[] = { "mxc", "mmcx", NULL };
+Ditto
+
+> +
+> +static const struct bw_info sm8550_bw_table_dec[] = {
+> +	{ 2073600, 1608000, 2742000 },	/* 4096x2160@60 */
+> +	{ 1036800,  826000, 1393000 },	/* 4096x2160@30 */
+> +	{  489600,  567000,  723000 },	/* 1920x1080@60 */
+> +	{  244800,  294000,  372000 },	/* 1920x1080@30 */
+> +};
+> +
+> +static const struct reg_preset_info sm8550_reg_preset_table[] = {
+> +	{ 0xB0088, 0x0, 0x11 },
+lowercase hex for non-defines, please
+> +};
+> +
+> +static struct ubwc_config_data ubwc_config_sm8550[] = {
+> +	UBWC_CONFIG(8, 32, 16, 0, 1, 1, 1),
+I think it would be far more telling to drop this #define and fill
+in the values inline
+
+> +};
+> +
+> +struct platform_data sm8550_data = {
+> +	.bus_tbl = sm8550_bus_table,
+> +	.bus_tbl_size = ARRAY_SIZE(sm8550_bus_table),
+> +	.clk_tbl = sm8550_clk_table,
+> +	.clk_tbl_size = ARRAY_SIZE(sm8550_clk_table),
+> +	.clk_rst_tbl = sm8550_clk_reset_table,
+> +	.clk_rst_tbl_size = ARRAY_SIZE(sm8550_clk_reset_table),
+> +
+> +	.bw_tbl_dec = sm8550_bw_table_dec,
+> +	.bw_tbl_dec_size = ARRAY_SIZE(sm8550_bw_table_dec),
+> +
+> +	.pd_tbl = sm8550_pd_table,
+> +	.pd_tbl_size = ARRAY_SIZE(sm8550_pd_table),
+> +	.opp_pd_tbl = sm8550_opp_pd_table,
+> +	.opp_pd_tbl_size = ARRAY_SIZE(sm8550_opp_pd_table),
+> +
+> +	.reg_prst_tbl = sm8550_reg_preset_table,
+> +	.reg_prst_tbl_size = ARRAY_SIZE(sm8550_reg_preset_table),
+> +	.fwname = "vpu30_4v.mbn",
+> +	.pas_id = 9,
+> +
+> +	.core_data = core_data_sm8550,
+> +	.core_data_size = ARRAY_SIZE(core_data_sm8550),
+> +	.inst_cap_data = instance_cap_data_sm8550,
+> +	.inst_cap_data_size = ARRAY_SIZE(instance_cap_data_sm8550),
+> +	.ubwc_config = ubwc_config_sm8550,
+Unless any of these are going to be reused, please inline all of the
+values here..
+
+Konrad
 
