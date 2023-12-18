@@ -1,23 +1,23 @@
-Return-Path: <linux-kernel+bounces-4471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72BB6817DF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:14:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ACFE817DE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10F931F24875
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:14:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02A5CB2307B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E5C768F6;
-	Mon, 18 Dec 2023 23:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2949D760B4;
+	Mon, 18 Dec 2023 23:11:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F90076093
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3AC76093
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=devkernel.io
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=devkernel.io
 Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
