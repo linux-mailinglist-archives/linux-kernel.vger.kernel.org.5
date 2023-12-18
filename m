@@ -1,82 +1,104 @@
-Return-Path: <linux-kernel+bounces-3202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C94D816915
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:02:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10A8E81691B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC162B20BED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:02:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 445D21C22587
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8AC111BD;
-	Mon, 18 Dec 2023 09:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1E211188;
+	Mon, 18 Dec 2023 09:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="mMVeDO8/"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZagKMmn9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5D31171A;
-	Mon, 18 Dec 2023 09:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1702890149; bh=nXLNUybO72z9kq/7hDhdxKrWpyLZXnqSO0bXUnPnp04=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mMVeDO8/ys3Pr00NuGUnefiQQlpH4nhRpLWV1lUyi4n186pegseN3QF7u1MEMhnYQ
-	 QVpZrv4Ns+K1NGtGKoyZPfDGZ6rQYXMFzENJrXKuoSvnXJJ18FHhoElrweuO2tiwLh
-	 ttc2m0Lrem/Dev610bsLgYubo8CKch3zSEH5+9CRxVGIZRbbzqpeFUD2VgCgBhNXyo
-	 9Z5WTXpBQqgvc4T2uPEQ3z0C+SO4q0k1InOods7AyKgDruW1eId6SP8cMwbItTTmSw
-	 omzurgBEcDgiAzwASroncI0iN5dWGwsFq4oPG8xWyIv7D1fzT6kf12kIcxDQzn/ca9
-	 aR7mDXAKMTAkw==
-Received: by gofer.mess.org (Postfix, from userid 1000)
-	id A890910029E; Mon, 18 Dec 2023 09:02:29 +0000 (GMT)
-Date: Mon, 18 Dec 2023 09:02:29 +0000
-From: Sean Young <sean@mess.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 5/6] pwm: bcm2835: Allow PWM driver to be used in
- atomic context
-Message-ID: <ZYAKpXOgF1j03KPF@gofer.mess.org>
-References: <cover.1702369869.git.sean@mess.org>
- <e9e32c9789da3c90b5a2aa7d5a093120b76421fb.1702369869.git.sean@mess.org>
- <20231212160838.k4z4csy455a7qnje@pengutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C0911C9B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a1ca24776c3so721396866b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702890172; x=1703494972; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8oj5BsM/xGdC3KN8KGTSJH/xUgeBwNL/Afk9gki+yN4=;
+        b=ZagKMmn965hsrkwxh82v6nHzBduiyW5gLhVj4fqJiFzkFDlKcAs6cqf34oepW9E2tv
+         PeD7ogoqbczjEbTTtf4FRaa0QhQtBkPZetSqjJ79JI7pVApHp/rXDEjHNT9baUbzoESH
+         YyFofvfrGnhPuspyocT19lOosLE4t7vk5BCYJyQfoO3AGbj4XXEi+667SDWaS3Yrr1eG
+         9X1LJ3MKQrGwpXpjKf6UE2aUtB+ivzZKVg50tpzR1fRIUidXWgKKDsXbbyRcFpjQAIVy
+         1Dm1gP5QrnauFC3tYMhf83wxLmRBfmHkp2PMajiu4IkVr0Hq8YPL9Kspgc4zk92tIyUR
+         slLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702890172; x=1703494972;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8oj5BsM/xGdC3KN8KGTSJH/xUgeBwNL/Afk9gki+yN4=;
+        b=Ln2SD6eS8sk33aeuuUqCxSunkPLSHq0cKET4yIgmu4v6XO5f8lvBvxYaMELU6hyooO
+         VUrMcDvp1b3znZ38iqyiGHT48iCgJXYhtvPI3vcNZWz8QiFeGr1xnhZdrptrOYlMmzE3
+         6E0N6MuyDPX4tSUW4iOWYrF5xW0KudFQEvHFhy/noWk6G0s414ks7AUPBHcw2ZFeIsi2
+         De0T9tvEOVr8BLc8Xnc8ApXuzyT6SIv1HN7OzmRtx3j1Cx2up3lFbos+RbuhKVfiakmM
+         CeAGe+LlddMuHrmfHlOhFFRF9ce+hN+saSup8ubeIdNPSnmYBG1WQGeaGb2q6viRt+jQ
+         WZFw==
+X-Gm-Message-State: AOJu0YxRV8rSvWS7ZZVZpcz5vkvm9FTfd15V5FrHt4RGB2CWt07WTL/V
+	c7AHlWg1kpiUhRcX9ZxHvqOVDQ==
+X-Google-Smtp-Source: AGHT+IHS0mtHIvUG2u9ha9s798b2XIZD4KdzteJIQM8j9zcnguqcNxT/VI6ojy355UDA/EKpSNJeeQ==
+X-Received: by 2002:a17:907:6d0f:b0:a23:4cab:a076 with SMTP id sa15-20020a1709076d0f00b00a234caba076mr1970270ejc.33.1702890172710;
+        Mon, 18 Dec 2023 01:02:52 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id vh6-20020a170907d38600b00a0180de2797sm13884771ejc.74.2023.12.18.01.02.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 01:02:52 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: peter.griffin@linaro.org, Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com, 
+ alim.akhtar@samsung.com, mturquette@baylibre.com, sboyd@kernel.org, 
+ robh+dt@kernel.org, conor+dt@kernel.org, semen.protsenko@linaro.org, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, kernel-team@android.com
+In-Reply-To: <20231218064333.479885-1-tudor.ambarus@linaro.org>
+References: <20231218064333.479885-1-tudor.ambarus@linaro.org>
+Subject: Re: [PATCH v2] dt-bindings: clock: google,gs101: rename CMU_TOP
+ gate defines
+Message-Id: <170289017091.18651.1346933339464153967.b4-ty@linaro.org>
+Date: Mon, 18 Dec 2023 10:02:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231212160838.k4z4csy455a7qnje@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-On Tue, Dec 12, 2023 at 05:08:38PM +0100, Uwe Kleine-König wrote:
-> Hello Sean,
+
+On Mon, 18 Dec 2023 06:43:33 +0000, Tudor Ambarus wrote:
+> The gs101 clock defines from the bindings header are derived from the
+> clock register names found in the datasheet under some certain rules.
 > 
-> On Tue, Dec 12, 2023 at 08:34:04AM +0000, Sean Young wrote:
-> > @@ -169,6 +179,7 @@ static int bcm2835_pwm_suspend(struct device *dev)
-> >  {
-> >  	struct bcm2835_pwm *pc = dev_get_drvdata(dev);
-> >  
-> > +	clk_rate_exclusive_put(pc->clk);
-> >  	clk_disable_unprepare(pc->clk);
+> The CMU TOP gate clock defines missed to include the required "CMU"
+> differentiator which will cause collisions with the gate clock defines
+> of other clock units. Rename the TOP gate clock defines to include "CMU".
 > 
-> I thought this was the remove function, but that's suspend. Adding
-> clk_rate_exclusive_put() there is wrong.
+> [...]
 
-Nice catch - fixed in v9.
+Applied, thanks!
 
+[1/1] dt-bindings: clock: google,gs101: rename CMU_TOP gate defines
+      https://git.kernel.org/krzk/linux/c/35f32e39b4d9b436354c2a37623c393a2ac7cf87
 
-Sean
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 
