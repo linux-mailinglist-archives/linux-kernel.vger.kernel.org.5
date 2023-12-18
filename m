@@ -1,169 +1,130 @@
-Return-Path: <linux-kernel+bounces-3847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670368173DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:40:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D2988173E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:40:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFAB6B23058
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:40:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26A6A2815D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59E03064A;
-	Mon, 18 Dec 2023 14:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E18237863;
+	Mon, 18 Dec 2023 14:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tF/ZkDce"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o8S7Ru0T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CDA200C0
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:39:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2356bb40e3so95067766b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:39:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6761E52B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-553046ea641so2326231a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:40:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702910392; x=1703515192; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0pTaPp82Aa5VZmUHLjVfWpth1QdXOXHq0YobrMTPaUg=;
-        b=tF/ZkDceha8LK/6OvLLlhyrHVEOXJEcS0DaYFsoEE0SEuxGUuA8Z0COlkBTsLoy+Mr
-         IwelOXhWZqlHD7xq3ToJFnTR2Z/vzlnQYcshkmk14Wg9CxofTX8i2UL8BdCVXz0eZ05S
-         XF7Js10wYruR8gGRsruAUmULIfi4tvbaI4HrLrBUdrlG6ijsYbcLsZlVu6ccgq0LpPxm
-         N2xFlbCnYp+zliaLeqvmmTDuwdqiVJEsrstiFNmYrsNhUAhTP69lPl3c5VCm+LcRXj8c
-         YCDgpURPMFUFxfo287S31LIsd+VgUzFCEnux/0AaA2eva3LFpVPSxIhFKhsbzPmcevRS
-         7AZw==
+        d=linaro.org; s=google; t=1702910402; x=1703515202; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bQTHmPqAi3BiL6/SuUuJyEm6v6KImHr4PNYUjCrz2Do=;
+        b=o8S7Ru0TO0sOoJc4eHASjA7/NQDC/MG6s8TZpndgov9Y+waUpWvu+byzmaTaXLOOMS
+         xgoPPyuUE4uLkM4F/m9EKfwrHABK62mkAvdeC0b+rsXQ/1xrVCwylKltOjE8AXEUdqVj
+         ut18DPxyCCNLJEehmzIDRyDyww4QpzSN2oFbZh+fkSMcNoZ7G5VXBytNDQmSRMe/FKXO
+         8T6zKO7rFla4gx+GvaHpzsgu7oaC40KyfYJWiuJZPduKlP/fdZyYbxnadFuerNwSMT2Q
+         E9tHyhP6p9Brv61LgTVZPceH2tUPT2Hf5z1XOIOclovbkTMq9rfd7RUdgXovPY0yzKBK
+         XbFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702910392; x=1703515192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0pTaPp82Aa5VZmUHLjVfWpth1QdXOXHq0YobrMTPaUg=;
-        b=udRuTKgfOBTG/kHV9/UTNByfEAWNvI2XCWPyVGubo5ajqDU7IY0RSazxUtzqT6RpC1
-         jNPVSNCzl/EafcVkChTTHBpyZV9Z0ZpJGrZNK+AID+bdch9G8XD0x9z5g+eXEfj6unZ+
-         4g+deJMyvk5Gwm9LQlKaWFBxRUXehUPOXdZoGWMDTGhzQF98EqTXfA4jWkrhKQJT8a5s
-         4pAor5KEzh4SftY0Qi2oYZky4D4pBi7EzMOaQ6z7wjU+pW+HC/AZLBGNshl5+dFFOCD4
-         OcYe58yiLad7o0ZxF74i87YFxUMCJsjBFGh2PZFdBdFTP8h3w8YQiS1ZFkLb3HGQa+QZ
-         8mVw==
-X-Gm-Message-State: AOJu0YwEDQ52lNkZ2FLTIYrDW0p0F/gZnRaoHnUQY0XJS4I/16KN482T
-	s/PXNRIpegnkno8SqieNWKG0661gQdkL23SKvmAXNg==
-X-Google-Smtp-Source: AGHT+IErhmQSsH2j5h0Y+N6BksWa046h7FS1zKFIgfG1GpHJ04zswD4nFe+yo9vE93FPqIp1665sVEPOkMGUwGXIA10=
-X-Received: by 2002:a17:906:6847:b0:a23:5412:c4a5 with SMTP id
- a7-20020a170906684700b00a235412c4a5mr1280318ejs.61.1702910391612; Mon, 18 Dec
- 2023 06:39:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702910402; x=1703515202;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bQTHmPqAi3BiL6/SuUuJyEm6v6KImHr4PNYUjCrz2Do=;
+        b=svR7nNCrz+9+vnWHlgxgEbc2BjvJnbHxwG+TYsx7K89poN0Dt6BnRi4nvxp48MvFHB
+         Sxmu1whLsN3wGbPO1+3Fl611BFA2WIkVlYzwIX6l4f7GMvI9ImilS5L7zzw420WiUqgN
+         qizyXclZ6nhl0qW8Qu3I5ZF19sZ1a1kY4MEgDWGZJxfPnoQw7+aPOWTq/j35fayLPm5Q
+         /gSJ6Fw95PfayjCeOeKz1ViPPxa/s36ZQwN2kV1XwTOeI0jpRJWh903PIN8pbIF3u7b9
+         8qs3X7vQP6Lnx5hndEkPO/2b0JA0zsu24We01Hg14OuthVn9T3997/guSlXVhpZ3605A
+         MoWA==
+X-Gm-Message-State: AOJu0YxRDH/tK2H699omGqvQS1MaMGMh1eKFmLoM23yLjlWVCxGrQZZE
+	KZ0lCatE2msDsTce0O15fVWF6Q==
+X-Google-Smtp-Source: AGHT+IGieG6PHSpO7kAdb+8EmH7ka7SFF91cTZxrMXWbWpVh5X/q1rwqv3Vyvx+8ZcYUYPpLejfn/g==
+X-Received: by 2002:a17:906:1f4d:b0:a19:a1ba:bae7 with SMTP id d13-20020a1709061f4d00b00a19a1babae7mr3766338ejk.141.1702910402457;
+        Mon, 18 Dec 2023 06:40:02 -0800 (PST)
+Received: from [10.167.154.1] (178235179137.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.137])
+        by smtp.gmail.com with ESMTPSA id o18-20020a17090611d200b00a2362ef4387sm654930eja.49.2023.12.18.06.40.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 06:40:02 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Date: Mon, 18 Dec 2023 15:40:00 +0100
+Subject: [PATCH] thermal: core: Print out thermal zone name on
+ update_temperature error
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
- <20231213-zswap-dstmem-v1-5-896763369d04@bytedance.com> <CAJD7tkb5cKopA-Lfvtsn7sqgqjRf2kyaMwZhhp6SkveNEwArGw@mail.gmail.com>
- <20231214142320.f5cf319e619dbb2127c423e9@linux-foundation.org>
- <CAJD7tkaJVB+BoYmcO3MtGD7Ku88Sjk-VAK640h9B-aQzyGPdZQ@mail.gmail.com> <20231218140313.GA19167@cmpxchg.org>
-In-Reply-To: <20231218140313.GA19167@cmpxchg.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 18 Dec 2023 06:39:13 -0800
-Message-ID: <CAJD7tkbdCv7CMy71UOCefR2Y1BXevJ2eMmYwk+=e=GPcCqn3+w@mail.gmail.com>
-Subject: Re: [PATCH 5/5] mm/zswap: cleanup zswap_reclaim_entry()
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Chengming Zhou <zhouchengming@bytedance.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Chris Li <chriscli@google.com>, 
-	Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>, 
-	Vitaly Wool <vitaly.wool@konsulko.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231218-topic-thermaldbg-v1-1-451bcb723e1d@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAL9ZgGUC/x2NywrCMBAAf6Xs2UAejai/Ih426dosxLRsqgil/
+ +7icQaG2aGTMHW4DTsIfbjz0hTcaYBcsM1keFIGb31w3l3MtqyczVZIXlinNBuM12DtGOIYz6B
+ Zwk4mCbZcNGzvWlWuQk/+/j/3x3H8AJUeitZ3AAAA
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+ Lukasz Luba <lukasz.luba@arm.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702910400; l=1225;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=UU7uKTLN3epJ08kwExjhQmhXBD0r95XXPC6qw1eXEh4=;
+ b=Q+80yXiJ0lRIuo9VrUzn28vbeGgMSh97SH+S/F1mpK+OYOMmKiVcZfD0RqeQlgjdcaarchEAE
+ ydCTp+GOpjcBkEoRxIlKLtjUyc9Aqg37NWxIYBTeZHmiULKGfh7qFkg
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On Mon, Dec 18, 2023 at 6:03=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Thu, Dec 14, 2023 at 02:41:26PM -0800, Yosry Ahmed wrote:
-> > On Thu, Dec 14, 2023 at 2:23=E2=80=AFPM Andrew Morton <akpm@linux-found=
-ation.org> wrote:
-> > >
-> > > On Wed, 13 Dec 2023 17:02:25 -0800 Yosry Ahmed <yosryahmed@google.com=
-> wrote:
-> > >
-> > > > On Tue, Dec 12, 2023 at 8:18=E2=80=AFPM Chengming Zhou
-> > > > <zhouchengming@bytedance.com> wrote:
-> > > > >
-> > > > > Also after the common decompress part goes to __zswap_load(), we =
-can
-> > > > > cleanup the zswap_reclaim_entry() a little.
-> > > >
-> > > > I think you mean zswap_writeback_entry(), same for the commit title=
-.
-> > >
-> > > I updated my copy of the changelog, thanks.
-> > >
-> > > > > -       /*
-> > > > > -        * If we get here because the page is already in swapcach=
-e, a
-> > > > > -        * load may be happening concurrently. It is safe and oka=
-y to
-> > > > > -        * not free the entry. It is also okay to return !0.
-> > > > > -        */
-> > > >
-> > > > This comment should be moved above the failure check of
-> > > > __read_swap_cache_async() above, not completely removed.
-> > >
-> > > This?
-> >
-> > Yes, thanks a lot. Although I think a new version is needed anyway to
-> > address other comments.
-> >
-> > >
-> > > --- a/mm/zswap.c~mm-zswap-cleanup-zswap_reclaim_entry-fix
-> > > +++ a/mm/zswap.c
-> > > @@ -1457,8 +1457,14 @@ static int zswap_writeback_entry(struct
-> > >         mpol =3D get_task_policy(current);
-> > >         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
-> > >                                 NO_INTERLEAVE_INDEX, &page_was_alloca=
-ted, true);
-> > > -       if (!page)
-> > > +       if (!page) {
-> > > +               /*
-> > > +                * If we get here because the page is already in swap=
-cache, a
-> > > +                * load may be happening concurrently. It is safe and=
- okay to
-> > > +                * not free the entry. It is also okay to return !0.
-> > > +                */
-> > >                 return -ENOMEM;
-> > > +       }
-> > >
-> > >         /* Found an existing page, we raced with load/swapin */
-> > >         if (!page_was_allocated) {
->
-> That's the wrong branch, no?
->
-> !page -> -ENOMEM
->
-> page && !page_was_allocated -> already in swapcache
+Currently, we can encounter an error like this:
 
-Ah yes, my bad.
+  thermal thermal_zone48: failed to read out thermal zone (-19)
 
->
-> Personally, I don't really get the comment. What does it mean that
-> it's "okay" not to free the entry? There is a put, which may or may
-> not free the entry if somebody else is using it. Is it explaining how
-> lifetime works for refcounted objects? I'm similarly confused by the
-> "it's okay" to return non-zero. What is that trying to convey?
->
-> Deletion seemed like the right choice here, IMO ;)
+It's good to know that there's been an issue, but on some occasions
+(like the error happening in the middle of a platform crash), one may
+not be able to look up what kind of thermal zone that is.
 
-It's not the clearest of comments for sure. I think it is just trying
-to say that it is okay not to write back the entry from zswap and to
-fail, because the caller will just try another page. I did not like
-silently deleting the comment during the refactoring. How about
-rewriting it to something like:
+Add the TZ name to the error message in order to speed up debugging.
 
-/*
- * If we get here because the page is already in the swapcache, a
- * load may be happening concurrently. Skip this page, the caller
- * will move on to a different page.
- */
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/thermal/thermal_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 2415dc50c31d..a6ccf93eb34e 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -403,8 +403,8 @@ static void update_temperature(struct thermal_zone_device *tz)
+ 	if (ret) {
+ 		if (ret != -EAGAIN)
+ 			dev_warn(&tz->device,
+-				 "failed to read out thermal zone (%d)\n",
+-				 ret);
++				 "failed to read out thermal zone %s (%d)\n",
++				 tz->type, ret);
+ 		return;
+ 	}
+ 
+
+---
+base-commit: ceb2fe0d438644e1de06b9a6468a1fb8e2199c70
+change-id: 20231218-topic-thermaldbg-a59300435456
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
