@@ -1,122 +1,86 @@
-Return-Path: <linux-kernel+bounces-4385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D605817C59
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:01:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 513A3817C5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 821A61C223B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:01:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC3A8B23650
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599E57346C;
-	Mon, 18 Dec 2023 21:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="YIfzEHM+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F241B7348F;
+	Mon, 18 Dec 2023 21:05:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9B11E4B7
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 21:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-28659348677so2535544a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:00:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1702933256; x=1703538056; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yCl70P2eXwsD32MiqrmB1dJU3mIh1ffQIY/OsyTsmc0=;
-        b=YIfzEHM+joXJA0KroR1tlepEpaEEtwx3YNIoTwcAOssJtY2DBaMpSVe/99rJvzP1GW
-         4vhYsfIt5IUNmJkwZ254MtnQSKibPrA3lSAEpd8/capeZiA2R5SzsAAOlc93WtFzR+cF
-         Sw6eCJ5xI487j2fqG8bJr+HDQwfdAJExTTqPOYhQZJYGSZbooJ3Ds0yAPIE1IbhaLgaT
-         hQx4d08oswccFwYC/AF2LPUftZ45WyKsDH6xfO915PYOx9jED9tB5Fdm7/YjWxnZmMJF
-         /3KxAhtJpbRlu8Y1NN2I3FYHD14lk7oEewD+HZGsPqXWK/iOB6U2fjAz6pvoZtpHBoQF
-         ASjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702933256; x=1703538056;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yCl70P2eXwsD32MiqrmB1dJU3mIh1ffQIY/OsyTsmc0=;
-        b=lu95sCE2pPg9yFWVlwPkWdyhTjKyPjASCpvfXuwtEK/BNSbkkgQa9CiDr57ozjRssI
-         cWTwM3bO/zkxpl3RIJiJnz0tSRjZPU6uPEixuzKuIgMD56NPJJ0crm6plaMwROquXb6z
-         4r7EnOTYlomOpxX8buiqeDlVw9DWbA5hPFJD2NlQEtoopr/TQQ9ysUyaU3sqNtzL8c0W
-         5vayLJA70MjLC1UJU8UasmIjZzdhE7Xz63M7BtgtAH3gB0a/wZNBNC39Puxe7hSIZLO3
-         BJrw3JppDCbkvmlMgj5r5QOea+HaGBqX+9XFz1px8Exwkyl4n49ZB/P3w+IZVGkoWAZS
-         bdjg==
-X-Gm-Message-State: AOJu0YxrQAfZkUghPMjO8+4iGEp1oUuLwgfgEJfdyZNBCkxdKER86zv/
-	CWdVDHCoSvr5N4cMM9gTcbqVHw==
-X-Google-Smtp-Source: AGHT+IFRkQHZVHpggsuenU8/ddppEpd5S2UPqIefRShVpVOZW68bvcOoHhDR4JetnCX3kBkUOmYAtA==
-X-Received: by 2002:a17:90a:4b4f:b0:28b:5fc3:36c9 with SMTP id o15-20020a17090a4b4f00b0028b5fc336c9mr2440pjl.29.1702933256147;
-        Mon, 18 Dec 2023 13:00:56 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id sh18-20020a17090b525200b00286e0c91d73sm20565584pjb.55.2023.12.18.13.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 13:00:55 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rFKjM-00A8r7-12;
-	Tue, 19 Dec 2023 08:00:52 +1100
-Date: Tue, 19 Dec 2023 08:00:52 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0310A2D
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 21:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFKnr-0002lP-0x; Mon, 18 Dec 2023 22:05:31 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFKnq-00GmWx-AZ; Mon, 18 Dec 2023 22:05:30 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFKnq-005Y6C-1Q; Mon, 18 Dec 2023 22:05:30 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: kernel@pengutronix.de,
 	linux-kernel@vger.kernel.org
-Subject: Re: Convert write_cache_pages() to an iterator v3
-Message-ID: <ZYCzBCqetc+tLmq+@dread.disaster.area>
-References: <20231218153553.807799-1-hch@lst.de>
+Subject: [PATCH 0/2] parport: Convert to platform remove callback returning void
+Date: Mon, 18 Dec 2023 22:05:17 +0100
+Message-ID: <cover.1702933181.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153553.807799-1-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=841; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=NqpmQLSPHcC2yz+6ePrX/QuLgXrvJdL3SxGAU6DN9XA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlgLQMgC/Iq/GHBw6WgR8xnEPtf4JApJhnSdHXY xcvmGvMAzWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYC0DAAKCRCPgPtYfRL+ Tvo1CACrvkfCfOPMM65fgJySkgUA0rfOMRoQSKHHlbsWuan5wr1rx+EA++5Sd0Mv7A7zrCJl2/8 SpJd9dUC4EV1ERTJNqBFfb9WfUuYRxoO8tTnjxmlw5m5CNxvcyP/hpHzfF18ut9RM8yrepmF7Hf NHgcV1uuK/iyMj+Ea2sNkOFwbT+Qmz+tMqMcZy6WXrr/Lwsv2MKAnLi2TlrN3DVflZ6D50vgB+/ DcuN13ggn4dhem3d9qLLRX3xAxLrO6XCPEXklUq7/hLZ2otgHbo1f5eUXBXlMYcG/aNCMIkFoqd BcAhmB8E75QQUF6ry3LS66OrOlPgOAfjvtTzsyNixJWZpQdY
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, Dec 18, 2023 at 04:35:36PM +0100, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this is basically a evolution of the series Matthew Wilcox originally
-> set in June.  Based on comments from Jan a Brian this now actually
-> untangles some of the more confusing conditional in the writeback code
-> before refactoring it into the iterator.  Because of that all the
-> later patches need a fair amount of rebasing and I've not carried any
-> reviewed-by over.
-> 
-> The original cover letter is below:
-> 
-> Dave Howells doesn't like the indirect function call imposed by
-> write_cache_pages(), so refactor it into an iterator.  I took the
-> opportunity to add the ability to iterate a folio_batch without having
-> an external variable.
-> 
-> This is against next-20230623.  If you try to apply it on top of a tree
-> which doesn't include the pagevec removal series, IT WILL CRASH because
-> it won't reinitialise folio_batch->i and the iteration will index out
-> of bounds.
-> 
-> I have a feeling the 'done' parameter could have a better name, but I
-> can't think what it might be.
-> 
-> Diffstat:
->  include/linux/pagevec.h   |   18 ++
->  include/linux/writeback.h |   19 ++
->  mm/page-writeback.c       |  333 +++++++++++++++++++++++++---------------------
->  3 files changed, 220 insertions(+), 150 deletions(-)
+Hello,
 
-I've just done a quick scan of the code - nothing stands out to me
-as problematic, and I like how much cleaner the result is.
+this series converts all drivers below drivers/parport to use
+.remove_new(). See commit 5c5a7680e67b ("platform: Provide a remove
+callback that returns no value") for an extended explanation and the
+eventual goal. The TL;DR; is to make it harder for driver authors to
+leak resources without noticing.
 
-Acked-by: Dave Chinner <dchinner@redhat.com>
+This is merge window material. The two patches are independent of each
+other, so they could be applied individually.
 
+Best regards
+Uwe
+
+Uwe Kleine-König (2):
+  parport: amiga: Convert to platform remove callback returning void
+  parport: sunbpp: Convert to platform remove callback returning void
+
+ drivers/parport/parport_amiga.c  | 5 ++---
+ drivers/parport/parport_sunbpp.c | 6 ++----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
+
+
+base-commit: ceb2fe0d438644e1de06b9a6468a1fb8e2199c70
 -- 
-Dave Chinner
-david@fromorbit.com
+2.42.0
+
 
