@@ -1,198 +1,162 @@
-Return-Path: <linux-kernel+bounces-2985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B86C4816592
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:11:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46733816596
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B6C11F22801
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:11:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 371101C22154
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6C9569F;
-	Mon, 18 Dec 2023 04:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158235690;
+	Mon, 18 Dec 2023 04:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ub+IdUV/"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="KOVWs4pY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2035.outbound.protection.outlook.com [40.92.22.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F0F5671
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 04:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702872653; x=1734408653;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Tmnb2JQEF4jHnYCeJg/zUcmFTsCzvUpFIPHBRrPtzsE=;
-  b=Ub+IdUV/auHyZlUGo2hFCW/s6YxT7b1Cw6MzkdDPCdf5dgF5s/XiIBva
-   +pwSMHrBewe1QJ+kdvAGKKXipjEUdiep+4ssDw5tqU0h6weMBQVKvuygh
-   BoO7QFJJHftKyJqjl4Y1Fresw/5/Q0918eOpB47qh7y0RY1AyaoJ8rEoD
-   9XFuskSBnrrfhkvgj+T3WAOf0T+4R940mi25eZJ6/L4jXrmh5oz/HB23w
-   HQU6wRkAnOzFLPUwnMKONehgUwfBrYxlgJWBAICwwPxjfyg1LZgZe9MhW
-   Mq8aWPU+FPW5mlD/Q/2tiauNuPE58pbLqct3lXZO/tz/iXF9Rfvwp/cVY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="2289481"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="2289481"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 20:10:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="841339030"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="841339030"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Dec 2023 20:10:50 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rF4xs-0003kL-0w;
-	Mon, 18 Dec 2023 04:10:48 +0000
-Date: Mon, 18 Dec 2023 12:10:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Daniel Hill <daniel@gluo.nz>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Kent Overstreet <kmo@daterainc.com>
-Subject: fs/bcachefs/mean_and_variance.c:67: warning: Function parameter or
- struct member 's' not described in 'mean_and_variance_get_mean'
-Message-ID: <202312181258.ae2vsFwE-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92806538D;
+	Mon, 18 Dec 2023 04:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=noULYUg4UNrp7XyyAw1WnlDX7b4EZGqThYBkK+/zJIod9GTFqGrYR7J/JeG+JOzyEoZgSolHRyxJSnnptMwqbIAwiyaoQ9l5P+NHJw5aDsZ8C2D3m8GrEpMg6zUWyNFUonpg7BV4gqJVcGShh3m5LrjiaQcEjwRR7qnG7CO4cSTiYiDoD3zlHWTLCiQ+HDDQo6kTqz4Z8ah/1oIrKUltT2ighnjt9MG8HuAA/9oZKTuKTVGZchbRthvOkPyPTEx2YF+pgbFoQfLGLgB53n2o9vLxobKqJFa9hvYJgVVoEzoVM1SWKeYbGTlz6oyAPuUcZHVUZDc+Od2KKSGHSY9WLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=V7LoElwMN7arx3uYQfs+gIkmMqkFMhQjtR2nsLeLhiw=;
+ b=IycW9J3Xk1HX8HLrf6fPBu+niVlvhypM/ihe1Q1DTKRP8LSJg3n+uuipGWIOK1zaiYKOOkVVqpDVU2moNMvAzDSOBzA2cGGM+8/Snhx9AWACSbEJcNBNp10rINTtOF1xvMETVUm46BSrfSzI4WUKuYi3tZ3FYPa8rkWO5hNnx0Z1UqgSF/0DHTDIbPSRW4tjWxGT44HsXXEsAR7CMxS4WkpUsSxiTxk1O8r/DGDttt5kOqMToH/IiRUVU6Eo1G0HINKmZhiJYMQwrYtxZHDCrYk/7VWKPcA9daZuK3HWZ7WCpdqH9qv9yS9s/Q3v8UrE0+712jdSdH30sysHLfVkDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V7LoElwMN7arx3uYQfs+gIkmMqkFMhQjtR2nsLeLhiw=;
+ b=KOVWs4pYJhGnI+3l1Ukbf3wNMj6UzSSWYCNsw10GoOG4CxLdDzEeYFq1+ERMnIGVZMmgbyCv5d2YKkWhd4C9jqA7k1aL2dF6lwxCxjlXO12C1kZZv23fryRWHDzWZ8sYF+LwTed3M1/DNiLEF33eIoYSf4vK5y5RbaqIzUmdW1nsazrwn9ZeoeijDT3CnCqV3aUKMpGDmY+fQALmhwXNR/m+2VRhkCCtiKRXRxVYpWHoA44/K1QSzJTHcvGhFXrUkgZ461+kj7hXNVQWii8MZk9NhqLsTnJwFtNiTPCI7SQctPEtYZUEZkCyGk5Kf8cm+r1baAKOWExu7UGGnASPBQ==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by PH7PR20MB6138.namprd20.prod.outlook.com (2603:10b6:510:2bf::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
+ 2023 04:15:40 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
+ 04:15:40 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	a.zummo@towertech.it,
+	alexandre.belloni@bootlin.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor@kernel.org,
+	conor+dt@kernel.org,
+	chao.wei@sophgo.com,
+	unicorn_wang@outlook.com,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: Inochi Amaoto <inochiama@outlook.com>,
+	linux-rtc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dlan@gentoo.org
+Subject: Re: [PATCH v2 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
+Date: Mon, 18 Dec 2023 12:15:14 +0800
+Message-ID:
+ <IA1PR20MB49538A79892CC58B13C61DB9BB90A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231217110952.78784-4-qiujingbao.dlmu@gmail.com>
+References: <20231217110952.78784-4-qiujingbao.dlmu@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [vMBBASEldvm2F6kW7LZSyh62g/HAaQlI7eW1g9dBMCM=]
+X-ClientProxiedBy: TY2PR06CA0045.apcprd06.prod.outlook.com
+ (2603:1096:404:2e::33) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <20231218041514.579018-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH7PR20MB6138:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83466a76-86a5-4734-e556-08dbff7ffeb9
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	exqwH3famwu1triOiLxP2PSSR/W0PlMlq//YYj/bd0DHKI7wQt5NeUFhpX4447h+I6GW9lG8ptTYovwxv+xtr+unmqLdDBaFUE0jeLoaOQSAt94bT7zdP5/Zoi8VvbfB236dvCVfFu5TYrYzrgSMW02aOdsSU8M2ejBQbVizgWBHH/pGe57Gt1enP/2z/Yz8mT+RNDjhtCS/lCDY+/qjc2yaaFp7r2X90gDcx8xhwr45t2bzWJeEuDZ4J44eumDKBJdK2spLpneQKUEd30SuMSTGe6ZvsKgYC/XUpIg+SqLKj12LXFc2bhy6h54WRFojuAfhbMruRhuXA7xEKQvkmgU7JJWTrLVt4/UIguatLK8W3DxNyGh9VPrHBMkTf5NhJ6PmnPZ0dG7zmbpMTniBAYKIWxFaoJiovprWF/R0BRgv2HE7ch3yQmSuqAHOS1xGUTHWSih29s+l2muRFKQXOlDeVpc8XjDnvflcQ9YuotsNsl6OrGPd4v7isV5Q3zZ92ONk7XIlL4YTCPNumNV+PKABHeHZYQneqN2WyWzaywAGimCl6x6E8yGyYUj/tHOAnBn5MMieQZCnkxihYbLRNH7KjpoyEwj/qcYst9l2qNHIsLwf+U65lB+NMviQjqrA
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?WEniHVH8XAqMsEpTglnfjTEDLB0yX/ViTidmXb5Z4aOi8jCmgm0vCKQ3Edxx?=
+ =?us-ascii?Q?rIVvLirawhWEN2PEJIrolOnKKPWj1WxDMAsj3ci5klTsfRGVBtiGJCttuYTF?=
+ =?us-ascii?Q?NgBYMM6BxBnyyeyeGnwGjpe6kz9rjupGHKn4a232UMv19QBPSOCjsLZj7nW+?=
+ =?us-ascii?Q?PfCBvtjRMxx4IrvbllKpD+7FQP4O2/PdaYN45r+zMbYdw26nY1De6SQYzylF?=
+ =?us-ascii?Q?Adus3lOyGdSGYCZWMnvnTNnsLcuq2Odk3NLg29EkfizyGsfAId2isxKuuTrH?=
+ =?us-ascii?Q?q5iVr5/5GYt0d+dwfCGJWQVJ4NyLyEY5S3cexNOyD0DsX+LrZxnBfSWvCAAk?=
+ =?us-ascii?Q?roTI0JBDgfwEUtcAWbUKJ1wYD5PL96ztdmQ6Q4QNKLkzk+KfiZ22DLjoivBE?=
+ =?us-ascii?Q?WqO3+Q2TwVhO5vRVbYZgU3r1JLBcpBznzq79ZVR87PWU5RvisizVnDNe292P?=
+ =?us-ascii?Q?6nsHg2b7UmvH4TTZvUG6QWqjI6AG9PKqZk0UsHdu4YhMOacp7L9AVh7Bnawg?=
+ =?us-ascii?Q?6NcX4i+8mYwFHVvPX7NEMoq3e8OpLZCiGlVJaEQat0rmuWwKPBfeMR3UzUgH?=
+ =?us-ascii?Q?km1kF+hDRyQEk57syQ0LOo3NPiNaEecXVgnFw4LHlr9hYq/pgSh04Ow6IdHQ?=
+ =?us-ascii?Q?F+cjSGShpjzjkHii639JuJbcQaZ2+MLclMQ068dgTD5OA0CBCcmvBJfe0pvR?=
+ =?us-ascii?Q?FOb70/3ztsLHUvbtBEUsjVy6+lsiDvn1mNKULA6MpfsiLT0Gq+2ok8o2g4fS?=
+ =?us-ascii?Q?rCR+aOy9LPER4bpokq5R7yUNeosFZvCHH5Tzm/yVZVn95ZBfl7/b1SdP5TaU?=
+ =?us-ascii?Q?MW7kVqjrRp5IQFhfIUwn7wWLdOvx592mfndQyP73J8DUw7pTOsBZxW5McyCZ?=
+ =?us-ascii?Q?WeLL5m5ulELI8l5yAvj1hd1EiaIJtMlY6kRQ8uvHnsQMGDfHvUbbc8rhde9T?=
+ =?us-ascii?Q?cjfhBHscRwe9AfmZGaunD4IE2hbTAGlDIXkQin+cmFTcHC6jrvJsvyzw76PT?=
+ =?us-ascii?Q?CJhgzAUR2dnsjVw0ewBQlB8gmkKOP11HEDfZjXMOD3mfEgtzQiU4AoNuQZcv?=
+ =?us-ascii?Q?wf0jdtf+Cx9dZAq9H16hpmECFqY2zDSaaDA6p5Tuh80asitXK89bkn6wHunw?=
+ =?us-ascii?Q?cNQMhuOTw54QCQ2fu7qMolMjCNiALbgbxotwz4gxV1CgQ2UQx+wB3/9yBzCO?=
+ =?us-ascii?Q?GQHGPGZAkQfgXj2hHeGO5D6r8WCCHnyhQoup9qNqCqH8LpML61vMU+dX7AY?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83466a76-86a5-4734-e556-08dbff7ffeb9
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 04:15:40.5157
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR20MB6138
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
-commit: 92095781e0f607e735971c1a6462ca6dad8826d2 bcachefs: Mean and variance
-date:   8 weeks ago
-config: i386-buildonly-randconfig-002-20231218 (https://download.01.org/0day-ci/archive/20231218/202312181258.ae2vsFwE-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312181258.ae2vsFwE-lkp@intel.com/reproduce)
+>Add the rtc device tree node to cv1800 SoC.
+>
+>Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+>---
+> arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 7 +++++++
+> 1 file changed, 7 insertions(+)
+>
+>diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>index df40e87ee063..429bee76f677 100644
+>--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>+++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>@@ -119,5 +119,12 @@ clint: timer@74000000 {
+> 			reg = <0x74000000 0x10000>;
+> 			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
+> 		};
+>+
+>+		rtc@5025000 {
+>+			compatible = "sophgo,cv1800-rtc";
+>+			reg = <0x5025000 0x1000>, <0x5026000 0x1000>;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312181258.ae2vsFwE-lkp@intel.com/
+>+			clocks = <&osc>;
 
-All warnings (new ones prefixed by >>):
+IIRC, the clock is not osc, but the clock controller with id CLK_RTC_25M.
+Please read the manual again and ensure this is the right clock.
 
->> fs/bcachefs/mean_and_variance.c:67: warning: Function parameter or struct member 's' not described in 'mean_and_variance_get_mean'
->> fs/bcachefs/mean_and_variance.c:78: warning: Function parameter or struct member 's1' not described in 'mean_and_variance_get_variance'
->> fs/bcachefs/mean_and_variance.c:94: warning: Function parameter or struct member 's' not described in 'mean_and_variance_get_stddev'
->> fs/bcachefs/mean_and_variance.c:108: warning: Function parameter or struct member 's' not described in 'mean_and_variance_weighted_update'
->> fs/bcachefs/mean_and_variance.c:108: warning: Function parameter or struct member 'x' not described in 'mean_and_variance_weighted_update'
-   fs/bcachefs/mean_and_variance.c:108: warning: Excess function parameter 's1' description in 'mean_and_variance_weighted_update'
-   fs/bcachefs/mean_and_variance.c:108: warning: Excess function parameter 's2' description in 'mean_and_variance_weighted_update'
->> fs/bcachefs/mean_and_variance.c:134: warning: Function parameter or struct member 's' not described in 'mean_and_variance_weighted_get_mean'
->> fs/bcachefs/mean_and_variance.c:143: warning: Function parameter or struct member 's' not described in 'mean_and_variance_weighted_get_variance'
->> fs/bcachefs/mean_and_variance.c:153: warning: Function parameter or struct member 's' not described in 'mean_and_variance_weighted_get_stddev'
-
-
-vim +67 fs/bcachefs/mean_and_variance.c
-
-    62	
-    63	/**
-    64	 * mean_and_variance_get_mean() - get mean from @s
-    65	 */
-    66	s64 mean_and_variance_get_mean(struct mean_and_variance s)
-  > 67	{
-    68		return s.n ? div64_u64(s.sum, s.n) : 0;
-    69	}
-    70	EXPORT_SYMBOL_GPL(mean_and_variance_get_mean);
-    71	
-    72	/**
-    73	 * mean_and_variance_get_variance() -  get variance from @s1
-    74	 *
-    75	 * see linked pdf equation 12.
-    76	 */
-    77	u64 mean_and_variance_get_variance(struct mean_and_variance s1)
-  > 78	{
-    79		if (s1.n) {
-    80			u128_u s2 = u128_div(s1.sum_squares, s1.n);
-    81			u64  s3 = abs(mean_and_variance_get_mean(s1));
-    82	
-    83			return u128_lo(u128_sub(s2, u128_square(s3)));
-    84		} else {
-    85			return 0;
-    86		}
-    87	}
-    88	EXPORT_SYMBOL_GPL(mean_and_variance_get_variance);
-    89	
-    90	/**
-    91	 * mean_and_variance_get_stddev() - get standard deviation from @s
-    92	 */
-    93	u32 mean_and_variance_get_stddev(struct mean_and_variance s)
-  > 94	{
-    95		return int_sqrt64(mean_and_variance_get_variance(s));
-    96	}
-    97	EXPORT_SYMBOL_GPL(mean_and_variance_get_stddev);
-    98	
-    99	/**
-   100	 * mean_and_variance_weighted_update() - exponentially weighted variant of mean_and_variance_update()
-   101	 * @s1: ..
-   102	 * @s2: ..
-   103	 *
-   104	 * see linked pdf: function derived from equations 140-143 where alpha = 2^w.
-   105	 * values are stored bitshifted for performance and added precision.
-   106	 */
-   107	void mean_and_variance_weighted_update(struct mean_and_variance_weighted *s, s64 x)
- > 108	{
-   109		// previous weighted variance.
-   110		u8 w		= s->weight;
-   111		u64 var_w0	= s->variance;
-   112		// new value weighted.
-   113		s64 x_w		= x << w;
-   114		s64 diff_w	= x_w - s->mean;
-   115		s64 diff	= fast_divpow2(diff_w, w);
-   116		// new mean weighted.
-   117		s64 u_w1	= s->mean + diff;
-   118	
-   119		if (!s->init) {
-   120			s->mean = x_w;
-   121			s->variance = 0;
-   122		} else {
-   123			s->mean = u_w1;
-   124			s->variance = ((var_w0 << w) - var_w0 + ((diff_w * (x_w - u_w1)) >> w)) >> w;
-   125		}
-   126		s->init = true;
-   127	}
-   128	EXPORT_SYMBOL_GPL(mean_and_variance_weighted_update);
-   129	
-   130	/**
-   131	 * mean_and_variance_weighted_get_mean() - get mean from @s
-   132	 */
-   133	s64 mean_and_variance_weighted_get_mean(struct mean_and_variance_weighted s)
- > 134	{
-   135		return fast_divpow2(s.mean, s.weight);
-   136	}
-   137	EXPORT_SYMBOL_GPL(mean_and_variance_weighted_get_mean);
-   138	
-   139	/**
-   140	 * mean_and_variance_weighted_get_variance() -- get variance from @s
-   141	 */
-   142	u64 mean_and_variance_weighted_get_variance(struct mean_and_variance_weighted s)
- > 143	{
-   144		// always positive don't need fast divpow2
-   145		return s.variance >> s.weight;
-   146	}
-   147	EXPORT_SYMBOL_GPL(mean_and_variance_weighted_get_variance);
-   148	
-   149	/**
-   150	 * mean_and_variance_weighted_get_stddev() - get standard deviation from @s
-   151	 */
-   152	u32 mean_and_variance_weighted_get_stddev(struct mean_and_variance_weighted s)
- > 153	{
-   154		return int_sqrt64(mean_and_variance_weighted_get_variance(s));
-   155	}
-   156	EXPORT_SYMBOL_GPL(mean_and_variance_weighted_get_stddev);
-   157	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>+			interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+>+		};
+> 	};
+> };
+>--
+>2.25.1
+>
 
