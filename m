@@ -1,291 +1,229 @@
-Return-Path: <linux-kernel+bounces-3854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 992508173FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:44:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B5F88173F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:44:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE5A31C24AB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:44:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4A61281514
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193373D577;
-	Mon, 18 Dec 2023 14:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C49D33D54A;
+	Mon, 18 Dec 2023 14:43:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33A83A1A8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA52E3789E
 	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b711ddbf1aso373479039f.0
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7a9f90f04so533265039f.0
         for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:43:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702910607; x=1703515407;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fAtVa/cvMWKWtkc7fS76yx599wTk67rVxkUu75EVfkM=;
-        b=PJSmY+L9HBWo9+3BRECYiez6da6upNQAswfJxxeAdmwZaS6K8k4qV8CLr0fYLBOhkU
-         zYOvoEFCUwSzViPkrpFHYOru1efNi6HY8Uyj1hU6p3b8L1D6BSRieQL5ueAmUIjCnkEV
-         EKMa31EniwzR8LRfRHOBx8DAtSd4neMWQiG332A9LKGL8MzGfHu9Lb+Dm6MA5MZSNKyG
-         zxHIEpeU5h7LtzVMqu7/diIWf7ZM5gKxSG8SiOzGxIXfdPqwAh5n2bLZIWq0OZGj0YEb
-         aq8Gq3d+nij7bnPJKpkXhUE86rTBQCk+2AbR9wXgSCwnTagpYLypzZt98eXMfJGsyop9
-         qHow==
-X-Gm-Message-State: AOJu0Ywi4VCghmMQnTLS6KSOHpT9qPsAUybk7Ly60s9wSH9CiDjy+5g6
-	DC8bipHd3iGMVKmGpo/B7dKwYURTdU6EuoJK3A/HfIBWjzxX
-X-Google-Smtp-Source: AGHT+IFb+Z3JNS0QXI0IOSlUUQvYK9ZHj3+Zgfo3Wxld6iDFnBdd5Ui4GqCmKNXIjBorNxD88cDw1Aiah9mXHVYHUQBQxWNeu+m8
+        bh=EM88xTFig+JbgiSlhAOOt+tZ4fN5H09dR4j9K9Kl5MY=;
+        b=N+34UKzKhPjFtYCLm8/cS+HW0rLbM0JHqNzyiZvGqpq5UUOYCHXJPuaQtYomfXVYR8
+         0cko8MLw3c2VvWuQVt8jfdSRQnB7HMB8R706iSvLBDykCru1ZJyj5bIPpK2BCt/djhAs
+         xFN/stKEJAuNCanjDyDJjnx+W7s4NQn5/MmKEzpPX/OzflUGdSYh/ue0iYVNhWK8NlN1
+         HFNrwDJwoRm0Xc3K9qPsAW5+fzuanGnnHt+uB4NmZjST5tyKcEZJhy8jEyWJduMsz7R6
+         SeV09VVBrtTxG/JQs3YwfD/UxdaW3fwbnE5cgt4zAQlsZLmWDVMxDT6fYW0HP34TtPYK
+         kCbw==
+X-Gm-Message-State: AOJu0YyZdNIRf7VTN1ClPxYbpydXGuRLj1AoMRT7PriLWeiKE7jGm6Ro
+	AgWQPjEpVaqb7EmfJmkBCr77B0OdHMTm9PooZ8BSwcekBLEa
+X-Google-Smtp-Source: AGHT+IF3iS+Y8LvysDbPGm5d2MaCQR8Xx6BmUWHdvv/F8tE23+9O4yvUFYTzx8h0LC0fE2+bdukt3Twp6DbzlDhxggmupmnZqOle
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a88:b0:35f:b447:8e92 with SMTP id
- k8-20020a056e021a8800b0035fb4478e92mr190513ilv.4.1702910607303; Mon, 18 Dec
- 2023 06:43:27 -0800 (PST)
+X-Received: by 2002:a05:6638:62a1:b0:466:5e39:7098 with SMTP id
+ fh33-20020a05663862a100b004665e397098mr1118350jab.5.1702910607070; Mon, 18
+ Dec 2023 06:43:27 -0800 (PST)
 Date: Mon, 18 Dec 2023 06:43:27 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d52e14060cc9c551@google.com>
-Subject: [syzbot] [crypto?] KASAN: slab-out-of-bounds Read in arc4_crypt
-From: syzbot <syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com>
-To: davem@davemloft.net, herbert@gondor.apana.org.au, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000d1a1d1060cc9c5e7@google.com>
+Subject: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in getname_kernel (2)
+From: syzbot <syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com>
+To: clm@fb.com, daniel@iogearbox.net, dsterba@suse.com, 
+	john.fastabend@gmail.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	liujian56@huawei.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    17cb8a20bde6 Add linux-next specific files for 20231215
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1129f3b6e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ec104439b5dbc583
-dashboard link: https://syzkaller.appspot.com/bug?extid=8ffb0839a24e9c6bfa76
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d23c01e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14cfe021e80000
+HEAD commit:    3bd7d7488169 Merge tag 'io_uring-6.7-2023-12-15' of git://..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13732cc6e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
+dashboard link: https://syzkaller.appspot.com/bug?extid=33f23b49ac24f986c9e8
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d8ba06e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136fd5b2e80000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ae1915546a0a/disk-17cb8a20.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b0f2ec7a35f4/vmlinux-17cb8a20.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/619edb9cb864/bzImage-17cb8a20.xz
+disk image: https://storage.googleapis.com/syzbot-assets/99b3f103aa0b/disk-3bd7d748.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/32f8e3e696ce/vmlinux-3bd7d748.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cb20a5445c11/bzImage-3bd7d748.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4f5365674997/mount_0.gz
 
 The issue was bisected to:
 
-commit 47309ea1359115125d9cab17a279c8df72b47235
-Author: Herbert Xu <herbert@gondor.apana.org.au>
-Date:   Tue Nov 28 06:52:57 2023 +0000
+commit 9974d37ea75f01b47d16072b5dad305bd8d23fcc
+Author: Liu Jian <liujian56@huawei.com>
+Date:   Tue Jun 28 12:36:16 2022 +0000
 
-    crypto: arc4 - Add internal state
+    skmsg: Fix invalid last sg check in sk_msg_recvmsg()
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=130bb292e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=108bb292e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=170bb292e80000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=172b998ae80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14ab998ae80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ab998ae80000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com
-Fixes: 47309ea13591 ("crypto: arc4 - Add internal state")
+Reported-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+Fixes: 9974d37ea75f ("skmsg: Fix invalid last sg check in sk_msg_recvmsg()")
 
-"syz-executor161" (5061) uses obsolete ecb(arc4) skcipher
+BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
 ==================================================================
-BUG: KASAN: slab-out-of-bounds in arc4_crypt+0x31c/0x4e0 lib/crypto/arc4.c:46
-Read of size 4 at addr ffff888079f44ee0 by task syz-executor161/5061
+BUG: KASAN: slab-out-of-bounds in strlen+0x58/0x70 lib/string.c:418
+Read of size 1 at addr ffff88801d7f2a28 by task syz-executor424/5057
 
-CPU: 1 PID: 5061 Comm: syz-executor161 Not tainted 6.7.0-rc5-next-20231215-syzkaller #0
+CPU: 1 PID: 5057 Comm: syz-executor424 Not tainted 6.7.0-rc5-syzkaller-00200-g3bd7d7488169 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
 Call Trace:
  <TASK>
  __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc3/0x620 mm/kasan/report.c:488
- kasan_report+0xd9/0x110 mm/kasan/report.c:601
- arc4_crypt+0x31c/0x4e0 lib/crypto/arc4.c:46
- crypto_arc4_crypt+0x61/0x70 crypto/arc4.c:37
- crypto_lskcipher_crypt_sg+0x28c/0x460 crypto/lskcipher.c:229
- crypto_skcipher_decrypt+0xda/0x160 crypto/skcipher.c:693
- _skcipher_recvmsg crypto/algif_skcipher.c:199 [inline]
- skcipher_recvmsg+0xc2b/0x1040 crypto/algif_skcipher.c:221
- sock_recvmsg_nosec net/socket.c:1044 [inline]
- sock_recvmsg+0xe2/0x170 net/socket.c:1066
- ____sys_recvmsg+0x21f/0x5c0 net/socket.c:2801
- ___sys_recvmsg+0x115/0x1a0 net/socket.c:2843
- __sys_recvmsg+0x114/0x1e0 net/socket.c:2873
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x142/0x170 mm/kasan/report.c:588
+ strlen+0x58/0x70 lib/string.c:418
+ getname_kernel+0x1d/0x2e0 fs/namei.c:226
+ kern_path+0x1d/0x50 fs/namei.c:2609
+ lookup_bdev block/bdev.c:979 [inline]
+ bdev_open_by_path+0xd1/0x540 block/bdev.c:901
+ btrfs_init_dev_replace_tgtdev fs/btrfs/dev-replace.c:260 [inline]
+ btrfs_dev_replace_start fs/btrfs/dev-replace.c:638 [inline]
+ btrfs_dev_replace_by_ioctl+0x41b/0x2010 fs/btrfs/dev-replace.c:747
+ btrfs_ioctl_dev_replace+0x2c9/0x390 fs/btrfs/ioctl.c:3299
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7effab449b79
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff6c0657f8 EFLAGS: 00000246 ORIG_RAX: 000000000000002f
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007effab449b79
-RDX: 0000000000000000 RSI: 00000000200005c0 RDI: 0000000000000004
-RBP: 0000000000003a28 R08: 0000000000000000 R09: 0000000000000006
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f8e8ffdc079
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe15cbe138 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffe15cbe308 RCX: 00007f8e8ffdc079
+RDX: 0000000020000540 RSI: 00000000ca289435 RDI: 0000000000000005
+RBP: 00007f8e90054610 R08: 00007ffe15cbe308 R09: 00007ffe15cbe308
+R10: 00007ffe15cbe308 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffe15cbe2f8 R14: 0000000000000001 R15: 0000000000000001
  </TASK>
 
-Allocated by task 78:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
- kasan_set_track+0x24/0x30 mm/kasan/common.c:61
- ____kasan_kmalloc mm/kasan/common.c:375 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:384
+Allocated by task 5057:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
  kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slub.c:3985 [inline]
- __kmalloc+0x1f9/0x440 mm/slub.c:3998
- kmalloc include/linux/slab.h:594 [inline]
- kzalloc include/linux/slab.h:711 [inline]
- kobject_get_path+0xce/0x2b0 lib/kobject.c:159
- kobject_uevent_env+0x26b/0x1800 lib/kobject_uevent.c:529
- kset_register+0x1b6/0x2a0 lib/kobject.c:873
- bus_register+0x1bf/0x6a0 drivers/base/bus.c:868
- gpiolib_dev_init+0x1b/0x1c0 drivers/gpio/gpiolib.c:4684
- do_one_initcall+0x128/0x680 init/main.c:1236
- do_initcall_level init/main.c:1298 [inline]
- do_initcalls init/main.c:1314 [inline]
- do_basic_setup init/main.c:1333 [inline]
- kernel_init_freeable+0x692/0xc30 init/main.c:1551
- kernel_init+0x1c/0x2a0 init/main.c:1441
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ __do_kmalloc_node mm/slab_common.c:1007 [inline]
+ __kmalloc_node_track_caller+0xb1/0x190 mm/slab_common.c:1027
+ memdup_user+0x2b/0xc0 mm/util.c:197
+ btrfs_ioctl_dev_replace+0xb8/0x390 fs/btrfs/ioctl.c:3286
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Last potentially related work creation:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
- kasan_set_track+0x24/0x30 mm/kasan/common.c:61
- ____kasan_kmalloc mm/kasan/common.c:375 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:384
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slub.c:3985 [inline]
- __kmalloc+0x1f9/0x440 mm/slub.c:3998
- kmalloc include/linux/slab.h:594 [inline]
- kzalloc include/linux/slab.h:711 [inline]
- acpi_os_allocate_zeroed include/acpi/platform/aclinuxex.h:57 [inline]
- acpi_ns_internalize_name+0x149/0x220 drivers/acpi/acpica/nsutils.c:331
- acpi_ns_get_node_unlocked+0x164/0x310 drivers/acpi/acpica/nsutils.c:666
- acpi_ns_get_node+0x4c/0x70 drivers/acpi/acpica/nsutils.c:726
- acpi_ns_evaluate+0x6eb/0xca0 drivers/acpi/acpica/nseval.c:62
- acpi_ut_evaluate_object+0xda/0x490 drivers/acpi/acpica/uteval.c:60
- acpi_ut_execute_HID+0x8e/0x3b0 drivers/acpi/acpica/utids.c:45
- acpi_ns_get_device_callback+0x182/0x510 drivers/acpi/acpica/nsxfeval.c:679
- acpi_ns_walk_namespace+0x3fe/0x5a0 drivers/acpi/acpica/nswalk.c:233
- acpi_get_devices+0x135/0x160 drivers/acpi/acpica/nsxfeval.c:805
- acpi_ec_dsdt_probe+0x4b/0x160 drivers/acpi/ec.c:1769
- acpi_bus_init drivers/acpi/bus.c:1372 [inline]
- acpi_init+0x2c5/0xb70 drivers/acpi/bus.c:1430
- do_one_initcall+0x128/0x680 init/main.c:1236
- do_initcall_level init/main.c:1298 [inline]
- do_initcalls init/main.c:1314 [inline]
- do_basic_setup init/main.c:1333 [inline]
- kernel_init_freeable+0x692/0xc30 init/main.c:1551
- kernel_init+0x1c/0x2a0 init/main.c:1441
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-Second to last potentially related work creation:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
- kasan_set_track+0x24/0x30 mm/kasan/common.c:61
- __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:329
- kasan_slab_alloc include/linux/kasan.h:188 [inline]
- slab_post_alloc_hook mm/slub.c:3817 [inline]
- slab_alloc_node mm/slub.c:3864 [inline]
- kmem_cache_alloc+0x136/0x320 mm/slub.c:3871
- kmem_cache_zalloc include/linux/slab.h:701 [inline]
- acpi_os_acquire_object include/acpi/platform/aclinuxex.h:67 [inline]
- acpi_ut_allocate_object_desc_dbg drivers/acpi/acpica/utobject.c:359 [inline]
- acpi_ut_create_internal_object_dbg+0x7b/0x400 drivers/acpi/acpica/utobject.c:69
- acpi_ds_create_buffer_field+0x389/0x610 drivers/acpi/acpica/dsfield.c:214
- acpi_ds_load2_end_op+0x5d8/0x1070 drivers/acpi/acpica/dswload2.c:475
- acpi_ds_exec_end_op+0xbb7/0x1460 drivers/acpi/acpica/dswexec.c:542
- acpi_ps_parse_loop+0x429/0x1ce0 drivers/acpi/acpica/psloop.c:525
- acpi_ps_parse_aml+0x3c1/0xca0 drivers/acpi/acpica/psparse.c:475
- acpi_ps_execute_table+0x37b/0x4c0 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x3ee/0x550 drivers/acpi/acpica/nsparse.c:116
- acpi_ns_load_table+0x5b/0x130 drivers/acpi/acpica/nsload.c:71
- acpi_tb_load_namespace+0x435/0x700 drivers/acpi/acpica/tbxfload.c:186
- acpi_load_tables+0x2c/0x110 drivers/acpi/acpica/tbxfload.c:59
- acpi_bus_init drivers/acpi/bus.c:1321 [inline]
- acpi_init+0x123/0xb70 drivers/acpi/bus.c:1430
- do_one_initcall+0x128/0x680 init/main.c:1236
- do_initcall_level init/main.c:1298 [inline]
- do_initcalls init/main.c:1314 [inline]
- do_basic_setup init/main.c:1333 [inline]
- kernel_init_freeable+0x692/0xc30 init/main.c:1551
- kernel_init+0x1c/0x2a0 init/main.c:1441
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-The buggy address belongs to the object at ffff888079f44800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 1024 bytes to the right of
- allocated 736-byte region [ffff888079f44800, ffff888079f44ae0)
+The buggy address belongs to the object at ffff88801d7f2000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 0 bytes to the right of
+ allocated 2600-byte region [ffff88801d7f2000, ffff88801d7f2a28)
 
 The buggy address belongs to the physical page:
-page:ffffea0001e7d000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x79f40
-head:ffffea0001e7d000 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page:ffffea000075fc00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1d7f0
+head:ffffea000075fc00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
 page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888013041dc0 0000000000000000 0000000000000001
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+raw: 00fff00000000840 ffff888012c42140 ffffea00007b5600 0000000000000002
+raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
 page dumped because: kasan: bad access detected
 page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4686, tgid 4686 (udevd), ts 39444184156, free_ts 23975115080
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4716, tgid 4716 (ifup), ts 29920494589, free_ts 29905444571
  set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d0/0x350 mm/page_alloc.c:1540
- prep_new_page mm/page_alloc.c:1547 [inline]
- get_page_from_freelist+0xa19/0x3740 mm/page_alloc.c:3355
- __alloc_pages+0x22e/0x2410 mm/page_alloc.c:4611
- alloc_pages_mpol+0x258/0x5f0 mm/mempolicy.c:2133
- alloc_slab_page mm/slub.c:2191 [inline]
- allocate_slab mm/slub.c:2358 [inline]
- new_slab+0x283/0x3c0 mm/slub.c:2411
- ___slab_alloc+0x4ab/0x1990 mm/slub.c:3544
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3629
- __slab_alloc_node mm/slub.c:3682 [inline]
- slab_alloc_node mm/slub.c:3854 [inline]
- __do_kmalloc_node mm/slub.c:3984 [inline]
- __kmalloc+0x3b4/0x440 mm/slub.c:3998
- kmalloc include/linux/slab.h:594 [inline]
- load_elf_phdrs+0x103/0x210 fs/binfmt_elf.c:526
- load_elf_binary+0x14ca/0x4e10 fs/binfmt_elf.c:955
- search_binary_handler fs/exec.c:1736 [inline]
- exec_binprm fs/exec.c:1778 [inline]
- bprm_execve fs/exec.c:1853 [inline]
- bprm_execve+0x7ef/0x1a80 fs/exec.c:1809
- do_execveat_common.isra.0+0x679/0x8e0 fs/exec.c:1974
- do_execve fs/exec.c:2048 [inline]
- __do_sys_execve fs/exec.c:2124 [inline]
- __se_sys_execve fs/exec.c:2119 [inline]
- __x64_sys_execve+0x8c/0xb0 fs/exec.c:2119
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-page last free pid 1 tgid 1 stack trace:
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
+ prep_new_page mm/page_alloc.c:1544 [inline]
+ get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3312
+ __alloc_pages+0x255/0x680 mm/page_alloc.c:4568
+ alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
+ alloc_slab_page+0x6a/0x170 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc8a/0x1330 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0xa2/0x1a0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x255/0x500 security/tomoyo/file.c:771
+ security_file_open+0x63/0xa0 security/security.c:2836
+ do_dentry_open+0x327/0x1590 fs/open.c:935
+ do_open fs/namei.c:3622 [inline]
+ path_openat+0x2849/0x3290 fs/namei.c:3779
+ do_filp_open+0x234/0x490 fs/namei.c:3809
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
+page last free stack trace:
  reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x51f/0xb10 mm/page_alloc.c:2390
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2530
- free_contig_range+0xb6/0x190 mm/page_alloc.c:6579
- destroy_args+0xa69/0xe40 mm/debug_vm_pgtable.c:1028
- debug_vm_pgtable+0x16fc/0x3250 mm/debug_vm_pgtable.c:1408
- do_one_initcall+0x128/0x680 init/main.c:1236
- do_initcall_level init/main.c:1298 [inline]
- do_initcalls init/main.c:1314 [inline]
- do_basic_setup init/main.c:1333 [inline]
- kernel_init_freeable+0x692/0xc30 init/main.c:1551
- kernel_init+0x1c/0x2a0 init/main.c:1441
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ free_pages_prepare mm/page_alloc.c:1137 [inline]
+ free_unref_page_prepare+0x931/0xa60 mm/page_alloc.c:2347
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
+ discard_slab mm/slub.c:2116 [inline]
+ __unfreeze_partials+0x1e0/0x220 mm/slub.c:2655
+ put_cpu_partial+0x17b/0x250 mm/slub.c:2731
+ __slab_free+0x2b6/0x390 mm/slub.c:3679
+ qlink_free mm/kasan/quarantine.c:168 [inline]
+ qlist_free_all+0x75/0xe0 mm/kasan/quarantine.c:187
+ kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:294
+ __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook+0x6c/0x3c0 mm/slab.h:763
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x1d0/0x300 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0xa2/0x1a0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x2b7/0x730 security/tomoyo/file.c:822
+ security_inode_getattr+0xd3/0x120 security/security.c:2153
+ vfs_getattr+0x46/0x430 fs/stat.c:173
+ vfs_fstat fs/stat.c:198 [inline]
+ vfs_fstatat+0xd6/0x190 fs/stat.c:295
 
 Memory state around the buggy address:
- ffff888079f44d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888079f44e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888079f44e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                                       ^
- ffff888079f44f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888079f44f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801d7f2900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801d7f2980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88801d7f2a00: 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc
+                                  ^
+ ffff88801d7f2a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801d7f2b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
 ==================================================================
 
 
