@@ -1,164 +1,100 @@
-Return-Path: <linux-kernel+bounces-3883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03E068174AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:04:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8EF28174B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:05:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3FF6284682
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:04:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC8031C241E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAEF3498A2;
-	Mon, 18 Dec 2023 15:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658BD3A1BA;
+	Mon, 18 Dec 2023 15:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CbM1VR35";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nWfQwZy8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CbM1VR35";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nWfQwZy8"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="b3rdgRR0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792395A843;
-	Mon, 18 Dec 2023 15:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9864E21F76;
-	Mon, 18 Dec 2023 15:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702911773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9QYYgvVECfx39sMB+5FAGoxV4WVugIO+Aj4S4B/9Dqc=;
-	b=CbM1VR35/ZMHQoU4ahEzCymr41VP+h56dbl+isXf2J8yB+vvp3U82lh7uR0Ib0MB6y8oZX
-	yahhKxLd2k6TQ9fwUKliJHi49bVwLH7JM9e9cVz7TfLLGzFMGrbyZ8W0p1bWzfQcLEN1OI
-	mIaVsVqArvNe+dYGdH6SMAqMJdYptSk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702911773;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9QYYgvVECfx39sMB+5FAGoxV4WVugIO+Aj4S4B/9Dqc=;
-	b=nWfQwZy8luMQlwccrxJyh0ibqPIpe9hsTiRF0VHmiDCWBJmcGGYWKyC3RMOwZ12sakw6SW
-	d++DUV0buRSyMbCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702911773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9QYYgvVECfx39sMB+5FAGoxV4WVugIO+Aj4S4B/9Dqc=;
-	b=CbM1VR35/ZMHQoU4ahEzCymr41VP+h56dbl+isXf2J8yB+vvp3U82lh7uR0Ib0MB6y8oZX
-	yahhKxLd2k6TQ9fwUKliJHi49bVwLH7JM9e9cVz7TfLLGzFMGrbyZ8W0p1bWzfQcLEN1OI
-	mIaVsVqArvNe+dYGdH6SMAqMJdYptSk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702911773;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9QYYgvVECfx39sMB+5FAGoxV4WVugIO+Aj4S4B/9Dqc=;
-	b=nWfQwZy8luMQlwccrxJyh0ibqPIpe9hsTiRF0VHmiDCWBJmcGGYWKyC3RMOwZ12sakw6SW
-	d++DUV0buRSyMbCg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 87F8C13927;
-	Mon, 18 Dec 2023 15:02:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id kAnlIB1fgGXfdQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 18 Dec 2023 15:02:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1B6E9A07E0; Mon, 18 Dec 2023 16:02:53 +0100 (CET)
-Date: Mon, 18 Dec 2023 16:02:53 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH 2/4] ext4: do not trim the group with corrupted block
- bitmap
-Message-ID: <20231218150253.f75x2lju736weiky@quack3>
-References: <20231218141814.1477338-1-libaokun1@huawei.com>
- <20231218141814.1477338-3-libaokun1@huawei.com>
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21AC3A1C4
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yVVj0
+	ms6yYbBhgiPzB8MS/3H+dwi2Xyw+iNQAT3pKkI=; b=b3rdgRR0bvzFTd8qK2rJh
+	RiGeEqpkCqWTJacVdEP7814JwrchIJCdniarIbPOrEVqg8Zau9hGawmV8PWdbr76
+	90mKi1wzGXsQtt/W3nbrSIOoyAZ021dITxh0ye3Cwq27bD1a08OFoRAMikRXAWkL
+	lugsQ4kliFAidmKxueJu7c=
+Received: from localhost.localdomain (unknown [120.229.19.179])
+	by zwqz-smtp-mta-g1-4 (Coremail) with SMTP id _____wDXX6I8X4Bl7UDSFw--.52364S2;
+	Mon, 18 Dec 2023 23:03:25 +0800 (CST)
+From: Junwen Wu <wudaemon@163.com>
+To: mingo@redhat.com,
+	laoar.shao@gmail.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com
+Cc: mgorman@suse.de,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	linux-kernel@vger.kernel.org,
+	Junwen Wu <wudaemon@163.com>
+Subject: [PATCH v1] sched/rt: Fix rt task's sched latency statistics in sched_stat_wait trace_point
+Date: Mon, 18 Dec 2023 15:03:22 +0000
+Message-Id: <20231218150322.788382-1-wudaemon@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218141814.1477338-3-libaokun1@huawei.com>
-X-Spam-Level: *
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.69
-X-Spamd-Result: default: False [0.69 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.01)[46.62%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDXX6I8X4Bl7UDSFw--.52364S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF17Zw1UtF4kurWxtr1UWrg_yoWDuFgEq3
+	sa9w4qkwn09Fn8tF43Gw4fXryrtayjqFn5Za18tFWDCrykJrZ8tas8KFs5Gws3Xws7AFWq
+	krs2ga4vkrs7ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRKVyxJUUUUU==
+X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisR5KbWVOAiFeyAAAsW
 
-On Mon 18-12-23 22:18:12, Baokun Li wrote:
-> Otherwise operating on an incorrupted block bitmap can lead to all sorts
-> of unknown problems.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+When enable sched_stat_wait trace_point, some rt tasks sched latency
+so long, like this:
+sched_stat_wait: comm=rcu_preempt pid=14 delay=4936139545261 [ns]
+Rt task has low latency, it must have a bug. I found the reason is 
+When rt task balance off source cpu, dequeue operation not update 
+the sched_statistics, so follow update_stats_wait_end_fair
+update method.
 
-I agree this is a safer option. Feel free to add:
+Signed-off-by: Junwen Wu <wudaemon@163.com>
+---
+ kernel/sched/rt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/mballoc.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index d72b5e3c92ec..a95fa6e2b0f9 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6757,6 +6757,9 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
->  	bool set_trimmed = false;
->  	void *bitmap;
->  
-> +	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
-> +		return 0;
-> +
->  	bitmap = e4b->bd_bitmap;
->  	if (start == 0 && max >= ext4_last_grp_cluster(sb, e4b->bd_group))
->  		set_trimmed = true;
-> -- 
-> 2.31.1
-> 
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 6aaf0a3d6081..c75215947c20 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -1360,12 +1360,15 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
+ 			int flags)
+ {
+ 	struct task_struct *p = NULL;
++	struct rq *rq = rq_of_rt_se(rt_se);
+ 
+ 	if (!schedstat_enabled())
+ 		return;
+ 
+ 	if (rt_entity_is_task(rt_se))
+ 		p = rt_task_of(rt_se);
++	if (p != rq->curr)
++		update_stats_wait_end_rt(rt_rq, rt_se);
+ 
+ 	if ((flags & DEQUEUE_SLEEP) && p) {
+ 		unsigned int state;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
 
