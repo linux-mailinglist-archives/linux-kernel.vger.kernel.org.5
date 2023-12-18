@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-3400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6B9816BCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:03:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E01816BD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E448B22C85
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:03:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B41DD1F23408
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9030118E36;
-	Mon, 18 Dec 2023 11:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F0D18E0D;
+	Mon, 18 Dec 2023 11:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="cN7glQ4v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E4Chd/co"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF97A1A59D;
-	Mon, 18 Dec 2023 11:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B061857E;
-	Mon, 18 Dec 2023 12:02:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1702897355;
-	bh=Hs4zDcpAlPjEQR587odcjBPUdtoEfL2f0lHdH5doekw=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11165182C2;
+	Mon, 18 Dec 2023 11:04:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74418C433C7;
+	Mon, 18 Dec 2023 11:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702897490;
+	bh=X7AmpNy7nTx85EVWdcqkSZ3s+USJadxyg/pD9mVPUtI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cN7glQ4v/S57bZpO8D77xcIN5i2/p0Prbd/1HLXzSs3sBeZxjbcbUyKpYvcVBkjpd
-	 zaYzYd0lzzHfnzlNyfN/U2LbgTqEhSv7BLNTXrK4i44wL2og4a1i0QEjqzQU/CPAqT
-	 ss0O/9goNhKZvo0EguF4yKY7hD28GZ1gBq76fmCY=
-Date: Mon, 18 Dec 2023 13:03:31 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
-	Martin Hecht <martin.hecht@avnet.eu>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] media: i2c: alvium: store frame interval in subdev
- state
-Message-ID: <20231218110331.GQ5290@pendragon.ideasonboard.com>
-References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
- <20231215082452.1720481-4-tomm.merciai@gmail.com>
- <20231218025905.GJ5290@pendragon.ideasonboard.com>
- <ZYAfThT/mHdzGdAh@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+	b=E4Chd/co1bkcX+6Ux9mSS5u04qiUN/xoB4/VehY7U+0raPSN2/tLYM3utCFXSEgUj
+	 f+QRR+7PbxpcIbcoRVtbfhwaebVDMqmV223WCWOZX7Y/ytdxdqXNCLB+j9qp6kgpwE
+	 V1051YmrdFbmAoSQIHyQtO0YQdZvchUcPKVktV7I+ExjCPI3tYEt2oKQtoFPOPnmw7
+	 VL3XE20JLdl/M3FnRxrEI21y+lZ7VJwudVZtV8gXsKwLElwGyPUR+oxRUH6wrKPLtV
+	 vQf7A33ZSnwD4sxIOlhzP16izYBUxnFureNgEjznMfsyIw1rO5vjKwvpzJoOiOOysN
+	 EbqVN6r0jZyuA==
+Date: Mon, 18 Dec 2023 12:04:43 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org,
+	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com,
+	paulmck@kernel.org, keescook@chromium.org,
+	dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
+	longman@redhat.com, boqun.feng@gmail.com,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH 22/50] pid: Split out pid_types.h
+Message-ID: <20231218-weswegen-geleugnet-f8c0d66ca848@brauner>
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216032957.3553313-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,158 +55,125 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZYAfThT/mHdzGdAh@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+In-Reply-To: <20231216032957.3553313-1-kent.overstreet@linux.dev>
 
-On Mon, Dec 18, 2023 at 11:30:38AM +0100, Tommaso Merciai wrote:
-> Hi Laurent,
+On Fri, Dec 15, 2023 at 10:29:28PM -0500, Kent Overstreet wrote:
+> Trimming down sched.h dependencies: we dont't want to include more than
+> the base types.
 > 
-> On Mon, Dec 18, 2023 at 04:59:05AM +0200, Laurent Pinchart wrote:
-> > Hi Tommaso,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Fri, Dec 15, 2023 at 09:24:52AM +0100, Tommaso Merciai wrote:
-> > > Use the newly added storage for frame interval in the subdev state to
-> > > simplify the driver.
-> > > 
-> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > ---
-> > >  drivers/media/i2c/alvium-csi2.c | 40 ++++++++++-----------------------
-> > >  drivers/media/i2c/alvium-csi2.h |  2 --
-> > >  2 files changed, 12 insertions(+), 30 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > index fde456357be1..81f683b3c849 100644
-> > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > @@ -1643,25 +1643,6 @@ static int alvium_hw_init(struct alvium_dev *alvium)
-> > >  }
-> > >  
-> > >  /* --------------- Subdev Operations --------------- */
-> > > -
-> > > -static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > > -				   struct v4l2_subdev_state *sd_state,
-> > > -				   struct v4l2_subdev_frame_interval *fi)
-> > > -{
-> > > -	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > -
-> > > -	/*
-> > > -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
-> > > -	 * subdev active state API.
-> > > -	 */
-> > > -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-> > > -		return -EINVAL;
-> > > -
-> > > -	fi->interval = alvium->frame_interval;
-> > > -
-> > > -	return 0;
-> > > -}
-> > > -
-> > >  static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  				   struct v4l2_subdev_state *sd_state,
-> > >  				   struct v4l2_subdev_frame_interval *fi)
-> > > @@ -1669,6 +1650,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > >  	struct device *dev = &alvium->i2c_client->dev;
-> > >  	u64 req_fr, dft_fr, min_fr, max_fr;
-> > > +	struct v4l2_fract *interval;
-> > >  	int ret;
-> > >  
-> > >  	/*
-> > 
-> > You should drop the FIXME comment here and the ACTIVE check...
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Andy Lutomirski <luto@amacapital.net>
+> Cc: Will Drewry <wad@chromium.org>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+
+Hm, ideally the struct upid and struct pid definitions could also be
+moved and then included in pid.h?
+
+>  drivers/target/target_core_xcopy.c |  1 +
+>  include/linux/pid.h                | 15 ++-------------
+>  include/linux/pid_types.h          | 16 ++++++++++++++++
+>  include/linux/sched.h              |  2 +-
+>  include/linux/seccomp.h            |  2 ++
+>  5 files changed, 22 insertions(+), 14 deletions(-)
+>  create mode 100644 include/linux/pid_types.h
 > 
-> Oks, thanks.
+> diff --git a/drivers/target/target_core_xcopy.c b/drivers/target/target_core_xcopy.c
+> index 91ed015b588c..4128631c9dfd 100644
+> --- a/drivers/target/target_core_xcopy.c
+> +++ b/drivers/target/target_core_xcopy.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/list.h>
+> +#include <linux/rculist.h>
+>  #include <linux/configfs.h>
+>  #include <linux/ratelimit.h>
+>  #include <scsi/scsi_proto.h>
+> diff --git a/include/linux/pid.h b/include/linux/pid.h
+> index 653a527574c4..f254c3a45b9b 100644
+> --- a/include/linux/pid.h
+> +++ b/include/linux/pid.h
+> @@ -2,18 +2,10 @@
+>  #ifndef _LINUX_PID_H
+>  #define _LINUX_PID_H
+>  
+> +#include <linux/pid_types.h>
+>  #include <linux/rculist.h>
+> -#include <linux/wait.h>
+>  #include <linux/refcount.h>
+> -
+> -enum pid_type
+> -{
+> -	PIDTYPE_PID,
+> -	PIDTYPE_TGID,
+> -	PIDTYPE_PGID,
+> -	PIDTYPE_SID,
+> -	PIDTYPE_MAX,
+> -};
+> +#include <linux/wait.h>
+>  
+>  /*
+>   * What is struct pid?
+> @@ -110,9 +102,6 @@ extern void exchange_tids(struct task_struct *task, struct task_struct *old);
+>  extern void transfer_pid(struct task_struct *old, struct task_struct *new,
+>  			 enum pid_type);
+>  
+> -struct pid_namespace;
+> -extern struct pid_namespace init_pid_ns;
+> -
+>  extern int pid_max;
+>  extern int pid_max_min, pid_max_max;
+>  
+> diff --git a/include/linux/pid_types.h b/include/linux/pid_types.h
+> new file mode 100644
+> index 000000000000..c2aee1d91dcf
+> --- /dev/null
+> +++ b/include/linux/pid_types.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_PID_TYPES_H
+> +#define _LINUX_PID_TYPES_H
+> +
+> +enum pid_type {
+> +	PIDTYPE_PID,
+> +	PIDTYPE_TGID,
+> +	PIDTYPE_PGID,
+> +	PIDTYPE_SID,
+> +	PIDTYPE_MAX,
+> +};
+> +
+> +struct pid_namespace;
+> +extern struct pid_namespace init_pid_ns;
+> +
+> +#endif /* _LINUX_PID_TYPES_H */
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 436f7ce1450a..37cc9d257073 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -11,7 +11,7 @@
+>  
+>  #include <asm/current.h>
+>  
+> -#include <linux/pid.h>
+> +#include <linux/pid_types.h>
+>  #include <linux/sem.h>
+>  #include <linux/shm.h>
+>  #include <linux/kmsan_types.h>
+> diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
+> index 175079552f68..1ec0d8dc4b69 100644
+> --- a/include/linux/seccomp.h
+> +++ b/include/linux/seccomp.h
+> @@ -126,6 +126,8 @@ static inline long seccomp_get_metadata(struct task_struct *task,
+>  
+>  #ifdef CONFIG_SECCOMP_CACHE_DEBUG
+>  struct seq_file;
+> +struct pid_namespace;
+> +struct pid;
+>  
+>  int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
+>  			   struct pid *pid, struct task_struct *task);
+> -- 
+> 2.43.0
 > 
-> > 
-> > > @@ -1701,9 +1683,10 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  	if (req_fr >= max_fr && req_fr <= min_fr)
-> > >  		req_fr = dft_fr;
-> > >  
-> > > -	alvium->fr = req_fr;
-> > > -	alvium->frame_interval.numerator = fi->interval.numerator;
-> > > -	alvium->frame_interval.denominator = fi->interval.denominator;
-> > > +	interval = v4l2_subdev_state_get_interval(sd_state, 0);
-> > > +
-> > > +	interval->numerator = fi->interval.numerator;
-> > > +	interval->denominator = fi->interval.denominator;
-> > >  
-> > 
-> > ... and here only call alvium_set_frame_rate() for the ACTIVE frame
-> > interval.
-> 
-> I don't completely got this comment, can you give me more details about
-> please. Thanks in advance!
-
-alvium_s_frame_interval() can be called both for the TRY and ACTIVE
-status. The hardware registers should be written only for the ACTIVE
-state.
-
-> > >  	return alvium_set_frame_rate(alvium, req_fr);
-> > >  }
-> > > @@ -1853,6 +1836,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
-> > >  {
-> > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > >  	struct alvium_mode *mode = &alvium->mode;
-> > > +	struct v4l2_fract *interval;
-> > >  	struct v4l2_subdev_format sd_fmt = {
-> > >  		.which = V4L2_SUBDEV_FORMAT_TRY,
-> > >  		.format = alvium_csi2_default_fmt,
-> > > @@ -1870,6 +1854,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
-> > >  	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
-> > >  	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
-> > >  
-> > > +	/* Setup initial frame interval*/
-> > > +	interval = v4l2_subdev_state_get_interval(state, 0);
-> > > +	interval->numerator = 1;
-> > > +	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > +
-> > >  	return 0;
-> > >  }
-> > >  
-> > > @@ -2239,7 +2228,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
-> > >  	.set_fmt = alvium_set_fmt,
-> > >  	.get_selection = alvium_get_selection,
-> > >  	.set_selection = alvium_set_selection,
-> > > -	.get_frame_interval = alvium_g_frame_interval,
-> > > +	.get_frame_interval = v4l2_subdev_get_frame_interval,
-> > >  	.set_frame_interval = alvium_s_frame_interval,
-> > >  };
-> > >  
-> > > @@ -2260,11 +2249,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> > >  	struct v4l2_subdev *sd = &alvium->sd;
-> > >  	int ret;
-> > >  
-> > > -	/* Setup initial frame interval*/
-> > > -	alvium->frame_interval.numerator = 1;
-> > > -	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > > -
-> > >  	/* Setup the initial mode */
-> > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > >  	alvium->mode.width = alvium_csi2_default_fmt.width;
-> > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > index a6529b28e7dd..f5e26257b042 100644
-> > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > @@ -442,8 +442,6 @@ struct alvium_dev {
-> > >  	s32 inc_sharp;
-> > >  
-> > >  	struct alvium_mode mode;
-> > > -	struct v4l2_fract frame_interval;
-> > > -	u64 fr;
-> > 
-> > The fr field should have been removed by a previous patch (the one that
-> > will go between 1/3 an 2/3, see my review of 1/3) as shown by the fact
-> > that this patch only removes two locations where the field is set but
-> > none where it's read.
-> > 
-> > >  
-> > >  	u8 h_sup_csi_lanes;
-> > >  	u64 link_freq;
-
--- 
-Regards,
-
-Laurent Pinchart
 
