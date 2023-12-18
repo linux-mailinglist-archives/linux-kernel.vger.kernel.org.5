@@ -1,313 +1,266 @@
-Return-Path: <linux-kernel+bounces-3489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72FA816CFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:54:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0D6816CB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:44:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 295C0B22CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:54:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93BA6B22BD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:44:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A1441C79;
-	Mon, 18 Dec 2023 11:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D434B1BDE7;
+	Mon, 18 Dec 2023 11:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=temperror (0-bit key) header.d=alatek.krakow.pl header.i=@alatek.krakow.pl header.b="LB3tR+cW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K0Rzc4w+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460FF41C77;
-	Mon, 18 Dec 2023 11:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alatek.krakow.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alatek.krakow.pl
-Received: from localhost (localhost [127.0.0.1])
-	by helios.alatek.com.pl (Postfix) with ESMTP id 42AB22D01870;
-	Mon, 18 Dec 2023 12:40:53 +0100 (CET)
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
- with ESMTP id b4PkjW2spXRO; Mon, 18 Dec 2023 12:40:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by helios.alatek.com.pl (Postfix) with ESMTP id C38432D0186E;
-	Mon, 18 Dec 2023 12:40:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl C38432D0186E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
-	s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1702899652;
-	bh=sNlYkcgYiPMz7Dv9ePNXS0ND3ebl+/k4wfQd6xyfH1Q=;
-	h=From:To:Date:Message-Id:MIME-Version;
-	b=LB3tR+cWMWKw8sGtUwzCLnqxaP2eZnmkd9BdLVuDyVqxY58NMWvoKLRFu/U+GgfTZ
-	 67crnMKyCITrMKmaIqvbOLLPwzg0n6uoOyCbEcAuqrKaGS4W8QdGApnyddx5rG24tF
-	 FI/LZLtiS5CQNKCcbVC4qzH6Va+uHZxDV+0JnZ8yYkAw4Ur+xcKBC4lIib6wAYc3el
-	 dC8UnBMTB4ZJVaiwMzwDCaq0LuRJrazFj9zcaFMJSYhuZboRle+TaKr4sg0Row5Zg9
-	 6oAPoyBRfrIgKy/hZe7RtA+Y2t4KHETLsbbWNbFRd5ZS97LVhNBrSY3+qVh9z79TzV
-	 gud0kupY2l2uQ==
-X-Virus-Scanned: amavis at alatek.com.pl
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
- with ESMTP id lAfsM8nc3qpc; Mon, 18 Dec 2023 12:40:52 +0100 (CET)
-Received: from ideapad.. (unknown [10.0.2.2])
-	by helios.alatek.com.pl (Postfix) with ESMTPSA id 8D8E32D01868;
-	Mon, 18 Dec 2023 12:40:52 +0100 (CET)
-From: Jan Kuliga <jankul@alatek.krakow.pl>
-To: lizhi.hou@amd.com,
-	brian.xu@amd.com,
-	raj.kumar.rampelli@amd.com,
-	vkoul@kernel.org,
-	michal.simek@amd.com,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	miquel.raynal@bootlin.com
-Cc: jankul@alatek.krakow.pl
-Subject: [PATCH v5 8/8] dmaengine: xilinx: xdma: Implement interleaved DMA transfers
-Date: Mon, 18 Dec 2023 12:39:43 +0100
-Message-Id: <20231218113943.9099-9-jankul@alatek.krakow.pl>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231218113904.9071-1-jankul@alatek.krakow.pl>
-References: <20231218113904.9071-1-jankul@alatek.krakow.pl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECDE1BDDD;
+	Mon, 18 Dec 2023 11:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a233354c74aso261657766b.1;
+        Mon, 18 Dec 2023 03:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702899595; x=1703504395; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zcH0UIlZ9wGt+bB5pfsqVhB/iCTXynYZe0CCzCtVeWE=;
+        b=K0Rzc4w++NvpR2SUDCasEZRgttaV2KCnGlZoRN8Js0cuyoDlLaoF8lCcm7lVJL/NIR
+         p1UaewW6NyOrGkqJlufSP/xqubZk3obkxLq1sYoJFq2MZ7i1Pa6FWJSr8Y5Em2kU+9bh
+         0tK6WRqVnl48uPS9meve+8MuSiHL0vWJv586Fsi+9GjeUyQWbfgSXLRkKSDZKLhp9Qhf
+         hRHq7uBh/m+Y6N7Ld2dd5hA5vS608UN5aHlTDaVJhk/abWelkDLJDrSX0n4ZbMXEAG8/
+         iJMElI919qyG6udNDkphRIOV+JjA78kDNJm/+M7CQYBcQs8VR2sTa3PuoCNIZrFR9Csa
+         ybOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702899595; x=1703504395;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zcH0UIlZ9wGt+bB5pfsqVhB/iCTXynYZe0CCzCtVeWE=;
+        b=uIAhfTwjDq5shCy8jGgVaJN/swcWl+MqdnzTlvcQpO68WQG4vRyk3Q7xn9o0ngoVky
+         kZ/zWHzEMUGkRCTC9PG9TWjW89oCjjZ495P15bhTaZA2q+AfV3KI38EZnlwfguhzaJDF
+         rd43q3yiMQQRBETErmr+VjzdimkTqV2SqJjG1RUVJ0B82MsvB8j9pcJ5YJnEvOVxp09f
+         +JMWB0ot32otbiWKZyO+Yh7VlqiFdLwyu+KTalRa0cmnI7gAadEwz8MZe//OK7fZepQa
+         bXKsGuZH0o5XuWe6GZYA6gGOFn0Jd0+UtD0FgAuTTGg4InYl/ObLpjXVq4xShDYHXxt2
+         hhdw==
+X-Gm-Message-State: AOJu0Yx8987uo7WVUQEkN7eEkzucdTu6Y/ecyShbWDoUff5TNtsJ8HPq
+	CWU6+HHzuO2VRqQnaiIntuQ=
+X-Google-Smtp-Source: AGHT+IE7U9fV+RiDZTTEgZ9X1IIYI4BfahVLE+bQJjBadXhpoz8iEknnmreo+OAtK84Axb16JbXDGg==
+X-Received: by 2002:a17:906:af04:b0:a22:e827:fb7b with SMTP id lx4-20020a170906af0400b00a22e827fb7bmr10693418ejb.23.1702899595444;
+        Mon, 18 Dec 2023 03:39:55 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
+        by smtp.gmail.com with ESMTPSA id vs6-20020a170907a58600b00a1fa6a70b8dsm10410753ejc.133.2023.12.18.03.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 03:39:55 -0800 (PST)
+Date: Mon, 18 Dec 2023 12:39:53 +0100
+From: Tommaso Merciai <tomm.merciai@gmail.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
+	Martin Hecht <martin.hecht@avnet.eu>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] media: i2c: alvium: store frame interval in subdev
+ state
+Message-ID: <ZYAvifztnTGoQB51@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
+ <20231215082452.1720481-4-tomm.merciai@gmail.com>
+ <20231218025905.GJ5290@pendragon.ideasonboard.com>
+ <ZYAfThT/mHdzGdAh@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <20231218110331.GQ5290@pendragon.ideasonboard.com>
+ <ZYAqyOEfKp/oiqs9@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <20231218113618.GA21105@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218113618.GA21105@pendragon.ideasonboard.com>
 
-Interleaved DMA functionality allows dmaengine clients' to express
-DMA transfers in an arbitrary way. This is extremely useful in FPGA
-environments, where a greater transfer flexibility is needed. For
-instance, in one FPGA design there may be need to do DMA to/from a FIFO
-at a fixed address, and also to do DMA to/from a (non)contiguous RAM
-memory.
+On Mon, Dec 18, 2023 at 01:36:18PM +0200, Laurent Pinchart wrote:
+> On Mon, Dec 18, 2023 at 12:19:36PM +0100, Tommaso Merciai wrote:
+> > On Mon, Dec 18, 2023 at 01:03:31PM +0200, Laurent Pinchart wrote:
+> > > On Mon, Dec 18, 2023 at 11:30:38AM +0100, Tommaso Merciai wrote:
+> > > > On Mon, Dec 18, 2023 at 04:59:05AM +0200, Laurent Pinchart wrote:
+> > > > > On Fri, Dec 15, 2023 at 09:24:52AM +0100, Tommaso Merciai wrote:
+> > > > > > Use the newly added storage for frame interval in the subdev state to
+> > > > > > simplify the driver.
+> > > > > > 
+> > > > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > > > > > ---
+> > > > > >  drivers/media/i2c/alvium-csi2.c | 40 ++++++++++-----------------------
+> > > > > >  drivers/media/i2c/alvium-csi2.h |  2 --
+> > > > > >  2 files changed, 12 insertions(+), 30 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> > > > > > index fde456357be1..81f683b3c849 100644
+> > > > > > --- a/drivers/media/i2c/alvium-csi2.c
+> > > > > > +++ b/drivers/media/i2c/alvium-csi2.c
+> > > > > > @@ -1643,25 +1643,6 @@ static int alvium_hw_init(struct alvium_dev *alvium)
+> > > > > >  }
+> > > > > >  
+> > > > > >  /* --------------- Subdev Operations --------------- */
+> > > > > > -
+> > > > > > -static int alvium_g_frame_interval(struct v4l2_subdev *sd,
+> > > > > > -				   struct v4l2_subdev_state *sd_state,
+> > > > > > -				   struct v4l2_subdev_frame_interval *fi)
+> > > > > > -{
+> > > > > > -	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > > -
+> > > > > > -	/*
+> > > > > > -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
+> > > > > > -	 * subdev active state API.
+> > > > > > -	 */
+> > > > > > -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+> > > > > > -		return -EINVAL;
+> > > > > > -
+> > > > > > -	fi->interval = alvium->frame_interval;
+> > > > > > -
+> > > > > > -	return 0;
+> > > > > > -}
+> > > > > > -
+> > > > > >  static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > > > >  				   struct v4l2_subdev_state *sd_state,
+> > > > > >  				   struct v4l2_subdev_frame_interval *fi)
+> > > > > > @@ -1669,6 +1650,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > >  	struct device *dev = &alvium->i2c_client->dev;
+> > > > > >  	u64 req_fr, dft_fr, min_fr, max_fr;
+> > > > > > +	struct v4l2_fract *interval;
+> > > > > >  	int ret;
+> > > > > >  
+> > > > > >  	/*
+> > > > > 
+> > > > > You should drop the FIXME comment here and the ACTIVE check...
+> > > > 
+> > > > Oks, thanks.
+> > > > 
+> > > > > 
+> > > > > > @@ -1701,9 +1683,10 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > > > >  	if (req_fr >= max_fr && req_fr <= min_fr)
+> > > > > >  		req_fr = dft_fr;
+> > > > > >  
+> > > > > > -	alvium->fr = req_fr;
+> > > > > > -	alvium->frame_interval.numerator = fi->interval.numerator;
+> > > > > > -	alvium->frame_interval.denominator = fi->interval.denominator;
+> > > > > > +	interval = v4l2_subdev_state_get_interval(sd_state, 0);
+> > > > > > +
+> > > > > > +	interval->numerator = fi->interval.numerator;
+> > > > > > +	interval->denominator = fi->interval.denominator;
+> > > > > >  
+> > > > > 
+> > > > > ... and here only call alvium_set_frame_rate() for the ACTIVE frame
+> > > > > interval.
+> > > > 
+> > > > I don't completely got this comment, can you give me more details about
+> > > > please. Thanks in advance!
+> > > 
+> > > alvium_s_frame_interval() can be called both for the TRY and ACTIVE
+> > > status. The hardware registers should be written only for the ACTIVE
+> > > state.
+> > 
+> > Do you think could be sufficient an if check like this?
+> > 
+> > -	return alvium_set_frame_rate(alvium, req_fr);
+> > +	if (fi->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+> > +		return alvium_set_frame_rate(alvium, req_fr);
+> > +
+> > +	return ret;
+> 
+> That's the idea, yes. The "return ret" can become "return 0". Or you
+> could write
+> 
+> 	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+> 		return 0;
+> 
+> 	return alvium_set_frame_rate(alvium, req_fr);
+> 
+> >  }
 
-Introduce separate tx preparation callback and add tx-flags handling
-logic. Their behavior is based on the description of interleaved DMA
-transfers in both source code and the DMAEngine's documentation.
+(This is my personal idea eh :) )
 
-Since XDMA is a fully-fledged scatter-gather dma engine, the logic of
-xdma_prep_interleaved_dma() is fairly simple and similar to the other
-tx preparation callbacks. The whole tx-flags handling logic resides in
-xdma_channel_isr(). Transfer of a single frame from a interleaved DMA
-transfer template is pretty similar to the single sg transaction.
-Therefore, the transaction of the whole interleaved DMA transfer
-template is basically a cyclic dma transaction with finite cycles/periods
-(equal to the frame of count) of a single sg transfers.
+Maybe better:
 
-Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
----
- drivers/dma/xilinx/xdma.c | 107 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 98 insertions(+), 9 deletions(-)
+	if (fi->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+		ret = alvium_set_frame_rate(alvium, req_fr);
 
-diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
-index 618cc9af6eb9..9360b85131ef 100644
---- a/drivers/dma/xilinx/xdma.c
-+++ b/drivers/dma/xilinx/xdma.c
-@@ -83,8 +83,10 @@ struct xdma_chan {
-  * @desc_num: Number of hardware descriptors
-  * @completed_desc_num: Completed hardware descriptors
-  * @cyclic: Cyclic transfer vs. scatter-gather
-+ * @interleaved_dma: Interleaved DMA transfer
-  * @periods: Number of periods in the cyclic transfer
-  * @period_size: Size of a period in bytes in cyclic transfers
-+ * @frames_left: Number of frames left in interleaved DMA transfer
-  * @error: tx error flag
-  */
- struct xdma_desc {
-@@ -96,8 +98,10 @@ struct xdma_desc {
- 	u32				desc_num;
- 	u32				completed_desc_num;
- 	bool				cyclic;
-+	bool				interleaved_dma;
- 	u32				periods;
- 	u32				period_size;
-+	u32				frames_left;
- 	bool				error;
- };
-=20
-@@ -607,6 +611,8 @@ xdma_prep_device_sg(struct dma_chan *chan, struct sca=
-tterlist *sgl,
- 	if (!sw_desc)
- 		return NULL;
- 	sw_desc->dir =3D dir;
-+	sw_desc->cyclic =3D false;
-+	sw_desc->interleaved_dma =3D false;
-=20
- 	if (dir =3D=3D DMA_MEM_TO_DEV) {
- 		dev_addr =3D xdma_chan->cfg.dst_addr;
-@@ -682,6 +688,7 @@ xdma_prep_dma_cyclic(struct dma_chan *chan, dma_addr_=
-t address,
- 	sw_desc->periods =3D periods;
- 	sw_desc->period_size =3D period_size;
- 	sw_desc->dir =3D dir;
-+	sw_desc->interleaved_dma =3D false;
-=20
- 	addr =3D address;
- 	if (dir =3D=3D DMA_MEM_TO_DEV) {
-@@ -712,6 +719,57 @@ xdma_prep_dma_cyclic(struct dma_chan *chan, dma_addr=
-_t address,
- 	return NULL;
- }
-=20
-+/**
-+ * xdma_prep_interleaved_dma - Prepare virtual descriptor for interleave=
-d DMA transfers
-+ * @chan: DMA channel
-+ * @xt: DMA transfer template
-+ * @flags: tx flags
-+ */
-+struct dma_async_tx_descriptor *
-+xdma_prep_interleaved_dma(struct dma_chan *chan,
-+			  struct dma_interleaved_template *xt,
-+			  unsigned long flags)
-+{
-+	int i;
-+	u32 desc_num =3D 0, period_size =3D 0;
-+	struct dma_async_tx_descriptor *tx_desc;
-+	struct xdma_chan *xchan =3D to_xdma_chan(chan);
-+	struct xdma_desc *sw_desc;
-+	u64 src_addr, dst_addr;
-+
-+	for (i =3D 0; i < xt->frame_size; ++i)
-+		desc_num +=3D DIV_ROUND_UP(xt->sgl[i].size, XDMA_DESC_BLEN_MAX);
-+
-+	sw_desc =3D xdma_alloc_desc(xchan, desc_num, false);
-+	if (!sw_desc)
-+		return NULL;
-+	sw_desc->dir =3D xt->dir;
-+	sw_desc->interleaved_dma =3D true;
-+	sw_desc->cyclic =3D flags & DMA_PREP_REPEAT;
-+	sw_desc->frames_left =3D xt->numf;
-+	sw_desc->periods =3D xt->numf;
-+
-+	desc_num =3D 0;
-+	src_addr =3D xt->src_start;
-+	dst_addr =3D xt->dst_start;
-+	for (i =3D 0; i < xt->frame_size; ++i) {
-+		desc_num +=3D xdma_fill_descs(sw_desc, src_addr, dst_addr, xt->sgl[i].=
-size, desc_num);
-+		src_addr +=3D dmaengine_get_src_icg(xt, &xt->sgl[i]) + xt->src_inc ?
-+							      xt->sgl[i].size : 0;
-+		dst_addr +=3D dmaengine_get_dst_icg(xt, &xt->sgl[i]) + xt->dst_inc ?
-+							      xt->sgl[i].size : 0;
-+		period_size +=3D xt->sgl[i].size;
-+	}
-+	sw_desc->period_size =3D period_size;
-+
-+	tx_desc =3D vchan_tx_prep(&xchan->vchan, &sw_desc->vdesc, flags);
-+	if (tx_desc)
-+		return tx_desc;
-+
-+	xdma_free_desc(&sw_desc->vdesc);
-+	return NULL;
-+}
-+
- /**
-  * xdma_device_config - Configure the DMA channel
-  * @chan: DMA channel
-@@ -811,11 +869,12 @@ static irqreturn_t xdma_channel_isr(int irq, void *=
-dev_id)
- {
- 	struct xdma_chan *xchan =3D dev_id;
- 	u32 complete_desc_num =3D 0;
--	struct xdma_device *xdev;
--	struct virt_dma_desc *vd;
-+	struct xdma_device *xdev =3D xchan->xdev_hdl;
-+	struct virt_dma_desc *vd, *next_vd;
- 	struct xdma_desc *desc;
- 	int ret;
- 	u32 st;
-+	bool repeat_tx;
-=20
- 	spin_lock(&xchan->vchan.lock);
-=20
-@@ -824,9 +883,6 @@ static irqreturn_t xdma_channel_isr(int irq, void *de=
-v_id)
- 	if (!vd)
- 		goto out;
-=20
--	desc =3D to_xdma_desc(vd);
--	xdev =3D xchan->xdev_hdl;
--
- 	/* Clear-on-read the status register */
- 	ret =3D regmap_read(xdev->rmap, xchan->base + XDMA_CHAN_STATUS_RC, &st)=
-;
- 	if (ret)
-@@ -845,10 +901,36 @@ static irqreturn_t xdma_channel_isr(int irq, void *=
-dev_id)
- 	if (ret)
- 		goto out;
-=20
--	if (desc->cyclic) {
--		desc->completed_desc_num =3D complete_desc_num;
--		vchan_cyclic_callback(vd);
--	} else {
-+	desc =3D to_xdma_desc(vd);
-+	if (desc->interleaved_dma) {
-+		xchan->busy =3D false;
-+		desc->completed_desc_num +=3D complete_desc_num;
-+		if (complete_desc_num =3D=3D XDMA_DESC_BLOCK_NUM * XDMA_DESC_ADJACENT)=
- {
-+			xdma_xfer_start(xchan);
-+			goto out;
-+		}
-+
-+		/* last desc of any frame */
-+		desc->frames_left--;
-+		if (desc->frames_left)
-+			goto out;
-+
-+		/* last desc of the last frame  */
-+		repeat_tx =3D vd->tx.flags & DMA_PREP_REPEAT;
-+		next_vd =3D list_first_entry_or_null(&vd->node, struct virt_dma_desc, =
-node);
-+		if (next_vd)
-+			repeat_tx =3D repeat_tx && !(next_vd->tx.flags & DMA_PREP_LOAD_EOT);
-+		if (repeat_tx) {
-+			desc->frames_left =3D desc->periods;
-+			desc->completed_desc_num =3D 0;
-+			vchan_cyclic_callback(vd);
-+		} else {
-+			list_del(&vd->node);
-+			vchan_cookie_complete(vd);
-+		}
-+		/* start (or continue) the tx of a first desc on the vc.desc_issued li=
-st, if any */
-+		xdma_xfer_start(xchan);
-+	} else if (!desc->cyclic) {
- 		xchan->busy =3D false;
- 		desc->completed_desc_num +=3D complete_desc_num;
-=20
-@@ -865,6 +947,9 @@ static irqreturn_t xdma_channel_isr(int irq, void *de=
-v_id)
-=20
- 		/* transfer the rest of data */
- 		xdma_xfer_start(xchan);
-+	} else {
-+		desc->completed_desc_num =3D complete_desc_num;
-+		vchan_cyclic_callback(vd);
- 	}
-=20
- out:
-@@ -1163,6 +1248,9 @@ static int xdma_probe(struct platform_device *pdev)
- 	dma_cap_set(DMA_SLAVE, xdev->dma_dev.cap_mask);
- 	dma_cap_set(DMA_PRIVATE, xdev->dma_dev.cap_mask);
- 	dma_cap_set(DMA_CYCLIC, xdev->dma_dev.cap_mask);
-+	dma_cap_set(DMA_INTERLEAVE, xdev->dma_dev.cap_mask);
-+	dma_cap_set(DMA_REPEAT, xdev->dma_dev.cap_mask);
-+	dma_cap_set(DMA_LOAD_EOT, xdev->dma_dev.cap_mask);
-=20
- 	xdev->dma_dev.dev =3D &pdev->dev;
- 	xdev->dma_dev.residue_granularity =3D DMA_RESIDUE_GRANULARITY_SEGMENT;
-@@ -1178,6 +1266,7 @@ static int xdma_probe(struct platform_device *pdev)
- 	xdev->dma_dev.filter.mapcnt =3D pdata->device_map_cnt;
- 	xdev->dma_dev.filter.fn =3D xdma_filter_fn;
- 	xdev->dma_dev.device_prep_dma_cyclic =3D xdma_prep_dma_cyclic;
-+	xdev->dma_dev.device_prep_interleaved_dma =3D xdma_prep_interleaved_dma=
-;
-=20
- 	ret =3D dma_async_device_register(&xdev->dma_dev);
- 	if (ret) {
---=20
-2.34.1
+	return ret;
 
+What do you think?
+
+Regards,
+Tommaso
+
+> > 
+> > > > > > @@ -1853,6 +1836,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+> > > > > >  {
+> > > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > >  	struct alvium_mode *mode = &alvium->mode;
+> > > > > > +	struct v4l2_fract *interval;
+> > > > > >  	struct v4l2_subdev_format sd_fmt = {
+> > > > > >  		.which = V4L2_SUBDEV_FORMAT_TRY,
+> > > > > >  		.format = alvium_csi2_default_fmt,
+> > > > > > @@ -1870,6 +1854,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+> > > > > >  	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
+> > > > > >  	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
+> > > > > >  
+> > > > > > +	/* Setup initial frame interval*/
+> > > > > > +	interval = v4l2_subdev_state_get_interval(state, 0);
+> > > > > > +	interval->numerator = 1;
+> > > > > > +	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
+> > > > > > +
+> > > > > >  	return 0;
+> > > > > >  }
+> > > > > >  
+> > > > > > @@ -2239,7 +2228,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
+> > > > > >  	.set_fmt = alvium_set_fmt,
+> > > > > >  	.get_selection = alvium_get_selection,
+> > > > > >  	.set_selection = alvium_set_selection,
+> > > > > > -	.get_frame_interval = alvium_g_frame_interval,
+> > > > > > +	.get_frame_interval = v4l2_subdev_get_frame_interval,
+> > > > > >  	.set_frame_interval = alvium_s_frame_interval,
+> > > > > >  };
+> > > > > >  
+> > > > > > @@ -2260,11 +2249,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
+> > > > > >  	struct v4l2_subdev *sd = &alvium->sd;
+> > > > > >  	int ret;
+> > > > > >  
+> > > > > > -	/* Setup initial frame interval*/
+> > > > > > -	alvium->frame_interval.numerator = 1;
+> > > > > > -	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
+> > > > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
+> > > > > > -
+> > > > > >  	/* Setup the initial mode */
+> > > > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
+> > > > > >  	alvium->mode.width = alvium_csi2_default_fmt.width;
+> > > > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
+> > > > > > index a6529b28e7dd..f5e26257b042 100644
+> > > > > > --- a/drivers/media/i2c/alvium-csi2.h
+> > > > > > +++ b/drivers/media/i2c/alvium-csi2.h
+> > > > > > @@ -442,8 +442,6 @@ struct alvium_dev {
+> > > > > >  	s32 inc_sharp;
+> > > > > >  
+> > > > > >  	struct alvium_mode mode;
+> > > > > > -	struct v4l2_fract frame_interval;
+> > > > > > -	u64 fr;
+> > > > > 
+> > > > > The fr field should have been removed by a previous patch (the one that
+> > > > > will go between 1/3 an 2/3, see my review of 1/3) as shown by the fact
+> > > > > that this patch only removes two locations where the field is set but
+> > > > > none where it's read.
+> > > > > 
+> > > > > >  
+> > > > > >  	u8 h_sup_csi_lanes;
+> > > > > >  	u64 link_freq;
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
 
