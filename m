@@ -1,96 +1,198 @@
-Return-Path: <linux-kernel+bounces-4463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 876B3817DD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:05:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5EFD817DDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A4F21F2462F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:05:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC1221C21929
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84768760AD;
-	Mon, 18 Dec 2023 23:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9858768F1;
+	Mon, 18 Dec 2023 23:05:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ywPnYzld"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Ri+wefoJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F71876096
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d20831f21so16275e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:05:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702940740; x=1703545540; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+SN12il5ik6cWNDdw9fL8yyeZEss9E6x81jqC6dArM4=;
-        b=ywPnYzld0rBMoq2j4ctOl/jiTkZxPMQ3Jb814gZNpN861UR3rz0wG/jSXCu/wGRsMm
-         aOOI72wyDAXPUJKTOuh0cNZZLTU6DlWVTpaT73EhtisfnZVn9wxpUsjSIfWMsqGIc5ay
-         2RZcxcmLpELmRhJAmxf5rGCwpf/QdvJq2JCrzg3197FqyoRwODpE/4/66WljpcDlCIq9
-         svfGETYaQKA7eVz6WTB7pM8phewIYWZylTopEriEsSIrct51PTJ16Fzc2wicSpQopKl8
-         pGLXNzmvqk01uXSQTVkooXwrUqUIqUpb4WLw5XFqDKk1E/d4ytYtHNcJ6TBwNNNdBlU3
-         cOhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702940740; x=1703545540;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+SN12il5ik6cWNDdw9fL8yyeZEss9E6x81jqC6dArM4=;
-        b=W5XNUCMBJOk88W+V71M2xOoqicry7VRp68JTpELRpedcONnnbvp6LJHWAtMxHtB3db
-         BdQV+lc9+GFMMZmwbJpoxNWWSvtY2s5sweWZJaHmKftnCeiB4bAUR2f2mkjEpYFajO0i
-         MMRewKKFvPdfcNrffeU8z+BD7Jy/EB/ErL5hrNQGYQ7KhWkc+SmOHwnhyReiFnBS0N/6
-         5CFJLWqiryk/GZZw99klhy3pzx3YSwYgC0AayQRek0ly/9ixl61nj9O76rcgmtBTyqqk
-         vhnQYiCE82bE7jUKI0grak+LJG3JzxZ/+khxUQjQkgGn+NvnjeOu+Cuy0WxO7xVlva9A
-         v37w==
-X-Gm-Message-State: AOJu0YyiAGz4wF4BWlrY2jJutKVz1Wo/jhrzO9SiG3wtYf2PVJlTDbFz
-	JRYY0xtK0+iccEINALPqooDEK45IXw2WNG0RUkJpMyN7Bawn
-X-Google-Smtp-Source: AGHT+IGMOM3LPYj6duqgFMQpU/sRxW2c92eaacVQ5j02hlMrJxsQiJ5p6r8R1iKWvqGXXa2WKsmd/d4YW/xB4awXn9U=
-X-Received: by 2002:a1c:7406:0:b0:40c:4ed3:8d1f with SMTP id
- p6-20020a1c7406000000b0040c4ed38d1fmr26310wmc.7.1702940740206; Mon, 18 Dec
- 2023 15:05:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB23A7609D;
+	Mon, 18 Dec 2023 23:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: f63aea3e9df911eeba30773df0976c77-20231219
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=v9sJxu+peZKEvGLvTmMpiV6Tv/puBAp7n/rM5sIpeRQ=;
+	b=Ri+wefoJkTLb2OxPhBxPR4szvHZ6zGawmGO+kyQcPof40+uD26P2cz0MFfpwxKI0y9NH7S5AWHmY6lXLRB594B4zraB4If1M//DWvL170Pk1dbR+XZCx6hzhZqrSoPo2+R4JyFulfaQ5+JopT01I1BD4VlsgLdW0ixSO+NCBmjQ=;
+X-CID-CACHE: Type:Local,Time:202312190648+08,HitQuantity:1
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:94aeeec4-f4ae-4976-9889-77135e8203e9,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:c62eef73-1bd3-4f48-b671-ada88705968c,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+	NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: f63aea3e9df911eeba30773df0976c77-20231219
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
+	(envelope-from <bo.ye@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 2084125728; Tue, 19 Dec 2023 07:05:39 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 19 Dec 2023 07:05:38 +0800
+Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 19 Dec 2023 07:05:36 +0800
+From: Bo Ye <bo.ye@mediatek.com>
+To: <avri.altman@wdc.com>, <dominique.martinet@atmark-techno.com>,
+	<rafael.beims@toradex.com>, <vincent.whitchurch@axis.com>, Ulf Hansson
+	<ulf.hansson@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+CC: <yongdong.zhang@mediatek.com>, lin.gui <lin.gui@mediatek.com>, Bo Ye
+	<bo.ye@mediatek.com>, <linux-mmc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2] mmc: add wp_grp_size node
+Date: Tue, 19 Dec 2023 07:05:32 +0800
+Message-ID: <20231218230532.82427-1-bo.ye@mediatek.com>
+X-Mailer: git-send-email 2.17.0
+In-Reply-To: <20231218224832.81347-1-bo.ye@mediatek.com>
+References: <20231218224832.81347-1-bo.ye@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218095933.2487360-1-xuxinxiong@huaqin.corp-partner.google.com>
-In-Reply-To: <20231218095933.2487360-1-xuxinxiong@huaqin.corp-partner.google.com>
-From: Doug Anderson <dianders@google.com>
-Date: Mon, 18 Dec 2023 15:05:27 -0800
-Message-ID: <CAD=FV=XE+k3PTXMY7gU789HnGKVQdJMwJt8gqowxT6x0zj-A4w@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel-edp: Add several generic edp panels
-To: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
-Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
-	hsinyi@google.com, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--8.793700-8.000000
+X-TMASE-MatchedRID: HI0v3Fgc2rNGlhjnipkGEAwfhKwa9GwD+lX/RcQoG2FX4H/AHZTAKiQH
+	YX2qyjfSlB6IdnaWhV1I7JPsZpNRgcL2WgOVZLNHhDqIQb7sQecK3n1SHen81VeilmPI7oJlf8S
+	IQrqULYwLYtJsevMdjZZLxtyQINIcxzvHgMQjo/aEryjhqiyzyitovaaHxlUrXFNHTRKzg/r5WK
+	Feqf3EsSNfw7OZ1vFwDx215gVwcojLJhhr8sBh+jNdJzhXekT2r4ukWaaTegDdPCHlFNPO/7K3o
+	/jvHhd/z0if0vMXZ3Thyvjhw0nKvqtL0wBaA/G+syw+ZJnFumTeDOoY8z6DT8gYL9oUjHj+EPrQ
+	9ei0HsbGhcwVapF2+oAy6p60ZV62fJ5/bZ6npdg7AFczfjr/7DBO8LavgWJ5Hm17+SOHjgqwxZ+
+	f6eSsGVBAmUDF4FZTXrw8q3AM+fg=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--8.793700-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 5727A99A606388E051883DC4B6203A1CA60EBC100F0EC10313FF828558596EF02000:8
+X-MTK: N
 
-Hi,
+From: "lin.gui" <lin.gui@mediatek.com>
 
-On Mon, Dec 18, 2023 at 1:59=E2=80=AFAM Xuxin Xiong
-<xuxinxiong@huaqin.corp-partner.google.com> wrote:
->
-> Add support for the following 3 panels:
-> 1. BOE NV116WHM-N49 V8.0
-> 2. BOE NV122WUM-N41
-> 3. CSO MNC207QS1-1
->
-> Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 4 ++++
->  1 file changed, 4 insertions(+)
+Detail:
+Add node "wp_grp_size", corresponding to WP_GRP_SIZE
+(write protect group size) of eMMC's CSD register.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Scenario:
+The eMMC card can be set into write-protected mode to
+prevent data from being accidentally modified or deleted.
+Wp_grp_size (Write Protect Group Size) refers to an
+attribute of the eMMC card, used to manage write protection,
+and is the CSD register  [36:32] of the eMMC device.
+Wp_grp_size (Write Protect Group Size) indicates how many
+eMMC blocks are contained in each write protection group on the eMMC card.
 
-Pushed to drm-misc-next:
+Final rendered file:
+"/sys/class/mmc_host/mmc0/mmc0:0001/wp_grp_size"
 
-0547692ac146 drm/panel-edp: Add several generic edp panels
+Signed-off-by: Lin Gui <lin.gui@mediatek.com>
+Signed-off-by: Bo Ye <bo.ye@mediatek.com>
+---
+Change in v2: 
+-remove Change-Id
+-replace space with tabulation
+---
+ drivers/mmc/core/mmc.c   | 16 +++++++++++++++-
+ include/linux/mmc/card.h |  2 ++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 705942edacc6..e0d72378ac77 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -136,6 +136,17 @@ static void mmc_set_erase_size(struct mmc_card *card)
+ 	mmc_init_erase(card);
+ }
+ 
++
++static void mmc_set_wp_grp_size(struct mmc_card *card)
++{
++	if (card->ext_csd.erase_group_def & 1)
++		card->wp_grp_size = card->ext_csd.hc_erase_size *
++			card->ext_csd.raw_hc_erase_gap_size;
++	else
++		card->wp_grp_size = card->csd.erase_size *
++			(card->csd.wp_grp_size + 1);
++}
++
+ /*
+  * Given a 128-bit response, decode to our card CSD structure.
+  */
+@@ -186,6 +197,7 @@ static int mmc_decode_csd(struct mmc_card *card)
+ 		b = UNSTUFF_BITS(resp, 37, 5);
+ 		csd->erase_size = (a + 1) * (b + 1);
+ 		csd->erase_size <<= csd->write_blkbits - 9;
++		csd->wp_grp_size = UNSTUFF_BITS(resp, 32, 5);
+ 	}
+ 
+ 	return 0;
+@@ -790,6 +802,7 @@ MMC_DEV_ATTR(csd, "%08x%08x%08x%08x\n", card->raw_csd[0], card->raw_csd[1],
+ MMC_DEV_ATTR(date, "%02d/%04d\n", card->cid.month, card->cid.year);
+ MMC_DEV_ATTR(erase_size, "%u\n", card->erase_size << 9);
+ MMC_DEV_ATTR(preferred_erase_size, "%u\n", card->pref_erase << 9);
++MMC_DEV_ATTR(wp_grp_size, "%u\n", card->wp_grp_size << 9);
+ MMC_DEV_ATTR(ffu_capable, "%d\n", card->ext_csd.ffu_capable);
+ MMC_DEV_ATTR(hwrev, "0x%x\n", card->cid.hwrev);
+ MMC_DEV_ATTR(manfid, "0x%06x\n", card->cid.manfid);
+@@ -850,6 +863,7 @@ static struct attribute *mmc_std_attrs[] = {
+ 	&dev_attr_date.attr,
+ 	&dev_attr_erase_size.attr,
+ 	&dev_attr_preferred_erase_size.attr,
++	&dev_attr_wp_grp_size.attr,
+ 	&dev_attr_fwrev.attr,
+ 	&dev_attr_ffu_capable.attr,
+ 	&dev_attr_hwrev.attr,
+@@ -1764,7 +1778,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+ 			mmc_set_erase_size(card);
+ 		}
+ 	}
+-
++	mmc_set_wp_grp_size(card);
+ 	/*
+ 	 * Ensure eMMC user default partition is enabled
+ 	 */
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index 7b12eebc5586..b9c3c6303a22 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -32,6 +32,7 @@ struct mmc_csd {
+ 	unsigned int		r2w_factor;
+ 	unsigned int		max_dtr;
+ 	unsigned int		erase_size;		/* In sectors */
++	unsigned int		wp_grp_size;
+ 	unsigned int		read_blkbits;
+ 	unsigned int		write_blkbits;
+ 	unsigned int		capacity;
+@@ -306,6 +307,7 @@ struct mmc_card {
+ 	unsigned int		eg_boundary;	/* don't cross erase-group boundaries */
+ 	unsigned int		erase_arg;	/* erase / trim / discard */
+  	u8			erased_byte;	/* value of erased bytes */
++	unsigned int		wp_grp_size;	/* write group size in sectors */
+ 
+ 	u32			raw_cid[4];	/* raw card CID */
+ 	u32			raw_csd[4];	/* raw card CSD */
+-- 
+2.18.0
+
 
