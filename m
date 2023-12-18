@@ -1,173 +1,169 @@
-Return-Path: <linux-kernel+bounces-3090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D9981673D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:17:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BFF481671F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:12:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 486AF1C22334
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:17:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6FB1284432
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA3C779FC;
-	Mon, 18 Dec 2023 07:17:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA4BD537;
+	Mon, 18 Dec 2023 07:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="hVM+t6hz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-m127230.xmail.ntesmail.com (mail-m127230.xmail.ntesmail.com [115.236.127.230])
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF4179E1;
-	Mon, 18 Dec 2023 07:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from localhost.localdomain (unknown [IPV6:240e:3b7:3270:35d0:f136:8ef4:5e9e:94b4])
-	by mail-m12741.qiye.163.com (Hmail) with ESMTPA id EE1229E0608;
-	Mon, 18 Dec 2023 15:09:06 +0800 (CST)
-From: Ke Xiao <xiaoke@sangfor.com.cn>
-To: jesse.brandeburg@intel.com,
-	anthony.l.nguyen@intel.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: dinghui@sangfor.com.cn,
-	zhudi2@huawei.com,
-	zhangrui182@huawei.com,
-	shannon.nelson@amd.com,
-	jan.sokolowski@intel.com,
-	horms@kernel.org,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E14D533;
+	Mon, 18 Dec 2023 07:11:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 421CA603E6;
+	Mon, 18 Dec 2023 07:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1702883479;
+	bh=+3hCOyBA6B8r1AjHV1DyAm1ub22CieIvEKi/FHo1oXg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hVM+t6hzx8orPqGP8RUPdB0AiqlocXu4uS/f7d5LLp9EPMcGQubhRJXUM1A/2MHqX
+	 zO3/KJftoe/Obs8qrgWkiyJ1pdN5AUHjYe5EWalWLI4F0eE+Wr10zCfsvl/gA/HHlm
+	 qexQ0dFITeaQWZwGGS2AWUyWi0fmLzCnAm37nQHHf9zUKQLmYX0xX3fryVeRorvmAP
+	 lP/V+3l4EyRbcHAS3Y+1EyWH2bm4lOdYT4stbG8ETC+aIWdyfjWYZ1wIEwHnzY8YF5
+	 E8jaj/+hBVHnDlbeyTSS/o2UisGtDRTxNkbYUuOeTvWtl6du8LWpKVBmRYJJZvMxLo
+	 srGQ0YMvEOi7g==
+From: Tony Lindgren <tony@atomide.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Andy Shevchenko <andriy.shevchenko@intel.com>,
+	Dhruva Gole <d-gole@ti.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Johan Hovold <johan@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org,
-	Ke Xiao <xiaoke@sangfor.com.cn>
-Subject: [net PATCH v2] i40e: fix use-after-free in i40e_aqc_add_filters()
-Date: Mon, 18 Dec 2023 15:08:50 +0800
-Message-Id: <20231218070850.15870-1-xiaoke@sangfor.com.cn>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCT0hNVhpLSh1CQkNMGU9MH1UTARMWGhIXJBQOD1
-	lXWRgSC1lBWUlPSx5BSBlMQUhJTEtBSE4fS0EdSkhNQUMeHU9BTh5CHkFCTxlPWVdZFhoPEhUdFF
-	lBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg++
-X-HM-Tid: 0a8c7bc1cba9b214kuuuee1229e0608
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MDo6Pxw5CTwwKykpKigqGA0L
-	FTcaCwtVSlVKTEtJQ0NISE9DSklMVTMWGhIXVQMSGhQQHjsIGhUcHRQJVRgUFlUYFUVZV1kSC1lB
-	WUlPSx5BSBlMQUhJTEtBSE4fS0EdSkhNQUMeHU9BTh5CHkFCTxlPWVdZCAFZQU9CTUI3Bg++
+	linux-serial@vger.kernel.org
+Subject: [RFC PATCH v5 0/6] Add support for DEVNAME:0.0 style hardware based addressing
+Date: Mon, 18 Dec 2023 09:09:47 +0200
+Message-ID: <20231218071020.21805-1-tony@atomide.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Commit 3116f59c12bd ("i40e: fix use-after-free in
-i40e_sync_filters_subtask()") avoided use-after-free issues,
-by increasing refcount during update the VSI filter list to
-the HW. However, it missed the unicast situation.
+Hi all,
 
-When deleting an unicast FDB entry, the i40e driver will release
-the mac_filter, and i40e_service_task will concurrently request
-firmware to add the mac_filter, which will lead to the following
-use-after-free issue.
+With the recent serial core changes, we can now add DEVNAME:0.0 style
+addressing for the serial ports. When using DEVNAME:0.0 naming, we don't
+need to care which ttyS instance number is allocated depending on HSUART
+settings or if the devicetree has added aliases for all the ports.
 
-Fix again for both netdev->uc and netdev->mc.
+We also prepare the serial core to handle the ttyS related quirks done
+in console_setup() to prepare things for eventually dropping the parsing
+from console_setup().
 
-BUG: KASAN: use-after-free in i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
-Read of size 2 at addr ffff888eb3452d60 by task kworker/8:7/6379
+Regards,
 
-CPU: 8 PID: 6379 Comm: kworker/8:7 Kdump: loaded Tainted: G
-Workqueue: i40e i40e_service_task [i40e]
-Call Trace:
- dump_stack+0x71/0xab
- print_address_description+0x6b/0x290
- kasan_report+0x14a/0x2b0
- i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
- i40e_sync_vsi_filters+0x1676/0x39c0 [i40e]
- i40e_service_task+0x1397/0x2bb0 [i40e]
- process_one_work+0x56a/0x11f0
- worker_thread+0x8f/0xf40
- kthread+0x2a0/0x390
- ret_from_fork+0x1f/0x40
+Tony
 
-Allocated by task 21948:
- kasan_kmalloc+0xa6/0xd0
- kmem_cache_alloc_trace+0xdb/0x1c0
- i40e_add_filter+0x11e/0x520 [i40e]
- i40e_addr_sync+0x37/0x60 [i40e]
- __hw_addr_sync_dev+0x1f5/0x2f0
- i40e_set_rx_mode+0x61/0x1e0 [i40e]
- dev_uc_add_excl+0x137/0x190
- i40e_ndo_fdb_add+0x161/0x260 [i40e]
- rtnl_fdb_add+0x567/0x950
- rtnetlink_rcv_msg+0x5db/0x880
- netlink_rcv_skb+0x254/0x380
- netlink_unicast+0x454/0x610
- netlink_sendmsg+0x747/0xb00
- sock_sendmsg+0xe2/0x120
- __sys_sendto+0x1ae/0x290
- __x64_sys_sendto+0xdd/0x1b0
- do_syscall_64+0xa0/0x370
- entry_SYSCALL_64_after_hwframe+0x65/0xca
+Changes since v4:
+- Fix passing empty brl_opt to add_preferred_console() instead of NULL
 
-Freed by task 21948:
- __kasan_slab_free+0x137/0x190
- kfree+0x8b/0x1b0
- __i40e_del_filter+0x116/0x1e0 [i40e]
- i40e_del_mac_filter+0x16c/0x300 [i40e]
- i40e_addr_unsync+0x134/0x1b0 [i40e]
- __hw_addr_sync_dev+0xff/0x2f0
- i40e_set_rx_mode+0x61/0x1e0 [i40e]
- dev_uc_del+0x77/0x90
- rtnl_fdb_del+0x6a5/0x860
- rtnetlink_rcv_msg+0x5db/0x880
- netlink_rcv_skb+0x254/0x380
- netlink_unicast+0x454/0x610
- netlink_sendmsg+0x747/0xb00
- sock_sendmsg+0xe2/0x120
- __sys_sendto+0x1ae/0x290
- __x64_sys_sendto+0xdd/0x1b0
- do_syscall_64+0xa0/0x370
- entry_SYSCALL_64_after_hwframe+0x65/0xca
+- Fix console_setup() trying to parse a console index out of a DEVNAME:0.0
+  option that can be an IO address instead of an index
 
-Fixes: 3116f59c12bd ("i40e: fix use-after-free in i40e_sync_filters_subtask()")
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Signed-off-by: Ke Xiao <xiaoke@sangfor.com.cn>
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-Cc: Di Zhu <zhudi2@huawei.com>
-Reviewed-by: Jan Sokolowski <jan.sokolowski@intel.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
----
-v2:
-- Order local variable declarations in Reverse Christmas Tree (RCT)
+- Fix issue with default console getting enabled before DEVNAME:0.0
+  handling device driver calls add_preferred_console()
 
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+- Fix error check for kasprintf(), use serial_base_add_one_prefcon() and
+  coding suggestions by Andy
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 1ab8dbe2d880..d5633a440cca 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -107,12 +107,18 @@ static struct workqueue_struct *i40e_wq;
- static void netdev_hw_addr_refcnt(struct i40e_mac_filter *f,
- 				  struct net_device *netdev, int delta)
- {
-+	struct netdev_hw_addr_list *ha_list;
- 	struct netdev_hw_addr *ha;
- 
- 	if (!f || !netdev)
- 		return;
- 
--	netdev_for_each_mc_addr(ha, netdev) {
-+	if (is_unicast_ether_addr(f->macaddr) || is_link_local_ether_addr(f->macaddr))
-+		ha_list = &netdev->uc;
-+	else
-+		ha_list = &netdev->mc;
-+
-+	netdev_hw_addr_list_for_each(ha, ha_list) {
- 		if (ether_addr_equal(ha->addr, f->macaddr)) {
- 			ha->refcount += delta;
- 			if (ha->refcount <= 0)
+- Fixed compile errors if console is not enabled in .config as noted
+  by kernel test robot
+
+Changes since v3:
+- Fix handling of brl_options by saving them too in console_opt_save()
+
+- Drop changes to remove console_setup() parsing, further changes to
+  register_console() are still needed before can leave out the early
+  parsing
+
+- Added a patch for serial8250_isa_init_preferred_console(), otherwise
+  the console gets initialized later for x86 when the console_setup()
+  parsing is dropped as pointed out by Petr
+
+- Initialize __free() variables to NULL as noted by Dan
+
+- Return handled in console_setup() if saving console options fails
+
+- Simplify serial_base_add_preferred_console() and add a helper for
+  serial_base_add_one_prefcon() as suggested by Andy
+
+- Header include changes to kernel/printk/conopt.c as suggested by Andy
+
+Changes since v2:
+
+- Console name got constified and already applied as suggested by Ilpo
+  and Andy
+
+- Add printk/conopt.c to save console command line options
+
+- Add a patch to drop old console_setup() character device name parsing
+
+- Use cleanup.h to simplify freeing as suggested by Andy
+
+- Use types.h instead of kernel.h as suggested by Andy
+
+- Use strcspn() as suggested by Andy
+
+- Various coding improvments suggested by Andy
+
+Changes since v1:
+
+- Constify printk add_preferred_console() as suggested by Jiri
+
+- Use proper kernel command line helpers for parsing console as
+  suggested by Jiri
+
+- Update description for HSUART based on Andy's comments
+
+- Standardize on DEVNAME:0.0 style naming as suggested by Andy
+
+- Added missing put_device() calls paired with device_find_child()
+
+Tony Lindgren (6):
+  printk: Save console options for add_preferred_console_match()
+  printk: Don't try to parse DEVNAME:0.0 console options
+  printk: Flag register_console() if console is set on command line
+  serial: core: Add support for DEVNAME:0.0 style naming for kernel
+    console
+  serial: core: Handle serial console options
+  serial: 8250: Add preferred console in serial8250_isa_init_ports()
+
+ drivers/tty/serial/8250/8250_core.c  |   5 +
+ drivers/tty/serial/serial_base.h     |  24 +++++
+ drivers/tty/serial/serial_base_bus.c | 136 +++++++++++++++++++++++++
+ drivers/tty/serial/serial_core.c     |   4 +
+ include/linux/printk.h               |   3 +
+ kernel/printk/Makefile               |   2 +-
+ kernel/printk/conopt.c               | 142 +++++++++++++++++++++++++++
+ kernel/printk/console_cmdline.h      |   6 ++
+ kernel/printk/printk.c               |  23 ++++-
+ 9 files changed, 340 insertions(+), 5 deletions(-)
+ create mode 100644 kernel/printk/conopt.c
+
 -- 
-2.17.1
-
+2.43.0
 
