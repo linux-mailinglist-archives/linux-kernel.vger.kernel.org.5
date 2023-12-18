@@ -1,32 +1,32 @@
-Return-Path: <linux-kernel+bounces-3458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDAE8816C9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:41:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2EE816C9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:41:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97CBF28395D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:41:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97759B209FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA01334545;
-	Mon, 18 Dec 2023 11:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D119832C81;
+	Mon, 18 Dec 2023 11:38:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35EC931747
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 11:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9712D7A4
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 11:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=ratatoskr.trumtrar.info)
 	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
 	(envelope-from <s.trumtrar@pengutronix.de>)
-	id 1rFBwY-0000Vp-Or; Mon, 18 Dec 2023 12:37:54 +0100
+	id 1rFBwZ-0000Vp-E4; Mon, 18 Dec 2023 12:37:55 +0100
 From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Date: Mon, 18 Dec 2023 12:37:09 +0100
-Subject: [PATCH RFC 2/4] virtio-net: support receive timestamp
+Date: Mon, 18 Dec 2023 12:37:10 +0100
+Subject: [PATCH RFC 3/4] virtio-net: support transmit timestamp
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -35,7 +35,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231218-v6-7-topic-virtio-net-ptp-v1-2-cac92b2d8532@pengutronix.de>
+Message-Id: <20231218-v6-7-topic-virtio-net-ptp-v1-3-cac92b2d8532@pengutronix.de>
 References: <20231218-v6-7-topic-virtio-net-ptp-v1-0-cac92b2d8532@pengutronix.de>
 In-Reply-To: <20231218-v6-7-topic-virtio-net-ptp-v1-0-cac92b2d8532@pengutronix.de>
 To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
@@ -46,12 +46,12 @@ To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
 Cc: virtualization@lists.linux.dev, netdev@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Willem de Bruijn <willemb@google.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9439;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8554;
  i=s.trumtrar@pengutronix.de; h=from:subject:message-id;
- bh=/amFfGGN0ySjYA0bFqG8F1jrShubaLWAjnl+dO9RuW8=;
- b=owGbwMvMwCUmvd38QH3grB+Mp9WSGFIb9BmL9dvdJb3/hR9bZJG+i9u3yf+Yl+FMF8bPu1McvI/c
- OqzQUcrCIMbFICumyBK59pDGZuHPOl+On2eAmcPKBDKEgYtTACbyi4+RYcmhW7p/lLT4blf8PtdU6L
- LloFxpxFvLKUU7jiS81ffTMWL4724eLRoa9Sz+duaE1EtnGH9XlJmozNmxgFvzyM7Fu7aacAIA
+ bh=8hMAxYNzHYaVhUxwKSBTNbNGO8KM+28aw/y7rrmeGlo=;
+ b=owGbwMvMwCUmvd38QH3grB+Mp9WSGFIb9FmzBJi5L3y8EKam4PA96br4Mp/DM07fN8m8JxV/uPla
+ 4vPSjlIWBjEuBlkxRZbItYc0Ngt/1vly/DwDzBxWJpAhDFycAjCRq8WMDLc3fv0YeSjis6a1sPWEkw
+ /PpzJ/KAhbnR2aMuHjhvKn/u2MDPOuc568EqiyNNFm3e5D4Udf9QXduzXtVfxWp6SItSwlnxkB
 X-Developer-Key: i=s.trumtrar@pengutronix.de; a=openpgp;
  fpr=59ADC228B313F32CF4C7CF001BB737C07F519AF8
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
@@ -61,274 +61,229 @@ X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 From: Willem de Bruijn <willemb@google.com>
 
-Add optional PTP hardware rx timestamp offload for virtio-net.
+Add optional PTP hardware tx timestamp offload for virtio-net.
 
 Accurate RTT measurement requires timestamps close to the wire.
-Introduce virtio feature VIRTIO_NET_F_RX_TSTAMP. If negotiated, the
-virtio-net header is expanded with room for a timestamp.
+Introduce virtio feature VIRTIO_NET_F_TX_TSTAMP, the transmit
+equivalent to VIRTIO_NET_F_RX_TSTAMP.
 
-A device may pass receive timestamps for all or some packets. Flag
-VIRTIO_NET_HDR_F_TSTAMP signals whether a timestamp is recorded.
-
-A driver that supports hardware timestamping must also support
-ioctl SIOCSHWTSTAMP. Implement that, as well as information getters
-ioctl SIOCGHWTSTAMP and ethtool get_ts_info (`ethtool -T $DEV`).
+The driver sets VIRTIO_NET_HDR_F_TSTAMP to request a timestamp
+returned on completion. If the feature is negotiated, the device
+either places the timestamp or clears the feature bit.
 
 The timestamp straddles (virtual) hardware domains. Like PTP, use
 international atomic time (CLOCK_TAI) as global clock base. The driver
 must sync with the device, e.g., through kvm-clock.
 
-Tested:
-  guest: ./timestamping eth0 \
-          SOF_TIMESTAMPING_RAW_HARDWARE \
-          SOF_TIMESTAMPING_RX_HARDWARE
-  host: nc -4 -u 192.168.1.1 319
+Modify can_push to ensure that on tx completion the header, and thus
+timestamp, is in a predicatable location at skb_vnet_hdr.
 
-Changes RFC -> RFCv2
-  - rename virtio_net_hdr_v12 to virtio_net_hdr_hash_ts
-  - add ethtool .get_ts_info to query capabilities
-  - add ioctl SIOC[GS]HWTSTAMP to configure feature
-  - add vi->enable_rx_tstamp to store configuration
-  - convert virtioXX_to_cpu to leXX_to_cpu
-  - convert reserved to __u32
+Tested: modified txtimestamp.c to with h/w timestamping:
+  -       sock_opt = SOF_TIMESTAMPING_SOFTWARE |
+  +       sock_opt = SOF_TIMESTAMPING_RAW_HARDWARE |
+  + do_test(family, SOF_TIMESTAMPING_TX_HARDWARE);
 
 Signed-off-by: Willem de Bruijn <willemb@google.com>
 Co-developed-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 
 --
-  Changes to original RFCv2
-  - move virtio_net_hdr_v1 into hash-struct
+  Changes to original RFC v2:
+  - append write-able descriptor for TX timestamp
+
+Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 ---
- drivers/net/virtio_net.c        | 113 +++++++++++++++++++++++++++++++++++++++-
- include/uapi/linux/virtio_net.h |  13 +++++
- 2 files changed, 124 insertions(+), 2 deletions(-)
+ drivers/net/virtio_net.c        | 79 +++++++++++++++++++++++++++++++++++------
+ include/uapi/linux/virtio_net.h |  1 +
+ 2 files changed, 70 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 8c9de31af8942..9bb6cdaf49cc9 100644
+index 9bb6cdaf49cc9..4065834957fbd 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -274,6 +274,12 @@ struct virtnet_info {
- 	/* Driver will pass tx path info to the device */
- 	bool has_tx_hash;
+@@ -280,6 +280,12 @@ struct virtnet_info {
+ 	/* Device will pass rx timestamp. Requires has_rx_tstamp */
+ 	bool enable_rx_tstamp;
  
-+	/* Device can pass CLOCK_TAI receive time to the driver */
-+	bool has_rx_tstamp;
++	/* Device can pass CLOCK_TAI transmit time to the driver */
++	bool has_tx_tstamp;
 +
-+	/* Device will pass rx timestamp. Requires has_rx_tstamp */
-+	bool enable_rx_tstamp;
++	/* Device will pass tx timestamp. Requires has_tx_tstamp */
++	bool enable_tx_tstamp;
 +
  	/* Has control virtqueue */
  	bool has_cvq;
  
-@@ -384,6 +390,13 @@ skb_vnet_common_hdr(struct sk_buff *skb)
- 	return (struct virtio_net_common_hdr *)skb->cb;
+@@ -760,6 +766,21 @@ static void virtnet_rq_set_premapped(struct virtnet_info *vi)
+ 	}
  }
  
-+static inline struct virtio_net_hdr_hash_ts *skb_vnet_hdr_ht(struct sk_buff *skb)
-+{
-+	BUILD_BUG_ON(sizeof(struct virtio_net_hdr_hash_ts) > sizeof(skb->cb));
-+
-+	return (void *)skb->cb;
-+}
-+
- /*
-  * private is used to chain pages for big packets, put the whole
-  * most recent used list in the beginning for reuse
-@@ -1755,6 +1768,19 @@ static void virtio_skb_set_hash(const struct virtio_net_hdr_v1_hash *hdr_hash,
- 	skb_set_hash(skb, __le32_to_cpu(hdr_hash->hash_value), rss_hash_type);
- }
- 
-+static inline void virtnet_record_rx_tstamp(const struct virtnet_info *vi,
-+					    struct sk_buff *skb)
++static void virtnet_record_tx_tstamp(const struct send_queue *sq,
++				     struct sk_buff *skb)
 +{
 +	const struct virtio_net_hdr_hash_ts *h = skb_vnet_hdr_ht(skb);
++	const struct virtnet_info *vi = sq->vq->vdev->priv;
++	struct skb_shared_hwtstamps ts;
 +
 +	if (h->hash.hdr.flags & VIRTIO_NET_HDR_F_TSTAMP &&
-+	    vi->enable_rx_tstamp) {
-+		u64 ts = le64_to_cpu(h->tstamp);
-+
-+		skb_hwtstamps(skb)->hwtstamp = ns_to_ktime(ts);
++	    vi->enable_tx_tstamp) {
++		/* Write the timestamp from the userspace to the skb */
++		ts.hwtstamp = ns_to_ktime(le64_to_cpu(h->tstamp));
++		skb_tstamp_tx(skb, &ts);
 +	}
 +}
 +
- static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 			void *buf, unsigned int len, void **ctx,
- 			unsigned int *xdp_xmit,
-@@ -1797,6 +1823,7 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 		goto frame_err;
+ static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
+ {
+ 	unsigned int len;
+@@ -771,6 +792,7 @@ static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
+ 		if (likely(!is_xdp_frame(ptr))) {
+ 			struct sk_buff *skb = ptr;
+ 
++			virtnet_record_tx_tstamp(sq, skb);
+ 			pr_debug("Sent skb %p\n", skb);
+ 
+ 			bytes += skb->len;
+@@ -2312,7 +2334,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+ 	struct virtio_net_hdr_mrg_rxbuf *hdr;
+ 	const unsigned char *dest = ((struct ethhdr *)skb->data)->h_dest;
+ 	struct virtnet_info *vi = sq->vq->vdev->priv;
+-	struct virtio_net_hdr_v1_hash *ht;
++	struct virtio_net_hdr_hash_ts *ht;
+ 	int num_sg;
+ 	unsigned hdr_len = vi->hdr_len;
+ 	bool can_push;
+@@ -2321,7 +2343,8 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+ 
+ 	can_push = vi->any_header_sg &&
+ 		!((unsigned long)skb->data & (__alignof__(*hdr) - 1)) &&
+-		!skb_header_cloned(skb) && skb_headroom(skb) >= hdr_len;
++		!skb_header_cloned(skb) && skb_headroom(skb) >= hdr_len &&
++		!vi->enable_tx_tstamp;
+ 	/* Even if we can, don't push here yet as this would skew
+ 	 * csum_start offset below. */
+ 	if (can_push)
+@@ -2342,10 +2365,12 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+ 		u16 report = skb->l4_hash ? VIRTIO_NET_HASH_REPORT_L4 :
+ 					    VIRTIO_NET_HASH_REPORT_OTHER;
+ 
+-		ht->hash_value = cpu_to_le32(skb->hash);
+-		ht->hash_report = cpu_to_le16(report);
+-		ht->hash_state = cpu_to_le16(VIRTIO_NET_HASH_STATE_DEFAULT);
++		ht->hash.value = cpu_to_le32(skb->hash);
++		ht->hash.report = cpu_to_le16(report);
++		ht->hash.flow_state = cpu_to_le16(VIRTIO_NET_HASH_STATE_DEFAULT);
+ 	}
++	if (vi->enable_tx_tstamp && skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP)
++		ht->hash.hdr.flags |= VIRTIO_NET_HDR_F_TSTAMP;
+ 
+ 	sg_init_table(sq->sg, skb_shinfo(skb)->nr_frags + (can_push ? 1 : 2));
+ 	if (can_push) {
+@@ -2362,7 +2387,23 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+ 			return num_sg;
+ 		num_sg++;
+ 	}
+-	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
++
++	/* Append a writeable descriptor after the RO ones. TX timestamp is
++	 * received via this descriptor
++	 */
++	if (ht->hash.hdr.flags & VIRTIO_NET_HDR_F_TSTAMP) {
++		struct virtio_net_hdr_hash_ts *h = skb_vnet_hdr_ht(skb);
++		struct scatterlist *sgs[2];
++		struct scatterlist sg_in;
++
++		sg_init_one(&sg_in, &h->tstamp, sizeof(h->tstamp));
++		sgs[0] = sq->sg;
++		sgs[1] = &sg_in;
++
++		return virtqueue_add_sgs(sq->vq, sgs, 1, 1, skb, GFP_ATOMIC);
++	} else {
++		return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
++	}
+ }
+ 
+ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+@@ -3556,7 +3597,13 @@ static int virtnet_get_ts_info(struct net_device *dev,
+ 		info->rx_filters = HWTSTAMP_FILTER_NONE;
  	}
  
-+	virtnet_record_rx_tstamp(vi, skb);
- 	skb_record_rx_queue(skb, vq2rxq(rq->vq));
- 	skb->protocol = eth_type_trans(skb, dev);
- 	pr_debug("Receiving skb proto 0x%04x len %i type %i\n",
-@@ -3512,6 +3539,28 @@ static int virtnet_get_per_queue_coalesce(struct net_device *dev,
+-	info->tx_types = HWTSTAMP_TX_OFF;
++	if (vi->has_tx_tstamp) {
++		info->so_timestamping |= SOF_TIMESTAMPING_TX_HARDWARE |
++					 SOF_TIMESTAMPING_RAW_HARDWARE;
++		info->tx_types = HWTSTAMP_TX_ON;
++	} else {
++		info->tx_types = HWTSTAMP_TX_OFF;
++	}
+ 
  	return 0;
  }
+@@ -3984,7 +4031,8 @@ static int virtnet_ioctl_set_hwtstamp(struct net_device *dev, struct ifreq *ifr)
+ 		return -EFAULT;
+ 	if (tsconf.flags)
+ 		return -EINVAL;
+-	if (tsconf.tx_type != HWTSTAMP_TX_OFF)
++	if (tsconf.tx_type != HWTSTAMP_TX_OFF &&
++	    tsconf.tx_type != HWTSTAMP_TX_ON)
+ 		return -ERANGE;
+ 	if (tsconf.rx_filter != HWTSTAMP_FILTER_NONE &&
+ 	    tsconf.rx_filter != HWTSTAMP_FILTER_ALL)
+@@ -3995,6 +4043,11 @@ static int virtnet_ioctl_set_hwtstamp(struct net_device *dev, struct ifreq *ifr)
+ 	else
+ 		vi->enable_rx_tstamp = tsconf.rx_filter == HWTSTAMP_FILTER_ALL;
  
-+static int virtnet_get_ts_info(struct net_device *dev,
-+			       struct ethtool_ts_info *info)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+
-+	/* setup default software timestamp */
-+	ethtool_op_get_ts_info(dev, info);
-+
-+	/* return rx capabilities (which may differ from current enable) */
-+	if (vi->has_rx_tstamp) {
-+		info->so_timestamping |= SOF_TIMESTAMPING_RX_HARDWARE |
-+					 SOF_TIMESTAMPING_RAW_HARDWARE;
-+		info->rx_filters = HWTSTAMP_FILTER_ALL;
-+	} else {
-+		info->rx_filters = HWTSTAMP_FILTER_NONE;
-+	}
-+
-+	info->tx_types = HWTSTAMP_TX_OFF;
-+
-+	return 0;
-+}
-+
- static void virtnet_init_settings(struct net_device *dev)
- {
- 	struct virtnet_info *vi = netdev_priv(dev);
-@@ -3637,7 +3686,7 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
- 	.get_ethtool_stats = virtnet_get_ethtool_stats,
- 	.set_channels = virtnet_set_channels,
- 	.get_channels = virtnet_get_channels,
--	.get_ts_info = ethtool_op_get_ts_info,
-+	.get_ts_info = virtnet_get_ts_info,
- 	.get_link_ksettings = virtnet_get_link_ksettings,
- 	.set_link_ksettings = virtnet_set_link_ksettings,
- 	.set_coalesce = virtnet_set_coalesce,
-@@ -3926,6 +3975,60 @@ static void virtnet_tx_timeout(struct net_device *dev, unsigned int txqueue)
- 		   jiffies_to_usecs(jiffies - READ_ONCE(txq->trans_start)));
- }
- 
-+static int virtnet_ioctl_set_hwtstamp(struct net_device *dev, struct ifreq *ifr)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	struct hwtstamp_config tsconf;
-+
-+	if (copy_from_user(&tsconf, ifr->ifr_data, sizeof(tsconf)))
-+		return -EFAULT;
-+	if (tsconf.flags)
-+		return -EINVAL;
-+	if (tsconf.tx_type != HWTSTAMP_TX_OFF)
-+		return -ERANGE;
-+	if (tsconf.rx_filter != HWTSTAMP_FILTER_NONE &&
-+	    tsconf.rx_filter != HWTSTAMP_FILTER_ALL)
-+		tsconf.rx_filter = HWTSTAMP_FILTER_ALL;
-+
-+	if (!vi->has_rx_tstamp)
-+		tsconf.rx_filter = HWTSTAMP_FILTER_NONE;
++	if (!vi->has_tx_tstamp)
++		tsconf.tx_type = HWTSTAMP_TX_OFF;
 +	else
-+		vi->enable_rx_tstamp = tsconf.rx_filter == HWTSTAMP_FILTER_ALL;
++		vi->enable_tx_tstamp = tsconf.tx_type == HWTSTAMP_TX_ON;
 +
-+	if (copy_to_user(ifr->ifr_data, &tsconf, sizeof(tsconf)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int virtnet_ioctl_get_hwtstamp(struct net_device *dev, struct ifreq *ifr)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	struct hwtstamp_config tsconf;
-+
-+	tsconf.flags = 0;
-+	tsconf.rx_filter = vi->enable_rx_tstamp ? HWTSTAMP_FILTER_ALL :
-+						  HWTSTAMP_FILTER_NONE;
-+	tsconf.tx_type = HWTSTAMP_TX_OFF;
-+
-+	if (copy_to_user(ifr->ifr_data, &tsconf, sizeof(tsconf)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int virtnet_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
-+{
-+	switch (cmd) {
-+	case SIOCSHWTSTAMP:
-+		return virtnet_ioctl_set_hwtstamp(dev, ifr);
-+
-+	case SIOCGHWTSTAMP:
-+		return virtnet_ioctl_get_hwtstamp(dev, ifr);
-+	}
-+	return -EOPNOTSUPP;
-+}
-+
- static const struct net_device_ops virtnet_netdev = {
- 	.ndo_open            = virtnet_open,
- 	.ndo_stop   	     = virtnet_close,
-@@ -3942,6 +4045,7 @@ static const struct net_device_ops virtnet_netdev = {
- 	.ndo_get_phys_port_name	= virtnet_get_phys_port_name,
- 	.ndo_set_features	= virtnet_set_features,
- 	.ndo_tx_timeout		= virtnet_tx_timeout,
-+	.ndo_eth_ioctl		= virtnet_ioctl,
- };
+ 	if (copy_to_user(ifr->ifr_data, &tsconf, sizeof(tsconf)))
+ 		return -EFAULT;
  
- static void virtnet_config_changed_work(struct work_struct *work)
-@@ -4530,6 +4634,11 @@ static int virtnet_probe(struct virtio_device *vdev)
- 		vi->hdr_len = sizeof(struct virtio_net_hdr_v1_hash);
+@@ -4009,7 +4062,8 @@ static int virtnet_ioctl_get_hwtstamp(struct net_device *dev, struct ifreq *ifr)
+ 	tsconf.flags = 0;
+ 	tsconf.rx_filter = vi->enable_rx_tstamp ? HWTSTAMP_FILTER_ALL :
+ 						  HWTSTAMP_FILTER_NONE;
+-	tsconf.tx_type = HWTSTAMP_TX_OFF;
++	tsconf.tx_type = vi->enable_tx_tstamp ? HWTSTAMP_TX_ON :
++						HWTSTAMP_TX_OFF;
+ 
+ 	if (copy_to_user(ifr->ifr_data, &tsconf, sizeof(tsconf)))
+ 		return -EFAULT;
+@@ -4639,6 +4693,11 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 		vi->hdr_len = sizeof(struct virtio_net_hdr_hash_ts);
  	}
  
-+	if (virtio_has_feature(vdev, VIRTIO_NET_F_RX_TSTAMP)) {
-+		vi->has_rx_tstamp = true;
++	if (virtio_has_feature(vdev, VIRTIO_NET_F_TX_TSTAMP)) {
++		vi->has_tx_tstamp = true;
 +		vi->hdr_len = sizeof(struct virtio_net_hdr_hash_ts);
 +	}
 +
  	if (virtio_has_feature(vdev, VIRTIO_F_ANY_LAYOUT) ||
  	    virtio_has_feature(vdev, VIRTIO_F_VERSION_1))
  		vi->any_header_sg = true;
-@@ -4773,7 +4882,7 @@ static struct virtio_device_id id_table[] = {
+@@ -4882,7 +4941,7 @@ static struct virtio_device_id id_table[] = {
  	VIRTIO_NET_F_RSS, VIRTIO_NET_F_HASH_REPORT, VIRTIO_NET_F_NOTF_COAL, \
  	VIRTIO_NET_F_VQ_NOTF_COAL, \
  	VIRTIO_NET_F_GUEST_HDRLEN, \
--	VIRTIO_NET_F_TX_HASH
-+	VIRTIO_NET_F_TX_HASH, VIRTIO_NET_F_RX_TSTAMP
+-	VIRTIO_NET_F_TX_HASH, VIRTIO_NET_F_RX_TSTAMP
++	VIRTIO_NET_F_TX_HASH, VIRTIO_NET_F_RX_TSTAMP, VIRTIO_NET_F_TX_TSTAMP
  
  static unsigned int features[] = {
  	VIRTNET_FEATURES,
 diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-index 698a11f8c6ab9..6a0a6f299a13b 100644
+index 6a0a6f299a13b..03a7ef45372d7 100644
 --- a/include/uapi/linux/virtio_net.h
 +++ b/include/uapi/linux/virtio_net.h
 @@ -56,6 +56,7 @@
  #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
  					 * Steering */
  #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
-+#define VIRTIO_NET_F_RX_TSTAMP	  50	/* Device sends TAI receive time */
++#define VIRTIO_NET_F_TX_TSTAMP	  49	/* Device sends TAI transmit time */
+ #define VIRTIO_NET_F_RX_TSTAMP	  50	/* Device sends TAI receive time */
  #define VIRTIO_NET_F_TX_HASH	  51	/* Driver sends hash report */
  #define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
- #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
-@@ -131,6 +132,7 @@ struct virtio_net_hdr_v1 {
- #define VIRTIO_NET_HDR_F_NEEDS_CSUM	1	/* Use csum_start, csum_offset */
- #define VIRTIO_NET_HDR_F_DATA_VALID	2	/* Csum is valid */
- #define VIRTIO_NET_HDR_F_RSC_INFO	4	/* rsc info in csum_ fields */
-+#define VIRTIO_NET_HDR_F_TSTAMP		8	/* timestamp is recorded */
- 	__u8 flags;
- #define VIRTIO_NET_HDR_GSO_NONE		0	/* Not a GSO frame */
- #define VIRTIO_NET_HDR_GSO_TCPV4	1	/* GSO frame, IPv4 TCP (TSO) */
-@@ -187,6 +189,17 @@ struct virtio_net_hdr_v1_hash {
- 	};
- };
- 
-+struct virtio_net_hdr_hash_ts {
-+	struct {
-+		struct virtio_net_hdr_v1 hdr;
-+		__le32 value;
-+		__le16 report;
-+		__le16 flow_state;
-+	} hash;
-+	__u32 reserved;
-+	__le64 tstamp;
-+};
-+
- #ifndef VIRTIO_NET_NO_LEGACY
- /* This header comes first in the scatter-gather list.
-  * For legacy virtio, if VIRTIO_F_ANY_LAYOUT is not negotiated, it must
 
 -- 
 2.42.0
