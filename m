@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel+bounces-3240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C4D8169BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD65F8169BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FB871F23098
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:22:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 388501F230B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D567125B0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB2A11CB2;
 	Mon, 18 Dec 2023 09:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LO0gjkCJ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CLisT8UE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D96611C82;
-	Mon, 18 Dec 2023 09:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI8F7SS009591;
-	Mon, 18 Dec 2023 09:21:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=eqNU+wI7c51LjdCSDXdyX5iD4gjSXnctMsoSiFsfA7c=; b=LO
-	0gjkCJW2bJjuIo4HT7Gavs7h/cFHbfjlzWTJRxYaWnkJUd2VgGqhFcNmS6Qqr612
-	kNzvujKQQhW9wodMjmMVZnQJtdJ3SMge+lbC+y+DqNue1tYq21mGnkSCc/bu8aoH
-	eiA+KUhMWBAbwb3fQzNagLti5b8cqtUTi2BK+7naNZfpOXchPeFsAffxzoEte+Xx
-	nMf6qlxyPjtwnCzq5d8/lxi0OVg1kbd2ep8GKUh96i1zFoXMf7AJlx6spKFqf9Oz
-	GJEd7W0sHv9mTi4jnxigV738XeBP4Cp2QRd/hzY+zXr90KtptmXrjHZGvCAphkl4
-	ylYCSOHgagKOL5j6GgXg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v152qbur0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 09:21:41 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BI9Le5p011492
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 09:21:40 GMT
-Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
- 2023 01:21:35 -0800
-Message-ID: <7d906e89-827f-49c7-96a2-004919218a26@quicinc.com>
-Date: Mon, 18 Dec 2023 17:21:33 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051771170B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702891312;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=rZwDCgO8gEoCaElLjJ9XMxUFtV5ecpFh3LYKHxML9SI=;
+	b=CLisT8UE3lipk668VE2593KNBaqiMxQr4RvK70btRX6JBol/cfvXDJ+PWkpRWgSsEYgP7c
+	Mq+tDy4PVef5K/fouowkwkbPtAFwPvu2YM+qwMy4vBzFVLwJt2rggG0xCHUbijsFwqqcDm
+	s9+MODondXnY38hhKiZUDSCKE3EBp10=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423--yFZ_ISOOV-sMb4UZ24sbA-1; Mon, 18 Dec 2023 04:21:45 -0500
+X-MC-Unique: -yFZ_ISOOV-sMb4UZ24sbA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 859A485A58A;
+	Mon, 18 Dec 2023 09:21:44 +0000 (UTC)
+Received: from [10.39.208.26] (unknown [10.39.208.26])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 751C71121313;
+	Mon, 18 Dec 2023 09:21:40 +0000 (UTC)
+Message-ID: <b793a98c-dfde-4bf6-9057-6fa359cf4723@redhat.com>
+Date: Mon, 18 Dec 2023 10:21:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,124 +55,132 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/8] dt-bindings: arm: Add support for CMB element size
-To: James Clark <james.clark@arm.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni
-	<quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <andersson@kernel.org>, Mathieu Poirier
-	<mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio
-	<konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-2-git-send-email-quic_taozha@quicinc.com>
- <09447d69-e0ce-13e9-95ea-0db475b8bb6e@arm.com>
+Subject: Re: [PATCH v5 2/4] vduse: Temporarily disable control queue features
 Content-Language: en-US
-From: Tao Zhang <quic_taozha@quicinc.com>
-In-Reply-To: <09447d69-e0ce-13e9-95ea-0db475b8bb6e@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: RLdUNNWjX9wsKBgMsoNfq-2rfbODkJls
-X-Proofpoint-GUID: RLdUNNWjX9wsKBgMsoNfq-2rfbODkJls
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 phishscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 clxscore=1011 malwarescore=0 mlxlogscore=814
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312180066
+To: Jason Wang <jasowang@redhat.com>
+Cc: mst@redhat.com, xuanzhuo@linux.alibaba.com, paul@paul-moore.com,
+ jmorris@namei.org, serge@hallyn.com, stephen.smalley.work@gmail.com,
+ eparis@parisplace.org, xieyongji@bytedance.com,
+ virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+ david.marchand@redhat.com, lulu@redhat.com, casey@schaufler-ca.com
+References: <20231212131712.1816324-1-maxime.coquelin@redhat.com>
+ <20231212131712.1816324-3-maxime.coquelin@redhat.com>
+ <CACGkMEthp13a20TGashiFNDovK+b10mgfdX8L=3Xv05g5-eo0w@mail.gmail.com>
+ <8afc44f7-cef5-4b4a-afac-85a4eb967d3e@redhat.com>
+ <CACGkMEtNZyHDzo2e_N9SM9dw4CK8vpZHWBrk7TFFixD1T7cdjw@mail.gmail.com>
+From: Maxime Coquelin <maxime.coquelin@redhat.com>
+Autocrypt: addr=maxime.coquelin@redhat.com; keydata=
+ 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
+ Mwqu3GQ=
+In-Reply-To: <CACGkMEtNZyHDzo2e_N9SM9dw4CK8vpZHWBrk7TFFixD1T7cdjw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
 
-On 12/15/2023 7:19 PM, James Clark wrote:
->
-> On 21/11/2023 02:24, Tao Zhang wrote:
->> Add property "qcom,cmb-elem-size" to support CMB(Continuous
->> Multi-Bit) element for TPDM. The associated aggregator will read
->> this size before it is enabled. CMB element size currently only
->> supports 32-bit and 64-bit.
+
+On 12/18/23 03:50, Jason Wang wrote:
+> On Wed, Dec 13, 2023 at 7:23 PM Maxime Coquelin
+> <maxime.coquelin@redhat.com> wrote:
 >>
->> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->> ---
->>   .../bindings/arm/qcom,coresight-tpdm.yaml     | 28 +++++++++++++++++++
->>   1 file changed, 28 insertions(+)
+>> Hi Jason,
 >>
->> diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
->> index 61ddc3b5b247..0d9fe01a8b15 100644
->> --- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
->> +++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
->> @@ -52,6 +52,15 @@ properties:
->>       $ref: /schemas/types.yaml#/definitions/uint8
->>       enum: [32, 64]
->>   
->> +  qcom,cmb-element-size:
->> +    description:
->> +      Specifies the CMB(Continuous Multi-Bit) element size supported by
->> +      the monitor. The associated aggregator will read this size before it
->> +      is enabled. CMB element size currently only supports 8-bit, 32-bit
->> +      and 64-bit.
->> +    $ref: /schemas/types.yaml#/definitions/uint8
->> +    enum: [8, 32, 64]
->> +
->>     qcom,dsb-msrs-num:
->>       description:
->>         Specifies the number of DSB(Discrete Single Bit) MSR(mux select register)
->> @@ -110,4 +119,23 @@ examples:
->>         };
->>       };
->>   
->> +    tpdm@6c29000 {
->> +      compatible = "qcom,coresight-tpdm", "arm,primecell";
->> +      reg = <0x06c29000 0x1000>;
->> +      reg-names = "tpdm-base";
-> I think this one gives this error:
->
->   $ make dt_binding_check DT_SCHEMA_FILES=arm/qcom,coresight
->
->   DTC_CHK Documentation/devicetree/bindings/arm/qcom,coresight-
->    tpdm.example.dtb
->   qcom,coresight-tpdm.example.dtb: tpdm@6c29000: 'reg-names' does not
->    match any of the regexes: 'pinctrl-[0-9]+'
->          from schema $id: http://devicetree.org/schemas
->          /arm/qcom,coresight-tpdm.yaml#
+>> On 12/13/23 05:52, Jason Wang wrote:
+>>> On Tue, Dec 12, 2023 at 9:17 PM Maxime Coquelin
+>>> <maxime.coquelin@redhat.com> wrote:
+>>>>
+>>>> Virtio-net driver control queue implementation is not safe
+>>>> when used with VDUSE. If the VDUSE application does not
+>>>> reply to control queue messages, it currently ends up
+>>>> hanging the kernel thread sending this command.
+>>>>
+>>>> Some work is on-going to make the control queue
+>>>> implementation robust with VDUSE. Until it is completed,
+>>>> let's disable control virtqueue and features that depend on
+>>>> it.
+>>>>
+>>>> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+>>>
+>>> I wonder if it's better to fail instead of a mask as a start.
+>>
+>> I think it is better to use a mask and not fail, so that we can in the
+>> future use a recent VDUSE application with an older kernel.
+> 
+> It may confuse the userspace unless userspace can do post check after
+> CREATE_DEV.
+> 
+> And for blk we fail when WCE is set in feature_is_valid():
+> 
+> static bool features_is_valid(u64 features)
+> {
+>          if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+>                  return false;
+> 
+>          /* Now we only support read-only configuration space */
+>          if (features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE))
+>                  return false;
+> 
+>          return true;
+> }
 
-I will fix this in the next patch series.
+Ok, consistency with other devices types is indeed better.
 
+But should I fail if any of the feature advertised by the application is
+not listed by the VDUSE driver, or just fail if control queue is being
+advertised by the application?
 
-Best,
+Thanks,
+Maxime
 
-Tao
+> Thanks
+> 
+>>
+>> Why would it be better to fail than negotiating?
+>>
+>> Thanks,
+>> Maxime
+>>
+> 
 
->> +
->> +      qcom,cmb-element-size = /bits/ 8 <64>;
->> +
->> +      clocks = <&aoss_qmp>;
->> +      clock-names = "apb_pclk";
->> +
->> +      out-ports {
->> +        port {
->> +          tpdm_ipcc_out_funnel_center: endpoint {
->> +            remote-endpoint =
->> +              <&funnel_center_in_tpdm_ipcc>;
->> +          };
->> +        };
->> +      };
->> +    };
->>   ...
 
