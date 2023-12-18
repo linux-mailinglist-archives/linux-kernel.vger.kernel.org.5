@@ -1,129 +1,112 @@
-Return-Path: <linux-kernel+bounces-4043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28F45817714
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:12:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEB17817723
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 282061C25B8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:12:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7251F24EC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C8C4238D;
-	Mon, 18 Dec 2023 16:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21D842370;
+	Mon, 18 Dec 2023 16:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hm+Ex8Zi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aink5el2"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638AA42390;
-	Mon, 18 Dec 2023 16:12:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C57C433C8;
-	Mon, 18 Dec 2023 16:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421ECE57C;
+	Mon, 18 Dec 2023 16:13:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7048C433C8;
+	Mon, 18 Dec 2023 16:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702915926;
-	bh=+gDFHiUihVO9YBtJ8DDjinIUtn2dVVzpQVgSxl0p0lI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Hm+Ex8ZiURA0F5paydO7ZLLIg3KNQQlTFBJ0mw6XFkJlZz0Z8GltQT//tsgdtVJ1f
-	 yWpOK5soe6FtNz61AaJ2UjDAqWhyxOueiT+NHqHVaoq70dxYXKKPsJkiXaFsVyB+SX
-	 ZgvpxEDJNhJ5T3zufg2R1EI7oentL9EQntXtrRU06IykKyA7ncUCEzcDAcBjNV+poM
-	 BdKuO8M8ksN7Ccx4qFpiiftObmtA+bfPndtmPzOECOLHk7h2zfjPsrvHXPh1UuhObB
-	 d6XcyLAUnPmuVblEKfXGpaXz0Or3kPqPMpYf5uYbC8FNLDEVSbdVIjiINhzVRsvuxr
-	 4wSmFWSM0Evhg==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e3845abdaso1611300e87.3;
-        Mon, 18 Dec 2023 08:12:06 -0800 (PST)
-X-Gm-Message-State: AOJu0YxxcHHlvyKkBDH3JYA6yB6ZPiJkCQo/tIsN1pqcRtYz3G9iWjy1
-	wJYa6HyoMRT1rAhs+60H2OfY4+B10W+ydZC2gsM=
-X-Google-Smtp-Source: AGHT+IFX38T/oiryJnVRtGF33LbC+xeoNQMiXNLbUmvcuvnSgPEGquuxe9tB7QSqJygcut2TdqNcVjLjBSpbpJMiM3o=
-X-Received: by 2002:ac2:4c42:0:b0:50e:ce9:b2f6 with SMTP id
- o2-20020ac24c42000000b0050e0ce9b2f6mr6348086lfk.125.1702915925051; Mon, 18
- Dec 2023 08:12:05 -0800 (PST)
+	s=k20201202; t=1702916029;
+	bh=VTc39LZjCLzqd6eMZ4DBUBzdF70c+lVEjRmh+DQKRfo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aink5el2urJqqPhOekzgsDfGFdnmTPDVzbqrJub8R2cMMjzGvPBvRmNQytOwZ5NcO
+	 MCfNiWQ5ELJsj6MDmHbaWANLFu7sGv7ui1V9x59iHe1PnCoL1ulRS7iR6eoRKheJMY
+	 3Qye7SXYdbTzmBsrUESDOuSGw0VDXmK4Lf6JiwHUkjo9Z+Pj7NjMguUH7RGAM/8M8u
+	 Sm96+usTKuKoo4ldZdnw5DXsFzBEsafK0qP0ybPmzMx62vb+tmeaEbSCkklnlJ+E90
+	 tK2GpfTGGrTlINmtohOMDQmvSvCgdcgV9H/hpsvlOcfNZX0zI3VV73Wp/BUsu/eqyX
+	 fdIoe2D9gfB9w==
+Date: Mon, 18 Dec 2023 21:43:33 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] ARM: dts: qcom: sdx55: fix USB DP/DM HS PHY
+ interrupts
+Message-ID: <20231218161333.GB50521@thinkpad>
+References: <20231213173131.29436-1-johan+linaro@kernel.org>
+ <20231213173131.29436-3-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214222107.2016042-1-song@kernel.org> <20231215125059.00006270@linux.intel.com>
- <CAPhsuW6GZnufqFseLvgpMrrX6qRXodX1n89vEbbC-FqTjsWPDg@mail.gmail.com> <20231218093201.000020dd@linux.intel.com>
-In-Reply-To: <20231218093201.000020dd@linux.intel.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 18 Dec 2023 08:11:53 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7w7WbWePpQd4aqnvXHwbdEJzw9efEP_r6tJwpeg0_qLw@mail.gmail.com>
-Message-ID: <CAPhsuW7w7WbWePpQd4aqnvXHwbdEJzw9efEP_r6tJwpeg0_qLw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] md: Remove deprecated flavors
-To: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-block@vger.kernel.org, Paul E Luse <paul.e.luse@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231213173131.29436-3-johan+linaro@kernel.org>
 
-Hi Mariusz,
+On Wed, Dec 13, 2023 at 06:31:30PM +0100, Johan Hovold wrote:
+> The USB DP/DM HS PHY interrupts need to be provided by the PDC interrupt
+> controller in order to be able to wake the system up from low-power
+> states and to be able to detect disconnect events, which requires
+> triggering on falling edges.
+> 
+> A recent commit updated the trigger type but failed to change the
+> interrupt provider as required. This leads to the current Linux driver
+> failing to probe instead of printing an error during suspend and USB
+> wakeup not working as intended.
+> 
+> Fixes: d0ec3c4c11c3 ("ARM: dts: qcom: sdx55: fix USB wakeup interrupt types")
+> Fixes: fea4b41022f3 ("ARM: dts: qcom: sdx55: Add USB3 and PHY support")
+> Cc: stable@vger.kernel.org	# 5.12
+> Cc: Manivannan Sadhasivam <mani@kernel.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-On Mon, Dec 18, 2023 at 12:32=E2=80=AFAM Mariusz Tkaczyk
-<mariusz.tkaczyk@linux.intel.com> wrote:
->
-[...]
-> > >
-> > > Please note that there are mdadm tests for those levels. I can approv=
-e it
-> > > only when mdadm clean-up is merged. Our tests must pass continuously.
-> >
-> > Is the continuous test result available publicly?
->
-> We are working on public CI (Paul owns it). On my side I'm not executing =
-all
-> tests, IMSM only. In this case it is obvious that mdadm tests will stop p=
-assing,
-> I don't need results to see that. We should keep both mdadm and md compat=
-ible.
-> We are continuously adding new MD regression tests to mdadm (at least Kua=
-i is
-> doing that) so we should also care about removing things.
->
-> >
-> > >
-> > > It is a nice code complexity improvement so let me know if you would
-> > > like to get my help with mdadm patches.
-> >
-> > On my local tests with mdadm, I need to make changes to the following
-> > tests:
-> >
-> > 00linear...
-> > 00names...
-> > 00raid0...
-> > 00readonly...
-> > 02lineargrow...
-> > 03r0assem...
-> > 04r0update...
-> > 04update-metadata...
-> >
-> > The changes are all straightforward (just remove things related to
-> > linear/multipath/faulty).
-> >
->
-> Please do not forgot remove dead code from mdadm. For example simple find
-> "multipath" (case insensitive) reefers me to multiple places with special
-> handling for this level. We need to remove it from code and documentation=
-.
-> Can you handle this too?
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-I think this is a bigger discussion: will mdadm stop supporting these
-flavors on
-older kernels? Say, mdadm-5.0+ (or a different number) will not support
-multipath flavor on older kernels?
+- Mani
 
->
-> Oh and last one, I can't find update for md man in your changes. Could yo=
-u
-> please remove those levels from md man?
+> ---
+>  arch/arm/boot/dts/qcom/qcom-sdx55.dtsi | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+> index 0864c99a3da1..49910279cb71 100644
+> --- a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+> +++ b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+> @@ -585,10 +585,10 @@ usb: usb@a6f8800 {
+>  					  <&gcc GCC_USB30_MASTER_CLK>;
+>  			assigned-clock-rates = <19200000>, <200000000>;
+>  
+> -			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> -				     <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
+> -				     <GIC_SPI 158 IRQ_TYPE_EDGE_BOTH>,
+> -				     <GIC_SPI 157 IRQ_TYPE_EDGE_BOTH>;
+> +			interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&pdc 11 IRQ_TYPE_EDGE_BOTH>,
+> +					      <&pdc 10 IRQ_TYPE_EDGE_BOTH>;
+>  			interrupt-names = "hs_phy_irq", "ss_phy_irq",
+>  					  "dm_hs_phy_irq", "dp_hs_phy_irq";
+>  
+> -- 
+> 2.41.0
+> 
 
-man side is easier. Once we know which major will have this set (6.8 or lat=
-er),
-we can update the man pages with the information.
-
-Thanks,
-Song
+-- 
+மணிவண்ணன் சதாசிவம்
 
