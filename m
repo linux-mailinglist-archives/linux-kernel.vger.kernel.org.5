@@ -1,225 +1,113 @@
-Return-Path: <linux-kernel+bounces-3448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10C65816C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:38:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734B7816C9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:42:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28F691C22C97
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:38:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21AD3284704
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E210619BD7;
-	Mon, 18 Dec 2023 11:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KMSTqs4k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BA320327;
+	Mon, 18 Dec 2023 11:38:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79C21A29F;
-	Mon, 18 Dec 2023 11:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 027AA57E;
-	Mon, 18 Dec 2023 12:35:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1702899322;
-	bh=DlUn6WLQnav2qrM8BwYmTkQcr3nL09A9JB515SmTe/o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KMSTqs4k2m5ODqLXEqdda/ZLoGVuSKZBRE8jrJZYXFuxh3EXB4uRJXonukhhIov2y
-	 miTjnipnKKDQP7HEFabMuUfmHrY5xgU0PTkLceuAtGxOFyNECpvFOHazkzCRwBxFDs
-	 VSE1jSLhXX6Zo6L9X4mB0PurIk4nhRtTm9RR0j4I=
-Date: Mon, 18 Dec 2023 13:36:18 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
-	Martin Hecht <martin.hecht@avnet.eu>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] media: i2c: alvium: store frame interval in subdev
- state
-Message-ID: <20231218113618.GA21105@pendragon.ideasonboard.com>
-References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
- <20231215082452.1720481-4-tomm.merciai@gmail.com>
- <20231218025905.GJ5290@pendragon.ideasonboard.com>
- <ZYAfThT/mHdzGdAh@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231218110331.GQ5290@pendragon.ideasonboard.com>
- <ZYAqyOEfKp/oiqs9@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CA433CCD
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 11:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=ratatoskr.trumtrar.info)
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <s.trumtrar@pengutronix.de>)
+	id 1rFBwX-0000Vp-EK; Mon, 18 Dec 2023 12:37:53 +0100
+From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Subject: [PATCH RFC 0/4] virtio-net: add tx-hash, rx-tstamp, tx-tstamp and
+ tx-time
+Date: Mon, 18 Dec 2023 12:37:07 +0100
+Message-Id: <20231218-v6-7-topic-virtio-net-ptp-v1-0-cac92b2d8532@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZYAqyOEfKp/oiqs9@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOMugGUC/x2MwQoCIRBAf0Xm3EC6UtE16AO6LnvYdKy5qKhII
+ P77Dh0fvPcGVCpMFe5qQKHOlVMU0CcF7rvHDyF7YTBns2ijb9gveMWWMjvsXBonjNQwt4yLDyK
+ 9nQ3Wg/S5UODf/73C6/mAbc4DwNay03AAAAA=
+To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Richard Cochran <richardcochran@gmail.com>
+Cc: virtualization@lists.linux.dev, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Willem de Bruijn <willemb@google.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1880;
+ i=s.trumtrar@pengutronix.de; h=from:subject:message-id;
+ bh=TKUejtEOd2oK/lH8xrpsJNcmj6/cscNhZ+kAb5XG3TM=;
+ b=owGbwMvMwCUmvd38QH3grB+Mp9WSGFIb9H6W3p4j5SSVbV8ro7yis3W/8rtnSkbdT4v3P/jRofAn
+ 7c+KjlIWBjEuBlkxRZbItYc0Ngt/1vly/DwDzBxWJpAhDFycAjARfhuGv/KbBbzj91X9bL8To+bfGv
+ ni3KRbC6vFzitrnmJfdE3ilgMjw6rFtquNA54uLmt0bnj/Vs63z+pb5kt1N/31kml5N9Rz2QA=
+X-Developer-Key: i=s.trumtrar@pengutronix.de; a=openpgp;
+ fpr=59ADC228B313F32CF4C7CF001BB737C07F519AF8
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: s.trumtrar@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, Dec 18, 2023 at 12:19:36PM +0100, Tommaso Merciai wrote:
-> On Mon, Dec 18, 2023 at 01:03:31PM +0200, Laurent Pinchart wrote:
-> > On Mon, Dec 18, 2023 at 11:30:38AM +0100, Tommaso Merciai wrote:
-> > > On Mon, Dec 18, 2023 at 04:59:05AM +0200, Laurent Pinchart wrote:
-> > > > On Fri, Dec 15, 2023 at 09:24:52AM +0100, Tommaso Merciai wrote:
-> > > > > Use the newly added storage for frame interval in the subdev state to
-> > > > > simplify the driver.
-> > > > > 
-> > > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > > > ---
-> > > > >  drivers/media/i2c/alvium-csi2.c | 40 ++++++++++-----------------------
-> > > > >  drivers/media/i2c/alvium-csi2.h |  2 --
-> > > > >  2 files changed, 12 insertions(+), 30 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > > > index fde456357be1..81f683b3c849 100644
-> > > > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > > > @@ -1643,25 +1643,6 @@ static int alvium_hw_init(struct alvium_dev *alvium)
-> > > > >  }
-> > > > >  
-> > > > >  /* --------------- Subdev Operations --------------- */
-> > > > > -
-> > > > > -static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > > > > -				   struct v4l2_subdev_state *sd_state,
-> > > > > -				   struct v4l2_subdev_frame_interval *fi)
-> > > > > -{
-> > > > > -	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > -
-> > > > > -	/*
-> > > > > -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
-> > > > > -	 * subdev active state API.
-> > > > > -	 */
-> > > > > -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-> > > > > -		return -EINVAL;
-> > > > > -
-> > > > > -	fi->interval = alvium->frame_interval;
-> > > > > -
-> > > > > -	return 0;
-> > > > > -}
-> > > > > -
-> > > > >  static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > >  				   struct v4l2_subdev_state *sd_state,
-> > > > >  				   struct v4l2_subdev_frame_interval *fi)
-> > > > > @@ -1669,6 +1650,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > > >  	u64 req_fr, dft_fr, min_fr, max_fr;
-> > > > > +	struct v4l2_fract *interval;
-> > > > >  	int ret;
-> > > > >  
-> > > > >  	/*
-> > > > 
-> > > > You should drop the FIXME comment here and the ACTIVE check...
-> > > 
-> > > Oks, thanks.
-> > > 
-> > > > 
-> > > > > @@ -1701,9 +1683,10 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > >  	if (req_fr >= max_fr && req_fr <= min_fr)
-> > > > >  		req_fr = dft_fr;
-> > > > >  
-> > > > > -	alvium->fr = req_fr;
-> > > > > -	alvium->frame_interval.numerator = fi->interval.numerator;
-> > > > > -	alvium->frame_interval.denominator = fi->interval.denominator;
-> > > > > +	interval = v4l2_subdev_state_get_interval(sd_state, 0);
-> > > > > +
-> > > > > +	interval->numerator = fi->interval.numerator;
-> > > > > +	interval->denominator = fi->interval.denominator;
-> > > > >  
-> > > > 
-> > > > ... and here only call alvium_set_frame_rate() for the ACTIVE frame
-> > > > interval.
-> > > 
-> > > I don't completely got this comment, can you give me more details about
-> > > please. Thanks in advance!
-> > 
-> > alvium_s_frame_interval() can be called both for the TRY and ACTIVE
-> > status. The hardware registers should be written only for the ACTIVE
-> > state.
-> 
-> Do you think could be sufficient an if check like this?
-> 
-> -	return alvium_set_frame_rate(alvium, req_fr);
-> +	if (fi->which == V4L2_SUBDEV_FORMAT_ACTIVE)
-> +		return alvium_set_frame_rate(alvium, req_fr);
-> +
-> +	return ret;
+This series tries to pick up the work on the virtio-net timestamping
+feature from Willem de Bruijn.
 
-That's the idea, yes. The "return ret" can become "return 0". Or you
-could write
+Original series
+    Message-Id: 20210208185558.995292-1-willemdebruijn.kernel@gmail.com
+    Subject: [PATCH RFC v2 0/4] virtio-net: add tx-hash, rx-tstamp,
+    tx-tstamp and tx-time
+    From: Willem de Bruijn <willemb@google.com>
 
-	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-		return 0;
+    RFC for four new features to the virtio network device:
 
-	return alvium_set_frame_rate(alvium, req_fr);
+    1. pass tx flow state to host, for routing + telemetry
+    2. pass rx tstamp to guest, for better RTT estimation
+    3. pass tx tstamp to guest, idem
+    3. pass tx delivery time to host, for accurate pacing
 
->  }
-> 
-> > > > > @@ -1853,6 +1836,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
-> > > > >  {
-> > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > >  	struct alvium_mode *mode = &alvium->mode;
-> > > > > +	struct v4l2_fract *interval;
-> > > > >  	struct v4l2_subdev_format sd_fmt = {
-> > > > >  		.which = V4L2_SUBDEV_FORMAT_TRY,
-> > > > >  		.format = alvium_csi2_default_fmt,
-> > > > > @@ -1870,6 +1854,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
-> > > > >  	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
-> > > > >  	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
-> > > > >  
-> > > > > +	/* Setup initial frame interval*/
-> > > > > +	interval = v4l2_subdev_state_get_interval(state, 0);
-> > > > > +	interval->numerator = 1;
-> > > > > +	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > > > +
-> > > > >  	return 0;
-> > > > >  }
-> > > > >  
-> > > > > @@ -2239,7 +2228,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
-> > > > >  	.set_fmt = alvium_set_fmt,
-> > > > >  	.get_selection = alvium_get_selection,
-> > > > >  	.set_selection = alvium_set_selection,
-> > > > > -	.get_frame_interval = alvium_g_frame_interval,
-> > > > > +	.get_frame_interval = v4l2_subdev_get_frame_interval,
-> > > > >  	.set_frame_interval = alvium_s_frame_interval,
-> > > > >  };
-> > > > >  
-> > > > > @@ -2260,11 +2249,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> > > > >  	struct v4l2_subdev *sd = &alvium->sd;
-> > > > >  	int ret;
-> > > > >  
-> > > > > -	/* Setup initial frame interval*/
-> > > > > -	alvium->frame_interval.numerator = 1;
-> > > > > -	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > > > > -
-> > > > >  	/* Setup the initial mode */
-> > > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > > > >  	alvium->mode.width = alvium_csi2_default_fmt.width;
-> > > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > > > index a6529b28e7dd..f5e26257b042 100644
-> > > > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > > > @@ -442,8 +442,6 @@ struct alvium_dev {
-> > > > >  	s32 inc_sharp;
-> > > > >  
-> > > > >  	struct alvium_mode mode;
-> > > > > -	struct v4l2_fract frame_interval;
-> > > > > -	u64 fr;
-> > > > 
-> > > > The fr field should have been removed by a previous patch (the one that
-> > > > will go between 1/3 an 2/3, see my review of 1/3) as shown by the fact
-> > > > that this patch only removes two locations where the field is set but
-> > > > none where it's read.
-> > > > 
-> > > > >  
-> > > > >  	u8 h_sup_csi_lanes;
-> > > > >  	u64 link_freq;
+    All would introduce an extension to the virtio spec.
 
+The original series consisted of a hack around the DMA API, which should
+be fixed in this series.
+
+The changes in this series are to the driver side. For the changes to qemu see:
+    https://github.com/strumtrar/qemu/tree/v8.1.1/virtio-net-ptp
+
+Currently only virtio-net is supported. The original series used
+vhost-net as backend. However, the path through tun via sendmsg doesn't
+allow us to write data back to the driver side without any hacks.
+Therefore use the way via plain virtio-net without vhost albeit better
+performance.
+
+Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+---
+Willem de Bruijn (4):
+      virtio-net: support transmit hash report
+      virtio-net: support receive timestamp
+      virtio-net: support transmit timestamp
+      virtio-net: support future packet transmit time
+
+ drivers/net/virtio_net.c        | 211 ++++++++++++++++++++++++++++++++++++++--
+ include/uapi/linux/virtio_net.h |  24 ++++-
+ 2 files changed, 228 insertions(+), 7 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231218-v6-7-topic-virtio-net-ptp-3df023bc4f4d
+
+Best regards,
 -- 
-Regards,
+Steffen Trumtrar <s.trumtrar@pengutronix.de>
 
-Laurent Pinchart
 
