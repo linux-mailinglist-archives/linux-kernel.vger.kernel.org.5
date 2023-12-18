@@ -1,131 +1,177 @@
-Return-Path: <linux-kernel+bounces-4413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA0BB817CBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:44:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB463817CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:45:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99057285574
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:44:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368631F2510F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8284D6FB6;
-	Mon, 18 Dec 2023 21:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0100D74E35;
+	Mon, 18 Dec 2023 21:44:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gp17vnOo"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="p+aImHeE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E00273467;
-	Mon, 18 Dec 2023 21:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28659348677so2561511a91.0;
-        Mon, 18 Dec 2023 13:44:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702935882; x=1703540682; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hsIQRoDMyAO/1DgxQjK7hg35wfAQDmgiayboWw066aQ=;
-        b=Gp17vnOoU0YRBcRwYY6sIP/lzFDxecnFZCWWG5n4lkj9+u5aik8Cm+Jo3Ziho//TT0
-         f+Gh7Dez8xhAy9zSZm0EcvYg2FZ3nhMXWfB4t4WAJaFE8heuC+Fu7VA7hyDQH7aalEaf
-         pQXZxR5ebfnsdRUxdGofrGEpKr8S1mLgSqCx1+QVdUYTfqgbCdcewCUE8kppbRSuE6G1
-         U+xy9EWkA6ylgiX8RSzkOMVhGrxT3DzTX9KJAtUZs1NFa3D9jVJi2t5F2RVwz7RDygds
-         bN94SRKmlC4SKzfyH0ltOll2xQ8Bq0bwgv2FpSq5STEM87+Dbjb0Wcdw7uv3oPJa+H4f
-         dR2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702935882; x=1703540682;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hsIQRoDMyAO/1DgxQjK7hg35wfAQDmgiayboWw066aQ=;
-        b=VxgVNXkMo2TLMG3Ok+l/qOkVx0RU18EAx0B/yxBGxcxdujr6dq4os1zdrfcLaCo/21
-         b9bfDTZFO/uGy8QLEW8zVLL2Z8DNWjV4z9uuAWeVTqLga2JatSc6y1LH7PyP5NtB74XT
-         MkHsWfZMZ5VFNy4vuhAjCpNErqM3L1u7r6CBHWNHkaGwCGgHEmNRNOTDidaZB/6m2Mns
-         Aeraax46AVJA5fJUQaCqIRvQ95JGAixJj0DXXILDLKIM3Jw4Vn1d63dS66FxC1QM6HQF
-         8lP60Ez1T1gApZVzfkkpCwS1JcRuVxmWODvb7zfgegA6Tr12nlZD7uAkPpqHXXakQmtS
-         JoJw==
-X-Gm-Message-State: AOJu0YyJKNVkJjDmvkpq71V8OgPvm6ax6y6gMQ2TfpH0GqB/iWN2FnKy
-	hoLSuyGWHKAFZXkj6uoiHZY=
-X-Google-Smtp-Source: AGHT+IFovrmEbJoaKAuL0WhPM+7iXQ84uNI1T6Ho3Ro2axd+SDJpSLOBetddAyB1nl1YYc1ub8pO1Q==
-X-Received: by 2002:a17:90a:f3ca:b0:28b:664a:807d with SMTP id ha10-20020a17090af3ca00b0028b664a807dmr77347pjb.25.1702935881851;
-        Mon, 18 Dec 2023 13:44:41 -0800 (PST)
-Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id x14-20020a170902820e00b001d2ffeac9d3sm8253339pln.186.2023.12.18.13.44.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 13:44:41 -0800 (PST)
-Date: Mon, 18 Dec 2023 13:42:25 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Jacob Keller <jacob.e.keller@intel.com>
-Cc: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
-	vkuznets@redhat.com, tglx@linutronix.de,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	schakrabarti@microsoft.com, paulros@microsoft.com
-Subject: Re: [PATCH 3/3] net: mana: add a function to spread IRQs per CPUs
-Message-ID: <ZYC8wYdyHi3KA3Bp@yury-ThinkPad>
-References: <20231217213214.1905481-1-yury.norov@gmail.com>
- <20231217213214.1905481-4-yury.norov@gmail.com>
- <9ba04aef-ba13-4366-8709-ea1808dd4270@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F7474E26;
+	Mon, 18 Dec 2023 21:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1702935893;
+	bh=NQEqY143VYksNlhopFxm06zXb51908qalsqGZ+XLVDk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=p+aImHeEY5V+Cbui7K8BYs+kBMnVl/sTXwGrZhOyJw/mgNK5ZiNtbwSu+qD7D9UAh
+	 px9Kcdbgbf8dJYAsr7m7zd2EVGz7SkIDQ9ybOoXUwBRApdhZcgzMNhKe3BXV9t8Wck
+	 QqbQy0EMV5SQqjcxyDSp99ThORRlsJvCSTMhDwAx92Wb/AJT0cmOznPYxc950ka3MC
+	 zyGHQO/MgXYP2X8Mu2jeVUDYwAPwBrgf0Yp8Ow81JwXD3REjenpYlk+Rh7g3SKTMNp
+	 h4Ayn9b3uNQyWrOtll2uO/5kXeLBkiOZVNBMjmKfb6I97vNeKnsi+9D64R7594USvT
+	 SRXDoE83XhsFA==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2F6A8378146E;
+	Mon, 18 Dec 2023 21:44:53 +0000 (UTC)
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Samin Guo <samin.guo@starfivetech.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Hal Feng <hal.feng@starfivetech.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc: netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-clk@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	kernel@collabora.com
+Subject: [PATCH v4 0/9] Enable networking support for StarFive JH7100 SoC
+Date: Mon, 18 Dec 2023 23:44:40 +0200
+Message-ID: <20231218214451.2345691-1-cristian.ciocaltea@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ba04aef-ba13-4366-8709-ea1808dd4270@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 18, 2023 at 01:17:53PM -0800, Jacob Keller wrote:
-> 
-> 
-> On 12/17/2023 1:32 PM, Yury Norov wrote:
-> > +static __maybe_unused int irq_setup(unsigned int *irqs, unsigned int len, int node)
-> > +{
-> > +	const struct cpumask *next, *prev = cpu_none_mask;
-> > +	cpumask_var_t cpus __free(free_cpumask_var);
-> > +	int cpu, weight;
-> > +
-> > +	if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
-> > +		return -ENOMEM;
-> > +
-> > +	rcu_read_lock();
-> > +	for_each_numa_hop_mask(next, node) {
-> > +		weight = cpumask_weight_andnot(next, prev);
-> > +		while (weight-- > 0) {
-> > +			cpumask_andnot(cpus, next, prev);
-> > +			for_each_cpu(cpu, cpus) {
-> > +				if (len-- == 0)
-> > +					goto done;
-> > +				irq_set_affinity_and_hint(*irqs++, topology_sibling_cpumask(cpu));
-> > +				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
-> > +			}
-> > +		}
-> > +		prev = next;
-> > +	}
-> > +done:
-> > +	rcu_read_unlock();
-> > +	return 0;
-> > +}
-> > +
-> 
-> You're adding a function here but its not called and even marked as
-> __maybe_unused?
+This patch series adds ethernet support for the StarFive JH7100 SoC and makes it
+available for the StarFive VisionFive V1 and BeagleV Starlight boards, although
+I could only validate on the former SBC.  Thank you Emil and Geert for helping
+with tests on BeagleV!
 
-I expect that Souradeep would build his driver improvement on top of
-this function. cpumask API is somewhat tricky to use it properly here,
-so this is an attempt help him, instead of moving back and forth on
-review.
+The work is heavily based on the reference implementation [1] and depends on the
+SiFive Composable Cache controller and non-coherent DMA support provided by Emil
+via [2] and [3].
 
-Sorry, I had to be more explicit.
+*Update*: as of next-20231214, all dependencies have been merged.
 
-Thanks,
-Yury
+[1] https://github.com/starfive-tech/linux/commits/visionfive
+[2] https://lore.kernel.org/all/CAJM55Z_pdoGxRXbmBgJ5GbVWyeM1N6+LHihbNdT26Oo_qA5VYA@mail.gmail.com/
+[3] https://lore.kernel.org/all/20231130151932.729708-1-emil.renner.berthing@canonical.com/
+
+Changes in v4:
+ - Restricted double usage of 'ahb' reset name in PATCH 2 (Jessica, Samuel)
+ - Moved phy reference from PATCH 5 to both PATCH 6 & 7 where the node is
+   actually defined (Emil, Conor)
+ - Drop unnecessary gpio include in PATCH 6; also added a DTS comment describing
+   the rational behind RX internal delay adjustment (Andrew)
+ - v3:
+   https://lore.kernel.org/lkml/20231215204050.2296404-1-cristian.ciocaltea@collabora.com/
+
+Changes in v3:
+ - Rebased series onto next-20231214 and dropped the ccache & DMA coherency
+   related patches (v2 06-08/12) handled by Emil via [3]
+ - Squashed PATCH v2 01/12 into PATCH v3 2/9, per Krzysztof's review
+ - Dropped incorrect PATCH v2 02/12
+ - Incorporated Emil's feedback; also added his Co-developed-by on all dts
+   patches
+ - Documented the need of adjusting RX internal delay in PATCH v3 8/9, per
+   Andrew's request
+ - Added clock fixes from Emil (PATCH v3 8-9/9) required to support 10/100Mb
+   link speeds
+ - v2:
+   https://lore.kernel.org/lkml/20231029042712.520010-1-cristian.ciocaltea@collabora.com/
+
+Changes in v2:
+ - Dropped ccache PATCH 01-05 reworked by Emil via [2]
+ - Dropped already applied PATCH 06/12
+ - Added PATCH v2 01 to prepare snps-dwmac binding for JH7100 support
+ - Added PATCH v2 02-03 to provide some jh7110-dwmac binding optimizations
+ - Handled JH7110 conflicting work in PATCH 07 via PATCH v2 04
+ - Reworked PATCH 8 via PATCH v2 05, adding JH7100 quirk and dropped
+   starfive,gtxclk-dlychain DT property; also fixed register naming
+ - Added PATCH v2 08 providing DMA coherency related DT changes
+ - Updated PATCH 9 commit msg:
+   s/OF_DMA_DEFAULT_COHERENT/ARCH_DMA_DEFAULT_COHERENT/
+ - Replaced 'uncached-offset' property with 'sifive,cache-ops' in PATCH 10/12
+   and dropped 'sideband' reg
+ - Add new patch providing coherent DMA memory pool (PATCH v2 10)
+ - Updated PATCH 11/12 according to the stmmac glue layer changes in upstream
+ - Split PATCH 12/12 into PATCH v2 10-12 to handle individual gmac setup of
+   VisionFive v1 and BeagleV boards as they use different PHYs; also switched
+   phy-mode from "rgmii-tx" to "rgmii-id" (requires a reduction of
+   rx-internal-delay-ps by ~50%)
+ - Rebased series onto next-20231024
+ - v1:
+   https://lore.kernel.org/lkml/20230211031821.976408-1-cristian.ciocaltea@collabora.com/
+
+Cristian Ciocaltea (7):
+  dt-bindings: net: starfive,jh7110-dwmac: Drop redundant reset
+    description
+  dt-bindings: net: starfive,jh7110-dwmac: Add JH7100 SoC compatible
+  net: stmmac: dwmac-starfive: Add support for JH7100 SoC
+  riscv: dts: starfive: jh7100: Add sysmain and gmac DT nodes
+  riscv: dts: starfive: jh7100-common: Setup pinmux and enable gmac
+  riscv: dts: starfive: visionfive-v1: Setup ethernet phy
+  riscv: dts: starfive: beaglev-starlight: Setup phy reset gpio
+
+Emil Renner Berthing (2):
+  clk: starfive: Add flags argument to JH71X0__MUX macro
+  clk: starfive: jh7100: Add CLK_SET_RATE_PARENT to gmac_tx
+
+ .../devicetree/bindings/net/snps,dwmac.yaml   | 11 ++-
+ .../bindings/net/starfive,jh7110-dwmac.yaml   | 75 ++++++++++++-----
+ .../dts/starfive/jh7100-beaglev-starlight.dts | 11 +++
+ .../boot/dts/starfive/jh7100-common.dtsi      | 84 +++++++++++++++++++
+ .../jh7100-starfive-visionfive-v1.dts         | 22 ++++-
+ arch/riscv/boot/dts/starfive/jh7100.dtsi      | 36 ++++++++
+ .../clk/starfive/clk-starfive-jh7100-audio.c  |  2 +-
+ drivers/clk/starfive/clk-starfive-jh7100.c    | 32 +++----
+ .../clk/starfive/clk-starfive-jh7110-aon.c    |  6 +-
+ .../clk/starfive/clk-starfive-jh7110-isp.c    |  2 +-
+ .../clk/starfive/clk-starfive-jh7110-sys.c    | 26 +++---
+ drivers/clk/starfive/clk-starfive-jh71x0.h    |  4 +-
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |  6 +-
+ .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 32 ++++++-
+ 14 files changed, 280 insertions(+), 69 deletions(-)
+
+-- 
+2.43.0
+
 
