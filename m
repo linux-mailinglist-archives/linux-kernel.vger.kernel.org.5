@@ -1,107 +1,137 @@
-Return-Path: <linux-kernel+bounces-3159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D03DE81680D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:32:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 498DE816810
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:32:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 551DD282F11
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:32:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9BB91F22E32
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5789E10941;
-	Mon, 18 Dec 2023 08:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359F310786;
+	Mon, 18 Dec 2023 08:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mxHyc5Ig"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZURJpj5n"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6ED1094C;
-	Mon, 18 Dec 2023 08:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-336437ae847so2604041f8f.2;
-        Mon, 18 Dec 2023 00:32:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702888322; x=1703493122; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2R3RysZeELSrwaA1Xpv5JYjM2T+a8nYeDy+wQcqvhZU=;
-        b=mxHyc5Ig1AvGKc9Q9flo692/YFPpXGdFRKYejnjHDROW2Q1YWjb06UzUhdxVy6B1/Q
-         U6MoYk6yTX65Jmj0vBbO4sYENtMReZkf7RXUr2aFWOplGpzjSwEj8E/yQ2BwJXske1Qc
-         HikiOajPgNEqEPaXYTmoptkK9TnFqe8NeIhoS/WbH8b8mD/GELuwWefIcrHjtnBf1YV/
-         e9bb0Ch+zzmvO2Oc40k4RL8GwPkCjEUTqzWN1J/Gf6z0pNZph9MsgqosIX2a84bX3pxj
-         3ntcr10/0IQF4igGPg72Hr4cA7FB/I6+VqFdCrCwm+XpEyAGG02WpZk7qDtPHuObgpzY
-         j4Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702888322; x=1703493122;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2R3RysZeELSrwaA1Xpv5JYjM2T+a8nYeDy+wQcqvhZU=;
-        b=kn62EOE5deXWzKSUfCNoKstp893zzSOxZn/rhEHeASk6YGFEhZvnYHr0+XKLRi/4aJ
-         b1jgCuKlJH/YYHszzioXtyVbJaP0MT2EbcwhPYCDUEnmZ9TYXGXyLqjabD1NIdk5o627
-         Q0GQoP+O3GHoo0Alh+LL9+95Dh4RFM6XU7QNIGuC+QxUAkB+VQnsDwTo8ywbnzg/nTg2
-         OfPkP1+9S+lOY5y96hiH3Rxm/elbarGHb94eoGSfMPSP3s031tgaFa7MGkpDXE1GOPhF
-         HEuaUcWEI8xNf8SAnB9eIv0fWY+anYxtJFzbFU1SmDZ/Q4NRDXIOjhjxHGZDc79o0gdz
-         lucQ==
-X-Gm-Message-State: AOJu0YzvzvFCe0czVi+/U2ieI6TiN/4OCysp3bThZCiHQ2/km8bNNDfp
-	9jDfcW2FjC+f7jEVQPFMqg==
-X-Google-Smtp-Source: AGHT+IHKKhPPJJY38USoCVCcxvwSs9c0dtzo8svH14z8NfzO+gwgXo+Wt3ImnY+5yB9OgVK/TF3F6g==
-X-Received: by 2002:adf:e10b:0:b0:333:4295:8f72 with SMTP id t11-20020adfe10b000000b0033342958f72mr9174867wrz.118.1702888322217;
-        Mon, 18 Dec 2023 00:32:02 -0800 (PST)
-Received: from [192.168.1.148] (224.69.114.89.rev.vodafone.pt. [89.114.69.224])
-        by smtp.googlemail.com with ESMTPSA id w15-20020adfec4f000000b003366cc543casm537184wrn.102.2023.12.18.00.32.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 00:32:01 -0800 (PST)
-Message-ID: <84f0fbc6-f50d-4eea-ac9e-4683c5d252ad@gmail.com>
-Date: Mon, 18 Dec 2023 08:31:59 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F20910A29;
+	Mon, 18 Dec 2023 08:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702888328; x=1734424328;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=t6/Sw1KsGXTBaJiPRn+9IUbFxEcnyk7++tLcplOnYZw=;
+  b=ZURJpj5nim8NNOWAaRNk2vBvhHR6f1Um0mnaG0arLuCLkpecQsd8qHD9
+   gcH1OohMoUHjDd3wysPUbb194/lixc1clvu3R0V+1lEQvS7jaE/yZiqBx
+   2WM1RrVoqgTtqj9f4mdp7zejBJFkT1u3+4STQiFLDQoOwVtXj8mzThyM3
+   0qvW4JmSBj8XRMmrBxtZoCyK48wXp7kEwEochQJ995vMA776hJj9NGQM3
+   kerIJyJ6Z1Art42WwMWY8rA6zZlt/1RTwCaIT21YKCPNBww3oYBt+aYua
+   O1fYbOvp4L9hk5pfrCBcbW6z1EHqLSQ4S3scAxBmvdZWTXGPJ4WD9XtUe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="8834708"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="8834708"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 00:32:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="809732739"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="809732739"
+Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.237.142.76])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 00:32:05 -0800
+Date: Mon, 18 Dec 2023 09:32:01 +0100
+From: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+To: Song Liu <song@kernel.org>
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, Paul E Luse <paul.e.luse@linux.intel.com>
+Subject: Re: [PATCH 0/3] md: Remove deprecated flavors
+Message-ID: <20231218093201.000020dd@linux.intel.com>
+In-Reply-To: <CAPhsuW6GZnufqFseLvgpMrrX6qRXodX1n89vEbbC-FqTjsWPDg@mail.gmail.com>
+References: <20231214222107.2016042-1-song@kernel.org>
+	<20231215125059.00006270@linux.intel.com>
+	<CAPhsuW6GZnufqFseLvgpMrrX6qRXodX1n89vEbbC-FqTjsWPDg@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] rust: sync: add `CondVar::notify_sync`
-Content-Language: en-GB
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
- <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
- Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-References: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
- <20231216-rb-new-condvar-methods-v2-1-b05ab61e6d5b@google.com>
-From: Tiago Lam <tiagolam@gmail.com>
-In-Reply-To: <20231216-rb-new-condvar-methods-v2-1-b05ab61e6d5b@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 16/12/2023 15:31, Alice Ryhl wrote:
-> Wake up another thread synchronously.
-> 
-> This method behaves like `notify_one`, except that it hints to the
-> scheduler that the current thread is about to go to sleep, so it should
-> schedule the target thread on the same CPU.
-> 
-> This is used by Rust Binder as a performance optimization. When sending
-> a transaction to a different process, we usually know which thread will
-> handle it, so we can schedule that thread for execution next on this
-> CPU for better cache locality.
-> 
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+On Fri, 15 Dec 2023 07:37:54 -0800
+Song Liu <song@kernel.org> wrote:
 
-Reviewed-by: Tiago Lam <tiagolam@gmail.com>
+> Hi Mariusz,
+>=20
+> On Fri, Dec 15, 2023 at 3:51=E2=80=AFAM Mariusz Tkaczyk
+> <mariusz.tkaczyk@linux.intel.com> wrote:
+> >
+> > On Thu, 14 Dec 2023 14:21:04 -0800
+> > Song Liu <song@kernel.org> wrote:
+> > =20
+> > > Linear, multipath, and faulty have been marked as deprecated for 2.5
+> > > years. Let's remove them.
+> > >
+> > > Thanks,
+> > > Song =20
+> >
+> > Hi Song,
+> > Great idea!
+> >
+> > Please note that there are mdadm tests for those levels. I can approve =
+it
+> > only when mdadm clean-up is merged. Our tests must pass continuously. =
+=20
+>=20
+> Is the continuous test result available publicly?
+
+We are working on public CI (Paul owns it). On my side I'm not executing all
+tests, IMSM only. In this case it is obvious that mdadm tests will stop pas=
+sing,
+I don't need results to see that. We should keep both mdadm and md compatib=
+le.
+We are continuously adding new MD regression tests to mdadm (at least Kuai =
+is
+doing that) so we should also care about removing things.
+
+>=20
+> >
+> > It is a nice code complexity improvement so let me know if you would
+> > like to get my help with mdadm patches. =20
+>=20
+> On my local tests with mdadm, I need to make changes to the following
+> tests:
+>=20
+> 00linear...
+> 00names...
+> 00raid0...
+> 00readonly...
+> 02lineargrow...
+> 03r0assem...
+> 04r0update...
+> 04update-metadata...
+>=20
+> The changes are all straightforward (just remove things related to
+> linear/multipath/faulty).
+>=20
+
+Please do not forgot remove dead code from mdadm. For example simple find
+"multipath" (case insensitive) reefers me to multiple places with special
+handling for this level. We need to remove it from code and documentation.
+Can you handle this too?
+
+Oh and last one, I can't find update for md man in your changes. Could you
+please remove those levels from md man?
+
+Thanks,
+Mariusz
 
