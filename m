@@ -1,100 +1,111 @@
-Return-Path: <linux-kernel+bounces-3655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E5B1816F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:00:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D35CD816F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:00:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8D771F2425D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:00:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECA291C229DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939E27CCE4;
-	Mon, 18 Dec 2023 12:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178EB80562;
+	Mon, 18 Dec 2023 12:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Aw12uRO/"
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="lBwINm1S";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fwDsPFb7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58207CCFD;
-	Mon, 18 Dec 2023 12:46:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B938C433C9;
-	Mon, 18 Dec 2023 12:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903611;
-	bh=3F5ZTxNBkFlW/tOCdNalk8fTY560Df8zCrh14vAUju4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Aw12uRO/6NADmiuilPPeeYCUVWVOWX4B7MJlV70mnGtSTYjnLAOX3UOrlKNxEGXN6
-	 Ymol7fc1bV6CTLhlsSS8in5/GqRhXTSclSXeVRbMXDKJpCJNAtUoEWCrJjGpV65pss
-	 T71ee2nVgIk7dG0M/936Jmu8EpcySDNTBllY51Z1A56RV4p76Fboh+5M4VdMZSNvO5
-	 6J52B063YKxIiVJyAih04+vNRwwAq6QjWRvHH5tBG8Nv/ud+9BNMLa/4mHTDaHDFiq
-	 +KwPKiPdLcyhXnhvZn/V5GBFgMsIPZW5Sf49E4XSa/qLxUvApH9sthxVcHUknSzW0c
-	 34TJr180cSmqw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sasha Levin <sashal@kernel.org>,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 8/8] ring-buffer: Do not record in NMI if the arch does not support cmpxchg in NMI
-Date: Mon, 18 Dec 2023 07:46:29 -0500
-Message-ID: <20231218124635.1381482-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231218124635.1381482-1-sashal@kernel.org>
-References: <20231218124635.1381482-1-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F3D7CCF6
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 88C1D5C00CA;
+	Mon, 18 Dec 2023 07:46:50 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 18 Dec 2023 07:46:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1702903610; x=
+	1702990010; bh=Sp32Kv+FtgVwjl+FmjJanWnjE4SgTjgXVYd4enIlghQ=; b=l
+	BwINm1SPVYf/2xehUq8cI0Pan7ZFfVrVl5KaBov3E6F/LkWo/G5T9O50Ul1rfunP
+	6nhpVjRtgtG9VpcDQGtN3gLpWDpOo7eksvJOI1D1nPsKB2jjJLKwxvYtVw/y76FI
+	XVvZOI24OHF1RaLM1DWklgsB112WcueZdeBgioXFc11j2MqPG/JIdTim5OZZV0eI
+	wi9Mih4vKgWhHLB9R3T5nrFEPTpPB9Qcqu+BMEsFJ4BB5gCfh/gMvG1pZbEXXttw
+	vQsxlOF6rqA4KpfSpmSP6OC3CWR+GxfUZPgLF3kRprijmT7oZ0wIOkBOWSGc6KYw
+	XAdCN/n+q6W6L7Hy1a/RQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1702903610; x=1702990010; bh=Sp32Kv+FtgVwjl+FmjJanWnjE4Sg
+	TjgXVYd4enIlghQ=; b=fwDsPFb78Bn/QPrqT3e7IO5SbbQjzk438KtHqj4uNRfL
+	3NTsLKZZgd1kwYS7XEc9/dri3Ld74Rv6HDG3GpDuqB/4TRszTi9siDD6tNyfjty/
+	sGhbKvpsU59g1KdKPeZKQJzSCMLxUxksFvd0HprRohdikV1rZmgAIjb2gVaTEeUc
+	K4FRFZ/eXygez6Nxmy/LfS2chHllkJX5kB1HWl/H66kVzbYRyauDYsglacQtHi4e
+	yKwKZvMTvdU6z09F9VXEggwTQvAVmOi+23PvEjCIk8YvSX0u9WnWA3JQTniFmKcN
+	HHQrKYgiKyfqgUkQbRbP7A1lmH2bZusb+9oRHli8uQ==
+X-ME-Sender: <xms:Oj-AZZIJkcnuBN91mubhrDN9OQ4wBx-8V2BCf14dZF4FxlsEK02X9A>
+    <xme:Oj-AZVJb6Nc5xu14I0dS1bz5FIPZweUoxlnd3_UvyQ_VbYoJdCEa7tCvUabU5FK0H
+    H2_QTmHAvIZQC0ygTY>
+X-ME-Received: <xmr:Oj-AZRvm8vIHTds7C39m_1chTwLWoLI0snDhoxt5Ih4d6evmn7h_7_zmkAFCW22j97XMckOxiS_F3-RUwN44xTD6zhdEBXXGIAs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeei
+    ieetvdelfedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:Oj-AZaan73ujZ4Ps0L7yC-7pKxLNsWQt8TaomS_gQhFcENaETor3OQ>
+    <xmx:Oj-AZQZK9dIvTHjAk9mi6SdqxEowlkZ7-ks-elcH-HWitHdOFiaYnQ>
+    <xmx:Oj-AZeCEYCWV8TeroqsKByESZB3EP5jKjLjXIocUSQeXNCMpfWIlTA>
+    <xmx:Oj-AZbzBWUNtq3ocNaweT8Sq-4WpTcWdLHAPt3Bt_JY6_A5z-FOwiQ>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Dec 2023 07:46:49 -0500 (EST)
+Date: Mon, 18 Dec 2023 21:46:45 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Adam Goldman <adamg@pobox.com>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 8/8] firewire: core: change modalias of unit device
+ with backward incompatibility
+Message-ID: <20231218124645.GA46034@workstation.local>
+Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20231217103012.41273-1-o-takashi@sakamocchi.jp>
+ <20231217103012.41273-10-o-takashi@sakamocchi.jp>
+ <ZYAa0vJYppKgr9x7@iguana.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.204
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYAa0vJYppKgr9x7@iguana.lan>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi,
 
-[ Upstream commit 712292308af2265cd9b126aedfa987f10f452a33 ]
+On Mon, Dec 18, 2023 at 02:11:42AM -0800, Adam Goldman wrote:
+> Hi,
+> 
+> On Sun, Dec 17, 2023 at 07:30:12PM +0900, Takashi Sakamoto wrote:
+> > +	vendor_directory = search_directory(root_directory, CSR_DIRECTORY | CSR_VENDOR);
+> 
+> Setting the CSR_DIRECTORY bit here is extraneous since search_directory() also sets it.
 
-As the ring buffer recording requires cmpxchg() to work, if the
-architecture does not support cmpxchg in NMI, then do not do any recording
-within an NMI.
+Indeed. It is redundant.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231213175403.6fc18540@gandalf.local.home
 
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/trace/ring_buffer.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 7e1148aafd284..e58eba8419b12 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3431,6 +3431,12 @@ rb_reserve_next_event(struct trace_buffer *buffer,
- 	int nr_loops = 0;
- 	int add_ts_default;
- 
-+	/* ring buffer does cmpxchg, make sure it is safe in NMI context */
-+	if (!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) &&
-+	    (unlikely(in_nmi()))) {
-+		return NULL;
-+	}
-+
- 	rb_start_commit(cpu_buffer);
- 	/* The commit page can not change after this */
- 
--- 
-2.43.0
-
+Takashi Sakamoto
 
