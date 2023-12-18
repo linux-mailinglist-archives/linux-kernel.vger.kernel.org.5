@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-3058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E908166C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC98D8166C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:50:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 031011F22C43
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:48:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B3BB1F22AAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03DF747D;
-	Mon, 18 Dec 2023 06:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BE2748E;
+	Mon, 18 Dec 2023 06:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="inmSrJtp"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I3FEqCpz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A676FC9;
-	Mon, 18 Dec 2023 06:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3333b46f26aso2126625f8f.1;
-        Sun, 17 Dec 2023 22:47:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A6A7461
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-336607f4d05so590953f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 22:50:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702882074; x=1703486874; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1702882215; x=1703487015; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=H0AT1Mm+ApmzRWU5CE8MDyBwNw96Os0ML2k0Gs4JY74=;
-        b=inmSrJtpWIb2Q+TQob1tmGsXZvpt0c4CBWtL7mkxgnmrK6gfyblzgaoadne5nJm9EA
-         APmUDR/b5QrXr2ACWttBBQ8KVT2fl4saI1KOpZYts0tb5n+G9FXUy9vprJT7nWSd2K8K
-         nfAeqlDk+8MGIv4t0D6hUVounZ/PQXbFW/1TN9otEpp/mC+US2EmZlKc6pvApyZZCWad
-         n14p7gENNuQHbTzx5i/OvBwbTMM6UN09wloH6PYZN81eYSY7yaEYp968wNt+VXXS2cgt
-         M1dNlJ0CG5HEXMhUIqqVUugPODvvqWMUcB9kqiXVf8erFQb55rTT7yPYkzXa7cCb4QN+
-         bEcg==
+        bh=Z3fhJN/THXkL3+v4d5FjUzixu9giiwYacPBzyAkvIhY=;
+        b=I3FEqCpzZLXNYInEk7v/S1Q/RKpYdm52T5thhZ8EbwwrWMS6c4r6GNgzabzOQc52YV
+         LIA1p9BVPFPJupdJ6IpPp2dHtJ8Gl3C6jYMlyyDuOzeRdeEMkzhKjRa7FrYmBWsBXgnx
+         mgXbpsf3e88XuzzqOyHJ8N4VbpWjOI9kKdi1jj3tKVmdnqd9NuwQy//mSQE0AgYAdr4c
+         Fix7INUa0A5LtMCGU4t5a6Ux36JMdd4lbjfOM++4M0Z8IKsGQym9DqFsA8jhzY0bSivm
+         Q9S22v+WfVFhk1n1LUvKgfBwbXn98tnbaqEvAR9GryDTHc+hQU7pqkeATlP+KWgb23+D
+         62yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702882074; x=1703486874;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702882215; x=1703487015;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H0AT1Mm+ApmzRWU5CE8MDyBwNw96Os0ML2k0Gs4JY74=;
-        b=K3zCEhbH3TaBIhpONKSm4knI0Xb/nZUblsP42JkUpJsasC6BgZMFMx56LlHd5xbc2I
-         2ZNJG8ZVTO3N50cl4rPowdarE91yOs6PnIm1ifb3gHVpQylmXVw2oXJUpvK8tYtrDH/P
-         KEKfG9N735cv33J4suLGHIeq6eE1JxZbQ5M7o3BKaz4UPW7pUZjs/FyYYROytWsLKVoU
-         8u7Nllh/mjzo7/rPqM/J8nhpARXXsHrVKtYfJyH+EUCLXZHi0S2zYfigoN/PbvwCVYO0
-         6CVMY1bfaOUmSjwFq+wKmEmAX3s7m1lP6owDpEHeu0fMMZhRoLDRDqfzijFv+rBoToBq
-         ZEKQ==
-X-Gm-Message-State: AOJu0YwT/UUCt93BCGVjboXeyx+Vp5FbxvciLTf6BbAM4W7VJMcB7mjx
-	ur1EIrRK2avu7nzX/E0Ing==
-X-Google-Smtp-Source: AGHT+IH36newPw8Y1gTzSIPqawOCVHQE+gmfDx3gq8ZGmQUXx737tWV8aafN7TII1gRTZDnF11MVDg==
-X-Received: by 2002:a5d:410a:0:b0:336:6413:682 with SMTP id l10-20020a5d410a000000b0033664130682mr707904wrp.42.1702882073843;
-        Sun, 17 Dec 2023 22:47:53 -0800 (PST)
-Received: from [192.168.1.148] (224.69.114.89.rev.vodafone.pt. [89.114.69.224])
-        by smtp.googlemail.com with ESMTPSA id v17-20020adf8b51000000b003365c8d0756sm6461912wra.96.2023.12.17.22.47.51
+        bh=Z3fhJN/THXkL3+v4d5FjUzixu9giiwYacPBzyAkvIhY=;
+        b=l4flxkz55Zzyo0qAVUhxPD9TgxAmexzNsEvgNCPcWeV5I58c7DxfaW4sz8ponX+Dvi
+         WlivwWXrBHjJFqNOi/ehuD2WsZRJZCeZh/5NCXGQGYU07ajlDzGtQBY0gmyZwZkqrZtd
+         TyLhLBiRZhyxNLos5PPn5c2hnLkrSTFH+NERwFCBem9nk2BTKxVJaTP7UkGh7lm/NGXh
+         M4ey+4W16YTlHehmyD/77+S31DrpIAISeeM/juVAKI9CUQojLXKlpMlJQcUYUH0JpA5M
+         XQF0nBBlj6A8jae08OnXKl12EcGeiCPxBXZsZKHXYWWStr2U8EC9uExznfAUdFCpvKWP
+         GHeQ==
+X-Gm-Message-State: AOJu0YzBv7hTiBLNeY74gwcW4a3xpZXoxC9KQPEGf17/wJx4uM3en6Fo
+	iMk4OrUM9Hin3+zGUy+AtodOzg==
+X-Google-Smtp-Source: AGHT+IHdVQPSG6mkcnfZ8Mm4BRF0KX84CtvZ2huaFfJK8e2C5dAi45ajBpQW4msnoX0tG5ZswNAc/A==
+X-Received: by 2002:adf:fa06:0:b0:336:9ec:a25 with SMTP id m6-20020adffa06000000b0033609ec0a25mr7663431wrr.67.1702882214964;
+        Sun, 17 Dec 2023 22:50:14 -0800 (PST)
+Received: from [172.20.10.10] ([213.233.104.178])
+        by smtp.gmail.com with ESMTPSA id i6-20020adff306000000b003364ce25f22sm9455401wro.108.2023.12.17.22.50.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Dec 2023 22:47:53 -0800 (PST)
-Message-ID: <f891e3b0-c36d-4495-8e80-430723a445e0@gmail.com>
-Date: Mon, 18 Dec 2023 06:47:51 +0000
+        Sun, 17 Dec 2023 22:50:14 -0800 (PST)
+Message-ID: <877ea38d-a227-43b0-8e91-7e0f1f2059b3@linaro.org>
+Date: Mon, 18 Dec 2023 06:50:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,32 +66,76 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3] docs: rust: Document the rustupoverride target
-Content-Language: en-GB
-To: Viresh Kumar <viresh.kumar@linaro.org>, Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
- <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
- <aliceryhl@google.com>, Jonathan Corbet <corbet@lwn.net>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
- rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <c22eca4c308b72cdf750087622b61d3839ca40cc.1702878682.git.viresh.kumar@linaro.org>
-From: Tiago Lam <tiagolam@gmail.com>
-In-Reply-To: <c22eca4c308b72cdf750087622b61d3839ca40cc.1702878682.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 01/13] dt-bindings: clock: google,gs101: fix CMU_TOP gate
+ clock names
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ peter.griffin@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+ sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+ alim.akhtar@samsung.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+ catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
+ tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
+ semen.protsenko@linaro.org
+Cc: andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-2-tudor.ambarus@linaro.org>
+ <050c3119-0431-4400-9052-7a9c0ec67918@linaro.org>
+ <5e454300-f1ef-435c-8c4c-16561502196a@linaro.org>
+ <9eedae99-cc9a-4c8f-9a09-789b686cd456@linaro.org>
+ <7163718b-0a92-4383-b475-aac52354489d@linaro.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <7163718b-0a92-4383-b475-aac52354489d@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 18/12/2023 05:52, Viresh Kumar wrote:
-> Document the newly added Make target: rustupoverride.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Reviewed-by: Tiago Lam <tiagolam@gmail.com>
+
+On 12/15/23 19:25, Krzysztof Kozlowski wrote:
+> On 15/12/2023 20:24, Krzysztof Kozlowski wrote:
+>> On 15/12/2023 11:23, Tudor Ambarus wrote:
+>>> Hi, Krzysztof,
+>>>
+>>> On 12/15/23 08:13, Krzysztof Kozlowski wrote:
+>>>> On 14/12/2023 11:52, Tudor Ambarus wrote:
+>>>>> The gs101 clock names are derived from the clock register names under
+>>>>> some certain rules. In particular, for the gate clocks the following is
+>>>>> documented and expected in the gs101 clock driver:
+>>>>>
+>>>>>   Replace CLK_CON_GAT_CLKCMU      with CLK_GOUT_CMU and gout_cmu
+>>>>>   Replace CLK_CON_GAT_GATE_CLKCMU with CLK_GOUT_CMU and gout_cmu
+>>>>>
+>>>>>   For gates remove _UID _BLK _IPCLKPORT and _RSTNSYNC
+>>>>
+>>>> I don't understand what it has to do with the bindings.
+>>>>
+>>>>>
+>>>>> The CMU TOP gate clock names missed to include the required "CMU"
+>>>>> differentiator which will cause name collisions with the gate clock names
+>>>>> of other clock units. Fix the TOP gate clock names and include "CMU" in
+>>>>> their name.
+>>>>
+>>>> Neither here. Clock names are not related to defines.
+>>>>
+>>>
+>>> When saying "clock names" I meant the clock symbolic names that are
+>>> defined in the bindings, the _id passed in GATE(_id, ) if you want.
+>>
+>> Please re-phrase the commit message to say that you need to rename the
+>> defines in the bindings headers. If you change anything else, like clock
+>> names, then it should be separate patch.
+> 
+> I forgot:
+> You can also respin this patch separately, as soon as possible, because
+> it has to go this cycle.
+> 
+Sent here:
+https://lore.kernel.org/linux-arm-kernel/20231218064333.479885-1-tudor.ambarus@linaro.org/
+
+Thanks,
+ta
 
