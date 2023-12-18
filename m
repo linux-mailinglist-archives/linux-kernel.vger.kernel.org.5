@@ -1,252 +1,113 @@
-Return-Path: <linux-kernel+bounces-3164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39839816817
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:34:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24CE0816815
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C83F1C224F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:34:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6FA8281F12
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AE2107AB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8061079B;
 	Mon, 18 Dec 2023 08:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HTevlBku"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJnyG9Ex"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCF81118F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702888425;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PZCyaG6jNmPR26J2KXgAzagBivkyvaOw3c3fQFDUPyw=;
-	b=HTevlBku9u25Xe+YOSGxFbMJwYZF4kOhSzYl9k9ppMGRBqbwOt3rfAd+axCIpts3T6A37L
-	2LN5ZYTPo3KJYxpA6P/lQNIEWca/rgSsjPBWCcZJUrZ3R0NXY8qOqgck5XibXIcFD0GpkV
-	m2gDUX5/5IRWf1LLkzxuZuYuNKoVNzw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-171-6K13oJLmP8aXMnrCgWj9mA-1; Mon, 18 Dec 2023 03:33:44 -0500
-X-MC-Unique: 6K13oJLmP8aXMnrCgWj9mA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a232d6a33a3so18999566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 00:33:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702888423; x=1703493223;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5F111193;
+	Mon, 18 Dec 2023 08:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e3c6f1c10so353332e87.1;
+        Mon, 18 Dec 2023 00:33:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702888425; x=1703493225; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=PZCyaG6jNmPR26J2KXgAzagBivkyvaOw3c3fQFDUPyw=;
-        b=rPvqjkescd8HEcVdxjfju18ldi3w4v9UCyvLp6SN5Ox/YxNiwno2kEWklJZ9Lm4mS9
-         a83ZMNQpFvPxCkuFxjnaOs6MmvT38dxv/l1vcP2HsuFj2CNLXu9+SewZFktatYw6RwCS
-         9QEEVQC8FSID3MaHiJJjr/KSSjC9JsBVJ/a/Je4r1KzyxhRHAX6igL8Dw4j6MtXo1sPU
-         Wa2p+5Xw3npsGDgJJkEuvcz0sByXBB/a5Frj4vWPx6pFzP3b2ev+YJWaDySAHWvmyGSR
-         oIhOwvLBPipNhnEmmOZWM10fAtRqw0sKht+QnvjJmdoaT2a7gkZf6zjEFY0K7ttq1ux5
-         bITg==
-X-Gm-Message-State: AOJu0YyQ+z5y/Mga9tHK9PIDNd/k4MlGZz/rCejRbceLqrrDBL6gldGt
-	lYUbN803k4DHTmqRCUIOdElhRRY84k9G8vTIWepzGjNbyv1XDnpTZEeIxcDTFVYa5OYdU77JI78
-	MgzM2w0kGUlmLHtqCSr8RbCkJ
-X-Received: by 2002:a17:906:d9c8:b0:a23:58f9:e1c6 with SMTP id qk8-20020a170906d9c800b00a2358f9e1c6mr964545ejb.2.1702888422798;
-        Mon, 18 Dec 2023 00:33:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGQGBMWYTkky6iUzAdVFk/IT8+5vyhBj/peOAS45LyC7l2LbL4ZHsINHOLEzPcnUm2Z41gz1w==
-X-Received: by 2002:a17:906:d9c8:b0:a23:58f9:e1c6 with SMTP id qk8-20020a170906d9c800b00a2358f9e1c6mr964532ejb.2.1702888422424;
-        Mon, 18 Dec 2023 00:33:42 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-253-3.dyn.eolo.it. [146.241.253.3])
-        by smtp.gmail.com with ESMTPSA id li18-20020a170907199200b00a1e4558e450sm13852424ejc.156.2023.12.18.00.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 00:33:41 -0800 (PST)
-Message-ID: <a8d155ec7d43bf3308fcfa3387dc16d1723617c6.camel@redhat.com>
-Subject: Re: [PATCH net-next 12/24] seg6: Use nested-BH locking for
- seg6_bpf_srh_states.
-From: Paolo Abeni <pabeni@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Boqun Feng
- <boqun.feng@gmail.com>,  Daniel Borkmann <daniel@iogearbox.net>, Eric
- Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, David
- Ahern <dsahern@kernel.org>, Hao Luo <haoluo@google.com>,  Jiri Olsa
- <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@kernel.org>,  Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Yonghong Song
- <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Date: Mon, 18 Dec 2023 09:33:39 +0100
-In-Reply-To: <20231215171020.687342-13-bigeasy@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
-	 <20231215171020.687342-13-bigeasy@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        bh=w7msxpJgBBjQPtZZCsb1ltJW2M3TBsdRo5LCmhi6CvY=;
+        b=jJnyG9Exkp5mfMRYojnoHxE5FMvSvoqzF0VcD9oauACtTIrP3PS2Wsn+uPYGHCH0C2
+         /orB8AuQxoWZJojPbJmRyLPy4qGuuSSLJ0JByOiCZFtEy7Y3PGyEAAsf0VXMM82mFYpq
+         eJtAC5eP3qE9RD1izzGBajLzwZmayYAkkEC8T9CeQGT61deA83VNC7UA6Dmlu+HrhpM0
+         ikaxxavC2+VQGiTJDG7k0nyT/mNuWqapFHXARk9/KN1GOuCK9f37xbTUxAefTiWA6Yuq
+         d3pSBP1Ty3klkUuqin2bPEbku/wAwo8GWLAE4xrUXyuFjHUwNnRQVSfBhEZCzikG9LSe
+         +hxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702888425; x=1703493225;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w7msxpJgBBjQPtZZCsb1ltJW2M3TBsdRo5LCmhi6CvY=;
+        b=Xa7U0ins2kjIQHL8XMrHY0QTbQbrgoX0dh5n8DNsA/v/MFBvz/hSJy2afmkwp8UXuF
+         gmK6eVJCNBE40YEzO1okJgEeSJL5XUoL4RiH8F8nP7/3Fpu8KYkMlLQFk3p/GoLPx4Yy
+         TzZ2Bw8NtI3bU6W76ZpoUvnkfA90rcY+eGHJ1wGgdwYFi94n5XXVwKJNDLvSmxavDT5j
+         GsNSuuq/e7Ppo4Go9NK2N7+BAzLy+PW+G8ErNJbCuiGcFmtCyfs5LAfkXBkBWJRcvDD6
+         JtXWBIb9DbqUKAu6Z8/+/MMfMN4Sc1CYfPZ/RyNy1TweHIn9KYXpgMzvNQFtrrqzqfS2
+         zOzA==
+X-Gm-Message-State: AOJu0Yy3658zJS6/BftRsk+RsepnnulVCasts6T9y4Z8sy8XY+v43+OI
+	49lrTdDU2LqMVUDxkQtKPQ==
+X-Google-Smtp-Source: AGHT+IFm8yEQkImXxTPVut9GyAoJTRoIcCxxJ3EpWccrE5MErNed3DvHHjfBUo7yChrPWTtgHg1JDQ==
+X-Received: by 2002:ac2:4e82:0:b0:50e:2d04:fe42 with SMTP id o2-20020ac24e82000000b0050e2d04fe42mr408461lfr.241.1702888424842;
+        Mon, 18 Dec 2023 00:33:44 -0800 (PST)
+Received: from [192.168.1.148] (224.69.114.89.rev.vodafone.pt. [89.114.69.224])
+        by smtp.googlemail.com with ESMTPSA id w15-20020adfec4f000000b003366cc543casm537184wrn.102.2023.12.18.00.33.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 00:33:44 -0800 (PST)
+Message-ID: <80e69cc3-5ee2-48de-83a2-6e2b95f17121@gmail.com>
+Date: Mon, 18 Dec 2023 08:33:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/4] rust: sync: update integer types in CondVar
+Content-Language: en-GB
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
+ <20231216-rb-new-condvar-methods-v2-4-b05ab61e6d5b@google.com>
+From: Tiago Lam <tiagolam@gmail.com>
+In-Reply-To: <20231216-rb-new-condvar-methods-v2-4-b05ab61e6d5b@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2023-12-15 at 18:07 +0100, Sebastian Andrzej Siewior wrote:
-> The access to seg6_bpf_srh_states is protected by disabling preemption.
-> Based on the code, the entry point is input_action_end_bpf() and
-> every other function (the bpf helper functions bpf_lwt_seg6_*()), that
-> is accessing seg6_bpf_srh_states, should be called from within
-> input_action_end_bpf().
->=20
-> input_action_end_bpf() accesses seg6_bpf_srh_states first at the top of
-> the function and then disables preemption. This looks wrong because if
-> preemption needs to be disabled as part of the locking mechanism then
-> the variable shouldn't be accessed beforehand.
->=20
-> Looking at how it is used via test_lwt_seg6local.sh then
-> input_action_end_bpf() is always invoked from softirq context. If this
-> is always the case then the preempt_disable() statement is superfluous.
-> If this is not always invoked from softirq then disabling only
-> preemption is not sufficient.
->=20
-> Replace the preempt_disable() statement with nested-BH locking. This is
-> not an equivalent replacement as it assumes that the invocation of
-> input_action_end_bpf() always occurs in softirq context and thus the
-> preempt_disable() is superfluous.
-> Add a local_lock_t the data structure and use local_lock_nested_bh() in
-> guard notation for locking. Add lockdep_assert_held() to ensure the lock
-> is held while the per-CPU variable is referenced in the helper functions.
->=20
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: David Ahern <dsahern@kernel.org>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: bpf@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  include/net/seg6_local.h |  1 +
->  net/core/filter.c        |  3 ++
->  net/ipv6/seg6_local.c    | 59 ++++++++++++++++++++++------------------
->  3 files changed, 36 insertions(+), 27 deletions(-)
->=20
-> diff --git a/include/net/seg6_local.h b/include/net/seg6_local.h
-> index 3fab9dec2ec45..0f22771359f4c 100644
-> --- a/include/net/seg6_local.h
-> +++ b/include/net/seg6_local.h
-> @@ -20,6 +20,7 @@ extern bool seg6_bpf_has_valid_srh(struct sk_buff *skb)=
-;
-> =20
->  struct seg6_bpf_srh_state {
->  	struct ipv6_sr_hdr *srh;
-> +	local_lock_t bh_lock;
->  	u16 hdrlen;
->  	bool valid;
->  };
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 1737884be52f8..c8013f762524b 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -6384,6 +6384,7 @@ BPF_CALL_4(bpf_lwt_seg6_store_bytes, struct sk_buff=
- *, skb, u32, offset,
->  	void *srh_tlvs, *srh_end, *ptr;
->  	int srhoff =3D 0;
-> =20
-> +	lockdep_assert_held(&srh_state->bh_lock);
->  	if (srh =3D=3D NULL)
->  		return -EINVAL;
-> =20
-> @@ -6440,6 +6441,7 @@ BPF_CALL_4(bpf_lwt_seg6_action, struct sk_buff *, s=
-kb,
->  	int hdroff =3D 0;
->  	int err;
-> =20
-> +	lockdep_assert_held(&srh_state->bh_lock);
->  	switch (action) {
->  	case SEG6_LOCAL_ACTION_END_X:
->  		if (!seg6_bpf_has_valid_srh(skb))
-> @@ -6516,6 +6518,7 @@ BPF_CALL_3(bpf_lwt_seg6_adjust_srh, struct sk_buff =
-*, skb, u32, offset,
->  	int srhoff =3D 0;
->  	int ret;
-> =20
-> +	lockdep_assert_held(&srh_state->bh_lock);
->  	if (unlikely(srh =3D=3D NULL))
->  		return -EINVAL;
-> =20
-> diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-> index 24e2b4b494cb0..ed7278af321a2 100644
-> --- a/net/ipv6/seg6_local.c
-> +++ b/net/ipv6/seg6_local.c
-> @@ -1380,7 +1380,9 @@ static int input_action_end_b6_encap(struct sk_buff=
- *skb,
->  	return err;
->  }
-> =20
-> -DEFINE_PER_CPU(struct seg6_bpf_srh_state, seg6_bpf_srh_states);
-> +DEFINE_PER_CPU(struct seg6_bpf_srh_state, seg6_bpf_srh_states) =3D {
-> +	.bh_lock	=3D INIT_LOCAL_LOCK(bh_lock),
-> +};
-> =20
->  bool seg6_bpf_has_valid_srh(struct sk_buff *skb)
->  {
-> @@ -1388,6 +1390,7 @@ bool seg6_bpf_has_valid_srh(struct sk_buff *skb)
->  		this_cpu_ptr(&seg6_bpf_srh_states);
->  	struct ipv6_sr_hdr *srh =3D srh_state->srh;
-> =20
-> +	lockdep_assert_held(&srh_state->bh_lock);
->  	if (unlikely(srh =3D=3D NULL))
->  		return false;
-> =20
-> @@ -1408,8 +1411,7 @@ bool seg6_bpf_has_valid_srh(struct sk_buff *skb)
->  static int input_action_end_bpf(struct sk_buff *skb,
->  				struct seg6_local_lwt *slwt)
->  {
-> -	struct seg6_bpf_srh_state *srh_state =3D
-> -		this_cpu_ptr(&seg6_bpf_srh_states);
-> +	struct seg6_bpf_srh_state *srh_state;
->  	struct ipv6_sr_hdr *srh;
->  	int ret;
-> =20
-> @@ -1420,41 +1422,44 @@ static int input_action_end_bpf(struct sk_buff *s=
-kb,
->  	}
->  	advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
-> =20
-> -	/* preempt_disable is needed to protect the per-CPU buffer srh_state,
-> -	 * which is also accessed by the bpf_lwt_seg6_* helpers
-> +	/* The access to the per-CPU buffer srh_state is protected by running
-> +	 * always in softirq context (with disabled BH). On PREEMPT_RT the
-> +	 * required locking is provided by the following local_lock_nested_bh()
-> +	 * statement. It is also accessed by the bpf_lwt_seg6_* helpers via
-> +	 * bpf_prog_run_save_cb().
->  	 */
-> -	preempt_disable();
-> -	srh_state->srh =3D srh;
-> -	srh_state->hdrlen =3D srh->hdrlen << 3;
-> -	srh_state->valid =3D true;
-> +	scoped_guard(local_lock_nested_bh, &seg6_bpf_srh_states.bh_lock) {
-> +		srh_state =3D this_cpu_ptr(&seg6_bpf_srh_states);
-> +		srh_state->srh =3D srh;
-> +		srh_state->hdrlen =3D srh->hdrlen << 3;
-> +		srh_state->valid =3D true;
+On 16/12/2023 15:31, Alice Ryhl wrote:
+> Reduce the chances of compilation failures due to integer type
+> mismatches in `CondVar`.
+> 
+> When an integer is defined using a #define in C, bindgen doesn't know
+> which integer type it is supposed to be, so it will just use `u32` by
+> default (if it fits in an u32). Whenever the right type is something
+> else, we insert a cast in Rust. However, this means that the code has a
+> lot of extra casts, and sometimes the code will be missing casts if u32
+> happens to be correct on the developer's machine, even though the type
+> might be something else on a different platform.
+> 
+> This patch updates all uses of such constants in
+> `rust/kernel/sync/condvar.rs` to use constants defined with the right
+> type. This allows us to remove various unnecessary casts, while also
+> future-proofing for the case where `unsigned int != u32`.
+> 
+> I wrote this patch at the suggestion of Benno in [1].
+> 
+> Link: https://lore.kernel.org/all/nAEg-6vbtX72ZY3oirDhrSEf06TBWmMiTt73EklMzEAzN4FD4mF3TPEyAOxBZgZtjzoiaBYtYr3s8sa9wp1uYH9vEWRf2M-Lf4I0BY9rAgk=@proton.me/ [1]
+> Suggested-by: Benno Lossin <benno.lossin@proton.me>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 
-Here the 'scoped_guard' usage adds a lot of noise to the patch, due to
-the added indentation. What about using directly
-local_lock_nested_bh()/local_unlock_nested_bh() ?
-
-Cheers,
-
-Paolo
-
+Reviewed-by: Tiago Lam <tiagolam@gmail.com>
 
