@@ -1,104 +1,154 @@
-Return-Path: <linux-kernel+bounces-4226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE814817958
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:03:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8771181795A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:03:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48807285D57
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:03:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 199FBB21E15
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1B35D735;
-	Mon, 18 Dec 2023 18:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94887146B;
+	Mon, 18 Dec 2023 18:03:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="arMMbyd/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m8bYzy65"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FFC1DFDE;
-	Mon, 18 Dec 2023 18:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BIFAJWx011943;
-	Mon, 18 Dec 2023 10:03:08 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=ltnbOgbv
-	1rFAKiQQb0O/LdKhSjcYgvW52nepTPzv6Ow=; b=arMMbyd/ZPMCwBnIl8v7FTTq
-	hQe1QgIbs9rMi1Hf+co5ACpUjPkg0bnt+jy9XKoRx3eMufYy5q5sCIzXnHneHWzG
-	GTZgstJAoKDGs3LzoN68Pb0CoL5ZJnZ/3WLOjHcojbHEl4Oha6xgh81olmufD5Cm
-	YHDpXXOXuDmciteks1dPdZWAx0ceUdJ+xQdPUelSmPhZT27yVVcRCTHNsjx7L+PE
-	i+21yvXPsYl9BA2bJ+PpBJXdWDHXpmrAIbW36iQjyv+DJxqcqD85BAK+UXYJ0CFV
-	CrkdLlZiyl1tEwuO85RNUB2gQzZUDuilcFBknT26Zb77/M765yoW51a1+p0aPA==
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3v2rg58mrj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 10:03:07 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 18 Dec
- 2023 10:03:06 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 18 Dec 2023 10:03:06 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-	by maili.marvell.com (Postfix) with ESMTP id 234483F707D;
-	Mon, 18 Dec 2023 10:03:01 -0800 (PST)
-From: Suman Ghosh <sumang@marvell.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <sgoutham@marvell.com>, <sbhatta@marvell.com>,
-        <jerinj@marvell.com>, <gakula@marvell.com>, <hkelam@marvell.com>,
-        <lcherian@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <horms@kernel.org>
-CC: Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH] octeontx2-af: Fix a double free issue
-Date: Mon, 18 Dec 2023 23:32:58 +0530
-Message-ID: <20231218180258.303468-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58E65D74A;
+	Mon, 18 Dec 2023 18:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso4147831a12.1;
+        Mon, 18 Dec 2023 10:03:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702922599; x=1703527399; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AXdqNZYmXLzUeBYg/YluJviWJ+yD19wV70WwK0p1fG8=;
+        b=m8bYzy65HtGMtq60Kairil4zTZJqOI1bdOnM4SQm9tBlMJ07d3PFJ6PM7qT7xkg4dr
+         +X2OTC8Z3W2oW4Gq0Ig0DOe2uaJgc8PMtG2tfcgxBlCKVZ7dOjEax7g1dIbxUB61SHqS
+         pt+ZXobeWvAoTNiruzksK8tb0x3wTb8x18RRydKWw1TzZd+fUo/SPcP9nqJWtmyMAada
+         p+WCxoB3B83DLg4Da4QXN7c9Eyb2N+szZL70eNg0AUtih3FbQWczEVA20cHKQxZQDx88
+         fIH0KgIA6HM5bBY8rcPgSxzClRNCKw73WoT8X3J9NMuruHtRRrdcByWwD2h6testpLC4
+         EFyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702922599; x=1703527399;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AXdqNZYmXLzUeBYg/YluJviWJ+yD19wV70WwK0p1fG8=;
+        b=uaii+gHShPY+SHwYo2ZA5EGUUI/qTGzrot45I4YEYvyCc3x1/TnjjTOtDCAEPIRvym
+         3gltrXeAShjdAq9rgWh7gHrNh5zJfrVm5o8BFAdGt0oU59nCCHiMePAVQHmV4my9rOry
+         OZv1kTYOWR1WxKrjKJuBPhEZg9RZr7ISFKCHK3losVlonBPcHSLemkDBupP/dtYI4Th5
+         5A0+MhAyRjrdySuSKVSLrVoyWzJQj3cE5ZEGVH2ykwkDc+n1o/IKjSCehGx+b3mcdB7B
+         kbxDWFleAqvOiE5J4QGRrEHaF7W44Jwig6Fotx9Sz0fs9kzgF5pWfMmiCU7Qdof8zXhX
+         NIug==
+X-Gm-Message-State: AOJu0Yx0kCzpBv0wZ9czG5cNCElcHqgpvj8xPb03MQcO1km/MbrTGwo0
+	Web63YM6NR2SSte0MLYBcs5qWxJy4N3tzf81l50=
+X-Google-Smtp-Source: AGHT+IG2ZkH310Fgk2lLq12WAYCF4BIANdkcKZIdUpqWMhraUa3k7jB2IU6dY7NJgInRMaBzR4Zm+9LaGOthG+hHwpw=
+X-Received: by 2002:a17:906:c14a:b0:a23:5780:6305 with SMTP id
+ dp10-20020a170906c14a00b00a2357806305mr726692ejc.216.1702922598760; Mon, 18
+ Dec 2023 10:03:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ZWYpnapBLHaUTHG7NQo_YBPoUe7AgMLZ
-X-Proofpoint-GUID: ZWYpnapBLHaUTHG7NQo_YBPoUe7AgMLZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+References: <20231217131716.830290-1-menglong8.dong@gmail.com> <20231217131716.830290-4-menglong8.dong@gmail.com>
+In-Reply-To: <20231217131716.830290-4-menglong8.dong@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 18 Dec 2023 10:03:06 -0800
+Message-ID: <CAEf4BzZc3edO35FJwxgRscE4n5_qkpwQOJXjUAYjjfWwLkcANg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: add testcase to
+ verifier_bounds.c for JMP_NE
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	alexei.starovoitov@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There was a memory leak during error handling in function
-npc_mcam_rsrcs_init().
+On Sun, Dec 17, 2023 at 5:18=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> Add testcase for the logic that the verifier tracks the BPF_JNE for regs.
+> The assembly function "reg_not_equal()" that we add is exactly converted
+> from the following case:
+>
+>   u32 a =3D bpf_get_prandom_u32();
+>   u64 b =3D 0;
+>
+>   a %=3D 8;
+>   /* the "a > 0" here will be optimized to "a !=3D 0" */
+>   if (a > 0) {
+>     /* now the range of a should be [1, 7] */
+>     bpf_skb_store_bytes(skb, 0, &b, a, 0);
+>   }
+>
+> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> ---
+>  .../selftests/bpf/progs/verifier_bounds.c     | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
 
-Fixes: dd7842878633 ("octeontx2-af: Add new devlink param to configure maximum usable NIX block LFs")
-Suggested-by: Simon Horman <horms@kernel.org>
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
-This is a follow-up of
-https://urldefense.proofpoint.com/v2/url?u=https-3A__git.kernel.org_netdev_net-2Dnext_c_dd7842878633&d=DwIDaQ&c=nKjWec2b6R0mOyPaz7xtfQ&r=7si3Xn9Ly-Se1a655kvEPIYU0nQ9HPeN280sEUv5ROU&m=60aBCTsbI2Wra6po5SgIjqyAuIFqF5EhovKncvmmGaMwU94GDPEB2f_wC_piT9AE&s=7z2Gk48pbPhPqKU-pUu2xd2k6Ze5niLKk3P0iBiD9F8&e=
+LGTM, but please add a comment that we rely on bpf_skb_store_byte's
+4th argument being defined as ARG_CONST_SIZE, so zero is not allowed.
+And that r4 =3D=3D 0 check is providing us this exclusion of zero from
+initial [0, 7] range.
 
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 513c4fe86967..7f30e08b580f 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -1990,7 +1990,7 @@ int npc_mcam_rsrcs_init(struct rvu *rvu, int blkaddr)
- free_bmap_reverse:
- 	kfree(mcam->bmap_reverse);
- free_bmap:
--	kfree(mcam->counters.bmap);
-+	kfree(mcam->bmap);
- 
- 	return -ENOMEM;
- }
--- 
-2.25.1
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/=
+testing/selftests/bpf/progs/verifier_bounds.c
+> index ec430b71730b..3fe2ce2b3f21 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> @@ -1075,4 +1075,31 @@ l0_%=3D:   r0 =3D 0;                              =
+           \
+>         : __clobber_all);
+>  }
+>
+> +SEC("tc")
+> +__description("bounds check with JMP_NE for reg edge")
+> +__success __retval(0)
+> +__naked void reg_not_equal(void)
 
+technically, you are testing `r4 =3D=3D 0` :) so maybe call the test
+reg_equal_const or something. And then add similar test where you
+actually have `r4 !=3D 0`, called req_no_equal_const?
+
+> +{
+> +       asm volatile ("                                 \
+> +       r6 =3D r1;                                        \
+> +       r1 =3D 0;                                         \
+> +       *(u64*)(r10 - 8) =3D r1;                          \
+> +       call %[bpf_get_prandom_u32];                    \
+> +       r4 =3D r0;                                        \
+> +       r4 &=3D 7;                                        \
+> +       if r4 =3D=3D 0 goto l0_%=3D;                          \
+> +       r1 =3D r6;                                        \
+> +       r2 =3D 0;                                         \
+> +       r3 =3D r10;                                       \
+> +       r3 +=3D -8;                                       \
+> +       r5 =3D 0;                                         \
+> +       call %[bpf_skb_store_bytes];                    \
+> +l0_%=3D: r0 =3D 0;                                         \
+> +       exit;                                           \
+> +"      :
+> +       : __imm(bpf_get_prandom_u32),
+> +         __imm(bpf_skb_store_bytes)
+> +       : __clobber_all);
+> +}
+> +
+>  char _license[] SEC("license") =3D "GPL";
+> --
+> 2.39.2
+>
 
