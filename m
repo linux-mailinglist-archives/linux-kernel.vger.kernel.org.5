@@ -1,61 +1,56 @@
-Return-Path: <linux-kernel+bounces-4065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E4F6817781
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:29:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8AE6817785
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:30:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E65F1F21E35
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:29:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 875A1284F88
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1963A498BC;
-	Mon, 18 Dec 2023 16:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5739E42392;
+	Mon, 18 Dec 2023 16:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pgPaNxRa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eE4tIxcM"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9253D57F;
-	Mon, 18 Dec 2023 16:29:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E77EC433C7;
-	Mon, 18 Dec 2023 16:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E9423D7;
+	Mon, 18 Dec 2023 16:30:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8E9CC433C7;
+	Mon, 18 Dec 2023 16:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702916941;
-	bh=cuIJ/8s2AYcAKCRZwOwQRNGRaRi9/bICEVQ2fASqZdk=;
+	s=k20201202; t=1702917043;
+	bh=vzJT46XWAVR+AYyo+bbvE2VcoW5+6hnEFuhEHPUf3Xg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pgPaNxRa19QteSUajSmhwIBygIXOwyglTsgblC6uEftO+XTQg6+O3kXAj9XX2OmcC
-	 rQOpqnvB5+xOO/ow7seOv1CdwV13FbembY2BokFhPnwSM4b0DvGeATzzmDK+AEOLHw
-	 6DaCbWimil/lLwi/MxyvK5Y12TLnf9HBPcW++ZT9x3tzMvn7KL4GnLx7Lcu5QvqSQp
-	 eltb1y4JDmA5690dgcONdt9hmYC6CU/Xhok/FJZ/y98obP8l0G4B7kd38/bxCcL5CD
-	 m0hJV4fUjPoN82jbVmU9YShGfagm/C07b9jmlsrqKjpLRJaGDiIiVu6scxMm9bEVQ6
-	 YQAI2eQ+xkSew==
-Date: Mon, 18 Dec 2023 17:28:53 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 13/21] ACPICA: Add new MADT GICC flags fields
-Message-ID: <ZYBzRWs7v1PsF6qV@lpieralisi>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOgs-00Dvko-6t@rmk-PC.armlinux.org.uk>
- <20231215162322.00007391@Huawei.com>
- <ZXyEiHLFBsoUkfNI@shell.armlinux.org.uk>
- <ZYAPhlwPUT/7dN4n@lpieralisi>
- <CAJZ5v0hyUqJspPbGTgTMSVHVBe=wHR6swPx-O3UcsH5dXDFpTA@mail.gmail.com>
+	b=eE4tIxcMGFAtSKGwxbvZXUWQQVXG25HLFk+23hKD4QEh478DYEcoxuBtITIQ80JBv
+	 u748CUw6imyf5u9biVlTwpp7vMSI33GzO07N2Oabx5VE+cPomvTyooCfsNov3lt+3Y
+	 1GJ2B1PC0Zec/q+39Xy+hMNeFeNqkloRnxT50fQH5+GHxBP1M34aQHZBTkGIzSY4rX
+	 DapjFUR4dGx+q65ccAmWNXwp1UmCbDOwtRVV4GcoryyuKFyhVHoBGMwvE+ItHxDqgb
+	 cfaYsZU/JCfkk4y+FAfdouXbXfYaTmMQXT5L8q4/1iI8RerVtqjq2KRyz0nbpNsSMe
+	 3TGVinTNMlfag==
+Date: Mon, 18 Dec 2023 17:30:37 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>, hu1.chen@intel.com,
+	miklos@szeredi.hu, malini.bhandaru@intel.com, tim.c.chen@intel.com,
+	mikko.ylinen@intel.com, lizhen.you@intel.com,
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	David Howells <dhowells@redhat.com>,
+	Seth Forshee <sforshee@kernel.org>
+Subject: Re: [RFC] HACK: overlayfs: Optimize overlay/restore creds
+Message-ID: <20231218-intim-lehrstellen-dbe053d6c3a8@brauner>
+References: <CAOQ4uxg-WvdcuCrQg7zp03ocNZoT-G2bpi=Y6nVxMTodyFAUbg@mail.gmail.com>
+ <20231214220222.348101-1-vinicius.gomes@intel.com>
+ <CAOQ4uxhJmjeSSM5iQyDadbj5UNjPqvh1QPLpSOVEYFbNbsjDQQ@mail.gmail.com>
+ <87v88zp76v.fsf@intel.com>
+ <CAOQ4uxiCVv7zbfn2BPrR9kh=DvGxQtXUmRvy2pDJ=G7rxjBrgg@mail.gmail.com>
+ <CAOQ4uxhxvFt3_Wb3BGcjj4pGp=OFTBHNPJ4r4eH8245t-+CW+g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,68 +59,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0hyUqJspPbGTgTMSVHVBe=wHR6swPx-O3UcsH5dXDFpTA@mail.gmail.com>
+In-Reply-To: <CAOQ4uxhxvFt3_Wb3BGcjj4pGp=OFTBHNPJ4r4eH8245t-+CW+g@mail.gmail.com>
 
-On Mon, Dec 18, 2023 at 02:14:30PM +0100, Rafael J. Wysocki wrote:
-> On Mon, Dec 18, 2023 at 10:23 AM Lorenzo Pieralisi
-> <lpieralisi@kernel.org> wrote:
-> >
-> > On Fri, Dec 15, 2023 at 04:53:28PM +0000, Russell King (Oracle) wrote:
-> > > On Fri, Dec 15, 2023 at 04:23:22PM +0000, Jonathan Cameron wrote:
-> > > > On Wed, 13 Dec 2023 12:50:18 +0000
-> > > > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
-> > > >
-> > > > > From: James Morse <james.morse@arm.com>
-> > > > >
-> > > > > Add the new flag field to the MADT's GICC structure.
-> > > > >
-> > > > > 'Online Capable' indicates a disabled CPU can be enabled later. See
-> > > > > ACPI specification 6.5 Tabel 5.37: GICC CPU Interface Flags.
-> > > > >
-> > > > > Signed-off-by: James Morse <james.morse@arm.com>
-> > > > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > > > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > > > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > > >
-> > > > I see there is an acpica pull request including this bit but with a different name
-> > > > For reference.
-> > > > https://github.com/acpica/acpica/pull/914/commits/453a5f67567786522021d5f6913f561f8b3cabf6
-> > > >
-> > > > +CC Lorenzo who submitted that.
-> > >
-> > > > > +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)   /* 03: CPU is online capable */
-> > > >
-> > > > ACPI_MADT_GICC_ONLINE_CAPABLE
-> > >
-> > > It's somewhat disappointing, but no big deal. It's easy enough to change
-> > > "irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs"
-> > > to use Lorenzo's name when that patch hits - and it becomes one less
-> > > patch in this patch set when Lorenzo's change eventually hits mainline.
-> > >
-> > > Does anyone know how long it may take for Lorenzo's change to get into
-> > > mainline? Would it be by the 6.8 merge window or the following one?
-> >
-> > I wish I knew. I submitted ACPICA changes for the online capable bit
-> > since I had to add additional flags on top (ie DMA coherent) and it
-> > would not make sense to submit the latter without the former.
-> >
-> > I'd be great if the ACPICA headers can make it into Linux for the upcoming
-> > merge window, not sure what I can do to fasttrack the process though
-> > (I shall ping the maintainers).
+> > Yes, the important thing is that an object cannot change
+> > its non_refcount property during its lifetime -
 > 
-> If your upstream pull request has been merged, I can pick up Linux
-> patches carrying Link: tags pointing to the upstream ACPICA commits in
-> that pull request.
+> ... which means that put_creds_ref() should assert that
+> there is only a single refcount - the one handed out by
+> prepare_creds_ref() before removing non_refcount or
+> directly freeing the cred object.
+> 
+> I must say that the semantics of making a non-refcounted copy
+> to an object whose lifetime is managed by the caller sounds a lot
+> less confusing to me.
 
-Thank you, I don't think it has been merged yet (and it requires
-review because I am not that familiar with the ACPICA code base).
+So can't we do an override_creds() variant that is effectively just:
 
-Hopefully it should be an extended kernel cycle so it might be
-possible to get these headers in v6.8, if you deem that reasonable
-of course once the PR is merged.
+/* caller guarantees lifetime of @new */
+const struct cred *foo_override_cred(const struct cred *new)
+{
+	const struct cred *old = current->cred;
+	rcu_assign_pointer(current->cred, new);
+	return old;
+}
 
-Thanks,
-Lorenzo
+/* caller guarantees lifetime of @old */
+void foo_revert_creds(const struct cred *old)
+{
+	const struct cred *override = current->cred;
+	rcu_assign_pointer(current->cred, old);
+}
+
+Maybe I really fail to understand this problem or the proposed solution:
+the single reference that overlayfs keeps in ovl->creator_cred is tied
+to the lifetime of the overlayfs superblock, no? And anyone who needs a
+long term cred reference e.g, file->f_cred will take it's own reference
+anyway. So it should be safe to just keep that reference alive until
+overlayfs is unmounted, no? I'm sure it's something quite obvious why
+that doesn't work but I'm just not seeing it currently.
 
