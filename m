@@ -1,179 +1,280 @@
-Return-Path: <linux-kernel+bounces-3588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B396D816E19
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:43:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C210816E42
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D9B328450B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:43:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192E51C2438B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8851DDCA;
-	Mon, 18 Dec 2023 12:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967E080E04;
+	Mon, 18 Dec 2023 12:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="oRcIE3OR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gglmYec9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0147E579
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321557EFD6
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--alpic.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e56d85fa91so18794547b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 04:43:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702903307; x=1734439307;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=BrPOQcxAJFPiOpGJROaejVYtg0jjrg401AlounVUuH0=;
-  b=oRcIE3ORHdJwxtgSsGxH/RDDLaCKB/cdo4Tkn5ycPf341XA5OAJAN+qF
-   6u5DMuwnv8OVlDYjR60vTeo/i7Tp0ZTBIWEx89cYMQmq7hknpouBN08Uj
-   bCqW0rQWeU4CFz677p7htxSQnRo1X6pHZAEUWja63ea4TSS/90DEmzEvx
-   4=;
-X-IronPort-AV: E=Sophos;i="6.04,285,1695686400"; 
-   d="scan'208";a="692096045"
-Subject: Re: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
-Thread-Topic: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-e7094f15.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 12:41:39 +0000
-Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
-	by email-inbound-relay-pdx-2c-m6i4x-e7094f15.us-west-2.amazon.com (Postfix) with ESMTPS id 80E4340D53;
-	Mon, 18 Dec 2023 12:41:37 +0000 (UTC)
-Received: from EX19MTAEUC002.ant.amazon.com [10.0.43.254:30583]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.36.52:2525] with esmtp (Farcaster)
- id edfe62ad-4c37-438c-ad29-1666f56557c8; Mon, 18 Dec 2023 12:41:35 +0000 (UTC)
-X-Farcaster-Flow-ID: edfe62ad-4c37-438c-ad29-1666f56557c8
-Received: from EX19D012EUC002.ant.amazon.com (10.252.51.162) by
- EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 18 Dec 2023 12:41:35 +0000
-Received: from EX19D014EUC004.ant.amazon.com (10.252.51.182) by
- EX19D012EUC002.ant.amazon.com (10.252.51.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 18 Dec 2023 12:41:35 +0000
-Received: from EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41]) by
- EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41%3]) with mapi id
- 15.02.1118.040; Mon, 18 Dec 2023 12:41:34 +0000
-From: "Gowans, James" <jgowans@amazon.com>
-To: "ebiederm@xmission.com" <ebiederm@xmission.com>
-CC: "kexec@lists.infradead.org" <kexec@lists.infradead.org>, "maz@kernel.org"
-	<maz@kernel.org>, "tony.luck@intel.com" <tony.luck@intel.com>,
-	"sre@kernel.org" <sre@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "seanjc@google.com" <seanjc@google.com>,
-	"mingo@redhat.com" <mingo@redhat.com>, "pbonzini@redhat.com"
-	<pbonzini@redhat.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"arnd@arndb.de" <arnd@arndb.de>, "wens@csie.org" <wens@csie.org>, "Graf
- (AWS), Alexander" <graf@amazon.de>, =?utf-8?B?U2Now7ZuaGVyciwgSmFuIEgu?=
-	<jschoenh@amazon.de>, "orsonzhai@gmail.com" <orsonzhai@gmail.com>,
-	"bp@alien8.de" <bp@alien8.de>, "samuel@sholland.org" <samuel@sholland.org>,
-	"pavel@ucw.cz" <pavel@ucw.cz>, "jernej.skrabec@gmail.com"
-	<jernej.skrabec@gmail.com>
-Thread-Index: AQHaLY9ODTyAGBa/a0igJR34RcFga7Cna2CZgAeYkYA=
-Date: Mon, 18 Dec 2023 12:41:34 +0000
-Message-ID: <5a0858597867948f271fa5676fb2e3361f35d920.camel@amazon.com>
-References: <20231213064004.2419447-1-jgowans@amazon.com>
-	 <874jgm9huv.fsf@email.froward.int.ebiederm.org>
-In-Reply-To: <874jgm9huv.fsf@email.froward.int.ebiederm.org>
-Accept-Language: en-ZA, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E9C9E0A3ECC80E42B668D1A78E351F16@amazon.com>
-Content-Transfer-Encoding: base64
+        d=google.com; s=20230601; t=1702903436; x=1703508236; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SnWxA8lkTnP6794KoQ1RehtYycr6q6rCflxlfgb7k2M=;
+        b=gglmYec9omvD+nQgK6FSo5Ad1rPPV6dXrwNyXw+LjN+hLTYJIXau/617YamPWqcI42
+         AdeUav0I/ktkO42o7aMb4hK6fQNdCrf+JKzhYrPr8UUYan6yqfVY7zyARZRB2dudBh/u
+         PN+x5+JWKkWmqNd2cSeC1yhrx8s0S7MqzUC6wFUJIxVWDN0I3gkJVM/7pcxIguM6AEB/
+         VTPMBUe+Q6QBRwv9igCae7HqYEX2V/6ADFDZE81kAYmCUj9nrsKUmIJBcplurYHJ7kDV
+         /7CgPdtVtwMSS4X3VXspuXqfkHDTjBuRpxIPCyNCeyx3T58Q60r1dnzT/QJi4Mo6/Gk7
+         wvCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702903436; x=1703508236;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SnWxA8lkTnP6794KoQ1RehtYycr6q6rCflxlfgb7k2M=;
+        b=I3xWdmgD3jhKqOHmgN9i/XgwCpsIS1UuubrpA2KUuhwEPMZdTzEBjfRilGxeC//4a7
+         GvxboJB86bYPaTf25eOyvE3At20SXD1/nhTitf8sHxMUO40DXmd98RlqtuGVkxlE6XLj
+         Wwi/3zDJ5WsznggDMYjlng6iw2pqS8D36WUfXliZHYTYH3kiOgXLGqZMx73mYzetjsG3
+         SuPSj4eOUoBOKPzbi2H9u6ZMR8BSXmlw2ZJCmocLxJlQsPgCztM28APzJhfjxhDIkBSu
+         k5vHUHxrahAe8pOM4cm0P4VHlTt6DjiGCniJAlpGZg+pvafjw0u/bM67jEjlZNATTvSg
+         v//A==
+X-Gm-Message-State: AOJu0YwWdHCdp6amrsKSnHYPG66bsgDR2b4zMN5VdDpqv8uHl0DARwN+
+	bKuca/X5ZUIRziVZDO0jBRPVZfmO9w==
+X-Google-Smtp-Source: AGHT+IGevKtw8rVm6Um9ZQIlJjJ6hmAdAMNjQH/Mm6/Whe39nb/b1rR8kS2aRNvGhj9+d1dBei22d2LfYg==
+X-Received: from alpic.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1bf2])
+ (user=alpic job=sendgmr) by 2002:a05:6902:9:b0:db5:382f:3997 with SMTP id
+ l9-20020a056902000900b00db5382f3997mr1571712ybh.11.1702903436253; Mon, 18 Dec
+ 2023 04:43:56 -0800 (PST)
+Date: Mon, 18 Dec 2023 13:41:37 +0100
+In-Reply-To: <20230906102557.3432236-1-alpic@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20230906102557.3432236-1-alpic@google.com>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231218124137.2476015-1-alpic@google.com>
+Subject: [PATCH] SELinux: Introduce security_file_ioctl_compat hook
+From: Alfred Piccioni <alpic@google.com>
+To: Paul Moore <paul@paul-moore.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Eric Paris <eparis@parisplace.org>
+Cc: stable@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alfred Piccioni <alpic@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-SGkgRXJpYywNCg0KT24gV2VkLCAyMDIzLTEyLTEzIGF0IDEwOjM5IC0wNjAwLCBFcmljIFcuIEJp
-ZWRlcm1hbiB3cm90ZToNCj4gDQo+IEphbWVzIEdvd2FucyA8amdvd2Fuc0BhbWF6b24uY29tPiB3
-cml0ZXM6DQo+IA0KPiA+IHN5c2NvcmVfc2h1dGRvd24oKSBydW5zIGRyaXZlciBhbmQgbW9kdWxl
-IGNhbGxiYWNrcyB0byBnZXQgdGhlIHN5c3RlbQ0KPiA+IGludG8gYSBzdGF0ZSB3aGVyZSBpdCBj
-YW4gYmUgY29ycmVjdGx5IHNodXQgZG93bi4gSW4gY29tbWl0DQo+ID4gNmYzODlhOGYxZGQyICgi
-UE0gLyByZWJvb3Q6IGNhbGwgc3lzY29yZV9zaHV0ZG93bigpIGFmdGVyIGRpc2FibGVfbm9uYm9v
-dF9jcHVzKCkiKQ0KPiA+IHN5c2NvcmVfc2h1dGRvd24oKSB3YXMgcmVtb3ZlZCBmcm9tIGtlcm5l
-bF9yZXN0YXJ0X3ByZXBhcmUoKSBhbmQgaGVuY2UNCj4gPiBnb3QgKGluY29ycmVjdGx5PykgcmVt
-b3ZlZCBmcm9tIHRoZSBrZXhlYyBmbG93LiBUaGlzIHdhcyBpbm5vY3VvdXMgdW50aWwNCj4gPiBj
-b21taXQgNjczNTE1MGI2OTk3ICgiS1ZNOiBVc2Ugc3lzY29yZV9vcHMgaW5zdGVhZCBvZiByZWJv
-b3Rfbm90aWZpZXIgdG8gaG9vayByZXN0YXJ0L3NodXRkb3duIikNCj4gPiBjaGFuZ2VkIHRoZSB3
-YXkgdGhhdCBLVk0gcmVnaXN0ZXJlZCBpdHMgc2h1dGRvd24gY2FsbGJhY2tzLCBzd2l0Y2hpbmcg
-ZnJvbQ0KPiA+IHJlYm9vdCBub3RpZmllcnMgdG8gc3lzY29yZV9vcHMuc2h1dGRvd24uIEFzIHN5
-c2NvcmVfc2h1dGRvd24oKSBpcw0KPiA+IG1pc3NpbmcgZnJvbSBrZXhlYywgS1ZNJ3Mgc2h1dGRv
-d24gaG9vayBpcyBub3QgcnVuIGFuZCB2aXJ0dWFsaXNhdGlvbiBpcw0KPiA+IGxlZnQgZW5hYmxl
-ZCBvbiB0aGUgYm9vdCBDUFUgd2hpY2ggcmVzdWx0cyBpbiB0cmlwbGUgZmF1bHRzIHdoZW4NCj4g
-PiBzd2l0Y2hpbmcgdG8gdGhlIG5ldyBrZXJuZWwgb24gSW50ZWwgeDg2IFZULXggd2l0aCBWTVhF
-IGVuYWJsZWQuDQo+ID4gDQo+ID4gRml4IHRoaXMgYnkgYWRkaW5nIHN5c2NvcmVfc2h1dGRvd24o
-KSB0byB0aGUga2V4ZWMgc2VxdWVuY2UuIEluIHRlcm1zIG9mDQo+ID4gd2hlcmUgdG8gYWRkIGl0
-LCBpdCBpcyBiZWluZyBhZGRlZCBhZnRlciBtaWdyYXRpbmcgdGhlIGtleGVjIHRhc2sgdG8gdGhl
-DQo+ID4gYm9vdCBDUFUsIGJ1dCBiZWZvcmUgQVBzIGFyZSBzaHV0IGRvd24uIEl0IGlzIG5vdCB0
-b3RhbGx5IGNsZWFyIGlmIHRoaXMNCj4gPiBpcyB0aGUgYmVzdCBwbGFjZTogaW4gY29tbWl0IDZm
-Mzg5YThmMWRkMiAoIlBNIC8gcmVib290OiBjYWxsIHN5c2NvcmVfc2h1dGRvd24oKSBhZnRlciBk
-aXNhYmxlX25vbmJvb3RfY3B1cygpIikNCj4gPiBpdCBpcyBzdGF0ZWQgdGhhdCAic3lzY29yZV9v
-cHMgb3BlcmF0aW9ucyBzaG91bGQgYmUgY2FycmllZCB3aXRoIG9uZQ0KPiA+IENQVSBvbi1saW5l
-IGFuZCBpbnRlcnJ1cHRzIGRpc2FibGVkLiIgQVBzIGFyZSBvbmx5IG9mZmxpbmVkIGxhdGVyIGlu
-DQo+ID4gbWFjaGluZV9zaHV0ZG93bigpLCBzbyB0aGlzIHN5c2NvcmVfc2h1dGRvd24oKSBpcyBi
-ZWluZyBydW4gd2hpbGUgQVBzDQo+ID4gYXJlIHN0aWxsIG9ubGluZS4gVGhpcyBzZWVtcyB0byBi
-ZSB0aGUgY29ycmVjdCBwbGFjZSBhcyBpdCBtYXRjaGVzIHdoZXJlDQo+ID4gc3lzY29yZV9zaHV0
-ZG93bigpIGlzIHJ1biBpbiB0aGUgcmVib290IGFuZCBoYWx0IGZsb3dzIC0gdGhleSBhbHNvIHJ1
-bg0KPiA+IGl0IGJlZm9yZSBBUHMgYXJlIHNodXQgZG93bi4gVGhlIGFzc3VtcHRpb24gaXMgdGhh
-dCB0aGUgY29tbWl0IG1lc3NhZ2UNCj4gPiBpbiBjb21taXQgNmYzODlhOGYxZGQyICgiUE0gLyBy
-ZWJvb3Q6IGNhbGwgc3lzY29yZV9zaHV0ZG93bigpIGFmdGVyIGRpc2FibGVfbm9uYm9vdF9jcHVz
-KCkiKQ0KPiA+IGlzIG5vIGxvbmdlciB2YWxpZC4NCj4gPiANCj4gPiBLVk0gaGFzIGJlZW4gZGlz
-Y3Vzc2VkIGhlcmUgYXMgaXQgaXMgd2hhdCBicm9rZSBsb3VkbHkgYnkgbm90IGhhdmluZw0KPiA+
-IHN5c2NvcmVfc2h1dGRvd24oKSBpbiBrZXhlYywgYnV0IHRoaXMgY2hhbmdlIGltcGFjdHMgbW9y
-ZSB0aGFuIGp1c3QgS1ZNOw0KPiA+IGFsbCBkcml2ZXJzL21vZHVsZXMgd2hpY2ggcmVnaXN0ZXIg
-YSBzeXNjb3JlX29wcy5zaHV0ZG93biBjYWxsYmFjayB3aWxsDQo+ID4gbm93IGJlIGludm9rZWQg
-aW4gdGhlIGtleGVjIGZsb3cuIExvb2tpbmcgYXQgc29tZSBvZiB0aGVtIGxpa2UgeDg2IE1DRQ0K
-PiA+IGl0IGlzIHByb2JhYmx5IG1vcmUgY29ycmVjdCB0byBhbHNvIHNodXQgdGhlc2UgZG93biBk
-dXJpbmcga2V4ZWMuDQo+ID4gTWFpbnRhaW5lcnMgb2YgYWxsIGRyaXZlcnMgd2hpY2ggdXNlIHN5
-c2NvcmVfb3BzLnNodXRkb3duIGFyZSBhZGRlZCBvbg0KPiA+IENDIGZvciB2aXNpYmlsaXR5LiBU
-aGV5IGFyZToNCj4gPiANCj4gPiBhcmNoL3Bvd2VycGMvcGxhdGZvcm1zL2NlbGwvc3B1X2Jhc2Uu
-YyAgLnNodXRkb3duID0gc3B1X3NodXRkb3duLA0KPiA+IGFyY2gveDg2L2tlcm5lbC9jcHUvbWNl
-L2NvcmUuYyAgICAgICAgICAgICAgICAuc2h1dGRvd24gPSBtY2Vfc3lzY29yZV9zaHV0ZG93biwN
-Cj4gPiBhcmNoL3g4Ni9rZXJuZWwvaTgyNTkuYyAgICAgICAgICAgICAgICAgLnNodXRkb3duID0g
-aTgyNTlBX3NodXRkb3duLA0KPiA+IGRyaXZlcnMvaXJxY2hpcC9pcnEtaTgyNTkuYyAgICAgICAg
-ICAgLnNodXRkb3duID0gaTgyNTlBX3NodXRkb3duLA0KPiA+IGRyaXZlcnMvaXJxY2hpcC9pcnEt
-c3VuNmktci5jICAgICAgICAgLnNodXRkb3duID0gc3VuNmlfcl9pbnRjX3NodXRkb3duLA0KPiA+
-IGRyaXZlcnMvbGVkcy90cmlnZ2VyL2xlZHRyaWctY3B1LmMgICAgLnNodXRkb3duID0gbGVkdHJp
-Z19jcHVfc3lzY29yZV9zaHV0ZG93biwNCj4gPiBkcml2ZXJzL3Bvd2VyL3Jlc2V0L3NjMjd4eC1w
-b3dlcm9mZi5jIC5zaHV0ZG93biA9IHNjMjd4eF9wb3dlcm9mZl9zaHV0ZG93biwNCj4gPiBrZXJu
-ZWwvaXJxL2dlbmVyaWMtY2hpcC5jICAgICAgICAgICAgIC5zaHV0ZG93biA9IGlycV9nY19zaHV0
-ZG93biwNCj4gPiB2aXJ0L2t2bS9rdm1fbWFpbi5jICAgICAgICAgICAgICAgICAgIC5zaHV0ZG93
-biA9IGt2bV9zaHV0ZG93biwNCj4gPiANCj4gPiBUaGlzIGhhcyBiZWVuIHRlc3RlZCBieSBkb2lu
-ZyBhIGtleGVjIG9uIHg4Nl82NCBhbmQgYWFyY2g2NC4NCj4gDQo+IEZyb20gdGhlIDEwLDAwMCBm
-b290IHBlcnNwZWN0aXZlOg0KPiBBY2tlZC1ieTogIkVyaWMgVy4gQmllZGVybWFuIiA8ZWJpZWRl
-cm1AeG1pc3Npb24uY29tPg0KDQpUaGFua3MgZm9yIHRoZSBBQ0shDQpXaGF0J3MgdGhlIG5leHQg
-c3RlcCB0byBnZXQgdGhpcyBpbnRvIHRoZSBrZXhlYyB0cmVlPw0KDQpKRw0KDQo+IA0KPiANCj4g
-RXJpYw0KPiANCj4gPiBGaXhlczogNjczNTE1MGI2OTk3ICgiS1ZNOiBVc2Ugc3lzY29yZV9vcHMg
-aW5zdGVhZCBvZiByZWJvb3Rfbm90aWZpZXIgdG8gaG9vayByZXN0YXJ0L3NodXRkb3duIikNCj4g
-PiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBKYW1lcyBHb3dhbnMgPGpnb3dhbnNAYW1hem9uLmNvbT4N
-Cj4gPiBDYzogRXJpYyBCaWVkZXJtYW4gPGViaWVkZXJtQHhtaXNzaW9uLmNvbT4NCj4gPiBDYzog
-UGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT4NCj4gPiBDYzogU2VhbiBDaHJpc3Rv
-cGhlcnNvbiA8c2VhbmpjQGdvb2dsZS5jb20+DQo+ID4gQ2M6IE1hcmMgWnluZ2llciA8bWF6QGtl
-cm5lbC5vcmc+DQo+ID4gQ2M6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+DQo+ID4gQ2M6
-IFRvbnkgTHVjayA8dG9ueS5sdWNrQGludGVsLmNvbT4NCj4gPiBDYzogQm9yaXNsYXYgUGV0a292
-IDxicEBhbGllbjguZGU+DQo+ID4gQ2M6IFRob21hcyBHbGVpeG5lciA8dGdseEBsaW51dHJvbml4
-LmRlPg0KPiA+IENjOiBJbmdvIE1vbG5hciA8bWluZ29AcmVkaGF0LmNvbT4NCj4gPiBDYzogQ2hl
-bi1ZdSBUc2FpIDx3ZW5zQGNzaWUub3JnPg0KPiA+IENjOiBKZXJuZWogU2tyYWJlYyA8amVybmVq
-LnNrcmFiZWNAZ21haWwuY29tPg0KPiA+IENjOiBTYW11ZWwgSG9sbGFuZCA8c2FtdWVsQHNob2xs
-YW5kLm9yZz4NCj4gPiBDYzogUGF2ZWwgTWFjaGVrIDxwYXZlbEB1Y3cuY3o+DQo+ID4gQ2M6IFNl
-YmFzdGlhbiBSZWljaGVsIDxzcmVAa2VybmVsLm9yZz4NCj4gPiBDYzogT3Jzb24gWmhhaSA8b3Jz
-b256aGFpQGdtYWlsLmNvbT4NCj4gPiBDYzogQWxleGFuZGVyIEdyYWYgPGdyYWZAYW1hem9uLmRl
-Pg0KPiA+IENjOiBKYW4gSC4gU2Nob2VuaGVyciA8anNjaG9lbmhAYW1hem9uLmRlPg0KPiA+IC0t
-LQ0KPiA+ICBrZXJuZWwva2V4ZWNfY29yZS5jIHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAx
-IGluc2VydGlvbigrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9rZXJuZWwva2V4ZWNfY29yZS5j
-IGIva2VybmVsL2tleGVjX2NvcmUuYw0KPiA+IGluZGV4IGJlNTY0MmE0ZWM0OS4uYjkyNmM0ZGI4
-YTkxIDEwMDY0NA0KPiA+IC0tLSBhL2tlcm5lbC9rZXhlY19jb3JlLmMNCj4gPiArKysgYi9rZXJu
-ZWwva2V4ZWNfY29yZS5jDQo+ID4gQEAgLTEyNTQsNiArMTI1NCw3IEBAIGludCBrZXJuZWxfa2V4
-ZWModm9pZCkNCj4gPiAgICAgICAgICAgICAgIGtleGVjX2luX3Byb2dyZXNzID0gdHJ1ZTsNCj4g
-PiAgICAgICAgICAgICAgIGtlcm5lbF9yZXN0YXJ0X3ByZXBhcmUoImtleGVjIHJlYm9vdCIpOw0K
-PiA+ICAgICAgICAgICAgICAgbWlncmF0ZV90b19yZWJvb3RfY3B1KCk7DQo+ID4gKyAgICAgICAg
-ICAgICBzeXNjb3JlX3NodXRkb3duKCk7DQo+ID4gDQo+ID4gICAgICAgICAgICAgICAvKg0KPiA+
-ICAgICAgICAgICAgICAgICogbWlncmF0ZV90b19yZWJvb3RfY3B1KCkgZGlzYWJsZXMgQ1BVIGhv
-dHBsdWcgYXNzdW1pbmcgdGhhdA0KDQo=
+Some ioctl commands do not require ioctl permission, but are routed to
+other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
+done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
+
+However, if a 32-bit process is running on a 64-bit kernel, it emmits
+32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
+being checked erroneously, which leads to these ioctl operations being
+routed to the ioctl permission, rather than the correct file
+permissions.
+
+This was also noted in a RED-PEN finding from a while back -
+"/* RED-PEN how should LSM module know it's handling 32bit? */".
+
+This patch introduces a new hook, security_file_ioctl_compat, that
+replaces security_file_ioctl if the CONFIG_COMPAT flag is on. All
+current LSMs have been changed to hook into the compat flag.
+
+Reviewing the three places where we are currently using
+security_file_ioctl, it appears that only SELinux needs a dedicated
+compat change; TOMOYO and SMACK appear to be functional without any
+change.
+
+Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
+Signed-off-by: Alfred Piccioni <alpic@google.com>
+Cc: stable@vger.kernel.org
+---
+ fs/ioctl.c                    |  3 +--
+ fs/overlayfs/inode.c          |  4 ++++
+ include/linux/lsm_hook_defs.h |  2 ++
+ include/linux/security.h      |  7 +++++++
+ security/security.c           | 17 +++++++++++++++++
+ security/selinux/hooks.c      | 26 ++++++++++++++++++++++++++
+ security/smack/smack_lsm.c    |  1 +
+ security/tomoyo/tomoyo.c      |  1 +
+ 8 files changed, 59 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index f5fd99d6b0d4..76cf22ac97d7 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -920,8 +920,7 @@ COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
+ 	if (!f.file)
+ 		return -EBADF;
+ 
+-	/* RED-PEN how should LSM module know it's handling 32bit? */
+-	error = security_file_ioctl(f.file, cmd, arg);
++	error = security_file_ioctl_compat(f.file, cmd, arg);
+ 	if (error)
+ 		goto out;
+ 
+diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+index 83ef66644c21..170687b5985b 100644
+--- a/fs/overlayfs/inode.c
++++ b/fs/overlayfs/inode.c
+@@ -751,7 +751,11 @@ static int ovl_security_fileattr(const struct path *realpath, struct fileattr *f
+ 	else
+ 		cmd = fa->fsx_valid ? FS_IOC_FSGETXATTR : FS_IOC_GETFLAGS;
+ 
++#ifdef CONFIG_COMPAT
++	err = security_file_ioctl_compat(file, cmd, 0);
++# else
+ 	err = security_file_ioctl(file, cmd, 0);
++#endif
+ 	fput(file);
+ 
+ 	return err;
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index ac962c4cb44b..626aa8cf930d 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -171,6 +171,8 @@ LSM_HOOK(int, 0, file_alloc_security, struct file *file)
+ LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
+ LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
+ 	 unsigned long arg)
++LSM_HOOK(int, 0, file_ioctl_compat, struct file *file, unsigned int cmd,
++	 unsigned long arg)
+ LSM_HOOK(int, 0, mmap_addr, unsigned long addr)
+ LSM_HOOK(int, 0, mmap_file, struct file *file, unsigned long reqprot,
+ 	 unsigned long prot, unsigned long flags)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 5f16eecde00b..22a82b7c59f1 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -389,6 +389,7 @@ int security_file_permission(struct file *file, int mask);
+ int security_file_alloc(struct file *file);
+ void security_file_free(struct file *file);
+ int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
++int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg);
+ int security_mmap_file(struct file *file, unsigned long prot,
+ 			unsigned long flags);
+ int security_mmap_addr(unsigned long addr);
+@@ -987,6 +988,12 @@ static inline int security_file_ioctl(struct file *file, unsigned int cmd,
+ 	return 0;
+ }
+ 
++static inline int security_file_ioctl_compat(struct file *file, unsigned int cmd,
++				      unsigned long arg)
++{
++	return 0;
++}
++
+ static inline int security_mmap_file(struct file *file, unsigned long prot,
+ 				     unsigned long flags)
+ {
+diff --git a/security/security.c b/security/security.c
+index 23b129d482a7..5c16ffc99b1e 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2648,6 +2648,23 @@ int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ }
+ EXPORT_SYMBOL_GPL(security_file_ioctl);
+ 
++/**
++ * security_file_ioctl_compat() - Check if an ioctl is allowed in 32-bit compat mode
++ * @file: associated file
++ * @cmd: ioctl cmd
++ * @arg: ioctl arguments
++ *
++ * Compat version of security_file_ioctl() that correctly handles 32-bit processes
++ * running on 64-bit kernels.
++ *
++ * Return: Returns 0 if permission is granted.
++ */
++int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	return call_int_hook(file_ioctl_compat, 0, file, cmd, arg);
++}
++EXPORT_SYMBOL_GPL(security_file_ioctl_compat);
++
+ static inline unsigned long mmap_prot(struct file *file, unsigned long prot)
+ {
+ 	/*
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 2aa0e219d721..de96d156e6ea 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -3731,6 +3731,31 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
+ 	return error;
+ }
+ 
++static int selinux_file_ioctl_compat(struct file *file, unsigned int cmd,
++			      unsigned long arg)
++{
++	// If we are in a 64-bit kernel running 32-bit userspace, we need to make
++	// sure we don't compare 32-bit flags to 64-bit flags.
++	switch (cmd) {
++	case FS_IOC32_GETFLAGS:
++		cmd = FS_IOC_GETFLAGS;
++		break;
++	case FS_IOC32_SETFLAGS:
++		cmd = FS_IOC_GETFLAGS;
++		break;
++	case FS_IOC32_GETVERSION:
++		cmd = FS_IOC_GETVERSION;
++		break;
++	case FS_IOC32_SETVERSION:
++		cmd = FS_IOC_SETVERSION;
++		break;
++	default:
++		break;
++	}
++
++	return selinux_file_ioctl(file, cmd, arg);
++}
++
+ static int default_noexec __ro_after_init;
+ 
+ static int file_map_prot_check(struct file *file, unsigned long prot, int shared)
+@@ -7036,6 +7061,7 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
+ 	LSM_HOOK_INIT(file_permission, selinux_file_permission),
+ 	LSM_HOOK_INIT(file_alloc_security, selinux_file_alloc_security),
+ 	LSM_HOOK_INIT(file_ioctl, selinux_file_ioctl),
++	LSM_HOOK_INIT(file_ioctl_compat, selinux_file_ioctl_compat),
+ 	LSM_HOOK_INIT(mmap_file, selinux_mmap_file),
+ 	LSM_HOOK_INIT(mmap_addr, selinux_mmap_addr),
+ 	LSM_HOOK_INIT(file_mprotect, selinux_file_mprotect),
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index 65130a791f57..1f1ea8529421 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -4973,6 +4973,7 @@ static struct security_hook_list smack_hooks[] __ro_after_init = {
+ 
+ 	LSM_HOOK_INIT(file_alloc_security, smack_file_alloc_security),
+ 	LSM_HOOK_INIT(file_ioctl, smack_file_ioctl),
++	LSM_HOOK_INIT(file_ioctl_compat, smack_file_ioctl),
+ 	LSM_HOOK_INIT(file_lock, smack_file_lock),
+ 	LSM_HOOK_INIT(file_fcntl, smack_file_fcntl),
+ 	LSM_HOOK_INIT(mmap_file, smack_mmap_file),
+diff --git a/security/tomoyo/tomoyo.c b/security/tomoyo/tomoyo.c
+index 25006fddc964..298d182759c2 100644
+--- a/security/tomoyo/tomoyo.c
++++ b/security/tomoyo/tomoyo.c
+@@ -568,6 +568,7 @@ static struct security_hook_list tomoyo_hooks[] __ro_after_init = {
+ 	LSM_HOOK_INIT(path_rename, tomoyo_path_rename),
+ 	LSM_HOOK_INIT(inode_getattr, tomoyo_inode_getattr),
+ 	LSM_HOOK_INIT(file_ioctl, tomoyo_file_ioctl),
++	LSM_HOOK_INIT(file_ioctl_compat, tomoyo_file_ioctl),
+ 	LSM_HOOK_INIT(path_chmod, tomoyo_path_chmod),
+ 	LSM_HOOK_INIT(path_chown, tomoyo_path_chown),
+ 	LSM_HOOK_INIT(path_chroot, tomoyo_path_chroot),
+
+base-commit: 196e95aa8305aecafc4e1857b7d3eff200d953b6
+-- 
+2.43.0.472.g3155946c3a-goog
+
 
