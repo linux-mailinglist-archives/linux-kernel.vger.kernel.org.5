@@ -1,107 +1,241 @@
-Return-Path: <linux-kernel+bounces-4060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1CB3817762
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62904817763
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:26:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7EFB1C2268C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:26:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78F721C23F14
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B72B49886;
-	Mon, 18 Dec 2023 16:26:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekxTovEc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07EEF4239A;
+	Mon, 18 Dec 2023 16:26:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7CA2F51F;
-	Mon, 18 Dec 2023 16:26:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4051C433C7;
-	Mon, 18 Dec 2023 16:26:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702916769;
-	bh=SuOnhJkiF3f6Db2I3QvJoGtrtaXPHOvRBZiOzxpkX1k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ekxTovEc+q+OPul2U46zZoLe3d8F3rTaQS6fxQJZFxQGL8UZPpAbheMYFRBI3apEH
-	 6LRhk+CCR4QeXTcT834qggJT2RcPxm9QEoDExkwQdMaVdYRdwRBMnyckBKpBz1yWLy
-	 Wv17GSY8g8OYyHr5T03I0AE+AgZuV3C5DPg3DjDfQgjKIcwWbkrMBh1oAUbFjz9Ky9
-	 PbcWrXyO+Iq/vpWF+MFgUCV3UFBzjnS7j/vB+7cVVteC0/E7v3SesrazhLhVyUOoI5
-	 q3e8l9/Iv0ldRYX06xwvLUDwqq1/4aTof77jCZNJAIB/4ytDteGqJP9WjswFDh4PcF
-	 qudCm8hmKlJOQ==
-Date: Mon, 18 Dec 2023 16:26:04 +0000
-From: Simon Horman <horms@kernel.org>
-To: Suman Ghosh <sumang@marvell.com>
-Cc: "davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-	Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-	Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-	Geethasowjanya Akula <gakula@marvell.com>,
-	Hariprasad Kelam <hkelam@marvell.com>,
-	Linu Cherian <lcherian@marvell.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXT] Re: [net PATCH] octeontx2-pf: Fix graceful exit during PFC
- configuration failure
-Message-ID: <20231218162604.GH6288@kernel.org>
-References: <20231213181044.103943-1-sumang@marvell.com>
- <20231215125043.GJ6288@kernel.org>
- <SJ0PR18MB52169B706EB4F8F8D8FAB20CDB91A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04E8E578
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93AD02F4;
+	Mon, 18 Dec 2023 08:27:30 -0800 (PST)
+Received: from [10.57.75.230] (unknown [10.57.75.230])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C852E3F5A1;
+	Mon, 18 Dec 2023 08:26:44 -0800 (PST)
+Message-ID: <593c4eb0-e430-4186-a95c-9d2ebd91235c@arm.com>
+Date: Mon, 18 Dec 2023 16:26:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ0PR18MB52169B706EB4F8F8D8FAB20CDB91A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 14/39] mm/rmap: introduce
+ folio_add_anon_rmap_[pte|ptes|pmd]()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Hugh Dickins <hughd@google.com>, Yin Fengwei <fengwei.yin@intel.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
+ Peter Xu <peterx@redhat.com>
+References: <20231211155652.131054-1-david@redhat.com>
+ <20231211155652.131054-15-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231211155652.131054-15-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Dec 17, 2023 at 06:26:24AM +0000, Suman Ghosh wrote:
+On 11/12/2023 15:56, David Hildenbrand wrote:
+> Let's mimic what we did with folio_add_file_rmap_*() so we can similarly
+> replace page_add_anon_rmap() next.
+> 
+> Make the compiler always special-case on the granularity by using
+> __always_inline.
+> 
+> Note that the new functions ignore the RMAP_COMPOUND flag, which we will
+> remove as soon as page_add_anon_rmap() is gone.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  include/linux/rmap.h |   6 +++
+>  mm/rmap.c            | 118 ++++++++++++++++++++++++++++++-------------
+>  2 files changed, 88 insertions(+), 36 deletions(-)
+> 
+> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> index 7198905dc8be..3b5357cb1c09 100644
+> --- a/include/linux/rmap.h
+> +++ b/include/linux/rmap.h
+> @@ -234,6 +234,12 @@ static inline void __folio_rmap_sanity_checks(struct folio *folio,
+>   * rmap interfaces called when adding or removing pte of page
+>   */
+>  void folio_move_anon_rmap(struct folio *, struct vm_area_struct *);
+> +void folio_add_anon_rmap_ptes(struct folio *, struct page *, int nr_pages,
+> +		struct vm_area_struct *, unsigned long address, rmap_t flags);
+> +#define folio_add_anon_rmap_pte(folio, page, vma, address, flags) \
+> +	folio_add_anon_rmap_ptes(folio, page, 1, vma, address, flags)
+> +void folio_add_anon_rmap_pmd(struct folio *, struct page *,
+> +		struct vm_area_struct *, unsigned long address, rmap_t flags);
+>  void page_add_anon_rmap(struct page *, struct vm_area_struct *,
+>  		unsigned long address, rmap_t flags);
+>  void page_add_new_anon_rmap(struct page *, struct vm_area_struct *,
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index c5761986a411..7787499fa2ad 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1300,38 +1300,20 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+>  		unsigned long address, rmap_t flags)
+>  {
+>  	struct folio *folio = page_folio(page);
+> -	atomic_t *mapped = &folio->_nr_pages_mapped;
+> -	int nr = 0, nr_pmdmapped = 0;
+> -	bool compound = flags & RMAP_COMPOUND;
+> -	bool first;
+>  
+> -	/* Is page being mapped by PTE? Is this its first map to be added? */
+> -	if (likely(!compound)) {
+> -		first = atomic_inc_and_test(&page->_mapcount);
+> -		nr = first;
+> -		if (first && folio_test_large(folio)) {
+> -			nr = atomic_inc_return_relaxed(mapped);
+> -			nr = (nr < COMPOUND_MAPPED);
+> -		}
+> -	} else if (folio_test_pmd_mappable(folio)) {
+> -		/* That test is redundant: it's for safety or to optimize out */
+> +	if (likely(!(flags & RMAP_COMPOUND)))
+> +		folio_add_anon_rmap_pte(folio, page, vma, address, flags);
+> +	else
+> +		folio_add_anon_rmap_pmd(folio, page, vma, address, flags);
+> +}
+>  
+> -		first = atomic_inc_and_test(&folio->_entire_mapcount);
+> -		if (first) {
+> -			nr = atomic_add_return_relaxed(COMPOUND_MAPPED, mapped);
+> -			if (likely(nr < COMPOUND_MAPPED + COMPOUND_MAPPED)) {
+> -				nr_pmdmapped = folio_nr_pages(folio);
+> -				nr = nr_pmdmapped - (nr & FOLIO_PAGES_MAPPED);
+> -				/* Raced ahead of a remove and another add? */
+> -				if (unlikely(nr < 0))
+> -					nr = 0;
+> -			} else {
+> -				/* Raced ahead of a remove of COMPOUND_MAPPED */
+> -				nr = 0;
+> -			}
+> -		}
+> -	}
+> +static __always_inline void __folio_add_anon_rmap(struct folio *folio,
+> +		struct page *page, int nr_pages, struct vm_area_struct *vma,
+> +		unsigned long address, rmap_t flags, enum rmap_mode mode)
+> +{
+> +	unsigned int i, nr, nr_pmdmapped = 0;
+>  
+> +	nr = __folio_add_rmap(folio, page, nr_pages, mode, &nr_pmdmapped);
+>  	if (nr_pmdmapped)
+>  		__lruvec_stat_mod_folio(folio, NR_ANON_THPS, nr_pmdmapped);
+>  	if (nr)
+> @@ -1345,18 +1327,34 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+>  		 * folio->index right when not given the address of the head
+>  		 * page.
+>  		 */
+> -		VM_WARN_ON_FOLIO(folio_test_large(folio) && !compound, folio);
+> +		VM_WARN_ON_FOLIO(folio_test_large(folio) &&
+> +				 mode != RMAP_MODE_PMD, folio);
+>  		__folio_set_anon(folio, vma, address,
+>  				 !!(flags & RMAP_EXCLUSIVE));
+>  	} else if (likely(!folio_test_ksm(folio))) {
+>  		__page_check_anon_rmap(folio, page, vma, address);
+>  	}
+> -	if (flags & RMAP_EXCLUSIVE)
+> -		SetPageAnonExclusive(page);
+> -	/* While PTE-mapping a THP we have a PMD and a PTE mapping. */
+> -	VM_WARN_ON_FOLIO((atomic_read(&page->_mapcount) > 0 ||
+> -			  (folio_test_large(folio) && folio_entire_mapcount(folio) > 1)) &&
+> -			 PageAnonExclusive(page), folio);
+> +
+> +	if (flags & RMAP_EXCLUSIVE) {
+> +		switch (mode) {
+> +		case RMAP_MODE_PTE:
+> +			for (i = 0; i < nr_pages; i++)
+> +				SetPageAnonExclusive(page + i);
+> +			break;
+> +		case RMAP_MODE_PMD:
+> +			SetPageAnonExclusive(page);
 
-...
+Just to check; I suppose only setting this on the head is ok, because it's an
+exclusive mapping and therefore by definition it can only be mapped by pmd?
 
-> >Perhaps I am on the wrong track here, but if
-> >1. otx2_pfc_txschq_stop() was called by otx2_pfc_txschq_update()
-> >   (or otx2_pfc_txschq_config()) for relevant error cases; and
-> >2. pfc_en was passed as a parameter to otx2_config_priority_flow_ctrl()
-> >
-> >Then I think that the unwind logic in the if condition above could
-> >be expressed as unwind ladder with goto labels whereby the order
-> >of unwinding is strictly the reverse of configuration.
-> >
-> >This is a subjective opinion, but the advantage of this approach is that
-> >it
-> >tends to lead to more maintainable code and fewer errors in... error
-> >paths.
-> >
-> >(Completely untested!)
-> >
-> >	...
-> >	if (err)
-> >		goto err_pfc_en;
-> >	...
-> >	err = otx2_pfc_txschq_update(pfvf);
-> >	if (err)
-> >		goto err_config;
-> >
-> >	return 0;
-> >
-> >err_config:
-> >	if (pfc->pfc_en)
-> >		otx2_nix_config_bp(pfvf, false);
-> >	otx2_config_priority_flow_ctrl(pfvf, old_pfc_en);
-> >err_pfc_en:
-> >	pfvf->pfc_en = old_pfc_en;
-> >
-> >	return err;
-> [Suman] Let me think through it. I need to check if some cases will be missed, will update, and push a new patch in that case. Thanks for your feedback, Simon!!
+> +			break;
+> +		}
+> +	}
+> +	for (i = 0; i < nr_pages; i++) {
+> +		struct page *cur_page = page + i;
+> +
+> +		/* While PTE-mapping a THP we have a PMD and a PTE mapping. */
+> +		VM_WARN_ON_FOLIO((atomic_read(&cur_page->_mapcount) > 0 ||
+> +				  (folio_test_large(folio) &&
+> +				   folio_entire_mapcount(folio) > 1)) &&
+> +				 PageAnonExclusive(cur_page), folio);
+> +	}
+>  
+>  	/*
+>  	 * For large folio, only mlock it if it's fully mapped to VMA. It's
+> @@ -1368,6 +1366,54 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+>  		mlock_vma_folio(folio, vma);
+>  }
+>  
+> +/**
+> + * folio_add_anon_rmap_ptes - add PTE mappings to a page range of an anon folio
+> + * @folio:	The folio to add the mappings to
+> + * @page:	The first page to add
+> + * @nr_pages:	The number of pages which will be mapped
+> + * @vma:	The vm area in which the mappings are added
+> + * @address:	The user virtual address of the first page to map
+> + * @flags:	The rmap flags
+> + *
+> + * The page range of folio is defined by [first_page, first_page + nr_pages)
+> + *
+> + * The caller needs to hold the page table lock, and the page must be locked in
+> + * the anon_vma case: to serialize mapping,index checking after setting,
+> + * and to ensure that an anon folio is not being upgraded racily to a KSM folio
+> + * (but KSM folios are never downgraded).
+> + */
+> +void folio_add_anon_rmap_ptes(struct folio *folio, struct page *page,
+> +		int nr_pages, struct vm_area_struct *vma, unsigned long address,
+> +		rmap_t flags)
+> +{
+> +	__folio_add_anon_rmap(folio, page, nr_pages, vma, address, flags,
+> +			      RMAP_MODE_PTE);
+> +}
+> +
+> +/**
+> + * folio_add_anon_rmap_pmd - add a PMD mapping to a page range of an anon folio
+> + * @folio:	The folio to add the mapping to
+> + * @page:	The first page to add
+> + * @vma:	The vm area in which the mapping is added
+> + * @address:	The user virtual address of the first page to map
+> + * @flags:	The rmap flags
+> + *
+> + * The page range of folio is defined by [first_page, first_page + HPAGE_PMD_NR)
+> + *
+> + * The caller needs to hold the page table lock, and the page must be locked in
+> + * the anon_vma case: to serialize mapping,index checking after setting.
+> + */
+> +void folio_add_anon_rmap_pmd(struct folio *folio, struct page *page,
+> +		struct vm_area_struct *vma, unsigned long address, rmap_t flags)
+> +{
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +	__folio_add_anon_rmap(folio, page, HPAGE_PMD_NR, vma, address, flags,
+> +			      RMAP_MODE_PMD);
+> +#else
+> +	WARN_ON_ONCE(true);
+> +#endif
+> +}
+> +
+>  /**
+>   * folio_add_new_anon_rmap - Add mapping to a new anonymous folio.
+>   * @folio:	The folio to add the mapping to.
 
-Thanks, much appreciated.
 
