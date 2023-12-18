@@ -1,220 +1,162 @@
-Return-Path: <linux-kernel+bounces-3677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C15E816F77
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:05:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E855B816F79
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 169FC288515
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14ED01C23399
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 817FA1D12B;
-	Mon, 18 Dec 2023 12:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAB737867;
+	Mon, 18 Dec 2023 12:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4hl+F9J"
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="N/XaTCLp";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tYC0tK7a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8901D147;
-	Mon, 18 Dec 2023 12:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2335d81693so261085466b.0;
-        Mon, 18 Dec 2023 04:49:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702903794; x=1703508594; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T14bfi8c3k3Cq7TyZI+9Bh5hDSnSWfc6TpVsvOYBPic=;
-        b=P4hl+F9JTF+wawqVgpuWAGObb2Aut2FdbYIayLCpTiakxCLMVKljmoS0RziLmJt8p7
-         8NSqr7hBDfbBRvqjzMITaNea/r2z702CyBmd/le7KCEphH5YQ4u47DVssLgeCOxp1nxH
-         CCX3SiOczPQKSV8erwqX4Gm1kLCVZXPPN2xughagoRVaDz45Y0/mMW2alpYddkZPg8OG
-         L0np6c1H2DYFpV5bRDPVT+zox53wzEUkKeteIuCtFVftXkuJUgd++2ZV1Fve/6MuaqBD
-         k/CXimBy08GVDEWA2Iof6B9nanLmcMPk8sPQN5bmPXtBZzLKwe6M7ZUy5hodBQZ5u/ul
-         02Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702903794; x=1703508594;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T14bfi8c3k3Cq7TyZI+9Bh5hDSnSWfc6TpVsvOYBPic=;
-        b=GRaYq6RfHBcNnQ1nS36/rw6fz2R+u3EeqGoIze9eLD5xpkOjKk4O07eHL6C07qQNGn
-         sTwNcmr+IYvaTyIpe0rsEX8ahCmGpo0KP8oYtWp24DhF/wFH5Rsw4EmRg0S12kwmK0s3
-         WEfqMK7jDWoBD+mofglAmhdYXPF3JnsK49/1j40WEsakk4ayZZ27XUZkNkvDW+FYKugh
-         3ngqLx+A3aLk66dpkI0RQvDtpU2yYz9gBQKWCC3WpgKDE3VSIfvOlpxrmRuuNIzzALaj
-         LHLwCGuNWrVqq21mzVZtKvU2WhKmYkENc8yTgvmdIGopnifhw7sCf0C7O5b3YMbBjjFX
-         AtcQ==
-X-Gm-Message-State: AOJu0YzMSL/0WthDitx74mfe+Hv4msiPdySlzPUNjC1nWqH2U36G/2pQ
-	nA1DVXRX1kSJNgQSvoDg/w==
-X-Google-Smtp-Source: AGHT+IGfWK90TdMckm2zjiMGKfCaGR5Yp/VaGkOH1VvcUP7n1r7V+E8WHGK7QCmauy9RUW/2J23nTg==
-X-Received: by 2002:a17:906:241:b0:a1e:842d:ccd5 with SMTP id 1-20020a170906024100b00a1e842dccd5mr14599317ejl.48.1702903793489;
-        Mon, 18 Dec 2023 04:49:53 -0800 (PST)
-Received: from ?IPV6:2a02:810b:f40:4300:4847:f8df:b40e:3aa8? ([2a02:810b:f40:4300:4847:f8df:b40e:3aa8])
-        by smtp.gmail.com with ESMTPSA id vu8-20020a170907a64800b00a1d5c52d628sm14063947ejc.3.2023.12.18.04.49.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 04:49:53 -0800 (PST)
-Message-ID: <cbb7866c-5e72-4656-966e-9c2244afedbd@gmail.com>
-Date: Mon, 18 Dec 2023 13:49:52 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB221D147
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 168F75C00F3;
+	Mon, 18 Dec 2023 07:50:30 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 18 Dec 2023 07:50:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1702903830; x=
+	1702990230; bh=bmsqqJeIAUf+XP0ART0QYJLK60XqmBNUAlO8Smcs/NA=; b=N
+	/XaTCLpHp699rU1sbmc7RsHjmuXN/qRrVfr8DDqoak+99OSWs/R4PQ2AE4KNMi+4
+	j1hC4NxNb94KKR6PGmwMhS3IdZfHy0UhuTm56wMZd8pzw4rEl+LwPuqo4wI1+spM
+	LWrkvywVYqUHrOMDvGp/8rVGquMNNvuimAu1qlgMd82W5FE1AwSKsa8CZSQ9txfz
+	IRapoyMlgjtg8YpHfjXU9tDqymomwifuqmIbt6jGkpFosvutCb04rT3JJy5WId3Z
+	KCXkIaJfVIH/ynzaxStx2770g28G/t7kTum0/l+tinbFR/MMweCLBIuT36Cl58sL
+	UgbOGc9l4Vr9mfkubV+nQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1702903830; x=1702990230; bh=bmsqqJeIAUf+XP0ART0QYJLK60Xq
+	mBNUAlO8Smcs/NA=; b=tYC0tK7atZeLDqneS7XsdOUOWPpfTntA0ZVpMztcjlUA
+	7b8KDr6xBBFqiDsj0tU1uN9lJHzFebDFp/1ocg/lo8kFcmHoWGwzvvdQ0VYPb8R3
+	NsA9vV4uFXcmOMEigOnPnbF4X3Oo5NgOwQRCtLulbzaqPeOmS9D7Wgp5OGIGSjGm
+	TDzJmtbT14ujoEBq2tXtUy4ot+E0K0iMAod12EDbi4IEJOw5R/zQ0xXavn5lWLUb
+	NY/eifK7NRjOKYRyifK/CG0jSvzFNGmMeZDTxXnj8MgHyBReINzgUg0OWNc6DpWM
+	Kpgel+mda7c53U+MW4OX/JT18yVdbAGE4puclZnjZg==
+X-ME-Sender: <xms:FUCAZVznSmdObSmGZaThOZDUm3cdPxj8iWb1B2NFSS-lvGHGT6zGvg>
+    <xme:FUCAZVRGh58Ybkgr4lLZIZT4U_I2HioQHzAtdT9Fm0sfS5Z6bmVN3GfPZkUGDsN34
+    cHjEOSmxDocux59hIk>
+X-ME-Received: <xmr:FUCAZfXBmBo38v1A5BJ-lTeeeV5q78fH5LqwrsmmgsheuEdghJ1PxgQyTXUXHYD0fl4LTjYwr8TjVkzBkqiWHFska8KIAM66pIE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeei
+    ieetvdelfedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:FUCAZXgfDBrv0J-fewvJwSovwKa-cvG1l7dVg4OuDAjPAunJU8J_3A>
+    <xmx:FUCAZXD6UkpnW63zuHQ5W4sWn7rEN7tB-ISImNaECefs2XaaEdP3Vw>
+    <xmx:FUCAZQLee7JegDn4CpOSlePppN7K0VYQBb9sv28BSPW9XAye0BY4HQ>
+    <xmx:FkCAZc6hyhJN0j_kRK6Af5sxJXqvXDkuxj9OlGKSZ1hMxWOJgIAnZQ>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Dec 2023 07:50:28 -0500 (EST)
+Date: Mon, 18 Dec 2023 21:50:26 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Adam Goldman <adamg@pobox.com>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 7/8] firewire: core: detect model name for legacy
+ layout of configuration ROM
+Message-ID: <20231218125026.GB46034@workstation.local>
+Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20231217103012.41273-1-o-takashi@sakamocchi.jp>
+ <20231217103012.41273-8-o-takashi@sakamocchi.jp>
+ <ZYAZPRt79Qa1YPS0@iguana.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 19/27] drm/rockchip: inno_hdmi: Move tmds rate to
- connector state subclass
-Content-Language: en-US, de-DE
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Andy Yan <andyshrk@163.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20231216162639.125215-1-knaerzche@gmail.com>
- <20231216162639.125215-20-knaerzche@gmail.com>
- <xte5vjc3o77wnlozz6sy5yysiezdxbzvbwdblhbqb5s2nwnnv5@xxknftdeo6uk>
-From: Alex Bee <knaerzche@gmail.com>
-In-Reply-To: <xte5vjc3o77wnlozz6sy5yysiezdxbzvbwdblhbqb5s2nwnnv5@xxknftdeo6uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYAZPRt79Qa1YPS0@iguana.lan>
 
+Hi,
 
-Am 18.12.23 um 11:06 schrieb Maxime Ripard:
+On Mon, Dec 18, 2023 at 02:04:52AM -0800, Adam Goldman wrote:
 > Hi,
->
-> On Sat, Dec 16, 2023 at 05:26:30PM +0100, Alex Bee wrote:
->> Similar to the othter members of inno_hdmi_connector_state the tmds_rate is
->> not a property of the device, but of the connector state. Move it to
->> inno_hdmi_connector_state and make it a long to comply with the clock
->> framework. To get arround the issue of not having the connector state when
->> inno_hdmi_i2c_init is called in the bind path, getting the tmds rate is
->> wrapped in function which returns the fallback rate if the connector
->> doesn't have a state yet.
->>
->> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->> ---
->> changes in v2:
->>   - new patch
->>
->>   drivers/gpu/drm/rockchip/inno_hdmi.c | 36 +++++++++++++++++++---------
->>   1 file changed, 25 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
->> index f9bfae1e97a2..6799d24501b8 100644
->> --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
->> +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
->> @@ -47,14 +47,13 @@ struct inno_hdmi {
->>   
->>   	struct inno_hdmi_i2c *i2c;
->>   	struct i2c_adapter *ddc;
->> -
->> -	unsigned int tmds_rate;
->>   };
->>   
->>   struct inno_hdmi_connector_state {
->>   	struct drm_connector_state	base;
->>   	unsigned int			enc_out_format;
->>   	unsigned int			colorimetry;
->> +	unsigned long			tmds_rate;
->>   };
->>   
->>   static struct inno_hdmi *encoder_to_inno_hdmi(struct drm_encoder *encoder)
->> @@ -133,11 +132,33 @@ static inline void hdmi_modb(struct inno_hdmi *hdmi, u16 offset,
->>   	hdmi_writeb(hdmi, offset, temp);
->>   }
->>   
->> +static unsigned long inno_hdmi_tmds_rate(struct inno_hdmi *hdmi)
->> +{
->> +	struct drm_connector *connector = &hdmi->connector;
->> +	struct drm_connector_state *conn_state =  connector->state;
->> +	struct inno_hdmi_connector_state *inno_conn_state;
->> +
->> +	if (conn_state) {
->> +		inno_conn_state = to_inno_hdmi_conn_state(conn_state);
->> +		return inno_conn_state->tmds_rate;
->> +	}
->> +
->> +	/*
->> +	 * When IP controller haven't configured to an accurate video
->> +	 * timing, then the TMDS clock source would be switched to
->> +	 * PCLK_HDMI, so we need to init the TMDS rate to PCLK rate,
->> +	 * and reconfigure the DDC clock.
->> +	 */
->> +
->> +	return clk_get_rate(hdmi->pclk);
->> +}
->> +
->>   static void inno_hdmi_i2c_init(struct inno_hdmi *hdmi)
->>   {
->>   	int ddc_bus_freq;
->> +	unsigned long tmds_rate = inno_hdmi_tmds_rate(hdmi);
->>   
->> -	ddc_bus_freq = (hdmi->tmds_rate >> 2) / HDMI_SCL_RATE;
->> +	ddc_bus_freq = (tmds_rate >> 2) / HDMI_SCL_RATE;
->>   
->>   	hdmi_writeb(hdmi, DDC_BUS_FREQ_L, ddc_bus_freq & 0xFF);
->>   	hdmi_writeb(hdmi, DDC_BUS_FREQ_H, (ddc_bus_freq >> 8) & 0xFF);
->> @@ -431,7 +452,7 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
->>   	 * DCLK_LCDC, so we need to init the TMDS rate to mode pixel
->>   	 * clock rate, and reconfigure the DDC clock.
->>   	 */
->> -	hdmi->tmds_rate = mode->clock * 1000;
->> +	inno_conn_state->tmds_rate = mode->clock * 1000;
->>   	inno_hdmi_i2c_init(hdmi);
->>   
->>   	/* Unmute video and audio output */
->> @@ -823,13 +844,6 @@ static int inno_hdmi_bind(struct device *dev, struct device *master,
->>   		goto err_disable_clk;
->>   	}
->>   
->> -	/*
->> -	 * When IP controller haven't configured to an accurate video
->> -	 * timing, then the TMDS clock source would be switched to
->> -	 * PCLK_HDMI, so we need to init the TMDS rate to PCLK rate,
->> -	 * and reconfigure the DDC clock.
->> -	 */
->> -	hdmi->tmds_rate = clk_get_rate(hdmi->pclk);
->>   	inno_hdmi_i2c_init(hdmi);
-> I still think my patch is better there.
->
-> There's two places that use the inno_hdmi.tmds_rate field: the two
-> callers of inno_hdmi_i2c_init(). One is at bind time and needs to
-> initialise it with a sane default since we don't have a mode set yet,
-> the other is to update the internal clock rate while we have a mode set.
-That’s, unfortunately, not fully true: inno_hdmi_set_pwr_mode not only
-called at mode_set-time, but also in inno_hdmi_reset which is called in the
-bind path (where we do not have a mode). That’s the point why I thought
-extracting this in function makes sense. Otherwise I would have to pass the
-tmds_rate to inno_hdmi_set_pwr_mode (also for the LOWER_PWR-case where I
-don't need it) or do that whole fallback-if-no-mode thing in
-inno_hdmi_set_pwr_mode directly. Neither would make the code easier to
-follow. Being able to use it in inno_hdmi_i2c_init also is a nice gimmick.
-I agree, having it in the custom connector state is not strictly required,
-but I'd really like to keep the wrapping function.
+> 
+> On Sun, Dec 17, 2023 at 07:30:10PM +0900, Takashi Sakamoto wrote:
+> > -	ret = fw_csr_string(dir, attr->key, buf, bufsize);
+> > +	for (i = 0; i < ARRAY_SIZE(directories) && directories[i]; ++i)
+> > +		ret = fw_csr_string(directories[i], attr->key, buf, bufsize);
+> 
+> I believe this is incorrect. If the attribute is in the first directory 
+> searched, the loop will continue. The second loop iteration will set ret 
+> to -ENOENT because the attribute isn't in the second directory. Then 
+> show_text_leaf will return -ENOENT even though the attribute existed.
 
-Alex
+Exactly. It is a bug.
 
-> Since there's a single "modeset" user, there's no need to store it in
-> the state structure at all: it can be a local variable.
->
-> And in the bind function, you're not going to use the state structure
-> either since there's no state, and it's just a default that has no
-> relation to the modeset code at all.
->
-> Your function on the other end tries to reconcile and handle the two.
-> But there's no reason to, it just makes the code harder to follow. Just
-> pass the parent rate you want to init with as an argument and it's easy
-> to read and maintain.
->
-> Maxime
+I think we can solve it by aligning the pointers of directory in reverse
+order within the array, like:
+
+```
+diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
+index d3fc3270a00b..adae3268291f 100644
+--- a/drivers/firewire/core-device.c
++++ b/drivers/firewire/core-device.c
+@@ -326,13 +326,17 @@ static ssize_t show_text_leaf(struct device *dev,
+                directories[0] = fw_unit(dev)->directory;
+        } else {
+                const u32 *root_directory = fw_device(dev)->config_rom + ROOT_DIR_OFFSET;
++               const u32 *vendor_directory = search_directory(root_directory, CSR_VENDOR);
+
+-               directories[0] = root_directory;
+-
+-               // Legacy layout of configuration ROM described in Annex 1 of 'Configuration ROM
+-               // for AV/C Devices 1.0 (December 12, 2000, 1394 Trading Association, TA Document
+-               // 1999027)'.
+-               directories[1] = search_directory(root_directory, CSR_VENDOR);
++               if (!vendor_directory) {
++                       directories[0] = root_directory;
++               } else {
++                       // Legacy layout of configuration ROM described in Annex 1 of
++                       // 'Configuration ROM for AV/C Devices 1.0 (December 12, 2000, 1394
++                       // Trading Association, TA Document 1999027)'.
++                       directories[0] = vendor_directory;
++                       directories[1] = root_directory;
++               }
+        }
+
+        if (buf) {
+@@ -342,8 +346,11 @@ static ssize_t show_text_leaf(struct device *dev,
+                bufsize = 1;
+        }
+
+-       for (i = 0; i < ARRAY_SIZE(directories) && directories[i]; ++i)
++       for (i = 0; i < ARRAY_SIZE(directories) && directories[i]; ++i) {
+                ret = fw_csr_string(directories[i], attr->key, buf, bufsize);
++               if (ret >= 0)
++                       break;
++       }
+
+        if (ret >= 0) {
+                /* Strip trailing whitespace and add newline. */
+```
+
+Thanks
+
+Takashi Sakamoto
 
