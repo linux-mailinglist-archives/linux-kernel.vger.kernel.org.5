@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-3410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A80816BEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:08:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E889A816BEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:08:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C969F28431F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:08:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D4A91F2377E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55FB11A27E;
-	Mon, 18 Dec 2023 11:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C7CD1BDEE;
+	Mon, 18 Dec 2023 11:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fL2/6P8R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S/jTV9lw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F411A27A;
-	Mon, 18 Dec 2023 11:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20A218C30;
+	Mon, 18 Dec 2023 11:07:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a233a60f8feso150085866b.0;
-        Mon, 18 Dec 2023 03:06:52 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cc5e48779aso17283191fa.2;
+        Mon, 18 Dec 2023 03:07:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702897611; x=1703502411; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702897622; x=1703502422; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5YMMP/qsVfdoJtEElBLyEEO9c305KOAYJqUkekDdPZs=;
-        b=fL2/6P8R0UcYLbOSWLmu4ATxTxGp1TZd+yy+wyKCn2VNyb8/99PfkiKQLd54VMrrsA
-         tvT444JcjZBo2GS7kMGsIKNQ/xtf0MOG8ZxHzswWO/xReQ08bQK0WQcricsN4rVfuZBA
-         7692wJcJxepOgx0bfOBg1PnQCNSvb07v/u8La2sby7sxr5Bleq0CRN3CSYbFAon3p5Oe
-         /tLosjBeV98XjUtsfHA5iKL7o6XmriSewDQ0nzTMpIvUr8HMYzfJkqmmlC08I5o8WqY6
-         zBiUHHH4hyPmy/xbonM932XFQC/BIXLusLtXXrFJ2qTRO1SkCVvC3GL/JmnD/sIEiLSn
-         gi1g==
+        bh=4SZpEgDuZF0Kd57Q/v4Kq9sCIukMURy5kzt0ohYZmr8=;
+        b=S/jTV9lwoRvLKVEi3dfPE/aRV8rSmCa43/YIt+9SvkXYNnXLnX9SpkXsDlmdftHEUM
+         yWX3VoEsg3X3Z8WUezvWorKrL9iTXCCo29tSdhc57n+ZZ+TZLwSi04pghO66QVuCS0Ts
+         XXtKHZ7IElSkAYYPkhHQabwBZxel39lxqFV0OPehsPnrd0G5xMnwRm38UhL6rX3CT+4K
+         bYNMVAfrq7/9eXd3A7mu6b9ia8jrSWlvlmdFkGK0sD7Qs9ePUbAX02x/VxR/OAn0RC1o
+         +6HGAjygFy7959dFuDZJIqjmKKFndxYWBD1fhyiZEoLOEu7iVyYZ57am6vuCSKouXnVI
+         cn8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702897611; x=1703502411;
+        d=1e100.net; s=20230601; t=1702897622; x=1703502422;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5YMMP/qsVfdoJtEElBLyEEO9c305KOAYJqUkekDdPZs=;
-        b=fV7mhh8ZyWG7H7rsOCPMACnrNJduBfPWVfve92QDk92lT/vJCFJFKa58RXIBRRnfI+
-         EOuel6K3MyhrKRo2JtNMMJXQKViDX08o5VwK6BHl26vPLK+hRk7O3eFgDkQsYXuH/pP3
-         JXFlJ33biPvEUTna2P7bub0gBEoCAgZbkiNikzmGA+EynFu9rVab0BvMSgNOVDBsAxiq
-         GdIUpehPZ6bdYvm6Ig4+bCCbmq24tjR/xto4i9oLyV+MNgL5iz01t7Gj3LV8aMCKoXQG
-         8xdOli34d7BSaHQ6jvSAY/3jHuLtD/LpBp1It9u2TT85PM/kczRiG+G/ylt8X9LpUU/d
-         Aa4Q==
-X-Gm-Message-State: AOJu0Yyv4g8MCw5Zrn002dLreCcoqkqaUQUNWh7NgVgkzE5sX8Y1LxhT
-	ayn2aUxUx6QwosvEfKpJo3I=
-X-Google-Smtp-Source: AGHT+IFvCQuixkVNgpJoy4iekrTbntIvFyqQXesXqFyDPHUVUrNSA7K6fhKQ0zABch1KMEk0awPKmQ==
-X-Received: by 2002:a17:907:6094:b0:9fe:5d39:41c6 with SMTP id ht20-20020a170907609400b009fe5d3941c6mr8647546ejc.51.1702897611128;
-        Mon, 18 Dec 2023 03:06:51 -0800 (PST)
+        bh=4SZpEgDuZF0Kd57Q/v4Kq9sCIukMURy5kzt0ohYZmr8=;
+        b=AS3Gr7HQ5EAi0p7inVmk8QwqHyALTapoDw4MYt6UofLGPEjyyJpvqD4I0nUgvTHAQm
+         QgDKGTzftkkZNTmmw2633IiYVPniQqMKKbZe6MJzDSqkTjtsLI3/WuxDzM1RdAhDHrdb
+         377eh4bgvXJPyL7kQmAedmLdGyHMGfmxvNGHVEN4TozITtAb14Ae0+WMsF9azPHK+dxr
+         VvIftwi+PCnRNM03TNrNC0X1xXRi5I9Du2jL49r90VxWKQ7UWYbdE+EzNr2D1iPV9biT
+         qYUbVD07A6kr5NLaFi3rZWQKQeaJgMdBHDqnybC5HuKjjReFrRqkdDtwsPhq5M3b2/MV
+         Na6w==
+X-Gm-Message-State: AOJu0YzVuWHVmO/brliES0J3ULb+I/UcM9Mw54W2Vz0KMts9cmZyojZL
+	/xL4Xg7QrYCD3DPdPrOOnLI=
+X-Google-Smtp-Source: AGHT+IEEPpv4PbOGki1wpFYE/FNbr0LMBpvRkHRipU02IysiUzOQcuXrBHqB/ytN1/Alf/94bokq8Q==
+X-Received: by 2002:ac2:4d12:0:b0:50e:3dc2:ad16 with SMTP id r18-20020ac24d12000000b0050e3dc2ad16mr142258lfi.232.1702897621400;
+        Mon, 18 Dec 2023 03:07:01 -0800 (PST)
 Received: from localhost.localdomain ([154.72.163.164])
-        by smtp.gmail.com with ESMTPSA id pj4-20020a170906d78400b00a2353af1f7bsm1406769ejb.92.2023.12.18.03.06.44
+        by smtp.gmail.com with ESMTPSA id pj4-20020a170906d78400b00a2353af1f7bsm1406769ejb.92.2023.12.18.03.06.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 03:06:50 -0800 (PST)
+        Mon, 18 Dec 2023 03:07:00 -0800 (PST)
 From: Brandon Cheo Fusi <fusibrandon13@gmail.com>
 To: Yangtao Li <tiny.windzz@gmail.com>,
 	Viresh Kumar <vireshk@kernel.org>,
@@ -80,9 +80,9 @@ Cc: linux-pm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-riscv@lists.infradead.org,
 	Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Subject: [PATCH v2 3/5] cpufreq: sun50i: Add D1 support
-Date: Mon, 18 Dec 2023 12:05:41 +0100
-Message-Id: <20231218110543.64044-4-fusibrandon13@gmail.com>
+Subject: [PATCH v2 4/5] cpufreq: dt-platdev: Blocklist allwinner,sun20i-d1 SoC
+Date: Mon, 18 Dec 2023 12:05:42 +0100
+Message-Id: <20231218110543.64044-5-fusibrandon13@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231218110543.64044-1-fusibrandon13@gmail.com>
 References: <20231218110543.64044-1-fusibrandon13@gmail.com>
@@ -94,26 +94,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for D1 based devices to the Allwinner H6 cpufreq
-driver
+The Allwinner D1 uses H6 cpufreq driver. Add it to blocklist
+so the "cpufreq-dt" device is not created twice.
 
 Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
 ---
- drivers/cpufreq/sun50i-cpufreq-nvmem.c | 1 +
+ drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-index 32a9c88f8..ccf83780f 100644
---- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-@@ -160,6 +160,7 @@ static struct platform_driver sun50i_cpufreq_driver = {
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index bd1e1357c..2febcfc2c 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -104,6 +104,7 @@ static const struct of_device_id allowlist[] __initconst = {
+  */
+ static const struct of_device_id blocklist[] __initconst = {
+ 	{ .compatible = "allwinner,sun50i-h6", },
++	{ .compatible = "allwinner,sun20i-d1", },
  
- static const struct of_device_id sun50i_cpufreq_match_list[] = {
- 	{ .compatible = "allwinner,sun50i-h6" },
-+	{ .compatible = "allwinner,sun20i-d1" },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun50i_cpufreq_match_list);
+ 	{ .compatible = "apple,arm-platform", },
+ 
 -- 
 2.30.2
 
