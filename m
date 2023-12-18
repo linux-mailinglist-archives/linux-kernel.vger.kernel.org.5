@@ -1,208 +1,232 @@
-Return-Path: <linux-kernel+bounces-2950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BACD881651E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:54:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A69D816520
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D1BB1F21A36
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:54:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7A2C2821AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02AA73C16;
-	Mon, 18 Dec 2023 02:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2294B5680;
+	Mon, 18 Dec 2023 02:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VH1a1UrN"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="fdpgPzoE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8DB63A3;
-	Mon, 18 Dec 2023 02:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702868062; x=1734404062;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=tSR/AvoVEdj2XZLdhCdg5j6TmxnAOcDrrM/4y8eltVc=;
-  b=VH1a1UrNdlZRZWyYRNgZntdF/Bl0+nthg/zJB+Qh0ei2ZkktFmQfuLAH
-   TmuX5hdb7d6V2H4B8u3t5JtzaWkqfdg43KJw4v7s246w1jaJ8KoSWZTNC
-   EkOge2Ae0XF4gHbK9lFUaZpSo8KB0SRqZ0qbzPsBIWppy6OkiX5TjBaFl
-   CSZH1o79orZKN/VApaPVikC5z7KS9RvvafR9oc+qtvWO4+6lPMwu5ww1V
-   coCZSdX0t77p7oTUz76v9lcbMHiZ6T+SYkZ2m8fNrBhSC4kfIXSeULj+n
-   //M2xRiN79K8JBMXfbUDiuAkG5cP6nnGzanYAMsQuopwopUCplLoeedng
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="2656567"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="2656567"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 18:54:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="809657323"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="809657323"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Dec 2023 18:54:20 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 17 Dec 2023 18:54:20 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 17 Dec 2023 18:54:20 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 17 Dec 2023 18:54:18 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hHyHI7uj/hWq/7oTif2L3xzZYtaqyofmqyDLB7IHRoowwi3p6rA5Pt3QA1KCMfl1DObse/rmGeBQqgQqiOie+S9Fz95obA3CKePvG72XdHgDGlX24+NCrGBVsLiw3HJhIhiNcGmvQLdVFuq/Ni32CnZ6Xs763hCuiKFjVbCVSXIMtJo+ypVRmcvU2YWmzvvmXAeQQtpHvueZfRNJrutPSKfyNjy9DLOuEz5xA1KHKUdMuZp6yDMYzlDcxJU+j6D6txM9821DMdCJo3VvK7XcoontDwl3gDRSvpXTCQDuO/4AdcxMIDz1ArKZeIWqcyuNRvcKSWUTWEQHQYRNWvu3mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tSR/AvoVEdj2XZLdhCdg5j6TmxnAOcDrrM/4y8eltVc=;
- b=P6OHwTi4BxnhC8I9kfEjME813Ocrec8hyBZxAiZhoxmHZXW6zq7+eWgDLUeOydu2q+hkQXYvwvG8IVLtm9D9PwUnPvzkAO/Z5pL1GJBLZERplEAd9LqZYGHQIk3FHje1N2OFill3pkmn+KUW2UqTYvlKTi81EzF6/ntFz3nIX+Mk7tjAhB3peCHJsWPAWaG32t5Px6Aj2v9pZPPgUaa4yxCPM/SSTupnMkvht4DWMCGESBcruyXKULvL4BGFVmuWWGB5CJgX/BYg3IA4h9FNw8+NsEl/aHf0Yycpb8957wYBwXGjyOblO2p3cbqzFYnW3hjaIEuVYGZcMCvayiDW9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5830.namprd11.prod.outlook.com (2603:10b6:510:129::20)
- by BL1PR11MB5528.namprd11.prod.outlook.com (2603:10b6:208:314::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
- 2023 02:54:11 +0000
-Received: from PH0PR11MB5830.namprd11.prod.outlook.com
- ([fe80::6ffc:93a3:6d7f:383c]) by PH0PR11MB5830.namprd11.prod.outlook.com
- ([fe80::6ffc:93a3:6d7f:383c%6]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 02:54:11 +0000
-From: "Song, Yoong Siang" <yoong.siang.song@intel.com>
-To: Stanislav Fomichev <sdf@google.com>, Magnus Karlsson
-	<magnus.karlsson@gmail.com>
-CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "Bezdeka, Florian"
-	<florian.bezdeka@siemens.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Bjorn Topel
-	<bjorn@kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jonathan Lemon
-	<jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	Willem de Bruijn <willemb@google.com>, Maxime Coquelin
-	<mcoquelin.stm32@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, "Mykola
- Lysenko" <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
-	<kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Alexandre Torgue
-	<alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "xdp-hints@xdp-project.net"
-	<xdp-hints@xdp-project.net>, "linux-stm32@st-md-mailman.stormreply.com"
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>
-Subject: RE: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
- Time support to XDP ZC
-Thread-Topic: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
- Time support to XDP ZC
-Thread-Index: AQHaJgkYSPZeueih5k2aEmsHgya5rrCY72kAgABIIgCAAZaQsIAABuWAgAAbtICAAA4BAIAAGr0AgADyX4CAAJaigIARxG9A
-Date: Mon, 18 Dec 2023 02:54:11 +0000
-Message-ID: <PH0PR11MB58304128E1F6FCE3A2F0D0C2D890A@PH0PR11MB5830.namprd11.prod.outlook.com>
-References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
- <20231203165129.1740512-3-yoong.siang.song@intel.com>
- <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
- <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
- <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
- <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
- <CAKH8qBuXL8bOYtfKKPS8y=KJqouDptyciCjr0wNKVHtNj6BmqA@mail.gmail.com>
- <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
- <ZW98UW033wCy9vI-@google.com>
- <CAJ8uoz3_XqavGt1DyFoQAuKS8Faa1Lc85b2t+whc-f6GN1Pvzw@mail.gmail.com>
- <ZXDGHThTynXbSTJG@google.com>
-In-Reply-To: <ZXDGHThTynXbSTJG@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5830:EE_|BL1PR11MB5528:EE_
-x-ms-office365-filtering-correlation-id: 2dc24c3e-3f04-4476-5ae2-08dbff749ced
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: msQ9AkAvZ4o9AjqMN+K20FY56YKiuccYBpY5I5ye+l4g/k+EvdaLIjfN3Txg2EWUYdRHoqRijpLsIjFywhw0ceR9RkwgdHgm9cxF1ywD3kCBCLnqo+CH7UCccEWeKRI0rXnQdgtdOwmNaLnYgDm18B8byRdWMlGbZaGpN1XjsW+BNOxVYeXQozDOrL1a0S+kvjxsA5n3SQr/sPw575AGeZjywdAGB1ssy/kWk72/YVGxYCj4HU3DtzZFfqxvosWr1IV6R1iFcYlxzOR/3m4QSvtatU5auRy13htGw0MDgK/68RszBxehx6OtTi0c9FAQsxb7YqLFyinJQSTqs8wRDIK3kUSvRjI7b70ZEsfCvYpXObCQDR7Q7x9HS2pnBq0FA4VrrVWAfjQd0Fh6JgZNX3LhGwhkppgXbMXLMlgk/PyIVna9/NNZiKyEwXu6mr+VSFYaLRyl/gKQVmhaUdLLUcGEApbI7Fuo2sX5WScr7pmXhpQQ0J8rLkJ8KKRbqTI1GV7WWSCQU7V4iqd1CMr2dyqzoJZX0eTqNr82rO37LWUBRun+oD05Mj41PCZb41Bkbs/Iq1LDs9GNXuDXaxppX3AcT0klaJSKGIgZO1iutn8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5830.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(376002)(366004)(346002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(71200400001)(26005)(122000001)(38100700002)(8676002)(5660300002)(316002)(66946007)(4326008)(52536014)(41300700001)(4744005)(7406005)(7416002)(2906002)(478600001)(966005)(6506007)(7696005)(9686003)(8936002)(54906003)(64756008)(66446008)(66476007)(66556008)(76116006)(110136005)(33656002)(86362001)(82960400001)(38070700009)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?b1E4cGRIcC9XSzBHbFdob0ZIdTZXWkN4Njdod1ZLeCt3NGFLZDJIbVIwN1BF?=
- =?utf-8?B?a09mY0QrT0srZXMwUExZTjV0UTdCbUNSc2V5bnRmMTRzWFNqQjBDS3lpL1Bz?=
- =?utf-8?B?TUQvODNUT2VJWG5mRzZsMUh0aWxhOURZaVpyeGVDVEFGbmJQUkZOWFA5bFd4?=
- =?utf-8?B?VDhSc3JGK25LdTZXNjIxKzRkODFDbkR4eDBvMFpqbnBFcytEYXV0NVdaMllY?=
- =?utf-8?B?NEQ5Mm0vaFhDeXRDcEJESndRaFFTa1F4c2FvV2kzTXlhY21jbERPbGxpUjV0?=
- =?utf-8?B?MFo1bW11NFVtUHIzTkdDbjk1d0JNS2pNYkRsQjZIS3JpK1A4V1hQRlZBWGc3?=
- =?utf-8?B?QlFQKzQxeW1oWHJ6MVdLVTFGZXNLOEV1WDZYOEY4WUoyVVBxMUlMRldWRm95?=
- =?utf-8?B?RDE5MVBWc3Q2NlR4dkdhNVIxMHFlcWJCWGE2by9nWHhVN0ZNVTFVNE5qRUhu?=
- =?utf-8?B?b21DV0RBMjQ4T0tOM0NHY3RNcS9TOU10cStOMlNuTkx5RGljT2xSNE1MMTFh?=
- =?utf-8?B?dnl1YjRGd2lkcWdRL3VOY3ZxSnFpQklTYjdyVnVseGJ2cnpZN2RYeTFwOHBC?=
- =?utf-8?B?dDN4enlWZHBjdGphWEJWUVo5WCtKd2UxNFY0bnJ2bkVVK0lydXoxelVyZXB3?=
- =?utf-8?B?aC92ZnV4Z1hqdUN4ajF1cXlPZ2pZSm1JbFVxWnROQ0lCQS9xdVpHZnFxMnpL?=
- =?utf-8?B?MkFYV3R0ZXhnOUtvaXYxVjAzTDRSWmFmUmJqdzlIRURhUzhnOXo4cm5jSHlX?=
- =?utf-8?B?REpFTUdJMDhPeXVaUTcwSUxZZXFjU0lvdGxCL2M4QTYzaEFwaWkzNG0zZDlJ?=
- =?utf-8?B?ejQ5dkV6S3p2RmUrbFQwMnVVRHpUSVlIWit5bW9iUFZRSCswY2ptazVwYUQw?=
- =?utf-8?B?dUFLZ1FIaVV0YW1PN05GclhzRGV3WHVpNDRoK0FtemhyU0NwSWJhMnBEZ1c1?=
- =?utf-8?B?cWExL2lYUk9ydTU1WHFtcHFzbXF4UmJWM0MzcEtSN0d1ZkV6M0xNQ1N2YTlR?=
- =?utf-8?B?eFMvWEdBQUZ3bzJtQkp2c0xOc2ZjR1ZaWVNCVUpMMTRSZEkyRWt4OFVFTXB4?=
- =?utf-8?B?NC9zb1MrRXhtZ1VxODZNNnFzOWlSZUJ5dVJmdjB5aW9HdWN4S2x3MEoyUnJI?=
- =?utf-8?B?K0QxNG5YeEUvcTV2R0JWWGhMSXpSNkQxbStKMi80MDlqN1V0WFBIYUlOL2dl?=
- =?utf-8?B?bmF0cEZhZ3hlb2VEbkpHWUpJSUwrNEdHZ0ZORXJud1l6ZHNkNGVjNDArWlFI?=
- =?utf-8?B?WW5ld05WSDloVlBiMVpDbTFmWlJBbnVUS3E4S0dnaFhpbENtYTlKVTIwTWE1?=
- =?utf-8?B?WnBmOHdrSmJlMzBpNkJzQVF0Q1cxem5CUkZ0T0FEMDFFZGsvbncwTXRzMXQ1?=
- =?utf-8?B?TUFzWkRRSm56dG1VYndBUEVNZFdtblNVUWczZ1JFRXJaT2NxUldiZUc3eENv?=
- =?utf-8?B?MVZtS0c2VW1RWkdpOEJIc0ROd1NmNlhscWFzekYxSzBUSVRtR2tNMnJEY0o4?=
- =?utf-8?B?V0pxZ09QZlJKa0U0WDVDclA2TjJucVlDblB6dmJCVGtNRkRDcnBmOC8zaGdx?=
- =?utf-8?B?S0JqbTVxR0lCbldBV21MMFdERG10K2Zob2lEdWdHZkNUUXJwNGl6NGRqQ1Vi?=
- =?utf-8?B?eERYazZXc3ZXKy9ZWTlTTG1Wamt0WUdKcWkyVy9pUlNUczZhOEs3TElVTXNM?=
- =?utf-8?B?WDRYMW5kR3lXSjNWTDNKQy9TTzZaR3Vqemp3eWNNQ21PUi9WRkN6MWVRaDFE?=
- =?utf-8?B?ck1tbU94c1VLQ084dHArclEyWUc1UWJsRkcwa3NUb2N2SGlSQ01CSEZvRlpv?=
- =?utf-8?B?dWsvcUcrSjU3eUR2TTVkbzhjZDRKQWhvY0JlWlY2bG1lSTg5YkVRYklhTm9H?=
- =?utf-8?B?RHBkSlpHR2NNM3dScFk4YnZKR2RKZmxlSlpYZFVrTDJ5c2U4VUR6T3pmUUMz?=
- =?utf-8?B?R0lWOUQvWjdOMzNnQytOU1ovYnVtNDRGTERXdUNwMFRWQ05VUWhnb1J3MS9L?=
- =?utf-8?B?Q3VCOUVjMENUQW00Y0Rha0dwS2VVeEJXeXV0QnBvUFNCeEYyVnExNzBrYis5?=
- =?utf-8?B?K1hlT3M2a1FMTGdhT1pLNG1sb3owNlRmeFhyV0hLMlJFWm5uQjFsWElCZFRh?=
- =?utf-8?B?SGxyWExoZ2xxZE4wODNVcXFiVU5WcXgyTzRwYWdpaFd4eUhjS29OUFBHRHdx?=
- =?utf-8?B?dmc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EBA525A;
+	Mon, 18 Dec 2023 02:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 144101583;
+	Mon, 18 Dec 2023 03:53:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1702868016;
+	bh=ifP0i0WOxqYlJ9H1en/X9XPVzsiB06sLeUleJU3vF54=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fdpgPzoEUoD0FFoE3iVTgoals+XeJEqp2RaEpkXHV/gG1W4xQ7fNSWaNHnHyWaH40
+	 dvVZyWK+a0S8zACTOwkPV4KJ7x2ceFKnyFwYagI0p4mfIfXLZkGEpnREOxaO14OY8R
+	 62wPgvfnYLF9P6Z2/hXLwd31Gkw/PV95pz5xuchw=
+Date: Mon, 18 Dec 2023 04:54:30 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Tommaso Merciai <tomm.merciai@gmail.com>
+Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
+	Martin Hecht <martin.hecht@avnet.eu>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] media: i2c: alvium: removal of dft_fr, min_fr and
+ max_fr
+Message-ID: <20231218025430.GA9012@pendragon.ideasonboard.com>
+References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
+ <20231215082452.1720481-2-tomm.merciai@gmail.com>
+ <20231218025044.GH5290@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5830.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dc24c3e-3f04-4476-5ae2-08dbff749ced
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2023 02:54:11.6780
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CAZ1gjs/f3qvlP+T5hjsBukXGP+z5cBuzDkmyLQ9ZT2AFZRSP5H09gNds8E4u/+djERgWtlpSVVadDWstjwCpY58PLnj1z0mIT+w+/TcnNg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5528
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231218025044.GH5290@pendragon.ideasonboard.com>
 
-SGkgYWxsLA0KDQpGeWksIEkgc3VibWl0dGVkIGEgcGF0Y2ggWzFdIHRvIGVuYWJsZSB0eCBtZXRh
-ZGF0YSBmb3IgaWdjIGRyaXZlciBhcyBhIHByZXBhcmF0aW9uIHRvIGFkZCBsYXVuY2ggdGltZSB0
-byBpdC4NCkFmdGVyIHRoZSBwYXRjaCBpcyBhY2NlcHRlZCwgSSB3aWxsIGluY2x1ZGUgaWdjIGRy
-aXZlciBpbiBuZXh0IHZlcnNpb24gb2YgbGF1bmNoIHRpbWUgcGF0Y2ggc2V0Lg0KDQpbMV0gaHR0
-cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L25ldGRldmJwZi9wYXRjaC8yMDIzMTIx
-NTE2MjE1OC45NTE5MjUtMS15b29uZy5zaWFuZy5zb25nQGludGVsLmNvbS8NCg0KVGhhbmtzICYg
-UmVnYXJkcw0KU2lhbmcNCg==
+On Mon, Dec 18, 2023 at 04:50:46AM +0200, Laurent Pinchart wrote:
+> Hi Tommaso,
+> 
+> Thank you for the patch.
+> 
+> On Fri, Dec 15, 2023 at 09:24:50AM +0100, Tommaso Merciai wrote:
+> > Remove driver private data dft_fr, min_fr and max_fr.
+> > Those are used only in alvium_set_frame_interval function.
+> > Use local ones instead.
+> 
+> The fields are used to pass data from alvium_get_frame_interval() to its
+> caller, not just in alvium_get_frame_interval(). You can write
+> 
+> The dft_fr, min_fr and max_fr fields of the alvium_dev structure are
+> only used to pass results from alvium_get_frame_interval() to its
+> caller. Replace them with function parameters.
+> 
+> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > ---
+> >  drivers/media/i2c/alvium-csi2.c | 45 +++++++++++++++------------------
+> >  drivers/media/i2c/alvium-csi2.h |  3 ---
+> >  2 files changed, 21 insertions(+), 27 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> > index 34ff7fad3877..c4b7851045a1 100644
+> > --- a/drivers/media/i2c/alvium-csi2.c
+> > +++ b/drivers/media/i2c/alvium-csi2.c
+> > @@ -1170,40 +1170,36 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
+> >  	return 0;
+> >  }
+> >  
+> > -static int alvium_get_frame_interval(struct alvium_dev *alvium)
+> > +static int alvium_get_frame_interval(struct alvium_dev *alvium,
+> > +				     u64 *dft_fr, u64 *min_fr, u64 *max_fr)
+> >  {
+> > -	u64 dft_fr, min_fr, max_fr;
+> >  	int ret = 0;
+> >  
+> >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
+> > -		    &dft_fr, &ret);
+> > +		    dft_fr, &ret);
+> >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
+> > -		    &min_fr, &ret);
+> > +		    min_fr, &ret);
+> >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
+> > -		    &max_fr, &ret);
+> > +		    max_fr, &ret);
+> >  	if (ret)
+> >  		return ret;
+> 
+> You can just
+> 
+> 	return ret;
+> 
+> >  
+> > -	alvium->dft_fr = dft_fr;
+> > -	alvium->min_fr = min_fr;
+> > -	alvium->max_fr = max_fr;
+> > -
+> >  	return 0;
+> >  }
+> >  
+> > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
+> > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
+> >  {
+> >  	struct device *dev = &alvium->i2c_client->dev;
+> >  	int ret;
+> >  
+> >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
+> > -				  alvium->fr);
+> > +				  fr);
+> 
+> This is unrelated to the commit message. Please split handling of the fr
+> field to a separate patch. One change, one patch.
+> 
+> >  	if (ret) {
+> >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
+> >  		return ret;
+> >  	}
+> >  
+> > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
+> > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
+> >  
+> >  	return 0;
+> >  }
+> > @@ -1667,36 +1663,36 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
+> >  }
+> >  
+> >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
+> > -				     struct v4l2_subdev_frame_interval *fi)
+> > +				     struct v4l2_subdev *sd,
+> > +				     struct v4l2_subdev_state *sd_state,
+
+This is also unrelated to this patch.
+
+> > +				     struct v4l2_subdev_frame_interval *fi,
+> > +				     u64 *req_fr)
+> >  {
+> >  	struct device *dev = &alvium->i2c_client->dev;
+> > -	u64 req_fr, min_fr, max_fr;
+> > +	u64 dft_fr, min_fr, max_fr;
+> >  	int ret;
+> >  
+> >  	if (fi->interval.denominator == 0)
+> >  		return -EINVAL;
+> >  
+> > -	ret = alvium_get_frame_interval(alvium);
+> > +	ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
+> >  	if (ret) {
+> >  		dev_err(dev, "Fail to get frame interval\n");
+> >  		return ret;
+> >  	}
+> >  
+> > -	min_fr = alvium->min_fr;
+> > -	max_fr = alvium->max_fr;
+> > -
+> >  	dev_dbg(dev, "fi->interval.numerator = %d\n",
+> >  		fi->interval.numerator);
+> >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
+> >  		fi->interval.denominator);
+> >  
+> > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
+> > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
+> >  		       fi->interval.numerator);
+> >  
+> > -	if (req_fr >= max_fr && req_fr <= min_fr)
+> > -		req_fr = alvium->dft_fr;
+> > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
+> > +		*req_fr = dft_fr;
+> >  
+> > -	alvium->fr = req_fr;
+> > +	alvium->fr = *req_fr;
+> >  	alvium->frame_interval.numerator = fi->interval.numerator;
+> >  	alvium->frame_interval.denominator = fi->interval.denominator;
+> >  
+> > @@ -1708,6 +1704,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> >  				   struct v4l2_subdev_frame_interval *fi)
+> >  {
+> >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > +	u64 req_fr;
+> >  	int ret;
+> >  
+> >  	/*
+> > @@ -1720,9 +1717,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> >  	if (alvium->streaming)
+> >  		return -EBUSY;
+> >  
+> > -	ret = alvium_set_frame_interval(alvium, fi);
+> > +	ret = alvium_set_frame_interval(alvium, sd, sd_state, fi, &req_fr);
+> >  	if (!ret)
+> > -		ret = alvium_set_frame_rate(alvium);
+> > +		ret = alvium_set_frame_rate(alvium, req_fr);
+> >  
+> >  	return ret;
+> >  }
+> > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
+> > index 8b554bffdc39..a6529b28e7dd 100644
+> > --- a/drivers/media/i2c/alvium-csi2.h
+> > +++ b/drivers/media/i2c/alvium-csi2.h
+> > @@ -443,9 +443,6 @@ struct alvium_dev {
+> >  
+> >  	struct alvium_mode mode;
+> >  	struct v4l2_fract frame_interval;
+> > -	u64 dft_fr;
+> > -	u64 min_fr;
+> > -	u64 max_fr;
+> >  	u64 fr;
+> >  
+> >  	u8 h_sup_csi_lanes;
+
+-- 
+Regards,
+
+Laurent Pinchart
 
