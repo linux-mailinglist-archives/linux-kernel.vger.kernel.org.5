@@ -1,51 +1,63 @@
-Return-Path: <linux-kernel+bounces-3156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B41816802
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 058AB8168E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:57:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52AA71F22A99
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:25:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0C7F1F22F32
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624541119A;
-	Mon, 18 Dec 2023 08:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A36210A07;
+	Mon, 18 Dec 2023 08:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="HqwLgHin"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97CA3101FE;
-	Mon, 18 Dec 2023 08:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SttBS22vKzYspP;
-	Mon, 18 Dec 2023 16:23:28 +0800 (CST)
-Received: from kwepemm000017.china.huawei.com (unknown [7.193.23.46])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6CEDA140120;
-	Mon, 18 Dec 2023 16:24:20 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm000017.china.huawei.com (7.193.23.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Dec 2023 16:24:19 +0800
-From: Tong Tiangen <tongtiangen@huawei.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, <wangkefeng.wang@huawei.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Tony Luck <tony.luck@intel.com>, Andy Lutomirski
-	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Naoya Horiguchi <naoya.horiguchi@nec.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>,
-	<linux-mm@kvack.org>, Tong Tiangen <tongtiangen@huawei.com>, Guohanjun
-	<guohanjun@huawei.com>
-Subject: [PATCH -next v3 3/3] x86/mce: set MCE_IN_KERNEL_COPY_MC for DEFAULT_MCE_SAFE exception
-Date: Mon, 18 Dec 2023 16:24:00 +0800
-Message-ID: <20231218082400.2694698-4-tongtiangen@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A15B111A1;
+	Mon, 18 Dec 2023 08:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI3LPCC020756;
+	Mon, 18 Dec 2023 00:57:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=P9HCpRvo
+	cxgDIAlncH65HWa5yp44CPybVsfOANN0Cxc=; b=HqwLgHinFwzACcXxbBHL3emG
+	IFK3RVCaOPHASwKkZmDTQYufZpAs9cMnbp8TwGlskVkWCJqA92t5xVSAzxBX+CJf
+	CgEOE4qyYSDvN38iqCqsnkrpNjeuITIC0+MHL7g5yLZs3UG7f0MmMY50du2OCW7k
+	ErMyp67gQ/BceCfuoq9qeEb+Hz8UvRYO4jlfEzFkYaN/2325WPJr5xCNDqnMry1a
+	z4OFXrwDnSJmZIwoOSDSHd+ADaSO0gIxIU/g+Axow+4XY+eXYbrxoudS3Y6TQyEI
+	5jfbkH6B9EBMrkKHdWfVCrSb+gZsDk7aWgNIFjSsx103HxY4UtdRCVOA1054vA==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3v2e3v8y3c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 00:57:16 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 18 Dec
+ 2023 00:57:15 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 18 Dec 2023 00:57:15 -0800
+Received: from localhost.localdomain (unknown [10.28.36.166])
+	by maili.marvell.com (Postfix) with ESMTP id 48E643F7970;
+	Mon, 18 Dec 2023 00:28:01 -0800 (PST)
+From: Suman Ghosh <sumang@marvell.com>
+To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <sgoutham@marvell.com>, <sbhatta@marvell.com>,
+        <jerinj@marvell.com>, <gakula@marvell.com>, <hkelam@marvell.com>,
+        <lcherian@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: Suman Ghosh <sumang@marvell.com>
+Subject: [net PATCH] octeontx2-af: Fix marking couple of structure as __packed
+Date: Mon, 18 Dec 2023 13:57:58 +0530
+Message-ID: <20231218082758.247831-1-sumang@marvell.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231218082400.2694698-1-tongtiangen@huawei.com>
-References: <20231218082400.2694698-1-tongtiangen@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,117 +66,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000017.china.huawei.com (7.193.23.46)
+X-Proofpoint-ORIG-GUID: eE_W25v32nyC96SHiaYXWkHuFXnEU8xR
+X-Proofpoint-GUID: eE_W25v32nyC96SHiaYXWkHuFXnEU8xR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+Couple of structures was not marked as __packed which may have some
+performance implication. This patch fixes the same and mark them as
+__packed.
 
-If an MCE has happened in kernel space and the kernel can recover,
-mce.kflags MCE_IN_KERNEL_RECOV will set in error_context().
-
-With the setting of MCE_IN_KERNEL_RECOV, the MCE is handled in
-do_machine_check(). But due to lack of MCE_IN_KERNEL_COPY_MC, although the
-kernel won't panic, the corrupted page don't be isolated, new one maybe
-consume it again, which is not what we expected.
-
-In order to avoid above issue, some hwpoison recover process[1][2][3][4],
-memory_failure_queue() is called to cope with such unhandled corrupted
-pages, also there are some other already existed MC-safe copy scenarios,
-eg, nvdimm, dm-writecache, dax, which don't isolate corrupted pages.
-
-The best way to fix them is set MCE_IN_KERNEL_COPY_MC for MC-Safe Copy,
-then let the core do_machine_check() to isolate corrupted page instead
-of doing it one-by-one.
-
-EX_TYPE_FAULT_MCE_SAFE is used for the FPU. Here, we do not touch the logic
-of FPU. We only modify the logic of EX_TYPE_DEFAULT_MCE_SAFE which is used
-in the scenarios described above.
-
-[1] commit d302c2398ba2 ("mm, hwpoison: when copy-on-write hits poison, take page offline")
-[2] commit 1cb9dc4b475c ("mm: hwpoison: support recovery from HugePage copy-on-write faults")
-[3] commit 6b970599e807 ("mm: hwpoison: support recovery from ksm_might_need_to_copy()")
-[4] commit 1cb9dc4b475c ("mm: hwpoison: support recovery from HugePage copy-on-write faults")
-
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Fixes: 42006910b5ea ("octeontx2-af: cleanup KPU config data")
+Signed-off-by: Suman Ghosh <sumang@marvell.com>
 ---
- arch/x86/kernel/cpu/mce/severity.c |  4 ++--
- mm/ksm.c                           |  1 -
- mm/memory.c                        | 12 +++---------
- 3 files changed, 5 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/npc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-index df67a7a13034..b4b1d028cbb3 100644
---- a/arch/x86/kernel/cpu/mce/severity.c
-+++ b/arch/x86/kernel/cpu/mce/severity.c
-@@ -292,11 +292,11 @@ static noinstr int error_context(struct mce *m, struct pt_regs *regs)
- 	case EX_TYPE_UACCESS:
- 		if (!copy_user)
- 			return IN_KERNEL;
-+		fallthrough;
-+	case EX_TYPE_DEFAULT_MCE_SAFE:
- 		m->kflags |= MCE_IN_KERNEL_COPY_MC;
- 		fallthrough;
--
- 	case EX_TYPE_FAULT_MCE_SAFE:
--	case EX_TYPE_DEFAULT_MCE_SAFE:
- 		m->kflags |= MCE_IN_KERNEL_RECOV;
- 		return IN_KERNEL_RECOV;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+index ab3e39eef2eb..8c0732c9a7ee 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+@@ -528,7 +528,7 @@ struct npc_lt_def {
+ 	u8	ltype_mask;
+ 	u8	ltype_match;
+ 	u8	lid;
+-};
++} __packed;
  
-diff --git a/mm/ksm.c b/mm/ksm.c
-index ae05fb438ac5..01e3a7ef1b9d 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -3075,7 +3075,6 @@ struct folio *ksm_might_need_to_copy(struct folio *folio,
- 		if (copy_mc_user_highpage(folio_page(new_folio, 0), page,
- 								addr, vma)) {
- 			folio_put(new_folio);
--			memory_failure_queue(folio_pfn(folio), 0);
- 			return ERR_PTR(-EHWPOISON);
- 		}
- 		folio_set_dirty(new_folio);
-diff --git a/mm/memory.c b/mm/memory.c
-index 809746555827..9f0d875b1d3f 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2836,10 +2836,8 @@ static inline int __wp_page_copy_user(struct page *dst, struct page *src,
- 	unsigned long addr = vmf->address;
+ struct npc_lt_def_ipsec {
+ 	u8	ltype_mask;
+@@ -536,7 +536,7 @@ struct npc_lt_def_ipsec {
+ 	u8	lid;
+ 	u8	spi_offset;
+ 	u8	spi_nz;
+-};
++} __packed;
  
- 	if (likely(src)) {
--		if (copy_mc_user_highpage(dst, src, addr, vma)) {
--			memory_failure_queue(page_to_pfn(src), 0);
-+		if (copy_mc_user_highpage(dst, src, addr, vma))
- 			return -EHWPOISON;
--		}
- 		return 0;
- 	}
- 
-@@ -6168,10 +6166,8 @@ static int copy_user_gigantic_page(struct folio *dst, struct folio *src,
- 
- 		cond_resched();
- 		if (copy_mc_user_highpage(dst_page, src_page,
--					  addr + i*PAGE_SIZE, vma)) {
--			memory_failure_queue(page_to_pfn(src_page), 0);
-+					  addr + i*PAGE_SIZE, vma))
- 			return -EHWPOISON;
--		}
- 	}
- 	return 0;
- }
-@@ -6187,10 +6183,8 @@ static int copy_subpage(unsigned long addr, int idx, void *arg)
- 	struct copy_subpage_arg *copy_arg = arg;
- 
- 	if (copy_mc_user_highpage(copy_arg->dst + idx, copy_arg->src + idx,
--				  addr, copy_arg->vma)) {
--		memory_failure_queue(page_to_pfn(copy_arg->src + idx), 0);
-+				  addr, copy_arg->vma))
- 		return -EHWPOISON;
--	}
- 	return 0;
- }
- 
+ struct npc_lt_def_apad {
+ 	u8	ltype_mask;
 -- 
 2.25.1
 
