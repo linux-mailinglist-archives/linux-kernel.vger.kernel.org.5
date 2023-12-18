@@ -1,114 +1,160 @@
-Return-Path: <linux-kernel+bounces-3255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 742308169FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A05218169FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 028531F23288
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:38:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CFF21F23203
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2F4125AF;
-	Mon, 18 Dec 2023 09:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A235125C8;
+	Mon, 18 Dec 2023 09:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xjNdV0BN"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o+mDdHN2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FB9125A5
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso2856998a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:38:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507A0125AD
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2343c31c4bso120674066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702892321; x=1703497121; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xZ8Fi2dLzLbYy4lYxo2rawHPEVgmeyvbO/CcjHbsVvQ=;
-        b=xjNdV0BNsJIACFqS39qr4panlvmQmAzWP/fpNwkWAZ4KDhSybnzj6CGKvkfAzNRLer
-         TBy+v1vBEx2FMFjcpmwE2tzs7IbFhWz5PbY+HTuTC/q9cHVmAlolfIGOtDrGiJxT+oCB
-         dtFppE7nOZmuINYaL7UVDkuXqZhMkkRv7LemqsOT46+BND6vVzLEltnOTXK8E1ojTji2
-         Mlz1lU+sKKjv70Pkw8VKxS4CS/7xrvj9e0HhK19wW/U4AyPVNfnYD+SmF+Qe/ASJV5oL
-         oDh5l5ZXf6xAcSajrdJjVa/PfuaM4fQKHCJQAoH5AIiapYu81cC4UJgdjcbSs2TN48az
-         5blQ==
+        d=linaro.org; s=google; t=1702892342; x=1703497142; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yRPdYcUK3bn4d/UXXQLaapxgT6fJS3k55mWLhcaaxas=;
+        b=o+mDdHN2EtmgjBO6ntxWOFVioz+gL6okdo/e/cJRvzvhMNOEkL4IoyrFdatU7rI9R4
+         dS7cfNKaHy9Xj6m0V+EH8l2OmXhaztNbmB3swKazTqBg0Mwd1L7ujI+XwF8D+lZGqDEn
+         ozqgB412mHq7/UZVyU/ctIAO397zLqixkbtCxL/lmLriVYtowHiW6nbWglG6xo/HabC7
+         h78i46ueaP6bY3tNFy3FEDCeTM/TiMi5AtrDHq3UmdC8zSJ5A118arQP8nkajAz4RqJ5
+         trVAqmBadYRzqzCE6IfBs/M94I+xgoncNVvehSXpST5CGZoAdw4z0jnn9e6h5sG72p3N
+         l6Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702892321; x=1703497121;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xZ8Fi2dLzLbYy4lYxo2rawHPEVgmeyvbO/CcjHbsVvQ=;
-        b=KOtZqbR+KQyqw3FtiZet5o8Q5n4l+BEqFYA+EGiss5vKcTU8mmsL6Nu5ZM5OfMOTX3
-         2DHfAvRhNk1TMph++017o5f/Wm5yxSkCgZOBfvVE7D/3+ZwU5WOK6LA6HVNsjtD6/zrU
-         Ifty8QoiELlHBra4YP9mA50vvwJXwG4IT+eC5Ld4d3K1HJTjT4oavecph4OmkzzO/cIT
-         IzL5IOkTwdWg6wkNZbFgzLKW+1yrcqoCvEaVi2IiQ54cn/pP3AIsgy3CUGXk5GKurjyV
-         EVzlsvVwI76PULVrm/TzX+66MswB7bre3I3ll1BGzTdSijDMY1s4DZmCk4Y65IPgyMt1
-         D7Ag==
-X-Gm-Message-State: AOJu0YxXgG5O9CA6vp7M45Jld3BZPe0rvW8xuq7588e7HaJWx0ACMfQz
-	1kgB08wgJFdAblFeZESf/pxRX3DZh0bfGzSxc07c5Q==
-X-Google-Smtp-Source: AGHT+IHwOwRufeKXUD8IHua/HZtfaweMW/rW+eUzxVzu70/xq/9byuzl+DXAq8hUFt2pOMb2wrlRHAjCRLShgMWEFhs=
-X-Received: by 2002:a17:906:7388:b0:a1d:b6b5:3416 with SMTP id
- f8-20020a170906738800b00a1db6b53416mr5657636ejl.84.1702892320732; Mon, 18 Dec
- 2023 01:38:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702892342; x=1703497142;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yRPdYcUK3bn4d/UXXQLaapxgT6fJS3k55mWLhcaaxas=;
+        b=ehrEALyzbYasWe57yl6VfPqWoMcRnh1J5u9IaWRqetn1KSxYxWn9TD/Bzu8Dmy0PlA
+         g/7uS0ZvSysUZdlpXcn8OynpwlNTzhyjcO9rWy0rbgecIfyN3lPl8wSE1R7F8+HfMxSN
+         UY7gmhRAElqz91XfDcniYlJ4MpCb7c3o79woZhynmzlUHd4djm6m0vvN69UVUeHDGgHC
+         lv28/pNgu/N0LLQn6pE2W2nMp9eVC2EoMuGQ1nxgeB0Gk7EZbVgmQOpIUYmCb80AIIKN
+         AanA8go1dK9kHKRlMa+kV1ADXmgu9FDZni8AFtZGO5OHu/YOo6CUNS+JbcRTU3pX2RYD
+         hG1Q==
+X-Gm-Message-State: AOJu0Yy93SFVEiUeXd1q2usNjRho/Ze0EiTGteClQyxGNqWpQsvN2b0Z
+	OJmKrhGe03+h372lnpj8RONSvQ==
+X-Google-Smtp-Source: AGHT+IHCY04o2ElyEIUFv45JzgsxUGUOaLPS9XFvi3QivAc9F3XZ2RcNWxsqNxNkiq3+S+5soAdwaA==
+X-Received: by 2002:a17:907:9349:b0:a23:4c0c:7cb3 with SMTP id bv9-20020a170907934900b00a234c0c7cb3mr677668ejc.120.1702892342527;
+        Mon, 18 Dec 2023 01:39:02 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id cw10-20020a170907160a00b009bf7a4d591csm14136712ejd.11.2023.12.18.01.39.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 01:39:01 -0800 (PST)
+Message-ID: <6160aa1e-5f77-4d7d-aafd-e1ac7606bf06@linaro.org>
+Date: Mon, 18 Dec 2023 10:39:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
- <20231213-zswap-dstmem-v1-3-896763369d04@bytedance.com> <CAJD7tkbPPy6Xqy7Xtei24B7CzxdaGwYN7tdbLH_UMVmYkYYJ=g@mail.gmail.com>
- <b3736d08-fccc-4499-8801-4e9b8a7394d6@bytedance.com>
-In-Reply-To: <b3736d08-fccc-4499-8801-4e9b8a7394d6@bytedance.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 18 Dec 2023 01:38:04 -0800
-Message-ID: <CAJD7tkYdvhhn6KG1cNnGAHp6XxeSG7zpC9JqxSJd5yBxQVHoAA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mm/zswap: refactor out __zswap_load()
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chris Li <chriscli@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>, 
-	Vitaly Wool <vitaly.wool@konsulko.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 1/2] nfc: llcp_core: Hold a ref to
+ llcp_local->dev when holding a ref to llcp_local
+Content-Language: en-US
+To: Siddh Raman Pant <code@siddh.me>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Suman Ghosh <sumang@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
+References: <cover.1702816635.git.code@siddh.me>
+ <0d812b9aae2f16691d373460b06c5f3e098ed2a6.1702816635.git.code@siddh.me>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <0d812b9aae2f16691d373460b06c5f3e098ed2a6.1702816635.git.code@siddh.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 18, 2023 at 12:15=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> On 2023/12/14 08:52, Yosry Ahmed wrote:
-> > On Tue, Dec 12, 2023 at 8:18=E2=80=AFPM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
-> >>
-> >> The zswap_load() and zswap_writeback_entry() have the same part that
-> >> decompress the data from zswap_entry to page, so refactor out the
-> >> common part as __zswap_load(entry, page).
-> >>
-> >> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> >> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> >
-> > On a second look, there a few nits here.
-> >
-> > First I think it makes more sense to move this refactoring ahead of
-> > reusing destmem. Right now, we add the destmem reuse to zswap_load()
-> > only, then we do the refactor and zswap_writeback_entry() gets it
-> > automatically, so there is a slight change coming to
-> > zswap_writeback_entry() hidden in the refactoring patch.
-> >
-> > Let's refactor out __zswap_load() first, then reuse destmem in it.
->
-> I tried but found that putting the __zswap_load() first would introduce
-> another failure case in zswap_writeback_entry(), since the temporary
-> memory allocation may fail.
->
-> So instead, I also move the dstmem reusing in zswap_writeback_entry() to
-> the dstmem reusing patch. Then this patch becomes having only refactoring=
-.
+On 17/12/2023 14:11, Siddh Raman Pant wrote:
+>  static struct nfc_llcp_sock *nfc_llcp_sock_get(struct nfc_llcp_local *local,
+> @@ -959,8 +974,18 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
+>  	}
+>  
+>  	new_sock = nfc_llcp_sock(new_sk);
+> -	new_sock->dev = local->dev;
+> +
+>  	new_sock->local = nfc_llcp_local_get(local);
+> +	if (!new_sock->local) {
+> +		reason = LLCP_DM_REJ;
+> +		release_sock(&sock->sk);
+> +		sock_put(&sock->sk);
+> +		sock_put(&new_sock->sk);
 
-We could have still refactored __zswap_load() first by making it
-return an int initially when split, then void later. Anyway, it's not
-a big deal. The new series looks fine.
+Why is this needed? Which part earlier gets the reference?
+
+> +		nfc_llcp_sock_free(new_sock);
+
+This order is still wrong. Unwinding is almost always done in reversed
+order, for good reasons. Why do you unwind in other order?
+
+> +		goto fail;
+> +	}
+> +
+> +	new_sock->dev = local->dev;
+>  	new_sock->rw = sock->rw;
+>  	new_sock->miux = sock->miux;
+Best regards,
+Krzysztof
+
 
