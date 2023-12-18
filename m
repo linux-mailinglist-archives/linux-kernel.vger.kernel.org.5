@@ -1,158 +1,182 @@
-Return-Path: <linux-kernel+bounces-4224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A44281794A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:58:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA62581794E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:58:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80A341C20EC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:58:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4403C287DC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17E35D727;
-	Mon, 18 Dec 2023 17:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mr8kMxHQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F97E5BFA2;
+	Mon, 18 Dec 2023 17:58:33 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5328F5BFA2;
-	Mon, 18 Dec 2023 17:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cc794df8aaso9136171fa.0;
-        Mon, 18 Dec 2023 09:58:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702922298; x=1703527098; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q6HN2zwRhmMViQksauP5mSHc2h+svhYEJtdLhAQeySs=;
-        b=mr8kMxHQk8aYpNo+pep17UR3QMCHV8J9NdXC00k0NxCoDNKv5sbo0aCAmOemyFGOQe
-         n98s5pgHapE6H3uhjzEmvVP0Vy6/pdRxm77EtpmmWq2nh03jwUhJq0kam0Jvee8MMr5E
-         BEjZI9EAp1IJmMp1UBT6SzPmbr1wLWh1gDs56GPqdqgeuVT/oQMhvRRYytNh0XC7kdZ9
-         8XoksFrKwV0hURLudAPNFnps1i6O4QmpJkGtNL3ZR7DAI1DQcTQVTZ+wU3o94ZZz/1ae
-         PnlJzzXfdyEEZkP2wDDqBZ9ibcFLheGroTIzgSLCk4+Pi6Hqglrf4dgS1LSqigx28MAE
-         uJTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702922298; x=1703527098;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q6HN2zwRhmMViQksauP5mSHc2h+svhYEJtdLhAQeySs=;
-        b=myTPm9+WSpTcMZV0rnZkP8/x5MXc3eug1X8aBVBBg8jOdIzPqYadllQ7c4W8EOiJX7
-         F4f7/1kIDWgvwUlcK9DM2hnuo1CrGPfyU5hWHddFEOFO4FlS8FhyIwAsTFIBQKKHQqmt
-         jiXAIIQWASOX09qw99sZpMydFgPakeL4VtYc+T3mSIbAXZYbZv++Id68GDweL1CzEr1X
-         lnXRD34N+LTYL2Eq1tzYefYb17VOT69WT4Pqq3BuE8gcRZLyooUf9kzC4FR7EqSIeXjX
-         akAza270PySlJFILj7wYwZSD3OorKDI1DS6255MlTblnp3TMnX2UrRLQkGyNrPMg//02
-         G4wA==
-X-Gm-Message-State: AOJu0Yxj1RK+hajgai7W8I5e3yhGYxVyBUGDFwnxpqYA3HSpPIyuBqg0
-	jc3kej1z8Rpl9nzZivtCjrgx1wyxufnsgX9JBq8=
-X-Google-Smtp-Source: AGHT+IE0jD9e/ZNcL+DBQK5DFPDx5Nyc8KgWO+G6sj5na8nCURt/+6domfaYBsDBb95RIBDLdNOQI55VfnWGfeHM+dM=
-X-Received: by 2002:a2e:6a07:0:b0:2cc:540a:2601 with SMTP id
- f7-20020a2e6a07000000b002cc540a2601mr1960152ljc.98.1702922298235; Mon, 18 Dec
- 2023 09:58:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274535D735;
+	Mon, 18 Dec 2023 17:58:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C8B8C433C7;
+	Mon, 18 Dec 2023 17:58:31 +0000 (UTC)
+Date: Mon, 18 Dec 2023 12:58:28 -0500
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] counter: stm32-timer-cnt: populate capture
+ channels and check encoder
+Message-ID: <ZYCIRHVVTDD_k0Wk@ishi>
+References: <20230922143920.3144249-1-fabrice.gasnier@foss.st.com>
+ <20230922143920.3144249-6-fabrice.gasnier@foss.st.com>
+ <ZSnJR2yfYsBNHu/4@fedora>
+ <997c056e-c4e1-4bd8-9fcd-9f1b4bd45929@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231217131716.830290-1-menglong8.dong@gmail.com> <20231217131716.830290-3-menglong8.dong@gmail.com>
-In-Reply-To: <20231217131716.830290-3-menglong8.dong@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 18 Dec 2023 09:58:06 -0800
-Message-ID: <CAEf4Bza8UtCTCxe5QgstxexDhU1oz83MMmnT1w5xzV7czF+7zQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: activate the OP_NE login
- in range_cond()
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	alexei.starovoitov@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6hNcEl+RZUM6gQNw"
+Content-Disposition: inline
+In-Reply-To: <997c056e-c4e1-4bd8-9fcd-9f1b4bd45929@foss.st.com>
+
+
+--6hNcEl+RZUM6gQNw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 17, 2023 at 5:18=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> The edge range checking for the registers is supported by the verifier
-> now, so we can activate the extended login in
-> tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
-> such logic.
->
-> Besides, I added some cases to the "crafted_cases" array for this logic.
-> These cases are mainly used to test the edge of the src reg and dst reg.
->
-> All reg bounds testings has passed in the SLOW_TESTS mode:
->
-> $ export SLOW_TESTS=3D1 && ./test_progs -t reg_bounds -j
-> Summary: 65/18959832 PASSED, 0 SKIPPED, 0 FAILED
->
-> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> ---
-> v3:
-> - do some adjustment to the crafted cases that we added
-> v2:
-> - add some cases to the "crafted_cases"
-> ---
->  .../selftests/bpf/prog_tests/reg_bounds.c     | 20 +++++++++++++------
->  1 file changed, 14 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
-testing/selftests/bpf/prog_tests/reg_bounds.c
-> index 0c9abd279e18..c9dc9fe73211 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x,=
- struct range y,
->                 *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b)=
-);
->                 break;
->         case OP_NE:
-> -               /* generic case, can't derive more information */
-> -               *newx =3D range(t, x.a, x.b);
-> -               *newy =3D range(t, y.a, y.b);
-> -               break;
-> -
-> -               /* below extended logic is not supported by verifier just=
- yet */
-> +               /* below logic is supported by the verifier now */
->                 if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
->                         /* X is a constant matching left side of Y */
->                         *newx =3D range(t, x.a, x.b);
-> @@ -2101,6 +2096,19 @@ static struct subtest_case crafted_cases[] =3D {
->         {S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, 0}=
-},
->         {S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
->         {S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S32=
-_MIN, (u32)(s32)S32_MIN}},
-> +
-> +       /* edge overlap testings for BPF_NE, skipped some cases that alre=
-ady
-> +        * exist above.
-> +        */
-> +       {U64, U64, {0, U64_MAX}, {U64_MAX, U64_MAX}},
-> +       {U64, U64, {0, U64_MAX}, {0, 0}},
-> +       {S64, U64, {S64_MIN, 0}, {S64_MIN, S64_MIN}},
-> +       {S64, U64, {S64_MIN, 0}, {0, 0}},
-> +       {S64, U64, {S64_MIN, S64_MAX}, {S64_MAX, S64_MAX}},
-> +       {U32, U32, {0, U32_MAX}, {0, 0}},
+On Fri, Dec 15, 2023 at 06:13:51PM +0100, Fabrice Gasnier wrote:
+> >> +	/*
+> >> +	 * Handle diversity for stm32 timers features. For now encoder is fo=
+und with
+> >> +	 * advanced timers or gp timers with 4 channels. Timers with less ch=
+annels
+> >> +	 * doesn't support encoder.
+> >> +	 */
+> >> +	switch (priv->nchannels) {
+> >> +	case 4:
+> >> +		if (priv->has_encoder)
+> >> +			counter->counts =3D &stm32_counts_enc_4ch;
+> >> +		else
+> >> +			counter->counts =3D &stm32_counts_4ch;
+> >> +		counter->signals =3D stm32_signals;
+> >> +		counter->num_signals =3D ARRAY_SIZE(stm32_signals);
+> >> +		break;
+> >> +	case 2:
+> >> +		counter->counts =3D &stm32_counts_2ch;
+> >> +		counter->signals =3D stm32_signals;
+> >> +		counter->num_signals =3D 3; /* clock, ch1 and ch2 */
+> >> +		break;
+> >> +	case 1:
+> >> +		counter->counts =3D &stm32_counts_1ch;
+> >> +		counter->signals =3D stm32_signals;
+> >> +		counter->num_signals =3D 2; /* clock, ch1 */
+> >> +		break;
+> >> +	default:
+> >> +		counter->counts =3D &stm32_counts;
+> >> +		counter->signals =3D stm32_signals;
+> >> +		counter->num_signals =3D 1; /* clock */
+> >> +		break;
+> >> +	}
+> >=20
+> > Rather than adjusting the number of counts and signals, keep the
+> > configuration static and use a single stm32_counts array. The reason is
+> > that in the Counter subsystem paradigm Signals do not necessary
+> > correlate to specific hardware signals but are rather an abstract
+> > representation of the device behavior at a high level. In other words, a
+> > Synapse with an action mode set to COUNTER_SYNAPSE_ACTION_NONE can be
+> > viewed as representing a Signal that does not affect the Count (i.e. in
+> > this case equivalent to an unconnected line).
+> >=20
+> > What you'll need to do instead is check priv->nchannels during
+> > stm32_action_read and stm32_count_function_read calls in order to return
+> > the correct synapse action and count function for the particular
+> > channels configuration you have. In stm32_count_function_write you would
+> > return an -EINVAL (maybe -EOPNOTSUPP would be better?) when the channels
+> > configuration does not support a particular count function.
+>=20
+> Hi William,
+>=20
+> Sorry for the long delay to address your comments here. Many thanks for
+> these guidelines.
+>=20
+> I'm preparing a v3, to address these. I'll probably send it soon, so we
+> can start to review also the capture part of it. Still there are few
+> things here I'm wondering about (as an anticipation task).
+>=20
+> Basically, removing all the diversity here means the most featured timer
+> model will be represented here (with all possible signals).
+> When I wrote the various configuration arrays, I'd have been tempted to
+> allocate them dynamically upon probing to avoid having all these
+> variants described as const arrays. This may have eased other signals
+> additions later. But that's not the direction. So, this simplifies the
+> description here, clearly, to describe the full-featured timer/counter,
+> and handle the ("unconnected") variants by returning errors.
+>=20
+> I still have in mind the replacement of the last IIO_COUNT device [1]
+> (not addressed in this series), e.g. in
+> drivers/iio/trigger/stm32-timer-trigger.c. Here, there are
+> "valids_table" that are used to cascade two timers (one timer output
+> being the input to another timer). With this table currently, an IIO
+> user knows the name of the signal it selects (then the driver looks up
+> the 'valids' table to set SMCR / TS bits, e.g. trigger select). Each
+> individual timer has a different input mapping, so called peripheral
+> interconnect in STM32.
+> What bothers me here is: with an abstracted full-featured timer, without
+> any diversity on the signal names, I fear the userland has no clue on
+> which signal would be used. Abstracting the timer this way would mean
+> the user only knows it selects "Internal Trigger 0" for example, without
+> knowing which internal signal in the SoC it has selected.
+>=20
+> Even if this is out of scope for this series, would you have some clue
+> so I can anticipate it ? Or if we stick with abstract names? In which
+> case the userland may need to be aware of the signals mapping (where
+> currently in IIO_COUNT driver, the signal names are privided). I'd be
+> glad to get some direction here.
+>=20
+> Please advise,
+> Best Regards,
+> Fabrice
+>=20
+> [1] https://lore.kernel.org/linux-arm-kernel/Y0vzlOmFrVCQVXMq@fedora/
 
-missing case where we compare against U32_MAX constant?
+Hi Fabrice,
 
-> +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {0, 0}},
-> +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {(u32)(s32)S32_MIN, (u32)(s32)=
-S32_MIN}},
-> +       {S32, U32, {(u32)(s32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
->  };
->
->  /* Go over crafted hard-coded cases. This is fast, so we do it as part o=
-f
-> --
-> 2.39.2
->
+I took a look the stm32-timer-trigger.c file, but I'm having trouble
+understanding it well (probably the cascading is confusing me). If I
+understand the logic correctly, the user selects the trigger they want
+by the attribute's name which is compared via strncmp() against the
+'valids' table. It's possible we could dynamically configure the signal
+names, but keep the signal id static so the driver code won't need some
+many variations; alternatively, we could introduce a new signal
+extension attribute that could display the trigger name.
+
+Would you walk me through an example of using the stm32-timer-trigger
+IIO sysfs interface? I think that would help me understand how users
+currently interact with the triggers for that driver, and then maybe I
+can figure out an appropriate equivalent in the Counter paradigm for
+the migration. Right now, the timer cascade is confusing me so if I can
+grok it well, the right solution for this may come to me more easily.
+
+Thanks,
+
+William Breathitt Gray
+
+--6hNcEl+RZUM6gQNw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZYCIRAAKCRC1SFbKvhIj
+KzL0AQCBGPqG8kOluqjB/Yzuc6T3oT6VwNPErfSyZN8uvziqDQD9EI31uZSzpDLU
+hHMJkRMkV+Is306UT0QLqo+nFChRtgo=
+=wI3r
+-----END PGP SIGNATURE-----
+
+--6hNcEl+RZUM6gQNw--
 
