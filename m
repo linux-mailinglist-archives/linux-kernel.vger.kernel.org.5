@@ -1,292 +1,171 @@
-Return-Path: <linux-kernel+bounces-4341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF90817BCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:22:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E551817BCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFF87285489
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:22:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B93E91F24155
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33EA27349E;
-	Mon, 18 Dec 2023 20:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12977207C;
+	Mon, 18 Dec 2023 20:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oljQn0xn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+z7paLf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF66648784
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 20:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2370535060so66746066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:22:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702930943; x=1703535743; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hBnDjqR8ev8eEOR/Wb/mNlLBPLyySVDmi6fwcpUC1aE=;
-        b=oljQn0xnbHUycvaF+zVaIvUUqRi2ivtzBgVGbZpm+FtVvn3zwZrHLFRwK+OIQbHkMG
-         UQUFTeylQBFUE19DpGZcTU+1xWmbzEFJLwbyZaJt/TqL7j/iFWHiajeNKzEUBF9Gpn5y
-         PPB9yn18Aa4nHyv8G2ifU6MZevfnDTCq5hXvdJJ1LA8lO/ClkJvRFruGPIR5BnpC9Kpr
-         8EQH+DwX3Goyqx0M7Ld4P0r+H5SdNUJWICs8V3j6HMXvTdAwHrq6a/2Zafq3zzU4BaRr
-         VRaWO+nLw06R3EQKsWMkNLSQxJcSwtb09f2uHGrkILYZokRiQmSOEuyo0f+pe8GQF0zL
-         nEWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702930943; x=1703535743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hBnDjqR8ev8eEOR/Wb/mNlLBPLyySVDmi6fwcpUC1aE=;
-        b=FBJBhueJ8v4/3DuAXI/VcXZidENxewv8/giHyv44nROVKk0imRhODPNPvVUVSVO8XM
-         FLtqIIi6ALkZIK0Xy73+ZSh/Vtdcz7MeWjrVNtK0u/vivFPbIxxm+LAWBXcTdLVoIIZH
-         H0Oxp795CbT2YZo0UC8aQlDvYk0rIJNpdBcDB6n3RLebOfwAYW2MPJwFhL9tXk7v/gUs
-         8/WPUiYmSZ/qOqOWs+mXL/74TQISNlIe+C6jf+hVjh7OsU3Iky0PNg9DdsEWY98E410z
-         HFvT19xbfWQYJepvxcofD6M5vZ7iUUROYMFKzNOkt61rtiOaMMm+hLGDop3gbstWiT7N
-         0Lrw==
-X-Gm-Message-State: AOJu0Yxro80Am0OUvHCU7n3mZJyIMtCb23WQgf79zLIAZhJZIGp/0A9W
-	nd2Q97EndCkzPhnhkfChB5llNxSEqXGxtMW9wdWsp71Lv+KePrbmhJXqyw==
-X-Google-Smtp-Source: AGHT+IGOSn3yMNFErnneEacsS5/2W9PoiIzpIb6xAZzuXfnZ1mobdrawzlxvMuTKK0N9yjEitoiX5+htjybXySy6Z+s=
-X-Received: by 2002:a17:906:1b0e:b0:a23:5893:1ac8 with SMTP id
- o14-20020a1709061b0e00b00a2358931ac8mr2231828ejg.27.1702930942877; Mon, 18
- Dec 2023 12:22:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F0372050;
+	Mon, 18 Dec 2023 20:23:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64B81C433C8;
+	Mon, 18 Dec 2023 20:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702930998;
+	bh=1BbFmHk7YWm21tYfkE1YB3VNtMpu0O976sXjLOROCI0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e+z7paLfbgZAjpmOTmHVwoxJ6YSx551WdDhzrYfskPGJRhY7uveqGjw9UCH3DT7co
+	 LS1GpbLOmclwEHt/hYug9+hLkw9KGvrqwDqpnE9S8LuiDMo6vv0KtqRiTCn74Ll9fY
+	 8uxJdMfBDMJO52quiokBGxQUBOgNItz/iN3aIpG80rMSqbH6rCRtYbdEHNuAIG/71a
+	 M70KyrYEGbDFKLyrAGJL4lkd3qXkn5+/pe/8R5jgtfH0UHTgFUZzz3PilpLwAMEu5F
+	 1R94UaPdvvg/vuxU4ZqVAbThn2bGZ6WmeOkRkhoj4fKlYKpWYnYJu7ZBcS5B7xlzWr
+	 BZk1LqjBQZzBQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id E33F6403EF; Mon, 18 Dec 2023 17:23:15 -0300 (-03)
+Date: Mon, 18 Dec 2023 17:23:15 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Ian Rogers <irogers@google.com>,
+	Namhyung Kim <namhyung@kernel.org>, maz@kernel.org,
+	marcan@marcan.st, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf top: Use evsel's cpus to replace user_requested_cpus
+Message-ID: <ZYCqM2WQjUHWNUfw@kernel.org>
+References: <20231208210855.407580-1-kan.liang@linux.intel.com>
+ <ZXd7ZuxbNNsjAyqm@kernel.org>
+ <07677ab2-c29b-499b-b473-f7535fb27a8c@linux.intel.com>
+ <CAM9d7ci-VVhubefMqkSQgK-B2e2z4QU1=TLJtC49wbWW=VNc8g@mail.gmail.com>
+ <CAP-5=fVd-0aSovYVsOmTo2dfKb5_PHz1KV7ePipi35_JbfJ6qQ@mail.gmail.com>
+ <ZXim6U5251q0_bB2@FVFF77S0Q05N.cambridge.arm.com>
+ <ZXxyanyZgWBTOnoK@kernel.org>
+ <4658ca16-9749-434e-9296-3893aa2a34da@linux.intel.com>
+ <ZXyaZjwrpy6toGf6@kernel.org>
+ <14957171-6abd-4fd6-9e05-669b4945c0df@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231217080913.2025973-1-almasrymina@google.com>
- <20231217080913.2025973-4-almasrymina@google.com> <1195676f-59a4-40d8-b459-d2668eb8c5fe@huawei.com>
-In-Reply-To: <1195676f-59a4-40d8-b459-d2668eb8c5fe@huawei.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 18 Dec 2023 12:22:11 -0800
-Message-ID: <CAHS8izPJOrv_4tRRVP=g_m-02d=QKWQCsvO9UTxgGFtoDxFfuw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 3/3] net: add netmem_t to skb_frag_t
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14957171-6abd-4fd6-9e05-669b4945c0df@linux.intel.com>
+X-Url: http://acmel.wordpress.com
 
-On Mon, Dec 18, 2023 at 4:39=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2023/12/17 16:09, Mina Almasry wrote:
-> > Use netmem_t instead of page directly in skb_frag_t. Currently netmem_t
-> > is always a struct page underneath, but the abstraction allows efforts
-> > to add support for skb frags not backed by pages.
-> >
-> > There is unfortunately 1 instance where the skb_frag_t is assumed to be
-> > a bio_vec in kcm. For this case, add a debug assert that the skb frag i=
-s
-> > indeed backed by a page, and do a cast.
-> >
-> > Add skb[_frag]_fill_netmem_*() and skb_add_rx_frag_netmem() helpers so
-> > that the API can be used to create netmem skbs.
-> >
-> > Signed-off-by: Mina Almasry <almasrymina@google.com>
-> >
->
-> ...
->
-> >
-> > -typedef struct bio_vec skb_frag_t;
-> > +typedef struct skb_frag {
-> > +     struct netmem *bv_page;
->
-> bv_page -> bv_netmem?
->
+Em Fri, Dec 15, 2023 at 01:53:12PM -0500, Liang, Kan escreveu:
+> On 2023-12-15 1:26 p.m., Arnaldo Carvalho de Melo wrote:
+> > Right, I implemented it in a slightly different way, but end result
+> > should be the same:
 
-bv_page, bv_len & bv_offset all are misnomers after this change
-indeed, because bv_ refers to bio_vec and skb_frag_t is no longer a
-bio_vec. However I'm hoping renaming everything can be done in a
-separate series. Maybe I'll just apply the bv_page -> bv_netmem
-change, that doesn't seem to be much code churn and it makes things
-much less confusing.
+> > From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Date: Fri, 15 Dec 2023 15:23:30 -0300
+> > Subject: [PATCH 1/1] perf evlist: Move event attributes to after the / when uniquefying using the PMU name
+ 
+> Looks good to me and verified.
 
-> > +     unsigned int bv_len;
-> > +     unsigned int bv_offset;
-> > +} skb_frag_t;
-> >
-> >  /**
-> >   * skb_frag_size() - Returns the size of a skb fragment
-> > @@ -2431,22 +2436,37 @@ static inline unsigned int skb_pagelen(const st=
-ruct sk_buff *skb)
-> >       return skb_headlen(skb) + __skb_pagelen(skb);
-> >  }
-> >
->
-> ...
->
-> >  /**
-> > @@ -2462,10 +2482,10 @@ static inline void skb_len_add(struct sk_buff *=
-skb, int delta)
-> >  }
-> >
-> >  /**
-> > - * __skb_fill_page_desc - initialise a paged fragment in an skb
-> > + * __skb_fill_netmem_desc - initialise a paged fragment in an skb
-> >   * @skb: buffer containing fragment to be initialised
-> >   * @i: paged fragment index to initialise
-> > - * @page: the page to use for this fragment
-> > + * @netmem: the netmem to use for this fragment
-> >   * @off: the offset to the data with @page
-> >   * @size: the length of the data
-> >   *
-> > @@ -2474,10 +2494,13 @@ static inline void skb_len_add(struct sk_buff *=
-skb, int delta)
-> >   *
-> >   * Does not take any additional reference on the fragment.
-> >   */
-> > -static inline void __skb_fill_page_desc(struct sk_buff *skb, int i,
-> > -                                     struct page *page, int off, int s=
-ize)
-> > +static inline void __skb_fill_netmem_desc(struct sk_buff *skb, int i,
-> > +                                       struct netmem *netmem, int off,
-> > +                                       int size)
-> >  {
-> > -     __skb_fill_page_desc_noacc(skb_shinfo(skb), i, page, off, size);
-> > +     struct page *page =3D netmem_to_page(netmem);
-> > +
-> > +     __skb_fill_netmem_desc_noacc(skb_shinfo(skb), i, netmem, off, siz=
-e);
-> >
-> >       /* Propagate page pfmemalloc to the skb if we can. The problem is
-> >        * that not all callers have unique ownership of the page but rel=
-y
-> > @@ -2485,7 +2508,21 @@ static inline void __skb_fill_page_desc(struct s=
-k_buff *skb, int i,
-> >        */
-> >       page =3D compound_head(page);
-> >       if (page_is_pfmemalloc(page))
-> > -             skb->pfmemalloc =3D true;
-> > +             skb->pfmemalloc =3D true;
->
-> Is it possible to introduce netmem_is_pfmemalloc() and netmem_compound_he=
-ad()
-> for netmem,
+> Tested-by: Kan Liang <kan.liang@linux.intel.com>
 
-That is exactly the plan, and I added these helpers in the follow up
-series which introduces devmem support:
+I ended up with a bit more simplified version:
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.3516870=
--8-almasrymina@google.com/
+From 22ecc4601e28a12661f14ca877e39348dab6be8e Mon Sep 17 00:00:00 2001
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date: Fri, 15 Dec 2023 15:23:30 -0300
+Subject: [PATCH 1/1] perf evlist: Move event attributes to after the / when
+ uniquefying using the PMU name
 
-> and have some built-time testing to ensure the implementation
-> is the same between page_is_pfmemalloc()/compound_head() and
-> netmem_is_pfmemalloc()/netmem_compound_head()?
+When turning an event with attributes to the format including the PMU we
+need to move the "event:attributes" format to "event/attributes/" so
+that we can copy the event displayed and use it in the command line,
+i.e. in 'perf top' we had:
 
-That doesn't seem desirable to me. It's too hacky IMO to duplicate the
-implementation details of the MM stack in the net stack and that is
-not the implementation you see in the patch that adds these helpers
-above.
+ 1K cpu_atom/cycles:P/
+ 11K cpu_core/cycles:P/
 
-> So that we can avoid the
-> netmem_to_page() as much as possible, especially in the driver.
->
+If I try to use that on the command line:
 
-Agreed.
+  # perf top -e cpu_atom/cycles:P/
+  event syntax error: 'cpu_atom/cycles:P/'
+                                \___ Bad event or PMU
 
->
-> > +}
-> > +
-> > +static inline void __skb_fill_page_desc(struct sk_buff *skb, int i,
-> > +                                     struct page *page, int off, int s=
-ize)
-> > +{
-> > +     __skb_fill_netmem_desc(skb, i, page_to_netmem(page), off, size);
-> > +}
-> > +
->
-> ...
->
-> >   */
-> >  static inline struct page *skb_frag_page(const skb_frag_t *frag)
-> >  {
-> > -     return frag->bv_page;
-> > +     return netmem_to_page(frag->bv_page);
->
-> It seems we are not able to have a safe type protection for the above
-> function, as the driver may be able to pass a devmem frag as a param here=
-,
-> and pass the returned page into the mm subsystem, and compiler is not abl=
-e
-> to catch it when compiling.
->
+  Unable to find PMU or event on a PMU of 'cpu_atom'
 
-That depends on the implementation of netmem_to_page(). As I
-implemented it in the follow up series, netmem_to_page() always checks
-that netmem is actually a page before doing the conversion via
-checking the LSB checking. It's of course unacceptable to make an
-unconditional cast here. That will get around the type safety as you
-point out, and defeat the point. But I'm not doing that.
+  Initial error:
+  event syntax error: 'cpu_atom/cycles:P/'
+                                \___ unknown term 'cycles:P' for pmu
+  'cpu_atom'
 
-I can add a comment above netmem_to_page():
+  valid terms:
 
-/* Returns page* if the netmem is backed by a page, NULL otherwise. Current=
-ly
- * netmem can only be backed by a page, so we always return the underlying
- * page.
- */
-static inline struct page *netmem_to_page(struct netmem *netmem);
+    event,pc,edge,offcore_rsp,ldlat,inv,umask,cmask,config,config1,config2,config3,name,period,freq,branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,nr,no-overwrite,overwrite ,driver-config,percore,aux-output,aux-sample-size,metric-id,raw,legacy-cache,hardware
+  Run
+    'perf list' for a list of valid events
 
-> >  }
-> >
-> >  /**
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index 83af8aaeb893..053d220aa2f2 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -845,16 +845,24 @@ struct sk_buff *__napi_alloc_skb(struct napi_stru=
-ct *napi, unsigned int len,
-> >  }
-> >  EXPORT_SYMBOL(__napi_alloc_skb);
-> >
->
-> ...
->
-> > diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-> > index 65d1f6755f98..5c46db045f4c 100644
-> > --- a/net/kcm/kcmsock.c
-> > +++ b/net/kcm/kcmsock.c
-> > @@ -636,9 +636,15 @@ static int kcm_write_msgs(struct kcm_sock *kcm)
-> >               for (i =3D 0; i < skb_shinfo(skb)->nr_frags; i++)
-> >                       msize +=3D skb_shinfo(skb)->frags[i].bv_len;
-> >
-> > +             /* The cast to struct bio_vec* here assumes the frags are
-> > +              * struct page based.
-> > +              */
-> > +             DEBUG_NET_WARN_ON_ONCE(
-> > +                     !skb_frag_page(&skb_shinfo(skb)->frags[0]));
->
-> It seems skb_frag_page() always return non-NULL in this patch, the above
-> checking seems unnecessary?
+  Usage: perf top [<options>]
 
-We're doing a cast below, and the cast is only valid if the frag has a
-page underneath. This check makes sure the skb has a page. In the
-series that adds devmem support, skb_frag_page() returns NULL as the
-frag has no page. Since this patch adds the dangerous cast, I think it
-may be reasonable for it to also add the check.
+     -e, --event <event>   event selector. use 'perf list' to list available events
+  #
 
-I can add a comment above skb_frag_page() to indicate the intention again:
+Cc: Hector Martin <marcan@marcan.st>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/ZXxyanyZgWBTOnoK@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/evlist.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
- * Returns the &struct page associated with @frag. Returns NULL if this fra=
-g
- * has no associated page.
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 6f0892803c2249af..95f25e9fb994ab2a 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -2521,9 +2521,8 @@ void evlist__warn_user_requested_cpus(struct evlist *evlist, const char *cpu_lis
+ 
+ void evlist__uniquify_name(struct evlist *evlist)
+ {
++	char *new_name, empty_attributes[2] = ":", *attributes;
+ 	struct evsel *pos;
+-	char *new_name;
+-	int ret;
+ 
+ 	if (perf_pmus__num_core_pmus() == 1)
+ 		return;
+@@ -2535,11 +2534,17 @@ void evlist__uniquify_name(struct evlist *evlist)
+ 		if (strchr(pos->name, '/'))
+ 			continue;
+ 
+-		ret = asprintf(&new_name, "%s/%s/",
+-			       pos->pmu_name, pos->name);
+-		if (ret) {
++		attributes = strchr(pos->name, ':');
++		if (attributes)
++			*attributes = '\0';
++		else
++			attributes = empty_attributes;
++
++		if (asprintf(&new_name, "%s/%s/%s", pos->pmu_name, pos->name, attributes + 1)) {
+ 			free(pos->name);
+ 			pos->name = new_name;
++		} else {
++			*attributes = ':';
+ 		}
+ 	}
+ }
+-- 
+2.43.0
 
-But as of this series netmem can only be a page, so I think adding
-that information may be premature.
-
---=20
-Thanks,
-Mina
 
