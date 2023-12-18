@@ -1,140 +1,184 @@
-Return-Path: <linux-kernel+bounces-3099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B85581676A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:33:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78EC4816771
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6443B21E1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:33:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3E1F1F22C60
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC86A6D1B;
-	Mon, 18 Dec 2023 07:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B1EC8E2;
+	Mon, 18 Dec 2023 07:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uexwGawI"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="AgvoPYHr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921A179EB
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso3178495a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:33:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B03C79FD
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40c2bb872e2so30737385e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:34:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702884795; x=1703489595; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rphfm1orlEP9f+gtS1hXYi9pK8ccTsSPaPCdCV026H4=;
-        b=uexwGawIg4WVzSrPwq/GwSz2iwlrJHqTAKxWd8R2K5WauAlWoSsGpsAj3U1KzGmBim
-         rSPX0Zc7TSVZx/oG0OGgPuKHs6ib3vWEqIUFFnPR8PkDf78zCDDBWauOM4UUO6SQUcnW
-         83l4BcM3jTlTdILK2eqai+KBB202ESsbg9xnsmGy/ZARdhDL1XEfQGiGw4SEwglgAPna
-         RWLmhIQu6aDd8QAL37Iqun6rGeTPQwpS6Z/y0hMC36BbtIV5g6sTugsYcSmjZglXFZLX
-         Z/yLRs4PrB8xIuTWjp92NzYFkU02bBLg63HuyYArksgRRHLDd9gtU+CMDlyDqTgqWr0K
-         1tlg==
+        d=amarulasolutions.com; s=google; t=1702884850; x=1703489650; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=olULgM359/ngO2eLxqKPg4Bd8lNvjNS8Vgzy23+KEiE=;
+        b=AgvoPYHrHZ1vwVPdVvS6UCVHUpZLXfiMiO91VM1whJH428dEaey1kDI8UttJLpVDF8
+         pJFVPvRG6zKThT4wK+pDeWPV2uyjtHITEFtVQAgWGuZIxUc86A3CiEH+2lzyqQYXtz9f
+         M/VcVfs1QR0BJGvGkxFpjlW66FQR8hZnbr7Cw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702884795; x=1703489595;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rphfm1orlEP9f+gtS1hXYi9pK8ccTsSPaPCdCV026H4=;
-        b=UbJHrJi2EFgV+S6s22+Ej20+DKLYjI5rZRz/OfMpAATKoW+CPaLh6+cFEVMEuZqPCO
-         KR5toQA93JJzrCqTb0hFR94gRlKN9bJZStTOQwpixX9Gr6QURuo6Q8G3KwbVEQw8l3Yg
-         IRee/5WH/xbtJNHMgHK9fPZcr1PZ+F/UX+QFWN4P15/xPaUeLpWl/pZDkwJ95cEGv9wa
-         KsbAhN9gdmJGadPgCwZz7KvImPR6vH1u1qalGH2kHa5TKCFrH/Uj6NuKYpHI2zV8FJB9
-         46T18VLzWj8/viq7dl7nUvfDXaa5HbSNseKdJwiK3ze8xRT/yNg0P2IlUZwSy2cI4Q5q
-         70zw==
-X-Gm-Message-State: AOJu0YxzppJ1roYe7F9N2T7FpUhOf1HJBGQaNZ2tIWbfUs9AIHLabaVp
-	Wpj4P+btbbQ4Faj3AvxjGI52dw==
-X-Google-Smtp-Source: AGHT+IEAAi+t9n0lMb85+N+MYAjPdSFUyd+HGBn6iJdQkVfc72ZDBhQXsCpv3FB8y4gcqgQNYM12Og==
-X-Received: by 2002:a50:cc99:0:b0:553:1681:2ad0 with SMTP id q25-20020a50cc99000000b0055316812ad0mr1733346edi.25.1702884794887;
-        Sun, 17 Dec 2023 23:33:14 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id g6-20020a056402320600b00553463827a8sm911434eda.87.2023.12.17.23.33.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Dec 2023 23:33:13 -0800 (PST)
-Message-ID: <80857879-dd3c-4abb-a479-6b703fb53080@linaro.org>
-Date: Mon, 18 Dec 2023 08:33:12 +0100
+        d=1e100.net; s=20230601; t=1702884850; x=1703489650;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=olULgM359/ngO2eLxqKPg4Bd8lNvjNS8Vgzy23+KEiE=;
+        b=p8ltfzvGAVXU6FzeGNEqVZ8qktyO8NrmQ6em0xVCTxPj7Hyni8IillnLmgNmYJ6ZJW
+         TvpefegvGijmJbch6sYc7NjSB2jkNebIAnqOqYw1iLBt5OKArTgeeHS590FLbPTZNID4
+         OiOSqo+62ieiy2+fq/Z2HWxfoG2DVFFOb4/FHTl/Jd9XyZ6Yti8vaqLbg+TjGrLtK1IU
+         vCEmPf5CED4aETu/nbtTpuLYH9bcqxwLOG2BzcG9XDLgSAgBSBqUragI1dszRd1sKWFR
+         I84bMhYghBF00RvI2rQXtoxnOb71Xs6sIbfI54fOc/UA5IJFj4B0UpF8LEI3RF/Bw77b
+         iX1g==
+X-Gm-Message-State: AOJu0Ywr7kHbUyfSqw0wJ9YWB73koex82feqtMNMLetN3FoVfML04vg5
+	/hfHqR0MZYG1zXlDYHG4PWZ3JQ==
+X-Google-Smtp-Source: AGHT+IHC5jYHllOjb186unx3YfcDbKt7AIbFqpN8EjgWqZvjfYR4lwv1hDUQzlnE34dKvK9KzZNUBw==
+X-Received: by 2002:a7b:ca54:0:b0:40c:2db0:c803 with SMTP id m20-20020a7bca54000000b0040c2db0c803mr4103238wml.92.1702884850242;
+        Sun, 17 Dec 2023 23:34:10 -0800 (PST)
+Received: from panicking.QSD (net-91-81-8-146.cust.vodafonedsl.it. [91.81.8.146])
+        by smtp.gmail.com with ESMTPSA id iv19-20020a05600c549300b0040b397787d3sm37153199wmb.24.2023.12.17.23.34.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 23:34:09 -0800 (PST)
+From: Michael Trimarchi <michael@amarulasolutions.com>
+To: michael@amarulasolutions.com
+Cc: daniel.thompson@linaro.org,
+	dianders@chromium.org,
+	gregkh@linuxfoundation.org,
+	jason.wessel@windriver.com,
+	jirislaby@kernel.org,
+	kgdb-bugreport@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: [PATCH V2] tty: serial: kgdboc: Fix 8250_* kgd over serial
+Date: Mon, 18 Dec 2023 08:34:07 +0100
+Message-Id: <20231218073407.300982-1-michael@amarulasolutions.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231216173409.1264655-1-michael@amarulasolutions.com>
+References: <20231216173409.1264655-1-michael@amarulasolutions.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] Add DTS and bindings for Unisoc's UMS9620
-Content-Language: en-US
-To: Chunyan Zhang <chunyan.zhang@unisoc.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Lee Jones <lee@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
- Baolin Wang <baolin.wang@linux.alibaba.com>, Orson Zhai
- <orsonzhai@gmail.com>, Chunyan Zhang <zhang.lyra@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20231215085630.984892-1-chunyan.zhang@unisoc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231215085630.984892-1-chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 15/12/2023 09:56, Chunyan Zhang wrote:
-> Add a basic DTS for UMS9620 SoC and UMS9620-2H10 board, with this patchset
-> the board can run into console.
-> 
+Check if port type is not PORT_UNKNOWN during poll_init.
+The kgdboc calls the tty_find_polling_driver that check
+if the serial is able to use poll_init. The poll_init calls
+the uart uart_poll_init that try to configure the uart with the
+selected boot parameters. The uart must be ready before setting
+parameters. Seems that PORT_UNKNOWN is already used by other
+functions in serial_core to detect uart status, so use the same
+to avoid to use it in invalid state.
 
-This was never tested and never built on the upstream kernel. Please
-work on upstream, not on downstream fork.
+The crash happen for instance in am62x architecture where the 8250
+register the platform driver after the 8250 core is initialized.
 
-Best regards,
-Krzysztof
+Follow the report crash coming from KGDB
+
+Thread 2 received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1]
+_outb (addr=<optimized out>, value=<optimized out>) at ./include/asm-generic/io.h:584
+584		__raw_writeb(value, PCI_IOBASE + addr);
+(gdb) bt
+
+This section of the code is too early because in this case
+the omap serial is not probed
+
+Thread 2 received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1]
+_outb (addr=<optimized out>, value=<optimized out>) at ./include/asm-generic/io.h:584
+584		__raw_writeb(value, PCI_IOBASE + addr);
+(gdb) bt
+
+Thread 2 received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1]
+_outb (addr=<optimized out>, value=<optimized out>) at ./include/asm-generic/io.h:584
+584		__raw_writeb(value, PCI_IOBASE + addr);
+(gdb) bt
+0  _outb (addr=<optimized out>, value=<optimized out>) at ./include/asm-generic/io.h:584
+1  logic_outb (value=0 '\000', addr=18446739675637874689) at lib/logic_pio.c:299
+2  0xffff80008082dfcc in io_serial_out (p=0x0, offset=16760830, value=0) at drivers/tty/serial/8250/8250_port.c:416
+3  0xffff80008082fe34 in serial_port_out (value=<optimized out>, offset=<optimized out>, up=<optimized out>)
+    at ./include/linux/serial_core.h:677
+4  serial8250_do_set_termios (port=0xffff8000828ee940 <serial8250_ports+1568>, termios=0xffff80008292b93c, old=0x0)
+    at drivers/tty/serial/8250/8250_port.c:2860
+5  0xffff800080830064 in serial8250_set_termios (port=0xfffffbfffe800000, termios=0xffbffe, old=0x0)
+    at drivers/tty/serial/8250/8250_port.c:2912
+6  0xffff80008082571c in uart_set_options (port=0xffff8000828ee940 <serial8250_ports+1568>, co=0x0, baud=115200, parity=110, bits=8, flow=110)
+    at drivers/tty/serial/serial_core.c:2285
+7  0xffff800080828434 in uart_poll_init (driver=0xfffffbfffe800000, line=16760830, options=0xffff8000828f7506 <config+6> "115200n8")
+    at drivers/tty/serial/serial_core.c:2656
+8  0xffff800080801690 in tty_find_polling_driver (name=0xffff8000828f7500 <config> "ttyS2,115200n8", line=0xffff80008292ba90)
+    at drivers/tty/tty_io.c:410
+9  0xffff80008086c0b0 in configure_kgdboc () at drivers/tty/serial/kgdboc.c:194
+10 0xffff80008086c1ec in kgdboc_probe (pdev=0xfffffbfffe800000) at drivers/tty/serial/kgdboc.c:249
+11 0xffff8000808b399c in platform_probe (_dev=0xffff000000ebb810) at drivers/base/platform.c:1404
+12 0xffff8000808b0b44 in call_driver_probe (drv=<optimized out>, dev=<optimized out>) at drivers/base/dd.c:579
+13 really_probe (dev=0xffff000000ebb810, drv=0xffff80008277f138 <kgdboc_platform_driver+48>) at drivers/base/dd.c:658
+14 0xffff8000808b0d2c in __driver_probe_device (drv=0xffff80008277f138 <kgdboc_platform_driver+48>, dev=0xffff000000ebb810)
+    at drivers/base/dd.c:800
+15 0xffff8000808b0eb8 in driver_probe_device (drv=0xfffffbfffe800000, dev=0xffff000000ebb810) at drivers/base/dd.c:830
+16 0xffff8000808b0ff4 in __device_attach_driver (drv=0xffff80008277f138 <kgdboc_platform_driver+48>, _data=0xffff80008292bc48)
+    at drivers/base/dd.c:958
+17 0xffff8000808ae970 in bus_for_each_drv (bus=0xfffffbfffe800000, start=0x0, data=0xffff80008292bc48,
+    fn=0xffff8000808b0f3c <__device_attach_driver>) at drivers/base/bus.c:457
+18 0xffff8000808b1408 in __device_attach (dev=0xffff000000ebb810, allow_async=true) at drivers/base/dd.c:1030
+19 0xffff8000808b16d8 in device_initial_probe (dev=0xfffffbfffe800000) at drivers/base/dd.c:1079
+20 0xffff8000808af9f4 in bus_probe_device (dev=0xffff000000ebb810) at drivers/base/bus.c:532
+21 0xffff8000808ac77c in device_add (dev=0xfffffbfffe800000) at drivers/base/core.c:3625
+22 0xffff8000808b3428 in platform_device_add (pdev=0xffff000000ebb800) at drivers/base/platform.c:716
+23 0xffff800081b5dc0c in init_kgdboc () at drivers/tty/serial/kgdboc.c:292
+24 0xffff800080014db0 in do_one_initcall (fn=0xffff800081b5dba4 <init_kgdboc>) at init/main.c:1236
+25 0xffff800081b0114c in do_initcall_level (command_line=<optimized out>, level=<optimized out>) at init/main.c:1298
+26 do_initcalls () at init/main.c:1314
+27 do_basic_setup () at init/main.c:1333
+28 kernel_init_freeable () at init/main.c:1551
+29 0xffff8000810271ec in kernel_init (unused=0xfffffbfffe800000) at init/main.c:1441
+30 0xffff800080015e80 in ret_from_fork () at arch/arm64/kernel/entry.S:857
+
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+---
+v1 -> v2:
+	- fix if condition during submission
+	- improve a bit the commit message
+RFC -> v1:
+        - refuse uart that has type PORT_UNKNOWN
+
+---
+ drivers/tty/serial/serial_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index f1348a509552..9b7ed4aac77a 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -2633,7 +2633,7 @@ static int uart_poll_init(struct tty_driver *driver, int line, char *options)
+ 	mutex_lock(&tport->mutex);
+ 
+ 	port = uart_port_check(state);
+-	if (!port || !(port->ops->poll_get_char && port->ops->poll_put_char)) {
++	if (!port || port->type == PORT_UNKNOWN || !(port->ops->poll_get_char && port->ops->poll_put_char)) {
+ 		ret = -1;
+ 		goto out;
+ 	}
+-- 
+2.40.1
 
 
