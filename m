@@ -1,98 +1,93 @@
-Return-Path: <linux-kernel+bounces-3298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 354B6816A9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:10:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF26816A9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF5681F218D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:10:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF9CB1C22A46
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0256C134DF;
-	Mon, 18 Dec 2023 10:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD09B134C1;
+	Mon, 18 Dec 2023 10:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="LUinvacZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F3LKPLYv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B536214F78;
-	Mon, 18 Dec 2023 10:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=+atTE69qUF4qmAtBOv2QlTxSSQnSgQ2ejCWr//9J2gU=; b=LUinvacZ+I/oBS1JF9SJ3GoiJu
-	3DlMzLFt3ljsLnEz3JgreIvMNv7MXaVYMG+3cy0ZcFOthBu4lx56aFOI+VCqvQlyQAJNiSi39f9Ty
-	LIBpHbnLiRjBHnrPFLvQ7OHJb/jGVonHP7rvUbyB/17qEzcX4v+YdLI6RJiJS4f++52k=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rFAZx-003ESu-IU; Mon, 18 Dec 2023 11:10:29 +0100
-Date: Mon, 18 Dec 2023 11:10:29 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>
-Subject: Re: [PATCH net-next v4 13/13] Documentation: networking: document
- phy_link_topology
-Message-ID: <32461e61-b518-4ecc-bf51-7d22f8580212@lunn.ch>
-References: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
- <20231215171237.1152563-14-maxime.chevallier@bootlin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 034F21401E;
+	Mon, 18 Dec 2023 10:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ce4fe4ed18so229386b3a.1;
+        Mon, 18 Dec 2023 02:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702894308; x=1703499108; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dWVfo0YlGfjE9aDQP2Ly3L2JCb3LpM/ev0NxuURn88c=;
+        b=F3LKPLYvNsLSAjIf6bFDgT6NL3mkYVdoBJbBT+NiKbKsAsVtYrkOBlV1ILSr1/E7id
+         xiof1aVi2r/nLkEzcXNfo7hn10Ila9xFVz0II22HbAtO6JlOfgK97jpoxdrEXnNQe7aS
+         wTo0EKxwFuEdW9p/iRz4zXwNUmuLS82R7qFflyoZGAj3ZjIMcnad4VQ0bE9NPMwp4jpl
+         nRH9HG/UcspH+K4Jo3J09e2r/H05GjTLnXSTBFIwHg1GaWi1O6PTwFrO1DZAvXeG4n2d
+         bukxkON91yf9GzBLhhDiOg1njwJTXWJzsC0z93LkdFgnNJWOii6WtnongFkTxzb6SPX+
+         8ToA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702894308; x=1703499108;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dWVfo0YlGfjE9aDQP2Ly3L2JCb3LpM/ev0NxuURn88c=;
+        b=Kx1mHtQ2NIolQwwplgHk2PE1k79VESWZKaSY926pIggIB6B0YUQIsSidtOZGYLSIaO
+         /ajobdXOPdhdhruB88AtiHZKrkiSm+MBkb2+Mxe+x46gCkw4aNLUDECP82IhQ7V8GIqZ
+         xm/M9+qaNyVtAgKnm2IyyuSuK0GqaXyvvbp1qaVq/xDt9UJyNgjGYoaw1XmGTztl5Sr4
+         aacVolva/rbtXZYpdXwctmP052N6uq0HLOkGF/7og0TERYC+bVMeSAAKjh6MNN0sFsCR
+         F1nmTtQVOHbdt7/zeVg3M+rR6w/JOzC5iR/xo9SQAdx9cTg4m9blULGR9RETb/6sbuOD
+         KptA==
+X-Gm-Message-State: AOJu0YyeSrTVMwDBO2JYLhUt0fSyK/IKyFFSfj49tWxwNXMFxYNVgYSE
+	9fKUun4PX/NlXaV1fXVUs4uQH0Q88VUeZimeqVCkiff+
+X-Google-Smtp-Source: AGHT+IFYAnVfFiaPLV3aOQmZxk09vqA3D8C1S99StKDu8dlQoGIILh+9qvsyJUfc1ZciBzGtPeAUAdzf88ItNIDemXY=
+X-Received: by 2002:a05:6a00:2288:b0:6cd:e3ef:ce54 with SMTP id
+ f8-20020a056a00228800b006cde3efce54mr34661547pfe.0.1702894308316; Mon, 18 Dec
+ 2023 02:11:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215171237.1152563-14-maxime.chevallier@bootlin.com>
+References: <1702891731-3417-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1702891731-3417-1-git-send-email-shengjiu.wang@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Mon, 18 Dec 2023 07:11:36 -0300
+Message-ID: <CAOMZO5CjoXFx4uX7w7My_zSeo_+mhQqhWYH3PNdV6SQOUXTxtg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Fix channel swap issue on i.MX8MP
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, 
+	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, 
+	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> +An Ethernet Interface from userspace's poing of view is nothing but a
+On Mon, Dec 18, 2023 at 7:10=E2=80=AFAM Shengjiu Wang <shengjiu.wang@nxp.co=
+m> wrote:
+>
+> When flag mclk_with_tere and mclk_direction_output enabled,
+> The SAI transmitter or receiver will be enabled in very early
+> stage, that if FSL_SAI_xMR is set by previous case,
+> for example previous case is one channel, current case is
+> two channels, then current case started with wrong xMR in
+> the beginning, then channel swap happen.
+>
+> The patch is to clear xMR in hw_free() to avoid such
+> channel swap issue.
+>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-point
-
-> +:c:type:`struct net_device <net_device>`, which exposes configuration options
-> +trough the legacy ioctls and the ethool netlink commands. The base assumption
-
-through 
-
-> +when designing these configuration channels were that the link looked
-> +something like this ::
-> +
-> +  +-----------------------+        +----------+      +--------------+
-> +  | Ethernet Controller / |        | Ethernet |      | Connector /  |
-> +  |       MAC             | ------ |   PHY    | ---- |    Port      | ---... to LP
-> +  +-----------------------+        +----------+      +--------------+
-> +  struct net_device               struct phy_device
-> +
-> +Commands that needs to configure the PHY will go through the net_device.phydev
-> +field to reach the PHY and perform the relevant configuration.
-> +
-> +This assumption falls appart in more complex topologies that can arise when,
-
-apart.
-
-	Andrew
+Fixes tag, please.
 
