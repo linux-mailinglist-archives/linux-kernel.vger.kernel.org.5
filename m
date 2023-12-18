@@ -1,99 +1,157 @@
-Return-Path: <linux-kernel+bounces-3981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFF2D81764C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:50:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A89F6817650
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BD16281E0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:50:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 480DE1F26AAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE794FF61;
-	Mon, 18 Dec 2023 15:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3634236F;
+	Mon, 18 Dec 2023 15:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ExhYsNyj"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="E+eaknYD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6353D54D
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so2170248a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:47:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702914452; x=1703519252; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0eNl2vsDtnWZ+IAcuQvLIHQD/Xi40xLCKLfqrufOQbE=;
-        b=ExhYsNyjaOn6BFk4FuSUhHqep/osl0vIJz0vRSSqP0Nl7M70BTF+AlY+9pmwkEgDak
-         uMvsTbzWK5McP5xp61pr0tJZQ2g/1wss968bkfF/NVhc5uK2knGbx53tF6P/tL0kdws5
-         nZmvjdvg0QJGXLlfqCOshC9mhJ5qcIOrY30eLBq55MSSAIR6Xu0ACAurP1cnafuEhECS
-         JDbvOeCeNlG3B4dtirJS0MgsXNIywOxkzyIOkLje9jFFnHQOeb0YiDngZnWkxIDSMfUL
-         hOvk5Yp5MxK+FmJ2uRfkKUZjemIEmJYfSEYq8m0Z78GpuGoyIdMm3HCrqWAzkde7FWw2
-         76RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702914452; x=1703519252;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0eNl2vsDtnWZ+IAcuQvLIHQD/Xi40xLCKLfqrufOQbE=;
-        b=ZsdmL/Ay9yZzwWaoXr9sGhlN6MKSS5dgjsP2RjJXekM8zV2mAJwFGRih13GxIXXAIl
-         hCjkKhwlFvkrWRt/NMWOwE99vIFjeSkCTjZbKivV3soq/ypKHaGNkBFYTi8/jnHwk1nJ
-         aeIWRdStdtxQ3qQ9i7yqLRpYXyP0twIVSp8uzNQMgsY3nN4yldvwSYLd0bKQHybBDJCi
-         ZThfBPwOUewJTdS4jvVblvFgGSHo9H5K9Ffp1Vz9FV37ixGHWAJXIoLnP7G2tPB7fySI
-         wvNj6z22uLOG0MOMIzZqvGXjru6UzVQnLuILqFOvHhODAEk7unJuGU/oO3p50JfMDH/G
-         t4Lg==
-X-Gm-Message-State: AOJu0YzX3PgQM+vdG2r9B7Co6FHyPuiCJApuzRWn4rANDSbuDrA8SrLE
-	h4oJaAvxrwhbLofOoZvhs4H0rdBu+Us=
-X-Google-Smtp-Source: AGHT+IHC5qktQQ4b2sM7UtIt484SaKUejdtlj+rponp9uZJ7sZ97THniapcreVMbePgmnF2+r8RohA==
-X-Received: by 2002:a50:d6d7:0:b0:553:2f15:6245 with SMTP id l23-20020a50d6d7000000b005532f156245mr2498083edj.26.1702914452056;
-        Mon, 18 Dec 2023 07:47:32 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id r13-20020a056402018d00b005537b9f7ce7sm216914edv.68.2023.12.18.07.47.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 07:47:31 -0800 (PST)
-Message-ID: <f86ec29f-194a-800d-0aaf-9e16e551b37d@gmail.com>
-Date: Mon, 18 Dec 2023 16:47:30 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D313D545;
+	Mon, 18 Dec 2023 15:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 24B6757E;
+	Mon, 18 Dec 2023 16:47:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1702914462;
+	bh=2sOFBL109jjVIul3F+6t0mZTRAhvxnQtgcLNIu0TqOM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E+eaknYD0yp0U7kSb+ri0GDGITk+JMNKvwxxoCzsQAkn7n4k+JrNDZD/+k7PVajqC
+	 k5db1V+5k6xL1Ipe5FjVJiLg5ATaQKbOsLwI6FXl9lsn8/DZE0oWP1SnPS0Uy+Wa31
+	 hVVGSh2gpgbr7y2Bk+YrSYDri/Wb60eNOrXKZplk=
+Date: Mon, 18 Dec 2023 17:48:38 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Paul Elder <paul.elder@ideasonboard.com>, linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+	kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+	aford173@gmail.com, Dafna Hirschfeld <dafna@fastmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	"moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 05/11] media: rkisp1: Fix RSZ_CTRL bits for i.MX8MP
+Message-ID: <20231218154838.GR5290@pendragon.ideasonboard.com>
+References: <20231129092759.242641-1-paul.elder@ideasonboard.com>
+ <20231129092759.242641-6-paul.elder@ideasonboard.com>
+ <03b98b67-e88c-4bb0-a01d-5a90f78e04a3@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v2 0/2] Rockchip rk3066_hdmi update
-To: hjc@rock-chips.com, heiko@sntech.de, andy.yan@rock-chips.com
-Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <03b98b67-e88c-4bb0-a01d-5a90f78e04a3@ideasonboard.com>
 
-Update the Rockchip rk3066_hdmi driver in a somewhat similar way
-to what is proposed for the inno_hdmi driver.
+On Mon, Dec 18, 2023 at 05:31:18PM +0200, Tomi Valkeinen wrote:
+> Hi Paul,
+> 
+> On 29/11/2023 11:27, Paul Elder wrote:
+> > The ISP8000Nano, found in the i.MX8MP, has a different architecture to
+> > crop at the resizer input. Instead of the "dual crop" block between the
+> > ISP and the resizers found in the RK3399, cropping has been moved to the
+> > input of the resizer blocks. As a result, the resizer CFG_UPD and
+> > CFG_UPD_AUTO bits have been moved to make space for a new CROP_ENABLE
+> > bit.
+> > 
+> > Fix the resizer shadow update accordingly, using the DUAL_CROP feature
+> > to infer whether or not the resizer implements cropping. Support for
+> > resizer cropping itself will be added in a subsequent commit.
+> > 
+> > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> I don't think this one is correct.
+> 
+> The above is perhaps true for ISP8000, but ISP8000Nano does not have 
+> CROP_ENABLE bit, and the CFG_UPD and CFG_UPD_AUTO are at the same 
+> locations as on RK3399.
+> 
+> I don't have documentation to prove this, but experimentation shows that 
+> this is the case.
 
-Changed V2:
-  Drop already applied patches
-  Remove "Remove useless output format" patch for now
-  Add fill_modes hook removal patch
+I agree with you. The missing CROP_ENABLE bit matches the missing
+resizer input crop capability in the i.MX8MP. I don't know if that's
+specific to the i.MX8MP, specific to the ISP8000Nano, or common to all
+ISP8000 versions when the instance is synthesized with a single path
+(which may be what ISP8000Nano is).
 
-Johan Jonker (2):
-  drm/rockchip: rk3066_hdmi: remove unused drm device pointer
-  drm/rockchip: rk3066_hdmi: drop custom fill_modes hook
+> > ---
+> > Changes since v3:
+> > 
+> > - Condition on RKISP1_FEATURE_DUAL_CROP feature
+> > - Update commit message
+> > 
+> > Changes since v2:
+> > 
+> > - Condition on RKISP1_FEATURE_RSZ_CROP feature
+> > - Rename bits
+> > - Use the rkisp1_has_feature() macro
+> > 
+> >   .../media/platform/rockchip/rkisp1/rkisp1-regs.h  |  5 +++++
+> >   .../platform/rockchip/rkisp1/rkisp1-resizer.c     | 15 +++++++++++----
+> >   2 files changed, 16 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> > index 3b19c8411360..95646b45f28b 100644
+> > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> > @@ -168,6 +168,11 @@
+> >   #define RKISP1_CIF_RSZ_CTRL_CFG_UPD_AUTO		BIT(9)
+> >   #define RKISP1_CIF_RSZ_SCALER_FACTOR			BIT(16)
+> >   
+> > +/* For resizer instances that support cropping */
+> > +#define RKISP1_CIF_RSZ_CTRL_CROP_ENABLE			BIT(8)
+> > +#define RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD		BIT(9)
+> > +#define RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD_AUTO		BIT(10)
+> > +
+> >   /* MI_IMSC - MI_MIS - MI_RIS - MI_ICR - MI_ISR */
+> >   #define RKISP1_CIF_MI_FRAME(stream)			BIT((stream)->id)
+> >   #define RKISP1_CIF_MI_MBLK_LINE				BIT(2)
+> > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
+> > index c1aaeed58acc..6d6ebc53c6e5 100644
+> > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
+> > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
+> > @@ -178,10 +178,17 @@ static void rkisp1_rsz_update_shadow(struct rkisp1_resizer *rsz,
+> >   {
+> >   	u32 ctrl_cfg = rkisp1_rsz_read(rsz, RKISP1_CIF_RSZ_CTRL);
+> >   
+> > -	if (when == RKISP1_SHADOW_REGS_ASYNC)
+> > -		ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD_AUTO;
+> > -	else
+> > -		ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD;
+> > +	if (when == RKISP1_SHADOW_REGS_ASYNC) {
+> > +		if (rkisp1_has_feature(rsz->rkisp1, DUAL_CROP))
+> > +			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD_AUTO;
+> > +		else
+> > +			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD_AUTO;
+> > +	} else {
+> > +		if (rkisp1_has_feature(rsz->rkisp1, DUAL_CROP))
+> > +			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD;
+> > +		else
+> > +			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD;
+> > +	}
+> >   
+> >   	rkisp1_rsz_write(rsz, RKISP1_CIF_RSZ_CTRL, ctrl_cfg);
+> >   }
 
- drivers/gpu/drm/rockchip/rk3066_hdmi.c | 16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
+-- 
+Regards,
 
---
-2.39.2
-
+Laurent Pinchart
 
