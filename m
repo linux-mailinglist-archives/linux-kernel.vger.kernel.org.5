@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-4009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3831B817697
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 854008176EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:07:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B325F1C255AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:01:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CA421C258C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E724FF68;
-	Mon, 18 Dec 2023 16:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D687608B;
+	Mon, 18 Dec 2023 16:02:54 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2863D57B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:00:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425DF49897
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:02:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C824421FC5;
-	Mon, 18 Dec 2023 16:00:35 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8145E1FD4D;
+	Mon, 18 Dec 2023 16:02:50 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B426E13BC8;
-	Mon, 18 Dec 2023 16:00:35 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7349013BC8;
+	Mon, 18 Dec 2023 16:02:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Gld1KqNsgGWzAwAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Mon, 18 Dec 2023 16:00:35 +0000
+	id WUMpGyptgGUABAAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Mon, 18 Dec 2023 16:02:50 +0000
 From: Daniel Wagner <dwagner@suse.de>
 To: linux-nvme@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org,
@@ -45,9 +45,9 @@ Cc: linux-kernel@vger.kernel.org,
 	James Smart <james.smart@broadcom.com>,
 	Hannes Reinecke <hare@suse.de>,
 	Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v3 12/16] nvmet-fc: do not tack refs on tgtports from assoc
-Date: Mon, 18 Dec 2023 16:31:00 +0100
-Message-ID: <20231218153105.12717-13-dwagner@suse.de>
+Subject: [PATCH v3 13/16] nvmet-fc: abort command if when there is binding
+Date: Mon, 18 Dec 2023 16:31:01 +0100
+Message-ID: <20231218153105.12717-14-dwagner@suse.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218153105.12717-1-dwagner@suse.de>
 References: <20231218153105.12717-1-dwagner@suse.de>
@@ -59,59 +59,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Flag: NO
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	 REPLY(-4.00)[]
+Authentication-Results: smtp-out2.suse.de;
+	none
 X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: C824421FC5
-X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 8145E1FD4D
 
-The association life time is tight to the life time of the target port.
-That means we do not take extra a refcount when creating a association.
+WHen the target port has not active port binding, there is no point in
+trying to process the command as it has to fail anyway. Instead adding
+checks to all commands abort the command early.
 
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- drivers/nvme/target/fc.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/nvme/target/fc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index c243085d6f42..47cecc8c72b2 100644
+index 47cecc8c72b2..663c51c9fe53 100644
 --- a/drivers/nvme/target/fc.c
 +++ b/drivers/nvme/target/fc.c
-@@ -1109,12 +1109,9 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
- 	if (idx < 0)
- 		goto out_free_assoc;
+@@ -1101,6 +1101,9 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
+ 	int idx;
+ 	bool needrandom = true;
  
--	if (!nvmet_fc_tgtport_get(tgtport))
--		goto out_ida;
--
- 	assoc->hostport = nvmet_fc_alloc_hostport(tgtport, hosthandle);
- 	if (IS_ERR(assoc->hostport))
--		goto out_put;
-+		goto out_ida;
++	if (!tgtport->pe)
++		return NULL;
++
+ 	assoc = kzalloc(sizeof(*assoc), GFP_KERNEL);
+ 	if (!assoc)
+ 		return NULL;
+@@ -2520,8 +2523,9 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
  
- 	assoc->tgtport = tgtport;
- 	assoc->a_id = idx;
-@@ -1144,8 +1141,6 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
+ 	fod->req.cmd = &fod->cmdiubuf.sqe;
+ 	fod->req.cqe = &fod->rspiubuf.cqe;
+-	if (tgtport->pe)
+-		fod->req.port = tgtport->pe->port;
++	if (!tgtport->pe)
++		goto transport_error;
++	fod->req.port = tgtport->pe->port;
  
- 	return assoc;
- 
--out_put:
--	nvmet_fc_tgtport_put(tgtport);
- out_ida:
- 	ida_free(&tgtport->assoc_cnt, idx);
- out_free_assoc:
-@@ -1182,7 +1177,6 @@ nvmet_fc_target_assoc_free(struct kref *ref)
- 	dev_info(tgtport->dev,
- 		"{%d:%d} Association freed\n",
- 		tgtport->fc_target_port.port_num, assoc->a_id);
--	nvmet_fc_tgtport_put(tgtport);
- 	kfree(assoc);
- }
- 
+ 	/* clear any response payload */
+ 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
 -- 
 2.43.0
 
