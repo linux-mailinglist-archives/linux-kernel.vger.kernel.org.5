@@ -1,72 +1,64 @@
-Return-Path: <linux-kernel+bounces-4473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 618E2817DFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BFE0817DFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:19:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 883D71C21AD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:17:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 438581C218E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:19:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59271760B9;
-	Mon, 18 Dec 2023 23:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051D1760B4;
+	Mon, 18 Dec 2023 23:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D2cOYxYI"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="MxmO7Kk9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986454C3B2;
-	Mon, 18 Dec 2023 23:17:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E4EC433C7;
-	Mon, 18 Dec 2023 23:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702941427;
-	bh=9NPpjjGdr4FE4YAQV7We+AqNV5E8KFdD9TC+YKaSMKI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=D2cOYxYI0Uml5DbWzJUXd9jVYt/t2IKdKso8LEzlLzZMiuLlLbf44z9Nh2TTZpCHv
-	 bvLaDGnfAsBuExWqTFTTXQ20QaP+SakFMmIOSZ1IkYo6ahCBWIKIOkt5Pya0ywtk3C
-	 6MdOw2Vp9RlKGHR47pdTLlCdAMl18AEMRR9b72Qv+sd5a8dQeMKi4eS7uPHnhNfJ0O
-	 N5iRoZ2goQPyWIdPJLX346liF4Ykf9mhHe4nrTTpNttz7wVktYvIRJy9Ow1dVWyOXW
-	 v4PIgRnzoebcyokOHEber5wV40H5saplrV4/jY3I3jpPGS4qcw1CAW5DkXgw6F+p63
-	 7MTUqm2RLjvIQ==
-Date: Mon, 18 Dec 2023 15:17:05 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: syzbot <syzbot+f43a23b6e622797c7a28@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
- haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- keescook@chromium.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, pabeni@redhat.com,
- sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com,
- yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] [net?] KASAN: slab-use-after-free Read in
- nla_find
-Message-ID: <20231218151705.7861913d@kernel.org>
-In-Reply-To: <000000000000cdad2b060cc9c542@google.com>
-References: <000000000000cdad2b060cc9c542@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8102674E16;
+	Mon, 18 Dec 2023 23:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=vz2+SV6FQDFW+uFGsb93QwrVbDu7R4z3v/c1VUv6d/o=; b=MxmO7Kk9tqQi8N6OmthNpay4ev
+	1isjVH+koLZd7JvjlnNWCPcWUiWxsQGn7JjxpOhu3OsgiB+IMou/RFTvq41DXvjvWzXOTFeA4jexu
+	NcPfn9MxAmHD8vYZq/kR0TPS4fwp1LVZyueNKoZil60eDFItxCNz74T2h6ECMsNFiTj8uQsEgS5Wy
+	EnDi9WGEGyOODqjUeV+CeKM0MDlgBkBLCENiCw1uw+Li+2m3K1/3511ljMACWsUn51Z0vOUu1F9XM
+	YrmAgYEV5kP1nT3JfmXpsxv1swWBaETmz7B1fK5NszMHJaXH0BfjaM7Fzk5am/EDhsqnvbhME+FV8
+	xXXw+l7Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFMt1-00Fc1h-0M;
+	Mon, 18 Dec 2023 23:18:59 +0000
+Date: Mon, 18 Dec 2023 23:18:59 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: fix doc comment typo fs tree wide
+Message-ID: <20231218231859.GV1674809@ZenIV>
+References: <20231215130927.136917-1-aleksandr.mikhalitsyn@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215130927.136917-1-aleksandr.mikhalitsyn@canonical.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, 18 Dec 2023 06:43:26 -0800 syzbot wrote:
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:364 [inline]
->  print_report+0xc4/0x620 mm/kasan/report.c:475
->  kasan_report+0xda/0x110 mm/kasan/report.c:588
->  nla_ok include/net/netlink.h:1230 [inline]
->  nla_find+0x120/0x130 lib/nlattr.c:746
->  nla_find_nested include/net/netlink.h:1260 [inline]
->  ____bpf_skb_get_nlattr_nest net/core/filter.c:209 [inline]
+On Fri, Dec 15, 2023 at 02:09:27PM +0100, Alexander Mikhalitsyn wrote:
+> Do the replacement:
+> s/simply passs @nop_mnt_idmap/simply passs @nop_mnt_idmap/
+             ^^^                         ^^^
+> in the fs/ tree.
 
-This needs nla_ok() instead of playing with nla_len directly.
-Will send a fix soon..
+You might want to spell it correctly in the replacement string ;-)
 
