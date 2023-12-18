@@ -1,117 +1,86 @@
-Return-Path: <linux-kernel+bounces-3011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9594816617
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:42:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 354BD816619
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 743DF2827FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:42:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDB43B21ADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEBB663DA;
-	Mon, 18 Dec 2023 05:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2892A63D6;
+	Mon, 18 Dec 2023 05:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="DbhgfMK9"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="VPQUMJca"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF44C63C5;
-	Mon, 18 Dec 2023 05:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1702878125;
-	bh=x9ABy5vCpnKgmRlRZ90DI4YDdJgQGcJKqGSjNRufGGk=;
-	h=Date:From:To:Cc:Subject:From;
-	b=DbhgfMK9uGSsLqdZdbHpDmrkuzRR4RL9INGBMWPAp2g0IT8hbDRCn/xlPP4dO+ZN5
-	 LXs6iLXio2AX3siw+/E+PKCpFRiQxDTOBEV9dbxZjOMNgpJpIh4dA3Ll/5d9W4lnLm
-	 hEmktBpyMWkUOQr8/o221dGFh3Rwrgh+hQfgS6P35zj6VXt5Z3vrUGW9lKdtI+1Ilx
-	 +cNY05PSYOt0UpV5UMg+XOF50lFlXTfQcjIBXb8iocrNqreWeJs7qgsD1qz8Epso7P
-	 fN9PJF/nJOvXCbdoOwWakAB5/FDXmUfA5SiKrwZc6tBrnoLs4xRVAB0ZbWCol5S2lS
-	 SnxgXrBKbletg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4StpcD29n3z4xM2;
-	Mon, 18 Dec 2023 16:42:04 +1100 (AEDT)
-Date: Mon, 18 Dec 2023 16:42:03 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Rob Herring <robh@kernel.org>, Greg KH <greg@kroah.com>, Arnd Bergmann
- <arnd@arndb.de>, Jarkko Sakkinen <jarkko@kernel.org>, Bjorn Helgaas
- <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof
- =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the devicetree tree
-Message-ID: <20231218164203.530ad4f7@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D95263C9
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:46:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D594C433C8;
+	Mon, 18 Dec 2023 05:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1702878417;
+	bh=Aitsqp9o/OwmXfDwBOhtyQ3t1dhttz5cuHNKGQ3/Lq0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=VPQUMJcaXqkA6kWtQFYNOCoUb70Yg8hE3wmM4LgkM6VkCgKVGs4KvRQ9/KuRM5C/F
+	 aGCCSNuKoRCcWD6LA60b3Bd/2fL7ectZLVtfa2QyXKAU+WHPvcddnLcOL1NzgSOGyW
+	 EDCfAQwGDTpFV8QKiqsQr+Fb/u6LNLr4v3Bi0m+w=
+Date: Sun, 17 Dec 2023 21:46:56 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Yu Zhao
+ <yuzhao@google.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Jesse Barnes <jsbarnes@google.com>, Suren Baghdasaryan <surenb@google.com>,
+ Guru Anbalagane <gurua@google.com>, David Rientjes <rientjes@google.com>
+Subject: Re: [GIT PULL] hotfixes for 6.7-rc6
+Message-Id: <20231217214656.ee095a1df467b745ad1ca75e@linux-foundation.org>
+In-Reply-To: <ZX8WY7s76KYr3jRE@casper.infradead.org>
+References: <20231215071604.946a433bbc05a6409faf5a33@linux-foundation.org>
+	<CAHk-=wjWJgWzOf9MCuiE0oDsF6cCCn7KKDc_xDN6Q3kWNEHKLQ@mail.gmail.com>
+	<20231215122251.bad09400b337dfb1965f6976@linux-foundation.org>
+	<CAOUHufbcB9Lxeez=NcUY4uzxyX6x71dy2N0SMgj=ALooq+MetQ@mail.gmail.com>
+	<CAHk-=wgWwyvzcG9YiEAv2X7XivH-zqLLxeJ+A6EpMp+EA3o_iw@mail.gmail.com>
+	<ZX8WY7s76KYr3jRE@casper.infradead.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qsN_.e7Or5x+KDHl86iA0Qy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/qsN_.e7Or5x+KDHl86iA0Qy
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+On Sun, 17 Dec 2023 15:40:19 +0000 Matthew Wilcox <willy@infradead.org> wrote:
 
-The following commits are also in various other trees as different
-commits (but the same patches):
+> On Sat, Dec 16, 2023 at 04:16:45PM -0800, Linus Torvalds wrote:
+> > On Fri, 15 Dec 2023 at 20:57, Yu Zhao <yuzhao@google.com> wrote:
+> > >
+> > > There has been a short-term plan, i.e., moving some of folio->flags to
+> > > the lower bits of folio->lru so that we can drop the Kconfig
+> > > constraint. I have discussed this with Willy but never acted on it. My
+> > > priority has been to surface more of our ideas that can potentially
+> > > save users money on memory to the community. I'm CC'ing our team
+> > > leads. Please feel free to let us know your preference on the
+> > > priority.
+> > 
+> > This is definitely a "eventually" thing on my wishlist, so I was more
+> > just wanting to hear that there is a plan, and somebody working on
+> > it..
+> 
+> "eventually" we should get rid of LRUs altogether.  They're no good for
+> a modern CPU.
+> 
+> https://lore.kernel.org/linux-mm/ZTc7SHQ4RbPkD3eZ@casper.infradead.org/
+> 
 
-  11844f340318 ("cdx: Explicitly include correct DT includes, again")
-  319e31686b9f ("tpm: nuvoton: Use i2c_get_match_data()")
-  5adf0863e467 ("serial: esp32_acm: Add explicit platform_device.h include")
-  68398c844813 ("serial: esp32_uart: Use device_get_match_data()")
-  72cc46a84b80 ("pci: rcar-gen4: Replace of_device.h with explicit of.h inc=
-lude")
+OK, but...
 
-These are commits
+What of the cost of physical I/O?  If a computationally more expensive
+scan results in less I/O (hopefully) then the balance is altered?
 
-  aaee477e3e2c ("cdx: Explicitly include correct DT includes, again")
-
-from the char-misc tree
-
-  ebf2d4e8e582 ("tpm: nuvoton: Use i2c_get_match_data()")
-
-from the tpmdd tree
-
-  2600d9939440 ("serial: esp32_acm: Add explicit platform_device.h include")
-  3d19ff562d06 ("serial: esp32_uart: Use device_get_match_data()")
-
-from the tty tree
-
-  ec2152374804 ("PCI: rcar-gen4: Replace of_device.h with explicit of.h inc=
-lude")
-
-from the pci tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qsN_.e7Or5x+KDHl86iA0Qy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV/26sACgkQAVBC80lX
-0GyAWgf/WzLidDn/pnzIIYfzXPAdRsuUenXGZZQdqu9bGMTvUAPM2TaD6/z6osP5
-b2/Ue6gzVmDFZkJxv39is00Aipp5VZUCcdZU1LUzEHSSLTwctSy8W5i51LZO9Xr/
-Eh5BsHLp26LraWORjl9QhLF7AppRfGub/Wr41b2z8S1GG/DiwXrN195R2g9dM+je
-czLoZeh1SakzlJgBWx9ynofl4cJDQYvhEK6/XH9cuv13K3BIa0DUIp3g6RYF/k94
-4cp91wJo5sZFkxoNH4iRQnIdh9QGijAxBDBYc2k9BdJf+DM8Zt0nXzaak4CXeau9
-hFTQjXns+541l2EbySp/8x1qX3xstw==
-=g5tz
------END PGP SIGNATURE-----
-
---Sig_/qsN_.e7Or5x+KDHl86iA0Qy--
 
