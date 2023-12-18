@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-2906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DE9081640F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A75816413
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:29:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F01BB21AC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 01:29:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E923B20BE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 01:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC965CBE;
-	Mon, 18 Dec 2023 01:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D1B79C0;
+	Mon, 18 Dec 2023 01:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DSt9jwRu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YT/44wB+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750AF538B;
-	Mon, 18 Dec 2023 01:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 628986FAC;
+	Mon, 18 Dec 2023 01:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5bcfc508d14so2175379a12.3;
-        Sun, 17 Dec 2023 17:28:42 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2133836a12.3;
+        Sun, 17 Dec 2023 17:28:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702862922; x=1703467722; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702862930; x=1703467730; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RjojUSEOZbZ35+vIKwudAm9m3vU4GuyELsvW3NVGAV4=;
-        b=DSt9jwRu8WIafp4a5fL7DItVKIPcSSwCOZTFduAS1XkJ1PrgXfDHI9shCKYY9Bh8rx
-         EKC31DIdLa3hE1/NVwGItQYtHopwR31dhdWg+QIjmbcXicIp4l1SJ2w18KBNabhYwiV2
-         AEAIlZEgH9V85eagsjoTpAVpJQnpTQMBecU479G4LhapBDVZ+MXHYbdx+nuScVCPU9BR
-         5tYZ6huwjYL5FsMhQ4cbvZ9tEjXr+MrfrB4UakYvP8mlTmn+62AiXkkSzBSjYqQe6HzU
-         8vGzNm++3fr1f5CbaJkLDU6JmJDl0720DndUG0IywFx2AvFpcGT3YKMZgrpedsm5pxt9
-         dAOg==
+        bh=wCH7qHK5H8vXi2OAOx3SCYKWSwB7ChpMXiuHfRRRRKQ=;
+        b=YT/44wB+jmjT5DxysAPSSpkhe9QnU1kCuKfs7FAtYFFrQQ53fZ8YXNm/UOAhW6V0nY
+         gE+XX/BKnCwSQdu9JUvb/JRYbNRaV1dPO8sUPTLBKMEdxucjgNfL9d+o6J7N2geve0Fm
+         cxuVNGnh3ZMVESTmsJSutIBYSF2I1Iccz5LYU+GVstOeE5eDTW+X8YRsu0qp4mC5R/w+
+         8Vc25wP7kxZJWwfKPkEVkqbnm02LXX6/DtPzB0rYA0jEkBJ7amKqhACSb3Qepl6ybEQ3
+         z1XZgETo5MUP0ekAZ7due3OBS1kypWOEu9mhEcBZCoL1/9lJrCNq6ccE+RwrVD38wo9c
+         mhZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702862922; x=1703467722;
+        d=1e100.net; s=20230601; t=1702862930; x=1703467730;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RjojUSEOZbZ35+vIKwudAm9m3vU4GuyELsvW3NVGAV4=;
-        b=ZB+eVWApzwfbUFNYXnzxtPo6TgjCQo8G2I9rfnQth5S7ADbSznFUgh3ewbLnck+WOs
-         XVgb/36jJptpkyNR6I2l0FOXHkJRfq5y1vklRgSho+PWyisivQZk4Ol6+smZtLY4XTqi
-         BrbWTnQNS+uenZthfBGeo2xh1wsoSGgcBYUVyMHhWo/cSuGdeXlfvhWpR/9V7HLLNNQQ
-         twWMEAzivMa1AOy1S1UX8GmsAlHJmOmMNUfqEc1V3Kw7bVtQvfYNvGVDFpxNUNAZDRWY
-         t1j/dY7WIvzAWJVM+nwzIkrvAt5CFQi25y7JZ4sn9HSdVHkbOO1GpMyaLZ9irJpr7JRJ
-         uSkw==
-X-Gm-Message-State: AOJu0YyY29iW3rUGmafJxBzv5LCHThxfjQtjlBQAxQYUzt5HZKjmh7ZF
-	oxw/tJdhbtj6rotz5ERBI9E=
-X-Google-Smtp-Source: AGHT+IGqRwU9ifndXIqgukyYWjdkiAwuEu9XFlKu7ZG7igG9MGT4+0mjGiPBfOMnyvO/1Mp3pHeT+w==
-X-Received: by 2002:a05:6a20:f397:b0:18f:e56b:9848 with SMTP id qr23-20020a056a20f39700b0018fe56b9848mr17092765pzb.13.1702862921692;
-        Sun, 17 Dec 2023 17:28:41 -0800 (PST)
+        bh=wCH7qHK5H8vXi2OAOx3SCYKWSwB7ChpMXiuHfRRRRKQ=;
+        b=B3Kf3A3Z740ZMQOCp8NQoigGKRuSm/auhCbwRN4rw3QLWUZZGVqlNBSznMIM8QnwVY
+         Z8MBmS6oNy1ELqzqZa62PSTp4S7piLgFpLKmblPQfX3ZrXcvhtTZ6NlcHENRLdRGMeKv
+         YVlO2J4CDkVxUtQsS7R7f5UFeTDlW9uBcPOElxc4rhXjttRK47LYBSebKkbvvs8tqu4V
+         6qfEPzYfGT9yGIFbym/q4EKb++KAUG4uJ9NaaysEnsrd55V9bko9H8nBh/OSpi6/mMRt
+         SPD6totwPi7/DB7cINBMDvF8I85kmD7+FF7CPLX0TRAMDaSVhnwMot3s8P+cJn1XMqOC
+         1Opw==
+X-Gm-Message-State: AOJu0YwTejuJAeh4kC88KkxTW9VWWfJTSBpbRKRdohF16TTKx2qaPk1p
+	EyiepqiaHuXTCIi014gq7XA=
+X-Google-Smtp-Source: AGHT+IGa133ICpIrLkqr4uaz1Qz9UIK0d9TdYs5j/BpAJUE3p8qseJQ4tTZnFwgzc9agEM9ytMRHyg==
+X-Received: by 2002:a05:6a20:bb04:b0:18a:f317:1ee8 with SMTP id fc4-20020a056a20bb0400b0018af3171ee8mr16997382pzb.16.1702862930578;
+        Sun, 17 Dec 2023 17:28:50 -0800 (PST)
 Received: from ubuntu.. ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id s6-20020a625e06000000b006d64c4cb661sm1414014pfb.200.2023.12.17.17.28.35
+        by smtp.gmail.com with ESMTPSA id s6-20020a625e06000000b006d64c4cb661sm1414014pfb.200.2023.12.17.17.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 17:28:41 -0800 (PST)
+        Sun, 17 Dec 2023 17:28:50 -0800 (PST)
 From: Hongyu Jin <hongyu.jin.cn@gmail.com>
 To: agk@redhat.com,
 	snitzer@kernel.org,
@@ -70,9 +70,9 @@ Cc: zhiguo.niu@unisoc.com,
 	linux-kernel@vger.kernel.org,
 	dm-devel@lists.linux.dev,
 	linux-block@vger.kernel.org
-Subject: [PATCH v5 RESEND 2/5] dm: Support I/O priority for dm_io()
-Date: Mon, 18 Dec 2023 09:27:43 +0800
-Message-Id: <20231218012746.24442-3-hongyu.jin.cn@gmail.com>
+Subject: [PATCH v5 RESEND 3/5] dm-bufio: Support I/O priority
+Date: Mon, 18 Dec 2023 09:27:44 +0800
+Message-Id: <20231218012746.24442-4-hongyu.jin.cn@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231218012746.24442-1-hongyu.jin.cn@gmail.com>
 References: <CAMQnb4O15c=JC-zkCJD0U9GWwWko+Hez1iU7+cc3vhNSG86p9w@mail.gmail.com>
@@ -87,348 +87,335 @@ Content-Transfer-Encoding: 8bit
 
 From: Hongyu Jin <hongyu.jin@unisoc.com>
 
-Add I/O priority parameter for dm_io().
+Add I/O priority parameter for dm_bufio_read() and
+dm_bufio_prefetch().
 
 Co-developed-by: Yibin Ding <yibin.ding@unisoc.com>
 Signed-off-by: Yibin Ding <yibin.ding@unisoc.com>
 Signed-off-by: Hongyu Jin <hongyu.jin@unisoc.com>
 ---
- drivers/md/dm-bufio.c           |  6 +++---
- drivers/md/dm-integrity.c       | 10 +++++-----
- drivers/md/dm-io.c              | 23 +++++++++++++----------
- drivers/md/dm-kcopyd.c          |  4 ++--
- drivers/md/dm-log.c             |  4 ++--
- drivers/md/dm-raid1.c           |  6 +++---
- drivers/md/dm-snap-persistent.c |  4 ++--
- drivers/md/dm-writecache.c      |  8 ++++----
- include/linux/dm-io.h           |  3 ++-
- 9 files changed, 36 insertions(+), 32 deletions(-)
+ drivers/md/dm-bufio.c                         | 35 ++++++++++---------
+ drivers/md/dm-ebs-target.c                    |  8 ++---
+ drivers/md/dm-integrity.c                     |  2 +-
+ drivers/md/dm-snap-persistent.c               |  4 +--
+ drivers/md/dm-verity-fec.c                    |  4 +--
+ drivers/md/dm-verity-target.c                 |  4 +--
+ drivers/md/persistent-data/dm-block-manager.c |  6 ++--
+ include/linux/dm-bufio.h                      |  5 ++-
+ 8 files changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
-index 62eb27639c9b..91b05bf4b920 100644
+index 91b05bf4b920..f3b051d3517e 100644
 --- a/drivers/md/dm-bufio.c
 +++ b/drivers/md/dm-bufio.c
+@@ -1256,7 +1256,7 @@ static void dmio_complete(unsigned long error, void *context)
+ }
+ 
+ static void use_dmio(struct dm_buffer *b, enum req_op op, sector_t sector,
+-		     unsigned int n_sectors, unsigned int offset)
++		     unsigned int n_sectors, unsigned int offset, unsigned short ioprio)
+ {
+ 	int r;
+ 	struct dm_io_request io_req = {
 @@ -1279,7 +1279,7 @@ static void use_dmio(struct dm_buffer *b, enum req_op op, sector_t sector,
  		io_req.mem.ptr.vma = (char *)b->data + offset;
  	}
  
--	r = dm_io(&io_req, 1, &region, NULL);
-+	r = dm_io(&io_req, 1, &region, NULL, IOPRIO_DEFAULT);
+-	r = dm_io(&io_req, 1, &region, NULL, IOPRIO_DEFAULT);
++	r = dm_io(&io_req, 1, &region, NULL, ioprio);
  	if (unlikely(r))
  		b->end_io(b, errno_to_blk_status(r));
  }
-@@ -2130,7 +2130,7 @@ int dm_bufio_issue_flush(struct dm_bufio_client *c)
- 	if (WARN_ON_ONCE(dm_bufio_in_request()))
- 		return -EINVAL;
- 
--	return dm_io(&io_req, 1, &io_reg, NULL);
-+	return dm_io(&io_req, 1, &io_reg, NULL, IOPRIO_DEFAULT);
+@@ -1295,7 +1295,7 @@ static void bio_complete(struct bio *bio)
  }
- EXPORT_SYMBOL_GPL(dm_bufio_issue_flush);
  
-@@ -2154,7 +2154,7 @@ int dm_bufio_issue_discard(struct dm_bufio_client *c, sector_t block, sector_t c
- 	if (WARN_ON_ONCE(dm_bufio_in_request()))
- 		return -EINVAL; /* discards are optional */
- 
--	return dm_io(&io_req, 1, &io_reg, NULL);
-+	return dm_io(&io_req, 1, &io_reg, NULL, IOPRIO_DEFAULT);
- }
- EXPORT_SYMBOL_GPL(dm_bufio_issue_discard);
- 
-diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
-index e85c688fd91e..9ffd093ad6cc 100644
---- a/drivers/md/dm-integrity.c
-+++ b/drivers/md/dm-integrity.c
-@@ -553,7 +553,7 @@ static int sync_rw_sb(struct dm_integrity_c *ic, blk_opf_t opf)
- 		}
- 	}
- 
--	r = dm_io(&io_req, 1, &io_loc, NULL);
-+	r = dm_io(&io_req, 1, &io_loc, NULL, IOPRIO_DEFAULT);
- 	if (unlikely(r))
- 		return r;
- 
-@@ -1071,7 +1071,7 @@ static void rw_journal_sectors(struct dm_integrity_c *ic, blk_opf_t opf,
- 	io_loc.sector = ic->start + SB_SECTORS + sector;
- 	io_loc.count = n_sectors;
- 
--	r = dm_io(&io_req, 1, &io_loc, NULL);
-+	r = dm_io(&io_req, 1, &io_loc, NULL, IOPRIO_DEFAULT);
- 	if (unlikely(r)) {
- 		dm_integrity_io_error(ic, (opf & REQ_OP_MASK) == REQ_OP_READ ?
- 				      "reading journal" : "writing journal", r);
-@@ -1188,7 +1188,7 @@ static void copy_from_journal(struct dm_integrity_c *ic, unsigned int section, u
- 	io_loc.sector = target;
- 	io_loc.count = n_sectors;
- 
--	r = dm_io(&io_req, 1, &io_loc, NULL);
-+	r = dm_io(&io_req, 1, &io_loc, NULL, IOPRIO_DEFAULT);
- 	if (unlikely(r)) {
- 		WARN_ONCE(1, "asynchronous dm_io failed: %d", r);
- 		fn(-1UL, data);
-@@ -1517,7 +1517,7 @@ static void dm_integrity_flush_buffers(struct dm_integrity_c *ic, bool flush_dat
- 		fr.io_reg.count = 0,
- 		fr.ic = ic;
- 		init_completion(&fr.comp);
--		r = dm_io(&fr.io_req, 1, &fr.io_reg, NULL);
-+		r = dm_io(&fr.io_req, 1, &fr.io_reg, NULL, IOPRIO_DEFAULT);
- 		BUG_ON(r);
- 	}
- 
-@@ -2739,7 +2739,7 @@ static void integrity_recalc(struct work_struct *w)
- 	io_loc.sector = get_data_sector(ic, area, offset);
- 	io_loc.count = n_sectors;
- 
--	r = dm_io(&io_req, 1, &io_loc, NULL);
-+	r = dm_io(&io_req, 1, &io_loc, NULL, IOPRIO_DEFAULT);
- 	if (unlikely(r)) {
- 		dm_integrity_io_error(ic, "reading data", r);
- 		goto err;
-diff --git a/drivers/md/dm-io.c b/drivers/md/dm-io.c
-index f053ce245814..7409490259d1 100644
---- a/drivers/md/dm-io.c
-+++ b/drivers/md/dm-io.c
-@@ -305,7 +305,7 @@ static void km_dp_init(struct dpages *dp, void *data)
-  */
- static void do_region(const blk_opf_t opf, unsigned int region,
- 		      struct dm_io_region *where, struct dpages *dp,
--		      struct io *io)
-+		      struct io *io, unsigned short ioprio)
+ static void use_bio(struct dm_buffer *b, enum req_op op, sector_t sector,
+-		    unsigned int n_sectors, unsigned int offset)
++		    unsigned int n_sectors, unsigned int offset, unsigned short ioprio)
  {
  	struct bio *bio;
- 	struct page *page;
-@@ -354,6 +354,7 @@ static void do_region(const blk_opf_t opf, unsigned int region,
- 				       &io->client->bios);
- 		bio->bi_iter.bi_sector = where->sector + (where->count - remaining);
- 		bio->bi_end_io = endio;
-+		bio->bi_ioprio = ioprio;
- 		store_io_and_region_in_bio(bio, io, region);
+ 	char *ptr;
+@@ -1303,13 +1303,14 @@ static void use_bio(struct dm_buffer *b, enum req_op op, sector_t sector,
  
- 		if (op == REQ_OP_DISCARD || op == REQ_OP_WRITE_ZEROES) {
-@@ -383,7 +384,7 @@ static void do_region(const blk_opf_t opf, unsigned int region,
+ 	bio = bio_kmalloc(1, GFP_NOWAIT | __GFP_NORETRY | __GFP_NOWARN);
+ 	if (!bio) {
+-		use_dmio(b, op, sector, n_sectors, offset);
++		use_dmio(b, op, sector, n_sectors, offset, ioprio);
+ 		return;
+ 	}
+ 	bio_init(bio, b->c->bdev, bio->bi_inline_vecs, 1, op);
+ 	bio->bi_iter.bi_sector = sector;
+ 	bio->bi_end_io = bio_complete;
+ 	bio->bi_private = b;
++	bio->bi_ioprio = ioprio;
  
- static void dispatch_io(blk_opf_t opf, unsigned int num_regions,
- 			struct dm_io_region *where, struct dpages *dp,
--			struct io *io, int sync)
-+			struct io *io, int sync, unsigned short ioprio)
+ 	ptr = (char *)b->data + offset;
+ 	len = n_sectors << SECTOR_SHIFT;
+@@ -1332,7 +1333,7 @@ static inline sector_t block_to_sector(struct dm_bufio_client *c, sector_t block
+ 	return sector;
+ }
+ 
+-static void submit_io(struct dm_buffer *b, enum req_op op,
++static void submit_io(struct dm_buffer *b, enum req_op op, unsigned short ioprio,
+ 		      void (*end_io)(struct dm_buffer *, blk_status_t))
  {
- 	int i;
- 	struct dpages old_pages = *dp;
-@@ -400,7 +401,7 @@ static void dispatch_io(blk_opf_t opf, unsigned int num_regions,
- 	for (i = 0; i < num_regions; i++) {
- 		*dp = old_pages;
- 		if (where[i].count || (opf & REQ_PREFLUSH))
--			do_region(opf, i, where + i, dp, io);
-+			do_region(opf, i, where + i, dp, io, ioprio);
+ 	unsigned int n_sectors;
+@@ -1362,9 +1363,9 @@ static void submit_io(struct dm_buffer *b, enum req_op op,
  	}
  
- 	/*
-@@ -425,7 +426,7 @@ static void sync_io_complete(unsigned long error, void *context)
- 
- static int sync_io(struct dm_io_client *client, unsigned int num_regions,
- 		   struct dm_io_region *where, blk_opf_t opf, struct dpages *dp,
--		   unsigned long *error_bits)
-+		   unsigned long *error_bits, unsigned short ioprio)
- {
- 	struct io *io;
- 	struct sync_io sio;
-@@ -447,7 +448,7 @@ static int sync_io(struct dm_io_client *client, unsigned int num_regions,
- 	io->vma_invalidate_address = dp->vma_invalidate_address;
- 	io->vma_invalidate_size = dp->vma_invalidate_size;
- 
--	dispatch_io(opf, num_regions, where, dp, io, 1);
-+	dispatch_io(opf, num_regions, where, dp, io, 1, ioprio);
- 
- 	wait_for_completion_io(&sio.wait);
- 
-@@ -459,7 +460,8 @@ static int sync_io(struct dm_io_client *client, unsigned int num_regions,
- 
- static int async_io(struct dm_io_client *client, unsigned int num_regions,
- 		    struct dm_io_region *where, blk_opf_t opf,
--		    struct dpages *dp, io_notify_fn fn, void *context)
-+		    struct dpages *dp, io_notify_fn fn, void *context,
-+		    unsigned short ioprio)
- {
- 	struct io *io;
- 
-@@ -479,7 +481,7 @@ static int async_io(struct dm_io_client *client, unsigned int num_regions,
- 	io->vma_invalidate_address = dp->vma_invalidate_address;
- 	io->vma_invalidate_size = dp->vma_invalidate_size;
- 
--	dispatch_io(opf, num_regions, where, dp, io, 0);
-+	dispatch_io(opf, num_regions, where, dp, io, 0, ioprio);
- 	return 0;
- }
- 
-@@ -521,7 +523,8 @@ static int dp_init(struct dm_io_request *io_req, struct dpages *dp,
- }
- 
- int dm_io(struct dm_io_request *io_req, unsigned int num_regions,
--	  struct dm_io_region *where, unsigned long *sync_error_bits)
-+	  struct dm_io_region *where, unsigned long *sync_error_bits,
-+	  unsigned short ioprio)
- {
- 	int r;
- 	struct dpages dp;
-@@ -532,11 +535,11 @@ int dm_io(struct dm_io_request *io_req, unsigned int num_regions,
- 
- 	if (!io_req->notify.fn)
- 		return sync_io(io_req->client, num_regions, where,
--			       io_req->bi_opf, &dp, sync_error_bits);
-+			       io_req->bi_opf, &dp, sync_error_bits, ioprio);
- 
- 	return async_io(io_req->client, num_regions, where,
- 			io_req->bi_opf, &dp, io_req->notify.fn,
--			io_req->notify.context);
-+			io_req->notify.context, ioprio);
- }
- EXPORT_SYMBOL(dm_io);
- 
-diff --git a/drivers/md/dm-kcopyd.c b/drivers/md/dm-kcopyd.c
-index d01807c50f20..79c65c9ad5fa 100644
---- a/drivers/md/dm-kcopyd.c
-+++ b/drivers/md/dm-kcopyd.c
-@@ -578,9 +578,9 @@ static int run_io_job(struct kcopyd_job *job)
- 	io_job_start(job->kc->throttle);
- 
- 	if (job->op == REQ_OP_READ)
--		r = dm_io(&io_req, 1, &job->source, NULL);
-+		r = dm_io(&io_req, 1, &job->source, NULL, IOPRIO_DEFAULT);
+ 	if (b->data_mode != DATA_MODE_VMALLOC)
+-		use_bio(b, op, sector, n_sectors, offset);
++		use_bio(b, op, sector, n_sectors, offset, ioprio);
  	else
--		r = dm_io(&io_req, job->num_dests, job->dests, NULL);
-+		r = dm_io(&io_req, job->num_dests, job->dests, NULL, IOPRIO_DEFAULT);
- 
- 	return r;
- }
-diff --git a/drivers/md/dm-log.c b/drivers/md/dm-log.c
-index f9f84236dfcd..f7f9c2100937 100644
---- a/drivers/md/dm-log.c
-+++ b/drivers/md/dm-log.c
-@@ -300,7 +300,7 @@ static int rw_header(struct log_c *lc, enum req_op op)
- {
- 	lc->io_req.bi_opf = op;
- 
--	return dm_io(&lc->io_req, 1, &lc->header_location, NULL);
-+	return dm_io(&lc->io_req, 1, &lc->header_location, NULL, IOPRIO_DEFAULT);
- }
- 
- static int flush_header(struct log_c *lc)
-@@ -313,7 +313,7 @@ static int flush_header(struct log_c *lc)
- 
- 	lc->io_req.bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
- 
--	return dm_io(&lc->io_req, 1, &null_location, NULL);
-+	return dm_io(&lc->io_req, 1, &null_location, NULL, IOPRIO_DEFAULT);
- }
- 
- static int read_header(struct log_c *log)
-diff --git a/drivers/md/dm-raid1.c b/drivers/md/dm-raid1.c
-index ddcb2bc4a617..9511dae5b556 100644
---- a/drivers/md/dm-raid1.c
-+++ b/drivers/md/dm-raid1.c
-@@ -278,7 +278,7 @@ static int mirror_flush(struct dm_target *ti)
- 	}
- 
- 	error_bits = -1;
--	dm_io(&io_req, ms->nr_mirrors, io, &error_bits);
-+	dm_io(&io_req, ms->nr_mirrors, io, &error_bits, IOPRIO_DEFAULT);
- 	if (unlikely(error_bits != 0)) {
- 		for (i = 0; i < ms->nr_mirrors; i++)
- 			if (test_bit(i, &error_bits))
-@@ -554,7 +554,7 @@ static void read_async_bio(struct mirror *m, struct bio *bio)
- 
- 	map_region(&io, m, bio);
- 	bio_set_m(bio, m);
--	BUG_ON(dm_io(&io_req, 1, &io, NULL));
-+	BUG_ON(dm_io(&io_req, 1, &io, NULL, IOPRIO_DEFAULT));
- }
- 
- static inline int region_in_sync(struct mirror_set *ms, region_t region,
-@@ -681,7 +681,7 @@ static void do_write(struct mirror_set *ms, struct bio *bio)
- 	 */
- 	bio_set_m(bio, get_default_mirror(ms));
- 
--	BUG_ON(dm_io(&io_req, ms->nr_mirrors, io, NULL));
-+	BUG_ON(dm_io(&io_req, ms->nr_mirrors, io, NULL, IOPRIO_DEFAULT));
- }
- 
- static void do_writes(struct mirror_set *ms, struct bio_list *writes)
-diff --git a/drivers/md/dm-snap-persistent.c b/drivers/md/dm-snap-persistent.c
-index 15649921f2a9..568d10842b1f 100644
---- a/drivers/md/dm-snap-persistent.c
-+++ b/drivers/md/dm-snap-persistent.c
-@@ -223,7 +223,7 @@ static void do_metadata(struct work_struct *work)
- {
- 	struct mdata_req *req = container_of(work, struct mdata_req, work);
- 
--	req->result = dm_io(req->io_req, 1, req->where, NULL);
-+	req->result = dm_io(req->io_req, 1, req->where, NULL, IOPRIO_DEFAULT);
+-		use_dmio(b, op, sector, n_sectors, offset);
++		use_dmio(b, op, sector, n_sectors, offset, ioprio);
  }
  
  /*
-@@ -247,7 +247,7 @@ static int chunk_io(struct pstore *ps, void *area, chunk_t chunk, blk_opf_t opf,
- 	struct mdata_req req;
+@@ -1420,7 +1421,7 @@ static void __write_dirty_buffer(struct dm_buffer *b,
+ 	b->write_end = b->dirty_end;
  
- 	if (!metadata)
--		return dm_io(&io_req, 1, &where, NULL);
-+		return dm_io(&io_req, 1, &where, NULL, IOPRIO_DEFAULT);
+ 	if (!write_list)
+-		submit_io(b, REQ_OP_WRITE, write_endio);
++		submit_io(b, REQ_OP_WRITE, IOPRIO_DEFAULT, write_endio);
+ 	else
+ 		list_add_tail(&b->write_list, write_list);
+ }
+@@ -1434,7 +1435,7 @@ static void __flush_write_list(struct list_head *write_list)
+ 		struct dm_buffer *b =
+ 			list_entry(write_list->next, struct dm_buffer, write_list);
+ 		list_del(&b->write_list);
+-		submit_io(b, REQ_OP_WRITE, write_endio);
++		submit_io(b, REQ_OP_WRITE, IOPRIO_DEFAULT, write_endio);
+ 		cond_resched();
+ 	}
+ 	blk_finish_plug(&plug);
+@@ -1816,7 +1817,7 @@ static void read_endio(struct dm_buffer *b, blk_status_t status)
+  * and uses dm_bufio_mark_buffer_dirty to write new data back).
+  */
+ static void *new_read(struct dm_bufio_client *c, sector_t block,
+-		      enum new_flag nf, struct dm_buffer **bp)
++		      enum new_flag nf, struct dm_buffer **bp, unsigned short ioprio)
+ {
+ 	int need_submit = 0;
+ 	struct dm_buffer *b;
+@@ -1869,7 +1870,7 @@ static void *new_read(struct dm_bufio_client *c, sector_t block,
+ 		return NULL;
  
- 	req.where = &where;
- 	req.io_req = &io_req;
-diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
-index 074cb785eafc..6a4279bfb1e7 100644
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -531,7 +531,7 @@ static void ssd_commit_flushed(struct dm_writecache *wc, bool wait_for_ios)
- 		req.notify.context = &endio;
+ 	if (need_submit)
+-		submit_io(b, REQ_OP_READ, read_endio);
++		submit_io(b, REQ_OP_READ, ioprio, read_endio);
  
- 		/* writing via async dm-io (implied by notify.fn above) won't return an error */
--		(void) dm_io(&req, 1, &region, NULL);
-+		(void) dm_io(&req, 1, &region, NULL, IOPRIO_DEFAULT);
- 		i = j;
+ 	wait_on_bit_io(&b->state, B_READING, TASK_UNINTERRUPTIBLE);
+ 
+@@ -1889,17 +1890,17 @@ static void *new_read(struct dm_bufio_client *c, sector_t block,
+ void *dm_bufio_get(struct dm_bufio_client *c, sector_t block,
+ 		   struct dm_buffer **bp)
+ {
+-	return new_read(c, block, NF_GET, bp);
++	return new_read(c, block, NF_GET, bp, IOPRIO_DEFAULT);
+ }
+ EXPORT_SYMBOL_GPL(dm_bufio_get);
+ 
+ void *dm_bufio_read(struct dm_bufio_client *c, sector_t block,
+-		    struct dm_buffer **bp)
++		    struct dm_buffer **bp, unsigned short ioprio)
+ {
+ 	if (WARN_ON_ONCE(dm_bufio_in_request()))
+ 		return ERR_PTR(-EINVAL);
+ 
+-	return new_read(c, block, NF_READ, bp);
++	return new_read(c, block, NF_READ, bp, ioprio);
+ }
+ EXPORT_SYMBOL_GPL(dm_bufio_read);
+ 
+@@ -1909,12 +1910,12 @@ void *dm_bufio_new(struct dm_bufio_client *c, sector_t block,
+ 	if (WARN_ON_ONCE(dm_bufio_in_request()))
+ 		return ERR_PTR(-EINVAL);
+ 
+-	return new_read(c, block, NF_FRESH, bp);
++	return new_read(c, block, NF_FRESH, bp, IOPRIO_DEFAULT);
+ }
+ EXPORT_SYMBOL_GPL(dm_bufio_new);
+ 
+ void dm_bufio_prefetch(struct dm_bufio_client *c,
+-		       sector_t block, unsigned int n_blocks)
++		       sector_t block, unsigned int n_blocks, unsigned short ioprio)
+ {
+ 	struct blk_plug plug;
+ 
+@@ -1950,7 +1951,7 @@ void dm_bufio_prefetch(struct dm_bufio_client *c,
+ 			dm_bufio_unlock(c);
+ 
+ 			if (need_submit)
+-				submit_io(b, REQ_OP_READ, read_endio);
++				submit_io(b, REQ_OP_READ, ioprio, read_endio);
+ 			dm_bufio_release(b);
+ 
+ 			cond_resched();
+diff --git a/drivers/md/dm-ebs-target.c b/drivers/md/dm-ebs-target.c
+index 435b45201f4d..8198c8a7b416 100644
+--- a/drivers/md/dm-ebs-target.c
++++ b/drivers/md/dm-ebs-target.c
+@@ -84,7 +84,7 @@ static int __ebs_rw_bvec(struct ebs_c *ec, enum req_op op, struct bio_vec *bv,
+ 
+ 		/* Avoid reading for writes in case bio vector's page overwrites block completely. */
+ 		if (op == REQ_OP_READ || buf_off || bv_len < dm_bufio_get_block_size(ec->bufio))
+-			ba = dm_bufio_read(ec->bufio, block, &b);
++			ba = dm_bufio_read(ec->bufio, block, &b, IOPRIO_DEFAULT);
+ 		else
+ 			ba = dm_bufio_new(ec->bufio, block, &b);
+ 
+@@ -194,13 +194,13 @@ static void __ebs_process_bios(struct work_struct *ws)
+ 	bio_list_for_each(bio, &bios) {
+ 		block1 = __sector_to_block(ec, bio->bi_iter.bi_sector);
+ 		if (bio_op(bio) == REQ_OP_READ)
+-			dm_bufio_prefetch(ec->bufio, block1, __nr_blocks(ec, bio));
++			dm_bufio_prefetch(ec->bufio, block1, __nr_blocks(ec, bio), IOPRIO_DEFAULT);
+ 		else if (bio_op(bio) == REQ_OP_WRITE && !(bio->bi_opf & REQ_PREFLUSH)) {
+ 			block2 = __sector_to_block(ec, bio_end_sector(bio));
+ 			if (__block_mod(bio->bi_iter.bi_sector, ec->u_bs))
+-				dm_bufio_prefetch(ec->bufio, block1, 1);
++				dm_bufio_prefetch(ec->bufio, block1, 1, IOPRIO_DEFAULT);
+ 			if (__block_mod(bio_end_sector(bio), ec->u_bs) && block2 != block1)
+-				dm_bufio_prefetch(ec->bufio, block2, 1);
++				dm_bufio_prefetch(ec->bufio, block2, 1, IOPRIO_DEFAULT);
+ 		}
  	}
  
-@@ -568,7 +568,7 @@ static void ssd_commit_superblock(struct dm_writecache *wc)
- 	req.notify.fn = NULL;
- 	req.notify.context = NULL;
+diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
+index 9ffd093ad6cc..1e40e712bcd7 100644
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -1418,7 +1418,7 @@ static int dm_integrity_rw_tag(struct dm_integrity_c *ic, unsigned char *tag, se
+ 		if (unlikely(r))
+ 			return r;
  
--	r = dm_io(&req, 1, &region, NULL);
-+	r = dm_io(&req, 1, &region, NULL, IOPRIO_DEFAULT);
- 	if (unlikely(r))
- 		writecache_error(wc, r, "error writing superblock");
+-		data = dm_bufio_read(ic->bufio, *metadata_block, &b);
++		data = dm_bufio_read(ic->bufio, *metadata_block, &b, IOPRIO_DEFAULT);
+ 		if (IS_ERR(data))
+ 			return PTR_ERR(data);
+ 
+diff --git a/drivers/md/dm-snap-persistent.c b/drivers/md/dm-snap-persistent.c
+index 568d10842b1f..a2072b95e28c 100644
+--- a/drivers/md/dm-snap-persistent.c
++++ b/drivers/md/dm-snap-persistent.c
+@@ -524,7 +524,7 @@ static int read_exceptions(struct pstore *ps,
+ 
+ 				if (unlikely(pf_chunk >= dm_bufio_get_device_size(client)))
+ 					break;
+-				dm_bufio_prefetch(client, pf_chunk, 1);
++				dm_bufio_prefetch(client, pf_chunk, 1, IOPRIO_DEFAULT);
+ 				prefetch_area++;
+ 				if (unlikely(!prefetch_area))
+ 					break;
+@@ -533,7 +533,7 @@ static int read_exceptions(struct pstore *ps,
+ 
+ 		chunk = area_location(ps, ps->current_area);
+ 
+-		area = dm_bufio_read(client, chunk, &bp);
++		area = dm_bufio_read(client, chunk, &bp, IOPRIO_DEFAULT);
+ 		if (IS_ERR(area)) {
+ 			r = PTR_ERR(area);
+ 			goto ret_destroy_bufio;
+diff --git a/drivers/md/dm-verity-fec.c b/drivers/md/dm-verity-fec.c
+index 3ef9f018da60..715173cbf0ee 100644
+--- a/drivers/md/dm-verity-fec.c
++++ b/drivers/md/dm-verity-fec.c
+@@ -68,7 +68,7 @@ static u8 *fec_read_parity(struct dm_verity *v, u64 rsb, int index,
+ 	block = div64_u64_rem(position, v->fec->io_size, &rem);
+ 	*offset = (unsigned int)rem;
+ 
+-	res = dm_bufio_read(v->fec->bufio, block, buf);
++	res = dm_bufio_read(v->fec->bufio, block, buf, IOPRIO_DEFAULT);
+ 	if (IS_ERR(res)) {
+ 		DMERR("%s: FEC %llu: parity read failed (block %llu): %ld",
+ 		      v->data_dev->name, (unsigned long long)rsb,
+@@ -247,7 +247,7 @@ static int fec_read_bufs(struct dm_verity *v, struct dm_verity_io *io,
+ 			bufio = v->bufio;
+ 		}
+ 
+-		bbuf = dm_bufio_read(bufio, block, &buf);
++		bbuf = dm_bufio_read(bufio, block, &buf, IOPRIO_DEFAULT);
+ 		if (IS_ERR(bbuf)) {
+ 			DMWARN_LIMIT("%s: FEC %llu: read failed (%llu): %ld",
+ 				     v->data_dev->name,
+diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+index 26adcfea0302..0038e168f3d7 100644
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -307,7 +307,7 @@ static int verity_verify_level(struct dm_verity *v, struct dm_verity_io *io,
+ 			return -EAGAIN;
+ 		}
+ 	} else
+-		data = dm_bufio_read(v->bufio, hash_block, &buf);
++		data = dm_bufio_read(v->bufio, hash_block, &buf, IOPRIO_DEFAULT);
+ 
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -717,7 +717,7 @@ static void verity_prefetch_io(struct work_struct *work)
+ 		}
+ no_prefetch_cluster:
+ 		dm_bufio_prefetch(v->bufio, hash_block_start,
+-				  hash_block_end - hash_block_start + 1);
++				  hash_block_end - hash_block_start + 1, IOPRIO_DEFAULT);
+ 	}
+ 
+ 	kfree(pw);
+diff --git a/drivers/md/persistent-data/dm-block-manager.c b/drivers/md/persistent-data/dm-block-manager.c
+index 0e010e1204aa..86a4f73d2f3d 100644
+--- a/drivers/md/persistent-data/dm-block-manager.c
++++ b/drivers/md/persistent-data/dm-block-manager.c
+@@ -474,7 +474,7 @@ int dm_bm_read_lock(struct dm_block_manager *bm, dm_block_t b,
+ 	void *p;
+ 	int r;
+ 
+-	p = dm_bufio_read(bm->bufio, b, (struct dm_buffer **) result);
++	p = dm_bufio_read(bm->bufio, b, (struct dm_buffer **) result, IOPRIO_DEFAULT);
+ 	if (IS_ERR(p))
+ 		return PTR_ERR(p);
+ 
+@@ -510,7 +510,7 @@ int dm_bm_write_lock(struct dm_block_manager *bm,
+ 	if (dm_bm_is_read_only(bm))
+ 		return -EPERM;
+ 
+-	p = dm_bufio_read(bm->bufio, b, (struct dm_buffer **) result);
++	p = dm_bufio_read(bm->bufio, b, (struct dm_buffer **) result, IOPRIO_DEFAULT);
+ 	if (IS_ERR(p))
+ 		return PTR_ERR(p);
+ 
+@@ -624,7 +624,7 @@ EXPORT_SYMBOL_GPL(dm_bm_flush);
+ 
+ void dm_bm_prefetch(struct dm_block_manager *bm, dm_block_t b)
+ {
+-	dm_bufio_prefetch(bm->bufio, b, 1);
++	dm_bufio_prefetch(bm->bufio, b, 1, IOPRIO_DEFAULT);
  }
-@@ -596,7 +596,7 @@ static void writecache_disk_flush(struct dm_writecache *wc, struct dm_dev *dev)
- 	req.client = wc->dm_io;
- 	req.notify.fn = NULL;
  
--	r = dm_io(&req, 1, &region, NULL);
-+	r = dm_io(&req, 1, &region, NULL, IOPRIO_DEFAULT);
- 	if (unlikely(r))
- 		writecache_error(wc, r, "error flushing metadata: %d", r);
- }
-@@ -990,7 +990,7 @@ static int writecache_read_metadata(struct dm_writecache *wc, sector_t n_sectors
- 	req.client = wc->dm_io;
- 	req.notify.fn = NULL;
- 
--	return dm_io(&req, 1, &region, NULL);
-+	return dm_io(&req, 1, &region, NULL, IOPRIO_DEFAULT);
- }
- 
- static void writecache_resume(struct dm_target *ti)
-diff --git a/include/linux/dm-io.h b/include/linux/dm-io.h
-index 7595142f3fc5..7b2968612b7e 100644
---- a/include/linux/dm-io.h
-+++ b/include/linux/dm-io.h
-@@ -80,7 +80,8 @@ void dm_io_client_destroy(struct dm_io_client *client);
-  * error occurred doing io to the corresponding region.
+ bool dm_bm_is_read_only(struct dm_block_manager *bm)
+diff --git a/include/linux/dm-bufio.h b/include/linux/dm-bufio.h
+index 75e7d8cbb532..6cdd9cb66dd5 100644
+--- a/include/linux/dm-bufio.h
++++ b/include/linux/dm-bufio.h
+@@ -62,7 +62,7 @@ void dm_bufio_set_sector_offset(struct dm_bufio_client *c, sector_t start);
+  * it dirty.
   */
- int dm_io(struct dm_io_request *io_req, unsigned int num_regions,
--	  struct dm_io_region *region, unsigned int long *sync_error_bits);
-+	  struct dm_io_region *region, unsigned int long *sync_error_bits,
-+	  unsigned short ioprio);
+ void *dm_bufio_read(struct dm_bufio_client *c, sector_t block,
+-		    struct dm_buffer **bp);
++		    struct dm_buffer **bp, unsigned short ioprio);
  
- #endif	/* __KERNEL__ */
- #endif	/* _LINUX_DM_IO_H */
+ /*
+  * Like dm_bufio_read, but return buffer from cache, don't read
+@@ -84,8 +84,7 @@ void *dm_bufio_new(struct dm_bufio_client *c, sector_t block,
+  * I/O to finish.
+  */
+ void dm_bufio_prefetch(struct dm_bufio_client *c,
+-		       sector_t block, unsigned int n_blocks);
+-
++		       sector_t block, unsigned int n_blocks, unsigned short ioprio);
+ /*
+  * Release a reference obtained with dm_bufio_{read,get,new}. The data
+  * pointer and dm_buffer pointer is no longer valid after this call.
 -- 
 2.34.1
 
