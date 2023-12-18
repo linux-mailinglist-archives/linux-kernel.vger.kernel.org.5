@@ -1,184 +1,158 @@
-Return-Path: <linux-kernel+bounces-3172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09878816850
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:40:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD784816855
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECBE11C209A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:40:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95B6F2820CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717F3107AB;
-	Mon, 18 Dec 2023 08:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FCC89TqK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239AC10971;
+	Mon, 18 Dec 2023 08:39:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [195.130.137.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F03912B7D;
-	Mon, 18 Dec 2023 08:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI7MpDZ003476;
-	Mon, 18 Dec 2023 08:39:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ttEgV6madoRDju+rlOp1FQWerew2onQEJcXleU51T3s=;
- b=FCC89TqKzUK+FqBkdlBptR24DCxlVILowPXVCeDniHUxwEKZJVksehE4ZDSKrER9kv+V
- GP1gTR4vFeLngXgtksaWqXFQx14ATJM1bw1ePvOV0POGlf+pHVkeAKuplwqetisurgne
- KbgrgmjG9hJmx0KEWijUI9tjDHPJ0u8hwINWbAb3DK81TRD/kbYwIX+fz8FdMosbE1u9
- 4Rnih9jRuwFBk3OoMQq708GPORKFYBO9NfNKGIrMn4jCRJa1fZaDodxCXlsLNp6lX8dW
- DzwxPMiy0yPFHEb2KQetuZpINOGYT+gpCxeQB/4+8+hg95Q+anP4bZbmlCXiC3Wrj009 Aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2grfb85e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 08:39:17 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BI7ueHh028570;
-	Mon, 18 Dec 2023 08:39:16 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2grfb84q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 08:39:16 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI6C4mt010870;
-	Mon, 18 Dec 2023 08:39:15 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7n7my5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 08:39:15 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BI8dCvt43713058
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 18 Dec 2023 08:39:12 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0464D20063;
-	Mon, 18 Dec 2023 08:39:12 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9F5522004F;
-	Mon, 18 Dec 2023 08:39:10 +0000 (GMT)
-Received: from [9.171.88.206] (unknown [9.171.88.206])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 18 Dec 2023 08:39:10 +0000 (GMT)
-Message-ID: <63aa2995-7980-430d-84be-58ce204f5172@linux.ibm.com>
-Date: Mon, 18 Dec 2023 09:39:10 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82D810950
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+	by riemann.telenet-ops.be (Postfix) with ESMTPS id 4SttY74fqzz4wx2D
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:39:39 +0100 (CET)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:1c58:2452:9c5e:ccf6])
+	by andre.telenet-ops.be with bizsmtp
+	id PkfX2B00U182r2K01kfXco; Mon, 18 Dec 2023 09:39:32 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rF99V-00CaMJ-E8
+	for linux-kernel@vger.kernel.org;
+	Mon, 18 Dec 2023 09:39:31 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rF99v-000L2f-Ol
+	for linux-kernel@vger.kernel.org;
+	Mon, 18 Dec 2023 09:39:31 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v6.7-rc6
+Date: Mon, 18 Dec 2023 09:39:31 +0100
+Message-Id: <20231218083931.80857-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CAHk-=wi17USyiO=G0yDXP62eqU3V6x3ck0HcnVMPKHNPsBP_ig@mail.gmail.com>
+References: <CAHk-=wi17USyiO=G0yDXP62eqU3V6x3ck0HcnVMPKHNPsBP_ig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 03/10] net/smc: unify the structs of accept or
- confirm message for v1 and v2
-To: Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702371151-125258-1-git-send-email-guwen@linux.alibaba.com>
- <1702371151-125258-4-git-send-email-guwen@linux.alibaba.com>
-Content-Language: en-US
-From: Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <1702371151-125258-4-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UO1qgJwfFPMOQQrV-3BomPAcQvH5gWbj
-X-Proofpoint-ORIG-GUID: -2R8J05IhAk-ttGXp60Nga28F0Dwdfqt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-18_04,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- mlxlogscore=673 spamscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- malwarescore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312180061
+Content-Transfer-Encoding: 8bit
+
+Below is the list of build error/warning regressions/improvements in
+v6.7-rc6[1] compared to v6.6[2].
+
+Summarized:
+  - build errors: +12/-9
+  - build warnings: +24/-11
+
+JFYI, when comparing v6.7-rc6[1] to v6.7-rc5[3], the summaries are:
+  - build errors: +11/-1
+  - build warnings: +0/-1
+
+Note that there may be false regressions, as some logs are incomplete.
+Still, they're build errors/warnings.
+
+Happy fixing! ;-)
+
+Thanks to the linux-next team for providing the build service.
+
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ceb6a6f023fd3e8b07761ed900352ef574010bcb/ (237 out of 239 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ffc253263a1375a65fa6c9f62a893e9767fbebfa/ (all 239 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/a39b6ac3781d46ba18193c9dbb2110f31e9bffe9/ (238 out of 239 configs)
 
 
+*** ERRORS ***
 
-On 12.12.23 09:52, Wen Gu wrote:
-> The structs of CLC accept and confirm messages for SMCv1 and SMCv2 are
-> separately defined and often casted to each other in the code, which may
-> increase the risk of errors caused by future divergence of them. So
-> unify them into one struct for better maintainability.
-> 
-> Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
->  net/smc/af_smc.c  | 50 +++++++++++++++---------------------------
->  net/smc/smc_clc.c | 65 ++++++++++++++++++++++++-------------------------------
->  net/smc/smc_clc.h | 32 ++++++++++-----------------
->  3 files changed, 57 insertions(+), 90 deletions(-)
-> 
+12 error regressions:
+  + {standard input}: Error: displacement to undefined symbol .L104 overflows 8-bit field :  => 588
+  + {standard input}: Error: displacement to undefined symbol .L105 overflows 8-bit field :  => 590
+  + {standard input}: Error: displacement to undefined symbol .L134 overflows 8-bit field :  => 598
+  + {standard input}: Error: displacement to undefined symbol .L135 overflows 8-bit field :  => 603
+  + {standard input}: Error: displacement to undefined symbol .L75 overflows 12-bit field:  => 589, 606, 586
+  + {standard input}: Error: displacement to undefined symbol .L76 overflows 8-bit field :  => 580, 577
+  + {standard input}: Error: displacement to undefined symbol .L80 overflows 8-bit field :  => 607, 601
+  + {standard input}: Error: displacement to undefined symbol .L81 overflows 8-bit field : 606 => 606, 610, 604
+  + {standard input}: Error: displacement to undefined symbol .L96 overflows 12-bit field:  => 602
+  + {standard input}: Error: invalid operands for opcode:  => 612
+  + {standard input}: Error: missing operand:  => 612
+  + {standard input}: Error: pcrel too far: 595, 574, 598, 601, 577, 604 => 596, 599, 610, 569, 574, 601, 572, 595, 590, 593
 
-[...]
-Thank you very much, Wen Gu. I think this makes it much easier to spot the
-places in the accept/confirm code code where v1 vs v2 really make a difference.
-I understand that this is not really related to v2.1, but I feel it is worth
-simplifying the already complex strucutres before adding even more complexity.
-
-
-
-> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
-> index 1697b84..614fa2f 100644
-> --- a/net/smc/smc_clc.h
-> +++ b/net/smc/smc_clc.h
-> @@ -259,29 +259,22 @@ struct smc_clc_fce_gid_ext {
->  struct smc_clc_msg_accept_confirm {	/* clc accept / confirm message */
->  	struct smc_clc_msg_hdr hdr;
->  	union {
-> -		struct smcr_clc_msg_accept_confirm r0; /* SMC-R */
-> -		struct { /* SMC-D */
-> -			struct smcd_clc_msg_accept_confirm_common d0;
-> -			u32 reserved5[3];
-> -		};
-> -	};
-> -} __packed;			/* format defined in RFC7609 */
-> -
-> -struct smc_clc_msg_accept_confirm_v2 {	/* clc accept / confirm message */
-> -	struct smc_clc_msg_hdr hdr;
-> -	union {
->  		struct { /* SMC-R */
-> -			struct smcr_clc_msg_accept_confirm r0;
-> +			struct smcr_clc_msg_accept_confirm _r0;
-> +			/* v2 only, reserved and ignored in v1: */
->  			u8 eid[SMC_MAX_EID_LEN];
->  			u8 reserved6[8];
->  		} r1;
->  		struct { /* SMC-D */
-> -			struct smcd_clc_msg_accept_confirm_common d0;
-> +			struct smcd_clc_msg_accept_confirm_common _d0;
-> +			/* v2 only, reserved and ignored in v1: */
->  			__be16 chid;
->  			u8 eid[SMC_MAX_EID_LEN];
->  			u8 reserved5[8];
->  		} d1;
->  	};
-> +#define r0	r1._r0
-> +#define d0	d1._d0
-
-This adds complexity. 
-If you add the v2-only fields to struct smcr_clc_msg_accept_confirm and 
-struct smcd_clc_msg_accept_confirm_common respectively, you can avoid the
-#define and the extra layer in the struct. 
-Actually there are already v2-only fields in smcd_clc_msg_accept_confirm_common
-and smcd_clc_msg_accept_confirm_common (gid and others). So you could add the 
-correct informative comments there.
-
->  };
-
-You have removed the __packed attribute.
-patch 07/10 adds it back for the SMC-D case, but the SMC-R case needs it as well.
+9 error improvements:
+  - error: modpost: ".L872" [drivers/mtd/nand/raw/nand.ko] undefined!: N/A => 
+  - {standard input}: Error: displacement to undefined symbol .L101 overflows 12-bit field: 607 => 
+  - {standard input}: Error: displacement to undefined symbol .L103 overflows 8-bit field : 593 => 
+  - {standard input}: Error: displacement to undefined symbol .L107 overflows 8-bit field : 590 => 
+  - {standard input}: Error: displacement to undefined symbol .L140 overflows 8-bit field : 603 => 
+  - {standard input}: Error: displacement to undefined symbol .L149 overflows 8-bit field : 606 => 
+  - {standard input}: Error: displacement to undefined symbol .L73 overflows 12-bit field: 594 => 
+  - {standard input}: Error: displacement to undefined symbol .L74 overflows 8-bit field : 585 => 
+  - {standard input}: Error: unknown pseudo-op: `.': 609 => 
 
 
-[...]
+*** WARNINGS ***
+
+24 warning regressions:
+  + modpost: WARNING: modpost: "__ashldi3" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__lshrdi3" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__ndelay" [drivers/iio/resolver/ad2s1210.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/meson-rng.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/clk/sifive/sifive-prci.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/extcon/extcon-rtk-type-c.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/iio/adc/mcp3564.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/media/i2c/mt9m114.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/media/platform/nuvoton/npcm-video.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/rtc/rtc-imxdi.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/rtc/rtc-ssd202d.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "__udelay" [drivers/usb/typec/tipd/tps6598x.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: "empty_zero_page" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x110 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x14 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x30 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x4c (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x68 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x84 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xa0 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xbc (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xd8 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xf4 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
+  + modpost: WARNING: modpost: vmlinux: section mismatch in reference: __trace_event_discard_commit+0xe4 (section: .text.unlikely) -> initcall_level_names (section: .init.data):  => N/A
+
+11 warning improvements:
+  - modpost: WARNING: modpost: "__ashldi3" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__lshrdi3" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__lshrdi3" [drivers/thunderbolt/thunderbolt.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/media/platform/cadence/cdns-csi2rx.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb2.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb3.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/staging/iio/resolver/ad2s1210.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/staging/qlge/qlge.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: "__udelay" [drivers/staging/rtl8192u/r8192u_usb.ko] has no CRC!: N/A => 
+  - modpost: WARNING: modpost: vmlinux: section mismatch in reference: __trace_event_discard_commit+0x184 (section: .text.unlikely) -> initcall_level_names (section: .init.data): N/A => 
+  - modpost: WARNING: modpost: vmlinux: section mismatch in reference: __trace_event_discard_commit+0xe0 (section: .text.unlikely) -> initcall_level_names (section: .init.data): N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
