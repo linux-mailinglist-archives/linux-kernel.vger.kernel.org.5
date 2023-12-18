@@ -1,145 +1,110 @@
-Return-Path: <linux-kernel+bounces-4078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7C68177AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:38:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7624F8177BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1D171C240CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:38:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 537661C2359A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A591498BF;
-	Mon, 18 Dec 2023 16:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D7B949895;
+	Mon, 18 Dec 2023 16:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="w9PDDfUm"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IFlZymak"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2281E42392
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d190df5d0so14083815e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:37:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0DE1E515
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e384cd6ebso1437968e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:42:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702917477; x=1703522277; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1702917741; x=1703522541; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WUE9wOcs5DhS6rCyT7en0Ycls+VZryCuy04V3s7BDwY=;
-        b=w9PDDfUmDmKfk+lgbu/VSU9dz4HwZKDxVgPUM2nb+WFqQcWEL8LNlQrv24l+GSx0y2
-         6YSm3SeH9GkMFBfiLHkXXJNuorryYuVFHu6PFQFOLEbK6G+RtKJtwBB/XmiTAOvaAYAj
-         Pv7OKru8eAt3//0AMca9mOFGIY6VEauaU3MsmMkre8O4u3TsC/suGqQ0rwa1TGn3KLuO
-         s37rkm2Y7NSV5cL3wD7thYbl9tY/UJrMxUnh8yUX8fQK07sEkeZ0oni/6FVqcHMW9nJs
-         4pDvT+6jVApO6URAJApCxgSLC1i/Pquq+AiY3aVbcODtbSEQn3X3ZJO+orQUgbxwGPee
-         NwtQ==
+        bh=1aUBcpvKGT+MVST7gLJpsdhDGoD1QfbphX+istIq1xA=;
+        b=IFlZymakFcrE48oGsJzCEslS88/rv+Gbytchs62ywN9XLZd5vg+ugv5Q0KkMZgY9vm
+         IKeOjkWqkh1LxY+Ipi1tVahATm+sOb6DK5EeyLAySzuXYx+wtAEQca33nfmcY+uvn6P9
+         CM6lOw9IRmENWz30E/2lzuT6ETXe+/wBRXSkI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702917477; x=1703522277;
+        d=1e100.net; s=20230601; t=1702917741; x=1703522541;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WUE9wOcs5DhS6rCyT7en0Ycls+VZryCuy04V3s7BDwY=;
-        b=nLOZJ0MmnZUMzPFU7mgK4UOvRf93UjrtXPKNgVzsWfv2MAjdTIdVFD97r1NdqK/588
-         JJyLXRiOP1MXEBVsA0azk0m3jgWDOGHscEdWJf5kuqn9GMb2GetezjWcVztlwDViz1JN
-         yG3jlTmj1uez+Zeiu7H1wcz3DMSe17qLGMg9AghgfovloDg3Yrh9XReYCI8I9YzMCH0S
-         PLrYCK997r9YrP19oOcNepbt4svVAqoq1oJzrLsnmIrkDK8L77uvGXq0m80c/BHbzHIh
-         ZUFvheK/bGefJpiEx3HBx7Fr3y6toFlDAfmSv75cgqGx1lIPKStWFxlVQqZO6ObnNzy8
-         ia/A==
-X-Gm-Message-State: AOJu0Yy+d6VxNtP6OE1qwV+e/rzVlrhvFVwmVZmuEtub03FVntNm9DVS
-	emnscah+n23L7PIk/ZYN7o3xhJrIISHrwm9FDl6TWQ==
-X-Google-Smtp-Source: AGHT+IHXrsR1IvFyccMxPBaIu18/8JzznbiYFGpcdylejDvJk9lKQolYCP+MFBgLmXsqvurqf6AGybBA4PfkuxeHX/8=
-X-Received: by 2002:a05:600c:1649:b0:40c:1205:c253 with SMTP id
- o9-20020a05600c164900b0040c1205c253mr8598699wmn.183.1702917474422; Mon, 18
- Dec 2023 08:37:54 -0800 (PST)
+        bh=1aUBcpvKGT+MVST7gLJpsdhDGoD1QfbphX+istIq1xA=;
+        b=WwGm2PbroA2m0ZYmnCiInpmhpjoXnn9t9PnXF3MdHI1/QiG5OzqY1hV1Pdi7f7hx1X
+         AmCtPpQBgudj1oTIYdQ9juWObzkCNxXLVkCc18bkr+ZBNopEn1MGML37nVtAKcTqBY2p
+         rUUOSE7s1unEgNFuKrQm2E1+JZFBMpwh+u5jiktAyqu3RfmJgp0c5Z0yScRIR5GfSQLu
+         D7jeg6OlYMnBYpg+OIe7vxf9XeMPM+75SSrS+f5uXcpLJerFAkW5Xp2QoYv/yzKsNz3i
+         oaawQEz1UtA6kOo4Y3SkhPW15cjWBEHAl5QG3CMX+jUlU/QmWf7KrVYvSGGeuIEdbuwr
+         izPw==
+X-Gm-Message-State: AOJu0YxBbo15YCdC/9LI28s8XPfYwpcSjzVcAR08X7+EKnm6j8hvhD+s
+	0o+BoG2AfS96ISSyZst2Qim5Hz8REnrfk306jDOtdQ==
+X-Google-Smtp-Source: AGHT+IGbv4kWK1Q4T2cHLjWdghzD0ITUT8/tCWyY+vPjTAXhf2UOVmkWT/sj6gVck1C3W92JgvBYgw==
+X-Received: by 2002:a05:6512:31c9:b0:50e:22e5:f868 with SMTP id j9-20020a05651231c900b0050e22e5f868mr1941585lfe.157.1702917741312;
+        Mon, 18 Dec 2023 08:42:21 -0800 (PST)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id a24-20020a1709064a5800b00a23699a31e8sm400342ejv.89.2023.12.18.08.42.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 08:42:21 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so11655a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:42:20 -0800 (PST)
+X-Received: by 2002:a05:6402:22fc:b0:553:7ff4:5885 with SMTP id
+ dn28-20020a05640222fc00b005537ff45885mr32312edb.2.1702917740102; Mon, 18 Dec
+ 2023 08:42:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215-llvm-decode-stacktrace-v1-1-201cb86f4879@quicinc.com>
-In-Reply-To: <20231215-llvm-decode-stacktrace-v1-1-201cb86f4879@quicinc.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 18 Dec 2023 08:37:43 -0800
-Message-ID: <CAKwvOdmY=Jysqai3KOYO8+c5idP9JjNGKL2xZn2sDNdj5MjTVA@mail.gmail.com>
-Subject: Re: [PATCH] scripts/decode_stacktrace.sh: Use LLVM environment variable
-To: Elliot Berman <quic_eberman@quicinc.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Justin Stitt <justinstitt@google.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>, 
-	Manuel Traut <manut@linutronix.de>, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	Will Deacon <will@kernel.org>
+References: <20231214152817.2766280-1-treapking@chromium.org> <20231214152817.2766280-2-treapking@chromium.org>
+In-Reply-To: <20231214152817.2766280-2-treapking@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 18 Dec 2023 08:42:02 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WshKAWRe44ke-C6XnmBBFoPn1sJovGfVAFrQ55LuB8tw@mail.gmail.com>
+Message-ID: <CAD=FV=WshKAWRe44ke-C6XnmBBFoPn1sJovGfVAFrQ55LuB8tw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] drm/panel-edp: Add powered_on_to_enable delay
+To: Pin-yen Lin <treapking@chromium.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Guenter Roeck <groeck@chromium.org>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 10:27=E2=80=AFAM Elliot Berman <quic_eberman@quicin=
-c.com> wrote:
+Hi,
 
-This patch looks familiar...
-https://lore.kernel.org/lkml/20230929034836.403735-1-cmllamas@google.com/
-
-Masahiro, can you please pick up that patch?
-
-Elliot, Justin, can you help test/review that patch?
-
+On Thu, Dec 14, 2023 at 7:28=E2=80=AFAM Pin-yen Lin <treapking@chromium.org=
+> wrote:
 >
-> When using LLVM as the compiler, decode_stacktrace should also use
-> llvm-addr2line. Check if LLVM is set and add the appropriate
-> suffix/prefix.
+> Add the support of powered_on_to_enable delay as the minimum time that
+> needs to have passed between the panel powered on and enable may begin.
 >
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> ---
->  scripts/decode_stacktrace.sh | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
+> This delay is seen in BOE panels as the minimum delay of T3+T4+T5+T6+T8
+> in the eDP timing diagrams.
 >
-> diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-> index 564c5632e1a2..189b00f4e120 100755
-> --- a/scripts/decode_stacktrace.sh
-> +++ b/scripts/decode_stacktrace.sh
-> @@ -16,6 +16,16 @@ elif type c++filt >/dev/null 2>&1 ; then
->         cppfilt_opts=3D-i
->  fi
->
-> +if [[ "${LLVM}" =3D=3D "1" ]] ; then
-> +       addr2line=3D"llvm-addr2line"
-> +elif [[ "${LLVM}" =3D=3D */ ]] ; then
-> +       addr2line=3D"${LLVM}llvm-addr2line"
-> +elif [[ "${LLVM}" =3D=3D -* ]] ; then
-> +       addr2line=3D"llvm-addr2line${LLVM}"
-> +else
-> +       addr2line=3D"${CROSS_COMPILE}addr2line"
-> +fi
-> +
->  if [[ $1 =3D=3D "-r" ]] ; then
->         vmlinux=3D""
->         basepath=3D"auto"
-> @@ -169,7 +179,7 @@ parse_symbol() {
->         if [[ $aarray_support =3D=3D true && "${cache[$module,$address]+i=
-sset}" =3D=3D "isset" ]]; then
->                 local code=3D${cache[$module,$address]}
->         else
-> -               local code=3D$(${CROSS_COMPILE}addr2line -i -e "$objfile"=
- "$address" 2>/dev/null)
-> +               local code=3D$(${addr2line} -i -e "$objfile" "$address" 2=
->/dev/null)
->                 if [[ $aarray_support =3D=3D true ]]; then
->                         cache[$module,$address]=3D$code
->                 fi
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 >
 > ---
-> base-commit: 3f7168591ebf7bbdb91797d02b1afaf00a4289b1
-> change-id: 20231214-llvm-decode-stacktrace-09538979006d
 >
-> Best regards,
-> --
-> Elliot Berman <quic_eberman@quicinc.com>
+> Changes in v3:
+> - Collect review tag.
 >
+>  drivers/gpu/drm/panel/panel-edp.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 
+Pushed to drm-misc-next:
 
---=20
-Thanks,
-~Nick Desaulniers
+4464af92f276 drm/panel-edp: Add powered_on_to_enable delay
 
