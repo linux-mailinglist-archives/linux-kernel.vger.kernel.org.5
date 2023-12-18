@@ -1,96 +1,104 @@
-Return-Path: <linux-kernel+bounces-3046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A3C0816692
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:33:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B2A816693
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:34:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D20A1C2224D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:33:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C837B1F215DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:34:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195516FBD;
-	Mon, 18 Dec 2023 06:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109476FB5;
+	Mon, 18 Dec 2023 06:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jLFpJnfe"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="R1rGBwYF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A456FA5;
-	Mon, 18 Dec 2023 06:32:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF350C433C7;
-	Mon, 18 Dec 2023 06:32:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702881171;
-	bh=P+FpMjf2mykyFNclosXhXZPRX1VsrQekgOEK3L9QqY0=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=jLFpJnfeluZNkdrcEvIArVja7yW1RA5z4DELGrRNmRUmceW90bJr5VXBUPF1jkZ9a
-	 fLEhfoCfr6mhZmhRagX12JOoQv8PVxRVj+W81QOwIw+LysPDoa+RSzUjYoNGTAsBev
-	 PeXPGAfzmsj754Pcel6qPSJx1DRiDHxufST2zv/iIJSmwSMazER26DXrWl/yd2iD5V
-	 S6pWel0GmDomrzVn0s99VcakbmLtriKgyPMssIAdkwA/fAYmMndvRqBWuR32qxkkCW
-	 B481tkcDwToqwBBy2f3dE2PPCpNrV+0uC7+O5LJkZqJ538btMyWJZUN2uEEY6VHWDz
-	 e34sRTdSfmHCg==
-Message-ID: <ed6a16e092feb62366d3ddbeb3cbbe64.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 405816FA3
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d3c8781c92so751395ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 22:34:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1702881268; x=1703486068; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rNzWN5t7u2gxnvLE/wUGU2nmIrr3uGH5m13BIGWGMnk=;
+        b=R1rGBwYF8xCw/WX7zw9ojd/G8pXzQrAYO9InnFi/kch92yXqXOVtK3PJByLi3cpcEH
+         siWczb6o28RN9gc/caLFHUsXLn/L9Lld8UfUhHrP+Gtk2O/yAFTZdXmtCdiMM9Ve+2kJ
+         N/lMvK6o2fosHyvo3OQJsvQubiEHdlxlVDDtTdzD2Sd03YxDr4NMFt84brAMecPcvacd
+         876qTYx0ocPDuT/YmnQkRe8OBlypzhL+8ViE8xT8k5s52LQDlIP0aL0/iXH4gfbFZCK6
+         wX9bEiZnW8CKZWmYWrfh2EpvTwn09jMpNsDO4QZnTXxwiMpetogN312GNcq+bJB4hf/o
+         Mguw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702881268; x=1703486068;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rNzWN5t7u2gxnvLE/wUGU2nmIrr3uGH5m13BIGWGMnk=;
+        b=j1RdDM7RG95k5M+gISV+f8wqJbQsGW6VlU73K83WQIl1t7z/RWLeJW+9VvjUK13Jwt
+         aaNlRpBr0vn8bbmY1X4K/AgQoyALX3mkdx/VrVwFm3AI7QYn6RvOJU2h/r21x8MWoZCA
+         SH0isRHpE3ryuhvsBOwpWFUsJOFIqdKjfc5wDdNIaHRLYc80BzgkRJOP1tTwbsTykMDB
+         9iApxC+bvvt2SHnxsgAXUf4EOIcGtoddsneN+L+4eTbK609epUZZY44DULc9Gqosvsk3
+         CR+LI+ilK11bfzmveHKAsB2W29vsT2uMveDdYlXYhWi1rTnnGaq/obg9yuIJlnomRLw6
+         z3Xw==
+X-Gm-Message-State: AOJu0YxLVdb2BqRcB2oNtyb4AJM6ORikZ0muaGnd4MiAjJOsZHGrL9pO
+	ouoFShwEluSBBHq/uAxu30enGg==
+X-Google-Smtp-Source: AGHT+IG2pVwUdn27kNNiaKbx66NC0lj/as8aYtuJzNJZp0x1hsL/r+tQky+UaURXQJtqXMrIX1TUKA==
+X-Received: by 2002:a17:903:24c:b0:1d0:6ffd:9e1e with SMTP id j12-20020a170903024c00b001d06ffd9e1emr18147120plh.112.1702881268468;
+        Sun, 17 Dec 2023 22:34:28 -0800 (PST)
+Received: from [10.84.154.115] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id j15-20020a170902da8f00b001c9db5e2929sm18272762plx.93.2023.12.17.22.34.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Dec 2023 22:34:27 -0800 (PST)
+Message-ID: <46bc7aa3-4b08-4e5f-9563-485ee17e2785@bytedance.com>
+Date: Mon, 18 Dec 2023 14:34:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231124-alvin-clk-si5351-no-pll-reset-v6-3-69b82311cb90@bang-olufsen.dk>
-References: <20231124-alvin-clk-si5351-no-pll-reset-v6-0-69b82311cb90@bang-olufsen.dk> <20231124-alvin-clk-si5351-no-pll-reset-v6-3-69b82311cb90@bang-olufsen.dk>
-Subject: Re: [PATCH v6 3/3] clk: si5351: allow PLLs to be adjusted without reset
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Rabeeh Khoury <rabeeh@solid-run.com>, Jacob Siverskog <jacob@teenage.engineering>, Sergej Sawazki <sergej@taudac.com>, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Alvin =?utf-8?q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>, Alvin =?utf-8?q?=C5=A0ipraga?= <alvin@pqrs.dk>, Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh+dt@kernel.org>
-Date: Sun, 17 Dec 2023 22:32:49 -0800
-User-Agent: alot/0.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 0/5] hugetlb: parallelize hugetlb page init on boot
+To: David Rientjes <rientjes@google.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Gang Li <gang.li@linux.dev>, David Hildenbrand <david@redhat.com>,
+ Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231208025240.4744-1-gang.li@linux.dev>
+ <996ba32c-78f0-1807-5e64-af5841a820e7@google.com>
+ <20231212230813.GB7043@monkey>
+ <55c6c1f6-0792-61c3-86ed-4729d4a3fdf5@google.com>
+Content-Language: en-US
+From: Gang Li <ligang.bdlg@bytedance.com>
+In-Reply-To: <55c6c1f6-0792-61c3-86ed-4729d4a3fdf5@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Quoting Alvin =C5=A0ipraga (2023-11-24 05:17:44)
-> From: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
->=20
-> Introduce a new PLL reset mode flag which controls whether or not to
-> reset a PLL after adjusting its rate. The mode can be configured through
-> platform data or device tree.
->=20
-> Since commit 6dc669a22c77 ("clk: si5351: Add PLL soft reset"), the
-> driver unconditionally resets a PLL whenever its rate is adjusted.
-> The rationale was that a PLL reset was required to get three outputs
-> working at the same time. Before this change, the driver never reset the
-> PLLs.
->=20
-> Commit b26ff127c52c ("clk: si5351: Apply PLL soft reset before enabling
-> the outputs") subsequently introduced an option to reset the PLL when
-> enabling a clock output that sourced it. Here, the rationale was that
-> this is required to get a deterministic phase relationship between
-> multiple output clocks.
->=20
-> This clearly shows that it is useful to reset the PLLs in applications
-> where multiple clock outputs are used. However, the Si5351 also allows
-> for glitch-free rate adjustment of its PLLs if one avoids resetting the
-> PLL. In our audio application where a single Si5351 clock output is used
-> to supply a runtime adjustable bit clock, this unconditional PLL reset
-> behaviour introduces unwanted glitches in the clock output.
->=20
-> It would appear that the problem being solved in the former commit
-> may be solved by using the optional device tree property introduced in
-> the latter commit, obviating the need for an unconditional PLL reset
-> after rate adjustment. But it's not OK to break the default behaviour of
-> the driver, and it cannot be assumed that all device trees are using the
-> property introduced in the latter commit. Hence, the new behaviour is
-> made opt-in.
->=20
-> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> Cc: Rabeeh Khoury <rabeeh@solid-run.com>
-> Cc: Jacob Siverskog <jacob@teenage.engineering>
-> Cc: Sergej Sawazki <sergej@taudac.com>
-> Signed-off-by: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
-> Acked-by: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> ---
+Hi,
 
-Applied to clk-next
+On 2023/12/13 08:10, David Rientjes wrote:
+> On 6.6 I measured "hugepagesz=1G hugepages=11776" on as 12TB host to be
+> 77s this time around.
+
+Thanks for your test! Is this the total kernel boot time, or just the
+hugetlb initialization time?
+
+> 
+> A latest Linus build with this patch set does not boot successfully, so
+
+Which branch/tag is it compiled on?
+I test this patch on v6.7-rc4 and next-20231130.
+
+> I'll need to look into that and try to capture the failure.  Not sure if
+> it's related to this patch or the latest Linus build in general.
+> 
 
