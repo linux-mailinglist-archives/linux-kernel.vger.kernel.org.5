@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-3657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4341C816F2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:00:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EEAA816F31
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:00:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64B321C208DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:00:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DC7F1F24382
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8168180585;
-	Mon, 18 Dec 2023 12:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A4E138D3E;
+	Mon, 18 Dec 2023 12:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W3AOJ6ip"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yjnk2a2n"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D95C80587;
-	Mon, 18 Dec 2023 12:46:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EDBAC433C7;
-	Mon, 18 Dec 2023 12:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8611680595;
+	Mon, 18 Dec 2023 12:47:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D45EC433C8;
+	Mon, 18 Dec 2023 12:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903619;
-	bh=hhH0S1d1h1iP5cEliJA43vXsxR1kP/uHQeuebebGyQE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=W3AOJ6ipq22EP8pj7M5/sT+8PuAbW4JBPUQn7ksOMC6LkRyXguEDUhXK7NPwbNOBP
-	 1a6jk3gKak3vldv9jBLBoxtNlMvNS6HiSeRK2VRyHeownOHyss1rS6j4/RepEnA2lL
-	 WMMND+i6U7Bf1IbAYVfT4Kxt6svXfP7D/E2jhvHGdhNBH0ORHWYQOV8i92maOlqSjS
-	 qJfiXbXatVAoF1T3SZlZLrGG49QJmIWW4iC5bvRNopjipmWaAUvLTlehvaBPn2Qbj6
-	 aOHSuN3A5RlujYQeOIX8tqLzstxIZspADiE+wy+Gs+mU2gkoAg3COLnvZrunB7w+br
-	 vH1oouZ2z7g7A==
+	s=k20201202; t=1702903621;
+	bh=fPk9nWOEQwrLDz9tsexOez9iKGfoNwqwy3zhKY2+ESQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Yjnk2a2nebAwzCmPEIw1Dlo9q6+Jib7Mz5EiNb4Dbhb60PoGDU1HkMf1LIVveTEPA
+	 oCazG9tCKklfqX3Jn1d7d7weZMVUKZgovlndp2UuakFd1hKjsVqBlmNc7jr/vsKM29
+	 bi/35fhWPFoBh9xAIDN6/krm+BdE0CznOQFI2W/6hqcnDAlHAC2Ki5y5x+QGesEZGw
+	 5rowB98R8ziKdB8T812TfpO27rEaeACapBscFgMhyN8ygY/W7ZSAkV36iBO/E6lFrK
+	 fLk8BPNXVb37BbnSOgjkGhlTO7c5rgY+br2JQW0jy5/r8FKrdRf3WqBPruwxn90ElV
+	 J0mQZpJVysGtg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Weihao Li <cn.liweihao@gmail.com>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 1/7] clk: rockchip: rk3128: Fix HCLK_OTG gate register
-Date: Mon, 18 Dec 2023 07:46:46 -0500
-Message-ID: <20231218124656.1381949-1-sashal@kernel.org>
+	jack@suse.com,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 2/7] jbd2: correct the printing of write_flags in jbd2_write_superblock()
+Date: Mon, 18 Dec 2023 07:46:47 -0500
+Message-ID: <20231218124656.1381949-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231218124656.1381949-1-sashal@kernel.org>
+References: <20231218124656.1381949-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,33 +58,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.264
 Content-Transfer-Encoding: 8bit
 
-From: Weihao Li <cn.liweihao@gmail.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit c6c5a5580dcb6631aa6369dabe12ef3ce784d1d2 ]
+[ Upstream commit 85559227211020b270728104c3b89918f7af27ac ]
 
-The HCLK_OTG gate control is in CRU_CLKGATE5_CON, not CRU_CLKGATE3_CON.
+The write_flags print in the trace of jbd2_write_superblock() is not
+real, so move the modification before the trace.
 
-Signed-off-by: Weihao Li <cn.liweihao@gmail.com>
-Link: https://lore.kernel.org/r/20231031111816.8777-1-cn.liweihao@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20231129114740.2686201-1-yi.zhang@huaweicloud.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/rockchip/clk-rk3128.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jbd2/journal.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/rockchip/clk-rk3128.c b/drivers/clk/rockchip/clk-rk3128.c
-index 4b1122e98e167..ddfe1c402e80b 100644
---- a/drivers/clk/rockchip/clk-rk3128.c
-+++ b/drivers/clk/rockchip/clk-rk3128.c
-@@ -489,7 +489,7 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
- 	GATE(HCLK_I2S_2CH, "hclk_i2s_2ch", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
- 	GATE(0, "hclk_usb_peri", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 13, GFLAGS),
- 	GATE(HCLK_HOST2, "hclk_host2", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 3, GFLAGS),
--	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 13, GFLAGS),
-+	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(5), 13, GFLAGS),
- 	GATE(0, "hclk_peri_ahb", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 14, GFLAGS),
- 	GATE(HCLK_SPDIF, "hclk_spdif", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 9, GFLAGS),
- 	GATE(HCLK_TSP, "hclk_tsp", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 12, GFLAGS),
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index eeebe64b7c543..81bd7b29a10b6 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1355,9 +1355,11 @@ static int jbd2_write_superblock(journal_t *journal, int write_flags)
+ 		return -EIO;
+ 	}
+ 
+-	trace_jbd2_write_superblock(journal, write_flags);
+ 	if (!(journal->j_flags & JBD2_BARRIER))
+ 		write_flags &= ~(REQ_FUA | REQ_PREFLUSH);
++
++	trace_jbd2_write_superblock(journal, write_flags);
++
+ 	if (buffer_write_io_error(bh)) {
+ 		/*
+ 		 * Oh, dear.  A previous attempt to write the journal
 -- 
 2.43.0
 
