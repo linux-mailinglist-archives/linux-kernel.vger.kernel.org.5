@@ -1,138 +1,96 @@
-Return-Path: <linux-kernel+bounces-4323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3091817B7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:57:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA1ED817B7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:57:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 992B71F23518
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:57:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD6181C23351
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FC273477;
-	Mon, 18 Dec 2023 19:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528E973467;
+	Mon, 18 Dec 2023 19:56:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="jbBqZXc9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NqiSaqMG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613BB740B4;
-	Mon, 18 Dec 2023 19:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1702929344; x=1703534144; i=w_armin@gmx.de;
-	bh=8xcRS4toKnQj2X27ThuiST1cF613b/lRiEqma2uezJw=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=jbBqZXc9Fm79pEyNs39kyQOUq7iV1cgb3v6jxexwGyeiTscBEi1bOcDP3UXeLJRS
-	 dY+tIHWI+ikGrZt+MmT/WjGZNC9ieOvvSmRKAbzllsQcA9ZeVEUG9NRUY1ASIxhGO
-	 V1I0Zd5yM0w4EcnEsPJgq3+qJkOoWbHa2FXPF8jwTYGD7nVt7Bsup6aiwOAynFIjW
-	 jJkEAe31nxDISQXV//XFTloO9of5DHVtTw+7FF+Ms1jrQsXOOmWPVI3RDlE0WM45n
-	 6KuDmCzwONZPddEyvPPMis2hKnHD/DDUdeYeJjkricAU7gT2Ujo6whItjSPnW451B
-	 u3IrODDU70qziUyGpw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MfHAH-1qnQcd12N9-00gtMg; Mon, 18 Dec 2023 20:55:44 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] platform/x86: wmi: Simplify get_subobj_info()
-Date: Mon, 18 Dec 2023 20:55:31 +0100
-Message-Id: <20231218195531.311179-7-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231218195531.311179-1-W_Armin@gmx.de>
-References: <20231218195531.311179-1-W_Armin@gmx.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA0772066;
+	Mon, 18 Dec 2023 19:56:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e0d1f9fe6so4378400e87.1;
+        Mon, 18 Dec 2023 11:56:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702929371; x=1703534171; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZNO3jiSu7ic70hh4tyicrSnhqEtgPiAeeapM4Oz5gIE=;
+        b=NqiSaqMGloKQxqLPs8WV4ghINoaTPX0j/m2I/tBkxWJ+GRHZ+zgocl2MHJ+k/mkHBW
+         Ih6HfFqy80CVu0cxCBcfFDOSMKS2+yOWEMyJMUiwUJ3Ufnc638N0CMbbhPFZvjmY7Hps
+         SUqYvsBbEjxG4j6JtKR6sWDNd6xdmt9zEX9ytuwP5L/g4vfXkVxYp0EZZ4iP4zQLmC1J
+         SSkb42vGI5ee3vkHnGJDJnQY6SRy0iIb1JBm5RzFOMu86d4ittJf1qsGa+XQTRqcMC6C
+         rfI5hCwqd2/Go4NvsMiKQ5jSjNWbpfGEcGjaZHbt8FU5zKh0ImmKLn7Ovq6lw9UTTkhN
+         Yjuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702929371; x=1703534171;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZNO3jiSu7ic70hh4tyicrSnhqEtgPiAeeapM4Oz5gIE=;
+        b=SsUgRyRRfwWAW8Ataz2faRtICAGUA34x171E+jZS4AIHkAt9MiHYZHGmUEE4b+JAEq
+         DpsYy+Iqd7TLiTZj7Km8Kr9P4T0rZy5pT+EToXhTk2Smh8oKlgdFZ4imBRU/SCJ2K/3j
+         5WkM3gkaarw8AE64i6MRDix9S1zQ7smhY0iD+NptHrX0Nm2J+hfJY3cW17n2yakvACPc
+         eeUksmzpkjg3MfT30Y7aeW4PaTwcV61qdz7MI7Qo9ZrKD2IDARqm/pteAblq/RmfSLiW
+         KBK8iGErq7g6YLNLIJciQ24HZ7fCS/mb5NX4yJUUu5PwZQ7RUm5hNGm81o9Nfq6sEi7p
+         Kd9A==
+X-Gm-Message-State: AOJu0YyejNDLwkLb1ROboxG6XXr1A0FBZBpOF8hs10iJW4ZoZKhSNzXp
+	j7mupHveik+MuSq4VGLrtWEuElEQvzA=
+X-Google-Smtp-Source: AGHT+IGqqjw8wDeHxgdqEtTKBo2i830o6mNdblTFcEpQVPyBO4j57qkcMzMS3IxB9FnDj6Zou+dADw==
+X-Received: by 2002:a05:6512:3344:b0:50d:1e07:5aac with SMTP id y4-20020a056512334400b0050d1e075aacmr8599983lfd.43.1702929370889;
+        Mon, 18 Dec 2023 11:56:10 -0800 (PST)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id h29-20020a0564020e9d00b0054c63cc0469sm10780410eda.33.2023.12.18.11.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 11:56:10 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: linux-crypto@vger.kernel.org, ovidiu.panait@windriver.com
+Cc: linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
+ davem@davemloft.net, Ovidiu Panait <ovidiu.panait@windriver.com>,
+ Corentin Labbe <clabbe.montjoie@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 6/7] crypto: sun8i-ce - Use helper to set reqsize
+Date: Mon, 18 Dec 2023 20:56:08 +0100
+Message-ID: <4532392.LvFx2qVVIh@jernej-laptop>
+In-Reply-To: <20231218164649.2492465-6-ovidiu.panait@windriver.com>
+References:
+ <20231218164649.2492465-1-ovidiu.panait@windriver.com>
+ <20231218164649.2492465-6-ovidiu.panait@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y/Bdzz5LQ5l5DH6SFsP2N/veEnWbKrmkgn6CIDbxPduIi6hazLh
- UuiTS1T+DL5GydIrKi57aoR9hruokDMtH2VKiyVtJGZzIhfxul8fIbcSbt3EMbWRd/W8UVJ
- 5MpzSdJsCRvtaSwdi+VXG0dUbqfipewjIdfR1v9U3/U5z2u8zDn0FRWBXVh/taVRTq46L3E
- QgCvZlqMUvTE7Z5rLo1yg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:HbMWm1LXyxI=;ZMhIXv2exx6aSMr9mmjEsbuvd0Q
- oeY+A/3BgWhQ6uyTAvqYSlHnBXcouVqEz74re3YguoqtaP30RKceTuSVxoo3EPh+mROJ7XS7D
- /kV6OuTWMfnslAojWuQaZTg++/Pn/PmTeq1bbQhWpj22HhqxsYN/roSQQEyZpiwSqIVBb2gFz
- LOJbH3ow0FZ8LSOIiI+J6KGwmu1Ag5stc3Sw9iZdaHNvFZvJAzqAC8LTVMN0S8P9rJb597XQY
- S3z+p7vpsNxxYLEKgS1DCFDSn655zg230UAs6qaPX8vvp5mByUIV5B0b778QDSwqAtwRnTFaJ
- 5wROdlo3LnOHnJHDvVLIG2d27Yr+8zRrGcYzb9QB4zpbJWbE4pqvWa1TTF2Ld0FMKzw3fCvfs
- dPd8B8bnR6FTlkmnFRu3lBOjJE0IARP0KPB5v0aAUAoihtQ64WN9/FzpnVcShvWYQAB+eyFEM
- 6Px8X4Az84qDocwC/KUWGhkSMO7M9TusWS+3rsVl3B19ra0OamG35frpzD+NS00UJ+jSSLypJ
- L6R7VEGJJ/t+9BQsL2XNiIJGuX8rGhCiNLobV5d8zRoQPgVdzeGfjsr1ke1w7kV5PexQ/RPN4
- nXwFtTw2VIsdt12UiyknyfWgir+jKKV6q3e6qBQxoK33XJnAqGKUkzKROxNgFUf43N7OGXCIh
- MURmClzMCbZjHjw4mqYoASC50OOJ67qnSnYE9foI20oyJm/5+eRXueVxC+eo4Wuav9jl/pCSy
- bEx7YH19Bx/2sZqdrOnpT+xFbmO3vjdgKVw92SJTN5E+B0wBz9WJ3yL4FoeOBSjUtpLl/2P0w
- IgVrfectfMbSkb3xaZw6/9QlZ2oXo0L9vZ0+uNuiL0pIIrAGj7uLVUHdWt99CoAM6cFkj7mBZ
- lZMM3ScpD8W6D/oY2/TSwDeGAhn1+gwqbY3xELOP8iabRJdyviJ4DaGmEOAk/m+esmc/CEknL
- O1pffGWm/FSARtS/pXhLyZyi6SM=
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-All callers who call get_subobj_info() with **info being NULL
-should better use acpi_has_method() instead.
-Convert the only caller who does this to acpi_has_method()
-to drop the dummy info handling.
+Dne ponedeljek, 18. december 2023 ob 17:46:48 CET je ovidiu.panait@windriver.com napisal(a):
+> From: Ovidiu Panait <ovidiu.panait@windriver.com>
+> 
+> The value of reqsize must only be changed through the helper.
+> 
+> Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/wmi.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 559a99ebc624..a7cfcbf92432 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -132,23 +132,19 @@ static const void *find_guid_context(struct wmi_bloc=
-k *wblock,
- static int get_subobj_info(acpi_handle handle, const char *pathname,
- 			   struct acpi_device_info **info)
- {
--	struct acpi_device_info *dummy_info, **info_ptr;
- 	acpi_handle subobj_handle;
- 	acpi_status status;
+Best regards,
+Jernej
 
--	status =3D acpi_get_handle(handle, (char *)pathname, &subobj_handle);
-+	status =3D acpi_get_handle(handle, pathname, &subobj_handle);
- 	if (status =3D=3D AE_NOT_FOUND)
- 		return -ENOENT;
--	else if (ACPI_FAILURE(status))
--		return -EIO;
-
--	info_ptr =3D info ? info : &dummy_info;
--	status =3D acpi_get_object_info(subobj_handle, info_ptr);
- 	if (ACPI_FAILURE(status))
- 		return -EIO;
-
--	if (!info)
--		kfree(dummy_info);
-+	status =3D acpi_get_object_info(subobj_handle, info);
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-
- 	return 0;
- }
-@@ -998,9 +994,7 @@ static int wmi_create_device(struct device *wmi_bus_de=
-v,
- 	kfree(info);
-
- 	get_acpi_method_name(wblock, 'S', method);
--	result =3D get_subobj_info(device->handle, method, NULL);
--
--	if (result =3D=3D 0)
-+	if (acpi_has_method(device->handle, method))
- 		wblock->dev.setable =3D true;
-
-  out_init:
-=2D-
-2.39.2
 
 
