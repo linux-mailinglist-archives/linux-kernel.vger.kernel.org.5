@@ -1,29 +1,29 @@
-Return-Path: <linux-kernel+bounces-3377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B89B816B9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:53:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5B4D816B9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4AF31F234F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:53:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 718DC28405F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B4D20B17;
-	Mon, 18 Dec 2023 10:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091DE22325;
+	Mon, 18 Dec 2023 10:51:54 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A864208B8
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28562136B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:51:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E02011FB;
-	Mon, 18 Dec 2023 02:52:31 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 843712F4;
+	Mon, 18 Dec 2023 02:52:35 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12C8F3F738;
-	Mon, 18 Dec 2023 02:51:43 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A89773F738;
+	Mon, 18 Dec 2023 02:51:47 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -54,9 +54,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 08/16] arm64/mm: ptep_test_and_clear_young(): New layer to manage contig bit
-Date: Mon, 18 Dec 2023 10:50:52 +0000
-Message-Id: <20231218105100.172635-9-ryan.roberts@arm.com>
+Subject: [PATCH v4 09/16] arm64/mm: ptep_clear_flush_young(): New layer to manage contig bit
+Date: Mon, 18 Dec 2023 10:50:53 +0000
+Message-Id: <20231218105100.172635-10-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231218105100.172635-1-ryan.roberts@arm.com>
 References: <20231218105100.172635-1-ryan.roberts@arm.com>
@@ -83,60 +83,38 @@ existing uses.
 Tested-by: John Hubbard <jhubbard@nvidia.com>
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/arm64/include/asm/pgtable.h | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 994597a0bb0f..9b4a9909fd5b 100644
+index 9b4a9909fd5b..fc1005222ee4 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -887,8 +887,9 @@ static inline bool pud_user_accessible_page(pud_t pud)
- /*
-  * Atomic pte/pmd modifications.
+@@ -138,7 +138,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
+  * so that we don't erroneously return false for pages that have been
+  * remapped as PROT_NONE but are yet to be flushed from the TLB.
+  * Note that we can't make any assumptions based on the state of the access
+- * flag, since ptep_clear_flush_young() elides a DSB when invalidating the
++ * flag, since __ptep_clear_flush_young() elides a DSB when invalidating the
+  * TLB.
   */
--#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
--static inline int __ptep_test_and_clear_young(pte_t *ptep)
-+static inline int __ptep_test_and_clear_young(struct vm_area_struct *vma,
-+					      unsigned long address,
-+					      pte_t *ptep)
- {
- 	pte_t old_pte, pte;
- 
-@@ -903,18 +904,11 @@ static inline int __ptep_test_and_clear_young(pte_t *ptep)
+ #define pte_accessible(mm, pte)	\
+@@ -904,8 +904,7 @@ static inline int __ptep_test_and_clear_young(struct vm_area_struct *vma,
  	return pte_young(pte);
  }
  
--static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
--					    unsigned long address,
--					    pte_t *ptep)
--{
--	return __ptep_test_and_clear_young(ptep);
--}
--
- #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
- static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+-#define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
+-static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
++static inline int __ptep_clear_flush_young(struct vm_area_struct *vma,
  					 unsigned long address, pte_t *ptep)
  {
--	int young = ptep_test_and_clear_young(vma, address, ptep);
-+	int young = __ptep_test_and_clear_young(vma, address, ptep);
- 
- 	if (young) {
- 		/*
-@@ -937,7 +931,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 					    unsigned long address,
- 					    pmd_t *pmdp)
- {
--	return ptep_test_and_clear_young(vma, address, (pte_t *)pmdp);
-+	return __ptep_test_and_clear_young(vma, address, (pte_t *)pmdp);
- }
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
-@@ -1123,6 +1117,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
- #define pte_clear				__pte_clear
- #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+ 	int young = __ptep_test_and_clear_young(vma, address, ptep);
+@@ -1119,6 +1118,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
  #define ptep_get_and_clear			__ptep_get_and_clear
-+#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
-+#define ptep_test_and_clear_young		__ptep_test_and_clear_young
+ #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+ #define ptep_test_and_clear_young		__ptep_test_and_clear_young
++#define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
++#define ptep_clear_flush_young			__ptep_clear_flush_young
  
  #endif /* !__ASSEMBLY__ */
  
