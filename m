@@ -1,283 +1,252 @@
-Return-Path: <linux-kernel+bounces-3329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86AEB816B10
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:28:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42CC3816B08
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E2BD2833B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:28:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667BA1C22575
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2B614A99;
-	Mon, 18 Dec 2023 10:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B292154AB;
+	Mon, 18 Dec 2023 10:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d9oxPUn+"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="rbs0h8i4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2084.outbound.protection.outlook.com [40.107.22.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE178182A4;
-	Mon, 18 Dec 2023 10:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so3440933a12.3;
-        Mon, 18 Dec 2023 02:27:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702895221; x=1703500021; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8sRNZCx3Fepkk/1p+2V5Nj6L+xJzRr/Wtz906o7085o=;
-        b=d9oxPUn+h5PSx98ZZoHK0ilk5f/jw4fsEJpa8bX2FfnTx2KT12sEfz8kZcbO4zjwyc
-         Ouwcc3WMY2bs3OLBXVKLnlTe8Tnjoo125JOLi1ImlbYKaMJEPgjd137awuBgdFPRGPjb
-         XQ19weST/GJwE5sS0s7sfuyObGwyfMSJWqyDGFVXMSveDlzu2UgPmRzEhYc3za1mhAzn
-         I6pgOr5Yvmk2st6OIw6UHyDIdOiYWnb4KfcNY7Nkgb+jVuWp9t8qube5veILi6NZ174A
-         ahC3FJIBQH8h3TkBlJ9vemCCMkgIZAZpMxl5e6g8GG0dfPGQA23u9oiw+gMAKmIC5qPA
-         6mNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702895221; x=1703500021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8sRNZCx3Fepkk/1p+2V5Nj6L+xJzRr/Wtz906o7085o=;
-        b=R9IM8wxjXJSeCmnfsgH87FhlZD14GCJ+za7Oce93G4SyoiJw1zNEQXfWes3UPBEfeA
-         qcx+8Tv+ppS87KO22D85mwK0a5Eko0lvr1SBr1GOOJ6KwEhA+dZYEj5WhINbpTnQwVb2
-         WPT3h5hnQH/xYoDv++S9WWSRbUhkBcTZmyz86TZdFfGFtBTwbrMajYKx+3DiJERgQ9KV
-         YLLE93zhYxjB2uXZTPMXcrre7O9GwHkd+3GoYfTPmuAVvS1st+RdAdvZ9fn+8y/Fivte
-         /rT51ZuZiARFqZWLIBXl3NbbxA2D7tqlMsdgU7pPzkioYU2R5E2c7rSgatStAM0uXYMX
-         6UZw==
-X-Gm-Message-State: AOJu0YwIvfPHlsYB78EdJf78JVdAROMG2bfIPqJNemBA2qkKqLciDUJI
-	C2SbDtYKebb+EGTznJg/Hy0=
-X-Google-Smtp-Source: AGHT+IEkTx7EHKlSteq88pnqILHeDAl6HejLs+ZNVsHSL1QYZBen2E4N7XQ0FVKejjE+xHT0D/tiUA==
-X-Received: by 2002:a50:c34c:0:b0:553:74b4:5ad5 with SMTP id q12-20020a50c34c000000b0055374b45ad5mr169126edb.31.1702895220922;
-        Mon, 18 Dec 2023 02:27:00 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id ef13-20020a05640228cd00b00552d45bd8e7sm3023687edb.77.2023.12.18.02.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 02:27:00 -0800 (PST)
-Date: Mon, 18 Dec 2023 11:26:58 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
-	Martin Hecht <martin.hecht@avnet.eu>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] media: i2c: alvium: removal of dft_fr, min_fr and
- max_fr
-Message-ID: <ZYAecvgGSZ99GlHk@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
- <20231215082452.1720481-2-tomm.merciai@gmail.com>
- <20231218025044.GH5290@pendragon.ideasonboard.com>
- <20231218025430.GA9012@pendragon.ideasonboard.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C080614A9D;
+	Mon, 18 Dec 2023 10:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VugtPFp3aKuIFOvPib3kFhoQL8MhDWBIlZKEVmO3ZC4MkdAxR65z8/Jo6cgtj7EcQsW79JE3Taf5vanP1CV9Rp4PaWAH4vbc7MsAIwPdYXQYWRjmnvyVqL4FLPnzo3CyzS+ZhEcLnSHUZ7muQJtRWqhA025RxjhszETV7POHRws2hqkfviyKTuhEsDM8H9FdghnO+akB3ssWLCQrdfl7I1Ccht00qZ/l6ZG/eAhJ2G9TqES1B45w1fM1xdqxk9etZJRP3TUPHQ1rMqcBKqjlCjDzceRGhOnozMu69QIR09lO6sykDMGkKgEWAFuFDixgBZsdQGOz2mkBteNUXdvuCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rX96sfRouqN2nRRKvOYxxMLVVfEwa7SIe0+kkU0vkI8=;
+ b=DDSu+63C12AllYWAE/mIW64rQ/cdCjU86O+IAtib3+ZRcl8sZ1l/KziygWnbLIXZy3gvWhoYkLXvFdBCk9/CjoycgRi+107IqHVU5xxb/AXU3FwHtuDvVvHr6cQltj6vBQ2LUSNCRfAxPha+HdGtS63QG1WQzwyGx5kwqCgV6Oy/vKn1fKB+JJ0PvfAw424FCavVFBfSEqKohrD2DX3ZVNaI+MAaby0acrJ+jByN8Yqa7rF3nII8JFzx40LC4r4prIHYn5S0kk6MJ3iwq/qUwBhPagzaKSP5AHMVLocGfz+kBhqk6Hlokleb4S+k+KGYXg5AFjoIk+IL7MCXgA9DYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rX96sfRouqN2nRRKvOYxxMLVVfEwa7SIe0+kkU0vkI8=;
+ b=rbs0h8i4TlLJUUNBC3uVbNNQe4Akl4RpNxdXH6aGXs8V8UqnzHBoIcSP3PFgaCqxeEEi7Dv0wNIiRrCE6sLj0k7WP1x+mu3yMPRXvu1RykV+jQ1ekPCp3PHhX/ccfkMy6jhcA4acVDGwah75bCil2sTcUsNuhYtkx6xYwAOLCVk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM9PR04MB7668.eurprd04.prod.outlook.com (2603:10a6:20b:2dd::10)
+ by DU2PR04MB9050.eurprd04.prod.outlook.com (2603:10a6:10:2e5::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
+ 2023 10:26:23 +0000
+Received: from AM9PR04MB7668.eurprd04.prod.outlook.com
+ ([fe80::27c7:7617:d343:6204]) by AM9PR04MB7668.eurprd04.prod.outlook.com
+ ([fe80::27c7:7617:d343:6204%3]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
+ 10:26:23 +0000
+From: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+To: marcel@holtmann.org,
+	johan.hedberg@gmail.com,
+	luiz.dentz@gmail.com
+Cc: amitkumar.karwar@nxp.com,
+	neeraj.sanjaykale@nxp.com,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	sherry.sun@nxp.com,
+	rohit.fule@nxp.com
+Subject: [PATCH v1] Bluetooth: btnxpuart: Resolve TX timeout error in power save stress test
+Date: Mon, 18 Dec 2023 15:57:20 +0530
+Message-Id: <20231218102720.3816166-1-neeraj.sanjaykale@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM8P191CA0020.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21a::25) To AM9PR04MB7668.eurprd04.prod.outlook.com
+ (2603:10a6:20b:2dd::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218025430.GA9012@pendragon.ideasonboard.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB7668:EE_|DU2PR04MB9050:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ed82c13-29dd-4eec-c1f0-08dbffb3c8b8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	WTRLC+C3FIHEiOE6M3AdhAh8j2b0Y9hN8LhjAPlH9vfZxloENKmLs0vmGtecyH7s6YZlH6pn/v8aidTzJSqvb1dpo4YShqSTTC82Vgs7FW6uI2VDVtDp52eGYJ8ie8dDqoC2dwkFJBVlH6y7q4sNnaw65PnpCDTu/s04VFiCZKtobMKPL6NaBzYBAjgisiVNn/Hry6r3RD7Bq6lCbU/yN5SGurCgbYhs67zfNMAFXqmQjwSJKr0t/pWjueWqPRCi31qiTnqmyQtUagx+5aLqQ0illeZbRHgBE2ZQjFuT+xfa14CMiw8Wa0Di8vYGulQ4tZSNq/coioxl8rzL8tmcyfArTKKrIVhLpzqCL6thpvwmbPz1SPTjTWCxaR519Kpc4rbybxnwcrFPZoqTksX2Q397qI6Jd+IDdhE33u1xkCw60w5NyCTcMub8g/WVqyiS7ZGH0HZkoJyk9wd6wV6QcvMLsKNLXw8MeiSf34RXrU6lJAJnqOaBP0qHG2V1gW6P1s2qqvGsbncn2Yr5myPva4pC0g6VHARbGXShr3daYQHAfQrMWmPe7kRCLbBiZ8mPFuYXEbITmGCM9ilUhb/G46RAul3AlIIQh9fng6Wr5IV7ADH6MhBeFrMh+g16Kn6w
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7668.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(136003)(366004)(376002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(5660300002)(83380400001)(52116002)(1076003)(2616005)(26005)(38100700002)(316002)(478600001)(66946007)(4326008)(8676002)(8936002)(41300700001)(2906002)(6486002)(6506007)(6512007)(66476007)(66556008)(36756003)(86362001)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?eleRPweb290WHuRgujzONBPm4AVRu1Ruk8Bix5/9wISDq4nefuoxJssu9EDK?=
+ =?us-ascii?Q?lhIow65qtG3amdktJorVv85pyKTUNvJt3QDRf+ZBz/iMtlW0pN7geoAvVWDX?=
+ =?us-ascii?Q?K08W7ULBfu56uMIKTQvG0VSpLmd2eLk+yk6sjeWuOzluC4EzKaE2DzK/YYEy?=
+ =?us-ascii?Q?q6FDIuNxBu7WVjKxXVcYOBKjfAV5b9Wek8Hsgxzd7PHJzuSQFN5fqT7Ui0R3?=
+ =?us-ascii?Q?JS04fe8U9sozeN1hFkjgckuZjDtSSpwirJa1ccd9x+XjEaKI88eaQo6/8vJc?=
+ =?us-ascii?Q?wOJN7dTAdejpMxyk4xCwsBD4t/thsdfhJkOznaXkMvEhwBXRr9HTaofpY4RI?=
+ =?us-ascii?Q?F4dywfHH9S5fukjnXsxkt9Se2Wk4MpnDii7ni1d8SdVLjNHgqdawzRmJZSw5?=
+ =?us-ascii?Q?pKJXXj42g85dCjQlk4nNAC3p3dWzkip4GEXtDg7z2CB1jKwlZHw8oQFc8R1O?=
+ =?us-ascii?Q?pL7qT3ZeJdlFScBoZKHPqmrIF26GTFXsN4E+sDO8Jhv/d0xqHXFHG7/QVBzv?=
+ =?us-ascii?Q?v/+XwjLUnhtFUlZr897H9RiFU3D1TcIudiMWf2rWdrPFNdy5TB05OuNr7+JI?=
+ =?us-ascii?Q?60y/6qV0df9plchBDRjzB14rhkB70PnjgpNT9ee/35vPrqQj+3CLSwdXLcXx?=
+ =?us-ascii?Q?lDqG6YbI152Ua2vlnm3ZDOAut/N0jcrTSQA7uzeRE3/l2jhAH4Vrdn5uhej8?=
+ =?us-ascii?Q?DddrAw/JGJBYtQDSoOeRgYncYHjchoA09WVFlJpX1UcpHWW74L2goPWMsJJv?=
+ =?us-ascii?Q?U/+IxBATRg+ohARzFa3Oa83bwsZmuNT5ia8F4y85mLbrd7R+Zyw42FSe6c7G?=
+ =?us-ascii?Q?CSQf+VZn1FCO3iBOGp2/OD8q80k5M8g/FIPnnAoHdA9TVx1IWjqlQZo2e/Hz?=
+ =?us-ascii?Q?XapZC7grg5hblgE6eLdmoSBAr8wyTPhxNSJCQP0+GzX0NI7XjkvKHSPETJrx?=
+ =?us-ascii?Q?1zE3Nl4hMT7y4NaYxnZwxIPp9heDnCJgJ6BMNk1dOTB+rBHWaN8kcv19C/Vt?=
+ =?us-ascii?Q?HDQYRk3szVnb+8a+tIOGYUs9kBImKEEJbC6sctcJQHCWTA16RV45GXnsjTnE?=
+ =?us-ascii?Q?0LgSdxhZ5recf69+rXZtHQvqaG80CvTc42LTcIjFCw6+CpnRZ2r2+HuOkPCI?=
+ =?us-ascii?Q?kS9LwX/mKeDcuwL+wyBrgVYK0/7LpMR3Ebl/889igCUXCwe9rVPfoWjdrxHH?=
+ =?us-ascii?Q?QLVcUrmKt+a0jmFgJxaStkyZqegpu+NTJbqN+iMg81pgDfaPfhhhOf99xaOt?=
+ =?us-ascii?Q?JunKlKy1kPsW+YuiahVQ6jVn6JExQzR1XRDZvIIAZJJG0toBR0ToHx25eTkv?=
+ =?us-ascii?Q?lFjZ6XRU14Ki8kjXFYItW+PEVL1LlvCRs0b4g8LzyZKKEAu/ho8QXf/SXlZQ?=
+ =?us-ascii?Q?6TumgI/JYrqeEq3XjzaUt2TUwkA4qM4jZf02qBrfOeOs2p70Sv0HU88F1FqL?=
+ =?us-ascii?Q?4l6XCoLFcdd60EcELOXS/Q8ld7h5QlVJWYjHIi9toEGuiyLV7kySp+xxLCtt?=
+ =?us-ascii?Q?ZLRPoeQGpXMdXYCD3PlCxbMo+nG4o8IJ49UTZwPa+yoQJmZUn+oyv54+yOcc?=
+ =?us-ascii?Q?+PCubN280v3ivVmKnEXznjryLD6IkG1BPqrrno4I0eV8RbIcFg1VH8yS3NDj?=
+ =?us-ascii?Q?qA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ed82c13-29dd-4eec-c1f0-08dbffb3c8b8
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7668.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 10:26:23.7770
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ez7hILKzhChI059og8nxbIHTg/s2VGzWriaE/ikfRBgWkyi9JwM4MgHuICTrrbk4MXqUyUt+CW0crOE+g467jdAKhs++LYeLiQtJ2/Ure+s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9050
 
-Hi Laurent,
-Thanks for your review.
+This fixes the tx timeout issue seen while running a stress test on
+btnxpuart for couple of hours, such that the interval between two HCI
+commands coincide with the power save timeout value of 2 seconds.
 
-On Mon, Dec 18, 2023 at 04:54:30AM +0200, Laurent Pinchart wrote:
-> On Mon, Dec 18, 2023 at 04:50:46AM +0200, Laurent Pinchart wrote:
-> > Hi Tommaso,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Fri, Dec 15, 2023 at 09:24:50AM +0100, Tommaso Merciai wrote:
-> > > Remove driver private data dft_fr, min_fr and max_fr.
-> > > Those are used only in alvium_set_frame_interval function.
-> > > Use local ones instead.
-> > 
-> > The fields are used to pass data from alvium_get_frame_interval() to its
-> > caller, not just in alvium_get_frame_interval(). You can write
-> > 
-> > The dft_fr, min_fr and max_fr fields of the alvium_dev structure are
-> > only used to pass results from alvium_get_frame_interval() to its
-> > caller. Replace them with function parameters.
+Test procedure using bash script:
+<load btnxpuart.ko>
+hciconfig hci0 up
+//Enable Power Save feature
+hcitool -i hci0 cmd 3f 23 02 00 00
+while (true)
+do
+    hciconfig hci0 leadv
+    sleep 2
+    hciconfig hci0 noleadv
+    sleep 2
+done
 
-Thanks for the hint.
+Error log, after adding few more debug prints:
+[ 2206.497227] Bluetooth: btnxpuart_queue_skb(): 01 0A 20 01 00
+[ 2206.498239] Bluetooth: hci0: Set UART break: on, status=0
+[ 2206.503283] Bluetooth: hci0: btnxpuart_tx_wakeup() tx_work scheduled
+[ 2206.503299] Bluetooth: hci0: btnxpuart_tx_work() dequeue: 01 0A 20 01 00
+Can't set advertise mode on hci0: Connection timed out (110)
+[ 2208.514238] Bluetooth: hci0: command 0x200a tx timeout
 
-> > 
-> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > ---
-> > >  drivers/media/i2c/alvium-csi2.c | 45 +++++++++++++++------------------
-> > >  drivers/media/i2c/alvium-csi2.h |  3 ---
-> > >  2 files changed, 21 insertions(+), 27 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > index 34ff7fad3877..c4b7851045a1 100644
-> > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > @@ -1170,40 +1170,36 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
-> > >  	return 0;
-> > >  }
-> > >  
-> > > -static int alvium_get_frame_interval(struct alvium_dev *alvium)
-> > > +static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> > > +				     u64 *dft_fr, u64 *min_fr, u64 *max_fr)
-> > >  {
-> > > -	u64 dft_fr, min_fr, max_fr;
-> > >  	int ret = 0;
-> > >  
-> > >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > -		    &dft_fr, &ret);
-> > > +		    dft_fr, &ret);
-> > >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
-> > > -		    &min_fr, &ret);
-> > > +		    min_fr, &ret);
-> > >  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
-> > > -		    &max_fr, &ret);
-> > > +		    max_fr, &ret);
-> > >  	if (ret)
-> > >  		return ret;
-> > 
-> > You can just
-> > 
-> > 	return ret;
+When the power save mechanism turns on UART break, and btnxpuart_tx_work()
+is scheduled simultaneously, psdata->ps_state is read as PS_STATE_AWAKE,
+which prevents the psdata->work from being scheduled, which is responsible
+to turn OFF UART break.
 
-I'll do this in v2, thanks.
+This issue is fixed by adding a ps_lock mutex around UART break on/off as
+well as around ps_state read/write.
+btnxpuart_tx_wakeup() will now read updated ps_state value. If ps_state is
+PS_STATE_SLEEP, it will first schedule psdata->work, and then it will
+reschedule itself once UART break has been turned off and ps_state is
+PS_STATE_AWAKE.
 
-> > 
-> > >  
-> > > -	alvium->dft_fr = dft_fr;
-> > > -	alvium->min_fr = min_fr;
-> > > -	alvium->max_fr = max_fr;
-> > > -
-> > >  	return 0;
-> > >  }
-> > >  
-> > > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
-> > > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
-> > >  {
-> > >  	struct device *dev = &alvium->i2c_client->dev;
-> > >  	int ret;
-> > >  
-> > >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > -				  alvium->fr);
-> > > +				  fr);
-> > 
-> > This is unrelated to the commit message. Please split handling of the fr
-> > field to a separate patch. One change, one patch.
+Tested above script for 50,000 iterations and TX timeout error was not
+observed anymore.
 
-Right..
+Signed-off-by: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+---
+ drivers/bluetooth/btnxpuart.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-> > 
-> > >  	if (ret) {
-> > >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
-> > >  		return ret;
-> > >  	}
-> > >  
-> > > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
-> > > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
-> > >  
-> > >  	return 0;
-> > >  }
-> > > @@ -1667,36 +1663,36 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > >  }
-> > >  
-> > >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > -				     struct v4l2_subdev_frame_interval *fi)
-> > > +				     struct v4l2_subdev *sd,
-> > > +				     struct v4l2_subdev_state *sd_state,
-> 
-> This is also unrelated to this patch.
-> 
-> > > +				     struct v4l2_subdev_frame_interval *fi,
-> > > +				     u64 *req_fr)
-> > >  {
-> > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > -	u64 req_fr, min_fr, max_fr;
-> > > +	u64 dft_fr, min_fr, max_fr;
-> > >  	int ret;
-> > >  
-> > >  	if (fi->interval.denominator == 0)
-> > >  		return -EINVAL;
-> > >  
-> > > -	ret = alvium_get_frame_interval(alvium);
-> > > +	ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
-> > >  	if (ret) {
-> > >  		dev_err(dev, "Fail to get frame interval\n");
-> > >  		return ret;
-> > >  	}
-> > >  
-> > > -	min_fr = alvium->min_fr;
-> > > -	max_fr = alvium->max_fr;
-> > > -
-> > >  	dev_dbg(dev, "fi->interval.numerator = %d\n",
-> > >  		fi->interval.numerator);
-> > >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
-> > >  		fi->interval.denominator);
-> > >  
-> > > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > >  		       fi->interval.numerator);
-> > >  
-> > > -	if (req_fr >= max_fr && req_fr <= min_fr)
-> > > -		req_fr = alvium->dft_fr;
-> > > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> > > +		*req_fr = dft_fr;
-> > >  
-> > > -	alvium->fr = req_fr;
-> > > +	alvium->fr = *req_fr;
-> > >  	alvium->frame_interval.numerator = fi->interval.numerator;
-> > >  	alvium->frame_interval.denominator = fi->interval.denominator;
-> > >  
-> > > @@ -1708,6 +1704,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  				   struct v4l2_subdev_frame_interval *fi)
-> > >  {
-> > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > +	u64 req_fr;
-> > >  	int ret;
-> > >  
-> > >  	/*
-> > > @@ -1720,9 +1717,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  	if (alvium->streaming)
-> > >  		return -EBUSY;
-> > >  
-> > > -	ret = alvium_set_frame_interval(alvium, fi);
-> > > +	ret = alvium_set_frame_interval(alvium, sd, sd_state, fi, &req_fr);
-> > >  	if (!ret)
-> > > -		ret = alvium_set_frame_rate(alvium);
-> > > +		ret = alvium_set_frame_rate(alvium, req_fr);
-> > >  
-> > >  	return ret;
-> > >  }
-> > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > index 8b554bffdc39..a6529b28e7dd 100644
-> > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > @@ -443,9 +443,6 @@ struct alvium_dev {
-> > >  
-> > >  	struct alvium_mode mode;
-> > >  	struct v4l2_fract frame_interval;
-> > > -	u64 dft_fr;
-> > > -	u64 min_fr;
-> > > -	u64 max_fr;
-> > >  	u64 fr;
-> > >  
-> > >  	u8 h_sup_csi_lanes;
+diff --git a/drivers/bluetooth/btnxpuart.c b/drivers/bluetooth/btnxpuart.c
+index b7e66b7ac570..a68d10771c99 100644
+--- a/drivers/bluetooth/btnxpuart.c
++++ b/drivers/bluetooth/btnxpuart.c
+@@ -126,6 +126,7 @@ struct ps_data {
+ 	struct hci_dev *hdev;
+ 	struct work_struct work;
+ 	struct timer_list ps_timer;
++	struct mutex ps_lock;
+ };
+ 
+ struct wakeup_cmd_payload {
+@@ -337,6 +338,7 @@ static void ps_control(struct hci_dev *hdev, u8 ps_state)
+ 	    !test_bit(BTNXPUART_SERDEV_OPEN, &nxpdev->tx_state))
+ 		return;
+ 
++	mutex_lock(&psdata->ps_lock);
+ 	switch (psdata->cur_h2c_wakeupmode) {
+ 	case WAKEUP_METHOD_DTR:
+ 		if (ps_state == PS_STATE_AWAKE)
+@@ -356,6 +358,8 @@ static void ps_control(struct hci_dev *hdev, u8 ps_state)
+ 	}
+ 	if (!status)
+ 		psdata->ps_state = ps_state;
++	mutex_unlock(&psdata->ps_lock);
++
+ 	if (ps_state == PS_STATE_AWAKE)
+ 		btnxpuart_tx_wakeup(nxpdev);
+ }
+@@ -391,17 +395,25 @@ static void ps_setup(struct hci_dev *hdev)
+ 
+ 	psdata->hdev = hdev;
+ 	INIT_WORK(&psdata->work, ps_work_func);
++	mutex_init(&psdata->ps_lock);
+ 	timer_setup(&psdata->ps_timer, ps_timeout_func, 0);
+ }
+ 
+-static void ps_wakeup(struct btnxpuart_dev *nxpdev)
++static bool ps_wakeup(struct btnxpuart_dev *nxpdev)
+ {
+ 	struct ps_data *psdata = &nxpdev->psdata;
++	u8 ps_state;
++
++	mutex_lock(&psdata->ps_lock);
++	ps_state = psdata->ps_state;
++	mutex_unlock(&psdata->ps_lock);
+ 
+-	if (psdata->ps_state != PS_STATE_AWAKE) {
++	if (ps_state != PS_STATE_AWAKE) {
+ 		psdata->ps_cmd = PS_CMD_EXIT_PS;
+ 		schedule_work(&psdata->work);
++		return true;
+ 	}
++	return false;
+ }
+ 
+ static int send_ps_cmd(struct hci_dev *hdev, void *data)
+@@ -1171,7 +1183,6 @@ static struct sk_buff *nxp_dequeue(void *data)
+ {
+ 	struct btnxpuart_dev *nxpdev = (struct btnxpuart_dev *)data;
+ 
+-	ps_wakeup(nxpdev);
+ 	ps_start_timer(nxpdev);
+ 	return skb_dequeue(&nxpdev->txq);
+ }
+@@ -1186,6 +1197,11 @@ static void btnxpuart_tx_work(struct work_struct *work)
+ 	struct sk_buff *skb;
+ 	int len;
+ 
++	if (ps_wakeup(nxpdev)) {
++		schedule_work(&nxpdev->tx_work);
++		return;
++	}
++
+ 	while ((skb = nxp_dequeue(nxpdev))) {
+ 		len = serdev_device_write_buf(serdev, skb->data, skb->len);
+ 		hdev->stat.byte_tx += len;
+-- 
+2.34.1
 
-Plan for v2 is splitting this series
-into another patch as you suggest:
-
-media: i2c: alvium: removal of dft_fr, min_fr and max_fr
-+ media: i2c: alvium: removal of fr field
-media: i2c: alvium: store frame interval in subdev state
-media: i2c: alvium: inline set_frame_interval into s_frame_interval
-
-Thanks & Regards,
-Tommaso
-
-
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
 
