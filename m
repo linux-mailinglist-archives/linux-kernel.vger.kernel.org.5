@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-4381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567D7817C4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:53:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8CBB817C50
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0231C22432
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:53:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70CA1283624
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A30B7349E;
-	Mon, 18 Dec 2023 20:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16E37348A;
+	Mon, 18 Dec 2023 20:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OdDlprp6"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="siimhbt5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0397346E;
-	Mon, 18 Dec 2023 20:53:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA7DFC433C7;
-	Mon, 18 Dec 2023 20:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702932820;
-	bh=BMfh3lrcxmGPTr7GYpN8kaTYHMaxLq7SFzjSMIVtKgU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OdDlprp6u9LFydvgU37KF+hloZJ9RPnAoosCsP9NKtcH/Yzr9nL4GtZ/mrde8tZqG
-	 Gll8UaEkd2QLWFYOF7bIo32EAMuJtuTmyn+wrR8RRoJNqlTl6/Dd8zTHgdKxTIh1UH
-	 LN+U+khyDHIe65lhqdt/4SUHtE9HaWG8YO9RaGydx3ZiTUh4BAVWZX/v04qUrhLdYD
-	 iqpCOFC2cq7b6qcmcnf5gsfqQwWlB2cHM2DhfryZF4/piQcD82rqR1VhCQeKWieF6z
-	 gvrQoG04eHvoqo71PqPlf55NUa1HbgD9haydYU+2MSF7mZs63fGJ+eCixrZBqdxd4q
-	 O6BB4DgiYvbOQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id CBE29403EF; Mon, 18 Dec 2023 17:53:37 -0300 (-03)
-Date: Mon, 18 Dec 2023 17:53:37 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Nick Terrell <terrelln@fb.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Andi Kleen <ak@linux.intel.com>, Kajol Jain <kjain@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Vincent Whitchurch <vincent.whitchurch@axis.com>,
-	"Steinar H. Gunderson" <sesse@google.com>,
-	Liam Howlett <liam.howlett@oracle.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Colin Ian King <colin.i.king@gmail.com>,
-	Dmitrii Dolgov <9erthalion6@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Ming Wang <wangming01@loongson.cn>,
-	James Clark <james.clark@arm.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Leo Yan <leo.yan@linaro.org>, Ravi Bangoria <ravi.bangoria@amd.com>,
-	German Gomez <german.gomez@arm.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-	Sandipan Das <sandipan.das@amd.com>,
-	liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Guilherme Amadio <amadio@gentoo.org>
-Subject: Re: [PATCH v6 00/47] maps/threads/dsos memory improvements and fixes
-Message-ID: <ZYCxURwlu7Rld-IW@kernel.org>
-References: <20231207011722.1220634-1-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D83A2D;
+	Mon, 18 Dec 2023 20:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-28ba05b28adso690372a91.3;
+        Mon, 18 Dec 2023 12:54:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702932899; x=1703537699;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oyqQ/Wvr4doZBB9HaM9FngNfKFGZsIGpvcft8cmNfOo=;
+        b=TCgkVGHpL2A4MOBhuZ5DnCswi9iFCLpVv5/I2WV+GpFjOoXtCEQFbrHyjkUwRvno9g
+         dBWMw2KgbmYt8kumzkEIlh+KK3dHYE294HAMJe463yib8QLrgJOm2sAkJPeVkNUSySek
+         W8mMfzLczan14f95NHtzflyH0ckO4XQ+z5BsExNuPUfJ+RAg8Nyebxl5vLIN6mvInCYT
+         bQPhGxf+gXeSz/nmCNvG9WPasn8dJaQESHFu/qGQAOFfv8sOh9yJ4eXrOOTOiLFGy+wj
+         g952m73YkoWvwgTFNLHMJaxnwZujchGpn07CpbUdwO1BSdWtbUmabLMRY9aDO8TPFjel
+         qzGg==
+X-Gm-Message-State: AOJu0Yx0UMT595wtf/ZWi5dmZ3PdM0zOXz+ParGA7PRpRYw9DMFl0MiR
+	TgFYIp4+XAXC9fS0bzvkkVycQT4q65r1GEWc
+X-Google-Smtp-Source: AGHT+IFERz3rs4RdAWJgq6WTgWn0TmksVSr8VOrVO3aujyG/amJD5/zezu8GxPpfcuOA4ZB3FDfDuQ==
+X-Received: by 2002:a17:90a:c7c3:b0:28b:7ee0:4ef0 with SMTP id gf3-20020a17090ac7c300b0028b7ee04ef0mr1098616pjb.39.1702932898720;
+        Mon, 18 Dec 2023 12:54:58 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id mv21-20020a17090b199500b0028b96c9424dsm1850894pjb.1.2023.12.18.12.54.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 12:54:58 -0800 (PST)
+Date: Mon, 18 Dec 2023 17:54:56 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1702932896;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oyqQ/Wvr4doZBB9HaM9FngNfKFGZsIGpvcft8cmNfOo=;
+	b=siimhbt5hHKDQ19pCpHzQ6fYMLH+cOLBqXU8H2jSwJx9pZO9wOYzPxq3UpeILIgVC0D0Qt
+	42QIgsZlb11IwEyqMFVg/Y/MHZeAiOeT99qxTnBEhNk2P1vmAVGneIY3cNEEJFwZqyQpZ0
+	1h+/LPd51yv7Mr1N5GH3RFrRVR0gwYRydvKD3fmF2ZyTV9VYOv4FcLXXUPlhfNKIFHo5dk
+	WQQS4ne7OHeb5A2X+zz63PepVEOJG2sKfGVrnHD87H22R0uu/XQIWlhN6NFT6VZOEbZ0x0
+	ipJS3o+CAi2pE2dA1oPcb5Z04iQS9Mb/QqSg/U3lS0qRDeA0MOTXcCyfvLBayQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, 
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, 
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, 
+	allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 000/166] 6.6.8-rc1 review
+Message-ID: <6ax5yt6ximpyqdsv7lwkqh53uezui2mkifgcqh3hocirebvn53@uzodujfok34p>
+References: <20231218135104.927894164@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,38 +78,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231207011722.1220634-1-irogers@google.com>
-X-Url: http://acmel.wordpress.com
+In-Reply-To: <20231218135104.927894164@linuxfoundation.org>
 
-Em Wed, Dec 06, 2023 at 05:16:34PM -0800, Ian Rogers escreveu:
-> Modify the implementation of maps to not use an rbtree as the
-> container for maps, instead use a sorted array. Improve locking and
-> reference counting issues.
+On 23/12/18 02:49PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.8 release.
+> There are 166 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Similar to maps separate out and reimplement threads to use a hashmap
-> for lower memory consumption and faster look up. The fixes a
-> regression in memory usage where reference count checking switched to
-> using non-invasive tree nodes.  Reduce its default size by 32 times
-> and improve locking discipline. Also, fix regressions where tids had
-> become unordered to make `perf report --tasks` and
-> `perf trace --summary` output easier to read.
+> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
+> Anything received after that time might be too late.
 > 
-> Better encapsulate the dsos abstraction. Remove the linked list and
-> rbtree used for faster iteration and log(n) lookup to a sorted array
-> for similar performance but half the memory usage per dso. Improve
-> reference counting and locking discipline, adding reference count
-> checking to dso.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 > 
-> v6:
->  - Patch 1 is a parameter name fix requested by Namhyung.
->  - Patches 2 to 13 split apart a macro to function callback refactor
->    requested by Arnaldo.
->  - Add fixes and acked-by to later patches from Namhyung.
+> thanks
 
-Applied 1-10, 11 is failing, I'll try to resolve if you don't do it
-first.
+No regressions found on my system.
 
-This should be in tmp.perf-tools-next soon
+[    0.000000] Linux version 6.6.8-rc1+ (rbmarliere@debian) (Debian clang version 16.0.6 (19), GNU ld (GNU Binutils for Debian) 2.41.50.20231214) #14 SMP PREEMPT_DYNAMIC Mon Dec 18 14:51:26 -03 2023
 
-- Arnaldo
+Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+Thanks!
+-	Ricardo
 
