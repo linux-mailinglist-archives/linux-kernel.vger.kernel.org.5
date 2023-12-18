@@ -1,64 +1,80 @@
-Return-Path: <linux-kernel+bounces-4474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BFE0817DFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:19:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C96817E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 438581C218E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:19:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7FCB1C21829
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051D1760B4;
-	Mon, 18 Dec 2023 23:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF5D768E4;
+	Mon, 18 Dec 2023 23:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="MxmO7Kk9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FQfMty3r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8102674E16;
-	Mon, 18 Dec 2023 23:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=vz2+SV6FQDFW+uFGsb93QwrVbDu7R4z3v/c1VUv6d/o=; b=MxmO7Kk9tqQi8N6OmthNpay4ev
-	1isjVH+koLZd7JvjlnNWCPcWUiWxsQGn7JjxpOhu3OsgiB+IMou/RFTvq41DXvjvWzXOTFeA4jexu
-	NcPfn9MxAmHD8vYZq/kR0TPS4fwp1LVZyueNKoZil60eDFItxCNz74T2h6ECMsNFiTj8uQsEgS5Wy
-	EnDi9WGEGyOODqjUeV+CeKM0MDlgBkBLCENiCw1uw+Li+2m3K1/3511ljMACWsUn51Z0vOUu1F9XM
-	YrmAgYEV5kP1nT3JfmXpsxv1swWBaETmz7B1fK5NszMHJaXH0BfjaM7Fzk5am/EDhsqnvbhME+FV8
-	xXXw+l7Q==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFMt1-00Fc1h-0M;
-	Mon, 18 Dec 2023 23:18:59 +0000
-Date: Mon, 18 Dec 2023 23:18:59 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc: brauner@kernel.org, linux-fsdevel@vger.kernel.org,
-	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: fix doc comment typo fs tree wide
-Message-ID: <20231218231859.GV1674809@ZenIV>
-References: <20231215130927.136917-1-aleksandr.mikhalitsyn@canonical.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C56E760B3;
+	Mon, 18 Dec 2023 23:19:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AD17C433C7;
+	Mon, 18 Dec 2023 23:19:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702941563;
+	bh=jz2D1HTTnvEfO7luxuGZDmFgmCccQ/8d9eqpMPiagIE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FQfMty3rKGcMRGiCFhNF/8By0LJBuehsUIlEc012N7BdQZbSAxVx6+t30BLbXHbYE
+	 irb40fbCYkMv3ygXAIOIWPgOgvK+Xgd4xSSEc+UhCihHi8ihC0ARxT0szXhHH6QZzd
+	 NGPvbHSkk6IEMag/r7njT5jd5+P2P1QQStyJvAAVlZNX/kFCK1EB3cFqNajkAR0zYj
+	 RuY/CbHH8+L/PSJvzs9A9EIYfFnRqmKxHEVzfPENHgygZ6G9pWjZrwi5QLkJ6Yccvw
+	 2HB2K39TZ9dzxBPQx49F91CHr22UpicE+FBBzR+T3+O7Wypt/5MiXgOUTwanE9Yg9o
+	 6CJS4C14bQPFw==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	rcu <rcu@vger.kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 0/3] timers & RCU: Fix TREE03 stalls
+Date: Tue, 19 Dec 2023 00:19:13 +0100
+Message-ID: <20231218231916.11719-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215130927.136917-1-aleksandr.mikhalitsyn@canonical.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 15, 2023 at 02:09:27PM +0100, Alexander Mikhalitsyn wrote:
-> Do the replacement:
-> s/simply passs @nop_mnt_idmap/simply passs @nop_mnt_idmap/
-             ^^^                         ^^^
-> in the fs/ tree.
+5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
+has introduced an issue with RCU. This is a proposal to solve the
+situation after realizing that fixing that on the timers side wouldn't
+be pretty to say the least.
 
-You might want to spell it correctly in the replacement string ;-)
+Oh and the last patch is absolutely irrelevant to the issue...
+
+Frederic Weisbecker (3):
+  hrtimer: Report offline hrtimer enqueue
+  rcu: Defer RCU kthreads wakeup when CPU is dying
+  rcu/exp: Remove full barrier upon main thread wakeup
+
+ include/linux/hrtimer.h |  3 ++-
+ kernel/rcu/tree.c       | 34 +++++++++++++++++++++++++++++++++-
+ kernel/rcu/tree_exp.h   |  8 +++-----
+ kernel/time/hrtimer.c   |  3 +++
+ 4 files changed, 41 insertions(+), 7 deletions(-)
+
+-- 
+2.42.1
+
 
