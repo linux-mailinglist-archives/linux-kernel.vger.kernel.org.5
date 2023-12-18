@@ -1,179 +1,212 @@
-Return-Path: <linux-kernel+bounces-4329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC09817B94
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4588817C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17DFC1C22D10
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:08:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C83011C21C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E67172047;
-	Mon, 18 Dec 2023 20:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3C47349E;
+	Mon, 18 Dec 2023 20:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hQr7MjQT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JpykLe7i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771246FB6
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 20:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BIJYC7s012459;
-	Mon, 18 Dec 2023 20:08:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=hMBeBrq8quQH6CPv+lImN6QdJACxbXf9tSZyXHlRo4E=; b=hQ
-	r7MjQTkCnHevdZk/xZNlTOlCzJByyg1VJ4qM1AvnQp7UvqyZMO3Euds7jhtt8eED
-	OcKCPEg5dYfNJZ8GfHjZanYk/zmti7OuY96PncHIBR+de1aOMRqW5OGlafx0VYdd
-	T6J2BLs4C04WMNvgbHXroA7wNkeRhW97c+WEqnfttD9NRG5M9Amm2Gt4kyGMFcSy
-	U5g1g3y1ezrPkhtx4TK7/hE0PZHETFSeR45h7OhjiNI1eui5V20THu8LYXFjEn58
-	zNlwdXmauJhNUv/0fkUra032kIINL6L4Uq0Oc54AGc7cR/uqfJH0NDZPiwfMHbVn
-	b4PPPVG+YzzSi1JnREFQ==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2jx0hpr2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 20:08:16 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BIK8FP3001220
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 20:08:15 GMT
-Received: from [10.71.108.105] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
- 2023 12:08:14 -0800
-Message-ID: <d6f23512-cec4-4b82-aa6e-d3c98e86e29f@quicinc.com>
-Date: Mon, 18 Dec 2023 12:08:14 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F537348F;
+	Mon, 18 Dec 2023 20:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cc5ee69960so25946331fa.0;
+        Mon, 18 Dec 2023 12:47:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702932421; x=1703537221; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=3SIXDp75ZHCEs87qRhLFCCPIElvpLyVBzTpsncQ+3Og=;
+        b=JpykLe7iTr1G9owPwP1BnL7J1DdbfO96nHmFj3/+YVXX4HujYyfibgg7JwfTy0/1ks
+         Q22R2g7zaFjK69o8PUQEF2Va06OHpwXnoMVqOxj863/n7c0Hok9X99UNV2OCzWvdWQBq
+         j1TJ3IEFoAyZyYL3QjqSNk+e7P+/PFtzcx+A0hTeJXNysxcbNCJTU5KV+J4eKc4ooL3W
+         r3r08k1eG4IrvLmur0SvOzzFX4t/lSAQXVy7jwgX2NaW7RfP5mNN7Ry0qh1kB6RHrScv
+         n1VsYmL6dl3SG6MPrbxlw7iMOBwiJtbgkjHn5jOkk6M7dRrmtpk5piquMTTLwTGChEDn
+         JW2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702932421; x=1703537221;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3SIXDp75ZHCEs87qRhLFCCPIElvpLyVBzTpsncQ+3Og=;
+        b=PmLuDRaEc1Aq9l1TA0wX0uVy1hO1X2MJdMAOQM7kPz/rozuUhhGCuBGDCy8XYyNPgA
+         9s8NAan6gpEx0ahAijveuwoBHII5k0k/GD2vbvx+M0EyA6XhmkoAvc+ocHtIoIoE4mM9
+         oExRWEqUR+koNUdtSLfceWvB7/1K5ZBXvNhxEzS/uK6Z44im8VxNJUECEzIcT7NnuIYy
+         evlO3BZ+r9QfsFgQJ+YZvPIDs2W6WXCEfLgSh5sOyvEufX4kNeaIYtOaBuzZbT/a8cKl
+         nwN22MQetHzMfPdqYSpxThx5LS1mP5TxxEnVWO/2q3cLIpXHfsBcwEMeq4itLMjqgVMB
+         LFhw==
+X-Gm-Message-State: AOJu0Yyh92WL4sisGjZN0D5KD0dVzc4QYMDoGhT8C1He3NtEt65K4Ua9
+	rUJr8LBGnokKeVCniGkawdU=
+X-Google-Smtp-Source: AGHT+IFXCrMN7zl1aUbx1ydt1lz0r879IoYa36r//tRk/ToNNlqSKcI/ZWDk5XvAOFB8ElmnsCyPQw==
+X-Received: by 2002:a2e:90da:0:b0:2cc:6ebd:fad8 with SMTP id o26-20020a2e90da000000b002cc6ebdfad8mr870450ljg.19.1702932420809;
+        Mon, 18 Dec 2023 12:47:00 -0800 (PST)
+Received: from razdolb (95-24-145-153.broadband.corbina.ru. [95.24.145.153])
+        by smtp.gmail.com with ESMTPSA id x9-20020a2e9dc9000000b002cc7d567dffsm30090ljj.103.2023.12.18.12.46.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 12:47:00 -0800 (PST)
+References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
+ <20231211175023.1680247-13-mike.rudenko@gmail.com>
+ <20231211221533.GK27535@pendragon.ideasonboard.com>
+ <875y13pnn6.fsf@gmail.com>
+ <20231218180459.GS5290@pendragon.ideasonboard.com>
+User-agent: mu4e 1.10.7; emacs 29.1
+From: Mikhail Rudenko <mike.rudenko@gmail.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, Jacopo Mondi <jacopo@jmondi.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Dave Stevenson
+ <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>
+Subject: Re: [PATCH 12/19] media: i2c: ov4689: Implement digital gain control
+Date: Mon, 18 Dec 2023 23:10:25 +0300
+In-reply-to: <20231218180459.GS5290@pendragon.ideasonboard.com>
+Message-ID: <87msu7p7b0.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scripts/decode_stacktrace.sh: optionally use LLVM
- utilities
-To: Carlos Llamas <cmllamas@google.com>,
-        Nathan Chancellor
-	<nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>, Tom Rix
-	<trix@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <kernel-team@android.com>,
-        Will Deacon
-	<will@kernel.org>, John Stultz <jstultz@google.com>,
-        Masahiro Yamada
-	<masahiroy@kernel.org>
-References: <20230929034836.403735-1-cmllamas@google.com>
-Content-Language: en-US
-From: Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <20230929034836.403735-1-cmllamas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: lmPUyfD68-W5Tb92sDkUuf027cFXOKdZ
-X-Proofpoint-GUID: lmPUyfD68-W5Tb92sDkUuf027cFXOKdZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- phishscore=0 priorityscore=1501 suspectscore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 mlxscore=0 malwarescore=0 spamscore=0
- mlxlogscore=823 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312180150
+Content-Type: text/plain
 
 
+On 2023-12-18 at 20:04 +02, Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
 
-On 9/28/2023 8:48 PM, Carlos Llamas wrote:
-> GNU's addr2line can have problems parsing a vmlinux built with LLVM,
-> particularly when LTO was used. In order to decode the traces correctly
-> this patch adds the ability to switch to LLVM's utilities readelf and
-> addr2line. The same approach is followed by Will in [1].
-> 
-> Before:
->   $ scripts/decode_stacktrace.sh vmlinux < kernel.log
->   [17716.240635] Call trace:
->   [17716.240646] skb_cow_data (??:?)
->   [17716.240654] esp6_input (ld-temp.o:?)
->   [17716.240666] xfrm_input (ld-temp.o:?)
->   [17716.240674] xfrm6_rcv (??:?)
->   [...]
-> 
-> After:
->   $ LLVM=1 scripts/decode_stacktrace.sh vmlinux < kernel.log
->   [17716.240635] Call trace:
->   [17716.240646] skb_cow_data (include/linux/skbuff.h:2172 net/core/skbuff.c:4503)
->   [17716.240654] esp6_input (net/ipv6/esp6.c:977)
->   [17716.240666] xfrm_input (net/xfrm/xfrm_input.c:659)
->   [17716.240674] xfrm6_rcv (net/ipv6/xfrm6_input.c:172)
->   [...]
-> 
-> Note that one could set CROSS_COMPILE=llvm- instead to hack around this
-> issue. However, doing so can break the decodecode routine as it will
-> force the selection of other LLVM utilities down the line e.g. llvm-as.
-> 
-> [1] https://lore.kernel.org/all/20230914131225.13415-3-will@kernel.org/
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: John Stultz <jstultz@google.com>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Carlos Llamas <cmllamas@google.com>
+> Hi Mikhail,
+>
+> On Tue, Dec 12, 2023 at 03:52:48PM +0300, Mikhail Rudenko wrote:
+>> On 2023-12-12 at 00:15 +02, Laurent Pinchart wrote:
+>> > On Mon, Dec 11, 2023 at 08:50:15PM +0300, Mikhail Rudenko wrote:
+>> >> The OV4689 sensor supports digital gain up to 16x. Implement
+>> >> corresponding control in the driver. Default digital gain value is not
+>> >> modified by this patch.
+>> >>
+>> >> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+>> >> ---
+>> >>  drivers/media/i2c/ov4689.c | 16 ++++++++++++++--
+>> >>  1 file changed, 14 insertions(+), 2 deletions(-)
+>> >>
+>> >> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+>> >> index 62aeae43d749..ed0ce1b9e55b 100644
+>> >> --- a/drivers/media/i2c/ov4689.c
+>> >> +++ b/drivers/media/i2c/ov4689.c
+>> >> @@ -35,6 +35,12 @@
+>> >>  #define OV4689_GAIN_STEP		1
+>> >>  #define OV4689_GAIN_DEFAULT		0x80
+>> >>
+>> >> +#define OV4689_REG_DIG_GAIN		CCI_REG16(0x352A)
+>> >
+>> > Lowercase for hex constatns please.
+>>
+>> Ah, missed it somehow. Is this convention kernel-wide or media specific?
+>> I think checkpatch could have detetected this..
+>
+> It's media-wide :-) Lower-case hex constants are the majority through
+> the kernel, but there's no tree-wide ban on upper-case.
+>
+>> >> +#define OV4689_DIG_GAIN_MIN		1
+>> >> +#define OV4689_DIG_GAIN_MAX		0x7fff
+>> >> +#define OV4689_DIG_GAIN_STEP		1
+>> >> +#define OV4689_DIG_GAIN_DEFAULT		0x800
+>> >> +
+>> >>  #define OV4689_REG_TEST_PATTERN		CCI_REG8(0x5040)
+>> >>  #define OV4689_TEST_PATTERN_ENABLE	0x80
+>> >>  #define OV4689_TEST_PATTERN_DISABLE	0x0
+>> >> @@ -131,7 +137,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+>> >>
+>> >>  	/* AEC PK */
+>> >>  	{CCI_REG8(0x3503), 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
+>> >> -	{CCI_REG8(0x352a), 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
+>> >
+>> > Is the default value really x2 ? That's not very nice :-S
+>> >
+>> > It would be much nicer if the default value of the control mapped to x1,
+>> > otherwise it's impossible for userspace to interpret the scale of the
+>> > digital gain value in a generic way. I suppose that could break existing
+>> > applications though, which isn't great.
+>>
+>> The datasheet does not explicitly say how register values are mapped to
+>> the actual gain. 0x8 comes from the original register tables, and can
+>> also be found in a few other drivers for this sensor, although they do
+>> not implement digital gain control.
+>>
+>> OTOH, the power-on value of this register, and default value as found in
+>> the datasheet, is 0x4. This was the motivation behind that "(2x)"
+>> annotation.
+>
+> I wonder if the chip has a TPG that would be located before the digital
+> gain. It would be a nice way to test the digital gain scale.
 
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+Thanks for the suggestion, just tested that. Unfortunately, all the
+supported test patterns are not affected by digital gain at all :(
 
-> ---
->  scripts/decode_stacktrace.sh | 19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-> index 564c5632e1a2..bfe5a4082d8e 100755
-> --- a/scripts/decode_stacktrace.sh
-> +++ b/scripts/decode_stacktrace.sh
-> @@ -16,6 +16,21 @@ elif type c++filt >/dev/null 2>&1 ; then
->  	cppfilt_opts=-i
->  fi
->  
-> +UTIL_SUFFIX=
-> +if [[ -z ${LLVM:-} ]]; then
-> +	UTIL_PREFIX=${CROSS_COMPILE:-}
-> +else
-> +	UTIL_PREFIX=llvm-
-> +	if [[ ${LLVM} == */ ]]; then
-> +		UTIL_PREFIX=${LLVM}${UTIL_PREFIX}
-> +	elif [[ ${LLVM} == -* ]]; then
-> +		UTIL_SUFFIX=${LLVM}
-> +	fi
-> +fi
-> +
-> +READELF=${UTIL_PREFIX}readelf${UTIL_SUFFIX}
-> +ADDR2LINE=${UTIL_PREFIX}addr2line${UTIL_SUFFIX}
-> +
->  if [[ $1 == "-r" ]] ; then
->  	vmlinux=""
->  	basepath="auto"
-> @@ -75,7 +90,7 @@ find_module() {
->  
->  	if [[ "$modpath" != "" ]] ; then
->  		for fn in $(find "$modpath" -name "${module//_/[-_]}.ko*") ; do
-> -			if readelf -WS "$fn" | grep -qwF .debug_line ; then
-> +			if ${READELF} -WS "$fn" | grep -qwF .debug_line ; then
->  				echo $fn
->  				return
->  			fi
-> @@ -169,7 +184,7 @@ parse_symbol() {
->  	if [[ $aarray_support == true && "${cache[$module,$address]+isset}" == "isset" ]]; then
->  		local code=${cache[$module,$address]}
->  	else
-> -		local code=$(${CROSS_COMPILE}addr2line -i -e "$objfile" "$address" 2>/dev/null)
-> +		local code=$(${ADDR2LINE} -i -e "$objfile" "$address" 2>/dev/null)
->  		if [[ $aarray_support == true ]]; then
->  			cache[$module,$address]=$code
->  		fi
+But what if we set the digital gain control's default value in
+v4l2_ctrl_new_std to 0x400 (power-on default), right after that set
+ctrl->cur.val to 0x800 (default value before this series), and explain
+the situation in a comment? Thus we could keep the effective default
+value, and make it clear that it is 2x at the same time.
+
+What do you think?
+
+>> So, I'm afraid that we cannot interpret the absolute scale of the
+>> digital gain in any case, unless we have more documentation. I tend to
+>> keep the default value of 0x8 for the reasons of not (possibly) breaking
+>> userspace.
+>>
+>> > Out of curiosity, can you tell what SoC(s) you're using this sensor with
+>> > ?
+>>
+>> It's Rockchip 3399. I run most of my tests with AGC and AWB off, to be
+>> sure they do not hide some important details.
+>>
+>> >>
+>> >>  	/* ADC and analog control*/
+>> >>  	{CCI_REG8(0x3603), 0x40},
+>> >> @@ -622,6 +627,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>> >>  				OV4689_TIMING_FLIP_MASK,
+>> >>  				val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
+>> >>  		break;
+>> >> +	case V4L2_CID_DIGITAL_GAIN:
+>> >> +		cci_write(regmap, OV4689_REG_DIG_GAIN, val, &ret);
+>> >> +		break;
+>> >>  	default:
+>> >>  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
+>> >>  			 __func__, ctrl->id, val);
+>> >> @@ -650,7 +658,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>> >>
+>> >>  	handler = &ov4689->ctrl_handler;
+>> >>  	mode = ov4689->cur_mode;
+>> >> -	ret = v4l2_ctrl_handler_init(handler, 13);
+>> >> +	ret = v4l2_ctrl_handler_init(handler, 14);
+>> >>  	if (ret)
+>> >>  		return ret;
+>> >>
+>> >> @@ -693,6 +701,10 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>> >>  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
+>> >>  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
+>> >>
+>> >> +	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
+>> >> +			  OV4689_DIG_GAIN_MIN, OV4689_DIG_GAIN_MAX,
+>> >> +			  OV4689_DIG_GAIN_STEP, OV4689_DIG_GAIN_DEFAULT);
+>> >> +
+>> >>  	if (handler->error) {
+>> >>  		ret = handler->error;
+>> >>  		dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
+
+
+--
+Best regards,
+Mikhail Rudenko
 
