@@ -1,161 +1,356 @@
-Return-Path: <linux-kernel+bounces-3361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4689816B74
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:46:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A03F816B78
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC1E11C22A6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:46:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C98DDB22D70
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212BE17999;
-	Mon, 18 Dec 2023 10:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Qb+N0XGq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE524199C4;
+	Mon, 18 Dec 2023 10:46:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2042.outbound.protection.outlook.com [40.107.244.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B176C16408;
-	Mon, 18 Dec 2023 10:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k8iaJNy2hdG1PbaYThxsPMyrXZehAVvUNKdYPDSOxeM5O4miOgvA35vTXrL3yNvG3jzg21+68lbrmIOia79J1mBSTvo73AgXdVnEHrbBbdT1l4j/6sEnSyMdgnRymK3OT2/t5/AHlJkT/r/ENL6C7J7GyLVqWA9GS9byHM/HvYtmj0REA9e2BnxAptBNDx71B5uLeXGTvXHfIFK2BhRlx+VooqkD9n8eUC21jvlQPFERgjBERmHNJMVlPjJTkg+5PmtmWb1dEAqtCFCXXbgJf0HnfwNhqPpVZwtSoIi83vjs2HsNmwWwSpWo/C8wB4pOcfhpvaNYq8lyJxPUXXuHUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b6MMuppckFBoewfR2ux1DUxTv1PH7Z27IhLBDzZUVFs=;
- b=PxbeuuY34utwUKIkOFrnMHCLK0zaQAtWj9ohzqUBJ3UXqUwOau9QpCu4I3R2xxNqIZQALs1PFGsuoX5xS/DL91JgjmmTSCC7tbdtKpSHSjeyW04kcDmPlVNH97GhHIN3LMjd0ZMEjLSV8bOztCWEyZ5T4IjLM0OyASRNWS+te7FEvGAiFAECHh2Jx44sv0fEnbJ8NUa67cF/WsOt1sRH3ULhD5MzVjTLNI9uAo9ETK33hVQZOD+FsqgL+xKzjDayVqCp8Y1pdLs79qvmDkTshbpKMVOC6EF7SynMu9DMsyE/9POBqyk3RkvT+S9t94cVc5kF9kKFvNvTJVUtPL91dQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b6MMuppckFBoewfR2ux1DUxTv1PH7Z27IhLBDzZUVFs=;
- b=Qb+N0XGq7ALzdfmeonyM/yM/lBzX+yy/p08gnH8oBrDhUcc4FX+CvVCGXwp42Vn+mpHsdPedbqUom7SMgwlRH/5wMPzIkpAqrU8UVEmXZOHJ/sDNDHrXua/Jr7CZUr76AFl9cVrOwq8ndZYiSl5NOuULWeJozB0vdd8HOrShblaQ2gX9vihDNcCa6qlhnBfE0LCCxWp8l/Kx7yk4z3gF10ixdU7sx5cRKLdC8RJgt2gmcxQMHJLQ7TrnZCBSRDVgVa6woFLuoqs9g8/XD9y8LJ7NTps2a6jvyjYhwPQrwRZi59v9nBKsK5+XBzzASV3PDJWj7x1ZqsOsq5K2Fe2K2w==
-Received: from MW4PR04CA0381.namprd04.prod.outlook.com (2603:10b6:303:81::26)
- by IA0PR12MB8352.namprd12.prod.outlook.com (2603:10b6:208:3dd::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
- 2023 10:46:17 +0000
-Received: from CO1PEPF000044F4.namprd05.prod.outlook.com
- (2603:10b6:303:81:cafe::28) by MW4PR04CA0381.outlook.office365.com
- (2603:10b6:303:81::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38 via Frontend
- Transport; Mon, 18 Dec 2023 10:46:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CO1PEPF000044F4.mail.protection.outlook.com (10.167.241.74) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7113.14 via Frontend Transport; Mon, 18 Dec 2023 10:46:16 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 18 Dec
- 2023 02:46:08 -0800
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 18 Dec 2023 02:46:08 -0800
-Received: from localhost.localdomain (10.127.8.12) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 18 Dec 2023 02:46:02 -0800
-From: Kartik <kkartik@nvidia.com>
-To: <thierry.reding@gmail.com>
-CC: <akpm@linux-foundation.org>, <andy@kernel.org>, <arnd@arndb.de>,
-	<christophe.jaillet@wanadoo.fr>, <frank.li@vivo.com>, <jonathanh@nvidia.com>,
-	<keescook@chromium.org>, <kkartik@nvidia.com>, <linus.walleij@linaro.org>,
-	<linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-tegra@vger.kernel.org>,
-	<pdeschrijver@nvidia.com>, <petlozup@nvidia.com>, <pshete@nvidia.com>,
-	<robh@kernel.org>, <stefank@nvidia.com>, <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 0/8] soc/tegra: fuse: Add ACPI support
-Date: Mon, 18 Dec 2023 16:15:59 +0530
-Message-ID: <20231218104559.3286-1-kkartik@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <ZXyCOydl9VOfwKp-@orome.fritz.box>
-References: <ZXyCOydl9VOfwKp-@orome.fritz.box>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4889D179B4;
+	Mon, 18 Dec 2023 10:46:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC06E1FB;
+	Mon, 18 Dec 2023 02:47:06 -0800 (PST)
+Received: from [10.57.46.32] (unknown [10.57.46.32])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00FD13F738;
+	Mon, 18 Dec 2023 02:46:19 -0800 (PST)
+Message-ID: <ebd7e310-d1b4-4b2e-a915-6241e04763d4@arm.com>
+Date: Mon, 18 Dec 2023 10:46:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F4:EE_|IA0PR12MB8352:EE_
-X-MS-Office365-Filtering-Correlation-Id: e49658e9-20bb-45dd-bb2b-08dbffb69017
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Z643rmyS5VbJLZGgK2ZoGwawqNrXEGDranG5eChVTUVu3GkJv1RK7VbSoWYSiiqKvGe/zZo6hgCMhN7FPGbqIigYB8T8nGkS1em4cBRwVmCCEdnpF9FA1lKzXLzt6Xf+4X0jWL470zKjDEe6im9jVI2k7Xdsd9YZh5v6TW2dQxEFu4p5h2yg3j2ylWSEi7pjWhhoUqv5yg5eXYOkytsMmmmYLZXpG2JoTiiw4pVKpZUe9ORr7xBJZ7lD9VO6sq0nleeKouJI2+telcfxjpAfXmmlB/098blt1HPsFTrx8fifdbrx+X7X3X0t9xvK6fjVfACL8K7GEereJQFXr+fZ9bzu/Uzr3Gbz2IgdaJTIsj2RgTV/jOT4vnREWKRSXNngi8glLgwWlCS7NRexC6s732nkTkDOMRpatoSk6papYeq1Lnh5Bow7izszx3s4+i65LNOFWpUwSH1ek0MVEmAURuViIENq34K37b0ajWjgllaNrO8ryeSC8kwAuskC3o+0taeh9JMzd7eKq4fd9ilB35JqYxEeBsr6Z2V3KxzVmUaBpE6u+9Vp3W0UaO2Q1dikp0JeYA0JGyiBr7x4tvJ3EYQ9e06xavCKrnsMCFz5QIxtqAJkLt719J87em2oOaQb+WVmiqXcR9x222E4kQfEW9jpkHi7IHl06kPvB89SSRJw8mK5gih/eIDHjpnhhK0wQzdvy0QQwNzdJI9YS3qo1Ridm8K23Rbx0hWu97+Gm7DfnphEtaM7xlqkK6V5ndpz
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(396003)(136003)(230922051799003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(46966006)(40470700004)(36840700001)(26005)(1076003)(2616005)(6666004)(426003)(36860700001)(5660300002)(83380400001)(47076005)(478600001)(2906002)(7416002)(70206006)(8676002)(8936002)(4326008)(4001150100001)(54906003)(70586007)(6916009)(316002)(41300700001)(7636003)(356005)(336012)(82740400003)(36756003)(86362001)(40460700003)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 10:46:16.8724
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e49658e9-20bb-45dd-bb2b-08dbffb69017
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044F4.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8352
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 6/8] coresight-tpdm: Add timestamp control register
+ support for the CMB
+Content-Language: en-GB
+To: Tao Zhang <quic_taozha@quicinc.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-7-git-send-email-quic_taozha@quicinc.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <1700533494-19276-7-git-send-email-quic_taozha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2023-12-15 at 17:43 +0100, Thierry Reding wrote
-> On Thu, Dec 14, 2023 at 06:43:47PM +0000, Arnd Bergmann wrote:
-> > On Thu, Dec 14, 2023, at 17:08, Thierry Reding wrote:
-> > > On Tue, Oct 17, 2023 at 10:53:14AM +0530, Kartik wrote:
-> > >> This series of patches add ACPI support for Tegra194 and Tegra234 in
-> > >> Tegra fuse and apbmisc drivers. It also adds support for Tegra241
-> > >> which uses ACPI boot.
-> > >
-> > > Applied, thanks.
-> > 
-> > I'm still a bit puzzled by this series, can you provide some more background?
-> > 
-> > Why does an ACPI based system require access to SoC drivers? Shouldn't
-> > this all be abstracted by the BIOS in some form so the device drivers
-> > can work standalone rather than calling into this driver?
+On 21/11/2023 02:24, Tao Zhang wrote:
+> CMB_TIER register is CMB subunit timestamp insertion enable register.
+> Bit 0 is PATT_TSENAB bit. Set this bit to 1 to request a timestamp
+> following a CMB interface pattern match. Bit 1 is XTRIG_TSENAB bit.
+> Set this bit to 1 to request a timestamp following a CMB CTI timestamp
+> request. Bit 2 is TS_ALL bit. Set this bit to 1 to request timestamp
+> for all packets.
 > 
-> This driver exposes a couple of things such as SoC family and SKU
-> information that is not otherwise available. It also exposes FUSE
-> data which can be used to calibrate certain devices. Most of the
-> region that contains the fuses is in the keep-out, so perhaps they
-> aren't needed on Tegra241.
+> Reviewed-by: James Clark <james.clark@arm.com>
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+> ---
+>   .../testing/sysfs-bus-coresight-devices-tpdm  |  35 ++++++
+>   drivers/hwtracing/coresight/coresight-tpdm.c  | 116 +++++++++++++++++-
+>   drivers/hwtracing/coresight/coresight-tpdm.h  |  14 +++
+>   3 files changed, 162 insertions(+), 3 deletions(-)
 > 
-> I suppose things like SoC family and such could be exposed differently.
-> Not sure if ACPI has other ways to expose that.
-> 
-> Let's see if Kartik can shed some light on this.
-> 
-> Thierry
+> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> index 53662ce7c2d0..e0b77107be13 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> @@ -214,3 +214,38 @@ KernelVersion	6.7
+>   Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+>   Description:
+>   		(RW) Set/Get the mask of the pattern for the CMB subunit TPDM.
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/cmb_patt/enable_ts
+> +Date:		September 2023
+> +KernelVersion	6.7
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		(Write) Set the pattern timestamp of CMB tpdm. Read
+> +		the pattern timestamp of CMB tpdm.
+> +
+> +		Accepts only one of the 2 values -  0 or 1.
+> +		0 : Disable CMB pattern timestamp.
+> +		1 : Enable CMB pattern timestamp.
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/cmb_trig_ts
+> +Date:		September 2023
+> +KernelVersion	6.7
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		(RW) Set/Get the trigger timestamp of the CMB for tpdm.
+> +
+> +		Accepts only one of the 2 values -  0 or 1.
+> +		0 : Set the CMB trigger type to false
+> +		1 : Set the CMB trigger type to true
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/cmb_ts_all
+> +Date:		September 2023
+> +KernelVersion	6.7
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		(RW) Read or write the status of timestamp upon all interface.
+> +		Only value 0 and 1  can be written to this node. Set this node to 1 to requeset
+> +		timestamp to all trace packet.
+> +		Accepts only one of the 2 values -  0 or 1.
+> +		0 : Disable the timestamp of all trace packets.
+> +		1 : Enable the timestamp of all trace packets.
+> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+> index 894d4309f1c7..f6cda5616e84 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+> @@ -331,6 +331,36 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+>   	writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>   }
+>   
+> +static void set_cmb_tier(struct tpdm_drvdata *drvdata)
+> +{
+> +	u32 val;
+> +
+> +	val = readl_relaxed(drvdata->base + TPDM_CMB_TIER);
+> +
+> +	/* Clear all relevant fields */
+> +	val &= ~(TPDM_CMB_TIER_PATT_TSENAB | TPDM_CMB_TIER_TS_ALL |
+> +		 TPDM_CMB_TIER_XTRIG_TSENAB);
+> +
+> +	/* Set pattern timestamp type and enablement */
+> +	if (drvdata->cmb->patt_ts)
+> +		val |= TPDM_CMB_TIER_PATT_TSENAB;
 
-Hi Thierry, Arnd,
+  -- cut --
+> +	else
+> +		val &= ~TPDM_CMB_TIER_PATT_TSENAB;
 
-Although the keep-out contains most of the FUSE region. The driver still
-expose FUSE data with tegra_fuse_readl(), which can be used by drivers to
-get the required calibration data. Hence the reason to add ACPI support.
 
-The keep-out region is only used by nvmem interface, which allows reading the
-FUSE data from userspace as well as kernel modules. Currently on Tegra241,
-there are no users needing this information via nvmem interface.
+All the else cases in this function are superfluous. Please remove all
+of them.
 
-Regards,
-Kartik
+> +
+> +	/* Set trigger timestamp */
+> +	if (drvdata->cmb->trig_ts)
+> +		val |= TPDM_CMB_TIER_XTRIG_TSENAB;
+> +	else
+> +		val &= ~TPDM_CMB_TIER_XTRIG_TSENAB;
+> +
+> +	/* Set all timestamp enablement*/
+> +	if (drvdata->cmb->ts_all)
+> +		val |= TPDM_CMB_TIER_TS_ALL;
+> +	else
+> +		val &= ~TPDM_CMB_TIER_TS_ALL;
+> +	writel_relaxed(val, drvdata->base + TPDM_CMB_TIER);
+> +}
+> +
+>   static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+>   {
+>   	u32 val, i;
+> @@ -347,6 +377,8 @@ static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+>   			    drvdata->base + TPDM_CMB_XPMR(i));
+>   	}
+>   
+> +	set_cmb_tier(drvdata);
+> +
+>   	val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>   	/*
+>   	 * Set to 0 for continuous CMB collection mode,
+> @@ -695,9 +727,17 @@ static ssize_t enable_ts_show(struct device *dev,
+>   			      char *buf)
+>   {
+>   	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	ssize_t size = 0;
+>   
+> -	return sysfs_emit(buf, "%u\n",
+> -			 (unsigned int)drvdata->dsb->patt_ts);
+> +	if (tpdm_has_dsb_dataset(drvdata))
+> +		size = sysfs_emit(buf, "%u\n",
+> +				 (unsigned int)drvdata->dsb->patt_ts);
+> +
+> +	if (tpdm_has_cmb_dataset(drvdata))
+> +		size = sysfs_emit(buf, "%u\n",
+> +				 (unsigned int)drvdata->cmb->patt_ts);
+
+Why does this need to show two values ? This must only show ONE value.
+How you deduce that might be based on the availability of the feature
+set. Or store the TS value in the drvdata and use that instead for
+controlling CMB/DSB.
+
+Also, the sysfs documentation needs update, if this is going to
+control the CMB.
+
+Suzuki
+
+
+> +
+> +	return size;
+>   }
+>   
+>   /*
+> @@ -715,8 +755,13 @@ static ssize_t enable_ts_store(struct device *dev,
+>   		return -EINVAL;
+>   
+>   	spin_lock(&drvdata->spinlock);
+> -	drvdata->dsb->patt_ts = !!val;
+> +	if (tpdm_has_dsb_dataset(drvdata))
+> +		drvdata->dsb->patt_ts = !!val;
+> +
+> +	if (tpdm_has_cmb_dataset(drvdata))
+> +		drvdata->cmb->patt_ts = !!val;
+>   	spin_unlock(&drvdata->spinlock);
+> +
+>   	return size;
+>   }
+>   static DEVICE_ATTR_RW(enable_ts);
+> @@ -851,6 +896,68 @@ static ssize_t cmb_mode_store(struct device *dev,
+>   }
+>   static DEVICE_ATTR_RW(cmb_mode);
+>   
+> +static ssize_t cmb_ts_all_show(struct device *dev,
+> +			       struct device_attribute *attr,
+> +			       char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	return sysfs_emit(buf, "%u\n",
+> +			  (unsigned int)drvdata->cmb->ts_all);
+> +}
+> +
+> +static ssize_t cmb_ts_all_store(struct device *dev,
+> +				struct device_attribute *attr,
+> +				const char *buf,
+> +				size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+> +		return -EINVAL;
+> +
+> +	spin_lock(&drvdata->spinlock);
+> +	if (val)
+> +		drvdata->cmb->ts_all = true;
+> +	else
+> +		drvdata->cmb->ts_all = false;
+> +	spin_unlock(&drvdata->spinlock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(cmb_ts_all);
+> +
+> +static ssize_t cmb_trig_ts_show(struct device *dev,
+> +				struct device_attribute *attr,
+> +				char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	return sysfs_emit(buf, "%u\n",
+> +			  (unsigned int)drvdata->cmb->trig_ts);
+> +}
+> +
+> +static ssize_t cmb_trig_ts_store(struct device *dev,
+> +				 struct device_attribute *attr,
+> +				 const char *buf,
+> +				 size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+> +		return -EINVAL;
+> +
+> +	spin_lock(&drvdata->spinlock);
+> +	if (val)
+> +		drvdata->cmb->trig_ts = true;
+> +	else
+> +		drvdata->cmb->trig_ts = false;
+> +	spin_unlock(&drvdata->spinlock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(cmb_trig_ts);
+> +
+>   static struct attribute *tpdm_dsb_edge_attrs[] = {
+>   	&dev_attr_ctrl_idx.attr,
+>   	&dev_attr_ctrl_val.attr,
+> @@ -973,6 +1080,7 @@ static struct attribute *tpdm_cmb_patt_attrs[] = {
+>   	CMB_PATT_ATTR(1),
+>   	CMB_PATT_MASK_ATTR(0),
+>   	CMB_PATT_MASK_ATTR(1),
+> +	&dev_attr_enable_ts.attr,
+>   	NULL,
+>   };
+>   
+> @@ -985,6 +1093,8 @@ static struct attribute *tpdm_dsb_attrs[] = {
+>   
+>   static struct attribute *tpdm_cmb_attrs[] = {
+>   	&dev_attr_cmb_mode.attr,
+> +	&dev_attr_cmb_ts_all.attr,
+> +	&dev_attr_cmb_trig_ts.attr,
+>   	NULL,
+>   };
+>   
+> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
+> index e90d008c1cb2..65b7ca6c4077 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+> @@ -11,6 +11,8 @@
+>   
+>   /* CMB Subunit Registers */
+>   #define TPDM_CMB_CR		(0xA00)
+> +/*CMB subunit timestamp insertion enable register*/
+> +#define TPDM_CMB_TIER		(0xA04)
+>   /*CMB subunit timestamp pattern registers*/
+>   #define TPDM_CMB_TPR(n)		(0xA08 + (n * 4))
+>   /*CMB subunit timestamp pattern mask registers*/
+> @@ -24,6 +26,12 @@
+>   #define TPDM_CMB_CR_ENA		BIT(0)
+>   /* Trace collection mode for CMB subunit */
+>   #define TPDM_CMB_CR_MODE	BIT(1)
+> +/* Timestamp control for pattern match */
+> +#define TPDM_CMB_TIER_PATT_TSENAB	BIT(0)
+> +/* CMB CTI timestamp request */
+> +#define TPDM_CMB_TIER_XTRIG_TSENAB	BIT(1)
+> +/* For timestamp fo all trace */
+> +#define TPDM_CMB_TIER_TS_ALL		BIT(2)
+>   
+>   /*Patten register number*/
+>   #define TPDM_CMB_MAX_PATT		2
+> @@ -217,6 +225,9 @@ struct dsb_dataset {
+>    * @patt_mask:        Save value for pattern mask
+>    * @trig_patt:        Save value for trigger pattern
+>    * @trig_patt_mask:   Save value for trigger pattern mask
+> + * @patt_ts:          Indicates if pattern match for timestamp is enabled.
+> + * @trig_ts:          Indicates if CTI trigger for timestamp is enabled.
+> + * @ts_all:           Indicates if timestamp is enabled for all packets.
+>    */
+>   struct cmb_dataset {
+>   	u32			trace_mode;
+> @@ -224,6 +235,9 @@ struct cmb_dataset {
+>   	u32			patt_mask[TPDM_CMB_MAX_PATT];
+>   	u32			trig_patt[TPDM_CMB_MAX_PATT];
+>   	u32			trig_patt_mask[TPDM_CMB_MAX_PATT];
+> +	bool			patt_ts;
+> +	bool			trig_ts;
+> +	bool			ts_all;
+>   };
+>   
+>   /**
+
 
