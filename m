@@ -1,166 +1,107 @@
-Return-Path: <linux-kernel+bounces-3307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D08B816AB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:14:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3AA3816AC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:16:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30ACBB20B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:14:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4FB61C228CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5686713ADC;
-	Mon, 18 Dec 2023 10:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A3913FE3;
+	Mon, 18 Dec 2023 10:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cd20Edhm"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aqKKm6Rq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CF113FE6;
-	Mon, 18 Dec 2023 10:14:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6755C433CA;
-	Mon, 18 Dec 2023 10:14:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702894467;
-	bh=6q68azC955xrTVALbmO5YmJ9GQg0JKxbUIF9Ow4nWMQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Cd20EdhmnmW7oYL7H6uIxJBVzPArC24QyeozGNWEQfFNW4Bbk65REhag58Ygu10QG
-	 a9+MGQ5fmPYZgtzkuOJPbE3g+c0tnKSr+XxZL+UP8lR2WDl/3Opl2uYNR4S7dt7BGn
-	 x0+EjwVXfswcjbrZ7lHyeiRJf/Luv6GYFnDZkrjoSmJTF69D5yqMLhJvDOt2B4lNLg
-	 KirImYypTuab/eHtTNpIzs06W2oSyWpK+1uIjztjwFPs2tPvqPs1PBzlXPU9QLCZZp
-	 e6JzkeBKkBjEFO2WH2548EohrR+s8IiaEFK1rKBrRA68XCdL1HpjWni4VWKQLbSf/e
-	 v5p2Vjh6qbu/Q==
-Date: Mon, 18 Dec 2023 11:14:24 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>, 
-	Donald Robson <donald.robson@imgtec.com>, Matt Coster <matt.coster@imgtec.com>, 
-	Adam Ford <aford173@gmail.com>, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
-	Paul Cercueil <paul@crapouillou.net>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
-Message-ID: <22cny5aumc5wafsrjd3j55zcjbjf2viip64kfbjiqis2grtd6t@wg5dxeuzil6l>
-References: <20231204182245.33683-1-afd@ti.com>
- <20231204182245.33683-2-afd@ti.com>
- <23livt5mcc64bb6lkeec2uxp5cyn4wfekwaj6wzrjnrkndvwgj@6tveqglqpr4v>
- <B3A1B8A7-0363-4ECB-AFBF-576FECA569FA@goldelico.com>
- <vawv2mwhonuyvgmp7uox4rfgdcjwg5fa7hmbcfgl3wiase6e4p@tyavpclppfvu>
- <6BC60156-89E2-4734-BD00-B49A9A6C1D7A@goldelico.com>
- <6gpehpoz54f5lxhmvirqbfwmq7dpgiroy27cljpvu66wtn7aqy@lgrh7wysyxnp>
- <D8AB6CC4-DCA5-40DD-A311-94A16FF59254@goldelico.com>
- <oobcl2kfsuph27er7rflfqvt3lu6athufomxv5chf3uctx4emh@x6rzjtlskhbf>
- <F58855EC-D87D-4747-A363-0E7AA5DB1AEC@goldelico.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4939A134D8
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2360b9d6d2so35083666b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:16:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702894586; x=1703499386; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6T4R9okteCkjAhT9eyRdC/jbk1c6KtuDD/NaJ+LcB1s=;
+        b=aqKKm6Rqq8AP1UhsVlg4K0AaN30so0Zd1LW30XR+FlqwCzhCA4W0NuCaau9K4rmKfH
+         KXc7mgb7W9I5v61ejxV+MWkawJao1O6V5ZaEvk9PwU3Yc/LeiIyonZjkKn36pNRPWrat
+         azYaP+1DP5G1JDjKDl4FmCwZB/OR+CTc8+zd3Btm6AiHeuUugA8Z7srzru3mj156yOmQ
+         6nDjLrKfOiiYamV+Dy/h1I4Mpaq4tku1xVvoDNGMTTWFou64mcDa1WccB2+3zbYB8mBh
+         bdssQaVFOs90G1aPTlh7axh6kayrsJP3kG2UPXibJAweZBMZp1UAqy+lNp3Xtf++CQr8
+         M/1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702894586; x=1703499386;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6T4R9okteCkjAhT9eyRdC/jbk1c6KtuDD/NaJ+LcB1s=;
+        b=RritPpJF3EWBGQcKTpgKd0XLWit6g7SMr0+XtogohbEZZYni0JhLwzDpWqqVVIW3Tk
+         7nUvhpl/bkIxMkOvMMqaebCxp8pN0YAd9UMBWV/IVPRPUU5mpQdM5gjWflJFThxR2hAF
+         1tKi3Ak64ySVVQogQOOD107KqGhHwoRHoEup7vIMHWqg6bCzJAsyHuje+qezMfmCNGH8
+         vkvINaVfYLq9VXoLTAHtWRMGpzOEOG8eKvl9uePgk/6NBhYCPPI6fIIDhOnxZmnuVio6
+         brYagz8ayPHEqBCbCC/6KyXL8HgVhODU9q7H1CJJhhyHcpVP+N1olzQLM6ugRxV4SuHJ
+         BG6A==
+X-Gm-Message-State: AOJu0YzVJjcbQETxRXXKtcDzTY3Zps4SGLc6M43dg1Qo6wISiz0Cvt51
+	Tjqe4Te+OoDMsCOJafcduV4Shw==
+X-Google-Smtp-Source: AGHT+IHC5w0LaR0hZtZGoebFzWjvqDk4jLHPlKNUseyRe6YfHh7xV+cN4HpsENl4UBR0EZTA8NFZ8Q==
+X-Received: by 2002:a17:906:54f:b0:a23:5bfc:edf6 with SMTP id k15-20020a170906054f00b00a235bfcedf6mr531086eja.73.1702894586619;
+        Mon, 18 Dec 2023 02:16:26 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id tb21-20020a1709078b9500b009ad89697c86sm14131552ejc.144.2023.12.18.02.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 02:16:25 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Peter Griffin <peter.griffin@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, 
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231218101225.27637-1-lukas.bulwahn@gmail.com>
+References: <20231218101225.27637-1-lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust file entry in GOOGLE TENSOR SoC
+ SUPPORT
+Message-Id: <170289458489.40214.4044639674573718307.b4-ty@linaro.org>
+Date: Mon, 18 Dec 2023 11:16:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fqek5qfw3sbzkpso"
-Content-Disposition: inline
-In-Reply-To: <F58855EC-D87D-4747-A363-0E7AA5DB1AEC@goldelico.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
 
---fqek5qfw3sbzkpso
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 18 Dec 2023 11:12:25 +0100, Lukas Bulwahn wrote:
+> Commit 0a910f160638 ("dt-bindings: clock: Add Google gs101 clock
+> management unit bindings") adds the file google,gs101.h in
+> include/dt-bindings/clock/. However, commit 9d71df3e6eb7 ("MAINTAINERS:
+> add entry for Google Tensor SoC") wrongly refers to the file
+> google,clk-gs101.h in that directory.
+> 
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+> broken reference.
+> 
+> [...]
 
-On Mon, Dec 18, 2023 at 10:28:09AM +0100, H. Nikolaus Schaller wrote:
-> Hi Maxime,
->=20
-> > Am 15.12.2023 um 14:33 schrieb Maxime Ripard <mripard@kernel.org>:
-> >=20
-> >>>=20
-> >>> It's for a separate architecture, with a separate driver, maintained =
-out
-> >>> of tree by a separate community, with a separate set of requirements =
-as
-> >>> evidenced by the other thread. And that's all fine in itself, but
-> >>> there's very little reason to put these two bindings in the same file.
-> >>>=20
-> >>> We could also turn this around, why is it important that it's in the
-> >>> same file?
-> >>=20
-> >> Same vendor. And enough similarity in architectures, even a logical se=
-quence
-> >> of development of versions (SGX =3D Version 5, Rogue =3D Version 6+) b=
-ehind.
-> >> (SGX and Rogue seem to be just trade names for their architecture deve=
-lopment).
-> >=20
-> > Again, none of that matters for *where* the binding is stored.
->=20
-> So what then speaks against extending the existing bindings file as propo=
-sed
-> here?
+Applied, thanks!
 
-I mean, apart from everything you quoted, then sure, nothing speaks
-against it.
+[1/1] MAINTAINERS: adjust file entry in GOOGLE TENSOR SoC SUPPORT
+      https://git.kernel.org/krzk/linux/c/d0da0de31e1d50ff905eb8f095628eea666f8c67
 
-> >> AFAIK bindings should describe hardware and not communities or drivers
-> >> or who is currently maintaining it. The latter can change, the first n=
-ot.
-> >=20
-> > Bindings are supposed to describe hardware indeed. Nothing was ever said
-> > about where those bindings are supposed to be located.
-> >=20
-> > There's hundreds of other YAML bindings describing devices of the same
-> > vendors and different devices from the same generation.
->=20
-> Usually SoC seem to be split over multiple files by subsystem. Not by ver=
-sions
-> or generations. If the subsystems are similar enough they share the same =
-bindings
-> doc instead of having one for each generation duplicating a lot of code.
->=20
-> Here is a comparable example that combines multiple vendors and generatio=
-ns:
->=20
-> Documentation/devicetree/bindings/usb/generic-ehci.yaml
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-EHCI is a single interface for USB2.0 controllers. It's a standard API,
-and is made of a single driver that requires minor modifications to deal
-with multiple devices.
-
-We're very far from the same situation here.
-
-> > If anything it'll make it easier for you. I'm really not sure why it is
-> > controversial and you're fighting this so hard.
->=20
-> Well, you made it controversial by proposing to split what IMHO belongs t=
-ogether.
-
-No, reviews aren't controversial. The controversy started when you chose
-to oppose it while you could have just rolled with it.
-
-> I feel that the original patch is good enough for its purpose and follows
-> some design pattern that can be deduced from other binding docs.
-
-[citation needed]
-
-Maxime
-
---fqek5qfw3sbzkpso
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZYAbgAAKCRDj7w1vZxhR
-xS2kAQD1v8t8gOttSKasozzYFKDYkVASRfS4vwMhDEoa3VJGgAD/Sx0WPxcTR+rn
-Eh5f073VqTXt6rP/hUjFqzHk27M30w0=
-=p2+d
------END PGP SIGNATURE-----
-
---fqek5qfw3sbzkpso--
 
