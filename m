@@ -1,100 +1,154 @@
-Return-Path: <linux-kernel+bounces-3616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3F73816E82
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:50:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3913816EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 539F3B22E31
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:50:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A15E128CF2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C8183F5A;
-	Mon, 18 Dec 2023 12:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141FE5BF8E;
+	Mon, 18 Dec 2023 12:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Fdsnd/R+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cv7Q5/Yo"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AACCB4237D;
-	Mon, 18 Dec 2023 12:44:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16894C433CA;
-	Mon, 18 Dec 2023 12:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1702903497;
-	bh=FA7bC/Tz22mCuz19J7PFs++xTkp+j/DZIFm/pULGGl0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Fdsnd/R+4UyNhga0DfAdvjbrWZezQ0FT1GzT8s+S7SlcxFsgX1mKGoN9yh5NHcYkm
-	 JNt65swmHeDRpnVHlAPgjUltjxLZRsIbBSLKQ4e4Add2aZtW+ZbBSVRGKTD1RE5+lR
-	 0ZFwok+z2pABDWQSIXNVrTYxO3b7KSNkp580lMxU=
-Date: Mon, 18 Dec 2023 13:44:54 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: =?utf-8?B?VG9tw6HFoSBNdWRydcWIa2E=?= <tomas.mudrunka@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] /proc/sysrq-trigger can now pause processing for one
- second
-Message-ID: <2023121858-detonator-deepness-0135@gregkh>
-References: <20231218114222.283705-1-tomas.mudrunka@gmail.com>
- <c22997c9-6d99-4e1f-9015-b7f80be2a720@kernel.org>
- <CAH2-hcJe40e7LhrmQb5XjGpRfrUEp3RukqWUqn1p8UQSNkpisg@mail.gmail.com>
- <2023121858-aground-consent-cfe3@gregkh>
- <CAH2-hc+BO=oxt2faSqy4AJS6qPdjC+cAc+ONZrvYnCPJT1H61Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA357D608;
+	Mon, 18 Dec 2023 12:45:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29D8FC433C9;
+	Mon, 18 Dec 2023 12:45:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702903528;
+	bh=32O12H46O+p7HOk1r1T8hU27L4BiaRZKm+mPel7JsB8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=cv7Q5/YoNjNwXImSkrJm/x4QaYNNoltRDyf1AvXPp2B+jSdKdIYvlOjYcbXgxb4zi
+	 3C7JY6XLsRbMqt9V88s55zT9SeK+7eBtpMMCeN00NtAcAIJ9Jz69ctEXQyRCgc3aFt
+	 Ov637XFmlqHFi+87W/EZSNmMoDsZ6Iz5e41j2xLMSp4xyxQ0abnF/vpI/bFIKgbLb2
+	 bOtLT4wbs77JZsxEhpMZGfi2bBszD19I+0yZ35+KTt0CE78Ng9V+71lK96ar6nIsww
+	 ijgDD1NUz0UND0XsknM14RSbeSTqUNIRQ5n6BUbLzyQYYjL9kVKNp64yYyyZnF9ubY
+	 XWalhL4067lbw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Arnold Gozum <arngozum@gmail.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	acelan.kao@canonical.com,
+	platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 07/15] platform/x86: intel-vbtn: Fix missing tablet-mode-switch events
+Date: Mon, 18 Dec 2023 07:44:54 -0500
+Message-ID: <20231218124513.1380056-7-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231218124513.1380056-1-sashal@kernel.org>
+References: <20231218124513.1380056-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.68
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH2-hc+BO=oxt2faSqy4AJS6qPdjC+cAc+ONZrvYnCPJT1H61Q@mail.gmail.com>
 
-On Mon, Dec 18, 2023 at 01:37:44PM +0100, Tomáš Mudruňka wrote:
-> > What will kill it?  I feel like you are adding features to the kernel
-> > that can be done in userspace, which is generally not a good idea.
-> 
-> The mere act of writing "e" to /proc/sysrq-trigger kills everything
-> except for init, which is rather unfortunate when doing that through
-> remote access, like ssh (or other). I can surely block SIGTERM in
-> userspace by fixing all remote access software that exists to not exit
-> after SIGTERM, but if i want to do SIGKILL and then execute few more
-> sysrq actions (sync, unmount, reboot, ...) it surely is a problem
-> unless i am doing this from init process. which sometimes is just not
-> possible on remote system that have undergone some crash. and as linux
-> admin with 13 years of experience i can safely say that situations
-> with unresponsive init do happen every now and then. that is when i
-> usually have to resort to rebooting the system remotely via
-> sysrq-trigger. this process failing can be difference between me being
-> able to fix issue remotely with minimum downtime and me having to
-> physicaly visit datacenter during holidays.
-> 
-> BTW if still unclear, here is simple example of how running that
-> suggested code will not work:
-> 
-> $ ssh root@10.10.10.10
-> root@10.10.10.10's password:
-> Last login: Wed Oct  4 12:34:03 2023
-> root@debian-arm64:~#
-> root@debian-arm64:~# echo e > /proc/sysrq-trigger
-> Connection to 10.10.10.10 closed by remote host.
-> Connection to 10.10.10.10 closed.
+From: Hans de Goede <hdegoede@redhat.com>
 
-Great, then perhaps sysrq is not the thing you should be doing here?
-Why is sysrq suddenly responsible for remote connection fixes?
+[ Upstream commit 14c200b7ca46b9a9f4af9e81d258a58274320b6f ]
 
-I'm all for adding stuff that is useful, but really, sysrq is a "last
-possible chance" type of thing, if you need it to reboot your box, your
-box is hosed and it's not here to make it any less hosed.
+2 issues have been reported on the Dell Inspiron 7352:
 
-Add pauses and soon you will want loops and then it's turing complete :)
+1. Sometimes the tablet-mode-switch stops reporting tablet-mode
+   change events.
 
-Why not have a bpf script that does this instead?  :)
+   Add a "VBDL" call to notify_handler() to work around this.
 
-thanks,
+2. Sometimes the tablet-mode is incorrect after suspend/resume
 
-greg k-h
+   Add a detect_tablet_mode() to resume() to fix this.
+
+Reported-by: Arnold Gozum <arngozum@gmail.com>
+Closes: https://lore.kernel.org/platform-driver-x86/87271a74-c831-4eec-b7a4-1371d0e42471@gmail.com/
+Tested-by: Arnold Gozum <arngozum@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+Link: https://lore.kernel.org/r/20231204150601.46976-1-hdegoede@redhat.com
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/platform/x86/intel/vbtn.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/platform/x86/intel/vbtn.c b/drivers/platform/x86/intel/vbtn.c
+index c5e4e35c8d204..8e2b07ed2ce94 100644
+--- a/drivers/platform/x86/intel/vbtn.c
++++ b/drivers/platform/x86/intel/vbtn.c
+@@ -73,10 +73,10 @@ struct intel_vbtn_priv {
+ 	bool wakeup_mode;
+ };
+ 
+-static void detect_tablet_mode(struct platform_device *device)
++static void detect_tablet_mode(struct device *dev)
+ {
+-	struct intel_vbtn_priv *priv = dev_get_drvdata(&device->dev);
+-	acpi_handle handle = ACPI_HANDLE(&device->dev);
++	struct intel_vbtn_priv *priv = dev_get_drvdata(dev);
++	acpi_handle handle = ACPI_HANDLE(dev);
+ 	unsigned long long vgbs;
+ 	acpi_status status;
+ 	int m;
+@@ -89,6 +89,8 @@ static void detect_tablet_mode(struct platform_device *device)
+ 	input_report_switch(priv->switches_dev, SW_TABLET_MODE, m);
+ 	m = (vgbs & VGBS_DOCK_MODE_FLAG) ? 1 : 0;
+ 	input_report_switch(priv->switches_dev, SW_DOCK, m);
++
++	input_sync(priv->switches_dev);
+ }
+ 
+ /*
+@@ -134,7 +136,7 @@ static int intel_vbtn_input_setup(struct platform_device *device)
+ 	priv->switches_dev->id.bustype = BUS_HOST;
+ 
+ 	if (priv->has_switches) {
+-		detect_tablet_mode(device);
++		detect_tablet_mode(&device->dev);
+ 
+ 		ret = input_register_device(priv->switches_dev);
+ 		if (ret)
+@@ -198,6 +200,9 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
+ 	autorelease = val && (!ke_rel || ke_rel->type == KE_IGNORE);
+ 
+ 	sparse_keymap_report_event(input_dev, event, val, autorelease);
++
++	/* Some devices need this to report further events */
++	acpi_evaluate_object(handle, "VBDL", NULL, NULL);
+ }
+ 
+ /*
+@@ -358,7 +363,13 @@ static void intel_vbtn_pm_complete(struct device *dev)
+ 
+ static int intel_vbtn_pm_resume(struct device *dev)
+ {
++	struct intel_vbtn_priv *priv = dev_get_drvdata(dev);
++
+ 	intel_vbtn_pm_complete(dev);
++
++	if (priv->has_switches)
++		detect_tablet_mode(dev);
++
+ 	return 0;
+ }
+ 
+-- 
+2.43.0
+
 
