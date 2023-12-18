@@ -1,269 +1,169 @@
-Return-Path: <linux-kernel+bounces-3006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11285816603
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:22:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3442E816604
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFDF31C220B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:22:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B86031F220CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A723463CE;
-	Mon, 18 Dec 2023 05:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2DE663C6;
+	Mon, 18 Dec 2023 05:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CDsTWPxM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dUBzrwlp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EE46FA2;
-	Mon, 18 Dec 2023 05:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI3q33d030701;
-	Mon, 18 Dec 2023 05:22:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=9ORMgxcyoO2xSio7DnrTJI4X6geYouHjOrWCRCI3+F4=; b=CD
-	sTWPxMLV1E7D26QRzWncK/2d4JxUlq3syftMw/zFiaWkI+NfI0X6EDb6OafuWwBS
-	ewDk44UFvQ9JTFXGgrdq5zAYtQl4k0Atyo9Wg/A6TOTmc4BUSYN26o4MAeK+iJy+
-	ZiFJjEETxnzvHFroRrGV4oV+21DE9vig/SUkJwVOtIDyvh0aRuTg1AoQUzPeZFL6
-	2yoq0NDnUtfvcTlx6MhRI9qGme2u1zE2OUWGMiC04/CHb/4ybKPshnKjwO8TS3MG
-	bX/yt8R5McGWQuZDh9bGwd4YAtZyWuIZ2nl8udgGSxXbz0ZVsOpdLmPCbEpuybFh
-	vOYygfiy/A6dflFRJevA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v152w3cqt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 05:22:14 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BI5MDRe020609
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 05:22:13 GMT
-Received: from [10.253.9.247] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 17 Dec
- 2023 21:22:08 -0800
-Message-ID: <8ffe4a2c-af59-4b18-a614-9be6e41cac85@quicinc.com>
-Date: Mon, 18 Dec 2023 13:22:06 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A664D63AE
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702877007; x=1734413007;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ECkG5uggTH9duWrWc+G7ydY/UcTcu0osMq/FFgnPgJo=;
+  b=dUBzrwlphErdmlcPCjOT+ELYKEVx9ktXnKXZ4wxgCUPxtok9CQxCn1s4
+   yDTja0ettIzJkfzNc0If0XBlVGGCY1VsVIpcV/4Q06WF6kPdzf/X18mCF
+   jMnvC1TU3fZDsxqN5TFhLBvJxpQ5NmG1pxfiPU65uOX2C8b58S5R7aa6f
+   TJlLzRRPIQVhOgiPP5IJ+E1Se6gM4j//gb7a+Eds/wdNhoaNs+WkSsXoA
+   Nyo8btJJhA+SEetG2SSs62B3rT+IUmoMkh2bIgtM4x7U7nWS26YlHCVdg
+   NWWrC5yeJDZ3GByJr3+FNtGbr2u2Z2yOAyOqudRD9XlLM1XrsMHZ0wYJM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="2283898"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="2283898"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 21:23:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="1106801184"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="1106801184"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Dec 2023 21:23:25 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rF667-0003nF-0R;
+	Mon, 18 Dec 2023 05:23:23 +0000
+Date: Mon, 18 Dec 2023 13:23:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Florent Revest <revest@chromium.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: kernel/trace/ftrace.c:5417: warning: Function parameter or struct
+ member 'addr' not described in 'unregister_ftrace_direct'
+Message-ID: <202312181320.e0OwUd0s-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>
-CC: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Andrew Lunn
-	<andrew@lunn.ch>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <hkallweit1@gmail.com>, <corbet@lwn.net>,
-        <p.zabel@pengutronix.de>, <f.fainelli@gmail.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-References: <20231215074005.26976-1-quic_luoj@quicinc.com>
- <20231215074005.26976-15-quic_luoj@quicinc.com>
- <60b9081c-76fa-4122-b7ae-5c3dcf7229f9@lunn.ch>
- <a65ad12d-b990-4439-b196-903f4a5f096a@quicinc.com>
- <f5c5cbce-c36e-498a-97e2-35f06d927d74@lunn.ch>
- <a9798333-3105-422f-8033-76c0b1d4f439@quicinc.com>
- <7c05b08a-bb6d-4fa1-8cee-c1051badc9d9@lunn.ch>
- <ZX2rU5OFcZFyBmGl@shell.armlinux.org.uk>
- <6abe5d6f-9d00-445f-8c81-9c89b9da3e0a@quicinc.com>
- <657dc9d4.050a0220.e1913.c983@mx.google.com>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <657dc9d4.050a0220.e1913.c983@mx.google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: wNBLp9fPJugBP2qeH22LJhCu3JJYdZKH
-X-Proofpoint-GUID: wNBLp9fPJugBP2qeH22LJhCu3JJYdZKH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 impostorscore=0
- spamscore=0 clxscore=1015 adultscore=0 bulkscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312180034
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Florent,
+
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
+commit: da8bdfbd422333fbb7c85ac1d7f18592d17d6665 ftrace: Rename _ftrace_direct_multi APIs to _ftrace_direct APIs
+date:   9 months ago
+config: i386-randconfig-054-20231216 (https://download.01.org/0day-ci/archive/20231218/202312181320.e0OwUd0s-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312181320.e0OwUd0s-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312181320.e0OwUd0s-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/trace/ftrace.c:1283: warning: Function parameter or struct member 'ops' not described in 'ftrace_free_filter'
+>> kernel/trace/ftrace.c:5417: warning: Function parameter or struct member 'addr' not described in 'unregister_ftrace_direct'
+>> kernel/trace/ftrace.c:5417: warning: Function parameter or struct member 'free_filters' not described in 'unregister_ftrace_direct'
+   kernel/trace/ftrace.c:5565: warning: Function parameter or struct member 'ops' not described in 'ftrace_set_filter_ip'
+   kernel/trace/ftrace.c:5565: warning: Function parameter or struct member 'ip' not described in 'ftrace_set_filter_ip'
+   kernel/trace/ftrace.c:5565: warning: Function parameter or struct member 'remove' not described in 'ftrace_set_filter_ip'
+   kernel/trace/ftrace.c:5565: warning: Function parameter or struct member 'reset' not described in 'ftrace_set_filter_ip'
+   kernel/trace/ftrace.c:5588: warning: Function parameter or struct member 'ops' not described in 'ftrace_set_filter_ips'
+   kernel/trace/ftrace.c:5588: warning: Function parameter or struct member 'ips' not described in 'ftrace_set_filter_ips'
+   kernel/trace/ftrace.c:5588: warning: Function parameter or struct member 'cnt' not described in 'ftrace_set_filter_ips'
+   kernel/trace/ftrace.c:5588: warning: Function parameter or struct member 'remove' not described in 'ftrace_set_filter_ips'
+   kernel/trace/ftrace.c:5588: warning: Function parameter or struct member 'reset' not described in 'ftrace_set_filter_ips'
+   kernel/trace/ftrace.c:5602: warning: Function parameter or struct member 'ops' not described in 'ftrace_ops_set_global_filter'
+   kernel/trace/ftrace.c:5634: warning: Function parameter or struct member 'ops' not described in 'ftrace_set_filter'
+   kernel/trace/ftrace.c:5634: warning: Function parameter or struct member 'buf' not described in 'ftrace_set_filter'
+   kernel/trace/ftrace.c:5634: warning: Function parameter or struct member 'len' not described in 'ftrace_set_filter'
+   kernel/trace/ftrace.c:5634: warning: Function parameter or struct member 'reset' not described in 'ftrace_set_filter'
+   kernel/trace/ftrace.c:5657: warning: Function parameter or struct member 'ops' not described in 'ftrace_set_notrace'
+   kernel/trace/ftrace.c:5657: warning: Function parameter or struct member 'buf' not described in 'ftrace_set_notrace'
+   kernel/trace/ftrace.c:5657: warning: Function parameter or struct member 'len' not described in 'ftrace_set_notrace'
+   kernel/trace/ftrace.c:5657: warning: Function parameter or struct member 'reset' not described in 'ftrace_set_notrace'
+   kernel/trace/ftrace.c:5672: warning: Function parameter or struct member 'buf' not described in 'ftrace_set_global_filter'
+   kernel/trace/ftrace.c:5672: warning: Function parameter or struct member 'len' not described in 'ftrace_set_global_filter'
+   kernel/trace/ftrace.c:5672: warning: Function parameter or struct member 'reset' not described in 'ftrace_set_global_filter'
+   kernel/trace/ftrace.c:5688: warning: Function parameter or struct member 'buf' not described in 'ftrace_set_global_notrace'
+   kernel/trace/ftrace.c:5688: warning: Function parameter or struct member 'len' not described in 'ftrace_set_global_notrace'
+   kernel/trace/ftrace.c:5688: warning: Function parameter or struct member 'reset' not described in 'ftrace_set_global_notrace'
 
 
+vim +5417 kernel/trace/ftrace.c
 
-On 12/17/2023 12:01 AM, Christian Marangi wrote:
-> On Sat, Dec 16, 2023 at 10:41:28PM +0800, Jie Luo wrote:
->>
->>
->> On 12/16/2023 9:51 PM, Russell King (Oracle) wrote:
->>> On Sat, Dec 16, 2023 at 11:21:53AM +0100, Andrew Lunn wrote:
->>>>> The following is the chip package, the chip can work on the switch mode
->>>>> like the existed upstream code qca8k, where PHY1-PHY4 is connected with
->>>>> MAC1-MAC4 directly;
->>>>
->>>> Ah, that is new information, and has a big effect on the design.
->>>
->>> This QCA8084 that's being proposed in these patches is not a PHY in
->>> itself, but is a SoC. I came across this:
->>>
->>>    https://www.rt-rk.com/android-tv-solution-tv-in-smartphone-pantsstb-based-on-qualcomm-soc-design/
->>
->> The chip mentioned in the link you mentioned is SoC, which is not the
->> chip that the qca8084 driver work for.
->>
->> qca8084/qca8386 is just the Ethernet CHIP, not SoC, for the switch mode
->> qca8386, which is most like qca8337 the dsa drive qca8k.c is already in
->> upstream.
-> 
-> Hi,
-> sorry for stepping in. I guess here there is a massive confusion with
-> naming and using qca8k.
-> 
-> Since it seems the same name is used for PHY and for Switch stuff, I
-> would add PHY and MAC prefix when referring to qca8064.
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5401  
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5402  /**
+da8bdfbd422333 Florent Revest 2023-03-21  5403   * unregister_ftrace_direct - Remove calls to custom trampoline
+da8bdfbd422333 Florent Revest 2023-03-21  5404   * previously registered by register_ftrace_direct for @ops object.
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5405   * @ops: The address of the struct ftrace_ops object
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5406   *
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5407   * This is used to remove a direct calls to @addr from the nop locations
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5408   * of the functions registered in @ops (with by ftrace_set_filter_ip
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5409   * function).
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5410   *
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5411   * Returns:
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5412   *  0 on success
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5413   *  -EINVAL - The @ops object was not properly registered.
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5414   */
+da8bdfbd422333 Florent Revest 2023-03-21  5415  int unregister_ftrace_direct(struct ftrace_ops *ops, unsigned long addr,
+59495740f79524 Florent Revest 2023-03-21  5416  			     bool free_filters)
+f64dd4627ec6ed Jiri Olsa      2021-10-08 @5417  {
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5418  	struct ftrace_hash *hash = ops->func_hash->filter_hash;
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5419  	int err;
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5420  
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5421  	if (check_direct_multi(ops))
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5422  		return -EINVAL;
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5423  	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5424  		return -EINVAL;
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5425  
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5426  	mutex_lock(&direct_mutex);
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5427  	err = unregister_ftrace_function(ops);
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5428  	remove_direct_functions_hash(hash, addr);
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5429  	mutex_unlock(&direct_mutex);
+fea3ffa48c6d42 Jiri Olsa      2021-12-06  5430  
+fea3ffa48c6d42 Jiri Olsa      2021-12-06  5431  	/* cleanup for possible another register call */
+fea3ffa48c6d42 Jiri Olsa      2021-12-06  5432  	ops->func = NULL;
+fea3ffa48c6d42 Jiri Olsa      2021-12-06  5433  	ops->trampoline = 0;
+59495740f79524 Florent Revest 2023-03-21  5434  
+59495740f79524 Florent Revest 2023-03-21  5435  	if (free_filters)
+59495740f79524 Florent Revest 2023-03-21  5436  		ftrace_free_filter(ops);
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5437  	return err;
+f64dd4627ec6ed Jiri Olsa      2021-10-08  5438  }
+da8bdfbd422333 Florent Revest 2023-03-21  5439  EXPORT_SYMBOL_GPL(unregister_ftrace_direct);
+ccf5a89efd6f0a Jiri Olsa      2021-10-08  5440  
 
-Hi Christian,
-Welcome to join the discussion.
+:::::: The code at line 5417 was first introduced by commit
+:::::: f64dd4627ec6edc39bf1430fe6dbc923d2300a88 ftrace: Add multi direct register/unregister interface
 
-Sorry for the confusion, since the switch and PHY are the different
-chips, the switch chip is named as qca8386, the pure PHY chip is named
-as qca8084, the pure PHY chip qca8084 is connected with the SoC by PCS
-working on 10g-qxgmii, the switch chip qca8386 is connected with SoC by
-PCS working on sgmii.
+:::::: TO: Jiri Olsa <jolsa@redhat.com>
+:::::: CC: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-> 
-> With the previous message I was a bit confused by the use of qca8k and
-> didn't know you were actually referring to the DSA driver.
-> Interesting... this is for the upcoming WiFi 7 platoform right? (ipq9574)
-
-For qca8386, it is the switch chip and leverages the qca8k DSA driver,
-it is connected on the ipq5332 platform currently.
-
-But for qca8084, it is the pure PHY chip, which works on 10g-qxgmii for
-quad-phy, which is connected on the ipq9574.
-
-> 
-> All these discussion comes for the problem of using this PHY as an
-> integrated PHY in the qca8386 switch and trying to select the mode in
-> the PHY driver.
-
-Yes, for qca8386, the PHY is integrated to switch, since same PHY needs
-to work with qca8386 and qca8084, so the work mode needs to be
-configured to distinguish the different work mode as the patch
-<[PATCH v8 13/14] net: phy: at803x: configure qca8084 work mode>.
-
-> 
-> Considering you would use the same logic of the current DSA qca8k driver
-> with the integrated PHY, the problem doesn't apply or a different
-> implementation should be used (and actually handled later when the
-> actual DSA code will come)
-
-qca8386 has some differences from qca8337(qca8k dsa driver), qca8337
-integrated PHY can work by the general PHY, but the PHY in qca8386 needs
-the extra PHY driver, and the GCC clocks introduced.
-
-> 
-> I would expect in the integrated mode, the switch to handle the PHY (as
-> it's done by qca8337) with the PHY defined in the switch node and qca8k
-> handling the PHY registration. With the following implementation flags
-> can be passed and PHY can be configured to integrated mode. (or virtual
-> PHY ID can be used for such scope with dedicated functions in the PHY
-> driver)
-> 
-Since there is the pure PHY chip qca8084 using the same PHY, which does
-not enable the DSA driver.
-
-So the PHY driver should be standalone, and the common clocks and resets
-is better to put in the PHY driver, since these are the common configs
-for the qca8386 and qca8084.
-
-> With this in mind the entire integrated problem can put on hold and
-> dropped to be later reimplemented when it's time. (assuming that all the
-> prereq are already here and the very same implementation of qca8k will
-> be used)
-
-For the qca8386, it is true very same implementation of qca8k, besides
-the 2.5G capability and GCC clock involved.
-
-> 
-> Anyway, I'm more or less the maintainer of the qca8k.c DSA driver and I
-> would be more than happy to help you guys internally or externally on
-> pushing and make this proceed further. (again assuming this is ipq9574
-> stuff, it would be good to finally have proper DSA driver instead of
-> leaving the thing unusable as it's the current situation with ipq8074)
-
-Yes, the pure PHY chip qca8084 is connected on ipq9574 platform,
-and the switch chip qca8386 is connected on ipq5332 platform.
-
-Many thanks Christian again, will add you when pushing the qca8386 DSA
-patches for upstream review.
-
-> 
->>
->> i qca8084 chip package includes 4 PHYs, 2 PCSs and the common chip level
->> modules such as GCC and security control modules, all these modules are
->> located in the qca8084 chip package, since qca8084 works on PHY mode, so
->> the MACs are not used.
->>
->> qca8084 is connected with the SoC CHIP such as IPQ platform by PCS1
->> working on 10g-qxgmii mode and the fourth PHY can also optionally
->> be connected with the IPQ SoC PCS by sgmii mode, there is no more
->> interface on qca8084 to connect the external chips.
->>
->>> It's sounding like what we have here is some PHY IP that is integrated
->>> into a larger SoC, and the larger SoC needs to be configured so the
->>> PHY IP can work correctly.
->>
->> qca8084 is not a SoC, it is the Ethernet chip, in this qca8084 package,
->> there are GCC that is driving the PHY working on the various link speed.
->> that is the reason we need to do these package level common clocks and
->> resets initialization before probing PHY correctly.
->>
->>>
->>> Given that this package of four PHYs seems to be rather unique, I think
->>> we need Jie Luo to provide sufficient information so we can understand:
->>>
->>> 1) this package of four PHYs itself
->>
->> Yes, this chip package for all 4 PHYs itself, also including the PCSes
->> and common package level modules such as GCC.
->>
->>> 2) how this package is integrated into the SoC
->>
->> the qca8084 is connected with SoC by PCSes.
->>
->>>
->>> Specifically, what resets and clocks are controlled from within the
->>> package's register space, which are external to the package
->>> register space (and thus are provided by other IPs in the SoC).
->>
->> All clocks and resets mentioned for qca8084 drive including package
->> level and PCS & PHY clocks and resets from the qca8084 internal GCC
->> modules register space,
->>
->>>
->>> As I've said previously, the lack of DT example doesn't help to further
->>> our understanding. The lack of details of what the package encompases
->>> also doesn't help us understand the hardware.
->>
->> Indeed, i will add the qca8084 DT example in the next patch set.
->> BTW, i also replied your earlier comments by providing the DTS defined
->> for the current qca8084 drive code.
->>
->> hope you can have a better understanding with the provided DTS code in
->> earlier reply of this email thread.
->>>
->>> Unless we can gain that understanding, I feel that Jie Luo's patches
->>> are effectively unreviewable and can't be accepted into mainline.
->>>
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
