@@ -1,187 +1,133 @@
-Return-Path: <linux-kernel+bounces-3316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A159816AE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:23:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01480816AE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C40BD282D90
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B22142827E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5272013FF6;
-	Mon, 18 Dec 2023 10:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDE413FF2;
+	Mon, 18 Dec 2023 10:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BW2ktF+R"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="AtOQGxyU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67638134DF
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d3a9b9634dso179955ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:22:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702894973; x=1703499773; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XsINoeBkWViAuliJrhdixz1X42eDrzcqlZbekSi8rJY=;
-        b=BW2ktF+RhkMCGlIuBQLTd/LiJaSuxIl8Q0zpgQiks81azmkKjY+E1oCtrJKJdA8Jko
-         nZpSwgFn9JwZzW89IFiBCMMIO2cGBczNwSZuf/kh3B0GKYdNOqvPNOZ+2dUos+wXEGEx
-         cR+qL3zhEGUS6CQyS7xnspVNCZN0jDsTlgkJxzzUO7pXQcftHhZTg4EafpDJ+4qCthrk
-         ZfccHFHYuL8V7WTXScyuQHVdmJsYnDbBX4cyeT2KwehKLUS4egn9wmoq6DwyYBXuWtvk
-         k/XLDQN3+mqbq0IhgC9hVCKDwKkAyZww4+k39YF2zwCYQrxJrSrEgmdcjjurx0Dw4Jl+
-         N3lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702894973; x=1703499773;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XsINoeBkWViAuliJrhdixz1X42eDrzcqlZbekSi8rJY=;
-        b=KjUDaSx4PQpDSqsKYFquPid4dOIW4ugpH/IRRbuCsBWNbMtI5cPhJseu+T3+xCRWrH
-         wMx1Oz0igYUTHSth+D6yBMDXgd0iR0Z3PgEY3sBA4oIAFZm9PkzBodq1R3kpuXFpcexF
-         zbl6D1P7GJ7zaqCdLn24MuBcO06mouBASiI/gjck/2Vl4yQWlZrOM2/s/QXv1lkUcoIP
-         zuV7pXDgLkdfWEaI8IIKwIBqCH1VphVnkWXT5K5xZjCnNgbJ+5u5bbMaku6j1UcGiw6F
-         xj6DvtNKhaMU1f6LgiAABk8zaVPseY95JHso0ZrYgGmz9OL9iQFSA3U+rzCqPZznWLEb
-         LuKA==
-X-Gm-Message-State: AOJu0YwlprLlw88oYhEiWqVFE7/evZe0JVMQfGeW+cbbC0Y6vATWtMsU
-	CfVRrHeX7xeZNH2JJ1/I0p05KJawAOpFzTjeFS6h2shFTAQx
-X-Google-Smtp-Source: AGHT+IEqgTaLWJs/H23ic01NPxJ+nUivzssnIVroJq03aHwX6HoLLFRcwMEG/fmsAFGsJJ6GUIMZ+dK8dx8RfQ1NgxY=
-X-Received: by 2002:a17:902:ea0e:b0:1d3:b941:6b7 with SMTP id
- s14-20020a170902ea0e00b001d3b94106b7mr108364plg.23.1702894972479; Mon, 18 Dec
- 2023 02:22:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C39134DF;
+	Mon, 18 Dec 2023 10:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1702895008; x=1703499808; i=wahrenst@gmx.net;
+	bh=RtQgQ0O+lg07WrGEYnya2kc07+m3jaPp0Kl5bpka9Qw=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=AtOQGxyU/hOySBF2x/+Nt60p2F4sHKhg3gOjQY9F1XAem77Tywoa+NUkxRVUI6fS
+	 RvttdmhtGyi/B4Z39Ef1BAK4KU0TRFPn5xBdZqcJjrLNpqf8/w1NHXrsBzgyxifIM
+	 XxVKIgeVvw714IgvsCLqiDJGTJaZ2i5QSq3L+fUFID7c65s6oNULGqGFIFdXMslZY
+	 W/wNvWXSV9nMjqME0+eYNTXzLdLgfL6LpHfyFnBbnnvioij1v8KrfvuIcDarAj/Ye
+	 jT6bj2/z8zLOmZlbNnogPri/rnF0W1cIY/ha5Q9RD6S6gCSu3DwakVu6QtfxeJ1h2
+	 FYLomzjDvn9GDwSkkg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.130] ([37.4.248.43]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MeCtj-1qi29n28tb-00bGxP; Mon, 18
+ Dec 2023 11:23:28 +0100
+Message-ID: <badc6cff-7f16-49eb-a600-d99b0e01b92f@gmx.net>
+Date: Mon, 18 Dec 2023 11:23:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000f66a3005fa578223@google.com> <20231213104950.1587730-1-glider@google.com>
- <ZXofF2lXuIUvKi/c@rh> <ZXopGGh/YqNIdtMJ@dread.disaster.area>
- <CAG_fn=UukAf5sPrwqQtmL7-_dyUs3neBpa75JAaeACUzXsHwOA@mail.gmail.com>
- <ZXt2BklghFSmDbhg@dread.disaster.area> <CAG_fn=VqSEyt+vwZ7viviiJtipPPYyzEhkuDjdnmRcW-UXZkYg@mail.gmail.com>
- <ZXzMU9DQ7JqeYwvb@dread.disaster.area>
-In-Reply-To: <ZXzMU9DQ7JqeYwvb@dread.disaster.area>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Mon, 18 Dec 2023 11:22:40 +0100
-Message-ID: <CANp29Y5XPoH3tdZ_ZEJK3oUZnFf5awQn1w3E95YJFJ-wPxQQ4g@mail.gmail.com>
-Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in __crc32c_le_base (3)
-To: Dave Chinner <david@fromorbit.com>
-Cc: Alexander Potapenko <glider@google.com>, Dave Chinner <dchinner@redhat.com>, 
-	syzbot+a6d6b8fffa294705dbd8@syzkaller.appspotmail.com, hch@lst.de, 
-	davem@davemloft.net, herbert@gondor.apana.org.au, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, linux-xfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/12 net-next] qca_spi: Improve SPI IRQ handling
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231214150944.55808-1-wahrenst@gmx.net>
+ <20231214150944.55808-3-wahrenst@gmx.net>
+ <c5b81005-e309-46df-b534-b24814d10006@lunn.ch>
+ <8cdac20c-e860-4157-95c0-6e8250e50af5@gmx.net>
+ <0a372815-ce13-4254-ab3b-12bc2ca1b1a2@lunn.ch>
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <0a372815-ce13-4254-ab3b-12bc2ca1b1a2@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lmcEzQ0pcH14yj8EbWceUbVqTVqouP2RR2HFKHNyiG7smbZZ3NB
+ f76vJBNZ8NKpJsLS7zJn7X0MC2Mz5f2S0zwnlLR17D8LpW+gA+cz0UtqiEoEV/sq2KrNi8K
+ BUnrdNyvQ27gJn0OG6u+9oKSuZoWg+ZoyQq6LQwtKta1VmMuNvhsPKryeAu+YO2x+rSD3KP
+ 3Y8fTBaVhmos++FfsDFag==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:QbHPcr5qu08=;Syv/13cM3tSEqLh4agX1OHHEJEO
+ CtBGJVtRePkck9lxVVp2PKdsiV91bqoXkPrAIkH4DNvfozg7n7847m5qT8pnhX9lhvxsYUlsC
+ X8DUlS6ksi+dzhUO9HJd3f7OCJ20Kk4B6Dpe8QQdo3RQqm9V7yRTsdzKGyXbi/8TlU/VzxAq1
+ PULjJqI0VrXrvFGKg9jLIctEUq7iEzqPctzFBERQjwewfK+wgrzGdmB0vC2Mv86XWlLW9ctao
+ xiLCB8MROk/5STYAhTyjrU4Ya1eo+Fpn49FBbFv7im1gQAwbGdThFY/q9oAcLf17MVht0Zawo
+ qTjvqOIO9OiojykyDp0n9SRXXewnl+QQPF/x4vXpSbJk4zBVoPgxhRQ7yRzc8PoSWFBhRoxiY
+ K0UO2cZtDCypnUu3mjHP5VExoiuOFc6mgf2bi79MJ7bmJPnFauISFHh7TG7hIsMGadrWeY7DW
+ 1GXtjkD9pkmswei7axwsRQ6CP5Z7meIsdA4ZvWONxtqndtXf+nhmXvAtQDJi94dLYzQd+MKeN
+ Fcyhyz0UnJ2ZLxa29MFWCZh5NS46XjF3asRB38SnhB9EWkd3GZG88Q1/mpUi4RbW9gMc7xIgs
+ wCZMxwkgUURd1HmjY44Wp6OYMm/kdNfu7HyYKsEahu8807EX9YQpiqiKcn8Um0bopQhBZKHkA
+ W15n/0w9BV/lOfj14b9pJ8x6hSBciM48lLxr4Esqb+MGgOPyodGHv1MB9X8Aml4MPoQK+juiQ
+ pKpKA8Asvo9yIDuwbQqUXURxFM/+hUZW0qbM5pYSCdHfhpXjVYWsWQ3mEO8w9KoOQXt2UEqoJ
+ VhfAN3uf+nhd9ClP0KsgoDG+sZzjPC6UgPaXJcvYQLEKUbsyHD8KDQKYyhas9FxMGqMtkyKhl
+ Q9RWUms+IwkDYhDMvqknVFjDsqgwOa+e2fc6pPLRqJgLBLuLIVqWZvL6AlHmlvX2oryKJcAJs
+ nV395w==
 
-Hi Dave,
+Hi Andrew,
 
-> KMSAN has been used for quite a long time with syzbot, however,
-> and it's supposed to find these problems, too. Yet it's only been
-> finding this for 6 months?
+Am 17.12.23 um 23:48 schrieb Andrew Lunn:
+> On Sun, Dec 17, 2023 at 08:17:56PM +0100, Stefan Wahren wrote:
+>> Hi Andrew,
+>>
+>> Am 17.12.23 um 19:14 schrieb Andrew Lunn:
+>>> On Thu, Dec 14, 2023 at 04:09:34PM +0100, Stefan Wahren wrote:
+>>>> The functions qcaspi_netdev_open/close are responsible of request &
+>>>> free of the SPI interrupt, which wasn't the best choice because
+>>>> allocation problems are discovered not during probe. So let us split
+>>>> IRQ allocation & enabling, so we can take advantage of a device
+>>>> managed IRQ.
+>>> Could you replace the kernel thread with a threaded interrupt handler?
+>> the kernel thread is responsible for receiving, transmitting and reset
+>> handling (there is no GPIO reset in this driver) which must be
+>> synchronized along the same SPI interface. The interrupt just signalize
+>> a chip reset or a received packet is available.
+>>
+>> Could you please elaborate this request more in detail:
+>> What is the problem with the kernel thread?
+>> Why should i use the threaded interrupt as a replacement instead of e.g=
+.
+>> workqueue?
+>>
+>> Please don't get me wrong, but i need to convince my employer for such =
+a
+>> big rewrite.
+> I don't know this driver, which is why i asked the question. Its just
+> a suggestion. Maybe it makes no sense. But there have been other SPI
+> based Ethernet drivers which have been simplified by using threaded
+> interrupts rather than a kernel thread or a work queue, since the
+> interrupt core does all the thread management, and in particular the
+> creating and destroying of the thread which drivers often get wrong.
+thanks for the explanation. I guess you refer to enc28j60 and i had a
+look at commit 995585ecdf42 ("net: enc28j60: Use threaded interrupt
+instead of workqueue"). The fact that the qca_spi driver has a kernel
+thread which is kind of persistent (see patch 1 of this series) and the
+request to change this confused me. So your suggestion is more about the
+interrupt handling and not about the kernel thread which handles the SPI
+communication.
 
-As Alex already mentioned, there were big fs fuzzing improvements in
-2022, and that's exactly when we started seeing "KMSAN: uninit-value
-in __crc32c_le_base" (I've just checked crash history). Before that
-moment the code was likely just not exercised on syzbot.
+Yes the usage of threaded IRQ makes sense especially this would allow to
+support level triggered interrupts. But i think this complex change
+should be a separate series.
+> 	 Andrew
 
-On Fri, Dec 15, 2023 at 10:59=E2=80=AFPM 'Dave Chinner' via syzkaller-bugs
-<syzkaller-bugs@googlegroups.com> wrote:
->
-> On Fri, Dec 15, 2023 at 03:41:49PM +0100, Alexander Potapenko wrote:
-> >
-> > You are right, syzbot used to mount XFS way before 2022.
-> > On the other hand, last fall there were some major changes to the way
-> > syz_mount_image() works, so I am attributing the newly detected bugs
-> > to those changes.
->
-> Oh, so that's when syzbot first turned on XFS V5 format testing?
->
-> Or was that done in April, when this issue was first reported?
->
-> > Unfortunately we don't have much insight into reasons behind syzkaller
-> > being able to trigger one bug or another: once a bug is found for the
-> > first time, the likelihood to trigger it again increases, but finding
-> > it initially might be tricky.
-> >
-> > I don't understand much how trivial is the repro at
-> > https://gist.github.com/xrivendell7/c7bb6ddde87a892818ed1ce206a429c4,
->
-> I just looked at it - all it does is create a new file. It's
-> effectively "mount; touch", which is exactly what I said earlier
-> in the thread should reproduce this issue every single time.
->
-> > but overall we are not drilling deep enough into XFS.
-> > https://storage.googleapis.com/syzbot-assets/8547e3dd1cca/ci-upstream-k=
-msan-gce-c7402612.html
-> > (ouch, 230Mb!) shows very limited coverage.
->
-> *sigh*
->
-> Did you think to look at the coverage results to check why the
-> numbers for XFS, ext4 and btrfs are all at 1%?
-
-Hmmm, thanks for pointing it out!
-
-Our ci-upstream-kmsan-gce instance is configured in such a way that
-the fuzzer program is quite restricted in what it can do. Apparently,
-it also lacks capabilities to do mounts, so we get almost no coverage
-in fs/*/**. I'll check whether the lack of permissions to mount() was
-intended.
-
-On the other hand, the ci-upstream-kmsan-gce-386 instance does not
-have such restrictions at all and we do see fs/ coverage there:
-https://storage.googleapis.com/syzbot-assets/609dc759f08b/ci-upstream-kmsan=
--gce-386-0e389834.html
-
-It's still quite low for fs/xfs, which is explainable -- we almost
-immediately hit "KMSAN: uninit-value in __crc32c_le_base". For the
-same reason, it's also somewhat lower than could be elsewhere as well
--- we spend too much time restarting VMs after crashes. Once the fix
-patch reaches the fuzzed kernel tree, ci-upstream-kmsan-gce-386 should
-be back to normal.
-
-If we want to see how deep syzbot can go into the fs/ code in general,
-it's better to look at the KASAN instance coverage:
-https://storage.googleapis.com/syzbot-assets/12b7d6ca74e6/ci-upstream-kasan=
--gce-root-0e389834.html
- (*)
-
-Here e.g. fs/ext4 is already 63% and fs/xfs is 16%.
-
-(*) Be careful, the file is very big.
-
---=20
-Aleksandr
-
-> Why didn't the low
-> number make you dig a bit deeper to see if the number was real or
-> whether there was a test execution problem during measurement?
->
-> I just spent a minute doing exactly that, and the answer is
-> pretty obvious. Both ext4 and XFS had a mount attempts
-> rejected at mount option parsing, and btrfs rejected a device scan
-> ioctl. That's it. Nothing else was exercised in those three
-> filesystems.
->
-> Put simply: the filesystems *weren't tested during coverage
-> measurement*.
->
-> If you are going to do coverage testing, please measure coverage
-> over *thousands* of different tests performed on a single filesystem
-> type. It needs to be thousands, because syzbot tests are so shallow
-> and narrow that actually covering any significant amount of
-> filesystem code is quite difficult....
->
-> -Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
->
-> --
 
