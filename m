@@ -1,257 +1,209 @@
-Return-Path: <linux-kernel+bounces-2894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3CE48163E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 01:58:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 043128163EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26C06B21A9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 00:58:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF30B28287C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 01:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7EC23C2;
-	Mon, 18 Dec 2023 00:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468321FDC;
+	Mon, 18 Dec 2023 01:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="dB+wwYE4"
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="IQO386vW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0376D2107
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 00:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e2bd8c396so1144425e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 16:57:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8061F1FB5
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cc5e48779aso12971881fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 17:00:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702861074; x=1703465874; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702861243; x=1703466043; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xUdHF1MxkAooUSLHF4kQjIZjImBNrzkIpbjt/k8iX6w=;
-        b=dB+wwYE4pIVhiOtorR4WddajmTIciHXtX2Gp7vOZl2tFhCBqVlGYUfZriQzxWeLRcy
-         pSJknvyEltLEsVlkoD5QMrDfa7ltszTPybiTyBLbdf/binFyxea7Tg1flDFFUyOtH4XG
-         eneH+L8xMdedZUQ1VYE29ngy9phnJpF0kVRmh55TzV9oouo/t1pNZ//cmQKvEeCqfIc2
-         E1Xlmy8/oPLsupPU86R0fAq1S7SwDVPnWAcDNr9SZvIQOyYJxn4jW/I70beH3plLdB6s
-         9OlfvbPrnnjuP9pEKFEcuuoI7/q4Rek5hLM5x+tJu7gac1qqT3HnYxILWgjjwRSv3Rli
-         3Meg==
+        bh=EYhM54+sMY2tBRKqpDaD5Gx2Jei7oYxE5mh0exAmkgk=;
+        b=IQO386vW6DGGmQQjD2LzYmJJorHBqdMYptvsqfBlulPsSD4whf+Ehh6k4Lz7KR9Ikj
+         MPik2LKqs2gJS1XZi78AjYOoCTUvlqGBEgC0PQhJ6u08OZ3yenbyTOySET7//857oytM
+         uwmSlKRi8wM1pUTEQlaJ0Kl6gCqzXG1YXCE1lf52muJ8kL+Q5prwwLovOQKLQNVOlgbF
+         0tZ/6w5X1fQFaSUXiSB1XAKK/Y9wiV5UqSH4+VN48PbzO74J3INS8DANQb77oaBSrpui
+         +u+534eXrPUwqJ3QJtiodPWK0732pXF1Qbw37b8nozGWHhPJ0cGEvdxzDMJCu0l5tQju
+         804A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702861074; x=1703465874;
+        d=1e100.net; s=20230601; t=1702861243; x=1703466043;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xUdHF1MxkAooUSLHF4kQjIZjImBNrzkIpbjt/k8iX6w=;
-        b=E9tzJydeX0R41DzIYWGG+Lft0f7HaBGP8LHD9pID9/iXw8kExq1oFZjzROV5zBDT98
-         2n4UA4fgUVgyembaoNCVZSNcMTuOa/R06QYWUKhFcxrL0VvIocFoO+WwNN6gK+jEDsU/
-         E0eJnLA++T0mMeI8lAwTDB6uWDro1Qr47lwy2mD/vgZ/WETLqT3E86ve3c6o9V/F7rG3
-         oFoROwwNU7BKEpIvX0sjvrQHFp4JK5L5yQ6I5+o2K3EbdjtaA3669QjDwPQKYRYmk5QE
-         z16TMSAwVGAHykX2OH5dW1B9krqDZYMA86joqQu7+c/9PJaMW4truO/Z3N6Xva8/Ntd1
-         4FIA==
-X-Gm-Message-State: AOJu0Yw41WYgreve0V7Nus5MGk6MPvUolnDZEVefzkn0HtEX5x+ziZdR
-	YItVq5dLkZsyGpHMg5w1w7xFDYtiBZoGDVa94SoWp1wPk2xRqW29+bM=
-X-Google-Smtp-Source: AGHT+IEU/WHI1h/ykMV4VNrgx/RATuTIz8NW32NhEYWQF3ndy6wdTfdQBKd77OhDQIGgHWDz6r4TaShSH8NUihvKhm8=
-X-Received: by 2002:ac2:4c4e:0:b0:50e:1b7a:59a2 with SMTP id
- o14-20020ac24c4e000000b0050e1b7a59a2mr3353284lfk.86.1702861073964; Sun, 17
- Dec 2023 16:57:53 -0800 (PST)
+        bh=EYhM54+sMY2tBRKqpDaD5Gx2Jei7oYxE5mh0exAmkgk=;
+        b=wiamdKphqzvG8HfRe1CApY2ppXJDB+2wwTR4f379oVBw0BsrPz8kkvbslndGtsqn0b
+         XqeprvMahEORx89UzJ3MFGYBal9WQocqVS7Oq9ybvbFDQ5yANaPn8N8CkEIJrAB3bkD3
+         BaWfAGfXdUzfStATLvRn4Wdf3ARtd1qAChCihzXqzNmMZyjhRP6G0hF+aNPOLBpD5PTC
+         t/u6Gtjlo9RaYQG6arpcGo8K/ftn+FwJpH/1fTZXh/PgpuOSMso3UI064N8yJuY5QRTE
+         TS5I7yl/dR2B/hjmQ/Os1oE/CprJI/HgnicUll+zP9R1ojNAMq/hiJMnh9ie6s4Kgetb
+         QEEA==
+X-Gm-Message-State: AOJu0YyxrQd2SyDRWZbVWHrnXoqESevTZ+BuoI3pR4PnHIycyxSGC+wd
+	GJMyES0RbnO7dASEgjlKkn4GBcmpOiWkndJBl2ioPQ==
+X-Google-Smtp-Source: AGHT+IGT+13egZruEA6UBIyNn6mhLZfwdbUiXunPJ5JYwT6M/cXeoLwloFIFi6Do8ovp2sRvdiDM906QH2fckik0l2c=
+X-Received: by 2002:a05:651c:2106:b0:2cc:1f36:2abe with SMTP id
+ a6-20020a05651c210600b002cc1f362abemr3032047ljq.92.1702861243536; Sun, 17 Dec
+ 2023 17:00:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205024310.1593100-1-atishp@rivosinc.com> <20231205024310.1593100-7-atishp@rivosinc.com>
- <20231207-daycare-manager-2f4817171422@wendy> <CAHBxVyE3xAAj=Z_Cu33tEKjXEAcnOV_=Jpkpn-+j5MoLj1FPWw@mail.gmail.com>
- <20231217-navigate-thirsty-03509850a683@spud>
-In-Reply-To: <20231217-navigate-thirsty-03509850a683@spud>
-From: Atish Kumar Patra <atishp@rivosinc.com>
-Date: Sun, 17 Dec 2023 16:57:42 -0800
-Message-ID: <CAHBxVyFQ2+NYeb77zqMofHQC0zD5_Ye2cGk6Zsc+KHKm4zE5mw@mail.gmail.com>
-Subject: Re: [RFC 6/9] drivers/perf: riscv: Implement SBI PMU snapshot function
-To: Conor Dooley <conor@kernel.org>
-Cc: Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
-	Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Will Deacon <will@kernel.org>
+References: <20231212104451.22522-1-mitrutzceclan@gmail.com>
+ <CAMknhBEfisaSbHhnnei=gT1HZvHNWHrJD3O2y4b_TikkH=v2Ag@mail.gmail.com>
+ <e4a9dde7-dca6-4862-bfb3-a93b879c9a1f@gmail.com> <CAMknhBFQ56SwMvOni6UDqvaq8t0iydHcggiL0biUeLQ6OV1ONA@mail.gmail.com>
+ <a1f60bf6-5fb6-4814-b3b5-799fb8ffb847@gmail.com> <20231217135007.3e5d959a@jic23-huawei>
+In-Reply-To: <20231217135007.3e5d959a@jic23-huawei>
+From: David Lechner <dlechner@baylibre.com>
+Date: Sun, 17 Dec 2023 19:00:32 -0600
+Message-ID: <CAMknhBEzM202_pu=yYcmuC2Tz1HNv2zC=iy77q09hryfcGQ=Zw@mail.gmail.com>
+Subject: Re: [PATCH v8 1/2] dt-bindings: adc: add AD7173
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Ceclan Dumitru <mitrutzceclan@gmail.com>, linus.walleij@linaro.org, brgl@bgdev.pl, 
+	andy@kernel.org, linux-gpio@vger.kernel.org, 
+	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Walle <michael@walle.cc>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Arnd Bergmann <arnd@arndb.de>, ChiaEn Wu <chiaen_wu@richtek.com>, 
+	Niklas Schnelle <schnelle@linux.ibm.com>, =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>, 
+	Mike Looijmans <mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, Ceclan Dumitru <dumitru.ceclan@analog.com>, 
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 17, 2023 at 4:10=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
-te:
+On Sun, Dec 17, 2023 at 7:50=E2=80=AFAM Jonathan Cameron <jic23@kernel.org>=
+ wrote:
 >
-> On Sat, Dec 16, 2023 at 05:39:12PM -0800, Atish Kumar Patra wrote:
-> > On Thu, Dec 7, 2023 at 5:06=E2=80=AFAM Conor Dooley <conor.dooley@micro=
-chip.com> wrote:
-> > > On Mon, Dec 04, 2023 at 06:43:07PM -0800, Atish Patra wrote:
+> On Thu, 14 Dec 2023 19:03:28 +0200
+> Ceclan Dumitru <mitrutzceclan@gmail.com> wrote:
 >
-> > > > +static void pmu_sbi_snapshot_free(struct riscv_pmu *pmu)
-> > > > +{
-> > > > +     int cpu;
+> > On 12/14/23 18:12, David Lechner wrote:
+> > > On Thu, Dec 14, 2023 at 1:43=E2=80=AFPM Ceclan Dumitru <mitrutzceclan=
+@gmail.com> wrote:
+> > >> On 12/12/23 17:09, David Lechner wrote:
+> > >>> On Tue, Dec 12, 2023 at 11:45=E2=80=AFAM Dumitru Ceclan <mitrutzcec=
+lan@gmail.com> wrote:
+> >
+> > >> ...
+> > >>
+> > >>>> +  interrupts:
+> > >>>> +    maxItems: 1
+> > >>>
+> > >>> Shouldn't this be 2? The datasheet says there is a "Data Output Rea=
+dy"
+> > >>> signal on the DOUT/RDY pin and an "Error Output" on the SYNC/ERROR
+> > >>> pin. Although I could see how RDY could be considered part of the S=
+PI
+> > >>> bus. In any case, a description explaining what the interrupt is wo=
+uld
+> > >>> be useful.
+> > >>>
+> > >>
+> > >> I do not see how there could be 2 interrupts. DOUT/RDY is used as an
+> > >> interrupt when waiting for a conversion to finalize.
+> > >>
+> > >> Sync and Error are sepparate pins, Sync(if enabled) works only as an
+> > >> input that resets the modulator and the digital filter.
 > > >
-> > > > +     struct cpu_hw_events *cpu_hw_evt;
+> > > I only looked at the AD7172-2 datasheet and pin 15 is labeled
+> > > SYNC/ERROR. Maybe they are separate pins on other chips?
+> >
+> > Yep, sorry, missed that. All other supported models have them separate.
+>
+>
 > > >
-> > > This is only used inside the scope of the for loop.
+> > >>
+> > >> Error can be configured as input, output or ERROR output (OR between=
+ all
+> > >> internal error sources).
+> > >>
+> > >> Would this be alright
+> > >>   interrupts:
+> > >>
+> > >>     description: Conversion completion interrupt.
+> > >>                  Pin is shared with SPI DOUT.
+> > >>     maxItems: 1
+> > >
+> > > Since ERROR is an output, I would expect it to be an interrupt. The
+> > > RDY output, on the other hand, would be wired to a SPI controller wit=
+h
+> > > the SPI_READY feature (I use the Linux flag name here because I'm not
+> > > aware of a corresponding devicetree flag). So I don't think the RDY
+> > > signal would be an interrupt.
 > > >
 > >
-> > Do you intend to suggest using mixed declarations ? Personally, I
-> > prefer all the declarations upfront for readability.
-> > Let me know if you think that's an issue or violates coding style.
+> > Error does not have the purpose to be an interrupt. The only interrupt
+> > used from this chip is the one from the DOUT/~RDY pin. Sure, it is wire=
+d
+> > to the SPI controller, but when you can't also receive interrupts on
+> > that very same CPU pin an issue arises. So that pin is also wired to
+> > another GPIO with interrupt support.
 >
-> I was suggesting
+> You've lost me.  It's a pin that has a state change when an error conditi=
+on
+> occurs.  Why not an interrupt?  Doesn't matter that the driver doesn't
+> use this functionality. dt-bindings should be as comprehensive as possibl=
+e.
+> Given it's a multipurpose pin you'd also want to support it as a gpio to =
+be
+> complete alongside the other GPIOs.
 >
-> int cpu;
->
-> for_each_possible_cpu(cpu)
->         struct cpu_hw_events *cpu_hw_evt =3D per....()
->
-
-That's what I meant by mixed declarations.
-
-> I've been asked to do this in some subsystems I submitted code to,
-> and checkpatch etc do not complain about it. I don't think there is any
-> specific commentary in the coding style about minimising the scope of
-> variables however.
->
-
-I didn't know any subsystem which prefers mixed declaration vs upfront.
-
-> > > > +     /* Free up the snapshot area memory and fall back to default =
-SBI */
-> > >
-> > > What does "fall back to the default SBI mean"? SBI is an interface so=
- I
-> > > don't understand what it means in this context. Secondly,
 > >
-> > In absence of SBI PMU snapshot, the driver would try to read the
-> > counters directly and end up traps.
-> > Also, it would not use the SBI PMU snapshot flags in the SBI start/stop=
- calls.
-> > Snapshot is an alternative mechanism to minimize the traps. I just
-> > wanted to highlight that.
+> > This is the same way that ad4130.yaml is written for example (with the
+> > exception that ad4130 supports configuring where the interrupt is route=
+d).
 > >
-> > How about this ?
-> > "Free up the snapshot area memory and fall back to default SBI PMU
-> > calls without snapshot */
+> > In regards to SPI_READY _BITUL(7) /* slave pulls low to pause */: the
+> > ad_sigma_delta framework (if it can be called that) is written to expec=
+t
+> > a pin interrupt, not to use SPI_READY controller feature.
 >
-> Yeah, that's fine (modulo the */ placement). The original comment just
-> seemed truncated.
+> SPI_READY is supported by only a couple of controllers. I'm not even that
+> sure exactly how it is defined and whether that lines up with this usecas=
+e.
+> From some old asci art. https://lore.kernel.org/all/1456747459-8559-1-git=
+-send-email-linux@rempel-privat.de/
 >
-
-ok.
-
-> > > > +     if (ret.error) {
-> > > > +             if (ret.error !=3D SBI_ERR_NOT_SUPPORTED)
-> > > > +                     pr_warn("%s: pmu snapshot setup failed with e=
-rror %ld\n", __func__,
-> > > > +                             ret.error);
-> > >
-> > > Why is the function relevant here? Is the error message in-and-of-its=
-elf
-> > > not sufficient here? Where else would one be setting up the snapshots
-> > > other than the setup function?
-> > >
-> >
-> > The SBI implementation (i.e OpenSBI) may or may not provide a snapshot
-> > feature. This error message indicates
-> > that SBI implementation supports PMU snapshot but setup failed for
-> > some other error.
+> Flow control: Ready Sequence
+> Master CS   |-----1\_______________________|
+> Slave  FC   |--------2\____________________|
+> DATA        |-----------3\_________________|
 >
-> I don't see what this has to do with printing out the function. This is
-> a unique error message, and there is no other place where the setup is
-> done AFAICT.
+> So you set master and then wait for a flow control pin (the ready signal)=
+ before
+> you can actually talk to the device.
+>
+> Here we are indicating data is ready to be be read out.
+>
+> So I don't 'think' SPI_READY applies.
+>
+> Jonathan
 >
 
-Ahh you were concerned about the function name in the log. I
-misunderstood it at first.
-The function name is not relevant and has been already removed.
+I'm not arguing that SPI_READY applies in this particular case, but
+FWIW it does seem to me like...
 
-> > > > +             /* Snapshot is taken relative to the counter idx base=
-. Apply a fixup. */
-> > > > +             if (hwc->idx > 0) {
-> > > > +                     sdata->ctr_values[hwc->idx] =3D sdata->ctr_va=
-lues[0];
-> > > > +                     sdata->ctr_values[0] =3D 0;
-> > >
-> > > Why is this being zeroed in this manner? Why is zeroing it not requir=
-ed
-> > > if hwc->idx =3D=3D 0? You've got a comment there that could probably =
-do with
-> > > elaboration.
-> > >
-> >
-> > hwc->idx is the counter_idx_base here. If it is zero, that means the
-> > counter0 value is updated
-> > in the shared memory. However, if the base > 0, we need to update the
-> > relative counter value
-> > from the shared memory. Does it make sense ?
->
-> Please expand on the comment so that it contains this information.
->
-
-Sure.
-
-> > > > +             ret =3D pmu_sbi_snapshot_setup(pmu, smp_processor_id(=
-));
-> > > > +             if (!ret) {
-> > > > +                     pr_info("SBI PMU snapshot is available to opt=
-imize the PMU traps\n");
-> > >
-> > > Why the verbose message? Could we standardise on one wording for the =
-SBI
-> > > function probing stuff? Most users seem to be "SBI FOO extension dete=
-cted".
-> > > Only IPI has additional wording and PMU differs slightly.
-> >
-> > Additional information is for users to understand PMU functionality
-> > uses less traps on this system.
-> > We can just resort to and expect users to read upon the purpose of the
-> > snapshot from the spec.
-> > "SBI PMU snapshot available"
->
-> What I was asking for was alignment with the majority of other SBI
-> extensions that use the format I mentioned above.
->
-
-PMU snapshot is a function and my previous suggestion aligns PMU
-extension availability log message.
-I can change it to "SBI PMU snapshot detected"
-
-> >
-> > >
-> > > > +                     /* We enable it once here for the boot cpu. I=
-f snapshot shmem fails during
-> > >
-> > > Again, comment style here. What does "snapshot shmem" mean? I think
-> > > there's a missing action here. Registration? Allocation?
-> > >
-> >
-> > Fixed it. It is supposed to be "snapshot shmem setup"
-> >
-> > > > +                      * cpu hotplug on, it should bail out.
-> > >
-> > > Should or will? What action does "bail out" correspond to?
-> > >
-> >
-> > bail out the cpu hotplug process. We don't support heterogeneous pmus
-> > for snapshot.
-> > If the SBI implementation returns success for SBI_EXT_PMU_SNAPSHOT_SET_=
-SHMEM
-> > boot cpu but fails for other cpus while bringing them up, it is
-> > problematic to handle that.
->
-> "bail out" should be replaced by a more technical explanation of what is
-> going to happen. "should" is a weird word to use, either the cpuhotplug
-> code does or does not deal with this case, and since that code is also
-> in the kernel, this patchset should ensure that it does handle the case,
-> no? If the kernel does handle it "should" should be replaced with more
-> definitive wording.
->
-
-ok. I will improve the comment to explain a bit more.
-
-> Thanks,
-> Conor.
+1) SPI_READY could be implemented in any SPI driver using a GPIO
+interrupt (similar to how we already have GPIO CS)
+2) In cases where the SPI controller does have actual hardware support
+for SPI_READY and the ADC chip A) uses CS to trigger a conversion and
+B) has a "busy" signal that goes low when the conversion is complete,
+then the SPI_READY feature could be used to make reading sample data
+more efficient by avoiding any CPU intervention between CS assertion
+and starting the data xfer due to waiting for the conversion to
+complete either by waiting for an interrupt or sleeping for a fixed
+amount of time.
 
