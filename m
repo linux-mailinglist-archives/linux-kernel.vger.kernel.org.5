@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-3641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A7C3816EE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:56:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A75816EE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39856286D83
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4998B1C20B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5B276086;
-	Mon, 18 Dec 2023 12:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B86760A9;
+	Mon, 18 Dec 2023 12:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eeRQg0ar"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XL4wiqj4"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B307FBCA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A06B76098;
+	Mon, 18 Dec 2023 12:46:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE770C433C7;
 	Mon, 18 Dec 2023 12:46:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0D0C433CA;
-	Mon, 18 Dec 2023 12:46:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903573;
-	bh=5iuF1epyv3mwZoNuBNFGVrhC4joDGIutvo34c+ZkDz4=;
+	s=k20201202; t=1702903574;
+	bh=ivbs5pTD8vjpc5EWl8vdFge86i9YxTK1Ee2w1HNuikU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eeRQg0arcHa7PVqFekDhyZPCNKJMz+5qqGKKTZ50amj4njt6kn/LuqCv3Qkg+cg4b
-	 52YAcaFmf+ZlKMauS1aoArwFNDIZhGGkpu+Eeq1KIXjXuSgpU8r9f2c7t4c7vCnAqJ
-	 w5078ZF1M0gX9vx6Zn3t/xqkSGydEvege19ImG9QgP2IqbhgozktjX9m255JLuNQY9
-	 oGlZtfslloP3q9KN4b/tawPjGoih0DOGl6L+s2hAMVvGCfA7E4/1Fa3pKBU42ii2AX
-	 Tsi5XUjskRXWMB81XGIAkh39L4GTMTvWti8zwax/vKjZs0rwCZH+++XglGXmpA758c
-	 +gOszO8ohS44w==
+	b=XL4wiqj4HC1BNChshTay5r46MWVwJin7yByg+9E5OQsHrMfibnhwD4CDvM/m9Kqbe
+	 tZJ77mclucYWXqjYDdw5eye1H6hOcwPGnxsCeyWTiaN+KX4YL2eqdSO3O0KoN7FHAh
+	 Kh3fQYLEEatj72ux0CspXxCoTj1XgW8VJD1p4A27awYhev4+QCu7nHxRgOYegwDB/g
+	 pLm8etrcr84OToKDDxDe1mXa5hlfUzhsbnzWD3YCobl7I0dRE5b+MXCBtzFT/9iWAY
+	 flY+xIojaZjPx14UZXuCNyyjiDBou6Sd+x9u2Ce7tI8IIWVPSFEt2FhEXttgABBBy5
+	 T1GS8Bgro3nSg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ye Bin <yebin10@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jack@suse.com,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 07/13] jbd2: fix soft lockup in journal_finish_inode_data_buffers()
-Date: Mon, 18 Dec 2023 07:45:40 -0500
-Message-ID: <20231218124557.1380724-7-sashal@kernel.org>
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 08/13] tracing: Have large events show up as '[LINE TOO BIG]' instead of nothing
+Date: Mon, 18 Dec 2023 07:45:41 -0500
+Message-ID: <20231218124557.1380724-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124557.1380724-1-sashal@kernel.org>
 References: <20231218124557.1380724-1-sashal@kernel.org>
@@ -58,80 +58,76 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.143
 Content-Transfer-Encoding: 8bit
 
-From: Ye Bin <yebin10@huawei.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-[ Upstream commit 6c02757c936063f0631b4e43fe156f8c8f1f351f ]
+[ Upstream commit b55b0a0d7c4aa2dac3579aa7e6802d1f57445096 ]
 
-There's issue when do io test:
-WARN: soft lockup - CPU#45 stuck for 11s! [jbd2/dm-2-8:4170]
-CPU: 45 PID: 4170 Comm: jbd2/dm-2-8 Kdump: loaded Tainted: G  OE
-Call trace:
- dump_backtrace+0x0/0x1a0
- show_stack+0x24/0x30
- dump_stack+0xb0/0x100
- watchdog_timer_fn+0x254/0x3f8
- __hrtimer_run_queues+0x11c/0x380
- hrtimer_interrupt+0xfc/0x2f8
- arch_timer_handler_phys+0x38/0x58
- handle_percpu_devid_irq+0x90/0x248
- generic_handle_irq+0x3c/0x58
- __handle_domain_irq+0x68/0xc0
- gic_handle_irq+0x90/0x320
- el1_irq+0xcc/0x180
- queued_spin_lock_slowpath+0x1d8/0x320
- jbd2_journal_commit_transaction+0x10f4/0x1c78 [jbd2]
- kjournald2+0xec/0x2f0 [jbd2]
- kthread+0x134/0x138
- ret_from_fork+0x10/0x18
+If a large event was added to the ring buffer that is larger than what the
+trace_seq can handle, it just drops the output:
 
-Analyzed informations from vmcore as follows:
-(1) There are about 5k+ jbd2_inode in 'commit_transaction->t_inode_list';
-(2) Now is processing the 855th jbd2_inode;
-(3) JBD2 task has TIF_NEED_RESCHED flag;
-(4) There's no pags in address_space around the 855th jbd2_inode;
-(5) There are some process is doing drop caches;
-(6) Mounted with 'nodioread_nolock' option;
-(7) 128 CPUs;
+ ~# cat /sys/kernel/tracing/trace
+ # tracer: nop
+ #
+ # entries-in-buffer/entries-written: 2/2   #P:8
+ #
+ #                                _-----=> irqs-off/BH-disabled
+ #                               / _----=> need-resched
+ #                              | / _---=> hardirq/softirq
+ #                              || / _--=> preempt-depth
+ #                              ||| / _-=> migrate-disable
+ #                              |||| /     delay
+ #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+ #              | |         |   |||||     |         |
+            <...>-859     [001] .....   141.118951: tracing_mark_write           <...>-859     [001] .....   141.148201: tracing_mark_write: 78901234
 
-According to informations from vmcore we know 'journal->j_list_lock' spin lock
-competition is fierce. So journal_finish_inode_data_buffers() maybe process
-slowly. Theoretically, there is scheduling point in the filemap_fdatawait_range_keep_errors().
-However, if inode's address_space has no pages which taged with PAGECACHE_TAG_WRITEBACK,
-will not call cond_resched(). So may lead to soft lockup.
-journal_finish_inode_data_buffers
-  filemap_fdatawait_range_keep_errors
-    __filemap_fdatawait_range
-      while (index <= end)
-        nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end, PAGECACHE_TAG_WRITEBACK);
-        if (!nr_pages)
-           break;    --> If 'nr_pages' is equal zero will break, then will not call cond_resched()
-        for (i = 0; i < nr_pages; i++)
-          wait_on_page_writeback(page);
-        cond_resched();
+Instead, catch this case and add some context:
 
-To solve above issue, add scheduling point in the journal_finish_inode_data_buffers();
+ ~# cat /sys/kernel/tracing/trace
+ # tracer: nop
+ #
+ # entries-in-buffer/entries-written: 2/2   #P:8
+ #
+ #                                _-----=> irqs-off/BH-disabled
+ #                               / _----=> need-resched
+ #                              | / _---=> hardirq/softirq
+ #                              || / _--=> preempt-depth
+ #                              ||| / _-=> migrate-disable
+ #                              |||| /     delay
+ #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+ #              | |         |   |||||     |         |
+            <...>-852     [001] .....   121.550551: tracing_mark_write[LINE TOO BIG]
+            <...>-852     [001] .....   121.550581: tracing_mark_write: 78901234
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20231211112544.3879780-1-yebin10@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+This now emulates the same output as trace_pipe.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20231209171058.78c1a026@gandalf.local.home
+
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/commit.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index e058ef1839377..f858d1152368a 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -300,6 +300,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
- 			if (!ret)
- 				ret = err;
- 		}
-+		cond_resched();
- 		spin_lock(&journal->j_list_lock);
- 		jinode->i_flags &= ~JI_COMMIT_RUNNING;
- 		smp_mb();
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 657ecb8f03545..79b1bc4501dce 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4653,7 +4653,11 @@ static int s_show(struct seq_file *m, void *v)
+ 		iter->leftover = ret;
+ 
+ 	} else {
+-		print_trace_line(iter);
++		ret = print_trace_line(iter);
++		if (ret == TRACE_TYPE_PARTIAL_LINE) {
++			iter->seq.full = 0;
++			trace_seq_puts(&iter->seq, "[LINE TOO BIG]\n");
++		}
+ 		ret = trace_print_seq(m, &iter->seq);
+ 		/*
+ 		 * If we overflow the seq_file buffer, then it will
 -- 
 2.43.0
 
