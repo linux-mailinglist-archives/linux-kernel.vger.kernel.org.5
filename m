@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-4333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BD66817BAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:19:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 660F3817BAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:19:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 339D71F24346
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:19:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89BE11C23852
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CDE7207B;
-	Mon, 18 Dec 2023 20:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0340073495;
+	Mon, 18 Dec 2023 20:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="s7l6pPKv"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="mWGQtcwR"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37304239A;
-	Mon, 18 Dec 2023 20:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545CE73469;
+	Mon, 18 Dec 2023 20:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1702930757; x=1703535557; i=w_armin@gmx.de;
-	bh=wmxJqeTy+krnPbLSF9jAqQ4wf8RAiD4RO8JEKBF3GIA=;
+	t=1702930766; x=1703535566; i=w_armin@gmx.de;
+	bh=Gv/3KB2nhnzbj6OabYsWChzNP4Kil+PLOJoDKQOnE44=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=s7l6pPKv9BuBVYZ3gIfHq/6URUUA1BHGp5n0ihUtyvfQofdNs3v+Gaa41hO2NClR
-	 WZtBlSD+ecFMyWAeF1AmWrHz2qVSQlDJK6zADyQD2WO9Vw4bKwC9BJqYccltCMmE0
-	 9nxJRckWz6AbvZRF9lTenMhgHIeJGW67qcdyXCcthAGUin4+KUWUqoqVHOl0dAWaQ
-	 nvpX0uClpPtE9zZXJIkTovz19edAKosRTcCL9Ux8iyPwsdodyiFlFBK7Pw0rn4MA5
-	 rOs5MBhS5LdtcSPeonEXoPpqBvryrEa2n1bX12BhoiLEKW4BbBw6nnSkBZ3qhfHGB
-	 3tSZQnfyb40AKuiOYA==
+	b=mWGQtcwRPhtW/JXklo9Vki7Pj8Ts0Sy5ielOVqHp+wTHpmQ97iWguYnpEJ1Jd3wA
+	 f2znaplS9RBsOOUHf3+qS3X3PlPa6a4no9+3n8XjC46I0e3j25EL+pAoKZr+oymzx
+	 vZD2+vd2MqpLknKxecemUwNRsB2RJhkgvjVLEjol+QL906DjOFgPbpXxUqXt6JKic
+	 246nqNd9Y52BTkZUJcAXb+EKso4TDWJBc/ZnsfwOpJ5Hw2Qd7guPXnIj3hAD+zv18
+	 QdJnn8IIyHwCE90UXdWqQDri+25LnddCazR2eynJh2XR9dp9jelaY2ZQ2uRX1pX30
+	 sqqGuAi7gFMu+eOU9w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
  (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1Mof9P-1qvdT21hKz-00p8HD; Mon, 18 Dec 2023 21:19:17 +0100
+ 1MOiHl-1rfWqH0uAJ-00Q9Su; Mon, 18 Dec 2023 21:19:26 +0100
 From: Armin Wolf <W_Armin@gmx.de>
 To: hdegoede@redhat.com,
 	ilpo.jarvinen@linux.intel.com
 Cc: platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v2 1/6] platform/x86: wmi: Remove unused variable in address space handler
-Date: Mon, 18 Dec 2023 21:18:41 +0100
-Message-Id: <20231218201844.2860-2-W_Armin@gmx.de>
+Subject: [PATCH RESEND v2 2/6] platform/x86: wmi: Remove ACPI handlers after WMI devices
+Date: Mon, 18 Dec 2023 21:18:43 +0100
+Message-Id: <20231218201844.2860-3-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231218201844.2860-1-W_Armin@gmx.de>
 References: <20231218201844.2860-1-W_Armin@gmx.de>
@@ -54,66 +54,65 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KAjm65QT9bT5nfT6XqP92X2Nm+jWQAubsvYi5HST0dK9+svm1Ge
- QzkiHdUHU0BhHTLqTSyMtB+9XpmXMWJ5apONpxef8YKdFGrN1MrhRyrsJnK0067bp0IQrfE
- IGPIoeVFhkoXehlyTAF7/mFnQW8L8hS1+vP55wjWDvPLAndWdch5OOb5LLOVb/81XQHiB2H
- CbndZaUtpeDVI6fxMGe4w==
+X-Provags-ID: V03:K1:XOdpNjhflCYKJ1a+4E2Buao2nLfPzOYhyhtIE5Yvp/hvdx3f3V3
+ PAz+fPMBVHAzyWVntXAdayofd/qfaQ9+aIQA/ezcPCqjFi9cxhjpu/f3b8yvDslFyEQucZe
+ zrmOYm4iZ+8zKqQry9xVQF90v/CsE1rZ15FshNAsyvbiENrA09WBb6y4VghHZU1SeGn7Vta
+ bLA1z3h9EyNbje1Fyjifg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:i2HjnkTolY4=;kFzDhjTZ6XZL0SJHyAXlhhP2n9+
- TiU47rXnKooelB+tJAEqvPPDwDcVm50A6GXYQWwunT2ot+JqGXz5BHCn4I/Vtuf8QjYm9g2lw
- Ax92MbJuu1bSveqjpkCBbpVFp+blFXGps97KSXc6kMGEvfRVw6GYP54SljrExiKrBaZGhI7wh
- w6FaKS7VGu1NNb2AIrFnh32DIK9AMVPWpE5r4rTZT9OVfLEejiWPnOA27WI1JUNzUbowjzSFV
- GMZ7mAQ04n21+fkS4H+VBxFjWu5nTL9qQq+wjhl9S7jZFBdVPLvYVW1pkRIVRwmqrY08RmSpE
- L+dB/eHW3P611/7fL/IC/hzzB3SDDrFd468ASoCQICzmYckgvfL8KJvxatQLP00CCZ0Ht5+Lq
- Nk3fpkIjjOZJtw2iv68Xyy98flhw+OTP+ehHTvS5hZvttI34IsEo2HvbW9+fqSdEuRmS9pqEj
- l05B8edyd9R6PUTH0xckunxdG5MnI7zlsFmYYQsg1Y3AIeBDkIgA3+wZqkpluey7X1mPvkJJe
- exanl8jirW3UzFdr354An+75CGtd2DZWMQXct2L39UDZWhcL/ovJxs6ZEWJz5EpoKIjwh7uz1
- /lQH2TCoAEdFXTZu1bXjIw56CeqIEv/XKPa5ZAGeXWaz8GRmlJxKVaB7aqlzZngaUOGsviYTT
- J9ftd2COVMvWx8zDQ4NztTqaCGoCPj3cZFjFV1sJ/yL6Gj9hq07OJOSsUhJK9EI+XIyZ4sfjX
- WI8GoIW2Aaypy5BbPbVB/Q3lGxjB+4RGZWIREJjCTbP5BZyN/692uULDsA/50t4D7a29XJEF1
- DZEEKXfbR7OLonDxH97Nmxfx34wz5j5GXSZjlyRjf5cKEp4Ciuo2tMWG71cY0lq/wRAJiBKC9
- 6Eu+SKVetX1dQr0/vRjd+7S8rC5cc1YQaKs+VAwV3hGme0lNVPd3Ex9LmRJT4FZimnxeYwjTe
- /VTkzBDABKN5Jgb01ImeT740F/I=
+UI-OutboundReport: notjunk:1;M01:P0:Kxsn0DJ1v4g=;jhv3lb2Pj5rrq6ZAZa6pRPVGWVE
+ JS1tKzoUYgMYJ6MKiv/Cd/ft0+yTXxKO+TaofGzbtPkrTniIzvSclh+bBNgPSrpnrxbz92BOS
+ pFSvlikPliddvT7DNkQJzBMUYA6AE4roZL/HKz+J3B/zSZWtDiwo4QEIA50x6qbNhnIwJSbPs
+ YVbpQqIOLyYu/cX+oZDV6Nwbigtme8n9t1zg6V4z/Z11OUPKbjCXWhBfuO8Ha2Sa2J86XflbE
+ 6C7jhOc1lK5lU2FR4U9VqHuGTJvcdnkvPY4Jc+VW00YDU9x0W/xB1ttmDVOZeCadMr9M7zaN0
+ 3T7cbkhjGE2ydMLNwIOYqPBHgiFi8Aev4Q044SzDJRJFCEybdT/Kc+v/j5VySIbItQ8QiFWMB
+ PUqGxL4NbWTyk9qfqltyHlKvkxUnAf8CKU0t2pz4HRMdXFIUf2JhFAiov5x0eI7BjbWmFyv7/
+ LGYsotAiQaKefymxuTKT7uENIez+xpiKidavHj83RwICOWbOBgjFOMlbxVaxR+f1PZjaPPs1w
+ Fno1S4jrwJn30naCvtGTfL3S0SZOOx8loIXYJOmeNlFEkXhhGD01lxdYgC+MeHoLkljHTt2H3
+ 2goZxtcBs04rhzVskLzYNmKaiCeXx4glfuXeKNaA/LWWtiOFiaQsVKdc+FjNeL0PT20xVk4M/
+ qNnKoYPOQf5h/dslojIdiYLth6TZWdh2CtRppPBmrpEoA0uR35xrxjVjJNivGCVRvl6g0jyrB
+ mdD5rwuN85COPjhAJrbbbGk8EGaUM78wU+WTxWBaY/1yxG7FHKXaP397pAJKIJQ4UiiaNYKun
+ ITAAtMwAZBUApFnGhB2McZ1LM1SpegYAu5VNrRhrVB6poAY1I2lJhUjKYA9xgZkze2kpQIndz
+ VHcqzVpQxXYiryxXj/ywEGRETDz+WZUuR6Unv4Xud7OA88dibnD70OIAlRj6ySN1bTvkYM87Q
+ 2kPQGQ==
 
-The variable "i" is always zero and only used in shift operations.
-Remove it to make the code more readable.
+When removing the ACPI notify/address space handlers, the WMI devices
+are still active and might still depend on ACPI EC access or
+WMI events.
+Fix this by removing the ACPI handlers after all WMI devices
+associated with an ACPI device have been removed.
 
-Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/wmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/platform/x86/wmi.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 7303702290e5..906d3a2831ae 100644
+index 906d3a2831ae..2120c13e1676 100644
 =2D-- a/drivers/platform/x86/wmi.c
 +++ b/drivers/platform/x86/wmi.c
-@@ -1144,7 +1144,7 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physica=
-l_address address,
- 			  u32 bits, u64 *value,
- 			  void *handler_context, void *region_context)
- {
--	int result =3D 0, i =3D 0;
-+	int result =3D 0;
- 	u8 temp =3D 0;
+@@ -1239,13 +1239,12 @@ static void acpi_wmi_remove(struct platform_device=
+ *device)
+ 	struct acpi_device *acpi_device =3D ACPI_COMPANION(&device->dev);
+ 	struct device *wmi_bus_device =3D dev_get_drvdata(&device->dev);
 
- 	if ((address > 0xFF) || !value)
-@@ -1158,9 +1158,9 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physica=
-l_address address,
+-	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY,
+-				   acpi_wmi_notify_handler);
+-	acpi_remove_address_space_handler(acpi_device->handle,
+-				ACPI_ADR_SPACE_EC, &acpi_wmi_ec_space_handler);
+-
+ 	device_for_each_child_reverse(wmi_bus_device, NULL, wmi_remove_device);
+ 	device_unregister(wmi_bus_device);
++
++	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY, acpi_wm=
+i_notify_handler);
++	acpi_remove_address_space_handler(acpi_device->handle, ACPI_ADR_SPACE_EC=
+,
++					  &acpi_wmi_ec_space_handler);
+ }
 
- 	if (function =3D=3D ACPI_READ) {
- 		result =3D ec_read(address, &temp);
--		(*value) |=3D ((u64)temp) << i;
-+		*value =3D temp;
- 	} else {
--		temp =3D 0xff & ((*value) >> i);
-+		temp =3D 0xff & *value;
- 		result =3D ec_write(address, temp);
- 	}
-
+ static int acpi_wmi_probe(struct platform_device *device)
 =2D-
 2.39.2
 
