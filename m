@@ -1,138 +1,182 @@
-Return-Path: <linux-kernel+bounces-4219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381FF81793E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 390D0817944
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50D7E1C2415E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:54:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52DB21C212BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:56:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC24D5D746;
-	Mon, 18 Dec 2023 17:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9336C5D72D;
+	Mon, 18 Dec 2023 17:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="SNJgmnkT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aP3BNLxl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sonic306-27.consmr.mail.ne1.yahoo.com (sonic306-27.consmr.mail.ne1.yahoo.com [66.163.189.89])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530845BFB9
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702922066; bh=xu+gxgVbINDvBxq7UqsA+Q+MM170MmIrIQ86tUk5Qo4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=SNJgmnkT8VAX/gzXZb5FOZf1A+sBnVzFe3toujzQ64fy2UexwVzZsO5FrUND/5UnMJD1ms2XjMDOVE+P9LpVoWNQoa6zOB6BfcFQ5d3UFgu1h6u849LrajCX6avoJENL+HGLf/kZTh4vRpKrPVJwwm2GVRf2wrd3TGRJEPqS7REsZiyVc2oAy/Vel2WqgOGXK0TiPFkwSTfYTBH44AfxTx7jpYhKVH497CZJ1FzVfZIFP5lgWArPAJS77yDBkcZDWuUXc5+1ZDL6ZW0FVtGVbWdqSwiYDSb2cpfvMxUP8LptPKhM0APS+k24+4vwtivotoZFckNlLq5uKYC41P7zfw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702922066; bh=yx9ePzsTtYb8E4QZ9/KDNGdmwapjpRai4mvg+R0X8OZ=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=uI5VDjpa+bp5op2iugJV09P7RC4W3SdUyzqI+DDjz06eTfjVi2NtzpDZZ2+y7HSiidYzLy10LMbTv/e4T8i+A+UaDbNxu/a9l1s5th2DiPnh1LZv1JoMA+5onhE4QJiEGBNsN5qNaBY2eLW+IIUS9voUEsZIK406mwzxtr864tkeV6sOU/IpXA/ZS+UCo9oCnyTpI7q1vnRsCiVcJ9ZRFPzRif3vKSHpRU8613TWNYOpwxlbcwIyNUBVZ2svO+HvWdNtZKBy8HLOFu/xWKDAo5yavdHy6l+uA5MQgpmyYFrB6FJlfKJqfA2rEO2rwjRex32AiniIGOeRnxTepSj5PA==
-X-YMail-OSG: 2cvT6jcVM1n4hW_KV5Kua6i7GP3IFU1TFwt2inIFHQQX3D68KGDu30WchiBvvdC
- YGVie9.er5KpxVuH5hTCjNBJp78FOz7aAqMTsJU8XKfuO96FO7eOmBntZkwOzfhRxdiTOKdt866p
- 6QVJ.HJiC64.oW4LkRF_W2YBj97_OQcOtLtZsrJktEhGY5XrUR8bmAh4R_WurVJEPTH5xoiqY9Gc
- H0.KKoWC1vOvM9UI17b3R9Ajb5ELveqyjnu7Bo8pV5ZWF3rCeyY2fZtQdZ6ecioChnxLd.NyYMGT
- OX.4fIenNW4l80n82i_6L6U.89ygb2uTbmd2jPFfL4iUC4mYkZE6vHrUSJExlyP7WYkli3e3ZLs.
- 0Xz_ReVsvOqnAxrEd5H_Z9Yp9WXZBYURxu1TpxEOtoU75fGbFty4MHmLymQThSz8UhJiXCcQTAik
- AhmJEPPEWksK1RMCGu6sIwo_srcD5zW9EloE46lLljNnFpWul1WNle.1gl0HeHDmHF63jQEkgLVX
- diW5WseoD9DiBCEyEADbS2Sjdhn9sbl.fu3Z1i.LPMYgRvVSXcHTOeTBhE8AUa44D.NtewlLDCPL
- sMeQnSG72wLJfQNK7xQoXKEXJ8pMGcFEe4tqZvNNnRMdMy6XrB.n6OsfW2ccjhk8ReeFCrFd8_S7
- ed42i1JpC_slzFdpw1qwg9sqV1BsXDry_qvvBciMqi99FWupdLCmlSHDVUtJCOL2uyaO2T_qU6Rt
- gfnrtKoUPI4uuQn7aSswz.hBuKxhDoedxv3janEuwxLi3qwzJJjQRxqTn8DfuQm.ez4hPwGsWP3Y
- 6MABeiFZKdkg10VH8e.3so2a2p5HT13pwSLc3tCi4zyQsMR9bE2Oy2mLPSQFN5GLesg4F1Ilvwgl
- SITCMqgVIZBY4jZOPEjPTEclT13wk4lbwA3o1cBtnlj2leqDHrW5UmubusGDfdGNXv0habHckQiq
- EgAbHdj3EfF_USvefwxZyg3Puev9No6EZxarPDbv9WcnYvRrVUQgG62l0goagi.82vsidmKWg7fw
- iPq.he4Ouym_4rUxeU3oYrjbO8_AUTOhU180V1PuYSVDy6GEvta70AuugEkWL1j2D91KaMsNvlxz
- TEfICVln0Z3ipZLSMVGUWX6599OXzuOuUMoHsJbMhd8H2gxnWmAhvIm.Lqdv7J4Jk.VHelU8tRu7
- WD3U7XOyPpgQVFM7BOA.RDFIfhDQ0ab6bqSafkonigTc0bf_7kX8Am3OwfPlAV8blWpFLcHor8Bi
- qsj49LR9znZX6gYUKNQNjs3wF.FkwWKLE..k_HJLWa_aqlIMB2.hmMuxYvfVU8_IEbKJ7BxbOKAR
- 9KrRlCfeLA9ap0gYk0St8X5xBywbPx93mh.UzKtlqBuKdcsRlfHgRUgIbf6S6y2tAp4_12eb.XA3
- Ejy3yZplArOY1sCd4S.yQ4Iz7.F1DtYYt5txe9NQ5QaDTD2usZuJG9eW5JgSWi84ZNiF3hkjlURU
- YW7BHqgyaGyfpMf2PXUWidinboKQwzX0aiMTRLL2uHJdHOKhPb9tR5PxUwuvfgycL8XQRudOVcSN
- xsd71ljcADQgmGLocRxQ.Y3nzS3sAfoOkhFJaXvONh._fVD5y.Fg7jKuSO9mRQ.Mb0RaYe1kFeqd
- rElOcA6iHP4pCGh_pQh_kya6dWgFU2OCLiaKJM8uX4GH.bocboO7ovhBvKdvucn1nrC5h.H82uu3
- GSedheKQxpdCec1WGIVlhGUDdvHgwdyIoezdl_JiyRY8rBmLX4g.9K3s.3_qmMewS1hWUlWVql1x
- A3bGmGpNJoM8nJ2Rg.CmEqrBvwTyHOJOy_AjFaGUboslLjVIGhzCMiBVI7Ym1GIm4CwPJG4I8b9m
- 07ZACXNQ1GYf.hIvMAKt_yV1BiL_q5vSto2oZ3S_RbRgi.Sgc4ezmbi0PX4ovdqdfa0IU049JR3y
- dfL5bUg3jEjrO.nAl72gx46WrCvGT_VAlxKYb.e3zzPwtMvJX6s4nNpLtyDJz9FMhUccs8JSGtJt
- UMqWOpyx65dJYLAo9S.gUqbP0nOB4u3K8rIlMEI7IMwrqNbDzAtMMDJAMhdlIVzThOJbMpUoD6nb
- 6PZ4vmOrjvALN2cT7gAkh.Jyks1O8.ANpLVQqlHuOPMVXdiQ9WkRPK4ObioPmI3fEZ6DQ4N_2266
- GmB8g71cmwHUvluaKKJVjAFYjue5Vspd3wPa24FwHItigkZLkSF2uRlXjZzW1VdjQG6nZpUeaKP.
- ISGMpV0mYFEUNv1Y2qkYmGeQqDEtJeeP2BFf0iuYo1PYqc3hX4U7ZqzLuokeHiL_eq0AsjLYsOCj
- E0xnZAhXp
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: afa4c637-5a35-4b8f-8140-52bd182b60a6
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Mon, 18 Dec 2023 17:54:26 +0000
-Received: by hermes--production-gq1-6949d6d8f9-x28h5 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID a479ca567dab365b133a6acbdb5eb595;
-          Mon, 18 Dec 2023 17:54:20 +0000 (UTC)
-Message-ID: <0a392ae2-9fd0-4a13-a4b1-5454b17701bb@schaufler-ca.com>
-Date: Mon, 18 Dec 2023 09:54:13 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5351DFDE
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702922153; x=1734458153;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=rrB37d0MEuCQT466K+KoaqU17Ak0vR9cydmooFfPWfc=;
+  b=aP3BNLxlkVaKsz21g/RZE+P8q6dkU7Lorxvo7r1TENY/l3lvhRZSoONi
+   7Xd0Ctsz7R9SNYMqizgN9ZsyGH6+DuALEUf814ydSCitLUS7H8Wssk48T
+   F2VHLvCVU2o3hNj7kt0d5pbZWXp+p6dL21IRQy7Pp/LGBk5fi+1ytcj4j
+   OL//caz0Gp6cjUd4D+ybBWfjOPReb9h5Ke80VMrxjIps+ut3mu9FqGt57
+   byko/Rg0996Q3UpD9IVgIjuU7YaP/NvBM7mQpiHqRVEjMPpX4itVWUd0y
+   wuxjp9P8Vs3yly2iqoPWtIDcaco8BZH6xVv/z45BYAv9lHfo+TCYKxPmS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="2750952"
+X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
+   d="scan'208";a="2750952"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 09:55:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="899052973"
+X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
+   d="scan'208";a="899052973"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Dec 2023 09:55:52 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 18 Dec 2023 09:55:52 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 18 Dec 2023 09:55:52 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 18 Dec 2023 09:55:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SM7VrKcRhVY/UXNyO7lMmnsHa3JCMAGllS+Wgcb5tCA7yhH0bfoCwv1BCywShp4dqjF0T4Ks4isuXFb232RrqoYCLbrWbHPy08dmRd/7zRuEC+B5GwHFr478wCnWT5VDjqRRIL6FPdtcRp0nsgpxTqDyVCZvZS0Sc39S0CBjHSejG26rzYeMOsGs4US7Q6QSHgdRB4o5l7v6ZImnk43sYAt2I9ySmlmlmENu+0VBWh2EChcNS7nUS4+YQ/r02iwnjfglAc+T/FZ6pSRzqvjevp28cMMXzd0s9kTJEaWGeQqhF4S8HDzQATe/cMirpL4BDC8oLZ0kopeO4WfLW0vYTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rrB37d0MEuCQT466K+KoaqU17Ak0vR9cydmooFfPWfc=;
+ b=hMFTD9UyehikRBKgFzMk0TufH7wYsLRFRMgsm6i+VGVXNdIDP7pjF+eoR1GQA+pSvdYOF2E2/FCQyYZobluX8g101VNj7cPZQM/y7OMjevNT6QCKaBrUDMQWm+Zlppdk1so053Dbo7GqbuZQp+RAOdBEQ7ynOOjUs+5n6JVGsZcx7IdM5edZm5ZDdDr63QY+K/9ECMJxY1zVqK2b7CId1jm2jEEPYbGVaudlaYn2IHS1XMb7zVOC9cNLYtpKf4Wc0dndhLkYtvEiUUNl67qD1q1b5yW64zJHew/hIhc65UR8LdbSjN+fTlcy47K/xMVqM2C8sewH1vKAGwtp0Gg/RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by SA1PR11MB8544.namprd11.prod.outlook.com (2603:10b6:806:3a3::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
+ 2023 17:55:49 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::b870:a8ae:c4f1:c39b]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::b870:a8ae:c4f1:c39b%4]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
+ 17:55:49 +0000
+Date: Mon, 18 Dec 2023 11:55:47 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Himal Prasad Ghimiray <himal.prasad.ghimiray@intel.com>
+CC: Rodrigo Vivi <rodrigo.vivi@intel.com>, Badal Nilawar
+	<badal.nilawar@intel.com>, Akinobu Mita <akinobu.mita@gmail.com>, "Jason
+ Gunthorpe" <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Qi Zheng
+	<zhengqi.arch@bytedance.com>, <linux-kernel@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/1] fault-inject: Include linux/types.h by default.
+Message-ID: <a5o2opdfsfnbptrrbvillogft2uqp73w4icu3mdmmwtvoqmdr2@y2fbrc6t4aew>
+References: <20230816134748.979231-1-himal.prasad.ghimiray@intel.com>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230816134748.979231-1-himal.prasad.ghimiray@intel.com>
+X-ClientProxiedBy: SJ0PR03CA0151.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::6) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] SELinux: Introduce security_file_ioctl_compat hook
-Content-Language: en-US
-To: Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc: Alfred Piccioni <alpic@google.com>, Paul Moore <paul@paul-moore.com>,
- Eric Paris <eparis@parisplace.org>, stable@vger.kernel.org,
- selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20231218141645.2548743-1-alpic@google.com>
- <6dce3020-14f0-471b-9b6a-c9dc761cfa19@schaufler-ca.com>
- <CAEjxPJ4tZAvch50i7Ve_7dPYUzCXK8ckDtmhwq81vjCf7pweQw@mail.gmail.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CAEjxPJ4tZAvch50i7Ve_7dPYUzCXK8ckDtmhwq81vjCf7pweQw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21952 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|SA1PR11MB8544:EE_
+X-MS-Office365-Filtering-Correlation-Id: c7254daf-307b-4e8d-4b4b-08dbfff291d7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LYi2ogO6yDcHoKSW8FLbqS53wmXjlJg8Ji9x1Z1EYr8Ro9gLSLDAdX9Ei9cBnXcAw1LqOEzzdXQOBIY+/3q6Z1kUHj5hZ7LwsPz/W1LsmvEcx2WooIAqGB+q+epR1YGBVdT3GMuGaHSvPFtZvXYIBk40bplzvhNw7kn7w1Xt9oJ1AKkZI6e9uaIecLOnhPD9k1MsejGJDzrbiek/9AgXBMF1tKc9jWmueuj/APaX7aKYkt+B5bS912IobIOakE52IF8h52XvBWwACm/iPW+eUgEd+fAmBOemcYh/MBL1y6WXjUIIIYSZm8r/IQ6hKF9yLR60TVDDKqD3XVE0Dd0YDyDqOWEIs+4GwwTEAYSiSQ6kTZz47xPSVO6PetC/c7mRpBtksMZvqKlNrR9Ah4lXYOBIMWD5OSjWPTdXNQQ5uegxDpeYs/p00gkxLhmLdrFYW3t2fCiJOVi+cOwyaNJVEhWIPOWct0KR03z/LeE0CQ8vt9Resn6IW9SENT6ofWXnusGfHHsrjDlDvKY8lw07MwluSpNiM5qD85Fr10VH1AXLNuFv9d6nvvJl4RL89xdb
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(376002)(39860400002)(396003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(9686003)(6506007)(6512007)(33716001)(83380400001)(478600001)(2906002)(5660300002)(8936002)(6862004)(4326008)(8676002)(6486002)(316002)(66476007)(6636002)(54906003)(66556008)(66946007)(41300700001)(82960400001)(38100700002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mm0jF/iPnbnUusupNUDi+imjNVuxppHe+w8Vmnv9d6Uuj2nzfYd8Hiwh3+7D?=
+ =?us-ascii?Q?LIDcQEaTKBX4ygWbyZlnqmyAOqkRxYQCWYUJn8H546It2HhobvIaZuwkOztZ?=
+ =?us-ascii?Q?qtzVTF5ZqAcXwKfM8q3xW03jK2ySo/AAFXiaDChpKnWFIofw4Xqj7UzaSnS8?=
+ =?us-ascii?Q?72TBuczFwdi+RCc7vC2UJDXGuaFpnvD2r8X1l/ZnifTJkkMMnuTjLnPyX0fK?=
+ =?us-ascii?Q?NL3K5ra8yDPLBRkFcD4+Kh80YrYgYu4FDGTwfgCplMvhR7z7paqFfCCctkd0?=
+ =?us-ascii?Q?syYy9pVFxqIB3tB5UfwSkdbKE4a7G4OSjPEM0eMrKhuXnsVdZnxVLmVVBmV7?=
+ =?us-ascii?Q?v1l/cA//E9YEJvZ5Ix5mpbS1cbC2lOR1OLcduM+rFEzCzHjCu9w0ODAZvCpE?=
+ =?us-ascii?Q?dQhJm1r7KBcBKBDgED+RCFImRwysq5Jx4niesnd/1P/lF5kneZB2Da7T2oOU?=
+ =?us-ascii?Q?DjoPfjh/jAEowo87olYuZlzEvTlNEK+o4CqhBJ0c6BztcVlEKhai/mXGnwF5?=
+ =?us-ascii?Q?bt3ZNmEGPVpwEh8LYNIQDPmUW9alSJYP5XR30iOQgVo60Jx/Vc+9jRmv0RHt?=
+ =?us-ascii?Q?apK7WNT7GPzfyvg4d1TRXI8wWefGST5GhGvexIY7I1MpyeQIQZmfQlHvcOyK?=
+ =?us-ascii?Q?DqgYoj/ic/4cgcR5vY1RZ5IxVedQO83lz5n98omk86A288bU1XfpIYf6OgUL?=
+ =?us-ascii?Q?KoThJxpsvO7bpwLfXDPGB4U4Kdk6TmMYBRrh9MuGrUP39nt7M1h0HvifpDeG?=
+ =?us-ascii?Q?OSohXWH+42KBxxrXRUJqT9pxupy0cL61BYVdMWUF0385w5R/uktk82d+cUCQ?=
+ =?us-ascii?Q?O04nw/AWp9IK+Ipd6JWW4XOIn4WR6Oes2z6M5BOveoS5Ol9VFuSl69xSgdZT?=
+ =?us-ascii?Q?3f0RfWHw8+Sfu5WfBd7BE1EDFN+7bzz7iijGlQoYfticbrHL1fWpoxvWT0vb?=
+ =?us-ascii?Q?0OUUvv6HlMfLMnd1TWpD/gksSIGLSa+UKTCJEnRR72Jc/pYHcmrNoPbkSF+e?=
+ =?us-ascii?Q?1KWKmYdSzIzQt4TsU+EaUN3OHSs7/OohK1msEXPYT6sPFXEzjsrdr+cMMfKX?=
+ =?us-ascii?Q?6KDjJx31WywIt3DkCzvbJhr733mJSY8wlRpMI/Xrjn9zF/Q3W0iGAOCvSkcO?=
+ =?us-ascii?Q?g77CfzMy2uqnG9zClHor32j1/GCTCMBSFqItg9KXbWcD5wNJ3xvece3ydhl8?=
+ =?us-ascii?Q?ALTDzHud49+XTmR4Swmpa1+il5aCW8YWGnR9qP4pknSgaBSpob+na0jwA81D?=
+ =?us-ascii?Q?p3YESUB3G1uITKA7RxM9r5kndg+IZMYX8H6pJeTjLKc9vApmwlJBuXoLHgMK?=
+ =?us-ascii?Q?3HQza/2shkaEYkUy0cNgwXc8zIr2M/9oPae8dfch0NjOF56i60REQYYyQJSN?=
+ =?us-ascii?Q?ve9HyWqOkWeaWx3Lz79w6BBWn1iQWbTZsUGSR7D6GBeVItkPH/Y+R7JVpBQ0?=
+ =?us-ascii?Q?oSAKit7o7bqbCwN4SmJodCFhoC+SGqSBL3EesNbq3ZG/lUgH0e4Ew7cilqQO?=
+ =?us-ascii?Q?f8xEY4u6U6eA2hCK5QonjV4OwC772+ROyI0613mfJ90oVKD3Ct7bI9nfz0am?=
+ =?us-ascii?Q?VVSlK+jD9JG7ljtML1LfaJH1b1Pw/CSulEdL5kAs8qnoYTAdO1S266Bl42OO?=
+ =?us-ascii?Q?Cg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7254daf-307b-4e8d-4b4b-08dbfff291d7
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 17:55:49.8651
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OnpcF6iCtuzhW7VPde7kzP87l6CzaS8e9ZAluO5o8J1kfB9Du5hGrvvZkM4/OlXNj+iQS1ErTqqmgpgwzlKXwGH4V5JY0eNxwfWXCY9GKpY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8544
+X-OriginatorOrg: intel.com
 
-On 12/18/2023 9:36 AM, Stephen Smalley wrote:
-> On Mon, Dec 18, 2023 at 12:11 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->> On 12/18/2023 6:16 AM, Alfred Piccioni wrote:
->>
->>> Some ioctl commands do not require ioctl permission, but are routed to
->>> other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
->>> done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
->>>
->>> However, if a 32-bit process is running on a 64-bit kernel, it emits
->>> 32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
->>> being checked erroneously, which leads to these ioctl operations being
->>> routed to the ioctl permission, rather than the correct file
->>> permissions.
->>>
->>> This was also noted in a RED-PEN finding from a while back -
->>> "/* RED-PEN how should LSM module know it's handling 32bit? */".
->>>
->>> This patch introduces a new hook, security_file_ioctl_compat, that is
->>> called from the compat ioctl syscal. All current LSMs have been changed
->>> to support this hook.
->>>
->>> Reviewing the three places where we are currently using
->>> security_file_ioctl, it appears that only SELinux needs a dedicated
->>> compat change; TOMOYO and SMACK appear to be functional without any
->>> change.
->>>
->>> Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
->>> Signed-off-by: Alfred Piccioni <alpic@google.com>
->>> Cc: stable@vger.kernel.org
->> This *really* needs to go the the LSM email list:
->>         linux-security-module@vger.kernel.org
-> Yep, pointed that out a little earlier in this thread.
++Andrew
+
+On Wed, Aug 16, 2023 at 07:17:48PM +0530, Himal Prasad Ghimiray wrote:
+>Functions should_fail_alloc_page, should_failslab, and __should_failslab
+>are declared irrespective of CONFIG_FAULT_INJECTION. These functions use
+>bool and gfp_t types, which are treated as unknown when
+>CONFIG_FAULT_INJECTION is disabled because the inclusion of linux/types.h
+>is missing.
 >
->>> ---
->>> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
->>> index ac962c4cb44b..626aa8cf930d 100644
->>> --- a/include/linux/lsm_hook_defs.h
->>> +++ b/include/linux/lsm_hook_defs.h
->>> @@ -171,6 +171,8 @@ LSM_HOOK(int, 0, file_alloc_security, struct file *file)
->>>  LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
->>>  LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
->>>        unsigned long arg)
->>> +LSM_HOOK(int, 0, file_ioctl_compat, struct file *file, unsigned int cmd,
->>> +      unsigned long arg)
->> Please add a flags parameter to file_ioctl() rather than a new hook.
-> Paul told him the opposite earlier.
+>Fixes: 6ff1cb355e62 ("[PATCH] fault-injection capabilities infrastructure")
+>
+>Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+>Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+>Cc: Badal Nilawar <badal.nilawar@intel.com>
+>Cc: Akinobu Mita <akinobu.mita@gmail.com>
+>Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>Cc: Jens Axboe <axboe@kernel.dk>
+>Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+>Cc: linux-kernel@vger.kernel.org
+>Signed-off-by: Himal Prasad Ghimiray <himal.prasad.ghimiray@intel.com>
 
-Sigh. Paul's wrong, but as he's the maintainer I shan't push further.
+Reviewed-by: Lucas De Marchi <lucas.demarchi@intel.com>
 
+Andrew, could we take this through our drm-xe-next branch going to
+drm-next if this looks good to you?
+
+thanks
+Lucas De Marchi
 
