@@ -1,94 +1,116 @@
-Return-Path: <linux-kernel+bounces-4361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44ED3817C0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:35:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C84817C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43EAF1C21A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:35:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0098E1C219EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32CF73492;
-	Mon, 18 Dec 2023 20:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17FEE7347E;
+	Mon, 18 Dec 2023 20:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JoDCASE/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7691DA29;
-	Mon, 18 Dec 2023 20:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-203223f3299so111013fac.0;
-        Mon, 18 Dec 2023 12:35:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702931727; x=1703536527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w5muLLdvnEWK5GQ123Z96eJyI+5glad1JcNNdF8H1Jg=;
-        b=QFjCXzQjZLmVr4iO9XA2sgrkBVSpB8/GIMU085B3NW5V+8rluMFDr1vI1KCwliLpTM
-         TBb2jTYT6bR9KtAYwVdPjxwxiPozX015k8UgcEgfVSTc0k/gHFgelSGI58eA7U8SDLw1
-         pBZZt5qY2doVjOnI2y9QVrFSBUSCp9pXOGmTHCOVuQ15o9BxmvgxKUcIwjzfxwwL45ry
-         LzQsblDBGcQgwQiZw+hUKJRiFDDMEQsoTfe94joVIGlM9TQAr6mMxDkz9HWYzVu5gtme
-         MhMCQa/hevzK9U1lLvU8SNBtcdvikQZZfSyjMo3yuRr6fuWGRyLXMleY91eScM8ZixbA
-         xMpg==
-X-Gm-Message-State: AOJu0YyeIJgMFO0elQr12OxlmdapBT8d0yvrHi556SzcPZfQXFCDfnxS
-	A1Op+EXK9gV1bhHf1Z9QUgE9bO3NxwhhOv1LM1s=
-X-Google-Smtp-Source: AGHT+IF1MjB6QbmwWfc3T+5pLabp0AF+8g7RLCoeqeEABS9CAvETyoAN6o6rB15S5OlZOByT2E647igWVuJN9yCJ/4I=
-X-Received: by 2002:a05:6870:71ca:b0:203:e75d:a2c2 with SMTP id
- p10-20020a05687071ca00b00203e75da2c2mr729668oag.1.1702931727130; Mon, 18 Dec
- 2023 12:35:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D351E52E;
+	Mon, 18 Dec 2023 20:36:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B30E9C433C8;
+	Mon, 18 Dec 2023 20:36:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702931801;
+	bh=dAOyyU+aPtQu+XM1BL0WUdir2IdvIhUUVAbyrsyrv5k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JoDCASE/Y//4LPYrP0o1Xcn64hqxs+o300P3uGJ/HzPNqHWzfHPby2IHVK1pbpjR8
+	 1BBWH7/zQQNWkeJHSBuWGE+D6+kFI3MVA7L97YMZgASi7b77kjIU0M82pH3xtFl01x
+	 iYdG/D/57mPT9iktPSgBEMYl9ESEvCjMzZXpV+c9A+qRyBzFmFikLsumuppUoUVBe/
+	 JNCJeC9Sb2l7raDx8n+dg0O+Csq5qBEV9vPhXtULBI1r/nwvbF9bPwwg0i2Fusgw1P
+	 tR2X+yzEbtpkD0miAw7EFY8Dw0FfH8RWrr62kAdhnn/g0jAyUMHPZsi2rgEQHw6HA2
+	 GhIfFaW6edzyw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 12F2C403EF; Mon, 18 Dec 2023 17:36:39 -0300 (-03)
+Date: Mon, 18 Dec 2023 17:36:39 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: James Clark <james.clark@arm.com>
+Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Darren Hart <dvhart@infradead.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Kajol Jain <kjain@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Atish Patra <atishp@rivosinc.com>,
+	"Steinar H. Gunderson" <sesse@google.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	Sandipan Das <sandipan.das@amd.com>,
+	Ravi Bangoria <ravi.bangoria@amd.com>,
+	Paran Lee <p4ranlee@gmail.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v1 14/14] libperf cpumap: Document perf_cpu_map__nr's
+ behavior
+Message-ID: <ZYCtV6YcDLpgau75@kernel.org>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-15-irogers@google.com>
+ <0e1ca950-b5a4-1e08-8696-4e3e12e21b19@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
-In-Reply-To: <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 18 Dec 2023 21:35:16 +0100
-Message-ID: <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'
-To: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e1ca950-b5a4-1e08-8696-4e3e12e21b19@arm.com>
+X-Url: http://acmel.wordpress.com
 
-On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux.o=
-rg.uk> wrote:
->
-> From: James Morse <james.morse@arm.com>
->
-> The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
-> present.
+Em Tue, Dec 12, 2023 at 03:20:47PM +0000, James Clark escreveu:
+> On 29/11/2023 06:02, Ian Rogers wrote:
+> >  LIBPERF_API void perf_cpu_map__put(struct perf_cpu_map *map);
+> > +/**
+> > + * perf_cpu_map__cpu - get the CPU value at the given index. Returns -1 if index
+> > + *                     is invalid.
+> > + */
+> >  LIBPERF_API struct perf_cpu perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
+> > +/**
+> > + * perf_cpu_map__nr - for an empty map returns 1, as perf_cpu_map__cpu returns a
+> > + *                    cpu of -1 for an invalid index, this makes an empty map
+> > + *                    look like it contains the "any CPU"/dummy value. Otherwise
+> > + *                    the result is the number CPUs in the map plus one if the
+> > + *                    "any CPU"/dummy value is present.
+> 
+> Hmmm... I'm not sure whether to laugh or cry at that API.
+> 
+> Reviewed-by: James Clark <james.clark@arm.com>
 
-Right.
 
-> This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
-> CPUs can be taken offline as a power saving measure.
 
-But still there is the case in which a non-present CPU can become
-present, isn't it there?
+Thanks, applied to perf-tools-next.
 
-> On arm64 an offline CPU may be disabled by firmware, preventing it from
-> being brought back online, but it remains present throughout.
->
-> Adding code to prevent user-space trying to online these disabled CPUs
-> needs some additional terminology.
->
-> Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
-> that it makes possible CPUs present.
+- Arnaldo
 
-Honestly, I don't think that this change is necessary or even useful.
 
