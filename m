@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-2918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B8581643F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:06:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9DD6816442
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48DEB1F21D2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:06:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED82A1C21049
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1CE23D2;
-	Mon, 18 Dec 2023 02:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E126323C5;
+	Mon, 18 Dec 2023 02:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gYnpCtjw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRxQAAtw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D646620E6;
-	Mon, 18 Dec 2023 02:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6597D5228;
+	Mon, 18 Dec 2023 02:06:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6da16eab6fcso1966503a34.3;
-        Sun, 17 Dec 2023 18:05:56 -0800 (PST)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-58d18c224c7so1656384eaf.2;
+        Sun, 17 Dec 2023 18:06:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702865156; x=1703469956; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702865213; x=1703470013; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QYgxq/oGHPZP2QPh2THF7yf9x5x7XDARqeJu+ip26js=;
-        b=gYnpCtjwcFxHVX+w1IgCiE7CQZtFJEyzZMVw7++2ZHCw+MtmBMc7LBD9LkHHtML/Ku
-         nQwAgov12B/wZWcRlapIJFLjx/i28xggIJV9kyyEeds4Ae15/xjw6sjdkbWyFAfuAGQn
-         b2zcmaav7F6WHjwQ9DziEt78+7s0ZwBrM9tzd0Z6dGnETxEoqbH1aeCMvo7VRYwOzFGt
-         knl0iOqJNIpCdlROqW4hmh2lWRHVTxjNoy3DQGRMl8oAM8bQ+rVnAFbVAlW34x6vW0ZX
-         FyOwD+qp6Y3u6/EOQC77mSRm2wx853A7lkm3/e6dhVDcaRb8VittqkUNfGs5UmJEHtEM
-         dGEw==
+        bh=CKnYT6PKG7isJEwfwt4q7aWVApkXd222Gzbu36ZvTuA=;
+        b=JRxQAAtwgYm2eXqme6LNtsat9qKl7TFvuEkwM3LrckM1HHFaax72tcSNWJW8PSY4H4
+         yO4/4UnDCjzoPA3Jz8j4+B9ZRQtSjGHHCKCRPG+eCl9vAWzrBbt3NgpfJgF9kA0uhTxQ
+         ZJAftAjqkfn6KvuHhgdPDs7/INxo7I5dO31Z+Qyl6lsEDEaBLfdR/1bD6Wnmozrb0/We
+         sWCSS81kv3kRS6uoSl/9CAoFhBUZtsctcbG7xyZjGHWjXjj5HkY/ZKOcKcRXZ0cwWl/Q
+         GnBe1caeuv0IxsLp+vWdhwSWBvVrogOAd4p0ExQ4Q2v11pS7ZeaTNeXgmtEmBsMkzVWP
+         Xfng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702865156; x=1703469956;
+        d=1e100.net; s=20230601; t=1702865213; x=1703470013;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QYgxq/oGHPZP2QPh2THF7yf9x5x7XDARqeJu+ip26js=;
-        b=YFcKH5z7lwIRQS97xZT6Xo1f/8c5M2taXWAS324Rn3PP/vaX753cIC8x4lYHcYPvFG
-         /hc8uNvly6ZqKfXztX9tPfuB+xDd+JnKFmEhekxJY8gH+UYYLTa01taLnyv9r81Eg+zZ
-         OxSjwPXlnhJj9mK/4FncoOk53lo93UIY4Xa1a8oSxWzIyBerwcotkc51crfFQTLekASk
-         4YliIcvceNagkXWXQJQ3Wed0vWMrC62PuYJxqEtJMuub8rl1wDCV0gpkBqEzJg6jCbxV
-         DHGycZ06Zs/zY8Qc4b+CEAU+IhHDVeS/fXowo3dkXa3dNE3JKDyGzx217VvsSmgR4zdg
-         fobg==
-X-Gm-Message-State: AOJu0YyyrCPiXQRUfEljZLK+Fhb4lv0DUeyMmyFM8qaEPGbeEYOPN69a
-	RkJyJzQAGbxR+danr0bs8E7SFTR9vTxzrkzCIJv7T0U16b8jtQ==
-X-Google-Smtp-Source: AGHT+IGBwrGNS9Dnl9lwF/1w+WhHz837HY02kVuOAbrIADpxHLShvoerEHFpRqt9ZQ+uwBHPb34OjffS5iiPGeqVEOI=
-X-Received: by 2002:a05:6830:268c:b0:6da:5923:3d74 with SMTP id
- l12-20020a056830268c00b006da59233d74mr2051629otu.31.1702865155577; Sun, 17
- Dec 2023 18:05:55 -0800 (PST)
+        bh=CKnYT6PKG7isJEwfwt4q7aWVApkXd222Gzbu36ZvTuA=;
+        b=ZAUjiU6I9cqB0bCJw2klEKhosh1Z8sSBVBauYTYKJOS7fgq3dXG7HV01CF3ba9z9BK
+         lPm5Qm5FhAgiODR15D4Uz2D24umiKr8MZABHmhN9NSoZwjn2fNdpKUOEOFhNgW/xjbCm
+         oYtHop8dDxgnsF6GiMxdczuXka73iPwUEN0XWyHa26HAEfVTuglAk5h8AK8vnr4WzOJB
+         dgNFrnh5gWgmux1EhROn/UUnLibebpPeMmWXiRgh3EkZH464aa6Skx/xaVEi6THhVKEY
+         5kbNydC2eH+8vGMVY2k/dtaEWoafycx+A7YnofSeZACIosaMJfMwMkFXBA59yICydob0
+         6Veg==
+X-Gm-Message-State: AOJu0YzdtjDVzneEQVZekRVXXw+kWs2e5LM5RnFZeYD8dAOa/7PbJ85T
+	xzkcIYJ3JdqFbvuMk8fwF0aa3N/TXwmsIl01Sa0=
+X-Google-Smtp-Source: AGHT+IF9kw4TyVazYzXPgD+pbfcW/qHmmmr4LJQSulMg27SxvluP2HiadT3wlYkHOmqceAqJwzXrhyTItSFUO5WMWaA=
+X-Received: by 2002:a4a:b048:0:b0:591:54bc:438d with SMTP id
+ g8-20020a4ab048000000b0059154bc438dmr4693538oon.8.1702865213089; Sun, 17 Dec
+ 2023 18:06:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,12 +61,14 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231217110952.78784-1-qiujingbao.dlmu@gmail.com>
- <20231217110952.78784-4-qiujingbao.dlmu@gmail.com> <20231217-congenial-unwoven-8067fcbff9d5@spud>
-In-Reply-To: <20231217-congenial-unwoven-8067fcbff9d5@spud>
+ <20231217110952.78784-2-qiujingbao.dlmu@gmail.com> <20231217-wrist-flakily-db9974d8b515@spud>
+ <CAJRtX8TQ02swRqzNfPHPrcS-MU=pBN_atjV2PFsAyJeNBF8kgA@mail.gmail.com> <20231217-swept-uncorrupt-92ac058dba4b@spud>
+In-Reply-To: <20231217-swept-uncorrupt-92ac058dba4b@spud>
 From: jingbao qiu <qiujingbao.dlmu@gmail.com>
-Date: Mon, 18 Dec 2023 10:05:44 +0800
-Message-ID: <CAJRtX8TgK9Pi+urMSzCzKROw_gsDeMK2GeFSfXAougk_iHQ_vQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
+Date: Mon, 18 Dec 2023 10:06:42 +0800
+Message-ID: <CAJRtX8Q_811P+2r7bim-YLWYcCX4_ao72XH7ASBXKG1=_ta-DQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: sophgo: add RTC support for
+ Sophgo CV1800 series SoC
 To: Conor Dooley <conor@kernel.org>
 Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
 	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chao.wei@sophgo.com, 
@@ -76,46 +78,50 @@ Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 4:48=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+On Mon, Dec 18, 2023 at 4:47=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
 te:
 >
-> On Sun, Dec 17, 2023 at 07:09:52PM +0800, Jingbao Qiu wrote:
-> > Add the rtc device tree node to cv1800 SoC.
+> On Sun, Dec 17, 2023 at 09:16:39PM +0800, jingbao qiu wrote:
+> > On Sun, Dec 17, 2023 at 8:26=E2=80=AFPM Conor Dooley <conor@kernel.org>=
+ wrote:
+> > >
+> > > On Sun, Dec 17, 2023 at 07:09:50PM +0800, Jingbao Qiu wrote:
+> > >
+> > > > +  reg:
+> > > > +    items:
+> > > > +      - description: data register
+> > > > +      - description: control register
+> > >
+> > > > +    rtc@5025000{
+> > > > +      compatible =3D "sophgo,cv1800-rtc";
+> > > > +      reg =3D <0x5025000 0x1000>, <0x5026000 0x1000>;
+> > >
+> > > Why are these two regions rather than just one, given they are locate=
+d
+> > > next to one another?
+> > > Are they separate on one of the other devices in this family?
+> > >
+> > > Thanks,
+> > > Conor.
+> > >
 > >
-> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> > ---
-> >  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/=
-dts/sophgo/cv1800b.dtsi
-> > index df40e87ee063..429bee76f677 100644
-> > --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > @@ -119,5 +119,12 @@ clint: timer@74000000 {
-> >                       reg =3D <0x74000000 0x10000>;
-> >                       interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_in=
-tc 7>;
-> >               };
-> > +
-> > +             rtc@5025000 {
-> > +                     compatible =3D "sophgo,cv1800-rtc";
+> > I think there are two reasons, the first one is to distinguish
+> > different logical ,
+> > REG_ CTRL (base on 0x5025000) controls clock calibration, sleep,and oth=
+er
+> > functions, RTC_ CORE (base on 0x5026000) has basic RTC functionality,
+> > The second is the maximum address used by RTC_CTRL (base on 0x5025000)
+> > is 0x0ac,which is much smaller than 0x1000. Therefore, the datasheet di=
+vides
+> > it into two parts for introduction, and I also divide it into two
+> > parts based on this
+> > introduction.So do you suggest that I merge them together=EF=BC=9F
 >
-> This is a cv1800b, not a cv1800.
->
+> If all of the cv1800 series devices have them sequentially, I would just
+> make them one region.
 
 Thanks, I will fix it.
 
 Best regards,
 Jingbao Qiu
-
-> > +                     reg =3D <0x5025000 0x1000>, <0x5026000 0x1000>;
-> > +                     clocks =3D <&osc>;
-> > +                     interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
-> > +             };
-> >       };
-> >  };
-> > --
-> > 2.25.1
-> >
 
