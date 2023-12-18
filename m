@@ -1,65 +1,82 @@
-Return-Path: <linux-kernel+bounces-2922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F3181644F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:25:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 281D481644D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B22A41F21B35
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:25:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD1C1B219A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FFE62581;
-	Mon, 18 Dec 2023 02:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBA12581;
+	Mon, 18 Dec 2023 02:23:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mfwd14.mailplug.co.kr (mfwd14.mailplug.co.kr [14.63.174.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A82723BE
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wewakecorp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wewakecorp.com
-Received: (qmail 17255 invoked from network); 18 Dec 2023 11:18:45 +0900
-X-Spam-Level: *
-X-Spam-Virus: No
-X-Spam-Pyzor: 
-X-Spam-DCC:  : 
-Received: from m41.mailplug.com (121.156.118.41)
-	by 0 (qmail 1.03 + mailplug 2.0) with SMTP;
-	18 Dec 2023 11:18:41 +0900
-Received: (qmail 769912 invoked from network); 18 Dec 2023 11:18:41 +0900
-Received: from unknown (HELO sslauth16) (lsahn@wewakecorp.com@211.253.39.90)
-	by 0 (qmail 1.03 + mailplug 2.0) with SMTP;
-	18 Dec 2023 11:18:41 +0900
-Message-ID: <af67e443-665e-484a-847d-42a8da5f8993@wewakecorp.com>
-Date: Mon, 18 Dec 2023 11:18:41 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6DA23A7;
+	Mon, 18 Dec 2023 02:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6da579e6858so1791157a34.3;
+        Sun, 17 Dec 2023 18:23:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702866201; x=1703471001;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UUh8R+nscKiO1LQ6m0AM82k3aN4ql71rUMxjIgccdr8=;
+        b=LMzNVJRhAZEWIY4Whv84jVGADHgMaE0EY/ljHWFBbR3Y5Etf/GzY2MvhhX47Dg/aFH
+         HTJgOymDvNeeiH62Z2UWFloiNa+i6tdfktLVMH7Y400DenfJS63O6lW7G43brqlk3RVv
+         LR1N/fk9qe1mk2PcJbk7p/V80o5rjpDNMNuhC+6DduLx/vmC8PKeCVOifAsndM71Pm2B
+         iKH4kXpHT9N+dWfg1oTXZvF/orirK1aqVrzuoiNsw18WUVte7T5Y0K1KLRwIahN0rpzl
+         z+DQhegU7oBuiF+mCHiBG0vA3brKWLErHCRfoWFywb8MQttuhi6A0CLx9hoO2J9A1Mpm
+         94rg==
+X-Gm-Message-State: AOJu0Yy6FEspAFnpBaAYJnnbbvzqEXz4maIz5g/iv4dpuxGKx/+5EFbk
+	YOs5qkCBHfM93fkfDiR1uYo=
+X-Google-Smtp-Source: AGHT+IG7l7NST7Kn9f3sLGp2h7mChkuDh/xWs1QvXERaxEiq+3xoxgLsb1E4JkSVVfl6qQmllcIHwg==
+X-Received: by 2002:a05:6358:2608:b0:172:cf9c:882a with SMTP id l8-20020a056358260800b00172cf9c882amr1348802rwc.32.1702866201513;
+        Sun, 17 Dec 2023 18:23:21 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id ms16-20020a17090b235000b0028b06464b62sm1959293pjb.15.2023.12.17.18.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Dec 2023 18:23:20 -0800 (PST)
+Date: Mon, 18 Dec 2023 11:23:19 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Yang Li <yang.lee@linux.alibaba.com>
+Cc: lpieralisi@kernel.org, robh@kernel.org, bhelgaas@google.com,
+	michal.simek@amd.com, linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH -next] PCI: xilinx-xdma: Remove redundant dev_err()
+Message-ID: <20231218022319.GC88933@rocinante>
+References: <20231030061242.51475-1-yang.lee@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v39 42/42] Smack: Remove LSM_FLAG_EXCLUSIVE
-Content-Language: ko
-To: Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
- linux-security-module@vger.kernel.org
-Cc: jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
- john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
- stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org, mic@digikod.net
-References: <20231215221636.105680-1-casey@schaufler-ca.com>
- <20231215221636.105680-43-casey@schaufler-ca.com>
-From: Leesoo Ahn <lsahn@wewakecorp.com>
-In-Reply-To: <20231215221636.105680-43-casey@schaufler-ca.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030061242.51475-1-yang.lee@linux.alibaba.com>
 
-2023-12-16 오전 7:50에 Casey Schaufler 이(가) 쓴 글:
-> Smack no longer has any behaviors that require LSM_FLAG_EXCLUSIVE.
+Hello,
 
-Nice working, thank you!
+> There is no need to call the dev_err() function directly to print a
+> custom message when handling an error from either the platform_get_irq()
+> or platform_get_irq_byname() functions as both are going to display an
+> appropriate error message in case of a failure.
+> 
+> ./drivers/pci/controller/pcie-xilinx-dma-pl.c:688:2-9: line 688 is redundant because platform_get_irq() already prints an error
+> ./drivers/pci/controller/pcie-xilinx-dma-pl.c:702:2-9: line 702 is redundant because platform_get_irq() already prints an error
 
-BR,
-Leesoo Ahn
+Applied to controller/xilinx, thank you!
+
+[1/1] PCI: xilinx-xdma: Remove redundant dev_err()
+      https://git.kernel.org/pci/pci/c/b642e081f46c
+
+	Krzysztof
 
