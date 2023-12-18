@@ -1,204 +1,169 @@
-Return-Path: <linux-kernel+bounces-3907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF1838174FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:16:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B845A817503
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F1711C2326D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:16:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A88EE28910A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5A549894;
-	Mon, 18 Dec 2023 15:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEBC3A1D0;
+	Mon, 18 Dec 2023 15:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="l5Ca33k+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xsNnaOhy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vjwRspq7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a0gdTFNl"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FmKuHFi3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E56F49890;
-	Mon, 18 Dec 2023 15:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0482421E0D;
-	Mon, 18 Dec 2023 15:14:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702912497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2F73A1C7
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702912518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+cm4PMMqFmVathp7mybQaRO8gVagPOtZ+MpnGlv1cXU=;
-	b=l5Ca33k+JhYUsjq1pc4mJyNHCOiPfevvqobkUCWIrNfy0oCW6WA1OVnBijQP5v9kc5QeAW
-	N/ZF1IxYlnWV/EkZR/k9xfw+j6WeoHJU7hTt5LtZmnYulNliHccHFIV0CW4/Z/y4p4yeXu
-	y1wedumAsRe9AiH0Ufo1II5aIFieORc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702912497;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+cm4PMMqFmVathp7mybQaRO8gVagPOtZ+MpnGlv1cXU=;
-	b=xsNnaOhydrtNCt0dRF1Mv+sJ5G0Wkj6Cl6jfUkWB1s7bf7gkCP8YQYrtoNBAWKB87CtK1y
-	IgnYC/HmJx53/OAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702912496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+cm4PMMqFmVathp7mybQaRO8gVagPOtZ+MpnGlv1cXU=;
-	b=vjwRspq7HpGM/ahbEvab+2ey5t7yWRduEh8THIkXUo9jisr6NH321IjTl1KHWyi7rCrK3A
-	5RpKkBMnjAjL/xAvUbaFiUdnVYCuDkpa4uFFpMqpnFSJf/3DyKqv1Jm9BO27d9OHY0Z8yP
-	nVy+TRHCv7hjsOcT0ZBz4/+w/WupLHE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702912496;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+cm4PMMqFmVathp7mybQaRO8gVagPOtZ+MpnGlv1cXU=;
-	b=a0gdTFNlGs7CNz+hZtRVZBDbdmUUpuSR2bFG7dhpVzxVQ88zmanXide4VZ0fub9k+OGoZV
-	a9UHVp9ArJS9bhDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D6D7013927;
-	Mon, 18 Dec 2023 15:14:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id yypvNO9hgGX7eAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 18 Dec 2023 15:14:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 36F40A07E0; Mon, 18 Dec 2023 16:14:55 +0100 (CET)
-Date: Mon, 18 Dec 2023 16:14:55 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 3/4] ext4: avoid bb_free and bb_fragments inconsistency
- in mb_free_blocks()
-Message-ID: <20231218151455.yqph44iz4ihsujz5@quack3>
-References: <20231218141814.1477338-1-libaokun1@huawei.com>
- <20231218141814.1477338-4-libaokun1@huawei.com>
+	bh=HuaiH4rqzFFEALDPC43fTJimMBRbpfVpYg9fBcqQC3E=;
+	b=FmKuHFi3+cKNlIX+cYGi65rAoRhjWHVhshVl6FtpmA8BimzxyE0RWishQTmm3Kw8D3Jdfv
+	jF57FzxDSC4CsEvme/HmtoCWuVJor+5lZTJZdqrTp/YQ/dzkhcmzj0JXMkwAdBQcBXnH+v
+	lSrmG4WlUjFaZVd+KCQ/o0nqmzSTIfA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-221-A3NHCe_RNjqur2n_xBsgjQ-1; Mon, 18 Dec 2023 10:15:16 -0500
+X-MC-Unique: A3NHCe_RNjqur2n_xBsgjQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c3cea4c19so29120525e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:15:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702912515; x=1703517315;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HuaiH4rqzFFEALDPC43fTJimMBRbpfVpYg9fBcqQC3E=;
+        b=nwt6b2cVzsolv/g4lYQoyL0HnVdQwHib+AmH9VOaot8s7BKiskIKqSjkOYiLLDMonw
+         Wupya1rh75/qVNihgylAIGagYS3M0peJX8zloHIi5pBnmHuu07OQOnmV3Xuo9QicBrvr
+         i2WIZNBbax1q3tyL2MJT323JqvW78mk5Zp4QuPko0rHjdjvyT/pAxkCwzCLGN/SwMOqV
+         levpb2VV0ni4okD0OrnyrWMvgs8NCqQf8K+ROHx1DxXGEXnrkZ1dhqaSbUauiOVqBVF6
+         ZkaLT4Yh0r06+pwG/a7wzS9hpvzLs0mygzEbefJ84HR52RCvbTCnjlhQ/DyPPoPqMGlx
+         pl+g==
+X-Gm-Message-State: AOJu0YwSkkRSVIe8G0W0olZz8xPVLLkhpn69wdRnAqAI8mUUlV4vJYHm
+	2ZoTFGdD4eFeIpbTrnroA/dQV7LUdUh3Gq0nSr5iuy0EkV15CmpBkvVH9PD67Owyx9O/nzW+Rd9
+	cEw2e629VkJ3Jk5ZDvn3ueunH
+X-Received: by 2002:a05:600c:3146:b0:40c:3e7c:9e45 with SMTP id h6-20020a05600c314600b0040c3e7c9e45mr7221898wmo.179.1702912515186;
+        Mon, 18 Dec 2023 07:15:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH01NYRqs0cLPJmrbSp3Nv2uqyGIyLK81ZTxxjSLq4MH5WQAhaSsNI+INBXpQtGjJJeLQo86Q==
+X-Received: by 2002:a05:600c:3146:b0:40c:3e7c:9e45 with SMTP id h6-20020a05600c314600b0040c3e7c9e45mr7221888wmo.179.1702912514806;
+        Mon, 18 Dec 2023 07:15:14 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id a16-20020adffad0000000b003366fa08c2dsm41371wrs.83.2023.12.18.07.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 07:15:14 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+ Jocelyn Falempe <jfalempe@redhat.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Thomas Zimmermann <tzimmermann@suse.de>, Peter
+ Robinson <pbrobinson@gmail.com>, Rob Herring <robh@kernel.org>, Conor
+ Dooley <conor+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, David
+ Airlie <airlied@gmail.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: display: Add SSD133x OLED controllers
+In-Reply-To: <20231218-example-envision-b41ca8efa251@spud>
+References: <20231218132045.2066576-1-javierm@redhat.com>
+ <20231218132045.2066576-2-javierm@redhat.com>
+ <20231218-example-envision-b41ca8efa251@spud>
+Date: Mon, 18 Dec 2023 16:15:13 +0100
+Message-ID: <87plz3leym.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218141814.1477338-4-libaokun1@huawei.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Type: text/plain
 
-On Mon 18-12-23 22:18:13, Baokun Li wrote:
-> After updating bb_free in mb_free_blocks, it is possible to return without
-> updating bb_fragments because the block being freed is found to have
-> already been freed, which leads to inconsistency between bb_free and
-> bb_fragments.
-> 
-> Since the group may be unlocked in ext4_grp_locked_error(), this can lead
-> to problems such as dividing by zero when calculating the average fragment
-> length. Therefore, to ensure consistency, move the update of bb_free to
-> after the block double-free check.
-> 
-> Fixes: eabe0444df90 ("ext4: speed-up releasing blocks on commit")
-> CC: stable@vger.kernel.org # 3.10
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Conor Dooley <conor@kernel.org> writes:
 
-I agree there's no point in updating the allocation info if the bitmap is
-corrupted. We will not try to allocate (or free) blocks in that group
-anymore. I'm just a bit unsure about the EXT4_FC_REPLAY state where we
-don't mark the bitmap as corrupted although some blocks were already marked
-as freed. So in this case the free space statistics tracking will go
-permanently wrong. I'm kind of wondering in which case does fast-commit
-free already freed blocks. Ted, any idea?
+Hello Conor,
 
-								Honza
+Thanks a lot for your feedback.
 
+> On Mon, Dec 18, 2023 at 02:20:35PM +0100, Javier Martinez Canillas wrote:
 
-> ---
->  fs/ext4/mballoc.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index a95fa6e2b0f9..2fbee0f0f5c3 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1892,11 +1892,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->  	mb_check_buddy(e4b);
->  	mb_free_blocks_double(inode, e4b, first, count);
+[...]
+
+>> +
+>> +  - properties:
+>> +      width:
+>> +        default: 96
+>> +      height:
+>> +        default: 64
+>
+> diff --git a/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml b/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+> index 8feee9eef0fd..ffc939c782eb 100644
+> --- a/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+> +++ b/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+> @@ -9,24 +9,24 @@ title: Solomon SSD133x OLED Display Controllers
+>  maintainers:
+>    - Javier Martinez Canillas <javierm@redhat.com>
 >  
-> -	this_cpu_inc(discard_pa_seq);
-> -	e4b->bd_info->bb_free += count;
-> -	if (first < e4b->bd_info->bb_first_free)
-> -		e4b->bd_info->bb_first_free = first;
-> -
->  	/* access memory sequentially: check left neighbour,
->  	 * clear range and then check right neighbour
->  	 */
-> @@ -1922,9 +1917,14 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->  				sb, e4b->bd_group,
->  				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
->  		}
-> -		goto done;
-> +		return;
->  	}
->  
-> +	this_cpu_inc(discard_pa_seq);
-> +	e4b->bd_info->bb_free += count;
-> +	if (first < e4b->bd_info->bb_first_free)
-> +		e4b->bd_info->bb_first_free = first;
+> +allOf:
+> +  - $ref: solomon,ssd-common.yaml#
 > +
->  	/* let's maintain fragments counter */
->  	if (left_is_free && right_is_free)
->  		e4b->bd_info->bb_fragments--;
-> @@ -1949,7 +1949,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->  	if (first <= last)
->  		mb_buddy_mark_free(e4b, first >> 1, last >> 1);
+>  properties:
+>    compatible:
+>      enum:
+>        - solomon,ssd1331
 >  
-> -done:
->  	mb_set_largest_free_order(sb, e4b->bd_info);
->  	mb_update_avg_fragment_size(sb, e4b->bd_info);
->  	mb_check_buddy(e4b);
-> -- 
-> 2.31.1
-> 
+> +  width:
+> +    default: 96
+> +
+> +  height:
+> +    default: 64
+> +
+>  required:
+>    - compatible
+>    - reg
+>  
+> -allOf:
+> -  - $ref: solomon,ssd-common.yaml#
+> -
+> -  - properties:
+> -      width:
+> -        default: 96
+> -      height:
+> -        default: 64
+> -
+>  unevaluatedProperties: false
+>  
+>  examples:
+>
+> The properties stuff doesn't need to be in the allOf. Although, I took
+
+Ok.
+
+> the opportunity to look at ssd-common.yaml. How do the height/width here
+> differ from the vendor prefixed versions in that file?
+
+Oh! That is an error in the schema that I introduced when adding the
+binding for the SSD132x family in commit 2d23e7d6bacb ("dt-bindings:
+display: Add SSD132x OLED controllers"), and I just copied it to this
+binding as well making the same mistake...
+
+I'll fix that with a preparatory patch to use "solomon,{width,height}"
+everywhere in v3 and also include your suggested changes for this patch.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
