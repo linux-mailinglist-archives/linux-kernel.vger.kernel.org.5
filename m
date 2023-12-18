@@ -1,71 +1,53 @@
-Return-Path: <linux-kernel+bounces-4116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C6AE817811
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:02:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29952817812
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A180B228FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:02:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 725222843C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACA9C4FF65;
-	Mon, 18 Dec 2023 17:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D238498AB;
+	Mon, 18 Dec 2023 17:03:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gx6DJoo1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NFMJzBlQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B258137863
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7FF1D148
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702918965;
+	s=mimecast20190719; t=1702919008;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=/1DYgIzwVVHIUTBZRQm0/j2Jm2pykqS7kpwFWrYvsHg=;
-	b=gx6DJoo1NjgP6w/LTO5WgIbD7eeluDO4/m5xULLbGLgCDV0AGt923gXc2qOvfRcJoCN/df
-	728Wlkw4Fh1s2yZ33L9joKfr6yrhY4W0seJPaqXzcOe0MR9ddqCVeq6vXgyaRvSVE5fEK6
-	bzZC77JvNrbti7JW5zFfzdiq3gQLWi8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	 in-reply-to:in-reply-to:references:references;
+	bh=a+ySM2A8m6VADzcnOowSsvlY09s82EUkwc3W/+e6jno=;
+	b=NFMJzBlQzjOyVmINliEalsN2FMZTEfaDEdvs3DMfJiM015B/NjLuPPgHn6Gw3sTykod1Lk
+	ZOlD3UqGd1ivHr7Qc5FmX2UkkFhJbz3ZSJhXgo5GleHPfXALJLS7OLASmBbkDND8lde6+7
+	XRpk/OzK+vCDxFrD1RDucquIRbOpVps=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-68-KxFez5cvMCqhx_KNmDVwtw-1; Mon, 18 Dec 2023 12:02:43 -0500
-X-MC-Unique: KxFez5cvMCqhx_KNmDVwtw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40c1d2b1559so25429555e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:02:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702918962; x=1703523762;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/1DYgIzwVVHIUTBZRQm0/j2Jm2pykqS7kpwFWrYvsHg=;
-        b=sTHgM2+RaJStw2jEHNoTQs72vw0YDTyLaFlizrm0uw8btLwOkYDIC9mHG2O2Bolhod
-         uqE65gIZ5/xCPG4TunuiqD/7t/UK/fFg/HetWJtG8bZ4iyRXhj/ueEDBjqitvHKDOiLk
-         K4iyxm973yW/7s4lqkB9JurGKwLZ1aopMfhSXlX5ugrrT/Z8Q9Ud5+5/gGGGhmgTBWEL
-         rc42lJFkqn0sdtbU9zUznRh+iHdRTXmi/f/TIe+4LXe+PUBvThNVsltLLEdaUrMgxIAB
-         km7C8yoHpWXxhHHcL4PoeMm+1y93eamJpmsj27zWsSVflar2rJksbcFn/9hEcyr0BLa/
-         pLGg==
-X-Gm-Message-State: AOJu0Yy+M+a0gxuxYUg71HCpZfEByqAUPXCVF/O58waUThb/VLKHrLP5
-	PRs2klaSh7hGM8UEvkKe9aQ6sm644wWCKG4V4K5/lhJ4VXB9Uq9nHNYUNm8rWp5eC4odkdQDlg8
-	fgwKK0cjz9MXnJUk9vQvGgzA6
-X-Received: by 2002:a05:600c:3556:b0:40b:5e1e:cf9 with SMTP id i22-20020a05600c355600b0040b5e1e0cf9mr8065261wmq.52.1702918955259;
-        Mon, 18 Dec 2023 09:02:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFdWKo7SLZ9qZLZpwhuUfjr9X4Fxt0ethpIWz8nctSstfE2W+h8Ym1LbLSHz0CF+7lqYWIz0g==
-X-Received: by 2002:a05:600c:3556:b0:40b:5e1e:cf9 with SMTP id i22-20020a05600c355600b0040b5e1e0cf9mr8065077wmq.52.1702918944886;
-        Mon, 18 Dec 2023 09:02:24 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72b:b500:b53e:6e32:1408:27ac? (p200300cbc72bb500b53e6e32140827ac.dip0.t-ipconnect.de. [2003:cb:c72b:b500:b53e:6e32:1408:27ac])
-        by smtp.gmail.com with ESMTPSA id e10-20020adfe7ca000000b003335ddce799sm13919144wrn.103.2023.12.18.09.02.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 09:02:24 -0800 (PST)
-Message-ID: <1bc53fc1-fdf0-4f4b-98ab-bab53384b765@redhat.com>
-Date: Mon, 18 Dec 2023 18:02:22 +0100
+ us-mta-377-0kgxDM8POeGzsAmCC_8GYw-1; Mon, 18 Dec 2023 12:03:21 -0500
+X-MC-Unique: 0kgxDM8POeGzsAmCC_8GYw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E765185A785;
+	Mon, 18 Dec 2023 17:02:41 +0000 (UTC)
+Received: from [10.22.32.252] (unknown [10.22.32.252])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7A71F492BFA;
+	Mon, 18 Dec 2023 17:02:40 +0000 (UTC)
+Message-ID: <ab9d5f65-b4bc-42d7-b600-0ff037ad61d9@redhat.com>
+Date: Mon, 18 Dec 2023 12:02:40 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,94 +55,284 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 14/39] mm/rmap: introduce
- folio_add_anon_rmap_[pte|ptes|pmd]()
-To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Hugh Dickins <hughd@google.com>, Yin Fengwei <fengwei.yin@intel.com>,
- Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
- Peter Xu <peterx@redhat.com>
-References: <20231211155652.131054-1-david@redhat.com>
- <20231211155652.131054-15-david@redhat.com>
- <593c4eb0-e430-4186-a95c-9d2ebd91235c@arm.com>
+Subject: Re: [PATCH 21/50] locking/seqlock: Split out seqlock_types.h
 Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <593c4eb0-e430-4186-a95c-9d2ebd91235c@arm.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+Cc: tglx@linutronix.de, x86@kernel.org, tj@kernel.org, peterz@infradead.org,
+ mathieu.desnoyers@efficios.com, paulmck@kernel.org, keescook@chromium.org,
+ dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
+ boqun.feng@gmail.com, brauner@kernel.org
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-11-kent.overstreet@linux.dev>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20231216032651.3553101-11-kent.overstreet@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
 
->> -	if (flags & RMAP_EXCLUSIVE)
->> -		SetPageAnonExclusive(page);
->> -	/* While PTE-mapping a THP we have a PMD and a PTE mapping. */
->> -	VM_WARN_ON_FOLIO((atomic_read(&page->_mapcount) > 0 ||
->> -			  (folio_test_large(folio) && folio_entire_mapcount(folio) > 1)) &&
->> -			 PageAnonExclusive(page), folio);
->> +
->> +	if (flags & RMAP_EXCLUSIVE) {
->> +		switch (mode) {
->> +		case RMAP_MODE_PTE:
->> +			for (i = 0; i < nr_pages; i++)
->> +				SetPageAnonExclusive(page + i);
->> +			break;
->> +		case RMAP_MODE_PMD:
->> +			SetPageAnonExclusive(page);
-> 
-> Just to check; I suppose only setting this on the head is ok, because it's an
-> exclusive mapping and therefore by definition it can only be mapped by pmd?
+On 12/15/23 22:26, Kent Overstreet wrote:
+> Trimming down sched.h dependencies: we don't want to include more than
+> the base types.
+>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>   include/linux/sched.h         |  2 +-
+>   include/linux/seqlock.h       | 79 +----------------------------
+>   include/linux/seqlock_types.h | 93 +++++++++++++++++++++++++++++++++++
+>   3 files changed, 96 insertions(+), 78 deletions(-)
+>   create mode 100644 include/linux/seqlock_types.h
+>
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 6d803d0904d9..436f7ce1450a 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -33,7 +33,7 @@
+>   #include <linux/task_io_accounting.h>
+>   #include <linux/posix-timers_types.h>
+>   #include <linux/rseq.h>
+> -#include <linux/seqlock.h>
+> +#include <linux/seqlock_types.h>
+>   #include <linux/kcsan.h>
+>   #include <linux/rv.h>
+>   #include <linux/livepatch_sched.h>
+> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+> index e92f9d5577ba..d90d8ee29d81 100644
+> --- a/include/linux/seqlock.h
+> +++ b/include/linux/seqlock.h
+> @@ -18,6 +18,7 @@
+>   #include <linux/lockdep.h>
+>   #include <linux/mutex.h>
+>   #include <linux/preempt.h>
+> +#include <linux/seqlock_types.h>
+>   #include <linux/spinlock.h>
+>   
+>   #include <asm/processor.h>
+> @@ -37,37 +38,6 @@
+>    */
+>   #define KCSAN_SEQLOCK_REGION_MAX 1000
+>   
+> -/*
+> - * Sequence counters (seqcount_t)
+> - *
+> - * This is the raw counting mechanism, without any writer protection.
+> - *
+> - * Write side critical sections must be serialized and non-preemptible.
+> - *
+> - * If readers can be invoked from hardirq or softirq contexts,
+> - * interrupts or bottom halves must also be respectively disabled before
+> - * entering the write section.
+> - *
+> - * This mechanism can't be used if the protected data contains pointers,
+> - * as the writer can invalidate a pointer that a reader is following.
+> - *
+> - * If the write serialization mechanism is one of the common kernel
+> - * locking primitives, use a sequence counter with associated lock
+> - * (seqcount_LOCKNAME_t) instead.
+> - *
+> - * If it's desired to automatically handle the sequence counter writer
+> - * serialization and non-preemptibility requirements, use a sequential
+> - * lock (seqlock_t) instead.
+> - *
+> - * See Documentation/locking/seqlock.rst
+> - */
+> -typedef struct seqcount {
+> -	unsigned sequence;
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -	struct lockdep_map dep_map;
+> -#endif
+> -} seqcount_t;
+> -
+>   static inline void __seqcount_init(seqcount_t *s, const char *name,
+>   					  struct lock_class_key *key)
+>   {
+> @@ -131,28 +101,6 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+>    * See Documentation/locking/seqlock.rst
+>    */
+>   
+> -/*
+> - * For PREEMPT_RT, seqcount_LOCKNAME_t write side critical sections cannot
+> - * disable preemption. It can lead to higher latencies, and the write side
+> - * sections will not be able to acquire locks which become sleeping locks
+> - * (e.g. spinlock_t).
+> - *
+> - * To remain preemptible while avoiding a possible livelock caused by the
+> - * reader preempting the writer, use a different technique: let the reader
+> - * detect if a seqcount_LOCKNAME_t writer is in progress. If that is the
+> - * case, acquire then release the associated LOCKNAME writer serialization
+> - * lock. This will allow any possibly-preempted writer to make progress
+> - * until the end of its writer serialization lock critical section.
+> - *
+> - * This lock-unlock technique must be implemented for all of PREEMPT_RT
+> - * sleeping locks.  See Documentation/locking/locktypes.rst
+> - */
+> -#if defined(CONFIG_LOCKDEP) || defined(CONFIG_PREEMPT_RT)
+> -#define __SEQ_LOCK(expr)	expr
+> -#else
+> -#define __SEQ_LOCK(expr)
+> -#endif
+> -
+>   /*
+>    * typedef seqcount_LOCKNAME_t - sequence counter with LOCKNAME associated
+>    * @seqcount:	The real sequence counter
+> @@ -194,11 +142,6 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+>    * @lockbase:		prefix for associated lock/unlock
+>    */
+>   #define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockbase)	\
+> -typedef struct seqcount_##lockname {					\
+> -	seqcount_t		seqcount;				\
+> -	__SEQ_LOCK(locktype	*lock);					\
+> -} seqcount_##lockname##_t;						\
+> -									\
+>   static __always_inline seqcount_t *					\
+>   __seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
+>   {									\
+> @@ -284,6 +227,7 @@ SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
+>   SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
+>   SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
+>   SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+> +#undef SEQCOUNT_LOCKNAME
+>   
+>   /*
+>    * SEQCNT_LOCKNAME_ZERO - static initializer for seqcount_LOCKNAME_t
+> @@ -794,25 +738,6 @@ static inline void raw_write_seqcount_latch(seqcount_latch_t *s)
+>   	smp_wmb();      /* increment "sequence" before following stores */
+>   }
+>   
+> -/*
+> - * Sequential locks (seqlock_t)
+> - *
+> - * Sequence counters with an embedded spinlock for writer serialization
+> - * and non-preemptibility.
+> - *
+> - * For more info, see:
+> - *    - Comments on top of seqcount_t
+> - *    - Documentation/locking/seqlock.rst
+> - */
+> -typedef struct {
+> -	/*
+> -	 * Make sure that readers don't starve writers on PREEMPT_RT: use
+> -	 * seqcount_spinlock_t instead of seqcount_t. Check __SEQ_LOCK().
+> -	 */
+> -	seqcount_spinlock_t seqcount;
+> -	spinlock_t lock;
+> -} seqlock_t;
+> -
+>   #define __SEQLOCK_UNLOCKED(lockname)					\
+>   	{								\
+>   		.seqcount = SEQCNT_SPINLOCK_ZERO(lockname, &(lockname).lock), \
+> diff --git a/include/linux/seqlock_types.h b/include/linux/seqlock_types.h
+> new file mode 100644
+> index 000000000000..dfdf43e3fa3d
+> --- /dev/null
+> +++ b/include/linux/seqlock_types.h
+> @@ -0,0 +1,93 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __LINUX_SEQLOCK_TYPES_H
+> +#define __LINUX_SEQLOCK_TYPES_H
+> +
+> +#include <linux/lockdep_types.h>
+> +#include <linux/mutex_types.h>
+> +#include <linux/spinlock_types.h>
+> +
+> +/*
+> + * Sequence counters (seqcount_t)
+> + *
+> + * This is the raw counting mechanism, without any writer protection.
+> + *
+> + * Write side critical sections must be serialized and non-preemptible.
+> + *
+> + * If readers can be invoked from hardirq or softirq contexts,
+> + * interrupts or bottom halves must also be respectively disabled before
+> + * entering the write section.
+> + *
+> + * This mechanism can't be used if the protected data contains pointers,
+> + * as the writer can invalidate a pointer that a reader is following.
+> + *
+> + * If the write serialization mechanism is one of the common kernel
+> + * locking primitives, use a sequence counter with associated lock
+> + * (seqcount_LOCKNAME_t) instead.
+> + *
+> + * If it's desired to automatically handle the sequence counter writer
+> + * serialization and non-preemptibility requirements, use a sequential
+> + * lock (seqlock_t) instead.
+> + *
+> + * See Documentation/locking/seqlock.rst
+> + */
+> +typedef struct seqcount {
+> +	unsigned sequence;
+> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +	struct lockdep_map dep_map;
+> +#endif
+> +} seqcount_t;
+> +
+> +/*
+> + * For PREEMPT_RT, seqcount_LOCKNAME_t write side critical sections cannot
+> + * disable preemption. It can lead to higher latencies, and the write side
+> + * sections will not be able to acquire locks which become sleeping locks
+> + * (e.g. spinlock_t).
+> + *
+> + * To remain preemptible while avoiding a possible livelock caused by the
+> + * reader preempting the writer, use a different technique: let the reader
+> + * detect if a seqcount_LOCKNAME_t writer is in progress. If that is the
+> + * case, acquire then release the associated LOCKNAME writer serialization
+> + * lock. This will allow any possibly-preempted writer to make progress
+> + * until the end of its writer serialization lock critical section.
+> + *
+> + * This lock-unlock technique must be implemented for all of PREEMPT_RT
+> + * sleeping locks.  See Documentation/locking/locktypes.rst
+> + */
+> +#if defined(CONFIG_LOCKDEP) || defined(CONFIG_PREEMPT_RT)
+> +#define __SEQ_LOCK(expr)	expr
+> +#else
+> +#define __SEQ_LOCK(expr)
+> +#endif
+> +
+> +#define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockbase)	\
+> +typedef struct seqcount_##lockname {					\
+> +	seqcount_t		seqcount;				\
+> +	__SEQ_LOCK(locktype	*lock);					\
+> +} seqcount_##lockname##_t;
+> +
+> +SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
+> +SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
+> +SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
+> +SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+> +#undef SEQCOUNT_LOCKNAME
+> +
+> +/*
+> + * Sequential locks (seqlock_t)
+> + *
+> + * Sequence counters with an embedded spinlock for writer serialization
+> + * and non-preemptibility.
+> + *
+> + * For more info, see:
+> + *    - Comments on top of seqcount_t
+> + *    - Documentation/locking/seqlock.rst
+> + */
+> +typedef struct {
+> +	/*
+> +	 * Make sure that readers don't starve writers on PREEMPT_RT: use
+> +	 * seqcount_spinlock_t instead of seqcount_t. Check __SEQ_LOCK().
+> +	 */
+> +	seqcount_spinlock_t seqcount;
+> +	spinlock_t lock;
+> +} seqlock_t;
+> +
+> +#endif /* __LINUX_SEQLOCK_TYPES_H */
 
-Yes. And when PTE-remapping, we will push the flag to all tail pages. No 
-change in behavior :)
+seqlock.h is directly included in kernel/sched/sched.h, so breaking out 
+seqlock_types.h and including only that in include/linux/sched.h should 
+be OK.
 
--- 
-Cheers,
-
-David / dhildenb
+Acked-by: Waiman Long <longman@redhat.com>
 
 
