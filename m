@@ -1,172 +1,97 @@
-Return-Path: <linux-kernel+bounces-2952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCAF2816523
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3A3D816527
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:59:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99C81282245
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:55:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 908DF281BB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1473C23;
-	Mon, 18 Dec 2023 02:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB7429AF;
+	Mon, 18 Dec 2023 02:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="LQjAHFOH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VmVapPzn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50A823D2;
-	Mon, 18 Dec 2023 02:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4DAD61583;
-	Mon, 18 Dec 2023 03:54:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1702868052;
-	bh=fiwZrG0T9sm/2CKYqD2obhFOcr3rZBVGF+gFHJSGlss=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LQjAHFOHai+aWXYmJC6H6L0URkTdav4Xiz/2kZfChChPycbPtycJ+RYiZCF3ek+kM
-	 ZTVUBCGjAvnD4yOjd/GQGfi58AxHlWrbhpQKJkzp/KkxPqhPpEjhMWPtFOB/VGSWOq
-	 Z/ihrHQwdnwYi/MsbSwk/sZD4R1CsUuwfhn7hzGo=
-Date: Mon, 18 Dec 2023 04:55:07 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
-	Martin Hecht <martin.hecht@avnet.eu>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] media: i2c: alvium: inline set_frame_interval into
- s_frame_interval
-Message-ID: <20231218025507.GI5290@pendragon.ideasonboard.com>
-References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
- <20231215082452.1720481-3-tomm.merciai@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2BF3C16
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702868359; x=1734404359;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Ix+RIqgS9O5+g+wip7SZp6Oy9GhVKpNKHDFmWD+npWA=;
+  b=VmVapPznY4d0uzOtlZP0YRhIIAfqLy31ytMBLzil4X5C8o5QmAJf9sH6
+   3YlZP5AczSc5FtJRD+Fz9SFBHIrht02gS1EXxXg76uIKnDbcdiHBb8Yd+
+   jaB3JFfHPH16VSist+lsu+bEw7CpwslCsdITfEg/SoVCG28yo5iGJINqq
+   jqNCWe3odMP35tolVZ3kUGXUeFFb0y7gtnkPIj9syp50qffrROveDe0oD
+   k1p/N8rGsZI4/IKyJBKocgE7s+t1PeEHQ2OsJMmZB/+IMkUIdJhf8xa7/
+   QirzKskbCg/v607EkDY6GVllJsZXCjL0HivjnSKU2leduH+bHCdThwSF2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="461903714"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="461903714"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 18:59:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="751597377"
+X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
+   d="scan'208";a="751597377"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 17 Dec 2023 18:59:16 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rF3qd-0003hB-0K;
+	Mon, 18 Dec 2023 02:59:15 +0000
+Date: Mon, 18 Dec 2023 10:58:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Miroslav Benes <mbenes@suse.cz>
+Subject: drivers/video/fbdev/omap2/omapfb/dss/omapdss.o: warning: objtool:
+ hdmi_power_on_full.isra.0+0xcd: hdmi_pll_compute() is missing a __noreturn
+ annotation
+Message-ID: <202312181048.k6iQRj1R-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231215082452.1720481-3-tomm.merciai@gmail.com>
 
-Hi Tommaso,
+Hi Josh,
 
-Thank you for the patch.
+FYI, the error/warning still remains.
 
-On Fri, Dec 15, 2023 at 09:24:51AM +0100, Tommaso Merciai wrote:
-> Inline alvium_s_frame_interval function into alvium_s_frame_interval.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
+commit: fedb724c3db5490234ddde0103811c28c2fedae0 objtool: Detect missing __noreturn annotations
+date:   7 months ago
+config: x86_64-buildonly-randconfig-r003-20211101 (https://download.01.org/0day-ci/archive/20231218/202312181048.k6iQRj1R-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312181048.k6iQRj1R-lkp@intel.com/reproduce)
 
-I think you mean "alvium_set_frame_interval() function into
-alvium_s_frame_interval.()"
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312181048.k6iQRj1R-lkp@intel.com/
 
-> This to clean the driver code.
+All warnings (new ones prefixed by >>):
 
-You can describe the reason more precisely:
+>> drivers/video/fbdev/omap2/omapfb/dss/omapdss.o: warning: objtool: hdmi_power_on_full.isra.0+0xcd: hdmi_pll_compute() is missing a __noreturn annotation
 
-The alvium_set_frame_interval() is called once only, by
-alvium_s_frame_interval(). The latter is a thin wrapper around the
-former. Inline the function in its caller to make the code more
-readable.
 
-The rest looks good to me.
-
-> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> ---
->  drivers/media/i2c/alvium-csi2.c | 56 ++++++++++++---------------------
->  1 file changed, 20 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> index c4b7851045a1..fde456357be1 100644
-> --- a/drivers/media/i2c/alvium-csi2.c
-> +++ b/drivers/media/i2c/alvium-csi2.c
-> @@ -1662,16 +1662,25 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
->  	return 0;
->  }
->  
-> -static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> -				     struct v4l2_subdev *sd,
-> -				     struct v4l2_subdev_state *sd_state,
-> -				     struct v4l2_subdev_frame_interval *fi,
-> -				     u64 *req_fr)
-> +static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> +				   struct v4l2_subdev_state *sd_state,
-> +				   struct v4l2_subdev_frame_interval *fi)
->  {
-> +	struct alvium_dev *alvium = sd_to_alvium(sd);
->  	struct device *dev = &alvium->i2c_client->dev;
-> -	u64 dft_fr, min_fr, max_fr;
-> +	u64 req_fr, dft_fr, min_fr, max_fr;
->  	int ret;
->  
-> +	/*
-> +	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
-> +	 * subdev active state API.
-> +	 */
-> +	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-> +		return -EINVAL;
-> +
-> +	if (alvium->streaming)
-> +		return -EBUSY;
-> +
->  	if (fi->interval.denominator == 0)
->  		return -EINVAL;
->  
-> @@ -1686,42 +1695,17 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
->  	dev_dbg(dev, "fi->interval.denominator = %d\n",
->  		fi->interval.denominator);
->  
-> -	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> +	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
->  		       fi->interval.numerator);
->  
-> -	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> -		*req_fr = dft_fr;
-> +	if (req_fr >= max_fr && req_fr <= min_fr)
-> +		req_fr = dft_fr;
->  
-> -	alvium->fr = *req_fr;
-> +	alvium->fr = req_fr;
->  	alvium->frame_interval.numerator = fi->interval.numerator;
->  	alvium->frame_interval.denominator = fi->interval.denominator;
->  
-> -	return 0;
-> -}
-> -
-> -static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> -				   struct v4l2_subdev_state *sd_state,
-> -				   struct v4l2_subdev_frame_interval *fi)
-> -{
-> -	struct alvium_dev *alvium = sd_to_alvium(sd);
-> -	u64 req_fr;
-> -	int ret;
-> -
-> -	/*
-> -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
-> -	 * subdev active state API.
-> -	 */
-> -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-> -		return -EINVAL;
-> -
-> -	if (alvium->streaming)
-> -		return -EBUSY;
-> -
-> -	ret = alvium_set_frame_interval(alvium, sd, sd_state, fi, &req_fr);
-> -	if (!ret)
-> -		ret = alvium_set_frame_rate(alvium, req_fr);
-> -
-> -	return ret;
-> +	return alvium_set_frame_rate(alvium, req_fr);
->  }
->  
->  static int alvium_enum_mbus_code(struct v4l2_subdev *sd,
+objdump-func vmlinux.o hdmi_power_on_full.isra.0:
 
 -- 
-Regards,
-
-Laurent Pinchart
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
