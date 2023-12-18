@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-3093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9994A816752
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:24:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAEAF816756
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F70A281333
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:24:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A45BF28244D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F1A79FC;
-	Mon, 18 Dec 2023 07:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4026A79FC;
+	Mon, 18 Dec 2023 07:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mxmCJytD"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I6YQSYvR"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3E779E2
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8539479EB
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:24:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso2956012a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:24:20 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-550dd0e3304so3174331a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 23:24:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702884259; x=1703489059; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702884296; x=1703489096; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qWGp81WwfDbdrmI4IRwNuSv7pr8EF/d0/d63o4IHGMI=;
-        b=mxmCJytD9/vRCTGxEsAPT1ro9xRZEeHb2/v7moUkstzXD2P5+ot9Sgid7vPEZ8tFAE
-         0Qa1qbR0O0mS+8P667mv36iaJtAMaX6sqk5GGmB/JELk51fWdFFsdBltiO6lTt+kmh4q
-         ZxQW+e7NleJNpW4mDdkbc3fQdzAvPYJpP8thQtSRfT7xaQA5z7UK9otInU1Vo6QITw4W
-         yGzFUwPwrJDvDzdQPkVgv8oPUd9PvyYUVXm0q2A2BQDRv1jFihZ0cPs0AmLUfF5Me42N
-         mNMmcf/Kipg2nOdLMo2B88poLRVuZBGAW9+ERC/tNc8I93sYBt7uQMi1YlnVvBrdkKr8
-         PLqw==
+        bh=71v1IP5Mo5SwhWuTEYZjMJzZzSfj/IScmSgg4K5ZbcA=;
+        b=I6YQSYvRjRv04VVxQA08PTVnNOn1AMz1BY6/koyrEDkOwx/7d2qEzlVTCN0mCteoDC
+         sLfl7PNnIoE2TRxi2yruFNqmtK7W9C7SnnHW4LLt6dqIbvMqGkzq62TLMIL9J9rLY++o
+         vfBe3YChKRcQTSeUAUpCfkfWiVqy/uJCurk7oT9sqoCFjTEc/kzNmGiLEUytPKyYjTtp
+         OQG5lfkgKqTxkoWRPDP7Kdh9eRakxcl2cndoYS8WzSXDlLHPuiD2KLfiBxXA1IcbAhAs
+         RV3QFuJdSSaMAIvRZZB/14TQsWGNQiljTzLHiNxQkgwMOkJIdeZBmizXV5GO/m9ofWJ3
+         nujA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702884259; x=1703489059;
+        d=1e100.net; s=20230601; t=1702884296; x=1703489096;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qWGp81WwfDbdrmI4IRwNuSv7pr8EF/d0/d63o4IHGMI=;
-        b=ni1JprFEWlahl+JloB4JyxceOcAqFAnYihLTEVtJkbzyhSdiHPgZO4U5lIomsZiOmy
-         LJOF7AWehjTCqe9ptsb9QMr8Y7dFl00hleiUEv7kcocb7BMZSADJd0zdUiIez3C4nvtX
-         GoTVY5KuZtPu8LYWyrKWhVWpuT8MankonUcJRtGFvXCehlbUv6yTJqfxSNNKmtb8j3ZA
-         9iSD6x72zZx8/VlO6onLzcQuYTZBHmEv5z0HWzfH4LArzPDjCuh5YAhLRo6eOidWpLDq
-         ogEeE0mdzZ6gHoZrr3kvOfaAAb208TVdMq5pBCM7Oq0T7RqINgJtpJIP6UgK2qyDWcpq
-         Q2rg==
-X-Gm-Message-State: AOJu0Ywjz18S0bZ8Jms6H1xaB6YXs0Kddc27jrxkMBgkpU2ozAkq54wX
-	bVMoI4/iWAWvEWB3MP1pkIz8Ig==
-X-Google-Smtp-Source: AGHT+IGeFysnDVT9DhWn6gTgntkymbSYn1/6ltLEPPAxhyJucsrNddCeF1WxAYjFnot1R92iXVAJCA==
-X-Received: by 2002:a50:d788:0:b0:548:4b54:31ff with SMTP id w8-20020a50d788000000b005484b5431ffmr4602517edi.30.1702884258897;
-        Sun, 17 Dec 2023 23:24:18 -0800 (PST)
+        bh=71v1IP5Mo5SwhWuTEYZjMJzZzSfj/IScmSgg4K5ZbcA=;
+        b=dbsXbKAWmIkk86rAX/gFOlBxVi3sxL2Ha/JyG1bE7849Kqo58l1VvyS+zediKNbQ2a
+         pRQVXPD48P/hR2XlkY9RmfsiQ7JToCcraabXwwMq8bv37QbkAJTsJ5yDOPTUa4vEhe+D
+         4+c2K3kPwfjUoVozYYm9L6rDh676PdohiE9N8xA31NzdVYBVDuvrDNC+6vPCgJJqVt0o
+         DCpSpeuuB31C80FNj9LoUQi8e2VgvBhwmEM10tPdd/0W7AqQs6NiafKwUulzcjqDQUD4
+         A8RdLfxFf8RaV7Z0dieG+BdKtOlNcLnKClpk7L+MpDkx4iX6fitNNANDxW3ZmYnFQui2
+         FLMQ==
+X-Gm-Message-State: AOJu0YxPfzzJY50xYG20hLwUiZZreKteBxdXMgidF/McNEnC7GM+J4Fj
+	uCm5aIRJiCdOBTdihbt5ObioZw==
+X-Google-Smtp-Source: AGHT+IE4P4lsIBc8DqC236p+yuTaqflLG/MwPQWqoA4m9Lp2BjXYM9itkKbdmYGnDeoFbxw/pWecUw==
+X-Received: by 2002:a50:cc99:0:b0:553:1681:2ad0 with SMTP id q25-20020a50cc99000000b0055316812ad0mr1727094edi.25.1702884295872;
+        Sun, 17 Dec 2023 23:24:55 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id ew12-20020a056402538c00b00552691fc7f9sm4233391edb.66.2023.12.17.23.24.17
+        by smtp.gmail.com with ESMTPSA id ew12-20020a056402538c00b00552691fc7f9sm4233391edb.66.2023.12.17.23.24.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Dec 2023 23:24:18 -0800 (PST)
-Message-ID: <e1b86dd9-833d-4545-aeb0-b394702dc6dc@linaro.org>
-Date: Mon, 18 Dec 2023 08:24:16 +0100
+        Sun, 17 Dec 2023 23:24:55 -0800 (PST)
+Message-ID: <45a37621-596d-4e63-b7fa-6b8dc54602c8@linaro.org>
+Date: Mon, 18 Dec 2023 08:24:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -148,9 +148,6 @@ On 15/12/2023 14:55, efectn@6tel.net wrote:
 >  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5.dtb
 > +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-nanopi-r6s.dtb
 > \ No newline at end of file
-
-You have warning here.
-
 > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-nanopi-r6s.dts b/arch/arm64/boot/dts/rockchip/rk3588s-nanopi-r6s.dts
 > new file mode 100644
 > index 000000000..e575cc403
@@ -160,183 +157,21 @@ You have warning here.
 > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 > +
 > +/dts-v1/;
+> +
+> +#include <dt-bindings/pinctrl/rockchip.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +#include "rk3588s.dtsi"
+> +
+> +/ {
+> +	model = "FriendlyElec NanoPi R6S";
+> +	compatible = "friendlyelec,nanopi-r6s", "rockchip,rk3588s";
 
-...
-
-> +
-> +&i2c2 {
-> +	status = "okay";
-> +
-> +	vdd_npu_s0: rk8602@42 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +		compatible = "rockchip,rk8602";
-> +		reg = <0x42>;
-> +		fcs,suspend-voltage-selector = <1>;
-> +		regulator-compatible = "rk860x-reg";
-> +		regulator-name = "vdd_npu_s0";
-> +		regulator-min-microvolt = <550000>;
-> +		regulator-max-microvolt = <950000>;
-> +		regulator-ramp-delay = <2300>;
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		vin-supply = <&vcc5v0_sys>;
-> +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c6 {
-> +	clock-frequency = <200000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c6m0_xfer>;
-> +	status = "okay";
-> +
-> +	hym8563: rtc@51 {
-> +		compatible = "haoyu,hym8563";
-> +		reg = <0x51>;
-> +		#clock-cells = <0>;
-> +		clock-output-names = "hym8563";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&rtc_int>;
-> +		interrupt-parent = <&gpio0>;
-> +		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
-> +		wakeup-source;
-> +	};
-> +};
-> +
-> +&mdio1 {
-> +	rgmii_phy1: ethernet-phy@1 {
-> +		compatible = "ethernet-phy-id001c.c916";
-> +		reg = <0x1>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&rtl8211f_rst>;
-> +		reset-assert-us = <20000>;
-> +		reset-deassert-us = <100000>;
-> +		reset-gpios = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
-> +	};
-> +};
-> +
-> +&pcie2x1l1 {
-> +	reset-gpios = <&gpio1 RK_PA7 GPIO_ACTIVE_HIGH>;
-> +	vpcie3v3-supply = <&vcc_3v3_pcie20>;
-> +	status = "okay";
-> +};
-> +
-> +&pcie2x1l2 {
-> +	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
-> +	vpcie3v3-supply = <&vcc_3v3_pcie20>;
-> +	status = "okay";
-> +};
-> +
-> +&pinctrl {
-> +	gpio-key {
-> +		key1_pin: key1-pin {
-> +			rockchip,pins = <1 RK_PC0 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +
-> +	gpio-leds {
-> +		sys_led_pin: sys-led-pin {
-> +			rockchip,pins =
-> +				<1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +
-> +		wan_led_pin: wan-led-pin {
-> +			rockchip,pins =
-> +				<1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +
-> +		lan1_led_pin: lan1-led-pin {
-> +			rockchip,pins =
-> +				<1 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +
-> +		lan2_led_pin: lan2-led-pin {
-> +			rockchip,pins =
-> +				<1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +	};
-> +
-> +	hym8563 {
-> +		rtc_int: rtc-int {
-> +			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +
-> +	sdmmc {
-> +		sd_s0_pwr: sd-s0-pwr {
-> +			rockchip,pins = <4 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +
-> +	usb {
-> +		typec5v_pwren: typec5v-pwren {
-> +			rockchip,pins = <1 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +
-> +		vcc5v0_host20_en: vcc5v0-host20-en {
-> +			rockchip,pins = <4 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +	};
-> +
-> +	rtl8211f {
-> +		rtl8211f_rst: rtl8211f-rst {
-> +			rockchip,pins = <3 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +	};
-> +};
-> +
-> +&saradc {
-> +	vref-supply = <&avcc_1v8_s0>;
-> +	status = "okay";
-> +};
-> +
-> +&sdhci {
-> +	bus-width = <8>;
-> +	no-sdio;
-> +	no-sd;
-> +	non-removable;
-> +	mmc-hs200-1_8v;
-> +	max-frequency = <200000000>;
-> +	status = "okay";
-> +};
-> +
-> +&sdmmc {
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	disable-wp;
-> +	max-frequency = <150000000>;
-> +	no-mmc;
-> +	no-sdio;
-> +	sd-uhs-sdr104;
-> +	vmmc-supply = <&vcc_3v3_sd_s0>;
-> +	vqmmc-supply = <&vccio_sd_s0>;
-> +	status = "okay";
-> +};
-> +
-> +&spi2 {
-> +	status = "okay";
-> +	assigned-clocks = <&cru CLK_SPI2>;
-> +	assigned-clock-rates = <200000000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
-> +	num-cs = <1>;
-> +
-> +	pmic@0 {
-> +		compatible = "rockchip,rk806";
-> +		spi-max-frequency = <1000000>;
-> +		reg = <0x0>;
-
-reg should be second property.
-
-
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
 
 Best regards,
 Krzysztof
