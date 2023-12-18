@@ -1,50 +1,48 @@
-Return-Path: <linux-kernel+bounces-4274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08343817A9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:07:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 607C7817AA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACBD7285929
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:06:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E49F7B232FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AAD7144F;
-	Mon, 18 Dec 2023 19:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C940A5D753;
+	Mon, 18 Dec 2023 19:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5YqmWcH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sWmkz+Yv"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D0B53BF;
-	Mon, 18 Dec 2023 19:06:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2AB9C433CA;
-	Mon, 18 Dec 2023 19:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2317853BF;
+	Mon, 18 Dec 2023 19:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C690C433C7;
+	Mon, 18 Dec 2023 19:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702926406;
-	bh=Oj7Gm/7pBuv1oprC+a4gyIhGSXnfXjSzl+Q2UzH9PfU=;
+	s=k20201202; t=1702926619;
+	bh=XGALOxLIXLpZiiD0d7eWWL8+n4CoB+wewPDQcWFCmhk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r5YqmWcHA0EErYG+wdUrVMo+G3NRUlAHHAaq8OYyMC+0aX3HzBieTQD+saJYkuXz8
-	 8tVeyb80ImB6jhtI/nCc/Z9kQn/N2mRN7e1vDE5LoljMmYoR69+vqAXN1l42F15tJv
-	 a8k2+RplvA3gsK98gcp0wfob+x0GP2P5SzBFh9Z+IYLdNg9RRtq2wmqwaOSQBPQXr0
-	 6aWyqySgDEBIot96WJUo8TFNS+PW1e7qTruMg+rlru7oGH0qU8CsY51PH95b3w4QJA
-	 md8wKk/oWSDg770HWrBq6f79Fd0ArFWxcevlh1fKJbMVseMl2yto9fneZ6aWJD194T
-	 SIuvC5hdmrtMA==
-Date: Mon, 18 Dec 2023 19:06:40 +0000
+	b=sWmkz+Yvt9Qrj05CCyrLpZ3TPXeciu2TaZ5JrrcFJlBGi1QKnmM1tSSbfQ/DffYP4
+	 3b4PTq5enB8VFO2cuyqleezvn1pBpN8YePMCr1x3+aSEveT8eyiE7c7pUm9oXZR1SU
+	 Zd8eAOsno3I0dJoNT8ZVXsRak77rjJSApJL2o9TXxcLXGBydCZMMY7uXT8/X1adWkq
+	 Hyar8QMB/LUc/XDbquDBPy8swrMt3mpb1gJkbS9gvFFGCdc3q9bPi8csAHyVDyifFG
+	 ihC/n4jUDkvPJMGrN2C4lsN8ZnyvrO51LAz1wN3qkat2Vk6NLeQgb61nYj0hKG6nU2
+	 vutWp5r7exVMg==
+Date: Mon, 18 Dec 2023 19:10:14 +0000
 From: Simon Horman <horms@kernel.org>
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	ast@kernel.org
-Subject: Re: [RFC nf-next v2 1/2] netfilter: bpf: support prog update
-Message-ID: <20231218190640.GJ6288@kernel.org>
-References: <1702873101-77522-1-git-send-email-alibuda@linux.alibaba.com>
- <1702873101-77522-2-git-send-email-alibuda@linux.alibaba.com>
+To: Suman Ghosh <sumang@marvell.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, sgoutham@marvell.com, sbhatta@marvell.com,
+	jerinj@marvell.com, gakula@marvell.com, hkelam@marvell.com,
+	lcherian@marvell.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH] octeontx2-af: Fix a double free issue
+Message-ID: <20231218191014.GK6288@kernel.org>
+References: <20231218180258.303468-1-sumang@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,53 +51,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1702873101-77522-2-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <20231218180258.303468-1-sumang@marvell.com>
 
-On Mon, Dec 18, 2023 at 12:18:20PM +0800, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Mon, Dec 18, 2023 at 11:32:58PM +0530, Suman Ghosh wrote:
+> There was a memory leak during error handling in function
+> npc_mcam_rsrcs_init().
 > 
-> To support the prog update, we need to ensure that the prog seen
-> within the hook is always valid. Considering that hooks are always
-> protected by rcu_read_lock(), which provide us the ability to
-> access the prog under rcu.
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> Fixes: dd7842878633 ("octeontx2-af: Add new devlink param to configure maximum usable NIX block LFs")
+> Suggested-by: Simon Horman <horms@kernel.org>
+> Signed-off-by: Suman Ghosh <sumang@marvell.com>
 
-...
+Hi Suman,
 
-> @@ -26,8 +17,20 @@ struct bpf_nf_link {
->  	struct net *net;
->  	u32 dead;
->  	const struct nf_defrag_hook *defrag_hook;
-> +	struct rcu_head head;
->  };
->  
-> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
-> +				    const struct nf_hook_state *s)
-> +{
-> +	const struct bpf_nf_link *nf_link = bpf_link;
-> +	struct bpf_nf_ctx ctx = {
-> +		.state = s,
-> +		.skb = skb,
-> +	};
-> +	return bpf_prog_run(rcu_dereference(nf_link->link.prog), &ctx);
+thanks for the quick fix.
 
-Hi,
-
-AFAICT nf_link->link.prog isn't annotated as __rcu,
-so perhaps rcu_dereference() is not correct here?
-
-In any case, sparse seems a bit unhappy:
-
-  .../nf_bpf_link.c:31:29: error: incompatible types in comparison expression (different address spaces):
-  .../nf_bpf_link.c:31:29:    struct bpf_prog [noderef] __rcu *
-  .../nf_bpf_link.c:31:29:    struct bpf_prog *
-
-> +}
-> +
->  #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
->  static const struct nf_defrag_hook *
->  get_proto_defrag_hook(struct bpf_nf_link *link,
-
-...
+Reviewed-by: Simon Horman <horms@kernel.org>
 
