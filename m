@@ -1,273 +1,128 @@
-Return-Path: <linux-kernel+bounces-3718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D8481702E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:19:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC92817037
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0990D1C240BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:19:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92FB0B22B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9D43788D;
-	Mon, 18 Dec 2023 13:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="erWP+a/O"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27803A1C7;
+	Mon, 18 Dec 2023 13:14:48 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21C437870;
-	Mon, 18 Dec 2023 13:14:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A947AC433C8;
-	Mon, 18 Dec 2023 13:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702905269;
-	bh=1xFk1PI8w6iqmqfcLM9Z1JDlLC9jWBDIZWbfYmgwqf8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=erWP+a/OUnjLmULYf9Zmwbk9p5aHOM2u/dGDqrSC9lRx8Oi81qORHblG+osb/KTfp
-	 cfqt43W7861JlMVSfGTynjtzOcf9LwK2xkpEXIvTx3F6J51rGmbJhWrKc3GBNWETrV
-	 Sx32YVTK4SCfsWxb9+u6gjEv2mQzvAm0TgcIga3QuB9jVc9yG2PPj5h0BhvSTsu2Ym
-	 Q1G/p/htttEndYXPIUTkEzkg/Q7KXnB4Ccax11QY6NK6Q8xD1eSiqdQA44i25d87EE
-	 cwpwAzA4TsSMyWQI2GeLbeVRXF4NJtEuCT6JQI9g3SGVZsQVlTU5od5k8TNcMhW9hG
-	 wEZnSWjdz0YRw==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v5 14/34] function_graph: Move set_graph_function tests to shadow stack global var
-Date: Mon, 18 Dec 2023 22:14:22 +0900
-Message-Id: <170290526206.220107.14232017944689708425.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170290509018.220107.1347127510564358608.stgit@devnote2>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-User-Agent: StGit/0.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C779B3788C;
+	Mon, 18 Dec 2023 13:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6d9db2f1ddfso894865a34.0;
+        Mon, 18 Dec 2023 05:14:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702905286; x=1703510086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7pNpyU2ryow+CaLgg5WjtqJLreEscZp2rrpn9BXxGtI=;
+        b=s8MyMFadbp14TbR3U8/D9mddiWk8JmAPZWzi6N+5HLwF7SzVSCx+kAMw80+RPU6XIs
+         ByFaYwdXw+KPC4Z1MYUVCH8fAktRFc4R9daSp1axzh+9dYlxz0aswX/hmW90YXra068g
+         tuB1Q9leLGorer/w3IS+WK2fG1EM9sKWLud+9Ar+X//bbbsN7+t3cG8VL9Tyb649xbdH
+         0H6gekz1t11m9CIrZ+D6/toYpM30mcyI7ZKAUM5dNeiVtJcTJdb8KiFebZC8wUPpsDLK
+         X61dLnDwy+WgwSwnJvRM4SFasrhMGr+Azdu2DExE9FSKR/d+e0wTKiOiIZ3ywJ5Bls44
+         +Bmw==
+X-Gm-Message-State: AOJu0Yz1/grSEMW93sM9a083saG2S2fYyOC4rzYXdd1EPaaH7zdIEUwM
+	niqiYpry7aV8ZMBac1xsNW+MdRlxxOKYJfUAfm4=
+X-Google-Smtp-Source: AGHT+IGUbGitVTHQvmgL9TrX5vuBwIcknqlxcDjvg6GX7UZ1bnRcd/SOCXRu68x81Op7UDAQkGoBQI9yiRAPn8sEAhY=
+X-Received: by 2002:a05:6871:2284:b0:1fb:648:5207 with SMTP id
+ sd4-20020a056871228400b001fb06485207mr29349775oab.2.1702905285904; Mon, 18
+ Dec 2023 05:14:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOgs-00Dvko-6t@rmk-PC.armlinux.org.uk>
+ <20231215162322.00007391@Huawei.com> <ZXyEiHLFBsoUkfNI@shell.armlinux.org.uk> <ZYAPhlwPUT/7dN4n@lpieralisi>
+In-Reply-To: <ZYAPhlwPUT/7dN4n@lpieralisi>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 18 Dec 2023 14:14:30 +0100
+Message-ID: <CAJZ5v0hyUqJspPbGTgTMSVHVBe=wHR6swPx-O3UcsH5dXDFpTA@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 13/21] ACPICA: Add new MADT GICC flags fields
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+On Mon, Dec 18, 2023 at 10:23=E2=80=AFAM Lorenzo Pieralisi
+<lpieralisi@kernel.org> wrote:
+>
+> On Fri, Dec 15, 2023 at 04:53:28PM +0000, Russell King (Oracle) wrote:
+> > On Fri, Dec 15, 2023 at 04:23:22PM +0000, Jonathan Cameron wrote:
+> > > On Wed, 13 Dec 2023 12:50:18 +0000
+> > > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> > >
+> > > > From: James Morse <james.morse@arm.com>
+> > > >
+> > > > Add the new flag field to the MADT's GICC structure.
+> > > >
+> > > > 'Online Capable' indicates a disabled CPU can be enabled later. See
+> > > > ACPI specification 6.5 Tabel 5.37: GICC CPU Interface Flags.
+> > > >
+> > > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > >
+> > > I see there is an acpica pull request including this bit but with a d=
+ifferent name
+> > > For reference.
+> > > https://github.com/acpica/acpica/pull/914/commits/453a5f6756778652202=
+1d5f6913f561f8b3cabf6
+> > >
+> > > +CC Lorenzo who submitted that.
+> >
+> > > > +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)   /* 03: CPU is onl=
+ine capable */
+> > >
+> > > ACPI_MADT_GICC_ONLINE_CAPABLE
+> >
+> > It's somewhat disappointing, but no big deal. It's easy enough to chang=
+e
+> > "irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' C=
+PUs"
+> > to use Lorenzo's name when that patch hits - and it becomes one less
+> > patch in this patch set when Lorenzo's change eventually hits mainline.
+> >
+> > Does anyone know how long it may take for Lorenzo's change to get into
+> > mainline? Would it be by the 6.8 merge window or the following one?
+>
+> I wish I knew. I submitted ACPICA changes for the online capable bit
+> since I had to add additional flags on top (ie DMA coherent) and it
+> would not make sense to submit the latter without the former.
+>
+> I'd be great if the ACPICA headers can make it into Linux for the upcomin=
+g
+> merge window, not sure what I can do to fasttrack the process though
+> (I shall ping the maintainers).
 
-The use of the task->trace_recursion for the logic used for the
-set_graph_funnction was a bit of an abuse of that variable. Now that there
-exists global vars that are per stack for registered graph traces, use that
-instead.
+If your upstream pull request has been merged, I can pick up Linux
+patches carrying Link: tags pointing to the upstream ACPICA commits in
+that pull request.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- include/linux/trace_recursion.h      |    5 +----
- kernel/trace/trace.h                 |   32 +++++++++++++++++++++-----------
- kernel/trace/trace_functions_graph.c |    6 +++---
- kernel/trace/trace_irqsoff.c         |    4 ++--
- kernel/trace/trace_sched_wakeup.c    |    4 ++--
- 5 files changed, 29 insertions(+), 22 deletions(-)
-
-diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-index d48cd92d2364..2efd5ec46d7f 100644
---- a/include/linux/trace_recursion.h
-+++ b/include/linux/trace_recursion.h
-@@ -44,9 +44,6 @@ enum {
-  */
- 	TRACE_IRQ_BIT,
- 
--	/* Set if the function is in the set_graph_function file */
--	TRACE_GRAPH_BIT,
--
- 	/*
- 	 * In the very unlikely case that an interrupt came in
- 	 * at a start of graph tracing, and we want to trace
-@@ -60,7 +57,7 @@ enum {
- 	 * that preempted a softirq start of a function that
- 	 * preempted normal context!!!! Luckily, it can't be
- 	 * greater than 3, so the next two bits are a mask
--	 * of what the depth is when we set TRACE_GRAPH_BIT
-+	 * of what the depth is when we set TRACE_GRAPH_FL
- 	 */
- 
- 	TRACE_GRAPH_DEPTH_START_BIT,
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 02edfdb68933..3b9266aeb43b 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -894,11 +894,16 @@ extern void init_array_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops
- extern int allocate_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops);
- extern void free_fgraph_ops(struct trace_array *tr);
- 
-+enum {
-+	TRACE_GRAPH_FL		= 1,
-+};
-+
- #ifdef CONFIG_DYNAMIC_FTRACE
- extern struct ftrace_hash __rcu *ftrace_graph_hash;
- extern struct ftrace_hash __rcu *ftrace_graph_notrace_hash;
- 
--static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
-+static inline int
-+ftrace_graph_addr(unsigned long *task_var, struct ftrace_graph_ent *trace)
- {
- 	unsigned long addr = trace->func;
- 	int ret = 0;
-@@ -920,12 +925,11 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
- 	}
- 
- 	if (ftrace_lookup_ip(hash, addr)) {
--
- 		/*
- 		 * This needs to be cleared on the return functions
- 		 * when the depth is zero.
- 		 */
--		trace_recursion_set(TRACE_GRAPH_BIT);
-+		*task_var |= TRACE_GRAPH_FL;
- 		trace_recursion_set_depth(trace->depth);
- 
- 		/*
-@@ -945,11 +949,14 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
- 	return ret;
- }
- 
--static inline void ftrace_graph_addr_finish(struct ftrace_graph_ret *trace)
-+static inline void
-+ftrace_graph_addr_finish(struct fgraph_ops *gops, struct ftrace_graph_ret *trace)
- {
--	if (trace_recursion_test(TRACE_GRAPH_BIT) &&
-+	unsigned long *task_var = fgraph_get_task_var(gops);
-+
-+	if ((*task_var & TRACE_GRAPH_FL) &&
- 	    trace->depth == trace_recursion_depth())
--		trace_recursion_clear(TRACE_GRAPH_BIT);
-+		*task_var &= ~TRACE_GRAPH_FL;
- }
- 
- static inline int ftrace_graph_notrace_addr(unsigned long addr)
-@@ -976,7 +983,7 @@ static inline int ftrace_graph_notrace_addr(unsigned long addr)
- }
- 
- #else
--static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
-+static inline int ftrace_graph_addr(unsigned long *task_var, struct ftrace_graph_ent *trace)
- {
- 	return 1;
- }
-@@ -985,17 +992,20 @@ static inline int ftrace_graph_notrace_addr(unsigned long addr)
- {
- 	return 0;
- }
--static inline void ftrace_graph_addr_finish(struct ftrace_graph_ret *trace)
-+static inline void ftrace_graph_addr_finish(struct fgraph_ops *gops, struct ftrace_graph_ret *trace)
- { }
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- extern unsigned int fgraph_max_depth;
- 
--static inline bool ftrace_graph_ignore_func(struct ftrace_graph_ent *trace)
-+static inline bool
-+ftrace_graph_ignore_func(struct fgraph_ops *gops, struct ftrace_graph_ent *trace)
- {
-+	unsigned long *task_var = fgraph_get_task_var(gops);
-+
- 	/* trace it when it is-nested-in or is a function enabled. */
--	return !(trace_recursion_test(TRACE_GRAPH_BIT) ||
--		 ftrace_graph_addr(trace)) ||
-+	return !((*task_var & TRACE_GRAPH_FL) ||
-+		 ftrace_graph_addr(task_var, trace)) ||
- 		(trace->depth < 0) ||
- 		(fgraph_max_depth && trace->depth >= fgraph_max_depth);
- }
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 7f30652f0e97..66cce73e94f8 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -160,7 +160,7 @@ int trace_graph_entry(struct ftrace_graph_ent *trace,
- 	if (!ftrace_trace_task(tr))
- 		return 0;
- 
--	if (ftrace_graph_ignore_func(trace))
-+	if (ftrace_graph_ignore_func(gops, trace))
- 		return 0;
- 
- 	if (ftrace_graph_ignore_irqs())
-@@ -247,7 +247,7 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- 	long disabled;
- 	int cpu;
- 
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (trace_recursion_test(TRACE_GRAPH_NOTRACE_BIT)) {
- 		trace_recursion_clear(TRACE_GRAPH_NOTRACE_BIT);
-@@ -269,7 +269,7 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 				      struct fgraph_ops *gops)
- {
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (trace_recursion_test(TRACE_GRAPH_NOTRACE_BIT)) {
- 		trace_recursion_clear(TRACE_GRAPH_NOTRACE_BIT);
-diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
-index 5478f4c4f708..fce064e20570 100644
---- a/kernel/trace/trace_irqsoff.c
-+++ b/kernel/trace/trace_irqsoff.c
-@@ -184,7 +184,7 @@ static int irqsoff_graph_entry(struct ftrace_graph_ent *trace,
- 	unsigned int trace_ctx;
- 	int ret;
- 
--	if (ftrace_graph_ignore_func(trace))
-+	if (ftrace_graph_ignore_func(gops, trace))
- 		return 0;
- 	/*
- 	 * Do not trace a function if it's filtered by set_graph_notrace.
-@@ -214,7 +214,7 @@ static void irqsoff_graph_return(struct ftrace_graph_ret *trace,
- 	unsigned long flags;
- 	unsigned int trace_ctx;
- 
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (!func_prolog_dec(tr, &data, &flags))
- 		return;
-diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
-index 49bcc812652c..130ca7e7787e 100644
---- a/kernel/trace/trace_sched_wakeup.c
-+++ b/kernel/trace/trace_sched_wakeup.c
-@@ -120,7 +120,7 @@ static int wakeup_graph_entry(struct ftrace_graph_ent *trace,
- 	unsigned int trace_ctx;
- 	int ret = 0;
- 
--	if (ftrace_graph_ignore_func(trace))
-+	if (ftrace_graph_ignore_func(gops, trace))
- 		return 0;
- 	/*
- 	 * Do not trace a function if it's filtered by set_graph_notrace.
-@@ -149,7 +149,7 @@ static void wakeup_graph_return(struct ftrace_graph_ret *trace,
- 	struct trace_array_cpu *data;
- 	unsigned int trace_ctx;
- 
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (!func_prolog_preempt_disable(tr, &data, &trace_ctx))
- 		return;
-
+Thanks!
 
