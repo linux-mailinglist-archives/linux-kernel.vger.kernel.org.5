@@ -1,180 +1,205 @@
-Return-Path: <linux-kernel+bounces-4053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7354817748
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5DAD81774D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:20:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CB2E1F248B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:19:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C91E31F218B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922424989E;
-	Mon, 18 Dec 2023 16:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E2C3D574;
+	Mon, 18 Dec 2023 16:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aWMo8n03"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L4jGfYWw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB58742379;
-	Mon, 18 Dec 2023 16:19:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFBEBC433C7;
-	Mon, 18 Dec 2023 16:19:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702916383;
-	bh=YVe24+VIIvFgLdvWefXeeEKbQLshLdaWuzwzX/7lIYQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aWMo8n03zMskv+hccddZyoSa9i0wkcHSE2ZwS55PWUrvP/YUq6NzZuGRpwU1OpscC
-	 TUhkh46qs53hsAWTCqd1HmVxgsZFvEWrODz6aO6k5MfSKm4S2/0cShQUpLBywktD3c
-	 vhyC6Bl7JzjNZVWhcNpurvumYl8DARRFuDjgPJJ751uWJCBuCcV92cud+OnUI21iLH
-	 inAVf2JngFE2xJ01Cc0e+Xy2jkqHgXr9HXG2GbQqXdOgtcRLXltlUg5uFc6y//p51O
-	 qascUJ4OzVrqq4WnLKNAuVpMfJmPoSADaUJScHR3Wk2pHZnN3qyHsqS+LMJXCPQ1wB
-	 rC+ehPcL5zCLQ==
-Message-ID: <f9c841f0-9839-47b7-b026-d0cd2138af11@kernel.org>
-Date: Mon, 18 Dec 2023 17:19:36 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307984239F
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702916443;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tTEkicxeHNXHb/6pSYfpZYOfjZVCf7gx8W87QpG78TA=;
+	b=L4jGfYWwFN5U5bo0Gq1vRTD2vKP7jgMo9gFQDzpAM4PV1tVqaH1XY9FBPaPfgS+hRCU0T9
+	DS+8/ome3UM+AiTib6G+m/TMXhNf9w7bnboFSK7VyzRphaJzgcBVGux4UUBThCMg9fIQ2L
+	0FLQZPlnAaqMy8LYxbtkEu8omPUQA2g=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-632-FL-tlJUxPXSDru6kdxk6QA-1; Mon, 18 Dec 2023 11:20:10 -0500
+X-MC-Unique: FL-tlJUxPXSDru6kdxk6QA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-77f4ae2e25bso568400185a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:20:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702916407; x=1703521207;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tTEkicxeHNXHb/6pSYfpZYOfjZVCf7gx8W87QpG78TA=;
+        b=IyB0K7R9uuFltY5N7kpwZRYBRR4RaAkgKlVue88Z94CW1lxQzSyvmItsHlyDvMSSdl
+         CSKIafj8UqeYU7KUcyHaTtRaDpx1zsgWRuUr5JM4w9lYUQXPpIKctZfD8dyJLS/khGRo
+         MJLYHHVufjTmLz8FNoW3sOJO+4GV1Px9qRFBUnjcE0Vo7+hAUKE7LXX63J2MkJ/vxmvT
+         LtUlc9ej98EhCg3lBxr1s8sOfXitxi+DfUpCIQijOOukkXjszL7hTwCFpzFxzMNJX6+F
+         CTQLJdpWbSRazOjwVGEnsOcr7SbY2U/3bpfgSThh7iV8aCiRnMlDxzONUJEULJQHIUhE
+         zSuw==
+X-Gm-Message-State: AOJu0YwWEvfdqm5tuHSyjiGjryevrZVqFkO87pv98FKlZKTWTvY3Cge9
+	blYxCCXM36hUZ3PKGc9YcWtwKLLqu5Q2kgCL1BgDLBR7FoIQxOvxeOgYygnXo0iYN65qlTfjggX
+	xZwhJ3QavnIot3Kvdij0K9rqqlng2LZsl
+X-Received: by 2002:a05:620a:4591:b0:77e:fba3:58e2 with SMTP id bp17-20020a05620a459100b0077efba358e2mr21670378qkb.115.1702916407338;
+        Mon, 18 Dec 2023 08:20:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEtIhW+W09l1XgbMu3JLXQQrCRVUmt/NuCFTSbNGaPFdKMggkCWZLhtm+YyuiZCLChvHbZurQ==
+X-Received: by 2002:a05:620a:4591:b0:77e:fba3:58e2 with SMTP id bp17-20020a05620a459100b0077efba358e2mr21670361qkb.115.1702916407066;
+        Mon, 18 Dec 2023 08:20:07 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id vq18-20020a05620a559200b0077fafc08e46sm2772136qkn.84.2023.12.18.08.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 08:20:06 -0800 (PST)
+Date: Mon, 18 Dec 2023 10:20:03 -0600
+From: Andrew Halaney <ahalaney@redhat.com>
+To: Sneh Shah <quic_snehshah@quicinc.com>
+Cc: Vinod Koul <vkoul@kernel.org>, 
+	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, kernel@quicinc.com
+Subject: Re: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for
+ 2.5G SGMII
+Message-ID: <4zbf5fmijxnajk7kygcjrcusf6tdnuzsqqboh23nr6f3rb3c4g@qkfofhq7jmv6>
+References: <20231218071118.21879-1-quic_snehshah@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 12/34] media: iris: add video processing unit(VPU)
- specific register handling
-Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
- andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
- bryan.odonoghue@linaro.org
-Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
-References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
- <1702899149-21321-13-git-send-email-quic_dikshita@quicinc.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <1702899149-21321-13-git-send-email-quic_dikshita@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218071118.21879-1-quic_snehshah@quicinc.com>
 
-On 18/12/2023 12:32, Dikshita Agarwal wrote:
-> Registers are defined differently for different VPUs.
-> Define ops for VPU specific handling to accommodate
-> different VPUs. Implement boot sequence of firmware and interrupt
-> programming.
+On Mon, Dec 18, 2023 at 12:41:18PM +0530, Sneh Shah wrote:
+> Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
+> mode for 1G/100M/10M speed.
+> Added changes to configure serdes phy and mac based on link speed.
 > 
+> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+> ---
+>  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 +++++++++++++++++--
+>  1 file changed, 29 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> index d3bf42d0fceb..b3a28dc19161 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> @@ -21,6 +21,7 @@
+>  #define RGMII_IO_MACRO_CONFIG2		0x1C
+>  #define RGMII_IO_MACRO_DEBUG1		0x20
+>  #define EMAC_SYSTEM_LOW_POWER_DEBUG	0x28
+> +#define ETHQOS_MAC_AN_CTRL		0xE0
+>  
+>  /* RGMII_IO_MACRO_CONFIG fields */
+>  #define RGMII_CONFIG_FUNC_CLK_EN		BIT(30)
+> @@ -78,6 +79,10 @@
+>  #define ETHQOS_MAC_CTRL_SPEED_MODE		BIT(14)
+>  #define ETHQOS_MAC_CTRL_PORT_SEL		BIT(15)
+>  
+> +/*ETHQOS_MAC_AN_CTRL bits */
+> +#define ETHQOS_MAC_AN_CTRL_RAN			BIT(9)
+> +#define ETHQOS_MAC_AN_CTRL_ANE			BIT(12)
+> +
 
-...
+nit: space please add a space before ETHQOS_MAC_AN_CTRL
 
-> +
-> +int write_register(struct iris_core *core, u32 reg, u32 value)
-> +{
-> +	void __iomem *base_addr;
-> +	int ret;
-> +
-> +	ret = check_core_lock(core);
-> +	if (ret)
-> +		return ret;
-> +
-> +	base_addr = core->reg_base;
-> +	base_addr += reg;
-> +	writel_relaxed(value, base_addr);
-> +
-> +	/* Make sure value is written into the register */
-> +	wmb();
+>  struct ethqos_emac_por {
+>  	unsigned int offset;
+>  	unsigned int value;
+> @@ -109,6 +114,7 @@ struct qcom_ethqos {
+>  	unsigned int num_por;
+>  	bool rgmii_config_loopback_en;
+>  	bool has_emac_ge_3;
+> +	unsigned int serdes_speed;
+>  };
+>  
+>  static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
+> @@ -600,27 +606,47 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
+>  
+>  static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>  {
+> -	int val;
+> -
+> +	int val, mac_an_value;
+>  	val = readl(ethqos->mac_base + MAC_CTRL_REG);
+> +	mac_an_value = readl(ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
+>  
+>  	switch (ethqos->speed) {
+> +	case SPEED_2500:
+> +		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+> +		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> +			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> +			      RGMII_IO_MACRO_CONFIG2);
+> +		if (ethqos->serdes_speed != SPEED_2500)
+> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> +		mac_an_value &= ~ETHQOS_MAC_AN_CTRL_ANE;
+> +		break;
+>  	case SPEED_1000:
+>  		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+>  		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+>  			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+>  			      RGMII_IO_MACRO_CONFIG2);
+> +		if (ethqos->serdes_speed != SPEED_1000)
+> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+>  		break;
+>  	case SPEED_100:
+>  		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
+> +		if (ethqos->serdes_speed != SPEED_1000)
+> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+>  		break;
+>  	case SPEED_10:
+>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
+> +		if (ethqos->serdes_speed != SPEED_1000)
+> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+>  		break;
+>  	}
+>  
+>  	writel(val, ethqos->mac_base + MAC_CTRL_REG);
+> +	writel(mac_an_value, ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
+> +	ethqos->serdes_speed = ethqos->speed;
 
-Just don't use relaxed method. The same applies to other places like that.
+I see these bits are generic and there's some functions in stmmac_pcs.h
+that muck with these...
 
-> +
-> +	return ret;
-> +}
-> +
-> +int read_register(struct iris_core *core, u32 reg, u32 *value)
-> +{
-> +	void __iomem *base_addr;
-> +
-> +	base_addr = core->reg_base;
-> +
-> +	*value = readl_relaxed(base_addr + reg);
-> +
-> +	/* Make sure value is read correctly from the register */
-> +	rmb();
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct compat_handle compat_handle[] = {
-> +	{
-> +		.compat                  = "qcom,sm8550-iris",
-> +		.init                    = init_iris3,
+Could you help me understand if this really should be Qualcomm specific,
+or if this is something that should be considered for the more core bits
+of the driver? I feel in either case we should take advantage of the
+common definitions in that file if possible.
 
-Uh...
-
-> +	},
-> +};
-> +
-> +int init_vpu(struct iris_core *core)
-> +{
-> +	struct device *dev = NULL;
-> +	int i, ret = 0;
-> +
-> +	dev = core->dev;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(compat_handle); i++) {
-> +		if (of_device_is_compatible(dev->of_node, compat_handle[i].compat)) {
-> +			ret = compat_handle[i].init(core);
-
-
-This does not look good. Use flags, quirks, type, pointer ops in
-structures. Just look at existing code in Linux kernel. Do not
-reimplement driver match data.
-
-
-
-Best regards,
-Krzysztof
+>  
+>  	return val;
+>  }
+> @@ -789,6 +815,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+>  				     "Failed to get serdes phy\n");
+>  
+>  	ethqos->speed = SPEED_1000;
+> +	ethqos->serdes_speed = SPEED_1000;
+>  	ethqos_update_link_clk(ethqos, SPEED_1000);
+>  	ethqos_set_func_clk_en(ethqos);
+>  
+> -- 
+> 2.17.1
+> 
 
 
