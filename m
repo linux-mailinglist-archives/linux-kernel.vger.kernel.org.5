@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-3603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0136816E4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:46:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD10D816E51
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64B7F1F24774
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:46:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5C661C24411
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B688138D34;
-	Mon, 18 Dec 2023 12:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8109138D58;
+	Mon, 18 Dec 2023 12:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ij+JTDF2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOjJObjH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C83113877C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4006138D3F;
+	Mon, 18 Dec 2023 12:44:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83A5CC433D9;
 	Mon, 18 Dec 2023 12:44:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CAC0C433C8;
-	Mon, 18 Dec 2023 12:44:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903462;
-	bh=dDN46ecZEAy2OD4iXawXY7EQooHgbdoIMOokrSC7xxI=;
+	s=k20201202; t=1702903463;
+	bh=rlDckHg1oXaMhXQd1EujW6dU1WMOGuY7YxzvwEyHHww=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ij+JTDF2dMEDldN9ayZn01MeHm1+1nmSibQz3/FcofQaH2lxvT9YLXPnqVdOQDcTw
-	 gt/4QoMi0tv/ZyPcx1c6UFAEKzPep2kCCkzNs0kvEJBOCSMAsf6vIyK+Tb9cNDfq0Q
-	 Mgut4LgLv8+h3rvEWO7GTO/42j2IIjB0ZVn4DudCkHiHZlok1nptxApdX/1wueJ7YG
-	 OUPSdR7/DNklDiVyK3/1ejM92ORwF0Dc8gL2BUyVtg+B+LU1BeIkpbMsPF7qR+gNxa
-	 o2ZQBDDGgWNISjRy37T+P/E2Lm5fDkCruzVGkoaUKzlJiGKk2SIq8/Lj5vGMAeERYU
-	 2BBGIT9FH1buw==
+	b=iOjJObjHQI4qNFi8wPLuzp2lHyK65zYjNKTaay8CZBGyu6sg5F5VgKKQ1jAjZi5so
+	 bXkoHl2xwSHmTrDgKG/2TXi099lV2sOIZ2MODhRFeiWwNVFfIir6ubVWjDINnj2TEG
+	 mp0lR0IVC4xU9QLijs1e5a9NOjy+zFB8bh+yeZIwMyIOitqIII5JllGvJHUUhWRBww
+	 Jh0BMi8rU+Uh4NX5/Uqou+9Lc7kJuRAulEIvB2Wai0DvJf3J2ZeHz3dOp0vY05tFzd
+	 H4FZmElyIEaqJZXNiwKJCYYaWMvItxOB35G6irgpopC+MH3AY+SCXzsZDy+pDLdYRy
+	 PYc2GkoSRbIaA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chao Song <chao.song@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Vinod Koul <vkoul@kernel.org>,
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.6 03/18] soundwire: intel_ace2x: fix AC timing setting for ACE2.x
-Date: Mon, 18 Dec 2023 07:43:37 -0500
-Message-ID: <20231218124415.1379060-3-sashal@kernel.org>
+	jack@suse.com,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 04/18] jbd2: correct the printing of write_flags in jbd2_write_superblock()
+Date: Mon, 18 Dec 2023 07:43:38 -0500
+Message-ID: <20231218124415.1379060-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124415.1379060-1-sashal@kernel.org>
 References: <20231218124415.1379060-1-sashal@kernel.org>
@@ -58,50 +58,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.7
 Content-Transfer-Encoding: 8bit
 
-From: Chao Song <chao.song@linux.intel.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit 393cae5f32d640b9798903702018a48c7a45e59f ]
+[ Upstream commit 85559227211020b270728104c3b89918f7af27ac ]
 
-Start from ACE1.x, DOAISE is added to AC timing control
-register bit 5, it combines with DOAIS to get effective
-timing, and has the default value 1.
+The write_flags print in the trace of jbd2_write_superblock() is not
+real, so move the modification before the trace.
 
-The current code fills DOAIS, DACTQE and DODS bits to a
-variable initialized to zero, and updates the variable
-to AC timing control register. With this operation, We
-change DOAISE to 0, and force a much more aggressive
-timing. The timing is even unable to form a working
-waveform on SDA pin.
-
-This patch uses read-modify-write operation for the AC
-timing control register access, thus makes sure those
-bits not supposed and intended to change are not touched.
-
-Signed-off-by: Chao Song <chao.song@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20231127124735.2080562-1-yung-chuan.liao@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20231129114740.2686201-1-yi.zhang@huaweicloud.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/intel_ace2x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/jbd2/journal.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
-index a9d25ae0b73fe..e320c91289135 100644
---- a/drivers/soundwire/intel_ace2x.c
-+++ b/drivers/soundwire/intel_ace2x.c
-@@ -23,8 +23,9 @@
- static void intel_shim_vs_init(struct sdw_intel *sdw)
- {
- 	void __iomem *shim_vs = sdw->link_res->shim_vs;
--	u16 act = 0;
-+	u16 act;
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 30dec2bd2ecc2..e7aa47a02d4d6 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1791,9 +1791,11 @@ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
+ 		return -EIO;
+ 	}
  
-+	act = intel_readw(shim_vs, SDW_SHIM2_INTEL_VS_ACTMCTL);
- 	u16p_replace_bits(&act, 0x1, SDW_SHIM2_INTEL_VS_ACTMCTL_DOAIS);
- 	act |= SDW_SHIM2_INTEL_VS_ACTMCTL_DACTQE;
- 	act |=  SDW_SHIM2_INTEL_VS_ACTMCTL_DODS;
+-	trace_jbd2_write_superblock(journal, write_flags);
+ 	if (!(journal->j_flags & JBD2_BARRIER))
+ 		write_flags &= ~(REQ_FUA | REQ_PREFLUSH);
++
++	trace_jbd2_write_superblock(journal, write_flags);
++
+ 	if (buffer_write_io_error(bh)) {
+ 		/*
+ 		 * Oh, dear.  A previous attempt to write the journal
 -- 
 2.43.0
 
