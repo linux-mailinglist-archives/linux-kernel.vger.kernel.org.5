@@ -1,104 +1,129 @@
-Return-Path: <linux-kernel+bounces-4038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 442C8817708
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:11:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB29381770B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76518B252B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:11:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 153DAB254AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4069942042;
-	Mon, 18 Dec 2023 16:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED332498A2;
+	Mon, 18 Dec 2023 16:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GFjtoijR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LrYJtaVx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C2BB3D546
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702915828;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L5R99au8NJbb079tj5U7lHEWAwHW7p8PGZmVQ7WmYCk=;
-	b=GFjtoijRwUpTkbZ+f6VuM5VS2FzmhLCnktCDXO3Yr40nUZYD8K7fQvbuEZSLNiYPLagilJ
-	DwGvjCDqc9fN8Ozi33d3Cjcm4PYHFVedisXWHN9PydzeLOfQMDhd7WCtESmsv1zGPNdrMb
-	DCmtkpn+rDG7AZVILz6B0pTJLwM03ms=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-569-FGeGkfbHPQCbVCXN-5IZ_g-1; Mon, 18 Dec 2023 11:10:25 -0500
-X-MC-Unique: FGeGkfbHPQCbVCXN-5IZ_g-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-203b9bbe7ccso1352351fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:10:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702915825; x=1703520625;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L5R99au8NJbb079tj5U7lHEWAwHW7p8PGZmVQ7WmYCk=;
-        b=sfskK+uFuJYfubJ1s7rWlwZpiJG1XGZ6FfkJNXfqppn/XEBHTXRiKPKVBdoO6fisSb
-         VnUw/O/QbFsdLd7TTvEGM8fCrU0zaPgtSg/uNZf/tncKVz0w7lU3ifi26ENMYrLuNTu+
-         RJlmpQEHegBzb+eREp2upkiqfUzBJkg2prSTZdaiz2GVYkHAMVA27QLtKV7CLc4u13wX
-         AeLN6KsHr1EV7xXci90ow9nuKI5rxmJzgC9hLebnAyXdcZ/BPms5Vbs7GmKFgvu9h4fE
-         Jh2bzbneNvjsAUAL+02tOFvx1jyQK8HuNaTalWNs5KomFUAqs/qQBW8pv2phxTr0zZDQ
-         Fy1w==
-X-Gm-Message-State: AOJu0Yy7bPrZz8naylJ6ZgxmqrJXhnm+zpH9SN64xgK7ak7kK6d4hUsa
-	F+4QXAJM+p/w+hO4WFtJcppWA9SdVgeKJ49wORz9hwHv8x9G2KduTt4Up2I2AhPzDQA9he0p5cZ
-	XE4IrCSwzUq2cn+1ueprEmCq+ixXi/uvobgq5xqKR
-X-Received: by 2002:a05:6870:3d8e:b0:203:d297:a711 with SMTP id lm14-20020a0568703d8e00b00203d297a711mr1363185oab.66.1702915825210;
-        Mon, 18 Dec 2023 08:10:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEoAVPoEADCU6TjYtAWpqQGANggJfJXkSkO1I0bREZXjGczCKhZxkL4FRuwG2AyDJYAXsvzFVBo7hHGGAwxPRI=
-X-Received: by 2002:a05:6870:3d8e:b0:203:d297:a711 with SMTP id
- lm14-20020a0568703d8e00b00203d297a711mr1363172oab.66.1702915824969; Mon, 18
- Dec 2023 08:10:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3473D57F;
+	Mon, 18 Dec 2023 16:10:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 179F4C433C8;
+	Mon, 18 Dec 2023 16:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702915845;
+	bh=RyOpylSYH9NQruYbziThNE1gfBpDP2Ghh1KJd/KJVNY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LrYJtaVxeC9DSa/ig3EOb585fdd2cdMj9ADBkQiR62Q8T5nCFEJFy4oCJ5xYsf+pR
+	 pRKLLDONQnJEYHvb+Lbac0NFCoX+YhnFaHHHrOVCBiwswTV/ifceh2K5mgPkl1+lXJ
+	 WmX7EkNX7toPGx7g5rn1003gy5gE6J+K8GSPiEyRRhC5/2jFlSk1C52j8/JDaU35WJ
+	 BLNNmWTOjxHp/qa2oFGhEdzhEnm4Vjm44SZZ72PQ+un42q4+BzN/mj8faJfJvDp4Dv
+	 ePzQVC2oydQ7nYX1yRiFI0vPrmonamwrLOzUjxrtYLgbe9+VGNxLTQPhWHbmyRHHcJ
+	 tsovCrCgI1pkQ==
+Message-ID: <c0f76b35-1ac3-47e4-9a88-57f4738bd8f0@kernel.org>
+Date: Mon, 18 Dec 2023 17:10:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218153105.12717-1-dwagner@suse.de>
-In-Reply-To: <20231218153105.12717-1-dwagner@suse.de>
-From: Maurizio Lombardi <mlombard@redhat.com>
-Date: Mon, 18 Dec 2023 17:10:13 +0100
-Message-ID: <CAFL455mFwEfRF9VCCGHhHZVMt2tzr8f2qfFMAPGvufaU8zO4Gw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/17] enable nvmet-fc for blktests
-To: Daniel Wagner <dwagner@suse.de>
-Cc: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>, 
-	James Smart <james.smart@broadcom.com>, Hannes Reinecke <hare@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 04/34] dt-bindings: media: Add sm8550 dt schema
+To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
+ andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+ bryan.odonoghue@linaro.org
+Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-5-git-send-email-quic_dikshita@quicinc.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <1702899149-21321-5-git-send-email-quic_dikshita@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-po 18. 12. 2023 v 16:34 odes=C3=ADlatel Daniel Wagner <dwagner@suse.de> nap=
-sal:
->
-> Apropos KASAN, it still reports the problem from [1], so anyone who want =
-to run
-> this series needs to revert ee6fdc5055e9 ("nvme-fc: fix race between erro=
-r
-> recovery and creating association").
+On 18/12/2023 12:31, Dikshita Agarwal wrote:
+> Add a schema description for the iris video encoder/decoder
+> on sm8550.
+> 
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> ---
+>  .../bindings/media/qcom,sm8550-iris.yaml           | 177 +++++++++++++++++++++
+>  1 file changed, 177 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sm8550-iris.yaml
 
-We hit this regression in RHEL too and we were forced to revert that
-commit, it's obviously buggy
-because it calls blocking functions with interrupts disabled.
-Please revert it.
+NAK, I don't understand why we need to repeat it some many times.
 
-Note: I have tried to fix it and close the race condition but it all
-became a bit too complex, also,
-I didn't have the opportunity to test it yet.
-http://bsdbackstore.eu/misc/0001-nvme-fc-fix-races-and-scheduling-while-ato=
-mic-bugs.patch
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-Maurizio
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
+
+Best regards,
+Krzysztof
 
 
