@@ -1,124 +1,122 @@
-Return-Path: <linux-kernel+bounces-4404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D59F7817C91
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:21:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B5E8817C95
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F3828401C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:21:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B31F31C21C43
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89136740A5;
-	Mon, 18 Dec 2023 21:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC01740AA;
+	Mon, 18 Dec 2023 21:22:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q188g71d"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RwnBpBPE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433FD73465;
-	Mon, 18 Dec 2023 21:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702934482; x=1734470482;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=59SP83dOu7bE+wlgAIUbh0lOytZrwfO2TAn0TlI0bMA=;
-  b=Q188g71dZXWjtk2B8M1dLz7bKtn3skdyBvPIfzC5vt4nkly08XkBUZ9f
-   ydbCX7D2k8SCC7AwCQUsV9hgKo215iJBAHMXaX8Jj5YxoyaWVJTzAuhUM
-   /WbOF2XMPJrFTwsSRqMD0DHD8jsCQRJVQE/d0FAEEIYd2ZPs0dE8xnHUN
-   uNz0buXw+EQ6ulH6zuJH5OXhze+dEPQVtc6DdG4dON0o1gxWPz/fSUQdI
-   aBnQRgQyfR7l7HVdv5l+PX3rDYP4Y2AUNmRwHvgrbZph67Ri8GK2lRELY
-   u670GyKFwh2YtgM1EDXlVIfH3pKFYwFvaNU6IHfzNY89TIXbsuJo5DcZs
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="392744400"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="392744400"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 13:21:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="919397432"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="919397432"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2023 13:21:19 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFL36-0004XH-2c;
-	Mon, 18 Dec 2023 21:21:16 +0000
-Date: Tue, 19 Dec 2023 05:20:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Joshua Yeong <joshua.yeong@starfivetech.com>,
-	jeeheng.sia@starfivetech.com, leyfoon.tan@starfivetech.com,
-	jassisinghbrar@gmail.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mailbox: starfive: Add StarFive Meu Mailbox Driver
-Message-ID: <202312190442.dVG2haPq-lkp@intel.com>
-References: <20231218061201.98136-2-joshua.yeong@starfivetech.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE527349B;
+	Mon, 18 Dec 2023 21:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=VC+L7rFKG6X8C4ZiU4wNQCGzHwKND4zyyzshhUNrvTo=; b=RwnBpBPEKSObuehHd52kglOds7
+	qRfWT1wCChbj2oeUHWIWeqzisKj1mREJxbjq2QEsBC2yr5XUaU4f8Vdj6ZiLTCAm1cxrHwtpTKI9l
+	zaJgt0I7Ma2n+WA+1BRtSgVuHkO109xFu242d+OS0gajDklSLZWo6CEyyDcsT9broqoorbK/8loIP
+	6O9K7Q2nlyIu5BsDDGvxfLkPH0mCpY2fou3I2RTC3GBehV90FzFJAIUyOXbWQt0TrQ9KTeD232vYa
+	/188RCbwPKHr2eBMwNhaHRTjRiaio+4sKm6JcPlXAMxvP2HE/Q+L/aoTNsW89BEKsTX+Vh7cwGO7t
+	VU/1yU7A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFL3d-00C7Bt-0W;
+	Mon, 18 Dec 2023 21:21:49 +0000
+Date: Mon, 18 Dec 2023 13:21:49 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Joel Granados <j.granados@samsung.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Julia Lawall <julia.lawall@inria.fr>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Iurii Zaikin <yzaikin@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <ZYC37Vco1p4vD8ji@bombadil.infradead.org>
+References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com>
+ <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <20231207104357.kndqvzkhxqkwkkjo@localhost>
+ <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
+ <20231208095926.aavsjrtqbb5rygmb@localhost>
+ <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
+ <20231212090930.y4omk62wenxgo5by@localhost>
+ <ZXligolK0ekZ+Zuf@bombadil.infradead.org>
+ <20231217120201.z4gr3ksjd4ai2nlk@localhost>
+ <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231218061201.98136-2-joshua.yeong@starfivetech.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-Hi Joshua,
+So we can split this up concentually in two:
 
-kernel test robot noticed the following build warnings:
+ * constificaiton of the table handlers
+ * constification of the table struct itself
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on linus/master v6.7-rc6]
-[cannot apply to next-20231218]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Sun, Dec 17, 2023 at 11:10:15PM +0100, Thomas Weißschuh wrote:
+> The handlers can already be made const as shown in this series,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Joshua-Yeong/mailbox-starfive-Add-StarFive-Meu-Mailbox-Driver/20231218-141510
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231218061201.98136-2-joshua.yeong%40starfivetech.com
-patch subject: [PATCH 1/3] mailbox: starfive: Add StarFive Meu Mailbox Driver
-config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20231219/202312190442.dVG2haPq-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231219/202312190442.dVG2haPq-lkp@intel.com/reproduce)
+The series did already produce issues with some builds, and so
+Julia's point is confirmed that the series only proves hanlders
+which you did build and for which 0-day has coverage for.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312190442.dVG2haPq-lkp@intel.com/
+The challenge here was to see if we could draw up a test case
+that would prove this without build tests, and what occurred to
+me was coccinelle or smatch.
 
-All warnings (new ones prefixed by >>):
+> > If that is indeed what you are proposing, you might not even need the
+> > un-register step as all the mutability that I have seen occurs before
+> > the register. So maybe instead of re-registering it, you can so a copy
+> > (of the changed ctl_table) to a const pointer and then pass that along
+> > to the register function.
+> 
+> Tables that are modified, but *not* through the handler, would crop
+> during the constification of the table structs.
+> Which should be a second step.
 
->> drivers/mailbox/starfive-meu.c:50: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * StarFive MEU Mailbox allocated channel information
+Instead of "croping up" at build time again, I wonder if we can do
+better with coccinelle / smatch.
 
+Joel, and yes, what you described is what I was suggesting, that is to
+avoid having to add a non-const handler a first step, instead we modify
+those callers which do require to modify the table by first a
+deregistration and later a registration. In fact to make this even
+easier a new call would be nice so to aslo be able to git grep when
+this is done in the kernel.
 
-vim +50 drivers/mailbox/starfive-meu.c
+But if what you suggest is true that there are no registrations which
+later modify the table, we don't need that. It is the uncertainty that
+we might have that this is a true statment that I wanted to challenge
+to see if we could do better. Can we avoid this being a stupid
+regression later by doing code analysis with coccinelle / smatch?
 
-    48	
-    49	/**
-  > 50	 * StarFive MEU Mailbox allocated channel information
-    51	 *
-    52	 * @meu: Pointer to parent mailbox device
-    53	 * @pchan: Physical channel within which this doorbell resides in
-    54	 * @doorbell: doorbell number pertaining to this channel
-    55	 */
-    56	struct meu_db_channel {
-    57		struct starfive_meu *meu;
-    58		unsigned int pchan;
-    59		unsigned int doorbell;
-    60	};
-    61	
+The template of the above endeavor seems useful not only to this use
+case but to any place in the kernel where this previously has been done
+before, and hence my suggestion that this seems like a sensible thing
+to think over to see if we could generalize.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+  Luis
 
