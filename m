@@ -1,119 +1,122 @@
-Return-Path: <linux-kernel+bounces-3190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAACB8168C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:52:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 904708168D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 978F22824F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:52:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9D50282F5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B761118F;
-	Mon, 18 Dec 2023 08:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6627E10977;
+	Mon, 18 Dec 2023 08:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kdh/P+HF"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="JXjl4cAI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6743710A2E
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702889570; x=1734425570;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=bZCFZL7iDl6rX7EGf09C9U1b3W4raZXLVsbXzyIuzhA=;
-  b=kdh/P+HFv8oAkzTzbmo2vpSbnkIjwdyxZw5ix5SiHQCOnRQjB/qGF78h
-   4UNJGlaljf8MK7ZKzc5KIsBxy6su17uyRQm6v3MMhrdO2I0KSRKl6VOfK
-   lGQFLDXBV7IqeMdMt1j3Jjv+v144BADqBR1wbOGxHayclhfpSz+AapL58
-   K1v2mQaIOA3lTk48vceNepIuOz9Avq94bi1DL5QSnK4acrudIMBdksuwr
-   qhi9pv6tiosociHNRE6+jisXNvqwOyS40ZzEPfe84DFXYP9pikLQu/Buz
-   pXmbW3GesPScIXfvAq2P1tanmIT7DfrdO6fer5yxCAXQBuqLCCj3x5JkC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="14165835"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="14165835"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 00:52:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="893740379"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="893740379"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 18 Dec 2023 00:52:46 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rF9Mi-0003wO-2t;
-	Mon, 18 Dec 2023 08:52:44 +0000
-Date: Mon, 18 Dec 2023 16:52:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: drivers/cpuidle/governors/ladder.c:54: warning: Function parameter
- or member 'dev' not described in 'ladder_do_selection'
-Message-ID: <202312181621.8F4HyH1d-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875861118B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7cb36c458dcso456557241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 00:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702889693; x=1703494493; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zcy4Qs/F8NZOKre+BKtAjIT9nwGwO4y66Sp2H2m3iBE=;
+        b=JXjl4cAI7nN7/IRj2h72po246CciLmd0O0YvatKql4XtkV3BaE0zkW3X4XZu/XCqqJ
+         XuFa7+Q7HQfVuVgoz2DJVVYEDZKidvhUBFJcv1jd8+cmy9+vRJPO2BJ82kWKHh4Bwvvf
+         7EU1yE5JcENhWdbvM5E31PJ1PkB2kUbJwi3jnu6jLEKnzDrh6hChOAc/OXSXWoSkoJkR
+         ggpqkKxuyn9EWuYyKkGg3kFyqjYzyGhTGRft40pmc1Z/AlLvdwmm7D831Ug5p3onO5St
+         33ISEjkTWQDd9dfUDR8jNJddColoHgk5jIWYxEjFVP54+SACOzUulIjkDZUaFLO6rJ7V
+         kkWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702889693; x=1703494493;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zcy4Qs/F8NZOKre+BKtAjIT9nwGwO4y66Sp2H2m3iBE=;
+        b=RhBqotPXOttUnNic9vZkblsZf37iN98yB0VV+RHv2XvwJd/t94mk00GMYZ+pF7GD67
+         tNzfyIy32Wk21Z32cyHLeq8w7e0Ay7H6s+EUgTQwcN7M5u0ufaVaypT7o+9/OQNFl5Ht
+         qAi59agj/rCcgxHAaAp20goyX7PXjwbSSdTXCz5ayYSfzgcfEp2Th24TPRQsVz2i24/R
+         8v7Hmeppa0B/yLPP3yfT2vAlZ8RvDlVpiWphuONYOOJC6IzyQ/fex9wpWPb++Oh3KqCW
+         dOfLoIGoaciMjpFNNO9d/Ll6y52A5atlwC6hlNdRqugQDs0WT0eWLIDye0ueV+lnv6tO
+         piUw==
+X-Gm-Message-State: AOJu0Yx1x78Kkp+lh5/o9jNOINllZHyOyDjwvFTIxpB/M0embhv+soO8
+	GG2SO8g1NwdoI8mn5MN1HahgKUybIvsnmwYCh0nqzA==
+X-Google-Smtp-Source: AGHT+IEd+o68wmUpyG+J7UjiDt2djCJTwff101JpGUud0EelGzhHfUSZ4qLWXzX9dq0fpdbr60RDEy8NiE6oVOuO4cc=
+X-Received: by 2002:a05:6102:3d10:b0:466:9d70:6f03 with SMTP id
+ i16-20020a0561023d1000b004669d706f03mr250157vsv.14.1702889693302; Mon, 18 Dec
+ 2023 00:54:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <202312181513+0800-wangjinchao@xfusion.com>
+In-Reply-To: <202312181513+0800-wangjinchao@xfusion.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 18 Dec 2023 09:54:42 +0100
+Message-ID: <CAMRc=Me+wQroZhnVhwvdfFeOhFQ+1ACr1cLu2Pu8TQDpvyKpOA@mail.gmail.com>
+Subject: Re: [PATCH v2] gpiolib: cleanup for duplicated including
+To: Wang Jinchao <wangjinchao@xfusion.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stone.xulei@xfusion.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Marcelo,
+On Mon, Dec 18, 2023 at 8:16=E2=80=AFAM Wang Jinchao <wangjinchao@xfusion.c=
+om> wrote:
+>
+> Remove second `#include <linux/err.h>`.
+> Remove `#include <asm/errno.h>`.
+> As they are guaranteed by the global `err.h`.
+>
+> Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+> ---
+> V2:
+>     Revise the comment per Andy's suggestion.
+> V1: https://lore.kernel.org/all/202312151645+0800-wangjinchao@xfusion.com=
+/
+>
+>  include/linux/gpio/driver.h | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+> index 0aed62f0c633..df6857e579a1 100644
+> --- a/include/linux/gpio/driver.h
+> +++ b/include/linux/gpio/driver.h
+> @@ -701,7 +701,6 @@ int gpiochip_irqchip_add_domain(struct gpio_chip *gc,
+>  #else
+>
+>  #include <asm/bug.h>
+> -#include <asm/errno.h>
+>
+>  static inline int gpiochip_irqchip_add_domain(struct gpio_chip *gc,
+>                                               struct irq_domain *domain)
+> @@ -789,8 +788,6 @@ int gpio_device_get_base(struct gpio_device *gdev);
+>
+>  #else /* CONFIG_GPIOLIB */
+>
+> -#include <linux/err.h>
+> -
+>  #include <asm/bug.h>
+>
+>  static inline struct gpio_chip *gpiod_to_chip(const struct gpio_desc *de=
+sc)
+> --
+> 2.40.0
+>
 
-FYI, the error/warning still remains.
+Applied, thanks!
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
-commit: 7d4daeedd575bbc3c40c87fc6708a8b88c50fe7e governors: unify last_state_idx
-date:   4 years, 5 months ago
-config: x86_64-randconfig-161-20230927 (https://download.01.org/0day-ci/archive/20231218/202312181621.8F4HyH1d-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312181621.8F4HyH1d-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312181621.8F4HyH1d-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/cpuidle/governors/ladder.c:54: warning: Function parameter or member 'dev' not described in 'ladder_do_selection'
-
-
-vim +54 drivers/cpuidle/governors/ladder.c
-
-4f86d3a8e29720 Len Brown       2007-10-03  44  
-4f86d3a8e29720 Len Brown       2007-10-03  45  /**
-4f86d3a8e29720 Len Brown       2007-10-03  46   * ladder_do_selection - prepares private data for a state change
-4f86d3a8e29720 Len Brown       2007-10-03  47   * @ldev: the ladder device
-4f86d3a8e29720 Len Brown       2007-10-03  48   * @old_idx: the current state index
-4f86d3a8e29720 Len Brown       2007-10-03  49   * @new_idx: the new target state index
-4f86d3a8e29720 Len Brown       2007-10-03  50   */
-7d4daeedd575bb Marcelo Tosatti 2019-07-03  51  static inline void ladder_do_selection(struct cpuidle_device *dev,
-7d4daeedd575bb Marcelo Tosatti 2019-07-03  52  				       struct ladder_device *ldev,
-4f86d3a8e29720 Len Brown       2007-10-03  53  				       int old_idx, int new_idx)
-4f86d3a8e29720 Len Brown       2007-10-03 @54  {
-4f86d3a8e29720 Len Brown       2007-10-03  55  	ldev->states[old_idx].stats.promotion_count = 0;
-4f86d3a8e29720 Len Brown       2007-10-03  56  	ldev->states[old_idx].stats.demotion_count = 0;
-7d4daeedd575bb Marcelo Tosatti 2019-07-03  57  	dev->last_state_idx = new_idx;
-4f86d3a8e29720 Len Brown       2007-10-03  58  }
-4f86d3a8e29720 Len Brown       2007-10-03  59  
-
-:::::: The code at line 54 was first introduced by commit
-:::::: 4f86d3a8e297205780cca027e974fd5f81064780 cpuidle: consolidate 2.6.22 cpuidle branch into one patch
-
-:::::: TO: Len Brown <len.brown@intel.com>
-:::::: CC: Len Brown <len.brown@intel.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Bart
 
