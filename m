@@ -1,83 +1,78 @@
-Return-Path: <linux-kernel+bounces-4068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0FD881778C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:31:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6D6817795
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BB53B222AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:31:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C97E7284BAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180394FF7B;
-	Mon, 18 Dec 2023 16:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438121E520;
+	Mon, 18 Dec 2023 16:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BvsYD/nh"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gBNGgbyo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7A84FF86
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702917070;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gyklUaQH9+w5u3EWbqqNdNPWrEzxqS/e6qwVBUpXKmQ=;
-	b=BvsYD/nhiEY6EyXgK1hhE6SZ3J/nyRX3n6zu/TBLC62nsdEpUTqsVAxNypw1IAPhmeBiNc
-	v9JyfkhwDb9uc4+jS2rXUXxzlCfA8atl5d2+a0SFJQBH5RcsKOtZVkoS23Qz2xABhFqZYU
-	92AwwYKpWimGybQLbncz5l/sgP6GBVk=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-79-LHu776C4NSq6cfrbn2BSqA-1; Mon, 18 Dec 2023 11:31:08 -0500
-X-MC-Unique: LHu776C4NSq6cfrbn2BSqA-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-67f4a0c8fb2so10707216d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:31:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B051498BC
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so36876805e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:34:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1702917254; x=1703522054; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rOppEuE9fe8jK025Yd36IdkiDsieSocMieD2PWZmg8=;
+        b=gBNGgbyoUVijHfkMRibg3eWKqGWsqzlwR99xEr8v1/i07O0NW9XMK+CdWUzLAFBeDk
+         3RaxsPpsX8Kj5cY52QVXjP2pCDzT4f3L5WxYoYSROoi/lVNcg6ym9WemLY12XYAA3Hb4
+         L4fknAj2sifpanUvHjqzBfIxvegqKLF4NmpIJnOegcsIYRa7U75B5xgOIpgHZxyasQLE
+         WbxrTkw+UaIJXN1EKKwmXCi+tGL4cVe96JGvdqEw+a09DT5v4S4q4zRPERhCOraFwDOn
+         i4RN9iMULFBUlEJDpM2LnTHCHu1k+zMS1Dx0UUdpucsFGr2vc55EvAPDqHTc8ATD1aQ4
+         81Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702917068; x=1703521868;
+        d=1e100.net; s=20230601; t=1702917254; x=1703522054;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gyklUaQH9+w5u3EWbqqNdNPWrEzxqS/e6qwVBUpXKmQ=;
-        b=wGtzNW3fjY/SsI9juMeH7zHA4x5suPA38GZ8ZLF69j6Ey3zvP6qDmcIdPzNroT0kYZ
-         nhlKsIP86mEuHtwqu3cMJegB6UgfBASj71itAH/RePphOd8stQcu62wNe33TZJcZ5o52
-         w/1APL3ZYyG67xbMc3z0e/0Jl+Lox73Y2h0rLRTZ/ZNfDtTtfktq4QXNriMsVPHgIF+/
-         khzk1MVPyKXfwKvyuFgjyRivKkDYYoeyu/UKGLrom+J1g+eZhPHEYwALLrI8a7Neleof
-         t17X2lvKw23x4tESc4KKQMiQCWiGwtfsHSw65bsUEKG/43t0b0zT7sZZL8fNNpK+tp/i
-         d2ww==
-X-Gm-Message-State: AOJu0YyTvTgVZ4g2GZFw1nnSrygoCgYAmA4G/93+qfkNpGpEtBCGfL4E
-	UWhzad8UWcBfRrlWpPuCljjZvVGyISeNakuaXKeHqosQP1nK4ybRazMZ7lhcggVyEr+qBx0Kg9o
-	LLXSdA5tlAYQoErVyOgSMvbM7
-X-Received: by 2002:a05:6214:2262:b0:67f:4c0:59f0 with SMTP id gs2-20020a056214226200b0067f04c059f0mr13283879qvb.77.1702917068352;
-        Mon, 18 Dec 2023 08:31:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHYtPAkjW+suWvwLO6oqUyWkHoZlf2OBTm+xBUTH5nyvhqcUjD5pspfwg2Sp3Pu/DNpwnTBEA==
-X-Received: by 2002:a05:6214:2262:b0:67f:4c0:59f0 with SMTP id gs2-20020a056214226200b0067f04c059f0mr13283848qvb.77.1702917068034;
-        Mon, 18 Dec 2023 08:31:08 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id bu19-20020ad455f3000000b0067f46605191sm1019502qvb.56.2023.12.18.08.31.06
+        bh=/rOppEuE9fe8jK025Yd36IdkiDsieSocMieD2PWZmg8=;
+        b=I/iIBKZPDBJr5NjYe6NUt4IYI4eHwYfTl/0NNjjjcTXxCnHb2n8hRoGnw5yyd0oKra
+         5jtYZ/Stc0c9HLQHvcWPVfj3z/6EkiIqb5NNDWeyXIiDqJZlo+/skmNYUqBFylDJcttG
+         D9iiGxGyWSlf1mA7nfQXQux68xWzs6IiJ4XAfHDiLxeHAJ9NfY6+vXR2m46D/OTbCIR2
+         Tu/K1cHuTcFWH0lfrmGAV1+M4MQvhWDGyF1tfi4zHIgseyvWT5e/mjoUCy5+ZCVIL5Sy
+         Ht8swBHeE7jhh9maDlD7SZA+BG42TyuImAZLuTuExjvGpQ6zD0MKP7aDuKIO7nGKQw4n
+         p7hA==
+X-Gm-Message-State: AOJu0YzDAC1EDk4R+knUdYw87xboiXreZCVRakgsKI1SplmoCPanWmSt
+	84VzEYtIhVHwQPsB6gs/aC+IYw==
+X-Google-Smtp-Source: AGHT+IFgaUxBTqFKKtJeHzKpC/cBQB8gSB2dVjVuKhQguEwkv9LiA+Ha7V379VzvROHOEZGQbuAe9A==
+X-Received: by 2002:a05:600c:54c1:b0:40b:5e21:e263 with SMTP id iw1-20020a05600c54c100b0040b5e21e263mr8508945wmb.80.1702917254225;
+        Mon, 18 Dec 2023 08:34:14 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id ts7-20020a170907c5c700b00a1b65cd1957sm14343131ejc.107.2023.12.18.08.34.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 08:31:07 -0800 (PST)
-Date: Mon, 18 Dec 2023 10:31:04 -0600
-From: Andrew Halaney <ahalaney@redhat.com>
-To: Sneh Shah <quic_snehshah@quicinc.com>
-Cc: Vinod Koul <vkoul@kernel.org>, 
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
-Subject: Re: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for
- 2.5G SGMII
-Message-ID: <pdoedu3n7rdl6ifrfyugoa7pbjougqj4cg6mxyerhu5udf4e2h@unjqgqjt7odi>
-References: <20231218071118.21879-1-quic_snehshah@quicinc.com>
- <4zbf5fmijxnajk7kygcjrcusf6tdnuzsqqboh23nr6f3rb3c4g@qkfofhq7jmv6>
+        Mon, 18 Dec 2023 08:34:13 -0800 (PST)
+Date: Mon, 18 Dec 2023 17:34:11 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Jim Cromie <jim.cromie@gmail.com>
+Cc: lb@semihalf.com, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, bleung@google.com, contact@emersion.fr,
+	daniel@ffwll.ch, dianders@chromium.org, groeck@google.com,
+	jbaron@akamai.com, john.ogness@linutronix.de, keescook@chromium.org,
+	ppaalanen@gmail.com, rostedt@goodmis.org, seanpaul@chromium.org,
+	sergey.senozhatsky@gmail.com, upstream@semihalf.com,
+	vincent.whitchurch@axis.com, yanivt@google.com,
+	gregkh@linuxfoundation.org
+Subject: Re: [re: PATCH v2 00/15 -  03/11] dyndbg: disambiguate quoting in a
+ debug msg
+Message-ID: <ZYB0gyz-2M3k2kbD@alley>
+References: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com>
+ <cover.1701993656.git.jim.cromie@gmail.com>
+ <674f65e71c5c3e874b6b72b6f9d8cdd7a091b6d0.1701993656.git.jim.cromie@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,126 +81,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4zbf5fmijxnajk7kygcjrcusf6tdnuzsqqboh23nr6f3rb3c4g@qkfofhq7jmv6>
+In-Reply-To: <674f65e71c5c3e874b6b72b6f9d8cdd7a091b6d0.1701993656.git.jim.cromie@gmail.com>
 
-On Mon, Dec 18, 2023 at 10:20:03AM -0600, Andrew Halaney wrote:
-> On Mon, Dec 18, 2023 at 12:41:18PM +0530, Sneh Shah wrote:
-> > Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
-> > mode for 1G/100M/10M speed.
-> > Added changes to configure serdes phy and mac based on link speed.
-> > 
-> > Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
-> > ---
-> >  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 +++++++++++++++++--
-> >  1 file changed, 29 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> > index d3bf42d0fceb..b3a28dc19161 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> > @@ -21,6 +21,7 @@
-> >  #define RGMII_IO_MACRO_CONFIG2		0x1C
-> >  #define RGMII_IO_MACRO_DEBUG1		0x20
-> >  #define EMAC_SYSTEM_LOW_POWER_DEBUG	0x28
-> > +#define ETHQOS_MAC_AN_CTRL		0xE0
-> >  
-> >  /* RGMII_IO_MACRO_CONFIG fields */
-> >  #define RGMII_CONFIG_FUNC_CLK_EN		BIT(30)
-> > @@ -78,6 +79,10 @@
-> >  #define ETHQOS_MAC_CTRL_SPEED_MODE		BIT(14)
-> >  #define ETHQOS_MAC_CTRL_PORT_SEL		BIT(15)
-> >  
-> > +/*ETHQOS_MAC_AN_CTRL bits */
-> > +#define ETHQOS_MAC_AN_CTRL_RAN			BIT(9)
-> > +#define ETHQOS_MAC_AN_CTRL_ANE			BIT(12)
-> > +
+On Thu 2023-12-07 17:15:06, Jim Cromie wrote:
+> When debugging a query parsing error, the debug message wraps the
+> query in escaped-double-quotes.  This is confusing when mixed with any
+> quoted args where quotes are stripped by the shell.
 > 
-> nit: space please add a space before ETHQOS_MAC_AN_CTRL
+> So this replaces the \"%s\" with <%s> in the format string, allowing a
+> user to see how the shell strips quotes:
 > 
-> >  struct ethqos_emac_por {
-> >  	unsigned int offset;
-> >  	unsigned int value;
-> > @@ -109,6 +114,7 @@ struct qcom_ethqos {
-> >  	unsigned int num_por;
-> >  	bool rgmii_config_loopback_en;
-> >  	bool has_emac_ge_3;
-> > +	unsigned int serdes_speed;
-> >  };
-> >  
-> >  static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
-> > @@ -600,27 +606,47 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
-> >  
-> >  static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
-> >  {
-> > -	int val;
-> > -
-> > +	int val, mac_an_value;
-> >  	val = readl(ethqos->mac_base + MAC_CTRL_REG);
-> > +	mac_an_value = readl(ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
-> >  
-> >  	switch (ethqos->speed) {
-> > +	case SPEED_2500:
-> > +		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
-> > +		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> > +			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> > +			      RGMII_IO_MACRO_CONFIG2);
-> > +		if (ethqos->serdes_speed != SPEED_2500)
-> > +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> lx]# echo  module "foo" format ,_ -f > /proc/dynamic_debug/control
+> [  716.037430] dyndbg: read 26 bytes from userspace
+> [  716.037966] dyndbg: query 0: <module foo format ,_ -f> on module: <*>
 
-Also, please capture the return value here and propagate the error as
-appropriate.
+Could you provide a real life example, please? It is hard to imagine
+what '"foo" format' means in a real life.
 
-> > +		mac_an_value &= ~ETHQOS_MAC_AN_CTRL_ANE;
-> > +		break;
-> >  	case SPEED_1000:
-> >  		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
-> >  		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> >  			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> >  			      RGMII_IO_MACRO_CONFIG2);
-> > +		if (ethqos->serdes_speed != SPEED_1000)
-> > +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-> > +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
-> >  		break;
-> >  	case SPEED_100:
-> >  		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
-> > +		if (ethqos->serdes_speed != SPEED_1000)
-> > +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-> > +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
-> >  		break;
-> >  	case SPEED_10:
-> >  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
-> >  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
-> > +		if (ethqos->serdes_speed != SPEED_1000)
-> > +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-> > +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
-> >  		break;
-> >  	}
-> >  
-> >  	writel(val, ethqos->mac_base + MAC_CTRL_REG);
-> > +	writel(mac_an_value, ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
-> > +	ethqos->serdes_speed = ethqos->speed;
-> 
-> I see these bits are generic and there's some functions in stmmac_pcs.h
-> that muck with these...
-> 
-> Could you help me understand if this really should be Qualcomm specific,
-> or if this is something that should be considered for the more core bits
-> of the driver? I feel in either case we should take advantage of the
-> common definitions in that file if possible.
-> 
-> >  
-> >  	return val;
-> >  }
-> > @@ -789,6 +815,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
-> >  				     "Failed to get serdes phy\n");
-> >  
-> >  	ethqos->speed = SPEED_1000;
-> > +	ethqos->serdes_speed = SPEED_1000;
-> >  	ethqos_update_link_clk(ethqos, SPEED_1000);
-> >  	ethqos_set_func_clk_en(ethqos);
-> >  
-> > -- 
-> > 2.17.1
-> > 
+Also could you please provide output before and after?
 
+Honestly, Using <> as quotes looks pretty non-standard and confusing
+to me. Also this changes only one place but '\"' is used in many
+other locations which would make dyndbg messages even more confusing.
+
+I do not understand how this would help. The double quote is gone
+even in this variant.
+
+BTW: It is a bit funny that this patch is supposed to make the debug
+     message better readable. For me, the echo command is hard
+     to read in the first place. I would use:
+
+lx]# echo "module $my_module ,_ -f" > /proc/dynamic_debug/control
+
+Maybe, this change fixes the output to match some personal style.
+I wonder how common is the style. I can't remember seeing:
+
+    $> echo param param param
+
+Instead I frequently see:
+
+    $> echo "bla bla bla".
+
+Best Regards,
+Petr
 
