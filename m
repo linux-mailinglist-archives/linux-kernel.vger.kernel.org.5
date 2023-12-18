@@ -1,186 +1,104 @@
-Return-Path: <linux-kernel+bounces-3830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5E4817379
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:22:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DBBC81737C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:23:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBFA2B22F81
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:22:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 422D61C251E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF53134DF;
-	Mon, 18 Dec 2023 14:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD13E1D13B;
+	Mon, 18 Dec 2023 14:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="iig9a0gC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="f/cVLNJL"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gr0maGAL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012C21D148
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id DF4B05C01A1;
-	Mon, 18 Dec 2023 09:22:05 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 18 Dec 2023 09:22:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1702909325; x=1702995725; bh=80hApuyvNl
-	9yOSjCP0iH0vkOW+LFkGuu0dMrxsMPNow=; b=iig9a0gClrFChL0nRRAviiTnmI
-	CeLHUUI0H4vi1IELQnIoUyi4N0vdRHF/l3ZxaklJ6AnOgfDB1YLL3TGPCA7miGoc
-	5ZkT45OZZFu/Oc0qYZC23OWs2IEsRTpC8MZk/9AyutL/a9WfUX/LmXUqJIH29nsI
-	Ujd+Wh507GB721pvowdDXYyJycShUomqG4xE5ZsLV8gSbswGnETuh8ixhGlF1otl
-	x8V2HDdOX+UAOWq5+NOBDwlivj8fwVYAlkRjfk1maiLVjXE5B0ZDy2RGnLyDWs/Q
-	mVkC06q1Q9B7Ow/Se9UmI2duCkJDq7C8tkVaewchfRQZmkOC6D8mj9WdQ5PA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1702909325; x=1702995725; bh=80hApuyvNl9yOSjCP0iH0vkOW+LF
-	kGuu0dMrxsMPNow=; b=f/cVLNJLF7FcJ4S9MyeCKTZD33teYy/FXeG9KlimNhvU
-	U/hR0CpKUcdZSvhLq5/Nwb1vTAJgiLG3oMPX7KrRhM0UKrxaEM2cfeuGSBMP/bvP
-	fbqhr2tnpdMX7Bv8c1BFIIJcnMUZHd3nPlMZ+tpOmeMvmTAzazy7Zwd3hX23OlbW
-	KYd6oxVruKDjfHHA1ZDi/eKgkSyzAFHUDvt0VKpiTp4tTlI+UTT33pgC2AXc4Ww4
-	CLbnVMp38FXg+vsMHEkKfYgd8C9ON1fd1HllgtW1PJFHaDysTiZvbxFIJ/m/Wt5U
-	ZAbb5B2/Z3KjgArvvCdyAhpZUcEeEpsV/wceW+f0VA==
-X-ME-Sender: <xms:jFWAZY53EFfWxV-LS-L9k4Vdl2XBCEk9HOW7Kkc-4SMwP_2WKW4CpA>
-    <xme:jFWAZZ6XSoArW47ua4xnH5TxTHBntYzF_DcHhrNstyTrzsb8T_pGj3_fXNbx6Gwi4
-    p4n-oLzzYusjiyKaWM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeeigfehhfffveejiedvgeduudetfedvgeeuuefhffevlefgteelveefudei
-    heffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpohhpvghnfihrthdrohhrghenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnuges
-    rghrnhgusgdruggv
-X-ME-Proxy: <xmx:jFWAZXfaAmWJP-LVWgy5GQpEqluM9zxfYvvenauLA5zB90rHjMq1MA>
-    <xmx:jFWAZdJaFW_g-LvVeivAAn6MGhssXhexnikp92vxe1ctDel-Apqmng>
-    <xmx:jFWAZcIbjI0ru85uMrmGMCc0mZQxMUK4LmAeyJKurKEtZE1WxDQofw>
-    <xmx:jVWAZRXUXmOKE9o4G4KrBqggd1Inx84cAbnBerlz7ru7bzevYUDwAA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BF086B6008F; Mon, 18 Dec 2023 09:22:04 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE66C129ED2
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c2308faedso37107915e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:23:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702909408; x=1703514208; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LzQc1yULZChaDLQ9G/ihl8REJbHZhov+DE7MK87TVb0=;
+        b=gr0maGALSR52Eyn6HZ0rH2WG9HnEzVFbQ2nQoUbJlErLmPLZrJ5rn+w8wH3L7hr5f1
+         uyeuM/Kqz2jJb9uVfttqB3VMiff1lJvGo88GJKTHjtj0cIgFsme++XIE422ZRZytO97F
+         T8CjJOoC3KyuZLAknDZ1/JRHefSV0HYfhF+UBtJkBCQJxSpJV7b4c8YJdDOLRTI+sM+E
+         +yIRReU4VzDux188nZBBepttBd1sYYfD+u8rD1FSLQwIfC+HnT7MN1u98fUhwS68U/HV
+         tBvfICpNi1I1WcrdbAEM9KL7HG9X/wWmq2vNj9900Xat8rbkx9s+QNiK1jCx3JHFYbJt
+         8bpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702909408; x=1703514208;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LzQc1yULZChaDLQ9G/ihl8REJbHZhov+DE7MK87TVb0=;
+        b=SdJokm268tgcYEkv3ETOLQvG+35WU2HkYuntr0DYF6FApakBkBqCWWrCHKg4HzBWw6
+         P2Fp1t3lXRRdfMhDcDSgk9HhHFMJI1Qo2Ae/UFSe0xFEE6nHSKGmApmK707Gy8gY+64y
+         7SngtGtOlI7Pz81b0GzyX63HhB7lu1AK63fnadrRGpDv/cU7LwG/Hf80sj2nGSSh3yJv
+         12cGn4NbxGSzcVGZI4MneqmpksWfKB+Avr8EVXI6JNIk7ZjJPCEN+8D4VFUSPAfQ6qwx
+         iLExdgGdIe4jGwzA7j7UeGnWTvXnnArh1x/B92/CmyQ4GykWQvOCCBFxxcRmRXPf7YJ7
+         iAZw==
+X-Gm-Message-State: AOJu0YwA84jrKgt+b4FcRehO/+ZcUTDfwHuPnMGy68HXXZu6qZtAIAkb
+	7Ydr0NQaeToj3f2OcWgzpLF8MV9axgnc4+cdVuNl3w==
+X-Google-Smtp-Source: AGHT+IFjfzSrKy1VCxahCZN8bB8Pt2jUcoyta7zgHgxmTr6TUO/ufFtIA/WrJxi9JIIbR7og9rPgwtArG7ubGMx13Uk=
+X-Received: by 2002:a05:600c:4d0e:b0:40b:5e1e:cf1 with SMTP id
+ u14-20020a05600c4d0e00b0040b5e1e0cf1mr7965342wmp.44.1702909408123; Mon, 18
+ Dec 2023 06:23:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <24e92cfc-8dc8-47b8-b379-ed8b1b776fba@app.fastmail.com>
-In-Reply-To: <20231218134532.50599-1-krzysztof.kozlowski@linaro.org>
-References: <20231218134532.50599-1-krzysztof.kozlowski@linaro.org>
-Date: Mon, 18 Dec 2023 14:21:41 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- arm <arm@kernel.org>, soc@kernel.org, "Olof Johansson" <olof@lixom.net>
-Cc: "Lennert Buytenhek" <kernel@wantstofly.org>,
- "Steve Sakoman" <sakoman@gmail.com>,
- "Mark F . Brown" <mark.brown314@gmail.com>,
- "Robert Jarzmik" <robert.jarzmik@free.fr>,
- "Florian Fainelli" <florian@openwrt.org>,
- "Simtec Linux Team" <linux@simtec.co.uk>
-Subject: Re: [PATCH] ARM: MAINTAINERS: drop empty entries for removed boards
-Content-Type: text/plain
+References: <20231218141645.2548743-1-alpic@google.com>
+In-Reply-To: <20231218141645.2548743-1-alpic@google.com>
+From: Alfred Piccioni <alpic@google.com>
+Date: Mon, 18 Dec 2023 15:22:50 +0100
+Message-ID: <CALcwBGDoEjyfAnYHaCCqULa+dwRyw3spHijUXwJ_LAQp=oV-pg@mail.gmail.com>
+Subject: Re: [PATCH] SELinux: Introduce security_file_ioctl_compat hook
+To: Paul Moore <paul@paul-moore.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Eric Paris <eparis@parisplace.org>
+Cc: stable@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Dec 18, 2023, at 13:45, Krzysztof Kozlowski wrote:
-> Drop empty and redundant maintainer entries for boards which were
-> removed to fix `scripts/get_maintainer.pl --self-test=sections` errors
-> like:
->
->   ./MAINTAINERS:2021: warning: section without file pattern	ARM/CIRRUS 
-> LOGIC EDB9315A MACHINE SUPPORT
+> s/emmits/emits/
 
-Good catch, I wonder if I missed these in last year's board removal
-or if they were already broken back then. Some of these 
+Fixed.
 
-> @@ -2171,11 +2166,6 @@ T:	git 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git
->  F:	arch/arm/boot/dts/nxp/vf/
->  F:	arch/arm/mach-imx/*vf610*
-> 
-> -ARM/GUMSTIX MACHINE SUPPORT
-> -M:	Steve Sakoman <sakoman@gmail.com>
-> -L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> -S:	Maintained
+> It doesn't (or shouldn't) replace security_file_ioctl, and the hook
+> doesn't appear to be conditional on CONFIG_COMPAT per se.
+> It is a new hook that is called from the compat ioctl syscall. The old
+> hook continues to be used from the regular ioctl syscall and
+> elsewhere.
 
-I don't know if Steve still cares, but the board is still there
-in arch/arm/mach-pxa/{gumstix,am200epd.c,am300epd.c}
- 
-> -ARM/INTEL XSC3 (MANZANO) ARM CORE
-> -M:	Lennert Buytenhek <kernel@wantstofly.org>
-> -L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> -S:	Maintained
+Yup, reworded to be more correct. Partially lack of understanding on
+my part of how the ioctl syscalls were being made.
 
-Same here, the code is still there and used by pxa3xx:
+> I don't understand why you made this change, possibly a leftover of an
+> earlier version of the patch that tried to replace
+> security_file_ioctl() everywhere?
 
-arch/arm/mm/*xsc3l2*
+Correct. Forgot to go back and remove it. Fixed.
 
->  ARM/LG1K ARCHITECTURE
->  M:	Chanho Min <chanho.min@lge.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> @@ -2840,11 +2825,6 @@ F:	arch/arm/boot/dts/synaptics/
->  F:	arch/arm/mach-berlin/
->  F:	arch/arm64/boot/dts/synaptics/
-> 
-> -ARM/TECHNOLOGIC SYSTEMS TS7250 MACHINE SUPPORT
-> -M:	Lennert Buytenhek <kernel@wantstofly.org>
-> -L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> -S:	Maintained
+> By the way, for extra credit, you could augment the ioctl tests in the
+> selinux-testsuite to also exercise this new hook and confirm that it
+> works correctly. See
+> https://github.com/SELinuxProject/selinux-testsuite particularly
+> tests/ioctl and policy/test_ioctl.te. Feel free to ask for help on
+> that.
 
-arch/arm/mach-ep93xx/ts72xx.c is about to be obsoleted by the ongoing
-DT conversion.
-
-
-> @@ -17674,14 +17649,6 @@ L:	linux-gpio@vger.kernel.org
->  S:	Maintained
->  F:	drivers/gpio/gpio-pxa.c
-> 
-> -PXA MMCI DRIVER
-> -S:	Orphan
-> -
-> -PXA RTC DRIVER
-> -M:	Robert Jarzmik <robert.jarzmik@free.fr>
-> -L:	linux-rtc@vger.kernel.org
-> -S:	Maintained
-> -
-
-drivers/mmc/host/pxamci.c and drivers/rtc/rtc-pxa.c
-are still in use.
-
-> 
-> -RDC R-321X SoC
-> -M:	Florian Fainelli <florian@openwrt.org>
-> -S:	Maintained
-> -
-
-This is still supported and it's x86 rather than arm.
-
-There is a good chance that we /should/ remove it for being obsolete,
-but that has to be a separate series and remove the drivers and
-architecture support if we decide to go that way.
-
-I'm fairly sure this platform was originally added for use with
-OpenWRT but not everything was merged and OpenWRT stopped
-carrying the required patches in 2016:
-
-https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=fed29fa36bf9ff387ff6e96522b1b5423fed3581
-
-Some of the drivers might still be in use on the related
-vortex86 cores, so maybe we keep the support and add
-
-N:     rdc321x
-
-      Arnd
+I do like extra credit. I'll take a look and see if it's something I
+can tackle. I'm primarily doing ad hoc checks on Android devices, so
+I'm unsure how easy it will be for me to run the suite. I'll get back
+to you shortly on that.
 
