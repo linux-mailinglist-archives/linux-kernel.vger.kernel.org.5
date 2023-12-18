@@ -1,232 +1,154 @@
-Return-Path: <linux-kernel+bounces-3184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09B23816885
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:46:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA338168AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:50:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86DB71F218BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:46:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ACC11C224AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FBD10974;
-	Mon, 18 Dec 2023 08:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A551097B;
+	Mon, 18 Dec 2023 08:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="PkTKQ1Bt"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JF2MrTeR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2095.outbound.protection.outlook.com [40.107.243.95])
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD5210944;
-	Mon, 18 Dec 2023 08:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aLHrEl5wN3YaFmFN0gg/cgPz4MGFzI7hbcG+gzs7htB/0gn84o/FdD/NeUJLf+Cy+jpYRuaFvee4yiETWqO7lIaaOb6pJ519mifxA/aZXDDJvvgzUlHoTyojT1nXgd1AzCjE6OQivpaKsiw+fx7qebRsmKsh2Z7xLO9enUq7E1VrzlT6PSeQQwUM55Pz8zstWpXerAEhpyQHMyb06XN24x+y24/XjwgibCYnUMY+wkdzR4Jf7ilzvXn67v3f9SoLSCYcwjtYa8o+vNI31poBB0ZXFgnsasjxqCAokh061YlylRT4H0Z37ErEcZks7n0Fqv7hl7sj0dJRwz+rFt91og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RIpiW3TCP+qtTISIVXS7rVFEFgiPODM6i3q0cX1O/A0=;
- b=UAko50/nEh6wli0FZdjIQQJZmrWu2rnU5a/tYX+di8n2GnTZ2E4tvwRzhHgkP7B5ThR5EahAZqqzCxdNG7AxmVS2XlqMpfWpGeMac8PU7J462O9biM49VGoBk+1TozeeVNSvz90He2OIZ/TXCth+zwVaofdXzUXIjweXOh2ie19avQGupD6eM5b7QJmdTJK68j26Gw/crSm/LGsxnrDA9GDAWJasKLow1DPuDbHhfuomS3Xs94uzrOkIVAqFVpeAGwKVEZF8+dvP8DgKI4DZC8xR4sSTOfnkKV5gYsQ6GhqMdyGBVNWPdViPc7DyVEQzEs/JnpsVi2ZkKZ4J4mkvgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RIpiW3TCP+qtTISIVXS7rVFEFgiPODM6i3q0cX1O/A0=;
- b=PkTKQ1BtQkQ0396hlR2osq/2Oqlj1HFHRHdeqzKyYvtC1KXgtXcn6K1sJUv5R6vQtlgNES/USOzzBER/pI2WVI8luGkxzeDNE99g+eZHfQ+8Keu9HWZ39Sq0/e5NN8pUu+mfYOZgknRvQkBbzOxLrBlY8NY+3a4x8EkgMBn7wR4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11) by
- SN4PR01MB7440.prod.exchangelabs.com (2603:10b6:806:1eb::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.37; Mon, 18 Dec 2023 08:46:09 +0000
-Received: from SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68]) by SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68%3]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 08:46:09 +0000
-Message-ID: <7dfc99e5-4c76-413b-aabc-81b26e26249e@os.amperecomputing.com>
-Date: Mon, 18 Dec 2023 15:45:56 +0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] i2c: aspeed: Acknowledge Tx done with and without
- ACK irq late
-Content-Language: en-CA
-To: Andrew Jeffery <andrew@codeconstruct.com.au>,
- Brendan Higgins <brendan.higgins@linux.dev>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Joel Stanley <joel@jms.id.au>, Andi Shyti <andi.shyti@kernel.org>,
- Wolfram Sang <wsa@kernel.org>, Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
- Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
- openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc: Cosmo Chou <chou.cosmo@gmail.com>,
- Open Source Submission <patches@amperecomputing.com>,
- Phong Vo <phong@os.amperecomputing.com>,
- "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20231211102217.2436294-1-quan@os.amperecomputing.com>
- <20231211102217.2436294-3-quan@os.amperecomputing.com>
- <2eab42cde34723a195e7a0287db08b25f8388a3b.camel@codeconstruct.com.au>
- <54cba87a0df233b8762e43b742afe8e44a77a60c.camel@codeconstruct.com.au>
-From: Quan Nguyen <quan@os.amperecomputing.com>
-In-Reply-To: <54cba87a0df233b8762e43b742afe8e44a77a60c.camel@codeconstruct.com.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR04CA0101.namprd04.prod.outlook.com
- (2603:10b6:610:75::16) To SN4PR01MB7455.prod.exchangelabs.com
- (2603:10b6:806:202::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3723F10941;
+	Mon, 18 Dec 2023 08:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4D3A740004;
+	Mon, 18 Dec 2023 08:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702889399;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bwiHZrMTP7Wiahde4BM0HLwINyMuE+Tg6ATmX7gQwnc=;
+	b=JF2MrTeRWDXBcGI3/WDea3Ht6B5N4RpvQCz83GOeUkIzg/MMjDrma3A5Sd9oxYcA5nY4FG
+	hT/vHT/3XUxSwbssvhSQIMxTB+cN1bArWKrrEMZIDMH52aR2gqHA+yyE2PX76CvtGPmrQl
+	6WY5ukQYYj3HYcyPd/Mu8/qiQBy8ZtZGzvSZ7g8hFPrGQ/cWYWtNvUF1PCZCu7+k41VYgH
+	YyI9ox40tOZ2SErdfmb95t9SP1Eu10YpojxePqvpQhO4R0DsFcGIdOXiuNh4i7oDE8scf1
+	Xnk6AlK61qgnKVIJ4lvA7It8nGqZjUdIiuJwRSvE8LOz8GwEr9EtW5bT0UaOwA==
+Date: Mon, 18 Dec 2023 09:49:56 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>, davem@davemloft.net,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com, Jakub Kicinski <kuba@kernel.org>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell
+ King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, Herve Codina
+ <herve.codina@bootlin.com>, Florian Fainelli <f.fainelli@gmail.com>, Heiner
+ Kallweit <hkallweit1@gmail.com>, =?UTF-8?B?S8O2cnk=?= Maincent
+ <kory.maincent@bootlin.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, Marek =?UTF-8?B?QmVow7pu?=
+ <kabel@kernel.org>, Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, =?UTF-8?B?Tmljb2zDsg==?= Veronese
+ <nicveronese@gmail.com>
+Subject: Re: [PATCH net-next v4 01/13] net: phy: Introduce ethernet link
+ topology representation
+Message-ID: <20231218094956.676e7ed0@device-28.home>
+In-Reply-To: <ede222d4-11da-4b95-a685-17cb480694dd@lunn.ch>
+References: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+	<20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+	<20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+	<20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+	<20231215214523.ntk5kec32mb5vqjs@skbuf>
+	<ede222d4-11da-4b95-a685-17cb480694dd@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN4PR01MB7455:EE_|SN4PR01MB7440:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc451b3b-4694-4bd8-3c73-08dbffa5c800
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ifN4LkZBveMrJclelhbzT+X3jtHeCPUmZV1aHGiSbBylZM8xi+j79yt688ubfbpMsnbPZNRUBLI0w451c/N+mBxlJHaYkhs+uOywXpxGx3n1waotbWNH5ZwfSJrxaFdRuHBQO3cKjuY6fkwUG+EVyqiU6rZp4cq/nCxNy03RYYRS9ScYTz0BC3R+cazQ7nrdP+g4PCc9mZzeDPQJv7cAahTEMrJ8gHxv2t4p+KndwTMzy7Rb0a5GXPIZN+nrCkpBqWrGkZJEO1WcqHL0d+qIphtVa5nlVv1fgiRp4mLBkPTSFUuTT/QBTgH+J8pv7iraJ+KwUIRaEK1wrpPlgiRkZXYSwsA58FOF+kE1kiSJrJcdwMksB71l/0JFH9v0xAf3+w1AL9K+h63jIiy8VvR1PasNlMuEaRuRcCmJT9EepR7gWnWoZbeIH6W+XKi34jfMccqNFi+IW32kS2hS+6m+AE6SQbnTyoAIepVKKkjT9sxe6gZ3jxWp2uQOHiO5L1gm45ArQmwRxBcfNLCHhBYNrZ7EPx7Ek4WybAkJurbTmoP65Vv63MMjoYb6nBi+LRWenTYLH9hwDuGiuvwRUQGSUwAYgpQ4LedeQFBYMPLcDX4KTE1gCEYIXI5KFWubvAWFYqqp/zhcjw8ZWrCMj+ZAOg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR01MB7455.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39850400004)(136003)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(26005)(6506007)(53546011)(2616005)(107886003)(6512007)(5660300002)(4326008)(41300700001)(4001150100001)(2906002)(7416002)(6666004)(6486002)(478600001)(316002)(110136005)(54906003)(8936002)(8676002)(66556008)(66476007)(66946007)(86362001)(31696002)(38100700002)(921008)(31686004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bWxGYWV4MTM4ZVlyQmhTWW9NRlBSekxrclpvSmZjbzZNeEpSMGQ2aGl6Tm1q?=
- =?utf-8?B?Z1JyUnJVSk9WcW5HRjh0VUxIL281dzJQbVhCZnpJcnZHVU9mRE1PN1JVajlo?=
- =?utf-8?B?a0ZRNDZpR0xhSGJEM1FYL1U2cU9TUXlJYmVqMWY5b3dKby9ZbmZlbTVscDhP?=
- =?utf-8?B?S2tkSWVXV2Z1OGhTcmRqTktpeUFjR3FiMDZVNi8wUTU0Zm1rWlROQmJxVnNv?=
- =?utf-8?B?cm1xR21kZGJlY0tMQWJSS3lSWE80ZzdsdEpLT2FRVlBUZ00wODVoN0gxMFdv?=
- =?utf-8?B?eGpvR3BTMldzN1E0Wi9WRmFucEZqZWcwVDRUbEEzUTVJeEJxb3d3cVk0K0ty?=
- =?utf-8?B?bXNyY29NbXRnODBsQVpiNU5WdUF3MmJiYVFqSms5eVpRWDN1dUs3MzFEZXRm?=
- =?utf-8?B?a2c1Ym03T0x0aldNOE51dzB3c0RGT0lxc1JGWnVrT3BFSUVsb0JHRjl5MFFG?=
- =?utf-8?B?WW9jRUNyYjM0YUNsME90Z1pwWko2L2NsVE1VZXJTUEJnWXI3R0IrZDBSN0VW?=
- =?utf-8?B?RTJlbWtuNGd2bFpyRldyai9hbEJPRDQ0aDNoUFdqWW8wTWVhWTlEOUhBQzZi?=
- =?utf-8?B?QjNGQVBmR1Z0WWdQRyt0OEVLRmd6VHlNWlFlRmJGTHlPajVhenBhUUlXdHY5?=
- =?utf-8?B?ZE8zdnVVZGl1ZFlOZURIbUFqLzVJWCt2VXBZNjcvd1ArOFdIcExlN2k5dTZD?=
- =?utf-8?B?RHhOSVRmbmoybExWTXJFUFZsaWNNazFEUnJ0MmVPSUp4VU5DM0tTNk5uOUs4?=
- =?utf-8?B?cDVOQVB5UGJaaDdRT1c4WUZicVVYTlhnYzVIUzRnUG11cURlUDg1V1hWK2ND?=
- =?utf-8?B?Kyt3VHVPZERDcS9pTGlXK3VYNXkwYVI2eVU5K3JqWHZzM1ljRjduS3gzUXEx?=
- =?utf-8?B?TFFvR2JGcExrVkZNbjRNeFpUZ05BRFM3NEpKUkRwS0xvbE9RNmZ3UTVYRE8y?=
- =?utf-8?B?aXRqWU5kaEZLZ0h0VTh2R1VqbFI1R2xhaEhjSkV1WXB2TjhLZ2ExZGxMODJu?=
- =?utf-8?B?eG84ZjBQTzNJcUxXcU4veitqWmJDeDBRcXVOZHJVakcxS28vbkFTUUxwMms0?=
- =?utf-8?B?UFlDcnRDbFlPMDJucmZNMGZtaHExcjhNajFWUU1LY0t4eFJja3JqVFRYUWRS?=
- =?utf-8?B?aGFCa2dGOHZaVHNLVGhlRmlvQm5NUlA1RUJnVld3OFk2K0duaCtQRFZOKzFj?=
- =?utf-8?B?ZE9MZTZCcEV5ZGI2dEM2bGlGeExSWm5jT0lFSENnVHNrTFUvUXd1NFZjMG55?=
- =?utf-8?B?cVp2NFFIa2RaaElnWjdSWkoxVXA1dW9OKzVCNjNGZTI3MG9NMFVUc2N4ckxJ?=
- =?utf-8?B?anRXbndjWWtkbTB5WDQ2UStLSzZwZUZzTE5ZaE10VFJ4OGFyK3RJUGp4K1E2?=
- =?utf-8?B?TVU1MzdzOVVocUlOeGJneDE5U1AyRWNKamxvSS9QaHExZHFnNXhGVC9obHRr?=
- =?utf-8?B?bm1PdHE0SUFxSmFJRitlK2ZSNy85ZDRMNUNjdlAzWHozdC9GNFVxVEVrZ3lJ?=
- =?utf-8?B?Z1htRkQvMFBKYmlYT083OGxJdFdSeWRJWkR0bGJlQnRheGdVTExsRytNQnh6?=
- =?utf-8?B?cS92UzBTbHdmUVJIaXZLTjJxVkltUUFpRDJudW9WajJ2QklvdnVOL3E2UVJq?=
- =?utf-8?B?RjlnbTlOdkRRaDFsTzdyN1cyZXc4Q2t4d2R6Q1g1MmhMdi9QN1NOL25SNmlC?=
- =?utf-8?B?bms5UUNtVllTcURqRldIRGdxT3pOMWJXbTFJbHN2N2xmZTN2Nitrcmt6V1JS?=
- =?utf-8?B?TC93NlF1cUZSZDgyeGNjMU11emdZdndRTTlhOVZXbGNhVWZ2b05BUGJMQ1Jl?=
- =?utf-8?B?Ym5RMTZ0dkxUYzBBQ0txNmxTdUNZZmFPMHZ1SzFHaW0xaTBlMm5pdTZVb1ND?=
- =?utf-8?B?TVI1NFhkcURsOWdnNnpIRlhyYTZjUjhQU3VzVmEzN3Azay9OMXVGK3hkRmtT?=
- =?utf-8?B?a2tFT0pNalVhb0ZIVUw4a2g2d3h4TUhJWFpqa0Q2Tlo3NVRsd29iUWROWXJ4?=
- =?utf-8?B?TytsZ0NyUTQrbEFIb29adVNuRWdHa3BLalNDTEZKR3huUzRYR0U0TjhRTHBw?=
- =?utf-8?B?ZGo0bCtyRnUrcDMxNWpJTE9PQi84VnkranpDVTY3bTVkUW90b1EzbllRbHBU?=
- =?utf-8?B?VWVYWGdBSkI0aERoQlRaMCtudUg3eDVSRVFYejNTZ0NJQnJ4SWxmT1haU3ZS?=
- =?utf-8?B?a1E9PQ==?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc451b3b-4694-4bd8-3c73-08dbffa5c800
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR01MB7455.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 08:46:09.5151
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kCc6BkizIgUKHA/3mWWwwf6YfHn/CK5UhtFteX9eKTjXHzPPRX7kd0pIthFO8u6b51QjvoFX9MuD2BjPeZYXdHv+6STR9xz6fxs4NfcA7r4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR01MB7440
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
+Hello Andrew,
 
+Thanks for the review,
 
-On 15/12/2023 05:21, Andrew Jeffery wrote:
->> On Mon, 2023-12-11 at 17:22 +0700, Quan Nguyen wrote:
->>> Commit 2be6b47211e1 ("i2c: aspeed: Acknowledge most interrupts early in
->>> interrupt handler") acknowledges most interrupts early before the slave
->>> irq handler is executed, except for the "Receive Done Interrupt status"
->>> which is acknowledged late in the interrupt.
->>> However, it has been observed that the early acknowledgment of "Transmit
->>> Done Interrupt Status" (with ACK or NACK) often causes the interrupt to
->>> be raised in READ REQUEST state, that shows the
->>> "Unexpected ACK on read request." complaint messages.
->>>
->>> Assuming that the "Transmit Done" interrupt should only be acknowledged
->>> once it is truly processed, this commit fixes that issue by acknowledging
->>> interrupts for both ACK and NACK cases late in the interrupt handler.
->>>
->>> Fixes: 2be6b47211e1 ("i2c: aspeed: Acknowledge most interrupts early in interrupt handler")
->>> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
->>
->> Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+On Sun, 17 Dec 2023 17:57:10 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
+
+> On Fri, Dec 15, 2023 at 11:45:23PM +0200, Vladimir Oltean wrote:
+> > On Fri, Dec 15, 2023 at 06:12:23PM +0100, Maxime Chevallier wrote:  
+> > > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> > > index d8e9335d415c..89daaccc9276 100644
+> > > --- a/drivers/net/phy/phy_device.c
+> > > +++ b/drivers/net/phy/phy_device.c
+> > > @@ -1491,6 +1500,11 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
+> > >  
+> > >  		if (phydev->sfp_bus_attached)
+> > >  			dev->sfp_bus = phydev->sfp_bus;
+> > > +
+> > > +		err = phy_link_topo_add_phy(&dev->link_topo, phydev,
+> > > +					    PHY_UPSTREAM_MAC, dev);
+> > > +		if (err)
+> > > +			goto error;
+> > >  	}
+> > >  
+> > >  	/* Some Ethernet drivers try to connect to a PHY device before
+> > > @@ -1816,6 +1830,7 @@ void phy_detach(struct phy_device *phydev)
+> > >  	if (dev) {
+> > >  		phydev->attached_dev->phydev = NULL;
+> > >  		phydev->attached_dev = NULL;
+> > > +		phy_link_topo_del_phy(&dev->link_topo, phydev);
+> > >  	}
+> > >  	phydev->phylink = NULL;
+> > >  
+> > > diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
+> > > new file mode 100644
+> > > index 000000000000..22f6372d002c
+> > > --- /dev/null
+> > > +++ b/drivers/net/phy/phy_link_topology.c
+> > > +int phy_link_topo_add_phy(struct phy_link_topology *topo,
+> > > +			  struct phy_device *phy,
+> > > +			  enum phy_upstream upt, void *upstream)
+> > > +{
+> > > +	struct phy_device_node *pdn;
+> > > +	int ret;
+> > > +
+> > > +	/* Protects phy and upstream */
+> > > +	ASSERT_RTNL();  
+> > 
+> > Something to think for the PHY library maintainers. This is probably
+> > the first time when the rtnl_lock() requirement is asserted at
+> > phy_attach_direct() time.  
 > 
-> So I just booted this series on v6.7-rc5 under qemu v8.2.0-rc4 and
-> found this:
+> There are two use cases here for plain MAC drivers.
 > 
-> ```
-> $ qemu-system-arm \
-> 	-M ast2600-evb \
-> 	-kernel build.aspeed_g5/arch/arm/boot/zImage \
-> 	-dtb build.aspeed_g5/arch/arm/boot/dts/aspeed/aspeed-ast2600-evb.dtb \
-> 	-initrd ~/src/buildroot.org/buildroot/output/images/rootfs.cpio.xz \
-> 	-nographic 2>&1 \
-> 	| ts -s
-> ...
-> 00:00:03 [    1.089187] Freeing initrd memory: 3308K
-> 00:00:05 smbus: error: Unexpected send start condition in state 1
-> 00:00:05 smbus: error: Unexpected write in state -1
-> 00:00:06 [    3.685731] aspeed-i2c-bus 1e78a400.i2c-bus: i2c bus 7 registered, irq 48
-> 00:00:06 [    3.688918] aspeed-i2c-bus 1e78a480.i2c-bus: i2c bus 8 registered, irq 49
-> 00:00:06 [    3.692326] aspeed-i2c-bus 1e78a500.i2c-bus: i2c bus 9 registered, irq 50
-> 00:00:06 [    3.693757] aspeed-i2c-bus 1e78a680.i2c-bus: i2c bus 12 registered, irq 51
-> 00:00:06 [    3.695070] aspeed-i2c-bus 1e78a700.i2c-bus: i2c bus 13 registered, irq 52
-> 00:00:06 [    3.696184] aspeed-i2c-bus 1e78a780.i2c-bus: i2c bus 14 registered, irq 53
-> 00:00:06 [    3.697144] aspeed-i2c-bus 1e78a800.i2c-bus: i2c bus 15 registered, irq 54
-> 00:00:06 [    3.699061] aspeed-video 1e700000.video: irq 55
-> 00:00:06 [    3.699254] aspeed-video 1e700000.video: assigned reserved memory node video
-> 00:00:06 [    3.702755] aspeed-video 1e700000.video: alloc mem size(24576) at 0xbc000000 for jpeg header
-> 00:00:06 [    3.706139] Driver for 1-wire Dallas network protocol.
-> 00:00:07 smbus: error: Unexpected send start condition in state -1
-> 00:00:07 smbus: error: Unexpected write in state -1
-> 00:00:10 smbus: error: Unexpected send start condition in state -1
-> 00:00:10 smbus: error: Unexpected write in state -1
-> 00:00:12 smbus: error: Unexpected send start condition in state -1
-> 00:00:12 smbus: error: Unexpected write in state -1
-> 00:00:14 smbus: error: Unexpected send start condition in state -1
-> 00:00:14 smbus: error: Unexpected write in state -1
-> 00:00:17 smbus: error: Unexpected send start condition in state -1
-> 00:00:17 smbus: error: Unexpected write in state -1
-> 00:00:18 [   14.080141] adt7475 7-002e: Error configuring attenuator bypass
-> 00:00:19 smbus: error: Unexpected send start condition in state -1
-> 00:00:19 smbus: error: Unexpected write in state -1
-> 00:00:21 smbus: error: Unexpected send start condition in state -1
-> 00:00:21 smbus: error: Unexpected write in state -1
-> 00:00:24 smbus: error: Unexpected send start condition in state -1
-> 00:00:24 smbus: error: Unexpected write in state -1
-> ```
+> 1) phy_attach_direct() is called from probe. RTNL is normally not
+> held, the driver would have to take it before making the call.
 > 
-> The smbus errors do not occur if I revert this patch.
+> 2) phy_attach_direct() is called from ndo_open. In that case,
+> __dev_open() has a ASSERT_RTNL() so we can assume RTNL has been taken.
 > 
-> Can you look into qemu to see if it's a bug in the aspeed i2c
-> controller model's state machine?
+> So i don't think we can assume RTNL is held, but it might be held.
 > 
+> We need a better understanding what is being protected here.
 
-Thanks, Andrew, for testing these patches on qemu.
+I'm protecting the struct phy_device and the *upstream pointer (which
+can be a net_device or a struct phy_device as well). In particular, I'm
+protecting the phy_device->phyindex field. While I don't see any case
+where we would concurrently write to it, given the weird topologies
+that might be implemented in the future, I guess better safe than sorry.
 
-I'll try to look into it to see if anything can be improved, but I have 
-to admit that I'm not so familiar with it. This is my first time trying 
-it on qemu. Just did these tests on real HW with waveform captured 
-sometimes.
-
-So far I could be able to reproduce the issue and start playing around 
-trying to understand the model.
+For the rest, the actual phy list and the next_index pointer from the
+topology should be already protected by the xarray mechanism.
 
 Thanks,
-- Quan
+
+Maxime
+
 
