@@ -1,42 +1,45 @@
-Return-Path: <linux-kernel+bounces-3111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37A6581678E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:41:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC98A816793
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:41:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1878EB20764
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:41:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CF4E1C2221D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04DBF519;
-	Mon, 18 Dec 2023 07:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AFC410790;
+	Mon, 18 Dec 2023 07:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b="z0hz/g8b"
+	dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b="I5mFNRgU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from repost01.tmes.trendmicro.eu (repost01.tmes.trendmicro.eu [18.185.115.17])
+Received: from refb02.tmes.trendmicro.eu (refb02.tmes.trendmicro.eu [18.185.115.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79991F9D9
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37422F9D8
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensynergy.com
-Received: from 104.47.7.168_.trendmicro.com (unknown [172.21.203.211])
-	by repost01.tmes.trendmicro.eu (Postfix) with SMTP id 4D85910000D8E;
+Received: from 104.47.11.168_.trendmicro.com (unknown [172.21.19.56])
+	by refb02.tmes.trendmicro.eu (Postfix) with ESMTPS id 6556E109EA891
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:40:52 +0000 (UTC)
+Received: from 104.47.11.168_.trendmicro.com (unknown [172.21.171.117])
+	by repost01.tmes.trendmicro.eu (Postfix) with SMTP id 814CD10000C35;
 	Mon, 18 Dec 2023 07:40:45 +0000 (UTC)
-X-TM-MAIL-RECEIVED-TIME: 1702885245.057000
-X-TM-MAIL-UUID: c00a88ad-df20-4b22-8af2-20430592f62d
-Received: from DEU01-BE0-obe.outbound.protection.outlook.com (unknown [104.47.7.168])
-	by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 0DFFF10020CE3;
+X-TM-MAIL-RECEIVED-TIME: 1702885245.214000
+X-TM-MAIL-UUID: b216ee90-1167-4d77-b81b-6e29b7d01f2c
+Received: from DEU01-FR2-obe.outbound.protection.outlook.com (unknown [104.47.11.168])
+	by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 3476D10020CE3;
 	Mon, 18 Dec 2023 07:40:45 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ev7X/6EoJn2tjUeFIGF9zxmVeCJ1D/YSji/0RTt+vIyHoU3vrNL0EzLVBovEv4+PS6NWRoFvihjm9gQbYUFnGwbL4Er9/KpUzuNCXH+Xld7OOcP1OZw7pvUbm79+jCRkF78CuRXAMXyPAYyVxcRIGqDl1rCZ6cKFaLr24JIVQ3wbZcyvwcnpsr+onNzYlnVb3Hoa4KcYqhypH4/qLs4/ZaLKlxtUBjkWlM7u1Ih2/lq0bY+RVTkkKpwSpVF5aBY+s4wmvsQgdgGTW1La/13Ea9/wEmeCLPGMcMpRTNNdsXOcY5KYNXZ9/qq2zw2ihg1UoRb3XVbOzdndjGO8Jxlv0g==
+ b=O4nN89gvE3TMetq7g+vY5m5FnE2W4ozOoE6siZAkWLGcPiJSN1PkvutVwAYA2JMru8mrSL3T3ZxTod4edgnARTiVrnpt5NFBPAuLXqakKGDZJSl/Jmum3wJwo91WRLsUkI1rfljLBqGqtoFi3wROVXf1Iqi+UusNekNDAc2gwQYyLC4vs5f8FdQNRVIvL+Wx6IROpfp24c0dqNR+8TJIAmevEWDgKk1Njlq0dL8qKrT+H+/nv5FiHA9fm8QOSTkUl6i9mVrbbOvTE+ORKivLJd2R4oGKuCCjS2yb6fUsOWSGB0OMkEXJ4S7zJv2MNrrpunY8r+kQnnX+Zta+yezytg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s2IZ507OM6ksbzs3neAB9pnVNg/Lg+qzeVPyN5kTi14=;
- b=Qde7EyVUSTEAaLXo9B76k6dT9Mb1TLXJxrM/DMUfqxC8IeSt5iLYfLPt5VA8VYr1VvJTLeTB1LUFlHc/ll+xcrmHqX32cjNDy/SfEbkjx2jGpN4QlYTxRv68t8FU+ZlVx3wsREYSI1dNozfgqSz/46Ux3xwReeeHok2dSQGcZVk1fU/Vti6k8lzLhTspdy0GmqR9/ZNectdaQKfFxBOKvBUtHoNFawNrJgbcCA6H1/CASjftT+rwuYxjoyNvW1GvVHQUcZjo4iYMW2YwP/TCPUjGMXQPa5h1W4Ii6hY2p+FGgkyyWDDeC+UlSBnI//YDK/YqGpU6PP2Zk3oy+IkRIA==
+ bh=uJgaNBEzp9lR6H6IY7NbUAFUz6Y1OBwJFLiNK5ZnaYk=;
+ b=g449OVrwDB8rw9JYqbtAPh//nyToH/kOHp/6up2l9vbnuWFHVHOA3RaU35VPFPW6CoHVHayGNWl8iFWGuMKRE4U+3xurcqwMRSkpvff/Z1OkJEgQuvwomxOUYh27J6QVlvvWvLtcorW8mST0PLACdAUHhmTQv6+h9qhvAdjwy0HILJ+L4Qmu4DmEd6TOb8pMBv9AVzN//QZwR7s9R4XkC5cXo+CMXU+mGrdqGV+qqYEtk8gRz54+Wpnqw1S69YbPaSATqRv4FeR1XYJYy5/k6CnWeVuddrQ2rVy+XhtvyY/XK+2hoOqR8wDxQDePvimD4GaU43FnydFmrbK4puqXgA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  217.66.60.4) smtp.rcpttodomain=google.com smtp.mailfrom=opensynergy.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none
@@ -54,9 +57,9 @@ Cc: Peter Hilber <peter.hilber@opensynergy.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Stephen Boyd <sboyd@kernel.org>,
 	"Christopher S. Hall" <christopher.s.hall@intel.com>
-Subject: [RFC PATCH v3 2/7] timekeeping: Fix cross-timestamp interpolation corner case decision
-Date: Mon, 18 Dec 2023 08:38:40 +0100
-Message-Id: <20231218073849.35294-3-peter.hilber@opensynergy.com>
+Subject: [RFC PATCH v3 3/7] timekeeping: Fix cross-timestamp interpolation for non-x86
+Date: Mon, 18 Dec 2023 08:38:41 +0100
+Message-Id: <20231218073849.35294-4-peter.hilber@opensynergy.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231218073849.35294-1-peter.hilber@opensynergy.com>
 References: <20231218073849.35294-1-peter.hilber@opensynergy.com>
@@ -69,173 +72,107 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6EUR05FT052:EE_|BE1P281MB2401:EE_
+X-MS-TrafficTypeDiagnostic: VI1EUR05FT064:EE_|FR3P281MB2203:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 26ad6a13-62c7-49c3-4a00-08dbff9ca3eb
+X-MS-Office365-Filtering-Correlation-Id: 2447cebd-93e8-4ef9-8df7-08dbff9ca43a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	29rHFrDgD2/T5BFlSCYIQ/9QGsxI8G+VugFmhm0VLOdIODOeui4Q/sRQXjGM8vQPpmzhumR1Ho7q5jHO1vMyJ+JwOHhUxM0z2mYCi2TjjTXsE/z4aGKZnltkoJq/YQn/dfxqJsg0gYowm0nKrhAwgXy4j+/kNo/gtCAKTVL19wRxLSPs/QG7SDvyqZYHOrYgqGYz9hlXBmlS56rNnQDX4KpuMwFqgUjrhx8TAkXadw/BiAiGKYjcetFVA1xN7M2RjapwJODdsfMTlETIvQ2isX8kcFyVN5o5nJmQwuk3LIQU1/rE3Ym9bQV7BXQMHbeaFcuxIIfDmQqa4hWjS4W5KcZ4LIriMG3OQqrUcJi4pgXZNoSjgkbFAIJDBpbmrwxSo/yyNbmQcT3e2tUMh4TZtVh1nYFO94y1LfnjCGSAkacjLDUVf7HLaSEPBYQ2NkFi/M5U71BQk2OHEMUE6QGtWPa3IFw5NqJqQrjoMcZHNho7LzjU6fCS4lR27v0c2+a/sXLCPdF5XFUVwJi9Yq/OSfJYs3QJAtAIzrV610g4tSSGsKRKV4B+gLo1bzLgqIBbFlTMoO/HiGuVMnHtxKCOmizlLPgkahtuVcUJLho1rV3lmM9uAAFbNcDJOPHG2Vw3f3w3IaO04KxZ/LESLoRb3v4DXNjQyKjRF6ERREaY9/CAl7LW3cwGpvVXt69qs9K1d6fJwvYvCv9A8XQEtT/0y52faeoNIWkTmkz0RLXL0xpvywTgizj/0A8VQURhM+Gm8A7MN+p1cHESU709qBdCSBCBW+HKL8VCc3+KSUHBhC0=
+	hV/4Lpf/4GS1iU2eNA8WgohOhtG/czIihIksNJVOh0OV+KVQQrTt+o1wJUfMeWbbfbKJLbq0huNlTdKSCOTYrAdSv+9lOF6nE/vqtPKf7anvV5U6uQJgEYc9BX2Ns2/ScvOtALCRM4H9SBW0/bezCERBXCIIQVzKX0GXlAOv2BB8tHCFRHdXIb681kdDv9KeIysv/ftKooubWi7H4B+UMYS256XKHQ5URIaT+WiaPEIy7GC5HHSJOJzrS+YUSMO2HzpjFyAH+93C3KzPqO+cM12W2wec/Xmn1t6ZrI0vZ7EyAtxEqbDLFnN4VxjWOq6LyI57MBquqqQOe6JvjnftuPICu1/vd3JZThMp3LMFdC5zJLLy7Efh/h055kAeyashPVIbZcFibBcEztHyGyNHLPukMvibIj2xRVwzx+sDHA/5zcAsloeZyafp0ZUk+gQpNBQc73mdzb1sXZscOR3Tcq2hea4iZn2VDPlMCJIfw7YLicXSGuaeIDGZDA0a7/VcMn/7u75oryKGk4MjCYGYYhvCOi7p9vg1VB6NqYFxDttlEM0xd+XCrBZPZGmYHcROgntJ+nTVZcSkDQtSj8VayZk3hvLE81AR33MpoV/BfG52gFKgdT7MCsaJYTE4Ycd7rNee2/UUQ9EWRDwxsB22LNbcbwjUen05U7cDzJtO/QIIKVmaszGSkqVkFphNTvd4/We+gJWaLP7s7ANhFPOYtn/swnoO7V69oZENhAtpwF3OVxmROdiKKIJ/7vR9/D1ZJBMf7oR9AIslm2jGv9LUMWw8VQmfVvpcKf7jjNEorYY=
 X-Forefront-Antispam-Report:
-	CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(376002)(39830400003)(230922051799003)(1800799012)(451199024)(186009)(82310400011)(64100799003)(46966006)(36840700001)(5660300002)(8676002)(8936002)(41300700001)(4326008)(36756003)(36860700001)(86362001)(47076005)(44832011)(40480700001)(6916009)(81166007)(70586007)(54906003)(42186006)(316002)(70206006)(2906002)(83380400001)(1076003)(26005)(336012)(2616005)(478600001)(36900700001);DIR:OUT;SFP:1102;
+	CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(39830400003)(376002)(396003)(136003)(346002)(230922051799003)(82310400011)(64100799003)(451199024)(1800799012)(186009)(36840700001)(46966006)(26005)(336012)(2616005)(1076003)(83380400001)(478600001)(36860700001)(44832011)(40480700001)(8676002)(4326008)(41300700001)(8936002)(5660300002)(86362001)(47076005)(36756003)(2906002)(81166007)(6916009)(70206006)(54906003)(42186006)(70586007)(316002)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 07:40:43.2363
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 07:40:43.7557
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26ad6a13-62c7-49c3-4a00-08dbff9ca3eb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2447cebd-93e8-4ef9-8df7-08dbff9ca43a
 X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=800fae25-9b1b-4edc-993d-c939c4e84a64;Ip=[217.66.60.4];Helo=[SR-MAIL-03.open-synergy.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	AM6EUR05FT052.eop-eur05.prod.protection.outlook.com
+	VI1EUR05FT064.eop-eur05.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BE1P281MB2401
-X-TM-AS-ERS: 104.47.7.168-0.0.0.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR3P281MB2203
+X-TM-AS-ERS: 104.47.11.168-0.0.0.0
 X-TMASE-Version: StarCloud-1.3-9.1.1015-28064.005
-X-TMASE-Result: 10--10.122800-4.000000
-X-TMASE-MatchedRID: tTXG1YCXjlyHXEtxeZW06KF4nhfuztKa59KGlOljPvtYf8LrTKM9HLMr
-	1BCU9VEa9MR66Vl9gxh3ctDbGLJrCd7BQ4zNEspZnRTJpY7VAKebyUSNdkyqzgsPNAkPeS3Qjod
-	z+U1nZVma3KYBmyydiEIlvMJDMU4GfNVPm/PTkb3dQKgLFATP1u5zvRYCQLoVvYvv3/bSxhtUfz
-	9bnWycdWILFRMBZjgurrSryEHqYI8CvRxvTnoekIruruLIWfnx3O2+pOfl+vcwLJ9PZUBQhZu1m
-	GZ02rt+IcOU43RoyMaaqpJOgb8zX/axsint/cAcLrzngQuTvvQnfL6KqKSjbzB4jJltGVDbLN5w
-	GPX3TPXYeXOEzfM22ez1ZBVjJwp/DeUZOJCXHMi/2tJ3foSBQiPzRlrdFGDwHCGr2Wk5lVXInHS
-	iJPmGO8dDHZX32JRzuyRrXoaR96b7npjusD0LiA==
-X-TMASE-XGENCLOUD: 159f6a85-11cf-41f0-878a-66104a7187af-0-0-200-0
-X-TM-Deliver-Signature: 545986F62613B371B835B9B918AD7416
-X-TM-Addin-Auth: BUtqnBarHP0bgWzscdjgjGlWmOEumQ7NzaDkRCEFuqnjPtioewQeNlT068t
-	h048NLoEZeQFXe90tc44TaDTw1skxkWpHtSexOZnrTT976aZWukwHq7s1oXwcPrVnmJqjjAGlZZ
-	Itdzus4XVoBjT7jZ03LdN1pkb48VTetkEp0uRouDPNbJ614WYQhiunlCWSE/ThgJlq4dERSBfGu
-	CcgsTm/9xpIFOWO+3ik5w9PCGJVTDVSEczjZkg9vGebucHYOxldUjoowCQxWfdh6QMzx55HO7QG
-	EEPijYadLz5HukA=.hk5z7VrzTNKAoTn//xMnoW2yfZzSmi0JDBR14tXiI/rYAx2UC6ALNCmeTz
-	EnL+5Wor+ywlBCRSXiRNVx9ciL402pgilSGv28bFfbWQMAnEYele26yF+1m2f1tq089b8Hca+re
-	RBdbMJ5KMVbMPx1qd9iMhDJ9RlTLz46fokrzlh0t/7nfZqrnspwZgtQdIgbcR+m6BSszsJLdpQg
-	x5LIFwGc0ejJ2Bd/pbk283VOD572H15MeUtSLM9j3QPTBtvQj2xf9OAlT6qqf/suhqh2IYIdoXJ
-	cCv0A/tUez8Ogqm3Qwg8A4g83g0MIcInssiov7wEACOUDYJIFZhHdNEhxmA==
+X-TMASE-Result: 10--4.970100-4.000000
+X-TMASE-MatchedRID: t1u9etd7zexeKR/wKUhyN50UyaWO1QCnDNB/jaV2d3ufOd3yw6VkrA9M
+	5f/N3N4Qthzaop7IM7sxRT5xs1+q/LIfFXYUihhJ9uL5hOvaG1KVmuhG06IIbTji23k3pyJLKLe
+	iMOXj8x3VCWoGLJ7oTkLgBLH/nEyhKI9YY0txdTpSU7TOghylToHV87ajhAZw5LGd87xcOHdwLp
+	z8B01lud9cNTZyIRQywqMZFCdDzWHPE8gn5ga5qlvIId8M26gTcEVHZ4vVAlhmrG+H0FSHunGDu
+	y8y1qkuSOzJLIeTZAaj45JdBik2YvV6Jv37/R3WO5nVDm0S/sD25GFUd8k/Fw==
+X-TMASE-XGENCLOUD: 96cd9daa-7b3c-4ac2-801a-e6e48ee1ddd3-0-0-200-0
+X-TM-Deliver-Signature: 928184199E900A744B7BBEB1C3B61368
+X-TM-Addin-Auth: D+SUBOckl6OjIKaLJA0rQHc0X50yKi5HY80Iici+0iapvjj18OcDxWHQv8R
+	IqRKegDLglAreiv1SAHJOupQtQuWZhPbmRqZx+y/Yl0ci7oXrhmcCbkvivbxXgzpZ3kGYIIf/OF
+	LHsCCQCiFhthJQSlN41U9EIy8fIX5PTapcAxBByfBfYnvJfSwIOwY1xaix7rzRoi3Vue920ygwy
+	9kE8aE47mAaQQJ1fT/JEh1XdAjxKVe3qDmShFY/1K+FFLQaoqL3XYG/bkt7FvJDi++dRBZIz0CX
+	/4Le3U7PHYvWtgM=.gnmt3d8QzuNc/gGm2gBBuJmGrq4UyAqlTuplSuT9ETxP9cYxRF9rDLPvKS
+	l/MjrSnT+M6+5rCHEqTgqTorWOMRXpQmuwMAXkUKP2kjQ2RQKYVdSxFgwPi/EW1DfWpcdd305CD
+	HaT51J47yR0hasdTHELwRtTmE+ksAdnqaZtfmJijOmj6/iO8a9EFUgaxIa1B3t7Z4rlOEeflTbL
+	OeR+0Z9qOX1EAm9VgyNColBcZqQn3PbHRbMnIJb3FG228g5z9uydBHP/5mXILkm3oN3nQNSVWMd
+	9wAyvZKa7aIR0yC0MODzB++u69tsKZUFUUj7CIyEd/iYZKdNNZ4K8tDtnBg==
 X-TM-Addin-ProductCode: EMS
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
 	s=TM-DKIM-20210503141657; t=1702885245;
-	bh=6hbFW5zT7dhfs2v0i1nOXGxD6lV3W89B3HUgfdPwo94=; l=4866;
+	bh=4Y3l9rtDRj9fZtWY1TyW5Z1YIMRN5Dq13DtOFcxl4/E=; l=2127;
 	h=From:To:Date;
-	b=z0hz/g8bZBvVxNXGsqoSU9fFaGUrtGUuo7NsyuFPJj+anixyAFR+end1wDCdJRfnP
-	 40+JHqMS0AhT6G4s24S6pdqTzTGnyxP+9lYrh1q140/gYCEY5ZKrP702iwD+/ezSY6
-	 /JcN730AuQhqbtb5JSWSAgWfzq6Mxsr3mcpH1Ib8COBVRQNJDd4NS7eJDBCKWFZ4vX
-	 dbkV/94dTuExSjo85in/yHIA+m+cgB8zHFhyGxDFtlqG6wimUZ5gGUIndI8vNdWEu3
-	 B+rqxSWy6BJfYNipYOTL6yNvy0eBq/3w4PhUWkiDaECChroLNEgL59bYvfQE7rnhye
-	 hTeDiAqhMjzWA==
+	b=I5mFNRgUgKybw+zW7adHWb3URb4DQrNLOfpi9NS75s9xOFBpA0vjvxocmAR7ubbiB
+	 y4tcRZL8zHyHirIv2C440HJtQ26Pt3ZnugoEvtMDiPVyj/IedB2sjiJs+pBufYQOXJ
+	 tFPza2l8xegk1vL8vPv4ff8PtFYkX1pddqhY1b4bUJISviNEiyNp7TfV0TZWvc8nm6
+	 zSoPjLsyOIxNv3m4EZQSkr/A+85vBGKII+JGccCVSELgXHZfgUOD0ZXK6ppZjJXX9B
+	 +YGYtLR/zXZ114tyUmv8rd9aHYkGS98VB8DV/GPUIutQ9kqXFNTr093JU46UJB2YBO
+	 QU9tVVMkMjj0w==
 
-The cycle_between() helper checks if parameter test is in the open interval
-(before, after). Colloquially speaking, this also applies to the counter
-wrap-around special case before > after. get_device_system_crosststamp()
-currently uses cycle_between() at the first call site to decide whether to
-interpolate for older counter readings.
+So far, get_device_system_crosststamp() unconditionally passes
+system_counterval.cycles to timekeeping_cycles_to_ns(). But when
+interpolating system time (do_interp == true), system_counterval.cycles is
+before tkr_mono.cycle_last, contrary to the timekeeping_cycles_to_ns()
+expectations.
 
-get_device_system_crosststamp() has the following problem with
-cycle_between() testing against an open interval: Assume that, by chance,
-cycles == tk->tkr_mono.cycle_last (in the following, "cycle_last" for
-brevity). Then, cycle_between() at the first call site, with effective
-argument values cycle_between(cycle_last, cycles, now), returns false,
-enabling interpolation. During interpolation,
-get_device_system_crosststamp() will then call cycle_between() at the
-second call site (if a history_begin was supplied). The effective argument
-values are cycle_between(history_begin->cycles, cycles, cycles), since
-system_counterval.cycles == interval_start == cycles, per the assumption.
-Due to the test against the open interval, cycle_between() returns false
-again. This causes get_device_system_crosststamp() to return -EINVAL.
+On x86, CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE will mitigate on
+interpolating, setting delta to 0. With delta == 0, xtstamp->sys_monoraw
+and xtstamp->sys_realtime are then set to the last update time, as
+implicitly expected by adjust_historical_crosststamp(). On other
+architectures, the resulting nonsense xtstamp->sys_monoraw and
+xtstamp->sys_realtime corrupt the xtstamp (ts) adjustment in
+adjust_historical_crosststamp().
 
-This failure should be avoided, since get_device_system_crosststamp() works
-both when cycles follows cycle_last (no interpolation), and when cycles
-precedes cycle_last (interpolation). For the case cycles == cycle_last,
-interpolation is actually unneeded.
-
-Fix this by changing cycle_between() into timestamp_in_interval(), which
-now checks against the closed interval, rather than the open interval.
-
-This changes the get_device_system_crosststamp() behavior for three corner
-cases:
-
-1. Bypass interpolation in the case cycles == tk->tkr_mono.cycle_last,
-   fixing the problem described above.
-
-2. At the first timestamp_in_interval() call site, cycles == now no longer
-   causes failure.
-
-3. At the second timestamp_in_interval() call site, history_begin->cycles
-   == system_counterval.cycles no longer causes failure.
-   adjust_historical_crosststamp() also works for this corner case,
-   where partial_history_cycles == total_history_cycles.
-
-These behavioral changes should not cause any problems.
+Fix this by deriving xtstamp->sys_monoraw and xtstamp->sys_realtime from
+the last update time when interpolating, by using the local variable
+"cycles". The local variable already has the right value when
+interpolating, unlike system_counterval.cycles.
 
 Fixes: 2c756feb18d9 ("time: Add history to cross timestamp interface supporting slower devices")
 Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+Acked-by: John Stultz <jstultz@google.com>
 ---
 
 Notes:
-    v3:
-    
-    - switch back to v1 style closed interval test (Thomas Gleixner)
-    - document effect of closed interval test on corner cases
-    - do not carry "Acked-by: John Stultz <jstultz@google.com>" due to above
-      changes
-    
     v2:
     
-    - try to clarify problem description (John Stultz)
-    - simplify fix
+    - simplify fix (John Stultz)
 
- kernel/time/timekeeping.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ kernel/time/timekeeping.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 08a3d0052baa..24ffd681aa23 100644
+index 24ffd681aa23..b58dffc58a8f 100644
 --- a/kernel/time/timekeeping.c
 +++ b/kernel/time/timekeeping.c
-@@ -1180,13 +1180,15 @@ static int adjust_historical_crosststamp(struct system_time_snapshot *history,
- }
+@@ -1262,10 +1262,8 @@ int get_device_system_crosststamp(int (*get_time_fn)
+ 				      tk_core.timekeeper.offs_real);
+ 		base_raw = tk->tkr_raw.base;
  
- /*
-- * cycle_between - true if test occurs chronologically between before and after
-+ * timestamp_in_interval - true if ts is chronologically in [start, end]
-+ *
-+ * True if ts occurs chronologically at or after start, and before or at end.
-  */
--static bool cycle_between(u64 before, u64 test, u64 after)
-+static bool timestamp_in_interval(u64 start, u64 end, u64 ts)
- {
--	if (test > before && test < after)
-+	if (ts >= start && ts <= end)
- 		return true;
--	if (before > after && (test > before || test < after))
-+	if (start > end && (ts >= start || ts <= end))
- 		return true;
- 	return false;
- }
-@@ -1247,7 +1249,7 @@ int get_device_system_crosststamp(int (*get_time_fn)
- 		 */
- 		now = tk_clock_read(&tk->tkr_mono);
- 		interval_start = tk->tkr_mono.cycle_last;
--		if (!cycle_between(interval_start, cycles, now)) {
-+		if (!timestamp_in_interval(interval_start, now, cycles)) {
- 			clock_was_set_seq = tk->clock_was_set_seq;
- 			cs_was_changed_seq = tk->cs_was_changed_seq;
- 			cycles = interval_start;
-@@ -1278,13 +1280,13 @@ int get_device_system_crosststamp(int (*get_time_fn)
- 		bool discontinuity;
+-		nsec_real = timekeeping_cycles_to_ns(&tk->tkr_mono,
+-						     system_counterval.cycles);
+-		nsec_raw = timekeeping_cycles_to_ns(&tk->tkr_raw,
+-						    system_counterval.cycles);
++		nsec_real = timekeeping_cycles_to_ns(&tk->tkr_mono, cycles);
++		nsec_raw = timekeeping_cycles_to_ns(&tk->tkr_raw, cycles);
+ 	} while (read_seqcount_retry(&tk_core.seq, seq));
  
- 		/*
--		 * Check that the counter value occurs after the provided
-+		 * Check that the counter value is not before the provided
- 		 * history reference and that the history doesn't cross a
- 		 * clocksource change
- 		 */
- 		if (!history_begin ||
--		    !cycle_between(history_begin->cycles,
--				   system_counterval.cycles, cycles) ||
-+		    !timestamp_in_interval(history_begin->cycles,
-+					   cycles, system_counterval.cycles) ||
- 		    history_begin->cs_was_changed_seq != cs_was_changed_seq)
- 			return -EINVAL;
- 		partial_history_cycles = cycles - system_counterval.cycles;
+ 	xtstamp->sys_realtime = ktime_add_ns(base_real, nsec_real);
 -- 
 2.40.1
 
