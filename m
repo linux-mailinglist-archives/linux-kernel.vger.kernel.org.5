@@ -1,96 +1,144 @@
-Return-Path: <linux-kernel+bounces-3207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114F481692E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:05:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1C3D816932
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4B991F223A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:05:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 627631F22EB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8469311197;
-	Mon, 18 Dec 2023 09:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294C5111BD;
+	Mon, 18 Dec 2023 09:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DbjhWmQv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EkeetnyI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24E611C91;
-	Mon, 18 Dec 2023 09:05:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF990C433C7;
-	Mon, 18 Dec 2023 09:05:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702890310;
-	bh=yAr4KLt08A7Iall+6S1OSy+IFrkOCzjW+AgOrCIVPKA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DbjhWmQvIZQyVfYOkuJm8tHcyZGWKsv9OSBNiZq31GpFDSNrmj6IgTFqSkvkSMgfn
-	 +nCjAAhsczAAma4vp42q/dCqJozoRxZMeF7cMgdTjNKOXkHIerUIbeJeMNuJN3q/Qu
-	 rCe+WdEyOoCgGsS3nt1B5vSVNQ7w7141J/DRAI/stPKR2mG/GLsU+1ylIArQL/PvIk
-	 RJheNYZxKmhuC1/IHXHsIif9QERvDPYQFwu3cCF0TA3QGHPqO33eAarcagtA71p0DH
-	 cb5CqNQIYLqPErT8KehTNCSRiljhSJy345vACn3bUGNU74NZdflBt7MDuu9vLw52Mt
-	 gT8Oy6c/Hgw0Q==
-Date: Mon, 18 Dec 2023 10:05:07 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Alex Bee <knaerzche@gmail.com>
-Cc: Sandy Huang <hjc@rock-chips.com>, 
-	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Andy Yan <andyshrk@163.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 20/27] drm/rockchip: inno_hdmi: Correctly setup HDMI
- quantization range
-Message-ID: <rrtknir3vizvcyamp3kfy47r6uppn3wwevb6a5gln2k533t52z@otm6vum6pg43>
-References: <20231216162639.125215-1-knaerzche@gmail.com>
- <20231216162639.125215-21-knaerzche@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5111118F;
+	Mon, 18 Dec 2023 09:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3b9ef61b6b8so2492837b6e.3;
+        Mon, 18 Dec 2023 01:05:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702890327; x=1703495127; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hUaORyXJtV85V7Mu0MoyFI+3+zmAJo7uX2NhdndJAnY=;
+        b=EkeetnyIKRGTVHRM+74v/KR7dw/smHKhWWVktXEjQb9Edqngk1yCYSx7haU42k7wWl
+         IiFJrPVqfx5GmvXdxIpvYu00k0jpLtnPpXuWOfQClAoHHiuJiIC445k/3MCJVSf83gfz
+         utk1zkdaCKKUkMNofllR7ikUc437tsZvlP+gfiLGaRyvO9j/yEZmprEFFvxDU2LJgrGn
+         uabXi+Yb8T+Ox72y0x3J/Mgtu4sJMW4R+mVGlciJbvS6XKt+tFzB6acJKaDl7u81eEsH
+         hXSzpaabbIuwUbHFv+KkQwpDzAa2eZymWcF7B40C8+BsOXpftEnaHupzF7aLrCRBSEmQ
+         McSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702890327; x=1703495127;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hUaORyXJtV85V7Mu0MoyFI+3+zmAJo7uX2NhdndJAnY=;
+        b=erC+yZ5yDo6B2zJ2jr2Qh4PcyO7Ut7vGZ5c5gLgwB8rR/QDwQTHlW/FMoympobwYs8
+         /G0a7mozsKyRJUgxAZh2Yy1fKVJG/V0DyVOK8f6uL7c+GNq3PQzcGd3QTEEu1pdn+mlb
+         U6Rax0c4rv4N4GSxjd8H2LBKhp4lmXnlrHBpiPxHYnq4ggNO4t/RtWByRBBZKnKpMghp
+         tlTjOiuTSL0wJl75Mw1r+ot1zaDmcwkCeQ0sHDAxSGC9uvtcI4bU02YNHalhQBkf1iqd
+         +ba4rTqtIUvugldtvckYOoiTPwTGm27I5G+5VtpFhdO44Z7ZV8GK4wqkeA5zhZeNOmsk
+         Vifg==
+X-Gm-Message-State: AOJu0YyA+b2/pzFua63Zm+OxcuOWd0HM/oNWBi57ao1g3XTf0iI/5jFd
+	yCSzGwyJawDJ2Tyd4LmYJ8k=
+X-Google-Smtp-Source: AGHT+IHC9opzn76r24DJTdfbmaQp6hr3JCR76QBVfyMRS+pzV07C7AGUB8B74ei3FyKlzOOuhJJMhg==
+X-Received: by 2002:a05:6358:78a:b0:170:ddbe:d051 with SMTP id n10-20020a056358078a00b00170ddbed051mr14810443rwj.59.1702890327177;
+        Mon, 18 Dec 2023 01:05:27 -0800 (PST)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id p31-20020a635b1f000000b005c21943d571sm737830pgb.55.2023.12.18.01.05.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 01:05:26 -0800 (PST)
+Date: Mon, 18 Dec 2023 17:05:21 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Dmitry Safonov <dima@arista.com>
+Cc: Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Salam Noureddine <noureddine@arista.com>,
+	Bob Gilligan <gilligan@arista.com>, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+	Dmitry Safonov <0x7f454c46@gmail.com>
+Subject: Re: [PATCH 04/12] selftests/net: Add a test for TCP-AO keys matching
+Message-ID: <ZYALUXDln552uUeW@Laptop-X1>
+References: <20231215-tcp-ao-selftests-v1-0-f6c08180b985@arista.com>
+ <20231215-tcp-ao-selftests-v1-4-f6c08180b985@arista.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="syuqoz5ybbowf3nd"
-Content-Disposition: inline
-In-Reply-To: <20231216162639.125215-21-knaerzche@gmail.com>
-
-
---syuqoz5ybbowf3nd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231215-tcp-ao-selftests-v1-4-f6c08180b985@arista.com>
 
-On Sat, Dec 16, 2023 at 05:26:31PM +0100, Alex Bee wrote:
-> @@ -431,6 +452,9 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
->  	else
->  		inno_conn_state->colorimetry =3D HDMI_COLORIMETRY_ITU_709;
-> =20
-> +	inno_conn_state->rgb_limited_range =3D
-> +		drm_default_rgb_quant_range(mode) =3D=3D HDMI_QUANTIZATION_RANGE_LIMIT=
-ED;
-> +
->  	/* Mute video and audio output */
->  	hdmi_modb(hdmi, HDMI_AV_MUTE, m_AUDIO_MUTE | m_VIDEO_BLACK,
->  		  v_AUDIO_MUTE(1) | v_VIDEO_MUTE(1));
+On Fri, Dec 15, 2023 at 02:36:18AM +0000, Dmitry Safonov wrote:
+> Add TCP-AO tests on connect()/accept() pair.
+> SNMP counters exposed by kernel are very useful here to verify the
+> expected behavior of TCP-AO.
+> 
+> Expected output for ipv4 version:
+> > # ./connect-deny_ipv4
+> > 1..19
+> > # 1702[lib/setup.c:254] rand seed 1680553689
+> > TAP version 13
+> > ok 1 Non-AO server + AO client
+> > ok 2 Non-AO server + AO client: counter TCPAOKeyNotFound increased 0 => 1
+> > ok 3 AO server + Non-AO client
+> > ok 4 AO server + Non-AO client: counter TCPAORequired increased 0 => 1
+> > ok 5 Wrong password
+> > ok 6 Wrong password: counter TCPAOBad increased 0 => 1
+> > ok 7 Wrong rcv id
+> > ok 8 Wrong rcv id: counter TCPAOKeyNotFound increased 1 => 2
+> > ok 9 Wrong snd id
+> > ok 10 Wrong snd id: counter TCPAOGood increased 0 => 1
+> > ok 11 Server: Wrong addr: counter TCPAOKeyNotFound increased 2 => 3
+> > ok 12 Server: Wrong addr
+> > ok 13 Client: Wrong addr: connect() was prevented
+> > ok 14 rcv id != snd id: connected
+> > ok 15 rcv id != snd id: counter TCPAOGood increased 1 => 3
+> > ok 16 Server: prefix match: connected
+> > ok 17 Server: prefix match: counter TCPAOGood increased 4 => 6
+> > ok 18 Client: prefix match: connected
+> > ok 19 Client: prefix match: counter TCPAOGood increased 7 => 9
+> > # Totals: pass:19 fail:0 xfail:0 xpass:0 skip:0 error:0
+> 
+> Expected output for ipv6 version:
+> > # ./connect-deny_ipv6
+> > 1..19
+> > # 1725[lib/setup.c:254] rand seed 1680553711
+> > TAP version 13
+> > ok 1 Non-AO server + AO client
+> > ok 2 Non-AO server + AO client: counter TCPAOKeyNotFound increased 0 => 1
+> > ok 3 AO server + Non-AO client: counter TCPAORequired increased 0 => 1
+> > ok 4 AO server + Non-AO client
+> > ok 5 Wrong password: counter TCPAOBad increased 0 => 1
+> > ok 6 Wrong password
+> > ok 7 Wrong rcv id: counter TCPAOKeyNotFound increased 1 => 2
+> > ok 8 Wrong rcv id
+> > ok 9 Wrong snd id: counter TCPAOGood increased 0 => 1
+> > ok 10 Wrong snd id
+> > ok 11 Server: Wrong addr
+> > ok 12 Server: Wrong addr: counter TCPAOKeyNotFound increased 2 => 3
+> > ok 13 Client: Wrong addr: connect() was prevented
+> > ok 14 rcv id != snd id: connected
+> > ok 15 rcv id != snd id: counter TCPAOGood increased 1 => 3
+> > ok 16 Server: prefix match: connected
+> > ok 17 Server: prefix match: counter TCPAOGood increased 5 => 7
+> > ok 18 Client: prefix match: connected
+> > ok 19 Client: prefix match: counter TCPAOGood increased 8 => 10
+> > # Totals: pass:19 fail:0 xfail:0 xpass:0 skip:0 error:0
+> 
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
 
-This needs to be done at atomic_check time: the expectation is that by
-the time you commit the state, everything is prepared for it.
-
-Maxime
-
---syuqoz5ybbowf3nd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZYALQwAKCRDj7w1vZxhR
-xQzzAP0YVFac7ehXKiTwVJRxtQYeIMZmYW1VoSFT4wGJVIk8ZAD+PBIYdoQZJl7b
-X7Gv0oBzZzU9IKJ+0sxAUitZEgq+5w8=
-=+z9c
------END PGP SIGNATURE-----
-
---syuqoz5ybbowf3nd--
+Tested-by: Hangbin Liu <liuhangbin@gmail.com>
 
