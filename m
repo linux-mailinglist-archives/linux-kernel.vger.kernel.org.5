@@ -1,155 +1,122 @@
-Return-Path: <linux-kernel+bounces-4357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 792CC817BF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:31:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC747817BF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:32:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 884491C21856
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:31:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17BC9B221EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 916A174096;
-	Mon, 18 Dec 2023 20:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2261C42361;
+	Mon, 18 Dec 2023 20:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FAqGpUqb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44D438DCC;
-	Mon, 18 Dec 2023 20:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2037ef59df0so464204fac.1;
-        Mon, 18 Dec 2023 12:31:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702931461; x=1703536261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5tAlFGdRk7dsOpEqAvR+OuH9VoSVkSPM03m6WEM5ITU=;
-        b=lLSY1grXNSgRmqW+NumJef57v+1tmNXKx5BClN6X/JNvoU/+V3VzolZMECP1FIrfXw
-         ocreDOEjzUfCLkcs7F3Nmr1Ro19zKup+xkm1rs23Cgnk+olYd4jYkwu/uzxw+xnF6iGx
-         KJo9u5BzL6VVrrkmxkYG3frnILXsEDN6GUySQ6V8pvOoP/nCXYkVagNzrZJKX2yKJ4q2
-         jSLmnlKVpLlK+yGxuhthkfDPRhbcQOe0Etr2o8/ch6C8hMkIis+XihwJXx+bk0b+i/qn
-         qErnTRziEyfECUSb4xhT8QENyLqj3G6Igl0+RETL/jjHay+0pdqhgp2FVOVdQEvTWnIT
-         5AUw==
-X-Gm-Message-State: AOJu0Yw8jKDZae1wKPzR/oau0/Urx/ooBsK4xKa/boF0Br3tgkhtDEV2
-	1zUAQoeoutEpqdfxv0MrxnJMlTYPWA2kcwXzA/gQsMt0
-X-Google-Smtp-Source: AGHT+IH2/Xcl6oIvnSfLcxllKujvsfBDeafZqBXfGcoJ6ZYuhTDpjdkrOr2cBBTAZn748hcGAPQjloWIL3tDogLMDwE=
-X-Received: by 2002:a05:6870:420d:b0:1fb:5d05:685e with SMTP id
- u13-20020a056870420d00b001fb5d05685emr31445963oac.2.1702931460922; Mon, 18
- Dec 2023 12:31:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6857B740AB;
+	Mon, 18 Dec 2023 20:31:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1B30C433C8;
+	Mon, 18 Dec 2023 20:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702931508;
+	bh=3faOPrO+Vz+rLFKkSkQXxX3AWNfnSd028J3inec7y3o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FAqGpUqb7QgG5ESz3XiaFW/dVAMzThIcUFlj3cgxOhsZysXhOBRRuamyG3jFCiM+e
+	 XmxE2WkHC6FjXyx8yBo6UlqPsVp9A6R9RTeQfCZyDrXRgg69G3V27xQcE8KWX8zxrm
+	 aaE1xLarIJ1ndE2elglGlunkzOQtUXd4F/Ul+aDqzY5TJfyomSzdNOJEOgyQ5ulZ2v
+	 wVoF+7XFiUulmwRnG1APVB45iFq3Tp2cc6SuAs4zXX/LQ0gs7pBYACGl8yrlbvkZDn
+	 2N4qBxvC3vbU3r3Vft7YZ+Dh81eIxPxrFXhlQl3YWsvWnJEDPjrPSpPsbMnMoer2Dx
+	 iw4Vx3uTYR7nA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 23E18403EF; Mon, 18 Dec 2023 17:31:46 -0300 (-03)
+Date: Mon, 18 Dec 2023 17:31:46 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@arm.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] perf tests: Make DSO tests a suite rather than
+ individual
+Message-ID: <ZYCsMpYtmsQr1_Ed@kernel.org>
+References: <20231128194624.1419260-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOg7-00Dvjq-VZ@rmk-PC.armlinux.org.uk>
-In-Reply-To: <E1rDOg7-00Dvjq-VZ@rmk-PC.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 18 Dec 2023 21:30:50 +0100
-Message-ID: <CAJZ5v0je=-oVnSumZs=dzcyVuVUeVeTgO7yOnjGg1igyrS7EHQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 04/21] ACPI: processor: Register all CPUs from acpi_processor_get_info()
-To: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128194624.1419260-1-irogers@google.com>
+X-Url: http://acmel.wordpress.com
 
-On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux.o=
-rg.uk> wrote:
->
-> From: James Morse <james.morse@arm.com>
->
-> To allow ACPI to skip the call to arch_register_cpu() when the _STA
-> value indicates the CPU can't be brought online right now, move the
-> arch_register_cpu() call into acpi_processor_get_info().
+Em Tue, Nov 28, 2023 at 11:46:24AM -0800, Ian Rogers escreveu:
+> Make the DSO data tests a suite rather than individual so their output
+> is grouped.
 
-This kind of looks backwards to me and has a potential to become
-super-confusing.
+Thanks, applied to perf-tools-next.
 
-I would instead add a way for the generic code to ask the platform
-firmware whether or not the given CPU is enabled and so it can be
-registered.
+- Arnaldo
 
-> Systems can still be booted with 'acpi=3Doff', or not include an
-> ACPI description at all. For these, the CPUs continue to be
-> registered by cpu_dev_register_generic().
->
-> This moves the CPU register logic back to a subsys_initcall(),
-> while the memory nodes will have been registered earlier.
-
-Isn't this somewhat risky?
-
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
-> Changes since RFC v2:
->  * Fixup comment in acpi_processor_get_info() (Gavin Shan)
->  * Add comment in cpu_dev_register_generic() (Gavin Shan)
-> ---
->  drivers/acpi/acpi_processor.c | 12 ++++++++++++
->  drivers/base/cpu.c            |  6 +++++-
->  2 files changed, 17 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
-c
-> index 0511f2bc10bc..e7ed4730cbbe 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct acpi_devic=
-e *device)
->                         cpufreq_add_device("acpi-cpufreq");
->         }
->
-> +       /*
-> +        * Register CPUs that are present. get_cpu_device() is used to sk=
-ip
-> +        * duplicate CPU descriptions from firmware.
-> +        */
-> +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> +           !get_cpu_device(pr->id)) {
-> +               int ret =3D arch_register_cpu(pr->id);
+>  tools/perf/tests/builtin-test.c |  2 --
+>  tools/perf/tests/dso-data.c     | 15 ++++++++++++---
+>  2 files changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index 113e92119e1d..9c09e4681c3a 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -62,8 +62,6 @@ static struct test_suite *generic_tests[] = {
+>  	&suite__pmu,
+>  	&suite__pmu_events,
+>  	&suite__dso_data,
+> -	&suite__dso_data_cache,
+> -	&suite__dso_data_reopen,
+>  	&suite__perf_evsel__roundtrip_name_test,
+>  #ifdef HAVE_LIBTRACEEVENT
+>  	&suite__perf_evsel__tp_sched_test,
+> diff --git a/tools/perf/tests/dso-data.c b/tools/perf/tests/dso-data.c
+> index deaefcdd8f09..5286ae8bd2d7 100644
+> --- a/tools/perf/tests/dso-data.c
+> +++ b/tools/perf/tests/dso-data.c
+> @@ -393,6 +393,15 @@ static int test__dso_data_reopen(struct test_suite *test __maybe_unused, int sub
+>  	return 0;
+>  }
+>  
+> -DEFINE_SUITE("DSO data read", dso_data);
+> -DEFINE_SUITE("DSO data cache", dso_data_cache);
+> -DEFINE_SUITE("DSO data reopen", dso_data_reopen);
 > +
-> +               if (ret)
-> +                       return ret;
-> +       }
+> +static struct test_case tests__dso_data[] = {
+> +	TEST_CASE("read", dso_data),
+> +	TEST_CASE("cache", dso_data_cache),
+> +	TEST_CASE("reopen", dso_data_reopen),
+> +	{	.name = NULL, }
+> +};
 > +
->         /*
->          *  Extra Processor objects may be enumerated on MP systems with
->          *  less than the max # of CPUs. They should be ignored _iff
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index 47de0f140ba6..13d052bf13f4 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generic(void)
->  {
->         int i, ret;
->
-> -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
-> +       /*
-> +        * When ACPI is enabled, CPUs are registered via
-> +        * acpi_processor_get_info().
-> +        */
-> +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabled)
->                 return;
->
->         for_each_present_cpu(i) {
-> --
-> 2.30.2
->
->
+> +struct test_suite suite__dso_data = {
+> +	.desc = "DSO data tests",
+> +	.test_cases = tests__dso_data,
+> +};
+> -- 
+> 2.43.0.rc1.413.gea7ed67945-goog
+> 
+
+-- 
+
+- Arnaldo
 
