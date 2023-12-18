@@ -1,185 +1,158 @@
-Return-Path: <linux-kernel+bounces-3246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D952F8169D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:29:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B79288169DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EC721F232E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:29:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7437C282447
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC02A11CA7;
-	Mon, 18 Dec 2023 09:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dragonos-org.20200927.dkim.feishu.cn header.i=@dragonos-org.20200927.dkim.feishu.cn header.b="qXWx2Hgj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223B811CB7;
+	Mon, 18 Dec 2023 09:31:57 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from va-2-31.ptr.blmpb.com (va-2-31.ptr.blmpb.com [209.127.231.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3797A11C82
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dragonos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dragonos.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=s1; d=dragonos-org.20200927.dkim.feishu.cn; t=1702891776;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=+uxyKxzxLJ8CNNO/Y08bBRDDLEB9njSHwhyTzxE5Yss=;
- b=qXWx2HgjqkOldcyYffAGVwUwAWM68mOwyUZbMeJI08Ky0fdA8JXXormuJENaa84r+9StYk
- pr05bA3sZ7B2XFrKOdsggBsoQ9ygNQ67DamcMOOpPDkgta7b70DOwmyq2BkbSBAn87Gjvb
- 2xpTlJV1bUf9U8/6w+ekILZU6koo18G2wcq/fPSfaNdrZe3HgDEmcHBtV3fhxAqpkgtqOr
- n9bqwU3Vpfvehe5AxOTYH25hFTx9n0o4K5i9Yt17M0hpkzDyQBmmS/4WLO047yaYls1M5L
- G5/9700r89eM9USJTrGa/QKrsbBndYlqOHQmqwpCKfyDodYji+nSrgEI5HP0Dg==
-X-Original-From: longjin <longjin@DragonOS.org>
-Message-Id: <20231218092924.200165-1-longjin@DragonOS.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6797A11CAA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rF9yM-00008N-3x; Mon, 18 Dec 2023 10:31:38 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rF9yL-00GfSI-5C; Mon, 18 Dec 2023 10:31:37 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rF9yK-0059f2-Rz; Mon, 18 Dec 2023 10:31:36 +0100
+Date: Mon, 18 Dec 2023 10:31:36 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sean Young <sean@mess.org>
+Cc: linux-media@vger.kernel.org, linux-pwm@vger.kernel.org, 
+	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, 
+	Scott Branden <sbranden@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, linux-rpi-kernel@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 5/6] pwm: bcm2835: Allow PWM driver to be used in
+ atomic context
+Message-ID: <eicw7ppqj5dubskhmeh7iwdaoixv27qw2zqaljkddt2rwosogt@6aftnwt6p5ek>
+References: <cover.1702890244.git.sean@mess.org>
+ <5249bb5d6c067692e4cd09573ced2df58966693b.1702890244.git.sean@mess.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.1
-From: "longjin" <longjin@dragonos.org>
-Subject: [PATCH V2] Translated the RISC-V architecture boot documentation.
-X-Lms-Return-Path: <lba+2658010ff+7293f5+vger.kernel.org+longjin@dragonos.org>
-Date: Mon, 18 Dec 2023 09:29:24 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-To: <siyanteng@loongson.cn>, <alexs@kernel.org>
-Cc: <linux-doc@vger.kernel.org>, <linux-riscv@lists.infradead.org>, 
-	<linux-kernel@vger.kernel.org>, "longjin" <longjin@DragonOS.org>
-Received: from longjin-server.8.8.8.8 ([116.56.134.73]) by smtp.feishu.cn with ESMTPS; Mon, 18 Dec 2023 17:29:34 +0800
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yreug3ipg4bt5kq6"
+Content-Disposition: inline
+In-Reply-To: <5249bb5d6c067692e4cd09573ced2df58966693b.1702890244.git.sean@mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-VGhlIHBhdGNoIGFkZHMgYSBuZXcgZmlsZSBib290LnJzdCB0byB0aGUgRG9jdW1lbnRhdGlvbi90
-cmFuc2xhdGlvbnMvemhfQ04vDQphcmNoL3Jpc2N2LyBkaXJlY3RvcnksIGFuZCBhZGRzIGEgcmVm
-ZXJlbmNlIHRvIHRoZSBuZXcgZmlsZSANCmluIHRoZSBpbmRleC5yc3QgZmlsZS4NCg0KU2lnbmVk
-LW9mZi1ieTogbG9uZ2ppbiA8bG9uZ2ppbkBEcmFnb25PUy5vcmc+DQotLS0NCiAuLi4vdHJhbnNs
-YXRpb25zL3poX0NOL2FyY2gvcmlzY3YvYm9vdC5yc3QgICAgfCAxNTUgKysrKysrKysrKysrKysr
-KysrDQogLi4uL3RyYW5zbGF0aW9ucy96aF9DTi9hcmNoL3Jpc2N2L2luZGV4LnJzdCAgIHwgICAx
-ICsNCiAyIGZpbGVzIGNoYW5nZWQsIDE1NiBpbnNlcnRpb25zKCspDQogY3JlYXRlIG1vZGUgMTAw
-NjQ0IERvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2FyY2gvcmlzY3YvYm9vdC5yc3QN
-Cg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2FyY2gvcmlz
-Y3YvYm9vdC5yc3QgYi9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9hcmNoL3Jpc2N2
-L2Jvb3QucnN0DQpuZXcgZmlsZSBtb2RlIDEwMDY0NA0KaW5kZXggMDAwMDAwMDAwMDAwLi4wYzI2
-MTkwOTU4MTkNCi0tLSAvZGV2L251bGwNCisrKyBiL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25z
-L3poX0NOL2FyY2gvcmlzY3YvYm9vdC5yc3QNCkBAIC0wLDAgKzEsMTU1IEBADQorLi4gU1BEWC1M
-aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCisuLiBpbmNsdWRlOjogLi4vLi4vZGlzY2xhaW1l
-ci16aF9DTi5yc3QNCisNCis6T3JpZ2luYWw6IERvY3VtZW50YXRpb24vYXJjaC9yaXNjdi9ib290
-LnJzdA0KKw0KKzrnv7vor5E6DQorDQorIOm+mei/myBKaW4gTG9uZyA8bG9uZ2ppbkBkcmFnb25v
-cy5vcmc+DQorDQorPT09PT09PT09PT09PT09PT09PT09PT09DQorUklTQy1W5YaF5qC45ZCv5Yqo
-6KaB5rGC5ZKM6ZmQ5Yi2DQorPT09PT09PT09PT09PT09PT09PT09PT09DQorDQorOkF1dGhvcjog
-QWxleGFuZHJlIEdoaXRpIDxhbGV4Z2hpdGlAcml2b3NpbmMuY29tPg0KKzpEYXRlOiAyMyBNYXkg
-MjAyMw0KKw0KK+i/meS7veaWh+aho+aPj+i/sOS6hlJJU0MtVuWGheaguOWvueW8leWvvOWKoOi9
-veeoi+W6j+WSjOWbuuS7tueahOacn+acm++8jOS7peWPiuS7u+S9leW8gOWPkeiAheWcqOaOpein
-pg0KK+aXqeacn+WQr+WKqOi/h+eoi+aXtuW/hemhu+eJouiusOeahOe6puadn+OAguWcqOi/meS7
-veaWh+aho+S4re+8jCBgYOaXqeacn+WQr+WKqOi/h+eoi2BgIOaMh+eahOaYr+WcqOacgA0KK+e7
-iOiZmuaLn+aYoOWwhOiuvue9ruS5i+WJjei/kOihjOeahOS7u+S9leS7o+eggeOAgg0KKw0KK+WG
-heaguOmihOWKoOi9veeahOimgeaxguWSjOmZkOWItg0KKz09PT09PT09PT09PT09PT09PT09PT0N
-CisNCitSSVNDLVblhoXmoLjlr7nlvJXlr7zliqDovb3nqIvluo/lkozlubPlj7Dlm7rku7bmnInk
-u6XkuIvopoHmsYLvvJoNCisNCivlr4TlrZjlmajnirbmgIENCistLS0tLS0tLS0tDQorDQorUklT
-Qy1W5YaF5qC45pyf5pyb77yaDQorDQorICAqIGBgJGEwYGAg5bqU5YyF5ZCr5b2T5YmN5qC45b+D
-55qEaGFydGlk44CCDQorICAqIGBgJGExYGAg5bqU5YyF5ZCr5YaF5a2Y5Lit6K6+5aSH5qCR55qE
-5Zyw5Z2A44CCDQorDQorQ1NSIOWvhOWtmOWZqOeKtuaAgQ0KKy0tLS0tLS0tLS0tLS0tDQorDQor
-UklTQy1W5YaF5qC45pyf5pyb77yaDQorDQorICAqIGBgJHNhdHAgPSAwYGDvvJog5aaC5p6c5a2Y
-5ZyoTU1V77yM5b+F6aG75bCG5YW256aB55So44CCDQorDQor5Li65bi46am75Zu65Lu25L+d55WZ
-55qE5YaF5a2YDQorLS0tLS0tLS0tLS0tLS0tLS0tLS0NCisNCitSSVNDLVblhoXmoLjlnKjnm7Tm
-jqXmmKDlsITkuK3kuI3og73mmKDlsITku7vkvZXluLjpqbvlhoXlrZjmiJbnlKhQTVBz5L+d5oqk
-55qE5YaF5a2Y77yMDQor5Zug5q2k5Zu65Lu25b+F6aG75qC55o2u6K6+5aSH5qCR6KeE6IyDIOWS
-jC/miJYgVUVGSeinhOiMg+ato+ehruagh+iusOi/meS6m+WMuuWfn+OAgg0KKw0KK+WGheaguOea
-hOS9jee9rg0KKy0tLS0tLS0tLS0NCisNCitSSVNDLVblhoXmoLjmnJ/mnJvooqvmlL7nva7lnKhQ
-TUTovrnnlYzvvIjlr7nkuo5ydjY05Li6Mk1C5a+56b2Q77yM5a+55LqOcnYzMuS4ujRNQuWvuem9
-kO+8ieOAgg0KK+ivt+azqOaEj++8jOWmguaenOS4jeaYr+i/meagt++8jEVGSSBzdHViIOWwhumH
-jeWumuS9jeWGheaguOOAgg0KKw0KK+ehrOS7tuaPj+i/sA0KKy0tLS0tLS0tDQorDQor5Zu65Lu2
-5Y+v5Lul5bCG6K6+5aSH5qCR5oiWQUNQSeihqOS8oOmAkue7mVJJU0MtVuWGheaguOOAgg0KKw0K
-K+iuvuWkh+agkeWPr+S7peebtOaOpeS7juWJjeS4gOmYtuautemAmui/hyRhMeWvhOWtmOWZqOS8
-oOmAkue7meWGheaguO+8jOaIluiAheWcqOS9v+eUqFVFRknlkK/liqjml7bvvIwNCivlj6/ku6Xp
-gJrov4dFRknphY3nva7ooajkvKDpgJLjgIINCisNCitBQ1BJ6KGo6YCa6L+HRUZJ6YWN572u6KGo
-5Lyg6YCS57uZ5YaF5qC444CC5Zyo6L+Z56eN5oOF5Ya15LiL77yMRUZJIHN0dWIg5LuN54S25Lya
-5Yib5bu65LiA5LiqDQor5bCP55qE6K6+5aSH5qCR44CC6K+35Y+C6ZiF5LiL6Z2i55qEIkVGSSBz
-dHViIOWSjOiuvuWkh+agkSLpg6jliIbvvIzkuobop6Pov5nkuKrorr7lpIfmoJHnmoTor6bnu4YN
-Civkv6Hmga/jgIINCisNCivlhoXmoLjlhaXlj6MNCistLS0tLS0tLQ0KKw0KK+WcqFNNUOezu+e7
-n+S4re+8jOacieS4pOenjeaWueazleWPr+S7pei/m+WFpeWGheaguO+8mg0KKw0KKy0gYGBSSVND
-Vl9CT09UX1NQSU5XQUlUYGDvvJrlm7rku7blnKjlhoXmoLjkuK3ph4rmlL7miYDmnInnmoRoYXJ0
-77yM5LiA5LiqaGFydOi1og0KKyAg5b6X5oq95aWW5bm25omn6KGM5pep5pyf5ZCv5Yqo5Luj56CB
-77yM6ICM5YW25LuW55qEaGFydOWImeWBnOWcqOmCo+mHjOetieW+heWIneWni+WMluWujOaIkOOA
-gui/meenjQ0KKyAg5pa55rOV5Li76KaB55So5LqO5pSv5oyB5rKh5pyJU0JJIEhTTeaJqeWxleWS
-jE3mqKHlvI9SSVNDLVblhoXmoLjnmoTml6flm7rku7bjgIINCistIGBg5pyJ5bqP5ZCv5YqoYGDv
-vJrlm7rku7blj6rph4rmlL7kuIDkuKrlsIbmiafooYzliJ3lp4vljJbpmLbmrrXnmoRoYXJ077yM
-54S25ZCO5L2/55SoU0JJIEhTTQ0KKyAg5omp5bGV5ZCv5Yqo5omA5pyJ5YW25LuW55qEaGFydOOA
-guacieW6j+WQr+WKqOaWueazleaYr+WQr+WKqFJJU0MtVuWGheaguOeahOmmlumAieWQr+WKqOaW
-ueazle+8jA0KKyAg5Zug5Li65a6D5Y+v5Lul5pSv5oyBQ1BV54Ot5o+S5ouU5ZKMa2V4ZWPjgIIN
-CisNCitVRUZJDQorLS0tLQ0KKw0KK1VFRkkg5YaF5a2Y5pig5bCEDQorfn5+fn5+fn5+fn5+fg0K
-Kw0KK+S9v+eUqFVFRknlkK/liqjml7bvvIxSSVNDLVblhoXmoLjlsIblj6rkvb/nlKhFRknlhoXl
-rZjmmKDlsITmnaXloavlhYXns7vnu5/lhoXlrZjjgIINCisNCitVRUZJ5Zu65Lu25b+F6aG76Kej
-5p6QIGBgL3Jlc2VydmVkLW1lbW9yeWBgIOiuvuWkh+agkeiKgueCueeahOWtkOiKgueCue+8jOW5
-tumBteWuiOiuvuWkhw0KK+agkeinhOiMg++8jOWwhui/meS6m+WtkOiKgueCueeahOWxnuaAp++8
-iCBgYG5vLW1hcGBgIOWSjCBgYHJldXNhYmxlYGAg77yJ6L2s5o2i5Li65YW25q2jDQor56Gu55qE
-RUZJ562J5Lu354mp77yI5Y+C6KeB6K6+5aSH5qCR6KeE6IyDdjAuNC1yYzHnmoQiMy41LjQvcmVz
-ZXJ2ZWQtbWVtb3J55ZKMDQorVUVGSSLpg6jliIbvvInjgIINCisNCitSSVNDVl9FRklfQk9PVF9Q
-Uk9UT0NPTA0KK35+fn5+fn5+fn5+fn5+fn5+fn5+fn5+DQorDQor5L2/55SoVUVGSeWQr+WKqOaX
-tu+8jEVGSSBzdHViIOmcgOimgeW8leWvvGhhcnRpZOS7peS+v+WwhuWFtuS8oOmAkue7mSBgYCRh
-MWBgIOS4reeahA0KK1JJU0MtVuWGheaguOOAgkVGSSBzdHVi5L2/55So5Lul5LiL5pa55rOV5LmL
-5LiA6I635Y+W5byV5a+8aGFydGlk77yaDQorDQorLSBgYFJJU0NWX0VGSV9CT09UX1BST1RPQ09M
-YGAg77yIKirpppbpgIkqKu+8ieOAgg0KKy0gYGBib290LWhhcnRpZGBgIOiuvuWkh+agkeWtkOiK
-gueCue+8iCoq5bey5byD55SoKirvvInjgIINCisNCivku7vkvZXmlrDnmoTlm7rku7bpg73lv4Xp
-obvlrp7njrAgYGBSSVNDVl9FRklfQk9PVF9QUk9UT0NPTGBg77yM5Zug5Li65Z+65LqO6K6+5aSH
-5qCRDQor55qE5pa55rOV546w5bey6KKr5byD55So44CCDQorDQor5pep5pyf5ZCv5Yqo55qE6KaB
-5rGC5ZKM57qm5p2fDQorPT09PT09PT09PT09PT09PT09PT0NCisNCitSSVNDLVblhoXmoLjnmoTm
-l6nmnJ/lkK/liqjov4fnqIvpgbXlvqrku6XkuIvnuqbmnZ/vvJoNCisNCitFRkkgc3R1YiDlkozo
-rr7lpIfmoJENCistLS0tLS0tLS0tLS0tLS0tLQ0KKw0KK+S9v+eUqFVFRknlkK/liqjml7bvvIxF
-Rkkgc3R1YiDkvJrnlKjkuI5hcm02NOebuOWQjOeahOWPguaVsOihpeWFhe+8iOaIluWIm+W7uu+8
-ieiuvuWkh+agke+8jA0KK+i/meS6m+WPguaVsOWcqERvY3VtZW50YXRpb24vYXJjaC9hcm0vdWVm
-aS5yc3TkuK3nmoQNCisiVUVGSSBrZXJuZWwgc3VwcG9ydG9uIEFSTSLmrrXokL3kuK3mnInmj4/o
-v7DjgIINCisNCivomZrmi5/mmKDlsITlronoo4UNCistLS0tLS0tLS0tLS0NCisNCivlnKhSSVND
-LVblhoXmoLjkuK3vvIzomZrmi5/mmKDlsITnmoTlronoo4XliIbkuLrkuKTmraXov5vooYzvvJoN
-CisNCisxLiBgYHNldHVwX3ZtKClgYCDlnKggYGBlYXJseV9wZ19kaXJgYCDkuK3lronoo4XkuIDk
-uKrkuLTml7bnmoTlhoXmoLjmmKDlsITvvIzov5kNCisgICDlhYHorrjlj5HnjrDns7vnu5/lhoXl
-rZjjgIIgICDmraTml7blj6rmnInlhoXmoLjmlofmnKwv5pWw5o2u6KKr5pig5bCE44CC5Zyo5bu6
-56uL6L+Z5Liq5pig5bCE5pe277yMDQorICAg5LiN6IO96L+b6KGM5YiG6YWN77yI5Zug5Li657O7
-57uf5YaF5a2Y6L+Y5pyq55+l77yJ77yM5omA5LulYGBlYXJseV9wZ19kaXJgYOmhteihqOaYr+md
-mQ0KKyAgIOaAgeWIhumFjeeahO+8iOavj+S4que6p+WIq+WPquS9v+eUqOS4gOS4quihqO+8ieOA
-gg0KKw0KKzIuIGBgc2V0dXBfdm1fZmluYWwoKWBgIOWcqCBgYHN3YXBwZXJfcGdfZGlyYGAg5Lit
-5Yib5bu65pyA57uI55qE5YaF5qC45pigDQorICAg5bCE77yM5bm25Yip55So5Y+R546w55qE57O7
-57uf5YaF5a2YICAg5Yib5bu657q/5oCn5pig5bCE44CC5Zyo5bu656uL6L+Z5Liq5pig5bCE5pe2
-77yM5YaF5qC45Y+v5LulDQorICAg5YiG6YWN5YaF5a2Y77yM5L2G5LiN6IO955u05o6l6K6/6Zeu
-5a6D77yI5Zug5Li655u05o6l5pig5bCE6L+Y5LiN5a2Y5Zyo77yJ77yM5omA5Lul5a6D5L2/55So
-Zml4bWFwDQorICAg5Yy65Z+f55qE5Li05pe25pig5bCE5p2l6K6/6Zeu5paw5YiG6YWN55qE6aG1
-6KGo57qn5Yir44CCDQorDQor5Li65LqG6K6pIGBgdmlydF90b19waHlzKClgYCDlkowgYGBwaHlz
-X3RvX3ZpcnQoKWBgIOiDveWkn+ato+ehruWcsOWwhuebtOaOpQ0KK+aYoOWwhOWcsOWdgOi9rOaN
-ouS4uueJqeeQhuWcsOWdgO+8jOWug+S7rOmcgOimgeefpemBk0RSQU3nmoTotbflp4vkvY3nva7j
-gILov5nlj5HnlJ/lnKjmraXpqqQx5LmL5ZCO77yMDQor5bCx5Zyo5q2l6aqkMuWuieijheebtOaO
-peaYoOWwhOS5i+WJje+8iOWPguingWFyY2gvcmlzY3YvbW0vaW5pdC5j5Lit55qEDQorYGBzZXR1
-cF9ib290bWVtKClgYCDlh73mlbDvvInjgILlnKjlronoo4XmnIDnu4jomZrmi5/mmKDlsITkuYvl
-iY3kvb/nlKjov5nkupvlro/ml7blv4XpobsNCivku5Tnu4bmo4Dmn6XjgIINCisNCivpgJrov4dm
-aXhtYXDov5vooYzorr7lpIfmoJHmmKDlsIQNCistLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCisN
-CivnlLHkuo4gYGByZXNlcnZlZF9tZW1gYCDmlbDnu4TmmK/nlKggYGBzZXR1cF92bSgpYGAg5bu6
-56uL55qE6Jma5ouf5Zyw5Z2A5Yid5aeL5YyWDQor55qE77yM5bm25LiU5LiOYGBzZXR1cF92bV9m
-aW5hbCgpYGDlu7rnq4vnmoTmmKDlsITkuIDotbfkvb/nlKjvvIxSSVNDLVblhoXmoLjkvb/nlKgN
-CitmaXhtYXDljLrln5/mnaXmmKDlsITorr7lpIfmoJHjgILov5nnoa7kv53orr7lpIfmoJHlj6/k
-u6XpgJrov4fkuKTnp43omZrmi5/mmKDlsITorr/pl67jgIINCisNCitQcmUtTU1V5omn6KGMDQor
-LS0tLS0tLS0tLS0NCisNCivlnKjlu7rnq4vnrKzkuIDkuKromZrmi5/mmKDlsITkuYvliY3vvIzp
-nIDopoHov5DooYzkuIDkupvku6PnoIHjgILov5nkupvljIXmi6znrKzkuIDkuKromZrmi5/mmKDl
-sITnmoTlronoo4XmnKzouqvvvIwNCivml6nmnJ/mm7/ku6PmlrnmoYjnmoTkv67ooaXvvIzku6Xl
-j4rlhoXmoLjlkb3ku6TooYznmoTml6nmnJ/op6PmnpDjgILov5nkupvku6PnoIHlv4XpobvpnZ7l
-uLjlsI/lv4PlnLDnvJbor5HvvIzlm6DkuLrvvJoNCisNCistIGBgLWZuby1waWVgYO+8mui/meWv
-ueS6juS9v+eUqGBgLWZQSUVgYOeahOWPr+mHjeWumuS9jeWGheaguOaYr+W/hemcgOeahO+8jOWQ
-puWIme+8jOS7u+S9leWvuQ0KKyAg5YWo5bGA56ym5Y+355qE6K6/6Zeu6YO95bCG6YCa6L+HICBH
-T1Tov5vooYzvvIzogIxHT1Tlj6rmmK/omZrmi5/lnLDph43mlrDlrprkvY3jgIINCistIGBgLW1j
-bW9kZWw9bWVkYW55YGDvvJrku7vkvZXlr7nlhajlsYDnrKblj7fnmoTorr/pl67pg73lv4Xpobvm
-mK9QQ+ebuOWvueeahO+8jOS7pemBv+WFjeWcqOiuvg0KKyAg572uTU1V5LmL5YmN5Y+R55Sf5Lu7
-5L2V6YeN5a6a5L2N44CCDQorLSAq5omA5pyJKiDnmoTku6rooajljJblip/og73kuZ/lv4Xpobvo
-oqvnpoHnlKjvvIjljIXmi6xLQVNBTu+8jGZ0cmFjZeWSjOWFtuS7lu+8ieOAgg0KKw0KK+eUseS6
-juS9v+eUqOadpeiHquS4jeWQjOe8luivkeWNleWFg+eahOespuWPt+mcgOimgeeUqOi/meS6m+ag
-h+W/l+e8luivkeivpeWNleWFg++8jOaIkeS7rOW7uuiuruWwveWPr+iDveS4jeimgeS9v+eUqA0K
-K+WklumDqOespuWPt+OAgg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25z
-L3poX0NOL2FyY2gvcmlzY3YvaW5kZXgucnN0IGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMv
-emhfQ04vYXJjaC9yaXNjdi9pbmRleC5yc3QNCmluZGV4IDNiMDQxYzExNjE2OS4uOTY1NzM0NTkx
-MDVlIDEwMDY0NA0KLS0tIGEvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vYXJjaC9y
-aXNjdi9pbmRleC5yc3QNCisrKyBiL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2Fy
-Y2gvcmlzY3YvaW5kZXgucnN0DQpAQCAtMTcsNiArMTcsNyBAQCBSSVNDLVYg5L2T57O757uT5p6E
-DQogLi4gdG9jdHJlZTo6DQogICAgIDptYXhkZXB0aDogMQ0KIA0KKyAgICBib290DQogICAgIGJv
-b3QtaW1hZ2UtaGVhZGVyDQogICAgIHZtLWxheW91dA0KICAgICBwYXRjaC1hY2NlcHRhbmNlDQot
-LSANCjIuMzQuMQ==
+
+--yreug3ipg4bt5kq6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Sean,
+
+On Mon, Dec 18, 2023 at 09:06:46AM +0000, Sean Young wrote:
+> @@ -151,16 +146,40 @@ static int bcm2835_pwm_probe(struct platform_device=
+ *pdev)
+>  		return dev_err_probe(&pdev->dev, PTR_ERR(pc->clk),
+>  				     "clock not found\n");
+> =20
+> +	ret =3D clk_rate_exclusive_get(pc->clk);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret,
+> +				     "fail to get exclusive rate\n");
+
+If Maxime didn't object to my series at
+https://lore.kernel.org/linux-clk/cover.1702400947.git.u.kleine-koenig@peng=
+utronix.de/,
+I'd ask you to not do error checking here. With the objection I hesitate
+to ask for that and just mention it.
+
+> +	pc->rate =3D clk_get_rate(pc->clk);
+> +	if (!pc->rate) {
+> +		clk_rate_exclusive_put(pc->clk);
+> +		return dev_err_probe(&pdev->dev, -EINVAL,
+> +				     "failed to get clock rate\n");
+> +	}
+> +
+>  	pc->chip.dev =3D &pdev->dev;
+>  	pc->chip.ops =3D &bcm2835_pwm_ops;
+> +	pc->chip.atomic =3D true;
+>  	pc->chip.npwm =3D 2;
+> =20
+>  	platform_set_drvdata(pdev, pc);
+> =20
+>  	ret =3D devm_pwmchip_add(&pdev->dev, &pc->chip);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		clk_rate_exclusive_put(pc->clk);
+>  		return dev_err_probe(&pdev->dev, ret,
+>  				     "failed to add pwmchip\n");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int bcm2835_pwm_remove(struct platform_device *pdev)
+> +{
+> +	struct bcm2835_pwm *pc =3D platform_get_drvdata(pdev);
+> +
+> +	clk_rate_exclusive_put(pc->clk);
+
+The ugly thing here is that now clk_rate_exclusive_put() happens before
+pwmchip_remove(). Maybe register a devm cleanup which also gets rid of
+the two clk_rate_exclusive_put() in probe's error path?
+
+>  	return 0;
+>  }
+> @@ -197,6 +216,7 @@ static struct platform_driver bcm2835_pwm_driver =3D {
+>  		.pm =3D pm_ptr(&bcm2835_pwm_pm_ops),
+>  	},
+>  	.probe =3D bcm2835_pwm_probe,
+> +	.remove =3D bcm2835_pwm_remove,
+
+Please use .remove_new
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yreug3ipg4bt5kq6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWAEXcACgkQj4D7WH0S
+/k5t1ggAr2ILVcBzlWHGfg/TgkgTIZ5LtQYjXW5Bk9UFDSSdxt1WCu4lTf7aakUD
+L9wqph54ff/Gywj++5qXt3qGEm9Wv1yR/yoWVL7TISqibdE8lo21nQijQLqdAU6G
+4lvuIvF8V5zEsCj1hrkzYbwm8hnWLeadT5DDJkK2NwAsrUu7MJiMH3PzHjeYE9kb
+mZ8G7Ss9pSHkXFFhLpBTEIxlJPUSEj+ErVYomlrHe7MDTUPsNRH+vy8AZrIOy/49
+/uPZwoO/qbone0XC9uzIiCSdOoXRFZYs52vaTr+pE3SDmyxmbl4yBPZc/CflnBmQ
+xnAW21PTZownjRYM5BJzeEh1XlQEbg==
+=vw1H
+-----END PGP SIGNATURE-----
+
+--yreug3ipg4bt5kq6--
 
