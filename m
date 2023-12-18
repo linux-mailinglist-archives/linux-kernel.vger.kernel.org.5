@@ -1,207 +1,157 @@
-Return-Path: <linux-kernel+bounces-3122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A7C8167A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:46:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B0C8167A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:47:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 869801C22477
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:46:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 896C71F22C11
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751BA101EB;
-	Mon, 18 Dec 2023 07:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4263211C8E;
+	Mon, 18 Dec 2023 07:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IzalLcRh"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SgZOgNJ1"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38172E549
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FCB11CA0
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 07:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI6bVgv013118;
-	Mon, 18 Dec 2023 07:45:28 GMT
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI6Dtdu004492;
+	Mon, 18 Dec 2023 07:46:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=4UDu3rXjlCqT3/8LyZBW7PcqrrzBck5KaR5LZIkTUkY=;
- b=IzalLcRhRzENzyt0C1DSRuVoarBB/h+izeB/Fd4L/dIbpIPbuNehZEH/1Sf19UVfntT/
- AhgeIRVmoQm5cRaGjSmEJ3beLt41ftwQ2KF5YOm1eVn3JH5mVVbuFpuHP9rRY83SPg+K
- xp7CpLzjfuW/QH7E83jrTWIzIacj80Y3qmjgJRoUiqDRjK7kLh03SGsSAV+RvfwS6vhO
- m9+MyBfVHqarPEj9MD8jsofVt7oQVNe8cK++CI1yTsIQ5v+Fo5lpNFxVi5lsZwqw3ur0
- iO/hRY0NIqkO+PaRgnDvAjdDIPhXrBfnoDf1gQy4ijZ4K7O7iFxAcfTiZ3V5IuZ6znb/ hg== 
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=OBt1K0hL5jJcH/NjAWnY5492UJ0wnBJXT06vRSP5k2g=;
+ b=SgZOgNJ1eXv545gdlcRF8qLXVIDlPbzYWEKSJgOe4hKlrTMQB5kYpfttf4H1OBIE+YDJ
+ 7Q1witDNWPTBu20jq8ieoO28yXuHt5JO2wL3xihoxhQIZaUuUCXN3Qd55QnR79DTRYff
+ U4d130cZGhUSDjwzD2W1CZygX5yZ6q9gxHklZEx4PJEGWp9eWfJ09EK2oINAgXJWs2u7
+ /S0BxDIRHcbyMLRoJ+3OY5CoUMvOJD13MI5vtvlGshx58xZZytHe8RwbgJC0JvOPx3MF
+ GPAAJ6VGF1IzopumRMok/d80QUFFmEE897FLyNViP1JQQ0YwqeRgtlvEjRctypyt9kru AQ== 
 Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2gyj1p0k-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2dkmxptj-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 07:45:27 +0000
+	Mon, 18 Dec 2023 07:46:22 +0000
 Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI67Gdb010840;
-	Mon, 18 Dec 2023 07:45:26 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7n7d8n-1
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI69SDh010900;
+	Mon, 18 Dec 2023 07:46:21 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7n7dcm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 07:45:26 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BI7jOBf459510
+	Mon, 18 Dec 2023 07:46:21 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BI7kJpg13370024
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 18 Dec 2023 07:45:24 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 571752004D;
-	Mon, 18 Dec 2023 07:45:24 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 47C5020043;
-	Mon, 18 Dec 2023 07:45:24 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 18 Dec 2023 07:45:24 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-	id 15E80E16DA; Mon, 18 Dec 2023 08:45:24 +0100 (CET)
+	Mon, 18 Dec 2023 07:46:19 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 747042004B;
+	Mon, 18 Dec 2023 07:46:19 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 475E520040;
+	Mon, 18 Dec 2023 07:46:19 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 18 Dec 2023 07:46:19 +0000 (GMT)
 From: Sven Schnelle <svens@linux.ibm.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH v2 3/3] entry: move syscall_enter_from_user_mode() to header file
-Date: Mon, 18 Dec 2023 08:45:20 +0100
-Message-Id: <20231218074520.1998026-4-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231218074520.1998026-1-svens@linux.ibm.com>
-References: <20231218074520.1998026-1-svens@linux.ibm.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski
+ <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, Heiko Carstens
+ <hca@linux.ibm.com>
+Subject: Re: [PATCH 1/3] entry: move exit to usermode functions to header file
+In-Reply-To: <87r0jnmgew.ffs@tglx> (Thomas Gleixner's message of "Fri, 15 Dec
+	2023 20:09:27 +0100")
+References: <20231205133015.752543-1-svens@linux.ibm.com>
+	<20231205133015.752543-2-svens@linux.ibm.com> <87r0jnmgew.ffs@tglx>
+Date: Mon, 18 Dec 2023 08:46:18 +0100
+Message-ID: <yt9dh6kgvtpx.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wEVrj0xpU6k9jfWt2Y2zw8dxmkmnvpLB
-X-Proofpoint-ORIG-GUID: wEVrj0xpU6k9jfWt2Y2zw8dxmkmnvpLB
+X-Proofpoint-ORIG-GUID: A4LsraRmZgxVr8YGx8dmSRaGsoPwGM1m
+X-Proofpoint-GUID: A4LsraRmZgxVr8YGx8dmSRaGsoPwGM1m
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-18_04,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=799
- impostorscore=0 clxscore=1015 priorityscore=1501 spamscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312180054
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=536 suspectscore=0
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312180055
 
-To allow inlining of syscall_enter_from_user_mode(), move it
-to entry-common.h.
+Hi Thomas,
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- include/linux/entry-common.h | 27 +++++++++++++++++++++++++--
- kernel/entry/common.c        | 32 +-------------------------------
- 2 files changed, 26 insertions(+), 33 deletions(-)
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index e8f1e4bba1c1..4f8e467eaf3c 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -134,6 +134,9 @@ static __always_inline void enter_from_user_mode(struct pt_regs *regs)
-  */
- void syscall_enter_from_user_mode_prepare(struct pt_regs *regs);
- 
-+long syscall_trace_enter(struct pt_regs *regs, long syscall,
-+			 unsigned long work);
-+
- /**
-  * syscall_enter_from_user_mode_work - Check and handle work before invoking
-  *				       a syscall
-@@ -157,7 +160,15 @@ void syscall_enter_from_user_mode_prepare(struct pt_regs *regs);
-  *     ptrace_report_syscall_entry(), __secure_computing(), trace_sys_enter()
-  *  2) Invocation of audit_syscall_entry()
-  */
--long syscall_enter_from_user_mode_work(struct pt_regs *regs, long syscall);
-+static __always_inline long syscall_enter_from_user_mode_work(struct pt_regs *regs, long syscall)
-+{
-+	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
-+
-+	if (work & SYSCALL_WORK_ENTER)
-+		syscall = syscall_trace_enter(regs, syscall, work);
-+
-+	return syscall;
-+}
- 
- /**
-  * syscall_enter_from_user_mode - Establish state and check and handle work
-@@ -176,7 +187,19 @@ long syscall_enter_from_user_mode_work(struct pt_regs *regs, long syscall);
-  * Returns: The original or a modified syscall number. See
-  * syscall_enter_from_user_mode_work() for further explanation.
-  */
--long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall);
-+static __always_inline long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
-+{
-+	long ret;
-+
-+	enter_from_user_mode(regs);
-+
-+	instrumentation_begin();
-+	local_irq_enable();
-+	ret = syscall_enter_from_user_mode_work(regs, syscall);
-+	instrumentation_end();
-+
-+	return ret;
-+}
- 
- /**
-  * local_irq_enable_exit_to_user - Exit to user variant of local_irq_enable()
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index cd40cd1b4616..a35aaaa9f8bc 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -25,7 +25,7 @@ static inline void syscall_enter_audit(struct pt_regs *regs, long syscall)
- 	}
- }
- 
--static long syscall_trace_enter(struct pt_regs *regs, long syscall,
-+long syscall_trace_enter(struct pt_regs *regs, long syscall,
- 				unsigned long work)
- {
- 	long ret = 0;
-@@ -65,36 +65,6 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
- 	return ret ? : syscall;
- }
- 
--static __always_inline long
--__syscall_enter_from_user_work(struct pt_regs *regs, long syscall)
--{
--	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
--
--	if (work & SYSCALL_WORK_ENTER)
--		syscall = syscall_trace_enter(regs, syscall, work);
--
--	return syscall;
--}
--
--long syscall_enter_from_user_mode_work(struct pt_regs *regs, long syscall)
--{
--	return __syscall_enter_from_user_work(regs, syscall);
--}
--
--noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
--{
--	long ret;
--
--	enter_from_user_mode(regs);
--
--	instrumentation_begin();
--	local_irq_enable();
--	ret = __syscall_enter_from_user_work(regs, syscall);
--	instrumentation_end();
--
--	return ret;
--}
--
- noinstr void syscall_enter_from_user_mode_prepare(struct pt_regs *regs)
- {
- 	enter_from_user_mode(regs);
--- 
-2.40.1
+> On Tue, Dec 05 2023 at 14:30, Sven Schnelle wrote:
+>> +/**
+>> + * exit_to_user_mode_loop - do any pending work before leaving to user space
+>> + */
+>> +static __always_inline unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+>> +							    unsigned long ti_work)
+>> +{
+>> +	/*
+>> +	 * Before returning to user space ensure that all pending work
+>> +	 * items have been completed.
+>> +	 */
+>> +	while (ti_work & EXIT_TO_USER_MODE_WORK) {
+>> +
+>> +		local_irq_enable_exit_to_user(ti_work);
+>> +
+>> +		if (ti_work & _TIF_NEED_RESCHED)
+>> +			schedule();
+>> +
+>> +		if (ti_work & _TIF_UPROBE)
+>> +			uprobe_notify_resume(regs);
+>> +
+>> +		if (ti_work & _TIF_PATCH_PENDING)
+>> +			klp_update_patch_state(current);
+>> +
+>> +		if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+>> +			arch_do_signal_or_restart(regs);
+>> +
+>> +		if (ti_work & _TIF_NOTIFY_RESUME)
+>> +			resume_user_mode_work(regs);
+>> +
+>> +		/* Architecture specific TIF work */
+>> +		arch_exit_to_user_mode_work(regs, ti_work);
+>> +
+>> +		/*
+>> +		 * Disable interrupts and reevaluate the work flags as they
+>> +		 * might have changed while interrupts and preemption was
+>> +		 * enabled above.
+>> +		 */
+>> +		local_irq_disable_exit_to_user();
+>> +
+>> +		/* Check if any of the above work has queued a deferred wakeup */
+>> +		tick_nohz_user_enter_prepare();
+>> +
+>> +		ti_work = read_thread_flags();
+>> +	}
+>> +
+>> +	/* Return the latest work state for arch_exit_to_user_mode() */
+>> +	return ti_work;
+>> +}
+>
+> I'm not really sure about this part. exit_to_user_mode_loop() is the
+> slowpath when a TIF work flag is set. I can see the benefit on the
+> fastpath functions which are way smaller.
 
+Indeed, the main performance improvement comes from inlining the small
+functions. As Peter mentioned the same, i sent out a v2 which doesn't
+move exit_to_user_mode_loop().
+
+Thanks!
+Sven
 
