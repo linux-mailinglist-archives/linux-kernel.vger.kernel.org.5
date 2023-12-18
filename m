@@ -1,77 +1,75 @@
-Return-Path: <linux-kernel+bounces-3272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79B23816A30
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:50:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9157D816A36
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17C3D1F25857
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:50:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 446591F23269
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5F4125DD;
-	Mon, 18 Dec 2023 09:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FjXofiJh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B10125BA;
+	Mon, 18 Dec 2023 09:51:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF05125A3;
-	Mon, 18 Dec 2023 09:50:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2461FC433C8;
-	Mon, 18 Dec 2023 09:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702893010;
-	bh=kliH95p4M6Xr4U/JBggiZ+H3u6I+liKEwWc2N1aGs18=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FjXofiJhW9jL1rJtTbtwM+I1TO2JOPuwQLWysbLSk8VmfoJOporitqoAdo9zgM4tg
-	 KebfTmvh2aktzrLEqFs/N0kl0uX4DvMaJgNWC5QM13PqxOrnSgLHN1nqp1uAZO8aBo
-	 7JeNjhm1+aVR3evMPZK7qGpZIohwlWocUFheFK/AptmYfRw8IxPGb+DpyXqm17UJf9
-	 wnuJBeilC1v2AgUTB+kvoBQeW3XHlcSMvr9hL2xfyetrXq63JhRlMZaNt6WyUy3gVx
-	 cvhYq19/9JgtCumFTXIsxg1N+G7htDR9zvV6CTBfugqodVINZSHaYzg9bz+6On7/xx
-	 yTtMD2cAMlOqQ==
-Message-ID: <816f252c-191f-4517-931a-3d7b14dac654@kernel.org>
-Date: Mon, 18 Dec 2023 18:50:07 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E825134A1;
+	Mon, 18 Dec 2023 09:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Stw605ZNSz1fyfG;
+	Mon, 18 Dec 2023 17:49:44 +0800 (CST)
+Received: from kwepemi500008.china.huawei.com (unknown [7.221.188.139])
+	by mail.maildlp.com (Postfix) with ESMTPS id 686981A0172;
+	Mon, 18 Dec 2023 17:50:56 +0800 (CST)
+Received: from DESKTOP-4VUP2L6.huawei.com (10.174.177.147) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 18 Dec 2023 17:50:55 +0800
+From: JiangJianJun <jiangjianjun3@huawei.com>
+To: <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<louhongxiang@huawei.com>, <haowenchao2@huawei.com>, <lixiaokeng@huawei.com>
+Subject: [PATCH] scsi: sr: fix signed integer overflow
+Date: Mon, 18 Dec 2023 17:50:54 +0800
+Message-ID: <20231218095054.12228-1-jiangjianjun3@huawei.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] block: simplify disk_set_zoned
-Content-Language: en-US
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi
- <stefanha@redhat.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
- dm-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, linux-nvme@lists.infradead.org,
- linux-scsi@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20231217165359.604246-1-hch@lst.de>
- <20231217165359.604246-5-hch@lst.de>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20231217165359.604246-5-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
 
-On 2023/12/18 1:53, Christoph Hellwig wrote:
-> Only use disk_set_zoned to actually enable zoned device support.
-> For clearing it, call disk_clear_zoned, which is renamed from
-> disk_clear_zone_settings and now directly clears the zoned flag as
-> well.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Checking the range of the parameter speed, avoid integer overflow.
 
-Looks good.
+Signed-off-by: JiangJianJun <jiangjianjun3@huawei.com>
+---
+ drivers/scsi/sr_ioctl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-
+diff --git a/drivers/scsi/sr_ioctl.c b/drivers/scsi/sr_ioctl.c
+index 5b0b35e60e61..d5b2cd80d171 100644
+--- a/drivers/scsi/sr_ioctl.c
++++ b/drivers/scsi/sr_ioctl.c
+@@ -430,6 +430,8 @@ int sr_select_speed(struct cdrom_device_info *cdi, int speed)
+ 	Scsi_CD *cd = cdi->handle;
+ 	struct packet_command cgc;
+ 
++	if (speed < 0 || speed > (INT_MAX / 177))
++		return -EINVAL;
+ 	if (speed == 0)
+ 		speed = 0xffff;	/* set to max */
+ 	else
 -- 
-Damien Le Moal
-Western Digital Research
+2.39.3
 
 
