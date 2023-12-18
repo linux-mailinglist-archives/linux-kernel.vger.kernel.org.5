@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-4190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2229C8178F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:43:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D76358178F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B962857A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:43:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B4811F23EA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935C77409F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A1C72074;
 	Mon, 18 Dec 2023 17:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OgELI1Vk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eNeuCI9/"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738E272077;
-	Mon, 18 Dec 2023 17:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6ACB73462;
+	Mon, 18 Dec 2023 17:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e3cdcf010so1205263e87.2;
-        Mon, 18 Dec 2023 09:41:06 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50bf2d9b3fdso4627494e87.3;
+        Mon, 18 Dec 2023 09:41:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702921263; x=1703526063; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702921265; x=1703526065; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GECqqIbmwZQzSgkD0rH9gtwmMolx6aq5Ff6gT7Rc18w=;
-        b=OgELI1Vk+W2KzNTapnFPdr9D1qPmDJ8YzbDGUXxuBHxtsb6SHVFA7KMb/IzD0c26f0
-         HV0E9ZyF9+iKFKFkbmAJPDs991h09PST2Sc2v6aBNiIrAkfhITDENq1OqqH/k0FOfiUj
-         5dGTWLqY6FwnD7zksSedN9p8ggbJdmdjCJYTwBCD8n0OJt+exWDOgBN4a1pC45Ci45AI
-         cFl0a5SDQppnm7o/vtb7TDB79rtVjEx9jCssLfQ2ijW9R63FpnJqY43CJqIOUmJrbK/c
-         sDWpcrzT6BxQxCrYq1yEK99YsJx/KwxJRvjUZ0ZMLY/NrCw+88OPr+lB9g223bLUnbkN
-         kXww==
+        bh=zRAVS4vC9ni6nFv/TOVO0tDXxMYBMHf0gL/d3MqoeLg=;
+        b=eNeuCI9/n8IPTWNx30Fk1ROiHUtsmOZcgYTGHFJaoRZeqYcl9rCewx58shHDR1REXr
+         yO2PHSUgJMVEkLVD5yeFNdZgyUlTPCUp5/V30l8q9zTcdIC/355B+50lDCScOsTNLCPz
+         oWWvRLkUklIJe9BfjU3Y24Ulhp+xwlss7+uofV/rSGtw3rMXqXqOEmMbzKjBWXbc3Ktg
+         ZInWIk0iumOtGAtN5zKXNwNDDZ5ZN55cnhhtdpEgDRLoTCbZL4gtSJdRLFLFrrGOqXmW
+         0aa3EGUW8VUyXoOXmy3wnCDShI1zn4sbIwVzjHJYeoZGK9P3OB06f8dFRoNLbL/ZT7N0
+         f0LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702921263; x=1703526063;
+        d=1e100.net; s=20230601; t=1702921265; x=1703526065;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GECqqIbmwZQzSgkD0rH9gtwmMolx6aq5Ff6gT7Rc18w=;
-        b=nIAhzJaJk2rpnqyzpoYt7mE1kUGp4ecMmlRSIpv/N4XfjIasGDrkOyQIC0pk7liQws
-         ZdG1Wz7rtRMPP088Ju462kORd9EFxrAVGEIjeJvz+BYPetdkIL23BcrdImwApA4PWbFH
-         XWtHAatywOW4PShloEShOyNE+7073zDRppMLIaOSglR/EWjM/FOXnPd4pZx3l3lexbFs
-         2HUdHgI/V6aD9HCuR2l4W2xF6/Xd5+KlP6GBicdTKb8Bya/w4cGeCw0GGCod2J5QVjgL
-         us2SzfCX7Mz6m+1NdT2f1xvvasXPLtRcEu3sp6SEF29+y6hp0OYI0JCvrFvNLjrJmnp9
-         BecA==
-X-Gm-Message-State: AOJu0YxZcKsu3NR86QHP+06/1uizYD1+m4YLWCpSCJ/5uANQLujP4Gda
-	m6+4tykIa2l5Qy0+cQKxwmSjEMAznNSFWQ==
-X-Google-Smtp-Source: AGHT+IH+6Q93ikV/7PYO3Q+G/bwQHdgApa4/3jJQQUsD51UtW4bsyp0kRfsY8nvSS9xmtw39ltLtdA==
-X-Received: by 2002:a2e:a588:0:b0:2cb:3169:b348 with SMTP id m8-20020a2ea588000000b002cb3169b348mr4599390ljp.96.1702921263307;
-        Mon, 18 Dec 2023 09:41:03 -0800 (PST)
+        bh=zRAVS4vC9ni6nFv/TOVO0tDXxMYBMHf0gL/d3MqoeLg=;
+        b=iYt7o04uzR1mKjf9VeuLd8yDcHfwdlukYQ03SjK4V4GUZFx+Yviln3+gbFkaeMDzVr
+         m6J7f8+3NgY+GLb9N48IQa56GitkaY6JNotUzkO+nzGD1Rguk3Ymh9n3+EonL9dnDyfR
+         AOpS8+qXLnyqO5oxO1NoVpJWvHUt4b9EJ/q/PUixFDLGQRWzadcH7BzhoFm3NHLFy/EW
+         0hNQyAgukry9m8y4jjG9fsu2ypaZfkIU26asApRtRQGEuZQ9Ay/aEqFb3Og+h2cxeBgC
+         gSLEtyBcLhuvEfnsarhMLC187wTArb8AvZUwVSLBbdT1SOOXl+9VXZmllXkpJ//GyWG9
+         pDlQ==
+X-Gm-Message-State: AOJu0YwYuuFCw0ifx3GmIBZpEZrrd7Zn/5T8iwUR1qjkBN7xlbApsFgQ
+	yq+s1oL1M+2TvH8Q/pM7Jou4+f1LHC9xMw==
+X-Google-Smtp-Source: AGHT+IFuVh3NnbRkHJJQpPto8uz+sG7n1PpAvbfvBBjPePQSJZd4LNqyRfmPpOoi4pv+MbeYIiK9ZA==
+X-Received: by 2002:a19:6d0b:0:b0:50e:2e79:eb2 with SMTP id i11-20020a196d0b000000b0050e2e790eb2mr1602734lfc.14.1702921265055;
+        Mon, 18 Dec 2023 09:41:05 -0800 (PST)
 Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id k9-20020a05651c10a900b002cc74569398sm363278ljn.15.2023.12.18.09.41.02
+        by smtp.gmail.com with ESMTPSA id bi6-20020a0565120e8600b0050bf44d0d23sm2947923lfb.20.2023.12.18.09.41.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 09:41:02 -0800 (PST)
+        Mon, 18 Dec 2023 09:41:04 -0800 (PST)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -68,9 +68,9 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v2 05/20] media: i2c: ov4689: Remove i2c_client from ov4689 struct
-Date: Mon, 18 Dec 2023 20:40:26 +0300
-Message-ID: <20231218174042.794012-6-mike.rudenko@gmail.com>
+Subject: [PATCH v2 06/20] media: i2c: ov4689: Refactor ov4689_set_ctrl
+Date: Mon, 18 Dec 2023 20:40:27 +0300
+Message-ID: <20231218174042.794012-7-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218174042.794012-1-mike.rudenko@gmail.com>
 References: <20231218174042.794012-1-mike.rudenko@gmail.com>
@@ -82,166 +82,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The 'client' field within the 'ov4689' structure is solely used to
-access its 'dev' member. This commit removes the 'client' field and
-directly stores a pointer to the 'struct device'.
+Introduce local variable for regmap within the ov4689_set_ctrl
+function. This adjustment eliminates repetition within the function.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- drivers/media/i2c/ov4689.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ drivers/media/i2c/ov4689.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 6ea1c37323d1..3b20eba59c9c 100644
+index 3b20eba59c9c..d42f5d1a1ba8 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -74,7 +74,7 @@ struct ov4689_mode {
- };
- 
- struct ov4689 {
--	struct i2c_client *client;
-+	struct device *dev;
- 	struct regmap *regmap;
- 	struct clk *xvclk;
- 	struct gpio_desc *reset_gpio;
-@@ -405,13 +405,13 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
- {
- 	struct ov4689 *ov4689 = to_ov4689(sd);
--	struct i2c_client *client = ov4689->client;
-+	struct device *dev = ov4689->dev;
- 	int ret = 0;
- 
- 	mutex_lock(&ov4689->mutex);
- 
- 	if (on) {
--		ret = pm_runtime_resume_and_get(&client->dev);
-+		ret = pm_runtime_resume_and_get(dev);
- 		if (ret < 0)
- 			goto unlock_and_return;
- 
-@@ -420,26 +420,26 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
- 					  ov4689->cur_mode->num_regs,
- 					  NULL);
- 		if (ret) {
--			pm_runtime_put(&client->dev);
-+			pm_runtime_put(dev);
- 			goto unlock_and_return;
- 		}
- 
- 		ret = __v4l2_ctrl_handler_setup(&ov4689->ctrl_handler);
- 		if (ret) {
--			pm_runtime_put(&client->dev);
-+			pm_runtime_put(dev);
- 			goto unlock_and_return;
- 		}
- 
- 		ret = cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
- 				OV4689_MODE_STREAMING, NULL);
- 		if (ret) {
--			pm_runtime_put(&client->dev);
-+			pm_runtime_put(dev);
- 			goto unlock_and_return;
- 		}
- 	} else {
- 		cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
- 			  OV4689_MODE_SW_STANDBY, NULL);
--		pm_runtime_put(&client->dev);
-+		pm_runtime_put(dev);
- 	}
- 
- unlock_and_return:
-@@ -553,7 +553,6 @@ static const struct v4l2_subdev_ops ov4689_subdev_ops = {
-  */
- static int ov4689_map_gain(struct ov4689 *ov4689, int logical_gain, int *result)
- {
--	const struct device *dev = &ov4689->client->dev;
- 	const struct ov4689_gain_range *range;
- 	unsigned int n;
- 
-@@ -564,7 +563,8 @@ static int ov4689_map_gain(struct ov4689 *ov4689, int logical_gain, int *result)
- 	}
- 
- 	if (n == ARRAY_SIZE(ov4689_gain_ranges)) {
--		dev_warn_ratelimited(dev, "no mapping found for gain %d\n",
-+		dev_warn_ratelimited(ov4689->dev,
-+				     "no mapping found for gain %d\n",
- 				     logical_gain);
- 		return -EINVAL;
- 	}
-@@ -580,7 +580,7 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+@@ -580,6 +580,7 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
  {
  	struct ov4689 *ov4689 =
  		container_of(ctrl->handler, struct ov4689, ctrl_handler);
--	struct i2c_client *client = ov4689->client;
-+	struct device *dev = ov4689->dev;
++	struct regmap *regmap = ov4689->regmap;
+ 	struct device *dev = ov4689->dev;
  	int sensor_gain;
  	s64 max_expo;
- 	int ret;
-@@ -597,7 +597,7 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 		break;
- 	}
- 
--	if (!pm_runtime_get_if_in_use(&client->dev))
-+	if (!pm_runtime_get_if_in_use(dev))
- 		return 0;
- 
+@@ -603,16 +604,15 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
  	switch (ctrl->id) {
-@@ -618,13 +618,13 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+ 	case V4L2_CID_EXPOSURE:
+ 		/* 4 least significant bits of exposure are fractional part */
+-		ret = cci_write(ov4689->regmap, OV4689_REG_EXPOSURE,
+-				ctrl->val << 4, NULL);
++		cci_write(regmap, OV4689_REG_EXPOSURE, ctrl->val << 4, &ret);
+ 		break;
+ 	case V4L2_CID_ANALOGUE_GAIN:
+ 		ret = ov4689_map_gain(ov4689, ctrl->val, &sensor_gain);
+-		cci_write(ov4689->regmap, OV4689_REG_GAIN, sensor_gain, &ret);
++		cci_write(regmap, OV4689_REG_GAIN, sensor_gain, &ret);
+ 		break;
+ 	case V4L2_CID_VBLANK:
+-		ret = cci_write(ov4689->regmap, OV4689_REG_VTS,
+-				ctrl->val + ov4689->cur_mode->height, NULL);
++		cci_write(regmap, OV4689_REG_VTS,
++			  ctrl->val + ov4689->cur_mode->height, &ret);
+ 		break;
+ 	case V4L2_CID_TEST_PATTERN:
  		ret = ov4689_enable_test_pattern(ov4689, ctrl->val);
- 		break;
- 	default:
--		dev_warn(&client->dev, "%s Unhandled id:0x%x, val:0x%x\n",
-+		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
- 			 __func__, ctrl->id, ctrl->val);
- 		ret = -EINVAL;
- 		break;
+@@ -625,7 +625,6 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
  	}
  
--	pm_runtime_put(&client->dev);
-+	pm_runtime_put(dev);
- 
+ 	pm_runtime_put(dev);
+-
  	return ret;
  }
-@@ -689,8 +689,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
  
- 	if (handler->error) {
- 		ret = handler->error;
--		dev_err(&ov4689->client->dev, "Failed to init controls(%d)\n",
--			ret);
-+		dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
- 		goto err_free_handler;
- 	}
- 
-@@ -716,7 +715,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
- static int ov4689_check_sensor_id(struct ov4689 *ov4689,
- 				  struct i2c_client *client)
- {
--	struct device *dev = &ov4689->client->dev;
-+	struct device *dev = ov4689->dev;
- 	u64 id = 0;
- 	int ret;
- 
-@@ -744,7 +743,7 @@ static int ov4689_configure_regulators(struct ov4689 *ov4689)
- 	for (i = 0; i < ARRAY_SIZE(ov4689_supply_names); i++)
- 		ov4689->supplies[i].supply = ov4689_supply_names[i];
- 
--	return devm_regulator_bulk_get(&ov4689->client->dev,
-+	return devm_regulator_bulk_get(ov4689->dev,
- 				       ARRAY_SIZE(ov4689_supply_names),
- 				       ov4689->supplies);
- }
-@@ -813,7 +812,8 @@ static int ov4689_probe(struct i2c_client *client)
- 	if (!ov4689)
- 		return -ENOMEM;
- 
--	ov4689->client = client;
-+	ov4689->dev = dev;
-+
- 	ov4689->cur_mode = &supported_modes[OV4689_MODE_2688_1520];
- 
- 	ov4689->xvclk = devm_clk_get_optional(dev, NULL);
 -- 
 2.43.0
 
