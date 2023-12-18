@@ -1,161 +1,119 @@
-Return-Path: <linux-kernel+bounces-3189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E503F8168BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:52:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAACB8168C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 156F01C22527
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:52:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 978F22824F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E57310A3F;
-	Mon, 18 Dec 2023 08:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B761118F;
+	Mon, 18 Dec 2023 08:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pVnxw0u3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kdh/P+HF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED231094F;
-	Mon, 18 Dec 2023 08:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=u9rU7FfAkS1Xg3KQP7X+Uy8VuWy1sh7xNAOO2EeOmow=; b=pVnxw0u3V2KMrtdVYsexwpdnA5
-	XUz4IKQOBNxaBluhdNYzL8zwlyI8CjvzruSXco86xKeQ6QX9cV0XiRUgx1SayqkGcLFTuuCdNcreN
-	IYv72Eo9aa2ezSpHM/sq6jV2R3+vIjjFyGjsK/x2Nl8dUJj/GySOniPAkjktHMBS0gwug9YlUSVKk
-	E1ANshGn7IEXwUCrQ0edmmtKumnnePMpDfJ7tvxXWWIUvjf8OwTHC7AAiHt93l6j9w58BEch4hds3
-	CFiaDf4S4lSKklzGWwvE7xj7zzlkiYN9B3rJVXyRh4lviegYdZLL2jkzTg8CtU/F3vHY7hgsqJnoi
-	sJS6vhrQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rF9M8-000GMZ-Kc; Mon, 18 Dec 2023 09:52:08 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rF9M6-000DSm-B8; Mon, 18 Dec 2023 09:52:06 +0100
-Subject: Re: [PATCH net-next 16/24] net: netkit, veth, tun, virt*: Use
- nested-BH locking for XDP redirect.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Boqun Feng
- <boqun.feng@gmail.com>, Eric Dumazet <edumazet@google.com>,
- Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
- "K. Y. Srinivasan" <kys@microsoft.com>, "Michael S. Tsirkin"
- <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Dexuan Cui <decui@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Hao Luo <haoluo@google.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Juergen Gross <jgross@suse.com>,
- KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Nikolay Aleksandrov <razor@blackwall.org>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@google.com>,
- Stefano Stabellini <sstabellini@kernel.org>, Wei Liu <wei.liu@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
- virtualization@lists.linux.dev, xen-devel@lists.xenproject.org
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
- <20231215171020.687342-17-bigeasy@linutronix.de>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <74feb818-7109-cb1e-8eec-a037c17a2871@iogearbox.net>
-Date: Mon, 18 Dec 2023 09:52:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6743710A2E
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702889570; x=1734425570;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=bZCFZL7iDl6rX7EGf09C9U1b3W4raZXLVsbXzyIuzhA=;
+  b=kdh/P+HFv8oAkzTzbmo2vpSbnkIjwdyxZw5ix5SiHQCOnRQjB/qGF78h
+   4UNJGlaljf8MK7ZKzc5KIsBxy6su17uyRQm6v3MMhrdO2I0KSRKl6VOfK
+   lGQFLDXBV7IqeMdMt1j3Jjv+v144BADqBR1wbOGxHayclhfpSz+AapL58
+   K1v2mQaIOA3lTk48vceNepIuOz9Avq94bi1DL5QSnK4acrudIMBdksuwr
+   qhi9pv6tiosociHNRE6+jisXNvqwOyS40ZzEPfe84DFXYP9pikLQu/Buz
+   pXmbW3GesPScIXfvAq2P1tanmIT7DfrdO6fer5yxCAXQBuqLCCj3x5JkC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="14165835"
+X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
+   d="scan'208";a="14165835"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 00:52:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="893740379"
+X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
+   d="scan'208";a="893740379"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Dec 2023 00:52:46 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rF9Mi-0003wO-2t;
+	Mon, 18 Dec 2023 08:52:44 +0000
+Date: Mon, 18 Dec 2023 16:52:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: drivers/cpuidle/governors/ladder.c:54: warning: Function parameter
+ or member 'dev' not described in 'ladder_do_selection'
+Message-ID: <202312181621.8F4HyH1d-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231215171020.687342-17-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27126/Sun Dec 17 10:37:59 2023)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Sebastian,
+Hi Marcelo,
 
-On 12/15/23 6:07 PM, Sebastian Andrzej Siewior wrote:
-> The per-CPU variables used during bpf_prog_run_xdp() invocation and
-> later during xdp_do_redirect() rely on disabled BH for their protection.
-> Without locking in local_bh_disable() on PREEMPT_RT these data structure
-> require explicit locking.
-> 
-> This is a follow-up on the previous change which introduced
-> bpf_run_lock.redirect_lock and uses it now within drivers.
-> 
-> The simple way is to acquire the lock before bpf_prog_run_xdp() is
-> invoked and hold it until the end of function.
-> This does not always work because some drivers (cpsw, atlantic) invoke
-> xdp_do_flush() in the same context.
-> Acquiring the lock in bpf_prog_run_xdp() and dropping in
-> xdp_do_redirect() (without touching drivers) does not work because not
-> all driver, which use bpf_prog_run_xdp(), do support XDP_REDIRECT (and
-> invoke xdp_do_redirect()).
-> 
-> Ideally the minimal locking scope would be bpf_prog_run_xdp() +
-> xdp_do_redirect() and everything else (error recovery, DMA unmapping,
-> free/ alloc of memory, …) would happen outside of the locked section.
-[...]
+FYI, the error/warning still remains.
 
->   drivers/net/hyperv/netvsc_bpf.c |  1 +
->   drivers/net/netkit.c            | 13 +++++++----
->   drivers/net/tun.c               | 28 +++++++++++++----------
->   drivers/net/veth.c              | 40 ++++++++++++++++++++-------------
->   drivers/net/virtio_net.c        |  1 +
->   drivers/net/xen-netfront.c      |  1 +
->   6 files changed, 52 insertions(+), 32 deletions(-)
-[...]
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
+commit: 7d4daeedd575bbc3c40c87fc6708a8b88c50fe7e governors: unify last_state_idx
+date:   4 years, 5 months ago
+config: x86_64-randconfig-161-20230927 (https://download.01.org/0day-ci/archive/20231218/202312181621.8F4HyH1d-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312181621.8F4HyH1d-lkp@intel.com/reproduce)
 
-Please exclude netkit from this set given it does not support XDP, but
-instead only accepts tc BPF typed programs.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312181621.8F4HyH1d-lkp@intel.com/
 
-Thanks,
-Daniel
+All warnings (new ones prefixed by >>):
 
-> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-> index 39171380ccf29..fbcf78477bda8 100644
-> --- a/drivers/net/netkit.c
-> +++ b/drivers/net/netkit.c
-> @@ -80,8 +80,15 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
->   	netkit_prep_forward(skb, !net_eq(dev_net(dev), dev_net(peer)));
->   	skb->dev = peer;
->   	entry = rcu_dereference(nk->active);
-> -	if (entry)
-> -		ret = netkit_run(entry, skb, ret);
-> +	if (entry) {
-> +		scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
-> +			ret = netkit_run(entry, skb, ret);
-> +			if (ret == NETKIT_REDIRECT) {
-> +				dev_sw_netstats_tx_add(dev, 1, len);
-> +				skb_do_redirect(skb);
-> +			}
-> +		}
-> +	}
->   	switch (ret) {
->   	case NETKIT_NEXT:
->   	case NETKIT_PASS:
-> @@ -95,8 +102,6 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
->   		}
->   		break;
->   	case NETKIT_REDIRECT:
-> -		dev_sw_netstats_tx_add(dev, 1, len);
-> -		skb_do_redirect(skb);
->   		break;
->   	case NETKIT_DROP:
->   	default:
+>> drivers/cpuidle/governors/ladder.c:54: warning: Function parameter or member 'dev' not described in 'ladder_do_selection'
+
+
+vim +54 drivers/cpuidle/governors/ladder.c
+
+4f86d3a8e29720 Len Brown       2007-10-03  44  
+4f86d3a8e29720 Len Brown       2007-10-03  45  /**
+4f86d3a8e29720 Len Brown       2007-10-03  46   * ladder_do_selection - prepares private data for a state change
+4f86d3a8e29720 Len Brown       2007-10-03  47   * @ldev: the ladder device
+4f86d3a8e29720 Len Brown       2007-10-03  48   * @old_idx: the current state index
+4f86d3a8e29720 Len Brown       2007-10-03  49   * @new_idx: the new target state index
+4f86d3a8e29720 Len Brown       2007-10-03  50   */
+7d4daeedd575bb Marcelo Tosatti 2019-07-03  51  static inline void ladder_do_selection(struct cpuidle_device *dev,
+7d4daeedd575bb Marcelo Tosatti 2019-07-03  52  				       struct ladder_device *ldev,
+4f86d3a8e29720 Len Brown       2007-10-03  53  				       int old_idx, int new_idx)
+4f86d3a8e29720 Len Brown       2007-10-03 @54  {
+4f86d3a8e29720 Len Brown       2007-10-03  55  	ldev->states[old_idx].stats.promotion_count = 0;
+4f86d3a8e29720 Len Brown       2007-10-03  56  	ldev->states[old_idx].stats.demotion_count = 0;
+7d4daeedd575bb Marcelo Tosatti 2019-07-03  57  	dev->last_state_idx = new_idx;
+4f86d3a8e29720 Len Brown       2007-10-03  58  }
+4f86d3a8e29720 Len Brown       2007-10-03  59  
+
+:::::: The code at line 54 was first introduced by commit
+:::::: 4f86d3a8e297205780cca027e974fd5f81064780 cpuidle: consolidate 2.6.22 cpuidle branch into one patch
+
+:::::: TO: Len Brown <len.brown@intel.com>
+:::::: CC: Len Brown <len.brown@intel.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
