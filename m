@@ -1,125 +1,102 @@
-Return-Path: <linux-kernel+bounces-3874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A68CC817489
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B10F781748D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF54B1C2497B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:00:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72B0F1C221DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E944A3D574;
-	Mon, 18 Dec 2023 15:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tmpq8qu/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828123A1C0;
+	Mon, 18 Dec 2023 15:00:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE453A1A8;
-	Mon, 18 Dec 2023 15:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5533ca9cc00so1743304a12.2;
-        Mon, 18 Dec 2023 07:00:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702911601; x=1703516401; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3dpJ4wqz5tsoHUF96iO+zvC5cixng0FOvma4pqbpbEw=;
-        b=Tmpq8qu/HPDd2MRuWDGUT3/T4SWWYhnSb+Hq6e0KB5aIcxjPTi+SLdXe/eZLX6Zfin
-         7tEXAxdGlDwTqkvX21yiTNEd1jDU/qyFFGsdcJzevLq/6bVacJ1r56GNXrailiYyxJxX
-         66ZO88+u0gwcweU69yewApqiI/LPTAN4K1PGa6cXihEACJsK4TVXpn6W53T0q30rv17G
-         O+n3RKNMw6ra4jcM3BfsIuxuGZusmkvYs/SFKI0SgxhFUiZyF8N/zOCwCFuLgUwprfbK
-         sBLGWtmsGDBMROmfgEUVeaK9BA83TWt4vU3gpz/10pWBPe/6Rd3NGBqQOgp3WzosrMiv
-         G+ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702911601; x=1703516401;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3dpJ4wqz5tsoHUF96iO+zvC5cixng0FOvma4pqbpbEw=;
-        b=p47UEa1cOe6lD74YjmZJYEGmSz7vGxHdCDHjI5L5ItKXA/OSmF0GvMy2fylBPubF4R
-         6bzs2q7Kk034KaQpEO33HYHpU7wOjxi5e51VyLvhn5onBD7mCvGjfFwYS18wnvdRk138
-         KgLgWukJiE1zcJymhhLvCfScoILSheiwUA0/obhvKJaTj9Q9kGj3rQU7yNQohekQ0Q8O
-         c33vbA0qpKqPWeZr0iPGfWW+LkhlmnLf6a17c8R8d7siwmWgtbP+A6/FLEIxsE/kdSGq
-         fU0L/RP/TaI7y5uArvr6l2g77Ev1QaoybMlLWB6nBXk0/gzN7rC/frVjn/TEqKNQnK9k
-         iG+Q==
-X-Gm-Message-State: AOJu0Yw1aQeNE5NjDDZTSH3QNtDs8Zu7/PxeP3Orge5GU60ux8u/Hyuh
-	74N7P2dmiijX5SicOZmTC3Gfhg4uUSMT7jUth/4=
-X-Google-Smtp-Source: AGHT+IGvOIIEyYt7gsSQ0l9nkVHf/NVx2B3tEbVTX1I+ABBxJBnmeFubN0VM50ayuWh/gcBi2y8RMMovpIMPe0fSvSA=
-X-Received: by 2002:a17:906:3f0f:b0:a22:fb3f:7a67 with SMTP id
- c15-20020a1709063f0f00b00a22fb3f7a67mr4488123ejj.150.1702911600551; Mon, 18
- Dec 2023 07:00:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A6937874;
+	Mon, 18 Dec 2023 15:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jmu.edu.cn
+Received: from amadeus-Vostro-3710.lan (unknown [113.118.189.58])
+	by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 68C108001A7;
+	Mon, 18 Dec 2023 23:00:12 +0800 (CST)
+From: Chukun Pan <amadeus@jmu.edu.cn>
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andy Gross <agross@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chukun Pan <amadeus@jmu.edu.cn>
+Subject: [PATCH v2 1/1] arm64: dts: qcom: ipq8074: add MicroSD node
+Date: Mon, 18 Dec 2023 23:00:09 +0800
+Message-Id: <20231218150009.1227848-1-amadeus@jmu.edu.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218115802.15859-1-lukas.bulwahn@gmail.com> <26207725d5025318b831dd5a5feca67248aaa221.camel@sipsolutions.net>
-In-Reply-To: <26207725d5025318b831dd5a5feca67248aaa221.camel@sipsolutions.net>
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Mon, 18 Dec 2023 15:59:49 +0100
-Message-ID: <CAKXUXMyiMMOF79Wbe+xcL2yAXM8+9j_qJhCM0tn-o-hYeY=-ZQ@mail.gmail.com>
-Subject: Re: [PATCH] bcma,ssb: simplify dependency handling for bcma and ssb drivers
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Kalle Valo <kvalo@kernel.org>, 
-	Larry Finger <Larry.Finger@lwfinger.net>, Arend van Spriel <aspriel@gmail.com>, 
-	Franky Lin <franky.lin@broadcom.com>, Hante Meuleman <hante.meuleman@broadcom.com>, 
-	Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, 
-	b43-dev@lists.infradead.org, brcm80211-dev-list.pdl@broadcom.com, 
-	SHA-cyfmac-dev-list@infineon.com, kernel-janitors@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaGB0dVk1JGBhJHR1PGhpPQ1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpKSFVKSkNVSkNCVU5DWVdZFhoPEhUdFFlBWUtVS1VLVUtZBg++
+X-HM-Tid: 0a8c7d711708b03akuuu68c108001a7
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ME06Mzo*ATw6QihLAj4LLx81
+	FDIaFClVSlVKTEtJQkpKTUpITklNVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWUpK
+	SFVKSkNVSkNCVU5DWVdZCAFZQUlOTkk3Bg++
 
-On Mon, Dec 18, 2023 at 2:18=E2=80=AFPM Johannes Berg <johannes@sipsolution=
-s.net> wrote:
->
-> On Mon, 2023-12-18 at 12:58 +0100, Lukas Bulwahn wrote:
->
-> Dunno, I'm not super involved with this but ...
->
-> > +++ b/drivers/bcma/Kconfig
-> > @@ -1,12 +1,7 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> > -config BCMA_POSSIBLE
-> > -     bool
-> > -     depends on HAS_IOMEM && HAS_DMA
-> > -     default y
-> > -
-> >  menuconfig BCMA
-> >       tristate "Broadcom specific AMBA"
-> > -     depends on BCMA_POSSIBLE
-> > +     depends on HAS_IOMEM && HAS_DMA
->
-> [...]
-> >  config BRCMSMAC
-> >       tristate "Broadcom IEEE802.11n PCIe SoftMAC WLAN driver"
-> > -     depends on MAC80211
-> > -     depends on BCMA_POSSIBLE
-> > +     depends on HAS_IOMEM && HAS_DMA && MAC80211
-> >       select BCMA
->
-> to me it kind of seems more obvious for example in this case to say
-> "depend on BCMA_POSSIBLE and select BCMA" rather than open-coding the
-> BCMA dependencies both here and in BCMA? Now granted, they're rather
-> unlikely to _change_, but it still seems more obvious?
->
+Enable MicroSD card found on ipq8074 devices.
+Tested fine when SD card IO voltage is 3.3v.
 
-Okay, I see. Well, if that kind of pattern is the preference, then the
-code as-is makes sense. The pattern just starts to become obscure when
-the dependencies of multiple drivers are the same and we start writing
-"BCMA_POSSIBLE || SSB_POSSIBLE", but the dependencies are the same
-anyway.
+Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+---
+Changes in v2:
+* add dedicated qcom,ipq8074-sdhci compatible
 
-Let us see what others think.
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-Lukas
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index a4f7ae35be27..4f23c4459112 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -422,6 +422,26 @@ sdhc_1: mmc@7824900 {
+ 			status = "disabled";
+ 		};
+ 
++		sdhc_2: mmc@7864900 {
++			compatible = "qcom,ipq8074-sdhci", "qcom,sdhci-msm-v4";
++			reg = <0x7864900 0x500>, <0x7864000 0x800>;
++			reg-names = "hc", "core";
++
++			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "hc_irq", "pwr_irq";
++
++			clocks = <&gcc GCC_SDCC2_AHB_CLK>,
++				 <&gcc GCC_SDCC2_APPS_CLK>,
++				 <&xo>;
++			clock-names = "iface", "core", "xo";
++			resets = <&gcc GCC_SDCC2_BCR>;
++			max-frequency = <192000000>;
++			bus-width = <4>;
++
++			status = "disabled";
++		};
++
+ 		blsp_dma: dma-controller@7884000 {
+ 			compatible = "qcom,bam-v1.7.0";
+ 			reg = <0x07884000 0x2b000>;
+-- 
+2.25.1
+
 
