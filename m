@@ -1,90 +1,105 @@
-Return-Path: <linux-kernel+bounces-4273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28695817A95
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:06:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08343817A9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:07:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 491CB1C23013
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:06:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACBD7285929
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A255D73F;
-	Mon, 18 Dec 2023 19:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AAD7144F;
+	Mon, 18 Dec 2023 19:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wo5kaf4w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5YqmWcH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BABD022091;
-	Mon, 18 Dec 2023 19:06:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF37C433C7;
-	Mon, 18 Dec 2023 19:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D0B53BF;
+	Mon, 18 Dec 2023 19:06:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2AB9C433CA;
+	Mon, 18 Dec 2023 19:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702926373;
-	bh=DPDqKYmI8qgbkxQDO8uN7PM5IVz1b5OEtAbJMsgDAko=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Wo5kaf4wcUGWaFoMvf+D6sRS7zk0+YQkNV3YidGrEyKIaTO2Z9opFRC2r8XmQ6UID
-	 FrxLIZSYIlmnkmEl1y/8tcHmpvNBQdJhtBESstHf5kQhuimRhILZLM2gnZdUdnZu0f
-	 iFgPcPddFvHsoTXDAl44dtPVtkYsgvBHWdeI/FNwuQHUvUoTnCCXkX2fZLOoeY3XEO
-	 md+aPj243OfuArhgSYtwCUtUFvSizQqDiBu7gVBXsdZ6fbXhHGJ1wqtiJFB7V57KKe
-	 I55w7pyLeWZDiN/qPhjI8GqfOBUeBVpIy7O9sNgby5r9on/P8PgYkS+S1DZK7W2sRC
-	 ldk85ZQoLPLyg==
-From: Mark Brown <broonie@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Michael Hennerich <michael.hennerich@analog.com>, 
- =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, linux-spi@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-In-Reply-To: <20231218145348.339470-1-dlechner@baylibre.com>
-References: <20231218145348.339470-1-dlechner@baylibre.com>
-Subject: Re: [PATCH] spi: axi-spi-engine: fix struct member doc warnings
-Message-Id: <170292637153.111730.7490905316455174220.b4-ty@kernel.org>
-Date: Mon, 18 Dec 2023 19:06:11 +0000
+	s=k20201202; t=1702926406;
+	bh=Oj7Gm/7pBuv1oprC+a4gyIhGSXnfXjSzl+Q2UzH9PfU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r5YqmWcHA0EErYG+wdUrVMo+G3NRUlAHHAaq8OYyMC+0aX3HzBieTQD+saJYkuXz8
+	 8tVeyb80ImB6jhtI/nCc/Z9kQn/N2mRN7e1vDE5LoljMmYoR69+vqAXN1l42F15tJv
+	 a8k2+RplvA3gsK98gcp0wfob+x0GP2P5SzBFh9Z+IYLdNg9RRtq2wmqwaOSQBPQXr0
+	 6aWyqySgDEBIot96WJUo8TFNS+PW1e7qTruMg+rlru7oGH0qU8CsY51PH95b3w4QJA
+	 md8wKk/oWSDg770HWrBq6f79Fd0ArFWxcevlh1fKJbMVseMl2yto9fneZ6aWJD194T
+	 SIuvC5hdmrtMA==
+Date: Mon, 18 Dec 2023 19:06:40 +0000
+From: Simon Horman <horms@kernel.org>
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	ast@kernel.org
+Subject: Re: [RFC nf-next v2 1/2] netfilter: bpf: support prog update
+Message-ID: <20231218190640.GJ6288@kernel.org>
+References: <1702873101-77522-1-git-send-email-alibuda@linux.alibaba.com>
+ <1702873101-77522-2-git-send-email-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1702873101-77522-2-git-send-email-alibuda@linux.alibaba.com>
 
-On Mon, 18 Dec 2023 08:53:45 -0600, David Lechner wrote:
-> The build bots are complaining that the members of struct
-> spi_engine_message_state are not described. This adds the
-> proper @name: syntax to the comments to fix this.
+On Mon, Dec 18, 2023 at 12:18:20PM +0800, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
+> To support the prog update, we need to ensure that the prog seen
+> within the hook is always valid. Considering that hooks are always
+> protected by rcu_read_lock(), which provide us the ability to
+> access the prog under rcu.
 > 
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 
-Applied to
+...
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> @@ -26,8 +17,20 @@ struct bpf_nf_link {
+>  	struct net *net;
+>  	u32 dead;
+>  	const struct nf_defrag_hook *defrag_hook;
+> +	struct rcu_head head;
+>  };
+>  
+> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
+> +				    const struct nf_hook_state *s)
+> +{
+> +	const struct bpf_nf_link *nf_link = bpf_link;
+> +	struct bpf_nf_ctx ctx = {
+> +		.state = s,
+> +		.skb = skb,
+> +	};
+> +	return bpf_prog_run(rcu_dereference(nf_link->link.prog), &ctx);
 
-Thanks!
+Hi,
 
-[1/1] spi: axi-spi-engine: fix struct member doc warnings
-      commit: 15009a1b145b033c39a6b65d529c83de71a8d732
+AFAICT nf_link->link.prog isn't annotated as __rcu,
+so perhaps rcu_dereference() is not correct here?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+In any case, sparse seems a bit unhappy:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+  .../nf_bpf_link.c:31:29: error: incompatible types in comparison expression (different address spaces):
+  .../nf_bpf_link.c:31:29:    struct bpf_prog [noderef] __rcu *
+  .../nf_bpf_link.c:31:29:    struct bpf_prog *
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +}
+> +
+>  #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+>  static const struct nf_defrag_hook *
+>  get_proto_defrag_hook(struct bpf_nf_link *link,
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+...
 
