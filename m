@@ -1,160 +1,102 @@
-Return-Path: <linux-kernel+bounces-3913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40BC481750F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23DC3817514
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9A791F2164F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:18:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE3781F24BB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F9C3D577;
-	Mon, 18 Dec 2023 15:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6765498AE;
+	Mon, 18 Dec 2023 15:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uH+hX3bx"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="bZt4B8QU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD15229411;
-	Mon, 18 Dec 2023 15:17:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49290C433C8;
-	Mon, 18 Dec 2023 15:17:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702912640;
-	bh=Y2AbD1zR1eP2E6YbgGaYlyb+Rv+NoXGbIguzY9TYF+M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uH+hX3bxsibP2IzdFAFraViSj2c3EKBA+vg98LMVTaanUWvaeDExoG7X8q6kCnBUm
-	 Dv1V29e4Ka1B8X2rf5pLY0zonx2asWLO2PoKzMi+80CKPSUEcc/GaX/F1A7bPESnM6
-	 A5TY6NDjHI0Zls6dip8zSZVCSs24lelmKL1D5zX1uJCEDBNroPdon06u5jRsmiIHhX
-	 Q0+ZSSs62ZBCtzKLQU7PumZc6OJp0U2VLiSqFXB1tl9wxE8u/K/X1uyKPaK4dNEd/H
-	 Mv8I9VEJI6gaV656NOSWtLlN/JKtGmaStqEm3y3muWyjTL3G0fiuJCNwDOwxVmoBth
-	 X8+hsU5pRBVJA==
-Received: (nullmailer pid 3834100 invoked by uid 1000);
-	Mon, 18 Dec 2023 15:17:18 -0000
-Date: Mon, 18 Dec 2023 09:17:18 -0600
-From: Rob Herring <robh@kernel.org>
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
-Cc: Karel Balej <balejk@matfyz.cz>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>, linux-input@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/5] dt-bindings: mfd: add entry for the Marvell
- 88PM88X PMICs
-Message-ID: <20231218151718.GA3827526-robh@kernel.org>
-References: <20231217131838.7569-1-karelb@gimli.ms.mff.cuni.cz>
- <20231217131838.7569-2-karelb@gimli.ms.mff.cuni.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C08515485;
+	Mon, 18 Dec 2023 15:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BICT98m005192;
+	Mon, 18 Dec 2023 09:17:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=e
+	vsG9arND7+YtX1uYAIhQEshiu9bxevrDqV1h0a/GAc=; b=bZt4B8QU6qyHnFsIi
+	6HSq1Le18T5l/9eVaZmZcV0n9xix1cRyg7dpCxbwulV6BUUg1eGE3nxZKiw8qkYz
+	PD6srcbonzKPOf+Nl4M15eNSs4O5pT0ew/4Izu9ugFV63LLJIBDS4Kba+0EM+M0K
+	X/2p123O7HrJjBA0YMuvVem8fpFDZxHUho8cQSuwzovL87bS2zQMNhCGlzgBFp8l
+	2kCsl6bxd2jSNVlXKqvWjM3fNHMN0FzOlOF1tm+YzaAqjq3BzMg/O93R5nk+cipC
+	8tEovEmEYhYXnbLlhFS6IXlf/o9zcGWnUiGY/aq3rqUT7HbmPnHirSKVM68Vpopl
+	dAR/g==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3v196nau46-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 09:17:33 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
+ 2023 15:17:32 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Mon, 18 Dec 2023 15:17:32 +0000
+Received: from work-debian.ad.cirrus.com (EDINJ39Q8D3.ad.cirrus.com [198.61.65.115])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B1FD515A0;
+	Mon, 18 Dec 2023 15:17:31 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <brendan.higgins@linux.dev>, <davidgow@google.com>, <rmoar@google.com>
+CC: <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH] kunit: Fix NULL-dereference in kunit_init_suite() if suite->log is NULL
+Date: Mon, 18 Dec 2023 15:17:29 +0000
+Message-ID: <20231218151729.210027-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231217131838.7569-2-karelb@gimli.ms.mff.cuni.cz>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 6-WZmN5DLqvHa1b2pkx3jcJdWCidvtaj
+X-Proofpoint-GUID: 6-WZmN5DLqvHa1b2pkx3jcJdWCidvtaj
+X-Proofpoint-Spam-Reason: safe
 
-On Sun, Dec 17, 2023 at 02:16:59PM +0100, Karel Balej wrote:
-> From: Karel Balej <balejk@matfyz.cz>
-> 
-> Marvell 88PM880 and 88PM886 are two similar PMICs with mostly matching
-> register mapping and subdevices such as onkey, regulators or battery and
-> charger. Both seem to come in two revisions which seem to be handled
-> slightly differently in some subdevice drivers.
-> 
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> ---
->  .../bindings/mfd/marvell,88pm88x.yaml         | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml b/Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml
-> new file mode 100644
-> index 000000000000..e075729c360f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml
-> @@ -0,0 +1,55 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/marvell,88pm88x.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Marvell 88PM88X PMIC core MFD
+suite->log must be checked for NULL before passing it to
+string_stream_clear(). This was done in kunit_init_test() but was missing
+from kunit_init_suite().
 
-Drop 'MFD'.
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 6d696c4695c5 ("kunit: add ability to run tests after boot using debugfs")
+---
+ lib/kunit/test.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> +
-> +maintainers:
-> +  - Karel Balej <balejk@matfyz.cz>
-> +
-> +description: |
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index e803d998e855..ea7f0913e55a 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -658,7 +658,9 @@ static void kunit_init_suite(struct kunit_suite *suite)
+ 	kunit_debugfs_create_suite(suite);
+ 	suite->status_comment[0] = '\0';
+ 	suite->suite_init_err = 0;
+-	string_stream_clear(suite->log);
++
++	if (suite->log)
++		string_stream_clear(suite->log);
+ }
+ 
+ bool kunit_enabled(void)
+-- 
+2.30.2
 
-Don't need '|' as there is no formatting to preserve.
-
-> +  Marvell 88PM880 and 88PM886 are two similar PMICs providing
-> +  several functions such as onkey, regulators or battery and
-> +  charger. Both seem to come in two revisions -- A0 and A1.
-> +
-> +properties:
-> +  compatible:
-> +    const: marvell,88pm886-a1
-
-The description talks about 4 different devices, but only 1 here. 
-
-Do you expect to need A0 support? Devices with these PMICs should be 
-known and few, right? 
-
-> +
-> +  reg:
-> +    description: I2C device address
-
-Drop.
-
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupt-controller
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      pmic0: 88pm886@30 {
-
-pmic@30
-
-Drop the unused label.
-
-> +        compatible = "marvell,88pm886-a1";
-> +        reg = <0x30>;
-> +        interrupts = <0 4 IRQ_TYPE_LEVEL_HIGH>;
-
-You need the header for this.
-
-You'll find the input binding fails too. Please test your bindings 
-before sending.
-
-> +        interrupt-parent = <&gic>;
-> +        interrupt-controller;
-> +        #interrupt-cells = <1>;
-> +      };
-> +    };
-> +...
-> -- 
-> 2.43.0
-> 
 
