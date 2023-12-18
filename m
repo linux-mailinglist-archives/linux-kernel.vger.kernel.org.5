@@ -1,97 +1,196 @@
-Return-Path: <linux-kernel+bounces-2954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3A3D816527
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:59:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C55816526
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 908DF281BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:59:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C66411C220D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB7429AF;
-	Mon, 18 Dec 2023 02:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949A52F28;
+	Mon, 18 Dec 2023 02:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VmVapPzn"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="PGfbsqdv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2BF3C16
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702868359; x=1734404359;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Ix+RIqgS9O5+g+wip7SZp6Oy9GhVKpNKHDFmWD+npWA=;
-  b=VmVapPznY4d0uzOtlZP0YRhIIAfqLy31ytMBLzil4X5C8o5QmAJf9sH6
-   3YlZP5AczSc5FtJRD+Fz9SFBHIrht02gS1EXxXg76uIKnDbcdiHBb8Yd+
-   jaB3JFfHPH16VSist+lsu+bEw7CpwslCsdITfEg/SoVCG28yo5iGJINqq
-   jqNCWe3odMP35tolVZ3kUGXUeFFb0y7gtnkPIj9syp50qffrROveDe0oD
-   k1p/N8rGsZI4/IKyJBKocgE7s+t1PeEHQ2OsJMmZB/+IMkUIdJhf8xa7/
-   QirzKskbCg/v607EkDY6GVllJsZXCjL0HivjnSKU2leduH+bHCdThwSF2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="461903714"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="461903714"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 18:59:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="751597377"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="751597377"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 17 Dec 2023 18:59:16 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rF3qd-0003hB-0K;
-	Mon, 18 Dec 2023 02:59:15 +0000
-Date: Mon, 18 Dec 2023 10:58:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Miroslav Benes <mbenes@suse.cz>
-Subject: drivers/video/fbdev/omap2/omapfb/dss/omapdss.o: warning: objtool:
- hdmi_power_on_full.isra.0+0xcd: hdmi_pll_compute() is missing a __noreturn
- annotation
-Message-ID: <202312181048.k6iQRj1R-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAE623D2;
+	Mon, 18 Dec 2023 02:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 34F051583;
+	Mon, 18 Dec 2023 03:58:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1702868290;
+	bh=qeu/tfk9LDcRaYbt+aO9v6RG30BOvhvYl3/zHx9lKkc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PGfbsqdvcvNvJwnUaue6AIkvyu6zrLtFzsrAcV2FCxLXkMvbU26lrC7H6cySXIlUo
+	 pJh3lrstp0wvki8Atmpf0w4tCfGfwfP7fLMDynr9ZEQMNIPxfkgIL6RBBeMDjv1SSS
+	 3shBeU/rt+uWN9dGbzI/LwD3Dx2/D7YYTlSrHTTw=
+Date: Mon, 18 Dec 2023 04:59:05 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Tommaso Merciai <tomm.merciai@gmail.com>
+Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
+	Martin Hecht <martin.hecht@avnet.eu>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] media: i2c: alvium: store frame interval in subdev
+ state
+Message-ID: <20231218025905.GJ5290@pendragon.ideasonboard.com>
+References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
+ <20231215082452.1720481-4-tomm.merciai@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20231215082452.1720481-4-tomm.merciai@gmail.com>
 
-Hi Josh,
+Hi Tommaso,
 
-FYI, the error/warning still remains.
+Thank you for the patch.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
-commit: fedb724c3db5490234ddde0103811c28c2fedae0 objtool: Detect missing __noreturn annotations
-date:   7 months ago
-config: x86_64-buildonly-randconfig-r003-20211101 (https://download.01.org/0day-ci/archive/20231218/202312181048.k6iQRj1R-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312181048.k6iQRj1R-lkp@intel.com/reproduce)
+On Fri, Dec 15, 2023 at 09:24:52AM +0100, Tommaso Merciai wrote:
+> Use the newly added storage for frame interval in the subdev state to
+> simplify the driver.
+> 
+> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> ---
+>  drivers/media/i2c/alvium-csi2.c | 40 ++++++++++-----------------------
+>  drivers/media/i2c/alvium-csi2.h |  2 --
+>  2 files changed, 12 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> index fde456357be1..81f683b3c849 100644
+> --- a/drivers/media/i2c/alvium-csi2.c
+> +++ b/drivers/media/i2c/alvium-csi2.c
+> @@ -1643,25 +1643,6 @@ static int alvium_hw_init(struct alvium_dev *alvium)
+>  }
+>  
+>  /* --------------- Subdev Operations --------------- */
+> -
+> -static int alvium_g_frame_interval(struct v4l2_subdev *sd,
+> -				   struct v4l2_subdev_state *sd_state,
+> -				   struct v4l2_subdev_frame_interval *fi)
+> -{
+> -	struct alvium_dev *alvium = sd_to_alvium(sd);
+> -
+> -	/*
+> -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
+> -	 * subdev active state API.
+> -	 */
+> -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+> -		return -EINVAL;
+> -
+> -	fi->interval = alvium->frame_interval;
+> -
+> -	return 0;
+> -}
+> -
+>  static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+>  				   struct v4l2_subdev_state *sd_state,
+>  				   struct v4l2_subdev_frame_interval *fi)
+> @@ -1669,6 +1650,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+>  	struct alvium_dev *alvium = sd_to_alvium(sd);
+>  	struct device *dev = &alvium->i2c_client->dev;
+>  	u64 req_fr, dft_fr, min_fr, max_fr;
+> +	struct v4l2_fract *interval;
+>  	int ret;
+>  
+>  	/*
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312181048.k6iQRj1R-lkp@intel.com/
+You should drop the FIXME comment here and the ACTIVE check...
 
-All warnings (new ones prefixed by >>):
+> @@ -1701,9 +1683,10 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+>  	if (req_fr >= max_fr && req_fr <= min_fr)
+>  		req_fr = dft_fr;
+>  
+> -	alvium->fr = req_fr;
+> -	alvium->frame_interval.numerator = fi->interval.numerator;
+> -	alvium->frame_interval.denominator = fi->interval.denominator;
+> +	interval = v4l2_subdev_state_get_interval(sd_state, 0);
+> +
+> +	interval->numerator = fi->interval.numerator;
+> +	interval->denominator = fi->interval.denominator;
+>  
 
->> drivers/video/fbdev/omap2/omapfb/dss/omapdss.o: warning: objtool: hdmi_power_on_full.isra.0+0xcd: hdmi_pll_compute() is missing a __noreturn annotation
 
+... and here only call alvium_set_frame_rate() for the ACTIVE frame
+interval.
 
-objdump-func vmlinux.o hdmi_power_on_full.isra.0:
+>  	return alvium_set_frame_rate(alvium, req_fr);
+>  }
+> @@ -1853,6 +1836,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+>  {
+>  	struct alvium_dev *alvium = sd_to_alvium(sd);
+>  	struct alvium_mode *mode = &alvium->mode;
+> +	struct v4l2_fract *interval;
+>  	struct v4l2_subdev_format sd_fmt = {
+>  		.which = V4L2_SUBDEV_FORMAT_TRY,
+>  		.format = alvium_csi2_default_fmt,
+> @@ -1870,6 +1854,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+>  	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
+>  	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
+>  
+> +	/* Setup initial frame interval*/
+> +	interval = v4l2_subdev_state_get_interval(state, 0);
+> +	interval->numerator = 1;
+> +	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -2239,7 +2228,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
+>  	.set_fmt = alvium_set_fmt,
+>  	.get_selection = alvium_get_selection,
+>  	.set_selection = alvium_set_selection,
+> -	.get_frame_interval = alvium_g_frame_interval,
+> +	.get_frame_interval = v4l2_subdev_get_frame_interval,
+>  	.set_frame_interval = alvium_s_frame_interval,
+>  };
+>  
+> @@ -2260,11 +2249,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
+>  	struct v4l2_subdev *sd = &alvium->sd;
+>  	int ret;
+>  
+> -	/* Setup initial frame interval*/
+> -	alvium->frame_interval.numerator = 1;
+> -	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
+> -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
+> -
+>  	/* Setup the initial mode */
+>  	alvium->mode.fmt = alvium_csi2_default_fmt;
+>  	alvium->mode.width = alvium_csi2_default_fmt.width;
+> diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
+> index a6529b28e7dd..f5e26257b042 100644
+> --- a/drivers/media/i2c/alvium-csi2.h
+> +++ b/drivers/media/i2c/alvium-csi2.h
+> @@ -442,8 +442,6 @@ struct alvium_dev {
+>  	s32 inc_sharp;
+>  
+>  	struct alvium_mode mode;
+> -	struct v4l2_fract frame_interval;
+> -	u64 fr;
+
+The fr field should have been removed by a previous patch (the one that
+will go between 1/3 an 2/3, see my review of 1/3) as shown by the fact
+that this patch only removes two locations where the field is set but
+none where it's read.
+
+>  
+>  	u8 h_sup_csi_lanes;
+>  	u64 link_freq;
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+
+Laurent Pinchart
 
