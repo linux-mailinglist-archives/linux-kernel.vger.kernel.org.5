@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-3615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D579816E7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:49:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A540816E84
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE9C328AD2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:49:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8362F1C24566
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D681542378;
-	Mon, 18 Dec 2023 12:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C5249895;
+	Mon, 18 Dec 2023 12:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OmyezMN2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D3GA7TZ4"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123FC83B15;
-	Mon, 18 Dec 2023 12:44:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4F2DC433C7;
-	Mon, 18 Dec 2023 12:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE0683B16;
+	Mon, 18 Dec 2023 12:44:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8E37C433C9;
+	Mon, 18 Dec 2023 12:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903492;
-	bh=XNiY34RnGKRiPLV4W4DL2CZH3lGGyYlISxlkuuSEHlg=;
+	s=k20201202; t=1702903498;
+	bh=NkBDOcwd+mXjhVoiXLCAhNzbOz1XH1NLtu9Pn/+6ro8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OmyezMN2AXU0eJyPfrUNCppwNAMojUFz0VJCHUP02fEhFZgTP/rhLyhxIljDE8nJS
-	 YKY4G3ZxvbG8L9RKjIicycFlq6+a3s5o13rQgzrsETpoOFdCcWOeF4DBTA2AeU7h7B
-	 jmlViW2L/mTqJDOdlOUzSbUGq9ZbLLvI7JAFCbwm4IqPBeRa0spL6WIt9KSewEz0XJ
-	 jZJKmRbtAv9uBn5ONyFqgoaywCz15H+q9huhVOD5O9tILtcqB8UAikpIQfiOa6GK6g
-	 SfMOZJWTF+QX67/bq7PbDatftk3IEyyRT9jhdxDec74yHvJ3VTkIpd292VF2MjudKW
-	 kdWzmpbHmXlog==
+	b=D3GA7TZ4aEvtz7svyFpQ7Vy/XudNBHR7ClQlPrrE9JqEkoVvCyaTr9ZkyES5Y98V7
+	 g2LjgdMxKCwHXAk6eSSgfI5/RYIgK0X2ylVcbpauLSIijxP+9utGIsLPSAl/TTc7d/
+	 tacVXL6j1frXJ0Z/oo5UDWKky6h0yZA4rXOux6LLHQWAUmq4mdGqbnF0dKNqe/KFp1
+	 C/HMVKKYwoSWe3MJ2+40sbNYEeVMlWAFlcDdIHSLSurFBw8BvxQYJ32yLcGPkxf1n/
+	 s+OcN5xAn0nCf8Mrcf1WQBCsJ2Y2y2u5A8EMJ97IG4ghd/oDpevO39ynzGkmRwvwbr
+	 juTKxigDn6eIw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -41,18 +41,17 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Jiaxun Yang <jiaxun.yang@flygoat.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	alexandre.torgue@foss.st.com,
-	joabreu@synopsys.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	mcoquelin.stm32@gmail.com,
-	netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 15/18] stmmac: dwmac-loongson: drop useless check for compatible fallback
-Date: Mon, 18 Dec 2023 07:43:49 -0500
-Message-ID: <20231218124415.1379060-15-sashal@kernel.org>
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de,
+	zhoubinbin@loongson.cn,
+	git@xen0n.name,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 16/18] MIPS: dts: loongson: drop incorrect dwmac fallback compatible
+Date: Mon, 18 Dec 2023 07:43:50 -0500
+Message-ID: <20231218124415.1379060-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124415.1379060-1-sashal@kernel.org>
 References: <20231218124415.1379060-1-sashal@kernel.org>
@@ -69,7 +68,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit 31fea092c6f9f8fb2c40a08137907f5fbeae55dd ]
+[ Upstream commit 4907a3f54b12b8209864572a312cf967befcae80 ]
 
 Device binds to proper PCI ID (LOONGSON, 0x7a03), already listed in DTS,
 so checking for some other compatible does not make sense.  It cannot be
@@ -84,25 +83,38 @@ Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 3 +--
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi          | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-index 2cd6fce5c9934..b508b68157c77 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-@@ -59,11 +59,6 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
- 		return -ENODEV;
- 	}
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+index f878f47e4501b..ee3e2153dd13f 100644
+--- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -130,8 +130,7 @@ gmac@3,0 {
+ 				compatible = "pci0014,7a03.0",
+ 						   "pci0014,7a03",
+ 						   "pciclass0c0320",
+-						   "pciclass0c03",
+-						   "loongson, pci-gmac";
++						   "pciclass0c03";
  
--	if (!of_device_is_compatible(np, "loongson, pci-gmac")) {
--		pr_info("dwmac_loongson_pci: Incompatible OF node\n");
--		return -ENODEV;
--	}
--
- 	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
- 	if (!plat)
- 		return -ENOMEM;
+ 				reg = <0x1800 0x0 0x0 0x0 0x0>;
+ 				interrupts = <12 IRQ_TYPE_LEVEL_LOW>,
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index 7c69e8245c2f1..cce9428afc41f 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -193,8 +193,7 @@ gmac@3,0 {
+ 				compatible = "pci0014,7a03.0",
+ 						   "pci0014,7a03",
+ 						   "pciclass020000",
+-						   "pciclass0200",
+-						   "loongson, pci-gmac";
++						   "pciclass0200";
+ 
+ 				reg = <0x1800 0x0 0x0 0x0 0x0>;
+ 				interrupts = <12 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.43.0
 
