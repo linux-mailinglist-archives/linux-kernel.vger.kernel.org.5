@@ -1,71 +1,149 @@
-Return-Path: <linux-kernel+bounces-4292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82746817AF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B728C817AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F24F1C21677
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:26:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C4B1C229B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB4A74E0E;
-	Mon, 18 Dec 2023 19:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4235C760BB;
+	Mon, 18 Dec 2023 19:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sW8ZSIw7"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WwC6rIZI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC18740A3;
-	Mon, 18 Dec 2023 19:24:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A2D38C433C8;
-	Mon, 18 Dec 2023 19:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702927485;
-	bh=ENkpfPXDdBZ+VUxIprVp/9qDIkZLr31qOCwg3TYmvQU=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=sW8ZSIw7EB5+kPx5DHaRsHSK7DOBHjo21b677JmbmzC0GMInEfJ4QwGMI44vnnqxG
-	 o3NzyuFhlfuKUKIBR9qG4rLaawhsOMlZ0vNKa6S5KSB548iyjy8rx1ZVzddEv7NFet
-	 8z4Ei1jLQw9bjadoGCXCEXCeK2a+T1pklTDT8PynfeGFzFZzk7Dk1XHYXGbkO80v4a
-	 rcNBX2vy/vRRdUlyRVA2fmhxkl5x5quraSOf/S9n+YijEmF+CoyQTm8+Vl6+9UwbA0
-	 JvLvK9KJfXq9AlxEaYQILkBbn4Q1YgtRNReHJJFsv/a1Fw+OqR726feLDhUQoMrx2D
-	 hwZIGyzuuLGYw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 91F61D8C98B;
-	Mon, 18 Dec 2023 19:24:45 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 6.7-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <6edb005530947b752d1a84c9ea69df0da6c85cf5.camel@HansenPartnership.com>
-References: <6edb005530947b752d1a84c9ea69df0da6c85cf5.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <6edb005530947b752d1a84c9ea69df0da6c85cf5.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 77a67255609606164e1042f3bf7452a568a700e4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
-Message-Id: <170292748559.30314.10609090538239587335.pr-tracker-bot@kernel.org>
-Date: Mon, 18 Dec 2023 19:24:45 +0000
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E3D71477;
+	Mon, 18 Dec 2023 19:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=DeGlvkmf7JbvE0tcyrLdxjYn4gMXVBumoPbNkhd0aQU=; b=WwC6rIZIejSiNehEe8vtqQOylB
+	K7ljy/FKOjAygaJH2+58l37UR5BVxBeQ7Zw4CCftqsNXrT4TTFrVLnE8mBJ/NIKEtTjPt+yQ0BZGK
+	F5fGCM9Xz+n7zUKVQDa3MTl2HN0HTbuVJwazhSQN7xcZ129cd//6hO4D04bnyB5Xxnfcfxt7aUdrn
+	O2zqQSVNq4Oyr2fIOBsCt5mBiqaWpxDX7qpTr1iLauk1ag3zVlv+73YpMXnb6GFbvuRN47ZxbDSLw
+	d90B8+SCVArMGtrkFbcbIBliBr58CNKpvHWjDzMn8791bg0L9eOBSl1SrwmWW/2+Nzsf/C6d18Wx1
+	wi4C67HQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFJES-00BsrM-1g;
+	Mon, 18 Dec 2023 19:24:52 +0000
+Message-ID: <2b7964c1-3496-40de-bb61-a654d30b6fe6@infradead.org>
+Date: Mon, 18 Dec 2023 11:24:51 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] selftests/net: Fix various spelling mistakes in
+ TCP-AO tests
+Content-Language: en-US
+To: Colin Ian King <colin.i.king@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Dmitry Safonov <0x7f454c46@gmail.com>, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231218133022.321069-1-colin.i.king@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231218133022.321069-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The pull request you sent on Mon, 18 Dec 2023 13:43:54 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
+On 12/18/23 05:30, Colin Ian King wrote:
+> There are a handful of spelling mistakes in test messages in the
+> TCP-AIO selftests. Fix these.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Thank you!
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  tools/testing/selftests/net/tcp_ao/connect-deny.c      | 2 +-
+>  tools/testing/selftests/net/tcp_ao/lib/proc.c          | 4 ++--
+>  tools/testing/selftests/net/tcp_ao/setsockopt-closed.c | 2 +-
+>  tools/testing/selftests/net/tcp_ao/unsigned-md5.c      | 2 +-
+>  4 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/net/tcp_ao/connect-deny.c b/tools/testing/selftests/net/tcp_ao/connect-deny.c
+> index 1ca78040d8b7..185a2f6e5ff3 100644
+> --- a/tools/testing/selftests/net/tcp_ao/connect-deny.c
+> +++ b/tools/testing/selftests/net/tcp_ao/connect-deny.c
+> @@ -55,7 +55,7 @@ static void try_accept(const char *tst_name, unsigned int port, const char *pwd,
+>  	err = test_wait_fd(lsk, timeout, 0);
+>  	if (err == -ETIMEDOUT) {
+>  		if (!fault(TIMEOUT))
+> -			test_fail("timeouted for accept()");
+> +			test_fail("timed out for accept()");
+>  	} else if (err < 0) {
+>  		test_error("test_wait_fd()");
+>  	} else {
+> diff --git a/tools/testing/selftests/net/tcp_ao/lib/proc.c b/tools/testing/selftests/net/tcp_ao/lib/proc.c
+> index 2322f4d4676d..2fb6dd8adba6 100644
+> --- a/tools/testing/selftests/net/tcp_ao/lib/proc.c
+> +++ b/tools/testing/selftests/net/tcp_ao/lib/proc.c
+> @@ -227,7 +227,7 @@ void netstat_print_diff(struct netstat *nsa, struct netstat *nsb)
+>  		}
+>  
+>  		if (nsb->counters_nr < nsa->counters_nr)
+> -			test_error("Unexpected: some counters dissapeared!");
+> +			test_error("Unexpected: some counters disappeared!");
+>  
+>  		for (j = 0, i = 0; i < nsb->counters_nr; i++) {
+>  			if (strcmp(nsb->counters[i].name, nsa->counters[j].name)) {
+> @@ -244,7 +244,7 @@ void netstat_print_diff(struct netstat *nsa, struct netstat *nsb)
+>  			j++;
+>  		}
+>  		if (j != nsa->counters_nr)
+> -			test_error("Unexpected: some counters dissapeared!");
+> +			test_error("Unexpected: some counters disappeared!");
+>  
+>  		nsb = nsb->next;
+>  		nsa = nsa->next;
+> diff --git a/tools/testing/selftests/net/tcp_ao/setsockopt-closed.c b/tools/testing/selftests/net/tcp_ao/setsockopt-closed.c
+> index 7e4601b3f6a3..a329f42f40ce 100644
+> --- a/tools/testing/selftests/net/tcp_ao/setsockopt-closed.c
+> +++ b/tools/testing/selftests/net/tcp_ao/setsockopt-closed.c
+> @@ -427,7 +427,7 @@ static void test_einval_del_key(void)
+>  
+>  	sk = prepare_defs(TCP_AO_DEL_KEY, &del);
+>  	del.set_current = 1;
+> -	setsockopt_checked(sk, TCP_AO_DEL_KEY, &del, ENOENT, "set non-exising current key");
+> +	setsockopt_checked(sk, TCP_AO_DEL_KEY, &del, ENOENT, "set non-existing current key");
+>  
+>  	sk = prepare_defs(TCP_AO_DEL_KEY, &del);
+>  	del.set_rnext = 1;
+> diff --git a/tools/testing/selftests/net/tcp_ao/unsigned-md5.c b/tools/testing/selftests/net/tcp_ao/unsigned-md5.c
+> index 7cffde02d2be..14addfd46468 100644
+> --- a/tools/testing/selftests/net/tcp_ao/unsigned-md5.c
+> +++ b/tools/testing/selftests/net/tcp_ao/unsigned-md5.c
+> @@ -72,7 +72,7 @@ static void try_accept(const char *tst_name, unsigned int port,
+>  	err = test_wait_fd(lsk, timeout, 0);
+>  	if (err == -ETIMEDOUT) {
+>  		if (!fault(TIMEOUT))
+> -			test_fail("timeouted for accept()");
+> +			test_fail("timed out for accept()");
+>  	} else if (err < 0) {
+>  		test_error("test_wait_fd()");
+>  	} else {
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
