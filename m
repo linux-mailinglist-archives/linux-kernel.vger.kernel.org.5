@@ -1,104 +1,125 @@
-Return-Path: <linux-kernel+bounces-4778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9DF8181F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:03:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD93D81835A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:29:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04831F26EC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:03:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CE33B2376D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C131BDEB;
-	Tue, 19 Dec 2023 07:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F15EF125BA;
+	Tue, 19 Dec 2023 08:29:28 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99DE1BDCE;
-	Tue, 19 Dec 2023 07:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vyq-RHH_1702969201;
-Received: from 30.97.48.48(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vyq-RHH_1702969201)
-          by smtp.aliyun-inc.com;
-          Tue, 19 Dec 2023 15:00:01 +0800
-Message-ID: <1b9a7d11-c91f-4b55-bf27-d7c703ed5c24@linux.alibaba.com>
-Date: Tue, 19 Dec 2023 15:00:24 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8AD125A8
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SvVGY3VX9z1wp0D;
+	Tue, 19 Dec 2023 16:29:09 +0800 (CST)
+Received: from dggpeml500003.china.huawei.com (unknown [7.185.36.200])
+	by mail.maildlp.com (Postfix) with ESMTPS id EA9301A0192;
+	Tue, 19 Dec 2023 16:29:22 +0800 (CST)
+Received: from huawei.com (10.44.142.84) by dggpeml500003.china.huawei.com
+ (7.185.36.200) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Dec
+ 2023 16:29:22 +0800
+From: Yu Liao <liaoyu15@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>
+CC: <liaoyu15@huawei.com>, <liwei391@huawei.com>, <wangxiongfeng2@huawei.com>,
+	<frederic@kernel.org>, <mingo@kernel.org>
+Subject: [PATCH] tick/broadcast-hrtimer: Prevent the timer device on broadcast duty CPU from being disabled
+Date: Mon, 18 Dec 2023 10:58:44 +0800
+Message-ID: <20231218025844.55675-1-liaoyu15@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dmaengine: sprd: delete enable opreation in probe
-To: liu kaiwei <liukaiwei086@gmail.com>, Vinod Koul <vkoul@kernel.org>
-Cc: Kaiwei Liu <kaiwei.liu@unisoc.com>, Orson Zhai <orsonzhai@gmail.com>,
- Chunyan Zhang <zhang.lyra@gmail.com>, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org, Wenming Wu <wenming.wu@unisoc.com>
-References: <20231102121623.31924-1-kaiwei.liu@unisoc.com>
- <ZWCg9hmfvexyn7xK@matsya>
- <CAOgAA6FzZ4q=rdmh8ySJRhojkGCgyV4PVjT6JAOUix+CF9PFtw@mail.gmail.com>
- <ZXb1RWaFWHVDx1wV@matsya>
- <CAOgAA6FJrJ2kVg4hg3sAE_VAG8SyQ4UzKikU+Ofa=N2w0Q4Ghg@mail.gmail.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <CAOgAA6FJrJ2kVg4hg3sAE_VAG8SyQ4UzKikU+Ofa=N2w0Q4Ghg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500003.china.huawei.com (7.185.36.200)
 
+It was found that running the LTP hotplug stress test on a aarch64
+system could produce rcu_sched stall warnings.
 
+The issue is the following:
 
-On 12/19/2023 1:21 PM, liu kaiwei wrote:
-> On Mon, Dec 11, 2023 at 7:41 PM Vinod Koul <vkoul@kernel.org> wrote:
->>
->> On 06-12-23, 17:32, liu kaiwei wrote:
->>> On Fri, Nov 24, 2023 at 9:11 PM Vinod Koul <vkoul@kernel.org> wrote:
->>>>
->>>> On 02-11-23, 20:16, Kaiwei Liu wrote:
->>>>> From: "kaiwei.liu" <kaiwei.liu@unisoc.com>
->>>>
->>>> Typo is subject line
->>>>
->>>>>
->>>>> In the probe of dma, it will allocate device memory and do some
->>>>> initalization settings. All operations are only at the software
->>>>> level and don't need the DMA hardware power on. It doesn't need
->>>>> to resume the device and set the device active as well. here
->>>>> delete unnecessary operation.
->>>>
->>>> Don't you need to read or write to the device? Without enable that wont
->>>> work right?
->>>>
->>>
->>> Yes, it doesn't need to read or write to the device in the probe of DMA.
->>> We will enable the DMA when allocating the DMA channel.
->>
->> So you will probe even if device is not present! I think it makes sense
->> to access device registers in probe!
-> 
-> There is another reason why we delete enable/disable and not to access
-> device in probe. The current driver is applicable to two DMA devices
-> in different
-> power domain. For some scenes, one of the domain is power off and when you
-> probe,  enable the dma with the domain power off may cause crash.
-> 
-> For example, one case is for audio co-processor and DMA serves for it,
-> DMA's power domain is off during initialization since audio is not used
-> at that time, so we cannot read/write DMA's register for this kind of cases.
-> 
-> @Baolin Wang
-> Hi baolin，what's your opinion?
+CPU1 (owns the broadcast hrtimer)	CPU2
 
-Please add your explanation into the commit message.
+				tick_broadcast_enter()
+				//shut down local timer device
+				...
+				tick_broadcast_exit()
+				//exits with tick_broadcast_force_mask set,
+				timer device remains disabled
 
-Moreover, I think Vinod's concern is reasonable, so you can not move the 
-pm_runtime_enable() after registering the devices, which means users can 
-access the device without powering on.
+				initiates offlining of CPU1
+take_cpu_down()
+//CPU1 shuts down and does
+not send broadcast IPI anymore
+				takedown_cpu()
+				  hotplug_cpu__broadcast_tick_pull()
+				  //move broadcast hrtimer to this CPU
+				    clockevents_program_event()
+				      bc_set_next()
+					hrtimer_start()
+					//does not call hrtimer_reprogram()
+					to program timer device if expires
+					equals dev->next_event, so the timer
+					device remains disabled.
 
-To solve your problem, I think you can move the pm_runtime_enable() 
-before dma_async_device_register(), then if users want to use DMA in 
-probe stage, the dma_chan_get()--->sprd_dma_alloc_chan_resources() will 
-help to power on it.
+CPU2 takes over the broadcast duty but local timer device is disabled,
+causing many CPUs to become stuck.
+
+Fix this by calling tick_program_event() to reprogram the local timer
+device in this scenario.
+
+Signed-off-by: Yu Liao <liaoyu15@huawei.com>
+---
+ kernel/time/tick-broadcast-hrtimer.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/time/tick-broadcast-hrtimer.c b/kernel/time/tick-broadcast-hrtimer.c
+index e28f9210f8a1..6a4a612581fb 100644
+--- a/kernel/time/tick-broadcast-hrtimer.c
++++ b/kernel/time/tick-broadcast-hrtimer.c
+@@ -42,10 +42,22 @@ static int bc_shutdown(struct clock_event_device *evt)
+  */
+ static int bc_set_next(ktime_t expires, struct clock_event_device *bc)
+ {
++	ktime_t next_event = this_cpu_ptr(&tick_cpu_device)->evtdev->next_event;
++
+ 	/*
+-	 * This is called either from enter/exit idle code or from the
+-	 * broadcast handler. In all cases tick_broadcast_lock is held.
+-	 *
++	 * This can be called from CPU offline operation to move broadcast
++	 * assignment. If tick_broadcast_force_mask is set, the CPU local
++	 * timer device may be disabled. And hrtimer_reprogram() will not
++	 * called if the timer is not the first expiring timer. Reprogram
++	 * the cpu local timer device to ensure we can take over the
++	 * broadcast duty.
++	 */
++	if (tick_check_broadcast_expired() && expires >= next_event)
++		tick_program_event(next_event, 1);
++
++	/*
++	 * This is called from enter/exit idle code, broadcast handler or
++	 * CPU offline operation. In all cases tick_broadcast_lock is held.
+ 	 * hrtimer_cancel() cannot be called here neither from the
+ 	 * broadcast handler nor from the enter/exit idle code. The idle
+ 	 * code can run into the problem described in bc_shutdown() and the
+-- 
+2.33.0
+
 
