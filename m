@@ -1,62 +1,66 @@
-Return-Path: <linux-kernel+bounces-3767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 394928170BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:44:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47FD38170BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3F631F23901
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:44:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB92728345F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C1137865;
-	Mon, 18 Dec 2023 13:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4D01D122;
+	Mon, 18 Dec 2023 13:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UoGvaYxk"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SAiaqNnm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69F71D146;
-	Mon, 18 Dec 2023 13:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702907047; x=1734443047;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=G/JDSsjaBbpRf47CjuV2xxri4aEDlv0U+LcRg8Kpez4=;
-  b=UoGvaYxkF3eLP5wlEQrsTg3dwAra4RnN7h8qI95Hbqk5duFN3MoJ5Cae
-   DMhsSBa4IvOb2ZwxgU1lyLugXDnStG9sDkGswOpqqajYNchtnZvU4yaj1
-   6hwyXL90muq0GAtjqO2u3zut7Ad5a2kMJGwffWBwg+UbMCFKimzE7XeCI
-   aqS06bPJOTqr1FbpTkondN5yl5t5z6qGy6V/2Sl4VjX/GQPdxf3WhkCU/
-   u2SXQtnXsdYKCV4rRqLjY1M0JNAnh8TmAZf+5s/PLHCd6CwOykuufNrVA
-   WleBm8cOpw7GInkt0yk/R8mX6r/1fK+QCvLUCXObw+KGoegs8ZppLX9CP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="8957884"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="8957884"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 05:44:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="898974742"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="898974742"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 05:44:04 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rFDub-00000006x8d-3pIB;
-	Mon, 18 Dec 2023 15:44:01 +0200
-Date: Mon, 18 Dec 2023 15:44:01 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-Message-ID: <ZYBMoUT8pDL0Rn5V@smile.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D7911185
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702907133;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1ixXR3XKTH39hKKYBoKlldaXP+hnNl1nKybCK1Edi+M=;
+	b=SAiaqNnmKlUCIdzeHzpnaEJlcETnsapzVS0/1eJrbelLEvmXr0pK5WbMklOS3zg3TN+rhc
+	LfDRCI0LJSj/F5QbURo4ow2nzQcpTGXjNtxEVjZn9NkbCEblvYPunWg0Ht+6G2hk7DGLYP
+	Qnpg/rvr+GM376vwX8KuahIW77n3w0s=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-689-D2zy3ttpM2yrOdXBVjGhbg-1; Mon,
+ 18 Dec 2023 08:45:30 -0500
+X-MC-Unique: D2zy3ttpM2yrOdXBVjGhbg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CAFDA1C3B641;
+	Mon, 18 Dec 2023 13:45:28 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 73714C159B0;
+	Mon, 18 Dec 2023 13:45:27 +0000 (UTC)
+Date: Mon, 18 Dec 2023 21:45:24 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Vivek Goyal <vgoyal@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 0/2] crash: fix potential cmem->ranges array overflow
+Message-ID: <ZYBM9MG1rjCDPykI@MiWiFi-R3L-srv>
+References: <20231218081915.24120-1-ytcoode@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,69 +69,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20231218081915.24120-1-ytcoode@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
+Hi Yuntao,
 
-On Fri, Dec 15, 2023 at 07:09:23PM +1030, Qu Wenruo wrote:
-> Just as mentioned in the comment of memparse(), the simple_stroull()
-> usage can lead to overflow all by itself.
+On 12/18/23 at 04:19pm, Yuntao Wang wrote:
+> This series tries to fix the potential cmem->ranges array overflow.
+
+This series looks good to me. While you'd better talk to fuqiang to ask
+if he wants to post these or wants to give up. He posted patch to raise
+the potention issue and I suggested him to do these during the
+discussion. Without consulting him for opinion to take over a discussing
+work, it's not suggested, I would say.
+
+https://lore.kernel.org/all/ZXrY7QbXAlxydsSC@MiWiFi-R3L-srv/T/#u
+
 > 
-> Furthermore, the suffix calculation is also super overflow prone because
-> that some suffix like "E" itself would eat 60bits, leaving only 4 bits
-> available.
+> Yuntao Wang (2):
+>   x86/crash: fix potential cmem->ranges array overflow
+>   crash_core: fix out-of-bounds access check in
+>     crash_exclude_mem_range()
 > 
-> And that suffix "E" can also lead to confusion since it's using the same
-> char of hex Ox'E'.
-
-How would you distinguish 25E with [0x]25e?
-I believe it's unsolvable issue as long as we have it already.
-
-> One simple example to expose all the problem is to use memparse() on
-> "25E".
-> The correct value should be 28823037615171174400, but the suffix E makes
-> it super simple to overflow, resulting the incorrect value
-> 10376293541461622784 (9E).
-
-So, then you can probably improve memparse()?
-
-> So here we introduce a new helper to address the problem,
-> kstrtoull_suffix():
-
-This is a horrible naming. What suffix? What would be without it
-(if it's even possible)? I have more questions than answers...
-
-> - Enhance _kstrtoull()
->   This allow _kstrtoull() to return even if it hits an invalid char, as
->   long as the optional parameter @retptr is provided.
+>  arch/x86/kernel/crash.c | 9 +++++----
+>  kernel/crash_core.c     | 2 +-
+>  2 files changed, 6 insertions(+), 5 deletions(-)
 > 
->   If @retptr is provided, _kstrtoull() would try its best to parse the
->   valid part, and leave the remaining to be handled by the caller.
+> -- 
+> 2.43.0
 > 
->   If @retptr is not provided, the behavior is not altered.
-
-Can we not touch that one. I admit that it may be not used in the hot paths,
-but I prefer that it does exactly what it does in a strict way.
-
-> - New kstrtoull_suffix() helper
->   This new helper utilize the new @retptr capability of _kstrtoull(),
->   and provides 2 new ability:
-> 
->   * Allow certain suffixes to be chosen
->     The recommended suffix list is "KkMmGgTtPp", excluding the overflow
->     prone "Ee". Undermost cases there is really no need to use "E" suffix
->     anyway.
->     And for those who really need that exabytes suffix, they can enable
->     that suffix pretty easily.
-> 
->   * Add overflow checks for the suffixes
->     If the original number string is fine, but with the extra left
->     shift overflow happens, then -EOVERFLOW is returned.
-
-And formal NAK due to lack of test cases. We do not accept new generic
-code without test cases.
-
--- 
-With Best Regards,
-Andy Shevchenko
 
 
