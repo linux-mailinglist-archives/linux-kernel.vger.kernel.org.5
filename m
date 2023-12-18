@@ -1,74 +1,94 @@
-Return-Path: <linux-kernel+bounces-4213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30EFA817926
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:51:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8C7F81792B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:51:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3DAC2867D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:51:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A39801C25C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A6074E2B;
-	Mon, 18 Dec 2023 17:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Yyd+/Wg+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 535B271451;
+	Mon, 18 Dec 2023 17:48:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE8E74E06
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1702921673; x=1703180873;
-	bh=kWoPrvQBKwAi266j+G1U1GXzd4+9SxzFGBqgXoz6f0s=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=Yyd+/Wg+Dy/TKDp06JYVsaH2QBQ2MJY8/rUWLjTkOHhENDcOukl9LIwicPsl3V4Td
-	 R9JrmNoCDBlcyUyPZ+t1t7OPKV8fUl9S5+M5rvqp9z+a3z81WMIYirRwpPcTKM2dbJ
-	 1v8/hOi6VFtGaKt9n7+Ggm2tR/HePFXlFXpd53MAesdwrfIdIS3Nz1j5PFph2KT8vD
-	 ARwlrh/WBe3PWdlyaqoQzBdOAdpIIWu8Gl3uj1X7FEIJckQvb7kJlkbqYiV0vCD5sD
-	 D4vym2dV6ue3jZkwrg96UuE6NqP2R/5h1cFguwk/MWpUMlaDHh2K1dESVmpJZWVGh+
-	 /SL5kYUgPgbGQ==
-Date: Mon, 18 Dec 2023 17:47:30 +0000
-To: Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Tejun Heo <tj@kernel.org>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Wedson Almeida Filho <walmeida@microsoft.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] rust: workqueue: add `#[pin_data]` to `Work`
-Message-ID: <cf36ec44-466a-4c00-afd6-8387dd1ed1f2@proton.me>
-In-Reply-To: <05fa58f3-f351-4119-9c07-1f5bb04503d2@gmail.com>
-References: <20231213220447.3613500-1-benno.lossin@proton.me> <20231213220447.3613500-3-benno.lossin@proton.me> <05fa58f3-f351-4119-9c07-1f5bb04503d2@gmail.com>
-Feedback-ID: 71780778:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77536760A9;
+	Mon, 18 Dec 2023 17:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id F19EC1C0050; Mon, 18 Dec 2023 18:48:34 +0100 (CET)
+Date: Mon, 18 Dec 2023 18:48:34 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 4.14 00/26] 4.14.334-rc1 review
+Message-ID: <ZYCF8orOZ02jpDNT@duo.ucw.cz>
+References: <20231218135040.665690087@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GrdRN5Bde1PD8wYa"
+Content-Disposition: inline
+In-Reply-To: <20231218135040.665690087@linuxfoundation.org>
+
+
+--GrdRN5Bde1PD8wYa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 12/14/23 04:13, Martin Rodriguez Reboredo wrote:
-> On 12/13/23 19:09, Benno Lossin wrote:
->> The previous two patches made it possible to add `#[pin_data]` on
->> structs with default generic parameter values.
->> This patch makes `Work` use `#[pin_data]` and removes an invocation of
->> `pin_init_from_closure`. This function is intended as a low level manual
->> escape hatch, so it is better to rely on the safe `pin_init!` macro.
->>
->> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
->> ---
->> [...]
+Hi!
 
-Did you mean to add your reviewed by? Because I received only
-the quote.
+> This is the start of the stable review cycle for the 4.14.334 release.
+> There are 26 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:                                =
+                                              =20
+                                                                           =
+                                              =20
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.14.y                                        =20
+                                                                           =
+                                              =20
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>                              =
+                                              =20
+                                                                           =
+                                              =20
+Best regards,                                                              =
+                                              =20
+                                                                Pavel      =
+                                              =20
 
 --=20
-Cheers,
-Benno
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
+--GrdRN5Bde1PD8wYa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZYCF8gAKCRAw5/Bqldv6
+8v8hAJ9EZpS9OrO4qyr+u3ZHbDKHjb9WywCgxJVEDK+OQel8pYmpQ7reqFtHv0M=
+=VWoD
+-----END PGP SIGNATURE-----
+
+--GrdRN5Bde1PD8wYa--
 
