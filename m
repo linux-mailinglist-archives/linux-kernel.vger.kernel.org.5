@@ -1,173 +1,170 @@
-Return-Path: <linux-kernel+bounces-2976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FB2816572
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:42:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42A89816579
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8025B1F21FA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:42:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 013C51F21DD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BB463C0;
-	Mon, 18 Dec 2023 03:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6630D53AC;
+	Mon, 18 Dec 2023 03:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="DdpNuqiG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e3QDVa1W"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2010.outbound.protection.outlook.com [40.92.20.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com [209.85.210.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B53663AA;
-	Mon, 18 Dec 2023 03:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PxQKMh+jrJ7FdJmELh6XFKIAuU20oG6V028L4KSK2fxXPk0U0mIh1clbuRSlC59vxkPSH8z9n9blLUsUgcBltb/hi+3z8Ewp8rttyPOmNnqQTnsHhwy/qTxrqCo9fYwKpumH0jV7MmiYScdbwfg1uj0Ceqcxtt5aB44fPFGmfa17RXewNjHDoiKIZQqffPTbKPhkEj8zIfUlPIa4VaeJ81ufTh+Dq0/OvFxxI83Aa8zx9WQFP7gy5RM/meWhncj7+nJglk/V8dNLpnosH00yPDFtHqkSFx5D/64IA9h/rDj3L+5JGZU518gHo1KSnUrZ3dhhykTMfCPfWGJrVX07Cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z7LcaDiwEE+5epWB0c3Ot+ju47zO+ahh1oFZKFI0vRY=;
- b=S3Fh1Mpjv6EHGM0+scI6ddl3t1/vHDJI6flk0z+3/Ni8GkzB2tN7vkV/2SgjmCvsNoApIEi6Gk2s30QPjq68EkAsEMuHRK/2Kth1MYGdaG+gEB4kVxKrNox8MMdji6+d+Ym/qQReOoHVPSqv/pt5v+13hoh9H5PDN5EIoNuyMma14mxBLxVfzrUdq+3iB4uAkOAVodxgkCaylWK4INgiyxb3P32sJKvj+QQScZ/Ntr/2+mzjX2Ag3IquQZNL2MzB7elqn4ldDtODcP+JpSV42rOj+IPMgnRmcjAMMmyVBQ9SUeP6VPuYLUvH2BgxoKnRpJ0YfpRSnlcLLROHfvNgEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z7LcaDiwEE+5epWB0c3Ot+ju47zO+ahh1oFZKFI0vRY=;
- b=DdpNuqiGQv7XAriiTcW1wuYTB3q3Gu7JiCFpCCq8wr+biGMGqj17ijtU+ZjWNs1cTFzh2DisMxcEuQHXyotRIrVbPBG3SR3z0LDRwLeRl4x8WoKSzoy+lzJe7melO2zsEOYWKDR2aIzWmTTZiTEsJbhAhHDhLzHCYePCh2/RAmRY4vtg3d80oktZriFusR1j3el2z3s7xcJjDs68VMJxrGgc9NFkIYDaj67uoRnfQPLjW3aIXYglRAstsIZu1jUOcO5r7/tH2i4mHVBFtiT9iI4Mt2RyByV5nCMt74MmnHWIY5THA9t+Sn+/gOc0TxgSHkXJZt6DAQLHZyIsGTy55Q==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SA0PR20MB3405.namprd20.prod.outlook.com (2603:10b6:806:70::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
- 2023 03:42:02 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 03:42:02 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Conor Dooley <conor@kernel.org>,
-	jingbao qiu <qiujingbao.dlmu@gmail.com>
-Cc: Inochi Amaoto <inochiama@outlook.com>,
-	a.zummo@towertech.it,
-	alexandre.belloni@bootlin.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	chao.wei@sophgo.com,
-	unicorn_wang@outlook.com,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	linux-rtc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dlan@gentoo.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: sophgo: add RTC support for Sophgo CV1800 series SoC
-Date: Mon, 18 Dec 2023 11:41:52 +0800
-Message-ID:
- <IA1PR20MB4953BE30DC29820912321C07BB90A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231217-swept-uncorrupt-92ac058dba4b@spud>
-References: <20231217-swept-uncorrupt-92ac058dba4b@spud>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [Jb0HqSOq7LgehUe6RPZqeIy4AFb9yMo8NjF6K/4uIqI=]
-X-ClientProxiedBy: TYCP286CA0337.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:38e::15) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <20231218034153.562704-1-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EAF2538B;
+	Mon, 18 Dec 2023 03:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f65.google.com with SMTP id 46e09a7af769-6d9fdbcec6eso2158521a34.1;
+        Sun, 17 Dec 2023 19:56:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702871790; x=1703476590; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IAXpZwPFWYTh7NYI9cITpDm8WNXyOT7XhEo/q9GXWHo=;
+        b=e3QDVa1WRby/aBsxaTlKmbybUsSMNscE4NGD1WiAZofOXu+5cLkCOokpRPU/ZxjSvG
+         cwrtqJ6C0VOKGkGYLMwrlSCzTZ12q1o2RtolFY51CbePTw4RsOQl9BmOlU7kF6GtEMHd
+         1clLvPwL1sfBQyTsFsnY0bUk2lrVGvnAY6w4wkRsLlhDVyYZoueMF89+Z/0+aaGLlpzS
+         Ojk6708qOiVOvx8diE8lkylqhfu5EPE4RvhX6ejiSquub11Qez4XYKjIF3nxlMtP+vqS
+         XOrPANAHVmVqxsyEzNSepcb0+VA3xJfyLCzqPTt7v5nzp0fDY8aU1xvqPnE3T1omyoa4
+         uh2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702871790; x=1703476590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IAXpZwPFWYTh7NYI9cITpDm8WNXyOT7XhEo/q9GXWHo=;
+        b=r+euyC7PMvp+5WOP8Ae6rhxVEfFmXokywGfts41/+vcU4GTEE85ikr6WRp+/jn8Rig
+         uCc1+ZL7F7+CisqWL7+teQsOaJyGEejZYAZbmMCJl+tu9c+MiS/atczX2Y90ozMeluEF
+         RzxsizozFsEAgyBq3e3OBrEEtI3X4J89BEQJj+s2R5KfUyqQIla9EZ8Si8epXH8Z8jun
+         Eg/S1EDBk3/zroeousR51s6QR6UZMzXj8iEh8t0frq8/1d17GTTXIYgcnCqJ1wJsmn4I
+         JCyQNotfOLrBfxcS0fkaxv183x2Y+6F0XoTHqitMTWA78FpfRS93lzPgR7LuC6/nVedQ
+         eT3g==
+X-Gm-Message-State: AOJu0Yz2vxrdO5CUSJDPf+LUBQxFJkElSFijAek86hb9Hb6E28ecIeVs
+	TpWavBjYyyDQI58GU6kYE5pdEbNm9Oa+u9d9/3g=
+X-Google-Smtp-Source: AGHT+IF8j1fEkzHM/ilC1Wmslv4guuqgchcdZ5NGZ0Ihl6Dd+1P3eeJblWw/N/RfVLyHrPgmdzu+bt4BkPLZ3xjbeUU=
+X-Received: by 2002:a05:6808:1443:b0:3b9:cca7:2f33 with SMTP id
+ x3-20020a056808144300b003b9cca72f33mr16554996oiv.72.1702871790196; Sun, 17
+ Dec 2023 19:56:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SA0PR20MB3405:EE_
-X-MS-Office365-Filtering-Correlation-Id: f3b9b1ea-7334-4e1b-c79f-08dbff7b4b85
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	b7MuOhDQZ7qXeUGgl/GeRj6UUuSjORV27bXoWDO/Hb791U9yMDQTwcchUhYgeAoTisSeFibxnkjb/X7fEm8984EcBYNmaimE4aHioThnmNzloeUlYP05eCRpAKx91tN6fZdksjN66QJwnk3CrhZny3j5DMoVGp44ICZYz1UC1clAybyXD0nrJyKw1vIHqeP63D8vWqYdpJFvMLMHnhwqAEl6zWwIBfyPYu7SHgYf/5NRvT+5XcCG+kUySY39XFad3KtNyW4DYwzyM7ERYy/Tp7Am/J0tNy8Jfr0IQ8pixI8FRsVQcUd4evwHpOv6VRkoj38/NR9TZBoSK6nQkjQ3qtZeeszitguvqNUPU1xpKx2LFO9CGlVWX0SwfQpFtf7q9kSsHsSABsXJC9CtZlywVT/sqL2DjqDQeLCtNVrdWakaD8/Rv2HNMIEYkrq+voBvFDdDrF2ja4cTl9yxwlDq6doxAPPLJ7CPA4ez8Ayx9w7pxtPeforUvb2YAsrhWRM3X3ORRHBp4W259VZD0wv3Y54o8C+tvbzA89NGvT2zoU87y2z69jC2un93IgAWiufXYZn7swe3aKSOblMwTsveDG0VPEBHOikvy8jhwO1NS+c=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?qw07aoooew7z6RDFsQhqlzGOKbRLtprYrHiXMdvKitO1mJU6n+IHAgUqXaEZ?=
- =?us-ascii?Q?kAhioXPYXMp0c/At0C9zabzlsnkFvbCrOzKj/GlMe+p+gh9HOkT5cxsK5sXC?=
- =?us-ascii?Q?8m8cLzYRattGMaiKa3aZCjx+w45ZwiUl+pUG5WiSIzXXoU3qVjKX01BcnoUL?=
- =?us-ascii?Q?qbxqqHEt5oWDtVeNIm3vVCoXdownBasPpteEArBzKlsI2UxIQBB7fF9TtET6?=
- =?us-ascii?Q?QnzSy+yfDEsB6jPqT53zYJ+j9XVGJ+3fQxZhploUefYIvYGfUrdVI+8Nbwxu?=
- =?us-ascii?Q?xtH1herPb8s2OfqofORoHxHhUMcPiQDHSUa4vv1pkiD5V+etDNWbi6SCgYqh?=
- =?us-ascii?Q?AeMBJ2THi7phvggD7zRWAEVRLyH8Ybmo8CNoBMo7oAxgw/2IGG4o8qif9tgQ?=
- =?us-ascii?Q?WBPfQ8Uzax3BFYr+RvDWvs2eiQs5i70DacqcPVrApdOJ8rwBPU0+D0Z2EOIb?=
- =?us-ascii?Q?78I+IBhlM2MoDoIEd8eqrQtibyvSW3OLfyLsGE82NwRcPJJ87deER7MwmTuU?=
- =?us-ascii?Q?6jrU1x6othZAkKe8pA/729Sh2a61dT3cDUfawph18/Fd2n8xEj7OQudAjMoy?=
- =?us-ascii?Q?4AI5CC8sAa5+6V0Ynles2/kMNhK6gQplL+SrliKeZqPJYYrMnZ8uDG6DS8Ec?=
- =?us-ascii?Q?2B7aeaYgbV7w1zNECIuIMYwrBb/Jf5SUTmtIqYRWwerwzkZ064NpoPWlC90a?=
- =?us-ascii?Q?FJj8ux4jFqrd4HBYEiHk8+o4lhfSy8j5LgynQd4/T/Sn62wGL9XLrkB9G15/?=
- =?us-ascii?Q?tA1zm12GKWRYHyQGh9h5vwAY63t+GN2kroT+J5eIsjPhShKSjn/9XUVWSs/g?=
- =?us-ascii?Q?HV7gQOLbQo+NkHoz+kSsYmsSN79oNVdwA5T2cdlzGWXhNCyFQyxs88DcUZ2E?=
- =?us-ascii?Q?77a8LyNCgyccJv3dCSuWRPbgAOzeXVhU82yFW5flm2Lr52FYWZrw6Iy1HaA4?=
- =?us-ascii?Q?D/NBe7TT4Splnpb6jqYPfe1oRPznRxQqC9jrFgCbCA47MKya4iVkJtVx5mZH?=
- =?us-ascii?Q?wgEX3RS2sPdswjl5qsINROpKiOOQmK4H7WJTEJRP9NpU6C4XtuBLWEeGEKwY?=
- =?us-ascii?Q?0QA8TBOZpvrCzypjUgw1ABhQhnpdXbY0VsD9rudcp3RBL3MTE4rRh/fsBmOU?=
- =?us-ascii?Q?TlXbjYzz7gSZZDWF673Twk88K8O5iG1KR4cgfzl78ojOuSoY2WA8txFByY8r?=
- =?us-ascii?Q?NSikcFMtxSQfQricXFDo3VbfAA0g77LMy+xEDR0ZIudw2yga+pAgjYYG5Fc?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3b9b1ea-7334-4e1b-c79f-08dbff7b4b85
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 03:42:02.0448
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR20MB3405
+References: <20231217131716.830290-1-menglong8.dong@gmail.com>
+ <20231217131716.830290-3-menglong8.dong@gmail.com> <CAADnVQJ6yVJzzAnHT9dWcQ+-0czcT9qf6Qm_b_tmYsBs3UVUEQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJ6yVJzzAnHT9dWcQ+-0czcT9qf6Qm_b_tmYsBs3UVUEQ@mail.gmail.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Mon, 18 Dec 2023 11:56:18 +0800
+Message-ID: <CADxym3bOgnU84Xngx_H3cwxzEqsaK8JkaYDY3F4dSr74R492ug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: activate the OP_NE login
+ in range_cond()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->On Sun, Dec 17, 2023 at 09:16:39PM +0800, jingbao qiu wrote:
->> On Sun, Dec 17, 2023 at 8:26=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
->rote:
->> >
->> > On Sun, Dec 17, 2023 at 07:09:50PM +0800, Jingbao Qiu wrote:
->> >
->> > > +  reg:
->> > > +    items:
->> > > +      - description: data register
->> > > +      - description: control register
->> >
->> > > +    rtc@5025000{
->> > > +      compatible =3D "sophgo,cv1800-rtc";
->> > > +      reg =3D <0x5025000 0x1000>, <0x5026000 0x1000>;
->> >
->> > Why are these two regions rather than just one, given they are located
->> > next to one another?
->> > Are they separate on one of the other devices in this family?
->> >
->> > Thanks,
->> > Conor.
->> >
->>=20
->> I think there are two reasons, the first one is to distinguish
->> different logical ,
->> REG_ CTRL (base on 0x5025000) controls clock calibration, sleep,and other
->> functions, RTC_ CORE (base on 0x5026000) has basic RTC functionality,
->> The second is the maximum address used by RTC_CTRL (base on 0x5025000)
->> is 0x0ac,which is much smaller than 0x1000. Therefore, the datasheet divi=
->des
->> it into two parts for introduction, and I also divide it into two
->> parts based on this
->> introduction.So do you suggest that I merge them together=EF=BC=9F
+On Mon, Dec 18, 2023 at 2:20=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->If all of the cv1800 series devices have them sequentially, I would just
->make them one region.
+> On Sun, Dec 17, 2023 at 5:18=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > The edge range checking for the registers is supported by the verifier
+> > now, so we can activate the extended login in
+> > tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to tes=
+t
+> > such logic.
+> >
+> > Besides, I added some cases to the "crafted_cases" array for this logic=
+.
+> > These cases are mainly used to test the edge of the src reg and dst reg=
+.
+> >
+> > All reg bounds testings has passed in the SLOW_TESTS mode:
+> >
+> > $ export SLOW_TESTS=3D1 && ./test_progs -t reg_bounds -j
+> > Summary: 65/18959832 PASSED, 0 SKIPPED, 0 FAILED
+> >
+> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> > ---
+> > v3:
+> > - do some adjustment to the crafted cases that we added
+> > v2:
+> > - add some cases to the "crafted_cases"
+> > ---
+> >  .../selftests/bpf/prog_tests/reg_bounds.c     | 20 +++++++++++++------
+> >  1 file changed, 14 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tool=
+s/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > index 0c9abd279e18..c9dc9fe73211 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range =
+x, struct range y,
+> >                 *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.=
+b));
+> >                 break;
+> >         case OP_NE:
+> > -               /* generic case, can't derive more information */
+> > -               *newx =3D range(t, x.a, x.b);
+> > -               *newy =3D range(t, y.a, y.b);
+> > -               break;
+> > -
+> > -               /* below extended logic is not supported by verifier ju=
+st yet */
+> > +               /* below logic is supported by the verifier now */
+> >                 if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
+> >                         /* X is a constant matching left side of Y */
+> >                         *newx =3D range(t, x.a, x.b);
+> > @@ -2101,6 +2096,19 @@ static struct subtest_case crafted_cases[] =3D {
+> >         {S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, =
+0}},
+> >         {S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
+> >         {S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S=
+32_MIN, (u32)(s32)S32_MIN}},
+> > +
+> > +       /* edge overlap testings for BPF_NE, skipped some cases that al=
+ready
+> > +        * exist above.
+> > +        */
+> > +       {U64, U64, {0, U64_MAX}, {U64_MAX, U64_MAX}},
+> > +       {U64, U64, {0, U64_MAX}, {0, 0}},
+> > +       {S64, U64, {S64_MIN, 0}, {S64_MIN, S64_MIN}},
+> > +       {S64, U64, {S64_MIN, 0}, {0, 0}},
+> > +       {S64, U64, {S64_MIN, S64_MAX}, {S64_MAX, S64_MAX}},
+> > +       {U32, U32, {0, U32_MAX}, {0, 0}},
+> > +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {0, 0}},
+> > +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {(u32)(s32)S32_MIN, (u32)(s3=
+2)S32_MIN}},
+> > +       {S32, U32, {(u32)(s32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
 >
+> I think you're copying the style of the casts from few lines above,
+> but (s32)S32_MIN is unnecessary. S32_MIN includes the cast already.
+> Please remove and fix the above lines too.
 
-I agree with using one region. The ctrl and core region are highly
-releated.
+Enn...yes, I simulated the usage of S32_MIN from the lines above.
+You are right, the s32 casting is unnecessary, I'll just keep the
+u32 casting.
 
-Moreover, I suggest using syscon to describe this region, the reboot
-device is also in this region.
+I'll wait a while before sending the next version to see if
+someone else any comments on this series.
+
+Thanks!
+Menglong Dong
 
