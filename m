@@ -1,96 +1,139 @@
-Return-Path: <linux-kernel+bounces-4326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AA6C817B80
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:57:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6383817B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:58:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE56BB2387D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:57:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E3041F23CD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E84073492;
-	Mon, 18 Dec 2023 19:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9331272075;
+	Mon, 18 Dec 2023 19:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJZOCTDl"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OR2h4lEM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DA57347A;
-	Mon, 18 Dec 2023 19:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2340c803c6so225641966b.0;
-        Mon, 18 Dec 2023 11:56:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702929391; x=1703534191; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uSOucPhy8Uq24Amn7av5EziiKi3zQUdPVY+HVNazcmw=;
-        b=NJZOCTDl/o7CzK2E9auv4LDse1Ad12gXRf9weGmeJCfKdu2BjMPiODyzIFZ//pfXHm
-         C9i+xO1msJ4+nut8sVzIVEFSF7XrWydkr5BYIjWHxRPlfq5Nmpx9u4y88BuFcCR0SbPu
-         BuUYQwZVBZLF5AM97XtCvO/4ItgTxKC5yOhvt9ykcFZ5Oq9mDVVRHTPkLFypMlE4bMy0
-         tOoI9VJZf9Va1gtjypgrOMfWiLyCD1427GeSjCH5A7fdAfxOMqwE6S9dqNOM9r4+2Pfp
-         2foKed5XNjUlbY4mbvKQsaVRA8eRb2XFWnuyaVX7DiyXz+Tu9V/QUWss5Q/SonhTMMFR
-         YbWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702929391; x=1703534191;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uSOucPhy8Uq24Amn7av5EziiKi3zQUdPVY+HVNazcmw=;
-        b=eq9f7ISPga56/AkoIMW/i5yKPaYC0z6msH0wtdnvvtWYa2w8f9OQw3JkgUXm/TKOJU
-         2BT9N4cW07bMob/AKqFiFXKsLss265T5qblUZOF59w8PD1GTccm/zIB+iWnTa1WD2O5n
-         Jw4+lQoTPhfsjLTteEp77hdX8zD0dLugkTMLRRi9oi6zAvAULSTA4G5ePxG1y0lsH31R
-         v3Rxl3PGMVDgYciguo2Xnc8sZZ/CFqqCTtmR1TSlktbEisTjAfIpPXhuA5K1A9TqW2AL
-         zom7Cm29i9l8639DcK+4f36M6PjKWHkJ4gXWerAnQa93rDLmTT0VkwBVPzU++IUR2iBV
-         9RbA==
-X-Gm-Message-State: AOJu0YzEFGnKvHm7/xIoBcY2+SP8uRFGsS1KHBiJVvF43Gr6zrnk4gbC
-	8/nkrvlj+Ilfz+UxqrhUsw74xflYnYY=
-X-Google-Smtp-Source: AGHT+IE7TmqHMKHKgZX1NTAreBGHNdqmsN91K3ft/OadYBs8869eUaoyHQxBBrQWWA4Y9Z8CFr6cMg==
-X-Received: by 2002:a17:906:de:b0:a23:6708:cdd0 with SMTP id 30-20020a17090600de00b00a236708cdd0mr597284eji.88.1702929390578;
-        Mon, 18 Dec 2023 11:56:30 -0800 (PST)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id vt5-20020a170907a60500b00a1d38589c67sm14604413ejc.98.2023.12.18.11.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 11:56:30 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: linux-crypto@vger.kernel.org, ovidiu.panait@windriver.com
-Cc: linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
- davem@davemloft.net, Ovidiu Panait <ovidiu.panait@windriver.com>,
- Corentin Labbe <clabbe.montjoie@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 7/7] crypto: sun8i-ss - Use helper to set reqsize
-Date: Mon, 18 Dec 2023 20:56:29 +0100
-Message-ID: <4854975.GXAFRqVoOG@jernej-laptop>
-In-Reply-To: <20231218164649.2492465-7-ovidiu.panait@windriver.com>
-References:
- <20231218164649.2492465-1-ovidiu.panait@windriver.com>
- <20231218164649.2492465-7-ovidiu.panait@windriver.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492581DDFC;
+	Mon, 18 Dec 2023 19:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BII7awl009072;
+	Mon, 18 Dec 2023 19:58:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=t0bpCimWvMhWfdI+TsPYGoHOoVAQBV1OEIZbPnpfoak=; b=OR
+	2h4lEM4dBzCsLd+KqD8zxpFrlQcglcplmQPVD6bBdBUEtesGx8DRYqcbadwSyAX5
+	jmEiOQcHKgdSvekkRMgu9/U7x2Li4Pfk0oD+VytunYIV4/Zu9CzuGNsd64EHQGHx
+	0h/KLdwKGOZ1bxSjn740snWNNAyIdoFnB0R0rlP4H309nRNyae940OtHLcoDVNFR
+	9kwAtUEG8ocQ1EmG9hIUXLQc6xsBO0xwZ4lTk7GSRi4anORUkKffrYR7LsalsFhK
+	6kPH+oFrTklJRRu9hpxsGH7MOU+qSRZ48m1HJpCUP9NU3z8d6oyGYbIL8Y4A5DvK
+	9AY1uv0JExp/EJLocjBw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2mfe1euh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 19:58:09 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BIJw8YC027591
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 19:58:08 GMT
+Received: from [10.110.97.107] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
+ 2023 11:58:06 -0800
+Message-ID: <0a3a6277-62f6-2d6c-d36a-46a442c89b67@quicinc.com>
+Date: Mon, 18 Dec 2023 11:58:02 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v10 18/41] ALSA: usb-audio: qcom: Add USB QMI definitions
+Content-Language: en-US
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, <srinivas.kandagatla@linaro.org>,
+        <mathias.nyman@intel.com>, <perex@perex.cz>, <conor+dt@kernel.org>,
+        <corbet@lwn.net>, <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>,
+        <andersson@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <konrad.dybcio@linaro.org>, <Thinh.Nguyen@synopsys.com>,
+        <broonie@kernel.org>, <bgoswami@quicinc.com>, <tiwai@suse.com>,
+        <robh+dt@kernel.org>, <agross@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+References: <20231215214955.12110-1-quic_wcheng@quicinc.com>
+ <20231215214955.12110-19-quic_wcheng@quicinc.com>
+ <80111881-13dd-4b05-876a-a97eb3889726@quicinc.com>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <80111881-13dd-4b05-876a-a97eb3889726@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: P-tbYw2YI5KNM16_-dyXNk1fYgg76NOe
+X-Proofpoint-GUID: P-tbYw2YI5KNM16_-dyXNk1fYgg76NOe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 suspectscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 impostorscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312180148
 
-Dne ponedeljek, 18. december 2023 ob 17:46:49 CET je ovidiu.panait@windriver.com napisal(a):
-> From: Ovidiu Panait <ovidiu.panait@windriver.com>
+Hi Jeff,
+
+On 12/15/2023 2:38 PM, Jeff Johnson wrote:
+> On 12/15/2023 1:49 PM, Wesley Cheng wrote:
+>> The Qualcomm USB audio offload driver utilizes the QMI protocol to
+>> communicate with the audio DSP.  Add the necessary QMI header and field
+>> definitions, so the QMI interface driver is able to route the QMI packet
+>> received to the USB audio offload driver.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> ---
+>>   sound/usb/qcom/usb_audio_qmi_v01.c | 892 +++++++++++++++++++++++++++++
+>>   sound/usb/qcom/usb_audio_qmi_v01.h | 162 ++++++
+>>   2 files changed, 1054 insertions(+)
+>>   create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.c
+>>   create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.h
+>>
+>> diff --git a/sound/usb/qcom/usb_audio_qmi_v01.c b/sound/usb/qcom/usb_audio_qmi_v01.c
+>> new file mode 100644
+>> index 000000000000..bdfd67d980eb
+>> --- /dev/null
+>> +++ b/sound/usb/qcom/usb_audio_qmi_v01.c
+>> @@ -0,0 +1,892 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
+>> + */
+>> +
+>> +#include <linux/soc/qcom/qmi.h>
+>> +
+>> +#include "usb_audio_qmi_v01.h"
+>> +
+>> +static struct qmi_elem_info mem_info_v01_ei[] = {
 > 
-> The value of reqsize must only be changed through the helper.
+> I believe all of the struct qmi_elem_info arrays can be const.
 > 
-> Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+> At least that was the goal of commit ff6d365898d4 ("soc: qcom: qmi: use
+> const for struct qmi_elem_info")
+> 
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Thanks for the review.  Will fix this.
 
-Best regards,
-Jernej
-
-
+Thanks
+Wesley Cheng
 
