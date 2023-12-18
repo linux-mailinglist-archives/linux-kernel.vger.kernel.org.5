@@ -1,127 +1,110 @@
-Return-Path: <linux-kernel+bounces-4297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5AA3817B0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:29:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06AA817B20
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 464041F21678
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:29:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B28E2844A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D95172077;
-	Mon, 18 Dec 2023 19:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BAB71469;
+	Mon, 18 Dec 2023 19:40:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09FB49899;
-	Mon, 18 Dec 2023 19:28:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id c4a5040754e8f936; Mon, 18 Dec 2023 20:28:40 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 50EBF668C31;
-	Mon, 18 Dec 2023 20:28:40 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>, Bo Ye <bo.ye@mediatek.com>, Radu Solea <radusolea@google.com>
-Subject: [PATCH v1 3/3] thermal: core: Resume thermal zones asynchronously
-Date: Mon, 18 Dec 2023 20:28:31 +0100
-Message-ID: <1886695.tdWV9SEqCh@kreacher>
-In-Reply-To: <5751163.DvuYhMxLoT@kreacher>
-References: <5751163.DvuYhMxLoT@kreacher>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE7F1E530;
+	Mon, 18 Dec 2023 19:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59158202d22so816588eaf.0;
+        Mon, 18 Dec 2023 11:40:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702928448; x=1703533248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fqCIyrV80aQe/xoEqMj06Wb1LCcYSvkWNPSdUnD3As8=;
+        b=ISu3/3/LiXkAW/i7y7Rf0rBn1Lz/nDn0wjKxM5UJQJ/A0McbdeEBEi39thjqI+1BYs
+         4p611R5qSXFtGQCEp1s2Cr7GM0/tUJBlsdSMoIaKmWqlAAYdX1iVK3BtfRzh3a0lAPZN
+         v9I6Vbbl2SWMiyBRMw17hVYlLcn0ZUmtV9wM3A1mbPkPm9KGT+QeGdHjzSXxVPhjJNpX
+         oBkCDevJVdr0jE/hdUyZ4tgztmuWsitk4U+ZAiVVSAbefJbfL1FKyGVTVoiHnsd9dqsK
+         qS0aWdOrHdo3NaAR6dJe0ardcHxL9b+nx95YH67yvtSCCCr5MmklbyCOVauox3OV5Unq
+         O1hg==
+X-Gm-Message-State: AOJu0YwVIcz/ZVMbCctMJGfjiWOOemCUBaUOK8JXav4+cO4QCizhyCu5
+	feeNDgbn+XNbor4OnI4WDZFpKxQp6LSdGQuv0iM=
+X-Google-Smtp-Source: AGHT+IFw6ui7RKvOySfqcNYWm/9KsHzVK8NCh6DrCyO+hgtaUUqYO5d9lQ5UTiAmONH8I1X7ZbYO4U+ycwbN2h9KA0g=
+X-Received: by 2002:a05:6820:2a18:b0:590:9027:7ab0 with SMTP id
+ dr24-20020a0568202a1800b0059090277ab0mr24739293oob.0.1702928448299; Mon, 18
+ Dec 2023 11:40:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20231218-topic-thermaldbg-v1-1-451bcb723e1d@linaro.org>
+In-Reply-To: <20231218-topic-thermaldbg-v1-1-451bcb723e1d@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 18 Dec 2023 20:40:37 +0100
+Message-ID: <CAJZ5v0gkko7nWH2ePwEhbfXR-jAb9+f+rsfYXKBMSz04uW4rYg@mail.gmail.com>
+Subject: Re: [PATCH] thermal: core: Print out thermal zone name on
+ update_temperature error
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedguddvfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeefudduuedtuefgleffudeigeeitdeufeelvdejgefftdethffhhfethfeljefgteenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepkedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehruhhi
- rdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+Content-Transfer-Encoding: quoted-printable
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Dec 18, 2023 at 3:40=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
+.org> wrote:
+>
+> Currently, we can encounter an error like this:
+>
+>   thermal thermal_zone48: failed to read out thermal zone (-19)
+>
+> It's good to know that there's been an issue, but on some occasions
+> (like the error happening in the middle of a platform crash), one may
+> not be able to look up what kind of thermal zone that is.
+>
+> Add the TZ name to the error message in order to speed up debugging.
 
-The resume of thermal zones in thermal_pm_notify() is carried out
-sequentially, which may be a problem if __thermal_zone_device_update()
-takes a significant time to run for some thermal zones, because some
-other thermal zones may need to wait for them to resume then and if
-any other PM notifiers are going to be invoked after the thermal one,
-they will need to wait for it either.
+s/name/type/ ?  It looks like that's what you mean.
 
-To address this, make thermal_pm_notify() switch the poll_queue delayed
-work over to a one-shot thermal_zone_device_resume() work function that
-will restore the original one during the thermal zone resume and queue
-up poll_queue without a delay for each thermal zone.
+First, the tz type is not its name (because there may be multiple
+zones of the same type) and it would be consistent with the first
+paragraph above.
 
-Link: https://lore.kernel.org/linux-pm/20231120234015.3273143-1-radusolea@google.com/
-Reported-by: Radu Solea <radusolea@google.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/thermal_core.c |   30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -1528,6 +1528,22 @@ exit:
- }
- EXPORT_SYMBOL_GPL(thermal_zone_get_zone_by_name);
- 
-+static void thermal_zone_device_resume(struct work_struct *work)
-+{
-+	struct thermal_zone_device *tz;
-+
-+	tz = container_of(work, struct thermal_zone_device, poll_queue.work);
-+
-+	mutex_lock(&tz->lock);
-+
-+	tz->suspended = false;
-+
-+	thermal_zone_device_init(tz);
-+	__thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
-+
-+	mutex_unlock(&tz->lock);
-+}
-+
- static int thermal_pm_notify(struct notifier_block *nb,
- 			     unsigned long mode, void *_unused)
- {
-@@ -1559,10 +1575,16 @@ static int thermal_pm_notify(struct noti
- 
- 			cancel_delayed_work(&tz->poll_queue);
- 
--			tz->suspended = false;
--
--			thermal_zone_device_init(tz);
--			__thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
-+			/*
-+			 * Replace the work function with the resume one, which
-+			 * will restore the original work function and schedule
-+			 * the polling work if needed.
-+			 */
-+			INIT_DELAYED_WORK(&tz->poll_queue,
-+					  thermal_zone_device_resume);
-+			/* Queue up the work without a delay. */
-+			mod_delayed_work(system_freezable_power_efficient_wq,
-+					 &tz->poll_queue, 0);
- 
- 			mutex_unlock(&tz->lock);
- 		}
-
-
-
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/thermal/thermal_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_cor=
+e.c
+> index 2415dc50c31d..a6ccf93eb34e 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -403,8 +403,8 @@ static void update_temperature(struct thermal_zone_de=
+vice *tz)
+>         if (ret) {
+>                 if (ret !=3D -EAGAIN)
+>                         dev_warn(&tz->device,
+> -                                "failed to read out thermal zone (%d)\n"=
+,
+> -                                ret);
+> +                                "failed to read out thermal zone %s (%d)=
+\n",
+> +                                tz->type, ret);
+>                 return;
+>         }
+>
+>
+> ---
 
