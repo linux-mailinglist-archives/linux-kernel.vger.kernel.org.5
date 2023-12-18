@@ -1,394 +1,318 @@
-Return-Path: <linux-kernel+bounces-3722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7871D81703C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:20:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F0381703F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EE391C21DBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:20:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13AA128698E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557E93D555;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C327206B;
 	Mon, 18 Dec 2023 13:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Foo3dv79"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from wxsgout04.xfusion.com (wxsgout04.xfusion.com [36.139.87.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983683A1CE;
-	Mon, 18 Dec 2023 13:15:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66332C433C8;
-	Mon, 18 Dec 2023 13:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702905306;
-	bh=/gKkhSKgsC+gBBrM8WzSTXkN4MLxFhNkMdP6rA+fbYg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Foo3dv79uEkuxnjF/3wTs9cef5+cFMrqHrI1DCKs5T+kP+OEY1aGRl3qya3Jg0nTZ
-	 SMzePYo7ybVWB/VVvR75gPpQtha4r9kRJ8w6d53i7Wg+SxUVzBU8dElj6Z17SQWWU+
-	 APHil4OUcPmWCxsx3ERlLLz7zM3LUqwjqgw9xN1I8LKjyhL/nHrN/ITV9ElzC4d75s
-	 p5lyvhUKXnE7RoyYTsqTN5l7AazcnL5tAMP7rk3K50yAcuGtQfia8FiWPDFU8vdLzm
-	 3ABscvrsBkvQIfbA2LSBv7kulePkS23ZHAsG8dTBs0V0Zo+fI1EwqjDaElXY8LCG4I
-	 h/GhJXNFrktWQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v5 17/34] function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
-Date: Mon, 18 Dec 2023 22:15:00 +0900
-Message-Id: <170290529969.220107.1869876267708036544.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170290509018.220107.1347127510564358608.stgit@devnote2>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-User-Agent: StGit/0.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BAB3A1B7;
+	Mon, 18 Dec 2023 13:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xfusion.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xfusion.com
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+	by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4Sv0Zm32HmzB1CfX;
+	Mon, 18 Dec 2023 21:11:28 +0800 (CST)
+Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 18 Dec
+ 2023 21:15:01 +0800
+Date: Mon, 18 Dec 2023 21:15:01 +0800
+From: WangJinchao <wangjinchao@xfusion.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
+	<davem@davemloft.net>, Tim Chen <tim.c.chen@linux.intel.com>,
+	<linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <stone.xulei@xfusion.com>, <wangjinchao@xfusion.com>
+Subject: [PATCH v2] crypto:tcrypt: add script tcrypt_speed_compare.py
+Message-ID: <202312182113+0800-wangjinchao@xfusion.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: wuxshcsitd00602.xfusion.com (10.32.132.250) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Create a script for comparing tcrypt speed test logs.
+The script will systematically analyze differences item
+by item and provide a summary (average).
+This tool is useful for evaluating the stability of
+cryptographic module algorithms and assisting with
+performance optimization.
 
-Added functions that can be called by a fgraph_ops entryfunc and retfunc to
-store state between the entry of the function being traced to the exit of
-the same function. The fgraph_ops entryfunc() may call
-fgraph_reserve_data() to store up to 32 words onto the task's shadow
-ret_stack and this then can be retrieved by fgraph_retrieve_data() called
-by the corresponding retfunc().
+Please note that for such a comparison, stability depends
+on whether we allow frequency to float or pin the frequency.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+The script produces comparisons in two scenes:
+
+1. For operations in seconds
+================================================================================
+rfc4106(gcm(aes)) (pcrypt(rfc4106(gcm_base(ctr(aes-generic),ghash-generic))))
+                         encryption
+--------------------------------------------------------------------------------
+bit key | byte blocks | base ops    | new ops     | differ(%)
+160     | 16          | 66439       | 63063       | -5.08
+160     | 64          | 62220       | 57439       | -7.68
+...
+288     | 4096        | 15059       | 16278       | 8.09
+288     | 8192        | 9043        | 9526        | 5.34
+--------------------------------------------------------------------------------
+average differ(%s)    | total_differ(%)
+--------------------------------------------------------------------------------
+5.70                  | -4.49
+================================================================================
+
+2. For avg cycles of operation
+================================================================================
+rfc4106(gcm(aes)) (pcrypt(rfc4106(gcm_base(ctr(aes-generic),ghash-generic))))
+                         encryption
+--------------------------------------------------------------------------------
+bit key | byte blocks | base cycles | new cycles  | differ(%)
+160     | 16          | 32500       | 35847       | 10.3
+160     | 64          | 33175       | 45808       | 38.08
+...
+288     | 4096        | 131369      | 132132      | 0.58
+288     | 8192        | 229503      | 234581      | 2.21
+--------------------------------------------------------------------------------
+average differ(%s)    | total_differ(%)
+--------------------------------------------------------------------------------
+8.41                  | -6.70
+================================================================================
+
+Signed-off-by: WangJinchao <wangjinchao@xfusion.com>
 ---
- Changes in v3:
-  - Store fgraph_array index to the data entry.
-  - Both function requires fgraph_array index to store/retrieve data.
-  - Reserve correct size of the data.
-  - Return correct data area.
- Changes in v2:
-  - Retrieve the reserved size by fgraph_retrieve_data().
-  - Expand the maximum data size to 32 words.
-  - Update stack index with __get_index(val) if FGRAPH_TYPE_ARRAY entry.
-  - fix typos and make description lines shorter than 76 chars.
----
- include/linux/ftrace.h |    3 +
- kernel/trace/fgraph.c  |  175 ++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 170 insertions(+), 8 deletions(-)
+ MAINTAINERS                                 |   6 +
+ tools/crypto/tcrypt/tcrypt_speed_compare.py | 190 ++++++++++++++++++++
+ 2 files changed, 196 insertions(+)
+ create mode 100755 tools/crypto/tcrypt/tcrypt_speed_compare.py
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 09ca4bba63f2..1c121237016e 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1075,6 +1075,9 @@ struct fgraph_ops {
- 	int				idx;
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bba17f97eda7..b9c8dd607bce 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5524,6 +5524,12 @@ F:	include/crypto/
+ F:	include/linux/crypto*
+ F:	lib/crypto/
  
-+void *fgraph_reserve_data(int idx, int size_bytes);
-+void *fgraph_retrieve_data(int idx, int *size_bytes);
++CRYPTO SPEED TEST COMPARE
++M:	Wang Jinchao <wangjinchao@xfusion.com>
++L:	linux-crypto@vger.kernel.org
++S:	Maintained
++F:	tools/crypto/tcrypt/tcrypt_speed_compare.py
 +
- /*
-  * Stack of return addresses for functions
-  * of a thread.
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 6e52c4989ef3..07385d53cc1b 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -41,17 +41,29 @@
-  * bits: 10 - 11	Type of storage
-  *			  0 - reserved
-  *			  1 - bitmap of fgraph_array index
-+ *			  2 - reserved data
-  *
-  * For bitmap of fgraph_array index
-  *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
-  *
-+ * For reserved data:
-+ *  bits: 12 - 17	The size in words that is stored
-+ *  bits: 18 - 23	The index of fgraph_array, which shows who is stored
-+ *
-  * That is, at the end of function_graph_enter, if the first and forth
-  * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
-- * on the return of the function being traced, this is what will be on the
-- * task's shadow ret_stack: (the stack grows upward)
-+ * on the return of the function being traced, and the forth fgraph_ops
-+ * stored two words of data, this is what will be on the task's shadow
-+ * ret_stack: (the stack grows upward)
-  *
-  * |                                            | <- task->curr_ret_stack
-  * +--------------------------------------------+
-+ * | data_type(idx:3, size:2,                   |
-+ * |           offset:FGRAPH_RET_INDEX+3)       | ( Data with size of 2 words)
-+ * +--------------------------------------------+ ( It is 4 words from the ret_stack)
-+ * |            STORED DATA WORD 2              |
-+ * |            STORED DATA WORD 1              |
-+ * +------i-------------------------------------+
-  * | bitmap_type(bitmap:(BIT(3)|BIT(0)),        |
-  * |             offset:FGRAPH_RET_INDEX)       | <- the offset is from here
-  * +--------------------------------------------+
-@@ -78,14 +90,23 @@
- enum {
- 	FGRAPH_TYPE_RESERVED	= 0,
- 	FGRAPH_TYPE_BITMAP	= 1,
-+	FGRAPH_TYPE_DATA	= 2,
- };
- 
- #define FGRAPH_INDEX_SIZE	16
- #define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
- #define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
- 
--/* Currently the max stack index can't be more than register callers */
--#define FGRAPH_MAX_INDEX	(FGRAPH_INDEX_SIZE + FGRAPH_RET_INDEX)
-+#define FGRAPH_DATA_SIZE	5
-+#define FGRAPH_DATA_MASK	((1 << FGRAPH_DATA_SIZE) - 1)
-+#define FGRAPH_DATA_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
+ CRYPTOGRAPHIC RANDOM NUMBER GENERATOR
+ M:	Neil Horman <nhorman@tuxdriver.com>
+ L:	linux-crypto@vger.kernel.org
+diff --git a/tools/crypto/tcrypt/tcrypt_speed_compare.py b/tools/crypto/tcrypt/tcrypt_speed_compare.py
+new file mode 100755
+index 000000000000..f3f5783cdc06
+--- /dev/null
++++ b/tools/crypto/tcrypt/tcrypt_speed_compare.py
+@@ -0,0 +1,190 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (C) xFusion Digital Technologies Co., Ltd., 2023
++#
++# Author: Wang Jinchao <wangjinchao@xfusion.com>
++#
++"""
++A tool for comparing tcrypt speed test logs.
 +
-+#define FGRAPH_DATA_INDEX_SIZE	4
-+#define FGRAPH_DATA_INDEX_MASK	((1 << FGRAPH_DATA_INDEX_SIZE) - 1)
-+#define FGRAPH_DATA_INDEX_SHIFT	(FGRAPH_DATA_SHIFT + FGRAPH_DATA_SIZE)
++Please note that for such a comparison, stability depends
++on whether we allow frequency to float or pin the frequency.
 +
-+#define FGRAPH_MAX_INDEX	\
-+	((FGRAPH_INDEX_SIZE << FGRAPH_DATA_SIZE) + FGRAPH_RET_INDEX)
- 
- #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
- 
-@@ -97,6 +118,8 @@ enum {
- 
- #define RET_STACK(t, index) ((struct ftrace_ret_stack *)(&(t)->ret_stack[index]))
- 
-+#define FGRAPH_MAX_DATA_SIZE (sizeof(long) * (1 << FGRAPH_DATA_SIZE))
++Both support tests for operations within one second and
++cycles of operation.
++For example, use it in the bash script below.
 +
- /*
-  * Each fgraph_ops has a reservered unsigned long at the end (top) of the
-  * ret_stack to store task specific state.
-@@ -145,14 +168,39 @@ static int fgraph_lru_alloc_index(void)
- 	return idx;
- }
- 
-+static inline int __get_index(unsigned long val)
-+{
-+	return val & FGRAPH_RET_INDEX_MASK;
-+}
++```bash
++#!/bin/bash
 +
-+static inline int __get_type(unsigned long val)
-+{
-+	return (val >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
-+}
++# log file prefix
++seq_num=0
 +
-+static inline int __get_data_index(unsigned long val)
-+{
-+	return (val >> FGRAPH_DATA_INDEX_SHIFT) & FGRAPH_DATA_INDEX_MASK;
-+}
++# When sec=0, it will perform cycle tests;
++# otherwise, it indicates the duration of a single test
++sec=0
++num_mb=8
++mode=211
 +
-+static inline int __get_data_size(unsigned long val)
-+{
-+	return (val >> FGRAPH_DATA_SHIFT) & FGRAPH_DATA_MASK;
-+}
++# base speed test
++lsmod | grep pcrypt && modprobe -r pcrypt
++dmesg -C
++modprobe tcrypt alg="pcrypt(rfc4106(gcm(aes)))" type=3
++modprobe tcrypt mode=${mode} sec=${sec} num_mb=${num_mb}
++dmesg > ${seq_num}_base_dmesg.log
 +
-+static inline unsigned long get_fgraph_entry(struct task_struct *t, int index)
-+{
-+	return t->ret_stack[index];
-+}
++# new speed test
++lsmod | grep pcrypt && modprobe -r pcrypt
++dmesg -C
++modprobe tcrypt alg="pcrypt(rfc4106(gcm(aes)))" type=3
++modprobe tcrypt mode=${mode} sec=${sec} num_mb=${num_mb}
++dmesg > ${seq_num}_new_dmesg.log
++lsmod | grep pcrypt && modprobe -r pcrypt
 +
- static inline int get_ret_stack_index(struct task_struct *t, int offset)
- {
--	return t->ret_stack[offset] & FGRAPH_RET_INDEX_MASK;
-+	return __get_index(t->ret_stack[offset]);
- }
- 
- static inline int get_fgraph_type(struct task_struct *t, int offset)
- {
--	return (t->ret_stack[offset] >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
-+	return __get_type(t->ret_stack[offset]);
- }
- 
- static inline unsigned long
-@@ -179,6 +227,22 @@ add_fgraph_index_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
- 	t->ret_stack[offset] |= (bitmap << FGRAPH_INDEX_SHIFT);
- }
- 
-+static inline void *get_fgraph_data(struct task_struct *t, int index)
-+{
-+	unsigned long val = t->ret_stack[index];
++tools/crypto/tcrypt/tcrypt_speed_compare.py \
++    ${seq_num}_base_dmesg.log \
++    ${seq_num}_new_dmesg.log  \
++        >${seq_num}_compare.log
++grep 'average' -A2 -B0 --group-separator="" ${seq_num}_compare.log
++```
++"""
 +
-+	if (__get_type(val) != FGRAPH_TYPE_DATA)
-+		return NULL;
-+	index -= __get_data_size(val);
-+	return (void *)&t->ret_stack[index];
-+}
++import sys
++import re
 +
-+static inline unsigned long make_fgraph_data(int idx, int size, int offset)
-+{
-+	return (idx << FGRAPH_DATA_INDEX_SHIFT) | (size << FGRAPH_DATA_SHIFT) |
-+		(FGRAPH_TYPE_DATA << FGRAPH_TYPE_SHIFT) | offset;
-+}
 +
- /* ftrace_graph_entry set to this to tell some archs to run function graph */
- static int entry_run(struct ftrace_graph_ent *trace, struct fgraph_ops *ops)
- {
-@@ -212,6 +276,92 @@ static void ret_stack_init_task_vars(unsigned long *ret_stack)
- 	memset(gvals, 0, sizeof(*gvals) * FGRAPH_ARRAY_SIZE);
- }
- 
-+/**
-+ * fgraph_reserve_data - Reserve storage on the task's ret_stack
-+ * @idx:	The index of fgraph_array
-+ * @size_bytes: The size in bytes to reserve
-+ *
-+ * Reserves space of up to FGRAPH_MAX_DATA_SIZE bytes on the
-+ * task's ret_stack shadow stack, for a given fgraph_ops during
-+ * the entryfunc() call. If entryfunc() returns zero, the storage
-+ * is discarded. An entryfunc() can only call this once per iteration.
-+ * The fgraph_ops retfunc() can retrieve this stored data with
-+ * fgraph_retrieve_data().
-+ *
-+ * Returns: On success, a pointer to the data on the stack.
-+ *   Otherwise, NULL if there's not enough space left on the
-+ *   ret_stack for the data, or if fgraph_reserve_data() was called
-+ *   more than once for a single entryfunc() call.
-+ */
-+void *fgraph_reserve_data(int idx, int size_bytes)
-+{
-+	unsigned long val;
-+	void *data;
-+	int curr_ret_stack = current->curr_ret_stack;
-+	int data_size;
++def parse_title(line):
++    pattern = r'tcrypt: testing speed of (.*?) (encryption|decryption)'
++    match = re.search(pattern, line)
++    if match:
++        alg = match.group(1)
++        op = match.group(2)
++        return alg, op
++    else:
++        return "", ""
 +
-+	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
-+		return NULL;
 +
-+	/* Convert to number of longs + data word */
-+	data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
++def parse_item(line):
++    pattern_operations = r'\((\d+) bit key, (\d+) byte blocks\): (\d+) operations'
++    pattern_cycles = r'\((\d+) bit key, (\d+) byte blocks\): 1 operation in (\d+) cycles'
++    match = re.search(pattern_operations, line)
++    if match:
++        res = {
++            "bit_key": int(match.group(1)),
++            "byte_blocks": int(match.group(2)),
++            "operations": int(match.group(3)),
++        }
++        return res
 +
-+	val = get_fgraph_entry(current, curr_ret_stack - 1);
-+	data = &current->ret_stack[curr_ret_stack];
++    match = re.search(pattern_cycles, line)
++    if match:
++        res = {
++            "bit_key": int(match.group(1)),
++            "byte_blocks": int(match.group(2)),
++            "cycles": int(match.group(3)),
++        }
++        return res
 +
-+	curr_ret_stack += data_size + 1;
-+	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_INDEX))
-+		return NULL;
++    return None
 +
-+	val = make_fgraph_data(idx, data_size, __get_index(val) + data_size + 1);
 +
-+	/* Set the last word to be reserved */
-+	current->ret_stack[curr_ret_stack - 1] = val;
++def parse(filepath):
++    result = {}
++    alg, op = "", ""
++    with open(filepath, 'r') as file:
++        for line in file:
++            if not line:
++                continue
++            _alg, _op = parse_title(line)
++            if _alg:
++                alg, op = _alg, _op
++                if alg not in result:
++                    result[alg] = {}
++                if op not in result[alg]:
++                    result[alg][op] = []
++                continue
++            parsed_result = parse_item(line)
++            if parsed_result:
++                result[alg][op].append(parsed_result)
++    return result
 +
-+	/* Make sure interrupts see this */
-+	barrier();
-+	current->curr_ret_stack = curr_ret_stack;
-+	/* Again sync with interrupts, and reset reserve */
-+	current->ret_stack[curr_ret_stack - 1] = val;
 +
-+	return data;
-+}
++def merge(base, new):
++    merged = {}
++    for alg in base.keys():
++        merged[alg] = {}
++        for op in base[alg].keys():
++            if op not in merged[alg]:
++                merged[alg][op] = []
++            for index in range(len(base[alg][op])):
++                merged_item = {
++                    "bit_key": base[alg][op][index]["bit_key"],
++                    "byte_blocks": base[alg][op][index]["byte_blocks"],
++                }
++                if "operations" in base[alg][op][index].keys():
++                    merged_item["base_ops"] = base[alg][op][index]["operations"]
++                    merged_item["new_ops"] = new[alg][op][index]["operations"]
++                else:
++                    merged_item["base_cycles"] = base[alg][op][index]["cycles"]
++                    merged_item["new_cycles"] = new[alg][op][index]["cycles"]
 +
-+/**
-+ * fgraph_retrieve_data - Retrieve stored data from fgraph_reserve_data()
-+ * @idx:	the index of fgraph_array (fgraph_ops::idx)
-+ * @size_bytes: pointer to retrieved data size.
-+ *
-+ * This is to be called by a fgraph_ops retfunc(), to retrieve data that
-+ * was stored by the fgraph_ops entryfunc() on the function entry.
-+ * That is, this will retrieve the data that was reserved on the
-+ * entry of the function that corresponds to the exit of the function
-+ * that the fgraph_ops retfunc() is called on.
-+ *
-+ * Returns: The stored data from fgraph_reserve_data() called by the
-+ *    matching entryfunc() for the retfunc() this is called from.
-+ *   Or NULL if there was nothing stored.
-+ */
-+void *fgraph_retrieve_data(int idx, int *size_bytes)
-+{
-+	int index = current->curr_ret_stack - 1;
-+	unsigned long val;
++                merged[alg][op].append(merged_item)
++    return merged
 +
-+	val = get_fgraph_entry(current, index);
-+	while (__get_type(val) == FGRAPH_TYPE_DATA) {
-+		if (__get_data_index(val) == idx)
-+			goto found;
-+		index -= __get_data_size(val) + 1;
-+		val = get_fgraph_entry(current, index);
-+	}
-+	return NULL;
-+found:
-+	if (size_bytes)
-+		*size_bytes = __get_data_size(val) *
-+			      sizeof(long);
-+	return get_fgraph_data(current, index);
-+}
 +
- /**
-  * fgraph_get_task_var - retrieve a task specific state variable
-  * @gops: The ftrace_ops that owns the task specific variable
-@@ -449,13 +599,18 @@ int function_graph_enter(unsigned long ret, unsigned long func,
- 
- 	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
- 		struct fgraph_ops *gops = fgraph_array[i];
-+		int save_curr_ret_stack;
- 
- 		if (gops == &fgraph_stub)
- 			continue;
- 
-+		save_curr_ret_stack = current->curr_ret_stack;
- 		if (ftrace_ops_test(&gops->ops, func, NULL) &&
- 		    gops->entryfunc(&trace, gops))
- 			bitmap |= BIT(i);
-+		else
-+			/* Clear out any saved storage */
-+			current->curr_ret_stack = save_curr_ret_stack;
- 	}
- 
- 	if (!bitmap)
-@@ -481,6 +636,7 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
- 			     struct fgraph_ops *gops)
- {
- 	struct ftrace_graph_ent trace;
-+	int save_curr_ret_stack;
- 	int index;
- 	int type;
- 
-@@ -497,13 +653,15 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
- 
- 	trace.func = func;
- 	trace.depth = current->curr_ret_depth;
-+	save_curr_ret_stack = current->curr_ret_stack;
- 	if (gops->entryfunc(&trace, gops)) {
- 		if (type == FGRAPH_TYPE_RESERVED)
- 			set_fgraph_index_bitmap(current, index, BIT(gops->idx));
- 		else
- 			add_fgraph_index_bitmap(current, index, BIT(gops->idx));
- 		return 0;
--	}
-+	} else
-+		current->curr_ret_stack = save_curr_ret_stack;
- 
- 	if (type == FGRAPH_TYPE_RESERVED) {
- 		current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
-@@ -648,7 +806,8 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
- 	 * curr_ret_stack is after that.
- 	 */
- 	barrier();
--	current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
-+	current->curr_ret_stack = index - FGRAPH_RET_INDEX;
++def format(merged):
++    for alg in merged.keys():
++        for op in merged[alg].keys():
++            base_sum = 0
++            new_sum = 0
++            differ_sum = 0
++            differ_cnt = 0
++            print()
++            hlen = 80
++            print("="*hlen)
++            print(f"{alg}")
++            print(f"{' '*(len(alg)//3) + op}")
++            print("-"*hlen)
++            key = ""
++            if "base_ops" in merged[alg][op][0]:
++                key = "ops"
++                print(f"bit key | byte blocks | base ops    | new ops     | differ(%)")
++            else:
++                key = "cycles"
++                print(f"bit key | byte blocks | base cycles | new cycles  | differ(%)")
++            for index in range(len(merged[alg][op])):
++                item = merged[alg][op][index]
++                base_cnt = item[f"base_{key}"]
++                new_cnt = item[f"new_{key}"]
++                base_sum += base_cnt
++                new_sum += new_cnt
++                differ = round((new_cnt - base_cnt)*100/base_cnt, 2)
++                differ_sum += differ
++                differ_cnt += 1
++                bit_key = item["bit_key"]
++                byte_blocks = item["byte_blocks"]
++                print(
++                    f"{bit_key:<7} | {byte_blocks:<11} | {base_cnt:<11} | {new_cnt:<11} | {differ:<8}")
++            average_speed_up = "{:.2f}".format(differ_sum/differ_cnt)
++            ops_total_speed_up = "{:.2f}".format(
++                (base_sum - new_sum) * 100 / base_sum)
++            print('-'*hlen)
++            print(f"average differ(%s)    | total_differ(%)")
++            print('-'*hlen)
++            print(f"{average_speed_up:<21} | {ops_total_speed_up:<10}")
++            print('='*hlen)
 +
- 	current->curr_ret_depth--;
- 	return ret;
- }
++
++def main(base_log, new_log):
++    base = parse(base_log)
++    new = parse(new_log)
++    merged = merge(base, new)
++    format(merged)
++
++
++if __name__ == "__main__":
++    if len(sys.argv) != 3:
++        print(f"usage: {sys.argv[0]} base_log new_log")
++        exit(-1)
++    main(sys.argv[1], sys.argv[2])
+-- 
+2.40.0
 
 
