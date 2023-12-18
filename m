@@ -1,129 +1,205 @@
-Return-Path: <linux-kernel+bounces-4101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8938177ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:53:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C99868177E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:50:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCDAC1F21D35
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:53:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79DEA2858C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D929C498A8;
-	Mon, 18 Dec 2023 16:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E757498B4;
+	Mon, 18 Dec 2023 16:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="S5I3NQIF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGyVZkZP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9763C1D148
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e2168ab09so3927615e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:53:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE681D148;
+	Mon, 18 Dec 2023 16:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d7fd937e0eso920153b3a.1;
+        Mon, 18 Dec 2023 08:50:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702918401; x=1703523201; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nM0rc7/LDh8NwvQblcAD/SfzUIDE9JpJzu1fXo/7n0Y=;
-        b=S5I3NQIF0tv4DlQny6DDnjgV47VIlda/Cc9tRRCORfB1YEqbspvUZXqLu/kam2tG36
-         QA1kOWrqQpAJVsIAg6kKm/C869/o8fDayqIQ2U+GfR7BLSUlXQLfbC9CFJKc/WufWmkx
-         wD6176nz8XEnZEbnm/YqxKAYKnaOF74/z9gqw=
+        d=gmail.com; s=20230601; t=1702918211; x=1703523011; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IkpQ7ULp2+EbxwsyiU5Y+XH1E1Lrbc8Y3UDZM+Jimvc=;
+        b=EGyVZkZPE2sJ0L0N0HYwqFwjUrbwZKI3AiooV/5qsAi6ow3Z5YScdNc4rQCGPBIu0D
+         LJjwV6UiaXuMEggijP2LL7B6OnYTKOVCzVWSF0qcUlUPXAG3td+8MVcHRbC7IEOoo2HD
+         9mWfWIG85sECSSjfnSR5W4uyLsa3UBZYO6bdXQLOzw/hYMT6c7CD4LzG6mc0o1nuAmCi
+         MWl0RtkAIy5dLsoEVQOS45j0X+QTreeqlBHC1r12g9M+0zJ6wr+L5fbSjV7lVgMHTxp6
+         lX1J9ctVyAlLSXuF//X5QmKJBUj4EWLh3jPIFGvZUau4IZM2vlB9bMRFkuBN9n8BuiTN
+         aHEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702918401; x=1703523201;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nM0rc7/LDh8NwvQblcAD/SfzUIDE9JpJzu1fXo/7n0Y=;
-        b=rQl0VOYy51toS0/w8DyXWNnL3vwGi/5J7spGhVysMCs5FVWjBzvjVqXAE5XMGrNhoP
-         abthg6HJ4cqyPMV/s8aT+vjWSdxhAcjndEOq9Z43HCWyfK5UwVW8WAq4RlfUkOSm/+HD
-         z/AFb5FYd/5n5V6zBMpcY3joFVcdmtxoLGtitL7hIRQ5G0TxQzF8pABFCmDv11S+mRla
-         AZT2Ph/FUcL4gQV08nB8xzNQP5qtknGPK0esMk7Xoj8Z+ZBLDVeGAy6ppGeNHyVRuJWE
-         HJd50UdoKck6iOk/I24UBryuCMWg0wwMLDfKZd/2MYa9Jo7nglAFoMizqerbrrLuZO2g
-         CaFA==
-X-Gm-Message-State: AOJu0Yw9fInHOGj4axbIw2udMJN6J0GUb2l7h9zdU3YNLq6iOXfqbCZJ
-	QPL04R560uPPlGc6gJyr3sHfwpO4z3mSTlLOeZU2yYU+
-X-Google-Smtp-Source: AGHT+IH2to9SuWtr71IiB/jOCnsc/DY7lUmnm9Zz5go8799sH0UWp2G4+dtIGyxOB4LdAtBScwe3BQ==
-X-Received: by 2002:a05:6512:2206:b0:50e:356b:f6b8 with SMTP id h6-20020a056512220600b0050e356bf6b8mr1868019lfu.123.1702918401414;
-        Mon, 18 Dec 2023 08:53:21 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id br29-20020a056512401d00b0050e03392a0bsm2010801lfb.171.2023.12.18.08.53.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 08:53:21 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e1f1086fcso6039e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:53:21 -0800 (PST)
-X-Received: by 2002:a05:600c:3b03:b0:40d:174c:9295 with SMTP id
- m3-20020a05600c3b0300b0040d174c9295mr213133wms.3.1702918048764; Mon, 18 Dec
- 2023 08:47:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702918211; x=1703523011;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IkpQ7ULp2+EbxwsyiU5Y+XH1E1Lrbc8Y3UDZM+Jimvc=;
+        b=UcrOlCrbLJUsKwrIpNSgTi/XKE5svKQlHJkvMqaC+NfdqL9oheKbSi/NyNsRkDOT4c
+         /p58V9GvSLZyVCxNPMc7NA2/XHxBwXajltESQxUwCnKKHLHhD93w6rsYiRRn02neiMb3
+         las0e4ynDTVDXVaVxbrp9oTzqgRPBOJgsmPBVaqD1nVWxt0QlC4y6SdnLLrqJnG6N0lU
+         F6ZD+eS4r6koB9Szpo1S7EF5BewzdaMbxYw8c4IQdLiJLFXaSNccONa5ridltRmUQ6nD
+         m0BWiN7JvV/rqbGwNI4IvUJEJKFsKTQ8m21pGUix0X5FFyydjAOXJdRoZO6BIaspaINa
+         qLrw==
+X-Gm-Message-State: AOJu0YwIRfT9QoG5gm0n9ebqGe48GOON9rYgbeWjYnL2t4CGRpjtiZqn
+	ss9nZsVYgrO3Mtw64TUAYmRFY5x6e0lC7A==
+X-Google-Smtp-Source: AGHT+IHMlIlqvTS9/uo97eOJqUybjmnws/cIuwBDQoDXwuLLTTvmg2ZCoDIh0+oobhUS99SSrSam1w==
+X-Received: by 2002:a05:6a21:199:b0:194:80ca:4e2f with SMTP id le25-20020a056a21019900b0019480ca4e2fmr881752pzb.56.1702918211213;
+        Mon, 18 Dec 2023 08:50:11 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:581e:798e:871c:98db:5638:a4])
+        by smtp.gmail.com with ESMTPSA id hy9-20020a056a006a0900b006d38dfaab9asm4324933pfb.136.2023.12.18.08.50.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 08:50:10 -0800 (PST)
+From: Anshul Dalal <anshulusr@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	devicetree@vger.kernel.org
+Cc: Anshul Dalal <anshulusr@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v3 1/2] dt-bindings: iio: dac: add MCP4821
+Date: Mon, 18 Dec 2023 22:17:33 +0530
+Message-ID: <20231218164735.787199-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214123752.v3.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
-In-Reply-To: <20231214123752.v3.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 18 Dec 2023 08:47:16 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VtGN-qU-jqHsD0XpPc5uJwm2xd_rO+ueR_PqK-VJcukQ@mail.gmail.com>
-Message-ID: <CAD=FV=VtGN-qU-jqHsD0XpPc5uJwm2xd_rO+ueR_PqK-VJcukQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] drm/bridge: parade-ps8640: Never store more than
- msg->size bytes in AUX xfer
-To: dri-devel@lists.freedesktop.org
-Cc: Guenter Roeck <groeck@chromium.org>, Andrzej Hajda <andrzej.hajda@intel.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Philip Chen <philipchen@chromium.org>, 
-	Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, Stephen Boyd <swboyd@chromium.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Adds support for MCP48xx series of DACs.
 
-On Thu, Dec 14, 2023 at 12:38=E2=80=AFPM Douglas Anderson <dianders@chromiu=
-m.org> wrote:
->
-> While testing, I happened to notice a random crash that looked like:
->
->   Kernel panic - not syncing: stack-protector:
->   Kernel stack is corrupted in: drm_dp_dpcd_probe+0x120/0x120
->
-> Analysis of drm_dp_dpcd_probe() shows that we pass in a 1-byte buffer
-> (allocated on the stack) to the aux->transfer() function. Presumably
-> if the aux->transfer() writes more than one byte to this buffer then
-> we're in a bad shape.
->
-> Dropping into kgdb, I noticed that "aux->transfer" pointed at
-> ps8640_aux_transfer().
->
-> Reading through ps8640_aux_transfer(), I can see that there are cases
-> where it could write more bytes to msg->buffer than were specified by
-> msg->size. This could happen if the hardware reported back something
-> bogus to us. Let's fix this so we never write more than msg->size
-> bytes. We'll still read all the bytes from the hardware just in case
-> the hardware requires it since the aux transfer data comes through an
-> auto-incrementing register.
->
-> NOTE: I have no actual way to reproduce this issue but it seems likely
-> this is what was happening in the crash I looked at.
->
-> Fixes: 13afcdd7277e ("drm/bridge: parade-ps8640: Add support for AUX chan=
-nel")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf #MCP48x1
+Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf #MCP48x2
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
 
-Since the patch fixes a crash, has two Reviews (even if they're both
-from @chromium), and doesn't seem controversial, I didn't want a full
-week and just landed it in drm-misc-fixes. If anyone is upset by this
-then please shout and we can revert or I can post a followup patch.
+---
 
-3164c8a70073 drm/bridge: parade-ps8640: Never store more than
-msg->size bytes in AUX xfer
+Changes for v3:
+- Added gpios for ldac and shutdown pins
+- Added spi-cpha and spi-cpol for the SPI mode 0 and 3
+
+Changes for v2:
+- Changed order in device table to numerical
+- Made vdd_supply required
+- Added 'Reviewed-by: Conor Dooley'
+
+Previous versions:
+v2: https://lore.kernel.org/lkml/20231217180836.584828-1-anshulusr@gmail.com/
+v1: https://lore.kernel.org/lkml/20231117073040.685860-1-anshulusr@gmail.com/
+---
+ .../bindings/iio/dac/microchip,mcp4821.yaml   | 86 +++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
+new file mode 100644
+index 000000000000..5b1707d974e2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
+@@ -0,0 +1,86 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/dac/microchip,mcp4821.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip MCP4821 and similar DACs
++
++description: |
++  Supports MCP48x1 (single channel) and MCP48x2 (dual channel) series of DACs.
++  Device supports simplex communication over SPI in Mode 0 and Mode 3.
++
++  +---------+--------------+-------------+
++  | Device  |  Resolution  |   Channels  |
++  |---------|--------------|-------------|
++  | MCP4801 |     8-bit    |      1      |
++  | MCP4802 |     8-bit    |      2      |
++  | MCP4811 |    10-bit    |      1      |
++  | MCP4812 |    10-bit    |      2      |
++  | MCP4821 |    12-bit    |      1      |
++  | MCP4822 |    12-bit    |      2      |
++  +---------+--------------+-------------+
++
++  Datasheet:
++    MCP48x1: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
++    MCP48x2: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    enum:
++      - microchip,mcp4801
++      - microchip,mcp4802
++      - microchip,mcp4811
++      - microchip,mcp4812
++      - microchip,mcp4821
++      - microchip,mcp4822
++
++  reg:
++    maxItems: 1
++
++  vdd-supply: true
++
++  ldac-gpios:
++    description: |
++      Active Low LDAC (Latch DAC Input) pin used to update the DAC output.
++    maxItems: 1
++
++  shdn-gpios:
++    description: |
++      Active Low pin used to enter the shutdown mode.
++    maxItems: 1
++
++  spi-cpha: true
++  spi-cpol: true
++
++required:
++  - compatible
++  - reg
++  - vdd-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dac@0 {
++            compatible = "microchip,mcp4821";
++            reg = <0>;
++            vdd-supply = <&vdd_regulator>;
++            ldac-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
++            shdn-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
++            spi-cpha;
++            spi-cpol;
++        };
++    };
+-- 
+2.43.0
+
 
