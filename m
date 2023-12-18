@@ -1,91 +1,104 @@
-Return-Path: <linux-kernel+bounces-4499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564D2817E3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:44:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E843817E3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ADBF1C228D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:44:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3AE81F22BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 23:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A48760BB;
-	Mon, 18 Dec 2023 23:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B8F768F1;
+	Mon, 18 Dec 2023 23:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Gb9uImLn"
+	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="FdTlk4ZO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EEC1D685
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5df49931b4eso29834677b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:44:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB91760B2
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6d9da137748so1634645a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702943056; x=1703547856; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v7VDVlzaCtIvv9IgKTwUyhOaFAx2Ep1sXTET+2Pb//w=;
-        b=Gb9uImLnr3jbTfNiKiVQ2ErR6qUW3tgG74GzbXDzMnhwGz3hDhutsBjke+F0xXTyu1
-         xLsIeLLM0LIIfw/F6sLkt5DsgA1VGBq/KBVhieyqJJg8pzyXyUSbF1hoyDSKBASADW5I
-         xmN7ZnjyI5AveeG2pXHMoj1w5o5GTy1kgohvBt89gNCOqztsqWfajg0kr712RoawDfeA
-         V4IXL1jms2/vCrfWx8n63+LWS3aqy4QbOmvAxpWJiXzIPG9C1xzfFFPf1c4NP2WPn/Pp
-         nbBOkHQaoEaZaH4pW4j7cFx6brg6XpUGYsKU9zKufpp/xnH7NbdGlloToCPIh4iyk6tv
-         7nGA==
+        d=linuxtx.org; s=google; t=1702943058; x=1703547858; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s38PvxZbBMTVGvQ0kbtSdyWDBrmSjvOO/03Z8xfaLco=;
+        b=FdTlk4ZOwiAaifg5lHVTamXACv8DPiF6EhrqN47ViXVGSStKlcLFl19VkLDWguzQDk
+         r4aOghAPLvojhZ6qWq/1lPTMfi43Qg+xLXFVCcfCCaZjidUxeAputYgEDrv+vEC/lgoY
+         aNz1XGDYscuWbfGaal/+iJn4Zg3KxqQEWZr28=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702943056; x=1703547856;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702943058; x=1703547858;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v7VDVlzaCtIvv9IgKTwUyhOaFAx2Ep1sXTET+2Pb//w=;
-        b=ozqBwre5ilnoNyQtqxk926Rj8QYYDKUv1PdAv7rkTv58pP8NUBxUslBVexiX02RlAE
-         udCh4RUDIpCXeTD3zsvgsvwM3OJ4zJRSPBRUjzoW82IkVMZ0HLkaAbZu050ooJYCBUMp
-         x0yo6X4JjV+tUPovwmTYwGBhWmd4hQiQ9euv9xnjlaUMzTj+tMdOrUIYc4/fC7f/DGpb
-         rzTaGrdzWa46fEOVp61hmXIXzqltJoJd6LelvCjb+bfhEpXomL5m0siAqoeNN0OE03BS
-         EN240IJ/ODvxgLz2UElNAQnXX1xYNWp8WV96AR4vWd5Yn2FDWgrb1arSo2lzvj1OCpzw
-         c6lw==
-X-Gm-Message-State: AOJu0YyOGKeHNLFuw0u8qWvmqY1QdJ2to1jffyxGF6fEMSH3KfmXC1cO
-	Auedn3hExbqD4EuwCCg5mD+D4+kvebASVVEVF/Ox1A==
-X-Google-Smtp-Source: AGHT+IFqzjkHF9wgqmxHy8DQwxyutO8m5gh5rPIBl+hj9RrqElTuK1IgZmdRiOhINEBB7SAzHZD5sB2OFYSltMLOTGg=
-X-Received: by 2002:a81:6d8c:0:b0:5e5:7647:3b32 with SMTP id
- i134-20020a816d8c000000b005e576473b32mr3142800ywc.60.1702943056756; Mon, 18
- Dec 2023 15:44:16 -0800 (PST)
+        bh=s38PvxZbBMTVGvQ0kbtSdyWDBrmSjvOO/03Z8xfaLco=;
+        b=Om4dChNcGoHJhqm5gIxAfrjlfzO78A9XDLq3VP9+N2P8yC5bAtr7egaDwm7MhTf4E0
+         goMW2kjL0hJoMJKVLDfRsit7bYfrnUQvlicu+Mt0rSvtzUDLn5NKOVxqjyEDNs3m81CL
+         9HMlByeBpdUAIzXl5CKxmI7ATONZ/Js2eVpLqFx2zmPT4uK+lz/EFmzDQZCLGM54A3Z0
+         oSAB2gZjPw8a6VTa96YVfQzJ/utmPi6k6auoaSoMWAOe5T/QgZ6OvFLee1WCOsMh9+ZU
+         5S12uBtIkCEEWwwq/7rI3GANdl6cQSHbe2ny729sDFmYN00FwxANm9YhrmeiTwS3Zxyl
+         Liog==
+X-Gm-Message-State: AOJu0YwwTuA00yZ3zca0Ft0lze3tlsH1ABKd9E2BMUfPb137s+RhGI/F
+	iKeg0wmWpPIPfFLtbwQBn46aKA==
+X-Google-Smtp-Source: AGHT+IGRv7a21r4zLDBsHKyuUtnKJGh7ThK4XMmPsNxiSeiENXirtAI6HZ3j/MXWq0z0MRxacOfwNA==
+X-Received: by 2002:a9d:6e08:0:b0:6d9:e61c:2c8a with SMTP id e8-20020a9d6e08000000b006d9e61c2c8amr69003otr.6.1702943058308;
+        Mon, 18 Dec 2023 15:44:18 -0800 (PST)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id t15-20020a9d66cf000000b006d7f41c7e11sm4792433otm.33.2023.12.18.15.44.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 15:44:17 -0800 (PST)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date: Mon, 18 Dec 2023 17:44:15 -0600
+From: Justin Forbes <jforbes@fedoraproject.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 000/166] 6.6.8-rc1 review
+Message-ID: <ZYDZT1sLD1D9Kcjo@fedora64.linuxtx.org>
+References: <20231218135104.927894164@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218164649.2492465-1-ovidiu.panait@windriver.com> <20231218164649.2492465-5-ovidiu.panait@windriver.com>
-In-Reply-To: <20231218164649.2492465-5-ovidiu.panait@windriver.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 19 Dec 2023 00:44:06 +0100
-Message-ID: <CACRpkdaNTdKu9QgvDqFH8sAzJRMaDARwXNa+a5ddHotUw3k_3g@mail.gmail.com>
-Subject: Re: [PATCH 5/7] crypto: sl3516 - Use helper to set reqsize
-To: ovidiu.panait@windriver.com
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, 
-	Hans Ulli Kroll <ulli.kroll@googlemail.com>, Corentin Labbe <clabbe@baylibre.com>, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218135104.927894164@linuxfoundation.org>
 
-On Mon, Dec 18, 2023 at 5:46=E2=80=AFPM <ovidiu.panait@windriver.com> wrote=
-:
+On Mon, Dec 18, 2023 at 02:49:26PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.8 release.
+> There are 166 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> From: Ovidiu Panait <ovidiu.panait@windriver.com>
->
-> The value of reqsize must only be changed through the helper.
->
-> Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
 
-Looks right to me:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
 
