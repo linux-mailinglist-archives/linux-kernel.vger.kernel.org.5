@@ -1,120 +1,187 @@
-Return-Path: <linux-kernel+bounces-3008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9922816608
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:23:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB52581660C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6998C1F21F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:23:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F6341F220A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDD363D6;
-	Mon, 18 Dec 2023 05:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E7B63C9;
+	Mon, 18 Dec 2023 05:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGNFH4hg"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="iYfc9Fbt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D366FA5;
-	Mon, 18 Dec 2023 05:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-425a116f1cdso26551071cf.0;
-        Sun, 17 Dec 2023 21:23:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702877021; x=1703481821; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RXl3wOFqM2CSVNd+66EEJwPvOL1LNVJZxBeNfFMTBSM=;
-        b=GGNFH4hg6BMpQcAjNNoiBNgSInWLULKCsTGC/cEy3jxArCtFyZ7e6dtNwBoNwhqLfY
-         Y31Y42Lw++HpEzIw78kGf4WwG4vcLu5jbm/McN9WlqEl71sDo/79BwgrwmJYMitQs5sh
-         9zJOmnmHWH9IrAtOZT2rBAW6SnkmwT/2Ab8kAfVtxyVC+oYwAwV6/tNgZoaIH1at/VXQ
-         Fqq50EZPEaB7QvQyA0gHi53ERaGaT/G+aAwIzyA41Z4aVup7k5bpVi4CmDHgTx2iLJmN
-         MTXW0KDplns76KTFEeX3KVdnpFfkABOHeCnJqSCimrbtAPc1LiueGxW3pMB+jJKaJ2pr
-         T31w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702877021; x=1703481821;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RXl3wOFqM2CSVNd+66EEJwPvOL1LNVJZxBeNfFMTBSM=;
-        b=K1nH0ExB1vsmxF2xZrgX90AxaVMFKWB1GMTWa0KS4+Sc1d8AKc3WdsjI7tbwPcPnNd
-         amwTckmbsl5mbnQ8J1Vkf+h5wY72T+7fZnDJ7E9HaIGNJIyuqFsDEvJJuEtB10xxziTc
-         5JVIU+vq1SDjvslxQqDJgRQK0p/L/KiKhZ4ITaPS5DAqoTZ98tDoE/0aQojyvYEUbPGJ
-         e06qmvR7Sb4s0jOuNKnLLWvJUo0AFA/y50JMAun7HK6Lj59FoGiTTwQTH2GOvKPiWDCy
-         pZWz9V2JkpEnYbb/Nl/9R6gxFQ+ks0WxA9UOz2d8kKUX8GqD8yTTCXEhMjAI2vGvqumE
-         z8qQ==
-X-Gm-Message-State: AOJu0YyAPbQC1d4qxtuRE0G4x69oDusjdBsVLf90bAMUD4zd8WdYC1ku
-	m3xVNwVePkq2TijmCiaLzWY=
-X-Google-Smtp-Source: AGHT+IHDdUhVaGmO76KoEpbpCO+h9TEe81AmbrDQJPIixHJ3109OZKp+oGo8KSAjVPCayGR5qVjxzg==
-X-Received: by 2002:ac8:5ad1:0:b0:425:823d:2d27 with SMTP id d17-20020ac85ad1000000b00425823d2d27mr24455905qtd.115.1702877021444;
-        Sun, 17 Dec 2023 21:23:41 -0800 (PST)
-Received: from abdel ([174.95.13.129])
-        by smtp.gmail.com with ESMTPSA id m26-20020ac8445a000000b00423e1b606bbsm8928996qtn.69.2023.12.17.21.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 21:23:40 -0800 (PST)
-Date: Mon, 18 Dec 2023 00:23:30 -0500
-From: Abdel Alkuor <alkuor@gmail.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/2] hwmon: Add AMS AS6200 temperature sensor
-Message-ID: <ZX/XUpHl+5ZiAcou@abdel>
-References: <149032e99136a9fe47c3533b57a71092646e497d.1702744180.git.alkuor@gmail.com>
- <63e352150ed51eefce90ca4058af5459730174b2.1702744180.git.alkuor@gmail.com>
- <aa93010a-7ab0-4b9d-bb5d-25ea15b81120@roeck-us.net>
- <ZX4frjGqOGb4zMmx@abdel>
- <c606c40b-8571-4618-827a-555ceab3ae74@roeck-us.net>
- <ZX6AQg1vz/Zz6JeG@abdel>
- <fbcceae6-2daf-4855-b8f2-f7a832a53339@roeck-us.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089F663A3
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BoY6Q4J59kuhgCJXZYf5woohgUcmN0+v1rNgpjBf67A/ucwSThSsFsIF1xvs8FUVTw5oBQzGFoBoJSbW5y6FWwblvTXxXwvCaJYGczSZtgyy673vrl2jCHt9YUKpmfE3+zPExjWSJKIZ0FbV90vaoqraQK8KRozOsRYEd6FC52f4yOEOzAiQp6BF1e4ygtgTuAWYYGxubPCPkZPtBhcZgPmCa9zZC8XaSV3zJWdMXq2CDr9Y0nQ6AEI3ApmFl4kNT7IbDOxo54BsvQZkGQU8vzZR7cixBvyBceCC6s6BYlw0Xd4J5YrfrP7qrabNvqColui3dT7m06tsevI2pN3oSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PWIolyEP0YV6kZ598cmZFNzsxYYq8H2XW72mdEnyYRU=;
+ b=lld6SucgIUc/MC0ggILWdPEuf+OTZj6RFIecUoFQsfrWxPgVIZYZLNeZB41wzXLaI1w3WfGpy9BuGdsi7iWplnfy1JvsA9lRGFyyIibq67bnYPPv024VXkqZxYprPZcJi/4sw2yZ5BjTCgfsZbZ3XLcA0zxSNgGR9YFFgT/vfsHUnGSemMij2+NxUbKim6bbJUqLXvzYJUlaEalEzHU0batzjxeF+Hr0VoTuPnBDGxLRRkr+u1Ga8od/A5s+OsBr7tmKzZ5TQKIC/yWPHbTEXYtA8OXX56RHQtjOZ4/t/hD0dlhgtU2Zao/cMiUhg3iE2U+iTR1v8+Ax5h1PwoBZVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PWIolyEP0YV6kZ598cmZFNzsxYYq8H2XW72mdEnyYRU=;
+ b=iYfc9FbtauqqoOaxfdZ2h8ODTA6ov4ndkSHrQvGBCLDPc7o1NwWsQ8wwfbqKClX/uPHkQ2voslWeMZBE+BnChgKJGg7aueT0PPQOIcd83jGhpbZhIwfDI2b4g79bN8bzSXAzHPuQvt6G7iRk14SVFafat2Xc0YKbFsGu2kouQis=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
+ by DS0PR12MB9422.namprd12.prod.outlook.com (2603:10b6:8:1bb::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
+ 2023 05:30:19 +0000
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::87d4:680b:51ef:181]) by SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::87d4:680b:51ef:181%7]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
+ 05:30:18 +0000
+Date: Mon, 18 Dec 2023 13:29:57 +0800
+From: Huang Rui <ray.huang@amd.com>
+To: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	David Airlie <airlied@redhat.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
+	Xenia Ragiadakou <xenia.ragiadakou@amd.com>
+Subject: Re: [PATCH] drm/virtio: add definition for venus capset
+Message-ID: <ZX/Y1Rp0RoFdpi1Q@amd.com>
+References: <20230915105918.3763061-1-ray.huang@amd.com>
+ <a7b783c8-b1c8-90e3-b6c7-7fa8c6d24d21@collabora.com>
+ <68470997-bb4c-3c11-98b5-aa75c52cbaea@collabora.com>
+ <b79dcf75-c9e8-490e-644f-3b97d95f7397@collabora.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b79dcf75-c9e8-490e-644f-3b97d95f7397@collabora.com>
+X-ClientProxiedBy: SI2PR02CA0043.apcprd02.prod.outlook.com
+ (2603:1096:4:196::12) To SJ2PR12MB8690.namprd12.prod.outlook.com
+ (2603:10b6:a03:540::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbcceae6-2daf-4855-b8f2-f7a832a53339@roeck-us.net>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|DS0PR12MB9422:EE_
+X-MS-Office365-Filtering-Correlation-Id: c1c788d9-e276-40cf-b6cb-08dbff8a6c0a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bNXpqQ9CiSL+3JbK7ax/+0CwHVA1YSMQOJ9E4LCjpcYnuGQr+5YXVpPbSRGeMoYcvAik5xTpUEdlbC8fzxTmBBddq29P9g/Ycr+2C5SJ2cRFyZgz+EllhZ+Z2LhjznbGiu9bpqj5tnzBbEw0V1MoeLTxtKCu6n9GsC7GYYEVokUfHZmEy9xXANZwMjXFW+FlQj5oIZ+CiWirDCZEvhTR5YmvbU1T/lF/IQHkHWRECZnsa8ptZeDtouYDGCwxe07jzi+qNRa7sgveVYP6JadTLp+8Y3cs10AtoZRZyI6IDYGZclZHVcuMVwK337ATCZUdUcmjlMzFp4uhR0rcLcwyhiO6bLFjb3LcLPCDvAv8uk6Vx7e/ookN09J16nKfuvM9/SDv8ZiKi7kNc239RAdweUcNCFNa28NfqvIo3oRn/KTmaOrgNnAONNJ5krgT1Wy1nhzksxCJoYW94iBRp/NiQZkmfe1HMqwhdj1czWfKW+/PGBNcRFr5cv5TgT4WWfPV8HjMu1MP5zfFPwXMOCQg1QAjNPAjMNsleyqrKKNPJafXubXFb/vq0pNh+TFDv98++ZQrWC+Y86ZOX4oo4lNsug==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(396003)(39860400002)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(5660300002)(38100700002)(86362001)(2906002)(2616005)(26005)(83380400001)(6506007)(53546011)(6512007)(6666004)(316002)(66556008)(66476007)(966005)(6486002)(36756003)(41300700001)(54906003)(6916009)(478600001)(66946007)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?WsWxN8OiZ8CN80qBLhy/CnCG1uvnHi7CwX6hwY7wzVQCnDf+6oWEpGnFGq7g?=
+ =?us-ascii?Q?O/8UBq8kC5gs8RLKx2iqyC+hzGvksFlClI051B5Of6zi6N/BxB+8lBa5HKcF?=
+ =?us-ascii?Q?3KZYT1VSf0taISbwEIqb7nskRiBODS1a0I50XYzdSGs+O6488nlbJTxKd/66?=
+ =?us-ascii?Q?YbSMaZIkNBsrmsRqc1wC7M91iy/3V0mcQyE+CU19vnMyWtR/UzJciwX1GjIG?=
+ =?us-ascii?Q?5IX2E2jIHI+BWlOkG/j2Tn5h+TGta2wefve8HHHNpylLDXLiHW4JGaGqO7kn?=
+ =?us-ascii?Q?hHTJJOvH8btqhN0FdAaI/y5mcYPkH7JpSEa+YiB/QgB1lGRxkhek1pEwVS0K?=
+ =?us-ascii?Q?x8FXXe70mKWXHixIWewpE6qd9e602nGoTTQy5aeUVwM+TDaL22qLHnJSJKGD?=
+ =?us-ascii?Q?Pm1tqCvu9WupcB8+LkwvnFDYYAs6q1P7noASaDpYuCRi9gwSZyiWIskIK79W?=
+ =?us-ascii?Q?EA1XTk1A1RGJ5cK0xkrh1zjjEt5E2PpyVxrNmAxQQWC9qbQ0NYDS8eYUqdca?=
+ =?us-ascii?Q?ljL0O47oCvNlEv60YejQaxvmJ5X8UyZ7Aylq6zTPKaThybsOOz4Oa0fYozO1?=
+ =?us-ascii?Q?/hLpqV7VHHC6xEhxtWH3m69Yj2roObhYBP/Jvtn/Hq7Db5x9jpnXDe89dD1m?=
+ =?us-ascii?Q?NN97qGDYfwF9tZcJUBlQabWLSJxAhGR1HpU8ADsZeefN3+AtZOBJRWKqFSJY?=
+ =?us-ascii?Q?uzXstvn6SSc/WTpBZNFpCLUdBs8+cV4juHUxFDXlSAgwC3Pc+iQxh+NS6act?=
+ =?us-ascii?Q?P+uC2DK9EEWGXc7yT8GX0gscUVNbXdBo5COTE4tcKxwv/iUncM8LIEyoDu0c?=
+ =?us-ascii?Q?kQozQ8WWZ2wb7U0LR40Lqe3wjum4agwjmGg/xzGlexNB1/mckEsgl7f89MQw?=
+ =?us-ascii?Q?z2M3sHhv3lGg3s1lcH3Ax2X4FjpPtxeya9KsJxfHOthorJX3TUsiBu7pq3qB?=
+ =?us-ascii?Q?qF0lsQlU6bHTlSs1PHpAAPXSWmYdOmdNeuLr9gfqsnzw7E2RDbC7t27dBon8?=
+ =?us-ascii?Q?CvBzjFGmUAhXHohcyTAvACaEJldkiF8N3Of6NRqPUC5t3bIRoOmaj9od/iBf?=
+ =?us-ascii?Q?FK0fn/KgpupMcCBcjgXSzr5SOI90WGAXTNV40VV3/wTo0coOqhz7Pb0nT62p?=
+ =?us-ascii?Q?XnllUvQ4CvMQ9S0htfbISHRamtkF/esiRU37TzOoYBZ+EMDM5BQLEuUOjx21?=
+ =?us-ascii?Q?m2smQHq0Kt3+lg+m9tFXTPEZ+6kXjMdaJs4P8480E7PsgldGR3LiVrfKkCAi?=
+ =?us-ascii?Q?PEqiSrXZiihdRII1lysqKKNDyBN1lSN4bSI2mlo88x05BssBpG0vXsWRsYWr?=
+ =?us-ascii?Q?W4jlxIg4hO0rtMTsWZwlBQW/M/Rqwu/qfOSiGsb3WW8aDD87KX2QrwTYNP9X?=
+ =?us-ascii?Q?QKVVVIVu6aDtrWeumGU4OFxm06AVw3AE9dqtCX4rYfg5vMDF83CLa3mMjoYc?=
+ =?us-ascii?Q?nF1EcyZazXxjxSMUdfa2sifcD7mHjC1KoOOCnl+3m56vJbGYnZbX+5jQfYeR?=
+ =?us-ascii?Q?91wH4JhWQ68Mptn10bsRnKfMKCq10/0/g+pYT1xzoC76tTlSgojMTjK/eHLt?=
+ =?us-ascii?Q?VkgkIrnApI9fvnLJZD7WngV2Cy6uRlJA2r93JwCT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1c788d9-e276-40cf-b6cb-08dbff8a6c0a
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 05:30:18.7558
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0YwqD54XtJKOw8EZdVa1Mo13dHI+jj6boHuaeOeZ5EQ353f1Zdp61XleT+aEL2mMcRFp7jOcaQQFiR/+du8cUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9422
 
-On Sat, Dec 16, 2023 at 10:06:03PM -0800, Guenter Roeck wrote:
-> On 12/16/23 20:59, Abdel Alkuor wrote:
-> > On Sat, Dec 16, 2023 at 05:40:35PM -0800, Guenter Roeck wrote:
-> > > On 12/16/23 14:07, Abdel Alkuor wrote:
-> > > > On Sat, Dec 16, 2023 at 10:46:53AM -0800, Guenter Roeck wrote:
-> > > > > On 12/16/23 08:39, Abdel Alkuor wrote:
-> >       ...
-> >     }
+On Sat, Dec 16, 2023 at 12:45:32AM +0800, Dmitry Osipenko wrote:
+> On 11/19/23 06:46, Dmitry Osipenko wrote:
+> > On 9/21/23 00:16, Dmitry Osipenko wrote:
+> >> On 9/15/23 13:59, Huang Rui wrote:
+> >>> This definition is used fro qemu, and qemu imports this marco in the
+> >>> headers to enable venus for virtio gpu. So it should add it even kernel
+> >>> doesn't use this.
+> >>>
+> >>> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> >>> ---
+> >>>
+> >>> Hi all,
+> >>>
+> >>> We would like to add a new definition for venus capset, it will be used for
+> >>> qemu. Please see details on below discussion:
+> >>>
+> >>> https://lore.kernel.org/qemu-devel/b82982aa-5b9e-481e-9491-b9313877bcaa@daynix.com/
+> >>>
+> >>> Thanks,
+> >>> Ray
+> >>>
+> >>>  include/uapi/linux/virtio_gpu.h | 2 ++
+> >>>  1 file changed, 2 insertions(+)
+> >>>
+> >>> diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
+> >>> index f556fde07b76..0e21f3998108 100644
+> >>> --- a/include/uapi/linux/virtio_gpu.h
+> >>> +++ b/include/uapi/linux/virtio_gpu.h
+> >>> @@ -309,6 +309,8 @@ struct virtio_gpu_cmd_submit {
+> >>>  
+> >>>  #define VIRTIO_GPU_CAPSET_VIRGL 1
+> >>>  #define VIRTIO_GPU_CAPSET_VIRGL2 2
+> >>> +/* 3 is reserved for gfxstream */
+> >>> +#define VIRTIO_GPU_CAPSET_VENUS 4
+> >>
+> >> Could you please add all other capsets, so we won't needed to do it
+> >> again in the future
 > > 
-> > Based on that, the new tmp112 set_mask and clr_mask would look like this instead,
-> >    [tmp112] = {
-> >    	.set_mask = 3 << 6,	/* 8 samples / second */
-> >    	.clr_mask = 1 << 15,	/* no one-shot mode*/
-> > 	.config_reg_16bits = 1,
-> >    	...
-> >    }
+> > I've opened request to update virtio-spec with the corrected/updated
+> > capsets https://github.com/oasis-tcs/virtio-spec/issues/182. I'm
+> > expecting that it will take some time until spec change will be merged
+> > and now leaning to apply this v1 patch to not hold the Venus work.
 > > 
+> > Gerd, do you have objections? R-b/ack?
 > 
-> Yes, you are correct, we'll need something like that. lm75_update_interval()
-> tries to solve the problem for tmp112, but that doesn't work with
-> set_mask/clear_mask. We should have a separate function lm75_read_config(),
-> though, to hide the complexity.
->
-I'll fix tmp112 parameters in another patch as as6200 patch 2 in v2
-implements 2bytes read/write for the configure reg.
-https://marc.info/?l=linux-hwmon&m=170287522119545&w=2
+> Applied patch to misc-next with edited commit message. Updating spec
+> taking much time, not worth to hold this change longer. We'll add the
+> rest of capsets later on. Thanks, Rui!
+> 
 
-On another note, I checked all the supported chips in lm75 to see
-which ones support an alert bit, only 3 chips support it; tmp112(bit 5 in the second byte),
-tmp100, and tmp101 (bit 7 in the first byte).
+Thank you, Dmitry! I will update corresponding patch in qemu, and send v6
+qemu patches.
 
-Thanks,
-Abdel
+Best Regards,
+Ray
 
