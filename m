@@ -1,212 +1,186 @@
-Return-Path: <linux-kernel+bounces-3829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDC59817377
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:21:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C5E4817379
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B8FF1F23E76
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:21:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBFA2B22F81
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB05037897;
-	Mon, 18 Dec 2023 14:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF53134DF;
+	Mon, 18 Dec 2023 14:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LpWZMhU+"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="iig9a0gC";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="f/cVLNJL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBEE37868;
-	Mon, 18 Dec 2023 14:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 40F0E240002;
-	Mon, 18 Dec 2023 14:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702909278;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VcFINdpUM3413RjJFum1h+gsTWlsCTgB3Zco0HFf37w=;
-	b=LpWZMhU+/FlDz/l6g9cAsHmsE93Bhq4Id8XqSYWOsaMalk5GcvOUsDi//RUZIFy+2Q+nKp
-	r0Ue5TYs8IiSKetzoBq1URx/7EQWB342qgDX9X4FQkp3TvAfan3jwJ/jm+EMzOscAy6PJt
-	z1av9pI3PSW8EUlbraBlXyEOr+LrwjXs4Fm5641BoWxtj/ZC1A/Qt4/8tguLpW2jCJi9YY
-	N4d1OHK+l82zLAWuHEjEGFXpbIQFgiGXVdCq4bJhDwmJDqIhJTzoOkQFokmWPmv+8OtQ/M
-	XljLCSnzggt7fIDqzF58t8GnU7eBiYK4OrDKmG307kg9prYOyXR/b0+KZOspMA==
-Date: Mon, 18 Dec 2023 15:21:16 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Michael Walle
- <michael@walle.cc>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, u-boot@lists.denx.de, =?UTF-8?B?UmFmYcWC?=
- =?UTF-8?B?IE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 4/4] nvmem: layouts: add U-Boot env layout
-Message-ID: <20231218152116.59d59bad@xps-13>
-In-Reply-To: <20231218133722.16150-4-zajec5@gmail.com>
-References: <20231218133722.16150-1-zajec5@gmail.com>
-	<20231218133722.16150-4-zajec5@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012C21D148
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id DF4B05C01A1;
+	Mon, 18 Dec 2023 09:22:05 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 18 Dec 2023 09:22:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1702909325; x=1702995725; bh=80hApuyvNl
+	9yOSjCP0iH0vkOW+LFkGuu0dMrxsMPNow=; b=iig9a0gClrFChL0nRRAviiTnmI
+	CeLHUUI0H4vi1IELQnIoUyi4N0vdRHF/l3ZxaklJ6AnOgfDB1YLL3TGPCA7miGoc
+	5ZkT45OZZFu/Oc0qYZC23OWs2IEsRTpC8MZk/9AyutL/a9WfUX/LmXUqJIH29nsI
+	Ujd+Wh507GB721pvowdDXYyJycShUomqG4xE5ZsLV8gSbswGnETuh8ixhGlF1otl
+	x8V2HDdOX+UAOWq5+NOBDwlivj8fwVYAlkRjfk1maiLVjXE5B0ZDy2RGnLyDWs/Q
+	mVkC06q1Q9B7Ow/Se9UmI2duCkJDq7C8tkVaewchfRQZmkOC6D8mj9WdQ5PA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1702909325; x=1702995725; bh=80hApuyvNl9yOSjCP0iH0vkOW+LF
+	kGuu0dMrxsMPNow=; b=f/cVLNJLF7FcJ4S9MyeCKTZD33teYy/FXeG9KlimNhvU
+	U/hR0CpKUcdZSvhLq5/Nwb1vTAJgiLG3oMPX7KrRhM0UKrxaEM2cfeuGSBMP/bvP
+	fbqhr2tnpdMX7Bv8c1BFIIJcnMUZHd3nPlMZ+tpOmeMvmTAzazy7Zwd3hX23OlbW
+	KYd6oxVruKDjfHHA1ZDi/eKgkSyzAFHUDvt0VKpiTp4tTlI+UTT33pgC2AXc4Ww4
+	CLbnVMp38FXg+vsMHEkKfYgd8C9ON1fd1HllgtW1PJFHaDysTiZvbxFIJ/m/Wt5U
+	ZAbb5B2/Z3KjgArvvCdyAhpZUcEeEpsV/wceW+f0VA==
+X-ME-Sender: <xms:jFWAZY53EFfWxV-LS-L9k4Vdl2XBCEk9HOW7Kkc-4SMwP_2WKW4CpA>
+    <xme:jFWAZZ6XSoArW47ua4xnH5TxTHBntYzF_DcHhrNstyTrzsb8T_pGj3_fXNbx6Gwi4
+    p4n-oLzzYusjiyKaWM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtkedgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeeigfehhfffveejiedvgeduudetfedvgeeuuefhffevlefgteelveefudei
+    heffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpohhpvghnfihrthdrohhrghenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnuges
+    rghrnhgusgdruggv
+X-ME-Proxy: <xmx:jFWAZXfaAmWJP-LVWgy5GQpEqluM9zxfYvvenauLA5zB90rHjMq1MA>
+    <xmx:jFWAZdJaFW_g-LvVeivAAn6MGhssXhexnikp92vxe1ctDel-Apqmng>
+    <xmx:jFWAZcIbjI0ru85uMrmGMCc0mZQxMUK4LmAeyJKurKEtZE1WxDQofw>
+    <xmx:jVWAZRXUXmOKE9o4G4KrBqggd1Inx84cAbnBerlz7ru7bzevYUDwAA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id BF086B6008F; Mon, 18 Dec 2023 09:22:04 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Message-Id: <24e92cfc-8dc8-47b8-b379-ed8b1b776fba@app.fastmail.com>
+In-Reply-To: <20231218134532.50599-1-krzysztof.kozlowski@linaro.org>
+References: <20231218134532.50599-1-krzysztof.kozlowski@linaro.org>
+Date: Mon, 18 Dec 2023 14:21:41 +0000
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ arm <arm@kernel.org>, soc@kernel.org, "Olof Johansson" <olof@lixom.net>
+Cc: "Lennert Buytenhek" <kernel@wantstofly.org>,
+ "Steve Sakoman" <sakoman@gmail.com>,
+ "Mark F . Brown" <mark.brown314@gmail.com>,
+ "Robert Jarzmik" <robert.jarzmik@free.fr>,
+ "Florian Fainelli" <florian@openwrt.org>,
+ "Simtec Linux Team" <linux@simtec.co.uk>
+Subject: Re: [PATCH] ARM: MAINTAINERS: drop empty entries for removed boards
+Content-Type: text/plain
 
-Hi Rafa=C5=82,
+On Mon, Dec 18, 2023, at 13:45, Krzysztof Kozlowski wrote:
+> Drop empty and redundant maintainer entries for boards which were
+> removed to fix `scripts/get_maintainer.pl --self-test=sections` errors
+> like:
+>
+>   ./MAINTAINERS:2021: warning: section without file pattern	ARM/CIRRUS 
+> LOGIC EDB9315A MACHINE SUPPORT
 
-zajec5@gmail.com wrote on Mon, 18 Dec 2023 14:37:22 +0100:
+Good catch, I wonder if I missed these in last year's board removal
+or if they were already broken back then. Some of these 
 
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> This patch moves all generic (NVMEM devices independent) code from NVMEM
-> device driver to NVMEM layout driver. Then it adds a simple NVMEM layout
-> code on top of it.
->=20
-> Thanks to proper layout it's possible to support U-Boot env data stored
-> on any kind of NVMEM device.
->=20
-> For backward compatibility with old DT bindings we need to keep old
-> NVMEM device driver functional. To avoid code duplication a parsing
-> function is exported and reused in it.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> ---
+> @@ -2171,11 +2166,6 @@ T:	git 
+> git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git
+>  F:	arch/arm/boot/dts/nxp/vf/
+>  F:	arch/arm/mach-imx/*vf610*
+> 
+> -ARM/GUMSTIX MACHINE SUPPORT
+> -M:	Steve Sakoman <sakoman@gmail.com>
+> -L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> -S:	Maintained
 
-I have a couple of comments about the original driver which gets
-copy-pasted in the new layout driver, maybe you could clean these
-(the memory leak should be fixed before the migration so it can be
-backported easily, the others are just style so it can be done after, I
-don't mind).
+I don't know if Steve still cares, but the board is still there
+in arch/arm/mach-pxa/{gumstix,am200epd.c,am300epd.c}
+ 
+> -ARM/INTEL XSC3 (MANZANO) ARM CORE
+> -M:	Lennert Buytenhek <kernel@wantstofly.org>
+> -L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> -S:	Maintained
 
-...
+Same here, the code is still there and used by pxa3xx:
 
-> +int u_boot_env_parse(struct device *dev, struct nvmem_device *nvmem,
-> +		     enum u_boot_env_format format)
-> +{
-> +	size_t crc32_data_offset;
-> +	size_t crc32_data_len;
-> +	size_t crc32_offset;
-> +	size_t data_offset;
-> +	size_t data_len;
-> +	size_t dev_size;
-> +	uint32_t crc32;
-> +	uint32_t calc;
-> +	uint8_t *buf;
-> +	int bytes;
-> +	int err;
-> +
-> +	dev_size =3D nvmem_dev_size(nvmem);
-> +
-> +	buf =3D kcalloc(1, dev_size, GFP_KERNEL);
+arch/arm/mm/*xsc3l2*
 
-Out of curiosity, why kcalloc(1,...) rather than kzalloc() ?
+>  ARM/LG1K ARCHITECTURE
+>  M:	Chanho Min <chanho.min@lge.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> @@ -2840,11 +2825,6 @@ F:	arch/arm/boot/dts/synaptics/
+>  F:	arch/arm/mach-berlin/
+>  F:	arch/arm64/boot/dts/synaptics/
+> 
+> -ARM/TECHNOLOGIC SYSTEMS TS7250 MACHINE SUPPORT
+> -M:	Lennert Buytenhek <kernel@wantstofly.org>
+> -L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> -S:	Maintained
 
-> +	if (!buf) {
-> +		err =3D -ENOMEM;
-> +		goto err_out;
+arch/arm/mach-ep93xx/ts72xx.c is about to be obsoleted by the ongoing
+DT conversion.
 
-We could directly return ENOMEM here I guess.
 
-> +	}
-> +
-> +	bytes =3D nvmem_device_read(nvmem, 0, dev_size, buf);
-> +	if (bytes < 0)
-> +		return bytes;
-> +	else if (bytes !=3D dev_size)
-> +		return -EIO;
+> @@ -17674,14 +17649,6 @@ L:	linux-gpio@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/gpio/gpio-pxa.c
+> 
+> -PXA MMCI DRIVER
+> -S:	Orphan
+> -
+> -PXA RTC DRIVER
+> -M:	Robert Jarzmik <robert.jarzmik@free.fr>
+> -L:	linux-rtc@vger.kernel.org
+> -S:	Maintained
+> -
 
-Don't we need to free buf in the above cases?
+drivers/mmc/host/pxamci.c and drivers/rtc/rtc-pxa.c
+are still in use.
 
-> +	switch (format) {
-> +	case U_BOOT_FORMAT_SINGLE:
-> +		crc32_offset =3D offsetof(struct u_boot_env_image_single, crc32);
-> +		crc32_data_offset =3D offsetof(struct u_boot_env_image_single, data);
-> +		data_offset =3D offsetof(struct u_boot_env_image_single, data);
-> +		break;
-> +	case U_BOOT_FORMAT_REDUNDANT:
-> +		crc32_offset =3D offsetof(struct u_boot_env_image_redundant, crc32);
-> +		crc32_data_offset =3D offsetof(struct u_boot_env_image_redundant, data=
-);
-> +		data_offset =3D offsetof(struct u_boot_env_image_redundant, data);
-> +		break;
-> +	case U_BOOT_FORMAT_BROADCOM:
-> +		crc32_offset =3D offsetof(struct u_boot_env_image_broadcom, crc32);
-> +		crc32_data_offset =3D offsetof(struct u_boot_env_image_broadcom, data);
-> +		data_offset =3D offsetof(struct u_boot_env_image_broadcom, data);
-> +		break;
-> +	}
-> +	crc32 =3D le32_to_cpu(*(__le32 *)(buf + crc32_offset));
+> 
+> -RDC R-321X SoC
+> -M:	Florian Fainelli <florian@openwrt.org>
+> -S:	Maintained
+> -
 
-Looks a bit convoluted, any chances we can use intermediate variables
-to help decipher this?
+This is still supported and it's x86 rather than arm.
 
-> +	crc32_data_len =3D dev_size - crc32_data_offset;
-> +	data_len =3D dev_size - data_offset;
-> +
-> +	calc =3D crc32(~0, buf + crc32_data_offset, crc32_data_len) ^ ~0L;
-> +	if (calc !=3D crc32) {
-> +		dev_err(dev, "Invalid calculated CRC32: 0x%08x (expected: 0x%08x)\n", =
-calc, crc32);
-> +		err =3D -EINVAL;
-> +		goto err_kfree;
-> +	}
-> +
-> +	buf[dev_size - 1] =3D '\0';
-> +	err =3D u_boot_env_parse_cells(dev, nvmem, buf, data_offset, data_len);
-> +	if (err)
-> +		dev_err(dev, "Failed to add cells: %d\n", err);
+There is a good chance that we /should/ remove it for being obsolete,
+but that has to be a separate series and remove the drivers and
+architecture support if we decide to go that way.
 
-Please drop this error message, the only reason for which the function
-call would fail is apparently an ENOMEM case.
+I'm fairly sure this platform was originally added for use with
+OpenWRT but not everything was merged and OpenWRT stopped
+carrying the required patches in 2016:
 
-> +
-> +err_kfree:
-> +	kfree(buf);
-> +err_out:
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(u_boot_env_parse);
-> +
-> +static int u_boot_env_add_cells(struct device *dev, struct nvmem_device =
-*nvmem)
-> +{
-> +	const struct of_device_id *match;
-> +	struct device_node *layout_np;
-> +	enum u_boot_env_format format;
-> +
-> +	layout_np =3D of_nvmem_layout_get_container(nvmem);
-> +	if (!layout_np)
-> +		return -ENOENT;
-> +
-> +	match =3D of_match_node(u_boot_env_of_match_table, layout_np);
-> +	if (!match)
-> +		return -ENOENT;
-> +
-> +	format =3D (uintptr_t)match->data;
+https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=fed29fa36bf9ff387ff6e96522b1b5423fed3581
 
-In the core there is currently an unused helper called
-nvmem_layout_get_match_data() which does that. I think the original
-intent of this function was to be used in this driver, so depending on
-your preference, can you please either use it or remove it?
+Some of the drivers might still be in use on the related
+vortex86 cores, so maybe we keep the support and add
 
-> +
-> +	of_node_put(layout_np);
-> +
-> +	return u_boot_env_parse(dev, nvmem, format);
-> +}
+N:     rdc321x
 
-Thanks,
-Miqu=C3=A8l
+      Arnd
 
