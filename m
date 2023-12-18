@@ -1,136 +1,165 @@
-Return-Path: <linux-kernel+bounces-3868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7168181745B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF5981746D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:58:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CD481C2498C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:57:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 669511C24FCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714C53787D;
-	Mon, 18 Dec 2023 14:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE183A1BA;
+	Mon, 18 Dec 2023 14:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="sS0yFIh4"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="f7Ico4zk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637EC1D15F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40c3ceded81so31217985e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:57:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702911431; x=1703516231; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ejW8mYTHsaSP2x9nTPGi1Vc36flABAG/m92kKNfgtE0=;
-        b=sS0yFIh4aMOJF52M1eZFoUnOZ+8uDkKCEnUpBsiNZR8FioNQ+TiCANkpCmwVxgiVvU
-         NB+1Tnsii1UwyHtlO6SZzWQMaIEwoeDWSjR94n17YVX7akSV7wHUtpx7lX9QDLS/EDWe
-         rhJMFj6iJQlswMozfPuIV8qe82/iT+jn3u8AugmjSLH7RnZn/AdK7GlVmwsP0j+g9Wwp
-         nkC65Eexes1OBfha3aBU7Q2+oV5870lREInFH1RTkOHeLxRTUMhpbpNt//LFoZnMgX6H
-         dhhRwVi8CGoE/EjrWRNOUwIA7cTts3dO+P2G+PZ32HRbDcX1DM4HhgCtBD64onaTLUU/
-         annQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702911431; x=1703516231;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ejW8mYTHsaSP2x9nTPGi1Vc36flABAG/m92kKNfgtE0=;
-        b=tssNKseqZG6XoiuIbY2UQ5utNSaEuqKCoUl0ug8r/zGKB2hkokJDTjroy18qnaXdGd
-         8DdBqxhGQMDxpd2aeILTNyeOrcjZBtxig68Kxl+NXMK4GqLEoyiIQCJdwUHQQIEpVLHg
-         lgQh3xSKD3BpEklAkT77Zx62fTVsyUc82ohjoHV5gxOB5dtslTwuJ75287iw9INqc1cw
-         CF8iJeZ8Sqi63MWYoH4y8YS4ba3Vm6ulAhjgpQ7rQC9+SxcH4JG1o3RMkVdRqef9hauk
-         MFhA7FC+M4c46KaA0fVAFW648D6xDD4M6sql6uM5Y4sBPLkwhvvlz3yUShMjis6iz8It
-         P/Lw==
-X-Gm-Message-State: AOJu0Yxil2ssMLq+KC18g8xfN6YACX/nO8SCWvupVEdQsNys0/i1aOjO
-	CwdnLeCt4JwifoPG5MkxZaYlPA==
-X-Google-Smtp-Source: AGHT+IGMmNT1wjDlCVxKWzxDjNxrJWY/X56rrN+bYXUA9s8NkWBJWZr4tcv3yKeTlvtQ6zaikL0UVQ==
-X-Received: by 2002:a05:600c:46cf:b0:40c:3d90:49f1 with SMTP id q15-20020a05600c46cf00b0040c3d9049f1mr7972031wmo.125.1702911431628;
-        Mon, 18 Dec 2023 06:57:11 -0800 (PST)
-Received: from toaster.lan ([2a01:e0a:3c5:5fb1:29f2:94ce:d35d:aa25])
-        by smtp.googlemail.com with ESMTPSA id fc17-20020a05600c525100b0040c42681fcesm35465477wmb.15.2023.12.18.06.57.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 06:57:11 -0800 (PST)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>,
-	Hsin-Yi Wang <hsinyi@google.com>
-Subject: [PATCH] ASoC: hdmi-codec: fix missing report for jack initial status
-Date: Mon, 18 Dec 2023 15:56:52 +0100
-Message-ID: <20231218145655.134929-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6EE37881;
+	Mon, 18 Dec 2023 14:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2115840E00A9;
+	Mon, 18 Dec 2023 14:58:41 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id duilsy3bKYSQ; Mon, 18 Dec 2023 14:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1702911518; bh=1weCWgHoOtoy2vZBHy2ouJrV4MN1BpD6yK4soKgP07A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=f7Ico4zkVTqrPgNkFulLln5Nn7Rt6hd6Lducnsi8AYtG2bRm1E7fIBe6Agbk2AS6/
+	 FBDdj+dVtsq21L4WCqfqzN77iciza6p2Aazc2xTtVR3SxGuiOp0VPWoYs+A/dgTw5b
+	 FgSNf+naMbhlKqPoTH4nYKt6j/lGJTCzRFDF4XDSqBeJbwFjcBzMZA6eR0ZnvgW5aN
+	 /N2XD1CjVWWNzuNDrtaYPgb/nDgDtai+TfUQDFIVaeu0uSEwHoXEt+3JE6DkHhBz6j
+	 wvXlKb79qjR05I27rf8pvHauSbZPWHvBhI6rsPg1l8zLgirQ22GzSLcHG+dOypn41P
+	 PcoxaCOKIRq+p6J/7+9P+8OePnsL2wBeWwV1cvApZkEYjZhj6gxrQsBbuLgucPLPdh
+	 t8RC4QYZ50vBVCiyindR7gHvpBk9/KtPZSxrkHRhlg3/rkjSjF4p4Z2DMEFrl7ydMC
+	 fmG7msrfTsjutInRMdlsQJBiQI1INizVxWIRhb+u7mGKAarSV0OH67C80Lko5LTDDe
+	 srRrnXx9sapR/7cSRyPEKGogfLs/jNmNHc7T2XI9NAIVSSFtNoxs4tYoSR8TR17OpG
+	 6jEfc1CY0Pj+fXzA549HB2h4pmBSG3wjep4rqzlZPMZqBTnh5l17Nw0wYsSbaICG+w
+	 CkPBR5p/qZQ9y1BnQook8fHg=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9413440E0030;
+	Mon, 18 Dec 2023 14:57:58 +0000 (UTC)
+Date: Mon, 18 Dec 2023 15:57:52 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+	linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+	tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+	nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+	liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 23/50] KVM: SEV: Make AVIC backing, VMSA and VMCB
+ memory allocation SNP safe
+Message-ID: <20231218145752.GQZYBd8D1iJBrI3cWs@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-24-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231016132819.1002933-24-michael.roth@amd.com>
 
-This fixes a problem introduced while fixing ELD reporting with no jack
-set.
 
-Most driver using the hdmi-codec will call the 'plugged_cb' callback
-directly when registered to report the initial state of the HDMI connector.
+Just typos:
 
-With the commit mentionned, this occurs before jack is ready and the
-initial report is lost for platforms actually providing a jack for HDMI.
+On Mon, Oct 16, 2023 at 08:27:52AM -0500, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
+> 
+> Implement a workaround for an SNP erratum where the CPU will incorrectly
+> signal an RMP violation #PF if a hugepage (2mb or 1gb) collides with the
+> RMP entry of a VMCB, VMSA or AVIC backing page.
+> 
+> When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
+> backing pages as "in-use" via a reserved bit in the corresponding RMP
+> entry after a successful VMRUN. This is done for _all_ VMs, not just
+> SNP-Active VMs.
+> 
+> If the hypervisor accesses an in-use page through a writable
+> translation, the CPU will throw an RMP violation #PF. On early SNP
+> hardware, if an in-use page is 2mb aligned and software accesses any
+> part of the associated 2mb region with a hupage, the CPU will
 
-Fix this by storing the hdmi connector status regardless of jack being set
-or not and report the last status when jack gets set.
+"hugepage"
 
-With this, the initial state is reported correctly even if it is
-disconnected. This was not done initially and is also a fix.
+> incorrectly treat the entire 2mb region as in-use and signal a spurious
+> RMP violation #PF.
+> 
+> The recommended is to not use the hugepage for the VMCB, VMSA or
 
-Fixes: 15be353d55f9 ("ASoC: hdmi-codec: register hpd callback on component probe")
-Reported-by: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
-Closes: https://lore.kernel.org/alsa-devel/CADYyEwTNyY+fR9SgfDa-g6iiDwkU3MUdPVCYexs2_3wbcM8_vg@mail.gmail.com/
-Cc: Hsin-Yi Wang <hsinyi@google.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/codecs/hdmi-codec.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+s/recommended/recommendation/
+s/the hugepage/a hugepage/
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 20da1eaa4f1c..0938671700c6 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -850,8 +850,9 @@ static int hdmi_dai_probe(struct snd_soc_dai *dai)
- static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
- 				   unsigned int jack_status)
- {
--	if (hcp->jack && jack_status != hcp->jack_status) {
--		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
-+	if (jack_status != hcp->jack_status) {
-+		if (hcp->jack)
-+			snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
- 		hcp->jack_status = jack_status;
- 	}
- }
-@@ -880,6 +881,13 @@ static int hdmi_codec_set_jack(struct snd_soc_component *component,
- 
- 	if (hcp->hcd.ops->hook_plugged_cb) {
- 		hcp->jack = jack;
-+
-+		/*
-+		 * Report the initial jack status which may have been provided
-+		 * by the parent hdmi driver while the hpd hook was registered.
-+		 */
-+		snd_soc_jack_report(jack, hcp->jack_status, SND_JACK_LINEOUT);
-+
- 		return 0;
- 	}
- 
+> AVIC backing page for similar reasons. Add a generic allocator that will
+> ensure that the page returns is not hugepage (2mb or 1gb) and is safe to
+
+"... the page returned is not a hugepage..."
+
+...
+
+> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
+> +{
+> +	unsigned long pfn;
+> +	struct page *p;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +
+> +	/*
+> +	 * Allocate an SNP safe page to workaround the SNP erratum where
+> +	 * the CPU will incorrectly signal an RMP violation  #PF if a
+> +	 * hugepage (2mb or 1gb) collides with the RMP entry of VMCB, VMSA
+> +	 * or AVIC backing page. The recommeded workaround is to not use the
+
+"recommended"
+
+> +	 * hugepage.
+> +	 *
+> +	 * Allocate one extra page, use a page which is not 2mb aligned
+> +	 * and free the other.
+> +	 */
+> +	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
+> +	if (!p)
+> +		return NULL;
+> +
+> +	split_page(p, 1);
+> +
+> +	pfn = page_to_pfn(p);
+> +	if (IS_ALIGNED(pfn, PTRS_PER_PMD))
+> +		__free_page(p++);
+> +	else
+> +		__free_page(p + 1);
+> +
+> +	return p;
+> +}
+
 -- 
-2.42.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
