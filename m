@@ -1,77 +1,158 @@
-Return-Path: <linux-kernel+bounces-4222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69879817947
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:57:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A44281794A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A260B2144A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:57:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80A341C20EC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1C15D72D;
-	Mon, 18 Dec 2023 17:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17E35D727;
+	Mon, 18 Dec 2023 17:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mr8kMxHQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id F2C524FF6C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 385326 invoked by uid 1000); 18 Dec 2023 12:57:01 -0500
-Date: Mon, 18 Dec 2023 12:57:00 -0500
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Yinghua Yang Yang <yinghua.yang@motorolasolutions.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>,
-  zachary.zuzzio@motorolasolutions.com,
-  Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-  Oliver Neukum <oneukum@suse.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-  Wentong Wu <wentong.wu@intel.com>,
-  Sakari Ailus <sakari.ailus@linux.intel.com>, linux-kernel@vger.kernel.org,
-  linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: misc: Add driver for Motorola Solutions security
- accessories
-Message-ID: <fa0492da-7b18-47f8-8c79-a640835a3174@rowland.harvard.edu>
-References: <20231215211218.2313996-1-Yinghua.Yang@motorolasolutions.com>
- <26c70a69-f18f-4c82-a520-7943be0e1961@rowland.harvard.edu>
- <CAHhS5zZzHzZBADHkKyzCzr5FJ0zdTvsaQUE0ygjU1FG3vocrCA@mail.gmail.com>
- <2023121712-gigabyte-oppressed-b8f4@gregkh>
- <CAHhS5zY+X5DFX5cYir-raswc0Pmck-nuMSWAsK7epBU3ARO_BA@mail.gmail.com>
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5328F5BFA2;
+	Mon, 18 Dec 2023 17:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cc794df8aaso9136171fa.0;
+        Mon, 18 Dec 2023 09:58:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702922298; x=1703527098; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q6HN2zwRhmMViQksauP5mSHc2h+svhYEJtdLhAQeySs=;
+        b=mr8kMxHQk8aYpNo+pep17UR3QMCHV8J9NdXC00k0NxCoDNKv5sbo0aCAmOemyFGOQe
+         n98s5pgHapE6H3uhjzEmvVP0Vy6/pdRxm77EtpmmWq2nh03jwUhJq0kam0Jvee8MMr5E
+         BEjZI9EAp1IJmMp1UBT6SzPmbr1wLWh1gDs56GPqdqgeuVT/oQMhvRRYytNh0XC7kdZ9
+         8XoksFrKwV0hURLudAPNFnps1i6O4QmpJkGtNL3ZR7DAI1DQcTQVTZ+wU3o94ZZz/1ae
+         PnlJzzXfdyEEZkP2wDDqBZ9ibcFLheGroTIzgSLCk4+Pi6Hqglrf4dgS1LSqigx28MAE
+         uJTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702922298; x=1703527098;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q6HN2zwRhmMViQksauP5mSHc2h+svhYEJtdLhAQeySs=;
+        b=myTPm9+WSpTcMZV0rnZkP8/x5MXc3eug1X8aBVBBg8jOdIzPqYadllQ7c4W8EOiJX7
+         F4f7/1kIDWgvwUlcK9DM2hnuo1CrGPfyU5hWHddFEOFO4FlS8FhyIwAsTFIBQKKHQqmt
+         jiXAIIQWASOX09qw99sZpMydFgPakeL4VtYc+T3mSIbAXZYbZv++Id68GDweL1CzEr1X
+         lnXRD34N+LTYL2Eq1tzYefYb17VOT69WT4Pqq3BuE8gcRZLyooUf9kzC4FR7EqSIeXjX
+         akAza270PySlJFILj7wYwZSD3OorKDI1DS6255MlTblnp3TMnX2UrRLQkGyNrPMg//02
+         G4wA==
+X-Gm-Message-State: AOJu0Yxj1RK+hajgai7W8I5e3yhGYxVyBUGDFwnxpqYA3HSpPIyuBqg0
+	jc3kej1z8Rpl9nzZivtCjrgx1wyxufnsgX9JBq8=
+X-Google-Smtp-Source: AGHT+IE0jD9e/ZNcL+DBQK5DFPDx5Nyc8KgWO+G6sj5na8nCURt/+6domfaYBsDBb95RIBDLdNOQI55VfnWGfeHM+dM=
+X-Received: by 2002:a2e:6a07:0:b0:2cc:540a:2601 with SMTP id
+ f7-20020a2e6a07000000b002cc540a2601mr1960152ljc.98.1702922298235; Mon, 18 Dec
+ 2023 09:58:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHhS5zY+X5DFX5cYir-raswc0Pmck-nuMSWAsK7epBU3ARO_BA@mail.gmail.com>
+References: <20231217131716.830290-1-menglong8.dong@gmail.com> <20231217131716.830290-3-menglong8.dong@gmail.com>
+In-Reply-To: <20231217131716.830290-3-menglong8.dong@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 18 Dec 2023 09:58:06 -0800
+Message-ID: <CAEf4Bza8UtCTCxe5QgstxexDhU1oz83MMmnT1w5xzV7czF+7zQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: activate the OP_NE login
+ in range_cond()
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	alexei.starovoitov@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 17, 2023 at 09:56:34PM -0600, Yinghua Yang Yang wrote:
-> Is there a way to set the auto suspend mode for a usb device without root
-> permission? I think this is a general question for many usb devices.
-> According to the Linux Kernel document
-> https://www.kernel.org/doc/Documentation/usb/power-management.txt, by
-> default the kernel disables autosuspend for all devices. So there are many
-> usb devices that support autosuspend but by default autosuspend is
-> disabled. In order to support autosuspend on those devices, are the only
-> solutions 1) obtain root permission and write ../power/control file using a
-> script
+On Sun, Dec 17, 2023 at 5:18=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> The edge range checking for the registers is supported by the verifier
+> now, so we can activate the extended login in
+> tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
+> such logic.
+>
+> Besides, I added some cases to the "crafted_cases" array for this logic.
+> These cases are mainly used to test the edge of the src reg and dst reg.
+>
+> All reg bounds testings has passed in the SLOW_TESTS mode:
+>
+> $ export SLOW_TESTS=3D1 && ./test_progs -t reg_bounds -j
+> Summary: 65/18959832 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> ---
+> v3:
+> - do some adjustment to the crafted cases that we added
+> v2:
+> - add some cases to the "crafted_cases"
+> ---
+>  .../selftests/bpf/prog_tests/reg_bounds.c     | 20 +++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
+testing/selftests/bpf/prog_tests/reg_bounds.c
+> index 0c9abd279e18..c9dc9fe73211 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x,=
+ struct range y,
+>                 *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b)=
+);
+>                 break;
+>         case OP_NE:
+> -               /* generic case, can't derive more information */
+> -               *newx =3D range(t, x.a, x.b);
+> -               *newy =3D range(t, y.a, y.b);
+> -               break;
+> -
+> -               /* below extended logic is not supported by verifier just=
+ yet */
+> +               /* below logic is supported by the verifier now */
+>                 if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
+>                         /* X is a constant matching left side of Y */
+>                         *newx =3D range(t, x.a, x.b);
+> @@ -2101,6 +2096,19 @@ static struct subtest_case crafted_cases[] =3D {
+>         {S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, 0}=
+},
+>         {S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
+>         {S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S32=
+_MIN, (u32)(s32)S32_MIN}},
+> +
+> +       /* edge overlap testings for BPF_NE, skipped some cases that alre=
+ady
+> +        * exist above.
+> +        */
+> +       {U64, U64, {0, U64_MAX}, {U64_MAX, U64_MAX}},
+> +       {U64, U64, {0, U64_MAX}, {0, 0}},
+> +       {S64, U64, {S64_MIN, 0}, {S64_MIN, S64_MIN}},
+> +       {S64, U64, {S64_MIN, 0}, {0, 0}},
+> +       {S64, U64, {S64_MIN, S64_MAX}, {S64_MAX, S64_MAX}},
+> +       {U32, U32, {0, U32_MAX}, {0, 0}},
 
-It doesn't have to be a script; any sort of program can do it.  A 
-power-management daemon such as PowerTOP, for example.
+missing case where we compare against U32_MAX constant?
 
->  2) work with the hardware vendor on a driver/kernel to write the
-> autosuspend flag?
-
-That would be kind of silly.  After all, if the vendor is willing to 
-work with you on a kernel driver, they certainly ought to be willing to 
-work with you on installing a power-management userspace program.  And 
-installing a program should be much easier than getting a new driver 
-into the kernel.
-
-But to answer your question -- Yes, the only ways to modify the 
-autosuspend settings are from userspace or from within the kernel.
-
-Alan Stern
+> +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {0, 0}},
+> +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {(u32)(s32)S32_MIN, (u32)(s32)=
+S32_MIN}},
+> +       {S32, U32, {(u32)(s32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
+>  };
+>
+>  /* Go over crafted hard-coded cases. This is fast, so we do it as part o=
+f
+> --
+> 2.39.2
+>
 
