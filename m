@@ -1,125 +1,131 @@
-Return-Path: <linux-kernel+bounces-3546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14253816DAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:13:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B734816D73
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:09:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A91D41F22060
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:13:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5C341F21068
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EA64B137;
-	Mon, 18 Dec 2023 12:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F0D4CB5F;
+	Mon, 18 Dec 2023 12:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V7IyBxI/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/aqlDaQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603175731E
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 12:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso2443547a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 04:09:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2499E4CB37;
+	Mon, 18 Dec 2023 12:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e239c49d0so2335638e87.2;
+        Mon, 18 Dec 2023 04:07:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702901340; x=1703506140; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=90h9raFSlwYqtZtEwRi3utD1Y8btrpvvb6rt2ijbFWY=;
-        b=V7IyBxI/v/WgQklxeliq38sMRo15tqKQ4Mr466jtVh4s7zVnxRc/FIPJHykQRTR5py
-         3DgTI0+puHqVGeVHKV9gJoXCdGd23vbamPdThte8f8dpgx5f0PixzlhTAiQga9zdPwuU
-         12VZ2RgtSdto3qTW6WBI13DvVez4Y5nO/L81cEuPPVsTbGVSpbsM6QZZYtP5pg6/0EWx
-         /Yfrxzvo0AfOLggUyC+Mu04MCzHfSbx/Rof0GCaadPauMIzv0WjzyjF9LSNzUa3w1QvX
-         ot3bIUufFdi7O2s+tzqhM4CUfiv5oFA5lNBdAAv9+QzHNvEYlr89TNjVfJ+JwR8pKRv+
-         +Q8A==
+        d=gmail.com; s=20230601; t=1702901268; x=1703506068; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8dxyVHTfWXCVHKUJ4PsRXiIlpKZrhjqQJMyk98Ihb9c=;
+        b=I/aqlDaQkZLlpoU6dfcugX5AzUBynBrugAvU6SgEX2oPJO9FjZNz5AlKWS10JbLIT7
+         IMsVfLTzfJA+89S8IyoT/cBSteyIYt3MA69ja3GjQtMry95Q1QDW6prZH3Upnz3IHyWp
+         /k8GyF+rkSDyBp0rpvXwb0kkPYhgJewG2DfiOb90fHsnj5/ij0U/bLYS/BnpUtom+xX6
+         WSpOe8ZI15B88IcTL4rJkjQHqSHozL02Ct2rFxdtUS8H0O0MxEwqpXCEPCwjc96HJKxV
+         63cXlotxjRvsJAaqMA38Aei90ncMFzLG/qnJjBQJS4Lp3XS+2VBj/9oDxKTUPUgzqbU5
+         +9CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702901340; x=1703506140;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=90h9raFSlwYqtZtEwRi3utD1Y8btrpvvb6rt2ijbFWY=;
-        b=IDtQ0kf8Ur6O6TaSR5x2811cQKPWn4elNf/gns5tSOVIuWi97FNZn0moeMdqmbq2Az
-         Nur+wR+jXSA1DHte6mHUTCqvh8ZlzNJbn/sUethsqFo347jKXuv9wn301817uWZb4MNK
-         tXNCXOdPqM/OMHAjHUrcF7kEX8ZHby+NbQ/NkiKb70uakcx75eZyNOmvmS2eytF6MNCq
-         csEBZt2UuyuproUA3QsPom1xabu1P4kOOd+4qCV+O+vARD+7wLhpKtJ5OzOB5JUKmtjq
-         2qViwEdjjSbnlZTeK6HLwAsj6Gb1mYPr3lfya81u61QKv7Gqe3BEFRowqCOSRleJQIlQ
-         Fd/g==
-X-Gm-Message-State: AOJu0Yy/mQnZNSE/TmNpFZLI6M2MWOKRwgkEbgF3hdN7ULSuWuUWSGQO
-	lW7lM9nt/dDujkm0IlobdpFr
-X-Google-Smtp-Source: AGHT+IH6YQIoz7g6eSuI6OBkFycERp/zo6TTsmB3JpzQ5Mkr+OSBAEVaXvjIhrOv9oP9NCPayYUGgA==
-X-Received: by 2002:a17:903:2292:b0:1d0:92a0:4929 with SMTP id b18-20020a170903229200b001d092a04929mr21153502plh.85.1702901340343;
-        Mon, 18 Dec 2023 04:09:00 -0800 (PST)
-Received: from localhost.localdomain ([117.207.27.21])
-        by smtp.gmail.com with ESMTPSA id j18-20020a170902c3d200b001d368c778dasm1285709plj.235.2023.12.18.04.08.54
+        d=1e100.net; s=20230601; t=1702901268; x=1703506068;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8dxyVHTfWXCVHKUJ4PsRXiIlpKZrhjqQJMyk98Ihb9c=;
+        b=eVS7s16rl2lBOhr5+u/R29BUF20VrYUJcl0ZjHI8H1gqAe0DWlE7Ao7T4PcdQSYpLv
+         jk6uM50T/z8yjJQ7ZlsjDBybPAffNpDLcb6l1e0pZKgN373ANJ7Ne0+wJkff1xO4l70X
+         2m+01AATuBvNw1eG3HrppSayw5plX9Bg0cqLBYrgnbl3qXSyFS4VOgEfX7vE/eb68mXf
+         3wC14PaxVNHhj7/YyyCey+z/AHJYYTf56OFXEXXu1BIdWLqrXMZEicDpDz9Y2FTeN/tS
+         Ps/YYflfRVpdEkequ8bsxrCYaQgv4n3J6q7VFJGjXnN5YRQ4mSul4LM7Ft3jz53i9ZAX
+         TIww==
+X-Gm-Message-State: AOJu0Ywq7HZ0dkANbt10o4KXTRTpBaBQTNaBYWZzS69gm6ah76distME
+	hCO2Pz27EwNio6ECNc/o+eM=
+X-Google-Smtp-Source: AGHT+IFhCnB+9DIlvwhRdrkEZeuhLMibN9TSxq/f2X6/GMXWUc+/YCqpFg9V105fJ9x08PfzEjEx3w==
+X-Received: by 2002:a05:6512:b0d:b0:50b:f7fc:ac5 with SMTP id w13-20020a0565120b0d00b0050bf7fc0ac5mr9778870lfu.97.1702901267947;
+        Mon, 18 Dec 2023 04:07:47 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id u4-20020ac243c4000000b0050e30d2e336sm509383lfl.91.2023.12.18.04.07.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 04:09:00 -0800 (PST)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	vkoul@kernel.org,
-	sboyd@kernel.org,
-	mturquette@baylibre.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	quic_cang@quicinc.com,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 16/16] arm64: dts: qcom: sm8550: Fix UFS PHY clocks
-Date: Mon, 18 Dec 2023 17:37:12 +0530
-Message-Id: <20231218120712.16438-17-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231218120712.16438-1-manivannan.sadhasivam@linaro.org>
-References: <20231218120712.16438-1-manivannan.sadhasivam@linaro.org>
+        Mon, 18 Dec 2023 04:07:47 -0800 (PST)
+Date: Mon, 18 Dec 2023 15:07:45 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: xiongxin <xiongxin@kylinos.cn>, hoan@os.amperecomputing.com, 
+	linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Riwen Lu <luriwen@kylinos.cn>
+Subject: Re: [v2] gpio: dwapb: mask/unmask IRQ when disable/enale it
+Message-ID: <mdogxxro42ymeaykrgqpld2kqbppopbywcm76osskuf3df72sl@5jalt26vzcv4>
+References: <20231218081246.1921152-1-xiongxin@kylinos.cn>
+ <ZYAt8Zlv9XMYO5FF@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYAt8Zlv9XMYO5FF@smile.fi.intel.com>
 
-QMP PHY used in SM8550 requires 3 clocks:
+On Mon, Dec 18, 2023 at 01:33:05PM +0200, Andy Shevchenko wrote:
+> On Mon, Dec 18, 2023 at 04:12:46PM +0800, xiongxin wrote:
+> > In the hardware implementation of the i2c hid driver based on dwapb gpio
+> > irq, when the user continues to use the i2c hid device in the suspend
+> > process, the i2c hid interrupt will be masked after the resume process
+> > is finished.
+> > 
+> > This is because the disable_irq()/enable_irq() of the dwapb gpio driver
+> > does not synchronize the irq mask register state. In normal use of the
+> > i2c hid procedure, the gpio irq irq_mask()/irq_unmask() functions are
+> > called in pairs. In case of an exception, i2c_hid_core_suspend() calls
+> > disable_irq() to disable the gpio irq. With low probability, this causes
+> > irq_unmask() to not be called, which causes the gpio irq to be masked
+> > and not unmasked in enable_irq(), raising an exception.
+> > 
+> > Add synchronization to the masked register state in the
+> > dwapb_irq_enable()/dwapb_irq_disable() function. mask the gpio irq
+> > before disabling it. After enabling the gpio irq, unmask the irq.
+> 
+> > Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB GPIO block")
+> > Signed-off-by: xiongxin <xiongxin@kylinos.cn>
+> 
+> Your SoB should go last.
+> 
+> > Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+> 
+> Then at all means what this SoB for? Either it's missing Co-developed-by,
+> or simply wrong.
+> 
+> > Tested-by: xiongxin <xiongxin@kylinos.cn>
+> 
+> This is assumed to be done by the contributor, but it's harmless to have it.
+> 
+> With the above being sorted out,
+> Reviewed-by: Andy Shevchenko <andy@kernel.org>
+> 
+> ...
+> 
 
-* ref - 19.2MHz reference clock from RPMh
-* ref_aux - Auxiliary reference clock from GCC
-* qref - QREF clock from TCSR
+> To Serge, I give my vote to hwirq as it is aligned with the documentation.
 
-Fixes: 35cf1aaab169 ("arm64: dts: qcom: sm8550: Add UFS host controller and phy nodes")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Right. Thanks for noting. It's now even more justified to use 'hwirq'
+then.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index baa8540868a4..386ffd0d72c4 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -1891,9 +1891,12 @@ crypto: crypto@1dfa000 {
- 		ufs_mem_phy: phy@1d80000 {
- 			compatible = "qcom,sm8550-qmp-ufs-phy";
- 			reg = <0x0 0x01d80000 0x0 0x2000>;
--			clocks = <&tcsr TCSR_UFS_CLKREF_EN>,
--				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
--			clock-names = "ref", "ref_aux";
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
-+				 <&tcsr TCSR_UFS_CLKREF_EN>;
-+			clock-names = "ref",
-+				      "ref_aux",
-+				      "qref";
- 
- 			power-domains = <&gcc UFS_MEM_PHY_GDSC>;
- 
--- 
-2.25.1
+-Serge(y)
 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
