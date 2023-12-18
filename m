@@ -1,143 +1,145 @@
-Return-Path: <linux-kernel+bounces-4077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD1D8177AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:38:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA7C68177AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 672351F25AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:38:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1D171C240CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B17498B2;
-	Mon, 18 Dec 2023 16:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A591498BF;
+	Mon, 18 Dec 2023 16:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rYAwltur"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="w9PDDfUm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEC05A84A
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40c2c65e6aaso42128515e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:36:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2281E42392
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d190df5d0so14083815e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:37:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702917405; x=1703522205; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gEiQXLxdqBICDnY79OHSv3Sv47jiKw8LbCcpfTgH4AA=;
-        b=rYAwlturr+bIMqMBYOyTwtLqEsayxtxFdwk18m/lDSyCXh1s6+KXm6LvfY0dKH4mOK
-         B+/FDrdu3OeTWD2irdRWBgTOnf6LiILkdHJhiOptG1ncJuVLEh+4RHUiuBSP5endswuI
-         J/QKH2H0Tg8OTMT2gsBrcyg3BUlNUK4EQeQIR28ZEFhw4cyvbElUQ5EfTUG1hj9vYOQi
-         wciLta28AwOBfBA7k2jYEFeAppt+ZsurvDXsxYIffgq+xSBPZLn/GIYp8/uz0iS6ukiz
-         JCP2VNOgVsrwGjcYf0cy8qAk1SJnJc5C8dY7IyF7U7OpwsXi1E81rK8blOk4ngNw/4xb
-         jTyw==
+        d=google.com; s=20230601; t=1702917477; x=1703522277; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WUE9wOcs5DhS6rCyT7en0Ycls+VZryCuy04V3s7BDwY=;
+        b=w9PDDfUmDmKfk+lgbu/VSU9dz4HwZKDxVgPUM2nb+WFqQcWEL8LNlQrv24l+GSx0y2
+         6YSm3SeH9GkMFBfiLHkXXJNuorryYuVFHu6PFQFOLEbK6G+RtKJtwBB/XmiTAOvaAYAj
+         Pv7OKru8eAt3//0AMca9mOFGIY6VEauaU3MsmMkre8O4u3TsC/suGqQ0rwa1TGn3KLuO
+         s37rkm2Y7NSV5cL3wD7thYbl9tY/UJrMxUnh8yUX8fQK07sEkeZ0oni/6FVqcHMW9nJs
+         4pDvT+6jVApO6URAJApCxgSLC1i/Pquq+AiY3aVbcODtbSEQn3X3ZJO+orQUgbxwGPee
+         NwtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702917405; x=1703522205;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gEiQXLxdqBICDnY79OHSv3Sv47jiKw8LbCcpfTgH4AA=;
-        b=Sc7YD2tH78w1FmangdH3gklAOvJJltYsFbPNNwIJB0tmPl+bcWqRKhxLDz7Jr4Jy2I
-         uEfxoVATfqrV/lsqSnP5ZCLg9lS5htrHXu7bcd1NG438BjwuUSJAzAgicLBha+mKkoJQ
-         SiTR7769egxRYWYJ7zUQqObn1/C791BQePtyQGvEnzdw1OxO2G4I3f+r4B5L7eEikDQi
-         aTxH15KF1P5WYFeA7YLgKRhbc1TrIIJBfJCTYm+fP1bNRpyEnx6WfqNQOdVJWPP/tKSE
-         vYm7MT/xtAWSmDKZupPbleNWG2Rv8AjNxsVjdTpA/lTUKYuUDXt4u+0d5Z2iHJ+L1QKU
-         0q5g==
-X-Gm-Message-State: AOJu0YxZai2dWBXb1kGdcvfAlXwHT95ovef0D0mf4nb9G+0eezJeZqq6
-	TQa55eeoPjEyNHVVz7z2bshsWA==
-X-Google-Smtp-Source: AGHT+IGcR59A5Bj1YcHV7wLTQuxeAEf6nNsIf2gMifDZJ7RvLX6KX0t1OUKr656X8kPMPXJYtBhlxQ==
-X-Received: by 2002:a05:600c:4454:b0:40c:6af0:ccea with SMTP id v20-20020a05600c445400b0040c6af0cceamr3046238wmn.223.1702917405037;
-        Mon, 18 Dec 2023 08:36:45 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id fc17-20020a05600c525100b0040c42681fcesm35836936wmb.15.2023.12.18.08.36.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 08:36:44 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Mon, 18 Dec 2023 18:36:40 +0200
-Subject: [PATCH] arm64: dts: qcom: x1e80100-qcp: Fix supplies for some LDOs
- in PM8550
+        d=1e100.net; s=20230601; t=1702917477; x=1703522277;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WUE9wOcs5DhS6rCyT7en0Ycls+VZryCuy04V3s7BDwY=;
+        b=nLOZJ0MmnZUMzPFU7mgK4UOvRf93UjrtXPKNgVzsWfv2MAjdTIdVFD97r1NdqK/588
+         JJyLXRiOP1MXEBVsA0azk0m3jgWDOGHscEdWJf5kuqn9GMb2GetezjWcVztlwDViz1JN
+         yG3jlTmj1uez+Zeiu7H1wcz3DMSe17qLGMg9AghgfovloDg3Yrh9XReYCI8I9YzMCH0S
+         PLrYCK997r9YrP19oOcNepbt4svVAqoq1oJzrLsnmIrkDK8L77uvGXq0m80c/BHbzHIh
+         ZUFvheK/bGefJpiEx3HBx7Fr3y6toFlDAfmSv75cgqGx1lIPKStWFxlVQqZO6ObnNzy8
+         ia/A==
+X-Gm-Message-State: AOJu0Yy+d6VxNtP6OE1qwV+e/rzVlrhvFVwmVZmuEtub03FVntNm9DVS
+	emnscah+n23L7PIk/ZYN7o3xhJrIISHrwm9FDl6TWQ==
+X-Google-Smtp-Source: AGHT+IHXrsR1IvFyccMxPBaIu18/8JzznbiYFGpcdylejDvJk9lKQolYCP+MFBgLmXsqvurqf6AGybBA4PfkuxeHX/8=
+X-Received: by 2002:a05:600c:1649:b0:40c:1205:c253 with SMTP id
+ o9-20020a05600c164900b0040c1205c253mr8598699wmn.183.1702917474422; Mon, 18
+ Dec 2023 08:37:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231218-x1e80100-qcp-dts-fix-pm8550-regulators-supplies-v1-1-0a313ce87745@linaro.org>
-X-B4-Tracking: v=1; b=H4sIABd1gGUC/x2NQQqDMBAAvyJ77sJugiX0K6WH1Kw2YDXNahHEv
- 7t4nMPM7KBSsyg8mh2q/LPmeTLgWwPdJ06DYE7G4Mh5dhxwYwnERPjrCqZFsc8blm9oW8Iqwzr
- GZa6KupYyWhjJJ36L78ndI1i1VDHjOj5fx3EC8amMG4EAAAA=
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Abel Vesa <abel.vesa@linaro.org>, 
- Sibi Sankar <quic_sibis@quicinc.com>, 
- Rajendra Nayak <quic_rjendra@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1502; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=Cl7h63hRqbdjD8FcBXVyS7ODnGEJNkYQ9rmoYCPxuEI=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlgHUaVLNVexMcAhqX6L+thj8elYSTNMwz5ezpi
- k/tIpAcuxSJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYB1GgAKCRAbX0TJAJUV
- VqJSEAC5J89LYaPgxDvV0RCxay2Vbk3bACk7uXnEbEoKbLjeNrB01LDgfcRRf3GS3bri0nKitnd
- 3fSggNdcNLFN34f1F2v1rm6WIU8uHMe+biLnCwL+n4CAU/AcCAoMt8Te6mGO6stfIRu4kuzMRTK
- UPAr2jjSNwl3jpbpbyw+zFugqFiVuq5gkmC1EJBEJeKLJKsKBtSXLDfanC23S00AiQtpG5LvHlO
- UKHVsfxhykUGJgbFLmUS5wv2p+8+sn3FpR2OyxJZqTimRP/7ZuxL79QpS3JM2Pxrq2KKDudaH1V
- 056Z/GMhM3dTuciPekcj3YbqPCHts6DqsfrO6s6U+86vCo1G453lx4NU4XON/lWVNclTeNkvo+/
- 6g80OmpRXOXt9S5SmEPnRvmk2G54mLKJo6YIT8GikU2ZaSXkyWB8k1TlqCpWW8WXCzZvbyv/9R2
- MRxBoSpOyBkJnor0903mZLkhYRvGQBn8Ei8/i2jxR5IRK+4/AF3wAjyEj0gP2q7pCEOmfmb2rwC
- v+Wp04tqo+6JAktjIDCnV/ii8hQpX8pl6DOrkQV83tHv37Yeb+0FcTV+pIVB4wk5IuN08sYEcNv
- QmDUME4ntIXfl3KJ6BZYSV4al31v5KcDA77sALTH+Brylw0mhxjQcgVoe49UEyWmxkZ8kzYAEDM
- uMorS+bVjjjZP8g==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+References: <20231215-llvm-decode-stacktrace-v1-1-201cb86f4879@quicinc.com>
+In-Reply-To: <20231215-llvm-decode-stacktrace-v1-1-201cb86f4879@quicinc.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Mon, 18 Dec 2023 08:37:43 -0800
+Message-ID: <CAKwvOdmY=Jysqai3KOYO8+c5idP9JjNGKL2xZn2sDNdj5MjTVA@mail.gmail.com>
+Subject: Re: [PATCH] scripts/decode_stacktrace.sh: Use LLVM environment variable
+To: Elliot Berman <quic_eberman@quicinc.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Justin Stitt <justinstitt@google.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>, 
+	Manuel Traut <manut@linutronix.de>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The LDOs 1, 4 and 10 from PM8550 share the same supply, the SMPS 4
-from PM8550ve. This needs to be done through shared supply approach
-otherwise the parsing will fail. Also fix a bindings check failure.
+On Fri, Dec 15, 2023 at 10:27=E2=80=AFAM Elliot Berman <quic_eberman@quicin=
+c.com> wrote:
 
-Fixes: af16b00578a7 ("arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts")
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
-Looks like I forgot to do the same thing for the QCP board.
+This patch looks familiar...
+https://lore.kernel.org/lkml/20230929034836.403735-1-cmllamas@google.com/
 
-Sorry about that.
----
- arch/arm64/boot/dts/qcom/x1e80100-qcp.dts | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Masahiro, can you please pick up that patch?
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-index 3746e1de3623..a37ad9475c90 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-+++ b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-@@ -40,13 +40,11 @@ regulators-0 {
- 
- 		vdd-bob1-supply = <&vph_pwr>;
- 		vdd-bob2-supply = <&vph_pwr>;
--		vdd-l1-supply = <&vreg_s4c_1p8>;
-+		vdd-l1-l4-l10-supply = <&vreg_s4c_1p8>;
- 		vdd-l2-l13-l14-supply = <&vreg_bob1>;
--		vdd-l4-supply = <&vreg_s4c_1p8>;
- 		vdd-l5-l16-supply = <&vreg_bob1>;
- 		vdd-l6-l7-supply = <&vreg_bob2>;
- 		vdd-l8-l9-supply = <&vreg_bob1>;
--		vdd-l10-supply = <&vreg_s4c_1p8>;
- 		vdd-l12-supply = <&vreg_s5j_1p2>;
- 		vdd-l15-supply = <&vreg_s4c_1p8>;
- 		vdd-l17-supply = <&vreg_bob2>;
+Elliot, Justin, can you help test/review that patch?
 
----
-base-commit: 48e8992e33abf054bcc0bb2e77b2d43bb899212e
-change-id: 20231218-x1e80100-qcp-dts-fix-pm8550-regulators-supplies-03d1be3f026a
+>
+> When using LLVM as the compiler, decode_stacktrace should also use
+> llvm-addr2line. Check if LLVM is set and add the appropriate
+> suffix/prefix.
+>
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> ---
+>  scripts/decode_stacktrace.sh | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
+> index 564c5632e1a2..189b00f4e120 100755
+> --- a/scripts/decode_stacktrace.sh
+> +++ b/scripts/decode_stacktrace.sh
+> @@ -16,6 +16,16 @@ elif type c++filt >/dev/null 2>&1 ; then
+>         cppfilt_opts=3D-i
+>  fi
+>
+> +if [[ "${LLVM}" =3D=3D "1" ]] ; then
+> +       addr2line=3D"llvm-addr2line"
+> +elif [[ "${LLVM}" =3D=3D */ ]] ; then
+> +       addr2line=3D"${LLVM}llvm-addr2line"
+> +elif [[ "${LLVM}" =3D=3D -* ]] ; then
+> +       addr2line=3D"llvm-addr2line${LLVM}"
+> +else
+> +       addr2line=3D"${CROSS_COMPILE}addr2line"
+> +fi
+> +
+>  if [[ $1 =3D=3D "-r" ]] ; then
+>         vmlinux=3D""
+>         basepath=3D"auto"
+> @@ -169,7 +179,7 @@ parse_symbol() {
+>         if [[ $aarray_support =3D=3D true && "${cache[$module,$address]+i=
+sset}" =3D=3D "isset" ]]; then
+>                 local code=3D${cache[$module,$address]}
+>         else
+> -               local code=3D$(${CROSS_COMPILE}addr2line -i -e "$objfile"=
+ "$address" 2>/dev/null)
+> +               local code=3D$(${addr2line} -i -e "$objfile" "$address" 2=
+>/dev/null)
+>                 if [[ $aarray_support =3D=3D true ]]; then
+>                         cache[$module,$address]=3D$code
+>                 fi
+>
+> ---
+> base-commit: 3f7168591ebf7bbdb91797d02b1afaf00a4289b1
+> change-id: 20231214-llvm-decode-stacktrace-09538979006d
+>
+> Best regards,
+> --
+> Elliot Berman <quic_eberman@quicinc.com>
+>
 
-Best regards,
--- 
-Abel Vesa <abel.vesa@linaro.org>
 
+--=20
+Thanks,
+~Nick Desaulniers
 
