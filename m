@@ -1,184 +1,121 @@
-Return-Path: <linux-kernel+bounces-2917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29E881643A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:00:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B8581643F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 03:06:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C1DB1C20CB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:00:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48DEB1F21D2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 02:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26F323A7;
-	Mon, 18 Dec 2023 02:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1CE23D2;
+	Mon, 18 Dec 2023 02:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Q42p60Rn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gYnpCtjw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F44020E6
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cc7087c6c4so4828851fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Dec 2023 18:00:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D646620E6;
+	Mon, 18 Dec 2023 02:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6da16eab6fcso1966503a34.3;
+        Sun, 17 Dec 2023 18:05:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702864827; x=1703469627; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702865156; x=1703469956; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YTpv7YoKKoT23nETYSezOT1AFCoo447JfaozaqzS3bc=;
-        b=Q42p60Rn4HGfX2wyDy36gyT0Q0qJV7fD//4yHj6GsbJTmGZhjc1FL7pGfNHN8GzAX8
-         3fCnFBZqCdqW5GETLHbIi7rHwJdG6gLH1X1smWYtQOcYGdyiksZe0ah/Jnj+zo36D76Y
-         rteSZoWYf0WdHhebz/FavcNRRBz3ls+EatgZk=
+        bh=QYgxq/oGHPZP2QPh2THF7yf9x5x7XDARqeJu+ip26js=;
+        b=gYnpCtjwcFxHVX+w1IgCiE7CQZtFJEyzZMVw7++2ZHCw+MtmBMc7LBD9LkHHtML/Ku
+         nQwAgov12B/wZWcRlapIJFLjx/i28xggIJV9kyyEeds4Ae15/xjw6sjdkbWyFAfuAGQn
+         b2zcmaav7F6WHjwQ9DziEt78+7s0ZwBrM9tzd0Z6dGnETxEoqbH1aeCMvo7VRYwOzFGt
+         knl0iOqJNIpCdlROqW4hmh2lWRHVTxjNoy3DQGRMl8oAM8bQ+rVnAFbVAlW34x6vW0ZX
+         FyOwD+qp6Y3u6/EOQC77mSRm2wx853A7lkm3/e6dhVDcaRb8VittqkUNfGs5UmJEHtEM
+         dGEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702864827; x=1703469627;
+        d=1e100.net; s=20230601; t=1702865156; x=1703469956;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YTpv7YoKKoT23nETYSezOT1AFCoo447JfaozaqzS3bc=;
-        b=i7ztwGBY5AqZ/smDSRTTbYdCV0HveIA/714n2PtwoN96RhcBvdxP4JGaRPvQMLH9H5
-         Rt4MIj5OpGbISU9mzDIfafQlSusP1Lvkg+Qq14R+dCamLFk3km26dgB6wwGHtUDZpGck
-         z7xArnBAMkSddd5qVlIuydgk33XCF2D1x298MFUuMQ5PDkBSzIkzrG8CucFDRSWQ+lj6
-         zZQsqZ2IEJHODh8iCz6R1XpvessZtT+tyWJAdQmEtlntOvXGueJvx+9rUp8Hr47Me1Zu
-         Re0jqWiaxAxDyVpWZgFis3QpDPjEmyhQe/Mei7kj/UX1RBkRZL0gPKcpGeyXYzG64lW4
-         7gPg==
-X-Gm-Message-State: AOJu0Yx9QndjN9mQsUhjq16HMSi/LmgeQzJHOLxFla7DZoJx/vh3QETr
-	t5PeyoxZQWpxKBENqCcXzQGahAJObZdZvGRHIoBuVQ==
-X-Google-Smtp-Source: AGHT+IH5xTtYNkhC/MIuueV2S7MYenEkwrSg8kiU2nm4gYQ0Y9FKlr1JQgpfsaID/zMtrOzJrCusMydhFyXo4ZaEzcA=
-X-Received: by 2002:a2e:9989:0:b0:2cc:60dc:42bb with SMTP id
- w9-20020a2e9989000000b002cc60dc42bbmr971453lji.68.1702864827297; Sun, 17 Dec
- 2023 18:00:27 -0800 (PST)
+        bh=QYgxq/oGHPZP2QPh2THF7yf9x5x7XDARqeJu+ip26js=;
+        b=YFcKH5z7lwIRQS97xZT6Xo1f/8c5M2taXWAS324Rn3PP/vaX753cIC8x4lYHcYPvFG
+         /hc8uNvly6ZqKfXztX9tPfuB+xDd+JnKFmEhekxJY8gH+UYYLTa01taLnyv9r81Eg+zZ
+         OxSjwPXlnhJj9mK/4FncoOk53lo93UIY4Xa1a8oSxWzIyBerwcotkc51crfFQTLekASk
+         4YliIcvceNagkXWXQJQ3Wed0vWMrC62PuYJxqEtJMuub8rl1wDCV0gpkBqEzJg6jCbxV
+         DHGycZ06Zs/zY8Qc4b+CEAU+IhHDVeS/fXowo3dkXa3dNE3JKDyGzx217VvsSmgR4zdg
+         fobg==
+X-Gm-Message-State: AOJu0YyyrCPiXQRUfEljZLK+Fhb4lv0DUeyMmyFM8qaEPGbeEYOPN69a
+	RkJyJzQAGbxR+danr0bs8E7SFTR9vTxzrkzCIJv7T0U16b8jtQ==
+X-Google-Smtp-Source: AGHT+IGBwrGNS9Dnl9lwF/1w+WhHz837HY02kVuOAbrIADpxHLShvoerEHFpRqt9ZQ+uwBHPb34OjffS5iiPGeqVEOI=
+X-Received: by 2002:a05:6830:268c:b0:6da:5923:3d74 with SMTP id
+ l12-20020a056830268c00b006da59233d74mr2051629otu.31.1702865155577; Sun, 17
+ Dec 2023 18:05:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211015717.1067822-1-joel@joelfernandes.org> <ZX4T4E02hbsgnGBY@localhost.localdomain>
-In-Reply-To: <ZX4T4E02hbsgnGBY@localhost.localdomain>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Sun, 17 Dec 2023 21:00:15 -0500
-Message-ID: <CAEXW_YQK_ct=kMKSO6XnW1NpSjSAVMiMevL-om_i-au9mpUEyw@mail.gmail.com>
-Subject: Re: [PATCH v2] srcu: Improve comments about acceleration leak
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
+References: <20231217110952.78784-1-qiujingbao.dlmu@gmail.com>
+ <20231217110952.78784-4-qiujingbao.dlmu@gmail.com> <20231217-congenial-unwoven-8067fcbff9d5@spud>
+In-Reply-To: <20231217-congenial-unwoven-8067fcbff9d5@spud>
+From: jingbao qiu <qiujingbao.dlmu@gmail.com>
+Date: Mon, 18 Dec 2023 10:05:44 +0800
+Message-ID: <CAJRtX8TgK9Pi+urMSzCzKROw_gsDeMK2GeFSfXAougk_iHQ_vQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
+To: Conor Dooley <conor@kernel.org>
+Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chao.wei@sophgo.com, 
+	unicorn_wang@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dlan@gentoo.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 16, 2023 at 4:17=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
-l.org> wrote:
+On Mon, Dec 18, 2023 at 4:48=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
 >
-> Le Mon, Dec 11, 2023 at 01:57:16AM +0000, Joel Fernandes (Google) a =C3=
-=A9crit :
-> > The comments added in commit 1ef990c4b36b ("srcu: No need to
-> > advance/accelerate if no callback enqueued") are a bit confusing to me.
->
-> I know some maintainers who may argue that in the changelog world, the fi=
-rst
-> person doesn't exist :-)
-
-Heh, that's fair. Ok I can drop the 'to me'. ;-)
-
->
-> > The comments are describing a scenario for code that was moved and is
-> > no longer the way it was (snapshot after advancing). Improve the code
-> > comments to reflect this and also document by acceleration can never
->
-> s/by/why
-
-Ok.
-
-> > fail.
+> On Sun, Dec 17, 2023 at 07:09:52PM +0800, Jingbao Qiu wrote:
+> > Add the rtc device tree node to cv1800 SoC.
 > >
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
 > > ---
-> > v1->v2: Fix typo in change log.
+> >  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 7 +++++++
+> >  1 file changed, 7 insertions(+)
 > >
-> >  kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
-> >  1 file changed, 20 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 0351a4e83529..051e149490d1 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(st=
-ruct srcu_struct *ssp,
-> >       if (rhp)
-> >               rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-> >       /*
-> > -      * The snapshot for acceleration must be taken _before_ the read =
-of the
-> > -      * current gp sequence used for advancing, otherwise advancing ma=
-y fail
-> > -      * and acceleration may then fail too.
-> > +      * It's crucial to capture the snapshot 's' for acceleration befo=
-re
-> > +      * reading the current gp_seq that is used for advancing. This is
-> > +      * essential because if the acceleration snapshot is taken after =
-a
-> > +      * failed advancement attempt, there's a risk that a grace period=
- may
-> > +      * conclude and a new one may start in the interim. If the snapsh=
-ot is
-> > +      * captured after this sequence of events, the acceleration snaps=
-hot 's'
-> > +      * could be excessively advanced, leading to acceleration failure=
-.
-> > +      * In such a scenario, an 'acceleration leak' can occur, where ne=
-w
-> > +      * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segme=
-nt.
-> > +      * Also note that encountering advancing failures is a normal
-> > +      * occurrence when the grace period for RCU_WAIT_TAIL is in progr=
-ess.
-> >        *
-> > -      * This could happen if:
-> > +      * To see this, consider the following events which occur if
-> > +      * rcu_seq_snap() were to be called after advance:
-> >        *
-> >        *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num =3D X + 4)=
- and the
-> >        *     RCU_NEXT_READY_TAIL also has callbacks (gp_num =3D X + 8).
-> > @@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(str=
-uct srcu_struct *ssp,
-> >       if (rhp) {
-> >               rcu_segcblist_advance(&sdp->srcu_cblist,
-> >                                     rcu_seq_current(&ssp->srcu_sup->src=
-u_gp_seq));
-> > +             /*
-> > +              * Acceleration can never fail because the state of gp_se=
-q used
-> > +              * for advancing is <=3D the state of gp_seq used for
-> > +              * acceleration.
+> > diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/=
+dts/sophgo/cv1800b.dtsi
+> > index df40e87ee063..429bee76f677 100644
+> > --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> > +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> > @@ -119,5 +119,12 @@ clint: timer@74000000 {
+> >                       reg =3D <0x74000000 0x10000>;
+> >                       interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_in=
+tc 7>;
+> >               };
+> > +
+> > +             rtc@5025000 {
+> > +                     compatible =3D "sophgo,cv1800-rtc";
 >
-> What do you mean by "state" here?
+> This is a cv1800b, not a cv1800.
+>
 
-State means "value at a certain point in time" here.
+Thanks, I will fix it.
 
-> If it's the gp_seq number, that doesn't look right.
+Best regards,
+Jingbao Qiu
 
-Uff, I screwed up the comment. I swapped "acceleration" and
-"advancing". I should say:
-
-"Acceleration can never fail because the state of gp_seq value used
-for acceleration is <=3D the state of gp_seq used for advancing."
-
-Does that sound correct now?
-
-> The situation raising the initial bug also involved a gp_seq used for adv=
-ancing <=3D the gp_seq used for acceleration.
-
-Right, which I understand is the bug.
-
-thanks,
-
- - Joel
+> > +                     reg =3D <0x5025000 0x1000>, <0x5026000 0x1000>;
+> > +                     clocks =3D <&osc>;
+> > +                     interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> >       };
+> >  };
+> > --
+> > 2.25.1
+> >
 
