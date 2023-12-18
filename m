@@ -1,102 +1,225 @@
-Return-Path: <linux-kernel+bounces-3435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2806816C30
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:33:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C65816C6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149101C22EC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:33:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28F691C22C97
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95BF199D0;
-	Mon, 18 Dec 2023 11:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E210619BD7;
+	Mon, 18 Dec 2023 11:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KMSTqs4k"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CCF19BD6;
-	Mon, 18 Dec 2023 11:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="399324312"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="399324312"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 03:33:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="841448115"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="841448115"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 03:33:08 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1rFBrt-00000006uZd-1qHe;
-	Mon, 18 Dec 2023 13:33:05 +0200
-Date: Mon, 18 Dec 2023 13:33:05 +0200
-From: Andy Shevchenko <andy@kernel.org>
-To: xiongxin <xiongxin@kylinos.cn>
-Cc: fancer.lancer@gmail.com, hoan@os.amperecomputing.com,
-	linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Riwen Lu <luriwen@kylinos.cn>
-Subject: Re: [v2] gpio: dwapb: mask/unmask IRQ when disable/enale it
-Message-ID: <ZYAt8Zlv9XMYO5FF@smile.fi.intel.com>
-References: <20231218081246.1921152-1-xiongxin@kylinos.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79C21A29F;
+	Mon, 18 Dec 2023 11:36:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 027AA57E;
+	Mon, 18 Dec 2023 12:35:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1702899322;
+	bh=DlUn6WLQnav2qrM8BwYmTkQcr3nL09A9JB515SmTe/o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KMSTqs4k2m5ODqLXEqdda/ZLoGVuSKZBRE8jrJZYXFuxh3EXB4uRJXonukhhIov2y
+	 miTjnipnKKDQP7HEFabMuUfmHrY5xgU0PTkLceuAtGxOFyNECpvFOHazkzCRwBxFDs
+	 VSE1jSLhXX6Zo6L9X4mB0PurIk4nhRtTm9RR0j4I=
+Date: Mon, 18 Dec 2023 13:36:18 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Tommaso Merciai <tomm.merciai@gmail.com>
+Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
+	Martin Hecht <martin.hecht@avnet.eu>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] media: i2c: alvium: store frame interval in subdev
+ state
+Message-ID: <20231218113618.GA21105@pendragon.ideasonboard.com>
+References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
+ <20231215082452.1720481-4-tomm.merciai@gmail.com>
+ <20231218025905.GJ5290@pendragon.ideasonboard.com>
+ <ZYAfThT/mHdzGdAh@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <20231218110331.GQ5290@pendragon.ideasonboard.com>
+ <ZYAqyOEfKp/oiqs9@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231218081246.1921152-1-xiongxin@kylinos.cn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <ZYAqyOEfKp/oiqs9@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
 
-On Mon, Dec 18, 2023 at 04:12:46PM +0800, xiongxin wrote:
-> In the hardware implementation of the i2c hid driver based on dwapb gpio
-> irq, when the user continues to use the i2c hid device in the suspend
-> process, the i2c hid interrupt will be masked after the resume process
-> is finished.
+On Mon, Dec 18, 2023 at 12:19:36PM +0100, Tommaso Merciai wrote:
+> On Mon, Dec 18, 2023 at 01:03:31PM +0200, Laurent Pinchart wrote:
+> > On Mon, Dec 18, 2023 at 11:30:38AM +0100, Tommaso Merciai wrote:
+> > > On Mon, Dec 18, 2023 at 04:59:05AM +0200, Laurent Pinchart wrote:
+> > > > On Fri, Dec 15, 2023 at 09:24:52AM +0100, Tommaso Merciai wrote:
+> > > > > Use the newly added storage for frame interval in the subdev state to
+> > > > > simplify the driver.
+> > > > > 
+> > > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > > > > ---
+> > > > >  drivers/media/i2c/alvium-csi2.c | 40 ++++++++++-----------------------
+> > > > >  drivers/media/i2c/alvium-csi2.h |  2 --
+> > > > >  2 files changed, 12 insertions(+), 30 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> > > > > index fde456357be1..81f683b3c849 100644
+> > > > > --- a/drivers/media/i2c/alvium-csi2.c
+> > > > > +++ b/drivers/media/i2c/alvium-csi2.c
+> > > > > @@ -1643,25 +1643,6 @@ static int alvium_hw_init(struct alvium_dev *alvium)
+> > > > >  }
+> > > > >  
+> > > > >  /* --------------- Subdev Operations --------------- */
+> > > > > -
+> > > > > -static int alvium_g_frame_interval(struct v4l2_subdev *sd,
+> > > > > -				   struct v4l2_subdev_state *sd_state,
+> > > > > -				   struct v4l2_subdev_frame_interval *fi)
+> > > > > -{
+> > > > > -	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > -
+> > > > > -	/*
+> > > > > -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
+> > > > > -	 * subdev active state API.
+> > > > > -	 */
+> > > > > -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+> > > > > -		return -EINVAL;
+> > > > > -
+> > > > > -	fi->interval = alvium->frame_interval;
+> > > > > -
+> > > > > -	return 0;
+> > > > > -}
+> > > > > -
+> > > > >  static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > > >  				   struct v4l2_subdev_state *sd_state,
+> > > > >  				   struct v4l2_subdev_frame_interval *fi)
+> > > > > @@ -1669,6 +1650,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > >  	struct device *dev = &alvium->i2c_client->dev;
+> > > > >  	u64 req_fr, dft_fr, min_fr, max_fr;
+> > > > > +	struct v4l2_fract *interval;
+> > > > >  	int ret;
+> > > > >  
+> > > > >  	/*
+> > > > 
+> > > > You should drop the FIXME comment here and the ACTIVE check...
+> > > 
+> > > Oks, thanks.
+> > > 
+> > > > 
+> > > > > @@ -1701,9 +1683,10 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > > >  	if (req_fr >= max_fr && req_fr <= min_fr)
+> > > > >  		req_fr = dft_fr;
+> > > > >  
+> > > > > -	alvium->fr = req_fr;
+> > > > > -	alvium->frame_interval.numerator = fi->interval.numerator;
+> > > > > -	alvium->frame_interval.denominator = fi->interval.denominator;
+> > > > > +	interval = v4l2_subdev_state_get_interval(sd_state, 0);
+> > > > > +
+> > > > > +	interval->numerator = fi->interval.numerator;
+> > > > > +	interval->denominator = fi->interval.denominator;
+> > > > >  
+> > > > 
+> > > > ... and here only call alvium_set_frame_rate() for the ACTIVE frame
+> > > > interval.
+> > > 
+> > > I don't completely got this comment, can you give me more details about
+> > > please. Thanks in advance!
+> > 
+> > alvium_s_frame_interval() can be called both for the TRY and ACTIVE
+> > status. The hardware registers should be written only for the ACTIVE
+> > state.
 > 
-> This is because the disable_irq()/enable_irq() of the dwapb gpio driver
-> does not synchronize the irq mask register state. In normal use of the
-> i2c hid procedure, the gpio irq irq_mask()/irq_unmask() functions are
-> called in pairs. In case of an exception, i2c_hid_core_suspend() calls
-> disable_irq() to disable the gpio irq. With low probability, this causes
-> irq_unmask() to not be called, which causes the gpio irq to be masked
-> and not unmasked in enable_irq(), raising an exception.
+> Do you think could be sufficient an if check like this?
 > 
-> Add synchronization to the masked register state in the
-> dwapb_irq_enable()/dwapb_irq_disable() function. mask the gpio irq
-> before disabling it. After enabling the gpio irq, unmask the irq.
+> -	return alvium_set_frame_rate(alvium, req_fr);
+> +	if (fi->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+> +		return alvium_set_frame_rate(alvium, req_fr);
+> +
+> +	return ret;
 
-> Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB GPIO block")
-> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
+That's the idea, yes. The "return ret" can become "return 0". Or you
+could write
 
-Your SoB should go last.
+	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+		return 0;
 
-> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+	return alvium_set_frame_rate(alvium, req_fr);
 
-Then at all means what this SoB for? Either it's missing Co-developed-by,
-or simply wrong.
-
-> Tested-by: xiongxin <xiongxin@kylinos.cn>
-
-This is assumed to be done by the contributor, but it's harmless to have it.
-
-With the above being sorted out,
-Reviewed-by: Andy Shevchenko <andy@kernel.org>
-
-...
-
-To Serge, I give my vote to hwirq as it is aligned with the documentation.
+>  }
+> 
+> > > > > @@ -1853,6 +1836,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+> > > > >  {
+> > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > >  	struct alvium_mode *mode = &alvium->mode;
+> > > > > +	struct v4l2_fract *interval;
+> > > > >  	struct v4l2_subdev_format sd_fmt = {
+> > > > >  		.which = V4L2_SUBDEV_FORMAT_TRY,
+> > > > >  		.format = alvium_csi2_default_fmt,
+> > > > > @@ -1870,6 +1854,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+> > > > >  	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
+> > > > >  	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
+> > > > >  
+> > > > > +	/* Setup initial frame interval*/
+> > > > > +	interval = v4l2_subdev_state_get_interval(state, 0);
+> > > > > +	interval->numerator = 1;
+> > > > > +	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
+> > > > > +
+> > > > >  	return 0;
+> > > > >  }
+> > > > >  
+> > > > > @@ -2239,7 +2228,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
+> > > > >  	.set_fmt = alvium_set_fmt,
+> > > > >  	.get_selection = alvium_get_selection,
+> > > > >  	.set_selection = alvium_set_selection,
+> > > > > -	.get_frame_interval = alvium_g_frame_interval,
+> > > > > +	.get_frame_interval = v4l2_subdev_get_frame_interval,
+> > > > >  	.set_frame_interval = alvium_s_frame_interval,
+> > > > >  };
+> > > > >  
+> > > > > @@ -2260,11 +2249,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
+> > > > >  	struct v4l2_subdev *sd = &alvium->sd;
+> > > > >  	int ret;
+> > > > >  
+> > > > > -	/* Setup initial frame interval*/
+> > > > > -	alvium->frame_interval.numerator = 1;
+> > > > > -	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
+> > > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
+> > > > > -
+> > > > >  	/* Setup the initial mode */
+> > > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
+> > > > >  	alvium->mode.width = alvium_csi2_default_fmt.width;
+> > > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
+> > > > > index a6529b28e7dd..f5e26257b042 100644
+> > > > > --- a/drivers/media/i2c/alvium-csi2.h
+> > > > > +++ b/drivers/media/i2c/alvium-csi2.h
+> > > > > @@ -442,8 +442,6 @@ struct alvium_dev {
+> > > > >  	s32 inc_sharp;
+> > > > >  
+> > > > >  	struct alvium_mode mode;
+> > > > > -	struct v4l2_fract frame_interval;
+> > > > > -	u64 fr;
+> > > > 
+> > > > The fr field should have been removed by a previous patch (the one that
+> > > > will go between 1/3 an 2/3, see my review of 1/3) as shown by the fact
+> > > > that this patch only removes two locations where the field is set but
+> > > > none where it's read.
+> > > > 
+> > > > >  
+> > > > >  	u8 h_sup_csi_lanes;
+> > > > >  	u64 link_freq;
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
 
-
+Laurent Pinchart
 
