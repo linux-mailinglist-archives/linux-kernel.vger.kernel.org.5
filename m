@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-3674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E7F3816F66
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:04:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25A8C816F6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1405287E05
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:04:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49AC51C2094B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9605D1297E5;
-	Mon, 18 Dec 2023 12:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7FCA12911E;
+	Mon, 18 Dec 2023 12:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iGgrunfm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n9biQ4QJ"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C441297CA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372441297F0;
+	Mon, 18 Dec 2023 12:47:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B89C433CA;
 	Mon, 18 Dec 2023 12:47:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91D53C433C9;
-	Mon, 18 Dec 2023 12:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903654;
-	bh=IabCCm4KKZwo8d/aJFphk+xg2Z10Z8zjdAJ3kO6qi1U=;
+	s=k20201202; t=1702903655;
+	bh=W86H2j/admdtpITtY5Jn2huyO56hJHR2Zf5N0N/wJlY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iGgrunfm8JziqldMwrf7ECuo/T6H9Myz3jzUuVH+ZmOn0YuXaX5KNvjfny0J1t1zc
-	 TpRT/2x8k6KZpOrCNkI3UHhS/bhLsDMgn8D2SuWPH0PwggvShoFVA8Hb5zk6teuQ5W
-	 YwPmT8Rc3/28fwu7aiOOKNVnaVO+UnvgMgsJGw/CNindGvqIIgYOdSsKP4ubeoIrBy
-	 IsaC5K+wsdfgYh+67RiC6nWS/xP6Yart34zrqJ/jUZMX+ugQtz425l0Lg4PzmkdzoW
-	 YnSDQy0Jkk6mdI2+rbXY4DflKQT6cAqk4NbkJZM9d7PElF7ki8dGcLNljc4MMoqoPS
-	 1hwWQgbuDsyMA==
+	b=n9biQ4QJv9FU2ZJO7vkMTDb5g4jMm4waNqsQJk+2VexPUVvljG+96/dWh+cOGVNV+
+	 ltCHDFI0QUxgyTBKt62D4P2iQR+BPk+SrDBTkaffthXElyyEYtLNWZ/KSDIVwwbWVE
+	 wOcdlxzMlcBhaxc/bSpwFoOZ6UY3SYFx1HxtKxDOXBYs5P6JVkIxZB6XRSWsVD720j
+	 FGU5SA19T11TuoyN1whtVAvmkvUB6v3ClueNXoROiwG69QCtzwpQ7eaxDNkXWOKblH
+	 4eSyJ6q6wAOwPEY3J5HP+LuyWBiqOB946TlyWgLZslddvE5NGjsynQ30CHvJQ9PuRF
+	 vJ7QseB1NkQ3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -41,9 +41,9 @@ Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 4/6] tracing: Have large events show up as '[LINE TOO BIG]' instead of nothing
-Date: Mon, 18 Dec 2023 07:47:21 -0500
-Message-ID: <20231218124725.1382738-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 5/6] tracing: Add size check when printing trace_marker output
+Date: Mon, 18 Dec 2023 07:47:22 -0500
+Message-ID: <20231218124725.1382738-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124725.1382738-1-sashal@kernel.org>
 References: <20231218124725.1382738-1-sashal@kernel.org>
@@ -60,47 +60,22 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-[ Upstream commit b55b0a0d7c4aa2dac3579aa7e6802d1f57445096 ]
+[ Upstream commit 60be76eeabb3d83858cc6577fc65c7d0f36ffd42 ]
 
-If a large event was added to the ring buffer that is larger than what the
-trace_seq can handle, it just drops the output:
+If for some reason the trace_marker write does not have a nul byte for the
+string, it will overflow the print:
 
- ~# cat /sys/kernel/tracing/trace
- # tracer: nop
- #
- # entries-in-buffer/entries-written: 2/2   #P:8
- #
- #                                _-----=> irqs-off/BH-disabled
- #                               / _----=> need-resched
- #                              | / _---=> hardirq/softirq
- #                              || / _--=> preempt-depth
- #                              ||| / _-=> migrate-disable
- #                              |||| /     delay
- #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
- #              | |         |   |||||     |         |
-            <...>-859     [001] .....   141.118951: tracing_mark_write           <...>-859     [001] .....   141.148201: tracing_mark_write: 78901234
+  trace_seq_printf(s, ": %s", field->buf);
 
-Instead, catch this case and add some context:
+The field->buf could be missing the nul byte. To prevent overflow, add the
+max size that the buf can be by using the event size and the field
+location.
 
- ~# cat /sys/kernel/tracing/trace
- # tracer: nop
- #
- # entries-in-buffer/entries-written: 2/2   #P:8
- #
- #                                _-----=> irqs-off/BH-disabled
- #                               / _----=> need-resched
- #                              | / _---=> hardirq/softirq
- #                              || / _--=> preempt-depth
- #                              ||| / _-=> migrate-disable
- #                              |||| /     delay
- #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
- #              | |         |   |||||     |         |
-            <...>-852     [001] .....   121.550551: tracing_mark_write[LINE TOO BIG]
-            <...>-852     [001] .....   121.550581: tracing_mark_write: 78901234
+  int max = iter->ent_size - offsetof(struct print_entry, buf);
 
-This now emulates the same output as trace_pipe.
+  trace_seq_printf(s, ": %*.s", max, field->buf);
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231209171058.78c1a026@gandalf.local.home
+Link: https://lore.kernel.org/linux-trace-kernel/20231212084444.4619b8ce@gandalf.local.home
 
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
@@ -108,26 +83,40 @@ Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/trace/trace_output.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index c5fe020336bea..755d6146c738c 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3826,7 +3826,11 @@ static int s_show(struct seq_file *m, void *v)
- 		iter->leftover = ret;
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index e3ab66e6fd85c..3ca9ddfef2b8f 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -1319,11 +1319,12 @@ static enum print_line_t trace_print_print(struct trace_iterator *iter,
+ {
+ 	struct print_entry *field;
+ 	struct trace_seq *s = &iter->seq;
++	int max = iter->ent_size - offsetof(struct print_entry, buf);
  
- 	} else {
--		print_trace_line(iter);
-+		ret = print_trace_line(iter);
-+		if (ret == TRACE_TYPE_PARTIAL_LINE) {
-+			iter->seq.full = 0;
-+			trace_seq_puts(&iter->seq, "[LINE TOO BIG]\n");
-+		}
- 		ret = trace_print_seq(m, &iter->seq);
- 		/*
- 		 * If we overflow the seq_file buffer, then it will
+ 	trace_assign_type(field, iter->ent);
+ 
+ 	seq_print_ip_sym(s, field->ip, flags);
+-	trace_seq_printf(s, ": %s", field->buf);
++	trace_seq_printf(s, ": %.*s", max, field->buf);
+ 
+ 	return trace_handle_return(s);
+ }
+@@ -1332,10 +1333,11 @@ static enum print_line_t trace_print_raw(struct trace_iterator *iter, int flags,
+ 					 struct trace_event *event)
+ {
+ 	struct print_entry *field;
++	int max = iter->ent_size - offsetof(struct print_entry, buf);
+ 
+ 	trace_assign_type(field, iter->ent);
+ 
+-	trace_seq_printf(&iter->seq, "# %lx %s", field->ip, field->buf);
++	trace_seq_printf(&iter->seq, "# %lx %.*s", field->ip, max, field->buf);
+ 
+ 	return trace_handle_return(&iter->seq);
+ }
 -- 
 2.43.0
 
