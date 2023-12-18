@@ -1,87 +1,259 @@
-Return-Path: <linux-kernel+bounces-4211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D55FB817924
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:50:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A79EE817925
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89F061F28103
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:50:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2BAE28645F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F2672045;
-	Mon, 18 Dec 2023 17:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578107409A;
+	Mon, 18 Dec 2023 17:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="PrBOoSbt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aFDvNdVQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413CA5D75F;
-	Mon, 18 Dec 2023 17:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1702921565; x=1703180765;
-	bh=l74qLactwzIVrq/B9kOv8F974+1rgtU+2NAFHFv2u0Q=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=PrBOoSbtVidBr8qVRqgwiiF2kZM4qxQbG9UHEVLk8gHXz+JVsd+Wkf4QqajFU5RDB
-	 dD9K8l1kUDM1+bpiYSlxHjIsIp0e/Um5RsiSh7al6eD6mNYyMtPzK1ok0322hIvG5I
-	 wthGfuHsSKVl/M6m+tuWDGAa08jVtAqhS0dwTira6waYvwwkzU8ETWvwssU13r7YW7
-	 2bZHAYXaEAMSPpUJRjb94r7BvT5Xs9juVySw5SgtHzFR/mgIndVaW/rfXbfxQIGOfo
-	 t/UNj4BgZiWX4I9cocLZeGdTadH6rffqrksn82qx+7OJxC2RoSM2D/Sdo3z8vqQKNw
-	 lHnEqMigNubDQ==
-Date: Mon, 18 Dec 2023 17:45:54 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>, Thomas Gleixner <tglx@linutronix.de>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] rust: sync: update integer types in CondVar
-Message-ID: <caefaf00-bf59-4ad9-bec5-9d095754354c@proton.me>
-In-Reply-To: <20231216-rb-new-condvar-methods-v2-4-b05ab61e6d5b@google.com>
-References: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com> <20231216-rb-new-condvar-methods-v2-4-b05ab61e6d5b@google.com>
-Feedback-ID: 71780778:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001645BFBF
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702921642;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=VXUpG+bRGJnp+OSohNJ9k3VW3RttT/l1zjhlcsHI6aY=;
+	b=aFDvNdVQwHk5oF2AwrKgfNKuzPI8bHKBwaYbg1DkX85E5qQEnBmDLUMB0aH5bkITv2kabe
+	QbRUazaOCqWTYDGwn2Ph4ToQ5Xkh51qdW2DNjnfn76l0S94dbN50KUIlQv8vPa1RZ23ZmD
+	sBzU8Gq8vfkxYRMzMWWRTKY8Tf/0ITg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-YR_XSPODP-2iOPxQ0egQeQ-1; Mon, 18 Dec 2023 12:47:21 -0500
+X-MC-Unique: YR_XSPODP-2iOPxQ0egQeQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40c348e529fso30411115e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:47:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702921640; x=1703526440;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VXUpG+bRGJnp+OSohNJ9k3VW3RttT/l1zjhlcsHI6aY=;
+        b=wpuv+bqilJP4+cXQMwi8Zy9cYya05WXXp2uRKOxOAg+AGKPLXjUxkpEF8Vw7pkJJFr
+         k0PDZZnb5D309yxIeRIL+9RoHHSincU+oKvSfpB5tBoCDVPHU9Z/imSAjtNawGFkaKo5
+         chvQqVQKB/Bzun+sg3Gsc0Xra52IAj29ft98MhFi2ZfDrMXcvtFhQNkjDk4a4jF+Y+RK
+         y99E+DsUoLmK/A32mSZJ5pjPqSFGShT02ToTII9ZCKIK1zLbL1qkg/GC6m8mAoTJrAS2
+         Da6ulB3nvVZe3Xhwna/5NCKg7BwwxLtVcVos7Hr0LzNY8A4bKr6aoVluxWIdRIqDTbfw
+         bF9w==
+X-Gm-Message-State: AOJu0YxAdej2OwkgoBiR0rpyx4mxt+qAP9QgywqKdrwOUgb42vDl6RlL
+	QoOKHU51RCLdSHk5R9Rj0cRS7NFLsG8jvcmodPh0GGA4IOURMK6uwpQOOYh2/lrRhI069XGo0qx
+	VN4VSPvTpw9n5fXxOelMRIPCe
+X-Received: by 2002:a05:600c:3410:b0:40c:24a2:6b05 with SMTP id y16-20020a05600c341000b0040c24a26b05mr8037751wmp.206.1702921639912;
+        Mon, 18 Dec 2023 09:47:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFGz34bu2APKQrNggPPHYfjts7sMyP4aUwKDuYTu+BK+6lzKcu2e5XHatto090CHhq9pkcRKQ==
+X-Received: by 2002:a05:600c:3410:b0:40c:24a2:6b05 with SMTP id y16-20020a05600c341000b0040c24a26b05mr8037735wmp.206.1702921639453;
+        Mon, 18 Dec 2023 09:47:19 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72b:b500:b53e:6e32:1408:27ac? (p200300cbc72bb500b53e6e32140827ac.dip0.t-ipconnect.de. [2003:cb:c72b:b500:b53e:6e32:1408:27ac])
+        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b0040c46ba7b66sm33764336wmn.48.2023.12.18.09.47.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 09:47:19 -0800 (PST)
+Message-ID: <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
+Date: Mon, 18 Dec 2023 18:47:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
+ Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
+ <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
+ Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
+ Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231218105100.172635-1-ryan.roberts@arm.com>
+ <20231218105100.172635-3-ryan.roberts@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231218105100.172635-3-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 12/16/23 16:31, Alice Ryhl wrote:
-> Reduce the chances of compilation failures due to integer type
-> mismatches in `CondVar`.
->=20
-> When an integer is defined using a #define in C, bindgen doesn't know
-> which integer type it is supposed to be, so it will just use `u32` by
-> default (if it fits in an u32). Whenever the right type is something
-> else, we insert a cast in Rust. However, this means that the code has a
-> lot of extra casts, and sometimes the code will be missing casts if u32
-> happens to be correct on the developer's machine, even though the type
-> might be something else on a different platform.
->=20
-> This patch updates all uses of such constants in
-> `rust/kernel/sync/condvar.rs` to use constants defined with the right
-> type. This allows us to remove various unnecessary casts, while also
-> future-proofing for the case where `unsigned int !=3D u32`.
->=20
-> I wrote this patch at the suggestion of Benno in [1].
->=20
-> Link: https://lore.kernel.org/all/nAEg-6vbtX72ZY3oirDhrSEf06TBWmMiTt73Ekl=
-MzEAzN4FD4mF3TPEyAOxBZgZtjzoiaBYtYr3s8sa9wp1uYH9vEWRf2M-Lf4I0BY9rAgk=3D@pro=
-ton.me/ [1]
-> Suggested-by: Benno Lossin <benno.lossin@proton.me>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+On 18.12.23 11:50, Ryan Roberts wrote:
+> Convert copy_pte_range() to copy a batch of ptes in one go. A given
+> batch is determined by the architecture with the new helper,
+> pte_batch_remaining(), and maps a physically contiguous block of memory,
+> all belonging to the same folio. A pte batch is then write-protected in
+> one go in the parent using the new helper, ptep_set_wrprotects() and is
+> set in one go in the child using the new helper, set_ptes_full().
+> 
+> The primary motivation for this change is to reduce the number of tlb
+> maintenance operations that the arm64 backend has to perform during
+> fork, as it is about to add transparent support for the "contiguous bit"
+> in its ptes. By write-protecting the parent using the new
+> ptep_set_wrprotects() (note the 's' at the end) function, the backend
+> can avoid having to unfold contig ranges of PTEs, which is expensive,
+> when all ptes in the range are being write-protected. Similarly, by
+> using set_ptes_full() rather than set_pte_at() to set up ptes in the
+> child, the backend does not need to fold a contiguous range once they
+> are all populated - they can be initially populated as a contiguous
+> range in the first place.
+> 
+> This code is very performance sensitive, and a significant amount of
+> effort has been put into not regressing performance for the order-0
+> folio case. By default, pte_batch_remaining() is compile constant 1,
+> which enables the compiler to simplify the extra loops that are added
+> for batching and produce code that is equivalent (and equally
+> performant) as the previous implementation.
+> 
+> This change addresses the core-mm refactoring only and a separate change
+> will implement pte_batch_remaining(), ptep_set_wrprotects() and
+> set_ptes_full() in the arm64 backend to realize the performance
+> improvement as part of the work to enable contpte mappings.
+> 
+> To ensure the arm64 is performant once implemented, this change is very
+> careful to only call ptep_get() once per pte batch.
+> 
+> The following microbenchmark results demonstate that there is no
+> significant performance change after this patch. Fork is called in a
+> tight loop in a process with 1G of populated memory and the time for the
+> function to execute is measured. 100 iterations per run, 8 runs
+> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
+> performed for case where 1G memory is comprised of order-0 folios and
+> case where comprised of pte-mapped order-9 folios. Negative is faster,
+> positive is slower, compared to baseline upon which the series is based:
+> 
+> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
+> | fork          |-------------------|-------------------|
+> | microbench    |    mean |   stdev |    mean |   stdev |
+> |---------------|---------|---------|---------|---------|
+> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
+> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
+> 
+> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
+> | fork          |-------------------|-------------------|
+> | microbench    |    mean |   stdev |    mean |   stdev |
+> |---------------|---------|---------|---------|---------|
+> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
+> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
+> 
+> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> Reviewed-by: Alistair Popple <apopple@nvidia.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
+>   include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
+>   mm/memory.c             | 92 ++++++++++++++++++++++++++---------------
+>   2 files changed, 139 insertions(+), 33 deletions(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index af7639c3b0a3..db93fb81465a 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
+>   #define arch_flush_lazy_mmu_mode()	do {} while (0)
+>   #endif
+>   
+> +#ifndef pte_batch_remaining
+> +/**
+> + * pte_batch_remaining - Number of pages from addr to next batch boundary.
+> + * @pte: Page table entry for the first page.
+> + * @addr: Address of the first page.
+> + * @end: Batch ceiling (e.g. end of vma).
+> + *
+> + * Some architectures (arm64) can efficiently modify a contiguous batch of ptes.
+> + * In such cases, this function returns the remaining number of pages to the end
+> + * of the current batch, as defined by addr. This can be useful when iterating
+> + * over ptes.
+> + *
+> + * May be overridden by the architecture, else batch size is always 1.
+> + */
+> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long addr,
+> +						unsigned long end)
+> +{
+> +	return 1;
+> +}
+> +#endif
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+It's a shame we now lose the optimization for all other archtiectures.
 
---=20
+Was there no way to have some basic batching mechanism that doesn't 
+require arch specifics?
+
+I'd have thought that something very basic would have worked like:
+
+* Check if PTE is the same when setting the PFN to 0.
+* Check that PFN is consecutive
+* Check that all PFNs belong to the same folio
+
+-- 
 Cheers,
-Benno
+
+David / dhildenb
 
 
