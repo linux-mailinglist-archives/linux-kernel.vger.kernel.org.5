@@ -1,117 +1,147 @@
-Return-Path: <linux-kernel+bounces-3523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8FB9816D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A42816D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1297B22BD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:05:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D50F4B20DC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A33A200A7;
-	Mon, 18 Dec 2023 12:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55EC2032D;
+	Mon, 18 Dec 2023 12:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lf5Z7wsw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LKUJGxHT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06031B27E;
-	Mon, 18 Dec 2023 12:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702901140; x=1734437140;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=zK0zifIjrsVfWQ7CRvZNOs/vbcIQjEXf2KxOVkZ+KlM=;
-  b=Lf5Z7wswMUFBnbQ9KZy+BKM5R0IBRskdmvyArrAiXh8DgisA17EW16X2
-   viHpg0SqI/846jWr4d+24Xt4nxLZWnJOGhEajvzVfhImGLKrQ3fo12UqS
-   OWA/7pcTsvIb6QaGen5/vng1CgjJN13tKctSkH5rM9pu/kAyiNm7jceCZ
-   52ajqHLrl6potCQnfOp08n5/nnj2fkhxjUAktdcyCMoqmw0GKLqzWr1MF
-   NSbHdpdigQmdq0+gNNYf4HSG4gnfsVgqiSuDBcb4AAA3bSMy1cEZ0XOjL
-   e0TwALeC/LpPmHLY/HDIVrYvg/vxDTYd1f9ybPiCIKCv/IS/roq8BwMUy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="2323920"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="2323920"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 04:05:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="751718827"
-X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
-   d="scan'208";a="751718827"
-Received: from gmarin-mobl1.ger.corp.intel.com ([10.252.34.78])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 04:05:32 -0800
-Date: Mon, 18 Dec 2023 14:05:30 +0200 (EET)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Armin Wolf <W_Armin@gmx.de>
-cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] platform/x86: wmi: Remove unused variable in address
- space handler
-In-Reply-To: <20231216015601.395118-2-W_Armin@gmx.de>
-Message-ID: <b0c2cabb-873d-8858-5175-9d60dddca639@linux.intel.com>
-References: <20231216015601.395118-1-W_Armin@gmx.de> <20231216015601.395118-2-W_Armin@gmx.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B93F1B282;
+	Mon, 18 Dec 2023 12:07:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89C75C433CA;
+	Mon, 18 Dec 2023 12:07:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702901221;
+	bh=DrUER6FrPw2fjC9H9x1urksXUY0gGNG6zMiTe1yGdnU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=LKUJGxHTrZ1gQyvq878M4w4HTVQcb8bbMxwpc19jT0HKCWZyr7ueaR6K9Nmol7qf4
+	 oYBbD8AzPcLS+DHc2TbrwtzMr178ov8zgr2I7Jxfv58m6bGFAVjUojoZJ9MlcEH2Dj
+	 qi69pp+NDQ/8Kav3JL/aUwfcOOOz+27WnDiUwk9SFR/pN6VrS1qJQT6FeRATOupFX9
+	 8POziYZNVql6QVwrqMz0KFFD2lfeRP9FfvzHXTgMaeG5ZlwI17Ags7DaTZSvs9zYnI
+	 9k0lKnHMvyELpUrEMLhHVNbbFTOHJrH01NGe0EUJPgM5MPGsVQQOA8BIlY7WjLg55H
+	 NlcR6Bf/3H/bA==
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1fab887fab8so2526310fac.0;
+        Mon, 18 Dec 2023 04:07:01 -0800 (PST)
+X-Gm-Message-State: AOJu0YyFW6kC53iyOVWpp9ERjqzpi3NmNbENdme5lRRL3i35ULj+PzqF
+	xvFdGbpwCvG3BQ3bo0lmsObtaxFGlGUMs9o6Hjg=
+X-Google-Smtp-Source: AGHT+IHbXzdWjN3WLIrbJWsVdm5g8DLYEIA4IOfNJwqDUwnzQPJ+UKUh+M42CGcq0eJeYmSUPySQg3zPBGdpCR1G9Xc=
+X-Received: by 2002:a05:6870:6b90:b0:203:7e47:3efe with SMTP id
+ ms16-20020a0568706b9000b002037e473efemr7533561oab.64.1702901220899; Mon, 18
+ Dec 2023 04:07:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-670412325-1702901134=:2348"
+References: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
+ <1c03eb18-a6ac-45c8-8fea-46097bb4e132@gmail.com> <CANiq72=mvca8PXoxwzSao+QFbAHDCecSKCDtV+ffd+YgZNFaww@mail.gmail.com>
+ <20231215064823.ltm55fk4zclsuuwq@vireshk-i7> <a2aca039-7360-476e-a1b1-e950698cd26b@gmail.com>
+ <20231215112418.usky65sibhbiubyx@vireshk-i7> <CANiq72nuUpBCHaeyozDXAZrV+YLW_OR-QOUiVHPfTbNGG3RFXA@mail.gmail.com>
+In-Reply-To: <CANiq72nuUpBCHaeyozDXAZrV+YLW_OR-QOUiVHPfTbNGG3RFXA@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Mon, 18 Dec 2023 21:06:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS8kaRsWf6Grob5Vuj3eNx2c2=s+JmmshcXXJT2B4ph_Q@mail.gmail.com>
+Message-ID: <CAK7LNAS8kaRsWf6Grob5Vuj3eNx2c2=s+JmmshcXXJT2B4ph_Q@mail.gmail.com>
+Subject: Re: [PATCH V2] docs: rust: Clarify that 'rustup override' applies to
+ build directory
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, Tiago Lam <tiagolam@gmail.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, rust-for-linux@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Dec 15, 2023 at 8:53=E2=80=AFPM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Fri, Dec 15, 2023 at 12:24=E2=80=AFPM Viresh Kumar <viresh.kumar@linar=
+o.org> wrote:
+> >
+> > I thought people aren't required to enter the build directory now (but
+> > just source code directory) and simply do:
+> >
+> >                 make LLVM=3D1 O=3D<builddir> rustupoverride
+>
+> Yeah, that is correct, but we don't need to write the `O=3D` in the
+> commands themselves. The idea is that 1) the commands can be easily
+> copy-pasted, 2) commands look simple (i.e. there are many other
+> variations and options you may pass), 3) newcomers do not need to care
+> about `O=3D` (so it is extra simple for them).
+>
+> > Will this still work if we are in the build directory ?
+>
+> Both should work (as long as the initial setup in the build folder is
+> done, of course), so I think we can simply remove the mention about
+> "enter ..." now and simply give the command.
+>
+> In fact, even if Kbuild did not support that, we could still remove
+> the "enter ...", because then the `make` would need to be run like any
+> other target from the source tree.
 
---8323329-670412325-1702901134=:2348
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
 
-On Sat, 16 Dec 2023, Armin Wolf wrote:
 
-> The variable "i" is always zero and only used in shift operations.
-> Remove it to make the code more readable.
-> 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
->  drivers/platform/x86/wmi.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index 7303702290e5..906d3a2831ae 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -1144,7 +1144,7 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physical_address address,
->  			  u32 bits, u64 *value,
->  			  void *handler_context, void *region_context)
->  {
-> -	int result = 0, i = 0;
-> +	int result = 0;
->  	u8 temp = 0;
-> 
->  	if ((address > 0xFF) || !value)
-> @@ -1158,9 +1158,9 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physical_address address,
-> 
->  	if (function == ACPI_READ) {
->  		result = ec_read(address, &temp);
-> -		(*value) |= ((u64)temp) << i;
-> +		*value = temp;
->  	} else {
-> -		temp = 0xff & ((*value) >> i);
-> +		temp = 0xff & *value;
->  		result = ec_write(address, temp);
->  	}
+FWIW.
 
-Seems to have been like this already when it got introduced...
+Kbuild is designed to be able to initiate 'make' from anywhere,
+even if the build directory is not set up.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+In that case, you need to use -f option to point to the top Makefile.
 
--- 
- i.
 
---8323329-670412325-1702901134=:2348--
+
+You can enter a build directory, then do this:
+
+  $ make -f <path/to/source/tree>/Makefile defconfig all
+
+
+
+
+Likewise, both of the following should work.
+
+
+1)  Enter the source directory, and
+
+  $ make O=3D<path-to-build-directory> rustupoverride
+
+
+2)  Enter the build directory, and
+
+
+  $ make -f <path-to-source-directory>/Makefile rustupoverride
+
+
+
+
+
+
+> In other words, regardless of the
+> answer, we could remove it thanks to the new target, unless I am
+> missing something.
+>
+> Cheers,
+> Miguel
+>
+
+
+--
+Best Regards
+Masahiro Yamada
 
