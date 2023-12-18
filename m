@@ -1,103 +1,84 @@
-Return-Path: <linux-kernel+bounces-4081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB1D8177BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:42:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD2D8177C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0DA2286E48
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:42:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCE411F25486
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D034498B2;
-	Mon, 18 Dec 2023 16:42:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92EDC49895;
+	Mon, 18 Dec 2023 16:43:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B086B1E4AF;
-	Mon, 18 Dec 2023 16:42:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E6DEC433C8;
-	Mon, 18 Dec 2023 16:42:12 +0000 (UTC)
-Date: Mon, 18 Dec 2023 11:43:08 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v7 0/2] ring-buffer: Rename sub-buffer into buffer page
-Message-ID: <20231218114308.4ed19608@gandalf.local.home>
-In-Reply-To: <20231218112817.7f3c8847@gandalf.local.home>
-References: <20231218151451.944907-1-vdonnefort@google.com>
-	<20231218154618.954997-1-vdonnefort@google.com>
-	<20231218112817.7f3c8847@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D0D1E486
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fb151c89bso16573715ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 08:43:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702917803; x=1703522603;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vEnH9DOn7htdFLxlz85xz/DnYEHpLVOwxdzfKYN97ZE=;
+        b=qN5ja9F1asihTNyjK5XoZGXjYhoK3v56sYuhzivz1RZXxzIcYYjDs3cuHQZQv6WbQw
+         aPRxz6S0YzWz6iNpHIr1sTQFFzQDvgHFqgdj036NrAFPAkTcghbrxDz3zBu8bvV9R8Qe
+         ZuJXmV73D4CHx4InHRfr6qZFJUuTfXVtI4osx2bwhB0nmGobH8qkBID+7vVSmwCVHT8+
+         gqRaMag7jHt+ujqhfCd6R7yu0nS5yWjuihRJYW48RFpU30JgwQ8BZ5eGlSHgBSq7mt1d
+         AhXGtx7DklrxC2I0E7ZOow94sa7bEK1YIhoO16xkqpXMzn9lEELqj3PDwOULJgZtDx0V
+         4x3g==
+X-Gm-Message-State: AOJu0Yw0PJXkv77R0O4e8AtsXTny6sBDN9YG3vOcON9TmlI9rEclBZxE
+	pq+5TNtOvH7ZF02vSE9gm6LpKC9xzf4E7+HLVNgNEeodHclaGio=
+X-Google-Smtp-Source: AGHT+IF4wvXEHfOc3ZSuANzi4m1bDvhjZf71Zka5lYRnL4qoOZz98UZyuXVBY4Vn79HA0t8E0W2CAZ+Cjrxd2RVUVEhZVH+Guf8E
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:338d:b0:35f:b2f8:6ca3 with SMTP id
+ bn13-20020a056e02338d00b0035fb2f86ca3mr250224ilb.2.1702917803210; Mon, 18 Dec
+ 2023 08:43:23 -0800 (PST)
+Date: Mon, 18 Dec 2023 08:43:23 -0800
+In-Reply-To: <000000000000ab8015060ad3f9bc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000be00ba060ccb7291@google.com>
+Subject: Re: [syzbot] go runtime error
+From: syzbot <syzbot+b8bbc03ee7bf80fc9f78@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 18 Dec 2023 11:28:17 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+syzbot has found a reproducer for the following issue on:
 
-> > Remove all references to sub-buffer and replace them with either bpage
-> > or ring_buffer_page.  
+HEAD commit:    610a689d2a57 Merge branch 'rtnl-rcu'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12ded821e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df5e944701db1d04
+dashboard link: https://syzkaller.appspot.com/bug?extid=b8bbc03ee7bf80fc9f78
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16da084ee80000
 
-The user interface should not be changed.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f1698c13981a/disk-610a689d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/21213e55dd47/vmlinux-610a689d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3f85e89cca69/bzImage-610a689d.xz
 
-But what I would like to have changed (and this will come after all other
-changes are complete), is to do the following renaming:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b8bbc03ee7bf80fc9f78@syzkaller.appspotmail.com
 
-  original structure name		new name		variable reference
-  -----------------------		--------		------------------
- struct buffer_data_page		struct buffer_data	bdata  (was bpage)
- struct buffer_page			struct buffer_subbuf	subbuf (was also bpage)
-
-Also change:
-
-struct buffer_page {
-	[..]
-	struct buffer_data_page *page;	/* Actual data page */
-};
-
-Into:
-
-struct buffer_subbuf {
-	[..]
-	struct buffer_data *data;	/* Actual data */
-};
-
-
-
-Then we can do a global rename of functions like:
-
- free_buffer_page() -> free_buffer_subbuf()
-
-And things like rb_init_page() into rb_init_subbuf()
-
-__rb_allocate_pages() -> rb_allocate_subbufs()
-
-etc.
-
-This should be broken up into steps of changes:
-
-1. Rename the struct buffer_data_page and bpage->bdata
-2. Rename the struct buffer_page and bpage->subbuf
-3. Rename static functions
-
-And I just realized that the two functions exposed outside of the file are
-not used anywhere else. We can remove one and make the other one static (as
-it is used within the file).
-
-ring_buffer_nr_pages() -> delete
-ring_buffer_nr_dirty_pages -> convert to static rb_nr_dirty_pages()
+fatal error: Connection to 10.128.1.63 closed by remote host.
 
 
-Thanks,
-
--- Steve
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
