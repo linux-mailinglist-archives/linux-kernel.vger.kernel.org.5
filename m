@@ -1,64 +1,66 @@
-Return-Path: <linux-kernel+bounces-3256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A05218169FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:39:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F9BF816A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CFF21F23203
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:39:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891EA1F23359
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A235125C8;
-	Mon, 18 Dec 2023 09:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0406711CAF;
+	Mon, 18 Dec 2023 09:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o+mDdHN2"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m+Jdg4Pq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507A0125AD
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:39:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B08125AD
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2343c31c4bso120674066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:39:04 -0800 (PST)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6d47bb467a9so903847b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:39:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702892342; x=1703497142; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yRPdYcUK3bn4d/UXXQLaapxgT6fJS3k55mWLhcaaxas=;
-        b=o+mDdHN2EtmgjBO6ntxWOFVioz+gL6okdo/e/cJRvzvhMNOEkL4IoyrFdatU7rI9R4
-         dS7cfNKaHy9Xj6m0V+EH8l2OmXhaztNbmB3swKazTqBg0Mwd1L7ujI+XwF8D+lZGqDEn
-         ozqgB412mHq7/UZVyU/ctIAO397zLqixkbtCxL/lmLriVYtowHiW6nbWglG6xo/HabC7
-         h78i46ueaP6bY3tNFy3FEDCeTM/TiMi5AtrDHq3UmdC8zSJ5A118arQP8nkajAz4RqJ5
-         trVAqmBadYRzqzCE6IfBs/M94I+xgoncNVvehSXpST5CGZoAdw4z0jnn9e6h5sG72p3N
-         l6Xw==
+        d=linaro.org; s=google; t=1702892381; x=1703497181; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BTYEtunIedVhrIrUbrN5OGHL/0lewttUjOiPfnpbhG4=;
+        b=m+Jdg4Pqa3KDO8JRupZ6tkl5k3/Jt03n+UEIpevEeTp+GWpZCDVjpZber2RoIODSwX
+         1BiHGKp7s2b4jleJcEWhMkm5XFOF+6RI/4A0/QEExdiSMXfK9+z5o2XM7r7PflsZpFfu
+         +gpF6AszArOKAGLXwgqnHkoEPUAoG4Txl2syQdTMOG7VqzfzTeKrRHSdVjytiLJ/Sm+k
+         CcGqLgHTd0xmbK9W8t4gewtKuhAPmtND+A9FC27W6d1JOttqMnZEbbcgRBFCFiXVm9uk
+         BTmLIGB5qtdfrd1R4xfdayECrvc1pFx9LR7z6RfWh7hlfoFMgq1dz06ZAJ8q35q1PgJc
+         9jrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702892342; x=1703497142;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yRPdYcUK3bn4d/UXXQLaapxgT6fJS3k55mWLhcaaxas=;
-        b=ehrEALyzbYasWe57yl6VfPqWoMcRnh1J5u9IaWRqetn1KSxYxWn9TD/Bzu8Dmy0PlA
-         g/7uS0ZvSysUZdlpXcn8OynpwlNTzhyjcO9rWy0rbgecIfyN3lPl8wSE1R7F8+HfMxSN
-         UY7gmhRAElqz91XfDcniYlJ4MpCb7c3o79woZhynmzlUHd4djm6m0vvN69UVUeHDGgHC
-         lv28/pNgu/N0LLQn6pE2W2nMp9eVC2EoMuGQ1nxgeB0Gk7EZbVgmQOpIUYmCb80AIIKN
-         AanA8go1dK9kHKRlMa+kV1ADXmgu9FDZni8AFtZGO5OHu/YOo6CUNS+JbcRTU3pX2RYD
-         hG1Q==
-X-Gm-Message-State: AOJu0Yy93SFVEiUeXd1q2usNjRho/Ze0EiTGteClQyxGNqWpQsvN2b0Z
-	OJmKrhGe03+h372lnpj8RONSvQ==
-X-Google-Smtp-Source: AGHT+IHCY04o2ElyEIUFv45JzgsxUGUOaLPS9XFvi3QivAc9F3XZ2RcNWxsqNxNkiq3+S+5soAdwaA==
-X-Received: by 2002:a17:907:9349:b0:a23:4c0c:7cb3 with SMTP id bv9-20020a170907934900b00a234c0c7cb3mr677668ejc.120.1702892342527;
-        Mon, 18 Dec 2023 01:39:02 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id cw10-20020a170907160a00b009bf7a4d591csm14136712ejd.11.2023.12.18.01.39.00
+        d=1e100.net; s=20230601; t=1702892381; x=1703497181;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BTYEtunIedVhrIrUbrN5OGHL/0lewttUjOiPfnpbhG4=;
+        b=mdoJaHrkToR5N3CZWK8FZNyWhTj/1QnZLwRB7d+BYP8I0ZWsoRZORGwXGP5anUs9YP
+         jNdF9G2U5JLhcUdiJbwdH4gBN5pl9MGBl3TdYx8B+FbBZ2EbFiXxJvIyFhkdSy/fd+tg
+         /0DMBLGw2b3sQIUU+gJWsdBLQpcVN4bjCuuuGL2CtU4mA80ylrj1eYDtPEudDvS+BYWd
+         aSc1YKWy+RJTqGDJ/egsfJ1VAsmiDADJ+YB6oBePQNU7GKL8m7VqGFOq3IJqAB23QGGY
+         nKcV5erKwidP8eiAY2casNrWKLCZ4jZriNV8lVGFknvFipyCRdgVpNXzpR+q17XbiAlv
+         Nofg==
+X-Gm-Message-State: AOJu0YxWZzyZpsGdmBrcTqGOe6TZdW9VJLKrYa+iomBv2dmhnBJ0uwPy
+	JdFExd3h8aIH6uI3cLzJfXGIvA==
+X-Google-Smtp-Source: AGHT+IF92lD4uQGcOvnMiAVb7hcO4gcbwh7m7LghWfKxV9vSCKKOHDlYmmYLmBb0BH9hREskDXqLvQ==
+X-Received: by 2002:a05:6a20:3712:b0:194:341e:8f5c with SMTP id t18-20020a056a20371200b00194341e8f5cmr1602230pze.50.1702892381093;
+        Mon, 18 Dec 2023 01:39:41 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:b425:da5d:c0cf:a505? ([2a01:e0a:982:cbb0:b425:da5d:c0cf:a505])
+        by smtp.gmail.com with ESMTPSA id e10-20020aa798ca000000b006d7bfb2f30csm1333167pfm.148.2023.12.18.01.39.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 01:39:01 -0800 (PST)
-Message-ID: <6160aa1e-5f77-4d7d-aafd-e1ac7606bf06@linaro.org>
-Date: Mon, 18 Dec 2023 10:39:00 +0100
+        Mon, 18 Dec 2023 01:39:40 -0800 (PST)
+Message-ID: <db90068a-8eac-458e-bc22-aceb59870f5d@linaro.org>
+Date: Mon, 18 Dec 2023 10:39:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,95 +68,159 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 1/2] nfc: llcp_core: Hold a ref to
- llcp_local->dev when holding a ref to llcp_local
-Content-Language: en-US
-To: Siddh Raman Pant <code@siddh.me>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Suman Ghosh <sumang@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
-References: <cover.1702816635.git.code@siddh.me>
- <0d812b9aae2f16691d373460b06c5f3e098ed2a6.1702816635.git.code@siddh.me>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <0d812b9aae2f16691d373460b06c5f3e098ed2a6.1702816635.git.code@siddh.me>
-Content-Type: text/plain; charset=UTF-8
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v9 08/12] clk: meson: g12a: make VCLK2 and ENCL clock path
+ configurable by CCF
+Content-Language: en-US, fr
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Jagan Teki <jagan@amarulasolutions.com>, Nicolas Belin
+ <nbelin@baylibre.com>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Remi Pommarel
+ <repk@triplefau.lt>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org,
+ linux-phy@lists.infradead.org, Rob Herring <robh@kernel.org>
+References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
+ <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-8-95256ed139e6@linaro.org>
+ <1jbkbjdxk8.fsf@starbuckisacylon.baylibre.com>
+ <b23ddc3b-d995-4cd6-91f2-3efa59d345a5@linaro.org>
+ <1j34wvdtux.fsf@starbuckisacylon.baylibre.com>
+ <41a1246e-c885-460a-8208-16844e95e1ae@linaro.org>
+ <1jjzq3zhaw.fsf@starbuckisacylon.baylibre.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <1jjzq3zhaw.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 17/12/2023 14:11, Siddh Raman Pant wrote:
->  static struct nfc_llcp_sock *nfc_llcp_sock_get(struct nfc_llcp_local *local,
-> @@ -959,8 +974,18 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
->  	}
->  
->  	new_sock = nfc_llcp_sock(new_sk);
-> -	new_sock->dev = local->dev;
-> +
->  	new_sock->local = nfc_llcp_local_get(local);
-> +	if (!new_sock->local) {
-> +		reason = LLCP_DM_REJ;
-> +		release_sock(&sock->sk);
-> +		sock_put(&sock->sk);
-> +		sock_put(&new_sock->sk);
+Hi,
 
-Why is this needed? Which part earlier gets the reference?
+On 27/11/2023 09:38, Jerome Brunet wrote:
+> 
+>>>
+>>>>
+>>>> I suspect mipi_dsi_pxclk_div was added to achieve fractional vclk/bitclk ratios,
+>>>> since it doesn't exist on AXG. Not sure we would ever need it... and none
+>>>> of the other upstream DSI drivers supports such setups.
+>>>>
+>>>> The main reasons I set only mipi_dsi_pxclk in DT is because :
+>>>> 1) the DSI controller requires a bitclk to respond, pclk is not enough
+>>>> 2) GP0 is disabled with an invalid config at cold boot, thus we cannot
+>>>> rely on a default/safe rate on an initial prepare_enable().
+>>>> This permits setting initial valid state for the DSI controller, while
+>>>> the actual bitclk and vclk are calculated dynamically with panel/bridge
+>>>> runtime parameters.
+>>> Nothing against setting rate in DT when it is static. Setting it then
+>>> overriding it is not easy to follow.
+>>
+>> Yup, would be simpler to only have parenting set in DT, since it must
+>> stay static, I'm fine trying to move rate setup to code.
+>>
+>>> To work around GP0 not being set, assuming you want to keep rate
+>>> propagation as it is, you could call clk_set_rate() on cts_encl (possibly w/o
+>>> enabling it) to force a setup on gp0 then clk_prepare_enable() on
+>>> pxclk. You'd get a your safe rate on GP0 and the clock you need on pxclk.
+>>> It is a bit hackish. Might be better to claim gp0 in your driver to
+>>> manage it directly, cutting rate propagation above it to control each
+>>> branch of the subtree as you need. It seems you need to have control over
+>>> that anyway and it would be clear GP0 is expected to belong to DSI.
+>>
+>> Controlling the PLL from the DSI controller seems violating too much layers,
+>> DSI controller driver is not feed directly by the PLL so it's a non-sense
+>> regarding DT properties.
+> 
+> Not sure what you mean by this. You have shown in your the commit
+> message that the DSI clocks make significant subtree. I don't see a
+> problem if you need to manage the root of that subtree. I'd be great if
+> you didn't need to, but it is what it is ...
 
-> +		nfc_llcp_sock_free(new_sock);
+I really think the choice of PLL should not be done by the DSI controller,
+but by the Video pipeline driver or statically until we can do this.
 
-This order is still wrong. Unwinding is almost always done in reversed
-order, for good reasons. Why do you unwind in other order?
+My point is that we should only define the clocks that are related to each
+hardware, for example the whole VCLK/VCLK2 clocks should be defined for the
+VPU HW, then only the few endpoint clocks should be defined for the HDMI
+or DSI controllers, PHY clock and ENCI/ENCP for HDMI, DSI and ENCL for DSI.
 
-> +		goto fail;
-> +	}
-> +
-> +	new_sock->dev = local->dev;
->  	new_sock->rw = sock->rw;
->  	new_sock->miux = sock->miux;
-Best regards,
-Krzysztof
+The big plan is to entirely switch to CCF for VPU, but first I want to have
+DSI working, and since DSI needs GP0, we need CCF for that so the intermediate
+plan is to have partial CCF handling only for DSI with fixed clock tree in DT,
+then in the future the Meson DRM driver would set up the appropriate clock
+tree for HDMI, DSI, Composite and perhaps DP for T7 SoCs then the controller
+bridge will call the clk_set_rate() in the same design I did for DSI.
+
+Here's the tracked item: https://gitlab.com/amlogic-foss/mainline-linux-issues-tracker/-/issues/9
+
+CCF clock control is a mandatory item to solved dual-head display: https://gitlab.com/amlogic-foss/mainline-linux-issues-tracker/-/issues/6
+
+> 
+>>
+>> Setting a safe clock from the DSI controller probe is an idea, but again I
+>> don't know which value I should use...
+> 
+> You mentionned that the problem comes DSI bridges that needs to change
+> at runtime. I don't know much about those TBH, but is there
+> anyway you can come up with a static GP0 rate that would then be able to
+> divide to serve all the rates bridge would need in your use case ?
+
+No, there's no such things in the DSI world, MIPI only specifies the electrical
+and transport layer, everything else is custom per vendor.
+
+> 
+> GP0 can go a lot higher than ~100MHz and there are dividers unused in the
+> tree it seems.
+> 
+> I suppose there is a finite number of required rate for each use case ?
+> If there are not too many and there is a common divider that allows a
+> common rate GP0 can do, it would solve your problem. It's a lot of if
+> but It is worth checking.
+> 
+> This is how audio works and DT assigned rate is a good match in this case.
+
+Yeah I know, but I would love it but no...
+
+> 
+>>
+>> I'll review the clk parenting flags and try to hack something.
+>>
+>> Thanks,
+>> Neil
+>>
+>>
+
+Thanks,
+Neil
 
 
