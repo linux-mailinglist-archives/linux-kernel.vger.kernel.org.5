@@ -1,173 +1,229 @@
-Return-Path: <linux-kernel+bounces-4234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7E3817970
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:14:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72EC2817972
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:14:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90638B21743
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:14:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 014581F24C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6695D74B;
-	Mon, 18 Dec 2023 18:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49945D74A;
+	Mon, 18 Dec 2023 18:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BWtF+un6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3bW0+VZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5045D733
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so627a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:14:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702923263; x=1703528063; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPggsM3NCSPNHuDW6MYkybcIgkppTmiteb7qARs7Z58=;
-        b=BWtF+un6752vqmkcElNRbra4G8AL7vWd0Q0/4iFu5IbKRN4M3aJ8E4KjKqp0TS6mE0
-         fjLc2KSlNOzadOiEl3Ik/m6tSwq//QFcSGxxm46KPA65++ucVdv53gDTNF/FRCX8Vq85
-         w6l3TYM6SAkgOkou9Xnes/rwDBDKfYOp3MJy1kI3rHIQE9t0jlRCzcR/dGuNCDEa0xP8
-         ksDXGasI+eaH/WtJTeBFH67Fe8mMsHS0Qsq3tTB33CDYfISQs56zpYZXnTOS/bZwdIvv
-         egQpsHvQAG2WH6hmn9I5+gGBIpBLAxOrc+a0WrCUOclwug3BB+MCxu0N6dKzCyF7fTuF
-         imJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702923263; x=1703528063;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DPggsM3NCSPNHuDW6MYkybcIgkppTmiteb7qARs7Z58=;
-        b=VIxkhUOUv9zcmcF3wL/J345nU+ghpQ0Z51l0XdHlqxx96jkR8okmOf5E5Us8VqzLRs
-         rAiFBANzdIqzk371JtfY66UmIXHMM5Io9yfqwpAM8MSdHWvrhQ1kbj/bochxixkDHjs7
-         gO97dZLl6ea3tdIybNUqginRREo8p3l8PlZEHxKcgxVfpYK9tROBQZz1J6XEoKA+yK8g
-         s2g3Mgz46rr2/+JBMpiRwekNKW9fQk9Z/WAcke3O+EU2Dsb+pPgTHeZBvzgKj4TXnude
-         OpnJ6TYkokwqU1zfV9AUxIRjstmqOQUtFcx3C+kZnZnsGiAe/SXtGjuE/cpL3NEUgnNG
-         IrJA==
-X-Gm-Message-State: AOJu0YxbDYfr76kA+2FfWv8QNY0uNUu8REhfOzbd2Ao+jc1vpJhTsBIC
-	+qaS55lZbU+lZUg07KGXQdEKjT/K8G8DRcVTuXr1w2HtH88=
-X-Google-Smtp-Source: AGHT+IEEzb76/Ah4Nlk8QgfziJRiEwlA6qkmZn/0hGHqfDBA43ntvwLYD5q36eVD4juH+vKRnm9fEY94vwSvJAHuo1g=
-X-Received: by 2002:a50:9e49:0:b0:553:62b4:5063 with SMTP id
- z67-20020a509e49000000b0055362b45063mr16629ede.4.1702923263119; Mon, 18 Dec
- 2023 10:14:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D153A1A8;
+	Mon, 18 Dec 2023 18:14:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5398CC433C8;
+	Mon, 18 Dec 2023 18:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702923282;
+	bh=IAcbyWh2VcqOIOQ3rTJ3BbMr4aaM/6S9Do49CCQkemo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=l3bW0+VZkzMl3rOqtt1pnAVTExQMgJpy0rtXcGPBSJjfdg8IQcSavbRLAcOhD8Lv4
+	 rpl3CyECQA31elgyTURlcCPxzd8nwLgJK5ngbJputFmt05Sh3bnEuF7oJR2lRMg4Ye
+	 KYWAmFwpJTTbc59t+b+xuav1vGnB3d/L4OCZ/UJ1SPJzItgTUwSZ33sMWrLI3IJpNZ
+	 jnt9AZBa6x9YXMeAVhZMVXsKuNju2M892qzTRLDFxEz2uXsKlXuK41w5T4MW84DcPt
+	 AwYQF70F69llYB5nT9QcYtY+NlploonaIahAKyJyZkSyZuozc6XwesIzpLiCtxuJHY
+	 18ZMCZ5keYD5Q==
+Date: Mon, 18 Dec 2023 18:14:30 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: =?UTF-8?B?TcOlcnRlbg==?= Lindahl <martenli@axis.com>
+Cc: linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ kernel@axis.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] iio: light: vcnl4000: Add ps high definition for
+ vcnl4040
+Message-ID: <20231218181430.0ed55749@jic23-huawei>
+In-Reply-To: <9469ccaa-d05a-1c9d-4350-841de7c03ae0@axis.com>
+References: <20231212-vcnl4000-ps-hd-v1-0-1c62a95828c0@axis.com>
+	<20231212-vcnl4000-ps-hd-v1-2-1c62a95828c0@axis.com>
+	<20231217141554.04c8863d@jic23-huawei>
+	<45bb38c9-63f9-101e-60e5-36037699f11e@axis.com>
+	<9469ccaa-d05a-1c9d-4350-841de7c03ae0@axis.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214103520.7198-1-yan.y.zhao@intel.com> <BN9PR11MB5276BE04CBB6D07039086D658C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZXzx1zXfZ6GV9TgI@google.com>
-In-Reply-To: <ZXzx1zXfZ6GV9TgI@google.com>
-From: Yiwei Zhang <zzyiwei@google.com>
-Date: Mon, 18 Dec 2023 10:14:09 -0800
-Message-ID: <CAKT=dDnMaX=sxU5i=tdPDB5Wpw6TQUVrUL-JJYD3xrgxEE=acw@mail.gmail.com>
-Subject: Re: [RFC PATCH] KVM: Introduce KVM VIRTIO device
-To: Sean Christopherson <seanjc@google.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, Yan Y Zhao <yan.y.zhao@intel.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "olvaffe@gmail.com" <olvaffe@gmail.com>, 
-	Zhiyuan Lv <zhiyuan.lv@intel.com>, Zhenyu Z Wang <zhenyu.z.wang@intel.com>, 
-	Yongwei Ma <yongwei.ma@intel.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>, 
-	"wanpengli@tencent.com" <wanpengli@tencent.com>, "jmattson@google.com" <jmattson@google.com>, 
-	"joro@8bytes.org" <joro@8bytes.org>, 
-	"gurchetansingh@chromium.org" <gurchetansingh@chromium.org>, "kraxel@redhat.com" <kraxel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> +Yiwei
->
-> On Fri, Dec 15, 2023, Kevin Tian wrote:
-> > > From: Zhao, Yan Y <yan.y.zhao@intel.com>
-> > > Sent: Thursday, December 14, 2023 6:35 PM
-> > >
-> > > - For host non-MMIO pages,
-> > >   * virtio guest frontend and host backend driver should be synced to use
-> > >     the same memory type to map a buffer. Otherwise, there will be
-> > >     potential problem for incorrect memory data. But this will only impact
-> > >     the buggy guest alone.
-> > >   * for live migration,
-> > >     as QEMU will read all guest memory during live migration, page aliasing
-> > >     could happen.
-> > >     Current thinking is to disable live migration if a virtio device has
-> > >     indicated its noncoherent state.
-> > >     As a follow-up, we can discuss other solutions. e.g.
-> > >     (a) switching back to coherent path before starting live migration.
-> >
-> > both guest/host switching to coherent or host-only?
-> >
-> > host-only certainly is problematic if guest is still using non-coherent.
-> >
-> > on the other hand I'm not sure whether the host/guest gfx stack is
-> > capable of switching between coherent and non-coherent path in-fly
-> > when the buffer is right being rendered.
-> >
-> > >     (b) read/write of guest memory with clflush during live migration.
-> >
-> > write is irrelevant as it's only done in the resume path where the
-> > guest is not running.
-> >
-> > >
-> > > Implementation Consideration
-> > > ===
-> > > There is a previous series [1] from google to serve the same purpose to
-> > > let KVM be aware of virtio GPU's noncoherent DMA status. That series
-> > > requires a new memslot flag, and special memslots in user space.
-> > >
-> > > We don't choose to use memslot flag to request honoring guest memory
-> > > type.
-> >
-> > memslot flag has the potential to restrict the impact e.g. when using
-> > clflush-before-read in migration?
->
-> Yep, exactly.  E.g. if KVM needs to ensure coherency when freeing memory back to
-> the host kernel, then the memslot flag will allow for a much more targeted
-> operation.
->
-> > Of course the implication is to honor guest type only for the selected slot
-> > in KVM instead of applying to the entire guest memory as in previous series
-> > (which selects this way because vmx_get_mt_mask() is in perf-critical path
-> > hence not good to check memslot flag?)
->
-> Checking a memslot flag won't impact performance.  KVM already has the memslot
-> when creating SPTEs, e.g. the sole caller of vmx_get_mt_mask(), make_spte(), has
-> access to the memslot.
->
-> That isn't coincidental, KVM _must_ have the memslot to construct the SPTE, e.g.
-> to retrieve the associated PFN, update write-tracking for shadow pages, etc.
->
-> I added Yiwei, who I think is planning on posting another RFC for the memslot
-> idea (I actually completely forgot that the memslot idea had been thought of and
-> posted a few years back).
+On Mon, 18 Dec 2023 17:00:10 +0100
+M=C3=A5rten Lindahl <martenli@axis.com> wrote:
 
-We've deferred to Yan (Intel side) to drive the userspace opt-in. So
-it's up to Yan to
-revise the series to be memslot flag based. I'm okay with what
-upstream folks think
-to be safer for the opt-in. Thanks!
+> On 12/18/23 16:19, M=C3=A5rten Lindahl wrote:
+> > On 12/17/23 15:15, Jonathan Cameron wrote: =20
+> >> On Fri, 15 Dec 2023 13:43:05 +0100
+> >> M=C3=A5rten Lindahl <marten.lindahl@axis.com> wrote:
+> >> =20
+> >>> The vcnl4040 proximity sensor defaults to 12 bit data resolution, but
+> >>> the chip also supports 16 bit data resolution, which is called=20
+> >>> proximity
+> >>> high definition (PS_HD).
+> >>>
+> >>> Add read/write attribute for proximity resolution, and read attribute
+> >>> for available proximity resolution values for the vcnl4040 chip.
+> >>>
+> >>> Signed-off-by: M=C3=A5rten Lindahl <marten.lindahl@axis.com> =20
+> > Hi Jonathan! =20
+> >> I'll review this on basis the usecase is clear (see reply to cover=20
+> >> letter) =20
+> >
+> > I'll skip this patch (see reply to cover letter comment)
+> >
+> > Your are right about the paired register manipulation. Better to=20
+> > read/write byte instead of word. =20
+>=20
+> Hi Jonathan!
+>=20
+> I now remember why the register is read as a word (CONF1/CONF2). It is=20
+> addressed as one 16 bit register where CONF1 is the low 8 bit field and=20
+> CONF2 is the high bit field. It is the same address/code for both:
+>=20
+> Register PS_CONF1 - COMMAND CODE: 0x03_L (0x03 DATA BYTE LOW)
+>=20
+> Register PS_CONF2 - COMMAND CODE: 0x03_H (0x03 DATA BYTE HIGH)
+>=20
+> Where in my case (PS_CONF2->PS_HD[3] is the same as PS_CONF1[11])
+Ouch. That's a horrible way to define a register map.
 
-> > > Instead we hope to make the honoring request to be explicit (not tied to a
-> > > memslot flag). This is because once guest memory type is honored, not only
-> > > memory used by guest virtio device, but all guest memory is facing page
-> > > aliasing issue potentially. KVM needs a generic solution to take care of
-> > > page aliasing issue rather than counting on memory type of a special
-> > > memslot being aligned in host and guest.
-> > > (we can discuss what a generic solution to handle page aliasing issue will
-> > > look like in later follow-up series).
-> > >
-> > > On the other hand, we choose to introduce a KVM virtio device rather than
-> > > just provide an ioctl to wrap kvm_arch_[un]register_noncoherent_dma()
-> > > directly, which is based on considerations that
+Jonathan
+
+>=20
+> Kind regards
+>=20
+> M=C3=A5rten
+>=20
 > >
-> > I wonder it's over-engineered for the purpose.
+> > Kind regards
 > >
-> > why not just introducing a KVM_CAP and allowing the VMM to enable?
-> > KVM doesn't need to know the exact source of requiring it...
->
-> Agreed.  If we end up needing to grant the whole VM access for some reason, just
-> give userspace a direct toggle.
+> > M=C3=A5rten
+> > =20
+> >>
+> >> The manipulation of the CONF1 and CONF2 registers in a pair is rather=
+=20
+> >> odd given you
+> >> only want to change one bit here.
+> >>
+> >> Why is that done? =20
+> >>> ---
+> >>> =C2=A0 drivers/iio/light/vcnl4000.c | 87=20
+> >>> +++++++++++++++++++++++++++++++++++++++++++-
+> >>> =C2=A0 1 file changed, 85 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/iio/light/vcnl4000.c=20
+> >>> b/drivers/iio/light/vcnl4000.c
+> >>> index fdf763a04b0b..2addff635b79 100644
+> >>> --- a/drivers/iio/light/vcnl4000.c
+> >>> +++ b/drivers/iio/light/vcnl4000.c
+> >>> @@ -90,6 +90,7 @@
+> >>> =C2=A0 #define VCNL4040_PS_CONF1_PS_SHUTDOWN=C2=A0=C2=A0=C2=A0 BIT(0)
+> >>> =C2=A0 #define VCNL4040_PS_CONF2_PS_IT=C2=A0=C2=A0=C2=A0 GENMASK(3, 1=
+) /* Proximity=20
+> >>> integration time */
+> >>> =C2=A0 #define VCNL4040_CONF1_PS_PERS=C2=A0=C2=A0=C2=A0 GENMASK(5, 4)=
+ /* Proximity=20
+> >>> interrupt persistence setting */
+> >>> +#define VCNL4040_PS_CONF2_PS_HD=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 BIT(11)=C2=A0=C2=A0=C2=A0 /* Proximity high=20
+> >>> definition */
+> >>> =C2=A0 #define VCNL4040_PS_CONF2_PS_INT=C2=A0=C2=A0=C2=A0 GENMASK(9, =
+8) /* Proximity=20
+> >>> interrupt mode */
+> >>> =C2=A0 #define VCNL4040_PS_CONF3_MPS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 GENMASK(6, 5) /* Proximity=20
+> >>> multi pulse number */
+> >>> =C2=A0 #define VCNL4040_PS_MS_LED_I=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 GENMASK(10, 8) /* Proximity=20
+> >>> current */
+> >>> @@ -170,6 +171,11 @@ static const int vcnl4040_ps_calibbias_ua[][2] =
+=3D {
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {0, 200000},
+> >>> =C2=A0 };
+> >>> =C2=A0 +static const int vcnl4040_ps_resolutions[2] =3D {
+> >>> +=C2=A0=C2=A0=C2=A0 12,
+> >>> +=C2=A0=C2=A0=C2=A0 16
+> >>> +};
+> >>> +
+> >>> =C2=A0 static const int vcnl4040_als_persistence[] =3D {1, 2, 4, 8};
+> >>> =C2=A0 static const int vcnl4040_ps_persistence[] =3D {1, 2, 3, 4};
+> >>> =C2=A0 static const int vcnl4040_ps_oversampling_ratio[] =3D {1, 2, 4=
+, 8};
+> >>> @@ -880,6 +886,54 @@ static ssize_t=20
+> >>> vcnl4040_write_ps_calibbias(struct vcnl4000_data *data, int val)
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+> >>> =C2=A0 }
+> >>> =C2=A0 +static ssize_t vcnl4040_read_ps_resolution(struct vcnl4000_da=
+ta=20
+> >>> *data, int *val, int *val2)
+> >>> +{
+> >>> +=C2=A0=C2=A0=C2=A0 int ret;
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 ret =3D i2c_smbus_read_word_data(data->client, VC=
+NL4200_PS_CONF1); =20
+> >> The field seems to be in PS_CONF2.=C2=A0 So you are reading a word and=
+ I=20
+> >> guess that
+> >> gets you two registers.=C2=A0 Can we not do a byte read to get just CO=
+NF2? =20
+> >>> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 ret =3D FIELD_GET(VCNL4040_PS_CONF2_PS_HD, ret);
+> >>> +=C2=A0=C2=A0=C2=A0 if (ret >=3D ARRAY_SIZE(vcnl4040_ps_resolutions))
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 *val =3D vcnl4040_ps_resolutions[ret];
+> >>> +=C2=A0=C2=A0=C2=A0 *val2 =3D 0;
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 return ret;
+> >>> +}
+> >>> +
+> >>> +static ssize_t vcnl4040_write_ps_resolution(struct vcnl4000_data=20
+> >>> *data, int val)
+> >>> +{
+> >>> +=C2=A0=C2=A0=C2=A0 unsigned int i;
+> >>> +=C2=A0=C2=A0=C2=A0 int ret;
+> >>> +=C2=A0=C2=A0=C2=A0 u16 regval;
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < ARRAY_SIZE(vcnl4040_ps_resoluti=
+ons); i++) {
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (val =3D=3D vcnl4040_p=
+s_resolutions[i])
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 b=
+reak;
+> >>> +=C2=A0=C2=A0=C2=A0 }
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 if (i >=3D ARRAY_SIZE(vcnl4040_ps_resolutions))
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 mutex_lock(&data->vcnl4000_lock);
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 ret =3D i2c_smbus_read_word_data(data->client, VC=
+NL4200_PS_CONF1);
+> >>> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_unlock;
+> >>> +
+> >>> +=C2=A0=C2=A0=C2=A0 regval =3D (ret & ~VCNL4040_PS_CONF2_PS_HD);
+> >>> +=C2=A0=C2=A0=C2=A0 regval |=3D FIELD_PREP(VCNL4040_PS_CONF2_PS_HD, i=
+);
+> >>> +=C2=A0=C2=A0=C2=A0 ret =3D i2c_smbus_write_word_data(data->client, V=
+CNL4200_PS_CONF1,
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regval);
+> >>> +
+> >>> +out_unlock:
+> >>> +=C2=A0=C2=A0=C2=A0 mutex_unlock(&data->vcnl4000_lock);
+> >>> +=C2=A0=C2=A0=C2=A0 return ret;
+> >>> +} =20
+> >> c), =20
+
 
