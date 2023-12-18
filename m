@@ -1,136 +1,73 @@
-Return-Path: <linux-kernel+bounces-3576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D33B816E06
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:39:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97396816E08
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2615B21FC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:39:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 374AEB21FA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3CD7D89F;
-	Mon, 18 Dec 2023 12:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4777EFBF;
+	Mon, 18 Dec 2023 12:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HjTamBvt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GPWCQdG9"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C243A262;
-	Mon, 18 Dec 2023 12:39:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A5B0C433C8;
-	Mon, 18 Dec 2023 12:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C4F7EFA1;
+	Mon, 18 Dec 2023 12:39:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78C90C433C7;
+	Mon, 18 Dec 2023 12:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903149;
-	bh=VI1TrtlceuEBz2etHmTIzW5gF+DnQL9zxLaBcO6AK8o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HjTamBvtbaoB+TEYe7ZAb2sCf8F8tlzBS3MiEBWx/ftoN3KkP5xS8696avO9+L6SB
-	 iOW+r1aWk8GAHPIW0FqE57qdtLfesRg1FPXi8LLmnPGECLer7jxJmvM+F8/MYsW2nA
-	 oChSp70N5TrxwXIAJ1PLCMy6vCABcND1uk8MZuq8PTuGfuNo5/FnanpIgh1J700qil
-	 j5KlfS6OL39/fM8m631TOPI18ST8MNsDPzAp9f+rYgrj4NcEkhLnao8hR5cnJEnUSN
-	 lb7xN+gxShV5DgDmosDUPNv3B0J5eoqO5LhknfU54Z0YtUzhCj8Ookt57e3IlVpK4+
-	 jHJm9LE+3XPeQ==
-Message-ID: <dc691a01-5b70-448c-bed3-fcd6819c4bc5@kernel.org>
-Date: Mon, 18 Dec 2023 14:39:03 +0200
+	s=k20201202; t=1702903165;
+	bh=0PY//jHcNSpAPBMjzTyNT7kr17tD9ZNoMx4Cb+GGtkU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GPWCQdG9/Ev7kXmdsF9q6RbTgvVb1bvzuSeLVv2L5EWP4cwEJYatFXzD8p0jNCBRe
+	 yBN3ul2yiBXw9v154taJKII31upB8XaI9f+vq3CMRWhCyPoPuKBa+nmvlnA4IVvlbg
+	 K96KALufQ+7QwD+k4jObhvbs0AzTLwcH3rITJrS/9WTCB66qibRTiYe3W+cYD9dLhQ
+	 M+cmjCrRbReTFIslJ+RoXfVMsXA0mWKVrUMbgTdRGg2WydCtLgLEJe1LaYbqsq8rne
+	 o7Y2zrlysvGlSKc1eQUhvj5lhVMV7qip6y+RHnvzos6pGH/Dd8fGttW1nI3MrO7bV7
+	 GXqF8DjXVsfqA==
+Date: Mon, 18 Dec 2023 13:39:18 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, tglx@linutronix.de,
+	x86@kernel.org, tj@kernel.org, peterz@infradead.org,
+	mathieu.desnoyers@efficios.com, paulmck@kernel.org,
+	keescook@chromium.org, dave.hansen@linux.intel.com,
+	mingo@redhat.com, will@kernel.org, longman@redhat.com,
+	boqun.feng@gmail.com
+Subject: Re: [PATCH 25/50] wait: Remove uapi header file from main header file
+Message-ID: <20231218-lacke-hiebe-aa4508561256@brauner>
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216032957.3553313-1-kent.overstreet@linux.dev>
+ <20231216032957.3553313-4-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 02/10] selftests: forwarding: ethtool_mm: fall
- back to aggregate if device does not report pMAC stats
-Content-Language: en-US
-To: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, shuah@kernel.org, s-vadapalli@ti.com,
- r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com, horms@kernel.org,
- p-varis@ti.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20231215132048.43727-1-rogerq@kernel.org>
- <20231215132048.43727-3-rogerq@kernel.org>
- <20231215172710.v6gtreijeqzocmv4@skbuf>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231215172710.v6gtreijeqzocmv4@skbuf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231216032957.3553313-4-kent.overstreet@linux.dev>
 
-
-
-On 15/12/2023 19:27, Vladimir Oltean wrote:
-> On Fri, Dec 15, 2023 at 03:20:40PM +0200, Roger Quadros wrote:
->> diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
->> index 8f6ca458af9a..763c262a3453 100755
->> --- a/tools/testing/selftests/net/forwarding/lib.sh
->> +++ b/tools/testing/selftests/net/forwarding/lib.sh
->> @@ -146,6 +146,15 @@ check_ethtool_mm_support()
->>  	fi
->>  }
->>  
->> +check_ethtool_pmac_std_stats_support()
->> +{
->> +	local dev=$1; shift
->> +	local grp=$1; shift
->> +
->> +	[ 0 -ne $(ethtool --json -S $dev --all-groups --src pmac 2>/dev/null \
->> +		| jq '.[]."$grp" | length') ]
+On Fri, Dec 15, 2023 at 10:29:31PM -0500, Kent Overstreet wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> This is broken. $grp inside single quotes will search for the plain-text
-> "$grp" string, not for the $grp bash variable. Use ".[].\"$grp\" | length".
+> There's really no overlap between uapi/linux/wait.h and linux/wait.h.
+> There are two files which rely on the uapi file being implcitly included,
+> so explicitly include it there and remove it from the main header file.
 > 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
 
-Thanks for catching this. Will fix in next spin.
-
-> $ ./ethtool_mm.sh eno0 swp0
-> eno0 does not report pMAC statistics, falling back to aggregate
-> swp0 does not report pMAC statistics, falling back to aggregate
-> $ ethtool -S swp0 --all-groups --src pmac
-> Standard stats for swp0:
-> eth-phy-SymbolErrorDuringCarrier: 0
-> eth-mac-FramesTransmittedOK: 90017
-> eth-mac-FramesReceivedOK: 90033
-> eth-mac-FrameCheckSequenceErrors: 0
-> eth-mac-AlignmentErrors: 0
-> eth-mac-OctetsTransmittedOK: 9181138
-> eth-mac-OctetsReceivedOK: 9182112
-> eth-mac-MulticastFramesXmittedOK: 17
-> eth-mac-BroadcastFramesXmittedOK: 90000
-> eth-mac-MulticastFramesReceivedOK: 33
-> eth-mac-BroadcastFramesReceivedOK: 90000
-> eth-mac-FrameTooLongErrors: 0
-> eth-ctrl-MACControlFramesReceived: 0
-> rmon-etherStatsUndersizePkts: 0
-> rmon-etherStatsOversizePkts: 0
-> rmon-etherStatsFragments: 0
-> rmon-etherStatsJabbers: 0
-> rx-rmon-etherStatsPkts64to64Octets: 33
-> rx-rmon-etherStatsPkts65to127Octets: 90000
-> rx-rmon-etherStatsPkts128to255Octets: 0
-> rx-rmon-etherStatsPkts256to511Octets: 0
-> rx-rmon-etherStatsPkts512to1023Octets: 0
-> rx-rmon-etherStatsPkts1024to1526Octets: 0
-> rx-rmon-etherStatsPkts1527to65535Octets: 0
-> tx-rmon-etherStatsPkts64to64Octets: 12
-> tx-rmon-etherStatsPkts65to127Octets: 90005
-> tx-rmon-etherStatsPkts128to255Octets: 0
-> tx-rmon-etherStatsPkts256to511Octets: 0
-> tx-rmon-etherStatsPkts512to1023Octets: 0
-> tx-rmon-etherStatsPkts1024to1526Octets: 0
-> tx-rmon-etherStatsPkts1527to65535Octets: 0
-> 
->> +}
->> +
->>  check_locked_port_support()
->>  {
->>  	if ! bridge -d link show | grep -q " locked"; then
->> -- 
->> 2.34.1
->>
-
--- 
-cheers,
--roger
+Reviewed-by: Christian Brauner <brauner@kernel.org>
 
