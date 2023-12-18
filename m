@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-3443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DCE5816C53
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:35:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96DB5816C62
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3333C1C22970
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:35:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F90A1C229FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE2C20321;
-	Mon, 18 Dec 2023 11:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD36231A71;
+	Mon, 18 Dec 2023 11:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eqnwoNUq"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FrZmTNPP"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCA81B27A;
-	Mon, 18 Dec 2023 11:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5D51BDE1;
+	Mon, 18 Dec 2023 11:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BIArrZX007847;
-	Mon, 18 Dec 2023 11:33:09 GMT
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BIAsPSk000317;
+	Mon, 18 Dec 2023 11:33:10 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=BVqhlyZ4naps
-	/Vtfgkn5TdPw6rNLybDqwsKTscaywgw=; b=eqnwoNUqf0AySpz/62PaDBOBqcOd
-	jX6B05EeDU33wByQ5cY9KACEpA1Q4sEEAEvhzltAqHmAlsLVtbbJHwbIerDuZJKE
-	8VK8k1SaWuNMyOGlugyrcRBFPFMP2bs7a5oPzhBz6T7nXsKgNThXu97K9KDbQ4bo
-	FJCG1jjY9GGlZi7XYy3DVDDYkubvoaYW/iynSp8nngKcg+uO0DmyEEv0lva28J5A
-	NL6E8L2CxosT1C5F+nnyfRUQo+/Xrrv6/N1YvFp9RAj05lKB1o432fd1RHq8trn8
-	AlvDzO5LyOwOH+0ZODATGwvbHeWQWxwzkFzODy5IjDH+w1NSFVCwQMD8Ig==
+	from:to:cc:subject:date:message-id:in-reply-to:references; s=
+	qcppdkim1; bh=uemSpET3sD+B6z4KBIkwMzg9w2z6sbdfcQ+wwx6z580=; b=Fr
+	ZmTNPPqEeQ0fk1Dx9CSOl3m7BN4zZy5fEqiTGZN0Z/0uBjd48/qUEmDJYG6V8q6K
+	9mqoHJ75IQCz/QQX+ju4IQ68OrnonYzp9cBZRJSXSjJ6w8tdFmsRvAB/c3bZWrYp
+	H75Yz6C2xCVLNtyLaWrxrQXirD3YW4guBQwIOnN0oH1NkOEt3/V2+70CS6+raXvg
+	CUOi5rPom2vCFqfdD8yhM1Alxy7g1DWLDqVPL7t1uoObiThFg1DBcLaeJIh/LKW9
+	RCixp3UXAk6NdY82FQZ0voYpzH+A7qvNB+HxoGgNUOEOxDNCLkTu3fhObW+zUxOG
+	Wm6/piFOe2OFmVtxE1Sg==
 Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2m49g5gv-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v14xy443u-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 18 Dec 2023 11:33:09 +0000 (GMT)
 Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BIBX5KT029944;
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BIBX5MB029943;
 	Mon, 18 Dec 2023 11:33:05 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3v14ykyyg7-1;
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3v14ykyyg9-1;
 	Mon, 18 Dec 2023 11:33:05 +0000
 Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BIBVmqp028240;
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BIBX5Gj029914;
 	Mon, 18 Dec 2023 11:33:05 GMT
 Received: from hu-sgudaval-hyd.qualcomm.com (hu-dikshita-hyd.qualcomm.com [10.213.110.13])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3BIBX59H029907;
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3BIBX53B029905;
 	Mon, 18 Dec 2023 11:33:05 +0000
 Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 347544)
-	id 1F56E22AB; Mon, 18 Dec 2023 17:03:04 +0530 (+0530)
+	id 211F0A34; Mon, 18 Dec 2023 17:03:04 +0530 (+0530)
 From: Dikshita Agarwal <quic_dikshita@quicinc.com>
 To: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com,
@@ -58,487 +59,99 @@ To: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         mchehab@kernel.org, bryan.odonoghue@linaro.org
 Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com,
         Dikshita Agarwal <quic_dikshita@quicinc.com>
-Subject: [PATCH v2 00/34] Qualcomm video encoder and decoder driver
-Date: Mon, 18 Dec 2023 17:01:55 +0530
-Message-Id: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+Subject: [PATCH v2 01/34] media: introduce common helpers for video firmware handling
+Date: Mon, 18 Dec 2023 17:01:56 +0530
+Message-Id: <1702899149-21321-2-git-send-email-quic_dikshita@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
 X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: UNfyMWvpvxd-6hB5qK3xlslaCbeVU6bf
-X-Proofpoint-GUID: UNfyMWvpvxd-6hB5qK3xlslaCbeVU6bf
+X-Proofpoint-GUID: x3Oy-UIFpQzs5vsfJ35JZG1ksAM8in_R
+X-Proofpoint-ORIG-GUID: x3Oy-UIFpQzs5vsfJ35JZG1ksAM8in_R
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- impostorscore=0 malwarescore=0 clxscore=1015 mlxscore=0 spamscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312180083
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312180083
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-This patch series introduces support for Qualcomm new video acceleration
-hardware architecture, used for video stream decoding/encoding. This driver
-is based on new communication protocol between video hardware and application
-processor.
-This driver comes with below capabilities:
-- V4L2 complaint video driver with M2M and STREAMING capability.
-- Supports H264, H265, VP9 decoders.
-- Supports H264, H265 encoders.
-This driver comes with below features:
-- Centralized resource and memory management.
-- Centralized management of core and instance states.
-- Defines platform specific capabilities and features. As a results, it provides
-  a single point of control to enable/disable a given feature depending on 
-  specific platform capabilities.
-- Handles hardware interdependent configurations. For a given configuration from
-  client, the driver checks for hardware dependent configuration/s and updates
-  the same.
-- Handles multiple complex video scenarios involving state transitions - DRC,
-  Drain, Seek, back to back DRC, DRC during Drain sequence, DRC during Seek
-  sequence.
-- Introduces a flexible way for driver to subscribe for any property with
-  hardware. Hardware would inform driver with those subscribed property with any
-  change in value.
-- Introduces performance (clock and bus) model based on new hardware
-  architecture.
-- Introduces multi thread safe design to handle communication between client and
-  hardware.
-- Adapts encoder quality improvements available in new hardware architecture.
-- Implements asynchronous communication with hardware to achieve better
-  experience in low latency usecases.
-- Supports multi stage hardware architecture for encode/decode.
-- Output and capture planes are controlled independently. Thereby providing a
-  way to reconfigure individual plane.
-- Hardware packetization layer supports synchronization between configuration
-  packet and data packet.
-- Introduces a flexibility to receive a hardware response for a given command
-  packet.
-- Native hardware support of LAST flag which is mandatory to align with port
-  reconfiguration and DRAIN sequence as per V4L guidelines.
-- Native hardware support for drain sequence.
+Re-organize the video driver code by introducing a new folder
+'vcodec' and placing 'venus' driver code inside that.
 
-Changes done since v1[1]:
-- Patches are created as logical split instead of file by file.
-- Extracted common functionality between venus and iris driver and placed them
-  under common folder vcodec.
-- Flattened directory structure.
-- Restructured the code in a simplified layer architecture.
-- Implemented runtime PM, and dropped explicit power collapse thread in driver.
-- Moved to standard kernel log print api.
-- Simplified the bus and clock calculation logic.
-- Removed debug features like dma tracker, frame stats, debugfs.
-- Merged v4l2 and vidc layer as vidc in driver.
-- Removed separate probe for context bank.
-- Use of_device_get_match_data to get platform data.
-- Replaced complex macros with inline functions.
-- Migrated venus to iris names.
-- Addressed many other comments received on [1].
+Introduce common helpers for trustzone based firmware
+load/unload etc. which are placed in common folder
+i.e. 'vcodec'.
+Use these helpers in 'venus' driver. These helpers will be
+used by 'iris' driver as well which is introduced later
+in this patch series.
 
-[1]: https://patchwork.kernel.org/project/linux-media/list/?series=770581 
-
-Patch 1, adds dt binding for iris driver.
-
-Patches 2-4, are introducing vcodec folder and moving common APIs like fw
-load/unload, buffer size calcualtions, read/write to shared queues to common
-files which are being used by both venus and iris drivers.
-This also moves the venus driver folder to vcodec folder.
-
-Patch 5, adds the maintainers for iris driver.
-
-Patch 6-29, adds core iris driver and enable decoder.
-
-Patch 30-34, enable encoder functionality in iris driver.
-
-Static tools like checkpatch, smatch, dt_binding_check, sparse and Coccinelle 
-run successfully with this driver. 
-
- The output of v4l2-compliance test looks like: 
-
-v4l2-compliance SHA: not available, 64 bits
- 
-Cannot open device /dev/vido0, exiting.
-root@qemuarm64:/usr/bin# ./v4l2-compliance -d /dev/video0
-v4l2-compliance SHA: not available, 64 bits
- 
-Compliance test for iris_driver device /dev/video0:
- 
-Driver Info:
-        Driver name      : iris_driver
-        Card type        : iris_decoder
-        Bus info         : platform:iris_bus
-        Driver version   : 6.6.0
-        Capabilities     : 0x84204000
-                Video Memory-to-Memory Multiplanar
-                Streaming
-                Extended Pix Format
-                Device Capabilities
-        Device Caps      : 0x04204000
-                Video Memory-to-Memory Multiplanar
-                Streaming
-                Extended Pix Format
- 
-Required ioctls:
-        test VIDIOC_QUERYCAP: OK
- 
-Allow for multiple opens:
-        test second /dev/video0 open: OK
-        test VIDIOC_QUERYCAP: OK
-        test VIDIOC_G/S_PRIORITY: OK
-                fail: ../../../v4l-utils-1.18.1/utils/v4l2-compliance/v4l2-compliance.cpp(724): !ok
-        test for unlimited opens: FAIL
- 
-Debug ioctls:
-        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
-        test VIDIOC_LOG_STATUS: OK (Not Supported)
- 
-Input ioctls:
-        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
-        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
-        test VIDIOC_ENUMAUDIO: OK (Not Supported)
-        test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
-        test VIDIOC_G/S_AUDIO: OK (Not Supported)
-        Inputs: 0 Audio Inputs: 0 Tuners: 0
- 
-Output ioctls:
-        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
-        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
-        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
-        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
-        Outputs: 0 Audio Outputs: 0 Modulators: 0
- 
-Input/Output configuration ioctls:
-        test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
-        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
-        test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
-        test VIDIOC_G/S_EDID: OK (Not Supported)
- 
-Control ioctls:
-        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
-        test VIDIOC_QUERYCTRL: OK
-        test VIDIOC_G/S_CTRL: OK
-        test VIDIOC_G/S/TRY_EXT_CTRLS: OK
-        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
-        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
-        Standard Controls: 48 Private Controls: 0
- 
-Format ioctls:
-        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
-        test VIDIOC_G/S_PARM: OK (Not Supported)
-        test VIDIOC_G_FBUF: OK (Not Supported)
-        test VIDIOC_G_FMT: OK
-        test VIDIOC_TRY_FMT: OK
-        test VIDIOC_S_FMT: OK
-        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
-        test Cropping: OK
-        test Composing: OK
-        test Scaling: OK
- 
-Codec ioctls:
-        test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
-        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
-        test VIDIOC_(TRY_)DECODER_CMD: OK
- 
-Buffer ioctls:
-        testVIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
-        test VIDIOC_EXPBUF: OK (Not Supported)
-        test Requests: OK (Not Supported)
- 
-Total for iris_driver device /dev/video0: 44, Succeeded: 43, Failed: 1, Warnings: 0
- 
-Compliance test for iris_driver device /dev/video1:
- 
-Driver Info:
-        Driver name      : iris_driver
-        Card type        : iris_encoder
-        Bus info         : platform:iris_bus
-        Driver version   : 6.6.0
-        Capabilities     : 0x84204000
-                Video Memory-to-Memory Multiplanar
-                Streaming
-                Extended Pix Format
-                Device Capabilities
-        Device Caps      : 0x04204000
-                Video Memory-to-Memory Multiplanar
-                Streaming
-                Extended Pix Format
- 
-Required ioctls:
-        test VIDIOC_QUERYCAP: OK
- 
-Allow for multiple opens:
-        test second /dev/video1 open: OK
-        test VIDIOC_QUERYCAP: OK
-        test VIDIOC_G/S_PRIORITY: OK
-                fail: ../../../v4l-utils-1.18.1/utils/v4l2-compliance/v4l2-compliance.cpp(724): !ok
-        test for unlimited opens: FAIL
- 
-Debug ioctls:
-        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
-        test VIDIOC_LOG_STATUS: OK (Not Supported)
- 
-Input ioctls:
-        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
-        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
-        test VIDIOC_ENUMAUDIO: OK (Not Supported)
-        test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
-        test VIDIOC_G/S_AUDIO: OK (Not Supported)
-        Inputs: 0 Audio Inputs: 0 Tuners: 0
- 
-Output ioctls:
-        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
-        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
-        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
-        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
-        Outputs: 0 Audio Outputs: 0 Modulators: 0
- 
-Input/Output configuration ioctls:
-        test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
-        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
-        test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
-        test VIDIOC_G/S_EDID: OK (Not Supported)
- 
-Control ioctls:
-        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
-        test VIDIOC_QUERYCTRL: OK
-        test VIDIOC_G/S_CTRL: OK
-        test VIDIOC_G/S/TRY_EXT_CTRLS: OK
-        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
-        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
-        Standard Controls: 48 Private Controls: 0
- 
-Format ioctls:
-        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
-        test VIDIOC_G/S_PARM: OK
-        test VIDIOC_G_FBUF: OK (Not Supported)
-        test VIDIOC_G_FMT: OK
-        test VIDIOC_TRY_FMT: OK
-        test VIDIOC_S_FMT: OK
-        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
-        test Cropping: OK
-        test Composing: OK
-        test Scaling: OK (Not Supported)
- 
-Codec ioctls:
-        test VIDIOC_(TRY_)ENCODER_CMD: OK
-        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
-        test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
- 
-Buffer ioctls:
-        test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
-        test VIDIOC_EXPBUF: OK (Not Supported)
-        test Requests: OK (Not Supported)
- 
-Total for iris_driver device /dev/video1: 44, Succeeded: 43, Failed: 1, Warnings: 0
-
-Dikshita Agarwal (27):
-  media: introduce common helpers for video firmware handling
-  media: introduce common helpers for queues handling
-  media: introduce common helpers for buffer size calculation
-  dt-bindings: media: Add sm8550 dt schema
-  media: MAINTAINERS: Add Qualcomm Iris video accelerator driver
-  media: iris: register video device to platform driver
-  media: iris: initialize power resources
-  media: iris: introduce state machine for iris core
-  media: iris: initialize shared queues for host and firmware
-    communication
-  media: iris: add PIL functionality for video firmware
-  media: iris: introduce packetization layer for creating HFI packets
-  media: iris: add video processing unit(VPU) specific register handling
-  media: iris: introduce platform specific capabilities for core and
-    instance
-  media: iris: add handling for interrupt service routine(ISR) invoked
-    by hardware
-  media: iris: implement iris v4l2_ctrl_ops and prepare capabilities
-  media: iris: implement vb2_ops queue setup
-  media: iris: implement HFI to queue and release buffers
-  media: iris: add video hardware internal buffer count and size
-    calculation
-  media: iris: implement internal buffer management
-  media: iris: introduce instance states
-  media: iris: implement vb2 streaming ops on capture and output planes
-  media: iris: implement vb2 ops for buf_queue and firmware response
-  media: iris: register video encoder device to platform driver
-  media: iris: add platform specific instance capabilities for encoder
-  media: iris: implement iris v4l2 ioctl ops supported by encoder
-  media: iris: add vb2 streaming and buffer ops for encoder
-  media: iris: add power management for encoder
-
-Vikash Garodia (7):
-  media: iris: implement iris v4l2 file ops
-  media: iris: introduce and implement iris vb2 mem ops
-  media: iris: implement iris v4l2 ioctl ops supported by decoder
-  media: iris: subscribe input and output properties to firmware
-  media: iris: subscribe src change and handle firmware responses
-  media: iris: add instance sub states and implement DRC and Drain
-    sequence
-  media: iris: implement power management
-
- .../bindings/media/qcom,sm8550-iris.yaml           |  177 ++
- MAINTAINERS                                        |   11 +
- drivers/media/platform/qcom/Kconfig                |    3 +-
- drivers/media/platform/qcom/Makefile               |    3 +-
- drivers/media/platform/qcom/vcodec/buffers.c       |  103 ++
- drivers/media/platform/qcom/vcodec/buffers.h       |   15 +
- drivers/media/platform/qcom/vcodec/firmware.c      |  147 ++
- drivers/media/platform/qcom/vcodec/firmware.h      |   21 +
- drivers/media/platform/qcom/vcodec/hfi_queue.c     |  258 +++
- drivers/media/platform/qcom/vcodec/hfi_queue.h     |  129 ++
- drivers/media/platform/qcom/vcodec/iris/Kconfig    |   13 +
- drivers/media/platform/qcom/vcodec/iris/Makefile   |   26 +
- .../media/platform/qcom/vcodec/iris/hfi_defines.h  |  386 +++++
- .../media/platform/qcom/vcodec/iris/iris_buffer.c  |  833 +++++++++
- .../media/platform/qcom/vcodec/iris/iris_buffer.h  |   65 +
- .../media/platform/qcom/vcodec/iris/iris_common.h  |  147 ++
- .../media/platform/qcom/vcodec/iris/iris_core.c    |  110 ++
- .../media/platform/qcom/vcodec/iris/iris_core.h    |  121 ++
- .../media/platform/qcom/vcodec/iris/iris_ctrls.c   | 1782 ++++++++++++++++++++
- .../media/platform/qcom/vcodec/iris/iris_ctrls.h   |   71 +
- .../media/platform/qcom/vcodec/iris/iris_helpers.c | 1099 ++++++++++++
- .../media/platform/qcom/vcodec/iris/iris_helpers.h |   68 +
- drivers/media/platform/qcom/vcodec/iris/iris_hfi.c |  917 ++++++++++
- drivers/media/platform/qcom/vcodec/iris/iris_hfi.h |   47 +
- .../platform/qcom/vcodec/iris/iris_hfi_packet.c    |  729 ++++++++
- .../platform/qcom/vcodec/iris/iris_hfi_packet.h    |  118 ++
- .../platform/qcom/vcodec/iris/iris_hfi_response.c  | 1097 ++++++++++++
- .../platform/qcom/vcodec/iris/iris_hfi_response.h  |   20 +
- .../platform/qcom/vcodec/iris/iris_instance.h      |  106 ++
- .../media/platform/qcom/vcodec/iris/iris_power.c   |  178 ++
- .../media/platform/qcom/vcodec/iris/iris_power.h   |   15 +
- .../media/platform/qcom/vcodec/iris/iris_probe.c   |  357 ++++
- .../media/platform/qcom/vcodec/iris/iris_state.c   |  453 +++++
- .../media/platform/qcom/vcodec/iris/iris_state.h   |   78 +
- drivers/media/platform/qcom/vcodec/iris/iris_vb2.c |  457 +++++
- drivers/media/platform/qcom/vcodec/iris/iris_vb2.h |   28 +
- .../media/platform/qcom/vcodec/iris/iris_vdec.c    | 1211 +++++++++++++
- .../media/platform/qcom/vcodec/iris/iris_vdec.h    |   25 +
- .../media/platform/qcom/vcodec/iris/iris_venc.c    |  948 +++++++++++
- .../media/platform/qcom/vcodec/iris/iris_venc.h    |   27 +
- .../media/platform/qcom/vcodec/iris/iris_vidc.c    | 1419 ++++++++++++++++
- .../media/platform/qcom/vcodec/iris/iris_vidc.h    |   15 +
- .../platform/qcom/vcodec/iris/platform_common.c    |   29 +
- .../platform/qcom/vcodec/iris/platform_common.h    |  323 ++++
- .../platform/qcom/vcodec/iris/platform_sm8550.c    | 1190 +++++++++++++
- .../media/platform/qcom/vcodec/iris/resources.c    |  506 ++++++
- .../media/platform/qcom/vcodec/iris/resources.h    |   44 +
- .../media/platform/qcom/vcodec/iris/vpu_common.c   |  158 ++
- .../media/platform/qcom/vcodec/iris/vpu_common.h   |   52 +
- .../media/platform/qcom/vcodec/iris/vpu_iris3.c    |  568 +++++++
- .../media/platform/qcom/vcodec/iris/vpu_iris3.h    |   13 +
- .../platform/qcom/vcodec/iris/vpu_iris3_buffer.c   |  395 +++++
- .../platform/qcom/vcodec/iris/vpu_iris3_buffer.h   | 1469 ++++++++++++++++
- .../platform/qcom/vcodec/iris/vpu_iris3_power.c    |  148 ++
- .../platform/qcom/vcodec/iris/vpu_iris3_power.h    |   13 +
- .../media/platform/qcom/{ => vcodec}/venus/Kconfig |    0
- .../platform/qcom/{ => vcodec}/venus/Makefile      |    5 +-
- .../media/platform/qcom/{ => vcodec}/venus/core.c  |  102 +-
- .../media/platform/qcom/{ => vcodec}/venus/core.h  |    0
- .../media/platform/qcom/{ => vcodec}/venus/dbgfs.c |    0
- .../media/platform/qcom/{ => vcodec}/venus/dbgfs.h |    0
- .../platform/qcom/vcodec/venus/firmware_no_tz.c    |  194 +++
- .../platform/qcom/vcodec/venus/firmware_no_tz.h    |   19 +
- .../platform/qcom/{ => vcodec}/venus/helpers.c     |  172 +-
- .../platform/qcom/{ => vcodec}/venus/helpers.h     |    2 +-
- .../media/platform/qcom/{ => vcodec}/venus/hfi.c   |    0
- .../media/platform/qcom/{ => vcodec}/venus/hfi.h   |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_cmds.c    |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_cmds.h    |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_helper.h  |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_msgs.c    |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_msgs.h    |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_parser.c  |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_parser.h  |    0
- .../qcom/{ => vcodec}/venus/hfi_plat_bufs.h        |    4 +-
- .../qcom/{ => vcodec}/venus/hfi_plat_bufs_v6.c     |   10 +-
- .../qcom/{ => vcodec}/venus/hfi_platform.c         |    0
- .../qcom/{ => vcodec}/venus/hfi_platform.h         |    0
- .../qcom/{ => vcodec}/venus/hfi_platform_v4.c      |    0
- .../qcom/{ => vcodec}/venus/hfi_platform_v6.c      |    0
- .../platform/qcom/{ => vcodec}/venus/hfi_venus.c   |  521 +-----
- .../platform/qcom/{ => vcodec}/venus/hfi_venus.h   |    0
- .../qcom/{ => vcodec}/venus/hfi_venus_io.h         |    0
- .../platform/qcom/{ => vcodec}/venus/pm_helpers.c  |    0
- .../platform/qcom/{ => vcodec}/venus/pm_helpers.h  |    0
- .../media/platform/qcom/{ => vcodec}/venus/vdec.c  |    5 +-
- .../media/platform/qcom/{ => vcodec}/venus/vdec.h  |    0
- .../platform/qcom/{ => vcodec}/venus/vdec_ctrls.c  |    0
- .../media/platform/qcom/{ => vcodec}/venus/venc.c  |    0
- .../media/platform/qcom/{ => vcodec}/venus/venc.h  |    0
- .../platform/qcom/{ => vcodec}/venus/venc_ctrls.c  |    0
- drivers/media/platform/qcom/venus/firmware.c       |  363 ----
- drivers/media/platform/qcom/venus/firmware.h       |   26 -
- 93 files changed, 19175 insertions(+), 989 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/media/qcom,sm8550-iris.yaml
- create mode 100644 drivers/media/platform/qcom/vcodec/buffers.c
- create mode 100644 drivers/media/platform/qcom/vcodec/buffers.h
+Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+---
+ drivers/media/platform/qcom/Kconfig                |   2 +-
+ drivers/media/platform/qcom/Makefile               |   2 +-
+ drivers/media/platform/qcom/vcodec/firmware.c      | 147 +++++++++
+ drivers/media/platform/qcom/vcodec/firmware.h      |  21 ++
+ .../media/platform/qcom/{ => vcodec}/venus/Kconfig |   0
+ .../platform/qcom/{ => vcodec}/venus/Makefile      |   4 +-
+ .../media/platform/qcom/{ => vcodec}/venus/core.c  | 102 +++++-
+ .../media/platform/qcom/{ => vcodec}/venus/core.h  |   0
+ .../media/platform/qcom/{ => vcodec}/venus/dbgfs.c |   0
+ .../media/platform/qcom/{ => vcodec}/venus/dbgfs.h |   0
+ .../platform/qcom/vcodec/venus/firmware_no_tz.c    | 194 +++++++++++
+ .../platform/qcom/vcodec/venus/firmware_no_tz.h    |  19 ++
+ .../platform/qcom/{ => vcodec}/venus/helpers.c     |   0
+ .../platform/qcom/{ => vcodec}/venus/helpers.h     |   0
+ .../media/platform/qcom/{ => vcodec}/venus/hfi.c   |   0
+ .../media/platform/qcom/{ => vcodec}/venus/hfi.h   |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_cmds.c    |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_cmds.h    |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_helper.h  |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_msgs.c    |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_msgs.h    |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_parser.c  |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_parser.h  |   0
+ .../qcom/{ => vcodec}/venus/hfi_plat_bufs.h        |   0
+ .../qcom/{ => vcodec}/venus/hfi_plat_bufs_v6.c     |   0
+ .../qcom/{ => vcodec}/venus/hfi_platform.c         |   0
+ .../qcom/{ => vcodec}/venus/hfi_platform.h         |   0
+ .../qcom/{ => vcodec}/venus/hfi_platform_v4.c      |   0
+ .../qcom/{ => vcodec}/venus/hfi_platform_v6.c      |   0
+ .../platform/qcom/{ => vcodec}/venus/hfi_venus.c   |  21 +-
+ .../platform/qcom/{ => vcodec}/venus/hfi_venus.h   |   0
+ .../qcom/{ => vcodec}/venus/hfi_venus_io.h         |   0
+ .../platform/qcom/{ => vcodec}/venus/pm_helpers.c  |   0
+ .../platform/qcom/{ => vcodec}/venus/pm_helpers.h  |   0
+ .../media/platform/qcom/{ => vcodec}/venus/vdec.c  |   0
+ .../media/platform/qcom/{ => vcodec}/venus/vdec.h  |   0
+ .../platform/qcom/{ => vcodec}/venus/vdec_ctrls.c  |   0
+ .../media/platform/qcom/{ => vcodec}/venus/venc.c  |   0
+ .../media/platform/qcom/{ => vcodec}/venus/venc.h  |   0
+ .../platform/qcom/{ => vcodec}/venus/venc_ctrls.c  |   0
+ drivers/media/platform/qcom/venus/firmware.c       | 363 ---------------------
+ drivers/media/platform/qcom/venus/firmware.h       |  26 --
+ 42 files changed, 492 insertions(+), 409 deletions(-)
  create mode 100644 drivers/media/platform/qcom/vcodec/firmware.c
  create mode 100644 drivers/media/platform/qcom/vcodec/firmware.h
- create mode 100644 drivers/media/platform/qcom/vcodec/hfi_queue.c
- create mode 100644 drivers/media/platform/qcom/vcodec/hfi_queue.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/Kconfig
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/Makefile
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/hfi_defines.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_buffer.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_buffer.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_common.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_core.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_core.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_ctrls.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_ctrls.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_helpers.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_helpers.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_hfi.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_hfi.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_hfi_packet.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_hfi_packet.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_hfi_response.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_hfi_response.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_instance.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_power.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_power.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_probe.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_state.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_state.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_vb2.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_vb2.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_vdec.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_vdec.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_venc.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_venc.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_vidc.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/iris_vidc.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/platform_common.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/platform_common.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/platform_sm8550.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/resources.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/resources.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_common.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_common.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_iris3.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_iris3.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_iris3_buffer.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_iris3_buffer.h
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_iris3_power.c
- create mode 100644 drivers/media/platform/qcom/vcodec/iris/vpu_iris3_power.h
  rename drivers/media/platform/qcom/{ => vcodec}/venus/Kconfig (100%)
- rename drivers/media/platform/qcom/{ => vcodec}/venus/Makefile (75%)
+ rename drivers/media/platform/qcom/{ => vcodec}/venus/Makefile (83%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/core.c (91%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/core.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/dbgfs.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/dbgfs.h (100%)
  create mode 100644 drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c
  create mode 100644 drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h
- rename drivers/media/platform/qcom/{ => vcodec}/venus/helpers.c (90%)
- rename drivers/media/platform/qcom/{ => vcodec}/venus/helpers.h (98%)
+ rename drivers/media/platform/qcom/{ => vcodec}/venus/helpers.c (100%)
+ rename drivers/media/platform/qcom/{ => vcodec}/venus/helpers.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_cmds.c (100%)
@@ -548,18 +161,18 @@ Vikash Garodia (7):
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_msgs.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_parser.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_parser.h (100%)
- rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_plat_bufs.h (94%)
- rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_plat_bufs_v6.c (99%)
+ rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_plat_bufs.h (100%)
+ rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_plat_bufs_v6.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform_v4.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform_v6.c (100%)
- rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_venus.c (73%)
+ rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_venus.c (99%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_venus.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_venus_io.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/pm_helpers.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/pm_helpers.h (100%)
- rename drivers/media/platform/qcom/{ => vcodec}/venus/vdec.c (99%)
+ rename drivers/media/platform/qcom/{ => vcodec}/venus/vdec.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/vdec.h (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/vdec_ctrls.c (100%)
  rename drivers/media/platform/qcom/{ => vcodec}/venus/venc.c (100%)
@@ -568,6 +181,1218 @@ Vikash Garodia (7):
  delete mode 100644 drivers/media/platform/qcom/venus/firmware.c
  delete mode 100644 drivers/media/platform/qcom/venus/firmware.h
 
+diff --git a/drivers/media/platform/qcom/Kconfig b/drivers/media/platform/qcom/Kconfig
+index cc5799b..e94142f 100644
+--- a/drivers/media/platform/qcom/Kconfig
++++ b/drivers/media/platform/qcom/Kconfig
+@@ -3,4 +3,4 @@
+ comment "Qualcomm media platform drivers"
+ 
+ source "drivers/media/platform/qcom/camss/Kconfig"
+-source "drivers/media/platform/qcom/venus/Kconfig"
++source "drivers/media/platform/qcom/vcodec/venus/Kconfig"
+diff --git a/drivers/media/platform/qcom/Makefile b/drivers/media/platform/qcom/Makefile
+index 4f055c3..3d2d82b 100644
+--- a/drivers/media/platform/qcom/Makefile
++++ b/drivers/media/platform/qcom/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-y += camss/
+-obj-y += venus/
++obj-y += vcodec/venus/
+diff --git a/drivers/media/platform/qcom/vcodec/firmware.c b/drivers/media/platform/qcom/vcodec/firmware.c
+new file mode 100644
+index 0000000..dbc220a
+--- /dev/null
++++ b/drivers/media/platform/qcom/vcodec/firmware.c
+@@ -0,0 +1,147 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#include <linux/device.h>
++#include <linux/dma-mapping.h>
++#include <linux/firmware.h>
++#include <linux/kernel.h>
++#include <linux/iommu.h>
++#include <linux/of_device.h>
++#include <linux/firmware/qcom/qcom_scm.h>
++#include <linux/of_reserved_mem.h>
++#include <linux/platform_device.h>
++#include <linux/soc/qcom/mdt_loader.h>
++
++#include "firmware.h"
++
++bool use_tz(struct device *core_dev)
++{
++	struct device_node *np;
++
++	np = of_get_child_by_name(core_dev->of_node, "video-firmware");
++	if (!np)
++		return true;
++
++	return false;
++}
++
++int protect_secure_region(u32 cp_start, u32 cp_size, u32 cp_nonpixel_start,
++			  u32 cp_nonpixel_size, u32 pas_id)
++{
++	int ret;
++	/*
++	 * Clues for porting using downstream data:
++	 * cp_start = 0
++	 * cp_size = venus_ns/virtual-addr-pool[0] - yes, address and not size!
++	 *   This works, as the non-secure context bank is placed
++	 *   contiguously right after the Content Protection region.
++	 *
++	 * cp_nonpixel_start = venus_sec_non_pixel/virtual-addr-pool[0]
++	 * cp_nonpixel_size = venus_sec_non_pixel/virtual-addr-pool[1]
++	 */
++	ret = qcom_scm_mem_protect_video_var(cp_start,
++					     cp_size,
++					     cp_nonpixel_start,
++					     cp_nonpixel_size);
++	if (ret)
++		qcom_scm_pas_shutdown(pas_id);
++
++	return ret;
++}
++
++int load_fw(struct device *dev, const char *fw_name, phys_addr_t *mem_phys,
++	    size_t *mem_size, u32 pas_id, bool use_tz)
++{
++	const struct firmware *firmware = NULL;
++	struct reserved_mem *rmem;
++	struct device_node *node;
++	void *mem_virt = NULL;
++	ssize_t fw_size = 0;
++	int ret;
++
++	if (!IS_ENABLED(CONFIG_QCOM_MDT_LOADER) ||
++	    (use_tz && !qcom_scm_is_available()))
++		return -EPROBE_DEFER;
++
++	if (!fw_name || !(*fw_name))
++		return -EINVAL;
++
++	*mem_phys = 0;
++	*mem_size = 0;
++
++	node = of_parse_phandle(dev->of_node, "memory-region", 0);
++	if (!node) {
++		dev_err(dev, "no memory-region specified\n");
++		return -EINVAL;
++	}
++
++	rmem = of_reserved_mem_lookup(node);
++	of_node_put(node);
++	if (!rmem) {
++		dev_err(dev, "failed to lookup reserved memory-region\n");
++		return -EINVAL;
++	}
++
++	ret = request_firmware(&firmware, fw_name, dev);
++	if (ret) {
++		dev_err(dev, "%s: failed to request fw \"%s\", error %d\n",
++			__func__, fw_name, ret);
++		return ret;
++	}
++
++	fw_size = qcom_mdt_get_size(firmware);
++	if (fw_size < 0) {
++		ret = fw_size;
++		dev_err(dev, "%s: out of bound fw image fw size: %ld\n",
++			__func__, fw_size);
++		goto err_release_fw;
++	}
++
++	*mem_phys = rmem->base;
++	*mem_size = rmem->size;
++
++	if (*mem_size < fw_size) {
++		ret = -EINVAL;
++		goto err_release_fw;
++	}
++
++	mem_virt = memremap(*mem_phys, *mem_size, MEMREMAP_WC);
++	if (!mem_virt) {
++		dev_err(dev, "unable to remap fw memory region %pa size %#zx\n",
++			mem_phys, *mem_size);
++		goto err_release_fw;
++	}
++
++	if (use_tz)
++		ret = qcom_mdt_load(dev, firmware, fw_name, pas_id, mem_virt,
++				    *mem_phys, *mem_size, NULL);
++	else
++		ret = qcom_mdt_load_no_init(dev, firmware, fw_name, pas_id, mem_virt,
++					    *mem_phys, *mem_size, NULL);
++	if (ret) {
++		dev_err(dev, "%s: error %d loading fw \"%s\"\n",
++			__func__, ret, fw_name);
++	}
++
++	memunmap(mem_virt);
++err_release_fw:
++	release_firmware(firmware);
++	return ret;
++}
++
++int auth_reset_fw(u32 pas_id)
++{
++	return qcom_scm_pas_auth_and_reset(pas_id);
++}
++
++void unload_fw(u32 pas_id)
++{
++	qcom_scm_pas_shutdown(pas_id);
++}
++
++int set_hw_state(bool resume)
++{
++	return qcom_scm_set_remote_state(resume, 0);
++}
+diff --git a/drivers/media/platform/qcom/vcodec/firmware.h b/drivers/media/platform/qcom/vcodec/firmware.h
+new file mode 100644
+index 0000000..7d410a8
+--- /dev/null
++++ b/drivers/media/platform/qcom/vcodec/firmware.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#ifndef _FIRMWARE_H_
++#define _FIRMWARE_H_
++
++#include <linux/device.h>
++#include <linux/types.h>
++
++bool use_tz(struct device *core_dev);
++int load_fw(struct device *dev, const char *fw_name, phys_addr_t *mem_phys,
++	    size_t *mem_size, u32 pas_id, bool use_tz);
++int auth_reset_fw(u32 pas_id);
++int protect_secure_region(u32 cp_start, u32 cp_size, u32 cp_nonpixel_start,
++			  u32 cp_nonpixel_size, u32 pas_id);
++void unload_fw(u32 pas_id);
++int set_hw_state(bool resume);
++
++#endif
+diff --git a/drivers/media/platform/qcom/venus/Kconfig b/drivers/media/platform/qcom/vcodec/venus/Kconfig
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/Kconfig
+rename to drivers/media/platform/qcom/vcodec/venus/Kconfig
+diff --git a/drivers/media/platform/qcom/venus/Makefile b/drivers/media/platform/qcom/vcodec/venus/Makefile
+similarity index 83%
+rename from drivers/media/platform/qcom/venus/Makefile
+rename to drivers/media/platform/qcom/vcodec/venus/Makefile
+index 91ee6be..f6f3a88 100644
+--- a/drivers/media/platform/qcom/venus/Makefile
++++ b/drivers/media/platform/qcom/vcodec/venus/Makefile
+@@ -1,7 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Makefile for Qualcomm Venus driver
+ 
+-venus-core-objs += core.o helpers.o firmware.o \
++venus-core-objs += ../firmware.o
++
++venus-core-objs += core.o helpers.o firmware_no_tz.o \
+ 		   hfi_venus.o hfi_msgs.o hfi_cmds.o hfi.o \
+ 		   hfi_parser.o pm_helpers.o dbgfs.o \
+ 		   hfi_platform.o hfi_platform_v4.o \
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/vcodec/venus/core.c
+similarity index 91%
+rename from drivers/media/platform/qcom/venus/core.c
+rename to drivers/media/platform/qcom/vcodec/venus/core.c
+index 9cffe97..56d9a53 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/vcodec/venus/core.c
+@@ -22,7 +22,8 @@
+ #include <media/v4l2-ioctl.h>
+ 
+ #include "core.h"
+-#include "firmware.h"
++#include "../firmware.h"
++#include "firmware_no_tz.h"
+ #include "pm_helpers.h"
+ #include "hfi_venus_io.h"
+ 
+@@ -86,6 +87,8 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 	struct venus_core *core =
+ 			container_of(work, struct venus_core, work.work);
+ 	int ret, i, max_attempts = RPM_WAIT_FOR_IDLE_MAX_ATTEMPTS;
++	const struct venus_resources *res = core->res;
++	const char *fwpath = NULL;
+ 	const char *err_msg = "";
+ 	bool failed = false;
+ 
+@@ -107,7 +110,10 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 
+ 	mutex_lock(&core->lock);
+ 
+-	venus_shutdown(core);
++	if (core->use_tz)
++		unload_fw(VENUS_PAS_ID);
++	else
++		unload_fw_no_tz(core);
+ 
+ 	venus_coredump(core);
+ 
+@@ -127,12 +133,39 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 		failed = true;
+ 	}
+ 
+-	ret = venus_boot(core);
++	ret = of_property_read_string_index(core->dev->of_node, "firmware-name", 0,
++					    &fwpath);
++	if (ret)
++		fwpath = core->res->fwname;
++
++	ret = load_fw(core->dev, fwpath, &core->fw.mem_phys, &core->fw.mem_size,
++		      VENUS_PAS_ID, core->use_tz);
+ 	if (ret && !failed) {
+-		err_msg = "boot Venus";
++		err_msg = "load FW";
+ 		failed = true;
+ 	}
+ 
++	if (core->use_tz)
++		ret = auth_reset_fw(VENUS_PAS_ID);
++	else
++		ret = auth_reset_fw_no_tz(core, core->fw.mem_phys, core->fw.mem_size);
++	if (ret && !failed) {
++		err_msg = "Auth and Reset";
++		failed = true;
++	}
++
++	if (core->use_tz && res->cp_size) {
++		ret = protect_secure_region(res->cp_start,
++					    res->cp_size,
++					    res->cp_nonpixel_start,
++					    res->cp_nonpixel_size,
++					    VENUS_PAS_ID);
++		if (ret && !failed) {
++			err_msg = "Protect CP Mem";
++			failed = true;
++		}
++	}
++
+ 	ret = hfi_core_resume(core, true);
+ 	if (ret && !failed) {
+ 		err_msg = "resume HFI";
+@@ -281,7 +314,9 @@ static irqreturn_t venus_isr_thread(int irq, void *dev_id)
+ 
+ static int venus_probe(struct platform_device *pdev)
+ {
++	const struct venus_resources *res;
+ 	struct device *dev = &pdev->dev;
++	const char *fwpath = NULL;
+ 	struct venus_core *core;
+ 	int ret;
+ 
+@@ -362,14 +397,42 @@ static int venus_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_runtime_disable;
+ 
+-	ret = venus_firmware_init(core);
++	core->use_tz = use_tz(core->dev);
++
++	if (!core->use_tz) {
++		ret = init_fw_no_tz(core);
++		if (ret)
++			goto err_of_depopulate;
++	}
++
++	ret = of_property_read_string_index(dev->of_node, "firmware-name", 0,
++					    &fwpath);
+ 	if (ret)
+-		goto err_of_depopulate;
++		fwpath = core->res->fwname;
+ 
+-	ret = venus_boot(core);
++	ret = load_fw(core->dev, fwpath, &core->fw.mem_phys, &core->fw.mem_size,
++		      VENUS_PAS_ID, core->use_tz);
+ 	if (ret)
+ 		goto err_firmware_deinit;
+ 
++	if (core->use_tz)
++		ret = auth_reset_fw(VENUS_PAS_ID);
++	else
++		ret = auth_reset_fw_no_tz(core, core->fw.mem_phys, core->fw.mem_size);
++	if (ret)
++		goto err_firmware_deinit;
++
++	res = core->res;
++	if (core->use_tz && res->cp_size) {
++		ret = protect_secure_region(res->cp_start,
++					    res->cp_size,
++					    res->cp_nonpixel_start,
++					    res->cp_nonpixel_size,
++					    VENUS_PAS_ID);
++		if (ret)
++			goto err_firmware_deinit;
++	}
++
+ 	ret = hfi_core_resume(core, true);
+ 	if (ret)
+ 		goto err_venus_shutdown;
+@@ -399,9 +462,13 @@ static int venus_probe(struct platform_device *pdev)
+ err_dev_unregister:
+ 	v4l2_device_unregister(&core->v4l2_dev);
+ err_venus_shutdown:
+-	venus_shutdown(core);
++	if (core->use_tz)
++		unload_fw(VENUS_PAS_ID);
++	else
++		unload_fw_no_tz(core);
+ err_firmware_deinit:
+-	venus_firmware_deinit(core);
++	if (!core->use_tz)
++		deinit_fw_no_tz(core);
+ err_of_depopulate:
+ 	of_platform_depopulate(dev);
+ err_runtime_disable:
+@@ -430,10 +497,15 @@ static void venus_remove(struct platform_device *pdev)
+ 	ret = hfi_core_deinit(core, true);
+ 	WARN_ON(ret);
+ 
+-	venus_shutdown(core);
++	if (core->use_tz)
++		unload_fw(VENUS_PAS_ID);
++	else
++		unload_fw_no_tz(core);
++
+ 	of_platform_depopulate(dev);
+ 
+-	venus_firmware_deinit(core);
++	if (!core->use_tz)
++		deinit_fw_no_tz(core);
+ 
+ 	pm_runtime_put_sync(dev);
+ 	pm_runtime_disable(dev);
+@@ -455,8 +527,12 @@ static void venus_core_shutdown(struct platform_device *pdev)
+ 	struct venus_core *core = platform_get_drvdata(pdev);
+ 
+ 	pm_runtime_get_sync(core->dev);
+-	venus_shutdown(core);
+-	venus_firmware_deinit(core);
++	if (core->use_tz) {
++		unload_fw(VENUS_PAS_ID);
++	} else {
++		unload_fw_no_tz(core);
++		deinit_fw_no_tz(core);
++	}
+ 	pm_runtime_put_sync(core->dev);
+ }
+ 
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/vcodec/venus/core.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/core.h
+rename to drivers/media/platform/qcom/vcodec/venus/core.h
+diff --git a/drivers/media/platform/qcom/venus/dbgfs.c b/drivers/media/platform/qcom/vcodec/venus/dbgfs.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/dbgfs.c
+rename to drivers/media/platform/qcom/vcodec/venus/dbgfs.c
+diff --git a/drivers/media/platform/qcom/venus/dbgfs.h b/drivers/media/platform/qcom/vcodec/venus/dbgfs.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/dbgfs.h
+rename to drivers/media/platform/qcom/vcodec/venus/dbgfs.h
+diff --git a/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c
+new file mode 100644
+index 0000000..9dca6e23
+--- /dev/null
++++ b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2017 Linaro Ltd.
++ */
++
++#include <linux/iommu.h>
++#include <linux/of_device.h>
++#include "core.h"
++#include "firmware_no_tz.h"
++#include "hfi_venus_io.h"
++
++#define VENUS_FW_MEM_SIZE		(6 * SZ_1M)
++#define VENUS_FW_START_ADDR		0x0
++
++int init_fw_no_tz(struct venus_core *core)
++{
++	struct platform_device_info info;
++	struct iommu_domain *iommu_dom;
++	struct platform_device *pdev;
++	struct device_node *np;
++	int ret;
++
++	np = of_get_child_by_name(core->dev->of_node, "video-firmware");
++
++	memset(&info, 0, sizeof(info));
++	info.fwnode = &np->fwnode;
++	info.parent = core->dev;
++	info.name = np->name;
++	info.dma_mask = DMA_BIT_MASK(32);
++
++	pdev = platform_device_register_full(&info);
++	if (IS_ERR(pdev)) {
++		of_node_put(np);
++		return PTR_ERR(pdev);
++	}
++
++	pdev->dev.of_node = np;
++
++	ret = of_dma_configure(&pdev->dev, np, true);
++	if (ret) {
++		dev_err(core->dev, "dma configure fail\n");
++		goto err_unregister;
++	}
++
++	core->fw.dev = &pdev->dev;
++
++	iommu_dom = iommu_domain_alloc(&platform_bus_type);
++	if (!iommu_dom) {
++		dev_err(core->fw.dev, "Failed to allocate iommu domain\n");
++		ret = -ENOMEM;
++		goto err_unregister;
++	}
++
++	ret = iommu_attach_device(iommu_dom, core->fw.dev);
++	if (ret) {
++		dev_err(core->fw.dev, "could not attach device\n");
++		goto err_iommu_free;
++	}
++
++	core->fw.iommu_domain = iommu_dom;
++
++	of_node_put(np);
++
++	return 0;
++
++err_iommu_free:
++	iommu_domain_free(iommu_dom);
++err_unregister:
++	platform_device_unregister(pdev);
++	of_node_put(np);
++	return ret;
++}
++
++void deinit_fw_no_tz(struct venus_core *core)
++{
++	struct iommu_domain *iommu;
++
++	if (!core->fw.dev)
++		return;
++
++	iommu = core->fw.iommu_domain;
++
++	iommu_detach_device(iommu, core->fw.dev);
++
++	if (iommu) {
++		iommu_domain_free(iommu);
++		iommu = NULL;
++	}
++
++	platform_device_unregister(to_platform_device(core->fw.dev));
++}
++
++static void reset_cpu_no_tz(struct venus_core *core)
++{
++	u32 fw_size = core->fw.mapped_mem_size;
++	void __iomem *wrapper_base;
++
++	if (IS_IRIS2_1(core))
++		wrapper_base = core->wrapper_tz_base;
++	else
++		wrapper_base = core->wrapper_base;
++
++	writel(0, wrapper_base + WRAPPER_FW_START_ADDR);
++	writel(fw_size, wrapper_base + WRAPPER_FW_END_ADDR);
++	writel(0, wrapper_base + WRAPPER_CPA_START_ADDR);
++	writel(fw_size, wrapper_base + WRAPPER_CPA_END_ADDR);
++	writel(fw_size, wrapper_base + WRAPPER_NONPIX_START_ADDR);
++	writel(fw_size, wrapper_base + WRAPPER_NONPIX_END_ADDR);
++
++	if (IS_IRIS2_1(core)) {
++		/* Bring XTSS out of reset */
++		writel(0, wrapper_base + WRAPPER_TZ_XTSS_SW_RESET);
++	} else {
++		writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
++		writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
++
++		/* Bring ARM9 out of reset */
++		writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
++	}
++}
++
++void set_hw_state_no_tz(struct venus_core *core, bool resume)
++{
++	if (resume) {
++		reset_cpu_no_tz(core);
++	} else {
++		if (IS_IRIS2_1(core))
++			writel(WRAPPER_XTSS_SW_RESET_BIT,
++			       core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
++		else
++			writel(WRAPPER_A9SS_SW_RESET_BIT,
++			       core->wrapper_base + WRAPPER_A9SS_SW_RESET);
++	}
++}
++
++int auth_reset_fw_no_tz(struct venus_core *core, phys_addr_t mem_phys,
++			size_t mem_size)
++{
++	struct iommu_domain *iommu;
++	struct device *dev;
++	int ret;
++
++	dev = core->fw.dev;
++	if (!dev)
++		return -EPROBE_DEFER;
++
++	iommu = core->fw.iommu_domain;
++	core->fw.mapped_mem_size = mem_size;
++
++	ret = iommu_map(iommu, VENUS_FW_START_ADDR, mem_phys, mem_size,
++			IOMMU_READ | IOMMU_WRITE | IOMMU_PRIV, GFP_KERNEL);
++	if (ret) {
++		dev_err(dev, "could not map video firmware region\n");
++		return ret;
++	}
++
++	reset_cpu_no_tz(core);
++
++	return 0;
++}
++
++void unload_fw_no_tz(struct venus_core *core)
++{
++	const size_t mapped = core->fw.mapped_mem_size;
++	struct iommu_domain *iommu;
++	size_t unmapped;
++	u32 reg;
++	struct device *dev = core->fw.dev;
++	void __iomem *wrapper_base = core->wrapper_base;
++	void __iomem *wrapper_tz_base = core->wrapper_tz_base;
++
++	if (IS_IRIS2_1(core)) {
++		/* Assert the reset to XTSS */
++		reg = readl(wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
++		reg |= WRAPPER_XTSS_SW_RESET_BIT;
++		writel(reg, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
++	} else {
++		/* Assert the reset to ARM9 */
++		reg = readl(wrapper_base + WRAPPER_A9SS_SW_RESET);
++		reg |= WRAPPER_A9SS_SW_RESET_BIT;
++		writel(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
++	}
++
++	iommu = core->fw.iommu_domain;
++
++	if (core->fw.mapped_mem_size && iommu) {
++		unmapped = iommu_unmap(iommu, VENUS_FW_START_ADDR, mapped);
++
++		if (unmapped != mapped)
++			dev_err(dev, "failed to unmap firmware\n");
++		else
++			core->fw.mapped_mem_size = 0;
++	}
++}
+diff --git a/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h
+new file mode 100644
+index 0000000..5f008ef
+--- /dev/null
++++ b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2017 Linaro Ltd.
++ */
++#ifndef __FIRMWARE_NO_TZ_H__
++#define __FIRMWARE_NO_TZ_H__
++
++struct device;
++
++#define VENUS_PAS_ID	9
++
++int init_fw_no_tz(struct venus_core *core);
++void deinit_fw_no_tz(struct venus_core *core);
++int auth_reset_fw_no_tz(struct venus_core *core, phys_addr_t mem_phys,
++			size_t mem_size);
++void unload_fw_no_tz(struct venus_core *core);
++void set_hw_state_no_tz(struct venus_core *core, bool resume);
++
++#endif
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/vcodec/venus/helpers.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/helpers.c
+rename to drivers/media/platform/qcom/vcodec/venus/helpers.c
+diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/vcodec/venus/helpers.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/helpers.h
+rename to drivers/media/platform/qcom/vcodec/venus/helpers.h
+diff --git a/drivers/media/platform/qcom/venus/hfi.c b/drivers/media/platform/qcom/vcodec/venus/hfi.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi.c
+diff --git a/drivers/media/platform/qcom/venus/hfi.h b/drivers/media/platform/qcom/vcodec/venus/hfi.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/vcodec/venus/hfi_cmds.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_cmds.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_cmds.c
+diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.h b/drivers/media/platform/qcom/vcodec/venus/hfi_cmds.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_cmds.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_cmds.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/vcodec/venus/hfi_helper.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_helper.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_helper.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/vcodec/venus/hfi_msgs.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_msgs.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_msgs.c
+diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.h b/drivers/media/platform/qcom/vcodec/venus/hfi_msgs.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_msgs.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_msgs.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/vcodec/venus/hfi_parser.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_parser.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_parser.c
+diff --git a/drivers/media/platform/qcom/venus/hfi_parser.h b/drivers/media/platform/qcom/vcodec/venus/hfi_parser.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_parser.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_parser.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs.h b/drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_plat_bufs.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c b/drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs_v6.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs_v6.c
+diff --git a/drivers/media/platform/qcom/venus/hfi_platform.c b/drivers/media/platform/qcom/vcodec/venus/hfi_platform.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_platform.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform.c
+diff --git a/drivers/media/platform/qcom/venus/hfi_platform.h b/drivers/media/platform/qcom/vcodec/venus/hfi_platform.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_platform.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_platform_v4.c b/drivers/media/platform/qcom/vcodec/venus/hfi_platform_v4.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_platform_v4.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform_v4.c
+diff --git a/drivers/media/platform/qcom/venus/hfi_platform_v6.c b/drivers/media/platform/qcom/vcodec/venus/hfi_platform_v6.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_platform_v6.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform_v6.c
+diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/vcodec/venus/hfi_venus.c
+similarity index 99%
+rename from drivers/media/platform/qcom/venus/hfi_venus.c
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_venus.c
+index f9437b6..5a68db9 100644
+--- a/drivers/media/platform/qcom/venus/hfi_venus.c
++++ b/drivers/media/platform/qcom/vcodec/venus/hfi_venus.c
+@@ -13,11 +13,12 @@
+ #include <linux/slab.h>
+ 
+ #include "core.h"
++#include "../firmware.h"
+ #include "hfi_cmds.h"
+ #include "hfi_msgs.h"
+ #include "hfi_venus.h"
+ #include "hfi_venus_io.h"
+-#include "firmware.h"
++#include "firmware_no_tz.h"
+ 
+ #define HFI_MASK_QHDR_TX_TYPE		0xff000000
+ #define HFI_MASK_QHDR_RX_TYPE		0x00ff0000
+@@ -635,7 +636,10 @@ static int venus_power_off(struct venus_hfi_device *hdev)
+ 	if (!hdev->power_enabled)
+ 		return 0;
+ 
+-	ret = venus_set_hw_state_suspend(hdev->core);
++	if (hdev->core->use_tz)
++		ret = set_hw_state(false);
++	else
++		set_hw_state_no_tz(hdev->core, false);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -655,7 +659,13 @@ static int venus_power_on(struct venus_hfi_device *hdev)
+ 	if (hdev->power_enabled)
+ 		return 0;
+ 
+-	ret = venus_set_hw_state_resume(hdev->core);
++	if (hdev->core->use_tz) {
++		ret = set_hw_state(true);
++		if (ret == -EINVAL)
++			ret = 0;
++	} else {
++		set_hw_state_no_tz(hdev->core, true);
++	}
+ 	if (ret)
+ 		goto err;
+ 
+@@ -668,7 +678,10 @@ static int venus_power_on(struct venus_hfi_device *hdev)
+ 	return 0;
+ 
+ err_suspend:
+-	venus_set_hw_state_suspend(hdev->core);
++	if (hdev->core->use_tz)
++		set_hw_state(false);
++	else
++		set_hw_state_no_tz(hdev->core, false);
+ err:
+ 	hdev->power_enabled = false;
+ 	return ret;
+diff --git a/drivers/media/platform/qcom/venus/hfi_venus.h b/drivers/media/platform/qcom/vcodec/venus/hfi_venus.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_venus.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_venus.h
+diff --git a/drivers/media/platform/qcom/venus/hfi_venus_io.h b/drivers/media/platform/qcom/vcodec/venus/hfi_venus_io.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/hfi_venus_io.h
+rename to drivers/media/platform/qcom/vcodec/venus/hfi_venus_io.h
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/vcodec/venus/pm_helpers.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/pm_helpers.c
+rename to drivers/media/platform/qcom/vcodec/venus/pm_helpers.c
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.h b/drivers/media/platform/qcom/vcodec/venus/pm_helpers.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/pm_helpers.h
+rename to drivers/media/platform/qcom/vcodec/venus/pm_helpers.h
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/vcodec/venus/vdec.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/vdec.c
+rename to drivers/media/platform/qcom/vcodec/venus/vdec.c
+diff --git a/drivers/media/platform/qcom/venus/vdec.h b/drivers/media/platform/qcom/vcodec/venus/vdec.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/vdec.h
+rename to drivers/media/platform/qcom/vcodec/venus/vdec.h
+diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/vcodec/venus/vdec_ctrls.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/vdec_ctrls.c
+rename to drivers/media/platform/qcom/vcodec/venus/vdec_ctrls.c
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/vcodec/venus/venc.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/venc.c
+rename to drivers/media/platform/qcom/vcodec/venus/venc.c
+diff --git a/drivers/media/platform/qcom/venus/venc.h b/drivers/media/platform/qcom/vcodec/venus/venc.h
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/venc.h
+rename to drivers/media/platform/qcom/vcodec/venus/venc.h
+diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/vcodec/venus/venc_ctrls.c
+similarity index 100%
+rename from drivers/media/platform/qcom/venus/venc_ctrls.c
+rename to drivers/media/platform/qcom/vcodec/venus/venc_ctrls.c
+diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+deleted file mode 100644
+index fe7da2b..0000000
+--- a/drivers/media/platform/qcom/venus/firmware.c
++++ /dev/null
+@@ -1,363 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (C) 2017 Linaro Ltd.
+- */
+-
+-#include <linux/device.h>
+-#include <linux/firmware.h>
+-#include <linux/kernel.h>
+-#include <linux/iommu.h>
+-#include <linux/io.h>
+-#include <linux/of.h>
+-#include <linux/of_address.h>
+-#include <linux/of_reserved_mem.h>
+-#include <linux/platform_device.h>
+-#include <linux/of_device.h>
+-#include <linux/firmware/qcom/qcom_scm.h>
+-#include <linux/sizes.h>
+-#include <linux/soc/qcom/mdt_loader.h>
+-
+-#include "core.h"
+-#include "firmware.h"
+-#include "hfi_venus_io.h"
+-
+-#define VENUS_PAS_ID			9
+-#define VENUS_FW_MEM_SIZE		(6 * SZ_1M)
+-#define VENUS_FW_START_ADDR		0x0
+-
+-static void venus_reset_cpu(struct venus_core *core)
+-{
+-	u32 fw_size = core->fw.mapped_mem_size;
+-	void __iomem *wrapper_base;
+-
+-	if (IS_IRIS2_1(core))
+-		wrapper_base = core->wrapper_tz_base;
+-	else
+-		wrapper_base = core->wrapper_base;
+-
+-	writel(0, wrapper_base + WRAPPER_FW_START_ADDR);
+-	writel(fw_size, wrapper_base + WRAPPER_FW_END_ADDR);
+-	writel(0, wrapper_base + WRAPPER_CPA_START_ADDR);
+-	writel(fw_size, wrapper_base + WRAPPER_CPA_END_ADDR);
+-	writel(fw_size, wrapper_base + WRAPPER_NONPIX_START_ADDR);
+-	writel(fw_size, wrapper_base + WRAPPER_NONPIX_END_ADDR);
+-
+-	if (IS_IRIS2_1(core)) {
+-		/* Bring XTSS out of reset */
+-		writel(0, wrapper_base + WRAPPER_TZ_XTSS_SW_RESET);
+-	} else {
+-		writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
+-		writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
+-
+-		/* Bring ARM9 out of reset */
+-		writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
+-	}
+-}
+-
+-int venus_set_hw_state(struct venus_core *core, bool resume)
+-{
+-	int ret;
+-
+-	if (core->use_tz) {
+-		ret = qcom_scm_set_remote_state(resume, 0);
+-		if (resume && ret == -EINVAL)
+-			ret = 0;
+-		return ret;
+-	}
+-
+-	if (resume) {
+-		venus_reset_cpu(core);
+-	} else {
+-		if (IS_IRIS2_1(core))
+-			writel(WRAPPER_XTSS_SW_RESET_BIT,
+-			       core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+-		else
+-			writel(WRAPPER_A9SS_SW_RESET_BIT,
+-			       core->wrapper_base + WRAPPER_A9SS_SW_RESET);
+-	}
+-
+-	return 0;
+-}
+-
+-static int venus_load_fw(struct venus_core *core, const char *fwname,
+-			 phys_addr_t *mem_phys, size_t *mem_size)
+-{
+-	const struct firmware *mdt;
+-	struct reserved_mem *rmem;
+-	struct device_node *node;
+-	struct device *dev;
+-	ssize_t fw_size;
+-	void *mem_va;
+-	int ret;
+-
+-	*mem_phys = 0;
+-	*mem_size = 0;
+-
+-	dev = core->dev;
+-	node = of_parse_phandle(dev->of_node, "memory-region", 0);
+-	if (!node) {
+-		dev_err(dev, "no memory-region specified\n");
+-		return -EINVAL;
+-	}
+-
+-	rmem = of_reserved_mem_lookup(node);
+-	of_node_put(node);
+-	if (!rmem) {
+-		dev_err(dev, "failed to lookup reserved memory-region\n");
+-		return -EINVAL;
+-	}
+-
+-	ret = request_firmware(&mdt, fwname, dev);
+-	if (ret < 0)
+-		return ret;
+-
+-	fw_size = qcom_mdt_get_size(mdt);
+-	if (fw_size < 0) {
+-		ret = fw_size;
+-		goto err_release_fw;
+-	}
+-
+-	*mem_phys = rmem->base;
+-	*mem_size = rmem->size;
+-
+-	if (*mem_size < fw_size || fw_size > VENUS_FW_MEM_SIZE) {
+-		ret = -EINVAL;
+-		goto err_release_fw;
+-	}
+-
+-	mem_va = memremap(*mem_phys, *mem_size, MEMREMAP_WC);
+-	if (!mem_va) {
+-		dev_err(dev, "unable to map memory region %pa size %#zx\n", mem_phys, *mem_size);
+-		ret = -ENOMEM;
+-		goto err_release_fw;
+-	}
+-
+-	if (core->use_tz)
+-		ret = qcom_mdt_load(dev, mdt, fwname, VENUS_PAS_ID,
+-				    mem_va, *mem_phys, *mem_size, NULL);
+-	else
+-		ret = qcom_mdt_load_no_init(dev, mdt, fwname, VENUS_PAS_ID,
+-					    mem_va, *mem_phys, *mem_size, NULL);
+-
+-	memunmap(mem_va);
+-err_release_fw:
+-	release_firmware(mdt);
+-	return ret;
+-}
+-
+-static int venus_boot_no_tz(struct venus_core *core, phys_addr_t mem_phys,
+-			    size_t mem_size)
+-{
+-	struct iommu_domain *iommu;
+-	struct device *dev;
+-	int ret;
+-
+-	dev = core->fw.dev;
+-	if (!dev)
+-		return -EPROBE_DEFER;
+-
+-	iommu = core->fw.iommu_domain;
+-	core->fw.mapped_mem_size = mem_size;
+-
+-	ret = iommu_map(iommu, VENUS_FW_START_ADDR, mem_phys, mem_size,
+-			IOMMU_READ | IOMMU_WRITE | IOMMU_PRIV, GFP_KERNEL);
+-	if (ret) {
+-		dev_err(dev, "could not map video firmware region\n");
+-		return ret;
+-	}
+-
+-	venus_reset_cpu(core);
+-
+-	return 0;
+-}
+-
+-static int venus_shutdown_no_tz(struct venus_core *core)
+-{
+-	const size_t mapped = core->fw.mapped_mem_size;
+-	struct iommu_domain *iommu;
+-	size_t unmapped;
+-	u32 reg;
+-	struct device *dev = core->fw.dev;
+-	void __iomem *wrapper_base = core->wrapper_base;
+-	void __iomem *wrapper_tz_base = core->wrapper_tz_base;
+-
+-	if (IS_IRIS2_1(core)) {
+-		/* Assert the reset to XTSS */
+-		reg = readl(wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+-		reg |= WRAPPER_XTSS_SW_RESET_BIT;
+-		writel(reg, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+-	} else {
+-		/* Assert the reset to ARM9 */
+-		reg = readl(wrapper_base + WRAPPER_A9SS_SW_RESET);
+-		reg |= WRAPPER_A9SS_SW_RESET_BIT;
+-		writel(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
+-	}
+-
+-	iommu = core->fw.iommu_domain;
+-
+-	if (core->fw.mapped_mem_size && iommu) {
+-		unmapped = iommu_unmap(iommu, VENUS_FW_START_ADDR, mapped);
+-
+-		if (unmapped != mapped)
+-			dev_err(dev, "failed to unmap firmware\n");
+-		else
+-			core->fw.mapped_mem_size = 0;
+-	}
+-
+-	return 0;
+-}
+-
+-int venus_boot(struct venus_core *core)
+-{
+-	struct device *dev = core->dev;
+-	const struct venus_resources *res = core->res;
+-	const char *fwpath = NULL;
+-	phys_addr_t mem_phys;
+-	size_t mem_size;
+-	int ret;
+-
+-	if (!IS_ENABLED(CONFIG_QCOM_MDT_LOADER) ||
+-	    (core->use_tz && !qcom_scm_is_available()))
+-		return -EPROBE_DEFER;
+-
+-	ret = of_property_read_string_index(dev->of_node, "firmware-name", 0,
+-					    &fwpath);
+-	if (ret)
+-		fwpath = core->res->fwname;
+-
+-	ret = venus_load_fw(core, fwpath, &mem_phys, &mem_size);
+-	if (ret) {
+-		dev_err(dev, "fail to load video firmware\n");
+-		return -EINVAL;
+-	}
+-
+-	core->fw.mem_size = mem_size;
+-	core->fw.mem_phys = mem_phys;
+-
+-	if (core->use_tz)
+-		ret = qcom_scm_pas_auth_and_reset(VENUS_PAS_ID);
+-	else
+-		ret = venus_boot_no_tz(core, mem_phys, mem_size);
+-
+-	if (ret)
+-		return ret;
+-
+-	if (core->use_tz && res->cp_size) {
+-		/*
+-		 * Clues for porting using downstream data:
+-		 * cp_start = 0
+-		 * cp_size = venus_ns/virtual-addr-pool[0] - yes, address and not size!
+-		 *   This works, as the non-secure context bank is placed
+-		 *   contiguously right after the Content Protection region.
+-		 *
+-		 * cp_nonpixel_start = venus_sec_non_pixel/virtual-addr-pool[0]
+-		 * cp_nonpixel_size = venus_sec_non_pixel/virtual-addr-pool[1]
+-		 */
+-		ret = qcom_scm_mem_protect_video_var(res->cp_start,
+-						     res->cp_size,
+-						     res->cp_nonpixel_start,
+-						     res->cp_nonpixel_size);
+-		if (ret) {
+-			qcom_scm_pas_shutdown(VENUS_PAS_ID);
+-			dev_err(dev, "set virtual address ranges fail (%d)\n",
+-				ret);
+-			return ret;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-int venus_shutdown(struct venus_core *core)
+-{
+-	int ret;
+-
+-	if (core->use_tz)
+-		ret = qcom_scm_pas_shutdown(VENUS_PAS_ID);
+-	else
+-		ret = venus_shutdown_no_tz(core);
+-
+-	return ret;
+-}
+-
+-int venus_firmware_init(struct venus_core *core)
+-{
+-	struct platform_device_info info;
+-	struct iommu_domain *iommu_dom;
+-	struct platform_device *pdev;
+-	struct device_node *np;
+-	int ret;
+-
+-	np = of_get_child_by_name(core->dev->of_node, "video-firmware");
+-	if (!np) {
+-		core->use_tz = true;
+-		return 0;
+-	}
+-
+-	memset(&info, 0, sizeof(info));
+-	info.fwnode = &np->fwnode;
+-	info.parent = core->dev;
+-	info.name = np->name;
+-	info.dma_mask = DMA_BIT_MASK(32);
+-
+-	pdev = platform_device_register_full(&info);
+-	if (IS_ERR(pdev)) {
+-		of_node_put(np);
+-		return PTR_ERR(pdev);
+-	}
+-
+-	pdev->dev.of_node = np;
+-
+-	ret = of_dma_configure(&pdev->dev, np, true);
+-	if (ret) {
+-		dev_err(core->dev, "dma configure fail\n");
+-		goto err_unregister;
+-	}
+-
+-	core->fw.dev = &pdev->dev;
+-
+-	iommu_dom = iommu_domain_alloc(&platform_bus_type);
+-	if (!iommu_dom) {
+-		dev_err(core->fw.dev, "Failed to allocate iommu domain\n");
+-		ret = -ENOMEM;
+-		goto err_unregister;
+-	}
+-
+-	ret = iommu_attach_device(iommu_dom, core->fw.dev);
+-	if (ret) {
+-		dev_err(core->fw.dev, "could not attach device\n");
+-		goto err_iommu_free;
+-	}
+-
+-	core->fw.iommu_domain = iommu_dom;
+-
+-	of_node_put(np);
+-
+-	return 0;
+-
+-err_iommu_free:
+-	iommu_domain_free(iommu_dom);
+-err_unregister:
+-	platform_device_unregister(pdev);
+-	of_node_put(np);
+-	return ret;
+-}
+-
+-void venus_firmware_deinit(struct venus_core *core)
+-{
+-	struct iommu_domain *iommu;
+-
+-	if (!core->fw.dev)
+-		return;
+-
+-	iommu = core->fw.iommu_domain;
+-
+-	iommu_detach_device(iommu, core->fw.dev);
+-
+-	if (core->fw.iommu_domain) {
+-		iommu_domain_free(iommu);
+-		core->fw.iommu_domain = NULL;
+-	}
+-
+-	platform_device_unregister(to_platform_device(core->fw.dev));
+-}
+diff --git a/drivers/media/platform/qcom/venus/firmware.h b/drivers/media/platform/qcom/venus/firmware.h
+deleted file mode 100644
+index aaccd84..0000000
+--- a/drivers/media/platform/qcom/venus/firmware.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (C) 2017 Linaro Ltd.
+- */
+-#ifndef __VENUS_FIRMWARE_H__
+-#define __VENUS_FIRMWARE_H__
+-
+-struct device;
+-
+-int venus_firmware_init(struct venus_core *core);
+-void venus_firmware_deinit(struct venus_core *core);
+-int venus_boot(struct venus_core *core);
+-int venus_shutdown(struct venus_core *core);
+-int venus_set_hw_state(struct venus_core *core, bool suspend);
+-
+-static inline int venus_set_hw_state_suspend(struct venus_core *core)
+-{
+-	return venus_set_hw_state(core, false);
+-}
+-
+-static inline int venus_set_hw_state_resume(struct venus_core *core)
+-{
+-	return venus_set_hw_state(core, true);
+-}
+-
+-#endif
 -- 
 2.7.4
 
