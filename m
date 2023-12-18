@@ -1,56 +1,64 @@
-Return-Path: <linux-kernel+bounces-3512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5652816D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:00:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B245F816D33
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:01:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC0711C233BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:00:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 614BC2810E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545EB41C7F;
-	Mon, 18 Dec 2023 11:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882E837D37;
+	Mon, 18 Dec 2023 11:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=temperror (0-bit key) header.d=alatek.krakow.pl header.i=@alatek.krakow.pl header.b="gwYdAwLw"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="XbCbq/EF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E8641212;
-	Mon, 18 Dec 2023 11:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alatek.krakow.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alatek.krakow.pl
-Received: from localhost (localhost [127.0.0.1])
-	by helios.alatek.com.pl (Postfix) with ESMTP id D39B22D01875;
-	Mon, 18 Dec 2023 12:52:30 +0100 (CET)
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
- with ESMTP id ojvRBzrblCMI; Mon, 18 Dec 2023 12:52:26 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by helios.alatek.com.pl (Postfix) with ESMTP id D5ADD2D01877;
-	Mon, 18 Dec 2023 12:52:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl D5ADD2D01877
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
-	s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1702900346;
-	bh=pgFYSPvqKsZ76d/HoygOZjY81UNiyQPNXJuryyJ5YgI=;
-	h=Message-ID:Date:MIME-Version:To:From;
-	b=gwYdAwLwPzOv7TzzKPBainbIFgrssAJfXlK0vlYm3XVUL7hKnWxXpUneM0S32+uaj
-	 iXnhrRD9r0ZmGqf2GNuQXfyFcjSlH4rkYnvS1CjOk/b62ZGu9E+kUkuMnAb08Pyc7u
-	 TItVfQcam071NDZy8riZzR6+2LafNYX6BJxijU3oOQOZn6hHTOdz+n2k5bwOTfy+uT
-	 BZAs7E0hVyTB6WdBXnpZvrcVyEohVVZEQi6KjIq67/CkGo/TVPlE1hPdKxjLMWLMvf
-	 EUkH2TZj4HLZV6ixuz7rNrqiu/+/hLnuc0v+6eVqUEs5+2IJskJalBzYZtQrqxS1dU
-	 c3Vz7rNTW6U1w==
-X-Virus-Scanned: amavis at alatek.com.pl
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
- with ESMTP id TCCewzLwpviW; Mon, 18 Dec 2023 12:52:26 +0100 (CET)
-Received: from [192.168.1.103] (unknown [10.0.2.2])
-	by helios.alatek.com.pl (Postfix) with ESMTPSA id A6A912D01875;
-	Mon, 18 Dec 2023 12:52:26 +0100 (CET)
-Message-ID: <49d892ae-5986-43c2-bdad-2ad09be298f2@alatek.krakow.pl>
-Date: Mon, 18 Dec 2023 12:52:26 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16146358B9
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 11:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-28b406a0fbfso2214958a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 03:55:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1702900500; x=1703505300; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L/ZTRFB8KMknyEn1OANya2XOBJMhR0NStgi+5UdJh4Y=;
+        b=XbCbq/EF1IAH8jBw/5vLoAebO1maIBGoBzBcdHfn6XBugftWPaP9Ul9WZwJm1x56tp
+         JFywnvqeJC6NiRGS2k3JC9uEp8lOwP+irbDj4yquHBQQFYQflbKql+vVVm33NnV7bPwp
+         LHmOBD/np0JIPBzJya7BSnnhpXiSiwdswJqpKNDig/49Z0M0c9dAjeY1XGyWFD9gC2L7
+         MqDPfmXikK+uRT9y97gTY7y8Zf33xEU+0nA42OVpC4IIt/ovHioIK2MAbPdeM9espD6f
+         T6TjyvBdlq/Ze43VtdX1nYZOoUILZN5mjYFhYTccbXhpaoqV5jDaNGcAuAvkNYalGnMj
+         e9yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702900500; x=1703505300;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L/ZTRFB8KMknyEn1OANya2XOBJMhR0NStgi+5UdJh4Y=;
+        b=DCEpLLZnA/0POsWD80k1j6lXwDRjD9jcXAFGvoFNlqHqjqjH44zBZ+fOymYHZQseCE
+         3YO3U5Nka3GKpBs9kOl85On2dKgTymeqIMfKv0YGGs6LKBTVgxVbT7KGBq5VhzN7JRbg
+         EsXxxPoF3vEVccklBAOfmoEhZsaFIdjZ+wHPtEJVeg9IRbh8r2pl+4naqKn/PD2w130C
+         IiYjo9z35FSqfale+ypZERsXPkMd8Otv1HyOZNOhR/gRXPZNxkx10hwnSTGaHcne58em
+         SED10l7XiE1x37AG4IR9Zmze5ubRJW5p4+kppWl3tjkoZ/7lwM7yXC+D0CmZMFeIVdGk
+         ynPA==
+X-Gm-Message-State: AOJu0Yxx/f3sNRmiCTMyC/fAPtUxeHpFk7XcPSydwUVjlFCeoCBg91rU
+	CwEYboMYJcEKIX45+u2gtTvtGw==
+X-Google-Smtp-Source: AGHT+IFX+JEJt0kMbu4r/pT+K+Ae87LI+JcegzzYIsYDypkQbvs0634QI0zRFUUHW0FedU0ubT0K4Q==
+X-Received: by 2002:a17:90b:4b12:b0:28b:6d24:be81 with SMTP id lx18-20020a17090b4b1200b0028b6d24be81mr801108pjb.55.1702900500392;
+        Mon, 18 Dec 2023 03:55:00 -0800 (PST)
+Received: from [10.254.38.164] ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id qa15-20020a17090b4fcf00b00286da7407f2sm7602250pjb.7.2023.12.18.03.54.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 03:55:00 -0800 (PST)
+Message-ID: <27c8af2f-c931-4d36-9db9-112de79ec3cd@bytedance.com>
+Date: Mon, 18 Dec 2023 19:54:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,138 +66,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/8] dmaengine: xilinx: xdma: Rework
- xdma_terminate_all()
-To: Vinod Koul <vkoul@kernel.org>
-Cc: lizhi.hou@amd.com, brian.xu@amd.com, raj.kumar.rampelli@amd.com,
- michal.simek@amd.com, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
-References: <20231208134838.49500-1-jankul@alatek.krakow.pl>
- <20231208134929.49523-5-jankul@alatek.krakow.pl> <ZXbqSQ9W/VrAA0ZE@matsya>
+Subject: Re: [PATCH v2 6/6] mm/zswap: directly use percpu mutex and buffer in
+ load/store
 Content-Language: en-US
-From: Jan Kuliga <jankul@alatek.krakow.pl>
-In-Reply-To: <ZXbqSQ9W/VrAA0ZE@matsya>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>,
+ Chris Li <chriscli@google.com>, Nhat Pham <nphamcs@gmail.com>,
+ Vitaly Wool <vitaly.wool@konsulko.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Chris Li <chrisl@kernel.org>
+References: <20231213-zswap-dstmem-v2-0-daa5d9ae41a7@bytedance.com>
+ <20231213-zswap-dstmem-v2-6-daa5d9ae41a7@bytedance.com>
+ <CAJD7tkZSrd-R-vuVqh29fgZ6bmo3EJxdb2Eahm0Ozg5hkPEjRg@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tkZSrd-R-vuVqh29fgZ6bmo3EJxdb2Eahm0Ozg5hkPEjRg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Vinod,
-
-Thanks for reviewing my patchset.
-
-On 11.12.2023 11:54, Vinod Koul wrote:
-> On 08-12-23, 14:49, Jan Kuliga wrote:
->> Simplify xdma_xfer_stop(). Stop the dma engine and clear its status
->> register unconditionally - just do what its name states. This change
->> also allows to call it without grabbing a lock, which minimizes
->> the total time spent with a spinlock held.
+On 2023/12/18 17:37, Yosry Ahmed wrote:
+> On Mon, Dec 18, 2023 at 12:22 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
 >>
->> Delete the currently processed vd.node from the vc.desc_issued list
->> prior to passing it to vchan_terminate_vdesc(). In case there's more
->> than one descriptor pending on vc.desc_issued list, calling
->> vchan_terminate_desc() results in losing the link between
->> vc.desc_issued list head and the second descriptor on the list. Doing so
->> results in resources leakege, as vchan_dma_desc_free_list() won't be
->> able to properly free memory resources attached to descriptors,
->> resulting in dma_pool_destroy() failure.
+>> Since the introduce of reusing the dstmem in the load path, it seems
+>> confusing that we are now using acomp_ctx->dstmem and acomp_ctx->mutex
+>> now for purposes other than what the naming suggests.
 >>
->> Don't call vchan_dma_desc_free_list() from within xdma_terminate_all().
->> Move all terminated descriptors to the vc.desc_terminated list instead.
->> This allows to postpone freeing memory resources associated with
->> descriptors until the call to vchan_synchronize(), which is called from
->> xdma_synchronize() callback. This is the right way to do it -
->> xdma_terminate_all() should return as soon as possible, while freeing
->> resources (that may be time consuming in case of large number of
->> descriptors) can be done safely later.
+>> Yosry suggested removing these two fields from acomp_ctx, and directly
+>> using zswap_dstmem and zswap_mutex in both the load and store paths,
+>> rename them, and add proper comments above their definitions that they
+>> are for generic percpu buffering on the load and store paths.
 >>
->> Fixes: 290bb5d2d1e2
->> ("dmaengine: xilinx: xdma: Add terminate_all/synchronize callbacks")
->>
->> Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
->> ---
->>  drivers/dma/xilinx/xdma.c | 32 ++++++++++++++++----------------
->>  1 file changed, 16 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
->> index 1bce48e5d86c..521ba2a653b6 100644
->> --- a/drivers/dma/xilinx/xdma.c
->> +++ b/drivers/dma/xilinx/xdma.c
->> @@ -379,20 +379,20 @@ static int xdma_xfer_start(struct xdma_chan *xchan)
->>   */
->>  static int xdma_xfer_stop(struct xdma_chan *xchan)
->>  {
->> -	struct virt_dma_desc *vd = vchan_next_desc(&xchan->vchan);
->> -	struct xdma_device *xdev = xchan->xdev_hdl;
->>  	int ret;
->> -
->> -	if (!vd || !xchan->busy)
->> -		return -EINVAL;
->> +	u32 val;
->> +	struct xdma_device *xdev = xchan->xdev_hdl;
->>
->>  	/* clear run stop bit to prevent any further auto-triggering */
->>  	ret = regmap_write(xdev->rmap, xchan->base + XDMA_CHAN_CONTROL_W1C,
->> -			   CHAN_CTRL_RUN_STOP);
->> +							CHAN_CTRL_RUN_STOP);
+>> So this patch remove dstmem and mutex from acomp_ctx, and rename the
+>> zswap_dstmem to zswap_buffer, using the percpu mutex and buffer on
+>> the load and store paths. And refactor out __zswap_store() to only
+>> include the compress & store, since I found zswap_store() is too long.
 > 
-> Why this change, checkpatch would tell you this is not expected
-> alignment (run with strict)
-Actually, it does not. I've run it like this:
-$LINUX_DIR/scripts/checkpatch.pl --strict -g <commit-id>
-
-and it produced no output related to this line. Anyway, I've already prepared v5 patchset, that conforms to your hint:
-Message-Id: 20231218113904.9071-1-jankul@alatek.krakow.pl
-
-> 
->>  	i.f (ret)
->>  		return ret;
->>
->> -	xchan->busy = false;
->> +	/* Clear the channel status register */
->> +	ret = regmap_read(xdev->rmap, xchan->base + XDMA_CHAN_STATUS_RC, &val);
->> +	if (ret)
->> +		return ret;
->>
->>  	return 0;
->>  }
->> @@ -505,25 +505,25 @@ static void xdma_issue_pending(struct dma_chan *chan)
->>  static int xdma_terminate_all(struct dma_chan *chan)
->>  {
->>  	struct xdma_chan *xdma_chan = to_xdma_chan(chan);
->> -	struct xdma_desc *desc = NULL;
->>  	struct virt_dma_desc *vd;
->>  	unsigned long flags;
->>  	LIST_HEAD(head);
->>
->> -	spin_lock_irqsave(&xdma_chan->vchan.lock, flags);
->>  	xdma_xfer_stop(xdma_chan);
->>
->> +	spin_lock_irqsave(&xdma_chan->vchan.lock, flags);
->> +
->> +	xdma_chan->busy = false;
->>  	vd = vchan_next_desc(&xdma_chan->vchan);
->> -	if (vd)
->> -		desc = to_xdma_desc(vd);
->> -	if (desc) {
->> -		dma_cookie_complete(&desc->vdesc.tx);
->> -		vchan_terminate_vdesc(&desc->vdesc);
->> +	if (vd) {
->> +		list_del(&vd->node);
->> +		dma_cookie_complete(&vd->tx);
->> +		vchan_terminate_vdesc(vd);
->>  	}
->> -
->>  	vchan_get_all_descriptors(&xdma_chan->vchan, &head);
->> +	list_splice_tail(&head, &xdma_chan->vchan.desc_terminated);
->> +
->>  	spin_unlock_irqrestore(&xdma_chan->vchan.lock, flags);
->> -	vchan_dma_desc_free_list(&xdma_chan->vchan, &head);
->>
->>  	return 0;
->>  }
->> --
->> 2.34.1
+> I am not sure refactoring out __zswap_store() is useful to be honest,
+> but I am not objecting to it, it mirrors __zswap_load() in a sense.
+> However, if you want to do so, please do it in a separate patch from
+> renaming the percpu buffers and mutex. This will make reviewing easier
+> (and make my Suggested-by correctly scoped).
 > 
 
-Thanks,
-Jan
+After thinking twice, I dropped the __zswap_store() part. Right, it's
+not much useful.
+
+Thanks.
 
