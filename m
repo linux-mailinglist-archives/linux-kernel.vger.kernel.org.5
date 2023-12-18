@@ -1,170 +1,163 @@
-Return-Path: <linux-kernel+bounces-3557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE14A816DCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:18:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7456816DD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 13:19:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B4572816EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:18:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 277BFB209D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22284B130;
-	Mon, 18 Dec 2023 12:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC594B5D9;
+	Mon, 18 Dec 2023 12:18:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GrRmicxq"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IShpKzBB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E59200A7;
-	Mon, 18 Dec 2023 12:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BIAsB4e027739;
-	Mon, 18 Dec 2023 12:18:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ehaUjXs4CdaBiJvv1AkLYb5dA59kogKiyU+o1F2szjg=; b=Gr
-	Rmicxqgr+1gdRhuOwCiBxynYs4xLOsoSKBE7Wy0tRSFWY+gHUq5g31paXNtMSChT
-	623TP9tAdQwdk1ACkLiBsvCnQCLn9nJ4OZKjrdwxtODdhvKKYQ2OSn0GOFHDgxf9
-	rkmHBB+Xnu2IMlvCGxy65J7iKp//59TUUykdgzkmGmyQC8uyXLCgE5/VQdw1P5X2
-	5lBUMzQnmxdDtJsdy5yzgaOmSDKCWrqjhtiaSpkdM932Fs24MY46CCMEihS/sJc0
-	psghry94rbTnaIgcww4aqVIind7oysX/Jhxm1Wxjz/0QunZLGJHZzuHtejdkQ8dq
-	aETvTiu3uS3fdldhmiOQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2mjfr69e-1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28EB94B13F;
+	Mon, 18 Dec 2023 12:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BIBmwMh020725;
+	Mon, 18 Dec 2023 12:18:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=2WN8VsOyG4EmTcHfp1n8B+knpWBd+9sbz9hkU8Songg=;
+ b=IShpKzBBjboojYcbmGVfsGZ/nvLmzbDJwWB7fqkQRxVYAt6Y3r5jFFFpmxOXccOWFaN1
+ 6xd66B56YBW/XKpb3b9pTXKtjD34UVj2Myu2yG1qHjIQIPuP2qnL2NIr6ZGi7/kfzMpi
+ QpFudwrZIuhyl+hGL4zXsvFmd/7HKKLcfx6KbEMzmgIAacSBinghYTJ5QVe2JMCJG0DR
+ LKnmJuDk60mPvE53agO/l66v3RHE6yHB+DeLcS/Hue9/i7Rks0efxLkpphRIkjVWuNFJ
+ t2E/zOuf20E9ssR/0GrHFuQwgpfPcbGA/SAL8GXelWSyDIB2nkAjuZ2YIJBydE0P/YoL Mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2nhdgtdv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 12:18:10 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BICHrxs028840
+	Mon, 18 Dec 2023 12:18:22 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BIBo92e023329;
+	Mon, 18 Dec 2023 12:18:21 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v2nhdgtdf-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 12:17:54 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
- 2023 04:17:49 -0800
-Message-ID: <8051b5ab-4f7f-4a8c-9c4f-fe1f46bb1951@quicinc.com>
-Date: Mon, 18 Dec 2023 20:17:46 +0800
+	Mon, 18 Dec 2023 12:18:21 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BI9jcSs010954;
+	Mon, 18 Dec 2023 12:18:21 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7n8kya-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Dec 2023 12:18:21 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BICIF8U40305196
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Dec 2023 12:18:15 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5EFF02004D;
+	Mon, 18 Dec 2023 12:18:15 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D8EAA20043;
+	Mon, 18 Dec 2023 12:18:14 +0000 (GMT)
+Received: from li-978a334c-2cba-11b2-a85c-a0743a31b510.ibm.com (unknown [9.171.53.250])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 18 Dec 2023 12:18:14 +0000 (GMT)
+Message-ID: <59621e88c5c29bdff8bc06f68b02b2c7a420a09a.camel@linux.ibm.com>
+Subject: Re: [PATCH] KVM: s390: selftest: memop: Fix undefined behavior
+From: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+To: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Date: Mon, 18 Dec 2023 13:18:14 +0100
+In-Reply-To: <20231215180206.740df738@p-imbrenda>
+References: <20231215161125.943551-1-nsg@linux.ibm.com>
+	 <20231215180206.740df738@p-imbrenda>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/8] dt-bindings: arm: Add support for TPDM CMB MSR
- register
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tingwei Zhang
-	<quic_tingweiz@quicinc.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>,
-        Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <andersson@kernel.org>
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-8-git-send-email-quic_taozha@quicinc.com>
- <e5fbbfab-02bf-4eda-8353-87c54c307af1@linaro.org>
- <1d57590d-2ecf-4bf6-9c8f-2a9d1ba08aaa@arm.com>
- <caa424d3-7af0-43e6-8e13-e87cde0c4f67@quicinc.com>
- <ca624e71-c487-4004-abc4-126442b92f33@arm.com>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <ca624e71-c487-4004-abc4-126442b92f33@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: P_gCS0pT-rVTt7gzYRB-h3WuLpIIlvE6
-X-Proofpoint-ORIG-GUID: P_gCS0pT-rVTt7gzYRB-h3WuLpIIlvE6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: bVERkLdM2YHjxVe6DsvclQc668euBIDF
+X-Proofpoint-ORIG-GUID: baXPKi0wmsIYc3Yx3-gM48kfdRQYxMwB
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- clxscore=1011 malwarescore=0 mlxscore=0 mlxlogscore=790 lowpriorityscore=0
- bulkscore=0 impostorscore=0 priorityscore=1501 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=2023-12-18_07,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 clxscore=1015 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 malwarescore=0 priorityscore=1501 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
  definitions=main-2312180089
 
+On Fri, 2023-12-15 at 18:02 +0100, Claudio Imbrenda wrote:
+> On Fri, 15 Dec 2023 17:11:25 +0100
+> Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
+>=20
+> > If an integer's type has x bits, shifting the integer left by x or more
+> > is undefined behavior.
+> > This can happen in the rotate function when attempting to do a rotation
+> > of the whole value by 0.
+>=20
+> is 0 the only problematic value? because in that case...=20
+>=20
+> >=20
+> > Fixes: 0dd714bfd200 ("KVM: s390: selftest: memop: Add cmpxchg tests")
+> > Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+> > ---
+> >  tools/testing/selftests/kvm/s390x/memop.c | 8 +++++---
+> >  1 file changed, 5 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/tools/testing/selftests/kvm/s390x/memop.c b/tools/testing/=
+selftests/kvm/s390x/memop.c
+> > index bb3ca9a5d731..2eba9575828e 100644
+> > --- a/tools/testing/selftests/kvm/s390x/memop.c
+> > +++ b/tools/testing/selftests/kvm/s390x/memop.c
+> > @@ -485,11 +485,13 @@ static bool popcount_eq(__uint128_t a, __uint128_=
+t b)
+> > =20
+> >  static __uint128_t rotate(int size, __uint128_t val, int amount)
+> >  {
+> > -	unsigned int bits =3D size * 8;
+> > +	unsigned int left, right, bits =3D size * 8;
+> > =20
+>=20
+> ...why not just:
+>=20
+> if (!amount)
+> 	return val;
+>=20
+> ?
 
+That works if you move it one statement down (128 would also trigger UB).
+% 128 does the trick, is branchless and there is a bit of a symmetry going
+on between right and left.
+But I can use an early return if you want.
 
-On 12/18/2023 7:56 PM, Suzuki K Poulose wrote:
-> Hi Tingwei Zhang
-> 
-> On 18/12/2023 11:23, Tingwei Zhang wrote:
->> On 12/18/2023 6:47 PM, Suzuki K Poulose wrote:
->>> Tao Zhang,
->>>
->>> On 21/11/2023 07:24, Krzysztof Kozlowski wrote:
->>>> On 21/11/2023 03:24, Tao Zhang wrote:
->>>>> Add property "qcom,cmb_msr_num" to support CMB MSR(mux select 
->>>>> register)
->>>>> for TPDM. It specifies the number of CMB MSR registers supported by
->>>>> the TDPM.
->>>>>
->>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>>>> ---
->>>>
->>>> I prefer not to take any new Qualcomm Coresight bindings or Qualcomm 
->>>> SoC
->>>> DTS nodes with Coresight till we fix all existing warnings. I don't 
->>>> know
->>>> how to fix them, so I need help with them. No such fixing happened so
->>>> far from Qcom, so pushback is my only way to get any attention.
->>>>
->>>> I already commented on this in other email thread.
->>>
->>> Are you addressing this ?
->> The DT warning is fixed in 
->> https://lore.kernel.org/linux-arm-msm/20231210072633.4243-1-quic_jinlmao@quicinc.com/.
->> It's applied to linux-arm-msm yesterday.
-> 
-> How are you supporting remote-etm ? We haven't merged the support for it 
-> in drivers ? We haven't even reviewed the remote-etm support patches ? 
-> Why weren't the coresight maintainers Cc ed on the "new" binding support ?
-> 
-> Suzuki
-> 
-> 
-Hi Suzuki,
+>=20
+> > -	amount =3D (amount + bits) % bits;
+> > +	right =3D (amount + bits) % bits;
+> > +	/* % 128 prevents left shift UB if size =3D=3D 16 && right =3D=3D 0 *=
+/
+> > +	left =3D (bits - right) % 128;
+> >  	val =3D cut_to_size(size, val);
+> > -	return (val << (bits - amount)) | (val >> amount);
+> > +	return (val << left) | (val >> right);
+> >  }
+> > =20
+> >  const unsigned int max_block =3D 16;
+> >=20
+> > base-commit: 305230142ae0637213bf6e04f6d9f10bbcb74af8
+>=20
 
-Sorry for missing coresight maintainers in the remote-etm binding patch.
- From the comments, we can add binding for the connected hardware first.
-
-https://lkml.org/lkml/2023/11/30/539
-
-Thanks
-Jinlong Mao
-
-> 
->>>
->>> Suzuki
->>>
->>>>
->>>> Best regards,
->>>> Krzysztof
->>>>
->>>
->>
-> 
 
