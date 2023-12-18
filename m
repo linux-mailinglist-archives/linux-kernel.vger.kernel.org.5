@@ -1,152 +1,137 @@
-Return-Path: <linux-kernel+bounces-4426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BC9B817CF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:51:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2011B817CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD087281D38
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:51:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FA11C2183F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E63740BA;
-	Mon, 18 Dec 2023 21:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1F5740B2;
+	Mon, 18 Dec 2023 21:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gp6NBwr0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xda6bzNz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9FC6FB6
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 21:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cc4029dc6eso44708101fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:51:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0FA740A2
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 21:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7c5cb5eeab1so1097644241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:53:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702936259; x=1703541059; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HpqC5fnit+OvETtq6T9wtzXgUHs1FJOABqRcVnmg1Jg=;
-        b=gp6NBwr09y/Dga1MGMtN+JjH3t5Z1eHDvLdvEGgb6iQNNR2FUeUR0LiJbKcq/nwrFS
-         lzIOiqhTaCW35K7tskKWi0yhkrSOuwmo3vng69NZbSecFBbnUQDO+En+RVdMle4Z7CWN
-         vti4wT7YHiD8JRscQwjbsI6g0dT7pUTi8wyT97nWD6IJSHPsPaV+6njqUiOHTQKSfksl
-         FvNfZgTXp5wMHZCVc0/r59Y856ihFA1y1Op7EYbsvKOCC0+QemihOajUsvi7mVg5HY/x
-         qk9a8hoL34NErSfzRWBiELXwu2KQ9HTF9bgH/G62f4dIk903eXTbyotehffuY3iH6nlT
-         2b0w==
+        d=google.com; s=20230601; t=1702936381; x=1703541181; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qL6Hfk+uqwtN0FGrPdWYTs1ebhUVgd8KgkwFHPg64Lk=;
+        b=xda6bzNzzW4pHjiWl2cr4q27zwriv7Lk7nh0aRxd0rBKE6kbj+ahAU7eSpMapWCQF0
+         7RnsjZzc7lG1v/hifT3VQfRBPSZrIRmogtNSPrXr+Pb95V5SVH6gAx9MFKj0jWGghwBz
+         vNhy1UtOBO6flGlVW1dtKYYB5mEMAfpvXKMvF/tMRQVMmWVbeclg7UWpxT1nVXVriO/4
+         aOczS8ov4WkjwAbSbcAfR2LUtguNo89UQbpUoX8O+rJ/c5mJxGnxmtpdAfZ0j5RK1Jh/
+         01m62CuQz1hm1gFHaWO1Oj5nrsJQDWy88Hbu0+lZR+aX6+ll3isofKkrFcRti7UQjtQk
+         rkYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702936259; x=1703541059;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HpqC5fnit+OvETtq6T9wtzXgUHs1FJOABqRcVnmg1Jg=;
-        b=OmXGsicZZdN8iMXrazOLfl+AunRl2c5qg/crq8hF4WTUU5HCEQ1AWYPPLp0pZ87Pm8
-         9waI5FZW+8h4dzhHiMd8cXK4u5A6NkgTm2iSu45WTj6fa4eHS3Duo4TbG7cE/S21eU/5
-         4CJPU8Hy81R3YUEb+Bpz6ljspuN5eL2FT1jaQyvmNXvWmzHTEZXV94NnQbeaSObsl2v4
-         jCUQPssswmyb46a5lkoz4wWSuwBenJN7nmDoJuc6ElQay1mg8z+xna7NQDp7SWMiySmQ
-         3L+KGKkjYFGeNRlKUynBohUlabw3LfQkNiN2hQUOmPm7JGDfjeJDQLjfs0weW/o1nKS2
-         sacw==
-X-Gm-Message-State: AOJu0YzwUejCLD3a1HdtxxbbGL4C3TPjicNxSdZXfLmY2Y+j4in4pfuA
-	5/IZkwYhcArnAYuDHv71N7v76g==
-X-Google-Smtp-Source: AGHT+IGaGm4QpmOIGIy0kS4wH041LlNK8W/DICtV5z7/1mZ2jOUrn2yU5m4ZurHCHvQYWVf7yC/0Bg==
-X-Received: by 2002:a2e:9545:0:b0:2ca:cb:36a1 with SMTP id t5-20020a2e9545000000b002ca00cb36a1mr7529025ljh.30.1702936258680;
-        Mon, 18 Dec 2023 13:50:58 -0800 (PST)
-Received: from [172.30.205.119] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id t1-20020a2e9c41000000b002c9ef016247sm3458166ljj.132.2023.12.18.13.50.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 13:50:58 -0800 (PST)
-Message-ID: <35e714ac-017e-4c3e-9a7f-75cf943fc515@linaro.org>
-Date: Mon, 18 Dec 2023 22:50:57 +0100
+        d=1e100.net; s=20230601; t=1702936381; x=1703541181;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qL6Hfk+uqwtN0FGrPdWYTs1ebhUVgd8KgkwFHPg64Lk=;
+        b=l6nFSVHZhBtajMPhOhR1rYNWYcj0WrmK8sHhg9S5As7v6/YwADBZF+hjJXIPnSy/w+
+         LBqTCm9iZw509TFXNVimNuWqMqZ9qtwkqbbPHGfDLRYkA71gxLBs11d9JEOWTHaM3Omz
+         UYZ6lx4TzVTc+/ispFNOmhrQ6U3luf3SAF6UISBLK3mkZiRGGV0nL3Yhj+77HaBst1ga
+         TnHkSJ3/PwuUv+1MbgOmbUgfsiay/AJY4oyE7t6ZhQXovG1MfqiUnByAo5MJeXb8qucW
+         xf1nPm5R7skf67M2tUIc61YRTFkR4SwWuZIfpsHE0PyA2DcGnVMLGHFYpDu/cqDrpIm0
+         M8lg==
+X-Gm-Message-State: AOJu0YyERM/0x4hdMF0y6C/ix/ubg4sYfDZb/RB3YSg+SkzGxjA6z1fe
+	w/mNDbN0yR4P+H+HqWJdWibx2WkPFNTx1PA3ft27BA==
+X-Google-Smtp-Source: AGHT+IGcfs4lSTJfkLGXzFhIGnzieJHv5rnAJxXnS53tFTrXJm63SMA3fMbE6syGwJ8lzSzgsSoOhpYioFVHH40cxnc=
+X-Received: by 2002:a05:6122:4e90:b0:4b6:bb4c:ce57 with SMTP id
+ gf16-20020a0561224e9000b004b6bb4cce57mr1756085vkb.6.1702936381100; Mon, 18
+ Dec 2023 13:53:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/34] media: iris: introduce packetization layer for
- creating HFI packets
-Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
- andersson@kernel.org, mchehab@kernel.org, bryan.odonoghue@linaro.org
-Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
-References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
- <1702899149-21321-12-git-send-email-quic_dikshita@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <1702899149-21321-12-git-send-email-quic_dikshita@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAJD7tkZXS-UJVAFfvxJ0nNgTzWBiqepPYA4hEozi01_qktkitg@mail.gmail.com>
+ <20231218144431.GB19167@cmpxchg.org>
+In-Reply-To: <20231218144431.GB19167@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 18 Dec 2023 13:52:23 -0800
+Message-ID: <CAJD7tkakMjE1sNfexLzooptDyQS4YZf5DmuoywnSFD7JTbh9BA@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, tj@kernel.org, 
+	lizefan.x@bytedance.com, cerasuolodomenico@gmail.com, sjenning@redhat.com, 
+	ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeelb@google.com, muchun.song@linux.dev, 
+	hughd@google.com, corbet@lwn.net, konrad.wilk@oracle.com, 
+	senozhatsky@chromium.org, rppt@kernel.org, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	david@ixit.cz, chrisl@kernel.org, Wei Xu <weixugc@google.com>, 
+	Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
+> > Taking a step back from all the memory.swap.tiers vs.
+> > memory.zswap.writeback discussions, I think there may be a more
+> > fundamental problem here. If the zswap store failure is recurrent,
+> > pages can keep going back to the LRUs and then sent back to zswap
+> > eventually, only to be rejected again. For example, this can if zswap
+> > is above the acceptance threshold, but could be even worse if it's the
+> > allocator rejecting the page due to not compressing well enough. In
+> > the latter case, the page can keep going back and forth between zswap
+> > and LRUs indefinitely.
+> >
+> > You probably did not run into this as you're using zsmalloc, but it
+> > can happen with zbud AFAICT. Even with zsmalloc, a less problematic
+> > version can happen if zswap is above its acceptance threshold.
+> >
+> > This can cause thrashing and ineffective reclaim. We have an internal
+> > implementation where we mark incompressible pages and put them on the
+> > unevictable LRU when we don't have a backing swapfile (i.e. ghost
+> > swapfiles), and something similar may work if writeback is disabled.
+> > We need to scan such incompressible pages periodically though to
+> > remove them from the unevictable LRU if they have been dirited.
+>
+> I'm not sure this is an actual problem.
+>
+> When pages get rejected, they rotate to the furthest point from the
+> reclaimer - the head of the active list. We only get to them again
+> after we scanned everything else.
+>
+> If all that's left on the LRU is unzswappable, then you'd assume that
+> remainder isn't very large, and thus not a significant part of overall
+> scan work. Because if it is, then there is a serious problem with the
+> zswap configuration.
+>
+> There might be possible optimizations to determine how permanent a
+> rejection is, but I'm not sure the effort is called for just
+> yet. Rejections are already failure cases that screw up the LRU
+> ordering, and healthy setups shouldn't have a lot of those. I don't
+> think this patch adds any sort of new complications to this picture.
 
+We have workloads where a significant amount (maybe 20%? 30% not sure
+tbh) of the memory is incompressible. Zswap is still a very viable
+option for those workloads once those pages are taken out of the
+picture. If those pages remain on the LRUs, they will introduce a
+regression in reclaim efficiency.
 
-On 12/18/23 12:32, Dikshita Agarwal wrote:
-> Host firmware interface (HFI) is well defined set of interfaces
-> for communication between host driver and firmware.
-> The command and responses are exchanged in form of packets.
-> One or multiple packets are grouped under packet header.
-> Each packet has packet type which describes the specific HFI
-> and payload which holds the corresponding value for that HFI.
-> 
-> Sys_init is the first packets sent to firmware, which initializes
-> the firmware. Sys_image_version packet is to get the firmware
-> version string.
-> 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> ---
-[...]
+With the upstream code today, those pages go directly to the backing
+store, which isn't ideal in terms of LRU ordering, but this patch
+makes them stay on the LRUs, which can be harmful. I don't think we
+can just assume it is okay. Whether we make those pages unevictable or
+store them uncompressed in zswap, I think taking them out of the LRUs
+(until they are redirtied), is the right thing to do.
 
->   struct iris_core {
-> @@ -65,6 +70,11 @@ struct iris_core {
->   	struct mem_desc				sfr;
->   	struct mutex				lock; /* lock for core structure */
->   	unsigned int				use_tz;
-> +	u8					*packet;
-> +	u32					packet_size;
-I'm not sure it's necessary to always keep a reference to the last
-packet in the core struct, especially since it needs to be allocated
-first anyway
-
-> +	u32					sys_init_id;
-This looks like a hyper-defensive measure against some firmware
-overtaking attacks.. Or a way to spot random/unwanted resets of
-the firmware core..
-
-Is it actually necessary, or does this just serve as a debug
-feature?
-
-> +	u32					header_id;
-Similar to above..
-
-> +	u32					packet_id;
-And here.
-
-I performed some quick CTRL-F-agge around the series and this is
-never reset.. Can the firmware cope with this? What if I watch a
-veeeery long youtube video that ends up creating more than
-(1<<32)-1 HFI packets while playing?
-
-> +
-> +enum hfi_packet_host_flags {
-> +	HFI_HOST_FLAGS_NONE			= 0x00000000,
-> +	HFI_HOST_FLAGS_INTR_REQUIRED		= 0x00000001,
-> +	HFI_HOST_FLAGS_RESPONSE_REQUIRED	= 0x00000002,
-> +	HFI_HOST_FLAGS_NON_DISCARDABLE		= 0x00000004,
-> +	HFI_HOST_FLAGS_GET_PROPERTY		= 0x00000008,
-BIT(n)?
-
-> +};
-> +
-> +enum hfi_packet_firmware_flags {
-> +	HFI_FW_FLAGS_NONE		= 0x00000000,
-> +	HFI_FW_FLAGS_SUCCESS		= 0x00000001,
-> +	HFI_FW_FLAGS_INFORMATION	= 0x00000002,
-> +	HFI_FW_FLAGS_SESSION_ERROR	= 0x00000004,
-> +	HFI_FW_FLAGS_SYSTEM_ERROR	= 0x00000008,
-BIT(n)?
-
-Konrad
+Adding Wei and Yu for more data about incompressible memory in our
+fleet. Keep in mind that we have internal patches to cap the
+compression ratio (i.e. reject pages where the compressed size +
+metadata is not worth it, or where zsmalloc will store it in a full
+page anyway). But the same thing can happen upstream with zbud.
 
