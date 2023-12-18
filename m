@@ -1,82 +1,82 @@
-Return-Path: <linux-kernel+bounces-3971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 216D881762B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:47:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CC35817640
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:48:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B69AB216CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:47:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5E28B234F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842A54989D;
-	Mon, 18 Dec 2023 15:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3513D556;
+	Mon, 18 Dec 2023 15:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="L19Sc9vV";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="DqqX81U+";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="L19Sc9vV";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="DqqX81U+"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bRdcAkZQ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wpY+fyfs";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Z7Sht93I";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uJTPrEe7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B9E74E04
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09C61D137
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 15:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 154B71F37E;
-	Mon, 18 Dec 2023 15:42:37 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E189D21F89;
+	Mon, 18 Dec 2023 15:44:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702914157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702914292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v1dKZcA4ezXwEdxeSlAbqNEVQJZBbN3wkn2D2BYxnGI=;
-	b=L19Sc9vVeoGzkuaT2qhVSvnG1e+bsLsIbDUptKVOlITXwsbz8oar6ZZiFL7/YNxqipOTqr
-	/Nz3myfKu/2YrcLBQ5sEOOAO39HhKdsxqEgACVxrUl5wyRvzZGvuJf7GJvH8s4g5HN28pg
-	SV4xV6TSZxp67M6sRZDmFOe0T4RRR+g=
+	bh=Sb3ykHY0s0lUwPOEpTQTKX0dDN9JeufCaNGO/9uVytU=;
+	b=bRdcAkZQuGRc4eQLw8ed49JvJ7Vz8idsz8j/Wbfj/yVy2XjvOLN5efe/lr/1nDGkP+1/kz
+	LZENPBUvI4z+UmS6M4SAJWafIV0VkmYbeTsz99MTUSqfcyncTA/4dbZs/gYYGrAjO98CGy
+	WL7ngNsoGrjHNiDdf47DJdPjF6K+vAk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702914157;
+	s=susede2_ed25519; t=1702914292;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v1dKZcA4ezXwEdxeSlAbqNEVQJZBbN3wkn2D2BYxnGI=;
-	b=DqqX81U+go088EIo54twaH9n2d7KVeW8hu+UFLich8bj+0EIpHlQFpXv3AFSLrcDJipvhD
-	E21TFtbKbh+D93AQ==
+	bh=Sb3ykHY0s0lUwPOEpTQTKX0dDN9JeufCaNGO/9uVytU=;
+	b=wpY+fyfsAzV3vI0PMl2YLuPGwEFIpcNTLrOMAUMvhb8h81BjXgoCJzwMTJo6IePAH0qI3v
+	wRmb+CQgp0vHTnBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702914157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702914291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v1dKZcA4ezXwEdxeSlAbqNEVQJZBbN3wkn2D2BYxnGI=;
-	b=L19Sc9vVeoGzkuaT2qhVSvnG1e+bsLsIbDUptKVOlITXwsbz8oar6ZZiFL7/YNxqipOTqr
-	/Nz3myfKu/2YrcLBQ5sEOOAO39HhKdsxqEgACVxrUl5wyRvzZGvuJf7GJvH8s4g5HN28pg
-	SV4xV6TSZxp67M6sRZDmFOe0T4RRR+g=
+	bh=Sb3ykHY0s0lUwPOEpTQTKX0dDN9JeufCaNGO/9uVytU=;
+	b=Z7Sht93ICnE3oJDjxdA3ZdGBvvJE7nzAtpMfLo3kmbUoWuu1SGISjK3u23uQEG/rcuzDli
+	kfp91NBUtdKE/Gtd2eCV6H0YFFK3/kDlBDITsvEUYb48kfTvdxUNScqRe/ypdLbnFO/nsx
+	GHFCyGRkr5NxGJAK+NRTF//sc5jd19Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702914157;
+	s=susede2_ed25519; t=1702914291;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v1dKZcA4ezXwEdxeSlAbqNEVQJZBbN3wkn2D2BYxnGI=;
-	b=DqqX81U+go088EIo54twaH9n2d7KVeW8hu+UFLich8bj+0EIpHlQFpXv3AFSLrcDJipvhD
-	E21TFtbKbh+D93AQ==
+	bh=Sb3ykHY0s0lUwPOEpTQTKX0dDN9JeufCaNGO/9uVytU=;
+	b=uJTPrEe7Jte0p/vm4b2wzrm1nulDkFRFrtN3wQa+G3fQyMA/LsHG1w0Cl9V9dMC2A8VrqC
+	Mi0CRnmHxZY68LAA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 06A4213BC8;
-	Mon, 18 Dec 2023 15:42:37 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D2B2113BC8;
+	Mon, 18 Dec 2023 15:44:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id ea/SAG1ogGXOfgAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Mon, 18 Dec 2023 15:42:37 +0000
+	id S4h/MvNogGXqfgAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Mon, 18 Dec 2023 15:44:51 +0000
 From: Daniel Wagner <dwagner@suse.de>
 To: linux-nvme@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org,
@@ -86,9 +86,9 @@ Cc: linux-kernel@vger.kernel.org,
 	James Smart <james.smart@broadcom.com>,
 	Hannes Reinecke <hare@suse.de>,
 	Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v3 04/16] nvmet-trace: null terminate device name string correctly
-Date: Mon, 18 Dec 2023 16:30:52 +0100
-Message-ID: <20231218153105.12717-5-dwagner@suse.de>
+Subject: [PATCH v3 05/16] nvmet-fcloop: Remove remote port from list when unlinking
+Date: Mon, 18 Dec 2023 16:30:53 +0100
+Message-ID: <20231218153105.12717-6-dwagner@suse.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218153105.12717-1-dwagner@suse.de>
 References: <20231218153105.12717-1-dwagner@suse.de>
@@ -101,7 +101,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
 X-Spam-Level: 
-X-Spamd-Result: default: False [0.90 / 50.00];
+X-Spamd-Result: default: False [0.89 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
@@ -120,37 +120,52 @@ X-Spamd-Result: default: False [0.90 / 50.00];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[44.81%]
-Authentication-Results: smtp-out2.suse.de;
+	 BAYES_HAM(-0.01)[49.98%]
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spam-Score: 0.90
+X-Spam-Score: 0.89
 X-Spam-Flag: NO
 
-strlen returns the string length excluding the null byte ('\0'), thus we
-cut the last chars from the device name. While at it, switch snprintf to
-ensure we always have properly terminated string.
+The remote port is removed too late from fcloop_nports list. Remove it
+when port is unregistered.
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+This prevents a busy loop in fcloop_exit, because it is possible the
+remote port is found in the list and thus we will never progress.
+
+The kernel log will be spammed with
+
+  nvme_fcloop: fcloop_exit: Failed deleting remote port
+  nvme_fcloop: fcloop_exit: Failed deleting target port
+
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- drivers/nvme/target/trace.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/target/fcloop.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nvme/target/trace.h b/drivers/nvme/target/trace.h
-index 68f5317b1251..952e69f9737f 100644
---- a/drivers/nvme/target/trace.h
-+++ b/drivers/nvme/target/trace.h
-@@ -59,8 +59,9 @@ static inline void __assign_req_name(char *name, struct nvmet_req *req)
- 		return;
- 	}
+diff --git a/drivers/nvme/target/fcloop.c b/drivers/nvme/target/fcloop.c
+index c65a73433c05..ead349af30f1 100644
+--- a/drivers/nvme/target/fcloop.c
++++ b/drivers/nvme/target/fcloop.c
+@@ -995,11 +995,6 @@ fcloop_nport_free(struct kref *ref)
+ {
+ 	struct fcloop_nport *nport =
+ 		container_of(ref, struct fcloop_nport, ref);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&fcloop_lock, flags);
+-	list_del(&nport->nport_list);
+-	spin_unlock_irqrestore(&fcloop_lock, flags);
  
--	strncpy(name, req->ns->device_path,
--		min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
-+	snprintf(name,
-+		 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path) + 1),
-+		 "%s", req->ns->device_path);
+ 	kfree(nport);
  }
- #endif
+@@ -1357,6 +1352,8 @@ __unlink_remote_port(struct fcloop_nport *nport)
+ 		nport->tport->remoteport = NULL;
+ 	nport->rport = NULL;
+ 
++	list_del(&nport->nport_list);
++
+ 	return rport;
+ }
  
 -- 
 2.43.0
