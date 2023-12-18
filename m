@@ -1,226 +1,130 @@
-Return-Path: <linux-kernel+bounces-3257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F9BF816A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:39:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED12E816A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891EA1F23359
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:39:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94747284671
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 09:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0406711CAF;
-	Mon, 18 Dec 2023 09:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77430125A1;
+	Mon, 18 Dec 2023 09:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m+Jdg4Pq"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vvIiVoLJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2060.outbound.protection.outlook.com [40.107.101.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B08125AD
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6d47bb467a9so903847b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 01:39:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702892381; x=1703497181; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BTYEtunIedVhrIrUbrN5OGHL/0lewttUjOiPfnpbhG4=;
-        b=m+Jdg4Pqa3KDO8JRupZ6tkl5k3/Jt03n+UEIpevEeTp+GWpZCDVjpZber2RoIODSwX
-         1BiHGKp7s2b4jleJcEWhMkm5XFOF+6RI/4A0/QEExdiSMXfK9+z5o2XM7r7PflsZpFfu
-         +gpF6AszArOKAGLXwgqnHkoEPUAoG4Txl2syQdTMOG7VqzfzTeKrRHSdVjytiLJ/Sm+k
-         CcGqLgHTd0xmbK9W8t4gewtKuhAPmtND+A9FC27W6d1JOttqMnZEbbcgRBFCFiXVm9uk
-         BTmLIGB5qtdfrd1R4xfdayECrvc1pFx9LR7z6RfWh7hlfoFMgq1dz06ZAJ8q35q1PgJc
-         9jrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702892381; x=1703497181;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BTYEtunIedVhrIrUbrN5OGHL/0lewttUjOiPfnpbhG4=;
-        b=mdoJaHrkToR5N3CZWK8FZNyWhTj/1QnZLwRB7d+BYP8I0ZWsoRZORGwXGP5anUs9YP
-         jNdF9G2U5JLhcUdiJbwdH4gBN5pl9MGBl3TdYx8B+FbBZ2EbFiXxJvIyFhkdSy/fd+tg
-         /0DMBLGw2b3sQIUU+gJWsdBLQpcVN4bjCuuuGL2CtU4mA80ylrj1eYDtPEudDvS+BYWd
-         aSc1YKWy+RJTqGDJ/egsfJ1VAsmiDADJ+YB6oBePQNU7GKL8m7VqGFOq3IJqAB23QGGY
-         nKcV5erKwidP8eiAY2casNrWKLCZ4jZriNV8lVGFknvFipyCRdgVpNXzpR+q17XbiAlv
-         Nofg==
-X-Gm-Message-State: AOJu0YxWZzyZpsGdmBrcTqGOe6TZdW9VJLKrYa+iomBv2dmhnBJ0uwPy
-	JdFExd3h8aIH6uI3cLzJfXGIvA==
-X-Google-Smtp-Source: AGHT+IF92lD4uQGcOvnMiAVb7hcO4gcbwh7m7LghWfKxV9vSCKKOHDlYmmYLmBb0BH9hREskDXqLvQ==
-X-Received: by 2002:a05:6a20:3712:b0:194:341e:8f5c with SMTP id t18-20020a056a20371200b00194341e8f5cmr1602230pze.50.1702892381093;
-        Mon, 18 Dec 2023 01:39:41 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:b425:da5d:c0cf:a505? ([2a01:e0a:982:cbb0:b425:da5d:c0cf:a505])
-        by smtp.gmail.com with ESMTPSA id e10-20020aa798ca000000b006d7bfb2f30csm1333167pfm.148.2023.12.18.01.39.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 01:39:40 -0800 (PST)
-Message-ID: <db90068a-8eac-458e-bc22-aceb59870f5d@linaro.org>
-Date: Mon, 18 Dec 2023 10:39:28 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6947811CA0
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 09:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=djwz5RLceIr0pyCbX7ztiL4DdgvL3QxY5rZoDETtMofHLuuuqbfN+gMXlAaNcvpgHqxMnoxqptw7rilqJsiIBjbMK6e+UUAFI70ZvZykk8cjhTIcvIWGL/iJqIDgvVHsipM9RA6iuRFLsJs06F+ADFGD8jwjKt85uMHZbYq1AOMB8HjwTDvCZKFyXATkbsqXtFYZ8G6ZOtt4uyJOXbJ5Ey2U8+to5OTa20jEdUbTly+3cVeYXmHpUko5/QNZeIKC66C5nfu4wOYwCGVSKfZGkzM3p1/Hgta+5qRAF5m2lRO3fxXuu0dNnaHl8IZ0wfdaTXX2fYv135wGYIoOccRm6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/iTkEo/GDkyrKe3swsv8RETdMWLOTt6O26f7yFrU1l0=;
+ b=QY1Zq32LjCMooqTsbvGRUAdinkaD9QEOyvtT52Qr3Tmvnx2iOaXOoCVuAEpUl0eFBkDmhpwBta1m+Tc17T5J69+C8rdEdgUDb5Saag0daV7L1KHcBjKvMDg2q37Tk9ckZUE49rHornH/7Y9+voY28DPwHZ9zPEjdhAUrzUsbkcAMy/GdiO2GJqsgst7SQZRNzfc1m8wygrOaBnbvy5O6RkCwThmBhIdA5mdAn9MVkNNU0P2Jh2QVYKT85luSkE6D00aNi8owb5p2Q7nEZjzZTptdNaUYA6bGwgRy0N13viG0TYzWp+BV5yswv96vXDL0H2HvBNqbsdUG+v3V57U+OA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/iTkEo/GDkyrKe3swsv8RETdMWLOTt6O26f7yFrU1l0=;
+ b=vvIiVoLJjHM+tiCH+6tdAp34xqkoKebwgI5b6mPCOVoq/kxoBUZeGam+5le6nd6oqiHgMJVTD7OPsVCPir9+Eu7hDFYl65FwIPSBX4OXFR+X0aHHM1YmciVl0Z49Zf1T4GLLDR1Mq4akoFYFFivp824uhvMvuqbo3WobXUr8Z8g=
+Received: from DM6PR03CA0044.namprd03.prod.outlook.com (2603:10b6:5:100::21)
+ by SN7PR12MB7980.namprd12.prod.outlook.com (2603:10b6:806:341::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
+ 2023 09:41:36 +0000
+Received: from DS3PEPF000099DE.namprd04.prod.outlook.com
+ (2603:10b6:5:100:cafe::a2) by DM6PR03CA0044.outlook.office365.com
+ (2603:10b6:5:100::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38 via Frontend
+ Transport; Mon, 18 Dec 2023 09:41:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099DE.mail.protection.outlook.com (10.167.17.200) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7113.14 via Frontend Transport; Mon, 18 Dec 2023 09:41:36 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 18 Dec
+ 2023 03:41:34 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 18 Dec
+ 2023 03:41:06 -0600
+Received: from xsjarunbala50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
+ Transport; Mon, 18 Dec 2023 03:41:05 -0600
+From: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
+To: <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
+	<sai.krishna.potthuri@amd.com>, <linus.walleij@linaro.org>,
+	<nava.kishore.manne@amd.com>, <dhaval.r.shah@amd.com>, <robh@kernel.org>,
+	<marex@denx.de>, <roman.gushchin@linux.dev>, <arnd@arndb.de>,
+	<shubhrajyoti.datta@amd.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Jay Buddhabhatti <jay.buddhabhatti@amd.com>
+Subject: [PATCH 0/2] add platform check in event manager driver
+Date: Mon, 18 Dec 2023 01:40:07 -0800
+Message-ID: <20231218094009.13528-1-jay.buddhabhatti@amd.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v9 08/12] clk: meson: g12a: make VCLK2 and ENCL clock path
- configurable by CCF
-Content-Language: en-US, fr
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Jagan Teki <jagan@amarulasolutions.com>, Nicolas Belin
- <nbelin@baylibre.com>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Remi Pommarel
- <repk@triplefau.lt>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org,
- linux-phy@lists.infradead.org, Rob Herring <robh@kernel.org>
-References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
- <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-8-95256ed139e6@linaro.org>
- <1jbkbjdxk8.fsf@starbuckisacylon.baylibre.com>
- <b23ddc3b-d995-4cd6-91f2-3efa59d345a5@linaro.org>
- <1j34wvdtux.fsf@starbuckisacylon.baylibre.com>
- <41a1246e-c885-460a-8208-16844e95e1ae@linaro.org>
- <1jjzq3zhaw.fsf@starbuckisacylon.baylibre.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <1jjzq3zhaw.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099DE:EE_|SN7PR12MB7980:EE_
+X-MS-Office365-Filtering-Correlation-Id: f44f0df1-a8e5-43c7-d376-08dbffad8756
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	R3wHFRBjDEwS6uNRvT645cz/1VFNqzsK2ZtWIEGvCeVdvvyrurmrB8d8/tOCqsTpZmu5QNHwoLiHBL/wqPHTC5yNi3NkVg1smQ/euTUXKNE51bbAMAE1TgG01DdfCQ07otwWRhnNUsisrEEcRDyjgpX4/A9E+as1GBFRnMOkDkRObjecF0bj+xjbY418NlVCDOLPGHVnfT2Y6rv0qZaYJxnXe5bCTAT50Fcfn3gpR6ZMJx0TvdIcizZ62Ztg98sn8+U7hgWqzUhpB8gBoJtH3REkAMpmrrHCc0WvKPHDV7nXMZBN9vxJZbXYimpbhEFiYFfIr0T45tV+FQRa2nYHmNDZX6Ee66+Rad3BxfC+CFA+frgKUn4A46xKmfydLm5b1n6v8D407cAK5uvhOEW/DSlcXDct9GCLkkVa04YZaWtPlJk2xM0rc52AAxR0RelxnvnZQ0D5z7xvnSQbQnhL1RcAh1rNT37cwtWhFEksbv414dd4kHx93CZ7dysYo+InniIG/t6GG6ezoP5j1q+pov2mfrjPwvmcAR9A8IHcOEgTp2fW5YEvbva8+AC1pE7XAbZFwIoyOoPS3dOTi0pd5mmL2h9LFS25xe7J9FJVs5VQN8LP58PItmilNm4Gwswl6t+KjDACD76NbkTgDxWbcZ2m8ppBjpETXL2Xt6Tc7zVLbhHqqPPY1xv6/D3e0yQyBMBbeEKUI5yfvEPPs5E7eKhX3iwoMU1kg2XgIGMshD851Swkg0Y3VnH+YrRDqs15zyzQIjipmuQvgAUBZTxuIjij5N8nVU6xUd3XDZOO+4k=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(376002)(396003)(230922051799003)(451199024)(1800799012)(82310400011)(186009)(64100799003)(46966006)(36840700001)(40470700004)(2906002)(86362001)(36756003)(4744005)(921008)(478600001)(36860700001)(83380400001)(47076005)(1076003)(356005)(82740400003)(81166007)(26005)(426003)(336012)(41300700001)(2616005)(5660300002)(40480700001)(54906003)(70586007)(70206006)(110136005)(8936002)(8676002)(4326008)(6636002)(316002)(40460700003)(44832011)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 09:41:36.7315
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f44f0df1-a8e5-43c7-d376-08dbffad8756
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099DE.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7980
 
-Hi,
+Some error event IDs for Versal and Versal NET are different.
+Both the platforms should access their respective error event
+IDs so use sub_family_code to check for Versal or Versal NET
+platform and check error IDs for respective platforms.
 
-On 27/11/2023 09:38, Jerome Brunet wrote:
-> 
->>>
->>>>
->>>> I suspect mipi_dsi_pxclk_div was added to achieve fractional vclk/bitclk ratios,
->>>> since it doesn't exist on AXG. Not sure we would ever need it... and none
->>>> of the other upstream DSI drivers supports such setups.
->>>>
->>>> The main reasons I set only mipi_dsi_pxclk in DT is because :
->>>> 1) the DSI controller requires a bitclk to respond, pclk is not enough
->>>> 2) GP0 is disabled with an invalid config at cold boot, thus we cannot
->>>> rely on a default/safe rate on an initial prepare_enable().
->>>> This permits setting initial valid state for the DSI controller, while
->>>> the actual bitclk and vclk are calculated dynamically with panel/bridge
->>>> runtime parameters.
->>> Nothing against setting rate in DT when it is static. Setting it then
->>> overriding it is not easy to follow.
->>
->> Yup, would be simpler to only have parenting set in DT, since it must
->> stay static, I'm fine trying to move rate setup to code.
->>
->>> To work around GP0 not being set, assuming you want to keep rate
->>> propagation as it is, you could call clk_set_rate() on cts_encl (possibly w/o
->>> enabling it) to force a setup on gp0 then clk_prepare_enable() on
->>> pxclk. You'd get a your safe rate on GP0 and the clock you need on pxclk.
->>> It is a bit hackish. Might be better to claim gp0 in your driver to
->>> manage it directly, cutting rate propagation above it to control each
->>> branch of the subtree as you need. It seems you need to have control over
->>> that anyway and it would be clear GP0 is expected to belong to DSI.
->>
->> Controlling the PLL from the DSI controller seems violating too much layers,
->> DSI controller driver is not feed directly by the PLL so it's a non-sense
->> regarding DT properties.
-> 
-> Not sure what you mean by this. You have shown in your the commit
-> message that the DSI clocks make significant subtree. I don't see a
-> problem if you need to manage the root of that subtree. I'd be great if
-> you didn't need to, but it is what it is ...
+Jay Buddhabhatti (2):
+  firmware: xilinx: Export function to use in other module
+  drivers: soc: xilinx: add check for platform
 
-I really think the choice of PLL should not be done by the DSI controller,
-but by the Video pipeline driver or statically until we can do this.
+ drivers/firmware/xilinx/zynqmp.c        |  3 ++-
+ drivers/soc/xilinx/xlnx_event_manager.c | 25 ++++++++++++++++++++-----
+ include/linux/firmware/xlnx-zynqmp.h    | 22 ++++++++++++++++++----
+ 3 files changed, 40 insertions(+), 10 deletions(-)
 
-My point is that we should only define the clocks that are related to each
-hardware, for example the whole VCLK/VCLK2 clocks should be defined for the
-VPU HW, then only the few endpoint clocks should be defined for the HDMI
-or DSI controllers, PHY clock and ENCI/ENCP for HDMI, DSI and ENCL for DSI.
-
-The big plan is to entirely switch to CCF for VPU, but first I want to have
-DSI working, and since DSI needs GP0, we need CCF for that so the intermediate
-plan is to have partial CCF handling only for DSI with fixed clock tree in DT,
-then in the future the Meson DRM driver would set up the appropriate clock
-tree for HDMI, DSI, Composite and perhaps DP for T7 SoCs then the controller
-bridge will call the clk_set_rate() in the same design I did for DSI.
-
-Here's the tracked item: https://gitlab.com/amlogic-foss/mainline-linux-issues-tracker/-/issues/9
-
-CCF clock control is a mandatory item to solved dual-head display: https://gitlab.com/amlogic-foss/mainline-linux-issues-tracker/-/issues/6
-
-> 
->>
->> Setting a safe clock from the DSI controller probe is an idea, but again I
->> don't know which value I should use...
-> 
-> You mentionned that the problem comes DSI bridges that needs to change
-> at runtime. I don't know much about those TBH, but is there
-> anyway you can come up with a static GP0 rate that would then be able to
-> divide to serve all the rates bridge would need in your use case ?
-
-No, there's no such things in the DSI world, MIPI only specifies the electrical
-and transport layer, everything else is custom per vendor.
-
-> 
-> GP0 can go a lot higher than ~100MHz and there are dividers unused in the
-> tree it seems.
-> 
-> I suppose there is a finite number of required rate for each use case ?
-> If there are not too many and there is a common divider that allows a
-> common rate GP0 can do, it would solve your problem. It's a lot of if
-> but It is worth checking.
-> 
-> This is how audio works and DT assigned rate is a good match in this case.
-
-Yeah I know, but I would love it but no...
-
-> 
->>
->> I'll review the clk parenting flags and try to hack something.
->>
->> Thanks,
->> Neil
->>
->>
-
-Thanks,
-Neil
+-- 
+2.17.1
 
 
