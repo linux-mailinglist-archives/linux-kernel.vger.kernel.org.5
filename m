@@ -1,158 +1,159 @@
-Return-Path: <linux-kernel+bounces-3296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93955816A94
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:10:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD89B816A97
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F55B281C86
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:10:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E24AD1C22921
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 10:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F97134CC;
-	Mon, 18 Dec 2023 10:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C9213FE6;
+	Mon, 18 Dec 2023 10:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JF0b82/A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lzBDenRg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DFE134A9
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 10:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c517d0de5so30703045e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 02:09:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF49134C3;
+	Mon, 18 Dec 2023 10:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cc3f5e7451so32910061fa.2;
+        Mon, 18 Dec 2023 02:10:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702894197; x=1703498997; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yk43Q72iETuPthnLG45NM2SPpQ2a0jDA3/fdMy7aOrk=;
-        b=JF0b82/AJtAVNF7lFknKK1shMD9EoFMsP+6ZUZibj3xGXmC9ZR2tt1fho7vnKgp3jt
-         J/z+hDNMwpmFPJmYTBp2c4dHl7qE40IZdMM+wgZin+N28OlLxOHvmRDT7pYW24Vmpwxz
-         rGPFeA2Y9u398q2t+R+gKfMAugEAnT1fBnoX8x1FB9pS1EZymUd/TkNQvkg6UYUZ4pwq
-         mJjelJ01Yb238+qYJhhOXbRsPC8jMSq7ArpLllP+5x0DveEckY2tC5QUMnf2oLwc3nF2
-         N4Nd6uCh+ZVXOKsWaRbYP+zyAWLN+JdcYi6X2ggOhWJ52sUwIGZYE6VRQjRM11sgJcEy
-         GTig==
+        d=gmail.com; s=20230601; t=1702894214; x=1703499014; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YC7nUYxtMAPXUFOtVXTFzk0D+Ha1NUghjTTPnYwUs+c=;
+        b=lzBDenRge3xD+m5ur0rDocyPV4wcKtS3SpcNRP1ugzPIn/7WTwlQW02aaHV8vACvzJ
+         EMhifKY+aOEtLz5Px6tzu97kVoal+6JtHCHUg2E0psNXxzrZOkqaICxndg7DL7Ga4TsH
+         n0S+hIxRWGn+FdjuSeFV2oGRvfRDjProRKgY5EWZ9jNm5jxU93AnAK22PykEzoaph6Wj
+         UPaPajaFKT/bGsg/hJsIEs2NJKdwGOOhLVu3ojxRsXn0uUrpA7JaU21ZL0MuZ0F44ITO
+         19hJgj8wmIvv4FZExHI2l8Uaib4GGa765sMt5L66YkLggVZLIVN0tzvInQaKYCaEtDZ+
+         eh1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702894197; x=1703498997;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yk43Q72iETuPthnLG45NM2SPpQ2a0jDA3/fdMy7aOrk=;
-        b=M6+ZqU4PjK1JfASay+h78iuvzPWR7x88em8+fqGaZsKaL1Z0HbtjGAnwDsmG1Ro8GP
-         sTOiHKbqN6PPSr57xMzSD5lPW26lRANL90TEZgdlC9UP83tRQewUNvUVaKLEpbWFpihg
-         w+UsR6bf2Mlve7kz/sSjkG0LCJSPkiwl6RqTAxqQjvD9sVIe1FHPcYVmz8x6ZbM2rCgh
-         g7Hcc6KFiatI2KVV5yfGg3IOTWCZCA8bL4AvwKR7sGkUsaYEJ8PBWPJkFXTm4rd82Hwi
-         MBxx9M+ST0Z1C0qqsxKyJttR38a0qV1cy+bIhTxqo+DKRtGS7BmnL1HZ6jDewUV6pwis
-         a6Ug==
-X-Gm-Message-State: AOJu0YxEeIKkkeMIdDsWsTJ1PH732U+bV0TVmiznHzLoRiOYHExSiVI8
-	RmDSH1OjGXta91CScJfJBIL+bQ==
-X-Google-Smtp-Source: AGHT+IEvLiv5uIxBczewJQUxj3fyC40lQRJ6wj3sekEPYc6kDhXo4TU081kFJ09+vbAPnCAWateKBQ==
-X-Received: by 2002:a05:600c:4509:b0:40c:2518:687c with SMTP id t9-20020a05600c450900b0040c2518687cmr8146291wmo.61.1702894196975;
-        Mon, 18 Dec 2023 02:09:56 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:b425:da5d:c0cf:a505? ([2a01:e0a:982:cbb0:b425:da5d:c0cf:a505])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm43664215wms.30.2023.12.18.02.09.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 02:09:56 -0800 (PST)
-Message-ID: <34b07b10-a70c-4599-8ae2-304e386fe9b2@linaro.org>
-Date: Mon, 18 Dec 2023 11:09:55 +0100
+        d=1e100.net; s=20230601; t=1702894214; x=1703499014;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YC7nUYxtMAPXUFOtVXTFzk0D+Ha1NUghjTTPnYwUs+c=;
+        b=gXve+/OLNyDofbC5Sq704Ox8MYHt1DMHAgzzKMRh3ocNDf9N5r9RMkkO2yD/VG4UPi
+         iDy7i47F1OECDCuX1hvwIfjgQ6T2q2pqaYFNtd1yFlgDVAUKBIx8nosn/IFSJxm5H2hD
+         GlWZ8xzLjSOPgX7f/Go0zISfG3EDteqpJSpnFzDmheTlrbaTRThLhXypmu8+ynu8sH3e
+         b91EcGuVNBVFcRvtIxU5umkcaojQYHarwFphN8Ft4Sxm+HQFjMUYCqD2w4u4jIuNDzPQ
+         PyAG2gbynllMljs9GVAqg5GB4J1EVLeaq8pyNme/iNYDg25/C7xh2aprxq/jUdfxqT7I
+         zRHA==
+X-Gm-Message-State: AOJu0YwjoQAxD7fPeGkDdSu5TsAUn905Tkh1rGTUxx735zk3jCg9pdTy
+	UlKh/M2BgB7vBdRHMnr2RqA=
+X-Google-Smtp-Source: AGHT+IE3EVLnFggdzYIFxGY/O4qZvTMXQtcau7VkqurJWHdYJ1W+qQxqmBjun1z1ouLDhPHAtx2Kpw==
+X-Received: by 2002:a05:651c:1a13:b0:2cb:314f:c300 with SMTP id by19-20020a05651c1a1300b002cb314fc300mr6926538ljb.27.1702894213998;
+        Mon, 18 Dec 2023 02:10:13 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id e15-20020a05651c150f00b002cc6b5ab63asm552635ljf.119.2023.12.18.02.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 02:10:13 -0800 (PST)
+Date: Mon, 18 Dec 2023 13:10:08 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: xiongxin <xiongxin@kylinos.cn>
+Cc: hoan@os.amperecomputing.com, linus.walleij@linaro.org, brgl@bgdev.pl, 
+	andy@kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Riwen Lu <luriwen@kylinos.cn>
+Subject: Re: [v2] gpio: dwapb: mask/unmask IRQ when disable/enale it
+Message-ID: <26nje24sbwccuenarcttuskk7q2ngyxun2nbuynd32ylcozc5y@aasey6najeji>
+References: <20231218081246.1921152-1-xiongxin@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] arm64: defconfig: enable GPU clock controller for
- SM8[45]50
-Content-Language: en-US, fr
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20231204-topic-sm8x50-upstream-gpucc-defconfig-v1-1-e615df0c4af9@linaro.org>
- <5kkk7j6425wshf2bmmhrh26jwc3rstcrm6kgxyyzowq2qqrfw2@u2mgm6qefxvk>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <5kkk7j6425wshf2bmmhrh26jwc3rstcrm6kgxyyzowq2qqrfw2@u2mgm6qefxvk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218081246.1921152-1-xiongxin@kylinos.cn>
 
-On 16/12/2023 06:11, Bjorn Andersson wrote:
-> On Mon, Dec 04, 2023 at 02:01:47PM +0100, Neil Armstrong wrote:
->> Enable GPU Clock Controller for SM8450 and SM8550 to allow using
->> Adreno GPU on these SoCs.
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
->>   arch/arm64/configs/defconfig | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->> index 5ad2b841aafc..56aebbdcdd40 100644
->> --- a/arch/arm64/configs/defconfig
->> +++ b/arch/arm64/configs/defconfig
->> @@ -1266,6 +1266,8 @@ CONFIG_SM_TCSRCC_8550=y
->>   CONFIG_SM_GPUCC_6115=m
->>   CONFIG_SM_GPUCC_8150=y
->>   CONFIG_SM_GPUCC_8250=y
->> +CONFIG_SM_GPUCC_8450=y
->> +CONFIG_SM_GPUCC_8550=y
+On Mon, Dec 18, 2023 at 04:12:46PM +0800, xiongxin wrote:
+> In the hardware implementation of the i2c hid driver based on dwapb gpio
+> irq, when the user continues to use the i2c hid device in the suspend
+> process, the i2c hid interrupt will be masked after the resume process
+> is finished.
 > 
-> I don't think these needs to be builtin, and if they do I'd like to see
-> the reason captured in the commit message.
-
-I don't have any good reasons... I'll resend with modules
-since in my tests it worked fine as modules.
-
-Neil
-
+> This is because the disable_irq()/enable_irq() of the dwapb gpio driver
+> does not synchronize the irq mask register state. In normal use of the
+> i2c hid procedure, the gpio irq irq_mask()/irq_unmask() functions are
+> called in pairs. In case of an exception, i2c_hid_core_suspend() calls
+> disable_irq() to disable the gpio irq. With low probability, this causes
+> irq_unmask() to not be called, which causes the gpio irq to be masked
+> and not unmasked in enable_irq(), raising an exception.
 > 
-> Regards,
-> Bjorn
+> Add synchronization to the masked register state in the
+> dwapb_irq_enable()/dwapb_irq_disable() function. mask the gpio irq
+> before disabling it. After enabling the gpio irq, unmask the irq.
 > 
->>   CONFIG_SM_VIDEOCC_8250=y
->>   CONFIG_QCOM_HFPLL=y
->>   CONFIG_CLK_GFM_LPASS_SM8250=m
->>
->> ---
->> base-commit: 9046d05c6ad632a271fc4173624e26f396975a80
->> change-id: 20231204-topic-sm8x50-upstream-gpucc-defconfig-3e3dc264be08
->>
->> Best regards,
->> -- 
->> Neil Armstrong <neil.armstrong@linaro.org>
->>
+> Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB GPIO block")
+> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
+> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+> Tested-by: xiongxin <xiongxin@kylinos.cn>
+> ---
+>  drivers/gpio/gpio-dwapb.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index 4a4f61bf6c58..8c59332429c2 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -282,13 +282,15 @@ static void dwapb_irq_enable(struct irq_data *d)
+>  {
+>  	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>  	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
 
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+
+Thanks for submitting the patch. I wasn't sure which way was better:
+define a "mask" or "hwirq" local vars with respective semantics. From
+my point of view both were correct with the first version being more
+optimized and the second one making enable()/disable() methods looking
+alike the mask()/unmask() functions. No objections against you
+implementing the second version. So
+
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Serge(y)
+
+>  	unsigned long flags;
+>  	u32 val;
+>  
+>  	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+> -	val = dwapb_read(gpio, GPIO_INTEN);
+> -	val |= BIT(irqd_to_hwirq(d));
+> +	val = dwapb_read(gpio, GPIO_INTEN) | BIT(hwirq);
+>  	dwapb_write(gpio, GPIO_INTEN, val);
+> +	val = dwapb_read(gpio, GPIO_INTMASK) & ~BIT(hwirq);
+> +	dwapb_write(gpio, GPIO_INTMASK, val);
+>  	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
+>  }
+>  
+> @@ -296,12 +298,14 @@ static void dwapb_irq_disable(struct irq_data *d)
+>  {
+>  	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>  	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+>  	unsigned long flags;
+>  	u32 val;
+>  
+>  	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+> -	val = dwapb_read(gpio, GPIO_INTEN);
+> -	val &= ~BIT(irqd_to_hwirq(d));
+> +	val = dwapb_read(gpio, GPIO_INTMASK) | BIT(hwirq);
+> +	dwapb_write(gpio, GPIO_INTMASK, val);
+> +	val = dwapb_read(gpio, GPIO_INTEN) & ~BIT(hwirq);
+>  	dwapb_write(gpio, GPIO_INTEN, val);
+>  	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
+>  }
+> -- 
+> 2.34.1
+> 
 
