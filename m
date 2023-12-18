@@ -1,99 +1,147 @@
-Return-Path: <linux-kernel+bounces-4056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8B0A817753
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:22:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F05C7817754
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:22:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 857BE2869D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:22:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F928286E31
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 16:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC07B49883;
-	Mon, 18 Dec 2023 16:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4656F36AEA;
+	Mon, 18 Dec 2023 16:22:38 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A22E336AEA;
-	Mon, 18 Dec 2023 16:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sv4pT6VLwz6K5yX;
-	Tue, 19 Dec 2023 00:21:53 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id A7F3D140A77;
-	Tue, 19 Dec 2023 00:22:29 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 18 Dec
- 2023 16:22:29 +0000
-Date: Mon, 18 Dec 2023 16:22:27 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-CC: <jikos@kernel.org>, <jic23@kernel.org>, <lars@metafoo.de>,
-	<Basavaraj.Natikar@amd.com>, <linux-input@vger.kernel.org>,
-	<linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 0/2] Fix regression in ALS
-Message-ID: <20231218162227.00002197@Huawei.com>
-In-Reply-To: <20231217200703.719876-1-srinivas.pandruvada@linux.intel.com>
-References: <20231217200703.719876-1-srinivas.pandruvada@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6263D57A
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C4E12F4;
+	Mon, 18 Dec 2023 08:23:19 -0800 (PST)
+Received: from [10.57.75.230] (unknown [10.57.75.230])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD4FE3F5A1;
+	Mon, 18 Dec 2023 08:22:33 -0800 (PST)
+Message-ID: <c3984854-0e39-475b-822d-773097d86f50@arm.com>
+Date: Mon, 18 Dec 2023 16:22:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 15/39] mm/huge_memory: batch rmap operations in
+ __split_huge_pmd_locked()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Hugh Dickins <hughd@google.com>, Yin Fengwei <fengwei.yin@intel.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
+ Peter Xu <peterx@redhat.com>
+References: <20231211155652.131054-1-david@redhat.com>
+ <20231211155652.131054-16-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231211155652.131054-16-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sun, 17 Dec 2023 12:07:01 -0800
-Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
-
-> Addition of color temperature and chromaticity support breaks ALS sensor
-> on several platforms. Till we have a good solution, revert these commits
-> for 6.7 cycle.
+On 11/12/2023 15:56, David Hildenbrand wrote:
+> Let's use folio_add_anon_rmap_ptes(), batching the rmap operations.
 > 
-> Srinivas Pandruvada (2):
->   Revert "iio: hid-sensor-als: Add light chromaticity support"
->   Revert "iio: hid-sensor-als: Add light color temperature support"
+> While at it, use more folio operations (but only in the code branch we're
+> touching), use VM_WARN_ON_FOLIO(), and pass RMAP_EXCLUSIVE instead of
+> manually setting PageAnonExclusive.
 > 
->  drivers/iio/light/hid-sensor-als.c | 100 +----------------------------
->  include/linux/hid-sensor-ids.h     |   4 --
->  2 files changed, 2 insertions(+), 102 deletions(-)
-
-+CC Greg KH.  (resent as I messed up Greg's address first time around)
-
-Hi Greg,
-
-This is a regression fix that I'd like to get in asap. Currently light sensors
-on a wide range of laptops are broken.  I was hoping we'd fix the the problem
-rather than need to revert, but time is running out so revert it is.
-
-I don't have anything else that needs to be rushed in before the merge cycle,
-so if you are happy to pick these two reverts directly that would be great.
-
-Message ID of the cover letter is
-
-20231217200703.719876-1-srinivas.pandruvada@linux.intel.com
-
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-If not I should be able to do a pull request in next couple of days
-with these in.
-
-Thanks,
-
-Jonathan
-
-
+> We should never see non-anon pages on that branch: otherwise, the
+> existing page_add_anon_rmap() call would have been flawed already.
 > 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/huge_memory.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 1f5634b2f374..82ad68fe0d12 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2398,6 +2398,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>  		unsigned long haddr, bool freeze)
+>  {
+>  	struct mm_struct *mm = vma->vm_mm;
+> +	struct folio *folio;
+>  	struct page *page;
+>  	pgtable_t pgtable;
+>  	pmd_t old_pmd, _pmd;
+> @@ -2493,16 +2494,18 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>  		uffd_wp = pmd_swp_uffd_wp(old_pmd);
+>  	} else {
+>  		page = pmd_page(old_pmd);
+> +		folio = page_folio(page);
+>  		if (pmd_dirty(old_pmd)) {
+>  			dirty = true;
+> -			SetPageDirty(page);
+> +			folio_set_dirty(folio);
+>  		}
+>  		write = pmd_write(old_pmd);
+>  		young = pmd_young(old_pmd);
+>  		soft_dirty = pmd_soft_dirty(old_pmd);
+>  		uffd_wp = pmd_uffd_wp(old_pmd);
+>  
+> -		VM_BUG_ON_PAGE(!page_count(page), page);
+> +		VM_WARN_ON_FOLIO(!folio_ref_count(folio), folio);
+> +		VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
+
+Is this warning really correct? file-backed memory can be PMD-mapped with
+CONFIG_READ_ONLY_THP_FOR_FS, so presumably it can also have the need to be
+remapped as pte? Although I guess if we did have a file-backed folio, it
+definitely wouldn't be correct to call page_add_anon_rmap() /
+folio_add_anon_rmap_ptes()...
+
+>  
+>  		/*
+>  		 * Without "freeze", we'll simply split the PMD, propagating the
+> @@ -2519,11 +2522,18 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>  		 *
+>  		 * See page_try_share_anon_rmap(): invalidate PMD first.
+>  		 */
+> -		anon_exclusive = PageAnon(page) && PageAnonExclusive(page);
+> +		anon_exclusive = PageAnonExclusive(page);
+>  		if (freeze && anon_exclusive && page_try_share_anon_rmap(page))
+>  			freeze = false;
+> -		if (!freeze)
+> -			page_ref_add(page, HPAGE_PMD_NR - 1);
+> +		if (!freeze) {
+> +			rmap_t rmap_flags = RMAP_NONE;
+> +
+> +			folio_ref_add(folio, HPAGE_PMD_NR - 1);
+> +			if (anon_exclusive)
+> +				rmap_flags |= RMAP_EXCLUSIVE;
+> +			folio_add_anon_rmap_ptes(folio, page, HPAGE_PMD_NR,
+> +						 vma, haddr, rmap_flags);
+> +		}
+>  	}
+>  
+>  	/*
+> @@ -2566,8 +2576,6 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>  			entry = mk_pte(page + i, READ_ONCE(vma->vm_page_prot));
+>  			if (write)
+>  				entry = pte_mkwrite(entry, vma);
+> -			if (anon_exclusive)
+> -				SetPageAnonExclusive(page + i);
+>  			if (!young)
+>  				entry = pte_mkold(entry);
+>  			/* NOTE: this may set soft-dirty too on some archs */
+> @@ -2577,7 +2585,6 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>  				entry = pte_mksoft_dirty(entry);
+>  			if (uffd_wp)
+>  				entry = pte_mkuffd_wp(entry);
+> -			page_add_anon_rmap(page + i, vma, addr, RMAP_NONE);
+>  		}
+>  		VM_BUG_ON(!pte_none(ptep_get(pte)));
+>  		set_pte_at(mm, addr, pte, entry);
 
 
