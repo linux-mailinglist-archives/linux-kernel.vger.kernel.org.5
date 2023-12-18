@@ -1,80 +1,76 @@
-Return-Path: <linux-kernel+bounces-3424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9437B816C16
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28498816C14
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 12:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC44E1C230C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:20:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F40B1C22EC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 11:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42331A594;
-	Mon, 18 Dec 2023 11:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC09B1947A;
+	Mon, 18 Dec 2023 11:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WAqVVmws"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JQr5Yf7l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DCE1A289;
-	Mon, 18 Dec 2023 11:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0D619BD8;
+	Mon, 18 Dec 2023 11:19:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40c38e292c8so14940105e9.0;
-        Mon, 18 Dec 2023 03:19:44 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-553729ee917so389171a12.1;
+        Mon, 18 Dec 2023 03:19:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702898383; x=1703503183; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702898379; x=1703503179; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O5n5729EOzdXeaDBJQbuOs1rZ+Vdmdqpq3oeECYilXc=;
-        b=WAqVVmwssoxeBizXyplI8QKENpKheRkAVVXyyXH2QWjiFFm2TDQWSJKmIvQRjHqHjJ
-         A/Fwu8vHurnxwaBMHgDt/JyHXyXUvNoufhcf2RYkOE6w5mqNSPmmQPTdtRQuPTfJFmc4
-         vwhlgbqQgJM/M4VXCUoGd7I6jb2RLUnl4o/a5tay3Hn9HiE3A6xYTxk/FsSJN14pAEb5
-         RaAisJ44soPJIaJEioq1XrtMNy3fxhO8/Hlg8tNvh1OaBWEXjzqtppgY3oNiCtSG30//
-         mGORHYQeX8EHzHLNRCQM5iugL7nmaV8M54RCQvK1g/ojTprpHt0XUUD7ued0Ef0ywL+Q
-         gYUA==
+        bh=t8kHNFe/eGO0I6G9ZddI076fRWeZyLjc7sbCR2/u9Pw=;
+        b=JQr5Yf7l8NQ2SmONhmoIvSATzhD5QPnuTK9hM/+05lPXoO4BzZ/n4z6toX0lKOPBbQ
+         1edZ6MRgv39+I8H0Bx/pt0wyC1kpZwMCyT7wDNMArDfZwttEvJs23PSphIJH5eyxKBLS
+         g3HnSjQUQnI8AvDPoaNyprOa4sazBEcHqbJoAyNu4mxUMjUoiVPOzvD1tDuHbxsqfQLi
+         5yu7nS3wuO6LDAqe8Law1q0/6OsQyYZ4NjNiQdUzjMO5ANGlqgtL2nvZh5TpuawsvXDL
+         BIM735tubovi/lWSCvV6t9QJuw7q/a/zgvC28/cv4KAaO3zBjHpO9lNH4bTRRVKYWfTq
+         QlUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702898383; x=1703503183;
+        d=1e100.net; s=20230601; t=1702898379; x=1703503179;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O5n5729EOzdXeaDBJQbuOs1rZ+Vdmdqpq3oeECYilXc=;
-        b=iXN2RBnYnVyN0pCJ1m0B/F4t4uHJZunzu8xQwP5poS+ShFxC+cT+J6FmKJUDebt0Sk
-         ZLKJvW3gcHsFUPIr78t42UBMc6SiP+dat5IakLvB5fUYbu1c/hoi88/MTgB/SdBmvsXS
-         Ntf6AYnUjJwpVLFQZ9YmC+k3QIRk8+NzRgTh30ABEHqSkVXWFmZneklDvXuuS5Pr7dAg
-         ql87PLfWK+FlKPwaXGB/6JeqehWHvknCct5Qf0V5G4h2bc8aRJDZdmfqFamSPu1m3IvZ
-         igiNbWIb+vRoU35A/CpDzbT9dUe9etXwpRO7dJMYJw+9Y2xnfU7ycbNLeeCOueZoFhsX
-         1flw==
-X-Gm-Message-State: AOJu0Yzu0KKLDsyI1AKTrwuzwGaXGDxroiNXqYckICxHZ/D5/wF8C/cE
-	QKRY8fRB0uGb5RnhXKrNzqA=
-X-Google-Smtp-Source: AGHT+IEppZ71ikMbMgoJRJrf1Z3A2CQGa+4kbg2ESzX2nbAn3Wk7vlt2e2rQHcuk5fFyQxu/2GFhDw==
-X-Received: by 2002:a05:600c:b50:b0:40b:5e26:237f with SMTP id k16-20020a05600c0b5000b0040b5e26237fmr7694647wmr.48.1702898382382;
-        Mon, 18 Dec 2023 03:19:42 -0800 (PST)
-Received: from eichest-laptop ([2a02:168:af72:0:887d:230f:8633:4d97])
-        by smtp.gmail.com with ESMTPSA id b16-20020a05600c4e1000b0040c310abc4bsm41919960wmq.43.2023.12.18.03.19.35
+        bh=t8kHNFe/eGO0I6G9ZddI076fRWeZyLjc7sbCR2/u9Pw=;
+        b=XJYqILUxo9WfdArYKuaoIH5jVp5dNUyN0fL08D4J2lvCHyhvzFW5ggVURrryp9jTuy
+         FomXqrPShyfWbQVkblvLwT1LFzXAQpEBqgQ/1ysrixowiPX6tdMbMoAASmObJwrkm4TI
+         X4/lZxRAwUWIdfkrFlOo4bLhG3Y+ovHHvdwmrTIRBxe1d/Q9u0xNldFafKRGDzhgYqxE
+         xbvw62A3x2hPORUmDpkHhxgMUvQn/8CgHybA1XBqLMLdG5giy4RlM/RqD3+SzUJOf3Pe
+         csiyG/iwmX3tRxPH6EigK9LXl3vqHTryuTjltRa5f3PQeUfrUt2lG4BBn1wyJxt0xMXy
+         nQzA==
+X-Gm-Message-State: AOJu0YxOnGliS79+vPg3ik6C40iO2IDybSaGdHZCwvJTP9pIbsFhOFSm
+	Klw79xvSuJiwcfQS6LHCEnANPlqcmp4=
+X-Google-Smtp-Source: AGHT+IHga7BpTpH5bnvqOJQAMbkyQFWJOfpoHO3arczMLt9WQNaoBA4EvT7nCoRTVmA6wh7af9dE/Q==
+X-Received: by 2002:a50:a69e:0:b0:54c:c9a4:83df with SMTP id e30-20020a50a69e000000b0054cc9a483dfmr10140643edc.26.1702898378705;
+        Mon, 18 Dec 2023 03:19:38 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
+        by smtp.gmail.com with ESMTPSA id k13-20020a50cb8d000000b0054cc7a4dc4csm10211082edi.13.2023.12.18.03.19.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 18 Dec 2023 03:19:38 -0800 (PST)
-Date: Mon, 18 Dec 2023 12:19:32 +0100
-From: Stefan Eichenberger <eichest@gmail.com>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: marvell-88q2xxx: add driver for the Marvell
- 88Q2220 PHY
-Message-ID: <ZYAqxPZHICtZO15O@eichest-laptop>
-References: <20231215213102.35994-1-dima.fedrau@gmail.com>
- <74d4b8f9-700e-45bc-af59-95a40a777b00@lunn.ch>
- <20231216221151.GA143483@debian>
- <28cc73bf-ed6d-49d8-b80b-4fbf5fa0442f@lunn.ch>
- <20231217111538.GA3591@debian>
- <ZX78ucHcNyEatXLD@eichest-laptop>
- <20231218090932.GA4319@debian>
+Date: Mon, 18 Dec 2023 12:19:36 +0100
+From: Tommaso Merciai <tomm.merciai@gmail.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
+	Martin Hecht <martin.hecht@avnet.eu>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] media: i2c: alvium: store frame interval in subdev
+ state
+Message-ID: <ZYAqyOEfKp/oiqs9@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231215082452.1720481-1-tomm.merciai@gmail.com>
+ <20231215082452.1720481-4-tomm.merciai@gmail.com>
+ <20231218025905.GJ5290@pendragon.ideasonboard.com>
+ <ZYAfThT/mHdzGdAh@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <20231218110331.GQ5290@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,84 +79,172 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231218090932.GA4319@debian>
+In-Reply-To: <20231218110331.GQ5290@pendragon.ideasonboard.com>
 
-Hi Dimitri,
+Hi Laurent,
+Thanks for your quick reply.
 
-On Mon, Dec 18, 2023 at 10:09:32AM +0100, Dimitri Fedrau wrote:
-> Am Sun, Dec 17, 2023 at 02:50:49PM +0100 schrieb Stefan Eichenberger:
-> > I also tried to make the 88Q2221 work but didn't find the time yet to
-> > write a clean version yet. My last minimal patch looks as attached
-> > bellow.
+On Mon, Dec 18, 2023 at 01:03:31PM +0200, Laurent Pinchart wrote:
+> On Mon, Dec 18, 2023 at 11:30:38AM +0100, Tommaso Merciai wrote:
+> > Hi Laurent,
 > > 
-> I probably will also get a 88Q2221 PHY, but it could take some time.
-> When looking at the reference code the only difference for the 88Q2220
-> and 88Q2221 seems to be an additional init sequence with 28 register writes.
-> Remaining code seems to be identical. Am I right ? If yes we can use the
-> same code base here. Besides that it seems that both PHYs share the same
-> PHY id and are only distinguished by the "Secondary ID Register".
-
-I think the init sequence is the same for both PHYs. At least they share
-the same reference manual and the API User Guide.
-
-> > I think the main thing to make the PHY work is to call this
-> > sequence to set the master/slave detection threshold:
+> > On Mon, Dec 18, 2023 at 04:59:05AM +0200, Laurent Pinchart wrote:
+> > > Hi Tommaso,
+> > > 
+> > > Thank you for the patch.
+> > > 
+> > > On Fri, Dec 15, 2023 at 09:24:52AM +0100, Tommaso Merciai wrote:
+> > > > Use the newly added storage for frame interval in the subdev state to
+> > > > simplify the driver.
+> > > > 
+> > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > > > ---
+> > > >  drivers/media/i2c/alvium-csi2.c | 40 ++++++++++-----------------------
+> > > >  drivers/media/i2c/alvium-csi2.h |  2 --
+> > > >  2 files changed, 12 insertions(+), 30 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> > > > index fde456357be1..81f683b3c849 100644
+> > > > --- a/drivers/media/i2c/alvium-csi2.c
+> > > > +++ b/drivers/media/i2c/alvium-csi2.c
+> > > > @@ -1643,25 +1643,6 @@ static int alvium_hw_init(struct alvium_dev *alvium)
+> > > >  }
+> > > >  
+> > > >  /* --------------- Subdev Operations --------------- */
+> > > > -
+> > > > -static int alvium_g_frame_interval(struct v4l2_subdev *sd,
+> > > > -				   struct v4l2_subdev_state *sd_state,
+> > > > -				   struct v4l2_subdev_frame_interval *fi)
+> > > > -{
+> > > > -	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > -
+> > > > -	/*
+> > > > -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
+> > > > -	 * subdev active state API.
+> > > > -	 */
+> > > > -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+> > > > -		return -EINVAL;
+> > > > -
+> > > > -	fi->interval = alvium->frame_interval;
+> > > > -
+> > > > -	return 0;
+> > > > -}
+> > > > -
+> > > >  static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > >  				   struct v4l2_subdev_state *sd_state,
+> > > >  				   struct v4l2_subdev_frame_interval *fi)
+> > > > @@ -1669,6 +1650,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > >  	struct device *dev = &alvium->i2c_client->dev;
+> > > >  	u64 req_fr, dft_fr, min_fr, max_fr;
+> > > > +	struct v4l2_fract *interval;
+> > > >  	int ret;
+> > > >  
+> > > >  	/*
+> > > 
+> > > You should drop the FIXME comment here and the ACTIVE check...
 > > 
-> > /* Set detection threshold slave master */
-> > phy_write_mmd(phydev, MDIO_MMD_AN, 0x8032, 0x2020);
-> > phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0x0a28);
-> > phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0x0c28);
+> > Oks, thanks.
 > > 
-> > Without this sequence the PHY does not work. I was also wondering as
-> > Andrew wrote why we write twice to the same register. My assumption is
-> > that 0x8032 is some kind of selector for a subregister while 0x8031 will
-> > set a 32 bit value. Unforunately, I also didn't get that information
-> > from Marvell and it is just a wild guess. Please also note that calling
-> > the sequence in the probe function (as I do it in the example below) is
-> > definitely wrong, it was just a quick and dirty test I did because I
-> > wanted to know if it is enough to call it only once.
+> > > 
+> > > > @@ -1701,9 +1683,10 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> > > >  	if (req_fr >= max_fr && req_fr <= min_fr)
+> > > >  		req_fr = dft_fr;
+> > > >  
+> > > > -	alvium->fr = req_fr;
+> > > > -	alvium->frame_interval.numerator = fi->interval.numerator;
+> > > > -	alvium->frame_interval.denominator = fi->interval.denominator;
+> > > > +	interval = v4l2_subdev_state_get_interval(sd_state, 0);
+> > > > +
+> > > > +	interval->numerator = fi->interval.numerator;
+> > > > +	interval->denominator = fi->interval.denominator;
+> > > >  
+> > > 
+> > > ... and here only call alvium_set_frame_rate() for the ACTIVE frame
+> > > interval.
 > > 
-> You are maybe right about your guess. Without the init sequence at all I
-> was able to get the PHY work with a fixed setting (100Mbit/Master).
-> Maybe it was due to bootstrapping the pins of the PHY. But still I'm not
-> getting the point. What are we going to do ? Do we want to strip down or
-> generalize the init sequence ? There is probably a reason for such an
-> annoying large undocumented series of register writes.
-
-The documentation is really annoying, I agree. I would propose to try to
-keep the driver as minimal as possible. If we see that something is not
-working, we can still add it later on. Maybe this helps to get a better
-understanding of what the registers do. Further, they always do a full
-initialization when they switch e.g. from 100MBit/s to 1GBit/s. This
-definitely seems to be unnecessary.
-
-> > Are you able to test everyting with the upstream kernel? I'm asking
-> > because I have to backport a lot of stuff to a downstream kernel 5.15
-> > from NXP to test the 88Q2221. 
-> > 
-> I'm testing with the upstream kernel, no problems so far. Didn't have to
-> backport anything or test on another kernel. First version of my driver
-> was also on NXPs 5.15 kernel. Gladly you already upstreamed some T1
-> specific code which helped me a lot to reduce code size.
-
-That's good to hear. The 88Q2221 in my setup is connected to an S32G274A
-from NXP and unfortunately that one doesn't have proper upstream support
-yet.
-
-> > Further, are you able to verify that autonegotion works? Somehow for me
-> > this never really worked even when using the example sequence from
-> > Marvell.
-> > 
+> > I don't completely got this comment, can you give me more details about
+> > please. Thanks in advance!
 > 
-> Autonegotiation works fine, didn't have any problems. I'm using the
-> 88Q2220M rev B0. I test it with a Media Converter, the NETLion1000 C2T and
-> with another 88Q2220M PHY. What do you use for testing ?
+> alvium_s_frame_interval() can be called both for the TRY and ACTIVE
+> status. The hardware registers should be written only for the ACTIVE
+> state.
 
-I have to try it again. I'm using the Goepel Media Converter (EasyCON)
-and I'm pretty sure autoneg works on the Media Converter but somehow not
-on the PHY side. It could be that this is because of one of this
-undocumented registers.
+Do you think could be sufficient an if check like this?
 
-Regards,
-Stefan
+-	return alvium_set_frame_rate(alvium, req_fr);
++	if (fi->which == V4L2_SUBDEV_FORMAT_ACTIVE)
++		return alvium_set_frame_rate(alvium, req_fr);
++
++	return ret;
+ }
+
+Thanks & Regards,
+Tommaso
+
+> > > > @@ -1853,6 +1836,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+> > > >  {
+> > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > >  	struct alvium_mode *mode = &alvium->mode;
+> > > > +	struct v4l2_fract *interval;
+> > > >  	struct v4l2_subdev_format sd_fmt = {
+> > > >  		.which = V4L2_SUBDEV_FORMAT_TRY,
+> > > >  		.format = alvium_csi2_default_fmt,
+> > > > @@ -1870,6 +1854,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
+> > > >  	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
+> > > >  	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
+> > > >  
+> > > > +	/* Setup initial frame interval*/
+> > > > +	interval = v4l2_subdev_state_get_interval(state, 0);
+> > > > +	interval->numerator = 1;
+> > > > +	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
+> > > > +
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > @@ -2239,7 +2228,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
+> > > >  	.set_fmt = alvium_set_fmt,
+> > > >  	.get_selection = alvium_get_selection,
+> > > >  	.set_selection = alvium_set_selection,
+> > > > -	.get_frame_interval = alvium_g_frame_interval,
+> > > > +	.get_frame_interval = v4l2_subdev_get_frame_interval,
+> > > >  	.set_frame_interval = alvium_s_frame_interval,
+> > > >  };
+> > > >  
+> > > > @@ -2260,11 +2249,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
+> > > >  	struct v4l2_subdev *sd = &alvium->sd;
+> > > >  	int ret;
+> > > >  
+> > > > -	/* Setup initial frame interval*/
+> > > > -	alvium->frame_interval.numerator = 1;
+> > > > -	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
+> > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
+> > > > -
+> > > >  	/* Setup the initial mode */
+> > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
+> > > >  	alvium->mode.width = alvium_csi2_default_fmt.width;
+> > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
+> > > > index a6529b28e7dd..f5e26257b042 100644
+> > > > --- a/drivers/media/i2c/alvium-csi2.h
+> > > > +++ b/drivers/media/i2c/alvium-csi2.h
+> > > > @@ -442,8 +442,6 @@ struct alvium_dev {
+> > > >  	s32 inc_sharp;
+> > > >  
+> > > >  	struct alvium_mode mode;
+> > > > -	struct v4l2_fract frame_interval;
+> > > > -	u64 fr;
+> > > 
+> > > The fr field should have been removed by a previous patch (the one that
+> > > will go between 1/3 an 2/3, see my review of 1/3) as shown by the fact
+> > > that this patch only removes two locations where the field is set but
+> > > none where it's read.
+> > > 
+> > > >  
+> > > >  	u8 h_sup_csi_lanes;
+> > > >  	u64 link_freq;
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
 
