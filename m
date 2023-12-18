@@ -1,193 +1,123 @@
-Return-Path: <linux-kernel+bounces-2987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-2990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 631E981659B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:18:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 375568165A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 05:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 958C31C221AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:18:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED3B22820E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 04:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE6B63AC;
-	Mon, 18 Dec 2023 04:18:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE536134;
+	Mon, 18 Dec 2023 04:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lNRMfDNB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0365396;
-	Mon, 18 Dec 2023 04:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vye8nWi_1702873108;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vye8nWi_1702873108)
-          by smtp.aliyun-inc.com;
-          Mon, 18 Dec 2023 12:18:28 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: pablo@netfilter.org,
-	kadlec@netfilter.org,
-	fw@strlen.de
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org
-Subject: [RFC nf-next v2 2/2] selftests/bpf: Add netfilter link prog update test
-Date: Mon, 18 Dec 2023 12:18:21 +0800
-Message-Id: <1702873101-77522-3-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1702873101-77522-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1702873101-77522-1-git-send-email-alibuda@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAE2566E;
+	Mon, 18 Dec 2023 04:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BI4Ucc9088169;
+	Sun, 17 Dec 2023 22:30:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1702873838;
+	bh=vGmCg4Mp8B+JjXs/7nAxIenV+8KYuMwdscLZTOUU4gs=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=lNRMfDNByrxwoxRb3CWyO6bjHIZYNn60+dZtK68+icSEJ/DZWpS3chrzfHwZgSC/C
+	 ylKZ2idRb5ySskAJPOA+nYDQrAfwFia6hMUXezBbS2HLJSiPZrkCLi31qMEm/qYtMl
+	 LXSEM0co/SOu5lA2FLAoKR9k8O7C3e/ec87NVj8w=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BI4UcSo007405
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 17 Dec 2023 22:30:38 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 17
+ Dec 2023 22:30:37 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 17 Dec 2023 22:30:37 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BI4UYJ9057180;
+	Sun, 17 Dec 2023 22:30:35 -0600
+Message-ID: <cb93763e-28d3-402a-a5fa-34936646bc0a@ti.com>
+Date: Mon, 18 Dec 2023 10:00:34 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+CC: <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <srk@ti.com>, <vigneshr@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH v2 3/4] dmaengine: ti: k3-udma-glue: Add function to
+ request TX channel by ID
+Content-Language: en-US
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+References: <20231212111011.1401641-1-s-vadapalli@ti.com>
+ <20231212111011.1401641-4-s-vadapalli@ti.com>
+ <800ccf2e-65cc-4524-8a42-1657a5906482@gmail.com>
+ <4f13681a-dc13-4de2-a0d5-9f85a4c350d4@ti.com>
+ <604657b5-0b88-4108-afd3-8cc88e10b16c@gmail.com>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <604657b5-0b88-4108-afd3-8cc88e10b16c@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-Update prog for active links and verify whether
-the prog has been successfully replaced.
 
-Expected output:
+On 17/12/23 16:48, Péter Ujfalusi wrote:
+> 
+> 
+> On 15/12/2023 08:08, Siddharth Vadapalli wrote:
+>>>>  err:
+>>>> @@ -395,6 +410,40 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>>>>  }
+>>>>  EXPORT_SYMBOL_GPL(k3_udma_glue_request_tx_chn);
+>>>>  
+>>>> +struct k3_udma_glue_tx_channel *
+>>>> +k3_udma_glue_request_tx_chn_by_id(struct device *dev, struct k3_udma_glue_tx_channel_cfg *cfg,
+>>>> +				  struct device_node *udmax_np, u32 thread_id)
+>>>
+>>> udmax_np is not dev->of_node ?
+>>
+>> I am not sure I fully understand the question. If you meant to ask if the driver
+>> which uses this API will not have its device's of_node set to udmax_np, then yes
+>> that's correct.
+>>
+>> The driver shall be probed over RPMsg-bus, due to which its device's of_node
+>> will not be udmax_np. Additionally, the udmax_np is the device-tree node of one
+>> of the DMA Controllers described in the device-tree. The driver shall obtain the
+>> reference to the udmax_np node using the API:
+>> of_find_compatible_node()
+>> with the compatible to be passed to the above API being a part of the driver's
+>> data. Thus, it is possible to specify which DMA Controller to use by specifying
+>> the compatible in the driver's data. I hope that I have answered your question.
+>> Please let me know otherwise.
+> 
+> I see, thank you for the detailed explanation!
+> 
+>> Thank you for reviewing the series. I will rename the API as mentioned above and
+>> if the question you had above regarding the of_node has been addressed, I will
+>> post the v3 series. Kindly let me know.
+> 
+> I don't have other open issues, thanks for the updates
+> 
 
-./test_progs -t netfilter_link_update_prog
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Thank you for the confirmation. I will implement your suggestions and post the
+v3 series.
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
- .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..d23b544
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <test_progs.h>
-+#include <linux/netfilter.h>
-+#include <network_helpers.h>
-+#include "test_netfilter_link_update_prog.skel.h"
-+
-+#define SERVER_ADDR "127.0.0.1"
-+#define SERVER_PORT 12345
-+
-+static const char dummy_message[] = "A dummy message";
-+
-+static int send_dummy(int client_fd)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	err = make_sockaddr(AF_INET, SERVER_ADDR, SERVER_PORT, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client_fd, dummy_message, sizeof(dummy_message) - 1, 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+void test_netfilter_link_update_prog(void)
-+{
-+	LIBBPF_OPTS(bpf_netfilter_opts, opts,
-+		.pf = NFPROTO_IPV4,
-+		.hooknum = NF_INET_LOCAL_OUT,
-+		.priority = 100);
-+	struct test_netfilter_link_update_prog *skel;
-+	struct bpf_program *prog;
-+	int server_fd, client_fd;
-+	int err;
-+
-+	skel = test_netfilter_link_update_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_netfilter_link_update_prog__open_and_load"))
-+		goto out;
-+
-+	prog = skel->progs.nf_link_prog;
-+
-+	if (!ASSERT_OK_PTR(prog, "load program"))
-+		goto out;
-+
-+	skel->links.nf_link_prog = bpf_program__attach_netfilter(prog, &opts);
-+	if (!ASSERT_OK_PTR(skel->links.nf_link_prog, "attach netfilter program"))
-+		goto out;
-+
-+	server_fd = start_server(AF_INET, SOCK_DGRAM, SERVER_ADDR, SERVER_PORT, 0);
-+	if (!ASSERT_GE(server_fd, 0, "start_server"))
-+		goto out;
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (!ASSERT_GE(client_fd, 0, "connect_to_fd"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+
-+	ASSERT_EQ(skel->bss->counter, 0, "counter should be zero");
-+
-+	err = bpf_link__update_program(skel->links.nf_link_prog, skel->progs.nf_link_prog_new);
-+	if (!ASSERT_OK(err, "bpf_link__update_program"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+	ASSERT_GE(skel->bss->counter, 0, "counter should be greater than zero");
-+out:
-+	if (client_fd > 0)
-+		close(client_fd);
-+	if (server_fd > 0)
-+		close(server_fd);
-+
-+	test_netfilter_link_update_prog__destroy(skel);
-+}
-+
-+
-diff --git a/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..42ae332
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#define NF_ACCEPT 1
-+
-+SEC("netfilter")
-+int nf_link_prog(struct bpf_nf_ctx *ctx)
-+{
-+	return NF_ACCEPT;
-+}
-+
-+u64 counter = 0;
-+
-+SEC("netfilter")
-+int nf_link_prog_new(struct bpf_nf_ctx *ctx)
-+{
-+	counter++;
-+	return NF_ACCEPT;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
 -- 
-1.8.3.1
-
+Regards,
+Siddharth.
 
