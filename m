@@ -1,120 +1,193 @@
-Return-Path: <linux-kernel+bounces-4389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12FAE817C60
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:06:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 318E9817C64
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 22:07:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A81051F22D34
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:06:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64CB1B23622
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 21:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9057349B;
-	Mon, 18 Dec 2023 21:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB32773492;
+	Mon, 18 Dec 2023 21:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="rHDetb2A"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="LzpRk9dF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA8273469
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 21:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28ade227850so2836585a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:06:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F281E53A
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 21:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d3165ac96bso1090343b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:07:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1702933588; x=1703538388; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=broadcom.com; s=google; t=1702933632; x=1703538432; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=36mhB37dzwFYxTc31wi9sEgexn00u1r64ISHaWciqdQ=;
-        b=rHDetb2As5dvxj/ZC0sfTVAeo7dFK8KOERk7H4/wNR25i8oaRgyiIzynyMSCNp7hju
-         P5pzrNQCmHo4jfFPElySXR0R6AVWCl7gZLzJnTKM+o7+7ldjSQqyBX0PBMfVe80q01fA
-         F2RJqw6Fz2SY+xN4G+81VpTpqNLnoA7BPRpZ1kzedda9dQoO3NQ9EEe3emTnWNGzpl58
-         X/E3YWaSDQ2pIsPB/r+Omej8rmCGY9bqO1tUhrS1q0TIx5ABSR8dRwcmX6XS0DDVVRCp
-         uU/1OHJNjwx/xfDFMAy52SGPSOOGB+YTsiT1QZEolec7e+/1r551Qeg6lyV7UiSkp6ng
-         lV+A==
+        bh=5055lDReJLj1kHw7iMD+lxant6U5JN409HWhq31YHOI=;
+        b=LzpRk9dFCg6yi0c/XcOHK/lI+MY76Swx7z/cA54wLZg2D0GN26zql/2v4s++pt7IYk
+         LJjLEwi01DPdG+lagtyAhY7f3f+p/8cG+lwzecCcYyIhpcRZQrST3WnZEWz1F9K5S1Ul
+         71daVWOXtJviw22KBvG0WIjym8eyIiO1I766A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702933588; x=1703538388;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702933632; x=1703538432;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=36mhB37dzwFYxTc31wi9sEgexn00u1r64ISHaWciqdQ=;
-        b=UcBUv2iz9j0yWVCzRkU7EIkTibDH0MCtoL++Za72ZCRNfpHQOncKMK4/0U7HtFkiS2
-         DPenbFMjDIX3xcgllAUv3VEinccrn8cYxwtI0lntPBTdtEFifo10e1JM3RnR/sOeAARH
-         ChWoDPcyGssh4wyxVWCkndqZ8ckFDz7UscvnS55wa1YiIRQk+ud22NOHPqN+9wai2Y7m
-         ZSrBWV0J8zq/CvpPZC37VJCv3BJdOW7YaQRZHzeiuUg0aHS6taJOoaOmnazpl3yknUqo
-         lO1FSzqcT2J723lTxtOPkx+wCeeDRs6Cge/yGQ419zD3DzTpHyuTigUtJu6SBudTTqaF
-         CKJw==
-X-Gm-Message-State: AOJu0Yw784KKItAY65HczFWKSnbop7v7ojNs6JS+oiYtAhF5Z9+ZX3F6
-	kKWOX1oRFAGnbQGz/6E1HTSgHTjaOOW0tYc1pc6Ddw==
-X-Google-Smtp-Source: AGHT+IFFWWsdRy/k0ymydJWK4zCUV+/JpG5DWtGZvqI5npFftIQI+RFLb8pwXUDFXBX91JKoBQDgehNmTjwj65jWClo=
-X-Received: by 2002:a17:90a:e50:b0:286:964d:c with SMTP id p16-20020a17090a0e5000b00286964d000cmr11000939pja.86.1702933587789;
- Mon, 18 Dec 2023 13:06:27 -0800 (PST)
+        bh=5055lDReJLj1kHw7iMD+lxant6U5JN409HWhq31YHOI=;
+        b=pEMvPmgr2n2tRMmsC2iQk3MdbPIuvAtyc97Fs1Uhc6oW8jdzvlTkBg9IqOpEmijegf
+         lLibkBFU/dd05aQo21Y1N+h5CUaB9h6mWGRUeGf3TNK+MvZGAZmgkN09HpR5Tl2jroP8
+         k5JoXxeyqWSC5c4irJbi/9qyZCDyS7JpEtbPqURNmlfZKjVGpgvzBsnhPeEq5jIUQKiO
+         Rw36Z7hRrWMQYJ/MC61NSv9jyVTf8X1dKRxX3ORSyzeHPlzre2F92BkevxrOQKDPShFD
+         Ei+78O6Of5Fdr4wHDAPImWq7nWZKMtFURoXlOvAvLc9Tx4J+4EmTaxn5GDR38Agv+MYr
+         3pKQ==
+X-Gm-Message-State: AOJu0YwVWBfuyU/3Tkh4LUCuR6UM/bxzjNkW0aLlmTItchCUXuLBInt/
+	xNawqGlObwCkuLed950ORdqubQ==
+X-Google-Smtp-Source: AGHT+IHn6EAt7EFxj7XZeGrGuN6Z67x9x2lFzX+Vp5I/I178DJ6ZnpBoU/74VnkGDxvAxXJsoPwacQ==
+X-Received: by 2002:a05:6a00:6c9d:b0:6d9:31bf:4280 with SMTP id jc29-20020a056a006c9d00b006d931bf4280mr198824pfb.52.1702933632318;
+        Mon, 18 Dec 2023 13:07:12 -0800 (PST)
+Received: from mail.broadcom.net ([192.19.144.250])
+        by smtp.gmail.com with ESMTPSA id i17-20020aa787d1000000b006d3b2008406sm4473417pfo.50.2023.12.18.13.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 13:07:11 -0800 (PST)
+From: Kamal Dasu <kamal.dasu@broadcom.com>
+To: ulf.hansson@linaro.org,
+	linux-kernel@vger.kernel.org,
+	alcooperx@gmail.com,
+	linux-arm-kernel@lists.infradead.org,
+	adrian.hunter@intel.com,
+	linux-mmc@vger.kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org
+Cc: f.fainelli@gmail.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	Kamal Dasu <kamal.dasu@broadcom.com>
+Subject: [PATCH v4 0/2] mmc: add new sdhci reset sequence for brcm 74165b0
+Date: Mon, 18 Dec 2023 16:07:03 -0500
+Message-Id: <20231218210705.38201-1-kamal.dasu@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000406077060ccf2262"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231218135104.927894164@linuxfoundation.org>
-In-Reply-To: <20231218135104.927894164@linuxfoundation.org>
-From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date: Tue, 19 Dec 2023 06:06:16 +0900
-Message-ID: <CAKL4bV5_vptGgsAC4NAYUhr-cknLTwiyR2z8JsvUwoDvmxKy2g@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/166] 6.6.8-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Greg
+--000000000000406077060ccf2262
 
-On Mon, Dec 18, 2023 at 11:03=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.8 release.
-> There are 166 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.8-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+v4 changes:
+ - Fix for v3 changes that introduced dt schema errors
+ - Fix for v3 changes that introduced sdhci-brcmstb build warnings 
+ - Added proper PATCH format and cleanup commit messages as per
+   review comments. Added proper 'Reported-by' and 'Closes' tags
+ - Added comments for 32-bit register access as per review comments
+ - Replaced wait loop polling with readb_poll_timeout() helper as per
+   review comments for the sdhci-brcmstb driver changes
+ 
+v3 changes:
+ - Removed extra emun arrayfor possible compatible strings
+ - shdci-brcmstb checkpatch warning fixes 
 
-6.6.8-rc1 tested.
+v2 changes:
+ - Fixed devicetree bindings for shdci-brcmstb and removed 74165 compatible
+   string as per review comments
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+Kamal Dasu (2):
+  dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for 74165b0
+  mmc: add new sdhci reset sequence for brcm 74165b0
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+ .../bindings/mmc/brcm,sdhci-brcmstb.yaml      |  4 +-
+ drivers/mmc/host/sdhci-brcmstb.c              | 67 +++++++++++++++++--
+ 2 files changed, 63 insertions(+), 8 deletions(-)
 
-[    0.000000] Linux version 6.6.8-rc1rv
-(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
-Binutils) 2.41.0) #1 SMP PREEMPT_DYNAMIC Tue Dec 19 05:38:30 JST 2023
+-- 
+2.17.1
 
-Thanks
 
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+--000000000000406077060ccf2262
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+DxuNuBlySpn/GYqPcDcRZd8EENWqnZrjtjHMk0j7ZfrPGXq8sQkbG3OX+DOwSaefPRq1pLGWBZaZ
+YuUo5O7CNHo7h7Hc9GgjiW+6X9BjKAzSaDy8jwIDAQABo4IB2DCCAdQwDgYDVR0PAQH/BAQDAgWg
+MIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUFBzABhjVo
+dHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMDBNBgNV
+HSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2ln
+bi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAiBgNVHREEGzAZ
+gRdrYW1hbC5kYXN1QGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAW
+gBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUcRYSWvAVyA3hgTrQ2c4AFquBsG0wDQYJ
+KoZIhvcNAQELBQADggEBAIKB2IOweF2sIYGBZTDm+Hwmhga+sjekM167Sk/KwxxvQFwZYP6i0SnR
+7aR59vbfVQVaAiZH/a+35EYxP/sXaIM4+E3bFykBuXwcGEnYyEn6MceiOCkjkWQq1Co2JyOdNvkP
+nAxyPoWlsJtr+N/MF1EYKGpYMdPM7S2T/gujjO9N56BCGu9yJElszWcXHmBl5IsaQqMS36vhsV0b
+NxffjNkeAdgfN/SS9S9Rj4WXD7pF1M0Xq8gPLCLyXrx1i2KkYOYJsj0PWlC6VRg6E1xXkYDte0VL
+fAAG4QsETU27E1HBNQyp5zF1PoPCPvq3EnWQnbLgYk+Jz2iwIUwiqwr/bDgxggJtMIICaQIBATBr
+MFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9i
+YWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgw89WX2Pp7ue922QVkwDQYJYIZI
+AWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHdIA7MVt+fZ6uYqnv7+MI07vFLcIY986zU9EfQ8
+nkgYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIxODIxMDcx
+MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQB
+AjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkq
+hkiG9w0BAQEFAASCAQBhl7H8YbBJXz4Fu1klzrj/cXqP6NuG0X8i9mTevdf2/RilRaafsq2sr+P2
+5wMFr2oDcdw676yo2ABPSsg8s6blX3AzztSg3jFQNvyF5U5RyXO1sgpAOg5J4iUjGAzrZb1t7Nqm
+pFlVrCQ/iWM6XChXC3kjI0QXi//SzdAHhB/3yeKtyQp9LeG0Ew7S49Rvw8+RHufeTV2tCCuIyzWz
+ZA1jgAShTnJC3GqG8JDB8WoAJrl2ASky/loIWGt7lQdzDPaPpxyk3X1tHbp+5lMr9iwEWviklGvO
+O/hIS9dQvmXQUtYM3vaB9DYYqvGR3ayLGfMR8Rf7YezObRevvyAFlCBR
+--000000000000406077060ccf2262--
 
