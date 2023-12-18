@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-3792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD9A8171B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:01:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 285738171B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 15:01:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A1871C2472F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:01:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4DA42837BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 14:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402B83D564;
-	Mon, 18 Dec 2023 14:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D1749881;
+	Mon, 18 Dec 2023 14:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TFlF86aa"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e+ttUet0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14FE93A1CF
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 13:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980C33A1CB
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 14:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbd4a080c0bso103406276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 05:59:58 -0800 (PST)
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-332ee20a3f0so2752947f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 06:00:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702907998; x=1703512798; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702908000; x=1703512800; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mFw1xMXqNfgjkaBSBUL3X2hMTwwdH9z1Qrb9oU+YYCg=;
-        b=TFlF86aaxDB2yvv/vLHpZ+mMqZB4dXMTKb1DVlzcFHwKmVZFpPq9uGXWZOGaebS3L6
-         i3cbc8RvifUbKROS/icpuPoRwcZUzh2amgNlokOx99ZMxxrq1l8n5Mcy1lV5KGaWuvJZ
-         iT/tgEopPb/f8o/0n1+dOOTW/jI2MOHUFUoaBYrzATztpUtVJvhfbs2JZUnE+Apw6eE/
-         vT4Ly1jZb5iLSBVEYIWsRybVFYx2CAPj9zBKakkI9bHba7BCMmm1pTp9eG+waknfYVwq
-         P0rU4+AP04TchYJ7B3cTFvbTjxyBa7GTBgioKto0hmoLtV6QgpziiYgrqpKCBmYxr12G
-         5CUw==
+        bh=rOYwKOEiNUEli62sB45rLYKU5arboivvkJa3j/TVfbA=;
+        b=e+ttUet07GJyopmWfk4cM1KPq4yTgK+WsfN8R7cNaa2OVNZbk0SjPfPuIINK27E9Ew
+         OzvpC2B4XUEAAWilt/mddKmbUIKwgIAYE7wZrvim7UH94wuTDS9PAde+VFWBojQYEgDV
+         /zrR6VB5cnGDtHGr2URo/nFnTrkqz/LTs63rflIN5wIY6IV4fosXhosqe8kpGu5R8msS
+         4tE54LxoezVSyPyisyUQpa3adaYkHegS3G/3yahod5QvBQ5mDKUFpcklze8QXLPTD3Tl
+         gaINEkqNABuq/NGYIiTe32C97828jrwAUKBIS2hCRYINiHqUBZrT4xpIinFnIOyCbVn6
+         dn1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702907998; x=1703512798;
+        d=1e100.net; s=20230601; t=1702908000; x=1703512800;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mFw1xMXqNfgjkaBSBUL3X2hMTwwdH9z1Qrb9oU+YYCg=;
-        b=WTM1GXiJGf4NaPF8tJo6+5t8d+aUv0gVGnbXllZmG31HZiFGChm8QUOhD8HdqwRz1v
-         BeuD+qI3EC8D3fQGhG/wazhoScoLuonZhWSEELW0Oyfog6DYpLebw3KNqjs3diXK9hyg
-         wuBZNaUi8l6/NbtF1Bhsejunc7vp5nz0EVpG9SL1TtnvifaZyPdVnrkfpPFwpfjFM8rI
-         slvyq4kqKTSw9dbgZqyU5MGJJPezLdayGUz7gT9TfgcgFLAWcjfHZ9k+E8cnvGVOen9U
-         A2/0216YinPIxj8J24FculhrGYfAPDs23dHcPQbOWFUWIdcAgsOIB1wRxcw9J4nT8lXP
-         ss3g==
-X-Gm-Message-State: AOJu0YxLm03QwWTnUKJLN8+zMQyeO4mGYRInk9f4Xr3nbnj1fuNC/tgu
-	G1fVoAPreKaSasoMaWMY49hLQ7evt9ht5hmLemk=
-X-Google-Smtp-Source: AGHT+IEFAVylPAkwhhH2AZEDt0+C92z4jGsfWuRL60FJ8EEzto9BtF/sl4dbwHDk1YbX1tmslSZZ2vCCzauBKs4CL5A=
+        bh=rOYwKOEiNUEli62sB45rLYKU5arboivvkJa3j/TVfbA=;
+        b=sjhmqUlpEjuLsapRfedBnmxEohWcXwV+Uhc5kUiGr20TFlUNp31SXgnYAfdwPcqzaG
+         9Xokvqgg96nxxW+GIm8TOgj8NjY5qFfcshegj1jN1Esyz9VsCGMoBcSKz7aycBWVzXS/
+         73JfVO6nFrg1cVOZMDohBfEuon0xQuORTvaSlGFXNBp+SAqxFnOObuE7TgxjiprWsoT/
+         ShCINNb0vWRDDqjmI/Krys/RUDqFF42aJs58aCGBc8VtZb3nXO6Wtpx7aAP4Ha0P2PE2
+         +EntM7SWmBe8G+CUc09QNdHTHxBQfAFK+cmzKfDG8G8nMH04ntvDqmfkp6dpVZZ82fUB
+         OyVA==
+X-Gm-Message-State: AOJu0YzlILUTS3dnaJ5KyMXxBExweQiyxgWG7r90GjhUAjarNEgIHOTZ
+	aj8hsVgufTsFQtrKrhnZmPdDtsHIR/0CdvlL0Ho=
+X-Google-Smtp-Source: AGHT+IGXjL4T5r7Jt2z8+UD516Qhh+E409pWPWPbcvwZsNr9Ka8qw+CBcfH+yjDL6U97mYGpDrYSGheDFXUPbCIOwCo=
 X-Received: from sebkvm.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:cd5])
- (user=sebastianene job=sendgmr) by 2002:a25:8a09:0:b0:db5:4d59:3b30 with SMTP
- id g9-20020a258a09000000b00db54d593b30mr1613891ybl.8.1702907998064; Mon, 18
- Dec 2023 05:59:58 -0800 (PST)
-Date: Mon, 18 Dec 2023 13:58:55 +0000
+ (user=sebastianene job=sendgmr) by 2002:a05:6000:144d:b0:336:6ccb:c32b with
+ SMTP id v13-20020a056000144d00b003366ccbc32bmr3131wrx.9.1702908000205; Mon,
+ 18 Dec 2023 06:00:00 -0800 (PST)
+Date: Mon, 18 Dec 2023 13:58:56 +0000
 In-Reply-To: <20231218135859.2513568-2-sebastianene@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,8 +63,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231218135859.2513568-2-sebastianene@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231218135859.2513568-7-sebastianene@google.com>
-Subject: [PATCH v4 05/10] arm64: ptdump: Use the mask from the state structure
+Message-ID: <20231218135859.2513568-8-sebastianene@google.com>
+Subject: [PATCH v4 06/10] KVM: arm64: Move pagetable definitions to common header
 From: Sebastian Ene <sebastianene@google.com>
 To: will@kernel.org, Oliver Upton <oliver.upton@linux.dev>, 
 	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
@@ -76,81 +76,121 @@ Cc: kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
 	Sebastian Ene <sebastianene@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Printing the descriptor attributes requires accessing a mask which has a
-different set of attributes for stage-2. In preparation for adding support
-for the stage-2 pagetables dumping, use the mask from the local context
-and not from the globally defined pg_level array. Store a pointer to
-the pg_level array in the ptdump state structure. This will allow us to
-extract the mask which is wrapped in the pg_level array and use it for
-descriptor parsing in the note_page.
+In preparation for using the stage-2 definitions in ptdump, move some of
+these macros in the common header.
 
 Signed-off-by: Sebastian Ene <sebastianene@google.com>
 ---
- arch/arm64/include/asm/ptdump.h |  1 +
- arch/arm64/mm/ptdump.c          | 13 ++++++++-----
- 2 files changed, 9 insertions(+), 5 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h | 42 ++++++++++++++++++++++++++++
+ arch/arm64/kvm/hyp/pgtable.c         | 42 ----------------------------
+ 2 files changed, 42 insertions(+), 42 deletions(-)
 
-diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
-index 23510be35..4e728d2a1 100644
---- a/arch/arm64/include/asm/ptdump.h
-+++ b/arch/arm64/include/asm/ptdump.h
-@@ -45,6 +45,7 @@ struct pg_level {
-  */
- struct pg_state {
- 	struct ptdump_state		ptdump;
-+	struct pg_level			*pg_level;
- 	struct seq_file			*seq;
- 	const struct addr_marker	*marker;
- 	unsigned long			start_address;
-diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index 64127c70b..015ed65d3 100644
---- a/arch/arm64/mm/ptdump.c
-+++ b/arch/arm64/mm/ptdump.c
-@@ -220,11 +220,12 @@ void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
- 	       u64 val)
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index f73efd8a8..37f2a8532 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -45,6 +45,48 @@ typedef u64 kvm_pte_t;
+ 
+ #define KVM_PHYS_INVALID		(-1ULL)
+ 
++#define KVM_PTE_LEAF_ATTR_LO		GENMASK(11, 2)
++
++#define KVM_PTE_LEAF_ATTR_LO_S1_ATTRIDX	GENMASK(4, 2)
++#define KVM_PTE_LEAF_ATTR_LO_S1_AP	GENMASK(7, 6)
++#define KVM_PTE_LEAF_ATTR_LO_S1_AP_RO		\
++	({ cpus_have_final_cap(ARM64_KVM_HVHE) ? 2 : 3; })
++#define KVM_PTE_LEAF_ATTR_LO_S1_AP_RW		\
++	({ cpus_have_final_cap(ARM64_KVM_HVHE) ? 0 : 1; })
++#define KVM_PTE_LEAF_ATTR_LO_S1_SH	GENMASK(9, 8)
++#define KVM_PTE_LEAF_ATTR_LO_S1_SH_IS	3
++#define KVM_PTE_LEAF_ATTR_LO_S1_AF	BIT(10)
++
++#define KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR	GENMASK(5, 2)
++#define KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R	BIT(6)
++#define KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W	BIT(7)
++#define KVM_PTE_LEAF_ATTR_LO_S2_SH	GENMASK(9, 8)
++#define KVM_PTE_LEAF_ATTR_LO_S2_SH_IS	3
++#define KVM_PTE_LEAF_ATTR_LO_S2_AF	BIT(10)
++
++#define KVM_PTE_LEAF_ATTR_HI		GENMASK(63, 50)
++
++#define KVM_PTE_LEAF_ATTR_HI_SW		GENMASK(58, 55)
++
++#define KVM_PTE_LEAF_ATTR_HI_S1_XN	BIT(54)
++
++#define KVM_PTE_LEAF_ATTR_HI_S2_XN	BIT(54)
++
++#define KVM_PTE_LEAF_ATTR_HI_S1_GP	BIT(50)
++
++#define KVM_PTE_LEAF_ATTR_S2_PERMS	(KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | \
++					 KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
++					 KVM_PTE_LEAF_ATTR_HI_S2_XN)
++
++#define KVM_INVALID_PTE_OWNER_MASK	GENMASK(9, 2)
++#define KVM_MAX_OWNER_ID		1
++
++/*
++ * Used to indicate a pte for which a 'break-before-make' sequence is in
++ * progress.
++ */
++#define KVM_INVALID_PTE_LOCKED		BIT(10)
++
+ static inline bool kvm_pte_valid(kvm_pte_t pte)
  {
- 	struct pg_state *st = container_of(pt_st, struct pg_state, ptdump);
-+	struct pg_level *pg_info = st->pg_level;
- 	static const char units[] = "KMGTPE";
- 	u64 prot = 0;
+ 	return pte & KVM_PTE_VALID;
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 82fef9620..ccd46bf56 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -17,48 +17,6 @@
+ #define KVM_PTE_TYPE_PAGE		1
+ #define KVM_PTE_TYPE_TABLE		1
  
- 	if (level >= 0)
--		prot = val & pg_level[level].mask;
-+		prot = val & pg_info[level].mask;
+-#define KVM_PTE_LEAF_ATTR_LO		GENMASK(11, 2)
+-
+-#define KVM_PTE_LEAF_ATTR_LO_S1_ATTRIDX	GENMASK(4, 2)
+-#define KVM_PTE_LEAF_ATTR_LO_S1_AP	GENMASK(7, 6)
+-#define KVM_PTE_LEAF_ATTR_LO_S1_AP_RO		\
+-	({ cpus_have_final_cap(ARM64_KVM_HVHE) ? 2 : 3; })
+-#define KVM_PTE_LEAF_ATTR_LO_S1_AP_RW		\
+-	({ cpus_have_final_cap(ARM64_KVM_HVHE) ? 0 : 1; })
+-#define KVM_PTE_LEAF_ATTR_LO_S1_SH	GENMASK(9, 8)
+-#define KVM_PTE_LEAF_ATTR_LO_S1_SH_IS	3
+-#define KVM_PTE_LEAF_ATTR_LO_S1_AF	BIT(10)
+-
+-#define KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR	GENMASK(5, 2)
+-#define KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R	BIT(6)
+-#define KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W	BIT(7)
+-#define KVM_PTE_LEAF_ATTR_LO_S2_SH	GENMASK(9, 8)
+-#define KVM_PTE_LEAF_ATTR_LO_S2_SH_IS	3
+-#define KVM_PTE_LEAF_ATTR_LO_S2_AF	BIT(10)
+-
+-#define KVM_PTE_LEAF_ATTR_HI		GENMASK(63, 50)
+-
+-#define KVM_PTE_LEAF_ATTR_HI_SW		GENMASK(58, 55)
+-
+-#define KVM_PTE_LEAF_ATTR_HI_S1_XN	BIT(54)
+-
+-#define KVM_PTE_LEAF_ATTR_HI_S2_XN	BIT(54)
+-
+-#define KVM_PTE_LEAF_ATTR_HI_S1_GP	BIT(50)
+-
+-#define KVM_PTE_LEAF_ATTR_S2_PERMS	(KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | \
+-					 KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
+-					 KVM_PTE_LEAF_ATTR_HI_S2_XN)
+-
+-#define KVM_INVALID_PTE_OWNER_MASK	GENMASK(9, 2)
+-#define KVM_MAX_OWNER_ID		1
+-
+-/*
+- * Used to indicate a pte for which a 'break-before-make' sequence is in
+- * progress.
+- */
+-#define KVM_INVALID_PTE_LOCKED		BIT(10)
+-
+ struct kvm_pgtable_walk_data {
+ 	struct kvm_pgtable_walker	*walker;
  
- 	if (st->level == -1) {
- 		st->level = level;
-@@ -250,10 +251,10 @@ void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
- 			unit++;
- 		}
- 		pt_dump_seq_printf(st->seq, "%9lu%c %s", delta, *unit,
--				   pg_level[st->level].name);
--		if (st->current_prot && pg_level[st->level].bits)
--			dump_prot(st, pg_level[st->level].bits,
--				  pg_level[st->level].num);
-+				   pg_info[st->level].name);
-+		if (st->current_prot && pg_info[st->level].bits)
-+			dump_prot(st, pg_info[st->level].bits,
-+				  pg_info[st->level].num);
- 		pt_dump_seq_puts(st->seq, "\n");
- 
- 		if (addr >= st->marker[1].start_address) {
-@@ -284,6 +285,7 @@ void ptdump_walk(struct seq_file *s, struct ptdump_info *info)
- 	st = (struct pg_state){
- 		.seq = s,
- 		.marker = info->markers,
-+		.pg_level = &pg_level[0],
- 		.level = -1,
- 		.ptdump = {
- 			.note_page = note_page,
-@@ -321,6 +323,7 @@ void ptdump_check_wx(void)
- 			{ 0, NULL},
- 			{ -1, NULL},
- 		},
-+		.pg_level = &pg_level[0],
- 		.level = -1,
- 		.check_wx = true,
- 		.ptdump = {
 -- 
 2.43.0.472.g3155946c3a-goog
 
