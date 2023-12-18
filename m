@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-4324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE60817B7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:57:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3091817B7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 20:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D67211C23326
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 992B71F23518
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 19:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9028176081;
-	Mon, 18 Dec 2023 19:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FC273477;
+	Mon, 18 Dec 2023 19:55:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="GBpWaHJ+"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="jbBqZXc9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5827348C;
-	Mon, 18 Dec 2023 19:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613BB740B4;
+	Mon, 18 Dec 2023 19:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1702929342; x=1703534142; i=w_armin@gmx.de;
-	bh=vd+n3ykeVoDXsg6HoG9Wxn2uSy55W8TbILg2TIyowI0=;
+	t=1702929344; x=1703534144; i=w_armin@gmx.de;
+	bh=8xcRS4toKnQj2X27ThuiST1cF613b/lRiEqma2uezJw=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=GBpWaHJ+bH5EaIkMJV0ZUU/NADA8IaXiCKIZM7TyssG0Hi220AiK757e0C6EaR6K
-	 vgpP4HFYOREhSGXAtM+Ir/8xKL4csXVuoAbHrqcNOAn+b/ep13PyhG993Bd4YcmdY
-	 mkh8s1LWQVXR+1e5+9Way8hebsWfPngAhjyFEUWaUfArCYIvGvt0em2vsKTEuPBZk
-	 5D3Az1oC0zkYt0wy6RYjWHEY5J31MGIaCnvMxjkXiN2cdY/N2uvcaNdhD/Co/SdgH
-	 5jTvltWTD30nbjWYVxUbrHWLN+wRyYGvnMaZLnfBpN9roOkYxbmaZ4uDpt7YfEx5+
-	 6nckeaZt0ojOsqckoA==
+	b=jbBqZXc9Fm79pEyNs39kyQOUq7iV1cgb3v6jxexwGyeiTscBEi1bOcDP3UXeLJRS
+	 dY+tIHWI+ikGrZt+MmT/WjGZNC9ieOvvSmRKAbzllsQcA9ZeVEUG9NRUY1ASIxhGO
+	 V1I0Zd5yM0w4EcnEsPJgq3+qJkOoWbHa2FXPF8jwTYGD7nVt7Bsup6aiwOAynFIjW
+	 jJkEAe31nxDISQXV//XFTloO9of5DHVtTw+7FF+Ms1jrQsXOOmWPVI3RDlE0WM45n
+	 6KuDmCzwONZPddEyvPPMis2hKnHD/DDUdeYeJjkricAU7gT2Ujo6whItjSPnW451B
+	 u3IrODDU70qziUyGpw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MsHru-1r0PBs1vf0-00toXW; Mon, 18 Dec 2023 20:55:42 +0100
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MfHAH-1qnQcd12N9-00gtMg; Mon, 18 Dec 2023 20:55:44 +0100
 From: Armin Wolf <W_Armin@gmx.de>
 To: hdegoede@redhat.com,
 	ilpo.jarvinen@linux.intel.com
 Cc: platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/6] platform/x86: wmi: Decouple ACPI notify handler from wmi_block_list
-Date: Mon, 18 Dec 2023 20:55:30 +0100
-Message-Id: <20231218195531.311179-6-W_Armin@gmx.de>
+Subject: [PATCH v2 6/6] platform/x86: wmi: Simplify get_subobj_info()
+Date: Mon, 18 Dec 2023 20:55:31 +0100
+Message-Id: <20231218195531.311179-7-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231218195531.311179-1-W_Armin@gmx.de>
 References: <20231218195531.311179-1-W_Armin@gmx.de>
@@ -55,128 +55,83 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y7okMXky5VNG+iTpPst6EOYsDtodFCWhYyJabz/08NN0B4xOJ65
- lTHMz42MEtRdxm/qqg5MQo3O0MTmwSztN0OvnJrDKy4QVQ7J9q56IMYOAjKQb2b4zmMqtG0
- 6VaHlziYN857J8mplne5pi43L1UMHCaYkC4DcNN39ZRCLKnBbp65+UoSPlTl0FlSxYGUos5
- Yd/7wedmc4/7H5uUOJ25A==
+X-Provags-ID: V03:K1:y/Bdzz5LQ5l5DH6SFsP2N/veEnWbKrmkgn6CIDbxPduIi6hazLh
+ UuiTS1T+DL5GydIrKi57aoR9hruokDMtH2VKiyVtJGZzIhfxul8fIbcSbt3EMbWRd/W8UVJ
+ 5MpzSdJsCRvtaSwdi+VXG0dUbqfipewjIdfR1v9U3/U5z2u8zDn0FRWBXVh/taVRTq46L3E
+ QgCvZlqMUvTE7Z5rLo1yg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7lcsT6aLjgU=;YWnRXlfrHzr0DEmhBo88e4+Vhq5
- VDx/rZHS83z8zmAOkBDM6Sts+lGILyZVOmnobRjv+tacJ8aAk5/Ic6osqV4N7MJ/N3HQenUxY
- e/rPfjZsb8hnF0PHOOZT5BFTMaUsvDR6KNDMSUuJI7UCPc0vUO3yGTgckB5+5Vmb/9QCfJmyH
- pznXPyn9e5nnWtfoFKtKNLax7V4QTdr3FDLN0rZzQbEFHsRJl5IwQB3n9Urk9jTA+CYhL1aoN
- zk6XWewzXUm/uPsAugCu5s6I6EdrEF9Zs6WdBTGMatQAuUkzq75VYtXQbM8r/glYZWT2qXV23
- dav7jeihK71FD8XkydjhF6wRQCZ6VGVPedBSuy2XhCZZzts/DaA3nU20G/GB9aPHHM6rNjlT6
- eVjWKdbxZ/5K/9fKDKuqXlOjR27RmXWCA9Wd4vSC8acleZ7g3UxmvP7T5WDOwMWcW1GF0uGtC
- KYX1/9pY8OnHS5JnBiBnP1ZS7OGc2QOGNWiwY5UtBa5VKQg+z1Bxl2SPk+SY1M1+gXTasdMWb
- SOeXGUZ7Amo5w3UvNZHb4Oq57KknwVeooR5/WbqBwXYx74AwPeWg/0T9qVfr9iC2sR73dJA1y
- vDikphC2GZBcaS8aCYjOMF0tN5gqbYmb2v29MMDLDxOkqwvo9wy2ANbRl3oucGBO8OGCfgH6k
- fWyCcI4vvMW4g00J5OhWW8ajBHN5vo+hN/XBATHxQ+DWCgnd+BW1nGuPEnXBrQu77STTyQzf0
- +dlGtBmABJsz2oKjUhy1PNnYX3/L835Ro7Rf3rgiXAxabqx+wM/tf079cOl+AbkA1Ygm+sh2i
- QoC6djbnLh8J1eECGaJVKJSEi7kKFkXM023P7Y7HKqtIVIWz9xN8XoimBPX1wZ9eTQR/66wul
- Eh0QKhSxpMoVBjY6f+twBd7anYlIzYr5fFW1PuApCMXRhXFXjr7hYUZ7trKaL8RNeitnbVMWS
- 7+x2q9ciifVNZ0OeCaMhHI5UJQg=
+UI-OutboundReport: notjunk:1;M01:P0:HbMWm1LXyxI=;ZMhIXv2exx6aSMr9mmjEsbuvd0Q
+ oeY+A/3BgWhQ6uyTAvqYSlHnBXcouVqEz74re3YguoqtaP30RKceTuSVxoo3EPh+mROJ7XS7D
+ /kV6OuTWMfnslAojWuQaZTg++/Pn/PmTeq1bbQhWpj22HhqxsYN/roSQQEyZpiwSqIVBb2gFz
+ LOJbH3ow0FZ8LSOIiI+J6KGwmu1Ag5stc3Sw9iZdaHNvFZvJAzqAC8LTVMN0S8P9rJb597XQY
+ S3z+p7vpsNxxYLEKgS1DCFDSn655zg230UAs6qaPX8vvp5mByUIV5B0b778QDSwqAtwRnTFaJ
+ 5wROdlo3LnOHnJHDvVLIG2d27Yr+8zRrGcYzb9QB4zpbJWbE4pqvWa1TTF2Ld0FMKzw3fCvfs
+ dPd8B8bnR6FTlkmnFRu3lBOjJE0IARP0KPB5v0aAUAoihtQ64WN9/FzpnVcShvWYQAB+eyFEM
+ 6Px8X4Az84qDocwC/KUWGhkSMO7M9TusWS+3rsVl3B19ra0OamG35frpzD+NS00UJ+jSSLypJ
+ L6R7VEGJJ/t+9BQsL2XNiIJGuX8rGhCiNLobV5d8zRoQPgVdzeGfjsr1ke1w7kV5PexQ/RPN4
+ nXwFtTw2VIsdt12UiyknyfWgir+jKKV6q3e6qBQxoK33XJnAqGKUkzKROxNgFUf43N7OGXCIh
+ MURmClzMCbZjHjw4mqYoASC50OOJ67qnSnYE9foI20oyJm/5+eRXueVxC+eo4Wuav9jl/pCSy
+ bEx7YH19Bx/2sZqdrOnpT+xFbmO3vjdgKVw92SJTN5E+B0wBz9WJ3yL4FoeOBSjUtpLl/2P0w
+ IgVrfectfMbSkb3xaZw6/9QlZ2oXo0L9vZ0+uNuiL0pIIrAGj7uLVUHdWt99CoAM6cFkj7mBZ
+ lZMM3ScpD8W6D/oY2/TSwDeGAhn1+gwqbY3xELOP8iabRJdyviJ4DaGmEOAk/m+esmc/CEknL
+ O1pffGWm/FSARtS/pXhLyZyi6SM=
 
-Currently, the ACPI notify handler searches all WMI devices for
-a matching WMI event device. This is inefficient since only WMI devices
-associated with the notified ACPI device need to be searched.
-Use the WMI bus device and device_for_each_child() to search for
-a matching WMI event device instead.
+All callers who call get_subobj_info() with **info being NULL
+should better use acpi_has_method() instead.
+Convert the only caller who does this to acpi_has_method()
+to drop the dummy info handling.
 
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/wmi.c | 46 +++++++++++++++++---------------------
- 1 file changed, 20 insertions(+), 26 deletions(-)
+ drivers/platform/x86/wmi.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index e2bfdc61c4ce..559a99ebc624 100644
+index 559a99ebc624..a7cfcbf92432 100644
 =2D-- a/drivers/platform/x86/wmi.c
 +++ b/drivers/platform/x86/wmi.c
-@@ -1176,24 +1176,13 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physi=
-cal_address address,
- 	}
- }
-
--static void acpi_wmi_notify_handler(acpi_handle handle, u32 event,
--				    void *context)
-+static int wmi_notify_device(struct device *dev, void *data)
+@@ -132,23 +132,19 @@ static const void *find_guid_context(struct wmi_bloc=
+k *wblock,
+ static int get_subobj_info(acpi_handle handle, const char *pathname,
+ 			   struct acpi_device_info **info)
  {
--	struct wmi_block *wblock =3D NULL, *iter;
--
--	list_for_each_entry(iter, &wmi_block_list, list) {
--		struct guid_block *block =3D &iter->gblock;
--
--		if (iter->acpi_device->handle =3D=3D handle &&
--		    (block->flags & ACPI_WMI_EVENT) &&
--		    (block->notify_id =3D=3D event)) {
--			wblock =3D iter;
--			break;
--		}
--	}
-+	struct wmi_block *wblock =3D dev_to_wblock(dev);
-+	u32 *event =3D data;
+-	struct acpi_device_info *dummy_info, **info_ptr;
+ 	acpi_handle subobj_handle;
+ 	acpi_status status;
 
--	if (!wblock)
--		return;
-+	if (!(wblock->gblock.flags & ACPI_WMI_EVENT && wblock->gblock.notify_id =
-=3D=3D *event))
-+		return 0;
+-	status =3D acpi_get_handle(handle, (char *)pathname, &subobj_handle);
++	status =3D acpi_get_handle(handle, pathname, &subobj_handle);
+ 	if (status =3D=3D AE_NOT_FOUND)
+ 		return -ENOENT;
+-	else if (ACPI_FAILURE(status))
+-		return -EIO;
 
- 	/* If a driver is bound, then notify the driver. */
- 	if (test_bit(WMI_PROBED, &wblock->flags) && wblock->dev.dev.driver) {
-@@ -1205,7 +1194,7 @@ static void acpi_wmi_notify_handler(acpi_handle hand=
-le, u32 event,
- 			status =3D get_event_data(wblock, &evdata);
- 			if (ACPI_FAILURE(status)) {
- 				dev_warn(&wblock->dev.dev, "failed to get event data\n");
--				return;
-+				return -EIO;
- 			}
- 		}
+-	info_ptr =3D info ? info : &dummy_info;
+-	status =3D acpi_get_object_info(subobj_handle, info_ptr);
+ 	if (ACPI_FAILURE(status))
+ 		return -EIO;
 
-@@ -1215,13 +1204,20 @@ static void acpi_wmi_notify_handler(acpi_handle ha=
-ndle, u32 event,
- 		kfree(evdata.pointer);
- 	} else if (wblock->handler) {
- 		/* Legacy handler */
--		wblock->handler(event, wblock->handler_data);
-+		wblock->handler(*event, wblock->handler_data);
- 	}
+-	if (!info)
+-		kfree(dummy_info);
++	status =3D acpi_get_object_info(subobj_handle, info);
++	if (ACPI_FAILURE(status))
++		return -EIO;
 
--	acpi_bus_generate_netlink_event(
--		wblock->acpi_device->pnp.device_class,
--		dev_name(&wblock->dev.dev),
--		event, 0);
-+	acpi_bus_generate_netlink_event(wblock->acpi_device->pnp.device_class,
-+					dev_name(&wblock->dev.dev), *event, 0);
-+
-+	return -EBUSY;
-+}
-+
-+static void acpi_wmi_notify_handler(acpi_handle handle, u32 event, void *=
-context)
-+{
-+	struct device *wmi_bus_dev =3D context;
-+
-+	device_for_each_child(wmi_bus_dev, &event, wmi_notify_device);
+ 	return 0;
  }
+@@ -998,9 +994,7 @@ static int wmi_create_device(struct device *wmi_bus_de=
+v,
+ 	kfree(info);
 
- static int wmi_remove_device(struct device *dev, void *data)
-@@ -1300,10 +1296,8 @@ static int acpi_wmi_probe(struct platform_device *d=
-evice)
- 	if (error < 0)
- 		return error;
+ 	get_acpi_method_name(wblock, 'S', method);
+-	result =3D get_subobj_info(device->handle, method, NULL);
+-
+-	if (result =3D=3D 0)
++	if (acpi_has_method(device->handle, method))
+ 		wblock->dev.setable =3D true;
 
--	status =3D acpi_install_notify_handler(acpi_device->handle,
--					     ACPI_ALL_NOTIFY,
--					     acpi_wmi_notify_handler,
--					     NULL);
-+	status =3D acpi_install_notify_handler(acpi_device->handle, ACPI_ALL_NOT=
-IFY,
-+					     acpi_wmi_notify_handler, wmi_bus_dev);
- 	if (ACPI_FAILURE(status)) {
- 		dev_err(&device->dev, "Error installing notify handler\n");
- 		return -ENODEV;
+  out_init:
 =2D-
 2.39.2
 
