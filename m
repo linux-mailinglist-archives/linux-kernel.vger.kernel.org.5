@@ -1,131 +1,169 @@
-Return-Path: <linux-kernel+bounces-3021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11408816635
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:04:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C777A816638
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28A6D1C21FF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:04:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A805B2114A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 06:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EF26FA2;
-	Mon, 18 Dec 2023 06:04:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDF77483;
+	Mon, 18 Dec 2023 06:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bErRZlaA"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="TDD714Fv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4071163DD;
-	Mon, 18 Dec 2023 06:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702879462; x=1734415462;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=E+b6W/1bNl232pY8WUkM2JHnonUAaI2S5/GHYS5BUQA=;
-  b=bErRZlaAN7f4L7R+iqI+lZImAwv3r7lVsebhXpwC2LHjE2I5tpAEJwzu
-   4e2NFeJaiGW0HUkAUvclq82Mvu4wVl9e1nztYD2/F2c3DQa5gREMCbX70
-   exI6YX7KaeJckIMKeh6iKVoeY8KbDqJadH9wnvcZNj7nBdodcN73NZiul
-   lwY87a2HE5teFfNfZ3YathxWCsyEXTbQInw1fNz2gBunYLU9RxwQ1O9+d
-   xsPk1hjEvab7fsshoMHjgjP4CajHNVCin8SUBpUWuzzQNpL2q96zdf813
-   hCGzhy4RslZLv+JsZKgnhsmxtgQMhZACsXBPO4D5g1bzbfF377NqZ2ILf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="392629729"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="392629729"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 22:04:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="898845829"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695711600"; 
-   d="scan'208";a="898845829"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 17 Dec 2023 22:04:15 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rF6jd-0003pB-0j;
-	Mon, 18 Dec 2023 06:04:13 +0000
-Date: Mon, 18 Dec 2023 14:04:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>, davem@davemloft.net
-Cc: oe-kbuild-all@lists.linux.dev,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com, Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>
-Subject: Re: [PATCH net-next v4 01/13] net: phy: Introduce ethernet link
- topology representation
-Message-ID: <202312181303.RTKMlnzl-lkp@intel.com>
-References: <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131477460;
+	Mon, 18 Dec 2023 06:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1702879548;
+	bh=W7xWmD1tcGQMNSwevlCe/BjI7YoyVi+BvIN4gvkDBhY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=TDD714FvOiCOwW2iJgvxwaHaGLLgDQcQ6Fiwdci0ojp80LZfhvTwObOd2XesL/b+E
+	 cPnFNvkxatWDNhOEOZlG6QXA9z+fIl0X13ebSlXchVodYPaNRXAia9VfHN7ghtsjQj
+	 m76IYG+HsLPChHyiJ52eYOu6NdynawfASYK8wpuz0z3uQH7Oh4ixvytrFJ9GvHzYOO
+	 Ub+0zWHFGJBNjmbuUOtYPPI3bJrPUjmScjU3FxlULMMzr/dRYt8UGQY5Ki4t+cuQgB
+	 MtNkrkmq3KGsjN0LKXy6783+DR2EeNrYp7sHjt0qi6TNsulTeF6bzisgmC19K52Jcm
+	 72i6cCPvdEa/g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Stq7c2hRQz4xSY;
+	Mon, 18 Dec 2023 17:05:48 +1100 (AEDT)
+Date: Mon, 18 Dec 2023 17:05:47 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Kent Overstreet <kent.overstreet@linux.dev>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin"
+ <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Uros Bizjak <ubizjak@gmail.com>
+Subject: linux-next: manual merge of the header_cleanup tree with the tip
+ tree
+Message-ID: <20231218170547.5714468f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+Content-Type: multipart/signed; boundary="Sig_/4URytsaGC3wZacBtwRn3Fe1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Maxime,
+--Sig_/4URytsaGC3wZacBtwRn3Fe1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build warnings:
+Hi all,
 
-[auto build test WARNING on net-next/main]
+Today's linux-next merge of the header_cleanup tree got a conflict in:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Maxime-Chevallier/net-phy-Introduce-ethernet-link-topology-representation/20231216-012641
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231215171237.1152563-2-maxime.chevallier%40bootlin.com
-patch subject: [PATCH net-next v4 01/13] net: phy: Introduce ethernet link topology representation
-config: i386-randconfig-054-20231216 (https://download.01.org/0day-ci/archive/20231218/202312181303.RTKMlnzl-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312181303.RTKMlnzl-lkp@intel.com/reproduce)
+  arch/x86/include/asm/percpu.h
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312181303.RTKMlnzl-lkp@intel.com/
+between commit:
 
-All warnings (new ones prefixed by >>):
+  0e3703630bd3 ("x86/percpu: Fix "const_pcpu_hot" version generation failur=
+e")
 
->> drivers/net/phy/phy_device.c:269:34: warning: 'phy_get_link_topology' defined but not used [-Wunused-function]
-     269 | static struct phy_link_topology *phy_get_link_topology(struct phy_device *phydev)
-         |                                  ^~~~~~~~~~~~~~~~~~~~~
+from the tip tree and commit:
 
+  863cc83ddcf8 ("Kill unnecessary kernel.h include")
 
-vim +/phy_get_link_topology +269 drivers/net/phy/phy_device.c
+from the header_cleanup tree.
 
-   268	
- > 269	static struct phy_link_topology *phy_get_link_topology(struct phy_device *phydev)
-   270	{
-   271		if (phydev->attached_dev)
-   272			return &phydev->attached_dev->link_topo;
-   273	
-   274		return NULL;
-   275	}
-   276	
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/include/asm/percpu.h
+index e56a37886143,5e01883eb51e..000000000000
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@@ -28,52 -24,13 +28,52 @@@
+ =20
+  #else /* ...!ASSEMBLY */
+ =20
+ +#include <linux/build_bug.h>
+- #include <linux/kernel.h>
+  #include <linux/stringify.h>
++ #include <asm/asm.h>
+ =20
+  #ifdef CONFIG_SMP
+ +
+ +#ifdef CONFIG_CC_HAS_NAMED_AS
+ +
+ +#ifdef __CHECKER__
+ +#define __seg_gs		__attribute__((address_space(__seg_gs)))
+ +#define __seg_fs		__attribute__((address_space(__seg_fs)))
+ +#endif
+ +
+ +#ifdef CONFIG_X86_64
+ +#define __percpu_seg_override	__seg_gs
+ +#else
+ +#define __percpu_seg_override	__seg_fs
+ +#endif
+ +
+ +#define __percpu_prefix		""
+ +
+ +#else /* CONFIG_CC_HAS_NAMED_AS */
+ +
+ +#define __percpu_seg_override
+  #define __percpu_prefix		"%%"__stringify(__percpu_seg)":"
+ +
+ +#endif /* CONFIG_CC_HAS_NAMED_AS */
+ +
+ +#define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
+  #define __my_cpu_offset		this_cpu_read(this_cpu_off)
+ =20
+ +#ifdef CONFIG_USE_X86_SEG_SUPPORT
+ +/*
+ + * Efficient implementation for cases in which the compiler supports
+ + * named address spaces.  Allows the compiler to perform additional
+ + * optimizations that can save more instructions.
+ + */
+ +#define arch_raw_cpu_ptr(ptr)					\
+ +({								\
+ +	unsigned long tcp_ptr__;				\
+ +	tcp_ptr__ =3D __raw_cpu_read(, this_cpu_off);		\
+ +								\
+ +	tcp_ptr__ +=3D (unsigned long)(ptr);			\
+ +	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
+ +})
+ +#else /* CONFIG_USE_X86_SEG_SUPPORT */
+  /*
+   * Compared to the generic __my_cpu_offset version, the following
+   * saves one instruction and avoids clobbering a temp register.
+
+--Sig_/4URytsaGC3wZacBtwRn3Fe1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV/4TsACgkQAVBC80lX
+0Gy6PQf+NZNjrD/XRrQft/EZePrWlfJCqBucqEtghgraAPkGudgosJ7zQIBTwLPg
+VFnC4bFH7jFtEDPVxP0xpyGX+raafl04YVTcjdMeFH+FCxkLJe9633ZR5PdScSKT
+5kPBhzV09smXJEZxQ6Pao1IC1xG4xwLBsOhkun4aKhkcQO974qQAF6alJ7ecjcUd
+4393IZ4E9JM4OFTQknCUaMvx24FFxlh/yLEBYWyi6gc/EKMkPKbC0xszr2vFyCf5
+8Je5GONwOOjYPW1BSYpmDvz0E66/tAm8IgxR98xtoPUSdB1p8Aj3NX0RUp8oZxbH
+7jvSbn7z5uLLfgW1zYkEfFG22ZmIeg==
+=86t3
+-----END PGP SIGNATURE-----
+
+--Sig_/4URytsaGC3wZacBtwRn3Fe1--
 
