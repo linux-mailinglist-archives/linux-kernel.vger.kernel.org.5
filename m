@@ -1,192 +1,133 @@
-Return-Path: <linux-kernel+bounces-3081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-3083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9CE8816722
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:12:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5C72816727
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 08:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38C551F213C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:12:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72C73283CDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 07:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C826179F7;
-	Mon, 18 Dec 2023 07:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E80101CE;
+	Mon, 18 Dec 2023 07:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gO4kYuKu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M6P04eck"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC2F1FB2;
-	Mon, 18 Dec 2023 07:11:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BI6W2th032313;
-	Mon, 18 Dec 2023 07:11:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=V3p1JFE4C6ua
-	8k53+rwVOsLfLC5EdBhsrQCkXO9H+28=; b=gO4kYuKujzcT8NP7HPlW1SoJGLXV
-	fY/lcdE3Jq65e0NtDOh7zqKB7ZRcKU3coLW4fQ9R2srjwKCcRlQim8MaZn095+/f
-	3pNUP+TNFRkGGg7Y0+gcw262YMTCoSTX/AdwphqLGlaYx3614qRHNqb+Mm9xDKDr
-	ULNIS97+q7eXM1TuN5Y2430/7PBqUw6VXVHxL1+1ZVXeMvWB8bhjgYH5UJEaDl4x
-	wuVDE+XN2HpRQNQYwRPPhk7ZqT2ADxQYF+StnMW7TLwXfzCLD9ZsAzFdPf6rctr9
-	JwFXHtcZjel4nqOuXV0eLaf8X0RzXjci9/ILR0cT0UfZ9+Ms4ronnLrLVg==
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2gw0r2gu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 07:11:24 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BI7BLno004919;
-	Mon, 18 Dec 2023 07:11:21 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3v14ykxp2e-1;
-	Mon, 18 Dec 2023 07:11:21 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BI7BLPF004913;
-	Mon, 18 Dec 2023 07:11:21 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3BI7BKnM004911;
-	Mon, 18 Dec 2023 07:11:21 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
-	id 9CACB5001DB; Mon, 18 Dec 2023 12:41:19 +0530 (+0530)
-From: Sneh Shah <quic_snehshah@quicinc.com>
-To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc: Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com
-Subject: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for 2.5G SGMII
-Date: Mon, 18 Dec 2023 12:41:18 +0530
-Message-Id: <20231218071118.21879-1-quic_snehshah@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: oXJQX_IlBXkALNAjyU-vo8QDVoD6Vehy
-X-Proofpoint-ORIG-GUID: oXJQX_IlBXkALNAjyU-vo8QDVoD6Vehy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312180049
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CE6D2ED;
+	Mon, 18 Dec 2023 07:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-20364459774so1734991fac.2;
+        Sun, 17 Dec 2023 23:11:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702883518; x=1703488318; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UhmvapdjbK4Juob7xVNZEvY20g3FFXidM5reGh1RCcM=;
+        b=M6P04eckv+9wSQoC9OCl9IFGQKjIrt9voGo3DRZ0Gx0MSVZC+gErCPUKOyrmdWNMFY
+         2saHjtzZ9FKV8rFRGRSi6/uw6pPpLigKEG7klmFlgRl5McLVtt1rzlrfPoogs0tP6Pb+
+         8F7P9j46rGHnKSPAf0v/URhSjnRA8F0uxSly5UY90N8lSWdMWQSKyQaEFvYzv7k0poSf
+         wDb9u4mlq7Z4b9fyi3Iopls4qfCybxhVtEq2fbgX6xxd9N7C2zNJbR8nzjVmofm9xQVm
+         ev254tjc5nVvkZZIHJsg3tW/cIzsv1ovXRV7+1n+vHFT76ykZA4uKpugmRn93yiGt9j+
+         ClbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702883518; x=1703488318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UhmvapdjbK4Juob7xVNZEvY20g3FFXidM5reGh1RCcM=;
+        b=goxJa7kFSdd9nF0IguusjC6KGlmp7w1Expwjr/aCDUagWjl/VDXyiRa8pzIhus7c7l
+         1RVnAiTmAfdW1/FBfOSEMHeatg5tGPFcXE6I8SKu0Yi1nKZBTpa//TW4HOh3gXuorfIF
+         jsVU6ckwkMI213xabwIaP9RzCDoDYqnl0vb1S3krgNemklEoKbjI3de6Za+PSsuNilVn
+         6UlgnP95DD0nluzT98ubW/R0JJY9q/rkDFMOzsXNPU2tv7PjEArbwVSlkKA5b8bFLLtG
+         Vs6hmTu9HMfM+tCgPotmsS3OZWoQY2y2BXn7hBUh8SqdEbkOkUQFVJooLZob+9dKT1/j
+         Ijhw==
+X-Gm-Message-State: AOJu0YyR4n/74CriJ5toYzWwqYH3IsYusbgfz1UDHomvw9iFValY77E8
+	YDSiLjONzDla6hQO42wUxeR46weY7K8f3sRT8kM=
+X-Google-Smtp-Source: AGHT+IHPVzt32uHRpOM3hUEPlx1J8EdwKEMu7SdIg1Pona01Ee1GULJv60QTmrXAk4aveIqd54Nvt2t93iq6zl6qHMU=
+X-Received: by 2002:a05:6870:414a:b0:203:b69b:674 with SMTP id
+ r10-20020a056870414a00b00203b69b0674mr2011546oad.35.1702883518015; Sun, 17
+ Dec 2023 23:11:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20231217110952.78784-1-qiujingbao.dlmu@gmail.com> <ZX/bUfSS1+32skCM@xhacker>
+In-Reply-To: <ZX/bUfSS1+32skCM@xhacker>
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Date: Mon, 18 Dec 2023 15:11:46 +0800
+Message-ID: <CAJRtX8T=bD4S1yMbexuwiMOK7rtwOg5TmVQJsRW6b8Lv9LnPKw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] riscv: rtc: sophgo: add rtc support for CV1800
+To: Jisheng Zhang <jszhang@kernel.org>
+Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor@kernel.org, conor+dt@kernel.org, 
+	chao.wei@sophgo.com, unicorn_wang@outlook.com, paul.walmsley@sifive.com, 
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dlan@gentoo.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
-mode for 1G/100M/10M speed.
-Added changes to configure serdes phy and mac based on link speed.
+On Mon, Dec 18, 2023 at 1:53=E2=80=AFPM Jisheng Zhang <jszhang@kernel.org> =
+wrote:
+>
+> On Sun, Dec 17, 2023 at 07:09:49PM +0800, Jingbao Qiu wrote:
+> > This series adds rtc support for Sophgo CV1800.
+> >
+> > Changes since v1
+> > - fix duplicate names in subject
+> > - using RTC replace RTC controller
+> > - improve the properties of dt-bindings
+> > - using `unevaluatedProperties` replace `additionalProperties`
+> > - dt-bindings passed the test
+> > - using `devm_platform_ioremap_resource()` replace
+> >   `platform_get_resource()` and `devm_ioremap_resource()`
+> > - fix random order of the code
+> > - fix wrong wrapping of the `devm_request_irq()` and map the flag with =
+dts
+> > - using devm_clk_get_enabled replace `devm_clk_get()` and
+> >   `clk_prepare_enable()`
+> > - fix return style
+> > - add rtc clock calibration function
+> > - use spinlock when write register on read/set time
+> >
+> > Jingbao Qiu (3):
+> >   dt-bindings: rtc: sophgo: add RTC support for Sophgo CV1800 series So=
+C
+> >   rtc: sophgo: add rtc support for Sophgo CV1800 SoC
+> >   riscv: dts: sophgo: add rtc dt node for CV1800
+>
+> AFAICT, the rtc subsystem supports not only RTC function but also
+> power/reboot controller, so modeling the rtc subsystem as RTC only doesn'=
+t
+> match the HW. I expect a mfd here.
+>
 
-Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
----
- .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 +++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
+Thanks,I will improve it in the next version.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index d3bf42d0fceb..b3a28dc19161 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -21,6 +21,7 @@
- #define RGMII_IO_MACRO_CONFIG2		0x1C
- #define RGMII_IO_MACRO_DEBUG1		0x20
- #define EMAC_SYSTEM_LOW_POWER_DEBUG	0x28
-+#define ETHQOS_MAC_AN_CTRL		0xE0
- 
- /* RGMII_IO_MACRO_CONFIG fields */
- #define RGMII_CONFIG_FUNC_CLK_EN		BIT(30)
-@@ -78,6 +79,10 @@
- #define ETHQOS_MAC_CTRL_SPEED_MODE		BIT(14)
- #define ETHQOS_MAC_CTRL_PORT_SEL		BIT(15)
- 
-+/*ETHQOS_MAC_AN_CTRL bits */
-+#define ETHQOS_MAC_AN_CTRL_RAN			BIT(9)
-+#define ETHQOS_MAC_AN_CTRL_ANE			BIT(12)
-+
- struct ethqos_emac_por {
- 	unsigned int offset;
- 	unsigned int value;
-@@ -109,6 +114,7 @@ struct qcom_ethqos {
- 	unsigned int num_por;
- 	bool rgmii_config_loopback_en;
- 	bool has_emac_ge_3;
-+	unsigned int serdes_speed;
- };
- 
- static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
-@@ -600,27 +606,47 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
- 
- static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
- {
--	int val;
--
-+	int val, mac_an_value;
- 	val = readl(ethqos->mac_base + MAC_CTRL_REG);
-+	mac_an_value = readl(ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
- 
- 	switch (ethqos->speed) {
-+	case SPEED_2500:
-+		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
-+		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-+			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-+			      RGMII_IO_MACRO_CONFIG2);
-+		if (ethqos->serdes_speed != SPEED_2500)
-+			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-+		mac_an_value &= ~ETHQOS_MAC_AN_CTRL_ANE;
-+		break;
- 	case SPEED_1000:
- 		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
- 		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
- 			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
- 			      RGMII_IO_MACRO_CONFIG2);
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-+		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
- 		break;
- 	case SPEED_100:
- 		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-+		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
- 		break;
- 	case SPEED_10:
- 		val |= ETHQOS_MAC_CTRL_PORT_SEL;
- 		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-+		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
- 		break;
- 	}
- 
- 	writel(val, ethqos->mac_base + MAC_CTRL_REG);
-+	writel(mac_an_value, ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
-+	ethqos->serdes_speed = ethqos->speed;
- 
- 	return val;
- }
-@@ -789,6 +815,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 				     "Failed to get serdes phy\n");
- 
- 	ethqos->speed = SPEED_1000;
-+	ethqos->serdes_speed = SPEED_1000;
- 	ethqos_update_link_clk(ethqos, SPEED_1000);
- 	ethqos_set_func_clk_en(ethqos);
- 
--- 
-2.17.1
+Best regards,
+Jingbao Qiu
 
+
+> >
+> >  .../bindings/rtc/sophgo,cv1800-rtc.yaml       |  47 ++
+> >  arch/riscv/boot/dts/sophgo/cv1800b.dtsi       |   7 +
+> >  drivers/rtc/Kconfig                           |   6 +
+> >  drivers/rtc/Makefile                          |   1 +
+> >  drivers/rtc/rtc-cv1800.c                      | 400 ++++++++++++++++++
+> >  5 files changed, 461 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv1800=
+-rtc.yaml
+> >  create mode 100644 drivers/rtc/rtc-cv1800.c
+> >
+> > --
+> > 2.25.1
+> >
 
