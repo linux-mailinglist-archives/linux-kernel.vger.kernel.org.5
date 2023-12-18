@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-4133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A95B817845
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:14:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67ECB81783F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 18:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE4952835D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:14:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 603851C2168E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Dec 2023 17:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FDC5BFAE;
-	Mon, 18 Dec 2023 17:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBE45A86B;
+	Mon, 18 Dec 2023 17:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PiouGzl+"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dvNUBdw5"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A6B4FF6D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327E84FF9D;
 	Mon, 18 Dec 2023 17:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8B6F21BF20A;
-	Mon, 18 Dec 2023 17:14:23 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BC8C51BF20F;
+	Mon, 18 Dec 2023 17:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702919664;
+	t=1702919665;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Lyt0fUA8qXAG186dpljc51Fb9nMcLd2wX7HB0Boh4IU=;
-	b=PiouGzl+MlgeZJG+Yp04/ynO3QZiEcefHG1cCb7Sy+fmU3VIBZgzYLBlJTf+rcA2PF0M1E
-	XmAgnL9Oq7v4a1GdTzLycAyg+sycBOHCAkhgzVWsAOyRi0T5FGlc/W//k8wqYKgoyF0RUt
-	SEz1ev8RaHhBnfzVkm7tD49rxO6oQUiyHq6ecOjbBgeDjwG9Pm/lm4PC8LH+zi6hRuohyH
-	PBlO1o/to+3ABoboosI+ed2UYAw4pSoIkLogbVMR+so4n8oZ55jkp9yoEWOYhngWSemPId
-	5q/PQmomsstB+AW8ZtxQUNjACkL69IiS31G2WmgF/QE0WkGJiwQDNCuJfIx87A==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rFyXIimwYPLIE7eA8eBWoKrpWj/DqAJh+jtaCI5Vbr4=;
+	b=dvNUBdw5y180mh1uvpa+RJLWsPHzDcsIg2k7Iddi9YlUa1mAyvzuPKCnwL9nhziWvkRr0E
+	yKSgJpHcJnyjItxa0b0f3CmzeGJUcNtYVu6k6MVFtnJngV0d6dzZHgW2ZFaBYGmPOOKZUf
+	Lr5nNJO9vSgBpGD/SH0lavA5xv1HdbjcSmCdmJJTUZFg4p2z3eX2KxJjKhonOSXnebNp0P
+	L0Zmfuba6lmN5i0NE0WNZcD1dOZlFH+q0gsmnbD4A1rdPtQk57vXU2lwkQZsSGS9keDIjf
+	74IIi9unZKGn/809BgII2QSS0gP4LIRYZpvjmSz8g/aIlLsjw+S58Pl6s2q/pQ==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: [PATCH 0/5] Add support for Mobileye EyeQ5 clock controller
-Date: Mon, 18 Dec 2023 18:14:15 +0100
-Message-Id: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com>
+Date: Mon, 18 Dec 2023 18:14:16 +0100
+Subject: [PATCH 1/5] clk: fixed-rate: fix
+ clk_hw_register_fixed_rate_with_accuracy_parent_hw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,10 +48,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAOh9gGUC/3WMQQ6CMBREr0K6tqafChRW3sOwoO1HfgRqWkIkh
- LtbcGFcuJjFm8y8lQX0hIFVyco8zhTIjRHglDDTNeMdOdnILBWphBg+6H7hpn9wVRjMTHqBVig
- W50+PLb0O1a2O3FGYnF8O8wx7+5GAFF/JDFxwlesWoCwsSLxq56aexrNxw279c9ESRWZzXWpsf
- i71tm1vTkSGx9UAAAA=
+Message-Id: <20231218-mbly-clk-v1-1-44ce54108f06@bootlin.com>
+References: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com>
+In-Reply-To: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com>
 To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
  Michael Turquette <mturquette@baylibre.com>, 
  Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
@@ -66,58 +66,32 @@ Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
 X-Mailer: b4 0.12.4
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi,
+Add missing comma and remove extraneous NULL argument. The macro is
+currently used by no one which explains why the typo slipped by.
 
-We replace fixed clocks as declared in the initial platform support
-series [1] by read-only clocks exposed by the clock driver implemented
-here. Write-ability is supported by the hardware but not implemented,
-it could be added later-on if the need appears.
-
-We expose ten PLLs that derive directly from the main crystal. Also, a divider
-clock is exposed as a child clock of one of the PLLs.
-
-The platform devicetree has many more clock nodes but those are
-fixed-factors that are not hardware controllable; we therefore do not
-deal with them.
-
-This series starts with a fix for a fixed-rate clock registering macro that is
-broken. We are the first upstream users which explains why we found the typo.
-
-We end our patch series by adding the clock controller node to the
-platform devicetree & by replacing hardcoded devicetree clocks by the
-ones exposed by this driver. The controller driver addition is split in
-two commits to simplify reviewing.
-
-[1]: https://lore.kernel.org/lkml/20231212163459.1923041-1-gregory.clement@bootlin.com/
-
-Have a nice day,
-Théo Lebrun
-
+Fixes: 2d34f09e79c9 ("clk: fixed-rate: Add support for specifying parents via DT/pointers")
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
-Théo Lebrun (5):
-      clk: fixed-rate: fix clk_hw_register_fixed_rate_with_accuracy_parent_hw
-      dt-bindings: clock: mobileye,eyeq5-clk: add bindings
-      clk: eyeq5: add controller
-      clk: eyeq5: add OSPI table-based divider clock
-      MIPS: mobileye: eyeq5: add OLB clocks controller node & pinmux nodes
+ include/linux/clk-provider.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- .../bindings/clock/mobileye,eyeq5-clk.yaml         |  83 +++++
- MAINTAINERS                                        |   3 +
- .../{eyeq5-fixed-clocks.dtsi => eyeq5-clocks.dtsi} |  56 +---
- arch/mips/boot/dts/mobileye/eyeq5.dtsi             |   9 +-
- drivers/clk/Kconfig                                |  11 +
- drivers/clk/Makefile                               |   1 +
- drivers/clk/clk-eyeq5.c                            | 346 +++++++++++++++++++++
- include/dt-bindings/clock/mobileye,eyeq5-clk.h     |  22 ++
- include/linux/clk-provider.h                       |   4 +-
- 9 files changed, 493 insertions(+), 42 deletions(-)
----
-base-commit: 0bb6b85cadabf93a754df740bd1b6c56ef41ac2c
-change-id: 20231023-mbly-clk-87ce5c241f08
+diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+index ace3a4ce2fc9..1293c38ddb7f 100644
+--- a/include/linux/clk-provider.h
++++ b/include/linux/clk-provider.h
+@@ -448,8 +448,8 @@ struct clk *clk_register_fixed_rate(struct device *dev, const char *name,
+  */
+ #define clk_hw_register_fixed_rate_with_accuracy_parent_hw(dev, name,	      \
+ 		parent_hw, flags, fixed_rate, fixed_accuracy)		      \
+-	__clk_hw_register_fixed_rate((dev), NULL, (name), NULL, (parent_hw)   \
+-				     NULL, NULL, (flags), (fixed_rate),	      \
++	__clk_hw_register_fixed_rate((dev), NULL, (name), NULL, (parent_hw),  \
++				     NULL, (flags), (fixed_rate),	      \
+ 				     (fixed_accuracy), 0, false)
+ /**
+  * clk_hw_register_fixed_rate_with_accuracy_parent_data - register fixed-rate
 
-Best regards,
 -- 
-Théo Lebrun <theo.lebrun@bootlin.com>
+2.43.0
 
 
