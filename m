@@ -1,278 +1,144 @@
-Return-Path: <linux-kernel+bounces-5237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5D3C818857
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:09:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98096818860
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:10:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 622BB1F226E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:09:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3053A285A83
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41E118E23;
-	Tue, 19 Dec 2023 13:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A61D19464;
+	Tue, 19 Dec 2023 13:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="O48JS6BJ"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="YkMd9YAQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C1B18B0D;
-	Tue, 19 Dec 2023 13:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7DBEAFA2;
-	Tue, 19 Dec 2023 14:07:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1702991274;
-	bh=JCibhsPNu5W9HOJHi4MIWdw+cGLwR2Fxjcp9SuRXtsA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O48JS6BJMTauugfyAXWhPMw1DmdqMl7Kc/uZHBdZargiR8ceOevtlnx+o1aDXvjUV
-	 YMu5J2JvJpAyImPcD+Qvij5EumMulP+zKi6Iu8B1RwFAh1z12qzMDo7iDcUUp/MqyA
-	 cGyDPzsb5JbQFFMNqSwIdVkka6xYY7eazVn59H6M=
-Date: Tue, 19 Dec 2023 15:08:49 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Dafna Hirschfeld <dafna@fastmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Mikhail Rudenko <mike.rudenko@gmail.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [PATCH 2/2] media: rkisp1: Fix IRQ handling due to shared
- interrupts
-Message-ID: <20231219130849.GA29638@pendragon.ideasonboard.com>
-References: <20231218-rkisp-shirq-fix-v1-0-173007628248@ideasonboard.com>
- <20231218-rkisp-shirq-fix-v1-2-173007628248@ideasonboard.com>
- <20231218092240.GB26540@pendragon.ideasonboard.com>
- <b465355b-65c2-451f-ae2e-63da9d0a6282@ideasonboard.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F8519BD9;
+	Tue, 19 Dec 2023 13:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BJAp1BU015045;
+	Tue, 19 Dec 2023 14:09:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=3XPfSMe
+	xOVKWq+whcvLdlAIAFwG0ty//S+OEFdiBKgk=; b=YkMd9YAQpyTQ+2dnEGmDKwY
+	WOaUJm/2nB1y9nRMV56NSFa1fV3Vn7/mAegQ5RYmxrKko5yu4T7bMKs+INBYiRBT
+	jNAdGJHVMcFGgsMhNEOT9WyrMPR6kmHwTOE327bVdQV4MpCcFCAIM9awiVXOBUuW
+	VwLq+yBx3nJUnICvNpzeH/kWBaTl1K/VtPbEtTOzAUOBzzbpvkUVvHPYNg8tEBuF
+	X2vCzhHbFB+k3WxTH3tUaK6N70EbspT6Kuhr45VykAICAzK9o7MRxi/iNQf7DQtf
+	zaq4JnFrAYErfBL7gj4oxqufGUvtEb01G11PwIak7iRi3V2hisgWSquQyoZ6gCQ=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v1pb4jdtc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 14:09:20 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6F74C100059;
+	Tue, 19 Dec 2023 14:09:19 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6495A227896;
+	Tue, 19 Dec 2023 14:09:19 +0100 (CET)
+Received: from localhost (10.201.21.240) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 19 Dec
+ 2023 14:09:19 +0100
+From: <gabriel.fernandez@foss.st.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd
+	<sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+CC: <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 0/2] Introduce STM32MP257 clock driver
+Date: Tue, 19 Dec 2023 14:09:07 +0100
+Message-ID: <20231219130909.265091-1-gabriel.fernandez@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b465355b-65c2-451f-ae2e-63da9d0a6282@ideasonboard.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-19_08,2023-12-14_01,2023-05-22_02
 
-Hi Tomi,
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-CC'ing Sakari
+v7: base on next-20231219
+  - These patches below are applied to clk-next:
+      clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
+      clk: stm32mp1: use stm32mp13 reset driver
+      dt-bindings: stm32: add clocks and reset binding for stm32mp25
+  - remove unnecessary includes
+  - migrate clock parents to struct clk_parent_data and remove
+    CLK_STM32_XXX() macros  to have a more readble code
+  - use platform device APIs (devm_of_iomap() instead of_iomap())
+  - move content of stm32mp25_rcc_init() to stm32mp25_rcc_clocks_probe()
+  - simply get_clock_deps()
+  - add const to stm32mp25_data struct
+  - remove ck_icn_p_serc clock (will be integrate later with security
+    management)
 
-On Tue, Dec 19, 2023 at 10:50:05AM +0200, Tomi Valkeinen wrote:
-> On 18/12/2023 11:22, Laurent Pinchart wrote:
-> > On Mon, Dec 18, 2023 at 09:54:01AM +0200, Tomi Valkeinen wrote:
-> >> The driver requests the interrupts as IRQF_SHARED, so the interrupt
-> >> handlers can be called at any time. If such a call happens while the ISP
-> >> is powered down, the SoC will hang as the driver tries to access the
-> >> ISP registers.
-> >>
-> >> This can be reproduced even without the platform sharing the IRQ line:
-> >> Enable CONFIG_DEBUG_SHIRQ and unload the driver, and the board will
-> >> hang.
-> >>
-> >> Fix this by adding a new field, 'irqs_enabled', which is used to bail
-> >> out from the interrupt handler when the ISP is not operational.
-> >>
-> >> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> >> ---
-> >>   .../platform/rockchip/rkisp1/rkisp1-capture.c      |  3 +++
-> >>   .../media/platform/rockchip/rkisp1/rkisp1-common.h |  2 ++
-> >>   .../media/platform/rockchip/rkisp1/rkisp1-csi.c    |  3 +++
-> >>   .../media/platform/rockchip/rkisp1/rkisp1-dev.c    | 22 ++++++++++++++++++++++
-> >>   .../media/platform/rockchip/rkisp1/rkisp1-isp.c    |  3 +++
-> >>   5 files changed, 33 insertions(+)
-> >>
-> >> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> >> index aebd3c12020b..c381c22135a2 100644
-> >> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> >> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> >> @@ -725,6 +725,9 @@ irqreturn_t rkisp1_capture_isr(int irq, void *ctx)
-> >>   	unsigned int i;
-> >>   	u32 status;
-> >>   
-> >> +	if (!rkisp1->irqs_enabled)
-> >> +		return IRQ_NONE;
-> > 
-> > Given that this is something all drivers that use shared IRQs have to
-> > do, would it make sense to use a standard helper here, such as
-> > pm_runtime_suspended() for instance ? I haven't looked at which one
-> > would be the most appropriate (if any), there's also
-> > pm_runtime_active() and pm_runtime_status_suspended(). That would
-> > simplify this patch.
-> 
-> I did consider that when writing the patch. But I just wasn't very 
-> comfortable using the runtime PM here, even if it would make sense, as 
-> I'm just not quite sure how it works.
-> 
-> For example, pm_runtime_suspended() checks if the device is in 
-> RPM_SUSPENDED state, and the device will be in RPM_SUSPENDED after the 
-> driver's suspend callback has finished. This makes sense.
-> 
-> However, _while_ suspending (not after we have suspended), we want to 
-> make sure that 1) no new irq handling will start, 2) we'll wait until 
-> any currently running irq handler has finished. For 1), we can't use 
-> pm_runtime_suspended() in the irq handler, as the status is not 
-> RPM_SUSPENDED. We could probably check for:
-> 
-> spin_lock(&dev->power.lock);
-> off = dev->power.runtime_status == RPM_SUSPENDED || 
-> dev->power.runtime_status == RPM_SUSPENDING;
-> spin_unlock(&dev->power.lock);
-> if (off)
-> 	return IRQ_NONE;
-> 
-> That would not work if we would depend on the irq handling while in the 
-> suspend callback (e.g. waiting for an irq which signals that the device 
-> has finished processing). But we don't do that at the moment, and that 
-> kind of this probably can usually be done before calling runtime_put().
-> 
-> When we take into account the resume part, I think we could just check 
-> for RPM_ACTIVE in the irq handler, which would then rule out 
-> RPM_RESUMING, RPM_SUSPENDED and RPM_SUSPENDING.
-> 
-> But we can't use pm_runtime_active(), as that also checks for 
-> dev->power.disable_depth. In other words, when we disable the PM for our 
-> device (e.g. when unloading the driver), the PM framework says our 
-> device became active.
-> 
-> Soo... I think this should work in the irq handler:
-> 
-> spin_lock(&dev->power.lock);
-> active = dev->power.runtime_status == RPM_ACTIVE;
+v6:
+  - remove useless defines in drivers/clk/stm32/stm32mp25_rcc.h
 
-It would be nice to use pm_runtime_active() instead. This would however
-require unregistering the IRQ handler before disabling runtime PM in the
-remove path. I think that should be done nonetheless though, as relying
-on devm to unregister the IRQ handler means it will happen after
-.remove() returns, which could cause all sort of issues (I'm thinking
-about the calls to dev_get_drvdata() in the IRQ handlers for instance).
-What do you think ?
+v5:
+  - Fix sparse warnings: was not declared. Should it be static?
+    drivers/clk/stm32/clk-stm32mp13.c:1516:29: symbol 'stm32mp13_reset_data'
+    drivers/clk/stm32/clk-stm32mp1.c:2148:29: symbol 'stm32mp1_reset_data'
+    drivers/clk/stm32/clk-stm32mp25.c:1003:5: symbol 'stm32mp25_cpt_gate'
+    drivers/clk/stm32/clk-stm32mp25.c:1005:29: symbol 'stm32mp25_clock_data'
+    drivers/clk/stm32/clk-stm32mp25.c:1011:29: symbol 'stm32mp25_reset_data'
 
-> spin_unlock(&dev->power.lock);
-> if (!active)
-> 	return IRQ_NONE;
-> 
-> I think the driver depends on runtime PM, but if no-PM was an option, I 
-> guess we'd need to ifdef the above away, and trust that the device is 
-> always powered on.
-> 
-> So, as I said in the beginning, "I just wasn't very comfortable using 
-> the runtime PM here". And that's still the case =). The runtime PM is 
-> horribly complex. If you think the above is clearer, and you think it's 
-> correct, I can make the change.
+v4:
+  - use GPL-2.0-only OR BSD-2-Clause for clock and reset binding files
+  - use quotes ' for #clock-cells and #reset-cells in YAML documentation
+  - reset binding start now to 0 instead 1
+  - improve management of reset lines that are not managed
 
-It sounds it may require some more work, and we should land this fix in
-v6.8, with the revert, right ? If so, I'm fine merging this patch, and
-moving to runtime PM checks on top if we decide to do so.
+v3:
+  - from Rob Herring change clock item description in YAML documentation
+v2:
+  - rework reset binding (use ID witch start from 0)
+  - rework reset driver to manage STM32MP13 / STM32MP15 / STM32MP25
+  - rework YAML documentation
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Gabriel Fernandez (2):
+  clk: stm32: introduce clocks for STM32MP257 platform
+  arm64: dts: st: add rcc support in stm32mp251
 
-By the way, I wonder if it would make sense to handle this in the driver
-core. The prospect of copying this code in all drivers doesn't make me
-happy.
-
-> >> +
-> >>   	status = rkisp1_read(rkisp1, RKISP1_CIF_MI_MIS);
-> >>   	if (!status)
-> >>   		return IRQ_NONE;
-> >> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> >> index 4b6b28c05b89..b757f75edecf 100644
-> >> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> >> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> >> @@ -450,6 +450,7 @@ struct rkisp1_debug {
-> >>    * @debug:	   debug params to be exposed on debugfs
-> >>    * @info:	   version-specific ISP information
-> >>    * @irqs:          IRQ line numbers
-> >> + * @irqs_enabled:  the hardware is enabled and can cause interrupts
-> >>    */
-> >>   struct rkisp1_device {
-> >>   	void __iomem *base_addr;
-> >> @@ -471,6 +472,7 @@ struct rkisp1_device {
-> >>   	struct rkisp1_debug debug;
-> >>   	const struct rkisp1_info *info;
-> >>   	int irqs[RKISP1_NUM_IRQS];
-> >> +	bool irqs_enabled;
-> >>   };
-> >>   
-> >>   /*
-> >> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-> >> index b6e47e2f1b94..4202642e0523 100644
-> >> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-> >> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-> >> @@ -196,6 +196,9 @@ irqreturn_t rkisp1_csi_isr(int irq, void *ctx)
-> >>   	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
-> >>   	u32 val, status;
-> >>   
-> >> +	if (!rkisp1->irqs_enabled)
-> >> +		return IRQ_NONE;
-> >> +
-> >>   	status = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_MIS);
-> >>   	if (!status)
-> >>   		return IRQ_NONE;
-> >> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> >> index acc559652d6e..73cf08a74011 100644
-> >> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> >> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> >> @@ -305,6 +305,24 @@ static int __maybe_unused rkisp1_runtime_suspend(struct device *dev)
-> >>   {
-> >>   	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
-> >>   
-> >> +	rkisp1->irqs_enabled = false;
-> >> +	/* Make sure the IRQ handler will see the above */
-> >> +	mb();
-> >> +
-> >> +	/*
-> >> +	 * Wait until any running IRQ handler has returned. The IRQ handler
-> >> +	 * may get called even after this (as it's a shared interrupt line)
-> >> +	 * but the 'irqs_enabled' flag will make the handler return immediately.
-> >> +	 */
-> >> +	for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il) {
-> >> +		if (rkisp1->irqs[il] == -1)
-> >> +			continue;
-> >> +
-> >> +		/* Skip if the irq line is the same as previous */
-> >> +		if (il == 0 || rkisp1->irqs[il - 1] != rkisp1->irqs[il])
-> >> +			synchronize_irq(rkisp1->irqs[il]);
-> >> +	}
-> >> +
-> >>   	clk_bulk_disable_unprepare(rkisp1->clk_size, rkisp1->clks);
-> >>   	return pinctrl_pm_select_sleep_state(dev);
-> >>   }
-> >> @@ -321,6 +339,10 @@ static int __maybe_unused rkisp1_runtime_resume(struct device *dev)
-> >>   	if (ret)
-> >>   		return ret;
-> >>   
-> >> +	rkisp1->irqs_enabled = true;
-> >> +	/* Make sure the IRQ handler will see the above */
-> >> +	mb();
-> >> +
-> >>   	return 0;
-> >>   }
-> >>   
-> >> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> >> index f00873d31c42..78a1f7a1499b 100644
-> >> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> >> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> >> @@ -976,6 +976,9 @@ irqreturn_t rkisp1_isp_isr(int irq, void *ctx)
-> >>   	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
-> >>   	u32 status, isp_err;
-> >>   
-> >> +	if (!rkisp1->irqs_enabled)
-> >> +		return IRQ_NONE;
-> >> +
-> >>   	status = rkisp1_read(rkisp1, RKISP1_CIF_ISP_MIS);
-> >>   	if (!status)
-> >>   		return IRQ_NONE;
+ arch/arm64/boot/dts/st/stm32mp251.dtsi |   59 +-
+ drivers/clk/stm32/Kconfig              |    7 +
+ drivers/clk/stm32/Makefile             |    1 +
+ drivers/clk/stm32/clk-stm32mp25.c      | 1826 ++++++++++++++++++++++++
+ drivers/clk/stm32/reset-stm32.c        |   59 +-
+ drivers/clk/stm32/reset-stm32.h        |    7 +
+ drivers/clk/stm32/stm32mp25_rcc.h      |  712 +++++++++
+ 7 files changed, 2628 insertions(+), 43 deletions(-)
+ create mode 100644 drivers/clk/stm32/clk-stm32mp25.c
+ create mode 100644 drivers/clk/stm32/stm32mp25_rcc.h
 
 -- 
-Regards,
+2.25.1
 
-Laurent Pinchart
 
