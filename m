@@ -1,188 +1,249 @@
-Return-Path: <linux-kernel+bounces-4814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9528E81825F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:38:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31D2E818264
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4701C2373C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:38:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA22A286941
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00EC1171C;
-	Tue, 19 Dec 2023 07:38:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3192C2CD;
+	Tue, 19 Dec 2023 07:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zXhV8Awq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDAC11710
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35d678edc08so26212145ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:38:06 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B079125C2
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cc5ee69960so30580571fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:38:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702971493; x=1703576293; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xminXgCBuj1Jpf20jWnFqmozJPH56EUn0oky68BU8xw=;
+        b=zXhV8AwqxI+Rjri54VoaRvBaFkoihmmNyx6NwiHwQBLaoNoE8NVynv0Qch100eq/UV
+         n+GkE6igXEzeAFqVy0qRRnIjQq4it0wv6RO3voiOB8eEJkEn9kjTw9eWv3Sro0sJj7KH
+         iUqX/r2qmly7Xqk/bEO8CD/ueRBWrABN9/h6w9V1AchZh+UHH4JN1T6WcDO2h5I+GUj3
+         JCvlquPmhhNpQ+z6JMyd+FkDg8Zx7HTKT1W1YnkxTfstuHwrpptQt9woZYQ0pVcUIAsh
+         7QHsIGpC1Nf8cVx/x03nyQkwYMEYxG8HNzk8c0DnYKEeG/B9rb0R5fQTkEfxvb/JPkHk
+         jC3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702971486; x=1703576286;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1702971493; x=1703576293;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iBGzPu2+fy6h8DikoGtIgIOYxuCKl/zgXCD5m5syRr8=;
-        b=rpVCzSlCvrJDcHsrWnYwYLSUlj/p50q6twyepPWaxZXVEp8shwLLf6pXc4ZD/Ni3TK
-         QWLRxs1z6fzsRn74tUJ/H6FB46JFUheUI4PKxrB1jCYat59NE+pX8WzXjHZ2hc+UAbC2
-         o5yu7b7lB4FO+KtfcnUu/Kd/DoP5gMDuwf+Skzd37gmyRQ7WQhxHZuRNWZqgHCvsDLip
-         R2sBnvPGFBgyWcvR5R8kIpB1Up1YFRwsBrGHk6bGiUsgm4iKHtouC3uWFnHzKNWpzqTt
-         4CU5JBgimh1JjlWZ9bsK59bKUvcFRx9oXSrnD9IC9AoYxurNfGE/VGvBl5aMYNWMQwdJ
-         pdjA==
-X-Gm-Message-State: AOJu0YzrcmOHfNSp6t1LwNbRbe/dibwM2E69IWgfMU0/6JIhGW764bG1
-	Aj40cRSJz53hT2ItBk87ouf64dQsoGg9cvi9aiZq/LasFkhl
-X-Google-Smtp-Source: AGHT+IEImPfuYRs7Z/gMdnI70ldBVEEUzpxKI7N2gtoqVDcHyhVeoO19kKiSBRZrrD3G4vGFgpsXL2QNu3DHTy0WUHJ8BmFF/hhm
+        bh=xminXgCBuj1Jpf20jWnFqmozJPH56EUn0oky68BU8xw=;
+        b=cutcQ/xqM9sLpc5pX1V5J1PtB0rwSP4CibbBuvowBNchZGI1d/FWEqoGX1ivmawVvV
+         tR47EafM6AWq0V3nl99un0xLawHJEGd5hBlBUa1MyxOOQXbdElgsClGPEPQNgpweMe3t
+         RkM1/hWXyt9uzhdc7Q/AiTaY8rzeHZeX/IjnsEtzZDYOQl5IjvA6NIws95fHXFCa2vsw
+         x9g7XdgE86khbktdjs9MbDjDqMG8FPg+eKSzjscS7888VcWzv4TbL6c1mcTvDrjIhyIb
+         8dvgZ1KiANIxQMZX5wb8iqCv+8JOwFCSADICrnMgYEWCzMUaKGn+Ttt/Po1sl8N35QwH
+         Gq8w==
+X-Gm-Message-State: AOJu0YxE4nMxqMqmrxH/1a2aOTcW6rbLvaT77cqBw/ubXBgwLtSfQNwd
+	KC7Jv+02Suyo3PYUtf+ykvIo6w==
+X-Google-Smtp-Source: AGHT+IEwCi6TuXgBXmQCr4t3MJg1QkQhNwWnewugfUeqrY5kscNstXB/rrHGtBazygdrQxPq5qsgbQ==
+X-Received: by 2002:a05:6512:220f:b0:50e:44a8:6628 with SMTP id h15-20020a056512220f00b0050e44a86628mr270964lfu.103.1702971493230;
+        Mon, 18 Dec 2023 23:38:13 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id x9-20020aa7cd89000000b0055289f60e3bsm4644445edv.79.2023.12.18.23.38.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 23:38:12 -0800 (PST)
+Message-ID: <2fb31811-b277-4f19-aaac-dc5ce9e99c34@linaro.org>
+Date: Tue, 19 Dec 2023 08:38:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d30e:0:b0:35f:ab18:74e9 with SMTP id
- x14-20020a92d30e000000b0035fab1874e9mr64237ila.2.1702971486106; Mon, 18 Dec
- 2023 23:38:06 -0800 (PST)
-Date: Mon, 18 Dec 2023 23:38:06 -0800
-In-Reply-To: <tencent_B8D761176D66C51367E368496703B5045805@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007dfde7060cd7f29d@google.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in
- getname_kernel (2)
-From: syzbot <syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] dt-bindings: clock: mobileye,eyeq5-clk: add bindings
+Content-Language: en-US
+To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com>
+ <20231218-mbly-clk-v1-2-44ce54108f06@bootlin.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231218-mbly-clk-v1-2-44ce54108f06@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On 18/12/2023 18:14, Théo Lebrun wrote:
+> Add DT schema bindings for the EyeQ5 clock controller driver.
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  .../bindings/clock/mobileye,eyeq5-clk.yaml         | 83 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  2 +
+>  include/dt-bindings/clock/mobileye,eyeq5-clk.h     | 22 ++++++
+>  3 files changed, 107 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+> new file mode 100644
+> index 000000000000..d56482a06bf1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+> @@ -0,0 +1,83 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/mobileye,eyeq5-clk.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mobileye EyeQ5 clock controller
+> +
+> +description:
+> +  The EyeQ5 clock controller handles 10 read-only PLLs derived from the main
+> +  crystal clock. It also exposes one divider clock, a child of one of the PLLs.
+> +  It is custom to this platform, its registers live in a shared region called
+> +  OLB.
+> +
+> +maintainers:
+> +  - Grégory Clement <gregory.clement@bootlin.com>
+> +  - Théo Lebrun <theo.lebrun@bootlin.com>
+> +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^clocks$"
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: stack-out-of-bounds Read in getname_kernel
+No, that's not correct pattern.
 
-BTRFS info (device loop0): disabling free space tree
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-==================================================================
-BUG: KASAN: stack-out-of-bounds in strlen+0x58/0x70 lib/string.c:418
-Read of size 1 at addr ffffc9000519fe08 by task syz-executor.0/5479
-
-CPU: 1 PID: 5479 Comm: syz-executor.0 Not tainted 6.7.0-rc5-syzkaller-00200-g3bd7d7488169-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x142/0x170 mm/kasan/report.c:588
- strlen+0x58/0x70 lib/string.c:418
- getname_kernel+0x1d/0x2e0 fs/namei.c:226
- kern_path+0x1d/0x50 fs/namei.c:2609
- lookup_bdev block/bdev.c:979 [inline]
- bdev_open_by_path+0xd1/0x540 block/bdev.c:901
- btrfs_init_dev_replace_tgtdev fs/btrfs/dev-replace.c:260 [inline]
- btrfs_dev_replace_start fs/btrfs/dev-replace.c:638 [inline]
- btrfs_dev_replace_by_ioctl+0x41b/0x2010 fs/btrfs/dev-replace.c:748
- btrfs_ioctl_dev_replace+0x3c9/0x4a0 fs/btrfs/ioctl.c:3298
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f412127cba9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4121f980c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f412139bf80 RCX: 00007f412127cba9
-RDX: 0000000020000540 RSI: 00000000ca289435 RDI: 0000000000000005
-RBP: 00007f41212c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f412139bf80 R15: 00007ffcdd6baae8
- </TASK>
-
-The buggy address belongs to stack of task syz-executor.0/5479
- and is located at offset 2632 in frame:
- btrfs_ioctl_dev_replace+0x0/0x4a0 fs/btrfs/ioctl.c:3931
-
-This frame has 1 object:
- [32, 2632) 'p'
-
-The buggy address belongs to the virtual mapping at
- [ffffc90005198000, ffffc900051a1000) created by:
- copy_process+0x5d1/0x3fb0 kernel/fork.c:2332
-
-The buggy address belongs to the physical page:
-page:ffffea00007149c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1c527
-memcg:ffff88801e905a82
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff ffff88801e905a82
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x102dc2(GFP_HIGHUSER|__GFP_NOWARN|__GFP_ZERO), pid 5449, tgid 5449 (dhcpcd-run-hook), ts 81588018886, free_ts 81585719939
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
- prep_new_page mm/page_alloc.c:1544 [inline]
- get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3312
- __alloc_pages+0x255/0x680 mm/page_alloc.c:4568
- alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
- vm_area_alloc_pages mm/vmalloc.c:3063 [inline]
- __vmalloc_area_node mm/vmalloc.c:3139 [inline]
- __vmalloc_node_range+0x9a3/0x14a0 mm/vmalloc.c:3320
- alloc_thread_stack_node kernel/fork.c:309 [inline]
- dup_task_struct+0x3e5/0x7d0 kernel/fork.c:1118
- copy_process+0x5d1/0x3fb0 kernel/fork.c:2332
- kernel_clone+0x222/0x840 kernel/fork.c:2907
- __do_sys_clone kernel/fork.c:3050 [inline]
- __se_sys_clone kernel/fork.c:3034 [inline]
- __x64_sys_clone+0x258/0x2a0 kernel/fork.c:3034
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1137 [inline]
- free_unref_page_prepare+0x931/0xa60 mm/page_alloc.c:2347
- free_unref_page_list+0x5a0/0x840 mm/page_alloc.c:2533
- release_pages+0x2117/0x2400 mm/swap.c:1042
- tlb_batch_pages_flush mm/mmu_gather.c:98 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:293 [inline]
- tlb_flush_mmu+0x34c/0x4e0 mm/mmu_gather.c:300
- tlb_finish_mmu+0xd4/0x1f0 mm/mmu_gather.c:392
- exit_mmap+0x4d3/0xc60 mm/mmap.c:3321
- __mmput+0x115/0x3c0 kernel/fork.c:1349
- exit_mm+0x21f/0x300 kernel/exit.c:567
- do_exit+0x9b7/0x2750 kernel/exit.c:858
- do_group_exit+0x206/0x2c0 kernel/exit.c:1021
- __do_sys_exit_group kernel/exit.c:1032 [inline]
- __se_sys_exit_group kernel/exit.c:1030 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1030
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Memory state around the buggy address:
- ffffc9000519fd00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc9000519fd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc9000519fe00: 00 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3
-                      ^
- ffffc9000519fe80: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc9000519ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
 
-Tested on:
+> +    description:
+> +      We have no unique address, we rely on OLB.
 
-commit:         3bd7d748 Merge tag 'io_uring-6.7-2023-12-15' of git://..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1753a73ee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
-dashboard link: https://syzkaller.appspot.com/bug?extid=33f23b49ac24f986c9e8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13fde369e80000
+No.
+
+I explained why in pinctrl patchset.
+
+> +
+> +  compatible:
+> +    const: mobileye,eyeq5-clk
+> +
+> +  "#clock-cells":
+> +    const: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description:
+> +      Input parent clock to all PLLs. Expected to be the main crystal.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ref
+> +
+> +  mobileye,olb:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      A phandle to the OLB syscon. This is a fallback to using the parent as
+> +      syscon node.
+
+Drop.
+
+> +
+> +required:
+> +  - compatible
+> +  - "#clock-cells"
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    olb@e00000 {
+> +      compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
+
+Drop, not related.
+
+> +      reg = <0xe00000 0x400>;
+> +      reg-io-width = <4>;
+> +
+> +      clocks {
+> +        compatible = "mobileye,eyeq5-clk";
+> +        #clock-cells = <1>;
+> +        clocks = <&xtal>;
+> +        clock-names = "ref";
+> +      };
+> +    };
+> +
+> +  - |
+> +    olb: olb@e00000 {
+> +      compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
+
+Drop, even less related. Still no explanation why you represent the same
+hardware in two different ways.
+
+
+Best regards,
+Krzysztof
 
 
