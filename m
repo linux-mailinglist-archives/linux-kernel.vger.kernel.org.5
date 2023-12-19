@@ -1,49 +1,63 @@
-Return-Path: <linux-kernel+bounces-4566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F818817F61
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:43:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F848817F51
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 799A4B241B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:43:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4051285E64
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEB26109;
-	Tue, 19 Dec 2023 01:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B36D17CF;
+	Tue, 19 Dec 2023 01:38:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B966B17D9;
-	Tue, 19 Dec 2023 01:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SvKFF352DzsSTR;
-	Tue, 19 Dec 2023 09:42:25 +0800 (CST)
-Received: from kwepemm000007.china.huawei.com (unknown [7.193.23.189])
-	by mail.maildlp.com (Postfix) with ESMTPS id A3CB8180066;
-	Tue, 19 Dec 2023 09:42:40 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 09:42:39 +0800
-From: Jijie Shao <shaojijie@huawei.com>
-To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <horms@kernel.org>
-CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-	<liuyonglong@huawei.com>, <lanhao@huawei.com>, <wangpeiyang1@huawei.com>,
-	<shaojijie@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH V4 net-next 4/4] net: hns3: support dump pfc frame statistics in tx timeout log
-Date: Tue, 19 Dec 2023 09:35:13 +0800
-Message-ID: <20231219013513.2589845-5-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231219013513.2589845-1-shaojijie@huawei.com>
-References: <20231219013513.2589845-1-shaojijie@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6048B137C;
+	Tue, 19 Dec 2023 01:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d3b84173feso3672385ad.1;
+        Mon, 18 Dec 2023 17:38:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702949893; x=1703554693;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=itayclm3e2RmB5yfikzI8PTp/jgy3ZG/7OtocXaYqA0=;
+        b=a+4RoGOB2c4bwpzfG4Mq3GvkH80RSru5soLc4LAEtUWSxqHREAIrDHSBnzz9e7+wS7
+         hj7p797wvbzjh4yxoFHm3XElcaNfD7zBuovKWUmp/5OzJyZFQqU9M7Va771AeaJrjUzF
+         9GFLd12qZcEuTlhfisOJ97Mv14vfcixVXqqQsva8qrkXkf3Q+XxX0a37Y1XeAEn+z22b
+         Ay0/Nl/1HEtzjCKcAeXJDexSWPIuQoltEjxXPL9zCrDehZdNHno8jf6kSW3U/9CD8VUs
+         wH+newox3GnN+yezdJiTMG8sWVIAfchF7HNiIQWgm9pcMPeevrEl57qYa0bwE6jTqChD
+         Ao3Q==
+X-Gm-Message-State: AOJu0Yxw3BM8kuGSeCuz3/M581sC0jUowCco0ZWuOinANQbNHplAXskb
+	w6MUE3BFmzxihcrisHlpqMfYjPn4rOGi4w==
+X-Google-Smtp-Source: AGHT+IFtkONIKo5N1dYQhZyWoM9e/m24EtiG3MCP98XI2ClkzZ7S/hyJL6uGptOBcpVtwK//xkweiw==
+X-Received: by 2002:a17:902:db12:b0:1d3:dbdc:4c9d with SMTP id m18-20020a170902db1200b001d3dbdc4c9dmr811851plx.3.1702949892590;
+        Mon, 18 Dec 2023 17:38:12 -0800 (PST)
+Received: from tgsp-ThinkPad-X280.. ([223.148.84.115])
+        by smtp.gmail.com with ESMTPSA id q18-20020a170902dad200b001cff026df52sm380900plx.221.2023.12.18.17.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 17:38:12 -0800 (PST)
+From: xiongxin <xiongxin@kylinos.cn>
+To: fancer.lancer@gmail.com,
+	hoan@os.amperecomputing.com,
+	linus.walleij@linaro.org,
+	brgl@bgdev.pl,
+	andy@kernel.org
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xiongxin <xiongxin@kylinos.cn>,
+	stable@kernel.org,
+	Riwen Lu <luriwen@kylinos.cn>
+Subject: [PATCH v3] gpio: dwapb: mask/unmask IRQ when disable/enale it
+Date: Tue, 19 Dec 2023 09:37:51 +0800
+Message-Id: <20231219013751.20386-1-xiongxin@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,65 +65,82 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000007.china.huawei.com (7.193.23.189)
 
-Continuous pfc frames may cause tx timeout.
-Therefore, pfc frame statistics are added to logs.
+In the hardware implementation of the i2c hid driver based on dwapb gpio
+irq, when the user continues to use the i2c hid device in the suspend
+process, the i2c hid interrupt will be masked after the resume process
+is finished.
 
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
+This is because the disable_irq()/enable_irq() of the dwapb gpio driver
+does not synchronize the irq mask register state. In normal use of the
+i2c hid procedure, the gpio irq irq_mask()/irq_unmask() functions are
+called in pairs. In case of an exception, i2c_hid_core_suspend() calls
+disable_irq() to disable the gpio irq. With low probability, this causes
+irq_unmask() to not be called, which causes the gpio irq to be masked
+and not unmasked in enable_irq(), raising an exception.
+
+Add synchronization to the masked register state in the
+dwapb_irq_enable()/dwapb_irq_disable() function. mask the gpio irq
+before disabling it. After enabling the gpio irq, unmask the irq.
+
+v3:
+	* Modify the submitter's information
+v2:
+	* Resubmit the patch to fix this exception from the dwapb gpio
+	  driver side.
+v1:
+	* Resolve the exception from the IRQ core layer. (key point not
+	  found correctly)
+
+Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB GPIO block")
+Cc: stable@kernel.org
+Co-developed-by: Riwen Lu <luriwen@kylinos.cn>
+Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+Signed-off-by: xiongxin <xiongxin@kylinos.cn>
 ---
- drivers/net/ethernet/hisilicon/hns3/hnae3.h             | 2 ++
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c         | 6 ++++--
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 2 ++
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-dwapb.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index ff475b0eac22..bf1e386617bc 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -209,6 +209,8 @@ struct hnae3_queue {
- struct hns3_mac_stats {
- 	u64 tx_pause_cnt;
- 	u64 rx_pause_cnt;
-+	u64 tx_pfc_cnt;
-+	u64 rx_pfc_cnt;
- };
+diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+index 4a4f61bf6c58..8c59332429c2 100644
+--- a/drivers/gpio/gpio-dwapb.c
++++ b/drivers/gpio/gpio-dwapb.c
+@@ -282,13 +282,15 @@ static void dwapb_irq_enable(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
++	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+ 	unsigned long flags;
+ 	u32 val;
  
- /* hnae3 loop mode */
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index b618797a7e8d..8e237f0f4fc9 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -2871,8 +2871,10 @@ static bool hns3_get_tx_timeo_queue_info(struct net_device *ndev)
- 		struct hns3_mac_stats mac_stats;
- 
- 		h->ae_algo->ops->get_mac_stats(h, &mac_stats);
--		netdev_info(ndev, "tx_pause_cnt: %llu, rx_pause_cnt: %llu\n",
--			    mac_stats.tx_pause_cnt, mac_stats.rx_pause_cnt);
-+		netdev_info(ndev,
-+			    "tx_pause_cnt: %llu, rx_pause_cnt: %llu, tx_pfc_cnt: %llu, rx_pfc_cnt: %llu\n",
-+			    mac_stats.tx_pause_cnt, mac_stats.rx_pause_cnt,
-+			    mac_stats.tx_pfc_cnt, mac_stats.rx_pfc_cnt);
- 	}
- 
- 	hns3_dump_queue_reg(ndev, tx_ring);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index cf85ef55a0f4..f70a1159de40 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -775,6 +775,8 @@ static void hclge_get_mac_stat(struct hnae3_handle *handle,
- 
- 	mac_stats->tx_pause_cnt = hdev->mac_stats.mac_tx_mac_pause_num;
- 	mac_stats->rx_pause_cnt = hdev->mac_stats.mac_rx_mac_pause_num;
-+	mac_stats->tx_pfc_cnt = hdev->mac_stats.mac_tx_pfc_pause_pkt_num;
-+	mac_stats->rx_pfc_cnt = hdev->mac_stats.mac_rx_pfc_pause_pkt_num;
+ 	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+-	val = dwapb_read(gpio, GPIO_INTEN);
+-	val |= BIT(irqd_to_hwirq(d));
++	val = dwapb_read(gpio, GPIO_INTEN) | BIT(hwirq);
+ 	dwapb_write(gpio, GPIO_INTEN, val);
++	val = dwapb_read(gpio, GPIO_INTMASK) & ~BIT(hwirq);
++	dwapb_write(gpio, GPIO_INTMASK, val);
+ 	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
  }
  
- static int hclge_parse_func_status(struct hclge_dev *hdev,
+@@ -296,12 +298,14 @@ static void dwapb_irq_disable(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
++	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+ 	unsigned long flags;
+ 	u32 val;
+ 
+ 	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+-	val = dwapb_read(gpio, GPIO_INTEN);
+-	val &= ~BIT(irqd_to_hwirq(d));
++	val = dwapb_read(gpio, GPIO_INTMASK) | BIT(hwirq);
++	dwapb_write(gpio, GPIO_INTMASK, val);
++	val = dwapb_read(gpio, GPIO_INTEN) & ~BIT(hwirq);
+ 	dwapb_write(gpio, GPIO_INTEN, val);
+ 	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
+ }
 -- 
-2.30.0
+2.34.1
 
 
