@@ -1,152 +1,206 @@
-Return-Path: <linux-kernel+bounces-6116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB4998194CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:54:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBA9C8194E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:00:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B23A1F23F18
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:54:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8689EB25884
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149CD3FB04;
-	Tue, 19 Dec 2023 23:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B753D1C2B;
+	Wed, 20 Dec 2023 00:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W2PSlAFk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OKmmh94W"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAC840BE0
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703030073; x=1734566073;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ppAkVblBhKGJyNnFXrHbhrJDTi8QtHJMAJrEo8cnHCg=;
-  b=W2PSlAFkOOmitpL2+x1s9aG707J3F5Hcvocj4qgYduU1kA8S0tjNCoii
-   yb8A77o9QmDo5ymYbqS5PtLx66ambj4NDMNHhuLYUEi76j0E5s9CTJrvd
-   3ye6K6JiZWHJZIuVl55HCMicxY0Th3qEVTj3+dtHh6o/pNsIZ+w8Qmx2a
-   A/uTA3P98X8Fj6x+fLXUVEK75MrCZywLUEbDfTy8OGlT9docy8TKQxfLB
-   Wxd2AOk3LACFvrUpFg1MvPCszVvUbw+DZqPg9fdMqjzAOhPUdc/frQe2I
-   qz+HHGWn7tE4rr56uJI4RsN9h+Gc/yLtSimgyoo48q9FGN150DKeSGg66
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="392907330"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="392907330"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 15:54:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="805061834"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="805061834"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 19 Dec 2023 15:54:30 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFjuu-000661-0M;
-	Tue, 19 Dec 2023 23:54:28 +0000
-Date: Wed, 20 Dec 2023 07:54:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chuanhong Guo <gch981213@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Mark Brown <broonie@kernel.org>
-Subject: drivers/spi/spi-mtk-snfi.c:1168: warning: Function parameter or
- member 'op' not described in 'mtk_snand_is_page_ops'
-Message-ID: <202312200721.rhknT3zL-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F63E40BE5;
+	Wed, 20 Dec 2023 00:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a1ca24776c3so42141766b.0;
+        Tue, 19 Dec 2023 16:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703030402; x=1703635202; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gwhJzmoPbvlufJXYZVSOwhyDBPsxrIm+e0rqKip7J9M=;
+        b=OKmmh94WoF8v1IELhEjaTWfCwW/xeEmGbA8brBTJxz76u0by5oRKcfPsWLBvewhkoV
+         SCCYLr/hUb65nO7sOi5bSKCez9cv/PURCmqq7P8hD3Hiv0qisx37QxFO+gc02/gaUYOt
+         W/yzkNGf62a6XY4fU8FBeybIdYbgwePiIBnIrVTCErPDWVwOsJMEXCf9xI22+vBxa3Uk
+         QXCFQVSpUI6pho9kfCz0YKte1soZBphv184LVsPtoXug8gZZ7sACQx6PTQxT7fk5SXn1
+         x78JsYHIMK+ZMIWZraVL8JpsuiefZaC3T4NmorQlUbvff1R/OuzOC4tJBfIhIHPpeHB8
+         cpwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703030402; x=1703635202;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gwhJzmoPbvlufJXYZVSOwhyDBPsxrIm+e0rqKip7J9M=;
+        b=rUe8Sw6TUUZnTX8mEV6sR1TDsK+yHTqECVQnOUb+bAFV4N/KGv9hPeJl7U6OOb7Mg7
+         Kx2pZB1SVxaP24/rAkmRcIvkL8Xu7tBqHNUxnhtaHAbiyt/1FFv8F9tdBERz41a2vLPF
+         ARcScpSJizg59m9V4Gly8xtl6UL3pYvuAggM18qrwzpwZG1kyLYy69pPysDW/56/YOA0
+         CpOIVrFIzbA2fRdngeiAqHzKwG9it4y9m1XaLgD98n1SAU3RziumHFIJ6C3MX0btwMax
+         tpUpZAxuPyoyR5GM28EJmRZwUqdPjKhAUq1Xh3DYZVr95AgznemKVFxC76WGvp5V+q0G
+         8hLg==
+X-Gm-Message-State: AOJu0YyK2LamWOIyRE3ogtrxsYTaGR3ISWuQwpgGb2luyXV6UZ87baW4
+	zvH08U4AhjNS8lbAvDXQ6kw=
+X-Google-Smtp-Source: AGHT+IEnzoyGyEaqEP1FV/hE9gguSDOlXvVD4FxAlOhLZGUxznuFC52CV3Bimn4dlMDdoJvMFHB9ag==
+X-Received: by 2002:a17:906:5498:b0:a23:4e54:25c9 with SMTP id r24-20020a170906549800b00a234e5425c9mr1807264ejo.36.1703030402286;
+        Tue, 19 Dec 2023 16:00:02 -0800 (PST)
+Received: from [192.168.8.100] ([85.255.233.166])
+        by smtp.gmail.com with ESMTPSA id f11-20020a170906138b00b00a268d06d127sm326646ejc.7.2023.12.19.16.00.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 16:00:01 -0800 (PST)
+Message-ID: <040a2f67-cdc2-4e75-84ba-36ec13cbc00b@gmail.com>
+Date: Tue, 19 Dec 2023 23:55:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
+ provider
+Content-Language: en-US
+To: Mina Almasry <almasrymina@google.com>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
+ <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>,
+ Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com>
+ <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
+ <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
+ <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
+ <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
+ <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
+ <CAHS8izOY9xm=LBEN8sYwEa3aFB4GWDvJVacom3o4mHZPdHzTUg@mail.gmail.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izOY9xm=LBEN8sYwEa3aFB4GWDvJVacom3o4mHZPdHzTUg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Chuanhong,
+On 12/14/23 20:03, Mina Almasry wrote:
+> On Mon, Dec 11, 2023 at 12:37 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> ...
+>>>> If you remove the branch, let it fall into ->release and rely
+>>>> on refcounting there, then the callback could also fix up
+>>>> release_cnt or ask pp to do it, like in the patch I linked above
+>>>>
+>>>
+>>> Sadly I don't think this is possible due to the reasons I mention in
+>>> the commit message of that patch. Prematurely releasing ppiov and not
+>>> having them be candidates for recycling shows me a 4-5x degradation in
+>>> performance.
+>>
+>> I don't think I follow. The concept is to only recycle a buffer (i.e.
+>> make it available for allocation) when its refs drop to zero, which is
+>> IMHO the only way it can work, and IIUC what this patchset is doing.
+>>
+>> That's also I suggest to do, but through a slightly different path.
+>> Let's say at some moment there are 2 refs (e.g. 1 for an skb and
+>> 1 for userspace/xarray).
+>>
+>> Say it first puts the skb:
+>>
+>> napi_pp_put_page()
+>>     -> page_pool_return_page()
+>>       -> mp_ops->release_page()
+>>          -> need_to_free = put_buf()
+>>             // not last ref, need_to_free==false,
+>>             // don't recycle, don't increase release_cnt
+>>
+>> Then you put the last ref:
+>>
+>> page_pool_iov_put_many()
+>>     -> page_pool_return_page()
+>>       -> mp_ops->release_page()
+>>          -> need_to_free = put_buf()
+>>             // last ref, need_to_free==true,
+>>             // recycle and release_cnt++
+>>
+>> And that last put can even be recycled right into the
+>> pp / ptr_ring, in which case it doesn't need to touch
+>> release_cnt. Does it make sense? I don't see where
+>> 4-5x degradation would come from
+>>
+>>
+> 
+> Sorry for the late reply, I have been working on this locally.
+> 
+> What you're saying makes sense, and I'm no longer sure why I was
+> seeing a perf degradation without '[net-next v1 10/16] page_pool:
+> don't release iov on elevanted refcount'. However, even though what
+> you're saying is technically correct, AFAIU it's actually semantically
+> wrong. When a page is released by the page_pool, we should call
+> page_pool_clear_pp_info() and completely disconnect the page from the
+> pool. If we call release_page() on a page and then the page pool sees
+> it again in page_pool_return_page(), I think that is considered a bug.
 
-FYI, the error/warning still remains.
+You're adding a new feature the semantics of which is already
+different from what is in there, you can extend it any way as long
+as it makes sense and agreed on. IMHO, it does. But well, if
+there is a better solution I'm all for it.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   55cb5f43689d7a9ea5bf35ef050f12334f197347
-commit: 764f1b7481645b2b4488eda26c4da7f331697e6b spi: add driver for MTK SPI NAND Flash Interface
-date:   1 year, 8 months ago
-config: i386-buildonly-randconfig-005-20231101 (https://download.01.org/0day-ci/archive/20231220/202312200721.rhknT3zL-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231220/202312200721.rhknT3zL-lkp@intel.com/reproduce)
+> In fact I think what you're proposing is as a result of a bug because
+> we don't call a page_pool_clear_pp_info() equivalent on releasing
+> ppiov.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312200721.rhknT3zL-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/spi/spi-mtk-snfi.c:1168: warning: Function parameter or member 'op' not described in 'mtk_snand_is_page_ops'
+I don't get it, what bug? page_pool_clear_pp_info() is not called
+for ppiov because it doesn't make sense to call it for ppiov,
+there is no reason to clear ppiov->pp, nor there is any pp_magic.
 
 
-vim +1168 drivers/spi/spi-mtk-snfi.c
+> However, I'm reasonably confident I figured out the right thing to do
+> here. The page_pool uses page->pp_frag_count for its refcounting.
+> pp_frag_count is a misnomer, it's being renamed to pp_ref_count in
+> Liang's series[1]). In this series I used a get_page/put_page
+> equivalent for refcounting. Once I transitioned to using
+> pp_[frag|ref]_count for refcounting inside the page_pool, the issue
+> went away, and I no longer need the patch 'page_pool: don't release
+> iov on elevanted refcount'.
 
-  1154	
-  1155	/**
-  1156	 * mtk_snand_is_page_ops() - check if the op is a controller supported page op.
-  1157	 * @op spi-mem op to check
-  1158	 *
-  1159	 * Check whether op can be executed with read_from_cache or program_load
-  1160	 * mode in the controller.
-  1161	 * This controller can execute typical Read From Cache and Program Load
-  1162	 * instructions found on SPI-NAND with 2-byte address.
-  1163	 * DTR and cmd buswidth & nbytes should be checked before calling this.
-  1164	 *
-  1165	 * Return: true if the op matches the instruction template
-  1166	 */
-  1167	static bool mtk_snand_is_page_ops(const struct spi_mem_op *op)
-> 1168	{
-  1169		if (op->addr.nbytes != 2)
-  1170			return false;
-  1171	
-  1172		if (op->addr.buswidth != 1 && op->addr.buswidth != 2 &&
-  1173		    op->addr.buswidth != 4)
-  1174			return false;
-  1175	
-  1176		// match read from page instructions
-  1177		if (op->data.dir == SPI_MEM_DATA_IN) {
-  1178			// check dummy cycle first
-  1179			if (op->dummy.nbytes * BITS_PER_BYTE / op->dummy.buswidth >
-  1180			    DATA_READ_MAX_DUMMY)
-  1181				return false;
-  1182			// quad io / quad out
-  1183			if ((op->addr.buswidth == 4 || op->addr.buswidth == 1) &&
-  1184			    op->data.buswidth == 4)
-  1185				return true;
-  1186	
-  1187			// dual io / dual out
-  1188			if ((op->addr.buswidth == 2 || op->addr.buswidth == 1) &&
-  1189			    op->data.buswidth == 2)
-  1190				return true;
-  1191	
-  1192			// standard spi
-  1193			if (op->addr.buswidth == 1 && op->data.buswidth == 1)
-  1194				return true;
-  1195		} else if (op->data.dir == SPI_MEM_DATA_OUT) {
-  1196			// check dummy cycle first
-  1197			if (op->dummy.nbytes)
-  1198				return false;
-  1199			// program load quad out
-  1200			if (op->addr.buswidth == 1 && op->data.buswidth == 4)
-  1201				return true;
-  1202			// standard spi
-  1203			if (op->addr.buswidth == 1 && op->data.buswidth == 1)
-  1204				return true;
-  1205		}
-  1206		return false;
-  1207	}
-  1208	
+Lovely, I'll take a look later! (also assuming it's in v5)
+
+
+> There is an additional upside, since pages and ppiovs are both being
+> refcounted using pp_[frag|ref]_count, we get some unified handling for
+> ppiov and we reduce the checks around ppiov. This should be fixed
+> properly in the next series.
+> 
+> I still need to do some work (~1 week) before I upload the next
+> version as there is a new requirement from MM that we transition to a
+> new type and not re-use page*, but I uploaded my changes github with
+> the refcounting issues resolved in case they're useful to you. Sorry
+> for the churn:
+> 
+> https://github.com/mina/linux/commits/tcpdevmem-v1.5/
+> 
+> [1] https://patchwork.kernel.org/project/netdevbpf/list/?series=809049&state=*
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Pavel Begunkov
 
