@@ -1,132 +1,164 @@
-Return-Path: <linux-kernel+bounces-4574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC310817F84
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11359817F87
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:03:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 695141F244A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:02:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A60971F24452
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:03:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953AA1842;
-	Tue, 19 Dec 2023 02:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B65A1FB9;
+	Tue, 19 Dec 2023 02:03:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ASA4Y0sy"
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="Xjlv5j/p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29A61381
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6d3cb1ccccbso1340001b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:02:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B9F17D5
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:03:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40c69403b3eso39581055e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:03:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702951342; x=1703556142; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Ddi859lp+o2Q6bh4j/OZybTU0nSFexpQuGGRFkYZ+Q=;
-        b=ASA4Y0sy72eHWO+1rcrrwAneyt6+Ec3tKgzKe341R5gNxEQaDryqE7zI/JO33HffU0
-         E9xS/tygg9sAmsqGxX9xrSte9lrYTGm0uwPSvCZZBTMXXCY2JcyGSjw8TSdfRnrnI0Ek
-         Mx3UwBeq+L0kn3CV8P9gHYXlWD1xyGLrJZvdGW3SbBCLYzFntJx/glsRjIu/ZTp5rr2S
-         tLWjeazrwohRwiH1Lsp3b5UJywQN9ogQvG59HCRxM57IdxXUS1D8xexKTotWA9jf71jU
-         eeAUUz5Mgti6uIxIG/FZjY235KR45d1kNpXoE2yrn988jQIi0gZKe/dixxEbD1y6DFS2
-         t5Eg==
+        d=arista.com; s=google; t=1702951393; x=1703556193; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjsAHbjfMeDwtBP8wrx8HGvaKAxkSsjCBhep4ZbKU2k=;
+        b=Xjlv5j/p/JeyugKxAljebVR7bkCLcw0+Z71qAklY64xXgDqZ0zE7y5p51cgcW6xXe7
+         AvdvN7e7KvjUL6z+QppAmkXcmsh4xrEKNY4xhhIgS9bIH1YSDUxrhkDH8iR07Wq+Fg03
+         Fzpz/07lNuSTaBeeKRBBqWMpdojmtE58Fo1I+hEALzkdRUM1A3CZk3USVE3bnzuGicsC
+         WBdYqqvqOoY5SPNDZBZKnBJTXrQ32ByzuIdEQNMdff0ExKz4qze9DIzLO/3Vvjh0ZFbG
+         7udnPWEC9KlKx8BPQsQ2IdntMLUXT3W7caKUBq8OPKzvm3qzRlMMu69XaJaPAGXHj748
+         lJnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702951342; x=1703556142;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Ddi859lp+o2Q6bh4j/OZybTU0nSFexpQuGGRFkYZ+Q=;
-        b=o9dJEPnoNlAWcsvsx+9nxgUVC8+PfAexn0ToEZmHcqaC4qXjJoJQFTi6fQ/mb+ImFy
-         /dSb3zaY3psLxFlHtlfQIIJ9ux0ePe0wGgaLZx48nO98qbX6aSr/Voi02qbnG3Cy7xbu
-         N9hWRjW0yISrdVSUQF0ji582Nmkvntu1aqCGF6Zg8UwFYgpsuPfiCvrhEZhrEMdxgLcj
-         x7uYK+kYV4E3F7ZxzVnIXZSsiVYRKk+p6u5SD1K29P6q+eiBtI9YDMQYHEYLWr/WdycS
-         Rksjj40WELp6PfWWAHjQMFqRqkz1oJRsG+isIe5q3l9zz7sw5Vn2wH30YPQYLrzJacQy
-         +daw==
-X-Gm-Message-State: AOJu0YwnNcr4KimTt267pveuAj4ccjWIQsc1V6sa00eg8FkDar0NATVl
-	nABqJlxIxN4dV2moK8RvG/r7z83j88w=
-X-Google-Smtp-Source: AGHT+IGQO/yFNZRfAGAkPq9RAOAcRyZY4vqOZcfY41afjOC0Kujo77iPoG2Qc09j95EsprDRcHz5kA==
-X-Received: by 2002:a17:903:124b:b0:1d3:34cb:2324 with SMTP id u11-20020a170903124b00b001d334cb2324mr7974429plh.88.1702951341872;
-        Mon, 18 Dec 2023 18:02:21 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id q19-20020a170902bd9300b001d06df5c1absm19791823pls.86.2023.12.18.18.02.16
+        d=1e100.net; s=20230601; t=1702951393; x=1703556193;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wjsAHbjfMeDwtBP8wrx8HGvaKAxkSsjCBhep4ZbKU2k=;
+        b=auaRAIToUTd4eHQr43RShJq4so8UMhwWP+kAiF90mrKtOokNqLvxLwaw2ZByshgqhc
+         M1TrlhaNdxw1L1/lYaM+JX2gupRdK+6hOeiRx2OeAMtPnr9yYAijRuAKYc1I/djBQ1Dg
+         HdlvhycQ71RI04nY6Iu+SlcjUWit/xo8bge3h1y4l1HQyEN9AKJDBvTeZAJr7pl/+TeX
+         yIJfVDHP+AwLlycfALcI0iNUBkWRhFPoW/BYwVoXa0Aa5SGfzeNBnMKyVYtIXy+5NMdx
+         PdAnboRnU2cHHqtJoRmAty5QaKpAGrUgPFokqrh6kGX9a32BrIuNwXMOAo6UeS1n0Dbd
+         +GAA==
+X-Gm-Message-State: AOJu0YwzntgGcvaufoNyqq0IKY2sZrEeKe1mrE6YSksOX3v6FrehRvPb
+	Qz0EyNA5eznLHdf0HX3QJY2p4w==
+X-Google-Smtp-Source: AGHT+IF/kNWkZMYNHeVVL3RUNGwgYlxAj7dA/S+cQyieGNqNAtjbstLMUDuonlQ07VWTyaXlrIyung==
+X-Received: by 2002:a05:600c:358d:b0:40d:27d3:8f2c with SMTP id p13-20020a05600c358d00b0040d27d38f2cmr25810wmq.56.1702951393183;
+        Mon, 18 Dec 2023 18:03:13 -0800 (PST)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id r19-20020a05600c35d300b0040c495b1c90sm590084wmq.11.2023.12.18.18.03.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 18:02:21 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: akpm@linux-foundation.org
-Cc: bhe@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	dyoung@redhat.com,
-	hbathini@linux.ibm.com,
-	hpa@zytor.com,
-	kexec@lists.infradead.org,
+        Mon, 18 Dec 2023 18:03:12 -0800 (PST)
+From: Dmitry Safonov <dima@arista.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Dmitry Safonov <dima@arista.com>,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	seanjc@google.com,
-	tglx@linutronix.de,
-	tiwai@suse.de,
-	vgoyal@redhat.com,
-	x86@kernel.org,
-	ytcoode@gmail.com
-Subject: Re: [PATCH 2/2] crash_core: fix out-of-bounds access check in crash_exclude_mem_range()
-Date: Tue, 19 Dec 2023 10:02:13 +0800
-Message-ID: <20231219020213.33197-1-ytcoode@gmail.com>
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH net-next] selftest/tcp-ao: Rectify out-of-tree build
+Date: Tue, 19 Dec 2023 02:03:05 +0000
+Message-ID: <20231219-b4-tcp-ao-selftests-out-of-tree-v1-1-0fff92d26eac@arista.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
-References: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.13-dev-b6b4b
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702951385; l=3173; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=kXGv43WpVA4QuiP4NyRqa0KCrJ/VO9r5P4J8vlLiCw4=; b=1kOnNm8p4AmUsY6Nx+/rLZt4zV6JjEDoQl4HTO7eoE4E/lSubDKnwS+Igmo/2rYam28n2VLEx I0by5+u8dJJCTRd323F9YsGNn3GyyBehrNSJVuJnaY7J2b0MMRoyxZ0
+X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
 Content-Transfer-Encoding: 8bit
 
-On Mon, 18 Dec 2023 09:29:02 -0800, Andrew Morton <akpm@linux-foundation.org> wrote:
+Trivial fix for out-of-tree build that I wasn't testing previously:
 
-> On Mon, 18 Dec 2023 16:19:15 +0800 Yuntao Wang <ytcoode@gmail.com> wrote:
-> 
-> > mem->nr_ranges represents the current number of elements stored in
-> > the mem->ranges array, and mem->max_nr_ranges represents the maximum number
-> > of elements that the mem->ranges array can hold. Therefore, the correct
-> > array out-of-bounds check should be mem->nr_ranges >= mem->max_nr_ranges.
-> > 
-> 
-> This does not apply after your own "crash_core: fix and simplify the
-> logic of crash_exclude_mem_range()".  What should be done?
+1. Create a directory for library object files, fixes:
+> gcc lib/kconfig.c -Wall -O2 -g -D_GNU_SOURCE -fno-strict-aliasing -I ../../../../../usr/include/ -iquote /tmp/kselftest/kselftest/net/tcp_ao/lib -I ../../../../include/  -o /tmp/kselftest/kselftest/net/tcp_ao/lib/kconfig.o -c
+> Assembler messages:
+> Fatal error: can't create /tmp/kselftest/kselftest/net/tcp_ao/lib/kconfig.o: No such file or directory
+> make[1]: *** [Makefile:46: /tmp/kselftest/kselftest/net/tcp_ao/lib/kconfig.o] Error 1
 
-Hi Andrew,
+2. Include $(KHDR_INCLUDES) that's exported by selftests/Makefile, fixes:
+> In file included from lib/kconfig.c:6:
+> lib/aolib.h:320:45: warning: ‘struct tcp_ao_add’ declared inside parameter list will not be visible outside of this definition or declaration
+>   320 | extern int test_prepare_key_sockaddr(struct tcp_ao_add *ao, const char *alg,
+>       |                                             ^~~~~~~~~~
+...
 
-I actually prefer the "crash_core: fix and simplify the logic of
-crash_exclude_mem_range()" patch as it makes the final code more concise and
-clear, and less prone to errors.
+3. While at here, clean-up $(KSFT_KHDR_INSTALL): it's not needed anymore
+   since commit f2745dc0ba3d ("selftests: stop using KSFT_KHDR_INSTALL")
 
-The current code is too strange, I guess no one can understand why there is
-a break in the for loop when they read this code for the first time.
+4. Also, while at here, drop .DEFAULT_GOAL definition: that has a
+   self-explaining comment, that was valid when I made these selftests
+   compile on local v4.19 kernel, but not needed since
+   commit 8ce72dc32578 ("selftests: fix headers_install circular dependency")
 
-Moreover, I think the current code is too fragile, it relies on callers using
-this function correctly to ensure its correctness, rather than being able to
-guarantee the correctness on its own. I even feel that this function is very
-likely to have bugs again as the code evolves.
+Fixes: cfbab37b3da0 ("selftests/net: Add TCP-AO library")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312190645.q76MmHyq-lkp@intel.com/
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ tools/testing/selftests/net/tcp_ao/Makefile | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-However, Baoquan also has his own considerations, he suggests keeping the code
-as it is.
+diff --git a/tools/testing/selftests/net/tcp_ao/Makefile b/tools/testing/selftests/net/tcp_ao/Makefile
+index 6343cfcf919b..8e60bae67aa9 100644
+--- a/tools/testing/selftests/net/tcp_ao/Makefile
++++ b/tools/testing/selftests/net/tcp_ao/Makefile
+@@ -17,22 +17,18 @@ TEST_IPV6_PROGS := $(TEST_BOTH_AF:%=%_ipv6)
+ TEST_GEN_PROGS := $(TEST_IPV4_PROGS) $(TEST_IPV6_PROGS)
+ 
+ top_srcdir	  := ../../../../..
+-KSFT_KHDR_INSTALL := 1
+ include ../../lib.mk
+ 
+ HOSTAR ?= ar
+ 
+-# Drop it on port to linux/master with commit 8ce72dc32578
+-.DEFAULT_GOAL := all
+-
+ LIBDIR	:= $(OUTPUT)/lib
+ LIB	:= $(LIBDIR)/libaotst.a
+ LDLIBS	+= $(LIB) -pthread
+ LIBDEPS	:= lib/aolib.h Makefile
+ 
+ CFLAGS	:= -Wall -O2 -g -D_GNU_SOURCE -fno-strict-aliasing
+-CFLAGS	+= -I ../../../../../usr/include/ -iquote $(LIBDIR)
+-CFLAGS	+= -I ../../../../include/
++CFLAGS	+= $(KHDR_INCLUDES)
++CFLAGS	+= -iquote ./lib/ -I ../../../../include/
+ 
+ # Library
+ LIBSRC	:= kconfig.c netlink.c proc.c repair.c setup.c sock.c utils.c
+@@ -43,6 +39,7 @@ $(LIB): $(LIBOBJ)
+ 	$(HOSTAR) rcs $@ $^
+ 
+ $(LIBDIR)/%.o: ./lib/%.c $(LIBDEPS)
++	mkdir -p $(LIBDIR)
+ 	$(CC) $< $(CFLAGS) $(CPPFLAGS) -o $@ -c
+ 
+ $(TEST_GEN_PROGS): $(LIB)
 
-The link below is our detailed discussion on this issue:
+---
+base-commit: ceb2fe0d438644e1de06b9a6468a1fb8e2199c70
+change-id: 20231219-b4-tcp-ao-selftests-out-of-tree-452f787f2d58
 
-https://lore.kernel.org/lkml/20231214163842.129139-3-ytcoode@gmail.com/t/#mfd78a97e16251bcb190b0957a0b6cb4b0a096b54
+Best regards,
+-- 
+Dmitry Safonov <dima@arista.com>
 
-The final decision on whether to apply that patch is up to you and Baoquan, if
-you choose to apply that patch, this patch can be ignored. But if you decide not
-to apply that patch, then this patch must be applied, as it fixes a bug in the
-crash_exclude_mem_range() function.
-
-Sincerely,
-Yuntao
 
