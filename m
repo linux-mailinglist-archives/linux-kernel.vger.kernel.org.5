@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-5383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70C09818A16
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 647CB818A19
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E20D2887FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:34:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E1C288BEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:35:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C2331A74;
-	Tue, 19 Dec 2023 14:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D37341B6;
+	Tue, 19 Dec 2023 14:32:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710D6225D2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162342D7A6
 	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:32:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14B1C433CC;
-	Tue, 19 Dec 2023 14:32:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37B11C433C7;
+	Tue, 19 Dec 2023 14:32:02 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rFb9Y-00000003MGu-4C2R;
+	id 1rFb9Z-00000003MHS-1GQ9;
 	Tue, 19 Dec 2023 09:33:01 -0500
-Message-ID: <20231219143300.777936212@goodmis.org>
+Message-ID: <20231219143301.069856775@goodmis.org>
 User-Agent: quilt/0.67
-Date: Tue, 19 Dec 2023 09:32:40 -0500
+Date: Tue, 19 Dec 2023 09:32:41 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- Shuah Khan <skhan@linuxfoundation.org>
-Subject: [for-next][PATCH 07/10] tracing/selftests: Add test to test the trace_marker
+ Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [for-next][PATCH 08/10] ring-buffer: Remove 32bit timestamp logic
 References: <20231219143233.204534014@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,109 +46,315 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a test that writes longs strings, some over the size of the sub buffer
-and make sure that the entire content is there.
+Each event has a 27 bit timestamp delta that is used to hold the delta
+from the last event. If the time between events is greater than 2^27, then
+a timestamp is added that holds a 59 bit absolute timestamp.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231213111527.6a4c9b58@gandalf.local.home
+Until a389d86f7fd09 ("ring-buffer: Have nested events still record running
+time stamp"), if an interrupt interrupted an event in progress, all the
+events delta would be zero to not deal with the races that need to be
+handled. The commit a389d86f7fd09 changed that to handle the races giving
+all events, even those that preempt other events, still have an accurate
+timestamp.
+
+To handle those races requires performing 64-bit cmpxchg on the
+timestamps. But doing 64-bit cmpxchg on 32-bit architectures is considered
+very slow. To try to deal with this the timestamp logic was broken into
+two and then three 32-bit cmpxchgs, with the thought that two (or three)
+32-bit cmpxchgs are still faster than a single 64-bit cmpxchg on 32-bit
+architectures.
+
+Part of the problem with this is that I didn't have any 32-bit
+architectures to test on. After hitting several subtle bugs in this code,
+an effort was made to try and see if three 32-bit cmpxchgs are indeed
+faster than a single 64-bit. After a few people brushed off the dust of
+their old 32-bit machines, tests were done, and even though 32-bit cmpxchg
+was faster than a single 64-bit, it was in the order of 50% at best, not
+300%.
+
+After some more refactoring of the code, all 4 64-bit cmpxchg were removed:
+
+ https://lore.kernel.org/linux-trace-kernel/20231211114420.36dde01b@gandalf.local.home
+ https://lore.kernel.org/linux-trace-kernel/20231214222921.193037a7@gandalf.local.home
+ https://lore.kernel.org/linux-trace-kernel/20231215081810.1f4f38fe@rorschach.local.home
+ https://lore.kernel.org/linux-trace-kernel/20231218230712.3a76b081@gandalf.local.home/
+
+With all the 64-bit cmpxchg removed, the complex 32-bit workaround can also be
+removed.
+
+The 32-bit and 64-bit logic is now exactly the same.
+
+Link: https://lore.kernel.org/all/20231213214632.15047c40@gandalf.local.home/
+Link: https://lore.kernel.org/linux-trace-kernel/20231219074303.28f9abda@gandalf.local.home
 
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- .../ftrace/test.d/00basic/trace_marker.tc     | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+ kernel/trace/ring_buffer.c | 176 ++-----------------------------------
+ 1 file changed, 9 insertions(+), 167 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-new file mode 100755
-index 000000000000..9aa0db2b84fc
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-@@ -0,0 +1,82 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Basic tests on writing to trace_marker
-+# requires: trace_marker
-+# flags: instance
-+
-+get_buffer_data_size() {
-+	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
-+}
-+
-+get_buffer_data_offset() {
-+	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
-+}
-+
-+get_event_header_size() {
-+	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-+	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-+	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-+	total_bits=$((type_len+time_len+array_len))
-+	total_bits=$((total_bits+7))
-+	echo $((total_bits/8))
-+}
-+
-+get_print_event_buf_offset() {
-+	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
-+}
-+
-+event_header_size=`get_event_header_size`
-+print_header_size=`get_print_event_buf_offset`
-+
-+data_offset=`get_buffer_data_offset`
-+
-+marker_meta=$((event_header_size+print_header_size))
-+
-+make_str() {
-+        cnt=$1
-+	# subtract two for \n\0 as marker adds these
-+	cnt=$((cnt-2))
-+	printf -- 'X%.0s' $(seq $cnt)
-+}
-+
-+write_buffer() {
-+	size=$1
-+
-+	str=`make_str $size`
-+
-+	# clear the buffer
-+	echo > trace
-+
-+	# write the string into the marker
-+	echo -n $str > trace_marker
-+
-+	echo $str
-+}
-+
-+test_buffer() {
-+
-+	size=`get_buffer_data_size`
-+	oneline_size=$((size-marker_meta))
-+	echo size = $size
-+	echo meta size = $marker_meta
-+
-+	# Now add a little more the meta data overhead will overflow
-+
-+	str=`write_buffer $size`
-+
-+	# Make sure the line was broken
-+	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
-+
-+	if [ "$new_str" = "$str" ]; then
-+		exit fail;
-+	fi
-+
-+	# Make sure the entire line can be found
-+	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; }' trace`
-+
-+	if [ "$new_str" != "$str" ]; then
-+		exit fail;
-+	fi
-+}
-+
-+test_buffer
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 16b640d824f9..a4ada4f303c4 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -27,6 +27,7 @@
+ #include <linux/cpu.h>
+ #include <linux/oom.h>
+ 
++#include <asm/local64.h>
+ #include <asm/local.h>
+ 
+ /*
+@@ -463,27 +464,9 @@ enum {
+ 	RB_CTX_MAX
+ };
+ 
+-#if BITS_PER_LONG == 32
+-#define RB_TIME_32
+-#endif
+-
+-/* To test on 64 bit machines */
+-//#define RB_TIME_32
+-
+-#ifdef RB_TIME_32
+-
+-struct rb_time_struct {
+-	local_t		cnt;
+-	local_t		top;
+-	local_t		bottom;
+-	local_t		msb;
+-};
+-#else
+-#include <asm/local64.h>
+ struct rb_time_struct {
+ 	local64_t	time;
+ };
+-#endif
+ typedef struct rb_time_struct rb_time_t;
+ 
+ #define MAX_NEST	5
+@@ -573,147 +556,14 @@ struct ring_buffer_iter {
+ 	int				missed_events;
+ };
+ 
+-#ifdef RB_TIME_32
+-
+-/*
+- * On 32 bit machines, local64_t is very expensive. As the ring
+- * buffer doesn't need all the features of a true 64 bit atomic,
+- * on 32 bit, it uses these functions (64 still uses local64_t).
+- *
+- * For the ring buffer, 64 bit required operations for the time is
+- * the following:
+- *
+- *  - Reads may fail if it interrupted a modification of the time stamp.
+- *      It will succeed if it did not interrupt another write even if
+- *      the read itself is interrupted by a write.
+- *      It returns whether it was successful or not.
+- *
+- *  - Writes always succeed and will overwrite other writes and writes
+- *      that were done by events interrupting the current write.
+- *
+- *  - A write followed by a read of the same time stamp will always succeed,
+- *      but may not contain the same value.
+- *
+- *  - A cmpxchg will fail if it interrupted another write or cmpxchg.
+- *      Other than that, it acts like a normal cmpxchg.
+- *
+- * The 60 bit time stamp is broken up by 30 bits in a top and bottom half
+- *  (bottom being the least significant 30 bits of the 60 bit time stamp).
+- *
+- * The two most significant bits of each half holds a 2 bit counter (0-3).
+- * Each update will increment this counter by one.
+- * When reading the top and bottom, if the two counter bits match then the
+- *  top and bottom together make a valid 60 bit number.
+- */
+-#define RB_TIME_SHIFT	30
+-#define RB_TIME_VAL_MASK ((1 << RB_TIME_SHIFT) - 1)
+-#define RB_TIME_MSB_SHIFT	 60
+-
+-static inline int rb_time_cnt(unsigned long val)
+-{
+-	return (val >> RB_TIME_SHIFT) & 3;
+-}
+-
+-static inline u64 rb_time_val(unsigned long top, unsigned long bottom)
+-{
+-	u64 val;
+-
+-	val = top & RB_TIME_VAL_MASK;
+-	val <<= RB_TIME_SHIFT;
+-	val |= bottom & RB_TIME_VAL_MASK;
+-
+-	return val;
+-}
+-
+-static inline bool __rb_time_read(rb_time_t *t, u64 *ret, unsigned long *cnt)
+-{
+-	unsigned long top, bottom, msb;
+-	unsigned long c;
+-
+-	/*
+-	 * If the read is interrupted by a write, then the cnt will
+-	 * be different. Loop until both top and bottom have been read
+-	 * without interruption.
+-	 */
+-	do {
+-		c = local_read(&t->cnt);
+-		top = local_read(&t->top);
+-		bottom = local_read(&t->bottom);
+-		msb = local_read(&t->msb);
+-	} while (c != local_read(&t->cnt));
+-
+-	*cnt = rb_time_cnt(top);
+-
+-	/* If top, msb or bottom counts don't match, this interrupted a write */
+-	if (*cnt != rb_time_cnt(msb) || *cnt != rb_time_cnt(bottom))
+-		return false;
+-
+-	/* The shift to msb will lose its cnt bits */
+-	*ret = rb_time_val(top, bottom) | ((u64)msb << RB_TIME_MSB_SHIFT);
+-	return true;
+-}
+-
+-static bool rb_time_read(rb_time_t *t, u64 *ret)
+-{
+-	unsigned long cnt;
+-
+-	return __rb_time_read(t, ret, &cnt);
+-}
+-
+-static inline unsigned long rb_time_val_cnt(unsigned long val, unsigned long cnt)
+-{
+-	return (val & RB_TIME_VAL_MASK) | ((cnt & 3) << RB_TIME_SHIFT);
+-}
+-
+-static inline void rb_time_split(u64 val, unsigned long *top, unsigned long *bottom,
+-				 unsigned long *msb)
+-{
+-	*top = (unsigned long)((val >> RB_TIME_SHIFT) & RB_TIME_VAL_MASK);
+-	*bottom = (unsigned long)(val & RB_TIME_VAL_MASK);
+-	*msb = (unsigned long)(val >> RB_TIME_MSB_SHIFT);
+-}
+-
+-static inline void rb_time_val_set(local_t *t, unsigned long val, unsigned long cnt)
+-{
+-	val = rb_time_val_cnt(val, cnt);
+-	local_set(t, val);
+-}
+-
+-static void rb_time_set(rb_time_t *t, u64 val)
+-{
+-	unsigned long cnt, top, bottom, msb;
+-
+-	rb_time_split(val, &top, &bottom, &msb);
+-
+-	/* Writes always succeed with a valid number even if it gets interrupted. */
+-	do {
+-		cnt = local_inc_return(&t->cnt);
+-		rb_time_val_set(&t->top, top, cnt);
+-		rb_time_val_set(&t->bottom, bottom, cnt);
+-		rb_time_val_set(&t->msb, val >> RB_TIME_MSB_SHIFT, cnt);
+-	} while (cnt != local_read(&t->cnt));
+-}
+-
+-static inline bool
+-rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
+-{
+-	return local_try_cmpxchg(l, &expect, set);
+-}
+-
+-#else /* 64 bits */
+-
+-/* local64_t always succeeds */
+-
+-static inline bool rb_time_read(rb_time_t *t, u64 *ret)
++static inline void rb_time_read(rb_time_t *t, u64 *ret)
+ {
+ 	*ret = local64_read(&t->time);
+-	return true;
+ }
+ static void rb_time_set(rb_time_t *t, u64 val)
+ {
+ 	local64_set(&t->time, val);
+ }
+-#endif
+ 
+ /*
+  * Enable this to make sure that the event passed to
+@@ -820,10 +670,7 @@ u64 ring_buffer_event_time_stamp(struct trace_buffer *buffer,
+ 	WARN_ONCE(1, "nest (%d) greater than max", nest);
+ 
+  fail:
+-	/* Can only fail on 32 bit */
+-	if (!rb_time_read(&cpu_buffer->write_stamp, &ts))
+-		/* Screw it, just read the current time */
+-		ts = rb_time_stamp(cpu_buffer->buffer);
++	rb_time_read(&cpu_buffer->write_stamp, &ts);
+ 
+ 	return ts;
+ }
+@@ -2820,7 +2667,7 @@ rb_check_timestamp(struct ring_buffer_per_cpu *cpu_buffer,
+ 		  (unsigned long long)info->ts,
+ 		  (unsigned long long)info->before,
+ 		  (unsigned long long)info->after,
+-		  (unsigned long long)(rb_time_read(&cpu_buffer->write_stamp, &write_stamp) ? write_stamp : 0),
++		  (unsigned long long)({rb_time_read(&cpu_buffer->write_stamp, &write_stamp); write_stamp;}),
+ 		  sched_clock_stable() ? "" :
+ 		  "If you just came from a suspend/resume,\n"
+ 		  "please switch to the trace global clock:\n"
+@@ -3497,16 +3344,14 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	struct ring_buffer_event *event;
+ 	struct buffer_page *tail_page;
+ 	unsigned long tail, write, w;
+-	bool a_ok;
+-	bool b_ok;
+ 
+ 	/* Don't let the compiler play games with cpu_buffer->tail_page */
+ 	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
+ 
+  /*A*/	w = local_read(&tail_page->write) & RB_WRITE_MASK;
+ 	barrier();
+-	b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
+-	a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
++	rb_time_read(&cpu_buffer->before_stamp, &info->before);
++	rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ 	barrier();
+ 	info->ts = rb_time_stamp(cpu_buffer->buffer);
+ 
+@@ -3521,7 +3366,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		if (!w) {
+ 			/* Use the sub-buffer timestamp */
+ 			info->delta = 0;
+-		} else if (unlikely(!a_ok || !b_ok || info->before != info->after)) {
++		} else if (unlikely(info->before != info->after)) {
+ 			info->add_timestamp |= RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND;
+ 			info->length += RB_LEN_TIME_EXTEND;
+ 		} else {
+@@ -3570,8 +3415,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		/* SLOW PATH - Interrupted between A and C */
+ 
+ 		/* Save the old before_stamp */
+-		a_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
+-		RB_WARN_ON(cpu_buffer, !a_ok);
++		rb_time_read(&cpu_buffer->before_stamp, &info->before);
+ 
+ 		/*
+ 		 * Read a new timestamp and update the before_stamp to make
+@@ -3583,9 +3427,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		rb_time_set(&cpu_buffer->before_stamp, ts);
+ 
+ 		barrier();
+- /*E*/		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-		/* Was interrupted before here, write_stamp must be valid */
+-		RB_WARN_ON(cpu_buffer, !a_ok);
++ /*E*/		rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ 		barrier();
+  /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+ 		    info->after == info->before && info->after < ts) {
 -- 
 2.42.0
 
