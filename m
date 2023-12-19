@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-5675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22556818DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:20:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7F3818DDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:20:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D43CA286CDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:20:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD6DC1C23FBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74095347AC;
-	Tue, 19 Dec 2023 17:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBABA328BF;
+	Tue, 19 Dec 2023 17:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="So/GFKJp"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="p0TX8kFA"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CE337178;
-	Tue, 19 Dec 2023 17:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4C037148;
+	Tue, 19 Dec 2023 17:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=wpxONzVdPDOBmeZf3AvhDTOhsPLl8o7m9pBKKhTUjcU=; b=So/GFKJprQ3l/iO+UzDe0ddOtI
-	DlyMEhRL+z38g6fjAfX+No4dwSQ6iPQTBJydcy8Co3pBx5BxpU/iK86h6SKDrdTUnBKfjuV3cPss1
-	UbZQErZihBwTW6m69yTCXpQ7Z9QVkC/S6d9EE6ZgAySbKcGk2BgcWCT1+IegB79AmseY=;
+	bh=ZsiNmlD3MHHl+wojDLWkdnOLAS+GCC2vUU+7h86+VQw=; b=p0TX8kFAxruNP3Fxt7QzvLJggc
+	Lv5YSnGE42ufgm/ALsF5KQyLjJPa1YXhC+ChSNueIcxL8U0Gdw868Z7FZXWMXcPvAIDMSPy//vRGK
+	T4ejEPFbKwevFPxeHaRPsW7Hh/QCbns6muG5tI+LV3DU9PYPIcwMRt+qeSgmZiH6d8Uk=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:40128 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rFdkP-0007Ao-P9; Tue, 19 Dec 2023 12:19:14 -0500
+	id 1rFdkQ-0007Ao-O6; Tue, 19 Dec 2023 12:19:15 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -42,10 +42,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 19 Dec 2023 12:18:51 -0500
-Message-Id: <20231219171903.3530985-8-hugo@hugovil.com>
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Date: Tue, 19 Dec 2023 12:18:52 -0500
+Message-Id: <20231219171903.3530985-9-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231219171903.3530985-1-hugo@hugovil.com>
 References: <20231219171903.3530985-1-hugo@hugovil.com>
@@ -62,47 +61,40 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH 07/18] serial: sc16is7xx: use i2c_get_match_data()
+Subject: [PATCH 08/18] serial: sc16is7xx: add driver name to struct uart_driver
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Use preferred i2c_get_match_data() instead of device_get_match_data()
-and i2c_client_get_device_id() to get the driver match data.
+Make sure that the driver name is displayed instead of "unknown" when
+displaying the driver infos:
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Before:
+    cat /proc/tty/drivers | grep ttySC
+    unknown              /dev/ttySC    243 0-7 serial
+
+After:
+    cat /proc/tty/drivers | grep ttySC
+    sc16is7xx            /dev/ttySC    243 0-7 serial
+
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/tty/serial/sc16is7xx.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/tty/serial/sc16is7xx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 8cbf54d0a16c..97a97a4bd71a 100644
+index 97a97a4bd71a..3fb99b6929f3 100644
 --- a/drivers/tty/serial/sc16is7xx.c
 +++ b/drivers/tty/serial/sc16is7xx.c
-@@ -1798,17 +1798,14 @@ MODULE_ALIAS("spi:sc16is7xx");
- #ifdef CONFIG_SERIAL_SC16IS7XX_I2C
- static int sc16is7xx_i2c_probe(struct i2c_client *i2c)
- {
--	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
- 	const struct sc16is7xx_devtype *devtype;
- 	struct regmap *regmaps[2];
- 	unsigned int i;
+@@ -350,6 +350,7 @@ static DECLARE_BITMAP(sc16is7xx_lines, SC16IS7XX_MAX_DEVS);
  
--	if (i2c->dev.of_node) {
--		devtype = device_get_match_data(&i2c->dev);
--		if (!devtype)
--			return -ENODEV;
--	} else {
--		devtype = (struct sc16is7xx_devtype *)id->driver_data;
-+	devtype = (struct sc16is7xx_devtype *)i2c_get_match_data(i2c);
-+	if (!devtype) {
-+		dev_err(&i2c->dev, "Failed to match device\n");
-+		return -ENODEV;
- 	}
- 
- 	for (i = 0; i < devtype->nr_uart; i++) {
+ static struct uart_driver sc16is7xx_uart = {
+ 	.owner		= THIS_MODULE,
++	.driver_name    = SC16IS7XX_NAME,
+ 	.dev_name	= "ttySC",
+ 	.nr		= SC16IS7XX_MAX_DEVS,
+ };
 -- 
 2.39.2
 
