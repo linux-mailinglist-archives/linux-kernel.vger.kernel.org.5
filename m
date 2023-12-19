@@ -1,124 +1,128 @@
-Return-Path: <linux-kernel+bounces-5573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B41818C78
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:41:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8574E818CAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBED628777F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:40:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080C21F25BB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DAC120DE3;
-	Tue, 19 Dec 2023 16:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+JztzBj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1483D0B2;
+	Tue, 19 Dec 2023 16:42:33 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2EDF20327;
-	Tue, 19 Dec 2023 16:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E19FC433CA;
-	Tue, 19 Dec 2023 16:40:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703004020;
-	bh=UrJeoHAbToGIFVIb+Xcf13zbgC5RX/uC16n/ATc0Wpo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y+JztzBj6Q+lWk209Lf5Rz9LMGwgNxsCPAxj1RKiE9Hai/Ygi1rRSArt3TEMQ+AKl
-	 yTcDQuZuIk3rWI/HTWhLKOs2A7SPpUU4gmGxFAIUlQg587cS/Evr5B7FiWRt/J3WQP
-	 o0Lr4H4Hn8j/zXdLx0DKCeZpn0rO7RsfEHe7GjVptHE13v4j72hdFcsh6sOdjUY+ox
-	 SoLBIbED0cAo7D8lPdSmf0Pq+wmBznH1rfubAuFlP3wCl7IJEeKucxEGv5BCDYlbsY
-	 fWe1hzHZ3SzD+QvLj18dr4aUrZgKgvQXHMk4XLO0aH+2wcIiu7k0/DrI9b/V5a3lYX
-	 ROaEaTwSlzSEQ==
-Date: Tue, 19 Dec 2023 16:40:15 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Elad Nachman <enachman@marvell.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
-	sebastian.hesselbarth@gmail.com, pali@kernel.org,
-	mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
-Subject: Re: [PATCH 1/2] dt-bindings: arm64: add Marvell 7k COMe boards
-Message-ID: <20231219-briskness-proving-374376a874c3@spud>
-References: <20231218154431.3789032-1-enachman@marvell.com>
- <20231218154431.3789032-2-enachman@marvell.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69983D0A2
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-82-FKW1q9CCNcWyoepqEPSr-A-1; Tue, 19 Dec 2023 16:42:27 +0000
+X-MC-Unique: FKW1q9CCNcWyoepqEPSr-A-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 19 Dec
+ 2023 16:42:11 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 19 Dec 2023 16:42:11 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'David Disseldorp' <ddiss@suse.de>, Qu Wenruo <wqu@suse.com>
+CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Christophe JAILLET
+	<christophe.jaillet@wanadoo.fr>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
+Thread-Topic: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
+Thread-Index: AQHaMbPBRujg17A2g0aXH8N7pLP0+bCwzl3Q
+Date: Tue, 19 Dec 2023 16:42:11 +0000
+Message-ID: <8095c6ae5f8d412d8e6ff95707961a08@AcuMS.aculab.com>
+References: <cover.1702628925.git.wqu@suse.com>
+ <11da10b4d07bf472cd47410db65dc0e222d61e83.1702628925.git.wqu@suse.com>
+ <20231218235946.32ab7a69@echidna>
+In-Reply-To: <20231218235946.32ab7a69@echidna>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bgIjMIk+f7m35qjd"
-Content-Disposition: inline
-In-Reply-To: <20231218154431.3789032-2-enachman@marvell.com>
-
-
---bgIjMIk+f7m35qjd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 05:44:30PM +0200, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
+From: David Disseldorp
+> Sent: 18 December 2023 13:00
 >=20
-> Add dt bindings for:
-> Armada 7020 COM Express CPU module
-> Falcon DB-98CX85x0 COM Express type 7 Carrier board
-> Falcon DB-98CX85x0 COM Express type 7 Carrier board
-> with an Armada 7020 COM Express CPU module
+> On Fri, 15 Dec 2023 19:09:23 +1030, Qu Wenruo wrote:
 >=20
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
+> > Just as mentioned in the comment of memparse(), the simple_stroull()
+> > usage can lead to overflow all by itself.
+> >
+> > Furthermore, the suffix calculation is also super overflow prone becaus=
+e
+> > that some suffix like "E" itself would eat 60bits, leaving only 4 bits
+> > available.
+> >
+> > And that suffix "E" can also lead to confusion since it's using the sam=
+e
+> > char of hex Ox'E'.
+> >
+> > One simple example to expose all the problem is to use memparse() on
+> > "25E".
+> > The correct value should be 28823037615171174400, but the suffix E make=
+s
+> > it super simple to overflow, resulting the incorrect value
+> > 10376293541461622784 (9E).
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Some more bikeshed paint :-)
+...
+> > +=09ret =3D _kstrtoull(s, base, &init_value, &endptr);
+> > +=09/* Either already overflow or no number string at all. */
+> > +=09if (ret < 0)
+> > +=09=09return ret;
+> > +=09final_value =3D init_value;
+> > +=09/* No suffixes. */
+> > +=09if (!*endptr)
+> > +=09=09goto done;
 
-Cheers,
-Conor.
+How about:
+=09suffix =3D *endptr;
+=09if (!strchr(suffixes, suffix))
+=09=09return -ENIVAL;
+=09shift =3D strcspn("KkMmGgTtPp", suffix)/2 * 10 + 10;
+=09if (shift > 50)
+=09=09return -EINVAL;
+=09if (value >> (64 - shift))
+=09=09return -EOVERFLOW;
+=09value <<=3D shift;
 
-> ---
->  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.y=
-aml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> index 52d78521e412..24d8031a533d 100644
-> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> @@ -21,6 +21,17 @@ properties:
->            - const: marvell,armada-ap806-dual
->            - const: marvell,armada-ap806
-> =20
-> +      - description:
-> +          Falcon (DB-98CX85x0) Development board COM Express Carrier plus
-> +          Armada 7020 SoC COM Express CPU module
-> +        items:
-> +          - const: marvell,armada7020-falcon-carrier
-> +          - const: marvell,db-falcon-carrier
-> +          - const: marvell,armada7020-cpu-module
-> +          - const: marvell,armada7020
-> +          - const: marvell,armada-ap806-dual
-> +          - const: marvell,armada-ap806
-> +
->        - description: Armada 7040 SoC
->          items:
->            - const: marvell,armada7040
-> --=20
-> 2.25.1
->=20
+Although purists might want to multiply by 1000 not 1024.
+And SI multipliers are all upper-case - except k.
+=09
+...
+> > +=09/* Overflow check. */
+> > +=09if (final_value < init_value)
+> > +=09=09return -EOVERFLOW;
 
---bgIjMIk+f7m35qjd
-Content-Type: application/pgp-signature; name="signature.asc"
+That is just plain wrong.
 
------BEGIN PGP SIGNATURE-----
+=09David
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYHHbwAKCRB4tDGHoIJi
-0r52AQCVptlobL+rozOxXgvJoDTVfNuy1jh+4NgtosowA1P02gD/fNkY3+irVsq8
-vzFW78WV3R+9oycwXBcSZR1oW08qdQ0=
-=PiDp
------END PGP SIGNATURE-----
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
---bgIjMIk+f7m35qjd--
 
