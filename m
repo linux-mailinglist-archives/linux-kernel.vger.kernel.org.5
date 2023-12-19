@@ -1,124 +1,131 @@
-Return-Path: <linux-kernel+bounces-5173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D965581878A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:34:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A082D81878F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:35:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F0981F23BA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:34:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 351BC283766
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:35:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95B91804D;
-	Tue, 19 Dec 2023 12:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7235A18036;
+	Tue, 19 Dec 2023 12:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SlswlgzV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WUO8LfK5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B0710E5;
-	Tue, 19 Dec 2023 12:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EDD917758
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-203fed05a31so8693fac.0;
-        Tue, 19 Dec 2023 04:34:23 -0800 (PST)
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3b9e6262fccso3113515b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:35:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702989263; x=1703594063; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:reply-to
-         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702989345; x=1703594145; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gwHmTFeEehKOaOu6iVKukiI2Xe8hwl6/KhukRfcBoho=;
-        b=SlswlgzVENskFx2o5i/QCJ2mW9gmKdsEkga3vORLJWVe77yWKiFWSyzwi2NqetHha6
-         BPO1ajIZlTWXYXqZ8dk2HtQH8T2qJWiSLGt+3BrGeukARjb99K4oDIIJMWa8b26QUjOh
-         JIq7hEaOx9L/kMK5dzSMgcLBSJeCACseEGEOTH9PIy+AvrEFVhBXjz5F1T1h1qH7oiIj
-         1FJ/K0tUHMHSkrvxq3FGkrwbrPenKZt2Y5BubSByyaMkdVA77TKVEMopPByJ3cIEVx7s
-         vfJ5FsRggC32m+T/3R09atcfBH4Kg82BMArWjm/oobxmVB1A3BG97Su7btcn+EIfG4Jn
-         0fhw==
+        bh=f362dzufuv9w4KdiRrBjnKIuy0T47SJxgT5f5p9LZdI=;
+        b=WUO8LfK5TIKkB3SRu4V+cz9zehfIaDq5LW7d5xaCPxpB0qp8PSDOFqmtynA2RVCfMM
+         h8xUhx7sptrOUPTduNHhG1ncadTp/dV6VEc56UiMuyWYlUIOrec8JtzXxFl7EowIP6Le
+         qsqsL+tNANmq+Ffk0EItKq6v20KEmFJ8sh7flUPXuWnZP39zdUEpApMquqnJ969PsGVS
+         oIgyJr7l5F67QqBWiY6zU+vk1XcMysEfZ4ZhANsbteqhma+E86RjEasl8VOO6rSeqqzW
+         /APwtuo7LKhNDRRjqnjGDIlmoyV4nh4g+aBZc+98Ql2pLBg5Xyr43+IqOh4PkI7da4Yp
+         R+cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702989263; x=1703594063;
-        h=in-reply-to:content-disposition:mime-version:references:reply-to
-         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=gwHmTFeEehKOaOu6iVKukiI2Xe8hwl6/KhukRfcBoho=;
-        b=u6Kml9vZu6ACoKTiZXugQcWYVjW2QqcySUn2lCcc+9JW3qQaekwBMo2H1ioiks/1Sf
-         QPUm7E8ZQvP9yFE/rUyLSWL2lMUvQAP6Rh+rhcB5hPkmkSqEkwAKMV4xJP5C2qlVS1g6
-         36GvpJnz0xQHhuqNhIRurCMLZllqi2cT8WUhiPXcOuudT9XGHTjQSqqonqbQ29qTosTw
-         8uNoqg4iQ9FDqfEUiIWFM1IcrvuA2q/lGHyExrY1fp8o8ePluDS31qU1qDL+gFB2tNBb
-         zvAodcB4XXLYl7Ufn7OuqKbAFA8G7PNWLTzgtGdjZQ6tFO9MWb1PTskqIAOActoMd+5c
-         A/Ow==
-X-Gm-Message-State: AOJu0YzktUt4F3rsf7+tX4xyGHyrUUZm4tZWixfmsovwf3a1LZEP9mtI
-	Qo8QKdXEsXz14n2g79vPSQ==
-X-Google-Smtp-Source: AGHT+IHVJBTzhlK2961aU1/aWwN2mixlQ7Nbh1X/XnRN9zpQEeKZ2hNCJt+RL5etGIFrj+gj/4oEiA==
-X-Received: by 2002:a05:6870:40ce:b0:1fb:75b:12ee with SMTP id l14-20020a05687040ce00b001fb075b12eemr21809762oal.64.1702989262425;
-        Tue, 19 Dec 2023 04:34:22 -0800 (PST)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id gb8-20020a056870670800b001fb4aaf261csm7004856oab.32.2023.12.19.04.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 04:34:22 -0800 (PST)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:b5d7:ee3a:2c5b:8083])
-	by serve.minyard.net (Postfix) with ESMTPSA id 5A7C9180047;
-	Tue, 19 Dec 2023 12:34:21 +0000 (UTC)
-Date: Tue, 19 Dec 2023 06:34:20 -0600
-From: Corey Minyard <minyard@acm.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	openipmi-developer@lists.sourceforge.net
-Subject: Re: [PATCH] ipmi: Remove usage of the deprecated ida_simple_xx() API
-Message-ID: <ZYGNzHt8yPMPTYfd@mail.minyard.net>
-Reply-To: minyard@acm.org
-References: <b1a7a75263400742e5fda6bd7ba426772dc8ef11.1702961986.git.christophe.jaillet@wanadoo.fr>
+        d=1e100.net; s=20230601; t=1702989345; x=1703594145;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f362dzufuv9w4KdiRrBjnKIuy0T47SJxgT5f5p9LZdI=;
+        b=wvZxxjWv8CTQMYBVbi/CPOZXqLJCxDB1x8tcCS5RE3ZiRKyG1P3RJQOJKf5uuW3kZF
+         ZRdD3qjv3tPu4Hlnsx2fgUqJ4eLb7lTVQQN9IWEwkNAST3Sd67OyijFiYJpdkGfWFtvU
+         h1d9um6vUTon6KooZeqwDdvSlqzFOX+71071K1ywGMaKdL3RcoJHiip0dEgB9r6AQSY1
+         fbmDvaLXIsF16Q1QnP4QojAX/E86cbuQgSYbTtKkmkUicQ9Yil64w6iZ98ItSsUoJiB+
+         tDoOEWpDxwzwdlQVZQ15tLzQnzq7td1ZgBSY9CuO/cLrQwXZEPQ0RQ1qcsDmxaaLOL4C
+         yANQ==
+X-Gm-Message-State: AOJu0YylsbgWZT1nLjJTi5jMZJdZ2g4OJPcH/fikY7C19ciCNW7QnKKB
+	D544EmRp6hHetrAUbTY2+DvnYHnUgkWzy/ErRzM=
+X-Google-Smtp-Source: AGHT+IHk/lUP+ncWd8/Ej0C3N9JnfFa/YuEwNqIWq88hkZ77gPHxM6NHvPaUzESdNmoXBxNV3jfy8BtK6f8oY3QhSxE=
+X-Received: by 2002:a05:6808:1312:b0:3b8:b2c0:e30e with SMTP id
+ y18-20020a056808131200b003b8b2c0e30emr22585262oiv.40.1702989345660; Tue, 19
+ Dec 2023 04:35:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1a7a75263400742e5fda6bd7ba426772dc8ef11.1702961986.git.christophe.jaillet@wanadoo.fr>
+References: <20231218150322.788382-1-wudaemon@163.com>
+In-Reply-To: <20231218150322.788382-1-wudaemon@163.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Tue, 19 Dec 2023 20:35:09 +0800
+Message-ID: <CALOAHbDY0dkohOudFL4UAK2XBn0FKe7uKLmbWUzmDeEdTq8M9w@mail.gmail.com>
+Subject: Re: [PATCH v1] sched/rt: Fix rt task's sched latency statistics in
+ sched_stat_wait trace_point
+To: Junwen Wu <wudaemon@163.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 06:00:39AM +0100, Christophe JAILLET wrote:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
-> 
-> This is less verbose.
+On Mon, Dec 18, 2023 at 11:05=E2=80=AFPM Junwen Wu <wudaemon@163.com> wrote=
+:
+>
+> When enable sched_stat_wait trace_point, some rt tasks sched latency
+> so long, like this:
+> sched_stat_wait: comm=3Drcu_preempt pid=3D14 delay=3D4936139545261 [ns]
+> Rt task has low latency, it must have a bug. I found the reason is
+> When rt task balance off source cpu, dequeue operation not update
+> the sched_statistics, so follow update_stats_wait_end_fair
+> update method.
 
-Thanks, queued for next release.
+Thanks for your report!
 
--corey
-
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>
+> Signed-off-by: Junwen Wu <wudaemon@163.com>
 > ---
->  drivers/char/ipmi/ipmi_msghandler.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-> index d6f14279684d..b0eedc4595b3 100644
-> --- a/drivers/char/ipmi/ipmi_msghandler.c
-> +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> @@ -3053,7 +3053,7 @@ static void cleanup_bmc_work(struct work_struct *work)
->  	int id = bmc->pdev.id; /* Unregister overwrites id */
->  
->  	platform_device_unregister(&bmc->pdev);
-> -	ida_simple_remove(&ipmi_bmc_ida, id);
-> +	ida_free(&ipmi_bmc_ida, id);
->  }
->  
->  static void
-> @@ -3169,7 +3169,7 @@ static int __ipmi_bmc_register(struct ipmi_smi *intf,
->  
->  		bmc->pdev.name = "ipmi_bmc";
->  
-> -		rv = ida_simple_get(&ipmi_bmc_ida, 0, 0, GFP_KERNEL);
-> +		rv = ida_alloc(&ipmi_bmc_ida, GFP_KERNEL);
->  		if (rv < 0) {
->  			kfree(bmc);
->  			goto out;
-> -- 
+>  kernel/sched/rt.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index 6aaf0a3d6081..c75215947c20 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -1360,12 +1360,15 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, stru=
+ct sched_rt_entity *rt_se,
+>                         int flags)
+>  {
+>         struct task_struct *p =3D NULL;
+> +       struct rq *rq =3D rq_of_rt_se(rt_se);
+>
+>         if (!schedstat_enabled())
+>                 return;
+>
+>         if (rt_entity_is_task(rt_se))
+>                 p =3D rt_task_of(rt_se);
+> +       if (p !=3D rq->curr)
+
+This seems wrong, the rt_se might not be a task.
+
+I think we'd better use if (!on_rt_rq(rt_se))
+
+> +               update_stats_wait_end_rt(rt_rq, rt_se);
+>
+>         if ((flags & DEQUEUE_SLEEP) && p) {
+>                 unsigned int state;
+> --
 > 2.34.1
-> 
+>
+
+
+--
+Regards
+Yafang
 
