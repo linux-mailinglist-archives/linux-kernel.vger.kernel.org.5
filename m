@@ -1,85 +1,68 @@
-Return-Path: <linux-kernel+bounces-5058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF22818616
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:12:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283B081861A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:14:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A5F1C237DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:12:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D35E1C23785
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A2E154A2;
-	Tue, 19 Dec 2023 11:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5241549B;
+	Tue, 19 Dec 2023 11:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uCLn8Aan"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA3EF14F7C;
-	Tue, 19 Dec 2023 11:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91FF61FB;
-	Tue, 19 Dec 2023 03:13:03 -0800 (PST)
-Received: from [10.57.85.119] (unknown [10.57.85.119])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22CD23F738;
-	Tue, 19 Dec 2023 03:12:18 -0800 (PST)
-Message-ID: <76e192f0-fd53-48a8-9f62-086fb1d8a55f@arm.com>
-Date: Tue, 19 Dec 2023 11:12:16 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F3514F79;
+	Tue, 19 Dec 2023 11:14:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC2A6C433C7;
+	Tue, 19 Dec 2023 11:14:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702984458;
+	bh=4dslH+bYawkfXaHXPZBzbHeEjQIgy5C0S5DQUgJOamE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uCLn8AanN0AhspbNLHhFt+V5YjWqp0f9Ywobt3FpVQ+4wacdEKkm701QAi0Z4HYeC
+	 8CfzMqj+K2cwGcAz6kah1fJhH5ZxOJIrAGZWL6QxFy2HnDkdJPBAOree9A1V79oH3y
+	 ky4RivFiTMf6dsb7ACb57UOv27ypC8X987bOE856eR1w2+CjuN85AJGLXmC9P0/NhR
+	 qs2h5hnzOJV48miDVIx3TfYgsPrX+3K5wZJMQHgM3P4X0BjRVInWcoOOr6gXW5Y9UD
+	 pixpKfH2Oqis+7O/Hg8Cfgh5iLlsgjYLPNOk5bSp9xjIV/9QNjjGxZEUq32HMjUpd7
+	 a1Yc0bNEI+ipQ==
+Date: Tue, 19 Dec 2023 11:14:13 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jijie Shao <shaojijie@huawei.com>
+Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	shenjian15@huawei.com, wangjie125@huawei.com,
+	liuyonglong@huawei.com, lanhao@huawei.com, wangpeiyang1@huawei.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 net-next 2/4] net: hns3: move constants from
+ hclge_debugfs.h to hclge_debugfs.c
+Message-ID: <20231219111413.GI811967@kernel.org>
+References: <20231219013513.2589845-1-shaojijie@huawei.com>
+ <20231219013513.2589845-3-shaojijie@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] iommu: Don't reserve 0-length IOVA region
-Content-Language: en-GB
-To: Ashish Mhetre <amhetre@nvidia.com>, joro@8bytes.org, will@kernel.org,
- treding@nvidia.com
-Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-tegra@vger.kernel.org
-References: <20231205065656.9544-1-amhetre@nvidia.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231205065656.9544-1-amhetre@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219013513.2589845-3-shaojijie@huawei.com>
 
-On 2023-12-05 6:56 am, Ashish Mhetre wrote:
-> When the bootloader/firmware doesn't setup the framebuffers, their
-> address and size are 0 in "iommu-addresses" property. If IOVA region is
-> reserved with 0 length, then it ends up corrupting the IOVA rbtree with
-> an entry which has pfn_hi < pfn_lo.
-> If we intend to use display driver in kernel without framebuffer then
-> it's causing the display IOMMU mappings to fail as entire valid IOVA
-> space is reserved when address and length are passed as 0.
-> An ideal solution would be firmware removing the "iommu-addresses"
-> property and corresponding "memory-region" if display is not present.
-> But the kernel should be able to handle this by checking for size of
-> IOVA region and skipping the IOVA reservation if size is 0. Also, add
-> a warning if firmware is requesting 0-length IOVA region reservation.
-
-Acked-by: Robin Murphy <robin.murphy@arm.com>
-
-> Fixes: a5bf3cfce8cb ("iommu: Implement of_iommu_get_resv_regions()")
-> Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
-> ---
->   drivers/iommu/of_iommu.c | 4 ++++
->   1 file changed, 4 insertions(+)
+On Tue, Dec 19, 2023 at 09:35:11AM +0800, Jijie Shao wrote:
+> some constants are defined in hclge_debugfs.h,
+> but only used in hclge_debugfs.c.
+> so move them from hclge_debugfs.h to hclge_debugfs.c.
 > 
-> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-> index 47302b637cc0..42cffb0ee5e2 100644
-> --- a/drivers/iommu/of_iommu.c
-> +++ b/drivers/iommu/of_iommu.c
-> @@ -264,6 +264,10 @@ void of_iommu_get_resv_regions(struct device *dev, struct list_head *list)
->   					prot |= IOMMU_CACHE;
->   
->   				maps = of_translate_dma_region(np, maps, &iova, &length);
-> +				if (length == 0) {
-> +					dev_warn(dev, "Cannot reserve IOVA region of 0 size\n");
-> +					continue;
-> +				}
->   				type = iommu_resv_region_get_type(dev, &phys, iova, length);
->   
->   				region = iommu_alloc_resv_region(iova, length, prot, type,
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+
+Thanks, I agree that these symbols belong in hclge_debugfs.c.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
 
