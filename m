@@ -1,105 +1,116 @@
-Return-Path: <linux-kernel+bounces-5231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D63B818842
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:07:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD774818844
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE461285936
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:07:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E6B71F2287B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:07:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3539C18C31;
-	Tue, 19 Dec 2023 13:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5237218ED2;
+	Tue, 19 Dec 2023 13:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="BfHuZel9"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fsVEC5wr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8279818B04;
-	Tue, 19 Dec 2023 13:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=/n2XJ
-	IfcbrULIis+G3+HtQ6D4FhSo/cN2GijjyoaIW4=; b=BfHuZel9uSjVEsxqIKnJS
-	6DTf6qRV7W0rWdkzkmasVYH8yQ1+SiOImVyVUJgyVV7mxcffF56Y+4xEGxnWwuHz
-	fUP+eONWdoh/jCe2nCjcCJvTLp36RyrWiEfxNqjIgpXHSEK6zX5T7SDwywk5eol8
-	Ho6m9rWbXZ4Op7c8d8zv+U=
-Received: from ubuntu22.localdomain (unknown [117.176.219.50])
-	by zwqz-smtp-mta-g0-1 (Coremail) with SMTP id _____wC3PxBUlYFljtpaEA--.10184S2;
-	Tue, 19 Dec 2023 21:06:29 +0800 (CST)
-From: chenguanxi11234@163.com
-To: rafael@kernel.org
-Cc: len.brown@intel.com,
-	pavel@ucw.cz,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Haonan <chen.haonan2@zte.com.cn>
-Subject: [PATCH linux-next v2] kernel/power: Use kmap_local_page() in snapshot.c
-Date: Tue, 19 Dec 2023 21:06:25 +0800
-Message-Id: <19e305896a2357d305f955fa14cc379e40e512bd.1702977429.git.chen.haonan2@zte.com.cn>
-X-Mailer: git-send-email 2.34.1
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6650D18EA0;
+	Tue, 19 Dec 2023 13:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJAgmYt023604;
+	Tue, 19 Dec 2023 13:06:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=QivfX9dR/w5DQ1pMwXDcAJ5dv1UM9wtRLMwtkpY0jus=; b=fs
+	VEC5wrDFBWxJ8h91HJn8GZKw4MyyMd45BGc2ErQfKqstJCU//wgHtQgZ5erxUddH
+	od8KlqkmROtRrwn8JHGCC8qdfYQR8Sd/O4HeyKgwiH+mNnZgzNlCdlgwgXMScdTl
+	W0wh+9ZPDaq7zXXMkHZsSo0EqwH6O7F638O9BaCXHselCWUHqM/6aZxMz9T1ZaeW
+	TP8lotqhDG0gNDiWD+oiMFBKVN1xrVRO2BDnyPjy+y/skX8UX9g88qO1qtYLDlob
+	NO4iERHsPubjN0Tdogb1Y8WS/SQpgxO/CAchv7pRRLA2bFzx8+vlmVZQeiIu0fBL
+	a8mVCz3aGx7/8h0n3d6g==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v39n8rbry-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 13:06:41 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJD6eqM003237
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 13:06:40 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
+ 2023 05:06:34 -0800
+Message-ID: <d5291beb-7384-4ee9-a7a4-8aad931d7bc8@quicinc.com>
+Date: Tue, 19 Dec 2023 18:36:31 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wC3PxBUlYFljtpaEA--.10184S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur1fKFWkZF18tF1fCr43GFg_yoW8WFy8pF
-	4UAFyDG3yYva48t34IqF1vkry3WwnxA3yrJFW3A3WfZrnIgwnFvr1Iqa18t3W3trWxJFWr
-	ArZrtayvkFs5KwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jJiSdUUUUU=
-X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/1tbiQABL+mVOAjMcXAABsq
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/5] iommu/arm-smmu: re-enable context caching in smmu
+ reset operation
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <dmitry.baryshkov@linaro.org>, <jsnitsel@redhat.com>,
+        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <qipl.kernel.upstream@quicinc.com>
+References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
+ <20231215101827.30549-6-quic_bibekkum@quicinc.com>
+ <3c7b8c2c-7174-4ced-8954-5a249f792c1e@linaro.org>
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <3c7b8c2c-7174-4ced-8954-5a249f792c1e@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: O6cKu9jgX6SHlCA8_-p4qhVgRs9Y6LeR
+X-Proofpoint-GUID: O6cKu9jgX6SHlCA8_-p4qhVgRs9Y6LeR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ suspectscore=0 phishscore=0 mlxlogscore=697 lowpriorityscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312190097
 
-From: Chen Haonan <chen.haonan2@zte.com.cn>
 
-kmap_atomic() has been deprecated in favor of kmap_local_page().
 
-kmap_atomic() disables page-faults and preemption (the latter 
-only for !PREEMPT_RT kernels).The code between the mapping and 
-un-mapping in this patch does not depend on the above-mentioned 
-side effects.So simply replaced kmap_atomic() with kmap_local_page().
+On 12/16/2023 5:24 AM, Konrad Dybcio wrote:
+[...]
+>> +
+>> +	arm_mmu500_reset(smmu);
+> We should check the return value here, in case the function is modified
+> some day in a way that makes it return something else than 0
+> 
 
-Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
----
- kernel/power/snapshot.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-index e3e8f1c6e75f..5c96ff067c64 100644
---- a/kernel/power/snapshot.c
-+++ b/kernel/power/snapshot.c
-@@ -1487,11 +1487,11 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
- 	s_page = pfn_to_page(src_pfn);
- 	d_page = pfn_to_page(dst_pfn);
- 	if (PageHighMem(s_page)) {
--		src = kmap_atomic(s_page);
--		dst = kmap_atomic(d_page);
-+		src = kmap_local_page(s_page);
-+		dst = kmap_local_page(d_page);
- 		zeros_only = do_copy_page(dst, src);
--		kunmap_atomic(dst);
--		kunmap_atomic(src);
-+		kunmap_local(dst);
-+		kunmap_local(src);
- 	} else {
- 		if (PageHighMem(d_page)) {
- 			/*
-@@ -1499,9 +1499,9 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
- 			 * data modified by kmap_atomic()
- 			 */
- 			zeros_only = safe_copy_page(buffer, s_page);
--			dst = kmap_atomic(d_page);
-+			dst = kmap_local_page(d_page);
- 			copy_page(dst, buffer);
--			kunmap_atomic(dst);
-+			kunmap_local(dst);
- 		} else {
- 			zeros_only = safe_copy_page(page_address(d_page), s_page);
- 		}
--- 
-2.25.1
+Thanks for pointing this actually. I crosschecked on the
+arm_mmu500_reset function behavior, looks like there's no return value
+other than 0 and so the functionality won't change. I think we can
+keep it as it is in this case.
 
+Thanks,
+Bibek
+
+> LGTM otherwise!
+> 
+> Konrad
 
