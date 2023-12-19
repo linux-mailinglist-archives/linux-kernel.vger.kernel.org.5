@@ -1,156 +1,144 @@
-Return-Path: <linux-kernel+bounces-5559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A95F818C38
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:29:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6252D818C3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 756821F258D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:29:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C342849D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D886200C4;
-	Tue, 19 Dec 2023 16:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="QmwXdk8X"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0FA1F94D;
+	Tue, 19 Dec 2023 16:30:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2073.outbound.protection.outlook.com [40.107.8.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4301F939
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S7+k4ypdff44O8F+hZfZtJkgmC4IOp/qY1KXqL45sr/k3RCwueKFMEQD5eUHqsuYdSpPx1ZyMGbhQmBDLZ2gNWf5PcZeKC5aO3SH6Uqxyjz4hyN9AP1GQIh/y5v7889rpWLyXKBSqZSMPS75vW3NJuJjvsKmddSCl81eIr3okdjq6lb8bzYE1wQz6LlVjeCk3KacCBkADA7EowrtYvgyRqSG5/oGT82VuGsBhHVYQKZaomM7PaeXa8atkx7OPRNbxgMnpnrub+cSDzzQoIuMj2GH+Evy24eMU8J2jQRNF6vzCfVKDSmEfNOFZ867Yqd8Z5NbSwhoBuzK57MBQKNjWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gviysMBbJbiLlKpA/n/5n4I8XkZu8ZAjXIIiyk6fz6U=;
- b=WQPYoP5p8AYdTw/BgfVqLxznDfYBggkk0Wq3aMBTFlVyjUBnZk4vOdV14XzPp8GzEPZi73P5X2DZFftuR0SfsZO15jWyVGi7Z0VT2RIrtiJbscobV5Dsrl/A3M2e2OBx2qXWeFS2MTXgC+1nEHgdcgnzU05CirQyoMoLiKr+KxPHtImzfTvxEvNGw/qo3Fnyic8Gm2Izye3k/XFLo1R5WuFqdMnZUA7q9LIu4AODDtAbd/YwNBTAdzIFAn65Qti7kOKwCNYLchJ3bw/3igdJm1Rp2X94UnqAadJqTthUprQlQ6z0v6sKQLi3HNjd9kDFxVi0xfX3qJpa1KnE5963xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gviysMBbJbiLlKpA/n/5n4I8XkZu8ZAjXIIiyk6fz6U=;
- b=QmwXdk8XpVNpcq7YnB94Y/cxUXMtzyQquUzR+zcb/CT/AL5RokkVZuJTxAlsckuWmpm5ctMcISf8e61GSHP8Co/5DeX29UM6m7zJiZoYyMBL1ThS6GWjfPvpXGxG7h1Uyk4Em+nDBb+kURDAq1a4H4CkHiUts9Mv/gmmJ4jGgCI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PA4PR04MB7887.eurprd04.prod.outlook.com (2603:10a6:102:c9::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
- 2023 16:29:38 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%7]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
- 16:29:38 +0000
-Date: Tue, 19 Dec 2023 11:29:22 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: miquel.raynal@bootlin.com
-Cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
-	imx@lists.linux.dev, joe@perches.com, linux-i3c@lists.infradead.org,
-	linux-kernel@vger.kernel.org, zbigniew.lukwinski@linux.intel.com
-Subject: Re: [v5 resend 0/6] i3c: master: some improvment for i3c master
-Message-ID: <ZYHE4rl7snpYJPSy@lizhi-Precision-Tower-5810>
-References: <20231201222532.2431484-1-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201222532.2431484-1-Frank.Li@nxp.com>
-X-ClientProxiedBy: CH0PR04CA0065.namprd04.prod.outlook.com
- (2603:10b6:610:74::10) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00BEA1F61F;
+	Tue, 19 Dec 2023 16:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-593f182f263so98879eaf.0;
+        Tue, 19 Dec 2023 08:30:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703003412; x=1703608212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O+nXGZ4WeIHnK2XE30unq/qDzfMFlqizs0CUMRrlF3c=;
+        b=ZDJSDpJL0YQEbInPUXkoFVae1mGMxZfME1oQPE46GuLOrGZUQ8piadam0tn78yo3ND
+         MYuKx/yz6aOM3YokJdbFgpwZ8eYE4FLwbWzQ6p5uEPr3+vEE+nmcwqJm4jgIwCObphbV
+         wLGE0e7yee9tdftOpEflGNBv9gn1zZ+YpvddQsVL2cz0LXNctYBHGzhbEGZRMNHJi+2p
+         Acpl13hv5U2JpsUL07CQM3NgvKOCjL4KSasqfX6UV4xx9EG6MuLUVQ8RAb+W0lIj/R85
+         qyV850NcrxYddZP2END2ylB5tyPaCt3Lb0u9JxdHndMfCxYh3WqoXqKccZPqnamjidFT
+         Wwew==
+X-Gm-Message-State: AOJu0YxWHkr0q67BiGC3LLNOdIQMwiauTSNyKiBUlNLexsD/XbYECAi4
+	F2EOVDgbxOMY/q3Mlvl70Dx7z1Ay0B2xd+DpAGU=
+X-Google-Smtp-Source: AGHT+IGCcu1hyxmj8XnSccAScP5oqN5dUluYAX9W1tGMGB9589pmbO/sXkRTIM1WwxoBb7YqVBoVmBJ+Pid3j1wUZQ4=
+X-Received: by 2002:a05:6820:2d44:b0:58d:be0d:6f7b with SMTP id
+ dz4-20020a0568202d4400b0058dbe0d6f7bmr29168905oob.1.1703003412038; Tue, 19
+ Dec 2023 08:30:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PA4PR04MB7887:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4480ddd4-897b-478a-d3c8-08dc00afb198
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YbvmHuAoWJ4WOPQBNQTEHeuYO0/SusDbzglgzp3ymTQxcrKu7PqBQHA2Rij7lqoEv13WATJ8xhLpf45YIixMuCRkRVrvUHi8Xd+iPWCiNLkk+S0wIhIrgdV60dDpoHI/HX05HTwoSBkQZn+YtwzWe0Pk5D8+ft3UffElPpDspqJe279zTfHG38wib2xzPIlz00aAvHZJaIPilFi5N1zPVtcZQxQ/AV3fnmC7dlZtFRf1n9Psbia2fElsVv43I1GlA7Et5lMfCj0I6SwbEfn5KvIqaBFeZ+is7BJuRg1IjMh9xcUfNXmHpJ7LOzt5h5TZnm2CPYYO+DsKsEVOrGoSep63b10qadQwZteGwOfnM60+dXKHnrA7TgVVeAjXa0np84pDqqdysE74j6Qi4Woaj4Yo+y34IFyRX7K3+nrvAy7D2FAM8JxCbv7ZYpuvTGwsX2CY3ji9dB95tN8lOWkxC1HnkEa9HDV9tjfpNhhB5k5CuMuLUrHjrWIjxQtM7CG7c7C7X+Tw6GQMiV9ZIpCGQzZw1KwsmuhYPZyVZ0aknDNQ202wxvf75mFfGe7fpF8+PXe6keKMN5bC5JFHTQ5bnsRJYQN+sQgHoUxciXrpKlvkNQaDOwPwIH33nqGXHuUSlblmwNlFfEbvm4pGy3bw+w==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(38350700005)(26005)(6666004)(2906002)(478600001)(6506007)(9686003)(4326008)(8936002)(6512007)(316002)(66476007)(66556008)(6916009)(52116002)(8676002)(66946007)(38100700002)(6486002)(5660300002)(33716001)(41300700001)(86362001)(83380400001)(42413004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?vn2B++bh56ooYQMziG7u6Fn+4gbjKZKOpSHFjfIoiwXGIUqtMbPUrC93X1Ty?=
- =?us-ascii?Q?KQZKwaEm91aKt3dUETROsfrUc5GYQo+urNBCDUO7SzgoeWckl7c7Vg1xRdrx?=
- =?us-ascii?Q?XV/Y4v8l2wQJOr0RxkkgnOzxdGSyATdwyic962KB1jKy7lH6VPJCLQKRF6w9?=
- =?us-ascii?Q?65SgFVarxzF/nr1dtlk2sMrQmt9pYV/rh7RUvkxnR59cb+JsVazmBwgFKE/2?=
- =?us-ascii?Q?OxFSCQwQZQ7Dot/9EA9gWdjuFLtkV/lvb0HTPZQC7iCaRkLoHseswQZfruJ5?=
- =?us-ascii?Q?cSKpLZ3xcntn9OGnvUCdIOAl/LOvYsZ9XEEsaDDJzTpY3Q3wkOvABVEqrs/P?=
- =?us-ascii?Q?w4+O8NjAm7HCnfUmiF/VS9u9Uh1B6eAKNvNZAQ34L/LWUPZ6hGEsLf96xEaL?=
- =?us-ascii?Q?QosF3w3Xr7BOf91Qt0FeGGgOk+ZjmsjGK06q4yvGkyAdR8KCLy5JT4UtVV0K?=
- =?us-ascii?Q?jCS74jXiq94HFCd5Aqr3VYJWEpOvMDyH14p6k6MUrGWfVKxyIUtDS55aE/wS?=
- =?us-ascii?Q?MyyLef+BsXdtFs04lsceccZKB5DW2MSIEALSt6CGwkntElhc6ckCduwDd22R?=
- =?us-ascii?Q?Niy+Z+FcwRPeNHEfU42mYUZ4U1jSViTKhBh3mPn6FqCkr/4XLOSKwv9OyS+d?=
- =?us-ascii?Q?3j7KjXnt6ylAmj2voIn9Us3lmMFIppRmzK2BIAiA51LQcF0yKCP+IhYZmv8q?=
- =?us-ascii?Q?18DAHVWs6tBTfCTGH2NjWVGDcmbwkJA1ONORhGzbIZsWJaiiDfIxPycIIz+q?=
- =?us-ascii?Q?3lAwaA3Jqja33M4HsD3qZsTK9/wknOD3Dg2aXC2HbrYwmPShOgdft2droWK9?=
- =?us-ascii?Q?0deFHwprrkr+WqXVEBRzbaVIZuhseIk1QfWlGQd3KtpDCxUAGYoL2v0kX5ac?=
- =?us-ascii?Q?a8pY6K5hEbCsZH1niRAZuEW4xACtNvlL7mI6izZkUPAO4k/0U/C7DWOI0iM6?=
- =?us-ascii?Q?Vn+LfBbbgiQRt9MdSkwuc2asg2XHD+3BPC1s3qYrplC/7ezrLMeADB0Z2h5S?=
- =?us-ascii?Q?3dmMDcSCdl9y93phdVlQqBoLroflFfzWHhOx3OvtsF4iLc3me0iJkfdx+i2b?=
- =?us-ascii?Q?kg8XWSfhcD3TrMgisXjCICB+TBf8MuxGbV9Pv+LyVVqpZnXxDFrP5cX3dxM4?=
- =?us-ascii?Q?6bfccCTXzOxPHWmHKgy+N/Zb8C1wwa0gRLk9Ed0CEjte6NdHDTOZeWtTtGps?=
- =?us-ascii?Q?E6MQjsoK4qtw+z5RT2YtJtjh/+I60jk5JA5utEhenGgpk9wmKSRlmZWUlmpL?=
- =?us-ascii?Q?4i5OZYjNHVWdJfqFFWjrG231ZHI6tsA/maUGuLNANdmrnpec9M6qPlfpy0e+?=
- =?us-ascii?Q?uG0o/RSIX6wZSA/tqO3c8HuNaH98rZarlQA2ZmWh5ot/2dnqai/92GBibIRj?=
- =?us-ascii?Q?EcZ811TIprd383CNda9mwz+7II4TN0BE4jKST3qh2zzqB1CFc2FqxAshGJLV?=
- =?us-ascii?Q?LNen+npltp//aJEUk4NJaOEIV9/k9rGf+Cq2H2tr3EsZeKp1OJ/vE6gisIMb?=
- =?us-ascii?Q?pWWOjNoBLLJpDBcBLt2Aj3QEsUNEc4vmNEDRTiRpPl1kWqtsVF+xAtDJyyRc?=
- =?us-ascii?Q?6YFRIcx2pr5S7vSUvhQ=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4480ddd4-897b-478a-d3c8-08dc00afb198
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 16:29:38.0111
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tSxdcyFJuv6ghoSdtpOy9E1PN/gHuZJXE1fieHLSPTx3TYf7knb6RNAfFZz/B4Xa8fMM2O24y2dpqjHWF/OFPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7887
+References: <20231219031444.91752-1-bo.ye@mediatek.com> <e807b180b074419ba4f1d1ff8a4c1a80@AcuMS.aculab.com>
+In-Reply-To: <e807b180b074419ba4f1d1ff8a4c1a80@AcuMS.aculab.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 19 Dec 2023 17:30:00 +0100
+Message-ID: <CAJZ5v0gLDZtfGhowxSM+nwBCM80y6sDR56fYZrHNGaRFK1oGyw@mail.gmail.com>
+Subject: Re: [PATCH v2] fix overflow in idle exit_latency
+To: David Laight <David.Laight@aculab.com>
+Cc: Bo Ye <bo.ye@mediatek.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	"yongdong.zhang@mediatek.com" <yongdong.zhang@mediatek.com>, C Cheng <C.Cheng@mediatek.com>, 
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 01, 2023 at 05:25:26PM -0500, Frank Li wrote:
-> There are three major improvement
-> 
-> 1. Add actual size in i3c_transfer because i3c allow target early termiate
-> transfer.
-> 2. Add API for i3c_dev_gettstatus_format1 for i3c comand GET_STATUS.
-> 3. svc master support hotjoin
+On Tue, Dec 19, 2023 at 5:24=E2=80=AFPM David Laight <David.Laight@aculab.c=
+om> wrote:
+>
+> From: Bo Ye
+> > Sent: 19 December 2023 03:15
+> >
+> > From: C Cheng <C.Cheng@mediatek.com>
+> >
+> > In detail:
+> >
+> > In C language, when you perform a multiplication operation, if
+> > both operands are of int type, the multiplication operation is
+> > performed on the int type, and then the result is converted to
+> > the target type. This means that if the product of int type
+> > multiplication exceeds the range that int type can represent,
+> >  an overflow will occur even if you store the result in a
+> > variable of int64_t type.
+> >
+> > For a multiplication of two int values, it is better to use
+> > mul_u32_u32() rather than s->exit_latency_ns =3D s->exit_latency *
+> > NSEC_PER_USEC to avoid potential overflow happenning.
+> >
+> > Signed-off-by: C Cheng <C.Cheng@mediatek.com>
+> > Signed-off-by: Bo Ye <bo.ye@mediatek.com>
+> > ---
+> > Change in v2:
+> > -remove Change-ID
+> > -correct patch author name
+> > -replace multiplication of two int values with mul_u32_u32
+> > -refine commit message
+> > ---
+> >  drivers/cpuidle/driver.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/cpuidle/driver.c b/drivers/cpuidle/driver.c
+> > index d9cda7f6ccb9..cf5873cc45dc 100644
+> > --- a/drivers/cpuidle/driver.c
+> > +++ b/drivers/cpuidle/driver.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/cpumask.h>
+> >  #include <linux/tick.h>
+> >  #include <linux/cpu.h>
+> > +#include <linux/math64.h>
+> >
+> >  #include "cpuidle.h"
+> >
+> > @@ -187,7 +188,7 @@ static void __cpuidle_driver_init(struct cpuidle_dr=
+iver *drv)
+> >                       s->target_residency =3D div_u64(s->target_residen=
+cy_ns, NSEC_PER_USEC);
+> >
+> >               if (s->exit_latency > 0)
+> > -                     s->exit_latency_ns =3D s->exit_latency * NSEC_PER=
+_USEC;
+> > +                     s->exit_latency_ns =3D mul_u32_u32(s->exit_latenc=
+y, NSEC_PER_USEC);
+>
+> Just force either side of the multiply to a 64bit unsigned type.
+> The compiler will then DTRT which is likely to be better code than
+> whatever mul_u32_u32() generates.
 
-Friendly ping. Any addtional comment about these patches?
+So why is it there?
 
-Frank LI
+The default implementation of mul_u32_u32() is to cast its first
+argument to u64 before the multiplication AFAICS.
 
-> 
-> Change log see each patches
-> 
-> Frank Li (6):
->   i3c: master: add enable(disable) hot join in sys entry
->   i3c: master: svc: add hot join support
->   i3c: add actual_len in i3c_priv_xfer
->   i3c: master: svc: rename read_len as actual_len
->   i3c: master: svc: return actual transfer data len
->   i3c: add API i3c_dev_gettstatus_format1() to get target device status
-> 
->  drivers/i3c/device.c                |  24 ++++++
->  drivers/i3c/internals.h             |   1 +
->  drivers/i3c/master.c                | 109 ++++++++++++++++++++++++++++
->  drivers/i3c/master/svc-i3c-master.c |  95 +++++++++++++++++++-----
->  include/linux/i3c/device.h          |   3 +
->  include/linux/i3c/master.h          |   5 ++
->  6 files changed, 220 insertions(+), 17 deletions(-)
-> 
-> -- 
-> 2.34.1
-> 
+> In any case is the 'exit_latency' ever going to be greater than 4 seconds=
+?
+> In which case the 32bit multiply will never overflow.
+
+So this is more of a theoretical thing found by some static analysis
+tool or similar.
+
+> >               else if (s->exit_latency_ns < 0)
+> >                       s->exit_latency_ns =3D  0;
+> >               else
+> > --
 
