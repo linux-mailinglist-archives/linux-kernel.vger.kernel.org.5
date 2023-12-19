@@ -1,189 +1,106 @@
-Return-Path: <linux-kernel+bounces-5608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5594818D0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:55:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B42F818D0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F0C11F25AA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:55:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82D9D1C23FFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287A520B16;
-	Tue, 19 Dec 2023 16:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDE32032C;
+	Tue, 19 Dec 2023 16:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qmJ1UAFB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Co8e1LrE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BE320DD7
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33668163949so2681054f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703004933; x=1703609733; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pr1gwYwEAqV3CPDFt5tJeZc4Ej3mhik7sPY5D9i4L+4=;
-        b=qmJ1UAFBfZ4ahVGkaLyRsoMDVYtCQes7HeM62U+vzeFk3ZVVdgg1vfXb/WgqTdHYLG
-         RxZs5YIA2yusvw7zBQ4gmjr6CmTttUnjf8rxsY+ZycnbY7FWl+b19Uv/Gv7W00djvUTt
-         zzuihPgrjItSSdUGH7QVI+R5TdKp5KrojWRie0IIilVM8islbrnFg59q6lu982cXdzqN
-         3ZdLGf4GedeEmDHSBcNeveM72dmgK3lu2Wdg78d1wDk3CsIhpjbYLcLPVQ0UHQm+4Ntw
-         a3mQ/vR+iOh0MO6Byw87tI/ETdRaI9EQjY54KSD/fUooASgvnk4H8gEtKqAmi7jmc89D
-         pAvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703004933; x=1703609733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pr1gwYwEAqV3CPDFt5tJeZc4Ej3mhik7sPY5D9i4L+4=;
-        b=J48Jug8QxWLwRV+XX00lgM68fZk9dwPnsEW3R+lXdCyQZ6f4PcEwrGMIFNZd7T3xQG
-         fa8QddP+E3FmATyk/BboPlq3/2Z0+HUi/IuNFguZJ9hCLCkFyR9Qmy8aiS3ezBJP12it
-         Cdg/CS4aAOrAz9LCoFdjOn4wFP9+PTcgnRO9CRzdQvhiSxoWSbVTc4TtRbjXFtwLXtDc
-         eZFdT+jZUHwqF3cXmchgt7ftpz6KLW4jVCRY+ksoi15X6eINssV4c+86Uq5C9nduw8N8
-         vGRKUZJJa1Si3VPkz9QEZx1HRFdLxyAeiDO842bFto4F5oTH43xxFMX6GX3HPom8f7SH
-         +zxA==
-X-Gm-Message-State: AOJu0Yyjf5R4jy8Rdl1Gql0RWJF1p+BzWktt3OIVe6EBTKllFoNNH1Vh
-	iAh3ZUpVlyXM3OfpDtBUauusfCEPGBt210wG7gh39Q==
-X-Google-Smtp-Source: AGHT+IHdJSnW1uoy3+KysPNVwLZ4H/jx1KVZ/uOvjz42emCllqfn1IhGJ3uQ5Ral4Y9max8Bshqiu+TgQgc/H/ReIBY=
-X-Received: by 2002:adf:e4c3:0:b0:336:60da:7530 with SMTP id
- v3-20020adfe4c3000000b0033660da7530mr1849799wrm.158.1703004932880; Tue, 19
- Dec 2023 08:55:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77EF20DC4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703005006;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B719XTWiXIHllaEXvsXPz/Q4Bs162RLSRke3FIDQ97A=;
+	b=Co8e1LrEb5zmjZ5SC5l1g1y2bn9A3NulfYY6EUMtsJmnDqDOZBdA+/CgK7gYWWtyp2YhDi
+	JFRi5kbIdJ4x8+iLyN3VzoLO0g0odwNTeIsAWaXPD4vDc0qEOPUjBQxM2qJJbNIg5M6Wht
+	Ya5Kq2j6PyZIUjo5E4aCCZiPUS/L8mk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-15-6503fTaVPLqMEr27yNBRTA-1; Tue, 19 Dec 2023 11:56:43 -0500
+X-MC-Unique: 6503fTaVPLqMEr27yNBRTA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9ED74185A782;
+	Tue, 19 Dec 2023 16:56:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D48152026D66;
+	Tue, 19 Dec 2023 16:56:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <8b9413cc37a231a97059c7d028d404ab35363764.camel@kernel.org>
+References: <8b9413cc37a231a97059c7d028d404ab35363764.camel@kernel.org> <20231213152350.431591-1-dhowells@redhat.com> <20231213152350.431591-38-dhowells@redhat.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: dhowells@redhat.com, Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 37/39] netfs: Optimise away reads above the point at which there can be no data
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215171020.687342-21-bigeasy@linutronix.de>
- <202312161212.D5tju5i6-lkp@intel.com> <20231219000116.GA3956476@dev-arch.thelio-3990X>
-In-Reply-To: <20231219000116.GA3956476@dev-arch.thelio-3990X>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Tue, 19 Dec 2023 08:55:21 -0800
-Message-ID: <CAKwvOdkfjyKz6686RzAGjfKMVPriLM8XuNueYyWcd_Sj-WnJbg@mail.gmail.com>
-Subject: Re: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP redirect.
-To: Nathan Chancellor <nathan@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, 
-	Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Eric Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, bpf@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1075372.1703004999.1@warthog.procyon.org.uk>
+Date: Tue, 19 Dec 2023 16:56:39 +0000
+Message-ID: <1075373.1703004999@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Mon, Dec 18, 2023 at 4:01=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> On Sat, Dec 16, 2023 at 12:53:43PM +0800, kernel test robot wrote:
-> > Hi Sebastian,
-> >
-> > kernel test robot noticed the following build errors:
-> >
-> > [auto build test ERROR on net-next/main]
-> >
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrze=
-j-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/2023=
-1216-011911
-> > base:   net-next/main
-> > patch link:    https://lore.kernel.org/r/20231215171020.687342-21-bigea=
-sy%40linutronix.de
-> > patch subject: [PATCH net-next 20/24] net: intel: Use nested-BH locking=
- for XDP redirect.
-> > config: arm-defconfig (https://download.01.org/0day-ci/archive/20231216=
-/202312161212.D5tju5i6-lkp@intel.com/config)
-> > compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.gi=
-t f28c006a5895fc0e329fe15fead81e37457cb1d1)
-> > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/arc=
-hive/20231216/202312161212.D5tju5i6-lkp@intel.com/reproduce)
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
-rsion of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202312161212.D5tju5i6-l=
-kp@intel.com/
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> > >> drivers/net/ethernet/intel/igb/igb_main.c:8620:3: error: cannot jump=
- from this goto statement to its label
-> >                    goto xdp_out;
-> >                    ^
+Jeff Layton <jlayton@kernel.org> wrote:
 
-^ The problematic goto should be replaced with an early return. (and
-perhaps a comment that you can't jump over __cleanup variable
-initialization).
+> >  (4) On local truncation up, we don't change zero_point.
+> > 
+> 
+> The above seems odd, but I guess the assumption is that if there are any
+> writes by a 3rd party above the old zero point, that that would cause an
+> invalidation?
 
-Otherwise the compiler cannot put the cleanup in the destination basic
-block; it would have to split the edges and have all the happy paths
-go to a synthesized basic block that runs the cleanup, then jumps to
-the original destination.
+All truncating up does is extend the region from which reading would return
+zeros, so it doesn't affect the zero_point.
 
-> >    drivers/net/ethernet/intel/igb/igb_main.c:8624:2: note: jump bypasse=
-s initialization of variable with __attribute__((cleanup))
-> >            guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
-> >            ^
-> >    include/linux/cleanup.h:142:15: note: expanded from macro 'guard'
-> >            CLASS(_name, __UNIQUE_ID(guard))
-> >                         ^
-> >    include/linux/compiler.h:180:29: note: expanded from macro '__UNIQUE=
-_ID'
-> >    #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), _=
-_COUNTER__)
-> >                                ^
-> >    include/linux/compiler_types.h:84:22: note: expanded from macro '__P=
-ASTE'
-> >    #define __PASTE(a,b) ___PASTE(a,b)
-> >                         ^
-> >    include/linux/compiler_types.h:83:23: note: expanded from macro '___=
-PASTE'
-> >    #define ___PASTE(a,b) a##b
-> >                          ^
-> >    <scratch space>:52:1: note: expanded from here
-> >    __UNIQUE_ID_guard753
-> >    ^
-> >    1 error generated.
->
-> I initially thought that this may have been
-> https://github.com/ClangBuiltLinux/linux/issues/1886 but asm goto is not
-> involved here.
->
-> This error occurs because jumping over the initialization of a variable
-> declared with __attribute__((__cleanup__(...))) does not prevent the
-> clean up function from running as one may expect it to, but could
-> instead result in the clean up function getting run on uninitialized
-> memory. A contrived example (see the bottom of the "Output" tabs for the
-> execution output):
->
-> https://godbolt.org/z/9bvGboxvc
->
-> While there is a warning from GCC in that example, I don't see one in
-> the kernel's case. I see there is an open GCC issue around this problem:
->
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D91951
->
-> While it is possible that there may not actually be a problem with how
-> the kernel uses __attribute__((__cleanup__(...))) and gotos, I think
-> clang's behavior is reasonable given the potential footguns that this
-> construct has.
->
-> Cheers,
-> Nathan
->
+If a third party interferes, then we have to invalidate the local caches and
+reset zero_point to the EOF.  But if a third party is writing to the file at
+the same time as you without both of you using locking or exclusive direct
+writes, your data is probably screwed anyway...
 
+Something cifs and ceph can use leasing to make this work; afs uses the data
+version number, notifications and the principle that you should use file
+locks.
 
---=20
-Thanks,
-~Nick Desaulniers
+David
+
 
