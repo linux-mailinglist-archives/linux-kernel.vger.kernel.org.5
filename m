@@ -1,388 +1,181 @@
-Return-Path: <linux-kernel+bounces-4788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9EF1818210
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:15:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A89F818214
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:16:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 533081F23FCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:15:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92918286702
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270AA8832;
-	Tue, 19 Dec 2023 07:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09DCDDC8;
+	Tue, 19 Dec 2023 07:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HLr+aqKv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2EF5C12A;
-	Tue, 19 Dec 2023 07:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SvSd70JD4z1wnwC;
-	Tue, 19 Dec 2023 15:15:07 +0800 (CST)
-Received: from dggpeml500026.china.huawei.com (unknown [7.185.36.106])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6D22A1A0190;
-	Tue, 19 Dec 2023 15:15:20 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 15:15:19 +0800
-Message-ID: <0678b8d2-698b-4fd1-d447-25e8fda919ec@huawei.com>
-Date: Tue, 19 Dec 2023 15:15:19 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DFE2C8DB;
+	Tue, 19 Dec 2023 07:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-67f61c5f3b1so1101976d6.0;
+        Mon, 18 Dec 2023 23:16:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702970165; x=1703574965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g+5WR243kQ/RvAMHBsxM/Gl8vp7vTNRpisHvUU60+wg=;
+        b=HLr+aqKvC3GHuFq2oHZ2aUBmWqa05RO5fqE8P6Aytsdao+e+DP/wgYjLuJIVZzgyaC
+         4o/5+W0MxPhlcm5nyVqz51Ol6HC5HqF4ZoEXaCtZztIGi3Mkg89U8M+9tNo8hohUG8ct
+         cE0ew59bTn3BjmMl1qIQkInbH4XIQyVenrDHb74wzAbZ3z3D4w+gGexheF6A84NQ9ba4
+         NVfplN58Jg/XpRRyNuawLRf51JSUt4Cn1VMLzUaHrP3doABIgpiBjntqtN5zXEXoFrR6
+         477C/pDfUDC6kg+Bbk8KQYKWh5K7yMtNHgSb/zPmcq+2nBSjZQ1pUBP0p6jkcakAsM4A
+         0yNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702970165; x=1703574965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g+5WR243kQ/RvAMHBsxM/Gl8vp7vTNRpisHvUU60+wg=;
+        b=Ue0XFYBfEj1EEDmxtWri8b+R7uXwBZNUmNjtuSsogqyBJXbjV3KvaYppYfGUlxqVrO
+         dmbWfIntozv5iM4UJewyByOwPDBxDgjLen07elU/KQmAp7S49DhbCx7iUZ0VGKP1UsBK
+         hIUwKv3GGdgCo2SZc5hxoA3rUOzCRRYBdcY5I1GMO/Bpr2Rvn51aJ3bP2n89rvK3hFqr
+         hYFOBRfkKe+q5MsYMGWjgb9QxuyEiO/xelotrALniqgiXOq8WbLzM8tjv9TQNNc8WR19
+         hzf4luGYPgSDsmnyQ2jvuGmidrogSCwAvDIuQNIVe/loXMKwlos29sTMb5uZwK5zL2iC
+         e6/g==
+X-Gm-Message-State: AOJu0Yys+UTqtzLIzq1K0748Nc9iaKk6gg0ahl2yN1FGhjcDzhLPYYD0
+	TpvOrdyh+SECKmSzMjOKagwd+mMWiUQhYqZ3S2gD756JpzY=
+X-Google-Smtp-Source: AGHT+IHWMseIasiaD8d3hjNptRx+YQ73MHnAO8mmgvGuj7K5xQ28WQQzCvf8ljKe4PlqWGpFZRlrnceSG6z/kerPGwc=
+X-Received: by 2002:a05:6214:2409:b0:67f:1dbb:d3c2 with SMTP id
+ fv9-20020a056214240900b0067f1dbbd3c2mr6274053qvb.16.1702970165370; Mon, 18
+ Dec 2023 23:16:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [RESEND PATCH] ipc/mqueue: fix potential sleeping issue in
- mqueue_flush_file
-To: Jan Kara <jack@suse.cz>
-CC: <gregkh@linuxfoundation.org>, <brauner@kernel.org>, <dchinner@redhat.com>,
-	<jlayton@kernel.org>, <riel@surriel.com>, <weiyongjun1@huawei.com>,
-	<yuehaibing@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>
-References: <20231218030624.2490456-1-shaozhengchao@huawei.com>
- <20231218130800.2xmoadpjivejn2l5@quack3>
-From: shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <20231218130800.2xmoadpjivejn2l5@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500026.china.huawei.com (7.185.36.106)
+References: <CAOQ4uxg-WvdcuCrQg7zp03ocNZoT-G2bpi=Y6nVxMTodyFAUbg@mail.gmail.com>
+ <20231214220222.348101-1-vinicius.gomes@intel.com> <CAOQ4uxhJmjeSSM5iQyDadbj5UNjPqvh1QPLpSOVEYFbNbsjDQQ@mail.gmail.com>
+ <87v88zp76v.fsf@intel.com> <CAOQ4uxiCVv7zbfn2BPrR9kh=DvGxQtXUmRvy2pDJ=G7rxjBrgg@mail.gmail.com>
+ <CAOQ4uxhxvFt3_Wb3BGcjj4pGp=OFTBHNPJ4r4eH8245t-+CW+g@mail.gmail.com>
+ <20231218-intim-lehrstellen-dbe053d6c3a8@brauner> <875y0vp41g.fsf@intel.com>
+In-Reply-To: <875y0vp41g.fsf@intel.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 19 Dec 2023 09:15:52 +0200
+Message-ID: <CAOQ4uxibYMQw0iszKhE5uxBnyayHWjqp4ZnOOiugO3GxMRS1eA@mail.gmail.com>
+Subject: Re: [RFC] HACK: overlayfs: Optimize overlay/restore creds
+To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: Christian Brauner <brauner@kernel.org>, hu1.chen@intel.com, miklos@szeredi.hu, 
+	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
+	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, David Howells <dhowells@redhat.com>, 
+	Seth Forshee <sforshee@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Dec 18, 2023 at 11:57=E2=80=AFPM Vinicius Costa Gomes
+<vinicius.gomes@intel.com> wrote:
+>
+> Christian Brauner <brauner@kernel.org> writes:
+>
+> >> > Yes, the important thing is that an object cannot change
+> >> > its non_refcount property during its lifetime -
+> >>
+> >> ... which means that put_creds_ref() should assert that
+> >> there is only a single refcount - the one handed out by
+> >> prepare_creds_ref() before removing non_refcount or
+> >> directly freeing the cred object.
+> >>
+> >> I must say that the semantics of making a non-refcounted copy
+> >> to an object whose lifetime is managed by the caller sounds a lot
+> >> less confusing to me.
+> >
+> > So can't we do an override_creds() variant that is effectively just:
 
+Yes, I think that we can....
 
-On 2023/12/18 21:08, Jan Kara wrote:
-> [CCed some networking people & netdev list since this is closely related to
-> networking]
-> 
-> On Mon 18-12-23 11:06:24, Zhengchao Shao wrote:
->> I analyze the potential sleeping issue of the following processes:
->> Thread A                                Thread B
->> ...                                     netlink_create  //create sock
->> do_mq_notify                            ...
->>    sock = netlink_getsockbyfilp          ...     //hold sock
->>    info->notify_sock = sock;             ...
->> ...                                     netlink_sendmsg
->> ...                                       skb = netlink_alloc_large_skb  //skb->head is vmalloced
->> ...                                       netlink_unicast
->> ...                                         sk = netlink_getsockbyportid
->> ...                                         netlink_sendskb
->> ...                                           __netlink_sendskb
->> ...                                             skb_queue_tail //put skb to sk_receive_queue
->> mqueue_flush_file
->>    spin_lock
->>    remove_notification
->>      netlink_sendskb
->>        sock_put  //put sock
->>          sk_free
->>            ...
->>            __sk_destruct
->>              netlink_sock_destruct
->>                skb_queue_purge  //get skb from sk_receive_queue
->>                  ...
->>                  __skb_queue_purge_reason
->>                    kfree_skb_reason
->>                      __kfree_skb
->>                      ...
->>                      skb_release_all
->>                        skb_release_head_state
->>                          netlink_skb_destructor
->>                            vfree(skb->head)  //sleeping while holding spinlock
->>
->> In netlink_sendmsg, if the memory pointed to by skb->head is allocated by
->> vmalloc, and is put to sk_receive_queue queue, also the skb is not freed.
->> When the mqueue executes flush, the sleeping bug will occur. Use mutex
->> lock instead of spin lock in mqueue_flush_file.
->>
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> 
-Hi Jan Kara:
-> I guess you are not getting answers because ipc/mqueue.c has no clear
-> maintainer and at least I know nothing about mqueue and only very little
-> about netlink which is also involved here. Do I get it right this was
-Thank you for your advice. I'll cc the maintainer in the network
-field in v2.
-> spotted by some checker, not really causing problems in the wild?
-This is an issue with syzkaller running on the 5.10 kernel, and it
-happened only once. And I analyze the mainline tree code, and there's
-the same issue.
-> 
-> Another question (and this is why I've involved the networking people): Is
-> it really possible that we end up calling sk_free() from under
-> mqueue_flush_file() - at the time this is called we are closing the file
-> but it is not closed yet which means the socket inode is pretty much alive
-> which I'd *think* means there is still somebody holding socket reference
-> and thus sock_put() will not drop the last socket reference... Am I missing
-> something?
-Sorry, I forgot to add the netlink release process. The following figure
-shows a better explanation of how the issue occurred.
+> >
+> > /* caller guarantees lifetime of @new */
+> > const struct cred *foo_override_cred(const struct cred *new)
+> > {
+> >       const struct cred *old =3D current->cred;
+> >       rcu_assign_pointer(current->cred, new);
+> >       return old;
+> > }
+> >
+> > /* caller guarantees lifetime of @old */
+> > void foo_revert_creds(const struct cred *old)
+> > {
+> >       const struct cred *override =3D current->cred;
+> >       rcu_assign_pointer(current->cred, old);
+> > }
+> >
 
-Thread A                                Thread B
-...                                     netlink_create  //ref = 1
-do_mq_notify                            ...
-   sock = netlink_getsockbyfilp          ...     //hold sock, ref = 2
-   info->notify_sock = sock;             ...
-...                                     netlink_sendmsg
-...                                       skb = netlink_alloc_large_skb 
-//skb->head is vmalloced
-...                                       netlink_unicast
-...                                         sk = netlink_getsockbyportid 
-//hold sock, ref = 3
-...                                         netlink_sendskb
-...                                           __netlink_sendskb
-...                                             skb_queue_tail //put skb 
-to sk_receive_queue
-...					      sock_put // ref = 2
-...					...
-...					netlink_release
-...					  deferred_put_nlk_sk //ref = 1
-...					
-mqueue_flush_file
-   spin_lock
-   remove_notification
-     netlink_sendskb
-       sock_put  //put sock, ref = 0
-         sk_free
-           ...
-           __sk_destruct
-             netlink_sock_destruct
-               skb_queue_purge  //get skb from sk_receive_queue
-                 ...
-                 __skb_queue_purge_reason
-                   kfree_skb_reason
-                     __kfree_skb
-                     ...
-                     skb_release_all
-                       skb_release_head_state
-                         netlink_skb_destructor
-                           vfree(skb->head)  //sleeping while holding 
-spinlock
+Even better(?), we can do this in the actual guard helpers to
+discourage use without a guard:
 
-Isn't that a little clearer?
+struct override_cred {
+        struct cred *cred;
+};
 
-Thank you.
+DEFINE_GUARD(override_cred, struct override_cred *,
+            override_cred_save(_T),
+            override_cred_restore(_T));
 
-Zhengchao Shao
-> 
-> 								Honza
-> 
->> ---
->>   ipc/mqueue.c | 48 ++++++++++++++++++++++++------------------------
->>   1 file changed, 24 insertions(+), 24 deletions(-)
->>
->> diff --git a/ipc/mqueue.c b/ipc/mqueue.c
->> index 5eea4dc0509e..f6f92e3f82e4 100644
->> --- a/ipc/mqueue.c
->> +++ b/ipc/mqueue.c
->> @@ -118,9 +118,9 @@ struct posix_msg_tree_node {
->>    * Solution: use _release and _acquire barriers.
->>    *
->>    * 3) There is intentionally no barrier when setting current->state
->> - *    to TASK_INTERRUPTIBLE: spin_unlock(&info->lock) provides the
->> + *    to TASK_INTERRUPTIBLE: mutex_unlock(&info->lock) provides the
->>    *    release memory barrier, and the wakeup is triggered when holding
->> - *    info->lock, i.e. spin_lock(&info->lock) provided a pairing
->> + *    info->lock, i.e. mutex_lock(&info->lock) provided a pairing
->>    *    acquire memory barrier.
->>    */
->>   
->> @@ -132,7 +132,7 @@ struct ext_wait_queue {		/* queue of sleeping tasks */
->>   };
->>   
->>   struct mqueue_inode_info {
->> -	spinlock_t lock;
->> +	struct mutex lock;
->>   	struct inode vfs_inode;
->>   	wait_queue_head_t wait_q;
->>   
->> @@ -312,7 +312,7 @@ static struct inode *mqueue_get_inode(struct super_block *sb,
->>   		inode->i_size = FILENT_SIZE;
->>   		/* mqueue specific info */
->>   		info = MQUEUE_I(inode);
->> -		spin_lock_init(&info->lock);
->> +		mutex_init(&info->lock);
->>   		init_waitqueue_head(&info->wait_q);
->>   		INIT_LIST_HEAD(&info->e_wait_q[0].list);
->>   		INIT_LIST_HEAD(&info->e_wait_q[1].list);
->> @@ -523,11 +523,11 @@ static void mqueue_evict_inode(struct inode *inode)
->>   
->>   	ipc_ns = get_ns_from_inode(inode);
->>   	info = MQUEUE_I(inode);
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   	while ((msg = msg_get(info)) != NULL)
->>   		list_add_tail(&msg->m_list, &tmp_msg);
->>   	kfree(info->node_cache);
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   
->>   	list_for_each_entry_safe(msg, nmsg, &tmp_msg, m_list) {
->>   		list_del(&msg->m_list);
->> @@ -640,7 +640,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
->>   	char buffer[FILENT_SIZE];
->>   	ssize_t ret;
->>   
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   	snprintf(buffer, sizeof(buffer),
->>   			"QSIZE:%-10lu NOTIFY:%-5d SIGNO:%-5d NOTIFY_PID:%-6d\n",
->>   			info->qsize,
->> @@ -649,7 +649,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
->>   			 info->notify.sigev_notify == SIGEV_SIGNAL) ?
->>   				info->notify.sigev_signo : 0,
->>   			pid_vnr(info->notify_owner));
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   	buffer[sizeof(buffer)-1] = '\0';
->>   
->>   	ret = simple_read_from_buffer(u_data, count, off, buffer,
->> @@ -665,11 +665,11 @@ static int mqueue_flush_file(struct file *filp, fl_owner_t id)
->>   {
->>   	struct mqueue_inode_info *info = MQUEUE_I(file_inode(filp));
->>   
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   	if (task_tgid(current) == info->notify_owner)
->>   		remove_notification(info);
->>   
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   	return 0;
->>   }
->>   
->> @@ -680,13 +680,13 @@ static __poll_t mqueue_poll_file(struct file *filp, struct poll_table_struct *po
->>   
->>   	poll_wait(filp, &info->wait_q, poll_tab);
->>   
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   	if (info->attr.mq_curmsgs)
->>   		retval = EPOLLIN | EPOLLRDNORM;
->>   
->>   	if (info->attr.mq_curmsgs < info->attr.mq_maxmsg)
->>   		retval |= EPOLLOUT | EPOLLWRNORM;
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   
->>   	return retval;
->>   }
->> @@ -724,7 +724,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
->>   		/* memory barrier not required, we hold info->lock */
->>   		__set_current_state(TASK_INTERRUPTIBLE);
->>   
->> -		spin_unlock(&info->lock);
->> +		mutex_unlock(&info->lock);
->>   		time = schedule_hrtimeout_range_clock(timeout, 0,
->>   			HRTIMER_MODE_ABS, CLOCK_REALTIME);
->>   
->> @@ -734,7 +734,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
->>   			retval = 0;
->>   			goto out;
->>   		}
->> -		spin_lock(&info->lock);
->> +		mutex_lock(&info->lock);
->>   
->>   		/* we hold info->lock, so no memory barrier required */
->>   		if (READ_ONCE(ewp->state) == STATE_READY) {
->> @@ -752,7 +752,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
->>   	}
->>   	list_del(&ewp->list);
->>   out_unlock:
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   out:
->>   	return retval;
->>   }
->> @@ -1125,7 +1125,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
->>   	if (!info->node_cache)
->>   		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
->>   
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   
->>   	if (!info->node_cache && new_leaf) {
->>   		/* Save our speculative allocation into the cache */
->> @@ -1166,7 +1166,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
->>   		simple_inode_init_ts(inode);
->>   	}
->>   out_unlock:
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   	wake_up_q(&wake_q);
->>   out_free:
->>   	if (ret)
->> @@ -1230,7 +1230,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
->>   	if (!info->node_cache)
->>   		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
->>   
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   
->>   	if (!info->node_cache && new_leaf) {
->>   		/* Save our speculative allocation into the cache */
->> @@ -1242,7 +1242,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
->>   
->>   	if (info->attr.mq_curmsgs == 0) {
->>   		if (f.file->f_flags & O_NONBLOCK) {
->> -			spin_unlock(&info->lock);
->> +			mutex_unlock(&info->lock);
->>   			ret = -EAGAIN;
->>   		} else {
->>   			wait.task = current;
->> @@ -1261,7 +1261,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
->>   
->>   		/* There is now free space in queue. */
->>   		pipelined_receive(&wake_q, info);
->> -		spin_unlock(&info->lock);
->> +		mutex_unlock(&info->lock);
->>   		wake_up_q(&wake_q);
->>   		ret = 0;
->>   	}
->> @@ -1391,7 +1391,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
->>   	info = MQUEUE_I(inode);
->>   
->>   	ret = 0;
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   	if (notification == NULL) {
->>   		if (info->notify_owner == task_tgid(current)) {
->>   			remove_notification(info);
->> @@ -1424,7 +1424,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
->>   		info->notify_user_ns = get_user_ns(current_user_ns());
->>   		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
->>   	}
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   out_fput:
->>   	fdput(f);
->>   out:
->> @@ -1470,7 +1470,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
->>   	inode = file_inode(f.file);
->>   	info = MQUEUE_I(inode);
->>   
->> -	spin_lock(&info->lock);
->> +	mutex_lock(&info->lock);
->>   
->>   	if (old) {
->>   		*old = info->attr;
->> @@ -1488,7 +1488,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
->>   		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
->>   	}
->>   
->> -	spin_unlock(&info->lock);
->> +	mutex_unlock(&info->lock);
->>   	fdput(f);
->>   	return 0;
->>   }
->> -- 
->> 2.34.1
->>
+...
+
+void override_cred_save(struct override_cred *new)
+{
+        new->cred =3D rcu_replace_pointer(current->cred, new->cred, true);
+}
+
+void override_cred_restore(struct override_cred *old)
+{
+        rcu_assign_pointer(current->cred, old->cred);
+}
+
+> > Maybe I really fail to understand this problem or the proposed solution=
+:
+> > the single reference that overlayfs keeps in ovl->creator_cred is tied
+> > to the lifetime of the overlayfs superblock, no? And anyone who needs a
+> > long term cred reference e.g, file->f_cred will take it's own reference
+> > anyway. So it should be safe to just keep that reference alive until
+> > overlayfs is unmounted, no? I'm sure it's something quite obvious why
+> > that doesn't work but I'm just not seeing it currently.
+>
+> My read of the code says that what you are proposing should work. (what
+> I am seeing is that in the "optimized" cases, the only practical effect
+> of override/revert is the rcu_assign_pointer() dance)
+>
+> I guess that the question becomes: Do we want this property (that the
+> 'cred' associated with a subperblock/similar is long lived and the
+> "inner" refcount can be omitted) to be encoded in the constructor? Or do
+> we want it to be "encoded" in a call by call basis?
+>
+
+Neither.
+
+Christian's proposal does not involve marking the cred object as
+long lived, which looks a much better idea to me.
+
+The performance issues you observed are (probably) due to get/put
+of cred refcount in the helpers {override,revert}_creds().
+
+Christian suggested lightweight variants of {override,revert}_creds()
+that do not change refcount. Combining those with a guard and
+I don't see what can go wrong (TM).
+
+If you try this out and post a patch, please be sure to include the
+motivation for the patch along with performance numbers in the
+commit message, even if only posting an RFC patch.
+
+Thanks,
+Amir.
 
