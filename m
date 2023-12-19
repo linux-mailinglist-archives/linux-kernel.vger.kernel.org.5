@@ -1,198 +1,337 @@
-Return-Path: <linux-kernel+bounces-5290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7509818907
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:53:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF15D81890A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 239C6B2336F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:53:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 719EF1F24E31
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E5E1A27D;
-	Tue, 19 Dec 2023 13:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ejFTNNlA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36E91A5A7;
+	Tue, 19 Dec 2023 13:54:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8CD1BDC4;
-	Tue, 19 Dec 2023 13:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702994022; x=1734530022;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yfmGb2CU0aifKMp5SXmmNHyvc7SvPOQRc4aakgQN3Vw=;
-  b=ejFTNNlAeBuUMsfNYHQ0+vodrkud9uQbetc+MXuXCW9keE7jVwXoNmyI
-   Zjm5mrxDDdX/bQO921CFYRygdG4a7veg1sdEhBAD5Mcv3L8M9nhZ6AtNr
-   mj2Og11GmQODz+mhij0rqOrAAvwS+baza4xfPiNfslVX6J6hiamKPX+2Q
-   eKfbxluheRYs6+Wyj4Hb/IZ0a2voFIt8ASyORch8jSIjxxoP/8lAzJaHh
-   ulC7/OoD63VBROV/UuUr3OzSiqh5zc6GhwVgRxeR+1NssPOz/rHyq+eS+
-   1mawp7ff8Ta7CEoGWpa0nzZ3kYsKsPk1plxVeSn4K6N1Y2TmeOeBXADBU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="399492488"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="399492488"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 05:53:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="769244133"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="769244133"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga007.jf.intel.com with SMTP; 19 Dec 2023 05:53:39 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 19 Dec 2023 15:53:38 +0200
-Date: Tue, 19 Dec 2023 15:53:38 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Dave Airlie <airlied@redhat.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	DRI <dri-devel@lists.freedesktop.org>
-Subject: Re: linux-next: build failure after merge of the header_cleanup tree
-Message-ID: <ZYGgYvsCHmazP2jH@intel.com>
-References: <20231218174030.3ed72f54@canb.auug.org.au>
- <20231219145734.13e40e1e@canb.auug.org.au>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223841A5A5;
+	Tue, 19 Dec 2023 13:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D8C61FB;
+	Tue, 19 Dec 2023 05:54:48 -0800 (PST)
+Received: from [10.57.46.64] (unknown [10.57.46.64])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BA243F5A1;
+	Tue, 19 Dec 2023 05:54:01 -0800 (PST)
+Message-ID: <fa39e477-7faf-46e4-8ae2-9eb2321afc26@arm.com>
+Date: Tue, 19 Dec 2023 13:54:00 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/8] coresight-tpda: Add support to configure CMB
+ element
+Content-Language: en-GB
+To: Tao Zhang <quic_taozha@quicinc.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-3-git-send-email-quic_taozha@quicinc.com>
+ <88e51407-344e-4584-8711-29cc014c782b@arm.com>
+ <b5965008-b51d-4bb7-8cf2-d21aa35d2205@quicinc.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <b5965008-b51d-4bb7-8cf2-d21aa35d2205@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231219145734.13e40e1e@canb.auug.org.au>
-X-Patchwork-Hint: comment
 
-On Tue, Dec 19, 2023 at 02:57:34PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On 19/12/2023 02:13, Tao Zhang wrote:
 > 
-> On Mon, 18 Dec 2023 17:40:30 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > After merging the header_cleanup tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> > 
-> > In file included from include/linux/kernel.h:27,
-> >                  from drivers/gpu/ipu-v3/ipu-dp.c:7:
-> > include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
-> > include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of function 'mul_u32_u32' [-Werror=implicit-function-declaration]
-> >    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input, (1 << bit_precision) - 1),
-> >       |                                              ^~~~~~~~~~~
-> > include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOSEST_ULL'
-> >   104 |         unsigned long long _tmp = (x) + (__d) / 2;      \
-> >       |                                    ^
-> > In file included from include/linux/time.h:6,
-> >                  from include/linux/videodev2.h:59,
-> >                  from include/video/imx-ipu-v3.h:16,
-> >                  from drivers/gpu/ipu-v3/ipu-dp.c:14:
-> > include/linux/math64.h: At top level:
-> > include/linux/math64.h:155:19: error: conflicting types for 'mul_u32_u32'; have 'u64(u32,  u32)' {aka 'long long unsigned int(unsigned int,  unsigned int)'}
-> >   155 | static inline u64 mul_u32_u32(u32 a, u32 b)
-> >       |                   ^~~~~~~~~~~
-> > include/drm/drm_color_mgmt.h:45:46: note: previous implicit declaration of 'mul_u32_u32' with type 'int()'
-> >    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input, (1 << bit_precision) - 1),
-> >       |                                              ^~~~~~~~~~~
-> > include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOSEST_ULL'
-> >   104 |         unsigned long long _tmp = (x) + (__d) / 2;      \
-> >       |                                    ^
-> > cc1: some warnings being treated as errors
-> > In file included from include/linux/kernel.h:27,
-> >                  from drivers/gpu/drm/omapdrm/dss/dispc_coefs.c:7:
-> > include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
-> > include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of function 'mul_u32_u32' [-Werror=implicit-function-declaration]
-> >    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input, (1 << bit_precision) - 1),
-> >       |                                              ^~~~~~~~~~~
-> > include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOSEST_ULL'
-> >   104 |         unsigned long long _tmp = (x) + (__d) / 2;      \
-> >       |                                    ^
-> > In file included from include/linux/jiffies.h:7,
-> >                  from include/linux/ktime.h:25,
-> >                  from include/linux/timer.h:6,
-> >                  from include/linux/workqueue.h:9,
-> >                  from include/linux/mm_types.h:19,
-> >                  from include/linux/mmzone.h:22,
-> >                  from include/linux/gfp.h:7,
-> >                  from include/linux/stackdepot.h:25,
-> >                  from include/drm/drm_modeset_lock.h:28,
-> >                  from include/drm/drm_crtc.h:30,
-> >                  from drivers/gpu/drm/omapdrm/dss/omapdss.h:11,
-> >                  from drivers/gpu/drm/omapdrm/dss/dispc_coefs.c:9:
-> > include/linux/math64.h: At top level:
-> > include/linux/math64.h:155:19: error: conflicting types for 'mul_u32_u32'; have 'u64(u32,  u32)' {aka 'long long unsigned int(unsigned int,  unsigned int)'}
-> >   155 | static inline u64 mul_u32_u32(u32 a, u32 b)
-> >       |                   ^~~~~~~~~~~
-> > include/drm/drm_color_mgmt.h:45:46: note: previous implicit declaration of 'mul_u32_u32' with type 'int()'
-> >    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input, (1 << bit_precision) - 1),
-> >       |                                              ^~~~~~~~~~~
-> > include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOSEST_ULL'
-> >   104 |         unsigned long long _tmp = (x) + (__d) / 2;      \
-> >       |                                    ^
-> > cc1: some warnings being treated as errors
+> On 12/18/2023 6:27 PM, Suzuki K Poulose wrote:
+>> On 21/11/2023 02:24, Tao Zhang wrote:
+>>> Read the CMB element size from the device tree. Set the register
+>>> bit that controls the CMB element size of the corresponding port.
+>>>
+>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>>> ---
+>>>   drivers/hwtracing/coresight/coresight-tpda.c | 117 +++++++++++--------
+>>>   drivers/hwtracing/coresight/coresight-tpda.h |   6 +
+>>>   2 files changed, 74 insertions(+), 49 deletions(-)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c 
+>>> b/drivers/hwtracing/coresight/coresight-tpda.c
+>>> index 5f82737c37bb..e3762f38abb3 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpda.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
+>>> @@ -28,24 +28,54 @@ static bool coresight_device_is_tpdm(struct 
+>>> coresight_device *csdev)
+>>>               CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
+>>>   }
+>>>   +static void tpdm_clear_element_size(struct coresight_device *csdev)
+>>> +{
+>>> +    struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>>> +
+>>> +    if (drvdata->dsb_esize)
+>>> +        drvdata->dsb_esize = 0;
+>>> +    if (drvdata->cmb_esize)
+>>> +        drvdata->cmb_esize = 0;
+>>
+>> Why do we need the if (...) check here ?
 > 
-> This turns out to be a semantic conflict (or exposing a bug in commit
+> The element size of all the TPDM sub-unit should be set to 0 here.
 > 
->  c6fbb6bca108 ("drm: Fix color LUT rounding")
+> I will update this in the next patch series.
 > 
-> from the drm tree.
+>>
+>>> +}
+>>> +
+>>> +static void tpda_set_element_size(struct tpda_drvdata *drvdata, u32 
+>>> *val)
+>>> +{
+>>> +
+>>> +    if (drvdata->dsb_esize == 64)
+>>> +        *val |= TPDA_Pn_CR_DSBSIZE;
+>>> +    else if (drvdata->dsb_esize == 32)
+>>> +        *val &= ~TPDA_Pn_CR_DSBSIZE;
+>>> +
+>>> +    if (drvdata->cmb_esize == 64)
+>>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
+>>> +    else if (drvdata->cmb_esize == 32)
+>>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
+>>> +    else if (drvdata->cmb_esize == 8)
+>>> +        *val &= ~TPDA_Pn_CR_CMBSIZE;
+>>> +}
+>>> +
+>>
+>>
+>>>   /*
+>>> - * Read the DSB element size from the TPDM device
+>>> + * Read the element size from the TPDM device
+>>>    * Returns
+>>> - *    The dsb element size read from the devicetree if available.
+>>> + *    The element size read from the devicetree if available.
+>>>    *    0 - Otherwise, with a warning once.
+>>
+>> This doesn't match the function ? It return 0 on success and
+>> error (-EINVAL) on failure ?
 > 
-> I have applied the following merge fix up patch (which should probably
-> be applied to the drm tree, if possible).
+> 0 means the element size property is found from the devicetree.
 > 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 19 Dec 2023 14:43:41 +1100
-> Subject: [PATCH] drm: using mul_u32_u32() requires linux/math64.h
+> Otherwise, it will return error(-EINVAL).
 > 
-> Some pending include file cleanups produced this error:
+> I will update this in the next patch series.
 > 
-> In file included from include/linux/kernel.h:27,
->                  from drivers/gpu/ipu-v3/ipu-dp.c:7:
-> include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
-> include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of function 'mul_u32_u32' [-Werror=implicit-function-declaration]
->    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input, (1 << bit_precision) - 1),
->       |                                              ^~~~~~~~~~~
+>>
+>>>    */
+>>> -static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
+>>> +static int tpdm_read_element_size(struct tpda_drvdata *drvdata,
+>>> +                  struct coresight_device *csdev)
+>>>   {
+>>> -    int rc = 0;
+>>> -    u8 size = 0;
+>>> -
+>>> -    rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+>>> -            "qcom,dsb-element-size", &size);
+>>> +    int rc = -EINVAL;
+>>> +
+>>> +    if (!fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+>>> +            "qcom,dsb-element-size", &drvdata->dsb_esize))
+>>> +        rc = 0;
+>>> +    if (!fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+>>> +            "qcom,cmb-element-size", &drvdata->cmb_esize))
+>>> +        rc = 0;
+>>
+>> Are we not silently resetting the error if the former failed ?
+>>
+>> Could we not :
+>>
+>>     rc |= fwnode_...
+>>
+>>     rc |= fwnode_...
+>>
+>> instead ?
+>>
+>> Also what is the expectation here ? Are these properties a MUST for
+>> TPDM ?
 > 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> The TPDM must have one of the element size property. As long as one
 
-Mea culpa.
+Please add a comment in the function. Someone else might try to "fix"
+it otherwise.
 
-I slapped on a
-Fixes: c6fbb6bca108 ("drm: Fix color LUT rounding")
-
-and applied this to drm-misc-next-fixes. Thanks.
-
-> ---
->  include/drm/drm_color_mgmt.h | 1 +
->  1 file changed, 1 insertion(+)
+Suzuki
 > 
-> diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
-> index 54b2b2467bfd..ed81741036d7 100644
-> --- a/include/drm/drm_color_mgmt.h
-> +++ b/include/drm/drm_color_mgmt.h
-> @@ -24,6 +24,7 @@
->  #define __DRM_COLOR_MGMT_H__
->  
->  #include <linux/ctype.h>
-> +#include <linux/math64.h>
->  #include <drm/drm_property.h>
->  
->  struct drm_crtc;
-> -- 
-> 2.40.1
+> can be found, this TPDM configuration can be considered valid. So this
 > 
-> -- 
-> Cheers,
-> Stephen Rothwell
+> function will return 0 if one of the element size property is found.
 
 
+> 
+> 
+> Best,
+> 
+> Tao
+> 
+>>
+>>>       if (rc)
+>>>           dev_warn_once(&csdev->dev,
+>>> -            "Failed to read TPDM DSB Element size: %d\n", rc);
+>>> +            "Failed to read TPDM Element size: %d\n", rc);
+>>>   -    return size;
+>>> +    return rc;
+>>>   }
+>>>     /*
+>>> @@ -56,11 +86,12 @@ static int tpdm_read_dsb_element_size(struct 
+>>> coresight_device *csdev)
+>>>    * Parameter "inport" is used to pass in the input port number
+>>>    * of TPDA, and it is set to -1 in the recursize call.
+>>>    */
+>>> -static int tpda_get_element_size(struct coresight_device *csdev,
+>>> +static int tpda_get_element_size(struct tpda_drvdata *drvdata,
+>>> +                 struct coresight_device *csdev,
+>>>                    int inport)
+>>>   {
+>>> -    int dsb_size = -ENOENT;
+>>> -    int i, size;
+>>> +    int rc = 0;
+>>> +    int i;
+>>>       struct coresight_device *in;
+>>>         for (i = 0; i < csdev->pdata->nr_inconns; i++) {
+>>> @@ -74,25 +105,21 @@ static int tpda_get_element_size(struct 
+>>> coresight_device *csdev,
+>>>               continue;
+>>>             if (coresight_device_is_tpdm(in)) {
+>>> -            size = tpdm_read_dsb_element_size(in);
+>>> +            if ((drvdata->dsb_esize) || (drvdata->cmb_esize))
+>>> +                return -EEXIST;
+>>> +            rc = tpdm_read_element_size(drvdata, in);
+>>> +            if (rc)
+>>> +                return rc;
+>>>           } else {
+>>>               /* Recurse down the path */
+>>> -            size = tpda_get_element_size(in, -1);
+>>> -        }
+>>> -
+>>> -        if (size < 0)
+>>> -            return size;
+>>> -
+>>> -        if (dsb_size < 0) {
+>>> -            /* Found a size, save it. */
+>>> -            dsb_size = size;
+>>> -        } else {
+>>> -            /* Found duplicate TPDMs */
+>>> -            return -EEXIST;
+>>> +            rc = tpda_get_element_size(drvdata, in, -1);
+>>> +            if (rc)
+>>> +                return rc;
+>>>           }
+>>>       }
+>>>   -    return dsb_size;
+>>> +
+>>> +    return rc;
+>>>   }
+>>>     /* Settings pre enabling port control register */
+>>> @@ -109,7 +136,7 @@ static void tpda_enable_pre_port(struct 
+>>> tpda_drvdata *drvdata)
+>>>   static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+>>>   {
+>>>       u32 val;
+>>> -    int size;
+>>> +    int rc;
+>>>         val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
+>>>       /*
+>>> @@ -117,29 +144,21 @@ static int tpda_enable_port(struct tpda_drvdata 
+>>> *drvdata, int port)
+>>>        * Set the bit to 0 if the size is 32
+>>>        * Set the bit to 1 if the size is 64
+>>>        */
+>>> -    size = tpda_get_element_size(drvdata->csdev, port);
+>>> -    switch (size) {
+>>> -    case 32:
+>>> -        val &= ~TPDA_Pn_CR_DSBSIZE;
+>>> -        break;
+>>> -    case 64:
+>>> -        val |= TPDA_Pn_CR_DSBSIZE;
+>>> -        break;
+>>> -    case 0:
+>>> -        return -EEXIST;
+>>> -    case -EEXIST:
+>>> +    tpdm_clear_element_size(drvdata->csdev);
+>>> +    rc = tpda_get_element_size(drvdata, drvdata->csdev, port);
+>>> +    if (!rc && ((drvdata->dsb_esize) || (drvdata->cmb_esize))) {
+>>> +        tpda_set_element_size(drvdata, &val);
+>>> +        /* Enable the port */
+>>> +        val |= TPDA_Pn_CR_ENA;
+>>> +        writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+>>> +    } else if (rc == -EEXIST)
+>>>           dev_warn_once(&drvdata->csdev->dev,
+>>> -            "Detected multiple TPDMs on port %d", -EEXIST);
+>>> -        return -EEXIST;
+>>> -    default:
+>>> -        return -EINVAL;
+>>> -    }
+>>> -
+>>> -    /* Enable the port */
+>>> -    val |= TPDA_Pn_CR_ENA;
+>>> -    writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+>>> +                  "Detected multiple TPDMs on port %d", -EEXIST);
+>>> +    else
+>>> +        dev_warn_once(&drvdata->csdev->dev,
+>>> +                  "Didn't find TPDM elem size");
+>>
+>> "element size"
+>>
+>>>   -    return 0;
+>>> +    return rc;
+>>>   }
+>>>     static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.h 
+>>> b/drivers/hwtracing/coresight/coresight-tpda.h
+>>> index b3b38fd41b64..29164fd9711f 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpda.h
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpda.h
+>>> @@ -10,6 +10,8 @@
+>>>   #define TPDA_Pn_CR(n)        (0x004 + (n * 4))
+>>>   /* Aggregator port enable bit */
+>>>   #define TPDA_Pn_CR_ENA        BIT(0)
+>>> +/* Aggregator port CMB data set element size bit */
+>>> +#define TPDA_Pn_CR_CMBSIZE        GENMASK(7, 6)
+>>>   /* Aggregator port DSB data set element size bit */
+>>>   #define TPDA_Pn_CR_DSBSIZE        BIT(8)
+>>>   @@ -25,6 +27,8 @@
+>>>    * @csdev:      component vitals needed by the framework.
+>>>    * @spinlock:   lock for the drvdata value.
+>>>    * @enable:     enable status of the component.
+>>> + * @dsb_esize   Record the DSB element size.
+>>> + * @cmb_esize   Record the CMB element size.
+>>>    */
+>>>   struct tpda_drvdata {
+>>>       void __iomem        *base;
+>>> @@ -32,6 +36,8 @@ struct tpda_drvdata {
+>>>       struct coresight_device    *csdev;
+>>>       spinlock_t        spinlock;
+>>>       u8            atid;
+>>> +    u8            dsb_esize;
+>>> +    u8            cmb_esize;
+>>>   };
+>>>     #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
+>>
+>> Suzuki
+>>
+>>
 
--- 
-Ville Syrj�l�
-Intel
 
