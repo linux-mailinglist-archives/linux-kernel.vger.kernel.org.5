@@ -1,225 +1,253 @@
-Return-Path: <linux-kernel+bounces-5011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2E54818540
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:22:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B02C881853B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F42B1F226FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:22:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C592B226DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AA414A81;
-	Tue, 19 Dec 2023 10:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gN4ljEoZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CB914A90;
+	Tue, 19 Dec 2023 10:21:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE02E14A98
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5e7db780574so2002277b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:22:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702981330; x=1703586130; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IWtv0nvouCX5fIsmZ0v0oxZW/THrMx3EmTdh8M6/xgA=;
-        b=gN4ljEoZAbB06gJ/52s08hzejsx1gG8TSUfD9FSqvMrcjDXT293NyaEQ/yw1p/cIo7
-         f098Z0rIfNm6kleOtNCMlqgK+BTMHtrJ7RUULdvv4DVGHCyPn27zMYNTESVhygfkJDca
-         IirkJGPuqKsj7DnLl333n8FpUBxS3SvWFRtmbU6rNQJ1FalkUg2BkY9M1mAujK7y/D9z
-         eu+iuHRYq378VVM90keAA1n4VSJloxxMl1TJmqH7TOJAsCjz2MAnDWK25iTFIgDSE4gk
-         An4IF//3Up6cDPhV9oCUCKa3dqmDS2R2t3RUd8eanksEAEsNO9kfO9sLeMaytFWtrvqM
-         IJ0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702981330; x=1703586130;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IWtv0nvouCX5fIsmZ0v0oxZW/THrMx3EmTdh8M6/xgA=;
-        b=S5pn7+6ybp598DXtK8EIgjAV4DNnZOdCvjM70Sira1TV+j9TTKwFLvgpECTl+sDVn1
-         wHxdB/ysj2Dn9q4mf75yCZtJZX6DTU3tz5g/nOqnz9DhFU/55m9Rv0JQSJhugYlrUDz6
-         bEofF/25u2kRoxt6jB2KdOaNLyzi/om3YEWcKWnrOGoCroRSe0WCgBDABByccx4eUIZy
-         yq0X5gHn3RicM+wKfRIk8Vm/MfxZKIc0rlhbPIC5aVqs3f3RQdA9oXeFwirhYYSbl8Ol
-         eHwoMU4vcPNX+nJSYshTUYLaMNCflnX6FwfNqHVjKCyvwQyGfHKyZI5QbUkQqfiowNVE
-         UrXw==
-X-Gm-Message-State: AOJu0Yw9aPCdC68yaHUl79fiTZ4huq81tGRpC4ALyY4I7698vKhisCMC
-	9mfK4u4RNEpYWSxlbvK56F1t2PLuAlTfER7qQCgxSg==
-X-Google-Smtp-Source: AGHT+IFhpDdAZ1lxMc9AEtbpDAW0YBFm8qR1mzenXUm1MTWc17RrIWYgD0L/pXRE448LohDI8TSYdryTZupOBG6uO14=
-X-Received: by 2002:a81:62d5:0:b0:5e4:d68a:310 with SMTP id
- w204-20020a8162d5000000b005e4d68a0310mr481678ywb.36.1702981329841; Tue, 19
- Dec 2023 02:22:09 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0246A14F78;
+	Tue, 19 Dec 2023 10:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A99E1FB;
+	Tue, 19 Dec 2023 02:22:11 -0800 (PST)
+Received: from [10.57.85.227] (unknown [10.57.85.227])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4BBD3F738;
+	Tue, 19 Dec 2023 02:21:24 -0800 (PST)
+Message-ID: <4f780b5e-7e37-40e3-bdf1-d7fe5d8dd1fc@arm.com>
+Date: Tue, 19 Dec 2023 10:22:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
- <20231215101827.30549-4-quic_bibekkum@quicinc.com> <CAA8EJppcsr1sbeD1fK0nZ+rASABNcetBK3yMvaP7OiA4JPwskw@mail.gmail.com>
- <c9493c5f-ccf8-4e21-b00c-5fbc2a5f2edb@quicinc.com> <b7f2bbf9-fb5a-430d-aa32-3a220b46c2f0@arm.com>
- <1eee8bae-59f0-4066-9d04-8c3a5f750d3a@linaro.org> <42d627af-164b-4b50-973e-fa71d86cb84c@linaro.org>
- <aa8b2ccd-33da-404b-9a93-3d88cf63ec77@quicinc.com> <8338db1e-0216-4fc5-b6ab-ddf43adf3648@linaro.org>
- <a363c860-62be-43a7-930c-cab8a6f3fa6c@quicinc.com>
-In-Reply-To: <a363c860-62be-43a7-930c-cab8a6f3fa6c@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 19 Dec 2023 12:21:58 +0200
-Message-ID: <CAA8EJpoMwrwQ9wBZE6AcobLLkCchFtN23SnHhw3enNOfX3CzTQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] iommu/arm-smmu: add ACTLR data and support for SM8550
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Robin Murphy <robin.murphy@arm.com>, will@kernel.org, 
-	joro@8bytes.org, jsnitsel@redhat.com, quic_bjorande@quicinc.com, 
-	mani@kernel.org, quic_eberman@quicinc.com, robdclark@chromium.org, 
-	u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com, 
-	quic_pkondeti@quicinc.com, quic_molvera@quicinc.com, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	qipl.kernel.upstream@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 00/23] Introduce runtime modifiable Energy Model
+Content-Language: en-US
+To: Qais Yousef <qyousef@layalina.io>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+ amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+ daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
+ pavel@ucw.cz, mhiramat@kernel.org, wvw@google.com
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <20231217182255.mgrpgpu6ojjg62jp@airbuntu>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231217182255.mgrpgpu6ojjg62jp@airbuntu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Dec 2023 at 10:25, Bibek Kumar Patro
-<quic_bibekkum@quicinc.com> wrote:
->
->
->
-> On 12/18/2023 7:51 PM, Dmitry Baryshkov wrote:
-> > On 18/12/2023 13:23, Bibek Kumar Patro wrote:
-> >>
-> >>
-> >> On 12/16/2023 9:45 PM, Dmitry Baryshkov wrote:
-> >>> On 16/12/2023 02:03, Konrad Dybcio wrote:
-> >>>> On 15.12.2023 13:54, Robin Murphy wrote:
-> >>>>> On 2023-12-15 12:20 pm, Bibek Kumar Patro wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> On 12/15/2023 4:14 PM, Dmitry Baryshkov wrote:
-> >>>>>>> On Fri, 15 Dec 2023 at 12:19, Bibek Kumar Patro
-> >>>>>>> <quic_bibekkum@quicinc.com> wrote:
-> >>>>>>>>
-> >>>>>>>> Add ACTLR data table for SM8550 along with support for
-> >>>>>>>> same including SM8550 specific implementation operations.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-> >>>>>>>> ---
-> >>>>>>>>    drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 89
-> >>>>>>>> ++++++++++++++++++++++
-> >>>>>>>>    1 file changed, 89 insertions(+)
-> >>>>>>>>
-> >>>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>> index cb49291f5233..d2006f610243 100644
-> >>>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>> @@ -20,6 +20,85 @@ struct actlr_config {
-> >>>>>>>>           u32 actlr;
-> >>>>>>>>    };
-> >>>>>>>>
-> >>>>>>>> +/*
-> >>>>>>>> + * SMMU-500 TRM defines BIT(0) as CMTLB (Enable context caching
-> >>>>>>>> in the
-> >>>>>>>> + * macro TLB) and BIT(1) as CPRE (Enable context caching in the
-> >>>>>>>> prefetch
-> >>>>>>>> + * buffer). The remaining bits are implementation defined and
-> >>>>>>>> vary across
-> >>>>>>>> + * SoCs.
-> >>>>>>>> + */
-> >>>>>>>> +
-> >>>>>>>> +#define PREFETCH_DEFAULT       0
-> >>>>>>>> +#define PREFETCH_SHALLOW       BIT(8)
-> >>>>>>>> +#define PREFETCH_MODERATE      BIT(9)
-> >>>>>>>> +#define PREFETCH_DEEP          (BIT(9) | BIT(8))
-> >>>>>>>
-> >>>>>>> I thin the following might be more correct:
-> >>>>>>>
-> >>>>>>> #include <linux/bitfield.h>
-> >>>>>>>
-> >>>>>>> #define PREFETCH_MASK GENMASK(9, 8)
-> >>>>>>> #define PREFETCH_DEFAULT FIELD_PREP(PREFETCH_MASK, 0)
-> >>>>>>> #define PREFETCH_SHALLOW FIELD_PREP(PREFETCH_MASK, 1)
-> >>>>>>> #define PREFETCH_MODERATE FIELD_PREP(PREFETCH_MASK, 2)
-> >>>>>>> #define PREFETCH_DEEP FIELD_PREP(PREFETCH_MASK, 3)
-> >>>>>>>
-> >>>>>>
-> >>>>>> Ack, thanks for this suggestion. Let me try this out using
-> >>>>>> GENMASK. Once tested, will take care of this in next version.
-> >>>>>
-> >>>>> FWIW the more typical usage would be to just define the named
-> >>>>> macros for the raw field values, then put the FIELD_PREP() at the
-> >>>>> point of use. However in this case that's liable to get pretty
-> >>>>> verbose, so although I'm usually a fan of bitfield.h, the most
-> >>>>> readable option here might actually be to stick with simpler
-> >>>>> definitions of "(0 << 8)", "(1 << 8)", etc. However it's not really
-> >>>>> a big deal either way, and I defer to whatever Dmitry and Konrad
-> >>>>> prefer, since they're the ones looking after arm-smmu-qcom the most :)
-> >>>> My 5 cents would be to just use the "common" style of doing this, so:
-> >>>>
-> >>>> #define ACTRL_PREFETCH    GENMASK(9, 8)
-> >>>>   #define PREFETCH_DEFAULT 0
-> >>>>   #define PREFETCH_SHALLOW 1
-> >>>>   #define PREFETCH_MODERATE 2
-> >>>>   #define PREFETCH_DEEP 3
-> >>>>
-> >>>> and then use
-> >>>>
-> >>>> | FIELD_PREP(ACTRL_PREFETCH, PREFETCH_x)
-> >>>>
-> >>>> it can get verbose, but.. arguably that's good, since you really want
-> >>>> to make sure the right bits are set here
-> >>>
-> >>> Sounds good to me.
-> >>>
-> >>
-> >> Konrad, Dimitry, just checked FIELD_PREP() implementation
-> >>
-> >> #define FIELD_FIT(_mask, _val)
-> >> ({                                                              \
-> >>                   __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");  \
-> >>                   ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask); \
-> >> })
-> >>
-> >> since it is defined as a block, it won't be possible to use FIELD_PREP
-> >> in macro or as a structure value, and can only be used inside a
-> >> block/function. Orelse would show compilation errors as following
-> >>
-> >> kernel/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c:94:20: note: in
-> >> expansion of macro 'PREFETCH_SHALLOW'
-> >>    { 0x1947, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
-> >>                      ^
-> >> kernel/include/linux/bitfield.h:113:2: error: braced-group within
-> >> expression allowed only inside a function
-> >>    ({        \
-> >>    ^
-> >>
-> >> So as per my understanding I think, we might need to go ahead with the
-> >> generic implementation only. Let me know if I missed something.
-> >
-> > Then anyway (foo << bar) is better compared to BIT(n) | BIT(m).
-> >
->
-> Sure Dmitry, (foo << bar) would be simpler as well as Robin mentioned
-> earlier in his reply.
-> I can implement the defines as:
->
-> #define PREFETCH_DEFAULT       0
-> #define PREFETCH_SHALLOW       (1 << 8)
-> #define PREFETCH_MODERATE      (1 << 9)
+Hi Qais,
 
-2 << 8. Isn't that hard.
+On 12/17/23 18:22, Qais Yousef wrote:
+> Hi Lukasz
+> 
+> On 11/29/23 11:08, Lukasz Luba wrote:
+>> Hi all,
+>>
+>> This patch set adds a new feature which allows to modify Energy Model (EM)
+>> power values at runtime. It will allow to better reflect power model of
+>> a recent SoCs and silicon. Different characteristics of the power usage
+>> can be leveraged and thus better decisions made during task placement in EAS.
+>>
+>> It's part of feature set know as Dynamic Energy Model. It has been presented
+>> and discussed recently at OSPM2023 [3]. This patch set implements the 1st
+>> improvement for the EM.
+> 
+> Thanks. The problem of EM accuracy has been observed in the field and would be
+> nice to have a mainline solution for it. We carry our own out-of-tree change to
+> enable modifying the EM.
 
-> #define PREFETCH_DEEP          (3 << 8)
->
-> This should be okay I think ?
->
-> Thanks,
-> Bibek
->
+Thanks for that statement here.
 
+> 
+>>
+>> The concepts:
+>> 1. The CPU power usage can vary due to the workload that it's running or due
+>> to the temperature of the SoC. The same workload can use more power when the
+>> temperature of the silicon has increased (e.g. due to hot GPU or ISP).
+>> In such situation the EM can be adjusted and reflect the fact of increased
+>> power usage. That power increase is due to static power
+>> (sometimes called simply: leakage). The CPUs in recent SoCs are different.
+>> We have heterogeneous SoCs with 3 (or even 4) different microarchitectures.
+>> They are also built differently with High Performance (HP) cells or
+>> Low Power (LP) cells. They are affected by the temperature increase
+>> differently: HP cells have bigger leakage. The SW model can leverage that
+>> knowledge.
+> 
+> One thing I'm not sure about is that in practice temperature of the SoC can
+> vary a lot in a short period of time. What is the expectation here? I can see
+> this useful in practice only if we average it over a window of time. Following
+> it will be really hard. Big variations can happen in few ms scales.
 
--- 
-With best wishes
-Dmitry
+It's mostly for long running heavy workloads, which involve other device
+than CPUs, e.g. GPU or ISP (Image Signal Processor). Those devices can
+heat up the SoC. In our game DrArm running on pixel6 the GPU uses 75-77%
+of total power budget (starting from ~2.5W for GPU + 1.3W for all CPUs).
+That 2.5W from the GPU is heating up the CPUs and mostly impact the Big
+cores, which are made from High-Performance cells (thus leaking more).
+OverUtilization in the first 4-5min of gaming is ~4-9%, so EAS can work
+and save some power, if it has a good model. Later we have thermal
+throttling and OU goes to ~50% but EAS still can work. If the model is
+more precised - thus adjusted for the raising leakage due to temperature
+increase (generated due to GPU power), than we still can use better that
+power budget and not waist on the leakage at higher OPPs.
+
+> 
+> Driver interface for this part makes sense; as thermal framework will likely to
+> know how feed things back to EM table, if necessary.
+
+Thermal framework or I would rather say smarter thermal dedicated driver
+which has built-in power model and access to the sensors data. In this
+way it can provide adjusted power model into the EM dynamically.
+It will also calculate the efficiency (the 'cost' field).
+
+> 
+>>
+>> 2. It is also possible to change the EM to better reflect the currently
+>> running workload. Usually the EM is derived from some average power values
+>> taken from experiments with benchmark (e.g. Dhrystone). The model derived
+>> from such scenario might not represent properly the workloads usually running
+>> on the device. Therefore, runtime modification of the EM allows to switch to
+>> a different model, when there is a need.
+> 
+> I didn't get how the new performance field is supposed to be controlled and
+> modified by users. A driver interface doesn't seem suitable as there's no
+> subsystem that knows the characteristic of the workload except userspace. In
+> Android we do have contextual info about what the current top-app to enable
+> modifying the capacities to match its characteristics.
+
+Well in latest public documentation (May2023) for Cortex-X4 there are
+described new features of Arm cores: PDP, MPMM, which can change the
+'performance' of the core in FW. Our SCMI kernel subsystem will get an
+interrupt, so the drivers can know about it. It could be used for
+recalculating the efficiency of the CPUs in the EM. When there is no
+hotplug and the long running app is still running, that FW policy would
+be reflected in EM. It's just not done all-in-one-step. Those patches
+will be later.
+
+Second, I have used that 'performance' field to finally get rid of
+this runtime division in em_cpu_energy() hot path - which was annoying
+me for very long time. It wasn't possible to optimize that last
+operation there, because the not all CPUs boot and final CPU capacity
+is not known when we register EMs. With this feature finally I can
+remove that heavy operation. You can see more in that patch 15/23.
+
+> 
+>>
+>> 3. The EM can be adjusted after boot, when all the modules are loaded and
+>> more information about the SoC is available e.g. chip binning. This would help
+>> to better reflect the silicon characteristics. Thus, this EM modification
+>> API allows it now. It wasn't possible in the past and the EM had to be
+>> 'set in stone'.
+>>
+>> More detailed explanation and background can be found in presentations
+>> during LPC2022 [1][2] or in the documentation patches.
+>>
+>> Some test results.
+>> The EM can be updated to fit better the workload type. In the case below the EM
+>> has been updated for the Jankbench test on Pixel6 (running v5.18 w/ mainline backports
+>> for the scheduler bits). The Jankbench was run 10 times for those two configurations,
+>> to get more reliable data.
+>>
+>> 1. Janky frames percentage
+>> +--------+-----------------+---------------------+-------+-----------+
+>> | metric |    variable     |       kernel        | value | perc_diff |
+>> +--------+-----------------+---------------------+-------+-----------+
+>> | gmean  | jank_percentage | EM_default          |  2.0  |   0.0%    |
+>> | gmean  | jank_percentage | EM_modified_runtime |  1.3  |  -35.33%  |
+>> +--------+-----------------+---------------------+-------+-----------+
+>>
+>> 2. Avg frame render time duration
+>> +--------+---------------------+---------------------+-------+-----------+
+>> | metric |      variable       |       kernel        | value | perc_diff |
+>> +--------+---------------------+---------------------+-------+-----------+
+>> | gmean  | mean_frame_duration | EM_default          | 10.5  |   0.0%    |
+>> | gmean  | mean_frame_duration | EM_modified_runtime |  9.6  |  -8.52%   |
+>> +--------+---------------------+---------------------+-------+-----------+
+>>
+>> 3. Max frame render time duration
+>> +--------+--------------------+---------------------+-------+-----------+
+>> | metric |      variable      |       kernel        | value | perc_diff |
+>> +--------+--------------------+---------------------+-------+-----------+
+>> | gmean  | max_frame_duration | EM_default          | 251.6 |   0.0%    |
+>> | gmean  | max_frame_duration | EM_modified_runtime | 115.5 |  -54.09%  |
+>> +--------+--------------------+---------------------+-------+-----------+
+>>
+>> 4. OS overutilized state percentage (when EAS is not working)
+>> +--------------+---------------------+------+------------+------------+
+>> |    metric    |       wa_path       | time | total_time | percentage |
+>> +--------------+---------------------+------+------------+------------+
+>> | overutilized | EM_default          | 1.65 |   253.38   |    0.65    |
+>> | overutilized | EM_modified_runtime | 1.4  |   277.5    |    0.51    |
+>> +--------------+---------------------+------+------------+------------+
+>>
+>> 5. All CPUs (Little+Mid+Big) power values in mW
+>> +------------+--------+---------------------+-------+-----------+
+>> |  channel   | metric |       kernel        | value | perc_diff |
+>> +------------+--------+---------------------+-------+-----------+
+>> |    CPU     | gmean  | EM_default          | 142.1 |   0.0%    |
+>> |    CPU     | gmean  | EM_modified_runtime | 131.8 |  -7.27%   |
+>> +------------+--------+---------------------+-------+-----------+
+> 
+> How did you modify the EM here? Did you change both performance and power
+> fields? How did you calculate the new ones?
+
+It was just the power values modified on my pixel6:
+for Littles 1.6x, Mid 0.8x, Big 1.3x of their boot power.
+TBH I don't know the chip binning of that SoC, but I suspect it
+could be due to this fact. More about possible error range in chip
+binning power values you can find in my comment to the patch 22/23
+
+> 
+> Did you try to simulate any heating effect during the run if you're taking
+> temperature into account to modify the power? What was the variation like and
+
+Yes, I did that experiment and presented on OSPM 2023 slide 13. There is
+big CPU power plot change in time, due to GPU heat. All detailed data is
+there. The big CPU power is ~18-20% higher when 1-1.5W GPU is heating up
+the whole SoC.
+
+> at what rate was the EM being updated in this case? I think Jankbench in
+
+In this experiment EM was only set once w/ the values mentioned above.
+It could be due to the chip lottery. I cannot say on 100% this phone.
+
+> general wouldn't stress the SoC enough.
+
+True, this test is not power heavy as it can be seen. It's more
+to show that the default EM after boot might not be the optimal one.
+
+> 
+> It'd be insightful to look at frequency residencies between the two runs and
+> power breakdown for each cluster if you have access to them. No worries if not!
+
+I'm afraid you're asking for too much ;)
+
+> 
+> My brain started to fail me somewhere around patch 15. I'll have another look
+> some time later in the week but generally looks good to me. If I have any
+> worries it is about how it can be used with the provided interfaces. Especially
+> expectations about managing fast thermal changes at the level you're targeting.
+
+No worries, thanks for the review! The fast thermal changes, which are
+linked to the CPU's workload are not an issue here and I'm not worried
+about those. The side effect of the heat from other device is the issue.
+Thus, that thermal driver which modifies the EM should be aware of the
+'whole SoC' situation (like mainline IPA does, when it manages all
+devices in a single thermal zone).
+
+Regards,
+Lukasz
 
