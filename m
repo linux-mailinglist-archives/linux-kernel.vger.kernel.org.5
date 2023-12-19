@@ -1,129 +1,102 @@
-Return-Path: <linux-kernel+bounces-5944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA1E8191D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:56:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2931E8191D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:58:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF3D21F2529F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:56:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFF00B231C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF8A3A27B;
-	Tue, 19 Dec 2023 20:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3BE3A1B9;
+	Tue, 19 Dec 2023 20:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NRTNu4af"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Lcx1T6rp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E5939AEA;
-	Tue, 19 Dec 2023 20:56:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3859C433C7;
-	Tue, 19 Dec 2023 20:56:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703019362;
-	bh=bI7eRgyy5+ORKYRMoLdIMmfFqNe12oOLtPUfljOSAyw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NRTNu4afzfmyVVxHDtB7hzC5xvReRXGZC3oX6gzfNCDxJV9dmI0Qx+K0XKecETC6y
-	 9maVdCXBahsp2UOvHWiQgrzHt+9fpBmshww7mD0gGSvxXCWp0Xv5XgCVzUsiX4unQb
-	 2jBBsQt7f1jfU+bT93hf+je1VMnkQW0WB9vvhxYHmdvkEQi7T91f4xG3JHbB7j3nMb
-	 fJlzoDmOzMJaFsMA7u9vMZC04S37LRZKw9bf+rGzR/YkAYlPbVIuQ67tCmFSCE3yFp
-	 xuaoo0xRMCxtVl/p/82ntXh2VNF1URJ6GVGAvtqZiWPC/UOx1qq1dM+8LSEq5dGQbO
-	 HP0GDTKTyR+Qg==
-Date: Tue, 19 Dec 2023 21:55:58 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Quan Nguyen <quan@os.amperecomputing.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Joel Stanley <joel@jms.id.au>, Andi Shyti <andi.shyti@kernel.org>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-	Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
-	openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	Cosmo Chou <chou.cosmo@gmail.com>,
-	Open Source Submission <patches@amperecomputing.com>,
-	Phong Vo <phong@os.amperecomputing.com>,
-	"Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH v4 1/2] i2c: aspeed: Handle the coalesced stop conditions
- with the start conditions.
-Message-ID: <ZYIDXru48jqk6MH0@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Quan Nguyen <quan@os.amperecomputing.com>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Joel Stanley <joel@jms.id.au>, Andi Shyti <andi.shyti@kernel.org>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-	Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
-	openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	Cosmo Chou <chou.cosmo@gmail.com>,
-	Open Source Submission <patches@amperecomputing.com>,
-	Phong Vo <phong@os.amperecomputing.com>,
-	"Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20231211102217.2436294-1-quan@os.amperecomputing.com>
- <20231211102217.2436294-2-quan@os.amperecomputing.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BFB39AEA;
+	Tue, 19 Dec 2023 20:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703019473;
+	bh=HL+J12pGhDwMatKlkflli5mu1mZB75z2ODA2GA/b1lU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Lcx1T6rpxvGwsRI7qdwtAsV2Hefhi8R6YM2K118OqEW1F3b8PLtsE4yV2lIY3rHM5
+	 dyYSzCnJEvqYT+iNxV2xFyXWNBatw3/tdOxpJEga+rSYepXMcGIqcqPq/TtVMZUGAO
+	 EPz7fjYolqgsx2y+NAK4NbW2CcyOVxSvZ7ZvvIFZzG/k+Hxu4ePsSbaVuI4PU9R7Ia
+	 GGuDYCN84FFXIEioDqG/GaYZSSiKA8Y/6UmjYl7xVXIC/d5VF1vzXTehe0Ov0r51as
+	 Al5aaRTlAOaBKiiO+0K+PRUGaq7rMfOW+2r5fbpYnfFVuK199H1+V5rfRHdWzGoHhZ
+	 ti8hcluPI3eFA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SvptT1Rfjz4wdB;
+	Wed, 20 Dec 2023 07:57:52 +1100 (AEDT)
+Date: Wed, 20 Dec 2023 07:57:50 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+Cc: Yury Norov <yury.norov@gmail.com>, Networking <netdev@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <20231220075750.19541c67@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="EnB+dRLs7i+8f3ip"
-Content-Disposition: inline
-In-Reply-To: <20231211102217.2436294-2-quan@os.amperecomputing.com>
+Content-Type: multipart/signed; boundary="Sig_/B9wA7/bc.L3DUIsAuTRRMxS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-
---EnB+dRLs7i+8f3ip
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/B9wA7/bc.L3DUIsAuTRRMxS
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 11, 2023 at 05:22:16PM +0700, Quan Nguyen wrote:
-> Some masters may drive the transfers with low enough latency between
-> the nak/stop phase of the current command and the start/address phase
-> of the following command that the interrupts are coalesced by the
-> time we process them.
-> Handle the stop conditions before processing SLAVE_MATCH to fix the
-> complaints that sometimes occur below.
->=20
-> "aspeed-i2c-bus 1e78a040.i2c-bus: irq handled !=3D irq. Expected
-> 0x00000086, but was 0x00000084"
->=20
-> Fixes: f9eb91350bb2 ("i2c: aspeed: added slave support for Aspeed I2C dri=
-ver")
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Hi all,
 
-Applied to for-current, thanks!
+In commit
 
-I'll wait with patch 2. It seems there are issues to be solved before.
+  340943fbff3d ("net: mana: select PAGE_POOL")
 
+Fixes tag
 
---EnB+dRLs7i+8f3ip
-Content-Type: application/pgp-signature; name="signature.asc"
+  Fixes: ca9c54d2 ("net: mana: Add a driver for Microsoft Azure Network Ada=
+pter")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    This can be fixed for the future by setting core.abbrev to 12 (or
+    more) or (for git v2.11 or later) just making sure it is not set
+    (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/B9wA7/bc.L3DUIsAuTRRMxS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWCA14ACgkQFA3kzBSg
-KbZyCA//ccM+CCktAPNx6R6VzRFUXc9PKW3sgI5UZ6kuiBU+ntqHpNArrKZRxWFj
-owkYvvBdo2tg1YZQWQOAEwdzOz3mEQ2py3faQRIEL08bihsZhgSR43jR/D2d9fpI
-tssJghX3Hu3VMt1m0O2PUqX+20IJhYxjuQIVB5VEm7gSvlRoDcl+nqps/xEyICv5
-A+Uftt2ZWHRGVgQ+RZB98BSsfFbPIgw64BfG0iKUF2bVqjPBCAMfPs2bZUSoGdxl
-I9cSyIzWqKmQ3R2R84S+tJw6xCy1aENHHXAaXHDFLtiXieoZrcBSvs3U2YaBcFeA
-VvZNMxPnGETYPsn8Hze1En1wJFimMzxEcpRRu380W+GphZa38oJyfadRh38oh8yf
-pYgu9hsL4vAUefT28PvBTC75T9AabggQifj3KqdxAEWfolcsB219lDgsC8qPnOKI
-IhU4bbtgGNM2z8pUN8zvFxWx9oJGONR8yibrkWhpSAsM1Wi1JREvxfdhOhlJ+84Y
-8j5AhARou0HEOb0mtaIBAT37UWyBX9/HlZatXFeSi4p9AktTpKS9A014Zw5rp3OS
-rZci0/iUupGoc7tg9KkbTQ0Oc4zMA9FhGKnWb+gXFw6lZPVs6w9O+EidfBCKG7iq
-mgpWX0bhPwIsr7IKgR29OeKEbWiD2Uye033m5dfBTQ8cnaL0yuc=
-=mbba
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWCA84ACgkQAVBC80lX
+0GwbGggAj9qHrs5DFB1oOI5tpHL58AuwA/yPDi7pXV386Wyk8VFTCSR3QOhqsu0U
+80NRS/roDih6w6XcfKTuKSYWHJKf2J7kT6HzaFMpxtmiyKxAcePdsm6ZZDFSbRV7
+S4lJi3Qh+34LFpYO4Tb26/1uQdUXvG4KvteWVNX+08/xX3vWR0aeNZxtq424DEeT
+whfdU1H1etjN+Lt8tpDmlKgES+iM+fhNeuWN5tyxCw12PVYs0oh2KtlRWNFbvWKP
+1sNwzna9nTbHaOtNg0gNTZy7m1DQ0boM+tf5oqv4+DMoz6gy5bOzXOtWI/boW+7+
+/FTWRfU6G+uU5Z4CR1tBFwb/U+G4Bw==
+=mpp2
 -----END PGP SIGNATURE-----
 
---EnB+dRLs7i+8f3ip--
+--Sig_/B9wA7/bc.L3DUIsAuTRRMxS--
 
