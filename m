@@ -1,45 +1,44 @@
-Return-Path: <linux-kernel+bounces-5434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7550818AA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:59:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F4FF818AA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:59:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED2BAB21333
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:59:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F33601F28557
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73BC37D3C;
-	Tue, 19 Dec 2023 14:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D38238DEE;
+	Tue, 19 Dec 2023 14:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="aJcqxiuM"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="B96wPCLj"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C6A37D0B;
-	Tue, 19 Dec 2023 14:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0C11CAAC;
+	Tue, 19 Dec 2023 14:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3812040009;
-	Tue, 19 Dec 2023 14:54:47 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8B06440013;
+	Tue, 19 Dec 2023 14:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702997688;
+	t=1702997689;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jzW2JR3KUHEBRvbUZ7SjMZvoo6agNjWiHJ41yASPvJk=;
-	b=aJcqxiuMtphsbOJDgOQgGXFv9oXj1R2pBkky5UQf5hja8CM7txnmYwBGBAI4XbP6V8qRdY
-	C77Pw6F0VhT10q5DHM9T8rvGWJV4ASEOFfbFcxLIVcJAN/UiHDI8RDS4qN3+UduXYlF9B1
-	h7JfwmshDbJaW4WkgSUKCw/igEfeWCQX78BQk+X3PpL0uGha65K9Kn7NT8R5y6hyCSfsGG
-	A2xUjiarZhJxQIj/SlYXGOu/xQlq0eL0R8eSCfLlqf3NXMgVUrvjCdARUw/B4VOGLzdKgt
-	1fYRymmyrTM3skVhJB9ztnByhaeDFHJoRHXxCeLCaNQF18WApSdQdyu71IfbAA==
+	bh=PDyTeU9usO3nPa3fs7kQ7qNlzGdPYLhGQTUhd4FhxwY=;
+	b=B96wPCLjTmdsJD900DmDDyWBYyQR63QedKxMVIFYAllO8UzR/7+MLZMuQRr1oxPqVHLdmO
+	wqA6h37ijE/3NphaWd+uLSe0Fc9/ntSHfmhnTu/GCJbS0V6ByORZiqZ6hFaDmI6Dq4+DGE
+	3hM4a98hdzQVVOFTBIwayVOkTrig86/1GbL183VD2Ms6bHkdMvjaJ6fW5U/NOJ5+B697U4
+	0zV6dplJh/+LM1dQwB0WLOL3A6gpF68bLbPyGYB2O4xiHFeVUFnQYYIZ7fM/if1mt3IVH8
+	J9k2qbJT/HRTvmrg+pWtqr853UDpnkCQPJB7sdEYHnoabdV5jV7OhBQj06GG1g==
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Tue, 19 Dec 2023 15:54:17 +0100
-Subject: [PATCH v2 2/6] ASoC: dt-bindings: Add Rockchip RK3308 internal
- audio codec
+Date: Tue, 19 Dec 2023 15:54:18 +0100
+Subject: [PATCH v2 3/6] ASoC: core: add SOC_DOUBLE_RANGE_TLV() helper macro
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,7 +47,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231219-rk3308-audio-codec-v2-2-c70d06021946@bootlin.com>
+Message-Id: <20231219-rk3308-audio-codec-v2-3-c70d06021946@bootlin.com>
 References: <20231219-rk3308-audio-codec-v2-0-c70d06021946@bootlin.com>
 In-Reply-To: <20231219-rk3308-audio-codec-v2-0-c70d06021946@bootlin.com>
 To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, 
@@ -64,144 +63,47 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.12.4
 X-GND-Sasl: luca.ceresoli@bootlin.com
 
-Add device tree bindings document for the internal audio codec of the
-Rockchip RK3308 SoC.
+No macro currently allows handling a stereo control that has left and right
+in the same register and whose minimum register value is not zero. Add one
+that does that.
+
+Note that even though the snd_soc_*_volsw_range() look more appropriate
+given the _range suffix, they are not suitable because they don't honor the
+two shift values. The snd_soc_*_volsw() look more generic and are suitable
+for the task.
 
 Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
 ---
 
-Changed in v2:
- - reword commit title
- - add maxItems to resets
- - remove quotes from reset-names
- - use percent values for rockchip,micbias-avdd-multiplier
- - use name compliant to the docs in the example
+This patch is new in v2.
 ---
- .../bindings/sound/rockchip,rk3308-codec.yaml      | 98 ++++++++++++++++++++++
- MAINTAINERS                                        |  5 ++
- 2 files changed, 103 insertions(+)
+ include/sound/soc.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml b/Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml
-new file mode 100644
-index 000000000000..27a9e5bcfa58
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml
-@@ -0,0 +1,98 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/rockchip,rk3308-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Rockchip RK3308 Internal Codec
-+
-+description: |
-+  This is the audio codec embedded in the Rockchip RK3308
-+  SoC. It has 8 24-bit ADCs and 2 24-bit DACs. The maximum supported
-+  sampling rate is 192 kHz.
-+
-+  It is connected internally to one out of a selection of the internal I2S
-+  controllers.
-+
-+  The RK3308 audio codec has 8 independent capture channels, but some
-+  features work on stereo pairs called groups:
-+    * grp 0 -- MIC1 / MIC2
-+    * grp 1 -- MIC3 / MIC4
-+    * grp 2 -- MIC5 / MIC6
-+    * grp 3 -- MIC7 / MIC8
-+
-+maintainers:
-+  - Luca Ceresoli <luca.ceresoli@bootlin.com>
-+
-+properties:
-+  compatible:
-+    const: rockchip,rk3308-codec
-+
-+  reg:
-+    maxItems: 1
-+
-+  rockchip,grf:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the General Register Files (GRF)
-+
-+  clocks:
-+    items:
-+      - description: clock for TX
-+      - description: clock for RX
-+      - description: AHB clock driving the interface
-+
-+  clock-names:
-+    items:
-+      - const: mclk_tx
-+      - const: mclk_rx
-+      - const: hclk
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    items:
-+      - const: codec
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  rockchip,micbias-avdd-percent:
-+    description: |
-+      Voltage setting for the MICBIAS pins expressed as a percentage of
-+      AVDD.
-+
-+      E.g. if rockchip,micbias-avdd-percent = 85 and AVDD = 3v3, then the
-+      MIC BIAS voltage will be 3.3 V * 85% = 2.805 V.
-+
-+    enum: [ 50, 55, 60, 65, 70, 75, 80, 85 ]
-+
-+required:
-+  - compatible
-+  - reg
-+  - rockchip,grf
-+  - clocks
-+  - resets
-+  - "#sound-dai-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/rk3308-cru.h>
-+
-+    audio-codec: audio-codec@ff560000 {
-+        compatible = "rockchip,rk3308-codec";
-+        reg = <0xff560000 0x10000>;
-+        rockchip,grf = <&grf>;
-+        clock-names = "mclk_tx", "mclk_rx", "hclk";
-+        clocks = <&cru SCLK_I2S2_8CH_TX_OUT>,
-+                 <&cru SCLK_I2S2_8CH_RX_OUT>,
-+                 <&cru PCLK_ACODEC>;
-+        reset-names = "codec";
-+        resets = <&cru SRST_ACODEC_P>;
-+        #sound-dai-cells = <0>;
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9104430e148e..feddd6610b51 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18669,6 +18669,11 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/media/rockchip-rga.yaml
- F:	drivers/media/platform/rockchip/rga/
- 
-+ROCKCHIP RK3308 INTERNAL AUDIO CODEC
-+M:	Luca Ceresoli <luca.ceresoli@bootlin.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml
-+
- ROCKCHIP VIDEO DECODER DRIVER
- M:	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
- L:	linux-media@vger.kernel.org
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 7792c393e238..41ba90bdbea9 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -149,6 +149,18 @@
+ 		{.reg = xreg, .rreg = xreg, \
+ 		.shift = shift_left, .rshift = shift_right, \
+ 		.max = xmax, .min = xmin} }
++#define SOC_DOUBLE_RANGE_TLV(xname, xreg, xshift_left, xshift_right, xmin, xmax, \
++			     xinvert, tlv_array) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
++		  SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.tlv.p = (tlv_array), \
++	.info = snd_soc_info_volsw, \
++	.get = snd_soc_get_volsw, .put = snd_soc_put_volsw, \
++	.private_value = (unsigned long)&(struct soc_mixer_control) \
++		{.reg = xreg, .rreg = xreg, \
++		 .shift = xshift_left, .rshift = xshift_right, \
++		 .min = xmin, .max = xmax, .invert = xinvert} }
+ #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
 
 -- 
 2.34.1
