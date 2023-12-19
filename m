@@ -1,64 +1,65 @@
-Return-Path: <linux-kernel+bounces-5142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E3658186FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:06:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2470818703
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE75D1F2496E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:06:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BD87286F20
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7CB17741;
-	Tue, 19 Dec 2023 12:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C613E171B9;
+	Tue, 19 Dec 2023 12:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="onwTq2Er"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wTZJctSb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7509D18E0E
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD3518645
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50c222a022dso5311845e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:06:17 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso5448617a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702987575; x=1703592375; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UPT5gtqaHdtp0V2LGisXTEFTTniJuvsYthI546xfi9A=;
-        b=onwTq2ErAkUATEQtcdwyHabAxD54clF1wkFyuaqJysQr718qB9Wzevi0JRmGgFfX0U
-         DyauVtSyuOn4/0xxAZpxPdeT7d+ikDLMuFIjFOZITDqqMDZYd3Fj//tHDi+AiXYUG5Fb
-         dvN4O83zgJxRfmHdS/bgF3JMmnX8Y24u2lg4nEqWQdzztGAkemxFQ4zYKjHy85Gmr/oD
-         EGL+JBwp+CA1JcSEdyQ3oGJLiKxxGaoy80woUQnnQiAqX364Ba1F5Apdqceyu7Hp2lwT
-         A5feW5feRnRQAVp1v/iNrBIRr0XdEDNJSkDs46eEfIy2dUnVgLIH8+y/CsGMcd3zbEMS
-         pIUA==
+        d=linaro.org; s=google; t=1702987591; x=1703592391; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=/exb5wVX9siMDyUcgM5UGDFi2b5saHGKkBIlCfEkmUg=;
+        b=wTZJctSbPTCNee+qKneBxja3I1fmxXLC74rWXhSKhZRpJu99k7xKy7HA7cIbYwpG+o
+         bQ8bPtCGwno+C37JXT354F2XnFf8M3VjCWzc2c3YZIh1z4UYulkZ2ox/+K+ZgB2R5xb7
+         OURO0uXZXqS2y1dSoM3clb/ataos/wItTh3ZPx5SC9KqMmT4VbSCQ3mCb20/iZ1ScFcd
+         7oI6hGd1rmermNy4Qrbk9E9ZRndVIMNzsUk1wZvqsOlIwvshxnu+8fGEuqckFLdD2wYP
+         8Axfn38dK1vVuwSC0xE3D0T245rdUdMw3Fp/em8EV75DMEZmFBwCyl4+Z4jSokDRBm57
+         ya7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702987575; x=1703592375;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UPT5gtqaHdtp0V2LGisXTEFTTniJuvsYthI546xfi9A=;
-        b=nVLfTmstSdzA2GFmxj+SA0OpK2nsatFtQLI1m4HslfjaQn7DP/f3EKC0BsSYCH+KIu
-         C+X7jPVY4CjcKXEEZyBkGHmweSERx69mB2paMzxBwToGUJvsGCVitUL+On87DXe00SPX
-         Kl6qH4lbifs1lk+H63LLyNnn07U2p1eOVSB95pm6MhVrQRU9cTP+ycFl4up5sRY8aYgX
-         DDBhM9EVZu8/LoEiForSb9MeRXzDe85+nUNGHbmEAsR4t5vaARyDETadWE71aQaabpxb
-         LTUpiBjTrV03gS4raEWZkcDZPM75fm+BzjVxEWAmTnzIZ31iHqv4CugxGH95/c+XIhGQ
-         Q8uA==
-X-Gm-Message-State: AOJu0Yy5o1yLNJHh+TKhLp9pqC2IbTqEriASVHsNb9vP4Hkpmq4ZDFhT
-	LBWNyN5aQ+909hU/oK79NdtJkw==
-X-Google-Smtp-Source: AGHT+IFrixXWHEcz8ztbqzWk3ox6ogOkzQOLFlYti3WrXFMd5D8129G9Lq6WgyelZr4+DgwdKt2XTw==
-X-Received: by 2002:a05:6512:2821:b0:50e:3170:7c33 with SMTP id cf33-20020a056512282100b0050e31707c33mr2448840lfb.34.1702987575356;
-        Tue, 19 Dec 2023 04:06:15 -0800 (PST)
-Received: from [192.168.199.59] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
-        by smtp.gmail.com with ESMTPSA id p13-20020aa7cc8d000000b00553622def74sm1686017edt.29.2023.12.19.04.06.14
+        d=1e100.net; s=20230601; t=1702987591; x=1703592391;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/exb5wVX9siMDyUcgM5UGDFi2b5saHGKkBIlCfEkmUg=;
+        b=W5ATILbF0Hr4vSz5ex4+g02Ul7UM83lTBXzq8VPe2cAX5sLlcXizzTv0i+etgbSpYy
+         B/KXhgD3m7ez3nqCtLOw6lC/Jjn8BJyg/d92mrqX8omPnQ+LRSNB70c7uSn7H9BwOBcf
+         V88hey6RNN8SEES9vPuSeVrs1HkrSaXIYlOz4erY4/XSolcW0/QD9ybD7aGvyfqM20LE
+         RP3/GOfMWbBrFsjN/8rxenSxyYeHkvxuhugJuIKLdAuZPz6iu5VlT7dU5lPr+FDs87Iy
+         pEzNFGSsGZxzTOmjSK1r/SXQoAKbng62RfC0mq+G50bK4qKb/colMHYwFEk3R8/OLg04
+         mTZw==
+X-Gm-Message-State: AOJu0YwcPLgpCUElBckXo2MbDlep6hcSDtDi+HGdWYuoKSS8fownEDjl
+	LeiBgcTpxd2w+OUKnupzc0j0tQ==
+X-Google-Smtp-Source: AGHT+IF6CdAeGP0WSJV+oc6kbgx/fFcGs4VJZwum8AjL3WAlT6tNIgmXHK5cfvA71s5C7jrixbLcUQ==
+X-Received: by 2002:a17:906:518b:b0:a23:648b:34f5 with SMTP id y11-20020a170906518b00b00a23648b34f5mr1240276ejk.16.1702987590959;
+        Tue, 19 Dec 2023 04:06:30 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id rg8-20020a1709076b8800b00a1f7cbf2896sm14306470ejc.176.2023.12.19.04.06.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 04:06:15 -0800 (PST)
-Message-ID: <5b453356-f2bd-4703-8761-5311b5964f6c@linaro.org>
-Date: Tue, 19 Dec 2023 13:06:13 +0100
+        Tue, 19 Dec 2023 04:06:29 -0800 (PST)
+Message-ID: <58ded02d-a5d2-40e2-b575-dc520a7553cf@linaro.org>
+Date: Tue, 19 Dec 2023 13:06:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,81 +67,127 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8650-qrd: add USB-C Altmode
- Support
+Subject: Re: [PATCH 2/2] clk: samsung: Fix typo error and extra space
+To: Varada Pavani <v.pavani@samsung.com>, mturquette@baylibre.com,
+ sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com
+Cc: linux-samsung-soc@vger.kernel.org, alim.akhtar@samsung.com,
+ aswani.reddy@samsung.com, pankaj.dubey@samsung.com
+References: <20231219115834.65720-1-v.pavani@samsung.com>
+ <CGME20231219115858epcas5p469e925738bcb93ee88842fdea0f9d3f0@epcas5p4.samsung.com>
+ <20231219115834.65720-2-v.pavani@samsung.com>
 Content-Language: en-US
-To: Neil Armstrong <neil.armstrong@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20231218-topic-sm8650-upstream-altmode-v1-0-7900660693cf@linaro.org>
- <20231218-topic-sm8650-upstream-altmode-v1-1-7900660693cf@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231218-topic-sm8650-upstream-altmode-v1-1-7900660693cf@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231219115834.65720-2-v.pavani@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 18.12.2023 11:26, Neil Armstrong wrote:
-> Add the necessary nodes to support the USB-C Altmode path by
-> adding the following
-> - WCD939x USBSS Mux I2C device
-> - nb7vpq904m Redriver I2C device
-> - Port/Endpoint graph links bettween PMIC-Glink, Mux, Redriver and USB PHY nodes.
+On 19/12/2023 12:58, Varada Pavani wrote:
+> Remove extra spaces and fix spelling mistakes in 'drivers/
+> clk/samsung/clk-cpu.c' and 'drivers/clk/samsung/clk-cpu.h'
 > 
-> WCD939x USBSS port 2 Path to Codec will be added later when Audio support
-> is added.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Varada Pavani <v.pavani@samsung.com>
 > ---
-[...]
+>  drivers/clk/samsung/clk-cpu.c | 6 +++---
+>  drivers/clk/samsung/clk-cpu.h | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-cpu.c b/drivers/clk/samsung/clk-cpu.c
+> index 3e62ade120c5..18568b8b1b9b 100644
+> --- a/drivers/clk/samsung/clk-cpu.c
+> +++ b/drivers/clk/samsung/clk-cpu.c
+> @@ -19,7 +19,7 @@
+>   * clock and the corresponding rate changes of the auxillary clocks of the CPU
+>   * domain. The platform clock driver provides a clock register configuration
+>   * for each configurable rate which is then used to program the clock hardware
+> - * registers to acheive a fast co-oridinated rate change for all the CPU domain
+> + * registers to achieve a fast co-oridinated rate change for all the CPU domain
+>   * clocks.
+>   *
+>   * On a rate change request for the CPU clock, the rate change is propagated
+> @@ -181,7 +181,7 @@ static int exynos_cpuclk_pre_rate_change(struct clk_notifier_data *ndata,
+>  	 * If the old parent clock speed is less than the clock speed of
+>  	 * the alternate parent, then it should be ensured that at no point
+>  	 * the armclk speed is more than the old_prate until the dividers are
+> -	 * set.  Also workaround the issue of the dividers being set to lower
+> +	 * set. Also workaround the issue of the dividers being set to lower
 
-> +&i2c3 {
-> +       status = "ok";
-"okay"
-[...]
+Why? The double-space is correct.
 
-> +&i2c6 {
-> +	status = "ok";
-"okay"
+>  	 * values before the parent clock speed is set to new lower speed
+>  	 * (this can result in too high speed of armclk output clocks).
+>  	 */
+> @@ -303,7 +303,7 @@ static int exynos5433_cpuclk_pre_rate_change(struct clk_notifier_data *ndata,
+>  	 * If the old parent clock speed is less than the clock speed of
+>  	 * the alternate parent, then it should be ensured that at no point
+>  	 * the armclk speed is more than the old_prate until the dividers are
+> -	 * set.  Also workaround the issue of the dividers being set to lower
+> +	 * set. Also workaround the issue of the dividers being set to lower
 
+Why?
 
-Konrad
+>  	 * values before the parent clock speed is set to new lower speed
+>  	 * (this can result in too high speed of armclk output clocks).
+>  	 */
+> diff --git a/drivers/clk/samsung/clk-cpu.h b/drivers/clk/samsung/clk-cpu.h
+> index fc9f67a3b22e..e0a1651174e6 100644
+> --- a/drivers/clk/samsung/clk-cpu.h
+> +++ b/drivers/clk/samsung/clk-cpu.h
+> @@ -33,7 +33,7 @@ struct exynos_cpuclk_cfg_data {
+>   * @hw:	handle between CCF and CPU clock.
+>   * @alt_parent: alternate parent clock to use when switching the speed
+>   *	of the primary parent clock.
+> - * @ctrl_base:	base address of the clock controller.
+> + * @ctrl_base: base address of the clock controller.
+
+Why only here and not in other places?
+
+Best regards,
+Krzysztof
+
 
