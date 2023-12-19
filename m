@@ -1,241 +1,201 @@
-Return-Path: <linux-kernel+bounces-5169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E70ED81877E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:30:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82B4A818782
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B1251F23C48
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:30:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 265EAB235C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBEA18626;
-	Tue, 19 Dec 2023 12:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E30E1862E;
+	Tue, 19 Dec 2023 12:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=softnautics.com header.i=@softnautics.com header.b="M2no/BJp"
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="ogPokliN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01on2126.outbound.protection.outlook.com [40.107.222.126])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0311D18629;
-	Tue, 19 Dec 2023 12:30:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=softnautics.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=softnautics.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L+EtSZG/vE2TIR/4UEOUQFW+sqAb4WMGXuNBuljAsLT63hP+VEOF/O/cunTMEGNxTN/RWc+9Kj/ja8YbqbL78WQsowt1V7hGuLZdXOsH5/CHinlZv8VswHd8w1XdPZE1cwL0RXGeFHWQAQhFVthaL6Z9emjiJw+bEMPJHjkwUra7Ka8/slNnpG3d9/2x6ym7FkOyrotqT1FgIKA+Ilckv2Jw69nhkDx1qjn+EKVVF9dYtsUOkwnBvuNhQj3TYnFSNUPh0BKKS8oa2574mZF3VJG0dta9jfKb43H4D/IoBIin39CPVvLVGnVaHy28cAeOhujoFFq2bvUroNYb7G1X8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XnN/Xa+VcKbJh29VLU2oyn3d9HaQzEPNb5YwopwqpLc=;
- b=GI8WAZ5lXwUSuiBnlEE9qG8+N6n4LsvybleKuzL37wGtaQD14Ri+EV5bGDjoDM/7gJ0e9JSc90xNrjwAuz5WdargHF1CJjtCjm/3914k1k+34+rfwGn9avNLIJ7AFwW3A+svUtVB7WDUdeKFFu1xMqRILuOOZpIG1r8+5ZkI/LAJ+sv5JQsvMiqboZn12yWrR3HVv1aPGb8zmlyR5TpBFXImS2Tvr35tFUJU4ZQScwqF8fPAkFVjGeH7WwgFIpp4OHlLmbA3BDN1tNOBX7EhL6sprk+pOf2MK0MqZq2+vcyuBIjvOhLCDdlPRDwPoGqOEbC9mB56+U62SjrWnuEdUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=softnautics.com; dmarc=pass action=none
- header.from=softnautics.com; dkim=pass header.d=softnautics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=softnautics.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XnN/Xa+VcKbJh29VLU2oyn3d9HaQzEPNb5YwopwqpLc=;
- b=M2no/BJpiGqnT6X0LaohUi2Ou3yNuNTbEArUVOBWyE20+DYGP0Ggd8DnziEKxx9Y06ITD1vQ62vRWuBwFqnl/qO3xjbd8xPWY4Xwe3szDq44JVoTgLzVo38sswffMVArYiIYgu/tHhanHTYQy250TGk96o1/9H9yrRxKvMcyuDQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=softnautics.com;
-Received: from MAZPR01MB6188.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:4f::5)
- by PN0PR01MB9979.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:13b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
- 2023 12:30:07 +0000
-Received: from MAZPR01MB6188.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::2abd:88a2:361a:d653]) by MAZPR01MB6188.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::2abd:88a2:361a:d653%7]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
- 12:30:07 +0000
-From: Sunil Vaghela <sunil.vaghela@softnautics.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	michal.simek@amd.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ASoC: xilinx: Embed IEC958 sample rate val to channel status register
-Date: Tue, 19 Dec 2023 17:59:55 +0530
-Message-Id: <20231219122955.104696-1-sunil.vaghela@softnautics.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BM1P287CA0021.INDP287.PROD.OUTLOOK.COM
- (2603:1096:b00:40::24) To MAZPR01MB6188.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:4f::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF2E18626
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1702989128;
+	bh=yegy5KvHAjVR/3lUPtBaK8gT7xS7yxnnzH8gSTQaNjU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=ogPokliNma+UCVMcfxvIV7oxKkXpzS8O7GpG2MFI3U3QwpBJnhuRXZ5G9G+UL5+WA
+	 h9dEoH+0QtZwmbDIZ3BC/Zi+JJ3RK1ISYnDsTa19zPr8qMmFeXSvvIqJUNElABkWvK
+	 yUo81kw3/oLJ6+SxTk2b8+nZ/cF+12wpJX1M57zdF1/AplmLIVFkwUyEmW+Ynq2HBN
+	 ai2lA8291/po9+dIZ2fesQ/IUNxPNZTe9ggDLqs8bZeHMv+js9otOwdpnhcQBKLQq/
+	 zvMHlQ1PIiMN+T77hXord8kqiLhkBKhs1e8pnQRiPytvcJgZx7JLSYDuT9MsfNatti
+	 IgSGpmuUcQ3Iw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Svbfw1vtbz4wdD;
+	Tue, 19 Dec 2023 23:32:08 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/64s: Increase default stack size to 32KB
+In-Reply-To: <20231215124449.317597-1-mpe@ellerman.id.au>
+References: <20231215124449.317597-1-mpe@ellerman.id.au>
+Date: Tue, 19 Dec 2023 23:32:07 +1100
+Message-ID: <87ttoel6ew.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MAZPR01MB6188:EE_|PN0PR01MB9979:EE_
-X-MS-Office365-Filtering-Correlation-Id: c42b5210-cdb0-4736-b2ee-08dc008e3bfb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Ie1g8lcfzYS7PhpINH9YTqNZsPHgD4Onj6yhsYzSwug685cstz/Dmq7IjidSLxide84rxBqGTfD8n0V+yTl/SWhhI2IFtmt8WBrv0AEmiac5CfQi2lCLdXOdtqYmuufJGUh5WwH9jeT1c2HJLu6B9Wur/+18sXRKDD/KqW418PGvlDeI/HUhDgsETk/OehueVQ+F91+TSQc2un54TuLZokVZE6e4yLx74VgrBOKZK6BSs7UORXu8+N4HMS/lLaaH7lq8dE+2PX40fZLlVTvDUiLcxfSAsTd98g5XasDV/3xkT6t2rOIWfVV+HT93xkm8vvTE/OR0KmJ+fRaaKIGCLIAmr9ZgB978VP8MbfEdN0C2kQeCzCGZ6hY2yU0/QSjVzBb5XWKTjBVvIJ+hvMXRRdnGaNG+VngP7Y4Cl3a20KMIYobhJzTDxBVkPl695jBLdzoxGkzXriblb3823ktwzfh34FrkKqKcuP2vCgyZfDJHIsdK4lAniKKaEJVbo7oSs53leHqVSllc9QVeltjcC04U7K6etxwJi+oqmFWzHHUrm7v9jkv2SheFnySgXjExtRy46P1hr9rxMvUc//JuIlCZs09NfouTBKQ3zVpc6p66vZzpyFrMzlHWSUsLM4BG
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MAZPR01MB6188.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(39840400004)(366004)(136003)(346002)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(26005)(2616005)(1076003)(6506007)(6666004)(52116002)(6512007)(55236004)(83380400001)(5660300002)(44832011)(2906002)(41300700001)(4326008)(478600001)(6486002)(8936002)(8676002)(66556008)(66476007)(316002)(66946007)(38350700005)(36756003)(86362001)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?x0e1OfJqP1S7DAu1DMuIRknp4+yX/2F/S6zOp1l2OGIDWT5pZomqoUNWnYPn?=
- =?us-ascii?Q?3yZRhqK3fusBzJJWXgTXnIDBgY5am7i/Pb2p5K/UbIhExWa2iTTli0ajmU6B?=
- =?us-ascii?Q?ZPgVIBawKCYQS1iUi0QlSkS1rha8LPFGTqk3vSfRXDgM9sHqt5k3+5hdxzua?=
- =?us-ascii?Q?GXYo3oL3r8YNTj7Jl2rs7Rfti8s5k0ZOgWgo09aJGtXpdC4wSDc8EjMXKmbZ?=
- =?us-ascii?Q?ijj8oehP+fsduqEoa75fdcV68G/D20mYq9RyZnWNAMyjnWaQ0VF4EvWH0YFd?=
- =?us-ascii?Q?1IP9ukW9MtlG5mMieGkctiiXk2u/FqwhWSuq+Gh1ECYFmpm2Y+HkAVIuG42i?=
- =?us-ascii?Q?foqWPcQWjzD/nYfbz3Z++26fCtt6BQzYVv2PYt+yQ2atNXGh5P0APaYjMoqL?=
- =?us-ascii?Q?n5w4T0z+Xd8RUxqzzl5rbOn38hI1t47gnDGHHwgZODndU7PRN6I4rZUmg+vM?=
- =?us-ascii?Q?sPEDM06Kyt6j2CPrGwzzp3OdqyXCVSAO2Fcijgml5vyoy78xkG3ycjgealwg?=
- =?us-ascii?Q?bigr8S+BNuIvt0lfrvTJPGkDypvw9juYg187dAPRFqyyDnAGFrK5wb5jn/0y?=
- =?us-ascii?Q?dhCxypjcQ6mWl+YzSht88RfDiGkTZUhqJ148xIDsrOs9RqNEfkq5zN4PGS2V?=
- =?us-ascii?Q?gJwHjugV71E2mO4pN+yxgZsmpEzgE47diCE0THkrNPfy99QISLgnSIIbPUkN?=
- =?us-ascii?Q?3xxSGuHprBwiLuctjMnt65UnmFqgrnX46lHq4q6pddsKY52vQm2PCzTlM6EX?=
- =?us-ascii?Q?d52SN2E80gtPl1PgmQtuqCYWJkqsnQOClKV5uzMMnv0io4f/73ENgBwOyh4F?=
- =?us-ascii?Q?bXDiyGQ/sprK7VwkZIeLUfUnKVfd4vDtK+50QN0nGUNuDPGsldXF8Mylxzxo?=
- =?us-ascii?Q?BknBtF9ZuQ83/HOnxyz4EqDDrsgxcHIn8L6Bmosa/zpYUDj1kYkfCvuxuKff?=
- =?us-ascii?Q?kKTgoKWoulkd5CaFmwC5LngC2Fx//u+U79EA/k1LS2PCB9uaHyXi9z2+dGrL?=
- =?us-ascii?Q?CXMljNKCEo8rO3JlQAdyCkxCig5YfQfGLCUMJhIxR6VZACfQ6LVz6C472jjS?=
- =?us-ascii?Q?CITJD+NwkUthOUzVkYGGPld1acWOP6NA51pW6obUr4M+RJYRZRjNPPPthHO7?=
- =?us-ascii?Q?JKvwlzKvduPcFzJJQ7sQ50BhQsWzFFJ1Tx0q6qXYWugTP8mYD1cyLK60qtmO?=
- =?us-ascii?Q?PkSQDTcWCbkm1a2GDeVg5BjHZuRENjQo0N9HZU9zx5CEC+o/62Www0zP+8xL?=
- =?us-ascii?Q?bK50vY6x+dln7tpVBwbD05TblNXkEgyWFOrAMLw4Aq4+TuAJ7SOtH8rPkWNI?=
- =?us-ascii?Q?1YgRF/wEbNFmyjlCLauOZrZZDEzqNLGWJL75JorVWnIaBwmgPfgnXhdqUK1w?=
- =?us-ascii?Q?w0USKAnMpEFaandoYyRrLhoGjrshYOBSx7UReGsFq0McfH+S9UKU7jLMVqHX?=
- =?us-ascii?Q?MMGZUynwFQp+I6815XR6L8bPnqb+CSRC/4dN5j0yv0oH/NgR9n2We43xXFRb?=
- =?us-ascii?Q?kqKhG2ahW5nk6nqqLisPVF0taCLoErqv4+m/ias3v1ddooQ8p7Nekkr9EfRj?=
- =?us-ascii?Q?mybPRFHSHHWqvjKeq2Y/OTPinUB+FAmbYQqzsFOfJPfGx6Dhj3AEkfAYiQxU?=
- =?us-ascii?Q?NEvUG5llIfVCYme4W572je8=3D?=
-X-OriginatorOrg: softnautics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c42b5210-cdb0-4736-b2ee-08dc008e3bfb
-X-MS-Exchange-CrossTenant-AuthSource: MAZPR01MB6188.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 12:30:07.2639
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 17b76cff-50c6-4f7a-9198-dd4afc5f8bea
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F7yrHgwf1+uvbaSHgAibABq8Ls+7hRXsBzkJw1G6Juqp+uCx93yS67fP9gGkmG19Fd7VqWeZGQXZOrDM1LctXhR0C4XSXn8PuMIEKoR5NYI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN0PR01MB9979
+Content-Type: text/plain
 
-As per IEC 60958 specification, bits 24 to 27 of channel status register
-indicates audio sample frequency. If these bits are not set, audio
-analyzer always shows 44.1KHz sample rate, irrespective of any sample
-rate audio is being played.
+Michael Ellerman <mpe@ellerman.id.au> writes:
+> There are reports of kernels crashing due to stack overflow while
+> running OpenShift (Kubernetes). The primary contributor to the stack
+> usage seems to be openvswitch, which is used by OVN-Kubernetes (based on
+> OVN (Open Virtual Network)), but NFS also contributes in some stack
+> traces.
 
-This patch fixes the issue by setting IEC958 specified channel status
-values for different audio sample rate in [24:27] bits of MM2S Audio
-channel status register.
+For the archives here's an example trace.
 
-Signed-off-by: Sunil Vaghela <sunil.vaghela@softnautics.com>
----
- sound/soc/xilinx/xlnx_formatter_pcm.c | 74 ++++++++++++++++++++++++++-
- 1 file changed, 73 insertions(+), 1 deletion(-)
+This comes from the openshift CI:
+  https://prow.ci.openshift.org/view/gs/origin-ci-test/logs/periodic-ci-openshift-multiarch-master-nightly-4.14-ocp-e2e-ovn-remote-libvirt-ppc64le/1703597644732960768
 
-diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
-index 299cfb5e2022..041010203ba5 100644
---- a/sound/soc/xilinx/xlnx_formatter_pcm.c
-+++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -451,12 +451,48 @@ xlnx_formatter_pcm_pointer(struct snd_soc_component *component,
- 	return bytes_to_frames(runtime, pos);
- }
- 
-+static u32 xlnx_formatter_get_iec958_ch_status(u32 sample_rate)
-+{
-+	u32 tmp = 0;
-+
-+	switch (sample_rate) {
-+	case 32000:
-+		tmp = IEC958_AES3_CON_FS_32000;
-+		break;
-+	case 44100:
-+		tmp = IEC958_AES3_CON_FS_44100;
-+		break;
-+	case 48000:
-+		tmp = IEC958_AES3_CON_FS_48000;
-+		break;
-+	case 88200:
-+		tmp = IEC958_AES3_CON_FS_88200;
-+		break;
-+	case 96000:
-+		tmp = IEC958_AES3_CON_FS_96000;
-+		break;
-+	case 176400:
-+		tmp = IEC958_AES3_CON_FS_176400;
-+		break;
-+	case 192000:
-+		tmp = IEC958_AES3_CON_FS_192000;
-+		break;
-+	case 768000:
-+		tmp = IEC958_AES3_CON_FS_768000;
-+		break;
-+	default:
-+		tmp = IEC958_AES3_CON_FS_NOTID;
-+	}
-+		return tmp;
-+}
-+
- static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
- 					struct snd_pcm_substream *substream,
- 					struct snd_pcm_hw_params *params)
- {
-+	void __iomem *reg;
- 	u32 low, high, active_ch, val, bytes_per_ch, bits_per_sample;
--	u32 aes_reg1_val, aes_reg2_val;
-+	u32 aes_reg1_val, aes_reg2_val, sample_rate, ch_sts;
- 	u64 size;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct xlnx_pcm_stream_param *stream_data = runtime->private_data;
-@@ -533,6 +569,42 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
- 	bytes_per_ch = DIV_ROUND_UP(params_period_bytes(params), active_ch);
- 	writel(bytes_per_ch, stream_data->mmio + XLNX_BYTES_PER_CH);
- 
-+	if ((strstr(adata->nodes[XLNX_PLAYBACK]->name, "hdmi")) ||
-+	    (strstr(adata->nodes[XLNX_PLAYBACK]->name, "dp"))) {
-+		sample_rate = params_rate(params);
-+		dev_info(component->dev, "%s: sample_rate=%d\n", __func__, sample_rate);
-+
-+		/* As per IEC 60958 standards, whenever transmitting a valid audio
-+		 * stream, HDMI/DP Sources shall always include valid and correct
-+		 * information in Channel Status bits 24 through 27. For L-PCM audio,
-+		 * these bits shall indicate the audio sample frequency. For
-+		 * compressed audio formats, these bits shall indicate the IEC 60958
-+		 * frame-rate.
-+		 *
-+		 * Channel Status Bit Number     Sample Frequency or Frame Rate
-+		 *   24    25     26    27
-+		 *   -----------------------     ------------------------------
-+		 *    1     1      0     0                    32 kHz
-+		 *    0     0      0     0                    44.1 kHz
-+		 *    0     0      0     1                    88.2 kHz
-+		 *    0     0      1     1                    176.4 kHz
-+		 *    0     1      0     0                    48 kHz
-+		 *    0     1      0     1                    96 kHz
-+		 *    0     1      1     1                    192 kHz
-+		 *    1     0      0     1                    768 kHz
-+		 */
-+
-+		ch_sts = xlnx_formatter_get_iec958_ch_status(sample_rate);
-+		dev_info(component->dev, "%s: iec60958 channel status bits 24 to 27 value for sample rate %dHz = 0x%08x\n",
-+			 __func__, sample_rate, ch_sts);
-+		ch_sts <<= 24;
-+		reg = adata->mmio + XLNX_MM2S_OFFSET + XLNX_AUD_CH_STS_START;
-+		aes_reg1_val = ioread32(reg);
-+		aes_reg1_val |= ch_sts;
-+		dev_info(component->dev, "%s: MM2S: AES Encode channel status register value 0x%08x\n",
-+			 __func__, aes_reg1_val);
-+		iowrite32(aes_reg1_val, reg);
-+	}
- 	return 0;
- }
- 
--- 
-2.25.1
+Which links through to the kdump.tar:
+  https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/origin-ci-test/logs/periodic-ci-openshift-multiarch-master-nightly-4.14-ocp-e2e-ovn-remote-libvirt-ppc64le/1703597644732960768/artifacts/ocp-e2e-ovn-remote-libvirt-ppc64le/ipi-conf-debug-kdump-gather-logs/artifacts/kdump.tar
 
+Which contains vmcore-dmesg.txt, which includes this trace:
+
+[ 1805.324030] do_IRQ: stack overflow: 1808
+[ 1805.324179] CPU: 0 PID: 263384 Comm: mount.nfs Kdump: loaded Not tainted 5.14.0-284.32.1.el9_2.ppc64le #1
+[ 1805.324184] Call Trace:
+[ 1805.324186] [c00000037d4806d0] [c0000000008427d0] dump_stack_lvl+0x74/0xa8 (unreliable)
+[ 1805.324199] [c00000037d480710] [c000000000016bbc] __do_IRQ+0x11c/0x130
+[ 1805.324205] [c00000037d4807a0] [c000000000016c10] do_IRQ+0x40/0xa0
+[ 1805.324210] [c00000037d4807d0] [c000000000009080] hardware_interrupt_common_virt+0x210/0x220
+[ 1805.324215] --- interrupt: 500 at slab_pre_alloc_hook.constprop.0+0x7c/0x340
+[ 1805.324221] NIP:  c0000000004feb3c LR: c0000000004feb24 CTR: c00000000092b770
+[ 1805.324223] REGS: c00000037d480840 TRAP: 0500   Not tainted  (5.14.0-284.32.1.el9_2.ppc64le)
+[ 1805.324226] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24424442  XER: 00000000
+[ 1805.324240] CFAR: c00000000045ef8c IRQMASK: 0 
+GPR00: c0000000004feb24 c00000037d480ae0 c000000002b12700 0000000000000000 
+GPR04: 0000000000000a20 c00000037d480b60 0000000000000001 0000000000000a20 
+GPR08: c00000000133ca80 0000000000000000 0000000000000028 0000000000004000 
+GPR12: c00000000092b770 c000000002ea0000 0000000000000000 0000000000000000 
+GPR16: 0000000000000005 0000000000000040 000000000000012e c0000000566930e0 
+GPR20: 0000000000000008 0000000000000000 c0000000566930e0 0000000000000000 
+GPR24: c00000000092bac4 c000000003010400 c00000037d480b60 0000000000000001 
+GPR28: 0000000000000000 0000000000000a20 0000000000000000 c000000003010400 
+[ 1805.324284] NIP [c0000000004feb3c] slab_pre_alloc_hook.constprop.0+0x7c/0x340
+[ 1805.324288] LR [c0000000004feb24] slab_pre_alloc_hook.constprop.0+0x64/0x340
+[ 1805.324291] --- interrupt: 500
+[ 1805.324292] [c00000037d480ae0] [0000000000000000] 0x0 (unreliable)
+[ 1805.324298] [c00000037d480b40] [c00000000050560c] __kmalloc+0x8c/0x5e0
+[ 1805.324302] [c00000037d480bc0] [c00000000092bac4] virtqueue_add_outbuf+0x354/0xac0
+[ 1805.324307] [c00000037d480cc0] [c0080000011b3a84] xmit_skb+0x1dc/0x350 [virtio_net]
+[ 1805.324317] [c00000037d480d50] [c0080000011b3ccc] start_xmit+0xd4/0x3b0 [virtio_net]
+[ 1805.324321] [c00000037d480e00] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
+[ 1805.324327] [c00000037d480e80] [c000000000cf1c8c] sch_direct_xmit+0xec/0x330
+[ 1805.324332] [c00000037d480f20] [c000000000c4a03c] __dev_xmit_skb+0x41c/0xa80
+[ 1805.324336] [c00000037d480f90] [c000000000c4c194] __dev_queue_xmit+0x414/0x950
+[ 1805.324340] [c00000037d481070] [c008000002abdfdc] ovs_vport_send+0xb4/0x210 [openvswitch]
+[ 1805.324351] [c00000037d4810f0] [c008000002aa14a4] do_output+0x7c/0x200 [openvswitch]
+[ 1805.324359] [c00000037d481140] [c008000002aa33b0] do_execute_actions+0xe48/0xeb0 [openvswitch]
+[ 1805.324366] [c00000037d481300] [c008000002aa3800] ovs_execute_actions+0x78/0x1f0 [openvswitch]
+[ 1805.324373] [c00000037d481380] [c008000002aa970c] ovs_dp_process_packet+0xb4/0x2e0 [openvswitch]
+[ 1805.324380] [c00000037d481450] [c008000002abde84] ovs_vport_receive+0x8c/0x130 [openvswitch]
+[ 1805.324388] [c00000037d481660] [c008000002abe638] internal_dev_xmit+0x40/0xd0 [openvswitch]
+[ 1805.324396] [c00000037d481690] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
+[ 1805.324401] [c00000037d481710] [c000000000c4c3b4] __dev_queue_xmit+0x634/0x950
+[ 1805.324405] [c00000037d4817f0] [c000000000d50810] neigh_hh_output+0xd0/0x180
+[ 1805.324410] [c00000037d481840] [c000000000d516ec] ip_finish_output2+0x31c/0x5c0
+[ 1805.324415] [c00000037d4818e0] [c000000000d53f94] ip_local_out+0x64/0x90
+[ 1805.324419] [c00000037d481920] [c000000000dd83e4] iptunnel_xmit+0x194/0x290
+[ 1805.324423] [c00000037d4819c0] [c008000003160408] udp_tunnel_xmit_skb+0x100/0x140 [udp_tunnel]
+[ 1805.324429] [c00000037d481a80] [c008000003203a54] geneve_xmit_skb+0x34c/0x610 [geneve]
+[ 1805.324434] [c00000037d481bb0] [c00800000320596c] geneve_xmit+0x94/0x1e8 [geneve]
+[ 1805.324438] [c00000037d481c30] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
+[ 1805.324442] [c00000037d481cb0] [c000000000c4c3b4] __dev_queue_xmit+0x634/0x950
+[ 1805.324446] [c00000037d481d90] [c008000002abdfdc] ovs_vport_send+0xb4/0x210 [openvswitch]
+[ 1805.324454] [c00000037d481e10] [c008000002aa14a4] do_output+0x7c/0x200 [openvswitch]
+[ 1805.324461] [c00000037d481e60] [c008000002aa33b0] do_execute_actions+0xe48/0xeb0 [openvswitch]
+[ 1805.324468] [c00000037d482020] [c008000002aa3800] ovs_execute_actions+0x78/0x1f0 [openvswitch]
+[ 1805.324475] [c00000037d4820a0] [c008000002aa970c] ovs_dp_process_packet+0xb4/0x2e0 [openvswitch]
+[ 1805.324482] [c00000037d482170] [c008000002aa36e0] clone_execute+0x2c8/0x370 [openvswitch]
+[ 1805.324489] [c00000037d482210] [c008000002aa2a20] do_execute_actions+0x4b8/0xeb0 [openvswitch]
+[ 1805.324495] [c00000037d4823d0] [c008000002aa3800] ovs_execute_actions+0x78/0x1f0 [openvswitch]
+[ 1805.324502] [c00000037d482450] [c008000002aa970c] ovs_dp_process_packet+0xb4/0x2e0 [openvswitch]
+[ 1805.324509] [c00000037d482520] [c008000002abde84] ovs_vport_receive+0x8c/0x130 [openvswitch]
+[ 1805.324516] [c00000037d482730] [c008000002abe638] internal_dev_xmit+0x40/0xd0 [openvswitch]
+[ 1805.324524] [c00000037d482760] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
+[ 1805.324528] [c00000037d4827e0] [c000000000c4c3b4] __dev_queue_xmit+0x634/0x950
+[ 1805.324532] [c00000037d4828c0] [c000000000d50810] neigh_hh_output+0xd0/0x180
+[ 1805.324536] [c00000037d482910] [c000000000d516ec] ip_finish_output2+0x31c/0x5c0
+[ 1805.324541] [c00000037d4829b0] [c000000000d54440] __ip_queue_xmit+0x1b0/0x4f0
+[ 1805.324545] [c00000037d482a40] [c000000000d821e0] __tcp_transmit_skb+0x450/0x9a0
+[ 1805.324549] [c00000037d482b10] [c000000000d84230] tcp_write_xmit+0x4e0/0xb40
+[ 1805.324553] [c00000037d482be0] [c000000000d848d4] __tcp_push_pending_frames+0x44/0x130
+[ 1805.324557] [c00000037d482c50] [c000000000d63aac] __tcp_sock_set_cork.part.0+0x8c/0xb0
+[ 1805.324561] [c00000037d482c80] [c000000000d63b48] tcp_sock_set_cork+0x78/0xa0
+[ 1805.324565] [c00000037d482cb0] [c0080000061b2acc] xs_tcp_send_request+0x2d4/0x430 [sunrpc]
+[ 1805.324594] [c00000037d482e50] [c0080000061ab120] xprt_request_transmit.constprop.0+0xa8/0x3c0 [sunrpc]
+[ 1805.324619] [c00000037d482eb0] [c0080000061acc74] xprt_transmit+0x12c/0x260 [sunrpc]
+[ 1805.324644] [c00000037d482f20] [c0080000061a1de8] call_transmit+0xd0/0x100 [sunrpc]
+[ 1805.324667] [c00000037d482f50] [c0080000061c8dc4] __rpc_execute+0xec/0x570 [sunrpc]
+[ 1805.324696] [c00000037d482fd0] [c0080000061d00e0] rpc_execute+0x168/0x1d0 [sunrpc]
+[ 1805.324725] [c00000037d483010] [c0080000061a4a74] rpc_run_task+0x1cc/0x2a0 [sunrpc]
+[ 1805.324754] [c00000037d483070] [c008000006013970] nfs4_call_sync_sequence+0x98/0x100 [nfsv4]
+[ 1805.324811] [c00000037d483120] [c008000006013dec] _nfs4_server_capabilities+0xd4/0x3c0 [nfsv4]
+[ 1805.324832] [c00000037d483210] [c00800000602036c] nfs4_server_capabilities+0x74/0xd0 [nfsv4]
+[ 1805.324854] [c00000037d483270] [c008000006020404] nfs4_proc_get_root+0x3c/0x150 [nfsv4]
+[ 1805.324876] [c00000037d4832f0] [c0080000062bee54] nfs_get_root+0xac/0x660 [nfs]
+[ 1805.324907] [c00000037d483420] [c0080000062c7ccc] nfs_get_tree_common+0x104/0x5f0 [nfs]
+[ 1805.324946] Kernel panic - not syncing: corrupted stack end detected inside scheduler
+[ 1805.325103] CPU: 0 PID: 263384 Comm: mount.nfs Kdump: loaded Not tainted 5.14.0-284.32.1.el9_2.ppc64le #1
+[ 1805.325316] Call Trace:
+[ 1805.325368] [c00000037d482c50] [c0000000008427d0] dump_stack_lvl+0x74/0xa8 (unreliable)
+[ 1805.325549] [c00000037d482c90] [c0000000001492b4] panic+0x160/0x3ec
+[ 1805.325706] [c00000037d482d30] [c000000000efce90] __schedule+0x710/0x720
+[ 1805.325838] [c00000037d482e00] [c000000000efcf7c] schedule+0x3c/0xa0
+[ 1805.325978] [c00000037d482e30] [c0080000061c4f84] rpc_wait_bit_killable+0x3c/0x110 [sunrpc]
+[ 1805.326185] [c00000037d482e60] [c000000000efd664] __wait_on_bit+0xd4/0x210
+[ 1805.326325] [c00000037d482ee0] [c000000000efd840] out_of_line_wait_on_bit+0xa0/0xd0
+[ 1805.326502] [c00000037d482f50] [c0080000061c8e54] __rpc_execute+0x17c/0x570 [sunrpc]
+[ 1805.326751] [c00000037d482fd0] [c0080000061d00e0] rpc_execute+0x168/0x1d0 [sunrpc]
+[ 1805.326936] [c00000037d483010] [c0080000061a4a74] rpc_run_task+0x1cc/0x2a0 [sunrpc]
+[ 1805.327120] [c00000037d483070] [c008000006013970] nfs4_call_sync_sequence+0x98/0x100 [nfsv4]
+[ 1805.327346] [c00000037d483120] [c008000006013dec] _nfs4_server_capabilities+0xd4/0x3c0 [nfsv4]
+[ 1805.327548] [c00000037d483210] [c00800000602036c] nfs4_server_capabilities+0x74/0xd0 [nfsv4]
+[ 1805.327747] [c00000037d483270] [c008000006020404] nfs4_proc_get_root+0x3c/0x150 [nfsv4]
+[ 1805.327972] [c00000037d4832f0] [c0080000062bee54] nfs_get_root+0xac/0x660 [nfs]
+[ 1805.328174] [c00000037d483420] [c0080000062c7ccc] nfs_get_tree_common+0x104/0x5f0 [nfs]
+[ 1805.328366] [c00000037d4834b0] [c0080000062ec6f8] nfs_get_tree+0x90/0xc0 [nfs]
+[ 1805.328556] [c00000037d4834e0] [c00000000056cd38] vfs_get_tree+0x48/0x160
+[ 1805.328715] [c00000037d483560] [c0080000062d8b68] nfs_do_submount+0x170/0x210 [nfs]
+[ 1805.328911] [c00000037d483600] [c008000006055b58] nfs4_submount+0x250/0x360 [nfsv4]
+[ 1805.329115] [c00000037d4836b0] [c0080000062d8eac] nfs_d_automount+0x194/0x2d0 [nfs]
+[ 1805.329303] [c00000037d483710] [c00000000057c7f4] __traverse_mounts+0x114/0x330
+[ 1805.329459] [c00000037d483770] [c000000000583d54] step_into+0x364/0x4d0
+[ 1805.329581] [c00000037d4837f0] [c00000000058465c] walk_component+0x8c/0x300
+[ 1805.329700] [c00000037d483870] [c000000000585868] path_lookupat+0xa8/0x260
+[ 1805.329819] [c00000037d4838c0] [c000000000586ab8] filename_lookup+0xc8/0x230
+[ 1805.329962] [c00000037d483a00] [c000000000586d18] vfs_path_lookup+0x68/0xc0
+[ 1805.330093] [c00000037d483a60] [c0000000005b0760] mount_subtree+0xd0/0x1e0
+[ 1805.330214] [c00000037d483ad0] [c0080000060496b8] do_nfs4_mount+0x280/0x520 [nfsv4]
+[ 1805.330370] [c00000037d483ba0] [c0080000060499b8] nfs4_try_get_tree+0x60/0x140 [nfsv4]
+[ 1805.330526] [c00000037d483c20] [c0080000062ec6c8] nfs_get_tree+0x60/0xc0 [nfs]
+[ 1805.330681] [c00000037d483c50] [c00000000056cd38] vfs_get_tree+0x48/0x160
+[ 1805.330821] [c00000037d483cd0] [c0000000005ae154] do_new_mount+0x204/0x3c0
+[ 1805.330972] [c00000037d483d40] [c0000000005af8f8] sys_mount+0x168/0x1c0
+[ 1805.331086] [c00000037d483db0] [c00000000002f544] system_call_exception+0x164/0x310
+[ 1805.331227] [c00000037d483e10] [c00000000000bfe8] system_call_vectored_common+0xe8/0x278
+[ 1805.331367] --- interrupt: 3000 at 0x7fffb235f4d0
+
+
+cheers
 
