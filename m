@@ -1,70 +1,63 @@
-Return-Path: <linux-kernel+bounces-4930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880308183FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:59:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2730B8183FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40CDC282241
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:59:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DCDFB23807
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1A812B80;
-	Tue, 19 Dec 2023 08:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E2012B69;
+	Tue, 19 Dec 2023 09:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="kZwHzqjK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IxmJVAnK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DA7125B5;
-	Tue, 19 Dec 2023 08:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=mApDO3T9Xz1helbAZSFet16out2mW7MWySk8mjZ5wDE=; b=kZwHzqjKiWEgoZn1veK4cqHCKR
-	SerS327V6zs7qE4E6zPYWmsCCljxHbsbPRP8PnWbjTURrTEHbkjZ8o2iz5NzhD8JA+Ff7VkMuDU7y
-	IuyEa1zVHU6FlNhAMzyxTvwbEkuOczsw1MpSllM/sbokb9AG9DcNbi1v0/8T47H9dxsI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rFVvb-003JjA-OP; Tue, 19 Dec 2023 09:58:15 +0100
-Date: Tue, 19 Dec 2023 09:58:15 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Samin Guo <samin.guo@starfivetech.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Subject: Re: [PATCH v4 6/9] riscv: dts: starfive: visionfive-v1: Setup
- ethernet phy
-Message-ID: <962691a4-993d-44c0-861f-d0fd5bbc2da9@lunn.ch>
-References: <20231218214451.2345691-1-cristian.ciocaltea@collabora.com>
- <20231218214451.2345691-7-cristian.ciocaltea@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5565A125B0;
+	Tue, 19 Dec 2023 09:00:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88831C433C7;
+	Tue, 19 Dec 2023 09:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702976427;
+	bh=7lPJeEGRA+v+htYV42yko4yF0KBUn2IyqKKgjcCAxrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IxmJVAnKZj+06aLhm7xhf2DPFrjWcriT2r501VOULyHpFR08ACZ7k4OeDjmewzi6I
+	 e/TDOV/63BWqsTI3luxnPvb7cnrykXZIIlvC3LmZdiuCvdtLJ8OVtHbz8EWrTvldfW
+	 VuhJ8quHz+Jo8qEP1iLmhxc845PD3edozq6bpQI5uIXoCxmzL6srDblkkPnYu7esfi
+	 qrKMHjfJJlGGPLHUQn5KWFL1WK2xkKg6Kb//htWNFPZ21agunQ70bfeJ2jQJobv2Q7
+	 I/Ojsi0B6wKPfjIxZEv1+N3+uLSE+buJwfVkfVa63dtRKLNuze7v5ZUEMABFX6G1pN
+	 2COE1D2MdNaFw==
+Date: Tue, 19 Dec 2023 08:58:51 +0000
+From: Simon Horman <horms@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+	Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	=?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	=?utf-8?Q?Nicol=C3=B2?= Veronese <nicveronese@gmail.com>
+Subject: Re: [PATCH net-next v4 13/13] Documentation: networking: document
+ phy_link_topology
+Message-ID: <20231219085851.GC811967@kernel.org>
+References: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+ <20231215171237.1152563-14-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,29 +66,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231218214451.2345691-7-cristian.ciocaltea@collabora.com>
+In-Reply-To: <20231215171237.1152563-14-maxime.chevallier@bootlin.com>
 
-On Mon, Dec 18, 2023 at 11:44:46PM +0200, Cristian Ciocaltea wrote:
-> The StarFive VisionFive V1 SBC uses a Motorcomm YT8521 PHY supporting
-> RGMII-ID, but requires manual adjustment of the RX internal delay to
-> work properly.
-> 
-> The default RX delay provided by the driver is 1.95 ns, which proves to
-> be too high. Applying a 50% reduction seems to mitigate the issue.
-> 
-> Also note this adjustment is not necessary on BeagleV Starlight SBC,
-> which uses a Microchip PHY.  Hence, there is no indication of a
-> misbehaviour on the GMAC side, but most likely the issue stems from
-> the Motorcomm PHY.
-> 
-> While at it, drop the redundant gpio include, which is already provided
-> by jh7100-common.dtsi.
-> 
-> Co-developed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+On Fri, Dec 15, 2023 at 06:12:35PM +0100, Maxime Chevallier wrote:
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+...
 
-    Andrew
+> +UAPI
+> +====
+> +
+> +There exist a set of netlink commands to query the link topology from userspace,
+> +see ``Documentation/networking/ethtool-netlink.rst``.
+> +
+> +The whole point of having a topology representation is to assign the phyindex
+> +field in :c:type:`struct phy_device <phy_device>`. This index is reported to
+> +userspace using the ``ETHTOOL_MSG_PHY_GET`` ethtnl command. Performing a DUMP operation
+> +will result in all PHYs from all net_device being listed. The DUMP command
+> +accepts either a ``ETHTOOL_A_HEADER_DEV_INDEX`` or ``ETHTOOL_A_HEADER_DEV_NAME``
+> +to be passed in the request to filter the DUMP to a single net_device.
+> +
+> +The retrieved index can then be passed as a request parameter using the
+> +``ETHTOOL_A_HEADER_PHY_INDEX`` field in the following ethnl commands :
+> +
+> +* ``ETHTOOL_MSG_STRSET_GET`` to get the stats strig set from a given PHY
+
+string
+
+> +* ``ETHTOOL_MSG_CABLE_TEST_ACT`` and ``ETHTOOL_MSG_CABLE_TEST_ACT``, to perform
+> +  cable testing on a given PHY on the link (most likely the outermost PHY)
+> +* ``ETHTOOL_MSG_PSE_SET`` and ``ETHTOOL_MSG_PSE_GET`` for PHY-controlled PoE and PSE settings
+> +* ``ETHTOOL_MSG_PLCA_GET_CFG``, ``ETHTOOL_MSG_PLCA_SET_CFG`` and ``ETHTOOL_MSG_PLCA_GET_STATUS``
+> +  to set the PLCA (Physical Layer Collision Avoidance) parameters
+> +
+> +Note that the PHY index can be passed to other requests, which will silently
+> +ignore it if present and irrelevant.
+> -- 
+> 2.43.0
+> 
 
