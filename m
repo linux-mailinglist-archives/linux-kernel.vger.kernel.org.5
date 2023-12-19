@@ -1,113 +1,59 @@
-Return-Path: <linux-kernel+bounces-5937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF108191B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:50:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC4D8191BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F14B2287983
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:50:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5FB6B22DB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:52:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B904439AF5;
-	Tue, 19 Dec 2023 20:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB4339AF4;
+	Tue, 19 Dec 2023 20:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uInVRD/s"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FvCGhuOh"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0074F39ADF;
-	Tue, 19 Dec 2023 20:50:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F4DC433C7;
-	Tue, 19 Dec 2023 20:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703019029;
-	bh=xb8dk6p1RHhv4INmJ7zZ89M+91T1HlupPCg4fGHi3AU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uInVRD/sdb+mv3EVpFUzOgm7aOKLUxR1fpXol3XYR+rF+3U+XLg+CVBt/ZPC2wlmD
-	 EVU4KFlJhMuc8JJLXOpS3R+mJh/MWFGV0Y43a/GFLhZhUj7HDfZvAIkXZKkelwOfkS
-	 jji7q3QkWxr5gcYhmiXcgjAJczWOcXzCYyIS6GyQ3SRaJdDbUYzTNa0b2F9woA7K39
-	 mCfMwZiKSB1sLWGOnOjc/tQrxvbJRt82m8dMdVos92NWbZYKfxcMl5iQQAO7QENQL0
-	 q2CGukfzFIYrYiCT6zdZ+0ULAz+GMeTEbwvIQSXYSw4uF3S4mv57aqgb4/E+Fds76m
-	 dvDUI4E0bmdBg==
-Date: Tue, 19 Dec 2023 21:50:25 +0100
-From: "wsa@kernel.org" <wsa@kernel.org>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"andi.shyti@kernel.org" <andi.shyti@kernel.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
-Message-ID: <ZYICEczlao+pg8kd@shikoro>
-Mail-Followup-To: "wsa@kernel.org" <wsa@kernel.org>,
-	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"andi.shyti@kernel.org" <andi.shyti@kernel.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231115035753.925534-1-chris.packham@alliedtelesis.co.nz>
- <20231115035753.925534-2-chris.packham@alliedtelesis.co.nz>
- <f24b9b2d-aeb1-47f7-bf21-4383fdcf94aa@linaro.org>
- <5a52b0c9-8858-4f55-8dd7-9269c29c10a7@alliedtelesis.co.nz>
- <ZYHMvZ3plIQ0zXWa@shikoro>
- <601d07b5-264d-4322-b92e-63d58b3d69fa@alliedtelesis.co.nz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF34639ADE;
+	Tue, 19 Dec 2023 20:51:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17AA6C433C8;
+	Tue, 19 Dec 2023 20:51:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1703019112;
+	bh=BKBUXYIBYj+i0f0Vw2LEavJlPrlK8MtTyPPLU6pBIm8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FvCGhuOhT1VaMyeTfhuDkqPJB7Ad4MWtQp0vOK/dJl783EUuK0cYVZkBHeaGfhtnK
+	 VMrTbERrRljzdgI578umcbKmjGCJ3ke42h8hFe9NFWx4505Z4nPt+eKh2SH7HvK2VL
+	 Hzt7gWOhcNcdR7NiluYs18/1aR0+wfhjtTwh1fTc=
+Date: Tue, 19 Dec 2023 12:51:51 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Changbin Du <changbin.du@huawei.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, <linux-modules@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Hui Wang <hw.huiwang@huawei.com>, Xiaoyi Su
+ <suxiaoyi@huawei.com>
+Subject: Re: [PATCH] modules: wait do_free_init correctly
+Message-Id: <20231219125151.4a042a259edf3c916580ccfe@linux-foundation.org>
+In-Reply-To: <20231219141231.2218215-1-changbin.du@huawei.com>
+References: <20231219141231.2218215-1-changbin.du@huawei.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KAQIevLhiSubidkk"
-Content-Disposition: inline
-In-Reply-To: <601d07b5-264d-4322-b92e-63d58b3d69fa@alliedtelesis.co.nz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Tue, 19 Dec 2023 22:12:31 +0800 Changbin Du <changbin.du@huawei.com> wrote:
 
---KAQIevLhiSubidkk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The commit 1a7b7d922081 ("modules: Use vmalloc special flag") moves
+> do_free_init() into a global workqueue instead of call_rcu(). So now
+> we should wait it via flush_work().
 
-
-> I personally would like to see it accepted but it seems there are=20
-> objections to this approach. I've yet to come up with anything better to=
-=20
-> offer as an alternative.
-
-I see. Thanks for the heads up!
-
-
---KAQIevLhiSubidkk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWCAg0ACgkQFA3kzBSg
-KbYzrw/9HTP8AzWQLqcM+C6TIAYaKJLjE4spZJpDJzE9JJNPDc1avUNCE/2SBn0D
-Y+NHTDDs4mTISseTNlJMAdTC5eRZaaTXYc2OOf6E5F9puJK2bwK7xRsTIHy9IodF
-80Gf3zGyiV6+Xw8XDVDrzL8aPyV+jb/Zwq+iju5RlnqSazNwCJZogyhfcmRbiqQU
-8fQ9arUMHkro0/4lgQmSG4q4cU+uYHuFdXWdiPDSAz1YKym1PHx1wGUu9gHzsFz0
-Q9eczVHvttrWDqa2NEpdAd81rftgsNvywuUwk3Gq7gb3snUne0fKNTrTbNqF7W5t
-+H1KV6CcBdAHlbm8Tkbt8ncOx6EpIb71d6KcW98o9Vrqomu3Yo28CaSopresBv9D
-/ZoWEkoSBNkrxYTdG8i/BE5NCH+r8c1WEdKrzCbuVBekJDDvw+oC4tU1rcmUW5Lc
-9rtvQ/q3CjqIaywMmLjqoNWeSYqCdTO/9BWfAZf5bocxwF3vzoJgIsamy1NgRAHB
-X9BlMCv8tvnxQN7siHVR6axNDcOpGmmWYgR4v3Twkh62vyyW4CLqAiAWSaYde3OH
-V3wO1kd1DjxCMtNZ+mUGNQPs6NiWx1KKj8ZoUSusdtZBp9n6yJlKaul5Hll0tx97
-cRAfSfUy6UfVKQLSloM2uloMeA8yR1WbmB8yF4q5RbnMNqPFf0g=
-=kggI
------END PGP SIGNATURE-----
-
---KAQIevLhiSubidkk--
+What are the runtime effects of this change?
 
