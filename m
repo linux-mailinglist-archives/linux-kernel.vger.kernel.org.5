@@ -1,253 +1,139 @@
-Return-Path: <linux-kernel+bounces-5483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 239FC818B32
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:26:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A96B818B35
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D91AB24871
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57FA2283C7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C3A1D54A;
-	Tue, 19 Dec 2023 15:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8F81CA82;
+	Tue, 19 Dec 2023 15:26:42 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724CA1C6B2;
-	Tue, 19 Dec 2023 15:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11FBE1FB;
-	Tue, 19 Dec 2023 07:26:06 -0800 (PST)
-Received: from [10.57.85.119] (unknown [10.57.85.119])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B84953F738;
-	Tue, 19 Dec 2023 07:25:19 -0800 (PST)
-Message-ID: <ab6a34c7-a0f9-4263-a6ea-08026e2bade9@arm.com>
-Date: Tue, 19 Dec 2023 15:25:19 +0000
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E9A1CF8A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-63--MssvIPyP6awiriq4uC_pg-1; Tue, 19 Dec 2023 15:26:27 +0000
+X-MC-Unique: -MssvIPyP6awiriq4uC_pg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 19 Dec
+ 2023 15:26:11 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 19 Dec 2023 15:26:11 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Jacob Keller' <jacob.e.keller@intel.com>, Suman Ghosh
+	<sumang@marvell.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"sgoutham@marvell.com" <sgoutham@marvell.com>, "sbhatta@marvell.com"
+	<sbhatta@marvell.com>, "jerinj@marvell.com" <jerinj@marvell.com>,
+	"gakula@marvell.com" <gakula@marvell.com>, "hkelam@marvell.com"
+	<hkelam@marvell.com>, "lcherian@marvell.com" <lcherian@marvell.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [net PATCH] octeontx2-af: Fix marking couple of structure as
+ __packed
+Thread-Topic: [net PATCH] octeontx2-af: Fix marking couple of structure as
+ __packed
+Thread-Index: AQHaMfL5LSuKUocy/Uq8m0SZmFOeabCwuX2Q
+Date: Tue, 19 Dec 2023 15:26:11 +0000
+Message-ID: <35751ffb2c4d436baaa93230c1430a03@AcuMS.aculab.com>
+References: <20231218082758.247831-1-sumang@marvell.com>
+ <c48b24d9-f05f-4c66-a0ca-5cd6f59bea0c@intel.com>
+In-Reply-To: <c48b24d9-f05f-4c66-a0ca-5cd6f59bea0c@intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] dt-bindings: iommu: Convert msm,iommu-v0 to yaml
-Content-Language: en-GB
-To: David Heidelberg <david@ixit.cz>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: iommu@lists.linux.dev, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20231216002242.112310-2-david@ixit.cz>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231216002242.112310-2-david@ixit.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On 2023-12-16 12:22 am, David Heidelberg wrote:
-> Convert Qualcomm IOMMU v0 implementation to yaml format.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
-> v5:
->   - updated example (thx @Konrad)
->   - ordering of requirements + dropped > and | and reformatted (thx @Konrad)
-> v4:
->   - renamed to qcom,apq8064-iommu as Rob requested
->   - changed title to Qualcomm APQ8064 IOMMU
->   - dropped quotes around URLs
->   - dropped mdp node
->   - dropped unused mdp_port0 label
-> 
-> v3:
->   - I kept the name as -v0, since we have other binding -v1 and it look
->     good, I can change thou in v4 if requested.
->   - dropped non-existent smmu_clk part (and adjusted example, which was
->     using it)
->   - dropped iommu description
->   - moved iommu-cells description to the property #iommu-cells
-> 
-> v2:
->   - fix wrong path in binding $id
->   - comment qcom,mdp4 node example (we don't want to validate it yet)
-> 
->   .../bindings/iommu/msm,iommu-v0.txt           | 64 ---------------
->   .../bindings/iommu/qcom,apq8064-iommu.yaml    | 82 +++++++++++++++++++
->   2 files changed, 82 insertions(+), 64 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
->   create mode 100644 Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt b/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
-> deleted file mode 100644
-> index 20236385f26e..000000000000
-> --- a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
-> +++ /dev/null
-> @@ -1,64 +0,0 @@
-> -* QCOM IOMMU
-> -
-> -The MSM IOMMU is an implementation compatible with the ARM VMSA short
-> -descriptor page tables. It provides address translation for bus masters outside
-> -of the CPU, each connected to the IOMMU through a port called micro-TLB.
-> -
-> -Required Properties:
-> -
-> -  - compatible: Must contain "qcom,apq8064-iommu".
-> -  - reg: Base address and size of the IOMMU registers.
-> -  - interrupts: Specifiers for the MMU fault interrupts. For instances that
-> -    support secure mode two interrupts must be specified, for non-secure and
-> -    secure mode, in that order. For instances that don't support secure mode a
-> -    single interrupt must be specified.
-> -  - #iommu-cells: The number of cells needed to specify the stream id. This
-> -		  is always 1.
-> -  - qcom,ncb:	  The total number of context banks in the IOMMU.
-> -  - clocks	: List of clocks to be used during SMMU register access. See
-> -		  Documentation/devicetree/bindings/clock/clock-bindings.txt
-> -		  for information about the format. For each clock specified
-> -		  here, there must be a corresponding entry in clock-names
-> -		  (see below).
-> -
-> -  - clock-names	: List of clock names corresponding to the clocks specified in
-> -		  the "clocks" property (above).
-> -		  Should be "smmu_pclk" for specifying the interface clock
-> -		  required for iommu's register accesses.
-> -		  Should be "smmu_clk" for specifying the functional clock
-> -		  required by iommu for bus accesses.
-> -
-> -Each bus master connected to an IOMMU must reference the IOMMU in its device
-> -node with the following property:
-> -
-> -  - iommus: A reference to the IOMMU in multiple cells. The first cell is a
-> -	    phandle to the IOMMU and the second cell is the stream id.
-> -	    A single master device can be connected to more than one iommu
-> -	    and multiple contexts in each of the iommu. So multiple entries
-> -	    are required to list all the iommus and the stream ids that the
-> -	    master is connected to.
-> -
-> -Example: mdp iommu and its bus master
-> -
-> -                mdp_port0: iommu@7500000 {
-> -			compatible = "qcom,apq8064-iommu";
-> -			#iommu-cells = <1>;
-> -			clock-names =
-> -			    "smmu_pclk",
-> -			    "smmu_clk";
-> -			clocks =
-> -			    <&mmcc SMMU_AHB_CLK>,
-> -			    <&mmcc MDP_AXI_CLK>;
-> -			reg = <0x07500000 0x100000>;
-> -			interrupts =
-> -			    <GIC_SPI 63 0>,
-> -			    <GIC_SPI 64 0>;
-> -			qcom,ncb = <2>;
-> -		};
-> -
-> -		mdp: qcom,mdp@5100000 {
-> -			compatible = "qcom,mdp";
-> -			...
-> -			iommus = <&mdp_port0 0
-> -				  &mdp_port0 2>;
-> -		};
-> diff --git a/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml b/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
-> new file mode 100644
-> index 000000000000..5af59305d277
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/iommu/qcom,apq8064-iommu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm APQ8064 IOMMU
-> +
-> +maintainers:
-> +  - Will Deacon <will@kernel.org>
-> +
-> +description:
-> +  The MSM IOMMU is an implementation compatible with the ARM VMSA short
-> +  descriptor page tables. It provides address translation for bus masters
-> +  outside of the CPU, each connected to the IOMMU through a port called micro-TLB.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,apq8064-iommu
-> +
-> +  clocks:
-> +    items:
-> +      - description: interface clock for register accesses
-> +      - description: functional clock for bus accesses
-> +
-> +  clock-names:
-> +    items:
-> +      - const: smmu_pclk
-> +      - const: iommu_clk
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: Specifiers for the MMU fault interrupts.
-> +    minItems: 1
-> +    items:
-> +      - description: non-secure mode interrupt
-> +      - description: secure mode interrupt (for instances which supports it)
-> +
-> +  "#iommu-cells":
-> +    const: 1
-> +    description:
-> +      The first cell is a phandle to the IOMMU and the second cell
-> +      is the stream id.
-> +      A single master device can be connected to more than one iommu
-> +      and multiple contexts in each of the iommu.
-> +      So multiple entries are required to list all the iommus and
-> +      the stream ids that the master is connected to.
+RnJvbTogSmFjb2IgS2VsbGVyDQo+IFNlbnQ6IDE4IERlY2VtYmVyIDIwMjMgMjA6NDQNCj4gDQo+
+IE9uIDEyLzE4LzIwMjMgMTI6MjcgQU0sIFN1bWFuIEdob3NoIHdyb3RlOg0KPiA+IENvdXBsZSBv
+ZiBzdHJ1Y3R1cmVzIHdhcyBub3QgbWFya2VkIGFzIF9fcGFja2VkIHdoaWNoIG1heSBoYXZlIHNv
+bWUNCj4gPiBwZXJmb3JtYW5jZSBpbXBsaWNhdGlvbi4gVGhpcyBwYXRjaCBmaXhlcyB0aGUgc2Ft
+ZSBhbmQgbWFyayB0aGVtIGFzDQo+ID4gX19wYWNrZWQuDQo+IA0KPiBOb3Qgc3VyZSBJIGZvbGxv
+dyB3aHkgbGFjayBvZiBfX3BhY2tlZCB3b3VsZCBoYXZlIHBlcmZvcm1hbmNlDQo+IGltcGxpY2F0
+aW9ucz8gSSBnZXQgdGhhdCBfX3BhY2tlZCBpcyBpbXBvcnRhbnQgdG8gZW5zdXJlIGxheW91dCBp
+cw0KPiBjb3JyZWN0IG9yIHRvIGVuc3VyZSB0aGUgd2hvbGUgc3RydWN0dXJlIGhhcyB0aGUgcmln
+aHQgc2l6ZSByYXRoZXIgdGhhbg0KPiB1bmV4cGVjdGVkIGdhcHMuIEknZCBndWVzcyBtYXliZSBi
+ZWNhdXNlIHRoZSBzdHJ1Y3R1cmVzIHNpemUgd291bGQNCj4gaW5jbHVkZSBwYWRkaW5nIHdpdGhv
+dXQgX19wYWNrZWQsIGxlYWRpbmcgdG8gYSBsb3Qgb2YgZ2FwcyB3aGVuDQo+IGNvbWJpbmluZyBz
+ZXZlcmFsIHN0cnVjdHVyZXMgdG9nZXRoZXIuLi4NCj4gDQo+IEkgZGlkIHRlc3Qgb24gbXkgc3lz
+dGVtIHdpdGggcGFob2xlLCBhbmQgZXZlbiB3aXRob3V0IF9fcGFja2VkLCBJIGRvbid0DQo+IGdl
+dCBhbnkgZ2FwcyBpbiB0aGUgbnBjX2x0X2RlZl9jZmcgc3RydWN0dXJlOg0KPiANCj4gDQo+ID4g
+c3RydWN0IG5wY19sdF9kZWZfY2ZnIHsNCj4gPiAgICAgICAgIHN0cnVjdCBucGNfbHRfZGVmICAg
+ICAgICAgIHJ4X29sMjsgICAgICAgICAgICAgICAvKiAgICAgMCAgICAgMyAqLw0KPiA+ICAgICAg
+ICAgc3RydWN0IG5wY19sdF9kZWYgICAgICAgICAgcnhfb2lwNDsgICAgICAgICAgICAgIC8qICAg
+ICAzICAgICAzICovDQo+ID4gICAgICAgICBzdHJ1Y3QgbnBjX2x0X2RlZiAgICAgICAgICByeF9p
+aXA0OyAgICAgICAgICAgICAgLyogICAgIDYgICAgIDMgKi8NCj4gPiAgICAgICAgIHN0cnVjdCBu
+cGNfbHRfZGVmICAgICAgICAgIHJ4X29pcDY7ICAgICAgICAgICAgICAvKiAgICAgOSAgICAgMyAq
+Lw0KPiA+ICAgICAgICAgc3RydWN0IG5wY19sdF9kZWYgICAgICAgICAgcnhfaWlwNjsgICAgICAg
+ICAgICAgIC8qICAgIDEyICAgICAzICovDQo+ID4gICAgICAgICBzdHJ1Y3QgbnBjX2x0X2RlZiAg
+ICAgICAgICByeF9vdGNwOyAgICAgICAgICAgICAgLyogICAgMTUgICAgIDMgKi8NCj4gPiAgICAg
+ICAgIHN0cnVjdCBucGNfbHRfZGVmICAgICAgICAgIHJ4X2l0Y3A7ICAgICAgICAgICAgICAvKiAg
+ICAxOCAgICAgMyAqLw0KPiA+ICAgICAgICAgc3RydWN0IG5wY19sdF9kZWYgICAgICAgICAgcnhf
+b3VkcDsgICAgICAgICAgICAgIC8qICAgIDIxICAgICAzICovDQo+ID4gICAgICAgICBzdHJ1Y3Qg
+bnBjX2x0X2RlZiAgICAgICAgICByeF9pdWRwOyAgICAgICAgICAgICAgLyogICAgMjQgICAgIDMg
+Ki8NCj4gPiAgICAgICAgIHN0cnVjdCBucGNfbHRfZGVmICAgICAgICAgIHJ4X29zY3RwOyAgICAg
+ICAgICAgICAvKiAgICAyNyAgICAgMyAqLw0KPiA+ICAgICAgICAgc3RydWN0IG5wY19sdF9kZWYg
+ICAgICAgICAgcnhfaXNjdHA7ICAgICAgICAgICAgIC8qICAgIDMwICAgICAzICovDQo+ID4gICAg
+ICAgICBzdHJ1Y3QgbnBjX2x0X2RlZl9pcHNlYyAgICByeF9pcHNlY1syXTsgICAgICAgICAgLyog
+ICAgMzMgICAgMTAgKi8NCj4gPiAgICAgICAgIHN0cnVjdCBucGNfbHRfZGVmICAgICAgICAgIHBj
+a19vbDI7ICAgICAgICAgICAgICAvKiAgICA0MyAgICAgMyAqLw0KPiA+ICAgICAgICAgc3RydWN0
+IG5wY19sdF9kZWYgICAgICAgICAgcGNrX29pcDQ7ICAgICAgICAgICAgIC8qICAgIDQ2ICAgICAz
+ICovDQo+ID4gICAgICAgICBzdHJ1Y3QgbnBjX2x0X2RlZiAgICAgICAgICBwY2tfb2lwNjsgICAg
+ICAgICAgICAgLyogICAgNDkgICAgIDMgKi8NCj4gPiAgICAgICAgIHN0cnVjdCBucGNfbHRfZGVm
+ICAgICAgICAgIHBja19paXA0OyAgICAgICAgICAgICAvKiAgICA1MiAgICAgMyAqLw0KPiA+ICAg
+ICAgICAgc3RydWN0IG5wY19sdF9kZWZfYXBhZCAgICAgcnhfYXBhZDA7ICAgICAgICAgICAgIC8q
+ICAgIDU1ICAgICA0ICovDQo+ID4gICAgICAgICBzdHJ1Y3QgbnBjX2x0X2RlZl9hcGFkICAgICBy
+eF9hcGFkMTsgICAgICAgICAgICAgLyogICAgNTkgICAgIDQgKi8NCj4gPiAgICAgICAgIHN0cnVj
+dCBucGNfbHRfZGVmX2NvbG9yICAgIG92bGFuOyAgICAgICAgICAgICAgICAvKiAgICA2MyAgICAg
+NSAqLw0KPiA+ICAgICAgICAgLyogLS0tIGNhY2hlbGluZSAxIGJvdW5kYXJ5ICg2NCBieXRlcykg
+d2FzIDQgYnl0ZXMgYWdvIC0tLSAqLw0KPiA+ICAgICAgICAgc3RydWN0IG5wY19sdF9kZWZfY29s
+b3IgICAgaXZsYW47ICAgICAgICAgICAgICAgIC8qICAgIDY4ICAgICA1ICovDQo+ID4gICAgICAg
+ICBzdHJ1Y3QgbnBjX2x0X2RlZl9jb2xvciAgICByeF9nZW4wX2NvbG9yOyAgICAgICAgLyogICAg
+NzMgICAgIDUgKi8NCj4gPiAgICAgICAgIHN0cnVjdCBucGNfbHRfZGVmX2NvbG9yICAgIHJ4X2dl
+bjFfY29sb3I7ICAgICAgICAvKiAgICA3OCAgICAgNSAqLw0KPiA+ICAgICAgICAgc3RydWN0IG5w
+Y19sdF9kZWZfZXQgICAgICAgcnhfZXRbMl07ICAgICAgICAgICAgIC8qICAgIDgzICAgIDEwICov
+DQo+ID4NCj4gPiAgICAgICAgIC8qIHNpemU6IDkzLCBjYWNoZWxpbmVzOiAyLCBtZW1iZXJzOiAy
+MyAqLw0KPiA+ICAgICAgICAgLyogbGFzdCBjYWNoZWxpbmU6IDI5IGJ5dGVzICovDQo+ID4gfTsN
+Cj4gDQo+IA0KPiBIb3dldmVyIHRoYXQgbWF5IG5vdCBiZSB0cnVlIGFjcm9zcyBhbGwgY29tcGls
+ZXJzIGV0Yy4gQWxzbyBhbGwgdGhlDQo+IG90aGVyIHN0cnVjdHVyZXMgYXJlIF9fcGFja2VkLiBN
+YWtlcyBzZW5zZS4NCg0KT3Igbm90IC0gbWF5YmUgYWxsIHRoZSBfX3BhY2tlZCBzaG91bGQgYmUg
+cmVtb3ZlZCBpbnN0ZWFkIQ0KDQpVbmxlc3MgdGhlc2Ugc3RydWN0dXJlcyAob3IgYW55IG90aGVy
+cykgYXBwZWFyIGluICdtZXNzYWdlcycgd2hpY2gNCmdldCB0cmFuc2ZlcnJlZCBiZXR3ZWVuIHN5
+c3RlbXMgdGhleSByZWFsbHkgc2hvdWxkbid0IGJlIF9fcGFja2VkLg0KQW5kIGEgOTMgYnl0ZSAn
+bWVzc2FnZScgd2l0aCBhbGwgdGhvc2UgZmllbGRzIHNlZW1zIHJhdGhlciBvZGQuDQoNClRoZSBh
+Ym92ZSBicmVha2Rvd24gc2VlbXMgdG8gaW1wbHkgZXZlcnl0aGluZyBpcyAndW5zaWduZWQgY2hh
+cicNCnNvIHRoZSBfX3BhY2tlZCBtYWtlcyBubyBkaWZmZXJlbmNlLg0KDQpVc2luZyBfX3BhY2tl
+ZCByZXF1aXJlcyB0aGUgY29tcGlsZXIgZ2VuZXJhdGUgYnl0ZSBsb2Fkcy9zdG9yZQ0Kd2l0aCBz
+aGlmdHMgKGV0Yykgb24gbWFueSBhcmNoaXRlY3R1cmVzIGFuZCBzaG91bGQgcmVhbGx5IGJlIGF2
+b2lkZWQNCnVubGVzcyBpdCBpcyBhYnNvbHV0ZWx5IG5lZWRlZCBmb3IgYmluYXJ5IGNvbXBhdGli
+aWxpdHkuDQoNCkV2ZW4gdGhlbiBpZiB0aGUgcHJvYmxlbSBpcyBhIDY0Yml0IGZpZWxkIHRoYXQg
+b25seSBuZWVkcyB0byBiZQ0KMzJiaXQgYWxpZ25lZCAoYXMgaXMgY29tbW9uIGZvciBzb21lIGNv
+bXBhdDMyIGNvZGUpIHRoZW4gdGhlIDY0Yml0DQpmaWVsZHMgc2hvdWxkIGJlIG1hcmtlZCBhcyBi
+ZWluZyAzMmJpdCBhbGlnbmVkLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-This seems pretty confusing since it's the description for some other 
-property, not this one. FWIW I'd just put this as something like "Each 
-IOMMU specifier describes a single Stream ID.", and if you think it's 
-really worth calling out that clients can have multiple IOMMU 
-specifiers, I'd stick that in the overall description.
-
-Thanks,
-Robin.
-
-> +
-> +  qcom,ncb:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: The total number of context banks in the IOMMU.
-> +
-> +required:
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - qcom,ncb
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,mmcc-msm8960.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    iommu@7500000 {
-> +            compatible = "qcom,apq8064-iommu";
-> +            reg = <0x07500000 0x100000>;
-> +            interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
-> +                         <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&clk SMMU_AHB_CLK>,
-> +                     <&clk MDP_AXI_CLK>;
-> +            clock-names = "smmu_pclk",
-> +                          "iommu_clk";
-> +            #iommu-cells = <1>;
-> +            qcom,ncb = <2>;
-> +    };
 
