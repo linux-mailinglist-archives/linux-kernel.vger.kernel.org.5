@@ -1,101 +1,196 @@
-Return-Path: <linux-kernel+bounces-5930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F6BB8191A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 946908191A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739121C218F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:39:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C81961C24B8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D994F39ADF;
-	Tue, 19 Dec 2023 20:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99A939AF2;
+	Tue, 19 Dec 2023 20:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="ByeeiWdZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369373B781;
-	Tue, 19 Dec 2023 20:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-203aa9c19ceso379521fac.0;
-        Tue, 19 Dec 2023 12:39:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703018376; x=1703623176;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8DziJ3fXpCSH0YjUbI03bbXMEuMGLYmct7c4S80aLAE=;
-        b=OndTq5WRlzMWY02UkB5odCjAjMFy9QdRf0CUGGEr8iQ1vzduu24U1eCJ1eqyiLnf6y
-         7F/tn189EIFahZUZI7nhMJFJKL0Wx9p5yeiDKgp21FkEATTAHbTXC4RfE7vhrg3rcHxu
-         K0T5jzXmE7ck31XwEEoP7NsEsdrqY1hJlkHftyGDMinmZxWRFExB58RjvtpTLkD1G0aP
-         kgY8AASboubuhlDk0/Hok0t3i2wKZh46iXK9gii0XyrmVm/sfLKViyLsKvfPROOc/PCj
-         J4mkjmUKeCAr1NUYzJmLQ/pW9Q+7PefAWvpRaDAHf/8I7qx7WsbbF+KE2oeNnZV4F2JB
-         yzqg==
-X-Gm-Message-State: AOJu0YzTrDrZi3AfsVLb8faQo+3oqiVt064KdYMFtFrEddxzGR+fzQqO
-	Qi0CmJhpf+V6kCC+P+zA93GNbI1BRZAPYWaMf8jQ+HfO
-X-Google-Smtp-Source: AGHT+IGgzXWzuvzaB3dYH5OY42sOHe01Du+gCgqovbDyT6GvFO2cJ6bnyXded158X3RY1nvsSFsINqUuHOn4fg38bxs=
-X-Received: by 2002:a05:6870:7014:b0:203:d0d0:5707 with SMTP id
- u20-20020a056870701400b00203d0d05707mr6439646oae.4.1703018376268; Tue, 19 Dec
- 2023 12:39:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350AD39AD0;
+	Tue, 19 Dec 2023 20:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=K/lXgN5BftqIB2NPWo5ghozyvDmpveobly1bEzRYtfo=;
+  b=ByeeiWdZVs/N8IODVg/UcgtGwAvK+qr1ZWWrOxCRnxdAn7U5qwBy4qI3
+   Odb/P86f2dnAjZ9YAR969oYQ2ZodM5xs0YsUs40EOkobCvwIDdgJ55KHz
+   LVK6xdjh+8HTNSgLpaRHb8ZqsakIck30oAmF8x81VpnbBqjgLKICGOl8F
+   g=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,289,1695679200"; 
+   d="scan'208";a="74895525"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 21:39:57 +0100
+Date: Tue, 19 Dec 2023 21:39:56 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To: =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>
+cc: Luis Chamberlain <mcgrof@kernel.org>, 
+    Joel Granados <j.granados@samsung.com>, 
+    Dan Carpenter <dan.carpenter@linaro.org>, 
+    Kees Cook <keescook@chromium.org>, 
+    "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+    Iurii Zaikin <yzaikin@google.com>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+In-Reply-To: <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
+Message-ID: <alpine.DEB.2.22.394.2312192139150.3196@hadrien>
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net> <20231207104357.kndqvzkhxqkwkkjo@localhost> <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de> <20231208095926.aavsjrtqbb5rygmb@localhost> <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
+ <20231212090930.y4omk62wenxgo5by@localhost> <ZXligolK0ekZ+Zuf@bombadil.infradead.org> <20231217120201.z4gr3ksjd4ai2nlk@localhost> <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de> <ZYC37Vco1p4vD8ji@bombadil.infradead.org>
+ <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213102808.94695-1-yaozhenguo1@gmail.com> <CAJZ5v0i4DAtzoJUyN0H-4rL=HR=cNntqrrJaDj12suF=7JiyeQ@mail.gmail.com>
- <9adc18c94f160cad550e762571a952baa7f8df36.camel@linux.intel.com>
-In-Reply-To: <9adc18c94f160cad550e762571a952baa7f8df36.camel@linux.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 19 Dec 2023 21:39:25 +0100
-Message-ID: <CAJZ5v0i19-o9qecaT4y6U8NhEEyR9aKCzyGccdrWXDW5RVHhag@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Add Emerald Rapids support in
- no-HWP mode
-To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>, 
-	Zhenguo Yao <yaozhenguo1@gmail.com>
-Cc: lenb@kernel.org, viresh.kumar@linaro.org, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, yaozhenguo@jd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="8323329-627943610-1703018397=:3196"
 
-On Tue, Dec 19, 2023 at 9:33=E2=80=AFPM srinivas pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-627943610-1703018397=:3196
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+
+
+
+On Tue, 19 Dec 2023, Thomas Weißschuh wrote:
+
+> Hi Luis and Julia,
 >
-> On Tue, 2023-12-19 at 21:22 +0100, Rafael J. Wysocki wrote:
-> > On Wed, Dec 13, 2023 at 11:28=E2=80=AFAM Zhenguo Yao <yaozhenguo1@gmail=
-.com>
-> > wrote:
-> > >
-> > > Users may disable HWP in firmware, in which case intel_pstate
-> > > wouldn't load
-> > > unless the CPU model is explicitly supported.
-> > >
-> > > See also the following past commits:
-> > >
-> > > commit df51f287b5de ("cpufreq: intel_pstate: Add Sapphire Rapids
-> > > support
-> > > in no-HWP mode")
-> > > commit d8de7a44e11f ("cpufreq: intel_pstate: Add Skylake servers
-> > > support")
-> > > commit 706c5328851d ("cpufreq: intel_pstate: Add Cometlake support
-> > > in
-> > > no-HWP mode")
-> > > commit fbdc21e9b038 ("cpufreq: intel_pstate: Add Icelake servers
-> > > support in
-> > > no-HWP mode")
-> > > commit 71bb5c82aaae ("cpufreq: intel_pstate: Add Tigerlake support
-> > > in
-> > > no-HWP mode")
-> > >
-> > > Signed-off-by: Zhenguo Yao <yaozhenguo1@gmail.com>
+> (Julia, there is a question and context for you inline, marked with your name)
+>
+> On 2023-12-18 13:21:49-0800, Luis Chamberlain wrote:
+> > So we can split this up concentually in two:
 > >
-> > Srinivas, any objections?
-> No.
+> >  * constificaiton of the table handlers
+> >  * constification of the table struct itself
+> >
+> > On Sun, Dec 17, 2023 at 11:10:15PM +0100, Thomas Weißschuh wrote:
+> > > The handlers can already be made const as shown in this series,
+> >
+> > The series did already produce issues with some builds, and so
+> > Julia's point is confirmed that the series only proves hanlders
+> > which you did build and for which 0-day has coverage for.
+> >
+> > The challenge here was to see if we could draw up a test case
+> > that would prove this without build tests, and what occurred to
+> > me was coccinelle or smatch.
 >
-> Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> I used the following coccinelle script to find more handlers that I
+> missed before:
+>
+> virtual patch
+> virtual context
+> virtual report
+>
+> @@
+> identifier func;
+> identifier ctl;
+> identifier write;
+> identifier buffer;
+> identifier lenp;
+> identifier ppos;
+> type loff_t;
+> @@
+>
+> int func(
+> - struct ctl_table *ctl,
+> + const struct ctl_table *ctl,
+>   int write, void *buffer, size_t *lenp, loff_t *ppos) { ... }
+>
+> It did not find any additional occurrences while it was able to match
+> the existing changes.
+>
+> After that I manually reviewed all handlers that they are not modifying
+> their table argument, which they don't.
+>
+> Should we do more?
+>
+>
+> For Julia:
+>
+> Maybe you could advise on how to use coccinelle to find where a const
+> function argument or one of its members are modified directly or passed
+> to some other function as non-const arguments.
+> See the coccinelle patch above.
+>
+> Is this possible?
 
-Applied as 6.8 material (with some minor edits in the changelog), thanks!
+I will propose something.
+
+>
+> > > > If that is indeed what you are proposing, you might not even need the
+> > > > un-register step as all the mutability that I have seen occurs before
+> > > > the register. So maybe instead of re-registering it, you can so a copy
+> > > > (of the changed ctl_table) to a const pointer and then pass that along
+> > > > to the register function.
+> > >
+> > > Tables that are modified, but *not* through the handler, would crop
+> > > during the constification of the table structs.
+> > > Which should be a second step.
+> >
+> > Instead of "croping up" at build time again, I wonder if we can do
+> > better with coccinelle / smatch.
+>
+> As for smatch:
+>
+> Doesn't smatch itself run as part of a normal build [0]?
+> So it would have the same visibility issues as the compiler itself.
+
+I also believe that this is the case.
+
+julia
+
+> > Joel, and yes, what you described is what I was suggesting, that is to
+> > avoid having to add a non-const handler a first step, instead we modify
+> > those callers which do require to modify the table by first a
+> > deregistration and later a registration. In fact to make this even
+> > easier a new call would be nice so to aslo be able to git grep when
+> > this is done in the kernel.
+> >
+> > But if what you suggest is true that there are no registrations which
+> > later modify the table, we don't need that. It is the uncertainty that
+> > we might have that this is a true statment that I wanted to challenge
+> > to see if we could do better. Can we avoid this being a stupid
+> > regression later by doing code analysis with coccinelle / smatch?
+> >
+> > The template of the above endeavor seems useful not only to this use
+> > case but to any place in the kernel where this previously has been done
+> > before, and hence my suggestion that this seems like a sensible thing
+> > to think over to see if we could generalize.
+>
+> I'd like to split the series and submit the part up until and including
+> the constification of arguments first and on its own.
+> It keeps the subsystem maintainers out of the discussion of the core
+> sysctl changes.
+>
+> I'll submit the core sysctl changes after I figure out proper responses
+> to all review comments and we can do this in parallel to the tree-wide
+> preparation.
+>
+> What do you think Luis and Joel?
+>
+> [0] https://repo.or.cz/smatch.git/blob/HEAD:/smatch_scripts/test_kernel.sh
+>
+--8323329-627943610-1703018397=:3196--
 
