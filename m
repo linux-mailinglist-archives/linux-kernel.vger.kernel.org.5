@@ -1,107 +1,127 @@
-Return-Path: <linux-kernel+bounces-5475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326C7818B13
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:22:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EBDA818B16
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:23:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A68941F23215
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:22:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0061C24598
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6448B1CA91;
-	Tue, 19 Dec 2023 15:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929171CA81;
+	Tue, 19 Dec 2023 15:22:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="cI5fDbWI"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WsR5eIqp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4F71CA81
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d3ae9d1109so5197685ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:22:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1702999360; x=1703604160; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l4X/t+TrQywqn2cB1k4Ph2OrjI7UqsZZQOkDIluIw2Y=;
-        b=cI5fDbWIt3vivpt4qfJ+xERO3f3ISJ+agd8v8pTtWUfwnKWaAi47BNHPynbuTB3As2
-         lx7q6fQeTKA/slGZW2rXjvjZGp1i+UmvbqDb1GT5djDl1PPwA46D/zMsjnip8AwAT1X+
-         ZJ37MG7bjsZtUIfa1ehC5Qx9h6iSXyma7V4h8HQ4/6sRKcxik/ci1e7YS73coDynIehR
-         F79+9ZVoVpp6OziFwUH2hjo+AHW2rC8NMZBMUyI/iXzBQSw8yqyRbV2+fn+5Dlq6JsjU
-         HVsx6aXRviAwcdi4DVW0fXBJi/uQZ8Wwc2Mx5jyphdT9mffEzxNwfz2VCabejT229nij
-         Q93Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702999360; x=1703604160;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l4X/t+TrQywqn2cB1k4Ph2OrjI7UqsZZQOkDIluIw2Y=;
-        b=KbmkKnPnXApCj2l3aPLCXKa7YagYqZyuDlZTSeyfP/cHumIzhlv8kjDcXb7pan3OrP
-         mB5Z169uiLHbpfE5Z0X2qv2Mbsu0M6geDR/Km4VT1fihEE8h1MkpjUwKYhxqtlShPL+X
-         a5PYQmWc+b5nEC81mFkjT/+RsNpUE4AompE9fUAA0suiDLroQvaXjPSFAnekqiF0Ht9p
-         n5+OhIUT/qx2Op7pqYoe0davE5kAGmHscqExHi3/29ZU+YpTPY9W9tuUXqS23brGyOek
-         HXEL8MwjRMr8XDC9cD/WrGwBC3ibudoZV8kVFIldtI8BG+ElQYHQmkidB4am+25mRVHa
-         sqgQ==
-X-Gm-Message-State: AOJu0YyYx2U47CwDkbiYocNVa/oOS12VF9nmcxZKuh/hBFgt6hXVLNyl
-	czb4etcRnbvh317EP7+jMBXU8g==
-X-Google-Smtp-Source: AGHT+IFFVPgVeQrzoWw4fxcoePk6KxRxSLLaAhp376iURBzFhdb+zXuHnkKxClPLX2ufrx/iRuaPgw==
-X-Received: by 2002:a17:902:db12:b0:1d3:dbdc:4c9d with SMTP id m18-20020a170902db1200b001d3dbdc4c9dmr2677146plx.3.1702999360121;
-        Tue, 19 Dec 2023 07:22:40 -0800 (PST)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id s14-20020a170902ea0e00b001cff9cd5129sm4331741plg.298.2023.12.19.07.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 07:22:39 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc: Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>, 
- Michael William Jonathan <moe@gnuweeb.org>, 
- io-uring Mailing List <io-uring@vger.kernel.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>
-In-Reply-To: <20231219115423.222134-1-ammarfaizi2@gnuweeb.org>
-References: <20231219115423.222134-1-ammarfaizi2@gnuweeb.org>
-Subject: Re: [PATCH liburing v1 0/2] Makefile and t/no-mmap-inval updates
-Message-Id: <170299935907.459636.7506375582198265132.b4-ty@kernel.dk>
-Date: Tue, 19 Dec 2023 08:22:39 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63421C69D;
+	Tue, 19 Dec 2023 15:22:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D439FC433C8;
+	Tue, 19 Dec 2023 15:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702999369;
+	bh=vOJ9fKH6Xqs5UvwP9s7vsM9ZkdDZzxdG2BYm96rLvAY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WsR5eIqpOuTF0cIbg+QKbJk945zH4aWyXTOIY1x3RQA0jbBvivNWsuj7e6Upmrryd
+	 RyL951N7XwvzbPbR4ViNCIRb5JLQqt7ZEr7thVILxZfFjWkwanT8MVZ+xBn2ZcerUg
+	 bXjNwD7NXCrngu8Maaslp8kRTGGO1BmBMQOT/Ooc=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: wsa@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	linux-i2c@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: [PATCH] i2c: make i2c_bus_type const
+Date: Tue, 19 Dec 2023 16:22:43 +0100
+Message-ID: <2023121942-jumble-unethical-3163@gregkh>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-7edf1
+Lines: 66
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2417; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=vOJ9fKH6Xqs5UvwP9s7vsM9ZkdDZzxdG2BYm96rLvAY=; b=owGbwMvMwCRo6H6F97bub03G02pJDKmNW51Sba1dDtXZnllysInD6hGjp6HmpIbM+iDrWF39f x6PXrh0xLIwCDIxyIopsnzZxnN0f8UhRS9D29Mwc1iZQIYwcHEKwEQKIhjm2U4SyLvO9cnsvoJq 3W9WhQ+C58WMGObp7bSdUBOyNC9E6FVt/PQlO9Sz518HAA==
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 
+Now that the driver core can properly handle constant struct bus_type,
+move the i2c_bus_type variable to be a constant structure as well, placing
+it into read-only memory which can not be modified at runtime.
 
-On Tue, 19 Dec 2023 18:54:21 +0700, Ammar Faizi wrote:
-> There are two patches in this series:
-> 
-> 1. Makefile: Remove the `partcheck` target.
-> 
-> Remove the `partcheck` target because it has remained unused for nearly
-> four years, and the associated TODO comment has not been actioned since
-> its introduction in commit:
-> 
-> [...]
+Note, the sound/soc/rockchip/rk3399_gru_sound.c also needed tweaking as
+it decided to save off a pointer to a bus type for internal stuff, and
+it was using the i2c_bus_type as well.
 
-Applied, thanks!
+Cc: Wolfram Sang <wsa@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: linux-i2c@vger.kernel.org
+Cc: linux-sound@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/i2c/i2c-core-base.c           | 2 +-
+ include/linux/i2c.h                   | 2 +-
+ sound/soc/rockchip/rk3399_gru_sound.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-[1/2] Makefile: Remove the `partcheck` target
-      commit: 4ea77f3a1561bbd3140cc0de03698a67d08f4f27
-[2/2] t/no-mmap-inval: Replace `valloc()` with `t_posix_memalign()`
-      commit: 7524a6adf4d6720a47bfa617b5cb2fd8d57f16d2
-
-Best regards,
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index eac90a3cf61a..24c6e1b52668 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -689,7 +689,7 @@ static struct attribute *i2c_dev_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(i2c_dev);
+ 
+-struct bus_type i2c_bus_type = {
++const struct bus_type i2c_bus_type = {
+ 	.name		= "i2c",
+ 	.match		= i2c_device_match,
+ 	.probe		= i2c_device_probe,
+diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+index 0dae9db27538..180462d1a373 100644
+--- a/include/linux/i2c.h
++++ b/include/linux/i2c.h
+@@ -23,7 +23,7 @@
+ #include <linux/swab.h>		/* for swab16 */
+ #include <uapi/linux/i2c.h>
+ 
+-extern struct bus_type i2c_bus_type;
++extern const struct bus_type i2c_bus_type;
+ extern struct device_type i2c_adapter_type;
+ extern struct device_type i2c_client_type;
+ 
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 1a504ebd3a0e..6c89c7331229 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -446,7 +446,7 @@ static const struct rockchip_sound_route rockchip_routes[] = {
+ 
+ struct dailink_match_data {
+ 	const char *compatible;
+-	struct bus_type *bus_type;
++	const struct bus_type *bus_type;
+ };
+ 
+ static const struct dailink_match_data dailink_match[] = {
 -- 
-Jens Axboe
-
-
+2.43.0
 
 
