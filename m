@@ -1,207 +1,205 @@
-Return-Path: <linux-kernel+bounces-4979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B5DD8184B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:45:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E54C8184BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8D50284FBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:45:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28886284F16
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2A314282;
-	Tue, 19 Dec 2023 09:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C821813FFF;
+	Tue, 19 Dec 2023 09:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="puWFRBLb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i/4uf4fP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C431427F
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55370780c74so2144642a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:45:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE1813FE5
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3b9ed8c3472so453773b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:45:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702979125; x=1703583925; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PRlR9bbBvVyS6S4VmsMAEYTreNTHrgGpvzAcX5l7aOY=;
-        b=puWFRBLb0WHp7aVkmH9pI6NMtGwCFK5wdVk+KzSPDHfHjDV0J//SV1BcVzD5upsyuW
-         hEvsHJh8sBdwGcdcCRqH5Vk7DQGk4vBKWhtEhIo5DMbj6zEgqud4iICkWqIDxselQSaL
-         vgyt8oKbZ6u+i3D8CPB2DXyU4Z/hFAtQNZ6uGmSUaQOJKR9zqJeVZgyf9F3xORSqB0fJ
-         Z1baYSzP9qceB1khgTg88QiWhmAgLssbxyxC/VLbNGWcNZ+4oblrpcc6FfiS5KVOWsfM
-         07GZ6Uyc5c+71Q80ZNqCAlsAkL4ojFuh1R41AYc0cyvkXx8MbOhJiwFYcknEQiVZmwtC
-         Sb5A==
+        d=gmail.com; s=20230601; t=1702979154; x=1703583954; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MkQbC/xyNrZkIWiwDp6IMwy7SGyY0b5UmnK4l5m5LgI=;
+        b=i/4uf4fPJOUdkSsHkFeBVbb7InuU1S+amW35RIe9XM4+zHoKF7vDgsGAKsJmed9pZB
+         0yLxrcxbU7C3egG0Jt361nUFyoEW2t0oc6/6UA4P+fs/jn9eN9VmI5Hgc723wmXazU+N
+         XDsSJsLsKr1B6jWQBDzSUI++GUrC71UE6FvmTARmsY31Hm0SSpssVhVSGzV/cnWBEE15
+         ir2b1Px2rBXmefVzoA+fl9PBAWFtUvHBSgxiO3u/W5eV3G2Ey0odsBkOL6CQVUKPWTi5
+         dmT3D+nZZSv/qI9Hx3GUqU5lSexzp0xDb6+6cEEOnLXwpz7IsBpGquRlw6rr0+2sE/z4
+         4i+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702979125; x=1703583925;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PRlR9bbBvVyS6S4VmsMAEYTreNTHrgGpvzAcX5l7aOY=;
-        b=Pt2pwoQIbtbacAM0VZ3D8lRbQTYdeiwFeZTdb5nf5mcp8lQbE/t9RURuYocYdaXHMt
-         HPc8NmX6Uc40mzAY8Cst/nK7LnnG/1w8icy5gGyg5sabrtR/hij8R5aDtug++LSYqGLk
-         mBRWqGzBCOhTDeMbMNICWJ4R6AkQgNrwxA2BfFodMqI5aiHw56BzyNitV8q6wv/oxfnZ
-         PoaIjPTw8i8IHMabfYxcI2c2PUbXIcxYV1moHo6+m6vrfsJnBuLM7wzUD1kZnpHoa68e
-         r+9TP44lAhimz71ZV5FUWKYkKczbdiMDWy29zQXK+Yy2f9HFSFVw9QPi4DL0cPf0UQNO
-         U8nw==
-X-Gm-Message-State: AOJu0YxuubCUPfp4MV3dmELnZR17dL0pHGIbcFDY1b5dkdXPLkxMFE7b
-	0mRGT75t2RCZ/GhtehE3/UQMug==
-X-Google-Smtp-Source: AGHT+IHf8gGuEoTDXOjkv3mJffP1TiyflDIBb8/woby5n1sbsurZ9BxF5yRg+Y2XEI8mLA7wCEt/tw==
-X-Received: by 2002:a50:c089:0:b0:553:51ba:7402 with SMTP id k9-20020a50c089000000b0055351ba7402mr1342619edf.36.1702979125113;
-        Tue, 19 Dec 2023 01:45:25 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id es21-20020a056402381500b0055267663784sm5407107edb.11.2023.12.19.01.45.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 01:45:24 -0800 (PST)
-Message-ID: <4ab88316-6168-4cbf-85eb-abd4945b809a@linaro.org>
-Date: Tue, 19 Dec 2023 10:45:22 +0100
+        d=1e100.net; s=20230601; t=1702979154; x=1703583954;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MkQbC/xyNrZkIWiwDp6IMwy7SGyY0b5UmnK4l5m5LgI=;
+        b=ikmHTbYC33HYO7XEv8dgq1j1qm8eHRA7/+GgeLUXlmqDWCCBCIIU6W/QvYXnWQ1pIr
+         8OhROCA1ABzNgRHyLoBtIPj0GzayDrXPa85LIdLy+wgpuKPXnW81iBvye8gkjUpzc7aE
+         slryctecf7TV4xEErGBl4m9qFLT4YqCTbMj4r+ZLFXQaQNgQgA/MpHfUJzxE9JYhKHE1
+         ek7IDiA7Mn4AUJp09R4YtXYMePWfWvX0hF8RtzhZeeSqYFG32WdMG0FCY43EcZPx48pj
+         hqIeEP+gxcPbNIRyO2ssX7bjuh0ao4zSa5o4a+ujeqaEi3/3zdRqg+wl5avA04zVlzmu
+         9DtA==
+X-Gm-Message-State: AOJu0Yz4/yzlXR42cT9NdDfqfurRQKoAsQUEnzOkQcka8l4e5Do8Nr/F
+	B7p4jAohjzaystMnzb3kuqtiZxEq9d5gnkXt38k=
+X-Google-Smtp-Source: AGHT+IGGNEiDhBcG8iHFE34HsdZISle57F+NS7CHQs5424Fk99e58FsftGrr8GxBUXq4xroikWAXO3kHBVOTaP4Fpj4=
+X-Received: by 2002:a05:6808:20a2:b0:3b9:de19:2fb9 with SMTP id
+ s34-20020a05680820a200b003b9de192fb9mr34191884oiw.3.1702979154479; Tue, 19
+ Dec 2023 01:45:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] dts: iot2050: Support IOT2050-SM variant
-Content-Language: en-US
-To: Jan Kiszka <jan.kiszka@siemens.com>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bao Cheng Su <baocheng.su@siemens.com>,
- Chao Zeng <chao.zeng@siemens.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Li Hua Qian <huaqian.li@siemens.com>
-References: <cover.1702917360.git.jan.kiszka@siemens.com>
- <11e0b0c8b828254567a8ff89820c067cacad2150.1702917360.git.jan.kiszka@siemens.com>
- <8b3daa3c-dbf8-4286-b04e-011cd9b0efa5@linaro.org>
- <4c31adc5-3fc5-47bc-9766-6d3d1eeddb65@siemens.com>
- <fbb29d81-9ea0-4468-ad47-f6668c2be277@linaro.org>
- <de3f4778-51d6-48ab-9d4d-451f2ba01a3c@siemens.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <de3f4778-51d6-48ab-9d4d-451f2ba01a3c@siemens.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CABXGCsMbqw2qzWSCDfp3cNrYVJ1oxLv8Aixfm_Dt91x1cvFX4w@mail.gmail.com>
+ <a99e6def-68be-3f2b-4e01-ac26cdb80f49@gmail.com> <CABXGCsM7JPxtQm6B7vk+ZcXfphgQm=ArJZKiDUdbk9hujyRtmg@mail.gmail.com>
+ <43016018-4d0a-94dc-ce93-b4bff2dce71c@gmail.com> <90b1c9f8-1674-e9ec-e6d8-2fa1967439b3@gmail.com>
+ <CABXGCsN2NutEmi==JBDD5G2Bj=DJ6vm87_Cbubycz-WowUOh5w@mail.gmail.com>
+ <e2975d53-840c-a104-8b2d-c302f502c894@gmail.com> <CABXGCsOJkF=c4B+oQm7cuEO7Fr_oknmH2iB6e6OCzmFy=KYtAw@mail.gmail.com>
+ <5cbba992-c4ce-01c1-2691-ed65ce66aad5@gmail.com> <CABXGCsMBWwRFRA+EJKF0v6BwZ+uTQHr4Yn9E9_iYgZ6KRbwsJQ@mail.gmail.com>
+ <8bce512e-abb6-495d-85a4-63648229859e@gmail.com>
+In-Reply-To: <8bce512e-abb6-495d-85a4-63648229859e@gmail.com>
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date: Tue, 19 Dec 2023 14:45:43 +0500
+Message-ID: <CABXGCsNAP_FOTOkNZ+BuJcPH8p1qpVsdiCyUEw9QWzJv81ut6w@mail.gmail.com>
+Subject: Re: amdgpu didn't start with pci=nocrs parameter, get error "Fatal
+ error during GPU init"
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc: amd-gfx list <amd-gfx@lists.freedesktop.org>, 
+	dri-devel <dri-devel@lists.freedesktop.org>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	"Deucher, Alexander" <Alexander.Deucher@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 19/12/2023 10:03, Jan Kiszka wrote:
-> On 19.12.23 09:48, Krzysztof Kozlowski wrote:
->> On 19/12/2023 09:22, Jan Kiszka wrote:
->>>>
->>>>> +			gpios = <&wkup_gpio0 53 GPIO_ACTIVE_HIGH>;
->>>>
->>>> Ditto
->>>>
->>>
->>> This is adjusting the existing LED nodes in k3-am65-iot2050-common.dtsi,
->>> not introducing new ones. We can add the color properties in a separate
->>
->>
->> Then why aren't you overriding by phandle/label?
->>
-> 
-> We could do that as well if we added labels first (they don't exist so 
-> far). Not seeing any difference, though.
-> 
->>> patch, but the node names are now part of the kernel ABI. Changing them
->>> would break existing userland.
->>
->> You mean label. Why node names became the ABI? Which interface exposes them?
-> 
-> root@iot2050-debian:~# ls -l /sys/class/leds/
+On Fri, Dec 15, 2023 at 5:37=E2=80=AFPM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> I have no idea :)
+>
+>  From the logs I can see that the AMDGPU now has the proper BARs assigned=
+:
+>
+> [    5.722015] pci 0000:03:00.0: [1002:73df] type 00 class 0x038000
+> [    5.722051] pci 0000:03:00.0: reg 0x10: [mem
+> 0xf800000000-0xfbffffffff 64bit pref]
+> [    5.722081] pci 0000:03:00.0: reg 0x18: [mem
+> 0xfc00000000-0xfc0fffffff 64bit pref]
+> [    5.722112] pci 0000:03:00.0: reg 0x24: [mem 0xfca00000-0xfcafffff]
+> [    5.722134] pci 0000:03:00.0: reg 0x30: [mem 0xfcb00000-0xfcb1ffff pre=
+f]
+> [    5.722368] pci 0000:03:00.0: PME# supported from D1 D2 D3hot D3cold
+> [    5.722484] pci 0000:03:00.0: 63.008 Gb/s available PCIe bandwidth,
+> limited by 8.0 GT/s PCIe x8 link at 0000:00:01.1 (capable of 252.048
+> Gb/s with 16.0 GT/s PCIe x16 link)
+>
+> And with that the driver can work perfectly fine.
+>
+> Have you updated the BIOS or added/removed some other hardware? Maybe
+> somebody added a quirk for your BIOS into the PCIe code or something
+> like that.
+
+No, nothing changed in hardware.
+But I found the commit which fixes it.
+
+> git bisect unfixed
+92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6 is the first fixed commit
+commit 92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6
+Author: Vasant Hegde <vasant.hegde@amd.com>
+Date:   Thu Sep 21 09:21:45 2023 +0000
+
+    iommu/amd: Introduce iommu_dev_data.flags to track device capabilities
+
+    Currently we use struct iommu_dev_data.iommu_v2 to keep track of the de=
+vice
+    ATS, PRI, and PASID capabilities. But these capabilities can be enabled
+    independently (except PRI requires ATS support). Hence, replace
+    the iommu_v2 variable with a flags variable, which keep track of the de=
+vice
+    capabilities.
+
+    From commit 9bf49e36d718 ("PCI/ATS: Handle sharing of PF PRI Capability
+    with all VFs"), device PRI/PASID is shared between PF and any associate=
+d
+    VFs. Hence use pci_pri_supported() and pci_pasid_features() instead of
+    pci_find_ext_capability() to check device PRI/PASID support.
+
+    Signed-off-by: Vasant Hegde <vasant.hegde@amd.com>
+    Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+    Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+    Link: https://lore.kernel.org/r/20230921092147.5930-13-vasant.hegde@amd=
+.com
+    Signed-off-by: Joerg Roedel <jroedel@suse.de>
+
+ drivers/iommu/amd/amd_iommu_types.h |  3 ++-
+ drivers/iommu/amd/iommu.c           | 46 ++++++++++++++++++++++-----------=
+----
+ 2 files changed, 30 insertions(+), 19 deletions(-)
 
 
-> total 0
-> lrwxrwxrwx 1 root root 0 Dec 19 08:55 mmc0:: -> ../../devices/platform/bus@100000/4fa0000.mmc/leds/mmc0::
-> lrwxrwxrwx 1 root root 0 Dec 19 08:55 mmc1:: -> ../../devices/platform/bus@100000/4f80000.mmc/leds/mmc1::
-> lrwxrwxrwx 1 root root 0 Dec 14 21:12 status-led-green -> ../../devices/platform/leds/leds/status-led-green
-> lrwxrwxrwx 1 root root 0 Dec 19 08:55 status-led-red -> ../../devices/platform/leds/leds/status-led-red
-> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led1-green -> ../../devices/platform/leds/leds/user-led1-green
-> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led1-red -> ../../devices/platform/leds/leds/user-led1-red
-> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led2-green -> ../../devices/platform/leds/leds/user-led2-green
-> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led2-red -> ../../devices/platform/leds/leds/user-led2-red
-> 
->>>>> +
->>>>> +&dwc3_0 {
->>>>> +	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
->>>>> +				 <&k3_clks 151 9>;  /* set PIPE3_TXB_CLK to CLK_12M_RC/256 (for HS only) */
->>>>> +	/delete-property/ phys;
->>>>> +	/delete-property/ phy-names;
->>>>
->>>> If your board need to remove phys from the SoC node, something is wrong.
->>>> Either your board or SoC.
->>>>
->>>> Any removal of properties in DTS is weird and unexpected. It deserves
->>>> comments.
->>>
->>> This goes along disabling USB3 which is by default enabled via
->>> k3-am65-iot2050-common-pg2.dtsi
->>
->> Isn't this mistake? Common part enables only these pieces which are
->> working in common hardware SoM. If your common part of hardware, which
->> DTSI should represent, has USB3 then why is it being disabled here? If
->> common hardware design does not have USB3, then why is it being enabled
->> in DTSI?
-> 
-> It's a trade-off between adding yet another dtsi for those widely 
-> common bits vs. adjusting the differences of only one variant from 
+> git bisect log
+git bisect start '--term-new=3Dfixed' '--term-old=3Dunfixed'
+# status: waiting for both good and bad commits
+# fixed: [33cc938e65a98f1d29d0a18403dbbee050dcad9a] Linux 6.7-rc4
+git bisect fixed 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+# status: waiting for good commit(s), bad commit known
+# unfixed: [ffc253263a1375a65fa6c9f62a893e9767fbebfa] Linux 6.6
+git bisect unfixed ffc253263a1375a65fa6c9f62a893e9767fbebfa
+# unfixed: [7d461b291e65938f15f56fe58da2303b07578a76] Merge tag
+'drm-next-2023-10-31-1' of git://anongit.freedesktop.org/drm/drm
+git bisect unfixed 7d461b291e65938f15f56fe58da2303b07578a76
+# unfixed: [e14aec23025eeb1f2159ba34dbc1458467c4c347] s390/ap: fix AP
+bus crash on early config change callback invocation
+git bisect unfixed e14aec23025eeb1f2159ba34dbc1458467c4c347
+# unfixed: [be3ca57cfb777ad820c6659d52e60bbdd36bf5ff] Merge tag
+'media/v6.7-1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media
+git bisect unfixed be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
+# fixed: [c0d12d769299e1e08338988c7745009e0db2a4a0] Merge tag
+'drm-next-2023-11-10' of git://anongit.freedesktop.org/drm/drm
+git bisect fixed c0d12d769299e1e08338988c7745009e0db2a4a0
+# fixed: [4bbdb725a36b0d235f3b832bd0c1e885f0442d9f] Merge tag
+'iommu-updates-v6.7' of
+git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu
+git bisect fixed 4bbdb725a36b0d235f3b832bd0c1e885f0442d9f
+# unfixed: [25b6377007ebe1c3ede773fd6979f613386db000] Merge tag
+'drm-next-2023-11-07' of git://anongit.freedesktop.org/drm/drm
+git bisect unfixed 25b6377007ebe1c3ede773fd6979f613386db000
+# unfixed: [67c0afb6424fee94238d9a32b97c407d0c97155e] Merge tag
+'exfat-for-6.7-rc1-part2' of
+git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
+git bisect unfixed 67c0afb6424fee94238d9a32b97c407d0c97155e
+# unfixed: [3613047280ec42a4e1350fdc1a6dd161ff4008cc] Merge tag
+'v6.6-rc7' into core
+git bisect unfixed 3613047280ec42a4e1350fdc1a6dd161ff4008cc
+# fixed: [cedc811c76778bdef91d405717acee0de54d8db5] iommu/amd: Remove
+DMA_FQ type from domain allocation path
+git bisect fixed cedc811c76778bdef91d405717acee0de54d8db5
+# unfixed: [b0cc5dae1ac0c18748706a4beb636e3b726dd744] iommu/amd:
+Rename ats related variables
+git bisect unfixed b0cc5dae1ac0c18748706a4beb636e3b726dd744
+# fixed: [5a0b11a180a9b82b4437a4be1cf73530053f139b] iommu/amd: Remove
+iommu_v2 module
+git bisect fixed 5a0b11a180a9b82b4437a4be1cf73530053f139b
+# fixed: [92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6] iommu/amd:
+Introduce iommu_dev_data.flags to track device capabilities
+git bisect fixed 92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6
+# unfixed: [739eb25514c90aa8ea053ed4d2b971f531e63ded] iommu/amd:
+Introduce iommu_dev_data.ppr
+git bisect unfixed 739eb25514c90aa8ea053ed4d2b971f531e63ded
+# first fixed commit: [92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6]
+iommu/amd: Introduce iommu_dev_data.flags to track device capabilities
 
-You don't need to add one more DTSI to achieve proper architecture of
-DTS/DTSI split.
-
-> that. We do the same for the Display Port so far.
-
-DTSI represents common piece of hardware, like SoM or re-usable blocks,
-not trade-off.
-
-Best regards,
-Krzysztof
-
+--=20
+Best Regards,
+Mike Gavrilov.
 
