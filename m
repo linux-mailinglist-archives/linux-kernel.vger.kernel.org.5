@@ -1,85 +1,87 @@
-Return-Path: <linux-kernel+bounces-4965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFEA8818474
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:32:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4265818484
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E8BB284DE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:32:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64779286BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFB813ADE;
-	Tue, 19 Dec 2023 09:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1245C13FED;
+	Tue, 19 Dec 2023 09:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="diJ/hkN6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156AF14A8F;
-	Tue, 19 Dec 2023 09:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CC9E1FB;
-	Tue, 19 Dec 2023 01:32:38 -0800 (PST)
-Received: from [10.57.85.227] (unknown [10.57.85.227])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A8CC3F738;
-	Tue, 19 Dec 2023 01:31:51 -0800 (PST)
-Message-ID: <cbb2ae63-eb51-451a-b202-2a1c447a93e9@arm.com>
-Date: Tue, 19 Dec 2023 09:32:56 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9C715483;
+	Tue, 19 Dec 2023 09:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF84AC433C7;
+	Tue, 19 Dec 2023 09:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702978408;
+	bh=U0si4BVeCSiJQq+SvPLzBPq/0rnWVdMAwb6silgvIMw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=diJ/hkN62P4qdzRr/wU5FdQDJepCKZeR/rHZf26elSqu+g0nrWZ5YpW68h7meJo11
+	 wsqkwkACqD5U16QYQY2hhduaS85Z2Yj+IUHM9G4AOjFmoHjHEXnuyY3Gd/AxttsRAK
+	 b42v5Rg4GXubUUtAERAlGUVMk3YNuXzq30zK5sHptf4rZS+CWI4Lnc0QFeHZr7go3E
+	 MVfUYGEbhWI8mITjdn4pYxpKT6AtwP0TuZ58quqAwK/cLgoUnLvGPdaOaGMpdiFddT
+	 tvcA6h1w+8W2X8NNJ4RcgpdBKGxMbZ3xefiK8ujYs1ACHCBWhQC0ayCBYS8y3JKk6p
+	 8fOyIUXPGayAg==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rFWTd-0007F4-1l;
+	Tue, 19 Dec 2023 10:33:25 +0100
+Date: Tue, 19 Dec 2023 10:33:25 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Marijn Suijten <marijn.suijten@somainline.org>
+Cc: Lee Jones <lee@kernel.org>, phone-devel@vger.kernel.org,
+	Pavel Machek <pavel@ucw.cz>,
+	Bjorn Andersson <bjorn.andersson@linaro.org>,
+	~postmarketos/upstreaming@lists.sr.ht,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+	Konrad Dybcio <konrad.dybcio@somainline.org>,
+	Martin Botka <martin.botka@somainline.org>,
+	Jami Kettunen <jami.kettunen@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-leds@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Stephen Boyd <swboyd@chromium.org>,
+	Satya Priya <quic_c_skakit@quicinc.com>
+Subject: Re: [PATCH v4 2/2] leds: qcom-lpg: Add PM660L configuration and
+ compatible
+Message-ID: <ZYFjZefdJej_vgwD@hovoldconsulting.com>
+References: <20220719211848.1653920-1-marijn.suijten@somainline.org>
+ <20220719211848.1653920-2-marijn.suijten@somainline.org>
+ <ZYFS04cznE5bhOeV@hovoldconsulting.com>
+ <3lsapoxlqijes5m4nqcbhdfhhs4chq3mcq3jaty7v2zihsqnwu@nn67a4h6425k>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/23] Documentation: EM: Update with runtime
- modification design
-Content-Language: en-US
-To: Xuewen Yan <xuewen.yan94@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
- rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
- amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
- <20231129110853.94344-24-lukasz.luba@arm.com>
- <CAB8ipk_Zx5NtSpNXHsAqpZSq2yVHGAni5sN=ot5Lkc0jGZxoxA@mail.gmail.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAB8ipk_Zx5NtSpNXHsAqpZSq2yVHGAni5sN=ot5Lkc0jGZxoxA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3lsapoxlqijes5m4nqcbhdfhhs4chq3mcq3jaty7v2zihsqnwu@nn67a4h6425k>
 
+On Tue, Dec 19, 2023 at 10:17:16AM +0100, Marijn Suijten wrote:
 
-
-On 12/19/23 06:22, Xuewen Yan wrote:
-> Hi Lukasz,
+> Note that I have one more unmerged leds patch around, that hasn't been looked
+> at either.  Would it help to send this once again, perhaps with more reviewers/
+> testing (Johan, would you mind taking a look too)?
 > 
-> On Wed, Nov 29, 2023 at 7:11 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> https://lore.kernel.org/linux-leds/20220719213034.1664056-1-marijn.suijten@somainline.org/
 
-[snip]
+Yes, I suggest you resend that one too so that it ends up in Lee's
+inbox.
 
->> +
->> +  -> drivers/soc/example/example_em_mod.c
->> +
->> +  01   static void foo_get_new_em(struct device *dev)
-> 
-> Because now some drivers use the dev_pm_opp_of_register_em() to
-> register energy model,
-> and maybe we can add a new function to update the energy model using
-> "EM_SET_ACTIVE_POWER_CB(em_cb, cb)"
-> instead of letting users set power again?
-> 
-
-There are different usage of this EM feature:
-1. Adjust power values after boot is finish and e.g. ASV in Exynos
-    has adjusted new voltage values in the OPP framework. It's
-    due to chip binning. I have described that in conversation
-    below patch 22/23. I'm going to send a patch for that
-    platform and OPP fwk later as a follow up to this series.
-2. Change the EM power values after long gaming, when the GPU
-    heats up the SoC heavily and CPUs start increase the leakage
-3. Change the EM for long running heavy apps, e.g. video conference app,
-    which is using camera w/ image AI and filters (so some heavy stuff)
-4. any other optimization that vendor/OEM like to have for
+Johan
 
