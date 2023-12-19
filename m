@@ -1,298 +1,101 @@
-Return-Path: <linux-kernel+bounces-5952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF872819212
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:10:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5EC819217
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:13:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFCE81C25136
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:09:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CC8EB233F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2383B182;
-	Tue, 19 Dec 2023 21:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619FE3B297;
+	Tue, 19 Dec 2023 21:12:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Hp/CB7sd"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EmG88mQE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D46E3A262;
-	Tue, 19 Dec 2023 21:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=h10GokaO9AbOHGo8bR1eL3FJfOAuP7hDq2UbXI6mgtQ=; b=Hp/CB7sdtsS33xpvxcRKaIgbZV
-	YbS6Ad+RcDCJM6liTHW+kWam+5VvbWdE6ZnUod326jBH2hksBaV3vVPzCzdAGs74Pywy2yW6Jj0Y6
-	DDz7yT4U9pMuIdbDE5l4zyscArpl3exeIMnezuRZ2z2/NeQHJzhtWAce9oHTUweqjVSqywSee9HZU
-	/rc8Ai9DWYC2EyetD7MYzXe1UHY5/2S0dO+evSlVWryDe2HPr2+9cIWWV6uBV9022npAsVBxcfvA0
-	tYmvabfW44u2gd98xMT4dCCDXerIkLZZC7YPPOelAmZbddcNVKQVHRuBATCOd4JuuQwtvndIHbzLL
-	rC+2v/8g==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFhLH-00FTPf-0N;
-	Tue, 19 Dec 2023 21:09:31 +0000
-Date: Tue, 19 Dec 2023 13:09:31 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Julia Lawall <julia.lawall@inria.fr>,
-	Joel Granados <j.granados@samsung.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Iurii Zaikin <yzaikin@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-Message-ID: <ZYIGi9Gf7oVI7ksf@bombadil.infradead.org>
-References: <20231207104357.kndqvzkhxqkwkkjo@localhost>
- <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
- <20231208095926.aavsjrtqbb5rygmb@localhost>
- <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
- <20231212090930.y4omk62wenxgo5by@localhost>
- <ZXligolK0ekZ+Zuf@bombadil.infradead.org>
- <20231217120201.z4gr3ksjd4ai2nlk@localhost>
- <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
- <ZYC37Vco1p4vD8ji@bombadil.infradead.org>
- <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608B83AC01
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5534abbc637so3678258a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:12:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703020366; x=1703625166; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h7lbvJCDJ1XM7ZPTdVewOcxLLbPIBuDKo8DQQNb5RJs=;
+        b=EmG88mQEaVlToJsv8oySfUlCstcuErd2hDiAR3rMOdHzsGTm2u8aFS1xzO0mIJp6uj
+         uH+c8/Er86pw5qvvQ1bh8p6iE9/bgt0132tQhWWSVSHyLPHR7/mDHKiNFjHT/jA2dUzP
+         3Q2U+AJIPctTpKko6kTxVztEnmC+1PnBPkdqlVN+406VEFmAddt0UhPBa3Af/IVc0lAw
+         CCDjUa3vgtwkYajThyE2C+y2BdsgyQi5MZ7x9SDXRSQZXUwYAEoXcTzD0GKoldpRAbu5
+         lD9uFjOl8arnTfNkv63FDlBeBQeDxwpDNVqF4WaN+PHCHRoANBe0Z9Ph6oD4uuGi+16L
+         oy4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703020366; x=1703625166;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h7lbvJCDJ1XM7ZPTdVewOcxLLbPIBuDKo8DQQNb5RJs=;
+        b=aE35BsQHFSyTZ3it2LfZ9svy7dBzoWwHXi4+BmENzbTRv+EmAfVG0cAMFj3inCi0Jr
+         6g9tgjZW3wdDDMgiyyfEzTCkHDi91moKXBQhsRGpTi830P/eUchgXnQlyohnsbUPRRvV
+         v3E4GFsLfv3Ad4xjGq7Y2plfjMqJBRnBRr+GZ1n2cij9RYcLi43CqZPM3LLNm3GxCoF3
+         f9f9bXOaON/WaE3M1v/sCvluHNxn1WZUG7GqOIPAdF6LevDBeNes5Ft/4/QOmV4TF/fb
+         w/rZD9nvS++y45/lmJrC344gJ6zfoEHN/1t2t2b5MItnqBiqIOTGfU2W/FJsdQRRm6IZ
+         nwxw==
+X-Gm-Message-State: AOJu0YwXx3zi5ys7HrDg2lDPJINcSInUi+FVHWIzOgs440C9S+QbeeDt
+	5gio4V6lhgDrnyk45pXsZuIcCYgA5kBfrVNt750oAw==
+X-Google-Smtp-Source: AGHT+IGx3h05PGeb3Es3OTmJpYxj0l2+kg87lc3hinLRFIMaFFOHpmYvxSRHlQSv9b2PFZtnDZ8q60mGJ1mZ6DK6CzA=
+X-Received: by 2002:a50:c209:0:b0:552:85f4:ed39 with SMTP id
+ n9-20020a50c209000000b0055285f4ed39mr4588788edf.38.1703020366584; Tue, 19 Dec
+ 2023 13:12:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20231215-llvm-decode-stacktrace-v1-1-201cb86f4879@quicinc.com>
+ <CAKwvOdmY=Jysqai3KOYO8+c5idP9JjNGKL2xZn2sDNdj5MjTVA@mail.gmail.com>
+ <CAFhGd8qA8Hh63iZPP33Nsxu61OycP7oqT50mDgUO-HFNUWHZxQ@mail.gmail.com> <CAKwvOdmMCmcHVd7+ymKgVUe5uZrSvUYMaD9Fz5GSBtHBMPTnSQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdmMCmcHVd7+ymKgVUe5uZrSvUYMaD9Fz5GSBtHBMPTnSQ@mail.gmail.com>
+From: Justin Stitt <justinstitt@google.com>
+Date: Tue, 19 Dec 2023 13:12:34 -0800
+Message-ID: <CAFhGd8q80F8kvigHQ1Njf3=KzPsahjy+oRTS_QRz6E6ujsSU5Q@mail.gmail.com>
+Subject: Re: [PATCH] scripts/decode_stacktrace.sh: Use LLVM environment variable
+To: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Elliot Berman <quic_eberman@quicinc.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>, Manuel Traut <manut@linutronix.de>, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 08:29:50PM +0100, Thomas Weißschuh wrote:
-> 
-> I used the following coccinelle script to find more handlers that I
-> missed before:
-> 
-> virtual patch
-> virtual context
-> virtual report
-> 
-> @@
-> identifier func;
-> identifier ctl;
-> identifier write;
-> identifier buffer;
-> identifier lenp;
-> identifier ppos;
-> type loff_t;
-> @@
-> 
-> int func(
-> - struct ctl_table *ctl,
-> + const struct ctl_table *ctl,
->   int write, void *buffer, size_t *lenp, loff_t *ppos) { ... }
+On Tue, Dec 19, 2023 at 8:49=E2=80=AFAM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Mon, Dec 18, 2023 at 4:17=E2=80=AFPM Justin Stitt <justinstitt@google.=
+com> wrote:
+> >
+> > Interestingly, I am getting good stack traces on mainline with a
+> > LLVM-built kernel -- both with and without that patch.
+>
+> Probably because:
+> 1. you have GNU binutils installed.
+> 2. you're not testing .o files from an LTO build (which GNU binutils
+> cannot decode).
+>
 
-I think it would be useful to describe that the reason why you have
-the parameters in places as required is you want to limit the scope
-to the sysctl handler routines only, and these have these fixed
-arguments.
+Yes, and yes. Makes sense.
 
-make coccicheck MODE=patch COCCI=sysctl-const.cocci SPFLAGS="--in-place" > /dev/null
-git diff --stat | tail -1
- 80 files changed, 390 insertions(+), 306 deletions(-)
-git diff --stat | sha1sum 
- ec90851ba02dad069b11822782c74665a01142db  -
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-> It did not find any additional occurrences while it was able to match
-> the existing changes.
-
-Fantastic, then please use and include the coccinelle rule to express
-that this is the goal, it is easier to review *one* cocinelle rule
-with intent rather than tons of changes.
-
-> After that I manually reviewed all handlers that they are not modifying
-> their table argument, which they don't.
-> 
-> Should we do more?
-
-Now that we started to think about *what* is the goal, and trying to
-break it down it is easier to think about the ramifications of what we
-need checked and how tools can help.
-
-We break down the first goal into a simple grammatical expression listed
-above, we want to constify the proc hanlders use of the struct ctl_table.
-
-Given this, I think that for the first part the coccinelle grammar above
-should take care of the cases where the compiler would not have caught
-a few builds where your config was not testing the compiler build. Now
-could this still allow
-
-ctl->foo = bar ?
-
-I think so, so here is a simple sysctl-const-mod.cocci which can be
-used in coccicheck patch mode as well instead of coccicheck context mode
-as the context mode just produces a removal visually, and I prefer to see
-the removals with git diff instead due to color syntax highlighting:
-
-make coccicheck MODE=patch COCCI=sysctl-const-mod.cocci SPFLAGS="--in-place" > /dev/null
-virtual patch
-                                                                                                                                                                                              
-@ r1 @                                                                                                                                                                                            
-identifier func;
-identifier ctl;
-identifier write;
-identifier buffer;
-identifier lenp;
-identifier ppos;
-type loff_t;
-@@                                                                                                                                                                                            
-
-int func(
-  struct ctl_table *ctl,
-  int write, void *buffer, size_t *lenp, loff_t *ppos)
-{ ... }
-
-@ r2 depends on r1 @
-struct ctl_table *ctl;
-expression E1, E2;
-@@
-
-(
--	ctl->extra1 = E1;
-|
--	ctl->extra2 = E1;
-)
-
-
-The git diff --stat:
-
-arch/arm64/kernel/armv8_deprecated.c | 2 --
-drivers/net/vrf.c                    | 3 ---
-net/ipv4/devinet.c                   | 2 --
-net/ipv4/route.c                     | 1 -
-net/ipv6/addrconf.c                  | 2 --
-net/ipv6/route.c                     | 1 -
-net/mpls/af_mpls.c                   | 2 --
-net/netfilter/ipvs/ip_vs_ctl.c       | 6 +-----
-net/netfilter/nf_log.c               | 2 +-
-net/sctp/sysctl.c                    | 5 -----
-10 files changed, 2 insertions(+), 24 deletions(-)
-
-So that needs review. And the OR could be expanded with more components
-of the struct ctl_table
-
-As I noted, I think this is a generically neat endeavor and so I think
-it would be nice to shorthand *any* member of the struct. ctl->any.
-Julia, is that possible?
-
-The depends on is rather loose so I *think* this means the second rule
-should only apply the rule on files which define handler. But that second
-rule could perhaps be made as a long term generic goal without the first rule.
-
-I first tried to attach the modification of the ctl table to the routine
-itself with so only the caller is modified:
-
-virtual patch
-                                                                                                                                                                                              
-@ r1 @                                                                                                                                                                                            
-identifier func;
-struct ctl_table *ctl;
-identifier write;
-identifier buffer;
-identifier lenp;
-identifier ppos;
-type loff_t;
-@@                                                                                                                                                                                            
-
-int func(
-  struct ctl_table *ctl,
-  int write, void *buffer, size_t *lenp, loff_t *ppos)
-{ ... }
-
-@ r2 depends on r1 @
-r1.ctl;
-expression E1, E2;
-@@
-
-(
--	ctl->extra1 = E1;
-|
--	ctl->extra2 = E1;
-)
-
-But that didn't work.
-
-> > The template of the above endeavor seems useful not only to this use
-> > case but to any place in the kernel where this previously has been done
-> > before, and hence my suggestion that this seems like a sensible thing
-> > to think over to see if we could generalize.
-> 
-> I'd like to split the series and submit the part up until and including
-> the constification of arguments first and on its own.
-
-The first part is the proc handlers.
-
-If after that you generalize when its used in any routine as this:
-
-virtual patch
-
-@@                                                                                                                                                                                            
-identifier func;                                                                                                                                                                              
-identifier ctl;                                                                                                                                                                               
-@@                                                                                                                                                                                            
-                                                                                                                                                                                              
-int func(...,
-- struct ctl_table *ctl,
-+ const struct ctl_table *ctl,
-  ...) { ... }
-
-You increase the required changes and scope. This does not handle the
-case where two different tables are in the same routine arguments, but
-that is a special case and could be hanlded through its own rule.
-
-> It keeps the subsystem maintainers out of the discussion of the core
-> sysctl changes.
-
-We'll need to involve subsystem maintainers eventually to deal with
-special cases which don't fit the goal we want to normalize to. I
-suggest you think about the changes in grammatical expressions, leading
-up to the final gaol, where we could do a full sweep and ensure no
-struct ctl_table is not const.
-
-That is, as you work your way up to the goal, I suspect you may need
-to modify a few loose drivers / components which may need special
-handling so that we could normalize on the intended grammatical
-requirements. Just as with the ctrl work Joel did -- a few drives
-needed to be modified so that the long term goal for the sentinel
-could be applied.
-
-I don't think time is wasted in formalizing this endeavor as it is
-a generic goal we tend to see. We're breaking this down then into
-a few goals, leaps:
-
- 1) Start off with a few key special routines which deal with the
-    data structure we want to constify, so we create grammar rules
-    which modify the expected function data types with the one
-    we are intersted in with const. The value in this is that
-    Coccinelle will find changes we need outside of the scope of our
-    build.
-
- 2) Those routines then need checks to ensure that no variable is
-    modified, so we need a scaper first to report these so we can
-    inspect the routine and change it so that the grammar rule in
-    1) works without any expected compile failure.
-
- 3) Loosten the search to any routine that uses the struct we want
-    to constify and address cases where the struct is used more than
-    once in a routine.
-
- 4) Ensure globally we don't modify the struct as done in the report
-    on goal 1).
-
- 5) Constify the struct
-
-  Luis
+Cheers
 
