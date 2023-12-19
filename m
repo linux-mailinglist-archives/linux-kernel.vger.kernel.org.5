@@ -1,94 +1,82 @@
-Return-Path: <linux-kernel+bounces-6095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A206B819491
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:25:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11716819497
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:26:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55D861F253B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:25:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5D601F21BFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541433FB11;
-	Tue, 19 Dec 2023 23:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CD23FB33;
+	Tue, 19 Dec 2023 23:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="jTcpaZ+Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fn2CoAUz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519E8405C9;
-	Tue, 19 Dec 2023 23:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1703028293;
-	bh=0H9ehYGDEdnphMZ75tPLSnXZQxKc5VOLCkI5wkvGLH4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jTcpaZ+Yy3VPneJdShj3+IU+iSxLYi8XUujVYc4ra/3JxhiBBebLwBwOrVOlzmsne
-	 ZxsmasMv5n5/0nho2EMtFbRrpRFY5wQKULc/uQMFUjG02YxdHsRNUBkWvXRl7sxnt4
-	 H7gh8GOAU/gZQ3eVRndDjxDNaobU4IfFh5URi/uF4Mr5KjLB9bwkch2lUoS1pyLR0i
-	 ++B3gK7cSy0VDRFLfa8clfLipJHWnL+zUv7Eb6skQ1zW0UzdfLrdmvH+oFFH2lullW
-	 XHVITRVH2zvhp4Yvb/0o9fA0LP9Dc4Jt4rus5se7OwEgTW+xf/mzwCfz0HldPYDoPG
-	 MlaqjEOY7RNRg==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6293637814AA;
-	Tue, 19 Dec 2023 23:24:53 +0000 (UTC)
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Emil Renner Berthing <kernel@esmil.dk>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>
-Cc: linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH 2/2] clk: starfive: jh7100: Add CLK_SET_RATE_PARENT to gmac_tx
-Date: Wed, 20 Dec 2023 01:24:40 +0200
-Message-ID: <20231219232442.2460166-3-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231219232442.2460166-1-cristian.ciocaltea@collabora.com>
-References: <20231219232442.2460166-1-cristian.ciocaltea@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D753EA8B;
+	Tue, 19 Dec 2023 23:25:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C8EC433C7;
+	Tue, 19 Dec 2023 23:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703028350;
+	bh=DWj53wlFUzo65I9QXk2QrzfgzePwG8ImdFFtSDI5Mj0=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=Fn2CoAUzSkfbWqTqm9my++lm2RsnyM3Kc/uGtgh8d4MqMcNHQ+7pP9qGcAn8R2VMC
+	 YFdMHxQ44CILCTtnbbKAfrK+OR8KIzfXJoyj4+GDC7UNNI3iDVr4gZ/rGauPI2x5Ao
+	 P2wt7AICaIqiUPRIXvtyWOs5wKTNPPk4I+2MlSSuBY7MKlSux3OlVm2fBHEyW+b0vr
+	 frUrwWEE2tHWCrfCLIHRK1T5S7eAh9IcMsS7DROSE5IB2pte4+j3oK+XAnWTecuD/I
+	 xbBeoYZbgiLHNpm5hbR3rDAFvNMr5V/cq2oq5EZmlyaHfNVVGh5mWf6rKHWhzB1p45
+	 M/Beka8dq5NZw==
+Date: Wed, 20 Dec 2023 00:25:45 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: "wsa@kernel.org" <wsa@kernel.org>,
+	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
+Message-ID: <20231219232545.ksrxgvl7epeewga2@zenone.zhora.eu>
+References: <20231115035753.925534-1-chris.packham@alliedtelesis.co.nz>
+ <20231115035753.925534-2-chris.packham@alliedtelesis.co.nz>
+ <f24b9b2d-aeb1-47f7-bf21-4383fdcf94aa@linaro.org>
+ <5a52b0c9-8858-4f55-8dd7-9269c29c10a7@alliedtelesis.co.nz>
+ <ZYHMvZ3plIQ0zXWa@shikoro>
+ <601d07b5-264d-4322-b92e-63d58b3d69fa@alliedtelesis.co.nz>
+ <ZYICEczlao+pg8kd@shikoro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYICEczlao+pg8kd@shikoro>
 
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Hi,
 
-This is needed by the dwmac-starfive ethernet driver to set the clock
-for 1000, 100 and 10 Mbps links properly.
+> > I personally would like to see it accepted but it seems there are 
+> > objections to this approach. I've yet to come up with anything better to 
+> > offer as an alternative.
+> 
+> I see. Thanks for the heads up!
 
-Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
----
- drivers/clk/starfive/clk-starfive-jh7100.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm also inclined to have this merged. A real fix might take
+time.
 
-diff --git a/drivers/clk/starfive/clk-starfive-jh7100.c b/drivers/clk/starfive/clk-starfive-jh7100.c
-index d3b260c01d5c..03f6f26a15d8 100644
---- a/drivers/clk/starfive/clk-starfive-jh7100.c
-+++ b/drivers/clk/starfive/clk-starfive-jh7100.c
-@@ -200,7 +200,7 @@ static const struct jh71x0_clk_data jh7100_clk_data[] __initconst = {
- 	JH71X0_GDIV(JH7100_CLK_GMAC_GTX, "gmac_gtxclk", 0, 255, JH7100_CLK_GMAC_ROOT_DIV),
- 	JH71X0_GDIV(JH7100_CLK_GMAC_RMII_TX, "gmac_rmii_txclk", 0, 8, JH7100_CLK_GMAC_RMII_REF),
- 	JH71X0_GDIV(JH7100_CLK_GMAC_RMII_RX, "gmac_rmii_rxclk", 0, 8, JH7100_CLK_GMAC_RMII_REF),
--	JH71X0__MUX(JH7100_CLK_GMAC_TX, "gmac_tx", 0, 3,
-+	JH71X0__MUX(JH7100_CLK_GMAC_TX, "gmac_tx", CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT, 3,
- 		    JH7100_CLK_GMAC_GTX,
- 		    JH7100_CLK_GMAC_TX_INV,
- 		    JH7100_CLK_GMAC_RMII_TX),
--- 
-2.43.0
+Myself I have developed a prototype for what has been discussed
+with Krzysztof, but I don't know how much time it will take to
+get things done.
 
+Andi
 
