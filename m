@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-4627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F47818016
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:08:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C549B818017
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3165B1F243B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:08:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D98941C23175
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42687D526;
-	Tue, 19 Dec 2023 03:07:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383501171C;
+	Tue, 19 Dec 2023 03:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="5WoaJT75"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dce2mjRJ"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6CA8BFD;
-	Tue, 19 Dec 2023 03:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB41C14E;
+	Tue, 19 Dec 2023 03:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702955266;
-	bh=NedD0CsTyD06CZpoZGygoYeaj43j/jCPYz4qI72jJJI=;
+	s=mail; t=1702955267;
+	bh=K6fLPyb8myohyHdMlG17XVZDsmGSbtI/ME/7hz5T6vI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=5WoaJT75SqIPQPy5/Vc2rZUoXCIC4RzpQyyp6Ho42tU6BgZB4x1XCgcBNWWE5Bx9+
-	 HUFr5J41WF4dw/v29/aq27nYcOmCvFz6T4VouDc/lCs2cIft+/t6TwyDDXTPnkMSHj
-	 9NCzmDgAZwtahf0GcetOTsDVg1zSInRRKCECHaX53ml183fg2O/EFhyPYxTBQWsL3h
-	 u1PYwZKubok48pIqLiWEFWniCbwpYS765u9zgSaQCH+57GhOsaMiyIoqukmqZQMy9b
-	 q6uBEn4pM4OGerlmrZMEr6PKQgCys9B8EK++E9ra4UlqVlSBhHo0oOGv4IUg4O1ytU
-	 qQzUcla1XKeXQ==
+	b=dce2mjRJLcFuUGCE0QzEQzkyGWU3LcFkM5ozorMtjoBsLVx/JmKrgJ/n3iTL83vE5
+	 SoVmG05Gw0G1nu18HE3GrWz9UmnbdUclgw5Hi48kYV/uNYoJALLWbw8PKWOczYuUPc
+	 Ql57zQ2NqdHAP7aw4V0jjqs2EHCjMzX2YAJgBBQ12S2UIE0QfScbdSzAQx/0vXfyiS
+	 c3nrmDmVaz5Np9FS3DwEpcjCjMZdo/kIcdM8lo/HFuZHhZAb3n231k200ZSazZbi1u
+	 /NYz6EIOVlaPB8DdB7b4hhNdII3WwnA3Eaa0ta/Zn2wMHUMPFm9laH02sI6TSJJU6z
+	 cOUyHSDWJmFcA==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 42AB237814AF;
-	Tue, 19 Dec 2023 03:07:46 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 55C443781476;
+	Tue, 19 Dec 2023 03:07:47 +0000 (UTC)
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -63,9 +63,9 @@ Cc: linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	sound-open-firmware@alsa-project.org,
 	kernel@collabora.com
-Subject: [PATCH v2 5/8] ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()
-Date: Tue, 19 Dec 2023 05:07:23 +0200
-Message-ID: <20231219030728.2431640-6-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 6/8] ASoC: SOF: amd: Optimize quirk for Valve Galileo
+Date: Tue, 19 Dec 2023 05:07:24 +0200
+Message-ID: <20231219030728.2431640-7-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
 References: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
@@ -77,61 +77,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Driver uses kasprintf() to initialize fw_{code,data}_bin members of
-struct acp_dev_data, but kfree() is never called to deallocate the
-memory, which results in a memory leak.
+Valve's Steam Deck OLED is uniquely identified by vendor and product
+name (Galileo) DMI fields.
 
-Fix the issue by switching to devm_kasprintf(). Additionally, ensure the
-allocation was successful by checking the pointer validity.
+Simplify the quirk by removing the unnecessary match on product family.
 
-Fixes: f7da88003c53 ("ASoC: SOF: amd: Enable signed firmware image loading for Vangogh platform")
+Additionally, fix the related comment as it points to the old product
+variant.
+
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
 ---
- sound/soc/sof/amd/acp.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ sound/soc/sof/amd/acp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 603ea5fc0d0d..c6f637f29847 100644
+index c6f637f29847..1e9840ae8938 100644
 --- a/sound/soc/sof/amd/acp.c
 +++ b/sound/soc/sof/amd/acp.c
-@@ -547,17 +547,27 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 	adata->signed_fw_image = false;
- 	dmi_id = dmi_first_match(acp_sof_quirk_table);
- 	if (dmi_id && dmi_id->driver_data) {
--		adata->fw_code_bin = kasprintf(GFP_KERNEL, "%s/sof-%s-code.bin",
--					       plat_data->fw_filename_prefix,
--					       chip->name);
--		adata->fw_data_bin = kasprintf(GFP_KERNEL, "%s/sof-%s-data.bin",
--					       plat_data->fw_filename_prefix,
--					       chip->name);
--		adata->signed_fw_image = dmi_id->driver_data;
-+		adata->fw_code_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+						    "%s/sof-%s-code.bin",
-+						    plat_data->fw_filename_prefix,
-+						    chip->name);
-+		if (!adata->fw_code_bin) {
-+			ret = -ENOMEM;
-+			goto free_ipc_irq;
-+		}
-+
-+		adata->fw_data_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+						    "%s/sof-%s-data.bin",
-+						    plat_data->fw_filename_prefix,
-+						    chip->name);
-+		if (!adata->fw_data_bin) {
-+			ret = -ENOMEM;
-+			goto free_ipc_irq;
-+		}
+@@ -28,11 +28,10 @@ MODULE_PARM_DESC(enable_fw_debug, "Enable Firmware debug");
  
--		dev_dbg(sdev->dev, "fw_code_bin:%s, fw_data_bin:%s\n", adata->fw_code_bin,
--			adata->fw_data_bin);
-+		adata->signed_fw_image = dmi_id->driver_data;
- 	}
-+
- 	adata->enable_fw_debug = enable_fw_debug;
- 	acp_memory_init(sdev);
- 
+ const struct dmi_system_id acp_sof_quirk_table[] = {
+ 	{
+-		/* Valve Jupiter device */
++		/* Steam Deck OLED device */
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Valve"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Galileo"),
+-			DMI_MATCH(DMI_PRODUCT_FAMILY, "Sephiroth"),
+ 		},
+ 		.driver_data = (void *)SECURED_FIRMWARE,
+ 	},
 -- 
 2.43.0
 
