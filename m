@@ -1,232 +1,95 @@
-Return-Path: <linux-kernel+bounces-5810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03C72818FC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:27:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D3B8818FC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7198F1F279E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:27:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 183871C21222
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E295137D3B;
-	Tue, 19 Dec 2023 18:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yJkIpqLj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ND3r4peh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yJkIpqLj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ND3r4peh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE3C37D2F;
+	Tue, 19 Dec 2023 18:28:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4830E37D17;
-	Tue, 19 Dec 2023 18:27:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4485E22168;
-	Tue, 19 Dec 2023 18:27:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703010432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
-	b=yJkIpqLjMNi3Dj3rOmN1hIIVyNJGeRo9IEl/0PXk6uIc8ickQFNyOdAXckJE/lFFWzei68
-	jiA+UhucvHxP77vqPKCX8yefHPJHw8ectoRREJB55q4/rsRoJ8ke/SsTvNCmV35SBskjk5
-	rXzGAyu9OpT1jPMTJtGplFMM4NaUK4g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703010432;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
-	b=ND3r4peh60mJqstnuduW+WeCtT/aPlEPjUdS5JlHdaX3N5OAzE8MHokT63Kk2/8lyRIO1q
-	5Ct13LGe8WOshGCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703010432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
-	b=yJkIpqLjMNi3Dj3rOmN1hIIVyNJGeRo9IEl/0PXk6uIc8ickQFNyOdAXckJE/lFFWzei68
-	jiA+UhucvHxP77vqPKCX8yefHPJHw8ectoRREJB55q4/rsRoJ8ke/SsTvNCmV35SBskjk5
-	rXzGAyu9OpT1jPMTJtGplFMM4NaUK4g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703010432;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
-	b=ND3r4peh60mJqstnuduW+WeCtT/aPlEPjUdS5JlHdaX3N5OAzE8MHokT63Kk2/8lyRIO1q
-	5Ct13LGe8WOshGCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3207A13BF1;
-	Tue, 19 Dec 2023 18:27:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id byzsC4DggWVLLgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 19 Dec 2023 18:27:12 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 790E5A07E0; Tue, 19 Dec 2023 19:27:11 +0100 (CET)
-Date: Tue, 19 Dec 2023 19:27:11 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/17] writeback: rework the loop termination condition
- in write_cache_pages
-Message-ID: <20231219182711.oskwl65vdctbpsxe@quack3>
-References: <20231218153553.807799-1-hch@lst.de>
- <20231218153553.807799-4-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8515637D1A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 18:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFepS-0003v1-II; Tue, 19 Dec 2023 19:28:30 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFepH-0004q5-9I; Tue, 19 Dec 2023 19:28:20 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFepI-000ERh-2q; Tue, 19 Dec 2023 19:28:20 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Stephen Boyd <sboyd@kernel.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Kees Cook <keescook@chromium.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+	Marco Elver <elver@google.com>,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH] lib: Add note about process exit message for DEBUG_STACK_USAGE
+Date: Tue, 19 Dec 2023 19:28:09 +0100
+Message-ID: <20231219182808.210284-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153553.807799-4-hch@lst.de>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=950; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=fe37acVhtHyJr122fBh9gFX3aE010DiPd5McETtsGXY=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlgeC5ie0fCEOBIJZkzOvTO7zoN+GaSJcgV6cHQ CCpjOwQZJmJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYHguQAKCRCPgPtYfRL+ TnJ+B/0Vknig4k6cd3X+bWQGTkAyGVmOwlQuS3Td0MRMREYoLNm23IcNByDktH87YHHKEHqaR8M gFKHYAq05N1oojCgmp8peO45HdLPFnzNpQRvyihyWwyL3B07sS/WAx0I+fkTQA48n5XhFfpop7K D6credUBv1Y8Txfs9MwbsBs+1vqqOVHN7EtqlS52sE9/0f7YyFJ3n+0cdFgS1iXVsiO6H/9K5/V 9dS5sYHWbpEBLA55OtNvrGHkb0+k86zAcYLmP4nnNQNoVWD8IONDgIa+PizwW7braSi7LJVzxhY K6fkUx13opSekTSixCQOe0sPuVHmBL5uuRhgRBRyq4rA5ItP
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon 18-12-23 16:35:39, Christoph Hellwig wrote:
-> Rework we deal with the cleanup after the writepage call.  First handle
-        ^^ the way
+DEBUG_STACK_USAGE doesn't only have an influence on the output of
+sysrq-T and sysrq-P, it also enables a message at process exit. See
+check_stack_usage() in kernel/exit.c where this is implemented.
 
-> the magic AOP_WRITEPAGE_ACTIVATE separately from real error returns to
-> get it out of the way of the actual error handling.  Then merge the
-> code to set ret for integrity vs non-integrity writeback.  For
-> non-integrity writeback the loop is terminated on the first error, so
-> ret will never be non-zero.  Then use a single block to check for
-> non-integrity writewack to consolidate the cases where it returns for
-> either an error or running off the end of nr_to_write.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ lib/Kconfig.debug | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Otherwise looks good. Feel free to add:
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 1642a6d58be4..97ce28f4d154 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -763,6 +763,8 @@ config DEBUG_STACK_USAGE
+ 	help
+ 	  Enables the display of the minimum amount of free stack which each
+ 	  task has ever had available in the sysrq-T and sysrq-P debug output.
++	  Also emits a message to dmesg when a process exits if that process
++	  used more stack space than previously exiting processes.
+ 
+ 	  This option will slow down process creation somewhat.
+ 
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  mm/page-writeback.c | 62 +++++++++++++++++++++------------------------
->  1 file changed, 29 insertions(+), 33 deletions(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 8e312d73475646..7ed6c2bc8dd51c 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2474,43 +2474,39 @@ int write_cache_pages(struct address_space *mapping,
->  			error = writepage(folio, wbc, data);
->  			nr = folio_nr_pages(folio);
->  			wbc->nr_to_write -= nr;
-> -			if (unlikely(error)) {
-> -				/*
-> -				 * Handle errors according to the type of
-> -				 * writeback. There's no need to continue for
-> -				 * background writeback. Just push done_index
-> -				 * past this page so media errors won't choke
-> -				 * writeout for the entire file. For integrity
-> -				 * writeback, we must process the entire dirty
-> -				 * set regardless of errors because the fs may
-> -				 * still have state to clear for each page. In
-> -				 * that case we continue processing and return
-> -				 * the first error.
-> -				 */
-> -				if (error == AOP_WRITEPAGE_ACTIVATE) {
-> -					folio_unlock(folio);
-> -					error = 0;
-> -				} else if (wbc->sync_mode != WB_SYNC_ALL) {
-> -					ret = error;
-> -					done_index = folio->index + nr;
-> -					done = 1;
-> -					break;
-> -				}
-> -				if (!ret)
-> -					ret = error;
-> +
-> +			/*
-> +			 * Handle the legacy AOP_WRITEPAGE_ACTIVATE magic return
-> +			 * value.  Eventually all instances should just unlock
-> +			 * the folio themselves and return 0;
-> +			 */
-> +			if (error == AOP_WRITEPAGE_ACTIVATE) {
-> +				folio_unlock(folio);
-> +				error = 0;
->  			}
->  
->  			/*
-> -			 * We stop writing back only if we are not doing
-> -			 * integrity sync. In case of integrity sync we have to
-> -			 * keep going until we have written all the pages
-> -			 * we tagged for writeback prior to entering this loop.
-> +			 * For integrity sync  we have to keep going until we
-> +			 * have written all the folios we tagged for writeback
-> +			 * prior to entering this loop, even if we run past
-> +			 * wbc->nr_to_write or encounter errors.  This is
-> +			 * because the file system may still have state to clear
-> +			 * for each folio.   We'll eventually return the first
-> +			 * error encountered.
-> +			 *
-> +			 * For background writeback just push done_index past
-> +			 * this folio so that we can just restart where we left
-> +			 * off and media errors won't choke writeout for the
-> +			 * entire file.
->  			 */
-> -			done_index = folio->index + nr;
-> -			if (wbc->nr_to_write <= 0 &&
-> -			    wbc->sync_mode == WB_SYNC_NONE) {
-> -				done = 1;
-> -				break;
-> +			if (error && !ret)
-> +				ret = error;
-> +			if (wbc->sync_mode == WB_SYNC_NONE) {
-> +				if (ret || wbc->nr_to_write <= 0) {
-> +					done_index = folio->index + nr;
-> +					done = 1;
-> +					break;
-> +				}
->  			}
->  		}
->  		folio_batch_release(&fbatch);
-> -- 
-> 2.39.2
-> 
+base-commit: aa4db8324c4d0e67aa4670356df4e9fae14b4d37
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.42.0
+
 
