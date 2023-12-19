@@ -1,143 +1,291 @@
-Return-Path: <linux-kernel+bounces-5145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD1081870A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:07:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1875818714
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5134286FF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:07:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B71E41C23589
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEBC1171C3;
-	Tue, 19 Dec 2023 12:07:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j1hk9dPd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91030171A2;
+	Tue, 19 Dec 2023 12:09:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB88A18627
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-550dd0e3304so5440352a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:07:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702987631; x=1703592431; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8jwW3o+MdMiQF8YAkLVAfAOBi6pavmtEQmsioxpTxDg=;
-        b=j1hk9dPdGy1mHuJt3pMxKk0kf91UnxLjUyAoDZANw/hyMqMDCqQxBRco8QGd2BbORZ
-         NIz9NVpeM3xKnbaCk9rB14RrdKg8aoRng5qgDJlVwjkEc2UbuxG4iAIkfIvGmmoen6pR
-         5H1Zl0Bt3W7HVLqVIO/Utu3+d0J/Ea7UJumYIUnuZSovY83te+nqcIBy7v+k3SZy2ji4
-         aMOEgKLwGKYgnf+KyYxnc4xfN7tgNUuzl2JLFcgcvafsJ01AvSk7sZkk/dnN3ox0eNqn
-         L+jM2Ka3H0q9FXFRAwmlrr1CLWuSQbEmQwrNtTo2zyR+mVjdVbZqCbUqzXtV0vAHgEO8
-         1tvA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA39168BD
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35facd4238bso36266375ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:09:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702987631; x=1703592431;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702987744; x=1703592544;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8jwW3o+MdMiQF8YAkLVAfAOBi6pavmtEQmsioxpTxDg=;
-        b=lYyl6F6T375UjYIycOMHKzFpuoz+p6pMeeOONgTmKo+3NClDZWXvwcSJlFJaN+NDQN
-         LMbmj/OW6U71DsJHwKV45D+MFj+Vz13GjrdDFase/aMRAuNm1WcbkpXOJA+84EZluz8W
-         LZkqt6AetyVJRZQtfGSt1IXNrMRfH1ArRWuhoVkdFtZbhUMzV3DCXpl+O1cHs9Tz7ND/
-         P3hjNt+E+JJQGF+4rIgCzq2PuHvXXRAACsj9j3vzMe49UswUymrEpUrWg7sfhQxE/ix4
-         0UuSazhM/ZeyR5LiMmIW3s1XVqJKYOpHNn7acy4G113U61GTHJdxOfOoj4bgqu2ozS2+
-         OIzw==
-X-Gm-Message-State: AOJu0YyddvYO5WgqXeFZq5aH/I7yyC6kWj8q1Mvqh7YUNReix+YlWgnj
-	evGchBz6X7bIFE5Nibu4uuLkpg==
-X-Google-Smtp-Source: AGHT+IEpy/lAdACmhYOO10Q/WAV3RMxt3W8TaKoBhdF4G6kSC3eXzyUrrtuRujIMiU2UkqqeVysthw==
-X-Received: by 2002:a17:907:76ab:b0:a23:53e6:601c with SMTP id jw11-20020a17090776ab00b00a2353e6601cmr1634438ejc.71.1702987631222;
-        Tue, 19 Dec 2023 04:07:11 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id rg8-20020a1709076b8800b00a1f7cbf2896sm14306470ejc.176.2023.12.19.04.07.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 04:07:09 -0800 (PST)
-Message-ID: <cb9a6bd4-6c99-4409-9cc7-73b600eb8fce@linaro.org>
-Date: Tue, 19 Dec 2023 13:07:06 +0100
+        bh=apc/xCbqmtlCwbr3H5Didv1+QQ3sVtVHxI6ljm2xYvg=;
+        b=NscWhPNnAWjR+Tc0C053TK23gP/Jkwgw3Cl8XAAGt0/5m8NB10TE/OMLmFTLQccys4
+         pPkNvfdB1fG0+LjeH9AanT4FQ4V7B+FEp5g3vBXqTwoc/G0cMCfPspoQXBorJChpM2FX
+         KyZiiw7+3hoOvBDXv8/IpyN6CHACKbJjLpOqgCdSmgZhBb/3xiEESjs/TbUlvFN3j/IG
+         TccmT5ogRko4q2mSSCH7dDpV2aU4SKwRRxXkIARafAPXLSERg9LMDpu/Y2Y2/kcVJpUQ
+         3zmmSKspKLg5bkFlNrcjawOgd0LPAFZER4JXQkYMdVWdKu/cGMrgjuQIoTqvL87IukvL
+         estw==
+X-Gm-Message-State: AOJu0Yxkf/i4MJYtRWbsl00sZA1oFUN678qRf0tJq3u7jCALE8em7eGd
+	uANNpUS6btvSLaLDctOX+AznvsgzP4ITtvPwkjthN5QRw86G
+X-Google-Smtp-Source: AGHT+IERGOe2qiwr3RJOAxfbnFGvs+eOucs1l8EBF7BEZ+xIWab9PsbadMroeTmxtuJlzQZmvNyczLJfRj47rnp/FcQHnGavl1uG
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: clock: Fix spelling mistake in
- 'tesla,fsd-clock.yaml'
-Content-Language: en-US
-To: Varada Pavani <v.pavani@samsung.com>, mturquette@baylibre.com,
- sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com
-Cc: linux-samsung-soc@vger.kernel.org, alim.akhtar@samsung.com,
- aswani.reddy@samsung.com, pankaj.dubey@samsung.com
-References: <CGME20231219115856epcas5p371abeb4264f60309e597b90954e6d58c@epcas5p3.samsung.com>
- <20231219115834.65720-1-v.pavani@samsung.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231219115834.65720-1-v.pavani@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:20e2:b0:35f:989c:a876 with SMTP id
+ q2-20020a056e0220e200b0035f989ca876mr867073ilv.1.1702987744649; Tue, 19 Dec
+ 2023 04:09:04 -0800 (PST)
+Date: Tue, 19 Dec 2023 04:09:04 -0800
+In-Reply-To: <tencent_049D8DFF92105DAADDA1995ECFAE0DC82507@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000093ab2d060cdbbbe2@google.com>
+Subject: Re: [syzbot] [crypto?] KASAN: slab-out-of-bounds Read in arc4_crypt
+From: syzbot <syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 19/12/2023 12:58, Varada Pavani wrote:
-> Fix typo 'inteernal' to 'internal' in 'Documentation/devicetree/
-> bindings/clock/tesla,fsd-clock.yaml'.
-> 
-> Signed-off-by: Varada Pavani <v.pavani@samsung.com>
-> ---
->  Documentation/devicetree/bindings/clock/tesla,fsd-clock.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-Are there any other typos in that file or in other Samsung clock bindings?
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-out-of-bounds Read in arc4_crypt
 
-Best regards,
-Krzysztof
+"syz-executor.0" (5497) uses obsolete ecb(arc4) skcipher
+ivs: ffff8880296a9ae0, v: 0, s: 0, ri: 0000000000000010, wi: 0000000000000000, crypto_lskcipher_crypt_sg
+==================================================================
+BUG: KASAN: slab-out-of-bounds in arc4_crypt+0x31c/0x4e0 lib/crypto/arc4.c:46
+Read of size 4 at addr ffff8880296a9ee0 by task syz-executor.0/5497
+
+CPU: 1 PID: 5497 Comm: syz-executor.0 Not tainted 6.7.0-rc5-next-20231215-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc3/0x620 mm/kasan/report.c:488
+ kasan_report+0xd9/0x110 mm/kasan/report.c:601
+ arc4_crypt+0x31c/0x4e0 lib/crypto/arc4.c:46
+ crypto_arc4_crypt+0x61/0x70 crypto/arc4.c:37
+ crypto_lskcipher_crypt_sg+0x398/0x600 crypto/lskcipher.c:235
+ crypto_skcipher_decrypt+0xda/0x160 crypto/skcipher.c:693
+ _skcipher_recvmsg crypto/algif_skcipher.c:199 [inline]
+ skcipher_recvmsg+0xc2b/0x1040 crypto/algif_skcipher.c:221
+ sock_recvmsg_nosec net/socket.c:1044 [inline]
+ sock_recvmsg+0xe2/0x170 net/socket.c:1066
+ ____sys_recvmsg+0x21f/0x5c0 net/socket.c:2801
+ ___sys_recvmsg+0x115/0x1a0 net/socket.c:2843
+ __sys_recvmsg+0x114/0x1e0 net/socket.c:2873
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+RIP: 0033:0x7f029aa7cba9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f029b7d40c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002f
+RAX: ffffffffffffffda RBX: 00007f029ab9bf80 RCX: 00007f029aa7cba9
+RDX: 0000000000000000 RSI: 00000000200005c0 RDI: 0000000000000004
+RBP: 00007f029aac847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f029ab9bf80 R15: 00007fff19420af8
+ </TASK>
+
+Allocated by task 78:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
+ kasan_set_track+0x24/0x30 mm/kasan/common.c:61
+ __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:329
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook mm/slub.c:3817 [inline]
+ slab_alloc_node mm/slub.c:3864 [inline]
+ kmem_cache_alloc_lru+0x142/0x6f0 mm/slub.c:3883
+ __d_alloc+0x32/0xac0 fs/dcache.c:1769
+ d_alloc+0x4e/0x220 fs/dcache.c:1849
+ d_alloc_parallel+0xe9/0x12d0 fs/dcache.c:2638
+ __lookup_slow+0x194/0x450 fs/namei.c:1678
+ lookup_one_len+0x17d/0x1b0 fs/namei.c:2755
+ start_creating.part.0+0x12f/0x3a0 fs/debugfs/inode.c:382
+ start_creating fs/debugfs/inode.c:355 [inline]
+ __debugfs_create_file+0xa5/0x620 fs/debugfs/inode.c:427
+ minstrel_ht_add_sta_debugfs+0x2f/0x50 net/mac80211/rc80211_minstrel_ht_debugfs.c:332
+ rate_control_add_sta_debugfs net/mac80211/rate.h:60 [inline]
+ sta_info_insert_finish net/mac80211/sta_info.c:879 [inline]
+ sta_info_insert_rcu+0xe3e/0x1ab0 net/mac80211/sta_info.c:944
+ ieee80211_ibss_finish_sta+0x21c/0x3a0 net/mac80211/ibss.c:575
+ ieee80211_ibss_add_sta+0x3a8/0x730 net/mac80211/ibss.c:631
+ ieee80211_update_sta_info net/mac80211/ibss.c:1005 [inline]
+ ieee80211_rx_bss_info net/mac80211/ibss.c:1096 [inline]
+ ieee80211_rx_mgmt_probe_beacon net/mac80211/ibss.c:1577 [inline]
+ ieee80211_ibss_rx_queued_mgmt+0x28b7/0x3140 net/mac80211/ibss.c:1604
+ ieee80211_iface_process_skb net/mac80211/iface.c:1589 [inline]
+ ieee80211_iface_work+0xa67/0xda0 net/mac80211/iface.c:1643
+ cfg80211_wiphy_work+0x24e/0x330 net/wireless/core.c:437
+ process_one_work+0x8a4/0x15f0 kernel/workqueue.c:2633
+ process_scheduled_works kernel/workqueue.c:2706 [inline]
+ worker_thread+0x8b6/0x1290 kernel/workqueue.c:2787
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
+ kasan_set_track+0x24/0x30 mm/kasan/common.c:61
+ ____kasan_kmalloc mm/kasan/common.c:375 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:384
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slub.c:3985 [inline]
+ __kmalloc_node_track_caller+0x220/0x470 mm/slub.c:4005
+ kmemdup+0x29/0x60 mm/util.c:131
+ kmemdup include/linux/fortify-string.h:761 [inline]
+ ip6t_register_table+0x1d0/0x420 net/ipv6/netfilter/ip6_tables.c:1768
+ ip6table_security_table_init+0x40/0x60 net/ipv6/netfilter/ip6table_security.c:45
+ xt_find_table_lock+0x2cf/0x4e0 net/netfilter/x_tables.c:1259
+ xt_request_find_table_lock+0x28/0xf0 net/netfilter/x_tables.c:1284
+ get_info+0x1a1/0x7c0 net/ipv4/netfilter/ip_tables.c:963
+ do_ip6t_get_ctl+0x16a/0xae0 net/ipv6/netfilter/ip6_tables.c:1660
+ nf_getsockopt+0x76/0xe0 net/netfilter/nf_sockopt.c:116
+ ipv6_getsockopt+0x1f9/0x2b0 net/ipv6/ipv6_sockglue.c:1488
+ tcp_getsockopt+0x97/0xf0 net/ipv4/tcp.c:4361
+ do_sock_getsockopt+0x2e1/0x6c0 net/socket.c:2371
+ __sys_getsockopt+0x1a1/0x270 net/socket.c:2400
+ __do_sys_getsockopt net/socket.c:2410 [inline]
+ __se_sys_getsockopt net/socket.c:2407 [inline]
+ __x64_sys_getsockopt+0xbd/0x150 net/socket.c:2407
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
+ __kasan_record_aux_stack+0xc2/0xd0 mm/kasan/generic.c:517
+ __call_rcu_common.constprop.0+0x9a/0x7b0 kernel/rcu/tree.c:2689
+ call_rcu_hurry include/linux/rcupdate.h:114 [inline]
+ dst_release net/core/dst.c:167 [inline]
+ dst_release+0x1b5/0x1e0 net/core/dst.c:164
+ refdst_drop include/net/dst.h:263 [inline]
+ skb_dst_drop include/net/dst.h:275 [inline]
+ skb_release_head_state+0x254/0x2b0 net/core/skbuff.c:1041
+ skb_release_all net/core/skbuff.c:1056 [inline]
+ kfree_skb_add_bulk net/core/skbuff.c:1129 [inline]
+ kfree_skb_list_reason+0x17b/0x4c0 net/core/skbuff.c:1151
+ __dev_xmit_skb net/core/dev.c:3840 [inline]
+ __dev_queue_xmit+0x255b/0x3d40 net/core/dev.c:4311
+ dev_queue_xmit include/linux/netdevice.h:3165 [inline]
+ neigh_resolve_output net/core/neighbour.c:1563 [inline]
+ neigh_resolve_output+0x584/0x8f0 net/core/neighbour.c:1543
+ neigh_output include/net/neighbour.h:542 [inline]
+ ip6_finish_output2+0x673/0x1820 net/ipv6/ip6_output.c:137
+ __ip6_finish_output net/ipv6/ip6_output.c:211 [inline]
+ ip6_finish_output+0x3c7/0xf70 net/ipv6/ip6_output.c:222
+ NF_HOOK_COND include/linux/netfilter.h:303 [inline]
+ ip6_output+0x1e2/0x530 net/ipv6/ip6_output.c:243
+ dst_output include/net/dst.h:451 [inline]
+ NF_HOOK include/linux/netfilter.h:314 [inline]
+ ndisc_send_skb+0xa13/0x18f0 net/ipv6/ndisc.c:509
+ ndisc_send_rs+0x133/0x6a0 net/ipv6/ndisc.c:719
+ addrconf_dad_completed+0x486/0x1030 net/ipv6/addrconf.c:4303
+ addrconf_dad_begin net/ipv6/addrconf.c:4068 [inline]
+ addrconf_dad_work+0xd5c/0x14b0 net/ipv6/addrconf.c:4170
+ process_one_work+0x8a4/0x15f0 kernel/workqueue.c:2633
+ process_scheduled_works kernel/workqueue.c:2706 [inline]
+ worker_thread+0x8b6/0x1290 kernel/workqueue.c:2787
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+The buggy address belongs to the object at ffff8880296a9800
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 1024 bytes to the right of
+ allocated 736-byte region [ffff8880296a9800, ffff8880296a9ae0)
+
+The buggy address belongs to the physical page:
+page:ffffea0000a5aa00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880296ac000 pfn:0x296a8
+head:ffffea0000a5aa00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+ksm flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888013041dc0 ffffea00052f8a00 0000000000000003
+raw: ffff8880296ac000 000000008010000a 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d2820(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 2871, tgid 2871 (kworker/u4:11), ts 83336024213, free_ts 79470601630
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d0/0x350 mm/page_alloc.c:1540
+ prep_new_page mm/page_alloc.c:1547 [inline]
+ get_page_from_freelist+0xa19/0x3740 mm/page_alloc.c:3355
+ __alloc_pages+0x22e/0x2410 mm/page_alloc.c:4611
+ alloc_pages_mpol+0x258/0x5f0 mm/mempolicy.c:2133
+ alloc_slab_page mm/slub.c:2191 [inline]
+ allocate_slab mm/slub.c:2358 [inline]
+ new_slab+0x283/0x3c0 mm/slub.c:2411
+ ___slab_alloc+0x4ab/0x1990 mm/slub.c:3544
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3629
+ __slab_alloc_node mm/slub.c:3682 [inline]
+ slab_alloc_node mm/slub.c:3854 [inline]
+ __do_kmalloc_node mm/slub.c:3984 [inline]
+ __kmalloc_node_track_caller+0x367/0x470 mm/slub.c:4005
+ kmalloc_reserve+0xef/0x260 net/core/skbuff.c:582
+ __alloc_skb+0x12b/0x330 net/core/skbuff.c:651
+ alloc_skb include/linux/skbuff.h:1298 [inline]
+ nlmsg_new include/net/netlink.h:1010 [inline]
+ inet6_rt_notify+0xf0/0x2b0 net/ipv6/route.c:6171
+ fib6_del_route net/ipv6/ip6_fib.c:1999 [inline]
+ fib6_del+0xfae/0x17a0 net/ipv6/ip6_fib.c:2034
+ fib6_clean_node+0x41f/0x5b0 net/ipv6/ip6_fib.c:2196
+ fib6_walk_continue+0x44c/0x8c0 net/ipv6/ip6_fib.c:2118
+ fib6_walk+0x182/0x370 net/ipv6/ip6_fib.c:2166
+ fib6_clean_tree+0xd7/0x110 net/ipv6/ip6_fib.c:2246
+page last free pid 5061 tgid 5053 stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1140 [inline]
+ free_unref_page_prepare+0x51f/0xb10 mm/page_alloc.c:2390
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2530
+ vfree+0x181/0x7a0 mm/vmalloc.c:2842
+ snd_dma_free_pages+0x51/0x60 sound/core/memalloc.c:126
+ do_free_pages sound/core/pcm_memory.c:93 [inline]
+ do_free_pages sound/core/pcm_memory.c:88 [inline]
+ snd_pcm_lib_free_pages+0x172/0x380 sound/core/pcm_memory.c:499
+ do_hw_free sound/core/pcm_native.c:893 [inline]
+ snd_pcm_release_substream.part.0+0x29c/0x330 sound/core/pcm_native.c:2760
+ snd_pcm_release_substream+0x5b/0x70 sound/core/pcm_native.c:2754
+ snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2413 [inline]
+ snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2405 [inline]
+ snd_pcm_oss_release+0x175/0x310 sound/core/oss/pcm_oss.c:2592
+ __fput+0x270/0xbb0 fs/file_table.c:381
+ __fput_sync+0x47/0x50 fs/file_table.c:466
+ __do_sys_close fs/open.c:1595 [inline]
+ __se_sys_close fs/open.c:1580 [inline]
+ __x64_sys_close+0x86/0xf0 fs/open.c:1580
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+Memory state around the buggy address:
+ ffff8880296a9d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880296a9e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff8880296a9e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                                                       ^
+ ffff8880296a9f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880296a9f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+Tested on:
+
+commit:         17cb8a20 Add linux-next specific files for 20231215
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=168fefc6e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ec104439b5dbc583
+dashboard link: https://syzkaller.appspot.com/bug?extid=8ffb0839a24e9c6bfa76
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14276121e80000
 
 
