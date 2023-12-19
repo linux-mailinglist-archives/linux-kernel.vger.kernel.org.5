@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-6056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B25638193A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:33:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5018193A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:32:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE7C8B22FF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:33:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 366C7285D97
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6706A40C1B;
-	Tue, 19 Dec 2023 22:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5053DB82;
+	Tue, 19 Dec 2023 22:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r2ZaOIS6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kt1rNfuv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A553D0D0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC21F3D0AB
 	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 22:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703025083;
+	t=1703025084;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=g+O4MJvijsH/fxNfhEtO0ZT1bhv1NQvjMHnoD8zQplM=;
-	b=r2ZaOIS6ZMwbcRwAxJW59qk9nmH2ETUbfqjNUSa+35AQ7mxBRhFueCynEMDfgvcNnxrrtH
-	sElLzMZVBT/HNZgRFD9eQQjvBsU+nFyNWnkw46nJ6bBbaBE5Zd1NMueq/it/uzQfhtXh75
-	B0otrG1zpXfsZNehE7M3FBuN9mYYkzY=
+	bh=KVsX1wYh/u3bsgXc0v6541Y+g0kgoewEBIuD2sVrVOE=;
+	b=Kt1rNfuvx7+wT5H8UNOgwHCeTbOEvaDygKRpZZi3u1FYmus+bD/11ubTVW79B+oIdiaNwz
+	JlwOYJnlQA+xJy+dqmZh3LmC25rgn5CNTohHAkyMco9Blc+/P3IIuddLLDTvM6CJy8A9+O
+	KeuWbai25yfJ/zAiqqyvZxcC5VTNrDs=
 From: andrey.konovalov@linux.dev
 To: Marco Elver <elver@google.com>,
 	Alexander Potapenko <glider@google.com>
@@ -47,9 +47,9 @@ Cc: Andrey Konovalov <andreyknvl@gmail.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH mm 12/21] kasan: save alloc stack traces for mempool
-Date: Tue, 19 Dec 2023 23:28:56 +0100
-Message-Id: <05ad235da8347cfe14d496d01b2aaf074b4f607c.1703024586.git.andreyknvl@google.com>
+Subject: [PATCH mm 13/21] mempool: skip slub_debug poisoning when KASAN is enabled
+Date: Tue, 19 Dec 2023 23:28:57 +0100
+Message-Id: <98a4b1617e8ceeb266ef9a46f5e8c7f67a563ad2.1703024586.git.andreyknvl@google.com>
 In-Reply-To: <cover.1703024586.git.andreyknvl@google.com>
 References: <cover.1703024586.git.andreyknvl@google.com>
 Precedence: bulk
@@ -63,111 +63,49 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Update kasan_mempool_unpoison_object to properly poison the redzone and
-save alloc strack traces for kmalloc and slab pools.
+With the changes in the following patch, KASAN starts saving its metadata
+within freed mempool elements.
 
-As a part of this change, split out and use a unpoison_slab_object helper
-function from __kasan_slab_alloc.
+Thus, skip slub_debug poisoning and checking of mempool elements when
+KASAN is enabled. Corruptions of freed mempool elements will be detected
+by KASAN anyway.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- include/linux/kasan.h |  7 +++---
- mm/kasan/common.c     | 50 ++++++++++++++++++++++++++++++++++---------
- 2 files changed, 44 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index e636a00e26ba..7392c5d89b92 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -303,9 +303,10 @@ void __kasan_mempool_unpoison_object(void *ptr, size_t size, unsigned long ip);
-  * mempool).
-  *
-  * This function unpoisons a slab allocation that was previously poisoned via
-- * kasan_mempool_poison_object() without initializing its memory. For the
-- * tag-based modes, this function does not assign a new tag to the allocation
-- * and instead restores the original tags based on the pointer value.
-+ * kasan_mempool_poison_object() and saves an alloc stack trace for it without
-+ * initializing the allocation's memory. For the tag-based modes, this function
-+ * does not assign a new tag to the allocation and instead restores the
-+ * original tags based on the pointer value.
-  *
-  * This function operates on all slab allocations including large kmalloc
-  * allocations (the ones returned by kmalloc_large() or by kmalloc() with the
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 962805bf5f62..b8e7416f83af 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -277,6 +277,20 @@ void __kasan_kfree_large(void *ptr, unsigned long ip)
- 	/* The object will be poisoned by kasan_poison_pages(). */
- }
+---
+
+Changes RFC->v1:
+- This is a new patch.
+---
+ mm/mempool.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/mm/mempool.c b/mm/mempool.c
+index 7e1c729f292b..1fd39478c85e 100644
+--- a/mm/mempool.c
++++ b/mm/mempool.c
+@@ -56,6 +56,10 @@ static void __check_element(mempool_t *pool, void *element, size_t size)
  
-+void unpoison_slab_object(struct kmem_cache *cache, void *object, gfp_t flags,
-+			  bool init)
-+{
-+	/*
-+	 * Unpoison the whole object. For kmalloc() allocations,
-+	 * poison_kmalloc_redzone() will do precise poisoning.
-+	 */
-+	kasan_unpoison(object, cache->object_size, init);
-+
-+	/* Save alloc info (if possible) for non-kmalloc() allocations. */
-+	if (kasan_stack_collection_enabled() && !is_kmalloc_cache(cache))
-+		kasan_save_alloc_info(cache, object, flags);
-+}
-+
- void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
- 					void *object, gfp_t flags, bool init)
+ static void check_element(mempool_t *pool, void *element)
  {
-@@ -299,15 +313,8 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
- 	tag = assign_tag(cache, object, false);
- 	tagged_object = set_tag(object, tag);
- 
--	/*
--	 * Unpoison the whole object.
--	 * For kmalloc() allocations, kasan_kmalloc() will do precise poisoning.
--	 */
--	kasan_unpoison(tagged_object, cache->object_size, init);
--
--	/* Save alloc info (if possible) for non-kmalloc() allocations. */
--	if (kasan_stack_collection_enabled() && !is_kmalloc_cache(cache))
--		kasan_save_alloc_info(cache, tagged_object, flags);
-+	/* Unpoison the object and save alloc info for non-kmalloc() allocations. */
-+	unpoison_slab_object(cache, tagged_object, flags, init);
- 
- 	return tagged_object;
- }
-@@ -482,7 +489,30 @@ bool __kasan_mempool_poison_object(void *ptr, unsigned long ip)
- 
- void __kasan_mempool_unpoison_object(void *ptr, size_t size, unsigned long ip)
- {
--	kasan_unpoison(ptr, size, false);
-+	struct slab *slab;
-+	gfp_t flags = 0; /* Might be executing under a lock. */
-+
-+	if (is_kfence_address(kasan_reset_tag(ptr)))
++	/* Skip checking: KASAN might save its metadata in the element. */
++	if (kasan_enabled())
 +		return;
 +
-+	slab = virt_to_slab(ptr);
-+
-+	/*
-+	 * This function can be called for large kmalloc allocation that get
-+	 * their memory from page_alloc.
-+	 */
-+	if (unlikely(!slab)) {
-+		kasan_unpoison(ptr, size, false);
-+		poison_kmalloc_large_redzone(ptr, size, flags);
-+		return;
-+	}
-+
-+	/* Unpoison the object and save alloc info for non-kmalloc() allocations. */
-+	unpoison_slab_object(slab->slab_cache, ptr, size, flags);
-+
-+	/* Poison the redzone and save alloc info for kmalloc() allocations. */
-+	if (is_kmalloc_cache(slab->slab_cache))
-+		poison_kmalloc_redzone(slab->slab_cache, ptr, size, flags);
- }
+ 	/* Mempools backed by slab allocator */
+ 	if (pool->free == mempool_kfree) {
+ 		__check_element(pool, element, (size_t)pool->pool_data);
+@@ -81,6 +85,10 @@ static void __poison_element(void *element, size_t size)
  
- bool __kasan_check_byte(const void *address, unsigned long ip)
+ static void poison_element(mempool_t *pool, void *element)
+ {
++	/* Skip poisoning: KASAN might save its metadata in the element. */
++	if (kasan_enabled())
++		return;
++
+ 	/* Mempools backed by slab allocator */
+ 	if (pool->alloc == mempool_kmalloc) {
+ 		__poison_element(element, (size_t)pool->pool_data);
 -- 
 2.25.1
 
