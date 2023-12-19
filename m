@@ -1,162 +1,141 @@
-Return-Path: <linux-kernel+bounces-5110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1268D8186A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:51:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB838186AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:51:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CFFCB237CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:51:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A63E91F221D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2A518E21;
-	Tue, 19 Dec 2023 11:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9ACF1640B;
+	Tue, 19 Dec 2023 11:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SYrGD+0x"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FBE218C05
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SvZkx1mLYzMp0Y;
-	Tue, 19 Dec 2023 19:50:33 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id 494BD18006C;
-	Tue, 19 Dec 2023 19:50:47 +0800 (CST)
-Received: from [10.174.151.185] (10.174.151.185) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 19:50:46 +0800
-Subject: Re: [PATCH 1/1] mm: memory-failure: Re-split hw-poisoned huge page on
- -EAGAIN
-To: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-CC: <akpm@linux-foundation.org>, <tony.luck@intel.com>,
-	<ying.huang@intel.com>, <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	HORIGUCHI NAOYA <naoya.horiguchi@nec.com>
-References: <20231215081204.8802-1-qiuxu.zhuo@intel.com>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <81eebf23-fce3-3bb3-857d-8aab5a75d788@huawei.com>
-Date: Tue, 19 Dec 2023 19:50:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE8718E2F;
+	Tue, 19 Dec 2023 11:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702986662; x=1734522662;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fnK/Y9O3xSfWK7qWy8ICoXoJrkOhv0lVOPade4CcLM0=;
+  b=SYrGD+0xVyypsVgyB2oYVGeDUs0eUVB9sxrgWMiNGUTKH0W3tFjH7X7B
+   cE2jsSeHFAQS0BuSi69g1LBDe54T0W4k6eD9WvCV1eHTZbvN1DiXqODVX
+   7O40pngjA5LNowz33+45dYeWldxAlyXcS6ig4mxhILek7V3QWpLCpV1GJ
+   2iXny+5bF8/4e+wg3cLT6EGJTE9T4mD7elh4BAW11yPmoeseE2RnKPgUy
+   8qXQHl8PWQuoqpM1bT8CEs6r9qt3HrEDJr/2IAfG0YHi9ABr7L3QcWe+K
+   Xdm8poUpsS0RDdQPyyVu7YwzRl71WD+6yXFWJcnWBDluGrIOV6oHUFArM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="394524569"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="394524569"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 03:51:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="779458621"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="779458621"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga007.fm.intel.com with SMTP; 19 Dec 2023 03:50:59 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 19 Dec 2023 13:50:58 +0200
+Date: Tue, 19 Dec 2023 13:50:58 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] usb: typec: tipd: add function to request firmware
+Message-ID: <ZYGDoi9rBvMnE+MX@kuha.fi.intel.com>
+References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
+ <20231207-tps6598x_update-v2-2-f3cfcde6d890@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231215081204.8802-1-qiuxu.zhuo@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207-tps6598x_update-v2-2-f3cfcde6d890@wolfvision.net>
 
-On 2023/12/15 16:12, Qiuxu Zhuo wrote:
-> During the process of splitting a hw-poisoned huge page, it is possible
-> for the reference count of the huge page to be increased by the threads
-> within the affected process, leading to a failure in splitting the
-> hw-poisoned huge page with an error code of -EAGAIN.
+On Thu, Dec 14, 2023 at 05:29:10PM +0100, Javier Carrasco wrote:
+> The firmware request process is device agnostic and can be used for
+> other parts.
 > 
-> This issue can be reproduced when doing memory error injection to a
-> multiple-thread process, and the error occurs within a huge page.
-> The call path with the returned -EAGAIN during the testing is shown below:
-> 
->   memory_failure()
->     try_to_split_thp_page()
->       split_huge_page()
->         split_huge_page_to_list() {
->           ...
->           Step A: can_split_folio() - Checked that the thp can be split.
->           Step B: unmap_folio()
->           Step C: folio_ref_freeze() - Failed and returned -EAGAIN.
->           ...
->         }
-> 
-> The testing logs indicated that some huge pages were split successfully
-> via the call path above (Step C was successful for these huge pages).
-> However, some huge pages failed to split due to a failure at Step C, and
-> it was observed that the reference count of the huge page increased between
-> Step A and Step C.
-> 
-> Testing has shown that after receiving -EAGAIN, simply re-splitting the
-> hw-poisoned huge page within memory_failure() always results in the same
-> -EAGAIN. This is possible because memory_failure() is executed in the
-> currently affected process. Before this process exits memory_failure() and
-> is terminated, its threads could increase the reference count of the
-> hw-poisoned page.
-> 
-> To address this issue, employ the kernel worker to re-split the hw-poisoned
-> huge page. By the time this worker begins re-splitting the hw-poisoned huge
-> page, the affected process has already been terminated, preventing its
-> threads from increasing the reference count. Experimental results have
-> consistently shown that this worker successfully re-splits these
-> hw-poisoned huge pages on its first attempt.
-> 
-> The kernel log (before):
->   [ 1116.862895] Memory failure: 0x4097fa7: recovery action for unsplit thp: Ignored
-> 
-> The kernel log (after):
->   [  793.573536] Memory failure: 0x2100dda: recovery action for unsplit thp: Delayed
->   [  793.574666] Memory failure: 0x2100dda: split unsplit thp successfully.
-> 
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 
-Thanks for your patch. Except for the comment from Naoya, I have some questions about the code itself.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
 > ---
->  mm/memory-failure.c | 73 +++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 71 insertions(+), 2 deletions(-)
+>  drivers/usb/typec/tipd/core.c | 35 ++++++++++++++++++++++++++---------
+>  1 file changed, 26 insertions(+), 9 deletions(-)
 > 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 660c21859118..0db4cf712a78 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -72,6 +72,60 @@ atomic_long_t num_poisoned_pages __read_mostly = ATOMIC_LONG_INIT(0);
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index f0c4cd571a37..83e5eeecdf5c 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -873,6 +873,30 @@ tps6598x_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
+>  	return 0;
+>  }
 >  
->  static bool hw_memory_failure __read_mostly = false;
->  
-> +#define SPLIT_THP_MAX_RETRY_CNT		10
-> +#define SPLIT_THP_INIT_DELAYED_MS	1
-> +
-> +static bool split_thp_pending;
-> +
-> +struct split_thp_req {
-> +	struct delayed_work work;
-> +	struct page *thp;
-> +	int retries;
-> +};
-> +
-> +static void split_thp_work_fn(struct work_struct *work)
+> +static int tps_request_firmware(struct tps6598x *tps, const struct firmware **fw)
 > +{
-> +	struct split_thp_req *req = container_of(work, typeof(*req), work.work);
+> +	const char *firmware_name;
 > +	int ret;
 > +
-> +	/* Split the thp. */
-> +	get_page(req->thp);
-
-Can req->thp be freed when split_thp_work_fn is scheduled ?
-
-> +	lock_page(req->thp);
-> +	ret = split_huge_page(req->thp);
-> +	unlock_page(req->thp);
-> +	put_page(req->thp);
+> +	ret = device_property_read_string(tps->dev, "firmware-name",
+> +					  &firmware_name);
+> +	if (ret)
+> +		return ret;
 > +
-> +	/* Retry with an exponential backoff. */
-> +	if (ret && ++req->retries < SPLIT_THP_MAX_RETRY_CNT) {
-> +		schedule_delayed_work(to_delayed_work(work),
-> +				      msecs_to_jiffies(SPLIT_THP_INIT_DELAYED_MS << req->retries));
-> +		return;
+> +	ret = request_firmware(fw, firmware_name, tps->dev);
+> +	if (ret) {
+> +		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
+> +		return ret;
 > +	}
 > +
-> +	pr_err("%#lx: split unsplit thp %ssuccessfully.\n", page_to_pfn(req->thp), ret ? "un" : "");
-> +	kfree(req);
-> +	split_thp_pending = false;
+> +	if ((*fw)->size == 0) {
+> +		release_firmware(*fw);
+> +		ret = -EINVAL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  static int
+>  tps25750_write_firmware(struct tps6598x *tps,
+>  			u8 bpms_addr, const u8 *data, size_t len)
+> @@ -961,16 +985,9 @@ static int tps25750_start_patch_burst_mode(struct tps6598x *tps)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = request_firmware(&fw, firmware_name, tps->dev);
+> -	if (ret) {
+> -		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
+> +	ret = tps_request_firmware(tps, &fw);
+> +	if (ret)
+>  		return ret;
+> -	}
+> -
+> -	if (fw->size == 0) {
+> -		ret = -EINVAL;
+> -		goto release_fw;
+> -	}
+>  
+>  	ret = of_property_match_string(np, "reg-names", "patch-address");
+>  	if (ret < 0) {
+> 
+> -- 
+> 2.39.2
 
-split_thp_pending is not protected against split_thp_delayed? Though this race should be benign.
-
-Thanks.
+-- 
+heikki
 
