@@ -1,443 +1,240 @@
-Return-Path: <linux-kernel+bounces-4655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C31A2818054
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAC67818055
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59A0A282D91
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:58:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55950284A59
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039ED5380;
-	Tue, 19 Dec 2023 03:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CFC5380;
+	Tue, 19 Dec 2023 03:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eQ0nxbo1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E47579EA
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 03:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 3BJ3vI5j060198;
-	Tue, 19 Dec 2023 11:57:18 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SvN5j45jKz2PmfTZ;
-	Tue, 19 Dec 2023 11:51:05 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 19 Dec 2023 11:57:16 +0800
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
-To: <jaegeuk@kernel.org>, <chao@kernel.org>
-CC: <linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
-        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>
-Subject: [PATCH V3] f2fs: unify the error handling of f2fs_is_valid_blkaddr
-Date: Tue, 19 Dec 2023 11:56:51 +0800
-Message-ID: <1702958211-23176-1-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6254CBE55;
+	Tue, 19 Dec 2023 03:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702958356; x=1734494356;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=3s4M1Ke7Zp6dpbGPTolOm9J70ngTk0LFGbPc1ei/amY=;
+  b=eQ0nxbo1MXmiT5C6ACUpn4NouqgpK2BG95tsLpSDo8ZiqkFho4gnZ8MO
+   +R435YpmLXIbfTBKPOeX4snjc4DTfJsD/DcU2aFM4q/AaF9poU/JNC5yf
+   +Kqnn3gsbVNuxOuwev+swv9Hb/WLCxo26WXroIp/8ymKYb51oU4XaJ3iJ
+   9cc8jqrahruoBlMGU2ooH0VuCv/2PrmOGh4kQCuYv7MLBdS9uTGUOGzrT
+   YXnaw/BvrYh2yLTCHxJFgrlSI2RYxIegRdkBahOJG4mYy8ASVO6PudC6E
+   BbbMWnNzP7AUAGlW6CEfEiLUrZwzoNVvldXPkP4akBAEGmX/7FT9A4ABe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="386023776"
+X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
+   d="scan'208";a="386023776"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 19:59:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="841740575"
+X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
+   d="scan'208";a="841740575"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 19:59:11 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Srinivasulu Thanneeru <sthanneeru@micron.com>
+Cc: Srinivasulu Opensrc <sthanneeru.opensrc@micron.com>,
+  "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+  "linux-mm@kvack.org" <linux-mm@kvack.org>,  "aneesh.kumar@linux.ibm.com"
+ <aneesh.kumar@linux.ibm.com>,  "dan.j.williams@intel.com"
+ <dan.j.williams@intel.com>,  gregory.price <gregory.price@memverge.com>,
+  "mhocko@suse.com" <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,
+  "john@jagalactic.com" <john@jagalactic.com>,  Eishan Mirakhur
+ <emirakhur@micron.com>,  Vinicius Tavares Petrucci
+ <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
+  "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Johannes
+ Weiner <hannes@cmpxchg.org>, Wei Xu <weixugc@google.com>
+Subject: Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
+In-Reply-To: <PH0PR08MB79551628EFA3B1B3CB55DFFEA890A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	(Srinivasulu Thanneeru's message of "Mon, 18 Dec 2023 08:56:02 +0000")
+References: <20231213175329.594-1-sthanneeru.opensrc@micron.com>
+	<87cyv8qcqk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB79551628EFA3B1B3CB55DFFEA890A@PH0PR08MB7955.namprd08.prod.outlook.com>
+Date: Tue, 19 Dec 2023 11:57:12 +0800
+Message-ID: <87o7emn8tj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 3BJ3vI5j060198
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-unify the error handling of ERROR_INVALID_BLKADDR in f2fs_is_valid_blkaddr
-and remove some redundant codes in f2fs_cache_compressed_page.
+Hi, Srinivasulu,
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
----
-changes of v2: improve patch according Chao's suggestions.
-changes of v3:
-	-rebase patch to dev-test
-	-correct return value for some f2fs_is_valid_blkaddr error case
----
----
- fs/f2fs/checkpoint.c   | 39 ++++++++++++++++++++-------------------
- fs/f2fs/compress.c     |  4 ----
- fs/f2fs/data.c         | 24 ++++--------------------
- fs/f2fs/extent_cache.c |  7 ++-----
- fs/f2fs/file.c         | 12 ++----------
- fs/f2fs/gc.c           |  2 --
- fs/f2fs/node.c         |  2 +-
- fs/f2fs/recovery.c     |  4 ----
- fs/f2fs/segment.c      |  2 --
- 9 files changed, 29 insertions(+), 67 deletions(-)
+Please use a email client that works for kernel patch review.  Your
+email is hard to read.  It's hard to identify which part is your text
+and which part is my text.  Please refer to,
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index b0597a5..83119aa 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -154,19 +154,17 @@ static bool __is_bitmap_valid(struct f2fs_sb_info *sbi, block_t blkaddr,
- 	if (unlikely(f2fs_cp_error(sbi)))
- 		return exist;
- 
--	if (exist && type == DATA_GENERIC_ENHANCE_UPDATE) {
--		f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
--			 blkaddr, exist);
--		set_sbi_flag(sbi, SBI_NEED_FSCK);
--		return exist;
--	}
-+	if ((exist && type == DATA_GENERIC_ENHANCE_UPDATE) ||
-+			(!exist && type == DATA_GENERIC_ENHANCE))
-+		goto err;
- 
--	if (!exist && type == DATA_GENERIC_ENHANCE) {
--		f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
--			 blkaddr, exist);
--		set_sbi_flag(sbi, SBI_NEED_FSCK);
--		dump_stack();
--	}
-+	return exist;
-+err:
-+	f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
-+		blkaddr, exist);
-+	set_sbi_flag(sbi, SBI_NEED_FSCK);
-+	dump_stack();
-+	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 	return exist;
- }
- 
-@@ -174,29 +172,29 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 					block_t blkaddr, int type)
- {
- 	if (time_to_inject(sbi, FAULT_BLKADDR))
--		return false;
-+		goto err;
- 
- 	switch (type) {
- 	case META_NAT:
- 		break;
- 	case META_SIT:
- 		if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
--			return false;
-+			goto err;
- 		break;
- 	case META_SSA:
- 		if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
- 			blkaddr < SM_I(sbi)->ssa_blkaddr))
--			return false;
-+			goto err;
- 		break;
- 	case META_CP:
- 		if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
- 			blkaddr < __start_cp_addr(sbi)))
--			return false;
-+			goto err;
- 		break;
- 	case META_POR:
- 		if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
- 			blkaddr < MAIN_BLKADDR(sbi)))
--			return false;
-+			goto err;
- 		break;
- 	case DATA_GENERIC:
- 	case DATA_GENERIC_ENHANCE:
-@@ -213,7 +211,7 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 				  blkaddr);
- 			set_sbi_flag(sbi, SBI_NEED_FSCK);
- 			dump_stack();
--			return false;
-+			goto err;
- 		} else {
- 			return __is_bitmap_valid(sbi, blkaddr, type);
- 		}
-@@ -221,13 +219,16 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 	case META_GENERIC:
- 		if (unlikely(blkaddr < SEG0_BLKADDR(sbi) ||
- 			blkaddr >= MAIN_BLKADDR(sbi)))
--			return false;
-+			goto err;
- 		break;
- 	default:
- 		BUG();
- 	}
- 
- 	return true;
-+err:
-+	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-+	return false;
- }
- 
- /*
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index c5a4364..cf075ca 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1878,12 +1878,8 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
- 
- 	set_page_private_data(cpage, ino);
- 
--	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
--		goto out;
--
- 	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
- 	SetPageUptodate(cpage);
--out:
- 	f2fs_put_page(cpage, 1);
- }
- 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index dce8def..61be01f 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -740,10 +740,8 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
- 
- 	if (!f2fs_is_valid_blkaddr(fio->sbi, fio->new_blkaddr,
- 			fio->is_por ? META_POR : (__is_meta_io(fio) ?
--			META_GENERIC : DATA_GENERIC_ENHANCE))) {
--		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
-+			META_GENERIC : DATA_GENERIC_ENHANCE)))
- 		return -EFSCORRUPTED;
--	}
- 
- 	trace_f2fs_submit_page_bio(page, fio);
- 
-@@ -948,10 +946,8 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
- 			fio->encrypted_page : fio->page;
- 
- 	if (!f2fs_is_valid_blkaddr(fio->sbi, fio->new_blkaddr,
--			__is_meta_io(fio) ? META_GENERIC : DATA_GENERIC)) {
--		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
-+			__is_meta_io(fio) ? META_GENERIC : DATA_GENERIC))
- 		return -EFSCORRUPTED;
--	}
- 
- 	trace_f2fs_submit_page_bio(page, fio);
- 
-@@ -1285,8 +1281,6 @@ struct page *f2fs_get_read_data_page(struct inode *inode, pgoff_t index,
- 		if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), dn.data_blkaddr,
- 						DATA_GENERIC_ENHANCE_READ)) {
- 			err = -EFSCORRUPTED;
--			f2fs_handle_error(F2FS_I_SB(inode),
--						ERROR_INVALID_BLKADDR);
- 			goto put_err;
- 		}
- 		goto got_it;
-@@ -1312,8 +1306,6 @@ struct page *f2fs_get_read_data_page(struct inode *inode, pgoff_t index,
- 						dn.data_blkaddr,
- 						DATA_GENERIC_ENHANCE)) {
- 		err = -EFSCORRUPTED;
--		f2fs_handle_error(F2FS_I_SB(inode),
--					ERROR_INVALID_BLKADDR);
- 		goto put_err;
- 	}
- got_it:
-@@ -1641,7 +1633,6 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
- 	if (!is_hole &&
- 	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE)) {
- 		err = -EFSCORRUPTED;
--		f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 		goto sync_out;
- 	}
- 
-@@ -2165,8 +2156,6 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 		if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), block_nr,
- 						DATA_GENERIC_ENHANCE_READ)) {
- 			ret = -EFSCORRUPTED;
--			f2fs_handle_error(F2FS_I_SB(inode),
--						ERROR_INVALID_BLKADDR);
- 			goto out;
- 		}
- 	} else {
-@@ -2299,7 +2288,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
- 			break;
- 
- 		if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC)) {
--			ret = -EFAULT;
-+			ret = -EFSCORRUPTED;
- 			goto out_put_dnode;
- 		}
- 		cc->nr_cpages++;
-@@ -2706,11 +2695,8 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
- 	    f2fs_lookup_read_extent_cache_block(inode, page->index,
- 						&fio->old_blkaddr)) {
- 		if (!f2fs_is_valid_blkaddr(fio->sbi, fio->old_blkaddr,
--						DATA_GENERIC_ENHANCE)) {
--			f2fs_handle_error(fio->sbi,
--						ERROR_INVALID_BLKADDR);
-+						DATA_GENERIC_ENHANCE))
- 			return -EFSCORRUPTED;
--		}
- 
- 		ipu_force = true;
- 		fio->need_lock = LOCK_DONE;
-@@ -2738,7 +2724,6 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
- 		!f2fs_is_valid_blkaddr(fio->sbi, fio->old_blkaddr,
- 						DATA_GENERIC_ENHANCE)) {
- 		err = -EFSCORRUPTED;
--		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
- 		goto out_writepage;
- 	}
- 
-@@ -3704,7 +3689,6 @@ static int f2fs_write_begin(struct file *file, struct address_space *mapping,
- 		if (!f2fs_is_valid_blkaddr(sbi, blkaddr,
- 				DATA_GENERIC_ENHANCE_READ)) {
- 			err = -EFSCORRUPTED;
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 			goto fail;
- 		}
- 		err = f2fs_submit_page_read(use_cow ?
-diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
-index ad8dfac7..99d0442 100644
---- a/fs/f2fs/extent_cache.c
-+++ b/fs/f2fs/extent_cache.c
-@@ -43,7 +43,6 @@ bool sanity_check_extent_cache(struct inode *inode)
- 	if (!f2fs_is_valid_blkaddr(sbi, ei->blk, DATA_GENERIC_ENHANCE) ||
- 	    !f2fs_is_valid_blkaddr(sbi, ei->blk + ei->len - 1,
- 					DATA_GENERIC_ENHANCE)) {
--		set_sbi_flag(sbi, SBI_NEED_FSCK);
- 		f2fs_warn(sbi, "%s: inode (ino=%lx) extent info [%u, %u, %u] is incorrect, run fsck to fix",
- 			  __func__, inode->i_ino,
- 			  ei->blk, ei->fofs, ei->len);
-@@ -856,10 +855,8 @@ static int __get_new_block_age(struct inode *inode, struct extent_info *ei,
- 		goto out;
- 
- 	if (__is_valid_data_blkaddr(blkaddr) &&
--	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE)) {
--		f2fs_bug_on(sbi, 1);
--		return -EINVAL;
--	}
-+	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
-+		return -EFSCORRUPTED;
- out:
- 	/*
- 	 * init block age with zero, this can happen when the block age extent
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 026d05a7..b3df24c 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1192,7 +1192,6 @@ static int __read_out_blkaddrs(struct inode *inode, block_t *blkaddr,
- 			!f2fs_is_valid_blkaddr(sbi, *blkaddr,
- 					DATA_GENERIC_ENHANCE)) {
- 			f2fs_put_dnode(&dn);
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 			return -EFSCORRUPTED;
- 		}
- 
-@@ -1478,7 +1477,6 @@ static int f2fs_do_zero_range(struct dnode_of_data *dn, pgoff_t start,
- 		if (!f2fs_is_valid_blkaddr(sbi, dn->data_blkaddr,
- 					DATA_GENERIC_ENHANCE)) {
- 			ret = -EFSCORRUPTED;
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 			break;
- 		}
- 
-@@ -3438,10 +3436,8 @@ static int release_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
- 		if (!__is_valid_data_blkaddr(blkaddr))
- 			continue;
- 		if (unlikely(!f2fs_is_valid_blkaddr(sbi, blkaddr,
--					DATA_GENERIC_ENHANCE))) {
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-+					DATA_GENERIC_ENHANCE)))
- 			return -EFSCORRUPTED;
--		}
- 	}
- 
- 	while (count) {
-@@ -3603,10 +3599,8 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
- 		if (!__is_valid_data_blkaddr(blkaddr))
- 			continue;
- 		if (unlikely(!f2fs_is_valid_blkaddr(sbi, blkaddr,
--					DATA_GENERIC_ENHANCE))) {
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-+					DATA_GENERIC_ENHANCE)))
- 			return -EFSCORRUPTED;
--		}
- 	}
- 
- 	while (count) {
-@@ -3877,8 +3871,6 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
- 						DATA_GENERIC_ENHANCE)) {
- 				ret = -EFSCORRUPTED;
- 				f2fs_put_dnode(&dn);
--				f2fs_handle_error(sbi,
--						ERROR_INVALID_BLKADDR);
- 				goto out;
- 			}
- 
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index 405a6077..9161050 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1197,7 +1197,6 @@ static int ra_data_block(struct inode *inode, pgoff_t index)
- 		if (unlikely(!f2fs_is_valid_blkaddr(sbi, dn.data_blkaddr,
- 						DATA_GENERIC_ENHANCE_READ))) {
- 			err = -EFSCORRUPTED;
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 			goto put_page;
- 		}
- 		goto got_it;
-@@ -1216,7 +1215,6 @@ static int ra_data_block(struct inode *inode, pgoff_t index)
- 	if (unlikely(!f2fs_is_valid_blkaddr(sbi, dn.data_blkaddr,
- 						DATA_GENERIC_ENHANCE))) {
- 		err = -EFSCORRUPTED;
--		f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 		goto put_page;
- 	}
- got_it:
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 9b546fd..541c4ad 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -612,7 +612,7 @@ int f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
- 	blkaddr = le32_to_cpu(ne.block_addr);
- 	if (__is_valid_data_blkaddr(blkaddr) &&
- 		!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
--		return -EFAULT;
-+		return -EFSCORRUPTED;
- 
- 	/* cache nat entry */
- 	cache_nat_entry(sbi, nid, &ne);
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index d0f24cc..21381b7 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -680,14 +680,12 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
- 		if (__is_valid_data_blkaddr(src) &&
- 			!f2fs_is_valid_blkaddr(sbi, src, META_POR)) {
- 			err = -EFSCORRUPTED;
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 			goto err;
- 		}
- 
- 		if (__is_valid_data_blkaddr(dest) &&
- 			!f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
- 			err = -EFSCORRUPTED;
--			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 			goto err;
- 		}
- 
-@@ -756,8 +754,6 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
- 				f2fs_err(sbi, "Inconsistent dest blkaddr:%u, ino:%lu, ofs:%u",
- 					dest, inode->i_ino, dn.ofs_in_node);
- 				err = -EFSCORRUPTED;
--				f2fs_handle_error(sbi,
--						ERROR_INVALID_BLKADDR);
- 				goto err;
- 			}
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 61da26e..0449498 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -334,8 +334,6 @@ static int __f2fs_commit_atomic_write(struct inode *inode)
- 					DATA_GENERIC_ENHANCE)) {
- 				f2fs_put_dnode(&dn);
- 				ret = -EFSCORRUPTED;
--				f2fs_handle_error(sbi,
--						ERROR_INVALID_BLKADDR);
- 				goto out;
- 			}
- 
--- 
-1.9.1
+https://www.kernel.org/doc/html/latest/process/email-clients.html
 
+Or something similar, for example,
+
+https://elinux.org/Mail_client_tips
+
+Srinivasulu Thanneeru <sthanneeru@micron.com> writes:
+
+> Micron Confidential
+>
+>
+>
+> Micron Confidential
+> ________________________________________
+> From: Huang, Ying <ying.huang@intel.com>
+> Sent: Friday, December 15, 2023 10:32 AM
+> To: Srinivasulu Opensrc
+> Cc: linux-cxl@vger.kernel.org; linux-mm@kvack.org; Srinivasulu
+> Thanneeru; aneesh.kumar@linux.ibm.com; dan.j.williams@intel.com;
+> gregory.price; mhocko@suse.com; tj@kernel.org; john@jagalactic.com;
+> Eishan Mirakhur; Vinicius Tavares Petrucci; Ravis OpenSrc;
+> Jonathan.Cameron@huawei.com; linux-kernel@vger.kernel.org
+> Subject: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
+>
+> CAUTION: EXTERNAL EMAIL. Do not click links or open attachments unless yo=
+u recognize the sender and were expecting this message.
+>
+>
+> <sthanneeru.opensrc@micron.com> writes:
+>
+>> From: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+>>
+>> The memory tiers feature allows nodes with similar memory types
+>> or performance characteristics to be grouped together in a
+>> memory tier. However, there is currently no provision for
+>> moving a node from one tier to another on demand.
+>>
+>> This patch series aims to support node migration between tiers
+>> on demand by sysadmin/root user using the provided sysfs for
+>> node migration.
+>>
+>> To migrate a node to a tier, the corresponding node=E2=80=99s sysfs
+>> memtier_override is written with target tier id.
+>>
+>> Example: Move node2 to memory tier2 from its default tier(i.e 4)
+>>
+>> 1. To check current memtier of node2
+>> $cat  /sys/devices/system/node/node2/memtier_override
+>> memory_tier4
+>>
+>> 2. To migrate node2 to memory_tier2
+>> $echo 2 > /sys/devices/system/node/node2/memtier_override
+>> $cat  /sys/devices/system/node/node2/memtier_override
+>> memory_tier2
+>>
+>> Usecases:
+>>
+>> 1. Useful to move cxl nodes to the right tiers from userspace, when
+>>    the hardware fails to assign the tiers correctly based on
+>>    memorytypes.
+>>
+>>    On some platforms we have observed cxl memory being assigned to
+>>    the same tier as DDR memory. This is arguably a system firmware
+>>    bug, but it is true that tiers represent *ranges* of performance
+>>    and we believe it's important for the system operator to have
+>>    the ability to override bad firmware or OS decisions about tier
+>>    assignment as a fail-safe against potential bad outcomes.
+>>
+>> 2. Useful if we want interleave weights to be applied on memory tiers
+>>    instead of nodes.
+>> In a previous thread, Huang Ying <ying.huang@intel.com> thought
+>> this feature might be useful to overcome limitations of systems
+>> where nodes with different bandwidth characteristics are grouped
+>> in a single tier.
+>> https://lore.kernel.org/lkml/87a5rw1wu8.fsf@yhuang6-desk2.ccr.corp.intel=
+.com/
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> Version Notes:
+>>
+>> V2 : Changed interface to memtier_override from adistance_offset.
+>> memtier_override was recommended by
+>> 1. John Groves <john@jagalactic.com>
+>> 2. Ravi Shankar <ravis.opensrc@micron.com>
+>> 3. Brice Goglin <Brice.Goglin@inria.fr>
+>
+> It appears that you ignored my comments for V1 as follows ...
+>
+> https://lore.kernel.org/lkml/87o7f62vur.fsf@yhuang6-desk2.ccr.corp.intel.=
+com/
+>
+> Thank you Huang, Ying for pointing to this.
+>
+> https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Live=
+%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
+>
+> In the presentation above, the adistance_offsets are per memtype.
+> We believe that adistance_offset per node is more suitable and flexible
+> since we can change it per node. If we keep adistance_offset per memtype,
+> then we cannot change it for a specific node of a given memtype.
+
+Why do you need to change it for a specific node?  Why do you needn't to
+chagne it for all nodes of a given memtype?
+
+> https://lore.kernel.org/lkml/87jzpt2ft5.fsf@yhuang6-desk2.ccr.corp.intel.=
+com/
+>
+> I guess that you need to move all NUMA nodes with same performance
+> metrics together?  If so, That is why we previously proposed to place
+> the knob in "memory_type"? (From: Huang, Ying )
+>
+> Yes, memory_type would be group the related memories togather as single t=
+ier.
+> We should also have a flexibility to move nodes between tiers, to address=
+ the issues described in usecases above.
+>
+> https://lore.kernel.org/lkml/87a5qp2et0.fsf@yhuang6-desk2.ccr.corp.intel.=
+com/
+>
+> This patch provides a way to move a node to the correct tier.
+> We observed in test setups where DRAM and CXL are put under the same
+> tier (memory_tier4).
+> By using this patch, we can move the CXL node away from the DRAM-linked
+> tier4 and put it in the desired tier.
+
+Good!  Can you give more details?  So I can resend the patch with your
+supporting data.
+
+--
+Best Regards,
+Huang, Ying
+
+> Regards,
+> Srini
+>
+> --
+> Best Regards,
+> Huang, Ying
+>
+>> V1 : Introduced adistance_offset sysfs.
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>> Srinivasulu Thanneeru (2):
+>>   base/node: Add sysfs for memtier_override
+>>   memory tier: Support node migration between tiers
+>>
+>>  Documentation/ABI/stable/sysfs-devices-node |  7 ++
+>>  drivers/base/node.c                         | 47 ++++++++++++
+>>  include/linux/memory-tiers.h                | 11 +++
+>>  include/linux/node.h                        | 11 +++
+>>  mm/memory-tiers.c                           | 85 ++++++++++++---------
+>>  5 files changed, 125 insertions(+), 36 deletions(-)
 
