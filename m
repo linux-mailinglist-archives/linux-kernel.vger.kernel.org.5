@@ -1,245 +1,143 @@
-Return-Path: <linux-kernel+bounces-5515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18ED0818B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:48:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FEFA818B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:50:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A403D284A9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:48:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A24F2842FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769751CF8A;
-	Tue, 19 Dec 2023 15:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4111D1CF95;
+	Tue, 19 Dec 2023 15:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b="kadCOFCg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HCrlcdts"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2076.outbound.protection.outlook.com [40.107.22.76])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E071DA46;
-	Tue, 19 Dec 2023 15:48:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UFIVLj6nxtWGTJbEVnjDT0/q/GDIPjuserW3PNve2WMsIn4FwU0QP4Eq6jmfmwLhLKIGr8G63VAX73i6VoIaEulcXNRMpZGwL7N4u8RoTrVMbmRnGR4Ct0UeKeWgwyHvzGopfaxThf01N6+E/ILHQG/twyWa1hdxC7+1Y9dkqEIYxrCj7Sc38rzN12L6hj8ADEcx6Hftd/k/MS2eRJNJmde3PZm/YZYrK/1XXo9fl27gl0p8HKuRHfXV/kETdeBRnHiQ1X3akmcS+XXi8yYwHuAnb2ZwuYs/TReheyG8aQ1jmLYioEArIwBF3UfncMDeI0nFolWj+iTkLRlrAo90zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s4gUVFpEN5ya9v8thQf82+DVXkbb7d7eJzGHL+f+WRg=;
- b=aEPVEtS1ZrYl5b2VAOQAZK/vqAWCmC02t56VEY5MGlvH0of+PXC14yEjw4cAXBdpdUH/VP7kShA/h6F/47NWLXtM79pRXpjrEhjUF9KMH01LDzYjU3RTS/MdUpYiy8TPzX9D49gDr4/YRkzjNegOY4OprS9AiuX0RGSwN8tpcpOZVI67t3uSSUR5MPTu59oWv53DIghCmk6qMkM0sPYSVqR87//B2hVhkWZ2XQ8oa9BvcG/hb91MdtNqIybrdncOBTWgEA0Pv7BZLhBM7ufGejai/r6fg/PayIHAs8P4FsGaKm3a8TKI7EfWALoIC3HA+CgdmoN7wh3JPVH5u/uxyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s4gUVFpEN5ya9v8thQf82+DVXkbb7d7eJzGHL+f+WRg=;
- b=kadCOFCg1Ma4cdy14TNjmEGLpWYMcSqzfcS4XLGyxgnB0sHT9ISUEOuaT63rw3oNbKf6z3zMkOLcspT56rS0unCjRv7dgQ6xbCr1biBHHex4ldNZqPEyyih47iXm3dOEwbxXvnt0WuZkAi2zPHusEYV1Rvs+Hm5SwclFtzCFGfO5gct+PXnFriR2ecYX3omkfQjrWQrAxGfL6wfRdLW7VsEgGL8jVAAmWFhivrvVxFsMsDMhTULcDvZrUwLkiBYC3PFeH4TsyELRzkI0iW62CvTj4c4VyCT6WaaD5R/482wahmb2628qB3XfrVYz4M8Xv4e3OyWGyn9nNig9v7JB9Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
- by AS4PR10MB5672.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:4f3::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
- 2023 15:48:20 +0000
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::96c7:d239:1723:8761]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::96c7:d239:1723:8761%5]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
- 15:48:20 +0000
-Message-ID: <cc6b7f99-3439-45a1-b4b4-0b5796dcbbbf@siemens.com>
-Date: Tue, 19 Dec 2023 16:48:18 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] dts: iot2050: Support IOT2050-SM variant
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bao Cheng Su <baocheng.su@siemens.com>,
- Chao Zeng <chao.zeng@siemens.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Li Hua Qian <huaqian.li@siemens.com>
-References: <cover.1702917360.git.jan.kiszka@siemens.com>
- <11e0b0c8b828254567a8ff89820c067cacad2150.1702917360.git.jan.kiszka@siemens.com>
- <8b3daa3c-dbf8-4286-b04e-011cd9b0efa5@linaro.org>
- <4c31adc5-3fc5-47bc-9766-6d3d1eeddb65@siemens.com>
- <fbb29d81-9ea0-4468-ad47-f6668c2be277@linaro.org>
- <de3f4778-51d6-48ab-9d4d-451f2ba01a3c@siemens.com>
- <3d2662be-3a55-4390-bd2a-cfa5cc53510f@linaro.org>
- <ef5a6cf0-4350-483d-a1e9-ce8b0ef71280@siemens.com>
- <ce6b002b-f2a6-4056-bf81-53a6c948b946@linaro.org>
- <62be89bb-1ae1-4bf6-9f9e-b6eb68e6504d@siemens.com>
- <f6241b58-202e-4624-ae83-ce52fc286edf@linaro.org>
- <29c030e1-c493-4521-b5e8-db3f484eefb8@siemens.com>
- <7edab40c-1ac2-4044-9337-9f26e80024a1@linaro.org>
-From: Jan Kiszka <jan.kiszka@siemens.com>
-In-Reply-To: <7edab40c-1ac2-4044-9337-9f26e80024a1@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0376.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f7::19) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:588::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4740B1CF8B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703000999;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NeCfUGBpqUtSZNjnibtvb8BtdlSt7X3JViDBCU6n/KM=;
+	b=HCrlcdtskHEcUGY5z95H6xrgEeV71/gwUoyvi4VC0tKMuNCgAz5LlYxHRabgDaCxGwbzn0
+	toZK+iH75Am8BZqt6Vn6iSApwlCR4y/DLij4ptH86v+FCvFXz+uRZgzUPxNtv35ztDU0oE
+	hVxG43TjKaaSMVkzoExU0EBZmBvhzqI=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-342-MvNjmr4UNgSQanyO-M4KSg-1; Tue, 19 Dec 2023 10:49:56 -0500
+X-MC-Unique: MvNjmr4UNgSQanyO-M4KSg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-55369c474e1so1008219a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:49:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703000995; x=1703605795;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NeCfUGBpqUtSZNjnibtvb8BtdlSt7X3JViDBCU6n/KM=;
+        b=RW2PejHx+YedWcAvlNvPzgM3EW90ZDNA+z+06BC4XN0rwVUx3y33UEkpid5YCjy7PV
+         zadHBdDVWGDj1aP2NSk53y5pFjWhVvK0yts2iSlVXoAeB1qRVUJaeb0WKrzWqlJZJ/ig
+         6vKuIKykoEJsHhTCW/hOC8RGz3rniKp/bTJkf8wqg+rYyB1yQE9/dyP/AIe7wcHpJIXv
+         DB2bwvcw8YPSimvSTBa+AN80IlmMHaSm3fljuY8pjpwTNItjq9s7BPX0kE7TId9f16fp
+         xWwYW0cgj5FIFexuFdFDxs+QaT8Y8p2A05Elwg8Ae9g6qSYDOD+J5+JFbbbTHyNkOkj3
+         7hOw==
+X-Gm-Message-State: AOJu0YzLGhVpMrFRALAz21hFklab94coH8e4SjRTq01/lP7+XYAalU74
+	nF7gbY2eAdV5Lcsou7q0RvPFI2aHFT4ZkGOQxh6Tji95f+8sXa7LXy3L7qhPM3oGnXNc++t8QfC
+	wah1TP8wjKorlTzKq74Ej1jlXB8rVMIej
+X-Received: by 2002:a50:d788:0:b0:548:4b54:31ff with SMTP id w8-20020a50d788000000b005484b5431ffmr5291441edi.30.1703000995048;
+        Tue, 19 Dec 2023 07:49:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEjfvygGGKMVYh8/Gt2P23z4AP/xm5uq1LmDuou7vgyIncCGVllYSA6bQZQCGc9TFmlSyNDEg==
+X-Received: by 2002:a50:d788:0:b0:548:4b54:31ff with SMTP id w8-20020a50d788000000b005484b5431ffmr5291430edi.30.1703000994709;
+        Tue, 19 Dec 2023 07:49:54 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id k13-20020a50cb8d000000b0054cc7a4dc4csm11551052edi.13.2023.12.19.07.49.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 07:49:54 -0800 (PST)
+Message-ID: <ce6c3a2e-0500-4246-a331-17148622c886@redhat.com>
+Date: Tue, 19 Dec 2023 16:49:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|AS4PR10MB5672:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1598e036-a530-487d-639c-08dc00a9eca4
-X-LD-Processed: 38ae3bcd-9579-4fd4-adda-b42e1495d55a,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YKyALxGiRst3XiJ0cCLujIXX4G5jWr3LSTcHJLpxk8f64PjxjM/tsKRXlJrsqGo0z5pgtP4V/brg+xMgNV8yGSNW9cCOeqsVmrQFVq0ywlDXgNhdMXVw4FEow2GUy7cQhe4bTH87HmSfE77sxyR3/n8zDRfjrSzgXS4pf4rCL7sDb+w8ZsL6NDcIu0Y7IVtGN4ZkH59mUUmNpNkngpd4VrirGf8mLIBVFXzV0ZF088mbR7hmxN8IIk7FudqnGxi4wLCz19edIHqYu511B6QVyIh/fYqXln4h8x1rV1iqM/S/uJ6KOafXZmUq1b+YFPdwQ779CogfEqir8pB6q5gXqgTyLM7tFUhlw+FvFCJmotYWCjX32I6cmlpuhco+x7NxsgMZ3jMi9aK92JoR7Gr7ybgF7taKh1SwVzwnRZkrq+ME2K6smN3cINndFLaK7OAY1lqf3PkC4AqSiiHwXrEfbPGFxntiDqdEYz2ZbVb1i8+ZRACamwA7vCp3FFHF2Ruuw1Hbr1qjC+fdRpvgxC02fagw3qfn1/7V0nWttwd1VoGZHLnXCXKwz8MxwrbJqv2DmDvGmUrz/1GnXcEfpJn54p1g5g1E5TMHsigz7TuQdfgrE0CIexv269cTtzoUeeeqoSGOGk8H5/jxKNg6NHcuzg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(396003)(366004)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(26005)(107886003)(2616005)(6512007)(6506007)(53546011)(7416002)(83380400001)(44832011)(5660300002)(478600001)(2906002)(8676002)(8936002)(4326008)(41300700001)(110136005)(66556008)(6486002)(316002)(6636002)(66476007)(66946007)(38100700002)(82960400001)(36756003)(86362001)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SG1qN2pBZ2RIR2pOVjFLcnJ0Qk9lT0hXTDlxYVNZZlNKb2w4WFlnSkVraE10?=
- =?utf-8?B?dC9vMENlZCtYM29MVFl3RDZFQmUzYUVlVW5DcEl0UjZUZzJ6WGgzL2ExT2xY?=
- =?utf-8?B?UEN4Yy9CamFCNFo0dTdlVmx6ekFtc3VSVkRnZjFwaWc2OWFEV0ZrZTdxWjFR?=
- =?utf-8?B?WW5IcU1zenpCemttRGUzTWNIZWNWblBRSWd6a2c0b3g2V3RjSmR1b3dtL2VX?=
- =?utf-8?B?Q0kvdmVpRGd0SlZOUEROQnozajdzZ1hTNno4Mm9adjVKOGRJaEV1a0ZWMys2?=
- =?utf-8?B?Q1dQcnFxVWd6a2prQWFiZ2N1WkdHQTVEcHdhcWhmemVOMytmVFZqZms3ODgv?=
- =?utf-8?B?ZnJmdjZQWW14VzFwYmxiSU4rRVJvUFlmclNhSGFMRnREd01ZbWkrb1ZHczVT?=
- =?utf-8?B?V0pJY1hWbjd4WkZIajhmbWRBNHNER2E1c2hISk5vODh6WkFoOWJPTTJPOERz?=
- =?utf-8?B?TkU4dFNJTGVsL1plUVVLOEFUbEtyMVc3Uy94SlEzRjBnMktSWWFPRWhaVnBD?=
- =?utf-8?B?N1FsTXZWWlgrN1pWSDlubTdjbU9rQ1Q0NU1SeVVBZTBXN2hQWXpJTHlJVUxn?=
- =?utf-8?B?ZzdxOFRQYkVRVVNuZ3NJSklVMVhMaTB2ZndKUk1KVmp2Mms4VjNqUlR0OGFY?=
- =?utf-8?B?ZmVreHJLV0dlNTR6OWJDV1V1d3lkUlVydmdIUlJEVGJTZ2hMaDFieW9uVTJy?=
- =?utf-8?B?bFRvd2FPZ3MwRE5ZWk1xMS96cjZ5aDhjeGJZVEh4eXRyVzZhU2JPeG1EQTlt?=
- =?utf-8?B?MWZJbjBEQjYyYXFYMDk2VGlsd3oxSXRtd09Uc1RaUlhPS204NGdYZ2IrN0JF?=
- =?utf-8?B?UXlldTdRQ2t5ZWU5Y0x2dyttZlpIemo3SVdPbnp6MjlVcXBpZzhmaDVWSDdi?=
- =?utf-8?B?dFY2ZUZTajd1QXRxTnp3bU5mL3B3cFZlaTBLQ2IyMkxBMVN1a2lheERmeloz?=
- =?utf-8?B?VDdBdXR5QjNLSjduQVRGM3JGZWIzclFrL2QwOFZCTzJSZnd5Wk1ZZFJLaE9o?=
- =?utf-8?B?SjdkZGxuOFlqYWIrZFNBejBMUHQ4YnErWk9Vd3AwN3p2WW5ocE1pSUhuZDJu?=
- =?utf-8?B?OGxjcDZzU3RzT1ErR2Ria01qZGVzRXVlUkdKZDNvOGxONDVxaHJsRExSMFhL?=
- =?utf-8?B?SHkwY2k1UXcwUk40SnVZUHdmSmtzQXBmeEJ3dm8xb2VWNWFyNkxsVnJCNWF2?=
- =?utf-8?B?VFNGTkI3aFpIQURYRHMvNU0xQmMyOWtVWVU3N3ZpOHNGNDFnRXBlY3R0Z3RM?=
- =?utf-8?B?WVdzQ3MwVDljSlFjY09tZVRyR2dLUVgwcW05Tkpaa3AwaTBGL2Frc3p0MVRX?=
- =?utf-8?B?Umt1b1FFcUt5UktJd1MwdTdFc1lmOEYreUxPakoveHJBVGN4WDJWT0VXQW56?=
- =?utf-8?B?N1AwbmhWc0QwczZ6NFlGL0VBVVlSOVg2VWZrYjE4MHdTaWQrUmt1T3NKTVBN?=
- =?utf-8?B?ekdOSExmaVJSc0xkOWlXb241ejNGbWo5Z1MwemYzMi9YcmdZMENQWktidGow?=
- =?utf-8?B?QlA2VmxmYzd6US9tV1ZHNUE5b2RGOS9hMS94aG45NUUxWkc2RllGQjE5aTFr?=
- =?utf-8?B?aGVaajdnT253VmhFeU1FUDVobk9PbXZEbC9GaDZQS0lRNC91NHJRbEIydU9P?=
- =?utf-8?B?dGUxUzBzaU1xNE5UakZGRFNkaktOSjQxcmZWb0FMT2o2UTBENDhjMFdpN2VP?=
- =?utf-8?B?MzErdWlHZE84YUJBY2FVRUFQQzhPN1ZMRENuTTQrRFFiQUxuMENLbE9wY0lu?=
- =?utf-8?B?SHpIb2dBRkhVWUdKcmZ4TDkzbkFJbE5XaHdOQVBpZzVDUExycXcwekpHSXNO?=
- =?utf-8?B?V0RKeWkvSzc2YTlNRnN5ZHdCdkp4d213YVQ2Sk5hblVUMUltOHpHNVQvYWUw?=
- =?utf-8?B?NXpDekhJRmNxVmlrdmw4S3FUZUhiK29aVWgzdEt2NWdWM2xUQUNTek9FQXNs?=
- =?utf-8?B?TXBlcnA1clFYcmYrSndEdXloUjdha1VOc2dyY1JJMEllVWlaejFWQXo3ekdM?=
- =?utf-8?B?VU1OMFBOOGVieUdodDdyeFNEeDZURUxhNTRWTTR3ZkoybEdXSk9kNmdjaXEw?=
- =?utf-8?B?NUhNajNneHgwQ0JtMCtIVk5JUExBeld6aVJkOEFudGdaclZlZXBnUDROdW9B?=
- =?utf-8?B?dEFaSlVaMVZLZFdEN2RSV2oyb0pSYzBtdUhseFhvbXZPMHVzR0kvOHBJdTFy?=
- =?utf-8?B?MkE9PQ==?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1598e036-a530-487d-639c-08dc00a9eca4
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 15:48:20.0707
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yD2nKn0VWvdZ+iCrXsHoY3a5AEGMcZzu51+SWO4ptN9D+sHt70p9fjaU71dKz+RLYGjNvE4JUb7r0xSPWSq+OA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR10MB5672
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/8] platform/x86/intel/pmc: Fix in mtl_punit_pmt_init()
+Content-Language: en-US, nl
+To: rjingar <rajvi.jingar@linux.intel.com>, irenic.rajneesh@gmail.com,
+ david.e.box@intel.com, ilpo.jarvinen@linux.intel.com,
+ platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: "David E . Box" <david.e.box@linux.intel.com>
+References: <20231219042216.2592029-1-rajvi.jingar@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20231219042216.2592029-1-rajvi.jingar@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 19.12.23 16:42, Krzysztof Kozlowski wrote:
-> On 19/12/2023 16:40, Jan Kiszka wrote:
->> On 19.12.23 16:39, Krzysztof Kozlowski wrote:
->>> On 19/12/2023 16:37, Jan Kiszka wrote:
->>>>>>>
->>>>>>> You have label for that... Somehow all these nodes are half-baked,
->>>>>>> without all the expected properties and now you call node name as ABI.
->>>>>>> The node name is not the ABI.
->>>>>>
->>>>>> Well, existing userspace uses those names, and adding the properties
->>>>>> would break that interface. Now, does Linux do that?
->>>>>
->>>>> I don't think you understood the concept. There is no change for
->>>>> userspace. Same interface, same names. No ABI break.
->>>>
->>>> I do understand the impact very well:
->>>> open("/sys/class/leds/user-led1-red") has to work for all the variants,
->>>> consistently and backward-compatible for userspace.
->>>
->>> And it will. The name is the same.
->>
->> Nope, it's not - I tried that already :)
->>
->> root@iot2050-debian:~# ls -l /sys/class/leds/
->> total 0
->> lrwxrwxrwx 1 root root 0 Dec 19 09:49 green:indicator -> ../../devices/platform/leds/leds/green:indicator
+Hi,
+
+On 12/19/23 05:22, rjingar wrote:
+> From: Rajvi Jingar <rajvi.jingar@linux.intel.com>
 > 
-> And how does your DTS look like?
+> pci_get_domain_bus_and_slot() increases the reference count on the pci
+> device that is used to register the endpoint. In case of failure in
+> registration, decrease reference count using pci_dev_put(pcidev) before
+> returning.
 > 
-> Because I also tried and it is exactly the same.
+> Fixes: 6e7964855381 ("platform/x86/intel/pmc: Show Die C6 counter on Meteor Lake")
+> Signed-off-by: Rajvi Jingar <rajvi.jingar@linux.intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+
+> ---
+>  drivers/platform/x86/intel/pmc/mtl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-
-I played with
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-index 402afa4bc1b6..a791444eeb93 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-@@ -10,6 +10,7 @@
-  */
- 
- #include "k3-am654.dtsi"
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/phy/phy.h>
- #include <dt-bindings/net/ti-dp83867.h>
- 
-@@ -84,27 +85,39 @@ leds {
- 		pinctrl-0 = <&leds_pins_default>;
- 
- 		status-led-red {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_STATUS;
- 			gpios = <&wkup_gpio0 32 GPIO_ACTIVE_HIGH>;
- 			panic-indicator;
- 		};
- 
- 		status-led-green {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_STATUS;
- 			gpios = <&wkup_gpio0 24 GPIO_ACTIVE_HIGH>;
- 		};
- 
- 		user-led1-red {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_INDICATOR;
- 			gpios = <&pcal9535_3 14 GPIO_ACTIVE_HIGH>;
- 		};
- 
- 		user-led1-green {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_INDICATOR;
- 			gpios = <&pcal9535_2 15 GPIO_ACTIVE_HIGH>;
- 		};
- 
- 		user-led2-red {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_INDICATOR;
- 			gpios = <&wkup_gpio0 17 GPIO_ACTIVE_HIGH>;
- 		};
- 
- 		user-led2-green {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_INDICATOR;
- 			gpios = <&wkup_gpio0 22 GPIO_ACTIVE_HIGH>;
- 		};
- 	};
-
-Jan
-
--- 
-Siemens AG, Technology
-Linux Expert Center
+> diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
+> index 38c2f946ec23..fb59dffccf28 100644
+> --- a/drivers/platform/x86/intel/pmc/mtl.c
+> +++ b/drivers/platform/x86/intel/pmc/mtl.c
+> @@ -985,6 +985,7 @@ static void mtl_punit_pmt_init(struct pmc_dev *pmcdev)
+>  	}
+>  
+>  	ep = pmt_telem_find_and_register_endpoint(pcidev, MTL_PMT_DMU_GUID, 0);
+> +	pci_dev_put(pcidev);
+>  	if (IS_ERR(ep)) {
+>  		dev_err(&pmcdev->pdev->dev,
+>  			"pmc_core: couldn't get DMU telem endpoint, %ld\n",
+> @@ -992,7 +993,6 @@ static void mtl_punit_pmt_init(struct pmc_dev *pmcdev)
+>  		return;
+>  	}
+>  
+> -	pci_dev_put(pcidev);
+>  	pmcdev->punit_ep = ep;
+>  
+>  	pmcdev->has_die_c6 = true;
 
 
