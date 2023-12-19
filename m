@@ -1,91 +1,100 @@
-Return-Path: <linux-kernel+bounces-5216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4CE818813
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:55:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83F4F818815
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D729B24E34
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:55:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C5E1C24057
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095E218E3C;
-	Tue, 19 Dec 2023 12:55:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B26A18C10;
+	Tue, 19 Dec 2023 12:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BemzYmdp"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QKCcZVXa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5816F18E16
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:55:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EB9C433C7;
-	Tue, 19 Dec 2023 12:55:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702990516;
-	bh=iqbTkJE/kFb6PPq0syjfJC3eznEYOBBXqJD92Sg+bSg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BemzYmdppMBq3ngm33vsXSgndG7PuSv4kxKUFHXX6J6iXIAc/OL/kQQ0tf47iBRgM
-	 7nw7lU2aM6uejG8LY8xt687oh1OxKyO5ugoDjlG40VsGbPfG7nsmXoOOnrGg+OKcFe
-	 NMMFJPb3ZlVtqXr2XiHxXSLQGxFj5v5k5BiVfsEq4QtxH2ADYFdVvFYWFHbJr5PlaQ
-	 yeV83j4Lce7ynDXooiKCexGsMzGQvwQXdTZLcEJCHxcnFFgiNvS6cdoiXG2yffLkmw
-	 LDw4aSo32b3yBIshn3CeDEzW/w/YkUeFN5JpS5tW2l2vjJQK0vjHX/kRiiqlWgjgA3
-	 AsK92ELQqKTEA==
-Date: Tue, 19 Dec 2023 13:55:14 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Cc: hjc@rock-chips.com, heiko@sntech.de, andy.yan@rock-chips.com, 
-	maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch, 
-	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] drm/rockchip: rk3066_hdmi: drop custom fill_modes
- hook
-Message-ID: <evaq3yfbqf4gchsps2qoojemtii7tmcss24aruiuze5kkzlnhy@mih7rky7viqz>
-References: <f86ec29f-194a-800d-0aaf-9e16e551b37d@gmail.com>
- <410b116b-cb63-7ba7-3689-4f0832ab5796@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C792918B04
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3D9CA1C000E;
+	Tue, 19 Dec 2023 12:55:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702990557;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eZ4FFwu75FPNZaoEBUmiGs2Cfmi6sxpqh1/xjHDIrSs=;
+	b=QKCcZVXaHhki+uoPYuWE2TI2e3//UYWwasRttEklWVrTsJsfjzy/T/V7J5Hhh7iFJXzbQk
+	G+9HgVNzCTtJzyfAQLYukrL4XalJ+Q8j94CAuzKCzonv6Ow0Kh5pXRktmO4npeLAdExtLr
+	Cg2URAKPN/eu5hsEOwnsORRLt1NsKnpYJyhCszHbFlC99WSKerbssnzird70zwhJ6E1HOp
+	byzJgUnEI+PtE+kSAYH+zeUJccQZksPbJF+tYPgYP6vhQpBtAccGaj/U1aAYk7kM6WtjQ1
+	MTXbmAD29boQ34Sd0gOcpT1xfqu2wTIspoGTCXRrA41B+peaEkAfO4ZYily3Qg==
+Date: Tue, 19 Dec 2023 13:55:53 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH v6.8 1/2] nvmem: layouts: refactor .add_cells() callback
+ arguments
+Message-ID: <20231219135553.4e1b74f4@xps-13>
+In-Reply-To: <20231219120104.3422-1-zajec5@gmail.com>
+References: <20231219120104.3422-1-zajec5@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fhhc2p3e2bqgegpc"
-Content-Disposition: inline
-In-Reply-To: <410b116b-cb63-7ba7-3689-4f0832ab5796@gmail.com>
-
-
---fhhc2p3e2bqgegpc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi,
+Hi Rafa=C5=82,
 
-On Mon, Dec 18, 2023 at 04:49:06PM +0100, Johan Jonker wrote:
-> CRTC size validation for the display controller has been added with
-> Commit 8e140cb60270 ("drm/rockchip: vop: limit maximum resolution to
-> hardware capabilities"), so we can drop the custom fill_modes hook.
+zajec5@gmail.com wrote on Tue, 19 Dec 2023 13:01:03 +0100:
+
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 >=20
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> Simply pass whole "struct nvmem_layout" instead of single variables.
+> There is nothing in "struct nvmem_layout" that we have to hide from
+> layout drivers. They also access it during .probe() and .remove().
+>=20
+> Thanks to this change:
+>=20
+> 1. API gets more consistent
+>    All layouts drivers callbacks get the same argument
+>=20
+> 2. Layouts get correct device
+>    Before this change NVMEM core code was passing NVMEM device instead
+>    of layout device. That resulted in:
+>    * Confusing prints
+>    * Calling devm_*() helpers on wrong device
+>    * Helpers like of_device_get_match_data() dereferencing NULLs
+>=20
+> 3. It gets possible to get match data
+>    First of all nvmem_layout_get_match_data() requires passing "struct
+>    nvmem_layout" which .add_cells() callback didn't have before this. It
+>    doesn't matter much as it's rather useless now anyway (and will be
+>    dropped).
+>    What's more important however is that of_device_get_match_data() can
+>    be used now thanks to owning a proper device pointer.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 
-I'm not sure those two are equivalent. CRTC and connectors usually have
-different requirements and capabilities, and thus different,
-supplementary, mode_valid/atomic_check implementations.
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Maxime
-
---fhhc2p3e2bqgegpc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZYGSsQAKCRDj7w1vZxhR
-xaOfAP47dRFiVGd7R/o+q+Utk5341Z7rt2jlf3mk8SWj4yz56gEAgEsj32uxPsfc
-sbBYzBbBTn1lTci++BiPymZmkwWfSAo=
-=HFiP
------END PGP SIGNATURE-----
-
---fhhc2p3e2bqgegpc--
+Thanks,
+Miqu=C3=A8l
 
