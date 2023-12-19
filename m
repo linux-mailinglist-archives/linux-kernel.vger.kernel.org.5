@@ -1,198 +1,146 @@
-Return-Path: <linux-kernel+bounces-4817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F339D81826C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:41:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B1D81826D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25AEE286896
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:41:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 462491C23344
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF15BC15F;
-	Tue, 19 Dec 2023 07:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CC6C2D3;
+	Tue, 19 Dec 2023 07:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DWnOjiMh"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="AAY0YqJt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971F811709
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a22f59c6aeaso490117766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:41:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9558BE2
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702971705; x=1703576505; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nXctI3I357roNP7qG6SksFhaE+Jk+2fn6B1riOMQudI=;
-        b=DWnOjiMhAak0Toua9XlmuXIwfIhunQCibPFOIvvoMFGtwheT3Po6656ffUIoXtOoXn
-         /pwjJ+t1AtBBl/iA3vgp1DwF0M02+PTYrk+xfWRVGVPDOSSyYR0VC+5yPZ8nRh+h/K7v
-         9lyPbGbnDwuISOKdlHgaHFc8H7uchds1I5BXmsh37FXB0nItJktFdfFQvvsCKdycjzAY
-         JnBkj8F5LYQB878iC2YQtu6ika6CpgReeMdlNMHBctzmmAwFnIdYUt8mwTAnGXBpvB+A
-         hRTQimyzU42vlYHgn+0I/ClNkYyZCAlE0VQ3KRDk6yg2UMCUlB7fjGwaQ5Ae0vhFUR4z
-         HWSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702971705; x=1703576505;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nXctI3I357roNP7qG6SksFhaE+Jk+2fn6B1riOMQudI=;
-        b=XQzQb+cR1+7wp0+rnJI4l+01rIvYMS3uYf8y2Y2qR2HltL5gxIoAye6FSSiVk+wTJ9
-         SJWb0HXccbQJUSCp+8agg4DjGIDUPO45TgY3QJJMA+brmPR0zqlhMZ/QahCJAA9NL+PY
-         sdjqvsCmIKtj6SbIQq6IxYtpHpiC4tW1JDRPORek0j0SS/Ya59Vufw3m9i/19dy8Edqp
-         EJwRtu4NBjd00ZFS0ynThP6sHcIR9C2ZBfUhPRM48kvpvDx7nd6p8lgFCEEMx0lgkTss
-         IEzVdjn5D2Bap/vcWJwJJAPS197Q2bDel+G8xVTuBlc5ZT7QwlHcXHCrSsLFlCfoFsOY
-         0Mxw==
-X-Gm-Message-State: AOJu0Yx1DnxH+LjdmFI6XuUJ153qQ/AGc+nCLzzQ9+0EBoucXBt5NRgr
-	FXC+3r1ipm92i/0XJMvPC2xQFQ==
-X-Google-Smtp-Source: AGHT+IG8UQ/3ALIZxBFYfozRFRKVqMqlgyNUXbK6yL0mYefZ60DRGpSJeMMoHHvQ3Ts6u2v6FqcSnw==
-X-Received: by 2002:a17:906:1316:b0:a23:57f3:95a9 with SMTP id w22-20020a170906131600b00a2357f395a9mr1571350ejb.2.1702971704816;
-        Mon, 18 Dec 2023 23:41:44 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vi7-20020a170907d40700b00a1dc7e789fbsm14935769ejc.21.2023.12.18.23.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 23:41:44 -0800 (PST)
-Message-ID: <6dd6690e-8344-49c2-b389-66562a94114a@linaro.org>
-Date: Tue, 19 Dec 2023 08:41:42 +0100
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1702971719; x=1734507719;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=opgInH91xzBuf6eAk7Qumo1WNIkpgtAJc0dLMfhU/Xo=;
+  b=AAY0YqJt2fvLxd4EKcs34hfPKNQgUSw4NaHh0KycMCzGbOhvpoX3zA8Y
+   G4iJb0EFxrj7Erq22oRQrw2RSfD3/oRSWXUmDP9JkuDNrRDs4acIBc4vX
+   +5qe+3ipJZNecf+dQaLOo4FlVRZD0KapJvJn8bYSMKP4fHantvDiGHWsw
+   c=;
+X-IronPort-AV: E=Sophos;i="6.04,287,1695686400"; 
+   d="scan'208";a="260343204"
+Subject: Re: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
+Thread-Topic: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-d47337e0.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 07:41:57 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+	by email-inbound-relay-pdx-2a-m6i4x-d47337e0.us-west-2.amazon.com (Postfix) with ESMTPS id F0C0D60CA7;
+	Tue, 19 Dec 2023 07:41:54 +0000 (UTC)
+Received: from EX19MTAEUC001.ant.amazon.com [10.0.17.79:58965]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.46.114:2525] with esmtp (Farcaster)
+ id e2b3b60b-ad0e-418a-bac9-9349b4714063; Tue, 19 Dec 2023 07:41:53 +0000 (UTC)
+X-Farcaster-Flow-ID: e2b3b60b-ad0e-418a-bac9-9349b4714063
+Received: from EX19D012EUC003.ant.amazon.com (10.252.51.208) by
+ EX19MTAEUC001.ant.amazon.com (10.252.51.155) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 19 Dec 2023 07:41:53 +0000
+Received: from EX19D014EUC004.ant.amazon.com (10.252.51.182) by
+ EX19D012EUC003.ant.amazon.com (10.252.51.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 19 Dec 2023 07:41:52 +0000
+Received: from EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41]) by
+ EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41%3]) with mapi id
+ 15.02.1118.040; Tue, 19 Dec 2023 07:41:52 +0000
+From: "Gowans, James" <jgowans@amazon.com>
+To: "bhe@redhat.com" <bhe@redhat.com>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>
+CC: "kexec@lists.infradead.org" <kexec@lists.infradead.org>, "maz@kernel.org"
+	<maz@kernel.org>, "tony.luck@intel.com" <tony.luck@intel.com>,
+	"sre@kernel.org" <sre@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "seanjc@google.com" <seanjc@google.com>,
+	"mingo@redhat.com" <mingo@redhat.com>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
+	"arnd@arndb.de" <arnd@arndb.de>, "wens@csie.org" <wens@csie.org>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	=?utf-8?B?U2Now7ZuaGVyciwgSmFuIEgu?= <jschoenh@amazon.de>, "Graf (AWS),
+ Alexander" <graf@amazon.de>, "orsonzhai@gmail.com" <orsonzhai@gmail.com>,
+	"bp@alien8.de" <bp@alien8.de>, "samuel@sholland.org" <samuel@sholland.org>,
+	"pavel@ucw.cz" <pavel@ucw.cz>, "jernej.skrabec@gmail.com"
+	<jernej.skrabec@gmail.com>
+Thread-Index: AQHaLY9ODTyAGBa/a0igJR34RcFga7CwCs0AgAA3uIA=
+Date: Tue, 19 Dec 2023 07:41:52 +0000
+Message-ID: <9ffa2c4d3e808feb2afa6f02f4afabf1cd674516.camel@amazon.com>
+References: <20231213064004.2419447-1-jgowans@amazon.com>
+	 <ZYEafpms++a3a8ch@MiWiFi-R3L-srv>
+In-Reply-To: <ZYEafpms++a3a8ch@MiWiFi-R3L-srv>
+Accept-Language: en-ZA, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6F407D659EED834391131A368521AA34@amazon.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] reset: eyeq5: add driver
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20231218-mbly-reset-v1-0-b4688b916213@bootlin.com>
- <20231218-mbly-reset-v1-2-b4688b916213@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231218-mbly-reset-v1-2-b4688b916213@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 18/12/2023 18:16, Théo Lebrun wrote:
-> Add the Mobileye EyeQ5 reset controller driver. See the header comment
-> for more information on how it works. This driver is specific to this
-> platform; it might grow to add later support of other platforms from
-> Mobileye.
-> 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
-
-
-...
-
-> +static int eq5r_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev->of_node;
-> +	struct device_node *parent_np = of_get_parent(np);
-> +	struct eq5r_private *priv;
-> +	int ret, i;
-> +
-> +	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	dev_set_drvdata(dev, priv);
-> +
-> +	priv->olb = ERR_PTR(-ENODEV);
-> +	if (parent_np)
-> +		priv->olb = syscon_node_to_regmap(parent_np);
-> +	if (IS_ERR(priv->olb))
-> +		priv->olb = syscon_regmap_lookup_by_phandle(np, "mobileye,olb");
-> +	if (IS_ERR(priv->olb))
-> +		return PTR_ERR(priv->olb);
-
-NAK for such code. In all of your patches. This is part of the OLB, as
-you explained before, and cannot be anything else.
-
-> +
-> +	for (i = 0; i < EQ5R_DOMAIN_COUNT; i++)
-> +		mutex_init(&priv->mutexes[i]);
-> +
-> +	priv->rcdev.ops = &eq5r_ops;
-> +	priv->rcdev.owner = THIS_MODULE;
-> +	priv->rcdev.dev = dev;
-> +	priv->rcdev.of_node = np;
-> +	priv->rcdev.of_reset_n_cells = 2;
-> +	priv->rcdev.of_xlate = eq5r_of_xlate;
-> +
-> +	priv->rcdev.nr_resets = 0;
-> +	for (i = 0; i < EQ5R_DOMAIN_COUNT; i++)
-> +		priv->rcdev.nr_resets += __builtin_popcount(eq5r_valid_masks[i]);
-> +
-> +	ret = reset_controller_register(&priv->rcdev);
-> +	if (ret) {
-> +		dev_err(dev, "Failed registering reset controller: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	dev_info(dev, "probed\n");
-
-Drop
-
-
-Best regards,
-Krzysztof
-
+T24gVHVlLCAyMDIzLTEyLTE5IGF0IDEyOjIyICswODAwLCBCYW9xdWFuIEhlIHdyb3RlOg0KPiBB
+ZGQgQW5kcmV3IHRvIENDIGFzIEFuZHJldyBoZWxwcyB0byBwaWNrIGtleGVjL2tkdW1wIHBhdGNo
+ZXMuDQoNCkFoLCB0aGFua3MsIEkgZGlkbid0IHJlYWxpc2UgdGhhdCBBbmRyZXcgcHVsbHMgaW4g
+dGhlIGtleGVjIHBhdGNoZXMuDQo+IA0KPiBPbiAxMi8xMy8yMyBhdCAwODo0MGFtLCBKYW1lcyBH
+b3dhbnMgd3JvdGU6DQo+IC4uLi4uLg0KPiA+IFRoaXMgaGFzIGJlZW4gdGVzdGVkIGJ5IGRvaW5n
+IGEga2V4ZWMgb24geDg2XzY0IGFuZCBhYXJjaDY0Lg0KPiANCj4gSGkgSmFtZXMsDQo+IA0KPiBU
+aGFua3MgZm9yIHRoaXMgZ3JlYXQgcGF0Y2guIE15IGNvbGxlYWd1ZXMgaGF2ZSBvcGVuZWQgYnVn
+IGluIHJoZWwgdG8NCj4gdHJhY2sgdGhpcyBhbmQgdHJ5IHRvIHZlcnlmeSB0aGlzIHBhdGNoLiBI
+b3dldmVyLCB0aGV5IGNhbid0IHJlcHJvZHVjZQ0KPiB0aGUgaXNzdWUgdGhpcyBwYXRjaCBpcyBm
+aXhpbmcuIENvdWxkIHlvdSB0ZWxsIG1vcmUgYWJvdXQgd2hlcmUgYW5kIGhvdw0KPiB0byByZXBy
+b2R1Y2Ugc28gdGhhdCB3ZSBjYW4gYmUgYXdhcmUgb2YgaXQgYmV0dGVyPyBUaGFua3MgaW4gYWR2
+YW5jZS4NCg0KU3VyZSEgVGhlIFRMO0RSIGlzOiBydW4gYSBWTVggKEludGVsIHg4NikgS1ZNIFZN
+IG9uIExpbnV4IHY2LjQrIGFuZCBkbyBhDQprZXhlYyB3aGlsZSB0aGUgIEtWTSBWTSBpcyBzdGls
+bCBydW5uaW5nLiBCZWZvcmUgdGhpcyBwYXRjaCB0aGUgc3lzdGVtDQp3aWxsIHRyaXBsZSBmYXVs
+dC4NCg0KSW4gbW9yZSBkZXRhaWw6DQpSdW4gYSBiYXJlIG1ldGFsIGhvc3Qgb24gYSBtb2Rlcm4g
+SW50ZWwgQ1BVIHdpdGggVk1YIHN1cHBvcnQuIFRoZSBrZXJuZWwNCkkgd2FzIHVzaW5nIHdhcyA2
+LjcuMC1yYzUrLg0KWW91IGNhbiB0b3RhbGx5IGRvIHRoaXMgd2l0aCBhIFFFTVUgImhvc3QiIGFz
+IHdlbGwsIGJ0dywgdGhhdCdzIGhvdyBJDQpkaWQgdGhlIGRlYnVnZ2luZyBhbmQgYXR0YWNoZWQg
+R0RCIHRvIGl0IHRvIGZpZ3VyZSBvdXQgd2hhdCB3YXMgdXAuDQoNCklmIHlvdSB3YW50IGEgdmly
+dHVhbCAiaG9zdCIgbGF1bmNoIHdpdGg6DQoNCi1jcHUgaG9zdCAtTSBxMzUsa2VybmVsLWlycWNo
+aXA9c3BsaXQsYWNjZWw9a3ZtIC1lbmFibGUta3ZtDQoNCkxhdW5jaCBhIEtWTSBndWVzdCBWTSwg
+ZWc6DQoNCnFlbXUtc3lzdGVtLXg4Nl82NCBcDQogIC1lbmFibGUta3ZtIFwNCiAgLWNkcm9tIGFs
+cGluZS12aXJ0LTMuMTkuMC14ODZfNjQuaXNvIFwNCiAgLW5vZGVmYXVsdHMgLW5vZ3JhcGhpYyAt
+TSBxMzUgXA0KICAtc2VyaWFsIG1vbjpzdGRpbw0KDQpXaGlsZSB0aGUgZ3Vlc3QgVk0gaXMgKnN0
+aWxsIHJ1bm5pbmcqIGRvIGEga2V4ZWMgb24gdGhlIGhvc3QsIGVnOg0KDQprZXhlYyAtbCAtLXJl
+dXNlLWNtZGxpbmUgLS1pbml0cmQ9Y29uZmlnLTYuNy4wLXJjNSsgdm1saW51ei02LjcuMC1yYzUr
+ICYmIFwNCiAga2V4ZWMgLWUNCg0KVGhlIGtleGVjIGNhbiBiZSB0byBhbnl0aGluZywgYnV0IEkg
+Z2VuZXJhbGx5IGp1c3Qga2V4ZWMgdG8gdGhlIHNhbWUNCmtlcm5lbC9yYW1kaXNrIGFzIGlzIGN1
+cnJlbnRseSBydW5uaW5nLiBJZTogc2FtZS12ZXJzaW9uIGtleGVjLg0KDQpCZWZvcmUgdGhpcyBw
+YXRjaCB0aGUga2V4ZWMgd2lsbCBnZXQgc3R1Y2ssIGFmdGVyIHRoaXMgdGhlIGtleGVjIHdpbGwg
+Z28NCnNtb290aGx5IGFuZCB0aGUgc3lzdGVtIHdpbGwgZW5kIHVwIGluIHRoZSBuZXcga2VybmVs
+IGluIGEgZmV3IHNlY29uZHMuDQoNCkkgaG9wZSB0aG9zZSBzdGVwcyBhcmUgY2xlYXIgYW5kIHlv
+dSBjYW4gcmVwcm8gdGhpcz8NCg0KQlRXLCB0aGUgcmVhc29uIHRoYXQgaXQncyBpbXBvcnRhbnQg
+Zm9yIHRoZSBLVk0gVk0gdG8gc3RpbGwgYmUgcnVubmluZw0Kd2hlbiB0aGUgaG9zdCBkb2VzIHRo
+ZSBrZXhlYyBpcyBiZWNhdXNlIEtWTSBpbnRlcm5hbGx5IG1haW50YWlucyBhIHVzYWdlDQpjb3Vu
+dGVyIGFuZCB3aWxsIGRpc2FibGUgdmlydHVhbGlzYXRpb24gb25jZSBhbGwgVk1zIGhhdmUgYmVl
+bg0KdGVybWluYXRlZCwgdmlhOg0KDQpfX2ZwdXQoa3ZtX2ZkKQ0KICBrdm1fdm1fcmVsZWFzZQ0K
+ICAgIGt2bV9kZXN0cm95X3ZtDQogICAgICBoYXJkd2FyZV9kaXNhYmxlX2FsbA0KICAgICAgICBo
+YXJkd2FyZV9kaXNhYmxlX2FsbF9ub2xvY2sNCiAgICAgICAgICBrdm1fdXNhZ2VfY291bnQtLTsN
+CiAgICAgICAgICBpZiAoIWt2bV91c2FnZV9jb3VudCkNCiAgICAgICAgICAgIG9uX2VhY2hfY3B1
+KGhhcmR3YXJlX2Rpc2FibGVfbm9sb2NrLCBOVUxMLCAxKTsNCg0KU28gaWYgYWxsIEtWTSBmZHMg
+YXJlIGNsb3NlZCB0aGVuIGtleGVjIHdpbGwgd29yayBiZWNhdXNlIFZNWEUgaXMNCmNsZWFyZWQg
+b24gYWxsIENQVXMgd2hlbiB0aGUgbGFzdCBWTSBpcyBkZXN0cm95ZWQuIElmIHRoZSBLVk0gZmRz
+IGFyZQ0Kc3RpbGwgb3BlbiAoaWU6IFFFTVUgcHJvY2VzcyBzdGlsbCBleGlzdHMpIHRoZW4gdGhl
+IGlzc3VlIG1hbmlmZXN0cy4gIEl0DQpzb3VuZHMgbmFzdHkgdG8gZG8gYSBrZXhlYyB3aGlsZSBR
+RU1VIHByb2Nlc3NlcyBhcmUgc3RpbGwgYXJvdW5kIGJ1dA0KdGhpcyBpcyBhIHBlcmZlY3RseSBu
+b3JtYWwgZmxvdyBmb3IgbGl2ZSB1cGRhdGU6DQoxLiBQYXVzZSBhbmQgU2VyaWFsaXNlIFZNIHN0
+YXRlDQoyLiBrZXhlYw0KMy4gZGVzZXJpYWxpc2UgYW5kIHJlc3VtZSBWTXMuDQpJbiB0aGF0IGZs
+b3cgdGhlcmUncyBubyBuZWVkIHRvIGFjdHVhbGx5IGtpbGwgdGhlIFFFTVUgcHJvY2VzcywgYXMg
+bG9uZw0KYXMgdGhlIFZNIGlzICpwYXVzZWQqIGFuZCBoYXMgYmVlbiBzZXJpYWxpc2VkIHdlIGNh
+biBoYXBwaWx5IGtleGVjLg0KDQpKRw0KDQo=
 
