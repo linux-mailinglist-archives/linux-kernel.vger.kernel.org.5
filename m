@@ -1,91 +1,92 @@
-Return-Path: <linux-kernel+bounces-5962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE6281922E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:20:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7E7D819230
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 920FA2876AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:20:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67779B23F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF51405C9;
-	Tue, 19 Dec 2023 21:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8523A8EE;
+	Tue, 19 Dec 2023 21:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vWTr3qhn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIRrVxde"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1569C3D0D5
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703020799;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nCFM+nFcyoFd/gCQWZCb7EKvVZ+qSBSDeoPEA8Jfh0A=;
-	b=vWTr3qhn77AyDPItr7Jb1Va+xZtAYsJMZbCeKfs5+hQd3T8gMEEYCJMliC2zyzhGEytQiS
-	pdedlVWK/90vwulDxVVraP5pN7YgbdG3MBwinwjLSYYIyJMPDTtGDljZA7elKcrlFiXdm6
-	5vpKeJm4v97c+Ecf3o21M8gf1GjoJH0=
-From: andrey.konovalov@linux.dev
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>,
-	Marco Elver <elver@google.com>,
-	Alexander Potapenko <glider@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	kasan-dev@googlegroups.com,
-	Evgenii Stepanov <eugenis@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v3 mm 4/4] lib/stackdepot: fix comment in include/linux/stackdepot.h
-Date: Tue, 19 Dec 2023 22:19:53 +0100
-Message-Id: <0ebe712d91f8d302a8947d3c9e9123bc2b1b8440.1703020707.git.andreyknvl@google.com>
-In-Reply-To: <cover.1703020707.git.andreyknvl@google.com>
-References: <cover.1703020707.git.andreyknvl@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50C23D0A4;
+	Tue, 19 Dec 2023 21:21:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D868AC433CA;
+	Tue, 19 Dec 2023 21:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703020891;
+	bh=2seEOgq+gqVcBhPue9Lq8IjiLv1aBugq6YYJHM2Wm9c=;
+	h=From:Subject:Date:To:Cc:From;
+	b=XIRrVxdeTb+lhQUpc90GqP4QEFpO2kOTHHxo0uLE05yxkJTzSWQ+YTTWCpODLo+1h
+	 Dx8zk0UPn3Nm6ed/59q4DHgf28R7WRoTJ9PS65DVaD95lCF4/6X55hLqCjfvy+eKVX
+	 pyH/TmPZsEodWaTr4otBy4StLRVWwpE67tByIGIESW3o0K8NMNqAJT/YWzeCZoEaoH
+	 1VH+JaEuVgNNL9glRVGWcEmBA1yLQXdTDI7HfFXlWd64qvqf+ttAZJKxWziNeD041I
+	 ug9nYLqMJqgBPL2dXV9M0AxdzIc31fJFOm9IqGxis/1Q2c/rkkKYuFDv897qun69n7
+	 h0ZT1HSJSuaoQ==
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 0/2] kselftest/seccomp: Convert to KTAP output
+Date: Tue, 19 Dec 2023 21:21:18 +0000
+Message-Id: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAE8JgmUC/x3NTQqDMBBA4avIrDuQn1ZtryIuYjrqkBpDJkhBv
+ HtDl9/mvROEMpPAqzkh08HCe6zQtwb86uJCyO9qMMpYbfQTpzsGoc9cSAoKeb9vCSeKft1cDhi
+ KS2gfXatsb2yneqillGnm7/8yjNf1A+VsrbR1AAAA
+To: Kees Cook <keescook@chromium.org>, 
+ Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-5c066
+X-Developer-Signature: v=1; a=openpgp-sha256; l=982; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=2seEOgq+gqVcBhPue9Lq8IjiLv1aBugq6YYJHM2Wm9c=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlgglXoRAvlWmqI1O+t+4ipDdNNd6cxMltCLGXHf62
+ x59dyguJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZYIJVwAKCRAk1otyXVSH0AHUB/
+ sH1VXarSm9MortDtWxJLDp8bwdnntwJX37q8CMyTOgNzKRXPE7uUS6+PANIG+dGanBJS7/aHyixz7j
+ VyZ7tL8T0aX+H+/vNdDkb6i8bD5AvBmkwCKOsbWHceON3b+VJQZPFCVxjELkR7UkDJw8Stm1QrUo6t
+ 12srjyy279jjO30HzRscPpWnEh4rhL9sDwG8wp9VBijDJYgnmtUqjuxGKW8ljLRF/hoQMF9SqApn02
+ oUrnRzZ1kJkTIomRhrOe3EVRF+p1Hez4im8Bia/KBf5YUc1b4Znnh3RxBFsXJb5cjBf3u9LunRwNjp
+ tRz2kOGTEiEcNLN2rNJKcOa6sixIOu
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-From: Andrey Konovalov <andreyknvl@google.com>
+Currently the seccomp benchmark selftest produces non-standard output,
+meaning that while it makes a number of checks of the performance it
+observes this has to be parsed by humans.  This means that automated
+systems running this suite of tests are almost certainly ignoring the
+results which isn't ideal for spotting problems.  Let's rework things so
+that each check that the program does is reported as a test result to
+the framework.
 
-As stack traces can now be evicted from the stack depot, remove the
-comment saying that they are never removed.
-
-Fixes: 108be8def46e ("lib/stackdepot: allow users to evict stack traces")
-Reviewed-by: Marco Elver <elver@google.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/linux/stackdepot.h | 2 --
- 1 file changed, 2 deletions(-)
+Mark Brown (2):
+      kselftest/seccomp: Use kselftest output functions for benchmark
+      kselftest/seccomp: Report each expectation we assert as a KTAP test
 
-diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-index a6796f178913..adcbb8f23600 100644
---- a/include/linux/stackdepot.h
-+++ b/include/linux/stackdepot.h
-@@ -11,8 +11,6 @@
-  * SLUB_DEBUG needs 256 bytes per object for that). Since allocation and free
-  * stack traces often repeat, using stack depot allows to save about 100x space.
-  *
-- * Stack traces are never removed from the stack depot.
-- *
-  * Author: Alexander Potapenko <glider@google.com>
-  * Copyright (C) 2016 Google, Inc.
-  *
+ .../testing/selftests/seccomp/seccomp_benchmark.c  | 105 +++++++++++++--------
+ 1 file changed, 65 insertions(+), 40 deletions(-)
+---
+base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+change-id: 20231219-b4-kselftest-seccomp-benchmark-ktap-357603823708
+
+Best regards,
 -- 
-2.25.1
+Mark Brown <broonie@kernel.org>
 
 
