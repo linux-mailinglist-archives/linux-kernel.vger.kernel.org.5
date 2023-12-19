@@ -1,242 +1,113 @@
-Return-Path: <linux-kernel+bounces-4960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8299818464
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:27:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8BE818477
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E363B1C23D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:27:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6151C1F26585
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C79713ADB;
-	Tue, 19 Dec 2023 09:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3159813FFC;
+	Tue, 19 Dec 2023 09:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="k0mdVD3c"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="wbbvqYUa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3386F15AC0;
-	Tue, 19 Dec 2023 09:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ97PpM030485;
-	Tue, 19 Dec 2023 09:26:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=w/p0k9EHg/9AzMA7j/JV2hgFJPlycLWZZ5QOcc3O3ns=;
- b=k0mdVD3ciDFj7A6oaxme8eXhIhxJShk+o3hUstpwLbkWgV5hGV0wbf7NNRfgVXk+gB4U
- Lg+bFdGzCZDdRQf13NGX7xo5peU5rlpjbbS+rQ4+wuXfXtqaHb3lfrwidhm0F8sQdrMY
- s6QrvVVArnQuIkPcH+BCQMTDx61wqIkejXYt5V0KGtwgqtNEgSIluHissU1R7vft/ySy
- jMPEJVfwb7yumUAhBFtus64EnwfRjNF7z+Jikm/LsxiDWPii8ggPvyYxWQqRbyGek3ul
- V7BqIKtieIBSZn1LHLHi9z5l4Oz05ffaqhdMtE+xu8ePfX5QVpc/w2wNyeqqu07gJ7Hs FQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v388xrfgj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 09:26:37 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BJ97MBb030354;
-	Tue, 19 Dec 2023 09:26:36 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v388xrffx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 09:26:36 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ6pKJt029680;
-	Tue, 19 Dec 2023 09:26:35 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v1p7sev27-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 09:26:35 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BJ9QXoC35848682
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Dec 2023 09:26:33 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 60E7A2004D;
-	Tue, 19 Dec 2023 09:26:33 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9000820040;
-	Tue, 19 Dec 2023 09:26:28 +0000 (GMT)
-Received: from [9.179.31.204] (unknown [9.179.31.204])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Dec 2023 09:26:28 +0000 (GMT)
-Message-ID: <a0abfee5-4dcd-3eb5-82fe-1a0dcdade038@linux.ibm.com>
-Date: Tue, 19 Dec 2023 14:56:27 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH V3 0/7] Clean up perf mem
-Content-Language: en-US
-To: kan.liang@linux.intel.com, acme@kernel.org, irogers@google.com,
-        peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
-        jolsa@kernel.org, adrian.hunter@intel.com, john.g.garry@oracle.com,
-        will@kernel.org, james.clark@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, yuhaixin.yhx@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com, tmricht@linux.ibm.com,
-        ravi.bangoria@amd.com, atrajeev@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231213195154.1085945-1-kan.liang@linux.intel.com>
-From: kajoljain <kjain@linux.ibm.com>
-In-Reply-To: <20231213195154.1085945-1-kan.liang@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jT3173WQo5SQrJDBT0qoPS-L_4sIugFJ
-X-Proofpoint-GUID: lJkxe_yYoab2cyfhmutpesPv5I8AIbDQ
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9AE14A92
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:31:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1702978008; bh=elkpKXS1pqxcZhfNDJmp+MGflnUCTd0/G4iZBGkHaCo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=wbbvqYUazWaZ9CmCGP9dlPlO8O26fHMO53sgcFy2kAlsAAN3d2Cg7+q4/f4H+9sGA
+	 5yQ6YlzC9m+P5YdfUL02NSykgecOPDifJHNBzUQ32nTP603Ar76Ez3U8n1tMdDggHN
+	 LPc0JNpqw4Jzd9LC08ShihsHKvirROInSBPvlPuU=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id 6AE86075; Tue, 19 Dec 2023 17:26:46 +0800
+X-QQ-mid: xmsmtpt1702978006toi2n32kk
+Message-ID: <tencent_6C9D33059E4C1B544BDB1B472576BAD9BB08@qq.com>
+X-QQ-XMAILINFO: OKkKo7I1HxIer+hWI+RaEvjHLg66dkCGkHYkIx4HgcYr6AhsvKTCuQFy6jjg5N
+	 kw3pPgQCZ+hIj6RO0+QG694ghKABHyGjmlTWD42/esNbCjNYG0EuzHq7yLAaFE7gD4ZzD77tmk6b
+	 Jeo5Su/UCSSSyJmPx2tXxEHQIo1yLJRLJtA3v0l21FawBt63v+jwQnfv5aJWK++iHA0R4Aia8rCq
+	 aNV2m/nVC+Dffb1whJJR7iJBwGDHt8zj3gFEFoNyyhFlujg/JTtThNWTIYKR/WELKckQg3E5p69r
+	 mMx03bHTrprWAH4nQ6jSoeMA0eI0RiXj48TSn5ZuCZqCRU+1q9UfHg6K+bioi9eml5botDxN/hYl
+	 AJwJoNdqrO8blKXHCbY2SM6zAoz5nA28KcFQu//YOfA2kJMQGMNsU82/Un/IjtWXNy85nwlUnCv5
+	 e7LJfmrwdbH4ylIRkwbXjL+I+3sKRZ+4y8L6gwO6qyPcKWEnP6jjSqsXfoR5g7faM8BUWAFytz6r
+	 Prgy2S4inzYq/gaNawz7SAf7yYVERQaNS331ngVM5v9/u4RHSForHAviV17f7eO98OTFmds8BfrQ
+	 AapabImiQhG9uS36cEsh/m9rkon5Zn49OqpN2vO3y8AgfiAMRXNzhPQm52tEAyiTIU6+rTZAojVf
+	 s7mwcjv1c4kCLhNOhtE6OvvXU/gLqdKK1cOvHBTz+mwDT4ED9/hRPvUX40hlbqxG3LicCaEyPjHO
+	 KMDN5azqNbO5IivzbQdKSOQYfJR4tfOPiUCc4JyqcjsFB7tatccg882Pr0FJViOPMGr4pMCVyJg/
+	 zBxNOKvyw8G+YKDD/poDFLwJn5UK6RMxzi4FXDcJ7iGa/b1U0cR7YgMsJODzx2IOezdPIywJ69AW
+	 Pf9tncsSiXfPrAPoCbCqO+mEj/BI4g8sKmhEgVXOPXCCR8UUF5XU7VbROwYdQp/KsvbEIHYT5PVV
+	 vHmSBMEGG6nH2Ds1a16kV8cGFZ1QkSCZREww/HcnVpOGxwe3tARMtwjNJMrUMP
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in getname_kernel (2)
+Date: Tue, 19 Dec 2023 17:26:47 +0800
+X-OQ-MSGID: <20231219092646.2015274-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000d1a1d1060cc9c5e7@google.com>
+References: <000000000000d1a1d1060cc9c5e7@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-19_04,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- spamscore=0 adultscore=0 lowpriorityscore=0 clxscore=1015 suspectscore=0
- phishscore=0 bulkscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312190070
+Content-Transfer-Encoding: 8bit
 
-Hi,
-  I was trying to test this patchset on powerpc.
+please test slab-out-of-bounds Read in getname_kernel
 
-After applying it on top of acme's perf-tools-next branch, I am getting
-below error:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3bd7d7488169
 
-  INSTALL libsubcmd_headers
-  INSTALL libperf_headers
-  INSTALL libsymbol_headers
-  INSTALL libapi_headers
-  INSTALL libbpf_headers
-  CC      arch/powerpc/util/mem-events.o
-In file included from arch/powerpc/util/mem-events.c:3:
-arch/powerpc/util/mem-events.h:5:52: error: ‘PERF_MEM_EVENTS__MAX’
-undeclared here (not in a function)
-    5 | extern struct perf_mem_event
-perf_mem_events_power[PERF_MEM_EVENTS__MAX];
-      |
-^~~~~~~~~~~~~~~~~~~~
-make[6]: *** [/home/kajol/linux/tools/build/Makefile.build:105:
-arch/powerpc/util/mem-events.o] Error 1
-make[5]: *** [/home/kajol/linux/tools/build/Makefile.build:158: util]
-Error 2
-make[4]: *** [/home/kajol/linux/tools/build/Makefile.build:158: powerpc]
-Error 2
-make[3]: *** [/home/kajol/linux/tools/build/Makefile.build:158: arch]
-Error 2
-make[3]: *** Waiting for unfinished jobs....
-make[2]: *** [Makefile.perf:693: perf-in.o] Error 2
-make[1]: *** [Makefile.perf:251: sub-make] Error 2
-make: *** [Makefile:70: all] Error 2
+diff --git a/mm/util.c b/mm/util.c
+index 744b4d7e3fae..2581d687df87 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -194,7 +194,7 @@ void *memdup_user(const void __user *src, size_t len)
+ {
+ 	void *p;
+ 
+-	p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN);
++	p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN | __GFP_ZERO);
+ 	if (!p)
+ 		return ERR_PTR(-ENOMEM);
+ 
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index f9544fda38e9..8318f6a21b3d 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_ioctl_dev_replace_args *args)
+ {
+-	int ret;
++	int ret, len;
+ 
+ 	switch (args->start.cont_reading_from_srcdev_mode) {
+ 	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
+@@ -740,8 +740,11 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+ 		return -EINVAL;
+ 	}
+ 
++	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
++	printk("l: %d, >%s<, %s\n", len, args->start.tgtdev_name, __func__);
+ 	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+-	    args->start.tgtdev_name[0] == '\0')
++	    args->start.tgtdev_name[0] == '\0' ||
++	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
+ 		return -EINVAL;
+ 
+ 	ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
 
-It seems some headerfiles are missing from arch/powerpc/util/mem-
-events.c
-
-Thanks,
-Kajol Jain
-
-On 12/14/23 01:21, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> Changes since V2:
-> - Fix the Arm64 building error (Leo)
-> - Add two new patches to clean up perf_mem_events__record_args()
->   and perf_pmus__num_mem_pmus() (Leo)
-> 
-> Changes since V1:
-> - Fix strcmp of PMU name checking (Ravi)
-> - Fix "/," typo (Ian)
-> - Rename several functions with perf_pmu__mem_events prefix. (Ian)
-> - Fold the header removal patch into the patch where the cleanups made.
->   (Arnaldo)
-> - Add reviewed-by and tested-by from Ian and Ravi
-> 
-> As discussed in the below thread, the patch set is to clean up perf mem.
-> https://lore.kernel.org/lkml/afefab15-cffc-4345-9cf4-c6a4128d4d9c@linux.intel.com/
-> 
-> Introduce generic functions perf_mem_events__ptr(),
-> perf_mem_events__name() ,and is_mem_loads_aux_event() to replace the
-> ARCH specific ones.
-> Simplify the perf_mem_event__supported().
-> 
-> Only keeps the ARCH-specific perf_mem_events array in the corresponding
-> mem-events.c for each ARCH.
-> 
-> There is no functional change.
-> 
-> The patch set touches almost all the ARCHs, Intel, AMD, ARM, Power and
-> etc. But I can only test it on two Intel platforms.
-> Please give it try, if you have machines with other ARCHs.
-> 
-> Here are the test results:
-> Intel hybrid machine:
-> 
-> $perf mem record -e list
-> ldlat-loads  : available
-> ldlat-stores : available
-> 
-> $perf mem record -e ldlat-loads -v --ldlat 50
-> calling: record -e cpu_atom/mem-loads,ldlat=50/P -e cpu_core/mem-loads,ldlat=50/P
-> 
-> $perf mem record -v
-> calling: record -e cpu_atom/mem-loads,ldlat=30/P -e cpu_atom/mem-stores/P -e cpu_core/mem-loads,ldlat=30/P -e cpu_core/mem-stores/P
-> 
-> $perf mem record -t store -v
-> calling: record -e cpu_atom/mem-stores/P -e cpu_core/mem-stores/P
-> 
-> 
-> Intel SPR:
-> $perf mem record -e list
-> ldlat-loads  : available
-> ldlat-stores : available
-> 
-> $perf mem record -e ldlat-loads -v --ldlat 50
-> calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=50/}:P
-> 
-> $perf mem record -v
-> calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=30/}:P -e cpu/mem-stores/P
-> 
-> $perf mem record -t store -v
-> calling: record -e cpu/mem-stores/P
-> 
-> Kan Liang (7):
->   perf mem: Add mem_events into the supported perf_pmu
->   perf mem: Clean up perf_mem_events__ptr()
->   perf mem: Clean up perf_mem_events__name()
->   perf mem: Clean up perf_mem_event__supported()
->   perf mem: Clean up is_mem_loads_aux_event()
->   perf mem: Clean up perf_mem_events__record_args()
->   perf mem: Clean up perf_pmus__num_mem_pmus()
-> 
->  tools/perf/arch/arm/util/pmu.c            |   3 +
->  tools/perf/arch/arm64/util/mem-events.c   |  39 +---
->  tools/perf/arch/arm64/util/mem-events.h   |   7 +
->  tools/perf/arch/powerpc/util/mem-events.c |  13 +-
->  tools/perf/arch/powerpc/util/mem-events.h |   7 +
->  tools/perf/arch/powerpc/util/pmu.c        |  11 ++
->  tools/perf/arch/s390/util/pmu.c           |   3 +
->  tools/perf/arch/x86/util/mem-events.c     |  99 ++--------
->  tools/perf/arch/x86/util/mem-events.h     |  10 +
->  tools/perf/arch/x86/util/pmu.c            |  19 +-
->  tools/perf/builtin-c2c.c                  |  45 ++---
->  tools/perf/builtin-mem.c                  |  48 ++---
->  tools/perf/util/mem-events.c              | 217 +++++++++++++---------
->  tools/perf/util/mem-events.h              |  19 +-
->  tools/perf/util/pmu.c                     |   4 +-
->  tools/perf/util/pmu.h                     |   7 +
->  tools/perf/util/pmus.c                    |   6 -
->  tools/perf/util/pmus.h                    |   1 -
->  18 files changed, 278 insertions(+), 280 deletions(-)
->  create mode 100644 tools/perf/arch/arm64/util/mem-events.h
->  create mode 100644 tools/perf/arch/powerpc/util/mem-events.h
->  create mode 100644 tools/perf/arch/powerpc/util/pmu.c
->  create mode 100644 tools/perf/arch/x86/util/mem-events.h
-> 
 
