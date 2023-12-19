@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-5519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D23B7818B9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:52:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAE6D818B9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:53:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C11A28488A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:52:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C4551F250FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE38A1CF9B;
-	Tue, 19 Dec 2023 15:52:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38C81CF9C;
+	Tue, 19 Dec 2023 15:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQco+Mtx"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615551D521;
-	Tue, 19 Dec 2023 15:52:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34CCCC433C8;
-	Tue, 19 Dec 2023 15:52:46 +0000 (UTC)
-Date: Tue, 19 Dec 2023 10:53:44 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] ring-buffer: Fix slowpath of interrupted event
-Message-ID: <20231219105344.3b496678@gandalf.local.home>
-In-Reply-To: <20231219103613.787bef51@gandalf.local.home>
-References: <20231218230712.3a76b081@gandalf.local.home>
-	<20231219233710.21b48850676e65da2a37fe22@kernel.org>
-	<20231219101027.349b7d19@gandalf.local.home>
-	<20231219103613.787bef51@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D25A1D522;
+	Tue, 19 Dec 2023 15:53:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5C73C433C9;
+	Tue, 19 Dec 2023 15:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703001230;
+	bh=2u2KauBAa48YgXbTuV8ltQ8J32Q6mKscN4TSL3UOF6w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UQco+MtxeMSyI/PAa2Rxr9aRdAJRfxC9DHogmgaTf2ai7BC0Vcp70scanxHz6pOU3
+	 jPvCUFfqguAnzF4ZTqaHRhQhBu1ucHVfVTX7GImY+FadIL8doFbVeII6HbtOIOSvmk
+	 aAisCloju4FDINuQJO5uircIAujgwr30Jlaf5Oho3byRy7RrvN+e/zgSio+PBIT+De
+	 AUAh7udzzRWUDOHfUmT5NbOZrMJYCpe4Q0B1PeppZFbNixffD+mFNhDpkNvM8p6l/o
+	 CR1fNGCylsGzvYAzSgiZdyir7uK+sGkQJii4XwyxOr3eSQW2uUVZbMCjzC7bpNeRwJ
+	 lRKhsCRG37YLQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rFcPk-0008IA-1j;
+	Tue, 19 Dec 2023 16:53:48 +0100
+Date: Tue, 19 Dec 2023 16:53:48 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/2] dt-bindings: spmi: clean up hisilicon binding
+Message-ID: <ZYG8jA64drRFL-SW@hovoldconsulting.com>
+References: <20231130173757.13011-1-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130173757.13011-1-johan+linaro@kernel.org>
 
-On Tue, 19 Dec 2023 10:36:13 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Stephen,
 
->  |-- interrupt event --|-- normal context event --|-- interrupt event --|
+On Thu, Nov 30, 2023 at 06:37:55PM +0100, Johan Hovold wrote:
+> When reviewing the various SPMI PMIC bindings, I noticed that several
+> examples were incorrect and misleading and could also use some cleanup.
 > 
->          ^                            ^                     ^
->          |                            |                     |
->     ts is before before_stamp         |                     |
->                                our before_stamp             |
->                                                     absolute value
-> 
-> We just need to make our delta not go beyond the absolute value. So:
-> 
->   ts of first event + (absolute value - our before_stamp)
-> 
-> Should not be greater than the absolute value.
+> This series addresses the related hisilicon SPMI controller binding.
 
-Hmm, this isn't good enough either. Because we could have had the interrupt
-happen *after* the before_stamp update, and leave the write_stamp not equal
-to the before_stamp (like the original patch is fixing).
+> Johan Hovold (2):
+>   dt-bindings: spmi: hisilicon,hisi-spmi-controller: fix binding
+>     references
+>   dt-bindings: spmi: hisilicon,hisi-spmi-controller: clean up example
 
-That is, in the case of finding an absolute value, there's still no way to
-know what delta to use without walking the sub-buffer. Hmm, since this is
-so rare, we could do that :-/
+I noticed that these are not yet in linux-next so sending a reminder.
 
-Anyway, for now, it's just going to be delta = 0, and we could do the
-sub-buffer walk if it becomes an issue (which it hasn't for the last decade
-or more).
-
--- Steve
+Johan
 
