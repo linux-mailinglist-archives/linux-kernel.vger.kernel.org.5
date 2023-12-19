@@ -1,155 +1,146 @@
-Return-Path: <linux-kernel+bounces-5254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D4B818897
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA39D818894
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:24:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EF35B21A79
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:24:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AA66B2384C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9311B268;
-	Tue, 19 Dec 2023 13:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE79F1A5A7;
+	Tue, 19 Dec 2023 13:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFuN0W0h"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BSdLH83p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D04D18ED6;
-	Tue, 19 Dec 2023 13:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55370780c74so2477463a12.1;
-        Tue, 19 Dec 2023 05:23:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FE418EB3
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33671384e50so844589f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:23:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702992220; x=1703597020; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=69alNgUwO4fEHcqvlE9wDHPb87XBycRiNpEU0YqP8dI=;
-        b=eFuN0W0hlGpPbszrLgW5riCtIgRr7m9ocAWh8w/UFI6osJooFYma5j5BiO3cYxP3tg
-         BpPzBimkv8XeTSmas1PtEYID8vLWuTEnG+oYjRIoeQ5bibskAAhAkTw9sYSRj81wbFh2
-         JXciVW88h5BLdC6b2RRlGwm91Jv5q0LcWzVsMVeQBfMm0c0F006ja6OWZFl9t7Cnd2OE
-         +vcLkn0OA+8FBebv3SDZwxjHFrxa3Lo9XaGPAmCCDEBci4I30tqCp0HaHNfrev4LGWJO
-         o2R69ykhB5eYiqXo26krQHqYsW3wBj5M85AjSCuSVIEKC8PVlwqewGEpkAH46PVRHiVZ
-         sL+A==
+        d=linaro.org; s=google; t=1702992220; x=1703597020; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p3LPY/wP+4u8xv3gDTbgceni72i0f7dLsgXss15/0/U=;
+        b=BSdLH83p31k+tIUHs2OgUKaP5mj0WqM6uP4LL0JAKxcWhFOyQ94TeEmicKwQEBNMnB
+         AY8S43MmicreYgZhJx6Tkc7hwBSgaHlIpUPR1tlVTTlH/g3oF2kQyc0k8q6JyTr66LqV
+         mk7Suu+a1EN648qBoUyS+nNZERrTMpc5WA4vu+Bm0s7hlKLgE9pRQ/kWxGwlcu8pSTxl
+         0dOE7jppv98yEBcBtOEOwXnrRW30E3vixuYNLGE9riQXUcW5ra1CTZALtTOWmbxaRBZ3
+         0ln6T0NAOgy0Xt4c2tGFEzDcQEuMs9LmKKnkCaPjm4uA9UrTpzMnTymrbpFwqk38pxD/
+         Frsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702992220; x=1703597020;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=69alNgUwO4fEHcqvlE9wDHPb87XBycRiNpEU0YqP8dI=;
-        b=PIlzXNpcx/5ZaZ4BjW5K0bA3NSmvZwMHh0qJtvQOBVhTXfuTgj3SWD+jYddbWh6SAS
-         ioLCf1YVJbHINVAhsvIuNVIbebwdPf7K+gTCbHxEma9a0jDOy7PvuIYCr7b1UzKyxNHL
-         kVYm3lBzEyeNSG7qsyHZP4EO5Kj04HmxV/cSlAle2WMKw7UuOpnqnf5ASfNFFKfuM/+/
-         r9vYRsD1VD+JCTMj1mYfIea+hRKBxxREW3dbHEAhxYgZ3qcrm/CTk02A3RZeEN5CaLpE
-         js03RA5fr/CqQ+RbI9moP0MlfTCwE8Mzg+Uan7ZRU4w//0AawofUVGp2AyfRRVsFZT7G
-         z7tw==
-X-Gm-Message-State: AOJu0YwumZwudBxDor3GE84pf0WkH0DwqyXP2TRNShKfp2wFKk3GT1j8
-	Kv1GCzA/m8Jzi9bVZIhDzLU=
-X-Google-Smtp-Source: AGHT+IFI7ga9857gOeHls61Pb8uACAAUgA2DnLBwa41gHMWBZxqS4Pzzc5dvwJBFt14RpJDi1nv2Xg==
-X-Received: by 2002:a17:906:2d6:b0:a1f:8aa3:2bd4 with SMTP id 22-20020a17090602d600b00a1f8aa32bd4mr8549477ejk.133.1702992220176;
-        Tue, 19 Dec 2023 05:23:40 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ot17-20020a170906ccd100b00a235b01886dsm2285702ejb.10.2023.12.19.05.23.39
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p3LPY/wP+4u8xv3gDTbgceni72i0f7dLsgXss15/0/U=;
+        b=D04oGrzJ5IhGSQoxwBnckqqFlQszXsJmgCuGolseskBsoVep+bjzvOISxaHrC2wB7p
+         Y5Ac2Ho7w9FKZTZo+AdTTy+qd3TY3Ql25QpRfgP+KE3Iym2uUUxb3EAAisq+u+vEtD7s
+         B5MvMOC+oojvRYiH3lCzT3anuJJOBOtI8FtDpMDxW9R01FklNSnfK+lJ6ZP1PhlQyM34
+         yvlV0fdrLyUn3ug+yTQUl/1KiZ4tSEidxnIX1tdvAQp3sn2CNQhBto+43MS5X204kt5A
+         zDDYajlCrA+zrE+kBr3jaYxhvcpxz1MfFzA7Ipez7+VCwoyzY19F5UELbZCl7SmaONec
+         w6eQ==
+X-Gm-Message-State: AOJu0Ywfr9CP5ZtXth1k+3ETiUqqeibT/DTxLoshZkcfQByvFegWSQ8B
+	7Qhgz6n3GSgZZVLpc2QiG4ZpbA==
+X-Google-Smtp-Source: AGHT+IFHYzvyDi0corcqB0NWZOjE5iHCoZWBmG8HzPdskcKE9UWUerE1vnbScokBVmD2OSU8t9HD/g==
+X-Received: by 2002:a5d:45cf:0:b0:336:578e:2bd1 with SMTP id b15-20020a5d45cf000000b00336578e2bd1mr3224416wrs.108.1702992219991;
+        Tue, 19 Dec 2023 05:23:39 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id j4-20020adfea44000000b00336471bc7ffsm15010151wrn.109.2023.12.19.05.23.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 19 Dec 2023 05:23:39 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+From: Neil Armstrong <neil.armstrong@linaro.org>
 Date: Tue, 19 Dec 2023 14:23:37 +0100
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>,
-	linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 06/34] function_graph: Allow multiple users to attach
- to function graph
-Message-ID: <ZYGZWWqwtSP82Sja@krava>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
- <170290516454.220107.14775763404510245361.stgit@devnote2>
+Subject: [PATCH] ASoC: dt-bindings: qcom,lpass-va-macro: remove spurious
+ contains in if statement
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170290516454.220107.14775763404510245361.stgit@devnote2>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231219-topic-sm8x50-upstream-va-macro-bindings-fix-v1-1-ae133886f70e@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAFiZgWUC/x2NOw6DQAwFr4JcxxK7JFHIVSIKsxjiYj+yASEh7
+ p5Vppsp3jvBWIUN3s0JyruY5FTF3RoIX0oLo0zVwbe+c971uOYiAS2+jkeLW7FVmSLuhJGCZhw
+ lTZIWw1kO7P19rjyJOwd1sSjX/H/7DNf1A26qMf59AAAA
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Banajit Goswami <bgoswami@quicinc.com>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, 
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1689;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=jX/VQsyuPIyHVsUjFUCTRKQIEp2WX+Su12Xn85ZrU+8=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlgZlaDrfW46D5usNUF+97Tkj84cNtskNX0ajIjSB4
+ c2y3rGGJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZYGZWgAKCRB33NvayMhJ0YOND/
+ 46yLraBMW6CnFYt7o5AHOdDFaYq3RCOhhkv53wUrp2UT+9o0dkTo/hdaKGwJlfGVtpIjkR1G/W1n0l
+ p0DAmni76jmRO2lXdxtWY9XfPqYXaFDdgo6OOkaA4Y6CJwJvQqDsRo+wpXftMOvHtgjwbmum8DzLZW
+ 70LxmqtfBXdA/5cxUDQecXMUtJt1RKpCDd84m1OsigYHQ0xVld+pem0MZRY1IHBZ8+e7NmeXKqwhJA
+ 4pbEKd7WeekEhtE8IouZbs1TptF1VnkgL7tKBloFGy/6bh0fQj+nvKZG520uXczqi8u3kuDnJNn2dd
+ Z7e/+jsEOq39jgYM8at/AGCksKx81laJRZ26/eXExBzOrtdCWQYrjq1rJI9/FeUK2MUSeESB6CS00J
+ uGFsd0iaGjIU8mMWI6Swqf23/kR2ci/zLrdpPMsq97gyNbHQ8xq6zrAv5N5/TNMPA39cQ+cu+xDxjq
+ zhODVdvJ2NDNBaMmRab4ZyGjH0WrzZgNeSXLuLU9DWtblMAJc/WjZFfq097FZhl0DkGiD1e3zZ31ej
+ 1xr936utWiaifj2KSeILxMgX0zVAc+gO/BBC4tsvQZnSTOj0x0qzVmWh3dDsUBXG6eeCzsOs49NraC
+ 176n4KxcOQHDA7kWYlN1tFI0aJFqGUNUfZh60WteKpzmVEaensgmrZU/UuDw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-On Mon, Dec 18, 2023 at 10:12:45PM +0900, Masami Hiramatsu (Google) wrote:
+Remove this spurious "contains" which causes the bindings check of
+qcom,sm8450-lpass-va-macro compatible to fail with:
+codec@33f0000: clocks: [[156, 57, 1], [156, 102, 1], [156, 103, 1], [156, 70, 1]] is too long
+        from schema $id: http://devicetree.org/schemas/sound/qcom,lpass-va-macro.yaml#
+codec@33f0000: clock-names: ['mclk', 'macro', 'dcodec', 'npl'] is too long
+        from schema $id: http://devicetree.org/schemas/sound/qcom,lpass-va-macro.yaml#
 
-SNIP
+Seems the double "contains" was considered as valid by the tool but broke
+the entire if statements.
 
->  /* Both enabled by default (can be cleared by function_graph tracer flags */
->  static bool fgraph_sleep_time = true;
->  
-> @@ -126,9 +247,34 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
->  	calltime = trace_clock_local();
->  
->  	index = current->curr_ret_stack;
-> -	RET_STACK_INC(current->curr_ret_stack);
-> +	/* ret offset = 1 ; type = reserved */
-> +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
->  	ret_stack = RET_STACK(current, index);
-> +	ret_stack->ret = ret;
-> +	/*
-> +	 * The unwinders expect curr_ret_stack to point to either zero
-> +	 * or an index where to find the next ret_stack. Even though the
-> +	 * ret stack might be bogus, we want to write the ret and the
-> +	 * index to find the ret_stack before we increment the stack point.
-> +	 * If an interrupt comes in now before we increment the curr_ret_stack
-> +	 * it may blow away what we wrote. But that's fine, because the
-> +	 * index will still be correct (even though the 'ret' won't be).
-> +	 * What we worry about is the index being correct after we increment
-> +	 * the curr_ret_stack and before we update that index, as if an
-> +	 * interrupt comes in and does an unwind stack dump, it will need
-> +	 * at least a correct index!
-> +	 */
->  	barrier();
-> +	current->curr_ret_stack += FGRAPH_RET_INDEX + 1;
-> +	/*
-> +	 * This next barrier is to ensure that an interrupt coming in
-> +	 * will not corrupt what we are about to write.
-> +	 */
-> +	barrier();
-> +
-> +	/* Still keep it reserved even if an interrupt came in */
-> +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
+Fixes: f243ef746d0a ("ASoC: dt-bindings: qcom,lpass-va-macro: Add SM8650 LPASS VA")
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-seems like this was set already few lines above?
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+index c03ff9472a85..6b483fa3c428 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+@@ -121,9 +121,8 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            contains:
+-              enum:
+-                - qcom,sm8550-lpass-va-macro
++            enum:
++              - qcom,sm8550-lpass-va-macro
+     then:
+       properties:
+         clocks:
 
-jirka
+---
+base-commit: aa4db8324c4d0e67aa4670356df4e9fae14b4d37
+change-id: 20231219-topic-sm8x50-upstream-va-macro-bindings-fix-924ffff6ae31
 
-> +
->  	ret_stack->ret = ret;
->  	ret_stack->func = func;
->  	ret_stack->calltime = calltime;
-> @@ -159,6 +305,12 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  			 unsigned long frame_pointer, unsigned long *retp)
->  {
->  	struct ftrace_graph_ent trace;
-> +	int offset;
-> +	int start;
-> +	int type;
-> +	int val;
-> +	int cnt = 0;
-> +	int i;
->  
->  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
->  	/*
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
-SNIP
 
