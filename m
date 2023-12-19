@@ -1,379 +1,199 @@
-Return-Path: <linux-kernel+bounces-4532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2C2B817EE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F04817EE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:41:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D713B23E14
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:43:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAC29B23C5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1245717D5;
-	Tue, 19 Dec 2023 00:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B48815AC;
+	Tue, 19 Dec 2023 00:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HRPdYAb9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H56w/d+p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F7F5233
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 00:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702946561; x=1734482561;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=GfyOGJi/zFUlYyCDCtAJEXpBdqBZGnuNFJCAHta4OxA=;
-  b=HRPdYAb9MUCmsAtLYo7VFNFp4D+UVPPz+hFP0h2/ozUnZhhk1h6jV7ml
-   Lg9/D/I/mvWZwotk/aVEH5utGGMJhqNBlzDMFNFFVo/e29TUCHDMDUP7T
-   ZFEXmTbRt08tyXegwBPeQOT7WRCnHODVPEYRNNBFxA4yjriev9OECWQON
-   JEpGzYEjiPCRTjMh1jd5VFCfUYv+ZqrcYamEe7vDYriULb/ZZWXV1WAY6
-   DyUMe9Gg8JJ0G5zUuXJP1tozt18xLrPj0A1WOcnRxXVp6dgMvtiKrezSl
-   +ZuQ3RFUGrvRI1s/k09UCfr3U4yvVgig6WYQnHRMWdoMe3CbmAkFJum6+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="9031630"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="9031630"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 16:42:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="725533742"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="725533742"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 18 Dec 2023 16:42:38 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFOBw-0004gh-0W;
-	Tue, 19 Dec 2023 00:42:36 +0000
-Date: Tue, 19 Dec 2023 08:41:36 +0800
-From: kernel test robot <lkp@intel.com>
-To: Hari Bathini <hbathini@linux.vnet.ibm.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Michael Ellerman <mpe@ellerman.id.au>
-Subject: arch/powerpc/platforms/powernv/opal-core.c:96:24: sparse: sparse:
- incorrect type in assignment (different base types)
-Message-ID: <202312190816.rGvIbWJs-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3FD15A0;
+	Tue, 19 Dec 2023 00:41:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED812C433C7;
+	Tue, 19 Dec 2023 00:41:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702946504;
+	bh=8eMEq2EQPcJdSoDYjoL4uYUzfmA7mbwgk3VmCG7O0T0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=H56w/d+pl+NtQL688KYylFmPYQByNU/Yx9h+6GeWG8o4+3YEtr2/tOqE/K058P3rn
+	 I+wk1r6Jg8JKiS5qaBYjYDZCvpY7qhYvRU1sB73fc2d5pAxoLUBlIlhf//Z5kY54P1
+	 9TYvT7B1LuFVlfOrbZlsE2mBzukF3AuTMZQEhSFSwIl9kS1VZJ81BPj/263DFl/Rh/
+	 gUK4lIWHvM290Uvf5gKedYDZHwzmS9OmHV2c4/jMQP5sybpxaorucJKrvghHCCgCvt
+	 OwZS5Jxeg9DNclquCgTnn8FYp4a20boJn2yVGRgoALRMXFa6SdsIzEtLXiN79tduGX
+	 F5/7l546/H+Qg==
+Date: Mon, 18 Dec 2023 16:41:42 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Michael Chan
+ <michael.chan@broadcom.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, "David S. Miller"
+ <davem@davemloft.net>, Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>, Frederic
+ Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>, Paolo
+ Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, Will
+ Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next 00/24] locking: Introduce nested-BH locking.
+Message-ID: <20231218164142.0b10e29d@kernel.org>
+In-Reply-To: <20231218172331.fp-nC_Nr@linutronix.de>
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+	<20231215145059.3b42ee35@kernel.org>
+	<20231218172331.fp-nC_Nr@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
-commit: 6f713d18144ce86c9f01cdf64222d6339e26129e powerpc/opalcore: export /sys/firmware/opal/core for analysing opal crashes
-date:   4 years, 3 months ago
-config: powerpc64-randconfig-r113-20231118 (https://download.01.org/0day-ci/archive/20231219/202312190816.rGvIbWJs-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231219/202312190816.rGvIbWJs-lkp@intel.com/reproduce)
+On Mon, 18 Dec 2023 18:23:31 +0100 Sebastian Andrzej Siewior wrote:
+> On 2023-12-15 14:50:59 [-0800], Jakub Kicinski wrote:
+> > On Fri, 15 Dec 2023 18:07:19 +0100 Sebastian Andrzej Siewior wrote: =20
+> > > The proposed way out is to introduce explicit per-CPU locks for
+> > > resources which are protected by local_bh_disable() and use those only
+> > > on PREEMPT_RT so there is no additional overhead for !PREEMPT_RT buil=
+ds. =20
+> >=20
+> > As I said at LPC, complicating drivers with odd locking constructs
+> > is a no go for me. =20
+>=20
+> I misunderstood it then as I assumed you wanted to ease the work while I
+> was done which every driver after (hopefully) understanding what is
+> possible/ needed and what not. We do speak here about 15++?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312190816.rGvIbWJs-lkp@intel.com/
+My main concern is that it takes the complexity of writing network
+device drivers to a next level. It's already hard enough to implement
+XDP correctly. "local lock" and "guard"? Too complicated :(
+Or "unmaintainable" as in "too much maintainer's time will be spent
+reviewing code that gets this wrong".
 
-sparse warnings: (new ones prefixed by >>)
->> arch/powerpc/platforms/powernv/opal-core.c:96:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] n_namesz @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:96:24: sparse:     expected unsigned int [usertype] n_namesz
-   arch/powerpc/platforms/powernv/opal-core.c:96:24: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:97:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] n_descsz @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:97:24: sparse:     expected unsigned int [usertype] n_descsz
-   arch/powerpc/platforms/powernv/opal-core.c:97:24: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:98:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] n_type @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:98:24: sparse:     expected unsigned int [usertype] n_type
-   arch/powerpc/platforms/powernv/opal-core.c:98:24: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:119:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected int [usertype] pr_pid @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:119:27: sparse:     expected int [usertype] pr_pid
-   arch/powerpc/platforms/powernv/opal-core.c:119:27: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:120:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected int [usertype] pr_ppid @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:120:27: sparse:     expected int [usertype] pr_ppid
-   arch/powerpc/platforms/powernv/opal-core.c:120:27: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:130:37: sparse: sparse: incorrect type in assignment (different base types) @@     expected short pr_cursig @@     got restricted __be16 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:130:37: sparse:     expected short pr_cursig
-   arch/powerpc/platforms/powernv/opal-core.c:130:37: sparse:     got restricted __be16 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:143:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:143:21: sparse:     expected unsigned long long [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:143:21: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:144:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:144:21: sparse:     expected unsigned long long [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:144:21: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:147:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:147:21: sparse:     expected unsigned long long [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:147:21: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:274:17: sparse: sparse: cast to restricted __be64
->> arch/powerpc/platforms/powernv/opal-core.c:274:17: sparse: sparse: cast to restricted __be64
->> arch/powerpc/platforms/powernv/opal-core.c:360:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] e_type @@     got restricted __be16 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:360:21: sparse:     expected unsigned short [usertype] e_type
-   arch/powerpc/platforms/powernv/opal-core.c:360:21: sparse:     got restricted __be16 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:361:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] e_machine @@     got restricted __be16 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:361:24: sparse:     expected unsigned short [usertype] e_machine
-   arch/powerpc/platforms/powernv/opal-core.c:361:24: sparse:     got restricted __be16 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:362:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] e_version @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:362:24: sparse:     expected unsigned int [usertype] e_version
-   arch/powerpc/platforms/powernv/opal-core.c:362:24: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:364:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] e_phoff @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:364:22: sparse:     expected unsigned long long [usertype] e_phoff
-   arch/powerpc/platforms/powernv/opal-core.c:364:22: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:368:23: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] e_ehsize @@     got restricted __be16 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:368:23: sparse:     expected unsigned short [usertype] e_ehsize
-   arch/powerpc/platforms/powernv/opal-core.c:368:23: sparse:     got restricted __be16 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:369:26: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] e_phentsize @@     got restricted __be16 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:369:26: sparse:     expected unsigned short [usertype] e_phentsize
-   arch/powerpc/platforms/powernv/opal-core.c:369:26: sparse:     got restricted __be16 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:377:25: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] p_type @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:377:25: sparse:     expected unsigned int [usertype] p_type
-   arch/powerpc/platforms/powernv/opal-core.c:377:25: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:381:25: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] p_offset @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:381:25: sparse:     expected unsigned long long [usertype] p_offset
-   arch/powerpc/platforms/powernv/opal-core.c:381:25: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:382:41: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] p_memsz @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:382:41: sparse:     expected unsigned long long [usertype] p_memsz
-   arch/powerpc/platforms/powernv/opal-core.c:382:41: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:391:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] p_type @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:391:33: sparse:     expected unsigned int [usertype] p_type
-   arch/powerpc/platforms/powernv/opal-core.c:391:33: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:392:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] p_flags @@     got restricted __be32 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:392:33: sparse:     expected unsigned int [usertype] p_flags
-   arch/powerpc/platforms/powernv/opal-core.c:392:33: sparse:     got restricted __be32 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:403:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] p_paddr @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:403:33: sparse:     expected unsigned long long [usertype] p_paddr
-   arch/powerpc/platforms/powernv/opal-core.c:403:33: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:404:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] p_vaddr @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:404:33: sparse:     expected unsigned long long [usertype] p_vaddr
-   arch/powerpc/platforms/powernv/opal-core.c:404:33: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:405:50: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] p_memsz @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:405:50: sparse:     expected unsigned long long [usertype] p_memsz
-   arch/powerpc/platforms/powernv/opal-core.c:405:50: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:407:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] p_offset @@     got restricted __be64 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:407:33: sparse:     expected unsigned long long [usertype] p_offset
-   arch/powerpc/platforms/powernv/opal-core.c:407:33: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/platforms/powernv/opal-core.c:414:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] e_phnum @@     got restricted __be16 [usertype] @@
-   arch/powerpc/platforms/powernv/opal-core.c:414:22: sparse:     expected unsigned short [usertype] e_phnum
-   arch/powerpc/platforms/powernv/opal-core.c:414:22: sparse:     got restricted __be16 [usertype]
-   arch/powerpc/platforms/powernv/opal-core.c:479:16: sparse: sparse: cast to restricted __be64
-   arch/powerpc/platforms/powernv/opal-core.c:490:16: sparse: sparse: cast to restricted __be64
-   arch/powerpc/platforms/powernv/opal-core.c: note: in included file:
-   arch/powerpc/platforms/powernv/opal-fadump.h:134:33: sparse: sparse: restricted __be64 degrades to integer
+> Now. The pattern is usually
+> |	act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+> |	switch (act) {
+> |	case XDP_REDIRECT:
+> |		ret =3D xdp_do_redirect(netdev, &xdp, xdp_prog)))
+> |		if (ret)
+> |			goto XDP_ABORTED;
+> |		xdp_redir++ or so;
+>=20
+> so we might be able to turn this into something that covers both and
+> returns either XDP_REDIRECT or XDP_ABORTED. So this could be merged
+> into
+>=20
+> | u32 bpf_prog_run_xdp_and_redirect(struct net_device *dev, const struct
+> | 				  bpf_prog *prog, struct xdp_buff *xdp)
+> | {
+> | 	u32 act;
+> | 	int ret;
+> |=20
+> | 	act =3D bpf_prog_run_xdp(prog, xdp);
+> | 	if (act =3D=3D XDP_REDIRECT) {
+> | 		ret =3D xdp_do_redirect(netdev, xdp, prog);
+> | 		if (ret < 0)
+> | 			act =3D XDP_ABORTED;
+> | 	}
+> | 	return act;
+> | }
 
-vim +96 arch/powerpc/platforms/powernv/opal-core.c
+If we could fold the DROP case into this -- even better!
 
-    88	
-    89	static Elf64_Word *append_elf64_note(Elf64_Word *buf, char *name,
-    90					     u32 type, void *data,
-    91					     size_t data_len)
-    92	{
-    93		Elf64_Nhdr *note = (Elf64_Nhdr *)buf;
-    94		Elf64_Word namesz = strlen(name) + 1;
-    95	
-  > 96		note->n_namesz = cpu_to_be32(namesz);
-  > 97		note->n_descsz = cpu_to_be32(data_len);
-  > 98		note->n_type   = cpu_to_be32(type);
-    99		buf += DIV_ROUND_UP(sizeof(*note), sizeof(Elf64_Word));
-   100		memcpy(buf, name, namesz);
-   101		buf += DIV_ROUND_UP(namesz, sizeof(Elf64_Word));
-   102		memcpy(buf, data, data_len);
-   103		buf += DIV_ROUND_UP(data_len, sizeof(Elf64_Word));
-   104	
-   105		return buf;
-   106	}
-   107	
-   108	static void fill_prstatus(struct elf_prstatus *prstatus, int pir,
-   109				  struct pt_regs *regs)
-   110	{
-   111		memset(prstatus, 0, sizeof(struct elf_prstatus));
-   112		elf_core_copy_kernel_regs(&(prstatus->pr_reg), regs);
-   113	
-   114		/*
-   115		 * Overload PID with PIR value.
-   116		 * As a PIR value could also be '0', add an offset of '100'
-   117		 * to every PIR to avoid misinterpretations in GDB.
-   118		 */
- > 119		prstatus->pr_pid  = cpu_to_be32(100 + pir);
- > 120		prstatus->pr_ppid = cpu_to_be32(1);
-   121	
-   122		/*
-   123		 * Indicate SIGUSR1 for crash initiated from kernel.
-   124		 * SIGTERM otherwise.
-   125		 */
-   126		if (pir == oc_conf->crashing_cpu) {
-   127			short sig;
-   128	
-   129			sig = kernel_initiated ? SIGUSR1 : SIGTERM;
- > 130			prstatus->pr_cursig = cpu_to_be16(sig);
-   131		}
-   132	}
-   133	
-   134	static Elf64_Word *auxv_to_elf64_notes(Elf64_Word *buf,
-   135					       u64 opal_boot_entry)
-   136	{
-   137		Elf64_Off *bufp = (Elf64_Off *)oc_conf->auxv_buf;
-   138		int idx = 0;
-   139	
-   140		memset(bufp, 0, AUXV_DESC_SZ);
-   141	
-   142		/* Entry point of OPAL */
- > 143		bufp[idx++] = cpu_to_be64(AT_ENTRY);
-   144		bufp[idx++] = cpu_to_be64(opal_boot_entry);
-   145	
-   146		/* end of vector */
-   147		bufp[idx++] = cpu_to_be64(AT_NULL);
-   148	
-   149		buf = append_elf64_note(buf, CRASH_CORE_NOTE_NAME, NT_AUXV,
-   150					oc_conf->auxv_buf, AUXV_DESC_SZ);
-   151		return buf;
-   152	}
-   153	
-   154	/*
-   155	 * Read from the ELF header and then the crash dump.
-   156	 * Returns number of bytes read on success, -errno on failure.
-   157	 */
-   158	static ssize_t read_opalcore(struct file *file, struct kobject *kobj,
-   159				     struct bin_attribute *bin_attr, char *to,
-   160				     loff_t pos, size_t count)
-   161	{
-   162		struct opalcore *m;
-   163		ssize_t tsz, avail;
-   164		loff_t tpos = pos;
-   165	
-   166		if (pos >= oc_conf->opalcore_size)
-   167			return 0;
-   168	
-   169		/* Adjust count if it goes beyond opalcore size */
-   170		avail = oc_conf->opalcore_size - pos;
-   171		if (count > avail)
-   172			count = avail;
-   173	
-   174		if (count == 0)
-   175			return 0;
-   176	
-   177		/* Read ELF core header and/or PT_NOTE segment */
-   178		if (tpos < oc_conf->opalcorebuf_sz) {
-   179			tsz = min_t(size_t, oc_conf->opalcorebuf_sz - tpos, count);
-   180			memcpy(to, oc_conf->opalcorebuf + tpos, tsz);
-   181			to += tsz;
-   182			tpos += tsz;
-   183			count -= tsz;
-   184		}
-   185	
-   186		list_for_each_entry(m, &opalcore_list, list) {
-   187			/* nothing more to read here */
-   188			if (count == 0)
-   189				break;
-   190	
-   191			if (tpos < m->offset + m->size) {
-   192				void *addr;
-   193	
-   194				tsz = min_t(size_t, m->offset + m->size - tpos, count);
-   195				addr = (void *)(m->paddr + tpos - m->offset);
-   196				memcpy(to, __va(addr), tsz);
-   197				to += tsz;
-   198				tpos += tsz;
-   199				count -= tsz;
-   200			}
-   201		}
-   202	
-   203		return (tpos - pos);
-   204	}
-   205	
-   206	static struct bin_attribute opal_core_attr = {
-   207		.attr = {.name = "core", .mode = 0400},
-   208		.read = read_opalcore
-   209	};
-   210	
-   211	/*
-   212	 * Read CPU state dump data and convert it into ELF notes.
-   213	 *
-   214	 * Each register entry is of 16 bytes, A numerical identifier along with
-   215	 * a GPR/SPR flag in the first 8 bytes and the register value in the next
-   216	 * 8 bytes. For more details refer to F/W documentation.
-   217	 */
-   218	static Elf64_Word * __init opalcore_append_cpu_notes(Elf64_Word *buf)
-   219	{
-   220		u32 thread_pir, size_per_thread, regs_offset, regs_cnt, reg_esize;
-   221		struct hdat_fadump_thread_hdr *thdr;
-   222		struct elf_prstatus prstatus;
-   223		Elf64_Word *first_cpu_note;
-   224		struct pt_regs regs;
-   225		char *bufp;
-   226		int i;
-   227	
-   228		size_per_thread = oc_conf->cpu_state_entry_size;
-   229		bufp = __va(oc_conf->cpu_state_destination_vaddr);
-   230	
-   231		/*
-   232		 * Offset for register entries, entry size and registers count is
-   233		 * duplicated in every thread header in keeping with HDAT format.
-   234		 * Use these values from the first thread header.
-   235		 */
-   236		thdr = (struct hdat_fadump_thread_hdr *)bufp;
-   237		regs_offset = (offsetof(struct hdat_fadump_thread_hdr, offset) +
-   238			       be32_to_cpu(thdr->offset));
-   239		reg_esize = be32_to_cpu(thdr->esize);
-   240		regs_cnt  = be32_to_cpu(thdr->ecnt);
-   241	
-   242		pr_debug("--------CPU State Data------------\n");
-   243		pr_debug("NumCpus     : %u\n", oc_conf->num_cpus);
-   244		pr_debug("\tOffset: %u, Entry size: %u, Cnt: %u\n",
-   245			 regs_offset, reg_esize, regs_cnt);
-   246	
-   247		/*
-   248		 * Skip past the first CPU note. Fill this note with the
-   249		 * crashing CPU's prstatus.
-   250		 */
-   251		first_cpu_note = buf;
-   252		buf = append_elf64_note(buf, CRASH_CORE_NOTE_NAME, NT_PRSTATUS,
-   253					&prstatus, sizeof(prstatus));
-   254	
-   255		for (i = 0; i < oc_conf->num_cpus; i++, bufp += size_per_thread) {
-   256			thdr = (struct hdat_fadump_thread_hdr *)bufp;
-   257			thread_pir = be32_to_cpu(thdr->pir);
-   258	
-   259			pr_debug("[%04d] PIR: 0x%x, core state: 0x%02x\n",
-   260				 i, thread_pir, thdr->core_state);
-   261	
-   262			/*
-   263			 * Register state data of MAX cores is provided by firmware,
-   264			 * but some of this cores may not be active. So, while
-   265			 * processing register state data, check core state and
-   266			 * skip threads that belong to inactive cores.
-   267			 */
-   268			if (thdr->core_state == HDAT_FADUMP_CORE_INACTIVE)
-   269				continue;
-   270	
-   271			opal_fadump_read_regs((bufp + regs_offset), regs_cnt,
-   272					      reg_esize, false, &regs);
-   273	
- > 274			pr_debug("PIR 0x%x - R1 : 0x%llx, NIP : 0x%llx\n", thread_pir,
-   275				 be64_to_cpu(regs.gpr[1]), be64_to_cpu(regs.nip));
-   276			fill_prstatus(&prstatus, thread_pir, &regs);
-   277	
-   278			if (thread_pir != oc_conf->crashing_cpu) {
-   279				buf = append_elf64_note(buf, CRASH_CORE_NOTE_NAME,
-   280							NT_PRSTATUS, &prstatus,
-   281							sizeof(prstatus));
-   282			} else {
-   283				/*
-   284				 * Add crashing CPU as the first NT_PRSTATUS note for
-   285				 * GDB to process the core file appropriately.
-   286				 */
-   287				append_elf64_note(first_cpu_note, CRASH_CORE_NOTE_NAME,
-   288						  NT_PRSTATUS, &prstatus,
-   289						  sizeof(prstatus));
-   290			}
-   291		}
-   292	
-   293		return buf;
-   294	}
-   295	
+> so the lock can be put inside the function and all drivers use this
+> function.
+>=20
+> From looking through drivers/net/ethernet/, this should work for most
+> drivers:
+> - amazon/ena
+> - aquantia/atlantic
+> - engleder/tsnep
+> - freescale/enetc
+> - freescale/fec
+> - intel/igb
+> - intel/igc
+> - marvell/mvneta
+> - marvell/mvpp2
+> - marvell/octeontx2
+> - mediatek/mtk
+> - mellanox/mlx5
+> - microchip/lan966x
+> - microsoft/mana
+> - netronome/nfp (two call paths with no support XDP_REDIRECT)
+> - sfc/rx
+> - sfc/siena (that offset pointer can be moved)
+> - socionext/netsec
+> - stmicro/stmmac
+>=20
+> A few do something custom/ additionally between bpf_prog_run_xdp() and
+>   xdp_do_redirect():
+>=20
+> - broadcom/bnxt
+>   calculates length, offset, data pointer. DMA unmaps + memory
+>   allocations before redirect.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Just looked at this one. The recalculation is probably for the PASS /
+TX cases, REDIRECT / DROP shouldn't care. The DMA unmap looks like=20
+a bug (hi, Michael!)
+
+> - freescale/dpaa2
+> - freescale/dpaa
+>   sets xdp.data_hard_start + frame_sz, unmaps DMA.
+>=20
+> - fungible/funeth
+>   conditional redirect.
+>=20
+> - google/gve
+>   Allocates a new packet for redirect.
+>=20
+> - intel/ixgbe
+> - intel/i40e
+> - intel/ice
+>   Failure in the ZC case is different from XDP_ABORTED, depends on the
+>   error from xdp_do_redirect())
+>=20
+> - mellanox/mlx4/
+>   calculates page_offset.
+>=20
+> - qlogic/qede
+>   DMA unmap and buffer alloc.
+>=20
+> - ti/cpsw_priv
+>   recalculates length (pointer).
+>=20
+> and a few more don't support XDP_REDIRECT:
+>=20
+> - cavium/thunder
+>   does not support XDP_REDIRECT, calculates length, offset.
+>=20
+> - intel/ixgbevf
+>   does not support XDP_REDIRECT
+>=20
+> I don't understand why some driver need to recalculate data_hard_start,
+> length and so on and others don't. This might be only needed for the
+> XDP_TX case or not needed=E2=80=A6
+> Also I'm not sure about the dma unmaps and skb allocations. The new skb
+> allocation can be probably handled before running the bpf prog but then
+> in the XDP_PASS case it is a waste=E2=80=A6
+> And the DMA unmaps. Only a few seem to need it. Maybe it can be done
+> before running the BPF program. After all the bpf may look into the skb.
+>=20
+>=20
+> If that is no go, then the only thing that comes to mind is (as you
+> mentioned on LPC) to acquire the lock in bpf_prog_run_xdp() and drop it
+> in xdp_do_redirect(). This would require that every driver invokes
+> xdp_do_redirect() even not if it is not supporting it (by setting netdev
+> to NULL or so).
+
+To make progress on other parts of the stack we could also take=20
+the local lock around all of napi->poll() for now..
 
