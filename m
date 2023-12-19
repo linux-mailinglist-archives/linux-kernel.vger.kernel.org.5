@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-4840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8034E8182BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:58:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE5BD8182C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3175A1F26972
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:58:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85767286B70
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD3018E23;
-	Tue, 19 Dec 2023 07:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A44712B71;
+	Tue, 19 Dec 2023 07:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NkviQZc1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HXSDbslq"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9060718E10
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D9C11C89
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702972629;
+	s=mimecast20190719; t=1702972644;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uyBT0nqGKaQsvTTr5mCIJmcBkZIho6YT9IXUJI5Nmzw=;
-	b=NkviQZc12NmMFj4HgvIl2cAmddrWkG9ee0wuSQYz1ZfZcEPG/W4lyvV5qIxX8BaJmG/QjY
-	YG/pse4Nc5vOwf+d1/mwZN2vBnPcHgKJowD9zvjc1AuyGqyz+FnySk5VSCZtY+aIGpeCAS
-	e4mFA7rm15Uji9Khdq9uL+/XCRrdxPs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-150-L9GGlqWjOR6XdFWT616TOg-1; Tue,
- 19 Dec 2023 02:57:06 -0500
-X-MC-Unique: L9GGlqWjOR6XdFWT616TOg-1
+	bh=4pxuQ+zeUrZD43W0p30SCM4P3ajCE4Euxhqhb6PE8fI=;
+	b=HXSDbslqmmhmUOJ5i6ilK+Jw0AKj4MScBwMEn1RmCCcyqYNAV707cl/ip3hiRMhtABXnFn
+	1hQLOiuS+kfrd6oQ6SyBhF1aNm0LjdItJETu/4zd9oagNRNDQZnNbCkgJcDP/oem+LG7Ln
+	BWC+cHNvuzMVlH5B1NPR7umvClwGshQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-308-O_LLgdEzO2yAjxB50bIomw-1; Tue, 19 Dec 2023 02:57:17 -0500
+X-MC-Unique: O_LLgdEzO2yAjxB50bIomw-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E4B5F3813F20;
-	Tue, 19 Dec 2023 07:57:04 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 94A54837221;
+	Tue, 19 Dec 2023 07:57:16 +0000 (UTC)
 Received: from x1n.redhat.com (unknown [10.72.116.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id EAA8A2026D66;
-	Tue, 19 Dec 2023 07:56:53 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id B40302026D66;
+	Tue, 19 Dec 2023 07:57:05 +0000 (UTC)
 From: peterx@redhat.com
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org
@@ -73,9 +73,9 @@ Cc: Matthew Wilcox <willy@infradead.org>,
 	Andrea Arcangeli <aarcange@redhat.com>,
 	peterx@redhat.com,
 	Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH 06/13] mm/gup: Drop folio_fast_pin_allowed() in hugepd processing
-Date: Tue, 19 Dec 2023 15:55:31 +0800
-Message-ID: <20231219075538.414708-7-peterx@redhat.com>
+Subject: [PATCH 07/13] mm/gup: Refactor record_subpages() to find 1st small page
+Date: Tue, 19 Dec 2023 15:55:32 +0800
+Message-ID: <20231219075538.414708-8-peterx@redhat.com>
 In-Reply-To: <20231219075538.414708-1-peterx@redhat.com>
 References: <20231219075538.414708-1-peterx@redhat.com>
 Precedence: bulk
@@ -89,65 +89,85 @@ X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
 From: Peter Xu <peterx@redhat.com>
 
-Hugepd format for GUP is only used in PowerPC with hugetlbfs.  There are
-some kernel usage of hugepd (can refer to hugepd_populate_kernel() for
-PPC_8XX), however those pages are not candidates for GUP.
+All the fast-gup functions take a tail page to operate, always need to do
+page mask calculations before feeding that into record_subpages().
 
-Commit a6e79df92e4a ("mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
-file-backed mappings") added a check to fail gup-fast if there's potential
-risk of violating GUP over writeback file systems.  That should never apply
-to hugepd.  Considering that hugepd is an old format (and even
-software-only), there's no plan to extend hugepd into other file typed
-memories that is prone to the same issue.
+Merge that logic into record_subpages(), so that it will do the nth_page()
+calculation.
 
-Drop that check, not only because it'll never be true for hugepd per any
-known plan, but also it paves way for reusing the function outside
-fast-gup.
-
-To make sure we'll still remember this issue just in case hugepd will be
-extended to support non-hugetlbfs memories, add a rich comment above
-gup_huge_pd(), explaining the issue with proper references.
-
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/gup.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ mm/gup.c | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
 
 diff --git a/mm/gup.c b/mm/gup.c
-index efc9847e58fb..bb5b7134f10b 100644
+index bb5b7134f10b..82d28d517d0d 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -2820,11 +2820,6 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
- 		return 0;
+@@ -2767,13 +2767,16 @@ static int __gup_device_huge_pud(pud_t pud, pud_t *pudp, unsigned long addr,
+ }
+ #endif
+ 
+-static int record_subpages(struct page *page, unsigned long addr,
+-			   unsigned long end, struct page **pages)
++static int record_subpages(struct page *page, unsigned long sz,
++			   unsigned long addr, unsigned long end,
++			   struct page **pages)
+ {
++	struct page *start_page;
+ 	int nr;
+ 
++	start_page = nth_page(page, (addr & (sz - 1)) >> PAGE_SHIFT);
+ 	for (nr = 0; addr != end; nr++, addr += PAGE_SIZE)
+-		pages[nr] = nth_page(page, nr);
++		pages[nr] = nth_page(start_page, nr);
+ 
+ 	return nr;
+ }
+@@ -2808,8 +2811,8 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
+ 	/* hugepages are never "special" */
+ 	VM_BUG_ON(!pfn_valid(pte_pfn(pte)));
+ 
+-	page = nth_page(pte_page(pte), (addr & (sz - 1)) >> PAGE_SHIFT);
+-	refs = record_subpages(page, addr, end, pages + *nr);
++	page = pte_page(pte);
++	refs = record_subpages(page, sz, addr, end, pages + *nr);
+ 
+ 	folio = try_grab_folio(page, refs, flags);
+ 	if (!folio)
+@@ -2882,8 +2885,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+ 					     pages, nr);
  	}
  
--	if (!folio_fast_pin_allowed(folio, flags)) {
--		gup_put_folio(folio, refs, flags);
--		return 0;
--	}
--
- 	if (!pte_write(pte) && gup_must_unshare(NULL, flags, &folio->page)) {
- 		gup_put_folio(folio, refs, flags);
- 		return 0;
-@@ -2835,6 +2830,14 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
- 	return 1;
- }
+-	page = nth_page(pmd_page(orig), (addr & ~PMD_MASK) >> PAGE_SHIFT);
+-	refs = record_subpages(page, addr, end, pages + *nr);
++	page = pmd_page(orig);
++	refs = record_subpages(page, PMD_SIZE, addr, end, pages + *nr);
  
-+/*
-+ * NOTE: currently GUP for a hugepd is only possible on hugetlbfs file
-+ * systems on Power, which does not have issue with folio writeback against
-+ * GUP updates.  When hugepd will be extended to support non-hugetlbfs or
-+ * even anonymous memory, we need to do extra check as what we do with most
-+ * of the other folios. See writable_file_mapping_allowed() and
-+ * folio_fast_pin_allowed() for more information.
-+ */
- static int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
- 		unsigned int pdshift, unsigned long end, unsigned int flags,
- 		struct page **pages, int *nr)
+ 	folio = try_grab_folio(page, refs, flags);
+ 	if (!folio)
+@@ -2926,8 +2929,8 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+ 					     pages, nr);
+ 	}
+ 
+-	page = nth_page(pud_page(orig), (addr & ~PUD_MASK) >> PAGE_SHIFT);
+-	refs = record_subpages(page, addr, end, pages + *nr);
++	page = pud_page(orig);
++	refs = record_subpages(page, PUD_SIZE, addr, end, pages + *nr);
+ 
+ 	folio = try_grab_folio(page, refs, flags);
+ 	if (!folio)
+@@ -2966,8 +2969,8 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
+ 
+ 	BUILD_BUG_ON(pgd_devmap(orig));
+ 
+-	page = nth_page(pgd_page(orig), (addr & ~PGDIR_MASK) >> PAGE_SHIFT);
+-	refs = record_subpages(page, addr, end, pages + *nr);
++	page = pgd_page(orig);
++	refs = record_subpages(page, PGDIR_SIZE, addr, end, pages + *nr);
+ 
+ 	folio = try_grab_folio(page, refs, flags);
+ 	if (!folio)
 -- 
 2.41.0
 
