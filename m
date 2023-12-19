@@ -1,89 +1,131 @@
-Return-Path: <linux-kernel+bounces-5228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F74881883A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:02:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B2AC81883B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAC31B24F32
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:02:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26DF91C2163B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1744B18E36;
-	Tue, 19 Dec 2023 13:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dilU4n7r"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E4A1B274;
+	Tue, 19 Dec 2023 13:04:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mail-m25484.xmail.ntesmail.com (mail-m25484.xmail.ntesmail.com [103.129.254.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BDE18E13;
-	Tue, 19 Dec 2023 13:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Aso/PSABcXQ/18wC+IQ9g/IA0o4shEADqRKW81TUoxw=; b=dilU4n7ryxuYedzFlRzioKja08
-	4qj4ySuGV9Ae6scuCXIItPCot64QClJ3OZL0DgZB1yBLjM7y/FcLrj1rvgWN8c7Zr0E5riKO2k0RE
-	DUgvs/tfgogxwmzjpe/1h5UZl+e4jDniEebdOYXZVtVvww2NBkcIctFHWyYnCGiueh18lET6gfdGy
-	XnblBn1md0RYvkpieKhEV22DdCyikiwtmTJY6E2ISWD1LSvLFuRX9N8Hqf4Vx1ITNQf10gamCX5/v
-	hMgDUxOZCRiFaK/z7sdIIKcFI33+jI5CqyhInR1ylG7vEbtJdw/2aj0HsbuILnihcFPhQKLNct1xV
-	vlz4RYcQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rFZjG-002z7C-LZ; Tue, 19 Dec 2023 13:01:46 +0000
-Date: Tue, 19 Dec 2023 13:01:46 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc: shr@devkernel.io, akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, joseph.qi@linux.alibaba.com,
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm: fix arithmetic for max_prop_frac when setting
- max_ratio
-Message-ID: <ZYGUOslxxwe1sNzR@casper.infradead.org>
-References: <20231219024246.65654-1-jefflexu@linux.alibaba.com>
- <20231219024246.65654-3-jefflexu@linux.alibaba.com>
- <ZYEWyn5g/jG/ixMk@casper.infradead.org>
- <5460aaf1-44f6-475f-b980-cb9058cc1df4@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9551A71B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
+Received: from [10.9.0.234] (unknown [211.103.144.18])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 9ACE5260127;
+	Tue, 19 Dec 2023 20:54:03 +0800 (CST)
+Message-ID: <273284e8-7680-4f5f-8065-c5d780987e59@easystack.cn>
+Date: Tue, 19 Dec 2023 20:54:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5460aaf1-44f6-475f-b980-cb9058cc1df4@linux.alibaba.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] kexec: avoid out of bounds in crash_exclude_mem_range()
+Content-Language: en-US
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
+ linux-kernel@vger.kernel.org, vgoyal@redhat.com
+References: <3765549d-892e-4102-9b56-9add1d0a8089@easystack.cn>
+ <20231219103928.98465-1-ytcoode@gmail.com>
+From: fuqiang wang <fuqiang.wang@easystack.cn>
+In-Reply-To: <20231219103928.98465-1-ytcoode@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkZQx1JVkwdTxkaGk1NThpNTFUZERMWGhIXJBQOD1
+	lXWRgSC1lBWUlKSlVKS0hVSk9PVUpDWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
+	++
+X-HM-Tid: 0a8c8223f70b0276kunm9ace5260127
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OlE6Nyo5LzE#LwFPAwoqQy0O
+	HzEKCS1VSlVKTEtJQkJLT09OT0tIVTMWGhIXVR0OChIaFRxVDBoVHDseGggCCA8aGBBVGBVFWVdZ
+	EgtZQVlJSkpVSktIVUpPT1VKQ1lXWQgBWUFOS0hMNwY+
 
-On Tue, Dec 19, 2023 at 01:58:21PM +0800, Jingbo Xu wrote:
-> On 12/19/23 12:06 PM, Matthew Wilcox wrote:
-> > On Tue, Dec 19, 2023 at 10:42:46AM +0800, Jingbo Xu wrote:
-> >>  	} else {
-> >>  		bdi->max_ratio = max_ratio;
-> >> -		bdi->max_prop_frac = (FPROP_FRAC_BASE * max_ratio) / 100;
-> >> +		bdi->max_prop_frac = div64_u64(FPROP_FRAC_BASE * max_ratio,
-> >> +					       100 * BDI_RATIO_SCALE);
-> >>  	}
-> > 
-> > Why use div64_u64 here?
-> > 
-> > FPROP_FRAC_BASE is an unsigned long.  max_ratio is an unsigned int, so
-> > the numerator is an unsigned long.  BDI_RATIO_SCALE is 10,000, so the
-> > numerator is an unsigned int.  There's no 64-bit arithmetic needed here.
-> 
-> Yes, div64_u64() is actually not needed here. So it seems
-> 
-> bdi->max_prop_frac = FPROP_FRAC_BASE * max_ratio / 100 / BDI_RATIO_SCALE;
-> 
-> is adequate?
+在 2023/12/19 18:39, Yuntao Wang 写道:
 
-I'd rather spell that as:
+> On Tue, 19 Dec 2023 16:55:16 +0800, fuqiang wang <fuqiang.wang@easystack.cn> wrote:
+>
+>> Thank you very much for your patient comment. This change does indeed improve
+>> readability. But as a combination of these two, how do you feel about moving
+>> crash_setup_memmap_entries() behind vzalloc().
+> I don't quite understand what you're trying to express.
+Hi Yuntao,
 
-		bdi->max_prop_frac = (FPROP_FRAC_BASE * max_ratio) /
-					(100 * BDI_RATIO_SCALE);
+I make the following changes based on your patch. This change can increase code
+readability on one hand, On the other hand, if these functions return errors,
+the rest process of crash_setup_memmap_entries() can be skipped.
 
-It's closer to how you'd write it out mathematically and so it reads
-more easily.  At least for me.
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index c92d88680dbf..67a974c041b9 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -285,6 +285,12 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
+         cmem = vzalloc(struct_size(cmem, ranges, 1));
+         if (!cmem)
+                 return -ENOMEM;
++       cmem->max_nr_ranges = 1;
++
++       /* Exclude some ranges from crashk_res and add rest to memmap */
++       ret = memmap_exclude_ranges(image, cmem, crashk_res.start, crashk_res.end);
++       if (ret)
++               goto out;
+
+         memset(&cmd, 0, sizeof(struct crash_memmap_data));
+         cmd.params = params;
+@@ -320,11 +326,6 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
+                 add_e820_entry(params, &ei);
+         }
+
+-       /* Exclude some ranges from crashk_res and add rest to memmap */
+-       ret = memmap_exclude_ranges(image, cmem, crashk_res.start, crashk_res.end);
+-       if (ret)
+-               goto out;
+-
+         for (i = 0; i < cmem->nr_ranges; i++) {
+                 ei.size = cmem->ranges[i].end - cmem->ranges[i].start + 1;
+>> The image->elf_load_addr is determined by arch_kexec_locate_mem_hole(), this
+>> function can ensure that the value is within the range of [crashk_res.start,
+>> crashk_res.end), but it seems that it cannot guarantee that its value will
+>> always be equal to crashk_res.start. Perhaps I have some omissions, please
+>> point them out.
+> Because elfcorehdr is the first one and only one that allocates memory from the
+> starting address of crashk_res, and the starting address of crashk_res meets
+> the alignment requirement of elfcorehdr.
+>
+> elfcorehdr requires 4k alignment, and the starting address of crashk_res is
+> 16M aligned.
+>
+> Therefore, image->elf_load_addr should be equal to crashk_res.start.
+Yes! you read the code very carefully and I didn't notice that! However, the
+location of elfheader in crashk_res.start is highly dependent on elfheader in
+crashk_res memory allocation order and position. At present, x86 first allocate
+the memory of elfheader. However, ppc64 doesn't seem to be like this (It first
+executes load_backup_segment()). Although arm64 allocates elfheader first, it
+sets kbuf.top_down to true in load_other_segments(). This will cause the
+elfheader to be allocated near crashk_res.end. I debugged using crash on the
+arm64 machine and the result is(Although the kernel version of the testing
+machine may be a bit low, the process of allocating elfheaders is consistent
+with upstream):
+
+     crash> p crashk_res.start
+     $6 = 1375731712
+     crash> p crashk_res.end
+     $7 = 2147483647
+     crash> p kexec_crash_image.arch.elf_headers_mem
+     $9 = 2147352576
+
+So I think it's best to set cmem->max_nr_ranges to 2 for easy maintenance in
+the future. What do you think about ?
 
