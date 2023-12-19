@@ -1,165 +1,123 @@
-Return-Path: <linux-kernel+bounces-5003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA63681851F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:12:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80259818518
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32843285B31
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:12:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 204541F2224E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431FD14A84;
-	Tue, 19 Dec 2023 10:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A8014A8F;
+	Tue, 19 Dec 2023 10:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="eVXOT55Q"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="PZLwEv67"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B2F14275
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1702980749; x=1734516749;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=iViKSTdI+ErtrWsDZMtiphCdw44JA/4rWoiQlO3XCQI=;
-  b=eVXOT55QPsWRZqMBpS0jVjOnSqGUKMtDTpFcqZN3rOF+EjhqbMn0E6K+
-   YwUN+CHBgYyulhEVA+r7NtCmbVNz3KnRoXz0UuenMbA/VUpI6mZVjS1jv
-   OHjskCmTxYhP+RvyGxaxniM9DQiW2IqokjutaimjRc3LJEK/KNeLRUhax
-   hlNqUNsO3lwWoPlm8ueA7qPhQcyb74JpaQAwvmibiMVrDTn3m9X7b6HJz
-   jrXA5wwog4vDjkIxBfyoMpRQz0/RiupIh86N/sVLXMC3FN7qoDRiSb0eJ
-   CVNegG0q14DufOb0hQdMsodv79ksetaph7ih6ezGsvlYKv6kd1OI4N0cb
-   A==;
-X-CSE-ConnectionGUID: vgLW8J4XSHmZoGcu39fnJw==
-X-CSE-MsgGUID: gHSyTML2RBeEe3T0U2yfGQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="14516133"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Dec 2023 03:12:22 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 03:12:06 -0700
-Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 19 Dec 2023 03:12:05 -0700
-Message-ID: <e4481634-d0b4-427d-a9a2-f3fe5643f2e6@microchip.com>
-Date: Tue, 19 Dec 2023 11:11:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A044D14298
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
+	by cmsmtp with ESMTPS
+	id FVjnrZyexgpyEFX50rMGPZ; Tue, 19 Dec 2023 10:12:02 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id FX4zrkQ4u11XZFX50rQYTi; Tue, 19 Dec 2023 10:12:02 +0000
+X-Authority-Analysis: v=2.4 cv=Z+v/oVdA c=1 sm=1 tr=0 ts=65816c72
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Ek58/Dn/yOlYHhx/8tFxJz3CawUYMzo0ZHTISftznQ4=; b=PZLwEv67a52YclfUBV0Fmut43G
+	L5mZZ+fw58wd0Yrgup485awPwCnb2n2Qsdim0zwMpeYXsBLdY2UCu23tx7DHSKk9+RNOevEJsxI43
+	5TJe5ZsQEAowdfJ9QlR0OzJqN0zXvBHpNiNaXLQ8wuT4S+aqNuj+v6IQSUt7GES7fQssJrKEXe6wV
+	LJ7K7xHxbITCI1hnZxetuhCiaeEfM8nSlYnp9h9Q9mahLex9tNj8Vg7Sv0DgpEEjvt8b39+4nJgDr
+	+jUa/Vetpf3r/DsZnUYuj+ttLFR5Cha23aZyJl7tqN8c+6/pRJYErLCIVmHsqVf5mcvgrl7hG30RW
+	0G8VmdGA==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:60502 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rFX4x-003xcJ-1R;
+	Tue, 19 Dec 2023 03:11:59 -0700
+Subject: Re: [PATCH 6.6 000/166] 6.6.8-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20231218135104.927894164@linuxfoundation.org>
+In-Reply-To: <20231218135104.927894164@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <75c03579-ddd2-5e7f-7370-499f077a1dd5@w6rz.net>
+Date: Tue, 19 Dec 2023 02:11:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 36/50] ARM: at91: add support in SoC driver for new
- sam9x7
-Content-Language: en-US, fr-FR
-To: Varshini Rajendran <varshini.rajendran@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@microchip.com>,
-	<mihai.sain@microchip.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20230728102905.267131-1-varshini.rajendran@microchip.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-In-Reply-To: <20230728102905.267131-1-varshini.rajendran@microchip.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rFX4x-003xcJ-1R
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:60502
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfMi3SgpG7aPQ2a6JNOD+3RJJresmVYepKAkuomQlnBEGoAX3oVEQB+Mlq30fa6TdQ+MjoUGwizcjUyks/5fF6hONCj3IPuI6sLo4PVmaHSyGpoiTXPMz
+ EKtgF6NKtpS4aYKfV2arLgdYLeH4TmdYxf8S2hjNL0CyZFnd3Em02zEc0NHz6t+QqV35ji/BUCIdjYzZuYwnOjgPsZCpoyXRwQc=
 
-On 28/07/2023 at 12:29, Varshini Rajendran wrote:
-> Add support for SAM9X7 SoC in the SoC driver.
-> 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->   drivers/soc/atmel/soc.c | 23 +++++++++++++++++++++++
->   drivers/soc/atmel/soc.h |  9 +++++++++
->   2 files changed, 32 insertions(+)
-> 
-> diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-> index cc9a3e107479..cae3452cbc60 100644
-> --- a/drivers/soc/atmel/soc.c
-> +++ b/drivers/soc/atmel/soc.c
-> @@ -101,6 +101,29 @@ static const struct at91_soc socs[] __initconst = {
->   		 AT91_CIDR_VERSION_MASK, SAM9X60_D6K_EXID_MATCH,
->   		 "sam9x60 8MiB SDRAM SiP", "sam9x60"),
->   #endif
-> +#ifdef CONFIG_SOC_SAM9X7
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X72_EXID_MATCH,
-> +		 "sam9x72", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X70_EXID_MATCH,
-> +		 "sam9x70", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D1G_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 1Gb DDR3L SiP ", "sam9x7"),
+On 12/18/23 5:49 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.8 release.
+> There are 166 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I don't want that we introduce more sizes in "bits" instead of "bytes" 
-in this file.
-I know it's what is advertised in datasheets, but we're software people 
-who count these sizes in bytes, so let's do the conversion for the users.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-BTW: this file will need to be updated with this statement in mind.
-
-Best regards,
-   Nicolas
-
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D5M_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 512Mb DDR2 SiP", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D1M_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 128Mb DDR2 SiP", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D2G_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 2Gb DDR3L SiP", "sam9x7"),
-> +#endif
->   #ifdef CONFIG_SOC_SAMA5
->   	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
->   		 AT91_CIDR_VERSION_MASK, SAMA5D21CU_EXID_MATCH,
-> diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-> index 7a9f47ce85fb..26dd26b4f179 100644
-> --- a/drivers/soc/atmel/soc.h
-> +++ b/drivers/soc/atmel/soc.h
-> @@ -45,6 +45,7 @@ at91_soc_init(const struct at91_soc *socs);
->   #define AT91SAM9N12_CIDR_MATCH		0x019a07a0
->   #define SAM9X60_CIDR_MATCH		0x019b35a0
->   #define SAMA7G5_CIDR_MATCH		0x00162100
-> +#define SAM9X7_CIDR_MATCH		0x09750020
-
-Apha-numerial order please.
-
->   
->   #define AT91SAM9M11_EXID_MATCH		0x00000001
->   #define AT91SAM9M10_EXID_MATCH		0x00000002
-> @@ -74,6 +75,14 @@ at91_soc_init(const struct at91_soc *socs);
->   #define SAMA7G54_D2G_EXID_MATCH		0x00000020
->   #define SAMA7G54_D4G_EXID_MATCH		0x00000028
->   
-> +#define SAM9X75_EXID_MATCH		0x00000000
-> +#define SAM9X72_EXID_MATCH		0x00000004
-> +#define SAM9X70_EXID_MATCH		0x00000005
-> +#define SAM9X75_D1G_EXID_MATCH		0x00000001
-> +#define SAM9X75_D5M_EXID_MATCH		0x00000002
-> +#define SAM9X75_D1M_EXID_MATCH		0x00000003
-> +#define SAM9X75_D2G_EXID_MATCH		0x00000006
-> +
-
-Ditto
-
->   #define AT91SAM9XE128_CIDR_MATCH	0x329973a0
->   #define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
->   #define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
+Tested-by: Ron Economos <re@w6rz.net>
 
 
