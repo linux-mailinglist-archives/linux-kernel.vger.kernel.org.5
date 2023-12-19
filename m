@@ -1,190 +1,201 @@
-Return-Path: <linux-kernel+bounces-5090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A645F818679
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:38:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CE0A81867F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 516C928684E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:38:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 901C61F2408B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383F315ACB;
-	Tue, 19 Dec 2023 11:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CAC15E92;
+	Tue, 19 Dec 2023 11:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MhBLKJ1g";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ALIu4m60";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MhBLKJ1g";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ALIu4m60"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YZ5wW2eq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26914156C0
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1EF09220EA;
-	Tue, 19 Dec 2023 11:38:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702985900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GlCCfHdUF8E59zVa06E6NUBcKS5WmlSLYddFv13EMtg=;
-	b=MhBLKJ1gUpS3nbAKExf8T7817nxvJxnyDDq2JnihCsAprWCJ9eJp1aKyf4thjNPeudqdjc
-	NF4wMdfHOnfrkz+QZ3Tk+bRqkCn0BS80ibfykJRdOjdBbdoo9htRhcrfUtz5tCte7PFYBb
-	hL1yAZL3MP4AFOcw7lGi5vDCH5gfG00=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702985900;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GlCCfHdUF8E59zVa06E6NUBcKS5WmlSLYddFv13EMtg=;
-	b=ALIu4m60oCV5YLeYV3Y79RDXz9JsSAFVY7RiDVQLnAGnKkvOcL/3ucxR6/oGMn+fy6XE1T
-	hE7rBS1o6PoygyCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702985900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GlCCfHdUF8E59zVa06E6NUBcKS5WmlSLYddFv13EMtg=;
-	b=MhBLKJ1gUpS3nbAKExf8T7817nxvJxnyDDq2JnihCsAprWCJ9eJp1aKyf4thjNPeudqdjc
-	NF4wMdfHOnfrkz+QZ3Tk+bRqkCn0BS80ibfykJRdOjdBbdoo9htRhcrfUtz5tCte7PFYBb
-	hL1yAZL3MP4AFOcw7lGi5vDCH5gfG00=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702985900;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GlCCfHdUF8E59zVa06E6NUBcKS5WmlSLYddFv13EMtg=;
-	b=ALIu4m60oCV5YLeYV3Y79RDXz9JsSAFVY7RiDVQLnAGnKkvOcL/3ucxR6/oGMn+fy6XE1T
-	hE7rBS1o6PoygyCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B31F71375D;
-	Tue, 19 Dec 2023 11:38:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +bcVJ6uAgWWGNQAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 19 Dec 2023 11:38:19 +0000
-Message-ID: <824b9386-7c95-49d4-995a-d94c35855287@suse.de>
-Date: Tue, 19 Dec 2023 12:38:19 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADAC18023;
+	Tue, 19 Dec 2023 11:38:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FEDCC43397;
+	Tue, 19 Dec 2023 11:38:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702985937;
+	bh=z/k+YLVG8n9w0gU6sDLuJgWPnnGVRssnALfrFYt48Kc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YZ5wW2eq3iLNVR0D3INYFDiHoOy9u7hHTIJmjfZrOmN9uEHlkSe2+p1LY8oA6Uqc6
+	 o5VzCD0CAEUBSZX5jaeRxTi5InLpxumraBNOcnXdpYcCmIgQhPonNmzT7snKzERGqd
+	 zXQcfBxETiC4pkV1PQZtn8g0yu7/g/wQxuvUn5kEjX/SZ57kCv2F9jYZTXCk3hJCF1
+	 ArW8C+v3dmdH8zKR2xalj8md0QUM4CNJ58TnTYVq9vpI6ZDXlVXiI9XFFYvVPkZRmO
+	 ySmRvSCKaphWrtDvYj4JXREjfOyKuw8GYmjokI38G2QdDaMQwV7V+r1gD6t2hGcj2/
+	 WB8ZmBIkPNq5g==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cc7b4709edso12475221fa.0;
+        Tue, 19 Dec 2023 03:38:57 -0800 (PST)
+X-Gm-Message-State: AOJu0YybCozzdw1vas2RZEgUc3jQQxA72MjecCrfqmbovMfxNWkvZiu3
+	2mvMT+9Cr8J5l1hmGIJ89djinZdKkNVJ5DSL/LQ=
+X-Google-Smtp-Source: AGHT+IGy+6E+Sn9s6ye17sM7ASYkS54eKGlyAxWBRLZL4jRxMOyZr0iV3s8QFFjT31FJTJwCyWvX4/ab2jc+J0WE6aE=
+X-Received: by 2002:a2e:8897:0:b0:2cc:7013:4b40 with SMTP id
+ k23-20020a2e8897000000b002cc70134b40mr1369809lji.68.1702985935277; Tue, 19
+ Dec 2023 03:38:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 12/16] nvmet-fc: do not tack refs on tgtports from
- assoc
-Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
- Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
- James Smart <james.smart@broadcom.com>
-References: <20231218153105.12717-1-dwagner@suse.de>
- <20231218153105.12717-13-dwagner@suse.de>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20231218153105.12717-13-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.02
-X-Spamd-Result: default: False [-2.02 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-0.73)[83.85%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+References: <20231215122614.5481-1-tzimmermann@suse.de> <20231215122614.5481-3-tzimmermann@suse.de>
+In-Reply-To: <20231215122614.5481-3-tzimmermann@suse.de>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Tue, 19 Dec 2023 12:38:44 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHrn-PxpMGnR4VoHv7kHvQYyf8SS9i1irm9Gi_uBseciw@mail.gmail.com>
+Message-ID: <CAMj1kXHrn-PxpMGnR4VoHv7kHvQYyf8SS9i1irm9Gi_uBseciw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] arch/x86: Add <asm/ima-efi.h> for arch_ima_efi_boot_mode
+To: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com, 
+	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, javierm@redhat.com, linux-arch@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/18/23 16:31, Daniel Wagner wrote:
-> The association life time is tight to the life time of the target port.
-                                tied
+Hi Thomas,
 
-> That means we do not take extra a refcount when creating a association.
-                 should not
+On Fri, 15 Dec 2023 at 13:26, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+>
+> The header file <asm/efi.h> contains the macro arch_ima_efi_boot_mode,
+> which expands to use struct boot_params from <asm/bootparams.h>. Many
+> drivers include <linux/efi.h>, but do not use boot parameters. Changes
+> to bootparam.h or its included headers can easily trigger large,
+> unnessary rebuilds of the kernel.
+>
+> Moving x86's arch_ima_efi_boot_mode to <asm/ima-efi.h> and including
+> <asm/setup.h> separates that dependency from the rest of the EFI
+> interfaces. The only user is in ima_efi.c. As the file already declares
+> a default value for arch_ima_efi_boot_mode, move this define into
+> asm-generic for all other architectures.
+>
+> With arch_ima_efi_boot_mode removed from efi.h, <asm/bootparam.h> can
+> later be removed from further x86 header files.
+>
 
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Apologies if I missed this in v1 but is the new asm-generic header
+really necessary? Could we instead turn arch_ima_efi_boot_mode into a
+function that is a static inline { return unset; } by default, but can
+be emitted out of line in one of the x86/platform/efi.c source files,
+where referring to boot_params is fine?
+
+
+
+
+
+> v2:
+>         * remove extra declaration of boot_params (Ard)
+>
+
+Please don't put the revision log here, but below the --- so that 'git
+am' will ignore it.
+
+
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 > ---
->   drivers/nvme/target/fc.c | 8 +-------
->   1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-> index c243085d6f42..47cecc8c72b2 100644
-> --- a/drivers/nvme/target/fc.c
-> +++ b/drivers/nvme/target/fc.c
-> @@ -1109,12 +1109,9 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
->   	if (idx < 0)
->   		goto out_free_assoc;
->   
-> -	if (!nvmet_fc_tgtport_get(tgtport))
-> -		goto out_ida;
+>  arch/x86/include/asm/efi.h       |  3 ---
+>  arch/x86/include/asm/ima-efi.h   | 11 +++++++++++
+>  include/asm-generic/Kbuild       |  1 +
+>  include/asm-generic/ima-efi.h    | 16 ++++++++++++++++
+>  security/integrity/ima/ima_efi.c |  5 +----
+>  5 files changed, 29 insertions(+), 7 deletions(-)
+>  create mode 100644 arch/x86/include/asm/ima-efi.h
+>  create mode 100644 include/asm-generic/ima-efi.h
+>
+> diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
+> index c4555b269a1b..99f31176c892 100644
+> --- a/arch/x86/include/asm/efi.h
+> +++ b/arch/x86/include/asm/efi.h
+> @@ -418,9 +418,6 @@ extern int __init efi_memmap_split_count(efi_memory_desc_t *md,
+>  extern void __init efi_memmap_insert(struct efi_memory_map *old_memmap,
+>                                      void *buf, struct efi_mem_range *mem);
+>
+> -#define arch_ima_efi_boot_mode \
+> -       ({ extern struct boot_params boot_params; boot_params.secure_boot; })
 > -
->   	assoc->hostport = nvmet_fc_alloc_hostport(tgtport, hosthandle);
->   	if (IS_ERR(assoc->hostport))
-> -		goto out_put;
-> +		goto out_ida;
->   
->   	assoc->tgtport = tgtport;
->   	assoc->a_id = idx;
-> @@ -1144,8 +1141,6 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
->   
->   	return assoc;
->   
-> -out_put:
-> -	nvmet_fc_tgtport_put(tgtport);
->   out_ida:
->   	ida_free(&tgtport->assoc_cnt, idx);
->   out_free_assoc:
-> @@ -1182,7 +1177,6 @@ nvmet_fc_target_assoc_free(struct kref *ref)
->   	dev_info(tgtport->dev,
->   		"{%d:%d} Association freed\n",
->   		tgtport->fc_target_port.port_num, assoc->a_id);
-> -	nvmet_fc_tgtport_put(tgtport);
->   	kfree(assoc);
->   }
->   
-Otherwise:
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Ivo Totev, Andrew McDonald,
-Werner Knoblich
-
+>  #ifdef CONFIG_EFI_RUNTIME_MAP
+>  int efi_get_runtime_map_size(void);
+>  int efi_get_runtime_map_desc_size(void);
+> diff --git a/arch/x86/include/asm/ima-efi.h b/arch/x86/include/asm/ima-efi.h
+> new file mode 100644
+> index 000000000000..b4d904e66b39
+> --- /dev/null
+> +++ b/arch/x86/include/asm/ima-efi.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_X86_IMA_EFI_H
+> +#define _ASM_X86_IMA_EFI_H
+> +
+> +#include <asm/setup.h>
+> +
+> +#define arch_ima_efi_boot_mode boot_params.secure_boot
+> +
+> +#include <asm-generic/ima-efi.h>
+> +
+> +#endif /* _ASM_X86_IMA_EFI_H */
+> diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
+> index def242528b1d..4fd16e71e8cd 100644
+> --- a/include/asm-generic/Kbuild
+> +++ b/include/asm-generic/Kbuild
+> @@ -26,6 +26,7 @@ mandatory-y += ftrace.h
+>  mandatory-y += futex.h
+>  mandatory-y += hardirq.h
+>  mandatory-y += hw_irq.h
+> +mandatory-y += ima-efi.h
+>  mandatory-y += io.h
+>  mandatory-y += irq.h
+>  mandatory-y += irq_regs.h
+> diff --git a/include/asm-generic/ima-efi.h b/include/asm-generic/ima-efi.h
+> new file mode 100644
+> index 000000000000..f87f5edef440
+> --- /dev/null
+> +++ b/include/asm-generic/ima-efi.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +
+> +#ifndef __ASM_GENERIC_IMA_EFI_H_
+> +#define __ASM_GENERIC_IMA_EFI_H_
+> +
+> +#include <linux/efi.h>
+> +
+> +/*
+> + * Only include this header file from your architecture's <asm/ima-efi.h>.
+> + */
+> +
+> +#ifndef arch_ima_efi_boot_mode
+> +#define arch_ima_efi_boot_mode efi_secureboot_mode_unset
+> +#endif
+> +
+> +#endif /* __ASM_GENERIC_FB_H_ */
+> diff --git a/security/integrity/ima/ima_efi.c b/security/integrity/ima/ima_efi.c
+> index 138029bfcce1..56bbee271cec 100644
+> --- a/security/integrity/ima/ima_efi.c
+> +++ b/security/integrity/ima/ima_efi.c
+> @@ -6,10 +6,7 @@
+>  #include <linux/module.h>
+>  #include <linux/ima.h>
+>  #include <asm/efi.h>
+> -
+> -#ifndef arch_ima_efi_boot_mode
+> -#define arch_ima_efi_boot_mode efi_secureboot_mode_unset
+> -#endif
+> +#include <asm/ima-efi.h>
+>
+>  static enum efi_secureboot_mode get_sb_mode(void)
+>  {
+> --
+> 2.43.0
+>
+>
 
