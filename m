@@ -1,117 +1,104 @@
-Return-Path: <linux-kernel+bounces-5947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB1318191DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:01:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90E1F8191DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:03:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D451B2350E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:01:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BD861C213C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BA33A1B9;
-	Tue, 19 Dec 2023 21:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FD23D0AB;
+	Tue, 19 Dec 2023 21:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pe1h/d2N"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JFwmCwdB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F203A262;
-	Tue, 19 Dec 2023 21:01:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A46BFC433C8;
-	Tue, 19 Dec 2023 21:01:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703019687;
-	bh=lCKCo7ckizVWRpPEUPMezC6c+Ikwd4cEM0GhD64Wcpw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pe1h/d2NiKPz8zQPLeOKd+xemnO6jG6C1KnaaD3bcF5PqRauc/XAqHAYvSx4ELXZ3
-	 JItABcOM2aTcR7CIzxhsuPc63t9NvHYVdnSjb+Bo3h0H1BeGuSAYkAar1XD7toX99K
-	 2pxCq9W11iUUFEALv4fPfM/3qKGSmru0lWmAD/fQzFh+BNYpf19nbTVu+XTsQjuW8F
-	 C43FS4U9Xlu4nu0PFOoKUC3pd7QsLnm4gqKF4G0M9Hg0CKBev3hItdsirnG2oZMEC3
-	 s9v6zwq6tveNd70P/UEFE/Hjq/GxtEJrcrxP18nlBN4P2gMNSnn9PU4E3sTgIA2jpL
-	 rwKf0FyPEPaSg==
-Date: Tue, 19 Dec 2023 22:01:23 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>,
-	linux-i2c@vger.kernel.org, linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH] i2c: make i2c_bus_type const
-Message-ID: <ZYIEo8H6Vz0psGOB@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>,
-	linux-i2c@vger.kernel.org, linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-References: <2023121942-jumble-unethical-3163@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712FC3C6A3
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 19 Dec 2023 16:02:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703019777;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qsj0lc16eNSjypOaBN+kiTN4/ImC8Sqq9/KbAa5A9Yg=;
+	b=JFwmCwdBloOFVe4lIBYNnTgC2AMZG71MPaUzExbNJzqvrsWsGYIUxGXAkzYcDzsw96EgZg
+	MbdQdodF2adLe9nMCNIlobqZHGc7bMzrki23ghmGsP8M0gJ1qnPSolpHBOEtDzp5bJ7MZT
+	yyK1rTnD+M1lgIQHh7wWIKRg+QpkeFk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org,
+	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com,
+	paulmck@kernel.org, keescook@chromium.org,
+	dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
+	longman@redhat.com, boqun.feng@gmail.com, brauner@kernel.org
+Subject: Re: [PATCH 15/50] kernel/numa.c: Move logging out of numa.h
+Message-ID: <20231219210253.btvil5tychx6b6kx@moria.home.lan>
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-5-kent.overstreet@linux.dev>
+ <20231219163644.GA345795@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gJv6Wj12fyHLJMkX"
-Content-Disposition: inline
-In-Reply-To: <2023121942-jumble-unethical-3163@gregkh>
-
-
---gJv6Wj12fyHLJMkX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231219163644.GA345795@dev-arch.thelio-3990X>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 19, 2023 at 04:22:43PM +0100, Greg Kroah-Hartman wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the i2c_bus_type variable to be a constant structure as well, placing
-> it into read-only memory which can not be modified at runtime.
->=20
-> Note, the sound/soc/rockchip/rk3399_gru_sound.c also needed tweaking as
-> it decided to save off a pointer to a bus type for internal stuff, and
-> it was using the i2c_bus_type as well.
->=20
-> Cc: Wolfram Sang <wsa@kernel.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-sound@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-rockchip@lists.infradead.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Tue, Dec 19, 2023 at 09:36:44AM -0700, Nathan Chancellor wrote:
+> On Fri, Dec 15, 2023 at 10:26:14PM -0500, Kent Overstreet wrote:
+> These need EXPORT_SYMBOL_GPL() now like the architecture specific
+> implementations because they are no longer inlined. My arm64 builds fail
+> with:
+> 
+>   ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/acpi/nfit/nfit.ko] undefined!
+>   ERROR: modpost: "phys_to_target_node" [drivers/acpi/nfit/nfit.ko] undefined!
+>   ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/virtio/virtio_mem.ko] undefined!
+>   ERROR: modpost: "phys_to_target_node" [drivers/dax/dax_cxl.ko] undefined!
+>   ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/dax/dax_cxl.ko] undefined!
+>   ERROR: modpost: "phys_to_target_node" [drivers/cxl/cxl_acpi.ko] undefined!
+>   ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/cxl/cxl_pmem.ko] undefined!
+>   ERROR: modpost: "phys_to_target_node" [drivers/cxl/cxl_pmem.ko] undefined!
+>   ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/hv/hv_balloon.ko] undefined!
 
-Applied to for-next, thanks!
+Applied the following:
 
 
---gJv6Wj12fyHLJMkX
-Content-Type: application/pgp-signature; name="signature.asc"
+commit 7ae175e405b44b9897c04bbf177e3e08ab25710a
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Tue Dec 19 16:02:26 2023 -0500
 
------BEGIN PGP SIGNATURE-----
+    fixup! kernel/numa.c: Move logging out of numa.h
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWCBKMACgkQFA3kzBSg
-Kbbzvw/8DPBh44kdD/FS9nh7venOLDxhoqI+4TPeK6q6PfcV5hYrx5IA0J35w3r4
-eYBdFl6McEWJvQnUwhPAj3UAiUcMxNbEIbnBH/HB1OawmqyTlzuLD+c0arONMWEe
-eWCyBiqadts9huWTsy/WN1BZXDPF/QDzLA5sfn5L7kGbjcVi5iLQWsQ7h5FD06H8
-hbYFG+PkejM3XwNKbrY2M+N2nhcJpmpdVKntoHSNE4oF0LSp/FY40zgcTgwW6txX
-Bd83AYDqwEtKDefGYoYu+FefhdMyiIV7GJhf/A2Tg/Zt1a5Aah5i2dGIb2gmppZr
-fF6WiElKjh2bSdihivyYviwpidVtzwv2ZQnkLarY+zLKcu2GXv3QrZBzy2zJz3Qd
-CPuwwLv6MEeue2aEc49LUgsq83AenKmDxUwi37FNBDGhI3WOdC92AZipdqptbES/
-Z9yNoJamBfn26kBVq8NyIUjg4XR9eO7WD9GC1q+WgM4hY30KglREC0xL3pJUgGfu
-mlI+4t2A9k40qEOKSS7l6QdbHq1tcz4bt5NlIU4TBGwiUDdvLgXgo0fhqj9KD3kc
-+tgdNT8e/ADcIvv0auqyzMjyF3ff/p4WkJxBLeqWEgAA5xvTZEw1qzgzdVPYYOGs
-WWjco3V8ZTAKy3V8qkX9hsKZIUtuLl1DvdbZMQeSgxTr8aNJMw0=
-=f8qM
------END PGP SIGNATURE-----
-
---gJv6Wj12fyHLJMkX--
+diff --git a/kernel/numa.c b/kernel/numa.c
+index c24c72f45989..67ca6b8585c0 100644
+--- a/kernel/numa.c
++++ b/kernel/numa.c
+@@ -12,6 +12,7 @@ int memory_add_physaddr_to_nid(u64 start)
+ 			start);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
+ #endif
+ 
+ #ifndef phys_to_target_node
+@@ -21,4 +22,5 @@ int phys_to_target_node(u64 start)
+ 			start);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(phys_to_target_node);
+ #endif
 
