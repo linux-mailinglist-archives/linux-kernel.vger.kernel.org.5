@@ -1,169 +1,79 @@
-Return-Path: <linux-kernel+bounces-4783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3018181FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:08:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08E33818202
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:09:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7894284E55
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:08:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D32F1C23290
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68D8882E;
-	Tue, 19 Dec 2023 07:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zVRdai30";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qxb331BZ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gq3laVAw";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="29gKWPWZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4B911728;
+	Tue, 19 Dec 2023 07:09:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9372D881E;
-	Tue, 19 Dec 2023 07:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D34321F7A5;
-	Tue, 19 Dec 2023 07:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702969699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wj5FWLm7rq7c9ULD+6OZOIhvpxTPaHm9vpb8dq5+e3Y=;
-	b=zVRdai30/CJw2bclC4Z3kqBP1s0av2v/Cbfyv8eaGyhSxUe7IdmJZ85KyK6dxKHL6c8VFx
-	gzeu44yY2XwNs7KLXM8YjNX63tvVQyzQ2Y+C8SwawkCg0Gs4fYeu6qdnQdlASYXNJD2Mcc
-	zAtGPhv3HJCHUmLSCAam4wDrP1FRjo8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702969699;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wj5FWLm7rq7c9ULD+6OZOIhvpxTPaHm9vpb8dq5+e3Y=;
-	b=qxb331BZPk1Lz60wN+t0VEF8t67GSA/65p2boWMdICeLO1VsZ8xx+bX/72UfMKsdTRH47F
-	TinAGRlkrBaTsyCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702969698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wj5FWLm7rq7c9ULD+6OZOIhvpxTPaHm9vpb8dq5+e3Y=;
-	b=gq3laVAwaDCupJGwdZ3P3wv2KZ/FEAjM9/5oD7CcWbFW6hIbqf1qyi2WR68HYNgALAauli
-	HfK16RAJ+vemj36vWNhVkrRqMvzsU0RhDcbuxzbfvrGJdeywzRD4Ey6gOfigskORA3cMyw
-	XFmgb2XLP9fPtZx9uf9soInoZlvPaPE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702969698;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wj5FWLm7rq7c9ULD+6OZOIhvpxTPaHm9vpb8dq5+e3Y=;
-	b=29gKWPWZCOD/SlqEUqWli1flFrWAsI5iossuD1aq/gbVwYTohOCAdnhPr6NO1BDvdHaMkS
-	IqdufoiXYK02bdBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A47013BE8;
-	Tue, 19 Dec 2023 07:08:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id EkAwDmBBgWVJfgAAn2gu4w
-	(envelope-from <colyli@suse.de>); Tue, 19 Dec 2023 07:08:16 +0000
-Date: Tue, 19 Dec 2023 15:08:10 +0800
-From: Coly Li <colyli@suse.de>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: kent.overstreet@gmail.com, linux-bcache@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kunwu Chan <kunwu.chan@hotmail.com>
-Subject: Re: [PATCH] bcache: Fix NULL pointer dereference in
- bch_cached_dev_run
-Message-ID: <nqdvnxwug6dv4xkt3kmzp6eiqnrjeilyaeaoukrtime5wjrz6c@jwliy7gmljvu>
-References: <20231211082510.262292-1-chentao@kylinos.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEE5F9E7;
+	Tue, 19 Dec 2023 07:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp79t1702969713tcg33gvg
+Received: from HX01040022.powercore.com.cn ( [223.112.234.130])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 19 Dec 2023 15:08:31 +0800 (CST)
+X-QQ-SSF: A0400000000000B0B000000A0000000
+X-QQ-FEAT: 7jw2iSiCazpTuf3ufex+zEZe9A3pw00ThJB+7xmzyuM0CKEdN4CCp2/95iL+l
+	gi0O8Rh90UjemHU5EyxxRFM7qmxcAhmELo7vtJBG9gvoqU91ErNV21DO7eRaemURBBjO9VV
+	9TgBtV7wWJiHalLlIpXHl7WjiQ+MYMP0vaCosGGwbPR7C2MepKLKN9w+KrMKAFlf48jw2p/
+	MLaxo28Nsb0iL+hg8TxuTKvEHB4IU1+a9wn/bK+VbQ1I0k6MTMlnJEOwKPcWGDFxw4bFx69
+	Xt4Gf1I6Vn/QUWbi7ts+luK0UoxJJrrkXmPIdccjOzrE2yT5zndNbnRhsq+udqzuNLYx696
+	UARMdXxt8bHlVLw8MAb63u8+zd3sUJpjRQhTE1HFSFHiw/M8Z9obk9dhNdWjAA6Oh9wCg1m
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 4276673365079671435
+From: "JiaLong.Yang" <jialong.yang@shingroup.cn>
+To: Alex Shi <alexs@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: 2738078698@qq.com,
+	"JiaLong.Yang" <jialong.yang@shingroup.cn>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Docs/zh_CN: Fix the meaning of DEBUG to pr_debug()
+Date: Tue, 19 Dec 2023 15:08:13 +0800
+Message-Id: <20231219070813.29161-1-jialong.yang@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231211082510.262292-1-chentao@kylinos.cn>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.73
-X-Spamd-Result: default: False [0.73 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(0.03)[52.49%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,hotmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,hotmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
-On Mon, Dec 11, 2023 at 04:25:10PM +0800, Kunwu Chan wrote:
-> kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure.
-> 
+Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+---
+ Documentation/translations/zh_CN/core-api/printk-basics.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If you check kobject_uevent_env(), you will find the NULL pointer dereference
-won't happen. Sending env[1] or env[2] as NULL into kobject_uevent_env() just
-results an unexpected udev event message, IMHO it is better than nothing.
-
-> Cc: Kunwu Chan <kunwu.chan@hotmail.com>
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-
-Why this patch is Cced to another email address of same person?
-
-Thanks.
-
-Coly Li
-
-> ---
->  drivers/md/bcache/super.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 1402096b8076..40b657887d3b 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1053,6 +1053,12 @@ int bch_cached_dev_run(struct cached_dev *dc)
->  		NULL,
->  	};
->  
-> +	if (!env[1] || !env[2]) {
-> +		pr_err("Couldn't create bcache dev <-> fail to allocate memory\n");
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
->  	if (dc->io_disable) {
->  		pr_err("I/O disabled on cached dev %pg\n", dc->bdev);
->  		ret = -EIO;
-> -- 
-> 2.39.2
-> 
-> 
-
+diff --git a/Documentation/translations/zh_CN/core-api/printk-basics.rst b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+index 59c6efb3fc41..cafa01bccff2 100644
+--- a/Documentation/translations/zh_CN/core-api/printk-basics.rst
++++ b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+@@ -100,7 +100,7 @@ printk()的用法通常是这样的::
+ 
+ 为了调试，还有两个有条件编译的宏：
+ pr_debug()和pr_devel()，除非定义了 ``DEBUG`` (或者在pr_debug()的情况下定义了
+-``CONFIG_DYNAMIC_DEBUG`` )，否则它们会被编译。
++``CONFIG_DYNAMIC_DEBUG`` )，否则它们不会被编译。
+ 
+ 
+ 函数接口
 -- 
-Coly Li
+2.25.1
+
 
