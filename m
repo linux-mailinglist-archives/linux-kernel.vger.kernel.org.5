@@ -1,80 +1,73 @@
-Return-Path: <linux-kernel+bounces-5477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B32D4818B18
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:23:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19660818B1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:24:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF8721C24688
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:23:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79E17B23442
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DF41CA83;
-	Tue, 19 Dec 2023 15:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397531D53F;
+	Tue, 19 Dec 2023 15:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XgV222GR"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="UivCMGxT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506FA1D533;
-	Tue, 19 Dec 2023 15:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d13e4f7abso28742785e9.2;
-        Tue, 19 Dec 2023 07:23:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460BD1D148
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d38e51cab3so9870705ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:23:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702999388; x=1703604188; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xpNIUdgm1xKEgSk1LoKphgMBJlifkTP5txFZXlU5p74=;
-        b=XgV222GR+RIvOkm8CXNM2fTbLZM+cDQ/w5ChyrKDgm9uWGE/RTzRSFDbUaDpFaoRdK
-         LYONjznfCXWuQBDSPIrbJ/nRte62koRidv6VF84xlG8bZyMOgxZ1PkbSLaEKBBVCT+nI
-         s6YdBH9+d78BUshgPSfurWYYayzVfT+D9CeJkvohXpOsCDjs7Sim18JImqQv5/64P0pz
-         G+nR3koc0zYy8654bb1J/RVldhiI/m7zCqwKkIAQ64rhxD2DTMGhHP7umukYGYc7VRB3
-         TEMpIULtwo2xiDWyV3f571wjMIZj53EsBGUiLhSXo7PjkYlZZEDg+hOau9MFKZ/3ikgP
-         qGbA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1702999410; x=1703604210; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f0UOZ8VrL/oouNYdqSXbbgETnT3D/EQ3t1zUq6Qh2Js=;
+        b=UivCMGxTSx94MzV0UFNQSLKrR34mNVFNCUFcH29GipSktwPh9zpXEAeVPKwgr3pQdv
+         GS3lRlmEJvqn8c+y+zkk8dDB6wYqpGk+kv/14QNdAkujw/le+r5sQOXO5O3GFGS4xGF4
+         JPp6xDMDYGC78EDA4iIs5UvZRmKuV3lhDHBGLQ0XHF939YQCWYNDZphgnkCMcSjosUzm
+         1XGUE+WXgncC8grl7cATyNMolA/rYnYhqTYH0ZPgmSVdSNTybqgw97tLiLZhoDRFUuzI
+         I9lUHgUIJQ6XJUpZOOGfaiCGkp3F0iYLDrLhGaUa/bw5dbQ4vZzCyxiblh1kfIw3WEcj
+         ExsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702999388; x=1703604188;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xpNIUdgm1xKEgSk1LoKphgMBJlifkTP5txFZXlU5p74=;
-        b=mtXI0GMZf4+CpK0Ny1AB5znN8RWxcYbC8PxX+URNDJfwjk1nP7LSLFcNfraVTO4Kao
-         u3thFSkvn1gXZaQXrVXMmQCEAZi3Jw+VksHziAr8FVrN2+3OYQ9gHq8fsKLHMLSivjo4
-         lx8wp+m9F7hLQGPaBtrDPz7urlOpyNSb529VXAis/x9sYPxBv2x91dg6blXLi559SLXA
-         zVy0TCQF1g9jtCTNDrE3lspCQ3eHrRy6QQfhPYclzj/4tSGKD4wIeXTLOui56HauXRPG
-         4NpWcXeI1kECGjqeuW0agqg94llZlgNa7fHxGb3DvZNf3W30fOSrQjlbLIgN89NJdDGp
-         xKYQ==
-X-Gm-Message-State: AOJu0YyWVUwj4refRQ5TXe3KCdm2ZuBl17rTPOBrN0ohsJGlenWizJjd
-	9FQDazfkswv/JRwZSgw8ZkA=
-X-Google-Smtp-Source: AGHT+IHhPjly3v7Sdop+BFjikOaHSUhil1aU6xIVfY1uk6KdqVl2aWvUISAltvTjKE2rE4sIFpBacw==
-X-Received: by 2002:a05:600c:45cb:b0:40d:2522:1164 with SMTP id s11-20020a05600c45cb00b0040d25221164mr716333wmo.82.1702999388209;
-        Tue, 19 Dec 2023 07:23:08 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id b3-20020adff903000000b003366aad3564sm4687202wrr.30.2023.12.19.07.23.07
+        d=1e100.net; s=20230601; t=1702999410; x=1703604210;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f0UOZ8VrL/oouNYdqSXbbgETnT3D/EQ3t1zUq6Qh2Js=;
+        b=hAkf3kjTlRKMLO14QDY6j7ER0ufA4iZ1UwoIoh4ed2kXRiJUH12wS4nBaql4TQA6l/
+         YFuWGciDcNB5syrhiI/wdXv2f4GB4wBoPf7G4tPKHZgBm3r+oI29UhfJWfoJDrKydb+F
+         gItMyQ5OYazpN0rqYss7lShN1sqDgcfL3XTW15zIBzWk2TZcMIMsKgud4jiCbyMKq14U
+         W5D1dGBcRg4ObD7ipCqdwtknW7L51FO2h0xiGiSS+9ZOqdHW/O/0grA0t0OUqK4hwfy3
+         hg7dFMOeJMd9hiENbsPur57S7dLTSVSk0RAj3flsqgjmxOLV9FinceK+23mD6+OmwCfj
+         Zzug==
+X-Gm-Message-State: AOJu0YwjDZEuxpbIuaAX0UrAL5DgJnCaRcRPG+8V9OGsAruKrFldKy5a
+	dfBut9pVruW5SuMtDWm1hvUAHPgcxrdH0lTWz5EO3A==
+X-Google-Smtp-Source: AGHT+IHh9ZJ35UY/PHwE29mi3IVPdXNAs3MelG+vc1BesnepllatXTbWOB526Oi6etCKPHV+dvEv2Q==
+X-Received: by 2002:a17:902:b18d:b0:1d0:80db:a841 with SMTP id s13-20020a170902b18d00b001d080dba841mr35939110plr.3.1702999410070;
+        Tue, 19 Dec 2023 07:23:30 -0800 (PST)
+Received: from [127.0.0.1] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id jw20-20020a170903279400b001d36df58ba2sm9877965plb.308.2023.12.19.07.23.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 07:23:07 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] samples/bpf: use %lu format specifier for unsigned long values
-Date: Tue, 19 Dec 2023 15:23:07 +0000
-Message-Id: <20231219152307.368921-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 19 Dec 2023 07:23:29 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: penguin-kernel@i-love.sakura.ne.jp, linan666@huaweicloud.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com, 
+ yangerkun@huawei.com
+In-Reply-To: <20231219075942.840255-1-linan666@huaweicloud.com>
+References: <20231219075942.840255-1-linan666@huaweicloud.com>
+Subject: Re: [PATCH] block: add check of 'minors' and 'first_minor' in
+ device_add_disk()
+Message-Id: <170299940902.460104.1563250346911093809.b4-ty@kernel.dk>
+Date: Tue, 19 Dec 2023 08:23:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,37 +75,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-7edf1
 
-Currently %ld format specifiers are being used for unsigned long
-values. Fix this by using %lu instead. Cleans up cppcheck warnings:
 
-warning: %ld in format string (no. 1) requires 'long' but the argument
-type is 'unsigned long'. [invalidPrintfArgType_sint]
+On Tue, 19 Dec 2023 15:59:42 +0800, linan666@huaweicloud.com wrote:
+> 'first_minor' represents the starting minor number of disks, and
+> 'minors' represents the number of partitions in the device. Neither
+> of them can be greater than MINORMASK + 1.
+> 
+> Commit e338924bd05d ("block: check minor range in device_add_disk()")
+> only added the check of 'first_minor + minors'. However, their sum might
+> be less than MINORMASK but their values are wrong. Complete the checks now.
+> 
+> [...]
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- samples/bpf/cpustat_user.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied, thanks!
 
-diff --git a/samples/bpf/cpustat_user.c b/samples/bpf/cpustat_user.c
-index ab90bb08a2b4..356f756cba0d 100644
---- a/samples/bpf/cpustat_user.c
-+++ b/samples/bpf/cpustat_user.c
-@@ -66,10 +66,10 @@ static void cpu_stat_print(void)
- 
- 		printf("CPU-%-6d ", j);
- 		for (i = 0; i < MAX_CSTATE_ENTRIES; i++)
--			printf("%-11ld ", data->cstate[i] / 1000000);
-+			printf("%-11lu ", data->cstate[i] / 1000000);
- 
- 		for (i = 0; i < MAX_PSTATE_ENTRIES; i++)
--			printf("%-11ld ", data->pstate[i] / 1000000);
-+			printf("%-11lu ", data->pstate[i] / 1000000);
- 
- 		printf("\n");
- 	}
+[1/1] block: add check of 'minors' and 'first_minor' in device_add_disk()
+      commit: 4c434392c4777881d01beada6701eff8c76b43fe
+
+Best regards,
 -- 
-2.39.2
+Jens Axboe
+
+
 
 
