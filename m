@@ -1,72 +1,55 @@
-Return-Path: <linux-kernel+bounces-5896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8762A819137
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:11:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BC878191AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F35F6B24892
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:11:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07919287482
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B29FD39AC4;
-	Tue, 19 Dec 2023 20:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDFC39AC4;
+	Tue, 19 Dec 2023 20:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="MkPrScov"
+	dkim=pass (2048-bit key) header.d=brun.one header.i=@brun.one header.b="HZDwUo/H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECB13986C
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33664b4e038so2845365f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:11:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703016668; x=1703621468; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eKIwE+5cUM1YHQTlDvspjas01+2C8lRyX9Kr4YHxh9w=;
-        b=MkPrScovR7/YPKAFyTvi7Ln40iS45rJG9r+CpP4WjLbNVo8DDWsZZF1hEUr3nLfDz2
-         Ge7nFGMAeGzTpOIcghdpou1OiUcNq0Hru4HZKHZwEphD92zYPufQDO98txLFKbTUNFZc
-         YaYBzoTBsTbDH/1SfrFrUIY1DSsCn8ad0THHftE3fGCWO0uWizxbxU4+53J+BvGMwXwA
-         FOZXByrS7aM0HJQ+VXnJ4nTGBWNA4pBYKgIyIHL+gC2V4gyFNTvo7aEY3DEje7sh6Pkk
-         PEwPf9HaLgassa8FypCR3Ze38GRAK0urF3XvF48IP6Bjj2w2edCs0vbHAtX5zQ9joSSk
-         fV2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703016668; x=1703621468;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eKIwE+5cUM1YHQTlDvspjas01+2C8lRyX9Kr4YHxh9w=;
-        b=kWj1oTo9bSpQNonp9bdnf37Kl29AfVrlE35i0JXrZhZ+ezO+MfBkjidzvwyAUCT9nN
-         oJjDVPxOM9d5n8w7/IJaXJDaJ07wSP25rEzzUJzaLboRM5B0iqVcVGW0Jd7CgDVN/L1d
-         0SRHYZlykJybVSWGaYQ+QL1hV/HWa+9vmd59swvQDJHMa6xTOs0Uh2cQbQCXl/JwbkSh
-         rSMWf0OPIBG6Yc0nj1Kdd226QylGOjKo5OpV3RCZRJsjBTTIu02nLItcy2VTET6A91XV
-         9ZypQnk93ZWEw47JOiQNu6D9uUdGiMdOgV7YHG59/YDH1NC/4Aio904MBt6uroensEWU
-         B8hg==
-X-Gm-Message-State: AOJu0YxjpJGiD7nILcK9FWsy+EMu/w85iqcRjVRhosPFE+A3UMBC6sNm
-	ZACDibwFHKaDvLU58EfeDSJ9n8ZdYtc1LztAyd8=
-X-Google-Smtp-Source: AGHT+IGVjLp1ideSdQfZT5iaXGEDl4v6lNQQmUdDMZiKSmn61aihOOR64K7Bc+JkP9rFVQl7aAFdlQ==
-X-Received: by 2002:adf:e547:0:b0:336:779e:7a2a with SMTP id z7-20020adfe547000000b00336779e7a2amr242632wrm.94.1703016667367;
-        Tue, 19 Dec 2023 12:11:07 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:bfd0:6ab0:50e2:7f18])
-        by smtp.gmail.com with ESMTPSA id e17-20020a5d5011000000b00336344c3c3fsm16402752wrt.90.2023.12.19.12.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 12:11:07 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Kent Gibson <warthog618@gmail.com>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [RFC PATCH] gpiolib: remove extra_checks
-Date: Tue, 19 Dec 2023 21:11:02 +0100
-Message-Id: <20231219201102.41639-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF08039AC7;
+	Tue, 19 Dec 2023 20:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=brun.one
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=brun.one
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
+	s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
+	References:From:To:Subject:Date:Message-ID:Reply-To;
+	bh=zv1tp5EJGy8vjqEhUz2XKQPecD+fBNOlCqIMeS8hFok=; b=HZDwUo/HPafCCF6LR6WBQcfZB0
+	W/7uxNvRnhBNOfvvH7YLkV34y29UK0zD7dytiRTcakH0Lo20grPg17B1cnOTAx2jf5Xsam/Ev+Qt2
+	rO2K5x/z+iZbMB8nFA9KYKeJDoXTmFv0RQsJUTbUmybP/X+T4h3PZNjKu+F9eAdlrwAsYSQHZWYU3
+	v5+NKDpn+uuQhfFyWRX5QlOAXvCqHFvz8ylnFp8OEok11hNlH+OOx8ruh2a7v7xF0pzsQbACubwqc
+	7r32ZKNkXe780MnPvE1iA+rO6HkCCjCh/vePDlQHjm7eR3g99EQDUVQ1fLVj7YUMIrp48gGBY74oY
+	Al4B57rA==;
+Received: from [212.51.153.89] (helo=blacklava.cluster.local)
+	by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <lorenz@dolansoft.org>)
+	id 1rFgUr-000rhY-1N;
+	Tue, 19 Dec 2023 20:15:21 +0000
+From: Lorenz Brun <lorenz@brun.one>
+To: James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda: cs35l41: Add HP override
+Date: Tue, 19 Dec 2023 21:15:11 +0100
+Message-ID: <20231219201513.2172580-1-lorenz@brun.one>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,125 +57,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: lorenz@dolansoft.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+This adds an override for a series of notebooks using a common config
+taken from HP's proprietary Windows driver (csaudioext).
 
-extra_checks is only used in a few places. It also depends on
-a non-standard DEBUG define one needs to add to the source file. The
-overhead of removing it should be minimal (we already use pure
-might_sleep() in the code anyway) so drop it.
+This has been tested on a HP 15-ey0xxxx device (subsystem 103C8A31)
+together with another Realtek quirk and the calibration files from the
+proprietary driver.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Lorenz Brun <lorenz@brun.one>
 ---
- drivers/gpio/gpiolib.c | 31 +++++++++----------------------
- 1 file changed, 9 insertions(+), 22 deletions(-)
+ sound/pci/hda/cs35l41_hda_property.c | 59 ++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index c9ca809b55de..837e9919bf07 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -47,19 +47,6 @@
-  * GPIOs can sometimes cost only an instruction or two per bit.
-  */
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index c83328971728..8135ea532a94 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -6,6 +6,7 @@
+ //
+ // Author: Stefan Binding <sbinding@opensource.cirrus.com>
  
--
--/* When debugging, extend minimal trust to callers and platform code.
-- * Also emit diagnostic messages that may help initial bringup, when
-- * board setup or driver bugs are most common.
-- *
-- * Otherwise, minimize overhead in what may be bitbanging codepaths.
-- */
--#ifdef	DEBUG
--#define	extra_checks	1
--#else
--#define	extra_checks	0
--#endif
--
- /* Device and char device-related information */
- static DEFINE_IDA(gpio_ida);
- static dev_t gpio_devt;
-@@ -2351,7 +2338,7 @@ void gpiod_free(struct gpio_desc *desc)
- 		return;
- 
- 	if (!gpiod_free_commit(desc))
--		WARN_ON(extra_checks);
-+		WARN_ON(1);
- 
- 	module_put(desc->gdev->owner);
- 	gpio_device_put(desc->gdev);
-@@ -3729,7 +3716,7 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_persistent);
-  */
- int gpiod_get_raw_value_cansleep(const struct gpio_desc *desc)
- {
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	VALIDATE_DESC(desc);
- 	return gpiod_get_raw_value_commit(desc);
++#include <linux/acpi.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/string.h>
+ #include "cs35l41_hda_property.h"
+@@ -81,6 +82,42 @@ static int hp_vision_acpi_fix(struct cs35l41_hda *cs35l41, struct device *physde
+ 	return 0;
  }
-@@ -3748,7 +3735,7 @@ int gpiod_get_value_cansleep(const struct gpio_desc *desc)
- {
- 	int value;
  
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	VALIDATE_DESC(desc);
- 	value = gpiod_get_raw_value_commit(desc);
- 	if (value < 0)
-@@ -3779,7 +3766,7 @@ int gpiod_get_raw_array_value_cansleep(unsigned int array_size,
- 				       struct gpio_array *array_info,
- 				       unsigned long *value_bitmap)
- {
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	if (!desc_array)
- 		return -EINVAL;
- 	return gpiod_get_array_value_complex(true, true, array_size,
-@@ -3805,7 +3792,7 @@ int gpiod_get_array_value_cansleep(unsigned int array_size,
- 				   struct gpio_array *array_info,
- 				   unsigned long *value_bitmap)
- {
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	if (!desc_array)
- 		return -EINVAL;
- 	return gpiod_get_array_value_complex(false, true, array_size,
-@@ -3826,7 +3813,7 @@ EXPORT_SYMBOL_GPL(gpiod_get_array_value_cansleep);
-  */
- void gpiod_set_raw_value_cansleep(struct gpio_desc *desc, int value)
- {
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	VALIDATE_DESC_VOID(desc);
- 	gpiod_set_raw_value_commit(desc, value);
- }
-@@ -3844,7 +3831,7 @@ EXPORT_SYMBOL_GPL(gpiod_set_raw_value_cansleep);
-  */
- void gpiod_set_value_cansleep(struct gpio_desc *desc, int value)
- {
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	VALIDATE_DESC_VOID(desc);
- 	gpiod_set_value_nocheck(desc, value);
- }
-@@ -3867,7 +3854,7 @@ int gpiod_set_raw_array_value_cansleep(unsigned int array_size,
- 				       struct gpio_array *array_info,
- 				       unsigned long *value_bitmap)
- {
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	if (!desc_array)
- 		return -EINVAL;
- 	return gpiod_set_array_value_complex(true, true, array_size, desc_array,
-@@ -3909,7 +3896,7 @@ int gpiod_set_array_value_cansleep(unsigned int array_size,
- 				   struct gpio_array *array_info,
- 				   unsigned long *value_bitmap)
- {
--	might_sleep_if(extra_checks);
-+	might_sleep();
- 	if (!desc_array)
- 		return -EINVAL;
- 	return gpiod_set_array_value_complex(false, true, array_size,
++/*
++ * HP 2-channel I2C configuration with internal boost (4.1A inductor current) with no _DSD,
++ * reset GPIO can still be extracted from ACPI by index. Covers HP configurations 251, 252,
++ * 253, 254, 351, 352 and 353 in the proprietary driver (csaudioext).
++ */
++static int hp_i2c_2ch_vbst_ipk41(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
++			      const char *hid)
++{
++	// In case a valid _DSD exists, use that instead of the override. This stops applying
++	// the override in case HP ever fixes their firmware.
++	if (device_property_count_u32(physdev, "cirrus,dev-index") > 0)
++		return -ENOENT;
++
++	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
++
++	cs35l41->index = id == 0x40 ? 0 : 1;
++	cs35l41->channel_index = 0;
++	// Get reset GPIO (shared for both instances) from ACPI GpioIo at index 0.
++	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
++	// Speaker ID GPIO is ACPI GpioIo index 1.
++	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 1);
++
++	hw_cfg->spk_pos = cs35l41->index ? 1 : 0; // left:right
++	hw_cfg->gpio1.func = CS35L41_NOT_USED;
++	hw_cfg->gpio1.valid = true;
++	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
++	hw_cfg->gpio2.valid = true;
++	hw_cfg->bst_type = CS35L41_INT_BOOST;
++	hw_cfg->bst_ind = 1000;
++	hw_cfg->bst_ipk = 4100;
++	hw_cfg->bst_cap = 10; // Exact value unknown, maps into correct range
++	hw_cfg->valid = true;
++
++	return 0;
++}
++
+ struct cs35l41_prop_model {
+ 	const char *hid;
+ 	const char *ssid;
+@@ -92,6 +129,28 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
+ 	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
+ 	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
++	{ "CSC3551", "103C8A28", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A29", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2A", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2B", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2C", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2D", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2E", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A30", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A31", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BB3", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BB4", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BDF", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE0", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE1", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE2", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE9", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BDD", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BDE", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE3", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE5", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE6", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8B3A", hp_i2c_2ch_vbst_ipk41 },
+ 	{}
+ };
+ 
 -- 
-2.40.1
+2.42.0
 
 
