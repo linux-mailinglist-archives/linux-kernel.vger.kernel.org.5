@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-4795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC78818226
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:21:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D2081822B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8E891F26114
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:21:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0205B22D4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367A311729;
-	Tue, 19 Dec 2023 07:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B744BC134;
+	Tue, 19 Dec 2023 07:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nwIsUAO9"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hu5x89Lp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3B331170D
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7CED11183
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e3295978aso3130220e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:21:21 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso5004077a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:22:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702970480; x=1703575280; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702970522; x=1703575322; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+dIML0oZvBxYNoSKgkY6M0oM1WDmJX7GeEY9prJCus4=;
-        b=nwIsUAO9RcZHKUkAfR7IXKQnsD2lE2sOHfpcQ7NY7ufHRQcoPX/Bn+eUPPqitUuiSG
-         C3ftDblW5YI7yf/L1xKKejbnIQTvChnIPFBFL6QC2syjOOTsjx00cRzU5OXtDRuwDajH
-         694L2pNgq4kk9kyW1KTu2tUhkffQa+Hh6ShAmUu4+557+7+C65Xbx9dA9KvZ1uOcsR3r
-         RzO+cdEValAuloFe89sZgBCAEVGI6UcQdOjFPMB2PLjLMgK1RZDWEUTCnXcW/KAKVq0i
-         JkVbBxH9fa5ylVggJjFDQxvpbep1rFlvdr9egx8RbGAKiMxPL41sVGYz2RL1kRI4jpUf
-         gCVw==
+        bh=q2d956jQ4Jn2yMn5fgzPx6GZkZa19K3KM3F0UqXtKxk=;
+        b=hu5x89LpVzk4qUbC0OuQM3nU5BpSTnyLbWKXvXo70DtPnT49I0jMvxAUbWOGWU9xgK
+         INydVkyDV0DzO1hR4kl0PhJX1PxCHaEDF9OjGN/WTflfagvvs0q6UQlOI/xXClMY3rXb
+         Ho1qRS1/1stEQv0IHazBTNv3uUhXz7ThHdY8aKOvdZfUDUkZ9eg/BNhM3r19RG7OcyIY
+         SyHeYXCR44j204O7qmS6thrb8pZ+ohYUssJynWHgcEkhOryrd5bH1F1KrbZTe4E8B7yq
+         2tcki5gSuJKhFU3AP+3k7rNEv4w7AdO9exfljfud1KhgF5IjIxp61fBpZLr/9OgFpDjo
+         jduA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702970480; x=1703575280;
+        d=1e100.net; s=20230601; t=1702970522; x=1703575322;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+dIML0oZvBxYNoSKgkY6M0oM1WDmJX7GeEY9prJCus4=;
-        b=i+1g8SyIXXamFUCOm1fDjKOO8yUALszzuvAelgBNhy5JqNcbodxKMjWSIfthUrL3tk
-         dxA8aHFr8rZL4rWYHALYJzKopezuriNtl7WYUb9/jxaiFSvIsNM4c+SVyysbjpjxnW2k
-         oLTVh6cLXxbNve1/lq7PzYbDkN3SgqR9dzARM7zQaymuZXc7ERPVHdux56ePmwa2+Iyc
-         eCkYi0aH1ItqOCJm/TjWf/OSBn+FKuvmVNjqcfH9Y4eYDnq9H6ZxbeeF7F0Q9whxAmxe
-         EDESDD4u96Um0SHWAldMchpeyzN0PYfFXYdBtQVbvoOK+cOMlFKRM6KMFqe9iSHy37I8
-         KuiA==
-X-Gm-Message-State: AOJu0YwutGQ7HO/mM+9+n1FtWBQ5OKO2qaRQ+CrtJFXz9x1oo7nwgwoy
-	CTP5a7MRe0YxoLRl7Acp/NZKvQ==
-X-Google-Smtp-Source: AGHT+IGf1lw1O2EXgwQVWPz+SkmsQcvtv374FxjrP5hSlPzHOpW3dA9Pf/02B52HH3maY2x/x/ldOQ==
-X-Received: by 2002:a05:6512:4013:b0:50e:1b50:fcec with SMTP id br19-20020a056512401300b0050e1b50fcecmr5757818lfb.70.1702970479936;
-        Mon, 18 Dec 2023 23:21:19 -0800 (PST)
+        bh=q2d956jQ4Jn2yMn5fgzPx6GZkZa19K3KM3F0UqXtKxk=;
+        b=v1dpBEA71f/TwcKt1b659R1U7i4FOFjjMU2EaWjgOtesmzxbczHe16Gq9F4R7nTTEy
+         Dfmrfws89WIKhO2OaeLP19oip7lg1j3ho4nDRKrjfuLsYNDNxoqM22JBM+POvy8XdXpy
+         /jc2KRTQc5tLQLdVxUPxY7kpoEwRPvjqxAcS0x6Z1tthqgm2LDxPa3wFSJI+f6nW2xqF
+         WEuyNolYCx7ZvrVnzm8/CA0zFcqlYXJiuD6IDHhxIK7uL7Hj+13+Xgb5OWV6iXBKgHWj
+         rY8YNMM1fU9utJDrVId1gRY+hVrVw0X2TLXG9HP4GghDisbwfhHEZiZk+GRy7Y/8sl+F
+         J+jA==
+X-Gm-Message-State: AOJu0YwpoYLsWs0QIgKO7wz1v1U61Ui0s8GQurJ6I6myEUDC4ZWqVg6e
+	lrlDa3v/CgqlsgbIzZkBW+B7HA==
+X-Google-Smtp-Source: AGHT+IEnYt8wHMtxInCD5RB0KwUR61Z6V/xeJUjLsCEv5MbTD0exxywCKlNt5VMgmlthk7u+Wm40HA==
+X-Received: by 2002:a17:906:2259:b0:a23:5239:bcb3 with SMTP id 25-20020a170906225900b00a235239bcb3mr1774798ejr.147.1702970522052;
+        Mon, 18 Dec 2023 23:22:02 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id mj16-20020a170906af9000b00a2368de9471sm1132449ejb.202.2023.12.18.23.21.18
+        by smtp.gmail.com with ESMTPSA id mj16-20020a170906af9000b00a2368de9471sm1132449ejb.202.2023.12.18.23.22.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 23:21:19 -0800 (PST)
-Message-ID: <61c15b50-5bb9-4288-a2dd-efc695f4a6f6@linaro.org>
-Date: Tue, 19 Dec 2023 08:21:17 +0100
+        Mon, 18 Dec 2023 23:22:01 -0800 (PST)
+Message-ID: <a630b011-4ad0-49d1-8076-647bc44f9d08@linaro.org>
+Date: Tue, 19 Dec 2023 08:22:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support
- for 74165b0
+Subject: Re: [PATCH v4 2/2] mmc: add new sdhci reset sequence for brcm 74165b0
 Content-Language: en-US
 To: Kamal Dasu <kamal.dasu@broadcom.com>, ulf.hansson@linaro.org,
  linux-kernel@vger.kernel.org, alcooperx@gmail.com,
@@ -78,7 +77,7 @@ To: Kamal Dasu <kamal.dasu@broadcom.com>, ulf.hansson@linaro.org,
 Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
  Kamal Dasu <kdasu@broadcom.com>
 References: <20231218210705.38201-1-kamal.dasu@broadcom.com>
- <20231218210705.38201-2-kamal.dasu@broadcom.com>
+ <20231218210705.38201-3-kamal.dasu@broadcom.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,22 +123,27 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231218210705.38201-2-kamal.dasu@broadcom.com>
+In-Reply-To: <20231218210705.38201-3-kamal.dasu@broadcom.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 18/12/2023 22:07, Kamal Dasu wrote:
 > From: Kamal Dasu <kdasu@broadcom.com>
 > 
-> With newer sdio controller core used for 74165b0 we need to update
-> the compatibility with "brcm,bcm74165b0-sdhci".
+> 74165b0 shall use a new sdio controller core version which
+> requires a different reset sequence. For core reset we use
+> sdhci_reset. For CMD and/or DATA reset added a new function
+> to also enable SDHCI clocks SDHCI_CLOCK_CARD_EN
+> SDHCI_CLOCK_INT_EN along with the SDHCI_RESET_CMD and/or
+> SDHCI_RESET_DATA fields.
 > 
 > Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
 > Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202312101146.IK4Nrw1S-lkp@intel.com/
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312091608.0VbkRxlh-lkp@intel.com/
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312091905.UGzltx8A-lkp@intel.com/
 
-What was reported by robot? New SoC? You already received such feedback!
-This does not make any sense.
+So again: drop the tags. Please reach to your Broadcom folks to get some
+basic guidance on submission process.
 
 Best regards,
 Krzysztof
