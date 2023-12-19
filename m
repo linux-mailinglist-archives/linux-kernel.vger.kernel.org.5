@@ -1,205 +1,169 @@
-Return-Path: <linux-kernel+bounces-5701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D97818E4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:39:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD567818E54
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B87A5B235FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:39:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5314A1F26900
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDAC37D0F;
-	Tue, 19 Dec 2023 17:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB58B374E7;
+	Tue, 19 Dec 2023 17:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ueQlHyJ+"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="Q/2bEyvg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453FC37D05
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3630956a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:38:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703007529; x=1703612329; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dwB1tsO1zuR2AK7X6AAFLPcDtCqSfV+mkwSgMHXNxAo=;
-        b=ueQlHyJ+xMGhbUp9baWdifmx5eQnY9WbJ5tpkMiYd7NyDeYPzpk4xIxiaFlBb+xvsf
-         Ke5LW72V/MsvR6B8LnRhtK2Mzeggyg3i5yoSZkBgvMoR+90LqfFPNplQLFUMSNRnRI8D
-         MOO4yoAlCtZpwkPyzEHoYJbnsYV8W/9QSG0glWT7H9tNvrFL/IEtJ8ilPUBXk84Uyfhc
-         8WD0KQA7BiZ3d7lMB2hpr9yDh7nd3aRbntVpcYsEsLd34JX5AIc0B0vvc9jSxPNqRps+
-         cyupxS+FHU4BPeK0ubNqaS8wPPfU3UnQ9qq/Qf5t+4mFYRR9yY5xK8q/3kLn3TR8tdIv
-         6QiQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B1431747
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3469B3F2C1
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:39:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1703007598;
+	bh=5lC8up460sffE6lEtHTKhMldznfJD/U8bnCN2AOssbw=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=Q/2bEyvgF5s94CKiZDa8SvGYclCMz/j2EuXkk4C6Z7l2OdvFVUNAUuGiNH8D+rlEz
+	 2xAg9ZS4kFFfYMIvnZ/NoV8VYK+ddmyONWjvkvAZoORR3fsCflka4T+el4uqvOnUxA
+	 5vU/Bip0Pu7zpIw9jBQWkFXtP5oOnwNso4N8nlagWVXj0OZQZz21G6FP4HjQW1M0wa
+	 v7zCC+xVZi6uHMb4m0SiIGsV4Uw8KVGQorSQGvjUMxVFVeqbQq35yyyW0b6NcUynUG
+	 TYMvumnuc6V0cbHC3WRRonV4BSvVH0kM4oc58RmyL0ocf+OkChadFnTguPLAkQ379K
+	 rpgRCw+0lCn5A==
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-42780de6a7eso4106671cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:39:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703007529; x=1703612329;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dwB1tsO1zuR2AK7X6AAFLPcDtCqSfV+mkwSgMHXNxAo=;
-        b=tYeHB+E5pc4YfEotSkuX5NLas/i+7QMUxjOCW0iVNCSwXoDUVuD4rcGBfSGa6Bkv0b
-         YPB1pSTCL7DbyVGdZMOVzVMbiWyisBIEKFdYlnL7xAAiVgCDOsJfJ3NKea2NbtlSkXsm
-         5dA4gqTp9kiNeSIvP/mSg/S3uhVGwff6E2gjyqXkYN1xC57wgMKtAfb3z8biYA65cWVk
-         VEgtIDjviPpNBmhxJ+SI+XW0v1wcczy9aupEiTSw4MT9Ihuve+LXiqgLyWAQRTH0ZLye
-         FkOnifwQBbsr4QzOr4d+5wjtkhuQOc7Gvy8eM9A7amO6/7WG9i9zVRC9pjxfk5LwYZ6M
-         J+wA==
-X-Gm-Message-State: AOJu0YwzFF1EoeZLLNCggtPXSoaY+tnGngyxAzhlI3+/l8sawJPXeggx
-	PQlRWY97xfAoIFWsTssAg0LmLwz78KeDd8EsZ6YCLg==
-X-Google-Smtp-Source: AGHT+IEwIu9896ZvQLJsVC5cTxv5Mcs36G5G7vSA/PChLzH96p9RCGLs6sfGU3Jmhug0TpZpLRxLaypwEkqina2tC78=
-X-Received: by 2002:a17:902:e88a:b0:1cc:43af:f568 with SMTP id
- w10-20020a170902e88a00b001cc43aff568mr22468704plg.6.1703007529566; Tue, 19
- Dec 2023 09:38:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703007595; x=1703612395;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5lC8up460sffE6lEtHTKhMldznfJD/U8bnCN2AOssbw=;
+        b=iY98MYloyrFi9HuKN2MYjAw94bKxFqoRxtg/RmyXRWWQs4174BqAZ5FxSmSH4O0hz/
+         TrB12XAKDKuisatqnuHHJAHoc4zwjNjd/uTy/Wp1skdecZFondSAa85C25le4taW1RUp
+         GSbH3eEEnqcMAMXmPjnJDy4cJlIZeQb2CDJuWeXmbTlw3Gby+XkR090RDroZsn3cPGlV
+         9YxJNzeukaYQUyL/zkhdJOddd+Vi4Pc4a2CzuKMe9IInRjkiyHx3LO5I1HrVO/P7mGt0
+         ja647TpNA4K5qGvggwKa8SNXz9M5oARfhLkX/JhGgufvSbohhF9hZczAp0YwTh8amBqd
+         zOdQ==
+X-Gm-Message-State: AOJu0YxYGkYX3NNSrpHAr7U+o5ml+GD7LcQsu+WH82CY8rHPRbLrYIEm
+	snrh58qtQjosXS1J4zzr199dR0DHfha3VMz9P8TVatPAgjH4qUwdu5B/N/uflsm8ByzXKLVn/AI
+	btYGzKFnM3GnKdWQHFDEXzqsxTrx7X5Zeu+4xa0QbNgwd/f1rTJAwJ/bkMg==
+X-Received: by 2002:a05:622a:19a9:b0:425:a117:90ec with SMTP id u41-20020a05622a19a900b00425a11790ecmr23114927qtc.66.1703007595438;
+        Tue, 19 Dec 2023 09:39:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHDTi89p4XgTEJbjNfwK+23dRywS9hQShScl1IpS3D4x4FXvIT3lk//qypTp5LCDwvH0SoDqu6Meoi8IDWfUkI=
+X-Received: by 2002:a05:622a:19a9:b0:425:a117:90ec with SMTP id
+ u41-20020a05622a19a900b00425a11790ecmr23114920qtc.66.1703007595184; Tue, 19
+ Dec 2023 09:39:55 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 19 Dec 2023 12:39:54 -0500
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <d35d3cf480064c69b1125ba07d615446@EXMBX066.cuchost.com>
+References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
+ <20231206115000.295825-7-jeeheng.sia@starfivetech.com> <CAJM55Z_VgBGvCPuvwmQahMcMfuWKnOKpZ9bBbbhei_Teu5Apeg@mail.gmail.com>
+ <9ae86c6786bc4ac7b93c971ba00084a6@EXMBX066.cuchost.com> <CAJM55Z9GVFGuwqe=zLXQvBwDfVSz4eA2EXDd4sqWVCKJF2J+fg@mail.gmail.com>
+ <d35d3cf480064c69b1125ba07d615446@EXMBX066.cuchost.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
- <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien>
- <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
- <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien>
- <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr>
- <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com> <alpine.DEB.2.22.394.2312182302310.3361@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2312182302310.3361@hadrien>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 19 Dec 2023 18:38:38 +0100
-Message-ID: <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
-Subject: Re: EEVDF and NUMA balancing
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Mime-Version: 1.0
+Date: Tue, 19 Dec 2023 12:39:54 -0500
+Message-ID: <CAJM55Z_XZVBKr05X4QeCeDO_iMZh-FbKsikcNsDPK7iKuVEodw@mail.gmail.com>
+Subject: RE: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock generator driver
+To: JeeHeng Sia <jeeheng.sia@starfivetech.com>, 
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>, "kernel@esmil.dk" <kernel@esmil.dk>, 
+	"conor@kernel.org" <conor@kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, 
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, 
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>, 
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, "mturquette@baylibre.com" <mturquette@baylibre.com>, 
+	"sboyd@kernel.org" <sboyd@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, 
+	Hal Feng <hal.feng@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Leyfoon Tan <leyfoon.tan@starfivetech.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 18 Dec 2023 at 23:31, Julia Lawall <julia.lawall@inria.fr> wrote:
+JeeHeng Sia wrote:
 >
 >
->
-> On Mon, 18 Dec 2023, Vincent Guittot wrote:
->
-> > On Mon, 18 Dec 2023 at 14:58, Julia Lawall <julia.lawall@inria.fr> wrote:
-> > >
-> > > Hello,
-> > >
-> > > I have looked further into the NUMA balancing issue.
-> > >
-> > > The context is that there are 2N threads running on 2N cores, one thread
-> > > gets NUMA balanced to the other socket, leaving N+1 threads on one socket
-> > > and N-1 threads on the other socket.  This condition typically persists
-> > > for one or more seconds.
-> > >
-> > > Previously, I reported this on a 4-socket machine, but it can also occur
-> > > on a 2-socket machine, with other tests from the NAS benchmark suite
-> > > (sp.B, bt.B, etc).
-> > >
-> > > Since there are N+1 threads on one of the sockets, it would seem that load
-> > > balancing would quickly kick in to bring some thread back to socket with
-> > > only N-1 threads.  This doesn't happen, though, because actually most of
-> > > the threads have some NUMA effects such that they have a preferred node.
-> > > So there is a high chance that an attempt to steal will fail, because both
-> > > threads have a preference for the socket.
-> > >
-> > > At this point, the only hope is active balancing.  However, triggering
-> > > active balancing requires the success of the following condition in
-> > > imbalanced_active_balance:
-> > >
-> > >         if ((env->migration_type == migrate_task) &&
-> > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
-> > >
-> > > sd->nr_balance_failed does not increase because the core is idle.  When a
-> > > core is idle, it comes to the load_balance function from schedule() though
-> > > newidle_balance.  newidle_balance always sends in the flag CPU_NEWLY_IDLE,
-> > > even if the core has been idle for a long time.
+> > -----Original Message-----
+> > From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> > Sent: Wednesday, December 13, 2023 7:57 PM
+> > To: JeeHeng Sia <jeeheng.sia@starfivetech.com>; Emil Renner Berthing <emil.renner.berthing@canonical.com>; kernel@esmil.dk;
+> > conor@kernel.org; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org; paul.walmsley@sifive.com; palmer@dabbelt.com;
+> > aou@eecs.berkeley.edu; mturquette@baylibre.com; sboyd@kernel.org; p.zabel@pengutronix.de; Hal Feng
+> > <hal.feng@starfivetech.com>; Xingyu Wu <xingyu.wu@starfivetech.com>
+> > Cc: linux-riscv@lists.infradead.org; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-clk@vger.kernel.org; Leyfoon Tan
+> > <leyfoon.tan@starfivetech.com>
+> > Subject: RE: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock generator driver
 > >
-> > Do you mean that you never kick a normal idle load balance ?
->
-> OK, it seems that both happen, at different times.  But the calls to
-> trigger_load_balance seem to rarely do more than the SMT level.
-
-yes, the min period is equal to "cpumask_weight of sched_domain" ms, 2
-ms at SMT level and 2N ms at numa level.
-
->
-> I have attached part of a trace in which I print various things that
-> happen during the idle period.
->
+> > JeeHeng Sia wrote:
+> > > > -----Original Message-----
+> > > > From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> > > > Sent: Saturday, December 9, 2023 12:25 AM
+> > > > To: JeeHeng Sia <jeeheng.sia@starfivetech.com>; kernel@esmil.dk; conor@kernel.org; robh+dt@kernel.org;
+> > > > krzysztof.kozlowski+dt@linaro.org; paul.walmsley@sifive.com; palmer@dabbelt.com; aou@eecs.berkeley.edu;
+> > > > mturquette@baylibre.com; sboyd@kernel.org; p.zabel@pengutronix.de; emil.renner.berthing@canonical.com; Hal Feng
+> > > > <hal.feng@starfivetech.com>; Xingyu Wu <xingyu.wu@starfivetech.com>
+> > > > Cc: linux-riscv@lists.infradead.org; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-clk@vger.kernel.org; Leyfoon
+> > Tan
+> > > > <leyfoon.tan@starfivetech.com>
+> > > > Subject: Re: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock generator driver
+> > > >
+> > > > Sia Jee Heng wrote:
+> > > > > Add support for JH8100 System clock generator.
+> > > > >
+> > > > > Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> > > > > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> > > > > ---
+> > > > >  MAINTAINERS                                   |   8 +
+> > > > >  drivers/clk/starfive/Kconfig                  |   9 +
+> > > > >  drivers/clk/starfive/Makefile                 |   1 +
+> > > > >  drivers/clk/starfive/clk-starfive-common.h    |   9 +-
+> > > > >  drivers/clk/starfive/jh8100/Makefile          |   3 +
+> > > > >  .../clk/starfive/jh8100/clk-starfive-jh8100.h |  11 +
+> > > > >  drivers/clk/starfive/jh8100/clk-sys.c         | 455 ++++++++++++++++++
+> > > > >  7 files changed, 495 insertions(+), 1 deletion(-)
+> > > > >  create mode 100644 drivers/clk/starfive/jh8100/Makefile
+> > > > >  create mode 100644 drivers/clk/starfive/jh8100/clk-starfive-jh8100.h
+> > > > >  create mode 100644 drivers/clk/starfive/jh8100/clk-sys.c
+> > ...
+> > > > > diff --git a/drivers/clk/starfive/Makefile b/drivers/clk/starfive/Makefile
+> > > > > index 012f7ee83f8e..6cb3ce823330 100644
+> > > > > --- a/drivers/clk/starfive/Makefile
+> > > > > +++ b/drivers/clk/starfive/Makefile
+> > > > > @@ -10,3 +10,4 @@ obj-$(CONFIG_CLK_STARFIVE_JH7110_AON)	+= clk-starfive-jh7110-aon.o
+> > > > >  obj-$(CONFIG_CLK_STARFIVE_JH7110_STG)	+= clk-starfive-jh7110-stg.o
+> > > > >  obj-$(CONFIG_CLK_STARFIVE_JH7110_ISP)	+= clk-starfive-jh7110-isp.o
+> > > > >  obj-$(CONFIG_CLK_STARFIVE_JH7110_VOUT)	+= clk-starfive-jh7110-vout.o
+> > > > > +obj-$(CONFIG_CLK_STARFIVE_JH8100_SYS)	+= jh8100/
+> > > >
+> > > > I don't really see why do you need a special subdirectory for the JH8100? The
+> > > > JH7110 drivers do fine without it.
+> > > Each subfolder can represent a different platform, making it easier to
+> > > locate and maintain platform-specific code. Since the code is expected
+> > > to grow in the future, let's start organizing it in a folder-based structure
+> > > for easier maintenance at a later stage.
 > >
-> > >
-> > > Changing newidle_balance to use CPU_IDLE rather than CPU_NEWLY_IDLE when
-> > > the core was already idle before the call to schedule() is not enough
-> > > though, because there is also the constraint on the migration type.  That
-> > > turns out to be (mostly?) migrate_util.  Removing the following
-> > > code from find_busiest_queue:
-> > >
-> > >                         /*
-> > >                          * Don't try to pull utilization from a CPU with one
-> > >                          * running task. Whatever its utilization, we will fail
-> > >                          * detach the task.
-> > >                          */
-> > >                         if (nr_running <= 1)
-> > >                                 continue;
-> >
-> > I'm surprised that load_balance wants to "migrate_util"  instead of
-> > "migrate_task"
->
-> In the attached trace, there are 147 occurrences of migrate_util, and 3
-> occurrences of migrate_task.  But even when migrate_task appears, the
-> counter has gotten knocked back down, due to the calls to newidle_balance.
->
-> > You have N+1 threads on a group of 2N CPUs so you should have at most
-> > 1 thread per CPUs in your busiest group.
->
-> One CPU has 2 threads, and the others have one.  The one with two threads
-> is returned as the busiest one.  But nothing happens, because both of them
-> prefer the socket that they are on.
+> > Yes, but that's not what you're doing here. You're making just one of the 3
+> > almost identical drivers be different for no good reason.
+> I will restructure it for the other 2 platforms.
 
-This explains way load_balance uses migrate_util and not migrate_task.
-One CPU with 2 threads can be overloaded
+That would be less bad, but you still haven't explained why you need to move
+everything around like that:
+https://lore.kernel.org/linux-riscv/CAJM55Z_3Mty2LftPVkQC1wbwtGeznMMAk9mAjH_GoNuL7CKtaQ@mail.gmail.com/
 
-ok, so it seems that your 1st problem is that you have 2 threads on
-the same CPU whereas you should have an idle core in this numa node.
-All cores are sharing the same LLC, aren't they ?
+I don't think just "too many files" is a very good argument here. Just look at
+drivers/clk/sunxi
 
-You should not have more than 1 thread per CPU when there are N+1
-threads on a node with N cores / 2N CPUs. This will enable the
-load_balance to try to migrate a task instead of some util(ization)
-and you should reach the active load balance.
-
->
-> > In theory you should have the
-> > local "group_has_spare" and the busiest "group_fully_busy" (at most).
-> > This means that no group should be overloaded and load_balance should
-> > not try to migrate utli but only task
->
-> I didn't collect information about the groups.  I will look into that.
->
-> julia
->
-> >
-> >
-> > >
-> > > and changing the above test to:
-> > >
-> > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
-> > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
-> > >
-> > > seems to solve the problem.
-> > >
-> > > I will test this on more applications.  But let me know if the above
-> > > solution seems completely inappropriate.  Maybe it violates some other
-> > > constraints.
-> > >
-> > > I have no idea why this problem became more visible with EEVDF.  It seems
-> > > to have to do with the time slices all turning out to be the same.  I got
-> > > the same behavior in 6.5 by overwriting the timeslice calculation to
-> > > always return 1.  But I don't see the connection between the timeslice and
-> > > the behavior of the idle task.
-> > >
-> > > thanks,
-> > > julia
-> >
+/Emil
 
