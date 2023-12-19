@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-5666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A8FE818DDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:20:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10978818DF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2228BB22146
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:20:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0A1F2868B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F40E31A68;
-	Tue, 19 Dec 2023 17:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E84039855;
+	Tue, 19 Dec 2023 17:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="eg5+ieEI"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="ci4Gmm1s"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1513337145;
-	Tue, 19 Dec 2023 17:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495363715D;
+	Tue, 19 Dec 2023 17:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=HhHbtgJLUFnfTgDCXdi3cYtYacZcjPvaik0ZgmPx/5k=; b=eg5+ieEIjziTn7rV3RSBdTZFQc
-	ENwvgwAHp3L/GkvwUsDJAHJ1V1WwnWz0QaFfCccwuCsOGEhE6WLro8PONzp6NvGnFXR/7i/wVOk2Y
-	4AGjYFJhCKJFuT4LmeX632Bst13yFAzsBlcTmJXDhZWCGkDCnpI+luF7Hon9a2oo9wJk=;
+	bh=teRiT/PcWy7VJ9V99NNQOeeSZvzVxy17hbE3C1wRPvE=; b=ci4Gmm1sWAzaQsm3++CMVL9fPO
+	qVSxhUubXDTMj40TZTnvWxCo1AQ+a8BENEENLsZwFioUVOjjpnFCbM2ARQ2XxRuBzw4d+wYzsHbVY
+	KQylOUUYeM5GO/sBX33tzfHkNFwoypobk+AEUvTtq2gtU4wMpuSnJybSLWjMQPPQjU0w=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:40128 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rFdkR-0007Ao-Mo; Tue, 19 Dec 2023 12:19:16 -0500
+	id 1rFdkS-0007Ao-Pm; Tue, 19 Dec 2023 12:19:17 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -42,9 +42,10 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date: Tue, 19 Dec 2023 12:18:53 -0500
-Message-Id: <20231219171903.3530985-10-hugo@hugovil.com>
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 19 Dec 2023 12:18:54 -0500
+Message-Id: <20231219171903.3530985-11-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231219171903.3530985-1-hugo@hugovil.com>
 References: <20231219171903.3530985-1-hugo@hugovil.com>
@@ -61,86 +62,41 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH 09/18] serial: sc16is7xx: add macro for max number of UART ports
+Subject: [PATCH 10/18] serial: sc16is7xx: use HZ_PER_MHZ macro to improve readability
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Add macro to hold the maximum number of UART ports per IC/device.
+Improves code readability by making it more obvious that it is a MHz value.
 
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/tty/serial/sc16is7xx.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/tty/serial/sc16is7xx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 3fb99b6929f3..29844e2eefc5 100644
+index 29844e2eefc5..7d5eec2d0e94 100644
 --- a/drivers/tty/serial/sc16is7xx.c
 +++ b/drivers/tty/serial/sc16is7xx.c
-@@ -28,6 +28,7 @@
+@@ -24,6 +24,7 @@
+ #include <linux/tty_flip.h>
+ #include <linux/spi/spi.h>
+ #include <linux/uaccess.h>
++#include <linux/units.h>
+ #include <uapi/linux/sched/types.h>
  
  #define SC16IS7XX_NAME			"sc16is7xx"
- #define SC16IS7XX_MAX_DEVS		8
-+#define SC16IS7XX_MAX_PORTS		2 /* Maximum number of UART ports per IC. */
- 
- /* SC16IS7XX register definitions */
- #define SC16IS7XX_RHR_REG		(0x00) /* RX FIFO */
-@@ -1396,11 +1397,11 @@ static void sc16is7xx_setup_irda_ports(struct sc16is7xx_port *s)
- 	int i;
- 	int ret;
- 	int count;
--	u32 irda_port[2];
-+	u32 irda_port[SC16IS7XX_MAX_PORTS];
- 	struct device *dev = s->p[0].port.dev;
- 
- 	count = device_property_count_u32(dev, "irda-mode-ports");
--	if (count < 0 || count > ARRAY_SIZE(irda_port))
-+	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
- 		return;
- 
- 	ret = device_property_read_u32_array(dev, "irda-mode-ports",
-@@ -1423,11 +1424,11 @@ static int sc16is7xx_setup_mctrl_ports(struct sc16is7xx_port *s,
- 	int i;
- 	int ret;
- 	int count;
--	u32 mctrl_port[2];
-+	u32 mctrl_port[SC16IS7XX_MAX_PORTS];
- 	struct device *dev = s->p[0].port.dev;
- 
- 	count = device_property_count_u32(dev, "nxp,modem-control-line-ports");
--	if (count < 0 || count > ARRAY_SIZE(mctrl_port))
-+	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
- 		return 0;
- 
- 	ret = device_property_read_u32_array(dev, "nxp,modem-control-line-ports",
-@@ -1471,6 +1472,8 @@ static int sc16is7xx_probe(struct device *dev,
- 	int i, ret;
- 	struct sc16is7xx_port *s;
- 
-+	WARN_ON(devtype->nr_uart > SC16IS7XX_MAX_PORTS);
-+
- 	for (i = 0; i < devtype->nr_uart; i++)
- 		if (IS_ERR(regmaps[i]))
- 			return PTR_ERR(regmaps[i]);
-@@ -1730,7 +1733,7 @@ static unsigned int sc16is7xx_regmap_port_mask(unsigned int port_id)
- static int sc16is7xx_spi_probe(struct spi_device *spi)
- {
- 	const struct sc16is7xx_devtype *devtype;
--	struct regmap *regmaps[2];
-+	struct regmap *regmaps[SC16IS7XX_MAX_PORTS];
- 	unsigned int i;
- 	int ret;
- 
-@@ -1800,7 +1803,7 @@ MODULE_ALIAS("spi:sc16is7xx");
- static int sc16is7xx_i2c_probe(struct i2c_client *i2c)
- {
- 	const struct sc16is7xx_devtype *devtype;
--	struct regmap *regmaps[2];
-+	struct regmap *regmaps[SC16IS7XX_MAX_PORTS];
- 	unsigned int i;
- 
- 	devtype = (struct sc16is7xx_devtype *)i2c_get_match_data(i2c);
+@@ -1741,7 +1742,7 @@ static int sc16is7xx_spi_probe(struct spi_device *spi)
+ 	spi->bits_per_word	= 8;
+ 	/* only supports mode 0 on SC16IS762 */
+ 	spi->mode		= spi->mode ? : SPI_MODE_0;
+-	spi->max_speed_hz	= spi->max_speed_hz ? : 15000000;
++	spi->max_speed_hz	= spi->max_speed_hz ? : 15 * HZ_PER_MHZ;
+ 	ret = spi_setup(spi);
+ 	if (ret)
+ 		return ret;
 -- 
 2.39.2
 
