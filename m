@@ -1,212 +1,143 @@
-Return-Path: <linux-kernel+bounces-4991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C3428184EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:59:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21EBA8184EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF87A1F24C57
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:59:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 493C71C23B3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CEC1429E;
-	Tue, 19 Dec 2023 09:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 231C014273;
+	Tue, 19 Dec 2023 10:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="AGZkkQLN"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="gnUW1lZ/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E14F1426D;
-	Tue, 19 Dec 2023 09:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1702979936; x=1734515936;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ICkzegM7gZOvkNqsWhAjmgW9haK24Yiw2UCFyLlQ4ck=;
-  b=AGZkkQLNpCPEbsEuWJX078qOEHqdbsvbuobJBmeIef2SetgU7oPq03tg
-   DuWyGNmZpeM4rimR0mvSfpjp/iEZ+M17jDkMtFyEzR9JxkLdbQpviclO7
-   idIg7aHCvvajZJEwOYBm8W5GRnhYMxLylTGhSkghBq8pGdH7Hs3khcGMJ
-   8ZehVJx/hmE87kXM6uetlzF1V5Dk9X25Imp7DPbhdMGYJZmQB5vRAN0hR
-   r2yHtQqEO48g3Jj+qG3ONtdfQuF3qYNJNBI5Gt3zVJTU1cfre51CXHwQI
-   Cki7nV8M6AJ6OkCaG4BEXLAYVSKzKwyzmaHgVadiyLv8v6S67pezp2B0a
-   g==;
-X-IronPort-AV: E=Sophos;i="6.04,287,1695679200"; 
-   d="scan'208";a="34582001"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 19 Dec 2023 10:58:48 +0100
-Received: from herburgerg-w2 (herburgerg-w2.tq-net.de [10.122.52.145])
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 483E3280075;
-	Tue, 19 Dec 2023 10:58:48 +0100 (CET)
-Date: Tue, 19 Dec 2023 10:58:42 +0100
-From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-To: esben@geanix.com
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Andi Shyti <andi.shyti@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux@ew.tq-group.com" <linux@ew.tq-group.com>
-Subject: Re: Re: [PATCH] i2c: i2c-imx: allow bus recovery on non-muxable pads
-Message-ID: <ZYFpUpP0Ll5c99py@herburgerg-w2>
-References: <20231218-i2c-imx-recovery-v1-1-f69fa85b228c@ew.tq-group.com>
- <87frzyprhq.fsf@geanix.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A4214267
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3C7F6FA2;
+	Tue, 19 Dec 2023 10:59:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1702979959;
+	bh=uGzdhIOys2BO35Mxa597q42lR062dtJ4CbbQfGkusyg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gnUW1lZ/g+U1fqNPGsb8X0inQNpGbj5WmTjUowUafHFvmauKW6itB+cZuvG5WJhUy
+	 1lXQPERbaoXCQyyfKDY+UKe7QGT7uZtSY4LN23mqr/0adX0yBXaMtH98QhnPIT2LA6
+	 mXKRwe/K1RCci4HGJeNCZZYNmKvDSBJcBkYBRw2U=
+Message-ID: <77bdddbb-cb1a-4848-9249-72bb7a6cd126@ideasonboard.com>
+Date: Tue, 19 Dec 2023 12:00:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87frzyprhq.fsf@geanix.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] drm/bridge: tc358767: Fix
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR case
+Content-Language: en-US
+To: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Aradhya Bhatia <a-bhatia1@ti.com>, Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+References: <20231031-tc358767-v1-0-392081ad9f4b@ideasonboard.com>
+ <0ba64662-b49e-4132-88ea-fcb813af1270@siemens.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <0ba64662-b49e-4132-88ea-fcb813af1270@siemens.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Esben,
+On 15/12/2023 15:33, Jan Kiszka wrote:
+> On 31.10.23 14:26, Tomi Valkeinen wrote:
+>> These two patches are needed to make tc358767 work in the
+>> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP connector.
+>> The first patch, "drm/bridge: tc358767: Support input format negotiation
+>> hook" was already sent separately, but I included it here for
+>> completeness, as both are needed to get a working display.
+>>
+>> I have tested this with TI AM654 EVM with a tc358767 add-on card.
+>>
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>> Aradhya Bhatia (1):
+>>        drm/bridge: tc358767: Support input format negotiation hook
+>>
+>> Tomi Valkeinen (1):
+>>        drm/bridge: tc358767: Fix link properties discovery
+>>
+>>   drivers/gpu/drm/bridge/tc358767.c | 32 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 32 insertions(+)
+>> ---
+>> base-commit: 79d94360d50fcd487edcfe118a47a2881534923f
+>> change-id: 20231031-tc358767-58e3ebdf95f0
+>>
+>> Best regards,
+> 
+> What's the plan for these fixes? I'm not yet seeing them in Linus' tree,
+> thus also not in stable.
+> 
+> Jan
+> 
 
-On Tue, Dec 19, 2023 at 07:43:21AM +0000, esben@geanix.com wrote:
-> Gregor Herburger <gregor.herburger@ew.tq-group.com> writes:
-> 
-> > Currently the i2c-imx driver assumes that for bus recovery the i2c pins
-> > can be reconfigured as gpio via pinctrl.
-> >
-> > But bus recovery can also be done with a gpio electrically connected to
-> > i2c scl.
-> >
-> > Modify i2c_imx_init_recovery_info to allow bus recovery on platforms
-> > without pinctrl. In this case only use scl-gpio and
-> > i2c_generic_scl_recovery.
-> 
-> Why not move to use the generic GPIO recovery instead?  Will something
-> like this be able to cover at least the same scenarios as your change?
+The discussion continued in v2 of the series. There are some open 
+question in the tc358767 behavior.
 
-I was not aware of the generic GPIO recovery functions. At a first
-glance I think your solution should work. I will give it a try and test
-it on hardware.
+  Tomi
 
-> 
-> From 7e432496bae8c7ac35c21504bc1cd03f1dfef97f Mon Sep 17 00:00:00 2001
-> Message-ID: <7e432496bae8c7ac35c21504bc1cd03f1dfef97f.1702971634.git.esben@geanix.com>
-> From: Esben Haabendal <esben@geanix.com>
-> Date: Tue, 25 May 2021 11:25:44 +0200
-> Subject: [PATCH] i2c: imx: move to generic GPIO recovery
-> 
-> Starting with
-> commit 75820314de26 ("i2c: core: add generic I2C GPIO recovery")
-> GPIO bus recovery is supported by the I2C core, so we can remove the
-> driver implementation and use that one instead.
-> 
-> As a nice side-effect, pinctrl becomes optional, allowing bus recovery on
-> LS1021A, which does not have such luxury, but can be wired up to use extra
-> fixed GPIO pins.
-> 
-> Signed-off-by: Esben Haabendal <esben@geanix.com>
-> ---
->  drivers/i2c/busses/i2c-imx.c | 62 ++++--------------------------------
->  1 file changed, 7 insertions(+), 55 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index 1775a79aeba2..824d8bbb9be5 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -212,10 +212,6 @@ struct imx_i2c_struct {
->  	const struct imx_i2c_hwdata	*hwdata;
->  	struct i2c_bus_recovery_info rinfo;
->  
-> -	struct pinctrl *pinctrl;
-> -	struct pinctrl_state *pinctrl_pins_default;
-> -	struct pinctrl_state *pinctrl_pins_gpio;
-> -
->  	struct imx_i2c_dma	*dma;
->  	struct i2c_client	*slave;
->  	enum i2c_slave_event last_slave_event;
-> @@ -1357,24 +1353,6 @@ static int i2c_imx_xfer_atomic(struct i2c_adapter *adapter,
->  	return result;
->  }
->  
-> -static void i2c_imx_prepare_recovery(struct i2c_adapter *adap)
-> -{
-> -	struct imx_i2c_struct *i2c_imx;
-> -
-> -	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
-> -
-> -	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_gpio);
-> -}
-> -
-> -static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
-> -{
-> -	struct imx_i2c_struct *i2c_imx;
-> -
-> -	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
-> -
-> -	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_default);
-> -}
-> -
->  /*
->   * We switch SCL and SDA to their GPIO function and do some bitbanging
->   * for bus recovery. These alternative pinmux settings can be
-> @@ -1385,43 +1363,17 @@ static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
->  static int i2c_imx_init_recovery_info(struct imx_i2c_struct *i2c_imx,
->  		struct platform_device *pdev)
->  {
-> -	struct i2c_bus_recovery_info *rinfo = &i2c_imx->rinfo;
-> +	struct i2c_bus_recovery_info *bri = &i2c_imx->rinfo;
->  
-> -	i2c_imx->pinctrl = devm_pinctrl_get(&pdev->dev);
-> -	if (!i2c_imx->pinctrl) {
-> -		dev_info(&pdev->dev, "pinctrl unavailable, bus recovery not supported\n");
-> +	bri->pinctrl = devm_pinctrl_get(&pdev->dev);
-> +	if (PTR_ERR(bri->pinctrl) == -ENODEV) {
-> +		bri->pinctrl = NULL;
->  		return 0;
->  	}
-> -	if (IS_ERR(i2c_imx->pinctrl)) {
-> -		dev_info(&pdev->dev, "can't get pinctrl, bus recovery not supported\n");
-> -		return PTR_ERR(i2c_imx->pinctrl);
-> -	}
-> -
-> -	i2c_imx->pinctrl_pins_default = pinctrl_lookup_state(i2c_imx->pinctrl,
-> -			PINCTRL_STATE_DEFAULT);
-> -	i2c_imx->pinctrl_pins_gpio = pinctrl_lookup_state(i2c_imx->pinctrl,
-> -			"gpio");
-> -	rinfo->sda_gpiod = devm_gpiod_get(&pdev->dev, "sda", GPIOD_IN);
-> -	rinfo->scl_gpiod = devm_gpiod_get(&pdev->dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
-> -
-> -	if (PTR_ERR(rinfo->sda_gpiod) == -EPROBE_DEFER ||
-> -	    PTR_ERR(rinfo->scl_gpiod) == -EPROBE_DEFER) {
-> -		return -EPROBE_DEFER;
-> -	} else if (IS_ERR(rinfo->sda_gpiod) ||
-> -		   IS_ERR(rinfo->scl_gpiod) ||
-> -		   IS_ERR(i2c_imx->pinctrl_pins_default) ||
-> -		   IS_ERR(i2c_imx->pinctrl_pins_gpio)) {
-> -		dev_dbg(&pdev->dev, "recovery information incomplete\n");
-> -		return 0;
-> -	}
-> -
-> -	dev_dbg(&pdev->dev, "using scl%s for recovery\n",
-> -		rinfo->sda_gpiod ? ",sda" : "");
-> +	if (IS_ERR(bri->pinctrl))
-> +		return PTR_ERR(bri->pinctrl);
->  
-> -	rinfo->prepare_recovery = i2c_imx_prepare_recovery;
-> -	rinfo->unprepare_recovery = i2c_imx_unprepare_recovery;
-> -	rinfo->recover_bus = i2c_generic_scl_recovery;
-> -	i2c_imx->adapter.bus_recovery_info = rinfo;
-> +	i2c_imx->adapter.bus_recovery_info = bri;
->  
->  	return 0;
->  }
-> -- 
-> 2.43.0
-> 
-> 
-> /Esben
-> 
 
