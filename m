@@ -1,158 +1,100 @@
-Return-Path: <linux-kernel+bounces-5208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B5A8187FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:52:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7B30818800
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41D0C28B5C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:52:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87DF51F216CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7160318AE7;
-	Tue, 19 Dec 2023 12:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73CA718EA1;
+	Tue, 19 Dec 2023 12:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VYLBYsEY"
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="XEYHBUBu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B5418653
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:50:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44ACFC433D9
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:50:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702990235;
-	bh=hXRBcR/CkDoWo+5XZl+gjuC8oYpbFZcW3b/mr+KF9Kk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VYLBYsEYisamx0tk99NFnluRGKQ0O9dFN0dJzZtfXpr0aspbVCiXWEGuNo4tBeEaR
-	 I9twNWCpgkkAK9Dkc28tHZwuesHccJXITEEkXJ1/ZkobxgViJOm4JBFkqQZlrMfPin
-	 jKR4kdCjBKUa3YdKR0aFG5JxbfqbOqP3CXqIWyOK05mZp8djwcK4g/YqER5lNcDGZ4
-	 3OKJ1G50jI6UEuU/SC1MZgHNhz+88bF4aKPEzpLEw4deBABtxBIocYL9LRWc725D6X
-	 RPxudwbTH3wTyb4AibD91vfEuzPJGXLOOcuDN6lkF5t1H/n/4CCbdgNJjENiQJEoEn
-	 hx7dO5HwOTn2Q==
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3ba46a19689so3550640b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:50:35 -0800 (PST)
-X-Gm-Message-State: AOJu0YyYcyotd0vHHuGYGsB1bUmYljqGzBI/PxggoMsLsF+uT/3Hd1CD
-	Vw5KRQwFIUjxKDePKyprOXvQITj7K9hqShLIrecyEg==
-X-Google-Smtp-Source: AGHT+IHLV35Qe4VA4rNnO1zOGlO5djKV2ADWoSTGkTId3HZua8ms5me49CWsKgEfLel8f9Q01NmNFJ2SpFdef5w6+h0=
-X-Received: by 2002:a05:6358:91d:b0:172:d2ab:fcd4 with SMTP id
- r29-20020a056358091d00b00172d2abfcd4mr3815066rwi.57.1702990234519; Tue, 19
- Dec 2023 04:50:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE551BDDE
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3365424df34so3191092f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:51:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1702990312; x=1703595112; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s7eqSad8qYVypHDv1PfcUABuIzKnHh55QiKj9dHA+Cc=;
+        b=XEYHBUBuPoBUd5uljV/4a5LVGc0o0G/LYe1Ysb82YtoTDg3qPXDUcbqqwaNIgzgskq
+         zHwzsf0P5pOzenFdqM0PMTu6P23XjCIwDpgfo8DUmyS3Ml3TKCElWDN190ePQScuSnor
+         sYCXDs24utXGLKHtPLOq+fX0Z/s8mTvgCSRQPYxCTmi7tUvDShq7Do7lUVGEebYnJveh
+         mubW1zjr8Dqqj/PVBg2g+yXen+p5fmwTsZyQhznC6+L+nNaU8gej9xy8hvf9pkUAAxLU
+         B2wMSLlNIVik4rfsKx1J0PMvIbrNJbGT+ZmhaC5SAr8k+mT0z3Or5h/q4lOEamF7QPk1
+         BvjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702990312; x=1703595112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s7eqSad8qYVypHDv1PfcUABuIzKnHh55QiKj9dHA+Cc=;
+        b=M602yxplGfmi+J9BAi4TIdxkkRNs7upTzeoEyDziLIOZ+UIjOXVG4zc8b3Yz+Fi5GK
+         LgbJYteQhQZz5CRGKoK+WHpXTotnCCEywTihx0pR0Ek7hi6GuLkwXOWWu/q92b+oJlxr
+         1C8wDca8Pnyo6qwPBqydkXszHGRpvhCnq8khDnJKOMEIysef9tPhBYgFEbuQBEm43TUi
+         Ay9Fx2eptWNlB2VxpFZBbpwJOQYfB17vEvU4zoa14DtNktUx1g3TuHKpID5Ms+6EeyA6
+         5YDix5EF9ck6mCvvb+vhCZOXaouyc7kt5kepA7hvV35QzYco7CM8KVZMV2LSf7BvqwRI
+         Ld7g==
+X-Gm-Message-State: AOJu0YynKZvPtHjupeqxhVftM7Xg8tqVvofnkHgKewGHAy2BlXVtXx9f
+	VTgOM/UasHLH0oj4Ul+jUbQDuF5UHkNKKlsJZObgDA==
+X-Google-Smtp-Source: AGHT+IF4f5c27MUdOhS8Li/cY3KZcZCwjgFHkHAYgaEtVL2Y3Ckh+8+WRv3R0iNFNEbSV7D9B/hwZQ==
+X-Received: by 2002:adf:dd82:0:b0:336:5c84:51b8 with SMTP id x2-20020adfdd82000000b003365c8451b8mr3450966wrl.141.1702990312299;
+        Tue, 19 Dec 2023 04:51:52 -0800 (PST)
+Received: from fedora.sec.9e.network (ip-037-049-067-221.um09.pools.vodafone-ip.de. [37.49.67.221])
+        by smtp.gmail.com with ESMTPSA id l17-20020a5d4bd1000000b00336607f6630sm8311579wrt.47.2023.12.19.04.51.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 04:51:52 -0800 (PST)
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
+To: Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Linus Walleij <linus.walleij@linaro.org>
+Cc: naresh.solanki@9elements.com,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] pinctrl: cy8c95x0: Fix typo
+Date: Tue, 19 Dec 2023 13:51:16 +0100
+Message-ID: <20231219125120.4028862-1-patrick.rudolph@9elements.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213-zswap-dstmem-v3-0-4eac09b94ece@bytedance.com> <20231213-zswap-dstmem-v3-5-4eac09b94ece@bytedance.com>
-In-Reply-To: <20231213-zswap-dstmem-v3-5-4eac09b94ece@bytedance.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Tue, 19 Dec 2023 04:50:23 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuM4sxd1at3yQKhb9R7hQjGx2G5WiEi3KPq=eKPb4C_KoQ@mail.gmail.com>
-Message-ID: <CAF8kJuM4sxd1at3yQKhb9R7hQjGx2G5WiEi3KPq=eKPb4C_KoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] mm/zswap: cleanup zswap_writeback_entry()
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Seth Jennings <sjenning@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	Vitaly Wool <vitaly.wool@konsulko.com>, Dan Streetman <ddstreet@ieee.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Nhat Pham <nphamcs@gmail.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Acked-by: Chris Li <chrisl@kernel.org> (Google)
+Fix typo to make pinctrl-cy8c95x compile again.
 
-I also thing this one can fold into patch 3. Too trivial to be a separate p=
-atch.
-Your call.
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+---
+ drivers/pinctrl/pinctrl-cy8c95x0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Chris
+diff --git a/drivers/pinctrl/pinctrl-cy8c95x0.c b/drivers/pinctrl/pinctrl-cy8c95x0.c
+index 4ccfa99ed93a..a8c7f00cceef 100644
+--- a/drivers/pinctrl/pinctrl-cy8c95x0.c
++++ b/drivers/pinctrl/pinctrl-cy8c95x0.c
+@@ -822,7 +822,7 @@ static int cy8c95x0_setup_gpiochip(struct cy8c95x0_pinctrl *chip)
+ 	gc->get_direction = cy8c95x0_gpio_get_direction;
+ 	gc->get_multiple = cy8c95x0_gpio_get_multiple;
+ 	gc->set_multiple = cy8c95x0_gpio_set_multiple;
+-	gc->set_config = gpiochip_generic_config,
++	gc->set_config = gpiochip_generic_config;
+ 	gc->can_sleep = true;
+ 	gc->add_pin_ranges = cy8c95x0_add_pin_ranges;
+ 
+-- 
+2.43.0
 
-On Mon, Dec 18, 2023 at 3:50=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> Also after the common decompress part goes to __zswap_load(), we can
-> cleanup the zswap_writeback_entry() a little.
->
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  mm/zswap.c | 25 +++++++++----------------
->  1 file changed, 9 insertions(+), 16 deletions(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 86886276cb81..2c349fd88904 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1443,7 +1443,6 @@ static int zswap_writeback_entry(struct zswap_entry=
- *entry,
->         struct page *page;
->         struct mempolicy *mpol;
->         bool page_was_allocated;
-> -       int ret;
->         struct writeback_control wbc =3D {
->                 .sync_mode =3D WB_SYNC_NONE,
->         };
-> @@ -1453,15 +1452,18 @@ static int zswap_writeback_entry(struct zswap_ent=
-ry *entry,
->         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
->                                 NO_INTERLEAVE_INDEX, &page_was_allocated,=
- true);
->         if (!page) {
-> -               ret =3D -ENOMEM;
-> -               goto fail;
-> +               /*
-> +                * If we get here because the page is already in swapcach=
-e, a
-> +                * load may be happening concurrently. It is safe and oka=
-y to
-> +                * not free the entry. It is also okay to return !0.
-> +                */
-> +               return -ENOMEM;
->         }
->
->         /* Found an existing page, we raced with load/swapin */
->         if (!page_was_allocated) {
->                 put_page(page);
-> -               ret =3D -EEXIST;
-> -               goto fail;
-> +               return -EEXIST;
->         }
->
->         /*
-> @@ -1475,8 +1477,7 @@ static int zswap_writeback_entry(struct zswap_entry=
- *entry,
->         if (zswap_rb_search(&tree->rbroot, swp_offset(entry->swpentry)) !=
-=3D entry) {
->                 spin_unlock(&tree->lock);
->                 delete_from_swap_cache(page_folio(page));
-> -               ret =3D -ENOMEM;
-> -               goto fail;
-> +               return -ENOMEM;
->         }
->         spin_unlock(&tree->lock);
->
-> @@ -1497,15 +1498,7 @@ static int zswap_writeback_entry(struct zswap_entr=
-y *entry,
->         __swap_writepage(page, &wbc);
->         put_page(page);
->
-> -       return ret;
-> -
-> -fail:
-> -       /*
-> -        * If we get here because the page is already in swapcache, a
-> -        * load may be happening concurrently. It is safe and okay to
-> -        * not free the entry. It is also okay to return !0.
-> -        */
-> -       return ret;
-> +       return 0;
->  }
->
->  static int zswap_is_page_same_filled(void *ptr, unsigned long *value)
->
-> --
-> b4 0.10.1
 
