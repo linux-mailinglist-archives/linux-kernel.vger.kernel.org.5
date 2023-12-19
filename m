@@ -1,130 +1,102 @@
-Return-Path: <linux-kernel+bounces-5269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0668188BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:37:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 646048188C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34CCB1F22884
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:37:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B2B1F23772
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F32199C1;
-	Tue, 19 Dec 2023 13:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6114199AD;
+	Tue, 19 Dec 2023 13:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rr/fsctI"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ClGsWkTw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0661B267;
-	Tue, 19 Dec 2023 13:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702993021;
-	bh=FnY6knylJ3x5vm9CnT/Sy6SqYuEWSlZ8nKY07PB5N7Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rr/fsctIrfTYaB6wwgAqsttKJXuqFEYeaGHdO+RJUJx6mCnkUHNcbAmTsAv6hHtz6
-	 HWU/k63GGZPmCPkoC9UHuhiYM/WE4xnxpAp9lY7KOp/yy/aHG59CzEK6ae141k4iy2
-	 ylfrB0Sl7xcYDxL0qJ/RiVjxDqBMokBKDX9oRNhd7F/jrw+TEr6sObE7JXzSWliHDG
-	 O8B1yPGN20H3Pr4IuFPnN0jlNyfrnNfBFI0AtX2LFY6lPtKGxF1oOlnKYl60VAjjJL
-	 BfCwuad1t7Mz4l63tcJxsvYvM7a+iquoBaxInwxx8kFCelNCoxO0SfT/b0kM9q/E7x
-	 agTbnn5KDVMWQ==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A413B378145A;
-	Tue, 19 Dec 2023 13:36:59 +0000 (UTC)
-Message-ID: <50f0a002-f602-4cdb-ab18-e085adbf09bc@collabora.com>
-Date: Tue, 19 Dec 2023 15:36:58 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BF119471;
+	Tue, 19 Dec 2023 13:41:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 508A6C433C7;
+	Tue, 19 Dec 2023 13:41:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702993310;
+	bh=F6ar0VqlrkPhdaatE1FLgFCrEDi1gq3l55wVb/ojN9w=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ClGsWkTw0Noy5KB0LJ5GhsqpJozgFV7MSyHlFPhrh96qDaajKX8+H2kqD9Svd3IxY
+	 CO+VR+Ca7wSECggtfKKf8o9u1tOErpLpw2qpgy/U7FSCVxKSseZVMhq+6dG0W6sej0
+	 j0ih/zq0r/CTXT+WyY80ouDSt8T9Jak0Bz+ZTVck=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: hch@lst.de,
+	m.szyprowski@samsung.com
+Cc: linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	iommu@lists.linux.dev
+Subject: [PATCH] dma-debug: make dma_debug_add_bus take a const pointer
+Date: Tue, 19 Dec 2023 14:41:42 +0100
+Message-ID: <2023121941-dejected-nugget-681e@gregkh>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/9] dt-bindings: net: starfive,jh7110-dwmac: Add
- JH7100 SoC compatible
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
- Samin Guo <samin.guo@starfivetech.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Hal Feng <hal.feng@starfivetech.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20231218214451.2345691-1-cristian.ciocaltea@collabora.com>
- <20231218214451.2345691-3-cristian.ciocaltea@collabora.com>
- <c9225053-78f8-40b7-9453-dc3dabe44500@linaro.org>
- <d030f5b7-8d32-4a80-a3c0-98cfa1c0fe4f@collabora.com>
- <15077e1f-c13b-4424-9918-df441b56b695@linaro.org>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <15077e1f-c13b-4424-9918-df441b56b695@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Lines: 47
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1752; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=F6ar0VqlrkPhdaatE1FLgFCrEDi1gq3l55wVb/ojN9w=; b=owGbwMvMwCRo6H6F97bub03G02pJDKmNc6e2Hm2dtNjAb48Td1VWxdacZ2x//KI6RKMV169z+ xWxlC+hI5aFQZCJQVZMkeXLNp6j+ysOKXoZ2p6GmcPKBDKEgYtTACby1ZFhnpb8PKZVb6RfbLzR dbF5He8WzqOFVgwLlsfOYvq1+UZnech0Y/21E1a5iT9PBAA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 
-On 12/19/23 15:19, Krzysztof Kozlowski wrote:
-> On 19/12/2023 13:49, Cristian Ciocaltea wrote:
->>>>    reg:
->>>>      maxItems: 1
->>>> @@ -46,23 +50,6 @@ properties:
->>>>        - const: tx
->>>>        - const: gtx
->>>>  
->>>> -  interrupts:
->>>> -    minItems: 3
->>>> -    maxItems: 3
->>>> -
->>>> -  interrupt-names:
->>>> -    minItems: 3
->>>> -    maxItems: 3
->>>> -
->>>> -  resets:
->>>> -    minItems: 2
->>>> -    maxItems: 2
->>>
->>> What is the point of your previous patch if you immediately remove it?
->>> It is a no-op. Just mention in this commit msg, that both resets and
->>> reset-names are coming from snps,dwmac so they can be removed from
->>> top-level entirely.
->>
->> This has been discussed during v2 review [1], where I also provided the
->> rational behind not updating reset-names. So the code was not deleted,
->> but moved under an if clause.
->>
->> Thanks for reviewing,
->> Cristian
->>
->> [1]: https://lore.kernel.org/lkml/f4d0b216-5bdc-4559-aabb-8af638d33721@collabora.com/
-> 
-> I don't see it being addressed:
-> 
-> https://lore.kernel.org/lkml/35556392-3b9a-4997-b482-082dc2f9121f@linaro.org/
-> 
-> Repeating the same and the same :/
+The driver core now can handle a const struct bus_type pointer, and the
+dma_debug_add_bus() call just passes on the pointer give to it to the
+driver core, so make this pointer const as well to allow everyone to use
+read-only struct bus_type pointers going forward.
 
-I think this was just a misunderstanding, sorry for the confusion.  I
-kept two sets of changes which were not directly related into separate
-patches, so I'm going to squash them in v5.
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: iommu@lists.linux.dev
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/dma-map-ops.h | 4 ++--
+ kernel/dma/debug.c          | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
-Cristian
+diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+index f2fc203fb8a1..e401f824a007 100644
+--- a/include/linux/dma-map-ops.h
++++ b/include/linux/dma-map-ops.h
+@@ -443,10 +443,10 @@ static inline void arch_teardown_dma_ops(struct device *dev)
+ #endif /* CONFIG_ARCH_HAS_TEARDOWN_DMA_OPS */
+ 
+ #ifdef CONFIG_DMA_API_DEBUG
+-void dma_debug_add_bus(struct bus_type *bus);
++void dma_debug_add_bus(const struct bus_type *bus);
+ void debug_dma_dump_mappings(struct device *dev);
+ #else
+-static inline void dma_debug_add_bus(struct bus_type *bus)
++static inline void dma_debug_add_bus(const struct bus_type *bus)
+ {
+ }
+ static inline void debug_dma_dump_mappings(struct device *dev)
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 3de494375b7b..1a5c86dd87d5 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -876,7 +876,7 @@ static int dma_debug_device_change(struct notifier_block *nb, unsigned long acti
+ 	return 0;
+ }
+ 
+-void dma_debug_add_bus(struct bus_type *bus)
++void dma_debug_add_bus(const struct bus_type *bus)
+ {
+ 	struct notifier_block *nb;
+ 
+-- 
+2.43.0
+
 
