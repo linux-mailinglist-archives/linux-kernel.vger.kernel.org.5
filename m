@@ -1,250 +1,162 @@
-Return-Path: <linux-kernel+bounces-4779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526F28181F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:04:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2D128181F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:04:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0214283B85
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:04:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A0051F273EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D5F11736;
-	Tue, 19 Dec 2023 07:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CE18BE2;
+	Tue, 19 Dec 2023 07:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YxahluJq"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rsku3z7Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADCB81BDC2
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDDE882E
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-4668cf02f7eso326514137.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:00:08 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55322dbabf6so2607910a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:02:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702969207; x=1703574007; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kOUJhlFP9EaawWtLZl5DOPkALIS3+etxDpqWFBR6+io=;
-        b=YxahluJqoWoXCwQ+3k2mx4tATnGk8aCTyGt5brbDEV5kE+dPsHt3VFudqpJgaAFNRj
-         gj5fCODz7gldCNhCbwV4dyOtaZ5B3ks9QVX/B75+aBeni+4wcHm2ZQmbDZxvi1Sv/hbJ
-         RcHqkIwkRDq+Emgv9S5k7Uy8Eg0747rNkF/0nL0zVR/NjPJ3PC9NOeSbop0eZJ40oUiu
-         K1Z5inz0AF9AV+dbtzaPQJTVO8Tu5MGx6dxSJZL1ZiDikc3Gcrx/ff19jc+hTFl3+BZD
-         l2kgJ7sQaMXH8bwOOgrskwpvcSqnxxv3WvAOcNSi0Mm942DCTSiZOlh3ZKUlGk2v8ZYZ
-         04eA==
+        d=linaro.org; s=google; t=1702969377; x=1703574177; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MkPfR7lqGwzgji3xkFR/F6aOTx95fUBqDD8cPbAtw+8=;
+        b=rsku3z7Q7POdWN1RHk63mfThfY7C5ZB+WCdB6A8X6I2s8nyeMZrEPk26t63lHK2s8M
+         F/wZoU8Yi8QcQEvYD/626npTzwAueN9fRnsCG96gFC1uVu5k22OYZngGRwRHyuIj2d1R
+         2PKYRfimB32Fcs9F+focJX8GifUq8bf2RP6MURn6urhtzo70RG4lsJVznIEcPjhD951F
+         wSpc8nbweFYXpjEiPsvMEUtjyXaBRG1rboTm9XSRa6bt+q159ibTu8h1aEI7lIda057/
+         N3PtQB5VYfUkemaoBMTH7iYmQbdTv6OAv5xArlMObBJkweeZBIZP3hzMn/MGVVB7PKz7
+         dqSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702969207; x=1703574007;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kOUJhlFP9EaawWtLZl5DOPkALIS3+etxDpqWFBR6+io=;
-        b=l3CESIVUQTsI+4DSX8Vl+pnD0HSNkxa+Ul1PX1qBjhMIEBgVbQgcwQhLpFXP52cf4Q
-         GtA9T1/vU6vfCBMpQqKArJcx7D4kD4ouTdYHWfxsyis6BA0CV1FIA4tdNhhmGIkt51qY
-         QAwXb3kTYJaZjN9r1lUBXYrZ6CCCEr+hmiBcPmDh/UjBWOTeiBo5hlgMqF3WX7Ldlx5L
-         ZL9FoEWzbya5T9Vzsd68Sxaom07fgKH71wT7Bn2hKURA2Ls+3z2hHaGZYbNes9VUX1cU
-         1hi/5VJ/t0a9LBULoUCbzR1ewsmNyUjmDSk+OBZ31WsGnjyVQI2lSAnaUuWWFV1aXamU
-         AA/Q==
-X-Gm-Message-State: AOJu0YwK80wwVXwzI184EjUOl1SkY/qL1/LZgEoVC8V/HdQlpUT1YPUz
-	F4R7E9cKcY/C3alsisSqiMyRdUgAF8Qc9WNOcw0+Rg==
-X-Google-Smtp-Source: AGHT+IFfbPj7SPepsBpIjki2G9lQd18pfZb7JvctGhfz5/6qSbQOM13nOcqVcS0wfmyDqKgrsmQcO2JI23xT6z72Ifc=
-X-Received: by 2002:a05:6102:3054:b0:464:627a:55d2 with SMTP id
- w20-20020a056102305400b00464627a55d2mr13783870vsa.18.1702969207503; Mon, 18
- Dec 2023 23:00:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702969377; x=1703574177;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MkPfR7lqGwzgji3xkFR/F6aOTx95fUBqDD8cPbAtw+8=;
+        b=DrTBHtMWi61ryzSZyI2Zyqv8r5b/yn/mAMQOEslh3E6vv/8icom6UxuwbYIG+WN8aN
+         Wgf5f9y56GflKyocWZBClbCwPlVoOSYwxEnfOVgFCR/gS2wuEQWduS+bSnkvC6+n7cXM
+         aq2GM1flaGCG1i7mLSLui6lIlR87xyk4XrzHUY6zFSCLwJ5x6QDEpsrwx1nUTra9+0xy
+         2fXC/RyiQgwAc5wbktYNoEOY6jB9zPGvkWHy3eogfSR1LCebgcu08MUSVGaldrd4PsFB
+         WrYBNjaHGZGl8qIumGJr0EzPHCVppQHZkkpbqDspXrSARtd+SbsvUEvoB7VDBXTCx6J1
+         b3gQ==
+X-Gm-Message-State: AOJu0YzrtaFOOAyMEWuv0+pjeP0TUQHFfnYMs1RfxVPxIp8JOiyOx/4S
+	Z1Ar8Z3zyoT8BY1Cw0JingdWsw==
+X-Google-Smtp-Source: AGHT+IHoky2a0wT2P75ZQuG73j9o9IJGi6xpCojJy5xOCSuvkVpdwJzWhiLYKEWJ9aT+Q4OJwwrIUw==
+X-Received: by 2002:a17:907:1a51:b0:a23:49f6:3ae9 with SMTP id mf17-20020a1709071a5100b00a2349f63ae9mr1263775ejc.61.1702969377463;
+        Mon, 18 Dec 2023 23:02:57 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id jw23-20020a17090776b700b00a23365f1290sm3080362ejc.218.2023.12.18.23.02.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 23:02:56 -0800 (PST)
+Message-ID: <ec730ce7-2021-4cad-97e6-0a86c6063533@linaro.org>
+Date: Tue, 19 Dec 2023 08:02:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218135104.927894164@linuxfoundation.org>
-In-Reply-To: <20231218135104.927894164@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 19 Dec 2023 12:29:56 +0530
-Message-ID: <CA+G9fYvfaTJWhu_Y7u59Xbaed_mQ0UNOSMkS7_F2-yWfojsqeA@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/166] 6.6.8-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/6] arm64: dts: qcom: qcs8550: introduce qcs8550 dtsi
+Content-Language: en-US
+To: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231219005007.11644-1-quic_tengfan@quicinc.com>
+ <20231219005007.11644-5-quic_tengfan@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231219005007.11644-5-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 18 Dec 2023 at 19:30, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.8 release.
-> There are 166 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.8-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 19/12/2023 01:50, Tengfei Fan wrote:
+> QCS8550 is derived from SM8550, it is mainly used in IoT scenarios.
 
+What are the differences? You need to describe the hardware, you have
+entire commit msg for something useful which will avoid such comments
+from reviewers.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> 
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/qcs8550.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/qcs8550.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/qcs8550.dtsi b/arch/arm64/boot/dts/qcom/qcs8550.dtsi
+> new file mode 100644
+> index 000000000000..254657f46c5e
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/qcs8550.dtsi
+> @@ -0,0 +1,6 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#include "sm8550.dtsi"
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This is a weird file. I thought qcs8550 has differences from sm8550,
+e.g. lack of modem, so why do you claim you have here MPSS?
 
-## Build
-* kernel: 6.6.8-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.6.y
-* git commit: aa90f2b75bff896df265802383a62bf4ed79b0f8
-* git describe: v6.6.7-167-gaa90f2b75bff
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.7=
--167-gaa90f2b75bff
+It's really confusing now.
 
-## Test Regressions (compared to v6.6.7)
+Best regards,
+Krzysztof
 
-## Metric Regressions (compared to v6.6.7)
-
-## Test Fixes (compared to v6.6.7)
-
-## Metric Fixes (compared to v6.6.7)
-
-## Test result summary
-total: 152532, pass: 130905, fail: 2449, skip: 19047, xfail: 131
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 141 total, 141 passed, 0 failed
-* arm64: 49 total, 47 passed, 2 failed
-* i386: 37 total, 37 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 3 total, 3 passed, 0 failed
-* powerpc: 34 total, 34 passed, 0 failed
-* riscv: 22 total, 22 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 42 total, 42 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
