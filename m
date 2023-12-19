@@ -1,319 +1,298 @@
-Return-Path: <linux-kernel+bounces-4951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B093818445
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:21:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0D7818450
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:23:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B442D1F251F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:21:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 490D01C23B73
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5A913FED;
-	Tue, 19 Dec 2023 09:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA8C13ADF;
+	Tue, 19 Dec 2023 09:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GBxYGEcj"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dZRjat3o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20F913ADA;
-	Tue, 19 Dec 2023 09:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ca04b1cc37so41912721fa.1;
-        Tue, 19 Dec 2023 01:21:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702977678; x=1703582478; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bwNJbSFpIsu9ypRnPjAlwKfx3kawFr8ncqgoti6mISc=;
-        b=GBxYGEcjS+HBlpnB8ke3+Zan8wxKUKh+hCsHA2EuqbePKnx/KXqNef3SQRrJc4gnNQ
-         Y0L869kP8bJMiRYhBKvhbi31Sl8lAn/db7GtzqIpjcRsH9i/FD2SjcNUAaWrfuJfmQx9
-         7KKmq3te+kT9wVmTJzEBUnTNMWSYmLeoXh4P3nM4urhce8fnlODM4AIFQjAVcxts3w2L
-         co2bLdxalCKwuZzMP+bVpgcIgOtSGATTvzlQWB15GtzdmlwE8W2KR92BBdbysvzWJ67R
-         cdUaNXUxEWxuAr4kSI/lF39fqWZPiqT/sgGaL5278z3BDwpZbLQ9+Kmjt9m0N8QGmQYB
-         9kVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702977678; x=1703582478;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bwNJbSFpIsu9ypRnPjAlwKfx3kawFr8ncqgoti6mISc=;
-        b=UysCKjepxNRjvQV7g7D9xeS1fwdOmWpkFFFMRxEMGzFkCK/EB6l8HblH3fr+u//auj
-         7PCELW/zWWBUqmb7KCnFWSDxAJR4AqEllcfctmUvYaV+bIGSZBy0sBXTsL2ukjn1Trcy
-         6OppvTmUMlG7rN5fUJwkqJoPVnUaVlVv29jytoJy3eo/kze8vJfArBYFYbYVvUigopUf
-         4pHRXm0dEk3PR6PZgvuAePIGyJNG8hDPeEpj5jXJYFfPAvoxsCfHo0YOhcjAC3Ps7DUE
-         OZkiis4KXCHDO1pvHphGgpXNzHwGfR3rlRqNbBLzosnJWXDyR5sLE0jldCGi1S7Gc568
-         FpWg==
-X-Gm-Message-State: AOJu0YxTanDDEdMYYGh6H1sVLf7liHUZj0I3NvLQMF+CCAlyyhruBl93
-	tN6+4asxS6IHKnEduK+hK57fphrkjqf1EWA4eSM=
-X-Google-Smtp-Source: AGHT+IGENMzpnbZf7E5l70A1oi/hFP8KPT7cupvbx9W7YXUVt8yrFgLV3OUaHIZ5jVst4YeCSiXkyA==
-X-Received: by 2002:a2e:780e:0:b0:2cc:68b2:c4de with SMTP id t14-20020a2e780e000000b002cc68b2c4demr472794ljc.24.1702977677653;
-        Tue, 19 Dec 2023 01:21:17 -0800 (PST)
-Received: from rand-ubuntu-development.dl.local (mail.confident.ru. [85.114.29.218])
-        by smtp.gmail.com with ESMTPSA id j5-20020a2e8245000000b002c9fc3dab0asm3766295ljh.5.2023.12.19.01.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 01:21:17 -0800 (PST)
-From: Rand Deeb <rand.sec96@gmail.com>
-To: Hannes Reinecke <hare@suse.com>,
-	"James E . J . Bottomley" <jejb@linux.ibm.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: deeb.rand@confident.ru,
-	lvc-project@linuxtesting.org,
-	voskresenski.stanislav@confident.ru,
-	Rand Deeb <rand.sec96@gmail.com>
-Subject: [PATCH] [SCSI] aic7xxx: Remove ahd_acquire_seeprom and ahd_release_seeprom due to redundant implementation
-Date: Tue, 19 Dec 2023 12:20:56 +0300
-Message-Id: <20231219092056.52919-1-rand.sec96@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0F5134C7;
+	Tue, 19 Dec 2023 09:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJ5gSjx014581;
+	Tue, 19 Dec 2023 09:22:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=9ksKVlT5USbgB/PsbLCyX3LO0cm8eSjeZUTZIwMqUGA=; b=dZ
+	Rjat3orYFcKnPOEVB5sfKBUvUVxkUCi2TL6cmcB19QTmFL2zh3NiF6CkHrMjTUmF
+	AXT9k9xvHgWzwK3wfCqTJjgtn44oZ/6WUcLnaOsqgXDKtdpt0xitP4YAfLHsyec1
+	oaQ3VV/3G+KvHr55bsL/yRuiXAhPYcgSlT2hWX5CG2pp6PRSrFv6BQ9NckqEABSE
+	KrdClm0ZMyqgUqbl7PBF6v5PmftIjwnhA8vCcmWrOMhOI7De1alUDVPe3KUVo9Oy
+	oFioGTEkg03j4LcjnyY9MlnCO/wBhif6jPsiyWlB7nFXbbcsXRA9p8ufBEGbLtgz
+	sALLOcjR1owShw1Ac50Q==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2mjftx41-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 09:22:39 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJ9Mcq0028994
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 09:22:38 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
+ 2023 01:22:32 -0800
+Message-ID: <8dcafd9a-ff90-439a-9337-fb957d2fcad1@quicinc.com>
+Date: Tue, 19 Dec 2023 17:22:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/8] coresight-tpdm: Add CMB dataset support
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang
+	<quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-4-git-send-email-quic_taozha@quicinc.com>
+ <f4ed3577-f78b-4b78-b306-8284ccb96043@arm.com>
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <f4ed3577-f78b-4b78-b306-8284ccb96043@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Ebpc8F2zkF-C-xeAp2fE3ICRIz9ZEt6u
+X-Proofpoint-ORIG-GUID: Ebpc8F2zkF-C-xeAp2fE3ICRIz9ZEt6u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ clxscore=1015 malwarescore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312190069
 
-We removed the ahd_acquire_seeprom and ahd_release_seeprom functions
-because both lacked meaningful implementations. The SEEPROM acquisition
-and release logic they provided were unused and had been commented out,
-making them redundant and non-functional. In addition to some style
-fixes.
-This change simplifies the codebase and improves code clarity by
-eliminating unnecessary code.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+On 12/18/2023 6:34 PM, Suzuki K Poulose wrote:
+> On 21/11/2023 02:24, Tao Zhang wrote:
+>> CMB (continuous multi-bit) is one of TPDM's dataset type. CMB subunit
+>> can be enabled for data collection by writing 1 to the first bit of
+>> CMB_CR register. This change is to add enable/disable function for
+>> CMB dataset by writing CMB_CR register.
+>>
+>> Reviewed-by: James Clark <james.clark@arm.com>
+>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-tpdm.c | 31 ++++++++++++++++++++
+>>   drivers/hwtracing/coresight/coresight-tpdm.h |  8 +++++
+>>   2 files changed, 39 insertions(+)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>> index 97654aa4b772..c8bb38822e08 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>> @@ -131,6 +131,11 @@ static bool tpdm_has_dsb_dataset(struct 
+>> tpdm_drvdata *drvdata)
+>>       return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
+>>   }
+>>   +static bool tpdm_has_cmb_dataset(struct tpdm_drvdata *drvdata)
+>> +{
+>> +    return (drvdata->datasets & TPDM_PIDR0_DS_CMB);
+>> +}
+>> +
+>>   static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
+>>                      struct attribute *attr, int n)
+>>   {
+>> @@ -267,6 +272,17 @@ static void tpdm_enable_dsb(struct tpdm_drvdata 
+>> *drvdata)
+>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>   }
+>>   +static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+>> +{
+>> +    u32 val;
+>> +
+>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>> +    val |= TPDM_CMB_CR_ENA;
+>> +
+>> +    /* Set the enable bit of CMB control register to 1 */
+>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>> +}
+>> +
+>>   /*
+>>    * TPDM enable operations
+>>    * The TPDM or Monitor serves as data collection component for various
+>> @@ -281,6 +297,8 @@ static void __tpdm_enable(struct tpdm_drvdata 
+>> *drvdata)
+>>         if (tpdm_has_dsb_dataset(drvdata))
+>>           tpdm_enable_dsb(drvdata);
+>> +    if (tpdm_has_cmb_dataset(drvdata))
+>> +        tpdm_enable_cmb(drvdata);
+>
+> Don't we need to add this check in the "property read" section ?
+> Otherwise, we could generate warnings unnecessarily ?
+>
+> i.e, if (tpdm_has_cmb_..())
+>       rc |= fwnode_..read_property(cmb-elem-size...)
+>
+> Similarly for DSB.
 
-Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
----
- drivers/scsi/aic7xxx/aic79xx.h      |  2 -
- drivers/scsi/aic7xxx/aic79xx_core.c | 29 ----------
- drivers/scsi/aic7xxx/aic79xx_pci.c  | 89 ++++++++++++++---------------
- drivers/scsi/aic7xxx/aic79xx_proc.c | 36 +++++-------
- 4 files changed, 56 insertions(+), 100 deletions(-)
+TPDM and TPDA are two independent hardware. If you want to modify them 
+in this way, the
 
-diff --git a/drivers/scsi/aic7xxx/aic79xx.h b/drivers/scsi/aic7xxx/aic79xx.h
-index 9a515551641c..e8a7b16a6861 100644
---- a/drivers/scsi/aic7xxx/aic79xx.h
-+++ b/drivers/scsi/aic7xxx/aic79xx.h
-@@ -962,8 +962,6 @@ int		ahd_read_seeprom(struct ahd_softc *ahd, uint16_t *buf,
- int		ahd_write_seeprom(struct ahd_softc *ahd, uint16_t *buf,
- 				  u_int start_addr, u_int count);
- int		ahd_verify_cksum(struct seeprom_config *sc);
--int		ahd_acquire_seeprom(struct ahd_softc *ahd);
--void		ahd_release_seeprom(struct ahd_softc *ahd);
- 
- /****************************  Message Buffer *********************************/
- typedef enum {
-diff --git a/drivers/scsi/aic7xxx/aic79xx_core.c b/drivers/scsi/aic7xxx/aic79xx_core.c
-index 4c790fe28f73..7d639b98e9aa 100644
---- a/drivers/scsi/aic7xxx/aic79xx_core.c
-+++ b/drivers/scsi/aic7xxx/aic79xx_core.c
-@@ -10089,35 +10089,6 @@ ahd_verify_cksum(struct seeprom_config *sc)
- 	}
- }
- 
--int
--ahd_acquire_seeprom(struct ahd_softc *ahd)
--{
--	/*
--	 * We should be able to determine the SEEPROM type
--	 * from the flexport logic, but unfortunately not
--	 * all implementations have this logic and there is
--	 * no programatic method for determining if the logic
--	 * is present.
--	 */
--	return (1);
--#if 0
--	uint8_t	seetype;
--	int	error;
--
--	error = ahd_read_flexport(ahd, FLXADDR_ROMSTAT_CURSENSECTL, &seetype);
--	if (error != 0
--         || ((seetype & FLX_ROMSTAT_SEECFG) == FLX_ROMSTAT_SEE_NONE))
--		return (0);
--	return (1);
--#endif
--}
--
--void
--ahd_release_seeprom(struct ahd_softc *ahd)
--{
--	/* Currently a no-op */
--}
--
- /*
-  * Wait at most 2 seconds for flexport arbitration to succeed.
-  */
-diff --git a/drivers/scsi/aic7xxx/aic79xx_pci.c b/drivers/scsi/aic7xxx/aic79xx_pci.c
-index 8397ae93f7dd..a25d193eb3ad 100644
---- a/drivers/scsi/aic7xxx/aic79xx_pci.c
-+++ b/drivers/scsi/aic7xxx/aic79xx_pci.c
-@@ -507,60 +507,55 @@ ahd_check_extport(struct ahd_softc *ahd)
- {
- 	struct	vpd_config vpd;
- 	struct	seeprom_config *sc;
--	u_int	adapter_control;
--	int	have_seeprom;
-+	u_int	adapter_control, start_addr;
-+	int	have_seeprom = 1;
- 	int	error;
- 
- 	sc = ahd->seep_config;
--	have_seeprom = ahd_acquire_seeprom(ahd);
--	if (have_seeprom) {
--		u_int start_addr;
- 
--		/*
--		 * Fetch VPD for this function and parse it.
--		 */
--		if (bootverbose) 
--			printk("%s: Reading VPD from SEEPROM...",
--			       ahd_name(ahd));
-+	/*
-+	 * Fetch VPD for this function and parse it.
-+	 */
-+	if (bootverbose)
-+		printk("%s: Reading VPD from SEEPROM...",
-+		       ahd_name(ahd));
- 
--		/* Address is always in units of 16bit words */
--		start_addr = ((2 * sizeof(*sc))
--			    + (sizeof(vpd) * (ahd->channel - 'A'))) / 2;
--
--		error = ahd_read_seeprom(ahd, (uint16_t *)&vpd,
--					 start_addr, sizeof(vpd)/2,
--					 /*bytestream*/TRUE);
--		if (error == 0)
--			error = ahd_parse_vpddata(ahd, &vpd);
--		if (bootverbose) 
--			printk("%s: VPD parsing %s\n",
--			       ahd_name(ahd),
--			       error == 0 ? "successful" : "failed");
--
--		if (bootverbose) 
--			printk("%s: Reading SEEPROM...", ahd_name(ahd));
--
--		/* Address is always in units of 16bit words */
--		start_addr = (sizeof(*sc) / 2) * (ahd->channel - 'A');
--
--		error = ahd_read_seeprom(ahd, (uint16_t *)sc,
--					 start_addr, sizeof(*sc)/2,
--					 /*bytestream*/FALSE);
--
--		if (error != 0) {
--			printk("Unable to read SEEPROM\n");
--			have_seeprom = 0;
--		} else {
--			have_seeprom = ahd_verify_cksum(sc);
-+	/* Address is always in units of 16bit words */
-+	start_addr = ((2 * sizeof(*sc))
-+		      + (sizeof(vpd) * (ahd->channel - 'A'))) / 2;
- 
--			if (bootverbose) {
--				if (have_seeprom == 0)
--					printk ("checksum error\n");
--				else
--					printk ("done.\n");
--			}
-+	error = ahd_read_seeprom(ahd, (uint16_t *)&vpd,
-+				 start_addr, sizeof(vpd)/2,
-+				 /*bytestream*/TRUE);
-+	if (error == 0)
-+		error = ahd_parse_vpddata(ahd, &vpd);
-+	if (bootverbose)
-+		printk("%s: VPD parsing %s\n",
-+		       ahd_name(ahd),
-+		       error == 0 ? "successful" : "failed");
-+
-+	if (bootverbose)
-+		printk("%s: Reading SEEPROM...", ahd_name(ahd));
-+
-+	/* Address is always in units of 16bit words */
-+	start_addr = (sizeof(*sc) / 2) * (ahd->channel - 'A');
-+
-+	error = ahd_read_seeprom(ahd, (uint16_t *)sc,
-+				 start_addr, sizeof(*sc)/2,
-+				 /*bytestream*/FALSE);
-+
-+	if (error != 0) {
-+		printk("Unable to read SEEPROM\n");
-+		have_seeprom = 0;
-+	} else {
-+		have_seeprom = ahd_verify_cksum(sc);
-+
-+		if (bootverbose) {
-+			if (have_seeprom == 0)
-+				printk("checksum error\n");
-+			else
-+				printk("done.\n");
- 		}
--		ahd_release_seeprom(ahd);
- 	}
- 
- 	if (!have_seeprom) {
-diff --git a/drivers/scsi/aic7xxx/aic79xx_proc.c b/drivers/scsi/aic7xxx/aic79xx_proc.c
-index add2da581d66..8a4a1c5601d1 100644
---- a/drivers/scsi/aic7xxx/aic79xx_proc.c
-+++ b/drivers/scsi/aic7xxx/aic79xx_proc.c
-@@ -213,6 +213,7 @@ ahd_proc_write_seeprom(struct Scsi_Host *shost, char *buffer, int length)
- 	u_long s;
- 	int paused;
- 	int written;
-+	u_int start_addr;
- 
- 	/* Default to failure. */
- 	written = -EINVAL;
-@@ -234,31 +235,22 @@ ahd_proc_write_seeprom(struct Scsi_Host *shost, char *buffer, int length)
- 		goto done;
- 	}
- 
--	have_seeprom = ahd_acquire_seeprom(ahd);
--	if (!have_seeprom) {
--		printk("ahd_proc_write_seeprom: No Serial EEPROM\n");
--		goto done;
--	} else {
--		u_int start_addr;
--
-+	if (ahd->seep_config == NULL) {
-+		ahd->seep_config = kmalloc(sizeof(*ahd->seep_config), GFP_ATOMIC);
- 		if (ahd->seep_config == NULL) {
--			ahd->seep_config = kmalloc(sizeof(*ahd->seep_config), GFP_ATOMIC);
--			if (ahd->seep_config == NULL) {
--				printk("aic79xx: Unable to allocate serial "
--				       "eeprom buffer.  Write failing\n");
--				goto done;
--			}
-+			printk("aic79xx: Unable to allocate serial "
-+			       "eeprom buffer.  Write failing\n");
-+			goto done;
- 		}
--		printk("aic79xx: Writing Serial EEPROM\n");
--		start_addr = 32 * (ahd->channel - 'A');
--		ahd_write_seeprom(ahd, (u_int16_t *)buffer, start_addr,
--				  sizeof(struct seeprom_config)/2);
--		ahd_read_seeprom(ahd, (uint16_t *)ahd->seep_config,
--				 start_addr, sizeof(struct seeprom_config)/2,
--				 /*ByteStream*/FALSE);
--		ahd_release_seeprom(ahd);
--		written = length;
- 	}
-+	printk("aic79xx: Writing Serial EEPROM\n");
-+	start_addr = 32 * (ahd->channel - 'A');
-+	ahd_write_seeprom(ahd, (u_int16_t *)buffer, start_addr,
-+			  sizeof(struct seeprom_config)/2);
-+	ahd_read_seeprom(ahd, (uint16_t *)ahd->seep_config,
-+			 start_addr, sizeof(struct seeprom_config)/2,
-+			 /*ByteStream*/FALSE);
-+	written = length;
- 
- done:
- 	ahd_restore_modes(ahd, saved_modes);
--- 
-2.34.1
+two independent drivers will be coupled to each other. At the same time, 
+this configuration
 
+is manually set in the devicetree by the users, and this check cannot 
+avoid manual setting errors.
+
+  Even if the configuration is wrong, it will not cause the driver to 
+stop working, it will only cause
+
+the data to be lost from the TPDM.
+
+>
+>>       CS_LOCK(drvdata->base);
+>>   }
+>> @@ -314,6 +332,17 @@ static void tpdm_disable_dsb(struct tpdm_drvdata 
+>> *drvdata)
+>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>   }
+>>   +static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
+>> +{
+>> +    u32 val;
+>> +
+>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>> +    val &= ~TPDM_CMB_CR_ENA;
+>> +
+>> +    /* Set the enable bit of CMB control register to 0 */
+>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>> +}
+>> +
+>>   /* TPDM disable operations */
+>>   static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+>>   {
+>> @@ -321,6 +350,8 @@ static void __tpdm_disable(struct tpdm_drvdata 
+>> *drvdata)
+>>         if (tpdm_has_dsb_dataset(drvdata))
+>>           tpdm_disable_dsb(drvdata);
+>> +    if (tpdm_has_cmb_dataset(drvdata))
+>> +        tpdm_disable_cmb(drvdata);
+>
+> minor nit: Instead of having these :
+>
+>     if (tpdm_has_XY_()
+>         tpdm_{enable/disable}_XY_()
+> I prefer :
+>
+>     tpdm_{enable/disable}_XY_
+>
+> and the helper take care of returning early if the feature is
+> not present.
+Does the following sample modification meet your expectation?
+static void tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
+{
+     u32 val;
+
+     if (tpdm_has_dsb_dataset(drvdata)) {
+         /* Set the enable bit of DSB control register to 0 */
+         val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+         val &= ~TPDM_DSB_CR_ENA;
+         writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+     }
+}
+
+static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
+{
+     u32 val;
+
+     if (tpdm_has_cmb_dataset(drvdata)) {
+         val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+         val &= ~TPDM_CMB_CR_ENA;
+
+         /* Set the enable bit of CMB control register to 0 */
+         writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+     }
+}
+
+/* TPDM disable operations */
+static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+{
+     CS_UNLOCK(drvdata->base);
+
+     tpdm_disable_dsb(drvdata);
+     tpdm_disable_cmb(drvdata);
+
+     CS_LOCK(drvdata->base);
+
+}
+
+
+Best,
+
+Tao
+
+>
+>
+> Suzuki
+>
+>
+>>         CS_LOCK(drvdata->base);
+>>   }
+>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
+>> b/drivers/hwtracing/coresight/coresight-tpdm.h
+>> index 4115b2a17b8d..0098c58dfdd6 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+>> @@ -9,6 +9,12 @@
+>>   /* The max number of the datasets that TPDM supports */
+>>   #define TPDM_DATASETS       7
+>>   +/* CMB Subunit Registers */
+>> +#define TPDM_CMB_CR        (0xA00)
+>> +
+>> +/* Enable bit for CMB subunit */
+>> +#define TPDM_CMB_CR_ENA        BIT(0)
+>> +
+>>   /* DSB Subunit Registers */
+>>   #define TPDM_DSB_CR        (0x780)
+>>   #define TPDM_DSB_TIER        (0x784)
+>> @@ -79,10 +85,12 @@
+>>    *
+>>    * PERIPHIDR0[0] : Fix to 1 if ImplDef subunit present, else 0
+>>    * PERIPHIDR0[1] : Fix to 1 if DSB subunit present, else 0
+>> + * PERIPHIDR0[2] : Fix to 1 if CMB subunit present, else 0
+>>    */
+>>     #define TPDM_PIDR0_DS_IMPDEF    BIT(0)
+>>   #define TPDM_PIDR0_DS_DSB    BIT(1)
+>> +#define TPDM_PIDR0_DS_CMB    BIT(2)
+>>     #define TPDM_DSB_MAX_LINES    256
+>>   /* MAX number of EDCR registers */
+>
 
