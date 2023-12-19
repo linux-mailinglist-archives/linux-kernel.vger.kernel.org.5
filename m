@@ -1,131 +1,257 @@
-Return-Path: <linux-kernel+bounces-4621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D11A81800E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:07:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE5581801D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:10:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF8B8285D97
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:07:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C307EB244F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 596FD46AA;
-	Tue, 19 Dec 2023 03:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82485689;
+	Tue, 19 Dec 2023 03:09:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BBDzKc04"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AEcUodUF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBFB8460;
-	Tue, 19 Dec 2023 03:06:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A90C433C9;
-	Tue, 19 Dec 2023 03:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702955218;
-	bh=RzxTf7RhaILeV9wCyhzQyl7++g8TNQNbq8hRWOyQd+M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BBDzKc04EME67QqQKtCaIS71J1L60KEaYd3UbCWUwUF6VeK1yfEc+khWnoYQA6k9g
-	 O1Xu/e8erSPVa6IP4Sqg2jaJjjVaVFhmmCpTDOZOeOXJZPrzeF8sL8S6MAcs2eEtGy
-	 Y3rCNuQd1/FsvoVq2iP6SwrVBrHKSsjiDEr5FpVz9YpLBqJAxS93Hll6WS1QURlNtD
-	 O777tF/XUlAf+TLzwj4AoC8R9q3Z/EXNM6bF9DnODtHCP5KBMd9itDka5EklGUTbWR
-	 n/LoPxax/nW0+PqoFyRy5Bugu6JNJ5lgY423z1/jxeoMMn/qaC39s/uJRs7vGiGRFy
-	 tKtB6xGL5GdnA==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e2ce4fb22so3594267e87.1;
-        Mon, 18 Dec 2023 19:06:58 -0800 (PST)
-X-Gm-Message-State: AOJu0YykKaqS5Q4dBOiKfFEPGlSXAiIJcDeus4sla8ZaGeagcUEd9PKv
-	TfLzvfytyTDpAr52LSKI+Awa3boSjo/ZvkYe7PU=
-X-Google-Smtp-Source: AGHT+IEk9tQlIMI9LFzQsHZ87oxZ2QTHtDV5rI1Dp8W1kZOWPN+LWRK4WWaazQRJIsOhShr35OG2IPzZlnxJ6etd6v4=
-X-Received: by 2002:ac2:42c7:0:b0:50e:3659:8657 with SMTP id
- n7-20020ac242c7000000b0050e36598657mr1453178lfl.21.1702955216361; Mon, 18 Dec
- 2023 19:06:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9143C14AA2;
+	Tue, 19 Dec 2023 03:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702955359; x=1734491359;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=AktSGCecR1q5QvnpMNfkj4bUsaYN+EPOsjyaNXsUfSE=;
+  b=AEcUodUFvc8EJ1E1hkUiJjUUq28h/ZTNU5AjQiQdqc4Lc/UwRkeVkL2K
+   5PKYawdX9wa6o2MXrBZgAZisf8hp17hB+kn4rB+w//H9wKbguBPXGg/6S
+   FodSH5Yvu6aahR2RuJTCIGYgf43JaJW6Yp3DDiaBr1iJy38UJ8vVLSt+f
+   Ge0FtIjdPUU1GQm4y7wlah68TlHwfa0YtAdPYy1KUMnzdhSEHtdpaDTiM
+   TkiKkJDJzwdG6oyWrxIgjhL4VQCwP03rIaZNIy/jW+uMnQBr45ob4BMLn
+   j0cWsZo2vzMjhpSRYiLZ6oWWCEv66Wbbqi/aykp41gPsvHoqzIQMoG9V0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="2433218"
+X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
+   d="scan'208";a="2433218"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 19:09:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="1107194605"
+X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
+   d="scan'208";a="1107194605"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 19:09:10 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gourry.memverge@gmail.com>
+Cc: linux-mm@kvack.org,  linux-doc@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-api@vger.kernel.org,  x86@kernel.org,  akpm@linux-foundation.org,
+  arnd@arndb.de,  tglx@linutronix.de,  luto@kernel.org,  mingo@redhat.com,
+  bp@alien8.de,  dave.hansen@linux.intel.com,  hpa@zytor.com,
+  mhocko@kernel.org,  tj@kernel.org,  gregory.price@memverge.com,
+  corbet@lwn.net,  rakie.kim@sk.com,  hyeongtak.ji@sk.com,
+  honggyu.kim@sk.com,  vtavarespetr@micron.com,  peterz@infradead.org,
+  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
+  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com
+Subject: Re: [PATCH v4 11/11] mm/mempolicy: extend set_mempolicy2 and mbind2
+ to support weighted interleave
+In-Reply-To: <20231218194631.21667-12-gregory.price@memverge.com> (Gregory
+	Price's message of "Mon, 18 Dec 2023 14:46:31 -0500")
+References: <20231218194631.21667-1-gregory.price@memverge.com>
+	<20231218194631.21667-12-gregory.price@memverge.com>
+Date: Tue, 19 Dec 2023 11:07:10 +0800
+Message-ID: <87sf3ynb4x.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231115090735.2404866-1-chenhuacai@loongson.cn> <15ba5868-42de-4563-9903-ccd0297e2075@infradead.org>
-In-Reply-To: <15ba5868-42de-4563-9903-ccd0297e2075@infradead.org>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 19 Dec 2023 11:06:43 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H57PxrGPQMSvxUS2eJFCETYYUAyc=oxxu5fX1akuUCAng@mail.gmail.com>
-Message-ID: <CAAhV-H57PxrGPQMSvxUS2eJFCETYYUAyc=oxxu5fX1akuUCAng@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: KVM: Fix build due to API changes
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Huacai Chen <chenhuacai@loongson.cn>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, kvm@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 
-Hi, Randy,
+Gregory Price <gourry.memverge@gmail.com> writes:
 
-On Sat, Dec 16, 2023 at 1:08=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
+> Extend set_mempolicy2 and mbind2 to support weighted interleave, and
+> demonstrate the extensibility of the mpol_args structure.
 >
-> Hi,
+> To support weighted interleave we add interleave weight fields to the
+> following structures:
 >
-> Someone please merge this patch...
-> Thanks.
-I prepared loongarch-kvm changes for 6.8 and the base is 6.7-rc6 [1],
-If I merge this patch then the loongarch-next branch will build fail.
-So I think this patch should be merged to Paolo's next branch in his
-kvm tree.
+> Kernel Internal:  (include/linux/mempolicy.h)
+> struct mempolicy {
+> 	/* task-local weights to apply to weighted interleave */
+> 	unsigned char weights[MAX_NUMNODES];
+> }
+> struct mempolicy_args {
+> 	/* Optional: interleave weights for MPOL_WEIGHTED_INTERLEAVE */
+> 	unsigned char *il_weights;	/* of size MAX_NUMNODES */
+> }
+>
+> UAPI: (/include/uapi/linux/mempolicy.h)
+> struct mpol_args {
+> 	/* Optional: interleave weights for MPOL_WEIGHTED_INTERLEAVE */
+> 	unsigned char *il_weights;	/* of size pol_max_nodes */
+> }
+>
+> The task-local weights are a single, one-dimensional array of weights
+> that apply to all possible nodes on the system.  If a node is set in
+> the mempolicy nodemask, the weight in `il_weights` must be >= 1,
+> otherwise set_mempolicy2() will return -EINVAL.  If a node is not
+> set in pol_nodemask, the weight will default to `1` in the task policy.
+>
+> The default value of `1` is required to handle the situation where a
+> task migrates to a set of nodes for which weights were not set (up to
+> and including the local numa node).  For example, a migrated task whose
+> nodemask changes entirely will have all its weights defaulted back
+> to `1`, or if the nodemask changes to include a mix of nodes that
+> were not previously accounted for - the weighted interleave may be
+> suboptimal.
+>
+> If migrations are expected, a task should prefer not to use task-local
+> interleave weights, and instead utilize the global settings for natural
+> re-weighting on migration.
+>
+> To support global vs local weighting,  we add the kernel-internal flag:
+> MPOL_F_GWEIGHT (1 << 5) /* Utilize global weights */
+>
+> This flag is set when il_weights is omitted by set_mempolicy2(), or
+> when MPOL_WEIGHTED_INTERLEAVE is set by set_mempolicy(). This internal
+> mode_flag dictates whether global weights or task-local weights are
+> utilized by the the various weighted interleave functions:
+>
+> * weighted_interleave_nodes
+> * weighted_interleave_nid
+> * alloc_pages_bulk_array_weighted_interleave
+>
+> if (pol->flags & MPOL_F_GWEIGHT)
+> 	pol_weights = iw_table;
+> else
+> 	pol_weights = pol->wil.weights;
+>
+> To simplify creations and duplication of mempolicies, the weights are
+> added as a structure directly within mempolicy. This allows the
+> existing logic in __mpol_dup to copy the weights without additional
+> allocations:
+>
+> if (old == current->mempolicy) {
+> 	task_lock(current);
+> 	*new = *old;
+> 	task_unlock(current);
+> } else
+> 	*new = *old
+>
+> Suggested-by: Rakie Kim <rakie.kim@sk.com>
+> Suggested-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Suggested-by: Honggyu Kim <honggyu.kim@sk.com>
+> Suggested-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+> Co-developed-by: Rakie Kim <rakie.kim@sk.com>
+> Signed-off-by: Rakie Kim <rakie.kim@sk.com>
+> Co-developed-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Co-developed-by: Honggyu Kim <honggyu.kim@sk.com>
+> Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
+> Co-developed-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+> Signed-off-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+> ---
+>  .../admin-guide/mm/numa_memory_policy.rst     |  10 ++
+>  include/linux/mempolicy.h                     |   2 +
+>  include/uapi/linux/mempolicy.h                |   2 +
+>  mm/mempolicy.c                                | 129 +++++++++++++++++-
+>  4 files changed, 139 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> index 99e1f732cade..0e91efe9e769 100644
+> --- a/Documentation/admin-guide/mm/numa_memory_policy.rst
+> +++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> @@ -254,6 +254,8 @@ MPOL_WEIGHTED_INTERLEAVE
+>  	This mode operates the same as MPOL_INTERLEAVE, except that
+>  	interleaving behavior is executed based on weights set in
+>  	/sys/kernel/mm/mempolicy/weighted_interleave/
+> +	when configured to utilize global weights, or based on task-local
+> +	weights configured with set_mempolicy2(2) or mbind2(2).
+>  
+>  	Weighted interleave allocations pages on nodes according to
+>  	their weight.  For example if nodes [0,1] are weighted [5,2]
+> @@ -261,6 +263,13 @@ MPOL_WEIGHTED_INTERLEAVE
+>  	2 pages allocated on node1.  This can better distribute data
+>  	according to bandwidth on heterogeneous memory systems.
+>  
+> +	When utilizing task-local weights, weights are not rebalanced
+> +	in the event of a task migration.  If a weight has not been
+> +	explicitly set for a node set in the new nodemask, the
+> +	value of that weight defaults to "1".  For this reason, if
+> +	migrations are expected or possible, users should consider
+> +	utilizing global interleave weights.
+> +
+>  NUMA memory policy supports the following optional mode flags:
+>  
+>  MPOL_F_STATIC_NODES
+> @@ -514,6 +523,7 @@ Extended Mempolicy Arguments::
+>  		__u16 mode_flags;
+>  		__s32 home_node; /* mbind2: policy home node */
+>  		__aligned_u64 pol_nodes; /* nodemask pointer */
+> +		__aligned_u64 il_weights;  /* u8 buf of size pol_maxnodes */
+>  		__u64 pol_maxnodes;
+>  		__s32 policy_node; /* get_mempolicy2: policy node information */
+>  	};
+> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+> index aeac19dfc2b6..387c5c418a66 100644
+> --- a/include/linux/mempolicy.h
+> +++ b/include/linux/mempolicy.h
+> @@ -58,6 +58,7 @@ struct mempolicy {
+>  	/* Weighted interleave settings */
+>  	struct {
+>  		unsigned char cur_weight;
+> +		unsigned char weights[MAX_NUMNODES];
+>  	} wil;
+>  };
+>  
+> @@ -70,6 +71,7 @@ struct mempolicy_args {
+>  	unsigned short mode_flags;	/* policy mode flags */
+>  	int home_node;			/* mbind: use MPOL_MF_HOME_NODE */
+>  	nodemask_t *policy_nodes;	/* get/set/mbind */
+> +	unsigned char *il_weights;	/* for mode MPOL_WEIGHTED_INTERLEAVE */
+>  	int policy_node;		/* get: policy node information */
+>  };
+>  
+> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+> index ec1402dae35b..16fedf966166 100644
+> --- a/include/uapi/linux/mempolicy.h
+> +++ b/include/uapi/linux/mempolicy.h
+> @@ -33,6 +33,7 @@ struct mpol_args {
+>  	__u16 mode_flags;
+>  	__s32 home_node;	/* mbind2: policy home node */
+>  	__aligned_u64 pol_nodes;
+> +	__aligned_u64 il_weights; /* size: pol_maxnodes * sizeof(char) */
+>  	__u64 pol_maxnodes;
+>  	__s32 policy_node;	/* get_mempolicy: policy node info */
+>  };
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongs=
-on.git/log/?h=3Dloongarch-next
+You break the ABI you introduced earlier in the patchset.  Although they
+are done within a patchset, I don't think that it's a good idea.  I
+suggest to finalize the ABI in the first place.  Otherwise, people check
+git log will be confused by ABI broken.  This makes it easier to be
+reviewed too.
 
-Huacai
+> @@ -75,6 +76,7 @@ struct mpol_args {
+>  #define MPOL_F_SHARED  (1 << 0)	/* identify shared policies */
+>  #define MPOL_F_MOF	(1 << 3) /* this policy wants migrate on fault */
+>  #define MPOL_F_MORON	(1 << 4) /* Migrate On protnone Reference On Node */
+> +#define MPOL_F_GWEIGHT	(1 << 5) /* Utilize global weights */
+>  
+>  /*
+>   * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
 
->
->
-> On 11/15/23 01:07, Huacai Chen wrote:
-> > Commit 8569992d64b8f750e34b7858eac ("KVM: Use gfn instead of hva for
-> > mmu_notifier_retry") replaces mmu_invalidate_retry_hva() usage with
-> > mmu_invalidate_retry_gfn() for X86, LoongArch also need similar changes
-> > to fix build.
-> >
-> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > ---
-> >  arch/loongarch/kvm/mmu.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
-> > index 80480df5f550..9463ebecd39b 100644
-> > --- a/arch/loongarch/kvm/mmu.c
-> > +++ b/arch/loongarch/kvm/mmu.c
-> > @@ -627,7 +627,7 @@ static bool fault_supports_huge_mapping(struct kvm_=
-memory_slot *memslot,
-> >   *
-> >   * There are several ways to safely use this helper:
-> >   *
-> > - * - Check mmu_invalidate_retry_hva() after grabbing the mapping level=
-, before
-> > + * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level=
-, before
-> >   *   consuming it.  In this case, mmu_lock doesn't need to be held dur=
-ing the
-> >   *   lookup, but it does need to be held while checking the MMU notifi=
-er.
-> >   *
-> > @@ -807,7 +807,7 @@ static int kvm_map_page(struct kvm_vcpu *vcpu, unsi=
-gned long gpa, bool write)
-> >
-> >       /* Check if an invalidation has taken place since we got pfn */
-> >       spin_lock(&kvm->mmu_lock);
-> > -     if (mmu_invalidate_retry_hva(kvm, mmu_seq, hva)) {
-> > +     if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
-> >               /*
-> >                * This can happen when mappings are changed asynchronous=
-ly, but
-> >                * also synchronously if a COW is triggered by
->
-> --
-> #Randy
-> https://people.kernel.org/tglx/notes-about-netiquette
-> https://subspace.kernel.org/etiquette.html
+--
+Best Regards,
+Huang, Ying
+
+[snip]
 
