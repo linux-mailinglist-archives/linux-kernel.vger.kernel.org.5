@@ -1,110 +1,133 @@
-Return-Path: <linux-kernel+bounces-5806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DE6A818FB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:22:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 875F4818FBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0901D28AC9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:22:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7F97B2558E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63DE37D17;
-	Tue, 19 Dec 2023 18:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D3337D21;
+	Tue, 19 Dec 2023 18:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="sjSIBeIJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJ7TR7dH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F7539844;
-	Tue, 19 Dec 2023 18:22:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06FFBC433C8;
-	Tue, 19 Dec 2023 18:22:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703010162;
-	bh=wSkiNjun2WCZD0RxVXQmuAD/N273lzHSG6FvzoIS+ks=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sjSIBeIJAPebdHDxXCC1d7uqA9GkNF23p1NHcKoyn30cPzw/xCTjaxvq3+TrTXwUv
-	 fsiw5vrzcaO1Y80EfN89YXyAZK9OLCTY/ip86xesQodMfPLkZjzidg5Aem01zlR6HO
-	 zc/A0JQt8csDafBQBDpk4xZ6Prf7wJQruSRaD/S0=
-Date: Tue, 19 Dec 2023 19:22:39 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Tanzir Hasan <tanzirh@google.com>
-Cc: Kees Cook <keescook@chromium.org>, Nick DeSaulniers <nnn@google.com>,
-	Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0576638DEB;
+	Tue, 19 Dec 2023 18:22:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78AA1C433C7;
+	Tue, 19 Dec 2023 18:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703010168;
+	bh=DPuOkfzjPhady10Q5o+36I/qim38sfvyYNHfU9o8g4s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lJ7TR7dHiGeTaDrDcD0P3s9K3/Cy0c5R+1JMsyHoyWSfR09sTOekdWbvT6dGuVtMM
+	 +MApXmtcHV+t2luxAN1lSgKWm++Ahv8W3hdZa37W1zwijBzqvRKv3ogmQQ3lwJtsH8
+	 IeMlSpos+7YynBF91UFPlkwtiaeyVcQL5JGEx9DWDK6ncwFsjZ1IvVPSg9+4aNJNL3
+	 oE03fa8trLY7ghnI0z+tR3HRpqSs+MYJo2GIFMKbAAeJ7/LiCe9FcaRMq2mvI7QGCD
+	 qYfD7Zh7ZWB9MMFX6UtMTZ4bCCpZWw6dKP6hxxwd3z8WAxC1YbU/jqaRGJ5bHb6Ljm
+	 q2fleBZ31mTBg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rFejt-005SbH-35;
+	Tue, 19 Dec 2023 18:22:45 +0000
+Date: Tue, 19 Dec 2023 18:22:44 +0000
+Message-ID: <8734vy832j.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: xiaobo55x@gmail.com,
+	ajones@ventanamicro.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Guo Ren <guoren@kernel.org>,
+	Mayuresh Chitale <mchitale@ventanamicro.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	wchen <waylingii@gmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Minda Chen <minda.chen@starfivetech.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Peter Xu <peterx@redhat.com>,
+	Like Xu <likexu@tencent.com>,
+	Vipin Sharma <vipinsh@google.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Aaron Lewis <aaronlewis@google.com>,
+	Thomas Huth <thuth@redhat.com>,
 	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 1/2] kernel.h: removed REPEAT_BYTE from kernel.h
-Message-ID: <2023121938-stargazer-purse-0dc1@gregkh>
-References: <20231219-libstringheader-v4-0-aaeb26495d2f@google.com>
- <20231219-libstringheader-v4-1-aaeb26495d2f@google.com>
+	linux-riscv@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 11/11] KVM: selftests: Enable tunning of err_margin_us in arch timer test
+In-Reply-To: <0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
+References: <cover.1702371136.git.haibo1.xu@intel.com>
+	<0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219-libstringheader-v4-1-aaeb26495d2f@google.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: haibo1.xu@intel.com, xiaobo55x@gmail.com, ajones@ventanamicro.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, pbonzini@redhat.com, shuah@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, guoren@kernel.org, mchitale@ventanamicro.com, greentime.hu@sifive.com, waylingii@gmail.com, conor.dooley@microchip.com, heiko@sntech.de, minda.chen@starfivetech.com, samuel@sholland.org, jszhang@kernel.org, seanjc@google.com, peterx@redhat.com, likexu@tencent.com, vipinsh@google.com, maciej.wieczor-retman@intel.com, aaronlewis@google.com, thuth@redhat.com, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Tue, Dec 19, 2023 at 06:09:51PM +0000, Tanzir Hasan wrote:
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -39,13 +39,6 @@
->  
->  #define STACK_MAGIC	0xdeadbeef
->  
-> -/**
-> - * REPEAT_BYTE - repeat the value @x multiple times as an unsigned long value
-> - * @x: value to repeat
-> - *
-> - * NOTE: @x is not checked for > 0xff; larger values produce odd results.
-> - */
-> -#define REPEAT_BYTE(x)	((~0ul / 0xff) * (x))
->  
->  /* generic data direction definitions */
->  #define READ			0
-> diff --git a/include/linux/wordpart.h b/include/linux/wordpart.h
-> new file mode 100644
-> index 000000000000..6a5ed5d54ba2
-> --- /dev/null
-> +++ b/include/linux/wordpart.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2023 Google LLC <tanzirh@google.com>
-> + */
-> +
-> +#ifndef _LINUX_WORDPART_H
-> +#define _LINUX_WORDPART_H
-> +/**
-> + * REPEAT_BYTE - repeat the value @x multiple times as an unsigned long value
-> + * @x: value to repeat
-> + *
-> + * NOTE: @x is not checked for > 0xff; larger values produce odd results.
-> + */
-> +#define REPEAT_BYTE(x)	((~0ul / 0xff) * (x))
+On Tue, 12 Dec 2023 09:31:20 +0000,
+Haibo Xu <haibo1.xu@intel.com> wrote:
+> > @@ -216,6 +221,9 @@ static bool parse_args(int argc, char *argv[])
+>  		case 'm':
+>  			test_args.migration_freq_ms = atoi_non_negative("Frequency", optarg);
+>  			break;
+> +		case 'e':
+> +			test_args.timer_err_margin_us = atoi_non_negative("Error Margin", optarg);
+> +			break;
 
-Legal note, this file is NOT copyright Google as no Google employe
-actually wrote the logcal contents of it.
+So your error margin is always unsigned...
 
-Please be VERY careful when doing stuff like this, it has potentially
-big repercussions, and you don't want to have to talk to lots of
-lawyers a few years from now and explain how you messed it all up :(
+>  		case 'o':
+>  			test_args.counter_offset = strtol(optarg, NULL, 0);
+>  			test_args.reserved = 0;
+> diff --git a/tools/testing/selftests/kvm/include/timer_test.h b/tools/testing/selftests/kvm/include/timer_test.h
+> index 968257b893a7..b1d405e7157d 100644
+> --- a/tools/testing/selftests/kvm/include/timer_test.h
+> +++ b/tools/testing/selftests/kvm/include/timer_test.h
+> @@ -22,6 +22,7 @@ struct test_args {
+>  	int nr_iter;
+>  	int timer_period_ms;
+>  	int migration_freq_ms;
+> +	int timer_err_margin_us;
 
-Nick, odds are there's a Google copyright class that Tanzir should take
-here, if not, I recommend the free LF one that anyone can take online
-that explains the issues here:
-	https://training.linuxfoundation.org/training/open-source-licensing-basics-for-software-developers/
+... except that you are storing it as a signed value. Some consistency
+wouldn't hurt, really, and would avoid issues when passing large
+values.
 
-As-is, this change is STRONGLY Nacked by me.
+	M.
 
-thanks,
-
-greg k-h
+-- 
+Without deviation from the norm, progress is not possible.
 
