@@ -1,149 +1,148 @@
-Return-Path: <linux-kernel+bounces-4792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 043A481821F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:17:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE9A81821C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:17:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A87A6286576
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:17:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 108E41F258A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A27D8BE6;
-	Tue, 19 Dec 2023 07:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C448C15;
+	Tue, 19 Dec 2023 07:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ndSacNlr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mimf+mH9"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886E811C9F;
-	Tue, 19 Dec 2023 07:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E26213AD8;
+	Tue, 19 Dec 2023 07:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702970252; x=1734506252;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FVUCMuly39zh45kSUkdxdd10YAp2v8XjUsT+A/CBjTk=;
-  b=ndSacNlrU40KKr5cM59IaoL4m+qGBNuFYldKnykPiTE4k5rCToBRsgR5
-   pOssNzmjgL2fAKo6bMYnehinq4ebFG73lIQg5FUW4nsu5GHc3ta0D+Xzp
-   su4myFmXFGSlq5j7umyMXyDitFGrNYFZql78Pl/ZVMzvkTdL5FViyhqsH
-   zWbih23ElyPCORSl3CP2q3PYzAqqYFUZKvYW16xvimw2YB0LeY2SzMD8z
-   LzihHryJ2qcZno2YxZxyPzCWHBlMH0lW0fXkhIlbvTUL+G970QkgEpj+C
-   y0ameVQkIj1oCdPi/hNmBiP5PvoGO5DR2Xo7E4kKDoV6CIbQiUNrvfP+l
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="426751088"
+  t=1702970216; x=1734506216;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=e1H4euSynEtAK+MQ7n5ddNUb1SBbebH7TmVLRdIdcdM=;
+  b=mimf+mH91DwNBYn62ufbbu9mhs68d6jNXm2VBpVh7TOT8h0FgWHJfaXR
+   M3NfyVWZMogPj/ZRsk3rHMnDpvIf3khbJoJzYY6TWbXqjcQO38fSjhiwC
+   maexaGUvhkSDv8mJtd6T+AjdGX5nymBcrNTjzpWIwXPnGJSixFSRnl+jn
+   0KUdR+rSyLiMnRj6k7UPf78EDDuL5l3sb//JRMHN3H0ullV2q83ApQDJ1
+   CG0a5QAfttF5ik111QLHl9AjzkT7PpH+AnEwc1RxoFQkaSoc8w1z/+/Ul
+   ORswsaVIRboZIL3qZx1JDGDit9tLuCdihgbjOdbJTlYwEjSL+OA1+nEC/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="426751052"
 X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="426751088"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 23:17:31 -0800
+   d="scan'208";a="426751052"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 23:16:55 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="894170301"
 X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="894170301"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 18 Dec 2023 23:17:29 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFUM3-0004xd-0w;
-	Tue, 19 Dec 2023 07:17:27 +0000
-Date: Tue, 19 Dec 2023 15:16:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>, rjw@rjwysocki.net,
-	lukasz.luba@arm.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	rui.zhang@intel.com, linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2 1/2] thermal/debugfs: Add thermal cooling device
- debugfs information
-Message-ID: <202312191425.5o49Dzmt-lkp@intel.com>
-References: <20231218171942.3048095-1-daniel.lezcano@linaro.org>
+   d="scan'208";a="17500248"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 23:16:53 -0800
+Message-ID: <2fa95471-e22e-46b7-8f23-f4e6abbbd69b@linux.intel.com>
+Date: Tue, 19 Dec 2023 15:16:50 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218171942.3048095-1-daniel.lezcano@linaro.org>
-
-Hi Daniel,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on rafael-pm/thermal]
-[also build test WARNING on linus/master v6.7-rc6 next-20231218]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Lezcano/thermal-debugfs-Add-thermal-debugfs-information-for-mitigation-episodes/20231219-012118
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
-patch link:    https://lore.kernel.org/r/20231218171942.3048095-1-daniel.lezcano%40linaro.org
-patch subject: [PATCH v2 1/2] thermal/debugfs: Add thermal cooling device debugfs information
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231219/202312191425.5o49Dzmt-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231219/202312191425.5o49Dzmt-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312191425.5o49Dzmt-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/thermal/thermal_debugfs.c:73: warning: cannot understand function prototype: 'struct cdev_value '
->> drivers/thermal/thermal_debugfs.c:91: warning: cannot understand function prototype: 'struct thermal_debugfs '
->> drivers/thermal/thermal_debugfs.c:370: warning: bad line: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] iommu/vt-d: don's issue devTLB flush request when
+ device is disconnected
+To: Baolu Lu <baolu.lu@linux.intel.com>, bhelgaas@google.com,
+ dwmw2@infradead.org, will@kernel.org, robin.murphy@arm.com, lukas@wunner.de
+Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20231217114902.3836260-1-haifeng.zhao@linux.intel.com>
+ <20231217114902.3836260-3-haifeng.zhao@linux.intel.com>
+ <ac0fd341-7def-485e-9f32-530cf8a83273@linux.intel.com>
+ <a275032f-cb1d-4ccc-9418-9567aba6b343@linux.intel.com>
+ <f7dfdec4-ec52-44b0-9e04-bdcc3af2ba25@linux.intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <f7dfdec4-ec52-44b0-9e04-bdcc3af2ba25@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-vim +73 drivers/thermal/thermal_debugfs.c
+On 12/19/2023 2:57 PM, Baolu Lu wrote:
+> On 2023/12/19 14:49, Ethan Zhao wrote:
+>>>> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+>>>> index 74e8e4c17e81..182eb5df244d 100644
+>>>> --- a/drivers/iommu/intel/pasid.c
+>>>> +++ b/drivers/iommu/intel/pasid.c
+>>>> @@ -476,6 +476,23 @@ devtlb_invalidation_with_pasid(struct 
+>>>> intel_iommu *iommu,
+>>>>   {
+>>>>       struct device_domain_info *info;
+>>>>       u16 sid, qdep, pfsid;
+>>>> +    struct pci_dev *pdev;
+>>>> +
+>>>> +    pdev = to_pci_dev(dev);
+>>>> +    if (!pdev)
+>>>> +        return;
+>>>> +
+>>>> +    /*
+>>>> +     * If endpoint device's link was brough down by user's pci 
+>>>> configuration
+>>>> +     * access to it's hotplug capable slot link control register, 
+>>>> as sequence
+>>>> +     * response for DLLSC, pciehp_ist() will set the device 
+>>>> error_state to
+>>>> +     * pci_channel_io_perm_failure. Checking device's state here 
+>>>> to avoid
+>>>> +     * issuing meaningless devTLB flush request to it, that might 
+>>>> cause lockup
+>>>> +     * warning or deadlock because too long time waiting in 
+>>>> interrupt context.
+>>>> +     */
+>>>> +
+>>>> +    if (pci_dev_is_disconnected(pdev))
+>>>> +        return;
+>>>>         info = dev_iommu_priv_get(dev);
+>>>>       if (!info || !info->ats_enabled)
+>>>
+>>> It's likely better to check the device status after verifying
+>>> ats_enabled. How about below change?
+>>>
+>>> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+>>> index 74e8e4c17e81..fa19c6cdfd8b 100644
+>>> --- a/drivers/iommu/intel/pasid.c
+>>> +++ b/drivers/iommu/intel/pasid.c
+>>> @@ -481,6 +481,9 @@ devtlb_invalidation_with_pasid(struct 
+>>> intel_iommu *iommu,
+>>>         if (!info || !info->ats_enabled)
+>>>                 return;
+>>>
+>>> +       if (pci_dev_is_disconnected(to_pci_dev(dev)))
+>>
+>> I like this kind of simplicity, but rationalist always brings me back 
+>> to the no-error(ugly)
+>>
+>> style.  🙂
+>
+> The rational is that Intel IOMMU driver only supports PCI ATS. So if
+> device is marked as ATS supported, then it must be a PCI device.
+> Therefore, it's safe to convert it to pci_device with to_pci_dev().
 
-    60	
-    61	/**
-    62	 * cdev_value - Common structure for cooling device entry
-    63	 *
-    64	 * The following common structure allows to store the information
-    65	 * related to the transitions and to the state residencies. They are
-    66	 * identified with a id which is associated to a value. It is used as
-    67	 * nodes for the "transitions" and "durations" above.
-    68	 *
-    69	 * @node: node to insert the structure in a list
-    70	 * @id: identifier of the value which can be a state or a transition
-    71	 * @value: the id associated value which can be a duration or an occurrence
-    72	 */
-  > 73	struct cdev_value {
-    74		struct list_head node;
-    75		int id;
-    76		u64 value;
-    77	};
-    78	
-    79	/**
-    80	 * thermal_debugfs - High level structure for a thermal object in
-    81	 * debugfs
-    82	 *
-    83	 * The thermal_debugfs structure is the common structure used by the
-    84	 * cooling device to compute the statistics.
-    85	 *
-    86	 * @d_top: top directory of the thermal object directory
-    87	 * @lock: per object lock to protect the internals
-    88	 *
-    89	 * @cdev: a cooling device debug structure
-    90	 */
-  > 91	struct thermal_debugfs {
-    92		struct dentry *d_top;
-    93		struct mutex lock;
-    94		union {
-    95			struct cdev_debugfs cdev;
-    96		};
-    97	};
-    98	
+Fair engough !
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+Thanks,
+
+Ethan
+
+>
+> If you move this up before ATS checking, then you need to check
+> dev_is_pci().
+>
+> Best regards,
+> baolu
+>
 
