@@ -1,208 +1,205 @@
-Return-Path: <linux-kernel+bounces-5700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 983E7818E4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:38:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59D97818E4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:39:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB55E1C23EF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:38:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B87A5B235FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89ECA347DF;
-	Tue, 19 Dec 2023 17:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDAC37D0F;
+	Tue, 19 Dec 2023 17:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="1PQkSO/1";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FYaEq0od"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ueQlHyJ+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3263174A;
-	Tue, 19 Dec 2023 17:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id D58053200A07;
-	Tue, 19 Dec 2023 12:38:42 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 19 Dec 2023 12:38:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1703007522; x=1703093922; bh=NZGyZihxFa
-	h0LL7yYJRdhv/PPbzAuX/RXJJmr8N6IHg=; b=1PQkSO/1PQdZRqyoCNcqArta9n
-	Ec305g4d+0BssKdPN8wGztEY33kNNdnhhBFmkvfaGLW7TaslN9Cv6i6bwtz+gSFl
-	SejRQ2neCctLguXSRp2qdqAmVJGNCqALR8qdIknw0lfrwqeqcC0z0QCoLAPlISUX
-	v63aJxujrVJ1I2bPt9IFwpxZYbo+zr4mXz7SBFYGkzC6bFVTCigOOSxopJsVrnya
-	57VglgS6xgJcIqwDd4zLNp4QWuCFSkm3Eb8KpaHvb2ERwp5uiVEJ65Bwnspy09O7
-	FnxQwSLq3q9mOf7jYSwMYy/u+hsRRX7qeuW5wmyYmglwihoz+p/2lr7ySVjw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703007522; x=1703093922; bh=NZGyZihxFah0LL7yYJRdhv/PPbzA
-	uX/RXJJmr8N6IHg=; b=FYaEq0odw552hYEyGxn66AqospWQNmq2tOXybUDjJTqL
-	AZWowKlaEbI30KaIFk77Zz5e6XKxD8Yw8bSqJx4/f3nwHV3h3xj1v/HMQzZO2wJW
-	r1AUFjH1dkjlc8Mw+ezNh0DyKQOZwI5HLSBg2wcnolpREJManunxzJXAMjlbEHKE
-	+fp1iMqG8GoI9of3BotOoNp61V4al81ppocF6gPU8ynL9fKWgru5RsKFuFXT/bMD
-	gplFcRqfNIs+54adFQ53zvBbDp0fB8FMbi7L+SIt+8amn9EM8E5YgsQ8cG0PAH/J
-	iFwbMbMqNgvP+ZRGEVdomn40De4vnq8IRbliG2ybsw==
-X-ME-Sender: <xms:IdWBZbK5tXBepbZsjjh6J30xz7PbZzzob0kOp89V7hXZ--KGZMUvXg>
-    <xme:IdWBZfIYRBZAmZzKjIVpCpRRzgXxw3gAGe_bQjsH7pk4idvwjg2JQ1MbVa-kBLPdC
-    6KMgLlqQXTpH4c4f_I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddutddguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:IdWBZTtj4HtLvhrVXyvMx93jLyQaFSiLmwsrB9d_ECv2JpXffj0rnQ>
-    <xmx:IdWBZUau-EAEnzxeyixGrsspBAtKPp0HVS8N03vMwnp68xmEW16o0g>
-    <xmx:IdWBZSbcQK_WUf_PIckvV60woL_K7-85GuMxz9nNwQckV-SzxvxBnw>
-    <xmx:ItWBZXPvrJl1BdYOKERUaSECLFW36Aatgt016P0ZAL0n1dTgfqCQSQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id B655CB6008F; Tue, 19 Dec 2023 12:38:41 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1350-g1d0a93a8fb-fm-20231218.001-g1d0a93a8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453FC37D05
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3630956a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:38:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703007529; x=1703612329; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dwB1tsO1zuR2AK7X6AAFLPcDtCqSfV+mkwSgMHXNxAo=;
+        b=ueQlHyJ+xMGhbUp9baWdifmx5eQnY9WbJ5tpkMiYd7NyDeYPzpk4xIxiaFlBb+xvsf
+         Ke5LW72V/MsvR6B8LnRhtK2Mzeggyg3i5yoSZkBgvMoR+90LqfFPNplQLFUMSNRnRI8D
+         MOO4yoAlCtZpwkPyzEHoYJbnsYV8W/9QSG0glWT7H9tNvrFL/IEtJ8ilPUBXk84Uyfhc
+         8WD0KQA7BiZ3d7lMB2hpr9yDh7nd3aRbntVpcYsEsLd34JX5AIc0B0vvc9jSxPNqRps+
+         cyupxS+FHU4BPeK0ubNqaS8wPPfU3UnQ9qq/Qf5t+4mFYRR9yY5xK8q/3kLn3TR8tdIv
+         6QiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703007529; x=1703612329;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dwB1tsO1zuR2AK7X6AAFLPcDtCqSfV+mkwSgMHXNxAo=;
+        b=tYeHB+E5pc4YfEotSkuX5NLas/i+7QMUxjOCW0iVNCSwXoDUVuD4rcGBfSGa6Bkv0b
+         YPB1pSTCL7DbyVGdZMOVzVMbiWyisBIEKFdYlnL7xAAiVgCDOsJfJ3NKea2NbtlSkXsm
+         5dA4gqTp9kiNeSIvP/mSg/S3uhVGwff6E2gjyqXkYN1xC57wgMKtAfb3z8biYA65cWVk
+         VEgtIDjviPpNBmhxJ+SI+XW0v1wcczy9aupEiTSw4MT9Ihuve+LXiqgLyWAQRTH0ZLye
+         FkOnifwQBbsr4QzOr4d+5wjtkhuQOc7Gvy8eM9A7amO6/7WG9i9zVRC9pjxfk5LwYZ6M
+         J+wA==
+X-Gm-Message-State: AOJu0YwzFF1EoeZLLNCggtPXSoaY+tnGngyxAzhlI3+/l8sawJPXeggx
+	PQlRWY97xfAoIFWsTssAg0LmLwz78KeDd8EsZ6YCLg==
+X-Google-Smtp-Source: AGHT+IEwIu9896ZvQLJsVC5cTxv5Mcs36G5G7vSA/PChLzH96p9RCGLs6sfGU3Jmhug0TpZpLRxLaypwEkqina2tC78=
+X-Received: by 2002:a17:902:e88a:b0:1cc:43af:f568 with SMTP id
+ w10-20020a170902e88a00b001cc43aff568mr22468704plg.6.1703007529566; Tue, 19
+ Dec 2023 09:38:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <fcb410dd-f042-4469-9319-040c26099b2b@app.fastmail.com>
-In-Reply-To: <20231218061201.98136-2-joshua.yeong@starfivetech.com>
-References: <20231218061201.98136-1-joshua.yeong@starfivetech.com>
- <20231218061201.98136-2-joshua.yeong@starfivetech.com>
-Date: Tue, 19 Dec 2023 17:38:23 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Joshua Yeong" <joshua.yeong@starfivetech.com>,
- jeeheng.sia@starfivetech.com, leyfoon.tan@starfivetech.com,
- "Jassi Brar" <jassisinghbrar@gmail.com>, "Rob Herring" <robh+dt@kernel.org>,
- krzysztof.kozlowski+dt@linaro.org, "Conor Dooley" <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mailbox: starfive: Add StarFive Meu Mailbox Driver
-Content-Type: text/plain
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+ <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien>
+ <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
+ <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien>
+ <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr>
+ <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com> <alpine.DEB.2.22.394.2312182302310.3361@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2312182302310.3361@hadrien>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 19 Dec 2023 18:38:38 +0100
+Message-ID: <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
+Subject: Re: EEVDF and NUMA balancing
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Dec 18, 2023, at 06:11, Joshua Yeong wrote:
-> This patch adds support for the StarFive Meu Mailbox driver. This enables
-> communication using mailbox doorbell between AP and SCP cores.
+On Mon, 18 Dec 2023 at 23:31, Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+>
+>
+> On Mon, 18 Dec 2023, Vincent Guittot wrote:
+>
+> > On Mon, 18 Dec 2023 at 14:58, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > >
+> > > Hello,
+> > >
+> > > I have looked further into the NUMA balancing issue.
+> > >
+> > > The context is that there are 2N threads running on 2N cores, one thread
+> > > gets NUMA balanced to the other socket, leaving N+1 threads on one socket
+> > > and N-1 threads on the other socket.  This condition typically persists
+> > > for one or more seconds.
+> > >
+> > > Previously, I reported this on a 4-socket machine, but it can also occur
+> > > on a 2-socket machine, with other tests from the NAS benchmark suite
+> > > (sp.B, bt.B, etc).
+> > >
+> > > Since there are N+1 threads on one of the sockets, it would seem that load
+> > > balancing would quickly kick in to bring some thread back to socket with
+> > > only N-1 threads.  This doesn't happen, though, because actually most of
+> > > the threads have some NUMA effects such that they have a preferred node.
+> > > So there is a high chance that an attempt to steal will fail, because both
+> > > threads have a preference for the socket.
+> > >
+> > > At this point, the only hope is active balancing.  However, triggering
+> > > active balancing requires the success of the following condition in
+> > > imbalanced_active_balance:
+> > >
+> > >         if ((env->migration_type == migrate_task) &&
+> > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> > >
+> > > sd->nr_balance_failed does not increase because the core is idle.  When a
+> > > core is idle, it comes to the load_balance function from schedule() though
+> > > newidle_balance.  newidle_balance always sends in the flag CPU_NEWLY_IDLE,
+> > > even if the core has been idle for a long time.
+> >
+> > Do you mean that you never kick a normal idle load balance ?
+>
+> OK, it seems that both happen, at different times.  But the calls to
+> trigger_load_balance seem to rarely do more than the SMT level.
 
-I think the naming here is a bit confusing. As far as I can tell, this
-is not a mailbox at all but just a doorbell, so maybe clarify that in the
-wording.
+yes, the min period is equal to "cpumask_weight of sched_domain" ms, 2
+ms at SMT level and 2N ms at numa level.
 
-It could be turned into a mailbox if you add a shared memory segment of
-course, but neither the driver nor the binding specifies how to use that.
+>
+> I have attached part of a trace in which I print various things that
+> happen during the idle period.
+>
+> >
+> > >
+> > > Changing newidle_balance to use CPU_IDLE rather than CPU_NEWLY_IDLE when
+> > > the core was already idle before the call to schedule() is not enough
+> > > though, because there is also the constraint on the migration type.  That
+> > > turns out to be (mostly?) migrate_util.  Removing the following
+> > > code from find_busiest_queue:
+> > >
+> > >                         /*
+> > >                          * Don't try to pull utilization from a CPU with one
+> > >                          * running task. Whatever its utilization, we will fail
+> > >                          * detach the task.
+> > >                          */
+> > >                         if (nr_running <= 1)
+> > >                                 continue;
+> >
+> > I'm surprised that load_balance wants to "migrate_util"  instead of
+> > "migrate_task"
+>
+> In the attached trace, there are 147 occurrences of migrate_util, and 3
+> occurrences of migrate_task.  But even when migrate_task appears, the
+> counter has gotten knocked back down, due to the calls to newidle_balance.
+>
+> > You have N+1 threads on a group of 2N CPUs so you should have at most
+> > 1 thread per CPUs in your busiest group.
+>
+> One CPU has 2 threads, and the others have one.  The one with two threads
+> is returned as the busiest one.  But nothing happens, because both of them
+> prefer the socket that they are on.
 
-> +config STARFIVE_MEU_MBOX
-> +	tristate "Starfive MEU Mailbox"
+This explains way load_balance uses migrate_util and not migrate_task.
+One CPU with 2 threads can be overloaded
 
-Please spell out MEU here, I don't think that is a well understood acronynm,
-at least I have never heard of it.
+ok, so it seems that your 1st problem is that you have 2 threads on
+the same CPU whereas you should have an idle core in this numa node.
+All cores are sharing the same LLC, aren't they ?
 
-> +	depends on OF
-> +	depends on SOC_STARFIVE || COMPILE_TEST
-> +	help
-> +	  Say Y here if you want to build the Starfive MEU mailbox controller
-> +	  driver.
-> +
-> +	  The StarFive mailbox controller has 2 channels. Each channel has a
-> +	  pair of Tx/Rx link and each link has 31 slots/doorbells.
+You should not have more than 1 thread per CPU when there are N+1
+threads on a node with N cores / 2N CPUs. This will enable the
+load_balance to try to migrate a task instead of some util(ization)
+and you should reach the active load balance.
 
-What is the significance of the "channels" as opposed to "slots"?
-
-The binding seems to indicate that there are just 62 fully equal
-doorbell channels as far as consumers are concerned. For efficiency
-one might want to of course only use one doorbell per channel here
-to avoid the interrupt sharing.
-
-> +static inline struct mbox_chan *
-> +meu_db_mbox_to_channel(struct mbox_controller *mbox, unsigned int 
-> pchan,
-> +		       unsigned int doorbell)
-> +{
-> +	struct meu_db_channel *chan_info;
-> +	int i;
-> +
-> +	for (i = 0; i < mbox->num_chans; i++) {
-> +		chan_info = mbox->chans[i].con_priv;
-> +		if (chan_info && chan_info->pchan == pchan &&
-> +		    chan_info->doorbell == doorbell)
-> +			return &mbox->chans[i];
-> +	}
-> +
-> +	return NULL;
-> +}
-
-If the number of doorbells is known in advance, maybe use
-use it as the array index here?
-
-> +static void meu_db_mbox_clear_irq(struct mbox_chan *chan)
-> +{
-> +	struct meu_db_channel *chan_info = chan->con_priv;
-> +	void __iomem *base = chan_info->meu->mlink[chan_info->pchan].rx_reg;
-> +
-> +	writel_relaxed(BIT(chan_info->doorbell), base + CHAN_CLR_OFFSET);
-> +}
-
-Any reason to use writel_relaxed() instead of writel() here? Please
-add a comment if this is necessary, otherwise this risks adding
-races if someone tries to use the doorbell in combination with
-shared memory.
-
-
-> +static struct mbox_chan *
-> +meu_db_mbox_irq_to_channel(struct starfive_meu *meu, unsigned int 
-> pchan)
-> +{
-> +	void __iomem *base = meu->mlink[pchan].rx_reg;
-> +	struct mbox_controller *mbox = &meu->mbox;
-> +	struct mbox_chan *chan = NULL;
-> +	unsigned int doorbell;
-> +	unsigned long bits;
-> +
-> +	bits = FIELD_GET(CHAN_RX_DOORBELL, readl_relaxed(base + 
-> CHAN_RX_STAT_OFFSET));
-> +	if (!bits)
-> +		/* No IRQs fired in specified physical channel */
-> +		return NULL;
-> +
-> +	/* An IRQ has fired, find the associated channel */
-> +	for (doorbell = 0; bits; doorbell++) {
-> +		if (!test_and_clear_bit(doorbell, &bits))
-> +			continue;
-
-There is no need to use atomic updates on stack variables. Just
-use for_each_set_bit() to do the loop here.
-
-> +		chan = meu_db_mbox_to_channel(mbox, pchan, doorbell);
-> +		if (chan)
-> +			break;
-> +
-> +		/* Clear IRQ for unregistered doorbell */
-> +		writel_relaxed(BIT(doorbell), base + CHAN_CLR_OFFSET);
-
-Again, add a comment about the use of _relaxed() here.
-
-
-> +static bool meu_db_last_tx_done(struct mbox_chan *chan)
-> +{
-> +	struct meu_db_channel *chan_info = chan->con_priv;
-> +	void __iomem *base = chan_info->meu->mlink[chan_info->pchan].tx_reg;
-> +
-> +	if (readl_relaxed(base + CHAN_TX_STAT_OFFSET) & 
-> BIT(chan_info->doorbell))
-
-The readl_relaxed() again prevents the use of shared memory, so
-change it to a normal readl() or add a comment about how ordering
-is maintained.
-
-     Arnd
+>
+> > In theory you should have the
+> > local "group_has_spare" and the busiest "group_fully_busy" (at most).
+> > This means that no group should be overloaded and load_balance should
+> > not try to migrate utli but only task
+>
+> I didn't collect information about the groups.  I will look into that.
+>
+> julia
+>
+> >
+> >
+> > >
+> > > and changing the above test to:
+> > >
+> > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
+> > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> > >
+> > > seems to solve the problem.
+> > >
+> > > I will test this on more applications.  But let me know if the above
+> > > solution seems completely inappropriate.  Maybe it violates some other
+> > > constraints.
+> > >
+> > > I have no idea why this problem became more visible with EEVDF.  It seems
+> > > to have to do with the time slices all turning out to be the same.  I got
+> > > the same behavior in 6.5 by overwriting the timeslice calculation to
+> > > always return 1.  But I don't see the connection between the timeslice and
+> > > the behavior of the idle task.
+> > >
+> > > thanks,
+> > > julia
+> >
 
