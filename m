@@ -1,212 +1,179 @@
-Return-Path: <linux-kernel+bounces-5659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295A9818DC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:17:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F12BB818DC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76D8AB22B2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:17:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CD0C1C24D73
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17009225CD;
-	Tue, 19 Dec 2023 17:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F28131A71;
+	Tue, 19 Dec 2023 17:17:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UvLDnRny"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PXG+lSD9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0E6224EE;
-	Tue, 19 Dec 2023 17:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703006238; x=1734542238;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=sNCcFiDhIZRJJSadr1L6RONC7vW1blL8kqd7SDbb23M=;
-  b=UvLDnRnydjXD5cGYdeTED0TGq2mZ1YmbM27BGoCrgJUmy7aBQTEaKAoZ
-   Vh+Jfzk6Cx64scSkVRfl6ldzewtRd6SMnARXTSVmZO/or2qWdJ1xidUsU
-   kGCZqsf2hsVvuAygJbd6F/HyWbkbgz4qzDNZILkPWrv+IX/LsYvkXmZYu
-   iNFq05W/awKZDzcnKMg7wiACmbla+7ZGrBValw98E5z4eOsJryguWQB8H
-   cnPzpMUN/DFar6hqeDuU101AO3L4BtOE0IJEhVah4H4xxzQIz0ADsL5mB
-   qekcHSZJ+7nVVCdabm6xlIbO5wxkxhzNie+8TFVivXRfSe0CdBkbfA9Yd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="2923311"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="2923311"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 09:17:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="17673575"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Dec 2023 09:17:18 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 09:17:17 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 09:17:16 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 19 Dec 2023 09:17:16 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 19 Dec 2023 09:17:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TnH6sZXsNqHVqVvaHyLnmVsP2DTL7dTXL8P8IIWQ9qZDOVveRNIPuPjilOZIjKN/IwaUZEl0pGG+eKr6hekBNE1W45jsRByThWVR//Mm/CCTbMRisqymcwP8UnSvehXMwoljHNOD/Gl5QcibGny2v0utY87kyeB0X68D2nOuOL/wxl2+gJaUTPTOBVPb3yDOPFmmWTN07/CHQVHDtJ8xwoEDE66NXeFR+yvpXhWzITbHo7qJXHtJHHjBr8y5kIk+a35NaYWklQq19kNCCLBixmnB1OQE5J3XLRKTTTNRkfhbcDN9jvhYbdq0x6QsTiQ4m3LA2/hKftoQxnNGkc/hPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WNx5XdoN12Sq/dUZdaNB0Y/q2Q0doHJnamvZtxc8R60=;
- b=PGC6JzWwTFm8vfPR5s9ykqvre6omg7oGGbCfLxXqK4PJKUush46/dJBpLuQe0d1YqHcQIATPbHIm/jKBwJX+WALj5J7KPerLIvAS2kXCNaLZyNVOiYM6xGn9lB+rWcgIZzGKMMInwQvBiXw/KkdjopUJB2QvJ6+6aDtKkF0yg5rUYIrgyQIcBISpO9zUXTkWoKpIU9oAOY6A26kr4SP6xpLbb3Dr7dCS4SZsDrAmaZitmq3U7kHXVSutV0bL0qf2Fx/bS2f9IBRxV7YAf3baBqDkwih9V22wk10vMnwg4VTZ8lnWELsau1NIfNSOeXxgythM4s49NO1I0K/nUzI0BQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by LV2PR11MB5976.namprd11.prod.outlook.com (2603:10b6:408:17c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
- 2023 17:17:14 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7113.016; Tue, 19 Dec 2023
- 17:17:13 +0000
-Date: Tue, 19 Dec 2023 09:17:10 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Ira Weiny <ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, Jonathan Cameron
-	<jonathan.cameron@huawei.com>, Shiju Jose <shiju.jose@huawei.com>
-CC: Yazen Ghannam <yazen.ghannam@amd.com>, Davidlohr Bueso
-	<dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Ard
- Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>
-Subject: Re: [PATCH v4 7/7] cxl/memdev: Register for and process CPER events
-Message-ID: <6581d01645c01_277bd294c8@iweiny-mobl.notmuch>
-References: <20231215-cxl-cper-v4-0-01b6dab44fcd@intel.com>
- <20231215-cxl-cper-v4-7-01b6dab44fcd@intel.com>
- <4cb5c275-566c-9414-7088-1e91378a409a@amd.com>
- <6580b21723b2c_269bd294f8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <6581cba663770_24f6b2942b@iweiny-mobl.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <6581cba663770_24f6b2942b@iweiny-mobl.notmuch>
-X-ClientProxiedBy: SJ0PR03CA0262.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::27) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A872E633
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703006245;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SAt7JiXzmNfxd2b5RJ1nXcgqmfXVLO96NAc/uLDObCg=;
+	b=PXG+lSD9jRgPMZ6kWS1vhM3FEL7GI1Dar/nht0h30XiSMd/9J1j1YPjmwT6bXn/emmQebv
+	6zLA312jsfrOefDasfl7/n37Zk9VRjSNvwi5OlfzUYCH2O7wWy2Yh5SGVddpxuRnjRC4hH
+	MJpG1QDoPLqa6wvvJeZ4UXTw/tTmBHQ=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-48-TpgW1-E9N1aFURdZ643y8w-1; Tue, 19 Dec 2023 12:17:24 -0500
+X-MC-Unique: TpgW1-E9N1aFURdZ643y8w-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-425b4c1b67cso78175071cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:17:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703006243; x=1703611043;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SAt7JiXzmNfxd2b5RJ1nXcgqmfXVLO96NAc/uLDObCg=;
+        b=S78qmSL2cC2lrzt3swDIgW4QUpdVhJ+SuOtMeox1ZmOfShECfIKFp2/xj16Fes/aE2
+         Pq3Tk19wKO5PhDoAz4Kk4NjGSjLIruHH3TPl6cKB+IXH/01jjP2M1Y/Yl9a0m1D3YTvd
+         3KfC6XlC8HAcelBu1CIJSfJ4mgzUhfz3vCWv5ysLXFaGWncQ3cvWQXPKQvBW+eCmq4h+
+         BzSnycGaNakYRI+oKVsc/QdG06o3waaPLFtEXzy+fzk2E7MKoR75WLUh+x3NMnHPP2bc
+         FoE6ethVSI/bnJdpvkWregk/GCph8k+0c7ZKyRLVXOs4VrexR1hWwy/VZH/91v2MtvSq
+         gJzQ==
+X-Gm-Message-State: AOJu0Yxj8NWue8voB0aY/hQWv2/F7e5lZZYnSCPiX9Q3L1Iud3rqG2Xi
+	TGIpLu7iLa9EdACowFVudoUZT1IF+HyIPBhDIw+cdYNFlh4WPZM2tYfTHac2rYgwdqsHEH5tQBa
+	GJrnfglQ5ozkwpgJ5i5FKDt6esSzFQHQ=
+X-Received: by 2002:ac8:5ad1:0:b0:423:7a01:3a65 with SMTP id d17-20020ac85ad1000000b004237a013a65mr24793072qtd.35.1703006243642;
+        Tue, 19 Dec 2023 09:17:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF2jjva7fgBRdAJJJu+d1gf0zXdcO+LTHjJgogTJ6jzZZxlP11DghTwYQbZc4in6iLQonpjOA==
+X-Received: by 2002:ac8:5ad1:0:b0:423:7a01:3a65 with SMTP id d17-20020ac85ad1000000b004237a013a65mr24793063qtd.35.1703006243352;
+        Tue, 19 Dec 2023 09:17:23 -0800 (PST)
+Received: from [192.168.9.34] (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
+        by smtp.gmail.com with ESMTPSA id o25-20020ac872d9000000b004258264d166sm10307046qtp.60.2023.12.19.09.17.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 09:17:23 -0800 (PST)
+Message-ID: <b2d3d88e-840d-48b1-86d4-0a89d6143683@redhat.com>
+Date: Tue, 19 Dec 2023 18:17:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|LV2PR11MB5976:EE_
-X-MS-Office365-Filtering-Correlation-Id: de8c4204-c434-4176-a5a8-08dc00b657d5
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 55Pwq0vAOvHn9zR+ZdV4oF9vknoWGu9v31LulFEoEyUXpictn263QJZQxPgGBCBSM7/2RXX4+9Zo1Io6zgIVhAyU0jdSSYlzesB0F8Xkvemdg9kXFdGWkAwKhSvzzbq71ByJS9T0SdtzQFwk1hfM1HJd/tIVQh1XMhpY2miYoywxto4v3F6U+AVwoMp3ZEZPYlJV/kXd80kP8aOcIm34Lc+UOgeTo1PW01gPzw8rkuPlGcG2B2WeePVE7Ddu3A6c8scPfwVWCD7VjPHwqZqzuEFFv8lblQ0eUtWmTzEQ5kvHpmjDqFMpikCFRDZY4QMrYHWQVx8KwDNTHxaHkYRdGHeznHdfiBlNs5Dk7fZnBHtberCIqdkVLfes8IcLFNJp/xNrqUxFWUI60XQNXGGXxuvm04n5is7uCHELM8AX8/BRilLHgYICD+TeIHyn+SGP0heZGZKgPwFp4OYLJW41f4qaPBcNarG/yZuF0DRxqFrDAAj2wbc6oF+yr43zqlfUhwIL2fQYYUb4+zQWj8ahNndpHoyn6lrQeFOvG7GO09ucNe+/PICbqNoDDfCwsMW6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(136003)(366004)(346002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(8936002)(8676002)(4326008)(82960400001)(86362001)(41300700001)(2906002)(44832011)(38100700002)(5660300002)(7416002)(53546011)(6506007)(6486002)(478600001)(9686003)(66556008)(66476007)(66946007)(54906003)(110136005)(316002)(6512007)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eHQHmcC2Re96x6np5Ly6tGbepV4VZoTWfGWvjMkiucaoXDNuPCPbiLl78xrg?=
- =?us-ascii?Q?IvJlmAtje5iBDe83bN51o4dUbbiY6b5jGSNVVAcFfsXoKtiMe+kvMU1mW0r0?=
- =?us-ascii?Q?CT/LPQbr1VTtfU2sNdyUxPIaJmEU4AWuPkdlw9GdgmZ9pJ1M2XSpcRdbG6Ec?=
- =?us-ascii?Q?GZsAS40R6KoLn8i01MmAiZTKyvdI4Ge+TIj37EC5XZWGwXYx5SHZ4PYKJDY0?=
- =?us-ascii?Q?CSTcQvTQ3b92M57ar4Ai+rpgqJYdvS+vaxqDRaAvBFjCvrijbwQSXusDhAX/?=
- =?us-ascii?Q?CIwtz9uBPZKkD3Mamuruao93QHlMFR8wXTjHX4+iTPCR9aJXWyTl37fKvbCf?=
- =?us-ascii?Q?Sa38p4Wo1cFlONR6sDWrtV1laCkwL0IUqjl9NjV+xOLvbvTRCk7SQXc0EIg+?=
- =?us-ascii?Q?07EoCFRkiN5NBRaq7kMjQTp9EJjBLFmpbLoobsy3gZoyZrqs6Ob0qd8MMLIK?=
- =?us-ascii?Q?dUBxK0svYbUw4fdwt4Rx2f0N/8NAMlJavZG2h7iDGUyx8dInP48zea04RdM7?=
- =?us-ascii?Q?rd2FLlO/oBgjgebWEo0CsX2yDAYZZyon6hTsI1jtskxxZ05qYiP5ImknjiRS?=
- =?us-ascii?Q?C7gnCNPw7p7sNUyvdv92Gk2wtWK67HJI1xK7sGCVP6G9q/oORmHsJ+UMfOwV?=
- =?us-ascii?Q?ghLbXNWeUv0fGD/HGwmS+6kDU2DVIat3H9dNnhsYiYSPPabaDq1vcBZ7iR8Z?=
- =?us-ascii?Q?lJKYFuUag4igEo7KWHoJZWkL2ELU8rjouNQpywJtsRycJoiIkBtq09iRqOvt?=
- =?us-ascii?Q?b3FaqHLqh+JK2w3zZwWralHK8O55M/5GPS5TBzU+4SHew3E2RDIYNGoOGjT2?=
- =?us-ascii?Q?Ttd+tmz/ZndIPx74Z9AQaYnFBEjPsNRyLBTe2LmDPXZHMNqH7baFiu5ZBb8T?=
- =?us-ascii?Q?0jJFSBHtQKobs5GE34TNmN4QfRhCiDQ0dnu1piGyKxAJvkQ6vdy/tQoNVSJB?=
- =?us-ascii?Q?JK5o0BywTdiL8P5ai9VmncqlfyD/dNM/WPc05Yci/Dwoar4W44rKXurjLHaw?=
- =?us-ascii?Q?MpAA2Xju+Tag543eyt90pQ6bX9jRg8pWkdPy+VOQZwS5DMR8I9OeCnaYNaSg?=
- =?us-ascii?Q?YbkOMsI3t4+jWsp+eGzA2NsoRzl5sTXlTscSAWy/3RXkzOBHzgiFnlxiVQMK?=
- =?us-ascii?Q?Of0aJlUDEpSoNdB7xVQK3r0kVDbQyxkAiDm7T0xExVxcQmliZ3VB7/ljKF4K?=
- =?us-ascii?Q?r9F6sF2iXF0b1EuMRUc1U/EWig18tAMZMrjtxYD+lCI5H6qtmObrszFEYfqj?=
- =?us-ascii?Q?8MERK6B1qBixI84BkYFvBM48EMX9sygl1WAm2zExeNXLDBfdb7qU/98RSa4w?=
- =?us-ascii?Q?KTvrz5OnFeUwgWuTZiW+TQi2+a+Sj5ItkY7wkWv0UBxMrIMzvRt77j+dvaj0?=
- =?us-ascii?Q?e3gjGJkrAdYj3jECDinCTYOa8RbjwUOR8ASO5IqgcGF8KPz27M6rdY1PKzAR?=
- =?us-ascii?Q?AjiDIbHkJOIyiN3s09yoh+IaGDpVT/9dkpQMitvhgFhasW2jfGZKs9Nz60+f?=
- =?us-ascii?Q?DbWsFr1SHfnloPa6I+owzNSn+nfik7YFwx7CH/sgqUrZTqjs3IvU8ulF99HT?=
- =?us-ascii?Q?g5EhvPIRg3nhOCaDhXfhy/v+qnWb1x24GicXXNv08rVpziM/zS6tikNCkx7q?=
- =?us-ascii?Q?JgjoVDs+Hwl7rGhiJDKaj0BsjrwdrzGv8qJXJt1y5VLN?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: de8c4204-c434-4176-a5a8-08dc00b657d5
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 17:17:13.8480
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cyME1Ju9Q084duNmHlyumgJmeHluqWdwTpTrOduNe49UO60/xUUDs64nGGO8BPvCUewHNtg7lhtseYkpOz0fmQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB5976
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 2/2] fpga: set owner of fpga_manager_ops for
+ existing low-level modules
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+ Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+ linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+References: <20231218202809.84253-1-marpagan@redhat.com>
+ <20231218202809.84253-3-marpagan@redhat.com>
+ <2023121829-zealous-prissy-99cc@gregkh>
+ <9296941c-a3c8-4d55-9e52-f1277f1c3fc7@redhat.com>
+ <2023121924-extent-defender-fb06@gregkh>
+From: Marco Pagani <marpagan@redhat.com>
+In-Reply-To: <2023121924-extent-defender-fb06@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Ira Weiny wrote:
-> Dan Williams wrote:
-> > Smita Koralahalli wrote:
-> > > On 12/15/2023 3:26 PM, Ira Weiny wrote:
 
-[snip]
-
-> > > I remember Dan pointing out to me this when I sent decoding for protocol 
-> > > errors and its still pending on me for protocol errors.
-> > 
-> > Good point, so I think the responsibility to trace CXL events should
-> > belong to ghes_do_proc() and ghes_print_estatus() can just ignore CXL
-> > events.
-> > 
-> > Notice how ghes_proc() sometimes skips ghes_print_estatus(), but
-> > uncoditionally emits a trace event in ghes_do_proc()? To me that means
-> > that the cper_estatus_print() inside ghes_print_estatus() can just defer
-> > to the ghes code to do the hookup to the trace code.
-> > 
-> > For example, ras_userspace_consumers() was introduced to skip emitting
-> > events to the kernel log when the trace event might be handled. My
-> > assumption is that was for historical reasons, but since CXL events are
-> > new, just never emit them to the kernel log and always require the trace
-> > path.
-> > 
-> > I am open to other thoughts here, but it seems like ghes_do_proc() is
-> > where the callback needs to be triggered.
+On 2023-12-19 16:10, Greg Kroah-Hartman wrote:
+> On Tue, Dec 19, 2023 at 03:54:25PM +0100, Marco Pagani wrote:
+>>
+>>
+>> On 2023-12-18 21:33, Greg Kroah-Hartman wrote:
+>>> On Mon, Dec 18, 2023 at 09:28:09PM +0100, Marco Pagani wrote:
+>>>> This patch tentatively set the owner field of fpga_manager_ops to
+>>>> THIS_MODULE for existing fpga manager low-level control modules.
+>>>>
+>>>> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+>>>> ---
+>>>>  drivers/fpga/altera-cvp.c             | 1 +
+>>>>  drivers/fpga/altera-pr-ip-core.c      | 1 +
+>>>>  drivers/fpga/altera-ps-spi.c          | 1 +
+>>>>  drivers/fpga/dfl-fme-mgr.c            | 1 +
+>>>>  drivers/fpga/ice40-spi.c              | 1 +
+>>>>  drivers/fpga/lattice-sysconfig.c      | 1 +
+>>>>  drivers/fpga/machxo2-spi.c            | 1 +
+>>>>  drivers/fpga/microchip-spi.c          | 1 +
+>>>>  drivers/fpga/socfpga-a10.c            | 1 +
+>>>>  drivers/fpga/socfpga.c                | 1 +
+>>>>  drivers/fpga/stratix10-soc.c          | 1 +
+>>>>  drivers/fpga/tests/fpga-mgr-test.c    | 1 +
+>>>>  drivers/fpga/tests/fpga-region-test.c | 1 +
+>>>>  drivers/fpga/ts73xx-fpga.c            | 1 +
+>>>>  drivers/fpga/versal-fpga.c            | 1 +
+>>>>  drivers/fpga/xilinx-spi.c             | 1 +
+>>>>  drivers/fpga/zynq-fpga.c              | 1 +
+>>>>  drivers/fpga/zynqmp-fpga.c            | 1 +
+>>>>  18 files changed, 18 insertions(+)
+>>>>
+>>>> diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
+>>>> index 4ffb9da537d8..aeb913547dd8 100644
+>>>> --- a/drivers/fpga/altera-cvp.c
+>>>> +++ b/drivers/fpga/altera-cvp.c
+>>>> @@ -520,6 +520,7 @@ static const struct fpga_manager_ops altera_cvp_ops = {
+>>>>  	.write_init	= altera_cvp_write_init,
+>>>>  	.write		= altera_cvp_write,
+>>>>  	.write_complete	= altera_cvp_write_complete,
+>>>> +	.owner		= THIS_MODULE,
+>>>
+>>> Note, this is not how to do this, force the compiler to set this for you
+>>> automatically, otherwise everyone will always forget to do it.  Look at
+>>> how functions like usb_register_driver() works.
+>>>
+>>> Also, are you _sure_ that you need a module owner in this structure?  I
+>>> still don't know why...
+>>>
+>>
+>> Do you mean moving the module owner field to the manager context and setting
+>> it during registration with a helper macro?
 > 
-> I see.
+> I mean set it during registration with a helper macro.
 > 
-> Ok.  I'll create a pre-patch which moves the protocol error first then
-> I'll put the events in the ghes_do_proc() well.
+>> Something like:
+>>
+>> struct fpga_manager {
+>> 	...
+>> 	struct module *owner;
+>> };
+>>
+>> #define fpga_mgr_register(parent, ...) \
+>> 	__fpga_mgr_register(parent,..., THIS_MODULE)
+>>
+>> struct fpga_manager *
+>> __fpga_mgr_register(struct device *parent, ..., struct module *owner)
+>> {
+>> 	...
+>> 	mgr->owner = owner;
+>> }
 > 
+> Yes.
+> 
+> But again, is a module owner even needed?  I don't think you all have
+> proven that yet...
 
-Apologies.  I really wanted to make this work a pre-cursor patch but I
-see that there is not a trace point for the protocol errors yet.  So as
-not to slow the progress of this work I'm going to skip moving the
-protocol stuff right now.
+Programming an FPGA involves a potentially lengthy sequence of interactions
+with the reconfiguration engine. The manager conceptually organizes these
+interactions as a sequence of ops. Low-level modules implement these ops/steps
+for a specific device. If we don't protect the low-level module, someone might
+unload it right when we are in the middle of a low-level op programming the
+FPGA. As far as I know, the kernel would crash in that case.
 
-Also, as part of this work I think moving the CXL specific defines into
-the common linux/cper.h is appropriate at this time.
+Thanks,
+Marco
 
-Unless I hear otherwise I'm going to land the event stuff in that common
-header and we can move the protocol error defines later.
-
-Thanks again for all the testing,
-Ira
 
