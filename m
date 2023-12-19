@@ -1,70 +1,85 @@
-Return-Path: <linux-kernel+bounces-5566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78FEA818C5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:32:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C46FD818C5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 111B4287AC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:32:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64767B23798
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D0132C9F;
-	Tue, 19 Dec 2023 16:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE333714F;
+	Tue, 19 Dec 2023 16:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="NYfu6jWK";
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="blkhsLd0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AKUPop6n"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E3622331;
-	Tue, 19 Dec 2023 16:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1703003468; bh=hUUyx2Ra/j0PfiviV+OXUA5B+Rr5c5IfU2vtPHgn40o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NYfu6jWKFgj9mC3ee/nZq7ODltMtE9iQU5keKKmA+PGIHhF1oFMXX08UunGXfJU60
-	 +YEdnVlG/tKBb7HpXA7iq68T83Hs17eygkJcyBeDOtMHvG9FAxQZzqgH7wlIv772PX
-	 oeTrxH6APT5WkRi71pL7t0eqcjInM1v+HoGN+YhZiVOwZSUPm+ooOUvyjS58j4quNt
-	 sTUXD6t/z29XaNqGRIzQW1Wb1Dr3VeUmucCSZGdtVj+qxPPGedGFsFiS2vGuAyWJga
-	 gaqpCKMyIxL+o2QVFsw0OzqmidSRhiEiCWff4TJ7DuiR0fnn/cGzdO+cQHjizKvyL5
-	 csiqF/k8KFg+g==
-Received: by gofer.mess.org (Postfix, from userid 501)
-	id C019010029E; Tue, 19 Dec 2023 16:31:08 +0000 (GMT)
-X-Spam-Level: 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1703003449; bh=hUUyx2Ra/j0PfiviV+OXUA5B+Rr5c5IfU2vtPHgn40o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=blkhsLd0GFn35E4dfO2DkD3V2fcGTIjuMIvfsWsX/UuDFkNgoaHlERe4GJE1v/b8r
-	 yT3XrpVFzaHEUhrmfzj9fBRmTBO4944oiniOix5V+6Y7vmYpZ5fyCKKS1PR+tD/rVL
-	 dDx+GS+JdhPR+9zcTFviaaUCOHnQZJoUqLtLxbKcm7iDE6ttXpxDyjanX5DGJWZ6J5
-	 bjw6fvYW3wYn5O3szjShT6yul4oYeAYvrmEV1SxhjrxbP8RkysqwwN9A97bX5sQvSF
-	 cxzzLAPrVPcITAEJZmiFxivO+SFoHVX5yZYMYmJ4r6psC0nuc0ktR/YUNzkKJDU0ju
-	 mHX7oGDUUpP2A==
-Received: from localhost.localdomain (bigcore.local [IPv6:2a02:8011:d000:212:ca7f:54ff:fe51:14d6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by gofer.mess.org (Postfix) with ESMTPSA id C18ED1009FF;
-	Tue, 19 Dec 2023 16:30:49 +0000 (GMT)
-From: Sean Young <sean@mess.org>
-To: linux-media@vger.kernel.org,
-	linux-pwm@vger.kernel.org,
-	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Sean Young <sean@mess.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v10 6/6] media: pwm-ir-tx: Trigger edges from hrtimer interrupt context
-Date: Tue, 19 Dec 2023 16:30:29 +0000
-Message-ID: <1a5750d4eb3e4f777a123b094fdd66d3b16d2b9d.1703003288.git.sean@mess.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A3437142
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d7f1109abcso1496576b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703003671; x=1703608471; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HTbe0FFkiWpC+TW0jPOJbtW/DMOk6SlTqa5fmcQzYNc=;
+        b=AKUPop6nE+15DM/I0uEQApQ6zpzF0Ufda4NZ9rQI7ZiiN2vf6qpLGnHF+LVgwh+vWV
+         TrpyjahuyscLMo7kK07Js1GwWuZFLs+wZyZK/KGuybj1kxoA7drgttISmEZZlVsZvFRq
+         poGv04RJMQTD4yTWWPd4oZoRrnH0WbF339HIHQZsEDzS/xlf9cscQxfFLsY1lNUDpihk
+         4Iuq2MtLbMMXvtvpUkA0x3gbKtrnfb2qQT+ZsPlR2k56eJ3rqC15BaQu1I6INAGqHLnw
+         dxwFwZDnvNN9r3Jjipr4kTzSp0TbTNCoGoDpkzXcFJ8QTDczlzPDEOEYBWcOSRX/EaSN
+         vhhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703003671; x=1703608471;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HTbe0FFkiWpC+TW0jPOJbtW/DMOk6SlTqa5fmcQzYNc=;
+        b=IfqI/w7JDSStX0ZLRoYpZwcTTGp/8BUq7DAJYg1dtMYb3F5eRzbswiOdBTcDpCR3/K
+         4VDVj5+KmfR2JIJy/AvO5+M3oFpD/0UeFCQZ00gJ0iBONKyKxFpMQl3ig4PpeT+TEoGD
+         YSbRRx674s1om/1gPKIyzUaH1qOdbngtv+Ds7NXMsc0FINebanp+hjhgfaxw0LQFAYh0
+         GVjW+7diGsQ5ws58UN2KB7f9k9cnq/G5oCeKIZZFQjp69bWQklqtCp+Wo9NM59G6DWMd
+         MkSRbNTbl2i2f5N2iaHuksDZhziR87HCW9Shbcuu3mm31g/Sz+7HZll4wsbKvp9qbfPS
+         MdTw==
+X-Gm-Message-State: AOJu0Yw2lLkT0HsneSnbHUpuZEe/yTqXT5wDqkvDRSTOK6APqq89rAOO
+	2+A2oOs73deLqDviN6ajVr64khk+Ars=
+X-Google-Smtp-Source: AGHT+IFby3sDY/fW2pan071Ch5YMA1tZy5GS/12pC3aFAT/8648QVZ7U1Wryd5SoCYIo2/SN0J3ttg==
+X-Received: by 2002:a05:6a20:9149:b0:18c:a9d3:4f96 with SMTP id x9-20020a056a20914900b0018ca9d34f96mr10624117pzc.32.1703003671264;
+        Tue, 19 Dec 2023 08:34:31 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id s9-20020a056a00178900b006ce789d8022sm20232551pfg.59.2023.12.19.08.34.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 08:34:30 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: akpm@linux-foundation.org
+Cc: bhe@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	dyoung@redhat.com,
+	hbathini@linux.ibm.com,
+	hpa@zytor.com,
+	kexec@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	seanjc@google.com,
+	tglx@linutronix.de,
+	tiwai@suse.de,
+	vgoyal@redhat.com,
+	x86@kernel.org,
+	ytcoode@gmail.com
+Subject: [PATCH] crash_core: optimize crash_exclude_mem_range()
+Date: Wed, 20 Dec 2023 00:34:18 +0800
+Message-ID: <20231219163418.108591-1-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1703003288.git.sean@mess.org>
-References: <cover.1703003288.git.sean@mess.org>
+In-Reply-To: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
+References: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,139 +88,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This makes the generated IR much more precise. Before this change, the
-driver is unreliable and many users opted to use gpio-ir-tx instead.
+Because memory ranges in mem->ranges are stored in ascending order, when we
+detect `p_end < start`, we can break the for loop early, as the subsequent
+memory ranges must also be outside the range we are looking for.
 
-Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- drivers/media/rc/pwm-ir-tx.c | 83 +++++++++++++++++++++++++++++++++---
- 1 file changed, 78 insertions(+), 5 deletions(-)
+Hi Andrew,
 
-diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-index cf51e2760975..fe368aebbc13 100644
---- a/drivers/media/rc/pwm-ir-tx.c
-+++ b/drivers/media/rc/pwm-ir-tx.c
-@@ -10,6 +10,8 @@
- #include <linux/slab.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/hrtimer.h>
-+#include <linux/completion.h>
- #include <media/rc-core.h>
+Patch "[PATCH 2/2] crash_core: fix out-of-bounds access check in
+crash_exclude_mem_range()" can be ignored, use this patch instead.
+
+ kernel/crash_core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+index 9a219a918638..d425c4a106cd 100644
+--- a/kernel/crash_core.c
++++ b/kernel/crash_core.c
+@@ -575,9 +575,12 @@ int crash_exclude_mem_range(struct crash_mem *mem,
+ 		p_start = mstart;
+ 		p_end = mend;
  
- #define DRIVER_NAME	"pwm-ir-tx"
-@@ -17,8 +19,14 @@
+-		if (p_start > end || p_end < start)
++		if (p_start > end)
+ 			continue;
  
- struct pwm_ir {
- 	struct pwm_device *pwm;
--	unsigned int carrier;
--	unsigned int duty_cycle;
-+	struct hrtimer timer;
-+	struct completion tx_done;
-+	struct pwm_state *state;
-+	u32 carrier;
-+	u32 duty_cycle;
-+	const unsigned int *txbuf;
-+	unsigned int txbuf_len;
-+	unsigned int txbuf_index;
- };
- 
- static const struct of_device_id pwm_ir_of_match[] = {
-@@ -49,8 +57,8 @@ static int pwm_ir_set_carrier(struct rc_dev *dev, u32 carrier)
- 	return 0;
- }
- 
--static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
--		     unsigned int count)
-+static int pwm_ir_tx_sleep(struct rc_dev *dev, unsigned int *txbuf,
-+			   unsigned int count)
- {
- 	struct pwm_ir *pwm_ir = dev->priv;
- 	struct pwm_device *pwm = pwm_ir->pwm;
-@@ -82,6 +90,62 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- 	return count;
- }
- 
-+static int pwm_ir_tx_atomic(struct rc_dev *dev, unsigned int *txbuf,
-+			    unsigned int count)
-+{
-+	struct pwm_ir *pwm_ir = dev->priv;
-+	struct pwm_device *pwm = pwm_ir->pwm;
-+	struct pwm_state state;
++		if (p_end < start)
++			break;
 +
-+	pwm_init_state(pwm, &state);
-+
-+	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-+	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
-+
-+	pwm_ir->txbuf = txbuf;
-+	pwm_ir->txbuf_len = count;
-+	pwm_ir->txbuf_index = 0;
-+	pwm_ir->state = &state;
-+
-+	hrtimer_start(&pwm_ir->timer, 0, HRTIMER_MODE_REL);
-+
-+	wait_for_completion(&pwm_ir->tx_done);
-+
-+	return count;
-+}
-+
-+static enum hrtimer_restart pwm_ir_timer(struct hrtimer *timer)
-+{
-+	struct pwm_ir *pwm_ir = container_of(timer, struct pwm_ir, timer);
-+	ktime_t now;
-+
-+	/*
-+	 * If we happen to hit an odd latency spike, loop through the
-+	 * pulses until we catch up.
-+	 */
-+	do {
-+		u64 ns;
-+
-+		pwm_ir->state->enabled = !(pwm_ir->txbuf_index % 2);
-+		pwm_apply_atomic(pwm_ir->pwm, pwm_ir->state);
-+
-+		if (pwm_ir->txbuf_index >= pwm_ir->txbuf_len) {
-+			complete(&pwm_ir->tx_done);
-+
-+			return HRTIMER_NORESTART;
-+		}
-+
-+		ns = US_TO_NS(pwm_ir->txbuf[pwm_ir->txbuf_index]);
-+		hrtimer_add_expires_ns(timer, ns);
-+
-+		pwm_ir->txbuf_index++;
-+
-+		now = timer->base->get_time();
-+	} while (hrtimer_get_expires_tv64(timer) < now);
-+
-+	return HRTIMER_RESTART;
-+}
-+
- static int pwm_ir_probe(struct platform_device *pdev)
- {
- 	struct pwm_ir *pwm_ir;
-@@ -103,10 +167,19 @@ static int pwm_ir_probe(struct platform_device *pdev)
- 	if (!rcdev)
- 		return -ENOMEM;
- 
-+	if (pwm_might_sleep(pwm_ir->pwm)) {
-+		dev_info(&pdev->dev, "TX will not be accurate as PWM device might sleep\n");
-+		rcdev->tx_ir = pwm_ir_tx_sleep;
-+	} else {
-+		init_completion(&pwm_ir->tx_done);
-+		hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		pwm_ir->timer.function = pwm_ir_timer;
-+		rcdev->tx_ir = pwm_ir_tx_atomic;
-+	}
-+
- 	rcdev->priv = pwm_ir;
- 	rcdev->driver_name = DRIVER_NAME;
- 	rcdev->device_name = DEVICE_NAME;
--	rcdev->tx_ir = pwm_ir_tx;
- 	rcdev->s_tx_duty_cycle = pwm_ir_set_duty_cycle;
- 	rcdev->s_tx_carrier = pwm_ir_set_carrier;
- 
+ 		/* Truncate any area outside of range */
+ 		if (p_start < start)
+ 			p_start = start;
 -- 
 2.43.0
 
