@@ -1,203 +1,416 @@
-Return-Path: <linux-kernel+bounces-4743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25C0B818174
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:20:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 872B3818176
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:23:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E3461F22504
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:20:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7699B1C233D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7BD79C6;
-	Tue, 19 Dec 2023 06:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2596479CF;
+	Tue, 19 Dec 2023 06:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FwTF/2ZQ";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="vjHnBPdZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dRXGI6PV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FEACC12F;
-	Tue, 19 Dec 2023 06:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ0J6ri024712;
-	Tue, 19 Dec 2023 06:20:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=mRLdUGvWRzdgNryt9Pc3ZJ+rnhzMlw/NYjOhyJviVq0=;
- b=FwTF/2ZQ59psSLyLKPbsiANFoEUmvE0kpwl3oLzVVf70x6/o3t7wFwstG3FeFypgDVPi
- tBw1kbT+CJHjP91HCJk+ULjc4vrINIyBCkmh4JK1WuqHkXQ1nnQCE+nXNI4cym2pRnuV
- ycxjrG/gT10fjwfq7r2uUM/Wq1JDfZdAoplJ5fk2Wj44o1MzyKzIPIul7yNT++mUdboK
- 9BfJAgbWdFAHafhmhObhXkA1851xXyQOYtzgqF+X/bhWiCo7ucc4gqgsWduc/kJACXXW
- aqQXfbPSMEqNUrjwpNgygOCA+0Q9W39CrsxDffjtJ52BOpL51IH7jA/i9l/d3PkdG7UU jw== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3v13xdd4wa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Dec 2023 06:20:16 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ6A7A5021006;
-	Tue, 19 Dec 2023 06:20:15 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3v12b6gkdh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Dec 2023 06:20:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ogiAZCtzajzOQCkoz8d21figJMUIyO8ZerlvAVEYsTV3RFpfvlABoj1jqCWvclA6iW7FRVoLpRJMx82HVuJ2Y68NFrGVrEKEjRHn6s04BGnkEETUtQ54WU7D+vBUL4tia3r142AWxzwk+N25hf2UBp0J1dh6Q0mjzgL0id96syPj1Uja9Mx7AKB32F2rkaDMgnAJnk/xFo8uZu1l2aUUw2HZ8Hl7R46iONAlNpDUY10vIJriuwWVtzRhr448hXMxowUBdyTaSoVCG2WhuOt1ptBXH1GfOOCu6f+tpier5GVOFldZhqGRPNL0oOyx5cKhAdcU/dhvmE4NEhmuvEJHOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mRLdUGvWRzdgNryt9Pc3ZJ+rnhzMlw/NYjOhyJviVq0=;
- b=N0iEhk+lfTAVKbKYWPE+lqzo/4DK4GcemwByW1oIzfeOQILeJ8jqlrfQKJ0636utD46lE6CANEgMQ6Df4KLUIbs2sntMSUKhxF00eaAh75bMOlih8i4beAauFuf5Gm2wfOGqNFiAB8Obx2Auj9WoUUsUfRlqJtBe5B2GQGIiqpLRa7igK130WG/rfaMnYeYKFZ/hfPHHgoqqa3IDVgs+VDeOJWi8qrWECLKgCcTEOy+/hzTqZyIduc2rb+yCR3x+dZaQiSDsIQ8VqaHupdI+Y4yq6MWj3ywn5Bop4wwMQtcvqhtg5/wMeISNunwxeDzSsQJkMmOMnG3942N9zXMg9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9670C120;
+	Tue, 19 Dec 2023 06:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1f03d9ad89fso2857756fac.1;
+        Mon, 18 Dec 2023 22:22:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mRLdUGvWRzdgNryt9Pc3ZJ+rnhzMlw/NYjOhyJviVq0=;
- b=vjHnBPdZNVMqN/7sJfw9iKxbiVPoIQW20bW8jVsYg1TxuCl3HrzjQ7RSkes4/kcpwoRHhAeoFEuRMeezMoZUGbaOXGpXOkJiK+isKpfZh7lCdhtGwuYmoTlwU15zvjPvclvtNhaOutrn62aBXWzQidFipj+rUG10JEEa9IB+t9M=
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
- by SA2PR10MB4633.namprd10.prod.outlook.com (2603:10b6:806:11a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
- 2023 06:20:12 +0000
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::b7a9:b552:a623:84a4]) by PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::b7a9:b552:a623:84a4%5]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
- 06:20:12 +0000
-Message-ID: <c555d601-2421-486f-a6dd-fd64e3708525@oracle.com>
-Date: Tue, 19 Dec 2023 11:50:07 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.14 00/26] 4.14.334-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Darren Kenny <darren.kenny@oracle.com>
-References: <20231218135040.665690087@linuxfoundation.org>
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-In-Reply-To: <20231218135040.665690087@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2P153CA0011.APCP153.PROD.OUTLOOK.COM (2603:1096::21) To
- PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+        d=gmail.com; s=20230601; t=1702966976; x=1703571776; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sSgHs0FWEMrb15OfbOetmXR8o3wALHpJc7WKcpx+S5s=;
+        b=dRXGI6PVALMmEyU9qk1QCl6O/8d0RbT9caGJw2J9ruFwqyzE0sfZJbH5MNvvyNpiF9
+         iO1Bm59MgzHntTvMnpNIH5iuswimFGMUvDxmddvsI3Ob/JeI2WlP0ds1Ils5zfRZH0MV
+         VqUdl0A3ij9I2yxi3mIqs/5RU+ir1KRWpRMRbtNlBMAW6kxPgIGKY+appERPMxBfe7Nj
+         rcipfk22dItOrD8ko/P8QYsjXAzxEOJ7YMPRIC59fNIKBSS4ZegfejSC9MnDUH21d2qk
+         bRa12p4MqTrZAFE0yc80B9Amm1IlK8kg9ebSnPyMaluUJQWQsHp7o8kPTF26iWOtC1HD
+         S46w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702966976; x=1703571776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sSgHs0FWEMrb15OfbOetmXR8o3wALHpJc7WKcpx+S5s=;
+        b=ODhrTAxHj2AdRhbFk0Mlbj1VNbfkr9zKKmLe0cRzgDSeAl3/M0qWRT4ppGqQzO402m
+         xOTD46OKC4qyWQFVetXKD0WW+0qzUwe0vWrfJyNdOLAQR4zpSKS4LJNuZGWjMpUszRcs
+         ZyLV4UAU1/TeIQeE/Zg1HNKyfnoevlxxvrjgSwaGD8v59NHv4MpL/nicgtY3zMl7m4x2
+         FExVUmNW8mPOKECaK4jqeumnjw6a3ME8fDq8ZG/2L1/p5rv8kq8htWktCrf3TU72c0cM
+         uQQvPADLqtOo0Ry9fCcHNFQjDkFnPM4JyZGB0G0h41Mevc+lkUEcnGtFAJq+lmAWXTq3
+         og7w==
+X-Gm-Message-State: AOJu0Ywl9zCNFGtdxEkrud2XFVzwwSD3+p2sbB1/QnXTn1iNxgtV6dgK
+	KVOodmgaTj4+etQaNPt8wCZ/95K3jUOPEN/d/A0=
+X-Google-Smtp-Source: AGHT+IE0fRbD/t0vhrxi97Q32D0rrqp3h5/XhjXIHtcBtogjmtZ09D4huhkkfvRMMOa0RjYDO+5mCgfRwHXM/OpQVwk=
+X-Received: by 2002:a05:6871:5207:b0:203:d05e:a812 with SMTP id
+ ht7-20020a056871520700b00203d05ea812mr2879393oac.19.1702966975725; Mon, 18
+ Dec 2023 22:22:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|SA2PR10MB4633:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4885f8d6-f04e-459e-ff2d-08dc005a8ede
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	AuP5c0mzxeaCeQIRm4HcFy465O7vf/Cu5Xgfz2i5j9Fuq/k9q9257xy9AMznmFOaG6XJWEwhN2Dvx6DNxg0CEMjtit8UgNGlcblPy5fYC0dGeGmkgFdLI9wDUXroQq0RjyCpa2srvdGBdxZqEM1pmBUdBFpmDlLwNFjs+A7JSYqKNH2qx9GO4cLrQUOakHwwnTPOBHCYZvtFvz40Tw+EPkL4nHBQTy4uUEWP4f8KCNHO5oudUPtRZ4EBgnsnVrHBHlPu9qKWcgJGqR+ecxxPyJvT8asRAacbaS/+6+Umy4tzXHdwTOnarLseu+lUXSbZRa/Xq5Osl9QQAv8CKnKB9Ie6atQljLpeyv6gJhyOBWBQuIK+utUjxJrH/SzRSY/bSfPkuQXUQ9CTNC8G9A+EWDH6caH00One48sBTDRC0lBL7ZLC85d8tNiiaYlw4ZuljaKuMN+MHkH12JetG+gbgnLmWLR3XEBLTNCb6gPqcUL03PaRjYBzrNfBIZj2vTBo8lNJLxXKbhpduxbbvmYNx6u9+5bEO1XGRQxypAYDFwxWwn1mSxVSrm+W+Ig9qbhFu7SGmJnkgrOeSXjGj72YofSekmnwjUdQuyc4Zl9ACmVplgfD9nNqJDBO48VrvTgV6DjTbFxEiJP163XpEXQ45g==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(39860400002)(136003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(2616005)(107886003)(53546011)(478600001)(26005)(38100700002)(8676002)(8936002)(4326008)(7416002)(41300700001)(4744005)(316002)(66946007)(966005)(6486002)(66556008)(6512007)(5660300002)(54906003)(66476007)(6506007)(6666004)(2906002)(86362001)(36756003)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?RVU4NmhtekU4bEx2WTNZZUVCM2pQbVY5bDBHcjVSa3I1NFIxUzlyVW5FRldp?=
- =?utf-8?B?NXMyMnl2TFpUdkJzdGh1ZTdQWHRiWituZ2U4SGovcUdZamdpeWZCVitZZ2xj?=
- =?utf-8?B?Z1FwRjMvamtTY3Z2OXQ0d1B0NytHOUNJSkUzb3hFWUtIM21mVVJKdXZndmxj?=
- =?utf-8?B?MWc1QkdEMFl6d3hrS3hPL0dhWXZFeWNXTVJyOTVkNERPZjJ5WW9KL0kxaStO?=
- =?utf-8?B?ZzA0YXRKZC9tR3Bad29KZmd4YVd0a2luVDFYNWhUR2p2MTdZWGlxYjlYOFRS?=
- =?utf-8?B?VXB3ZUhhNUs1VVU2aHRpbHBrb3lnS1djcGhDQ2toaFJMcVk4L0lTNlpMOTBj?=
- =?utf-8?B?V21kZmlMQVJTVndLVFgwYVB3TVpzSUZyMHM2RG9wa2NvL280cUgrQTRwSnZp?=
- =?utf-8?B?dzd0M082UnpYR282blB5K2V4S29hM0VLb014Vk9LWHlLWUxIZW5ydERzR0pE?=
- =?utf-8?B?U0wybW9MWlRSeUpjVmZZNWZzZmFkdXNqenBLNGR2bEhiY0IwQWowV0c4WjNE?=
- =?utf-8?B?ZHJKWXExWHNTeTVUNWcxQTFFM1dhU0NRTEovRnRGeXZ3VGMxY2dUTHVHd1dD?=
- =?utf-8?B?SmdVbE5ldnUrWEd3am9pV0ExQnAyUDVnWnN6V2tVSjdTWXd6VUtjNHJvSnli?=
- =?utf-8?B?bFV0eUYrT3c1dnptKzZlOFZyOEVpclZNSnN6dXV5M0U4bGlmZkNOcnRmYmpO?=
- =?utf-8?B?MGFXN2FWaWJXak12bk9sL21xSUwvQml1V3k0Qy9ES0k3UFlDWkJ4eFROam93?=
- =?utf-8?B?TUU1bW9kVUlSYSt3dHJsQmhES1UwejQ1UElEdnh3TmtiNjI2QWc1Tld4eTF5?=
- =?utf-8?B?Y0s2eUwySXJXZ2Q0bW1ldGo0M2ZzSHhtd09mRFVKdXh1RnNrVm1EOUFOeHJV?=
- =?utf-8?B?TmNaS3EvQzU5dG1SeS85a21SMklNMFNVUzd1VlBYSkluQnZtMHVlM2xNS0Rj?=
- =?utf-8?B?QzJCRjFtanlJakpEeFk3Y1RrcDFWV21vVFhGYUIvQ0JvR0RUN2NOOTBZbjhR?=
- =?utf-8?B?SFJOcFhBVjR1L2VISmJXU0cwMHdFdEUrcWd0NnNLdUs0c1FVdlVLYXpCSDNB?=
- =?utf-8?B?SmFwc3N2UGxibnNMRVV3SUkxVTNIc1phTTBuaGJKQkQ4azliMlhnc0h0Q1lJ?=
- =?utf-8?B?M2hMd1Y5cElYQzE5UVl2NEVPS0hkVUUyT2tUc3JjUk1lUWkzM2ZRcytVeVFp?=
- =?utf-8?B?eGwvMHJVVlZiaHAxOHhSQ0FwUFpOaGMzeUFFMEhUbmxEaWtmM3lqMjVkcUFC?=
- =?utf-8?B?UlJhMG5jTFZTQ2swMHVIRUIxNjRCc3BmTE80NHBTS1RFVE9lNk1wOGc0VGQ4?=
- =?utf-8?B?emhtZmRMUzJKYktndjNFYVVJeURJM0liQU55NFRXakJXUDhjdlBmOFp1QlNa?=
- =?utf-8?B?Wmx2RDBoZEtock8raENqQkVQKzZKYzIvTFlBZFZVK1VWbUpzeGwwL1hMT3po?=
- =?utf-8?B?amZOREtYTnA3cHJCUDdzdzhOUEswY0d3Ky9VL2Y0alkxYjZQVjVydmFLYWJL?=
- =?utf-8?B?eDFFcHRyL1BlbDdhQm1vSUJVM0xSclg0TWJ4SHdSVVpSWHIzdHR4N0JmZWVS?=
- =?utf-8?B?clhrdXAxanpsZnFSMGE0c3lRUWhqNUpmclNSWXpOYjNRS2ZGUUNnVkMrckdH?=
- =?utf-8?B?M0kwbi80WGFXNnI3bysxS1NicFo4VldlRWdmRXdjTWNyREx2QmdnS2VlcFkz?=
- =?utf-8?B?azRUYmNUN1JVRkszQkRwaWlxUlBWakNJYjdxWU9rQnhIWExlK1lLeU4rN3lo?=
- =?utf-8?B?dVRXU0drNElRVzVLNzJDYVVudWlqNkJOcXR0SXhNcWJsa0lvLzVzRnFaV1Ir?=
- =?utf-8?B?U1hCcmxzSk5Lck5KWFJGU05hTkRPZlBJbGx6bUQ1QU1QMFpubWFndWloUkRi?=
- =?utf-8?B?OWNITCthVUo4SG5ndEoyNkRBemhreTMwQUpLcmFpTEpuVE5Jam1EQlZBbDA1?=
- =?utf-8?B?dGExMzZHdFFmU0RvbnlURmRnY0pFN1crdSs0TjUvVHJUMmlINXdCZEdlZkRZ?=
- =?utf-8?B?ZUtXNml4OU82ZnhqS3R1Ryt0UnNMOUN4bTdqWUtodEtnMEVIVnNESVB6Z3VR?=
- =?utf-8?B?Ykk1MDNYZnBUVTVCSGVkZDM5TENHVmNYQ3NjelVNbGlyeVBkQnA5TlJ2L2w5?=
- =?utf-8?B?ck1VOWZjdFpna3d4N21VeVFSMVZOWkJmbXRrMDQrZDAwa0MraEFqR1ZTVUln?=
- =?utf-8?Q?nB3KxEwiBR/DCNPQn137udA=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	pQRBqCxP8oxRHn9FExv9/JQ6ScgXwyjoA6q4OhSwu9pVVoxkLfzo9AMaerNURciR2gfu9AH3p/w3FHTtE3bBp0doKVOKA5yRAkVVqUBnVvszQYsW2k4ZydJpU1mB3Uy2uaBIe0NBSJnBZirh5IgmJZZ9JlNtd1M8VSUYSUKktoQO8ZS8u9h0dYgN79J+ckK3Hx2sGUWGLgMyZ3AoiAVICgm8E3zUKXTBMx/I3BGX1HQiEdRpZsE5osPdNE7WD01iLcpvPV1lOGVs1B2MicpZ3DTCplTXrgSqH2sV2dSphsBqRpQuxuRWmn68Hh9EACGGvQBKJbaZfZV7snS5ROX/6+D6R+i1WajR3QoS0DpYBr8E7NnMQF4tCMxt+7MqFwSn4RDXI40gX0HuhlrSMd94YaE7dpC8d8F3U+OdW64w3yB5WzoOmHHILfn09vQBiI2MyRJWlVCOrLpNkON9YTW6Nzg657VNmlkKVisR41NLQukkeOVgmfXkV9YpXfTsukJ0ReSPD3XfsVq6H1munxWv370I+6tPkySqYVRpDIgVqhyqGcapfdBQJNrXLy4YoYu6UNJZDBEbz/D0yh209Vlp+/CGugw7i/0Wisx62txkFuU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4885f8d6-f04e-459e-ff2d-08dc005a8ede
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 06:20:12.6562
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gkdR+hOK8IFlDzTI7ymKuoqSzA82GKBlr6w6GvhesCKXXBgcviberc40oYVb0QvrBWF8r2hE+Gzv6ZIxmZmWUGd9VuYbjkczudGApMM0kQZ/aH32mQhji8PPxyZ+Is6L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4633
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-19_02,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312190045
-X-Proofpoint-GUID: rJYy4noLWxvgJFYJ8VRdhkc-MlF_gEWF
-X-Proofpoint-ORIG-GUID: rJYy4noLWxvgJFYJ8VRdhkc-MlF_gEWF
+References: <20231129110853.94344-1-lukasz.luba@arm.com> <20231129110853.94344-24-lukasz.luba@arm.com>
+In-Reply-To: <20231129110853.94344-24-lukasz.luba@arm.com>
+From: Xuewen Yan <xuewen.yan94@gmail.com>
+Date: Tue, 19 Dec 2023 14:22:45 +0800
+Message-ID: <CAB8ipk_Zx5NtSpNXHsAqpZSq2yVHGAni5sN=ot5Lkc0jGZxoxA@mail.gmail.com>
+Subject: Re: [PATCH v5 23/23] Documentation: EM: Update with runtime
+ modification design
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org, 
+	dietmar.eggemann@arm.com, rui.zhang@intel.com, amit.kucheria@verdurent.com, 
+	amit.kachhap@gmail.com, daniel.lezcano@linaro.org, viresh.kumar@linaro.org, 
+	len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, 
+	wvw@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Greg,
+Hi Lukasz,
 
-On 18/12/23 7:21 pm, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.334 release.
-> There are 26 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Nov 29, 2023 at 7:11=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> w=
+rote:
 >
+> Add a new section 'Design' which covers the information about Energy
+> Model. It contains the design decisions, describes models and how they
+> reflect the reality. Remove description of the default EM. Change the
+> other section IDs. Add documentation bit for the new feature which
+> allows to modify the EM in runtime.
+>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  Documentation/power/energy-model.rst | 206 +++++++++++++++++++++++++--
+>  1 file changed, 196 insertions(+), 10 deletions(-)
+>
+> diff --git a/Documentation/power/energy-model.rst b/Documentation/power/e=
+nergy-model.rst
+> index 13225965c9a4..1f8cf36914b1 100644
+> --- a/Documentation/power/energy-model.rst
+> +++ b/Documentation/power/energy-model.rst
+> @@ -72,16 +72,48 @@ required to have the same micro-architecture. CPUs in=
+ different performance
+>  domains can have different micro-architectures.
+>
+>
+> -2. Core APIs
+> +2. Design
+> +-----------------
+> +
+> +2.1 Runtime modifiable EM
+> +^^^^^^^^^^^^^^^^^^^^^^^^^
+> +
+> +To better reflect power variation due to static power (leakage) the EM
+> +supports runtime modifications of the power values. The mechanism relies=
+ on
+> +RCU to free the modifiable EM perf_state table memory. Its user, the tas=
+k
+> +scheduler, also uses RCU to access this memory. The EM framework provide=
+s
+> +API for allocating/freeing the new memory for the modifiable EM table.
+> +The old memory is freed automatically using RCU callback mechanism when =
+there
+> +are no owners anymore for the given EM runtime table instance. This is t=
+racked
+> +using kref mechanism. The device driver which provided the new EM at run=
+time,
+> +should call EM API to free it safely when it's no longer needed. The EM
+> +framework will handle the clean-up when it's possible.
+> +
+> +The kernel code which want to modify the EM values is protected from con=
+current
+> +access using a mutex. Therefore, the device driver code must run in slee=
+ping
+> +context when it tries to modify the EM.
+> +
+> +With the runtime modifiable EM we switch from a 'single and during the e=
+ntire
+> +runtime static EM' (system property) design to a 'single EM which can be
+> +changed during runtime according e.g. to the workload' (system and workl=
+oad
+> +property) design.
+> +
+> +It is possible also to modify the CPU performance values for each EM's
+> +performance state. Thus, the full power and performance profile (which
+> +is an exponential curve) can be changed according e.g. to the workload
+> +or system property.
+> +
+> +
+> +3. Core APIs
+>  ------------
+>
+> -2.1 Config options
+> +3.1 Config options
+>  ^^^^^^^^^^^^^^^^^^
+>
+>  CONFIG_ENERGY_MODEL must be enabled to use the EM framework.
+>
+>
+> -2.2 Registration of performance domains
+> +3.2 Registration of performance domains
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+>  Registration of 'advanced' EM
+> @@ -110,8 +142,8 @@ The last argument 'microwatts' is important to set wi=
+th correct value. Kernel
+>  subsystems which use EM might rely on this flag to check if all EM devic=
+es use
+>  the same scale. If there are different scales, these subsystems might de=
+cide
+>  to return warning/error, stop working or panic.
+> -See Section 3. for an example of driver implementing this
+> -callback, or Section 2.4 for further documentation on this API
+> +See Section 4. for an example of driver implementing this
+> +callback, or Section 3.4 for further documentation on this API
+>
+>  Registration of EM using DT
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> @@ -156,7 +188,7 @@ The EM which is registered using this method might no=
+t reflect correctly the
+>  physics of a real device, e.g. when static power (leakage) is important.
+>
+>
+> -2.3 Accessing performance domains
+> +3.3 Accessing performance domains
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+>  There are two API functions which provide the access to the energy model=
+:
+> @@ -175,10 +207,83 @@ CPUfreq governor is in use in case of CPU device. C=
+urrently this calculation is
+>  not provided for other type of devices.
+>
+>  More details about the above APIs can be found in ``<linux/energy_model.=
+h>``
+> -or in Section 2.4
+> +or in Section 3.5
+> +
+> +
+> +3.4 Runtime modifications
+> +^^^^^^^^^^^^^^^^^^^^^^^^^
+> +
+> +Drivers willing to update the EM at runtime should use the following ded=
+icated
+> +function to allocate a new instance of the modified EM. The API is liste=
+d
+> +below::
+> +
+> +  struct em_perf_table __rcu *em_allocate_table(struct em_perf_domain *p=
+d);
+> +
+> +This allows to allocate a structure which contains the new EM table with
+> +also RCU and kref needed by the EM framework. The 'struct em_perf_table'
+> +contains array 'struct em_perf_state state[]' which is a list of perform=
+ance
+> +states in ascending order. That list must be populated by the device dri=
+ver
+> +which wants to update the EM. The list of frequencies can be taken from
+> +existing EM (created during boot). The content in the 'struct em_perf_st=
+ate'
+> +must be populated by the driver as well.
+> +
+> +This is the API which does the EM update, using RCU pointers swap::
+> +
+> +  int em_dev_update_perf_domain(struct device *dev,
+> +                       struct em_perf_table __rcu *new_table);
+> +
+> +Drivers must provide a pointer to the allocated and initialized new EM
+> +'struct em_perf_table'. That new EM will be safely used inside the EM fr=
+amework
+> +and will be visible to other sub-systems in the kernel (thermal, powerca=
+p).
+> +The main design goal for this API is to be fast and avoid extra calculat=
+ions
+> +or memory allocations at runtime. When pre-computed EMs are available in=
+ the
+> +device driver, than it should be possible to simply re-use them with low
+> +performance overhead.
+> +
+> +In order to free the EM, provided earlier by the driver (e.g. when the m=
+odule
+> +is unloaded), there is a need to call the API::
+> +
+> +  void em_free_table(struct em_perf_table __rcu *table);
+> +
+> +It will allow the EM framework to safely remove the memory, when there i=
+s
+> +no other sub-system using it, e.g. EAS.
+> +
+> +To use the power values in other sub-systems (like thermal, powercap) th=
+ere is
+> +a need to call API which protects the reader and provide consistency of =
+the EM
+> +table data::
+>
+> +  struct em_perf_state *em_get_table(struct em_perf_domain *pd);
+>
+> -2.4 Description details of this API
+> +It returns the 'struct em_perf_state' pointer which is an array of perfo=
+rmance
+> +states in ascending order.
+> +
+> +When the EM table is not needed anymore there is a need to call dedicate=
+d API::
+> +
+> +  void em_put_table(void);
+> +
+> +In this way the EM safely uses the RCU read section and protects the use=
+rs.
+> +It also allows the EM framework to manage the memory and free it.
+> +
+> +There is dedicated API for device drivers to calculate em_perf_state::co=
+st
+> +values::
+> +
+> +  int em_dev_compute_costs(struct device *dev, struct em_perf_state *tab=
+le,
+> +                           int nr_states);
+> +
+> +These 'cost' values from EM are used in EAS. The new EM table should be =
+passed
+> +together with the number of entries and device pointer. When the computa=
+tion
+> +of the cost values is done properly the return value from the function i=
+s 0.
+> +The function takes care for right setting of inefficiency for each perfo=
+rmance
+> +state as well. It updates em_perf_state::flags accordingly.
+> +Then such prepared new EM can be passed to the em_dev_update_perf_domain=
+()
+> +function, which will allow to use it.
+> +
+> +More details about the above APIs can be found in ``<linux/energy_model.=
+h>``
+> +or in Section 4.2 with an example code showing simple implementation of =
+the
+> +updating mechanism in a device driver.
+> +
+> +
+> +3.5 Description details of this API
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  .. kernel-doc:: include/linux/energy_model.h
+>     :internal:
+> @@ -187,8 +292,11 @@ or in Section 2.4
+>     :export:
+>
+>
+> -3. Example driver
+> ------------------
+> +4. Examples
+> +-----------
+> +
+> +4.1 Example driver with EM registration
+> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+>  The CPUFreq framework supports dedicated callback for registering
+>  the EM for a given CPU(s) 'policy' object: cpufreq_driver::register_em()=
+.
+> @@ -242,3 +350,81 @@ EM framework::
+>    39   static struct cpufreq_driver foo_cpufreq_driver =3D {
+>    40           .register_em =3D foo_cpufreq_register_em,
+>    41   };
+> +
+> +
+> +4.2 Example driver with EM modification
+> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> +
+> +This section provides a simple example of a thermal driver modifying the=
+ EM.
+> +The driver implements a foo_thermal_em_update() function. The driver is =
+woken
+> +up periodically to check the temperature and modify the EM data::
+> +
+> +  -> drivers/soc/example/example_em_mod.c
+> +
+> +  01   static void foo_get_new_em(struct device *dev)
 
-No problems seen on x86_64 and aarch64 with our testing.
+Because now some drivers use the dev_pm_opp_of_register_em() to
+register energy model,
+and maybe we can add a new function to update the energy model using
+"EM_SET_ACTIVE_POWER_CB(em_cb, cb)"
+instead of letting users set power again?
 
-Tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Thanks!
 
-Thanks,
-Harshit
-
-
-> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.334-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> +  02   {
+> +  03           struct em_perf_table __rcu *runtime_table;
+> +  04           struct em_perf_state *table, *new_table;
+> +  05           struct em_perf_domain *pd;
+> +  06           unsigned long freq;
+> +  07           int i, ret;
+> +  08
+> +  09           pd =3D em_pd_get(dev);
+> +  10           if (!pd)
+> +  11                   return;
+> +  12
+> +  13           runtime_table =3D em_allocate_table(pd);
+> +  14           if (!runtime_table)
+> +  15                   return;
+> +  16
+> +  17           new_table =3D runtime_table->state;
+> +  18
+> +  19           table =3D em_get_table(pd);
+> +  20           for (i =3D 0; i < pd->nr_perf_states; i++) {
+> +  21                   freq =3D table[i].frequency;
+> +  22                   foo_get_power_perf_values(dev, freq, &new_table[i=
+]);
+> +  23           }
+> +  24           em_put_table();
+> +  25
+> +  26           /* Calculate 'cost' values for EAS */
+> +  27           ret =3D em_dev_compute_costs(dev, table, pd->nr_perf_stat=
+es);
+> +  28           if (ret) {
+> +  29                   dev_warn(dev, "EM: compute costs failed %d\n", re=
+t);
+> +  30                   em_free_table(runtime_table);
+> +  31                   return;
+> +  32           }
+> +  33
+> +  34           ret =3D em_dev_update_perf_domain(dev, runtime_table);
+> +  35           if (ret) {
+> +  36                   dev_warn(dev, "EM: update failed %d\n", ret);
+> +  37                   em_free_table(runtime_table);
+> +  38                   return;
+> +  39           }
+> +  40
+> +  41           ctx->runtime_table =3D runtime_table;
+> +  42   }
+> +  43
+> +  44   /*
+> +  45    * Function called periodically to check the temperature and
+> +  46    * update the EM if needed
+> +  47    */
+> +  48   static void foo_thermal_em_update(struct foo_context *ctx)
+> +  49   {
+> +  50           struct device *dev =3D ctx->dev;
+> +  51           int cpu;
+> +  52
+> +  53           ctx->temperature =3D foo_get_temp(dev, ctx);
+> +  54           if (ctx->temperature < FOO_EM_UPDATE_TEMP_THRESHOLD)
+> +  55                   return;
+> +  56
+> +  57           foo_get_new_em(dev);
+> +  58   }
+> +  59
+> +  60   static void foo_exit(void)
+> +  61   {
+> +  62           struct foo_context *ctx =3D glob_ctx;
+> +  63
+> +  64           em_free_table(ctx->runtime_table);
+> +  65   }
+> +  66
+> +  67   module_exit(foo_exit);
+> --
+> 2.25.1
+>
 
