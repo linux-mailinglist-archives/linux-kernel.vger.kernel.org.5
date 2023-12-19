@@ -1,123 +1,139 @@
-Return-Path: <linux-kernel+bounces-5748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1731B818F05
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:58:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59877818F02
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAF071F29218
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:58:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E9D11F29049
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:58:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E69240C00;
-	Tue, 19 Dec 2023 17:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987CA38F84;
+	Tue, 19 Dec 2023 17:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PhC7AOMb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PcnZ9NKY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D2D4B5A1;
-	Tue, 19 Dec 2023 17:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJGucNb031777;
-	Tue, 19 Dec 2023 17:52:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Ate2nQXbafi7WMu36jIrSAMLBThAwZVJ7XxcLPp9YLg=;
- b=PhC7AOMbFo0UFXB0jgULWba/ju+jRIfjUwTvmZAGm5tLFOQjIMdOo7zZxhi/P75p7x8y
- ai4wQUd57AJpUuTobyBoatPKN9Pw716pcNOCBareM5gFEIQn2iJtbqCFpgZ7tyac+st/
- d2ae+ZcBPmN4NAtiCpaGXuX6yqatMzQ/9E6RyzAWDv7jJG+PGUAARJEdAhFmS1l0ri82
- cKwV7SzmyeUOq50eU5lFzMTPu9tFh77hnVyIzkE4bFGESF7950oV90fVtl4u1N3MCfCJ
- OoURWtW17r3cPH5Gof0fUCbEv7wk3FSiDnpUW8T4LTvIEs5TBCy36VLKth9djbwkSKYg bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3d5u5185-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 17:52:23 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BJGuggB032360;
-	Tue, 19 Dec 2023 17:52:23 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3d5u517r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 17:52:23 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJFm1bD010900;
-	Tue, 19 Dec 2023 17:52:22 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7nheg1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 17:52:21 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BJHqJ1n15991452
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Dec 2023 17:52:20 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DAA1D2004B;
-	Tue, 19 Dec 2023 17:52:19 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2EDE320043;
-	Tue, 19 Dec 2023 17:52:18 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.61.138.145])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Dec 2023 17:52:17 +0000 (GMT)
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: linux-unionfs@vger.kernel.org
-Cc: Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Seth Forshee <sforshee@kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>
-Subject: [PATCH v2 3/3] overlay: disable EVM
-Date: Tue, 19 Dec 2023 12:52:06 -0500
-Message-Id: <20231219175206.12342-4-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231219175206.12342-1-zohar@linux.ibm.com>
-References: <20231219175206.12342-1-zohar@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF8B4B13D;
+	Tue, 19 Dec 2023 17:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3ac28ae81so24310195ad.0;
+        Tue, 19 Dec 2023 09:52:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703008351; x=1703613151; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GWs5/78iGYXOgAy2HmBDe2CVxDcBUmbJSBwHK3emws8=;
+        b=PcnZ9NKYFLcRS+G8/5U2RrQ4Vg/rxckSC3ugHwB3kJkaczrRj/Mj+e33+KNscS7cq9
+         kxrJHFJwRc+EhdqSiEL/x/Xo51N5lUQ6VvTj9tpooJyURwWIkXyrUeVO3rTCUIoHd1OC
+         Jy2N1Efnwo957VFrnt5ccJJau7RScOKk+Mo04RAFkqQdwUCJxkUEsbhlQSBfo3OaxFcG
+         AB7gSBi3LtYNRXbA4Kwx9iMg1pov3iq63gRQ04YoLnwpyolVhs1+iEY4R9It711YB9dJ
+         /aPL3I29zAdyMbUwUZWdxhPLlm19XhQFAxANTR1xYnguRRlYEVdR8/sz3ym2s1vZ+n9k
+         FIBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703008351; x=1703613151;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GWs5/78iGYXOgAy2HmBDe2CVxDcBUmbJSBwHK3emws8=;
+        b=bOxjzz3jBM2cu02fc4dNIFwfeuz82qFWE8T7JOLJdPTg8ISr4z4hBMdB/wiqwEG4RX
+         x+mSVnBMsDZjVDDYppir0qvvclCl/88CosZw+q45PlKKFe8ksBTGkvLQMwnlIRi6YsxG
+         Bs50kRKve8k5R841K97eumVCd8ASI9RfY904Cr8TVCHWaLdKGNRJyZerCLxfjZw1ICVV
+         6F8X3h3BmyAw8fdIHcrTbRdj9JVFzsnK3WT9dRiUqk/mug1ywE4JhHU110ldckK6sCA6
+         ol48wKKRBCNS6ZQhVFC+FvsGmm0aFWjOjnZ137Mdc5WHoUmX125xgKUpWGIFX7EJtGAw
+         Xi8g==
+X-Gm-Message-State: AOJu0Yz6wVYDIa80KpnC0zNJjB4bc0vFgcLtwHeBwzuQpZYh8/L8izSS
+	geXpAl3eRfiYbLoAFIleclA=
+X-Google-Smtp-Source: AGHT+IHrWmanCY0G9LlI5KHOyhIrjYu37wOFzz3+pj1aAiO/1gzkIjpvml6BIlC6xl0SmPasWzOGKQ==
+X-Received: by 2002:a17:903:2cc:b0:1d3:488e:a4b7 with SMTP id s12-20020a17090302cc00b001d3488ea4b7mr17195075plk.128.1703008351003;
+        Tue, 19 Dec 2023 09:52:31 -0800 (PST)
+Received: from debian ([177.240.14.150])
+        by smtp.gmail.com with ESMTPSA id a17-20020a170902ee9100b001cfc1764fa7sm4277198pld.1.2023.12.19.09.52.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 09:52:30 -0800 (PST)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Tue, 19 Dec 2023 09:52:27 -0800
+To: Ira Weiny <ira.weiny@intel.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Fan Ni <nifan.cxl@gmail.com>, Dave Jiang <dave.jiang@intel.com>,
+	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
+Subject: Re: [PATCH v2 2/2] cxl/cdat: Fix header sum value in CDAT checksum
+Message-ID: <ZYHYW-kaYLNPHXpj@debian>
+References: <20231117-fix-cdat-cs-v2-0-715399976d4d@intel.com>
+ <20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: l6owamPJ2tsk1ibyGUYFdROvgtzvvV6p
-X-Proofpoint-ORIG-GUID: aFUWRoiknWYYO-D-vDItShJhEj4KhB1X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-19_10,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=631 clxscore=1015
- impostorscore=0 bulkscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312190133
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
 
-Until a complete solution is developed, update 'sb->s_iflags' to
-disable EVM.
+On Wed, Nov 29, 2023 at 05:33:04PM -0800, Ira Weiny wrote:
+> The addition of the DCD support for CXL type-3 devices extended the CDAT
+> table large enough that the checksum being returned was incorrect.[1]
+> 
+> This was because the checksum value was using the header length field
+> rather than each of the 4 bytes of the length field.  This was
+> previously not seen because the length of the CDAT data was less than
+> 256 thus resulting in an equivalent checksum value.
+> 
+> Properly calculate the checksum for the CDAT header.
+> 
+> [1] https://lore.kernel.org/all/20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com/
+> 
+> Fixes: aba578bdace5 ("hw/cxl/cdat: CXL CDAT Data Object Exchange implementation")
+> Cc: Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes from V1:
+> [djiang: Remove do {} while (0);]
+> ---
+>  hw/cxl/cxl-cdat.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/hw/cxl/cxl-cdat.c b/hw/cxl/cxl-cdat.c
+> index 24829cf2428d..67e44a4f992a 100644
+> --- a/hw/cxl/cxl-cdat.c
+> +++ b/hw/cxl/cxl-cdat.c
+> @@ -49,6 +49,7 @@ static void ct3_build_cdat(CDATObject *cdat, Error **errp)
+>      g_autofree CDATTableHeader *cdat_header = NULL;
+>      g_autofree CDATEntry *cdat_st = NULL;
+>      uint8_t sum = 0;
+> +    uint8_t *buf;
+>      int ent, i;
+>  
+>      /* Use default table if fopen == NULL */
+> @@ -95,8 +96,12 @@ static void ct3_build_cdat(CDATObject *cdat, Error **errp)
+>      /* For now, no runtime updates */
+>      cdat_header->sequence = 0;
+>      cdat_header->length += sizeof(CDATTableHeader);
+> -    sum += cdat_header->revision + cdat_header->sequence +
+> -        cdat_header->length;
+> +
+> +    buf = (uint8_t *)cdat_header;
+> +    for (i = 0; i < sizeof(*cdat_header); i++) {
+> +        sum += buf[i];
+> +    }
+> +
+>      /* Sum of all bytes including checksum must be 0 */
+>      cdat_header->checksum = ~sum + 1;
+>  
+> 
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
- fs/overlayfs/super.c | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
 
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index a0967bb25003..e3d9c6c80a47 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -1454,6 +1454,7 @@ int ovl_fill_super(struct super_block *sb, struct fs_context *fc)
- 	 * lead to unexpected results.
- 	 */
- 	sb->s_iflags |= SB_I_NOUMASK;
-+	sb->s_iflags |= SB_I_EVM_UNSUPPORTED;
- 
- 	err = -ENOMEM;
- 	root_dentry = ovl_get_root(sb, ctx->upper.dentry, oe);
--- 
-2.39.3
-
+> -- 
+> 2.42.0
+> 
 
