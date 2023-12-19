@@ -1,84 +1,129 @@
-Return-Path: <linux-kernel+bounces-4571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF419817F6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:46:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23ED4817F7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E25628302A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C64DC2861EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98CC1C3D;
-	Tue, 19 Dec 2023 01:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QRLUDXo8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3F01FB6;
+	Tue, 19 Dec 2023 01:51:18 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF3A4402
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 18 Dec 2023 20:46:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702950382;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5dSq+xskUzFPW1/3n5Hbgu39SffXVNAv8XTfz69lcCQ=;
-	b=QRLUDXo8kJiL1Gog5CeF8oYKcr9jV1OIVFaza6OHEb8UDxa+NyQ7dG1QZp7b2WB14ckqUd
-	Y+vw8yTRiTstd53R1q/L+kprd/itBhNn4KDap2f2sfcMc/+YQkVzv1YebOVJI/o5+FISLh
-	/T4mHhnyxlPABPRwqqawGvlqFXWyaG0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Waiman Long <longman@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org,
-	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com,
-	paulmck@kernel.org, keescook@chromium.org,
-	dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
-	boqun.feng@gmail.com, brauner@kernel.org
-Subject: Re: [PATCH 19/50] locking/mutex: split out mutex_types.h
-Message-ID: <20231219014617.dulwl3mdro6zyblt@moria.home.lan>
-References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
- <20231216032651.3553101-1-kent.overstreet@linux.dev>
- <20231216032651.3553101-9-kent.overstreet@linux.dev>
- <7066c278-28e0-45eb-a046-eb684c4a659c@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47A21FAE;
+	Tue, 19 Dec 2023 01:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SvKR81wlrz1wntg;
+	Tue, 19 Dec 2023 09:51:00 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6B6E5140415;
+	Tue, 19 Dec 2023 09:51:13 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Dec 2023 09:51:12 +0800
+Message-ID: <e56b281b-2d23-dea7-f37e-c6cb5582a4af@huawei.com>
+Date: Tue, 19 Dec 2023 09:51:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7066c278-28e0-45eb-a046-eb684c4a659c@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 1/4] ext4: fix double-free of blocks due to wrong extents
+ moved_len
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>, Wei Chen
+	<harperchen1110@gmail.com>, xingwei lee <xrivendell7@gmail.com>,
+	<stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
+References: <20231218141814.1477338-1-libaokun1@huawei.com>
+ <20231218141814.1477338-2-libaokun1@huawei.com>
+ <20231218153227.x273h3c5t2dqgh76@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20231218153227.x273h3c5t2dqgh76@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Mon, Dec 18, 2023 at 11:53:08AM -0500, Waiman Long wrote:
-> On 12/15/23 22:26, Kent Overstreet wrote:
-> > -#include <linux/rtmutex.h>
-> 
-> Including rtmutex.h here means that mutex_types.h is no longer a simple
-> header for types only. So unless you also break out a rtmutex_types.h, it is
-> inconsistent.
+On 2023/12/18 23:32, Jan Kara wrote:
+> On Mon 18-12-23 22:18:11, Baokun Li wrote:
+>> In ext4_move_extents(), moved_len is only updated when all moves are
+>> successfully executed, and only discards orig_inode and donor_inode
+>> preallocations when moved_len is not zero. When the loop fails to exit
+>> after successfully moving some extents, moved_len is not updated and
+>> remains at 0, so it does not discard the preallocations.
+>>
+>> If the moved extents overlap with the preallocated extents, the
+>> overlapped extents are freed twice in ext4_mb_release_inode_pa() and
+>> ext4_process_freed_data() (as described in commit 94d7c16cbbbd), and
+>> bb_free is incremented twice. Hence when trim is executed, a zero-division
+>> bug is triggered in mb_update_avg_fragment_size() because bb_free is not
+>> zero and bb_fragments is zero.
+>>
+>> Therefore, update move_len after each extent move to avoid the issue.
+>>
+>> Reported-by: Wei Chen <harperchen1110@gmail.com>
+>> Reported-by: xingwei lee <xrivendell7@gmail.com>
+>> Closes: https://lore.kernel.org/r/CAO4mrferzqBUnCag8R3m2zf897ts9UEuhjFQGPtODT92rYyR2Q@mail.gmail.com
+>> Fixes: fcf6b1b729bc ("ext4: refactor ext4_move_extents code base")
+>> CC: stable@vger.kernel.org # 3.18
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/move_extent.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+>> index 3aa57376d9c2..4b9b503c6346 100644
+>> --- a/fs/ext4/move_extent.c
+>> +++ b/fs/ext4/move_extent.c
+>> @@ -672,7 +672,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+>>   		 */
+>>   		ext4_double_up_write_data_sem(orig_inode, donor_inode);
+>>   		/* Swap original branches with new branches */
+>> -		move_extent_per_page(o_filp, donor_inode,
+>> +		*moved_len += move_extent_per_page(o_filp, donor_inode,
+>>   				     orig_page_index, donor_page_index,
+>>   				     offset_in_page, cur_len,
+>>   				     unwritten, &ret);
+> Although this is currently fine, I think ext4_move_extents() should be
+> careful and zero out *moved_len before it starts using it.
+Totally agree, now __ext4_ioctl zeroes it out, but to avoid code logic
+changes or new callers afterward,  I'll zero it out before using it in
+ext4_move_extents() in the next version.
+>
+>> @@ -682,7 +682,6 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+>>   		o_start += cur_len;
+>>   		d_start += cur_len;
+>>   	}
+>> -	*moved_len = o_start - orig_blk;
+>>   	if (*moved_len > len)
+>>   		*moved_len = len;
+> So I'm not sure the *moved_len > len condition can ever trigger but if it
+> does, we'd need to check it whenever we are returning moved_len. So either
+> I'd delete the condition or move it to the out label.
+>
+> 								Honza
+As the code stands now, the *moved_len > len condition never
+occurs, and is supposed to be code left over from the refactoring
+in [Fixes], which I'll remove in the next version.
 
-good observation, I'll have to leave it for the next round of cleanups
-though since the merge window is approaching and I'll have to redo all
-the testing.
-
-> Besides, the kernel/sched code does use mutex_lock/unlock calls quite
-> frequently. With this patch, mutex.h will not be directly included. I
-> suspect that it is indirectly included via other header files. This may be
-> an issue with some configurations.
-
-I've now put it through randconfig testing on every arch that debian
-includes a compiler for (excluding sh and xtensa, which throw internal
-compiler errors) and that one hasn't come up yet.
-
-could still be included indirectly though - I haven't checked for that
-one specifically yet.
+Thank you for your review!
+-- 
+With Best Regards,
+Baokun Li
+.
 
