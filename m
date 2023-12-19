@@ -1,144 +1,149 @@
-Return-Path: <linux-kernel+bounces-4596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5212C817FC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:29:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1921817FCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D59F0B23138
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:29:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91BD91F23C06
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B300D468F;
-	Tue, 19 Dec 2023 02:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE654C78;
+	Tue, 19 Dec 2023 02:32:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06554409;
-	Tue, 19 Dec 2023 02:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SvLHB6Mh1zMnyZ;
-	Tue, 19 Dec 2023 10:29:10 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8085814068C;
-	Tue, 19 Dec 2023 10:29:09 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 10:29:08 +0800
-Message-ID: <7e0f5796-99eb-867d-8885-8df553de8df9@huawei.com>
-Date: Tue, 19 Dec 2023 10:29:08 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6F7AD47;
+	Tue, 19 Dec 2023 02:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rFPte-0008Gy-2m;
+	Tue, 19 Dec 2023 02:31:52 +0000
+Date: Tue, 19 Dec 2023 02:31:44 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Golle <daniel@makrotopia.org>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/7] mtd: ubi: allow UBI volumes to provide NVMEM
+Message-ID: <cover.1702952891.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 3/4] ext4: avoid bb_free and bb_fragments inconsistency in
- mb_free_blocks()
-Content-Language: en-US
-To: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
-CC: <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20231218141814.1477338-1-libaokun1@huawei.com>
- <20231218141814.1477338-4-libaokun1@huawei.com>
- <20231218151455.yqph44iz4ihsujz5@quack3>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231218151455.yqph44iz4ihsujz5@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2023/12/18 23:14, Jan Kara wrote:
-> On Mon 18-12-23 22:18:13, Baokun Li wrote:
->> After updating bb_free in mb_free_blocks, it is possible to return without
->> updating bb_fragments because the block being freed is found to have
->> already been freed, which leads to inconsistency between bb_free and
->> bb_fragments.
->>
->> Since the group may be unlocked in ext4_grp_locked_error(), this can lead
->> to problems such as dividing by zero when calculating the average fragment
->> length. Therefore, to ensure consistency, move the update of bb_free to
->> after the block double-free check.
->>
->> Fixes: eabe0444df90 ("ext4: speed-up releasing blocks on commit")
->> CC: stable@vger.kernel.org # 3.10
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> I agree there's no point in updating the allocation info if the bitmap is
-> corrupted. We will not try to allocate (or free) blocks in that group
-> anymore. I'm just a bit unsure about the EXT4_FC_REPLAY state where we
-> don't mark the bitmap as corrupted although some blocks were already marked
-> as freed. So in this case the free space statistics tracking will go
-> permanently wrong. I'm kind of wondering in which case does fast-commit
-> free already freed blocks. Ted, any idea?
->
-> 								Honza
-Some additional information, this judgment was introduced in
-commit 8016e29f4362 ("ext4: fast commit recovery path") in v5.10-rc1,
-at which point mb_regenerate_buddy() was called to regenerate the
-buddy when it was found to be freeing a block that had already been
-freed, so there was no problem. Until v5.11-rc1 commit 6bd97bf273bd
-("ext4: remove redundant mb_regenerate_buddy()") removes the logic
-to regenerate the buddy, it looks like the free space statistics will
-remain wrong. If this normal scenario exists, perhaps buddy should
-be regenerated here?
+Similar to how MAC addresses and Wi-Fi calibration data would be
+stored inside an MTD partition on devices coming with NOR flash, a UBI
+volume is used by some vendors in the same way on devices with NAND
+flash.
 
-Thanks,
-Baokun
->> ---
->>   fs/ext4/mballoc.c | 13 ++++++-------
->>   1 file changed, 6 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index a95fa6e2b0f9..2fbee0f0f5c3 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -1892,11 +1892,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   	mb_check_buddy(e4b);
->>   	mb_free_blocks_double(inode, e4b, first, count);
->>   
->> -	this_cpu_inc(discard_pa_seq);
->> -	e4b->bd_info->bb_free += count;
->> -	if (first < e4b->bd_info->bb_first_free)
->> -		e4b->bd_info->bb_first_free = first;
->> -
->>   	/* access memory sequentially: check left neighbour,
->>   	 * clear range and then check right neighbour
->>   	 */
->> @@ -1922,9 +1917,14 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   				sb, e4b->bd_group,
->>   				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
->>   		}
->> -		goto done;
->> +		return;
->>   	}
->>   
->> +	this_cpu_inc(discard_pa_seq);
->> +	e4b->bd_info->bb_free += count;
->> +	if (first < e4b->bd_info->bb_first_free)
->> +		e4b->bd_info->bb_first_free = first;
->> +
->>   	/* let's maintain fragments counter */
->>   	if (left_is_free && right_is_free)
->>   		e4b->bd_info->bb_fragments--;
->> @@ -1949,7 +1949,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   	if (first <= last)
->>   		mb_buddy_mark_free(e4b, first >> 1, last >> 1);
->>   
->> -done:
->>   	mb_set_largest_free_order(sb, e4b->bd_info);
->>   	mb_update_avg_fragment_size(sb, e4b->bd_info);
->>   	mb_check_buddy(e4b);
->> -- 
->> 2.31.1
->>
+The goal of this series is to support such embedded Linux devices which
+got NVMEM bits stored inside a UBI volume.
+
+Representing the UBI volume in the Device Tree and adding a phandle to
+be referenced by NVMEM consumers allows such devices to come up with
+their correct MAC addresses and device-specific Wi-Fi calibration data
+loaded.
+
+In order for NVMEM bits to be available for other drivers, attaching
+UBI devices has to be moved from late_initcall (which is too late for
+other drivers) to happen earlier. As an alternative to the existing
+kernel cmdline parameter the Device Tree property 'compatible =
+"linux,ubi";' inside an MTD partition can be used to have that MTD
+device attached as UBI device. MTD partitions which serve as UBI
+devices may have a "volumes" subnode with volumes, and volumes may
+have an "nvmem-layout" object which will trigger the creation of an
+emulated NVMEM device on top of the UBI volume.
+
+In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
+acquire NVMEM bits using the usual device tree phandle, just this time
+the NVMEM content is read from a UBI volume.
+
+This series is a follow-up and contains most patches of the previous
+series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
+preparation for implementing the NVMEM provider.
+
+[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
+
+Changes since v6:
+ * dt-bindings fixes got squashed into the wrong patch, fix that and
+   newly introduced YAML white space issues
+
+Changes since v5:
+ * fix whitespace problems in dt-schema additions
+
+Changes since v4:
+ * split ubi_open_volume_path() breaking out reusable parts for
+   new match_volume_desc() function as suggested by Richard Weinberger.
+   Doing the same for ubi_open_volume_nm() doesn't work as we are working
+   on struct ubi_volume_info in match_volume_desc() while ubi_open_volume_nm()
+   is working on struct ubi_volume. That reduces the common part to a string
+   comparision and length check which doesn't seem worth breaking out of the
+   existing function.
+ * drop patches and changes not strictly needed for NVMEM use-case:
+   - don't handle ubi detach on MTD removal notification. It was not done
+     until now and the locking hell I was facing when trying to implement
+     that is non trivial.
+   - don't relocate the call to ubiblock device creation to the
+     notification handler
+   - change ubiblock only as far as needed to handle creation from cmdline
+     parameter when a volume is added.
+ * improve commit messages and comments
+
+Changes since v3:
+ * dt-bindings fixes as requested
+
+Changes since v2:
+ * include dt-bindings additions
+
+Changes since v1:
+ * include patch to fix exiting Kconfig formatting issues
+ * fix typo and indentation in Kconfig
+
+
+
+Daniel Golle (7):
+  dt-bindings: mtd: add basic bindings for UBI
+  dt-bindings: mtd: ubi-volume: allow UBI volumes to provide NVMEM
+  mtd: ubi: block: use notifier to create ubiblock from parameter
+  mtd: ubi: attach from device tree
+  mtd: ubi: introduce pre-removal notification for UBI volumes
+  mtd: ubi: populate ubi volume fwnode
+  mtd: ubi: provide NVMEM layer over UBI volumes
+
+ .../bindings/mtd/partitions/linux,ubi.yaml    |  75 +++++++
+ .../bindings/mtd/partitions/ubi-volume.yaml   |  40 ++++
+ drivers/mtd/ubi/Kconfig                       |  12 ++
+ drivers/mtd/ubi/Makefile                      |   1 +
+ drivers/mtd/ubi/block.c                       | 136 ++++++-------
+ drivers/mtd/ubi/build.c                       | 154 ++++++++++----
+ drivers/mtd/ubi/kapi.c                        |  56 ++++--
+ drivers/mtd/ubi/nvmem.c                       | 188 ++++++++++++++++++
+ drivers/mtd/ubi/ubi.h                         |   3 +
+ drivers/mtd/ubi/vmt.c                         |  44 +++-
+ include/linux/mtd/ubi.h                       |   2 +
+ 11 files changed, 579 insertions(+), 132 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ create mode 100644 drivers/mtd/ubi/nvmem.c
+
+-- 
+2.43.0
 
