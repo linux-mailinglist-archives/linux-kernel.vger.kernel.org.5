@@ -1,90 +1,70 @@
-Return-Path: <linux-kernel+bounces-5964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48CDC819231
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 85E5E81927C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B8A61C25218
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:21:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8D231C23F4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D893C068;
-	Tue, 19 Dec 2023 21:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9B13B79F;
+	Tue, 19 Dec 2023 21:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="faJ1eSGj"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=su-phil.net header.i=@su-phil.net header.b="LfBzEA/h"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D1B3D0AF;
-	Tue, 19 Dec 2023 21:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=T6+SsNZScQS1eMrdG8r2jB2esUWxn8xnhRMnIHOnfWw=;
-  b=faJ1eSGjRVU/VL21IliFaaK3hMpLy5Z6vevuC9wkuFeb7Tk9mUrgp2xD
-   glV0dtWhOz4IBfciHRbdzhBiNx8+WPYc9PlEfdOQSv8Fi7Xh00Hp0TgCg
-   nHDTlx/KlSnxkAPKzx4beooZ3ecmKC+VLTiIBqn4fctIOonzCqFiPiG5O
-   k=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,289,1695679200"; 
-   d="scan'208";a="74897141"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 22:21:26 +0100
-Date: Tue, 19 Dec 2023 22:21:25 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: Luis Chamberlain <mcgrof@kernel.org>
-cc: =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>, 
-    Julia Lawall <julia.lawall@inria.fr>, 
-    Joel Granados <j.granados@samsung.com>, 
-    Dan Carpenter <dan.carpenter@linaro.org>, 
-    Kees Cook <keescook@chromium.org>, 
-    "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
-    Iurii Zaikin <yzaikin@google.com>, 
-    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-In-Reply-To: <ZYIGi9Gf7oVI7ksf@bombadil.infradead.org>
-Message-ID: <alpine.DEB.2.22.394.2312192218050.3196@hadrien>
-References: <20231207104357.kndqvzkhxqkwkkjo@localhost> <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de> <20231208095926.aavsjrtqbb5rygmb@localhost> <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de> <20231212090930.y4omk62wenxgo5by@localhost>
- <ZXligolK0ekZ+Zuf@bombadil.infradead.org> <20231217120201.z4gr3ksjd4ai2nlk@localhost> <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de> <ZYC37Vco1p4vD8ji@bombadil.infradead.org> <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
- <ZYIGi9Gf7oVI7ksf@bombadil.infradead.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46CC3B786
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=su-phil.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=su-phil.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=su-phil.net
+	; s=ds202310; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=0/xzxZSrWpP9yO8S74Yll9uN4mXq9NcoQE+Q/WLhoM4=; b=LfBzEA/h1nA8LukWLa7VB3+K4K
+	xMqp2rXvp9UrViL1rui6Ba5DFWgpl9MWW5bZnSW7YyaNKek04tosFCWZyzXd1WIcgcarb4irYbBoJ
+	OiVLM6WTJ/J/OnDQevnRVJwmVMfIGgGGWoZPCaNPQO2W2WZms+e7AsImloUx+QvihQJy+yyvbzqkj
+	l8slYW+h/5U0N3H7Pff2R9n5jvRXhHMzdpWMjdHK/ZdihHh6E0WDwyCDTUKiiwWdKEAY88JFVmzrZ
+	lpI/lV+xczvMf4OkTQfQ/tJlM2E6Eic6pzsNR/GRxZyidVnLCpHBSVuwLo1+QKq6PwUoKR8OIZOBr
+	iqzvu0Zg==;
+Received: from [84.215.119.50] (port=62829 helo=[192.168.0.2])
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_C4rlyn@su-phil.net>)
+	id 1rFhZE-009yex-DV
+	for linux-kernel@vger.kernel.org;
+	Tue, 19 Dec 2023 22:23:56 +0100
+Message-ID: <2fb82581-be17-4377-9fb4-09549aaacf56@su-phil.net>
+Date: Tue, 19 Dec 2023 22:23:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <Ywe_C4rlyn@su-phil.net>
+Subject: Syn X Symbol
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> As I noted, I think this is a generically neat endeavor and so I think
-> it would be nice to shorthand *any* member of the struct. ctl->any.
-> Julia, is that possible?
+I have also now made thje Syn X Symbol. Ascii version (I   (abit smaller 
+I on the graphics version).
 
-What do you mean by *any* member?  If any is an identifier typed
-metavariable then that would get any immediate member.  But maybe you want
-something like
+Really meaning You are responsible for your own path.
 
-<+...ctl->any...+>
+And overwriting negative associations to hacker, cracker etc, these 
+terms may not be needed anymore.
 
-that will match anything that has ctl->any as a subexpression?
-
-It may be necessary to put this in parentheses to address parsing issues,
-but the () won't need to be present in the matched code.
-
-You could also use
-
-assignment operator aop;
-
-rather than =, to also match += etc.
-
-julia
+-Peace.
+Ywe Cærlyn
+su-phil.net
 
