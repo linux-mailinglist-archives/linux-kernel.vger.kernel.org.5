@@ -1,197 +1,209 @@
-Return-Path: <linux-kernel+bounces-4932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002BF818400
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:02:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7C6C818413
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 697EAB23CD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:02:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405872814B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB68B12B98;
-	Tue, 19 Dec 2023 09:02:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAAA134A8;
+	Tue, 19 Dec 2023 09:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="AKJoaHaK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NHtTC9nO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F6612B69
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:01:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d39132d6baso1533034b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:01:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F74134A5;
+	Tue, 19 Dec 2023 09:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-28b4d7bf8bdso1092184a91.3;
+        Tue, 19 Dec 2023 01:05:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1702976518; x=1703581318; darn=vger.kernel.org;
-        h=mime-version:subject:user-agent:references:in-reply-to:message-id
-         :date:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qv5Fsu/4SSFLc7N7dWR7jKPZwv7B/WkMztthv+8j2aQ=;
-        b=AKJoaHaKO+tMGQfrG7HN+xygr5mD9zknYjt5h7wil4sFgWeGTotYVCcmxSa32GZvxi
-         AUlr0/aD6d0vI9VKepEilNfu8JZaDwAFyIYFxHMFesPtmigo5u+1P3uSZqpwwSAmVQoG
-         D6OiC90duh/1d0R2bYSjH2+zVppoFOWPcADdE=
+        d=gmail.com; s=20230601; t=1702976722; x=1703581522; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WNy5WamLV4+pReBU2afVcdS0VJmrLwZ/s8baVj2zs4o=;
+        b=NHtTC9nOmRLYTb0NWqTECNYydeGHq3LAOxgopRR7btCEiDjAvrlPWsu3ZzZgAmMALX
+         2fJk1VoAOQHn+jjT5xQnR82qalAasBfFbXv3vN1/K1VWBtPKGF/C4Kc9Oiw4YoUr3iX1
+         o9WmPK1JsY0x8tS5q+lq8ZodckHTN8vMcxMs3tN/LKaDFXtJ93JLkUotEG54GJuwy7A1
+         bB8TDjY711WUkUiaNxmw+73WBqUelQ40BLywf98HQKOXrkAFNX2QqNC/bVEzEjGzmtLI
+         /kqf1AQkAMEkt/RgoV389rDr6s9cWmO+07nKFGZw3EnEZpschhsMr7UUOSX7LRgg8HSK
+         wbcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702976518; x=1703581318;
-        h=mime-version:subject:user-agent:references:in-reply-to:message-id
-         :date:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qv5Fsu/4SSFLc7N7dWR7jKPZwv7B/WkMztthv+8j2aQ=;
-        b=ZrNKoz7ghYVUHt1i16GvEAmDkIYtbnsKTRG3a4oAVW7/4Gz07y36FNToHfEM7w0bau
-         qpW7Q50q/Oud1gKkB7bhzes0imHn+o+I/tEkhM9wrkwACFbdpn/dmeoR8gJ6eTywmVMW
-         9nww1B4pq2y4K6jYdTi8dOtBxflVnqVLVDlxQdKUUz622pUDQmO1yT2eVZUSuag/AkOx
-         viTHw9LO1biR9cv3QMjlNeB47V2/b7bbBDqu3RTIkolEDKaZ20tB54lphg8iwAhfsc9X
-         yAF2Pl4XFIycvKsD3vZLFh8xv89MMdEIM6cF6eVeeL5bnVUyIMdgxsk1PGZtzhd7etYt
-         ffvw==
-X-Gm-Message-State: AOJu0Yzp6ACb5gyRBuGicKuTvUf+IM0ozMnFpm5IqQqcocHV6aup38lV
-	selghKFQ7QD8gUKEuHwneswcSg==
-X-Google-Smtp-Source: AGHT+IEeX46HPldTf62RcNMdmmDHDQlNnj9aDS5hPL0VVv1fkr8gB7pp4OdlIZL7ePqzCB93t46OZA==
-X-Received: by 2002:a05:6a21:999c:b0:18f:97c:5b99 with SMTP id ve28-20020a056a21999c00b0018f097c5b99mr8761086pzb.103.1702976517978;
-        Tue, 19 Dec 2023 01:01:57 -0800 (PST)
-Received: from [192.168.178.38] (f215227.upc-f.chello.nl. [80.56.215.227])
-        by smtp.gmail.com with ESMTPSA id du16-20020a056a002b5000b006d93cc20792sm162316pfb.90.2023.12.19.01.01.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Dec 2023 01:01:57 -0800 (PST)
-From: Arend Van Spriel <arend.vanspriel@broadcom.com>
-To: Kalle Valo <kvalo@kernel.org>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
-CC: Arend van Spriel <aspriel@gmail.com>, Franky Lin <franky.lin@broadcom.com>, Hante Meuleman <hante.meuleman@broadcom.com>, <linux-wireless@vger.kernel.org>, <brcm80211-dev-list.pdl@broadcom.com>, <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Tue, 19 Dec 2023 10:01:46 +0100
-Message-ID: <18c814f4890.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-In-Reply-To: <170295913267.640718.8284035097366475252.kvalo@kernel.org>
-References: <20231218121105.23882-1-lukas.bulwahn@gmail.com>
- <170295913267.640718.8284035097366475252.kvalo@kernel.org>
-User-Agent: AquaMail/1.49.0 (build: 104900403)
-Subject: Re: MAINTAINERS: wifi: brcm80211: remove non-existing SHA-cyfmac-dev-list@infineon.com
+        d=1e100.net; s=20230601; t=1702976722; x=1703581522;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WNy5WamLV4+pReBU2afVcdS0VJmrLwZ/s8baVj2zs4o=;
+        b=r8tAWWQzZSU4Xz7tgYz3WAquwpGAy0d/znbfCmnjbpYYx3pP3vq2+R0uldc2HkTwVA
+         RiuPj12KnnlVWrTgvKelVIhONMoEk2epm3Oubms86TxaAkKK2OF7VBmsDqDF9HR/Z+S3
+         THCZnQ+O6x1LZ2YOcxk61G3DnKE+MaQb1+no2EF2mlhzvdftUbrDWW+PisIrKl2xsnWw
+         g+CsunOulk9ApAa+NL8on5u7SeOi9UaM995Uv6n4LQ34f5PvzlmbacK8GXPDvYp5p2vt
+         mM7ccXIbQVmzD99MnLitaWnGoNC/AVBupCMcnW8+C+wInKKqjrF5PvTmkcJyjWcnTK1R
+         C+qw==
+X-Gm-Message-State: AOJu0YyfTRghfsd6tETf2A5G6nnVp1HOsgszmXWSMZ14kTwvg9iSGmDg
+	QAap+u8Fu/Ij1iO66Mt1uir0ZaBKtKKh5c5y
+X-Google-Smtp-Source: AGHT+IEMK6Hy9dqCjKeNExgiUXdY/93jSMI8a4xxZS/JTwjBR1rPlOkm8F3+WVrMx4LfRCM0M9eYLw==
+X-Received: by 2002:a17:90a:702:b0:286:db1e:f8fc with SMTP id l2-20020a17090a070200b00286db1ef8fcmr7960776pjl.92.1702976722577;
+        Tue, 19 Dec 2023 01:05:22 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:581e:798e:871c:98db:5638:a4])
+        by smtp.gmail.com with ESMTPSA id f4-20020a17090aec8400b0028bbd9872d5sm806776pjy.12.2023.12.19.01.05.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 01:05:22 -0800 (PST)
+From: Anshul Dalal <anshulusr@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: Anshul Dalal <anshulusr@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v4 1/2] dt-bindings: iio: dac: add MCP4821
+Date: Tue, 19 Dec 2023 14:32:50 +0530
+Message-ID: <20231219090252.818754-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000070b6f8060cd91e13"
-
---00000000000070b6f8060cd91e13
-Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 8bit
 
-On December 19, 2023 5:12:19 AM Kalle Valo <kvalo@kernel.org> wrote:
+Adds support for MCP48xx series of DACs.
 
-> Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
->> When sending an email to SHA-cyfmac-dev-list@infineon.com, the server
->> responds '550 #5.1.0 Address rejected.'
->>
->> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->
-> Patch applied to wireless.git, thanks.
->
-> 044879ce5406 MAINTAINERS: wifi: brcm80211: remove non-existing 
-> SHA-cyfmac-dev-list@infineon.com
+Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf #MCP48x1
+Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf #MCP48x2
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
 
-Is the claim here true? In another thread I replied all including this list 
-and I am not getting a bounce message.
+---
 
-Googling error code 550 seems to indicate a sender issue:
+Changes for v4:
+- Removed 'Reviewed-by: Conor Dooley' due to changes
+- Renamed shdn-gpios to powerdown-gpios to conform to
+  gpio-consumer-common.yaml
 
-""""
-This means the recipient's server doesn't trust the domain name you are 
-using. If this happens, then your email IP is blacklisted, and your 
-messages will bounce.
-"""
+Changes for v3:
+- Added gpios for ldac and shutdown pins
+- Added spi-cpha and spi-cpol for the SPI mode 0 and 3
 
-Regards,
-Arend
+Changes for v2:
+- Changed order in device table to numerical
+- Made vdd_supply required
+- Added 'Reviewed-by: Conor Dooley'
 
-> --
-> https://patchwork.kernel.org/project/linux-wireless/patch/20231218121105.23882-1-lukas.bulwahn@gmail.com/
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Previous versions:
+v3: https://lore.kernel.org/lkml/20231218164735.787199-1-anshulusr@gmail.com/
+v2: https://lore.kernel.org/lkml/20231217180836.584828-1-anshulusr@gmail.com/
+v1: https://lore.kernel.org/lkml/20231117073040.685860-1-anshulusr@gmail.com/
+---
+ .../bindings/iio/dac/microchip,mcp4821.yaml   | 86 +++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
 
+diff --git a/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
+new file mode 100644
+index 000000000000..0dc577c33918
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
+@@ -0,0 +1,86 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/dac/microchip,mcp4821.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip MCP4821 and similar DACs
++
++description: |
++  Supports MCP48x1 (single channel) and MCP48x2 (dual channel) series of DACs.
++  Device supports simplex communication over SPI in Mode 0 and Mode 3.
++
++  +---------+--------------+-------------+
++  | Device  |  Resolution  |   Channels  |
++  |---------|--------------|-------------|
++  | MCP4801 |     8-bit    |      1      |
++  | MCP4802 |     8-bit    |      2      |
++  | MCP4811 |    10-bit    |      1      |
++  | MCP4812 |    10-bit    |      2      |
++  | MCP4821 |    12-bit    |      1      |
++  | MCP4822 |    12-bit    |      2      |
++  +---------+--------------+-------------+
++
++  Datasheet:
++    MCP48x1: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
++    MCP48x2: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    enum:
++      - microchip,mcp4801
++      - microchip,mcp4802
++      - microchip,mcp4811
++      - microchip,mcp4812
++      - microchip,mcp4821
++      - microchip,mcp4822
++
++  reg:
++    maxItems: 1
++
++  vdd-supply: true
++
++  ldac-gpios:
++    description: |
++      Active Low LDAC (Latch DAC Input) pin used to update the DAC output.
++    maxItems: 1
++
++  powerdown-gpios:
++    description: |
++      Active Low SHDN pin used to enter the shutdown mode.
++    maxItems: 1
++
++  spi-cpha: true
++  spi-cpol: true
++
++required:
++  - compatible
++  - reg
++  - vdd-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dac@0 {
++            compatible = "microchip,mcp4821";
++            reg = <0>;
++            vdd-supply = <&vdd_regulator>;
++            ldac-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
++            powerdown-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
++            spi-cpha;
++            spi-cpol;
++        };
++    };
+-- 
+2.43.0
 
-
-
---00000000000070b6f8060cd91e13
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-2Gzj3QNJRLsZu1TLyOyBBIr/BE7UiY3RabgRzknBGAPmzhS+fmyM8OtM5BYBsFBrSUFtZZO2p/tf
-Nbc24J2zf2peoZ8MK+7WQqummYlOnz+FyDkA9EybeNMcS5C+xi/PAgMBAAGjggHdMIIB2TAOBgNV
-HQ8BAf8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYI
-KwYBBQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24y
-Y2EyMDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqG
-OGh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3Js
-MCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYB
-BQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFIikAXd8CEtv
-ZbDflDRnf3tuStPuMA0GCSqGSIb3DQEBCwUAA4IBAQCdS5XCYx6k2GGZui9DlFsFm75khkqAU7rT
-zBX04sJU1+B1wtgmWTVIzW7ugdtDZ4gzaV0S9xRhpDErjJaltxPbCylb1DEsLj+AIvBR34caW6ZG
-sQk444t0HPb29HnWYj+OllIGMbdJWr0/P95ZrKk2bP24ub3ZP/8SyzrohfIba9WZKMq6g2nTLZE3
-BtkeSGJx/8dy0h8YmRn+adOrxKXHxhSL8BNn8wsmIZyYWe6fRcBtO3Ks2DOLyHCdkoFlN8x9VUQF
-N2ulEgqCbRKkx+qNirW86eF138lr1gRxzclu/38ko//MmkAYR/+hP3WnBll7zbpIt0jc9wyFkSqH
-p8a1MYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1z
-YTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMTv1t
-bpIzNUky46LXMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCLbMeM4ucMjh0u24BR
-DH+g0zBFFfuLTOz2C1dEq+3dKDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-BTEPFw0yMzEyMTkwOTAxNThaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFl
-AwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzAL
-BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAZ30g+RjmwtZHwR6H5oof3T0HKy8Bv+1M6toJ
-MfLMmuLNqUA/JLX4byrDbUVUt3XKEG+Gonvs6l5li0iMEiKjFrTkyJFTG/Y+e6B1sEdY4Pb9gTfo
-XKGLV3UDdUDAj6MLZjsNr2Gg33Y5axr8+SsyNgWRYUFMNiCUMCtNNRLfI8fbV/BqzHNgAwNC1Y9S
-uwMt38jm/391Wxat5HEBAP6oojWivkAytAJFOl+pu0zvVivpCwFTZwxHaQyyvbUsou7613NH6Dt4
-efPtX8gDF3JfQXbQytCNyRmf6pv1d+xbLFYthpZ6Drs3bTw1jStCK9QF7k5fzxynXbbsf5LF++99
-4w==
---00000000000070b6f8060cd91e13--
 
