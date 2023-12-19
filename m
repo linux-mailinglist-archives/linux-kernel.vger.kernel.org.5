@@ -1,93 +1,105 @@
-Return-Path: <linux-kernel+bounces-5677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D3B5818DF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:21:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF16818DCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EC481C20E06
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:21:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA98028417F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8199C38F86;
-	Tue, 19 Dec 2023 17:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE71F3174A;
+	Tue, 19 Dec 2023 17:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="BeZkUDmS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LzdQPjoA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E980221364;
-	Tue, 19 Dec 2023 17:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-	:From:subject:date:message-id:reply-to;
-	bh=KcYNp1sWTrGWiUqu1nyxva4KTAsY45l/5TWJVZ84DbE=; b=BeZkUDmS0Qlg0Xyvi2r+RDaD9N
-	GfZJ7MuTv4qhQJwQpz+ywqURzyObSUnrDTmKZzJwjjkoASxaFny29IIrF2XrHRXAV3PQmHJ66TLtD
-	7HqLnLjfVu0bxFD/5k4ax4Ot23PNzrdHRMLj1IapmfMJafO+wlXEk2Jju+fbPhPQVmos=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:40128 helo=pettiford.lan)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rFdkb-0007Ao-Qt; Tue, 19 Dec 2023 12:19:26 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	jringle@gridpoint.com,
-	kubakici@wp.pl,
-	phil@raspberrypi.org,
-	bo.svangard@embeddedart.se
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	hugo@hugovil.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date: Tue, 19 Dec 2023 12:19:02 -0500
-Message-Id: <20231219171903.3530985-19-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231219171903.3530985-1-hugo@hugovil.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0725C249F8;
+	Tue, 19 Dec 2023 17:19:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCDDAC433C9;
+	Tue, 19 Dec 2023 17:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703006359;
+	bh=SYX9p4gi9+/zBHEK/mikAFU01h6uY5iOIkUyj8418Co=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LzdQPjoA8VJRjFK/J/ijbwQbl+1YZusNVbJGMESqfmz6i4K8ARaId/cPS7xp8H7hX
+	 yycH8QMD9Q0/1VlvSkCzEntfmHLqfXjUnEHT60n/I/+TRAGEr8p8qyl1LV5sggL3xS
+	 y7HV2oTyR2QcBsFypQWndXdTmfnNKz5BtF/b6BwtcwurpRtK22NGSKi5s3tP8znhaB
+	 6tXNVENf/fpCX3YwE5pxp+q1W7jBvJLNMLZeO0SJPkoQrO7vtqXB533qDdL3vbdaKB
+	 uUl+EgjDvyidVnEiXNOS2XQc+wzRv5lYumPDOXl1Kf/fYolCZkREZ5WScGvWsTau0r
+	 dbaPW36yjizgw==
+Date: Tue, 19 Dec 2023 18:19:16 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Jochen Friedrich <jochen@scram.de>, Andi Shyti <andi.shyti@kernel.org>,
+	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-i2c@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] i2c: cpm: Remove linux,i2c-index conversion from be32
+Message-ID: <ZYHQlAVMEnkXHwtb@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Jochen Friedrich <jochen@scram.de>,
+	Andi Shyti <andi.shyti@kernel.org>, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+	kernel test robot <lkp@intel.com>
+References: <460afa20784a445dff05b552ebb8c6a389d9de85.1701901105.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH 18/18] serial: sc16is7xx: fix whitespace in sc16is7xx_startup() comments
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AMQaoeTeSrN0+RF5"
+Content-Disposition: inline
+In-Reply-To: <460afa20784a445dff05b552ebb8c6a389d9de85.1701901105.git.christophe.leroy@csgroup.eu>
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Add missing space at end of comments.
+--AMQaoeTeSrN0+RF5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- drivers/tty/serial/sc16is7xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Dec 06, 2023 at 11:24:03PM +0100, Christophe Leroy wrote:
+> sparse reports an error on some data that gets converted from be32.
+>=20
+> That's because that data is typed u32 instead of __be32.
+>=20
+> The type is correct, the be32_to_cpu() conversion is not.
+>=20
+> Remove the conversion.
+>=20
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312042210.QL4DA8Av-lkp@i=
+ntel.com/
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index ab68ee346ec6..a8a78d8f7fcf 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -1139,7 +1139,7 @@ static int sc16is7xx_startup(struct uart_port *port)
- 
- 	sc16is7xx_power(port, 1);
- 
--	/* Reset FIFOs*/
-+	/* Reset FIFOs */
- 	val = SC16IS7XX_FCR_RXRESET_BIT | SC16IS7XX_FCR_TXRESET_BIT;
- 	sc16is7xx_port_write(port, SC16IS7XX_FCR_REG, val);
- 	udelay(5);
--- 
-2.39.2
+Applied to for-next, thanks!
 
+
+--AMQaoeTeSrN0+RF5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWB0JQACgkQFA3kzBSg
+KbZWhA//bbjGBdyZHdVcVAiA7PwvcpVpxon0nuv8UUlQw4f7YcS2Gr8bTlc4woz2
+pw+1L5kBKNoi7qWriqTYKqbrVJC3wH7/5sgrqA/IwnrEK9RljFheI9SxchAkxmdT
+noTN6/DJkHCkGMpA4fW9pictdQXqx3CDH4rWccdR0qUfxmEgEqF4B2NakG9UOzSZ
+EmKg9mRDTxq/2AFJbjVYrDtSib0ZCzjoOXgrbgFgvqg4nVwgiXBL8g/R4gPw6p6U
+eRPo1D8HN8mTAsEutx3ZfPbQCjxnNLKNbipzviFMCBli2ZdtnxoGDpSSCFzAVpG6
+FQK+Sc702ZE+kiGRSQczvTsrAinv0JCDObNG8jFJxgtlk2ddzW29ECl36gw76lYJ
+5oKF83Qk91r5b5ZovnOhTTFAPJPw0pUCKCpnnH7ryP1/t0OSj5VB9z2cJz90tw87
+Pudw4Ev/HG9XyCg1DPDTsD26fdixVVUmQs1dPBd7iItCNhKqL6mVXJv08hOemp2l
+7f4N/6nB3ovObXkkgTKTzEFuAssj9Iko10S7AHxmbUeTTVRhUcbj8YlYBQ3EotQB
+O4KJNAjGU4hiJrRZEuJ542zjkPvCd/xSpDC8KTGHCOwV7UVua5RT76D2UizpQ9Jf
+ncmuWJb10e9gzMPAvudOao7rZdrMJsGFfugi6CEXeRxa+7Ol0QQ=
+=BGje
+-----END PGP SIGNATURE-----
+
+--AMQaoeTeSrN0+RF5--
 
