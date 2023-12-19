@@ -1,375 +1,137 @@
-Return-Path: <linux-kernel+bounces-5730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ADEB818EC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:52:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F116A818ED1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:54:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB03E1F24798
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:52:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C4C7B23BA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F0E37D01;
-	Tue, 19 Dec 2023 17:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA3A39AFE;
+	Tue, 19 Dec 2023 17:50:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=siddh.me header.i=code@siddh.me header.b="itoo7OK8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687BA37D0A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:48:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4983AC433C8;
-	Tue, 19 Dec 2023 17:48:25 +0000 (UTC)
-Date: Tue, 19 Dec 2023 12:49:23 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [GIT PULL] tracing: fix for 6.7
-Message-ID: <20231219124923.0841ca34@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0C0374FB;
+	Tue, 19 Dec 2023 17:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=siddh.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siddh.me
+ARC-Seal: i=1; a=rsa-sha256; t=1703008191; cv=none; 
+	d=zohomail.in; s=zohoarc; 
+	b=QOyVkYFTtehlwMgXA2ZYoTfaWgXSd7e0EpVAQQhTPu2E2XzKSFhFpo2B8n1L2SYtz8DpDRUOM6mziNNXuD1Zd9rcUcZpHJDu7OQJr8KmCLaBVsA6ujPxwMPW/Ybp2Y2dO4ZGx2ftS0UrtNE2AXh7NvO93tWZt1VtKjLgIWGS9W8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
+	t=1703008191; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=AF+NCNsa1eutOHcZrZ045IS0+FsNjuyaPy8+4b1PvQU=; 
+	b=QhBkOfPbqj542fHj0H2AINnX85mdPtraoEot6EalN/QvrFVuwbXR0pMyRaknCycWWhGSPxEew8wUSuEtkEnyu/2gGni6+R1MdAdiAxHb7COWxySp0NMKoTOs4/z5zte2Dox87C+0hluq6WtwUKn68O/n6EZH5GNmt811bkP4GEU=
+ARC-Authentication-Results: i=1; mx.zohomail.in;
+	dkim=pass  header.i=siddh.me;
+	spf=pass  smtp.mailfrom=code@siddh.me;
+	dmarc=pass header.from=<code@siddh.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1703008191;
+	s=zmail; d=siddh.me; i=code@siddh.me;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=AF+NCNsa1eutOHcZrZ045IS0+FsNjuyaPy8+4b1PvQU=;
+	b=itoo7OK8xmy9lIdJMp9qpWvoSb/J3qowZhsccfulphFDGZG9QM/sBNBSCUsozWjz
+	XSquQRvK9wKTCVq4gkndIEJ4z05OO4phxoxBeLOmyrWcyc+ISlO5fB2fAfCsGfVTPWb
+	NekMrLpM1GeclQKgKGXkcAVOOWzd/CbEiwpADgtI=
+Received: from kampyooter.. (122.170.167.40 [122.170.167.40]) by mx.zoho.in
+	with SMTPS id 1703008190516661.7229040711136; Tue, 19 Dec 2023 23:19:50 +0530 (IST)
+From: Siddh Raman Pant <code@siddh.me>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v7 0/2] nfc: Fix UAF during datagram sending caused by missing refcounting
+Date: Tue, 19 Dec 2023 23:19:42 +0530
+Message-ID: <cover.1702925869.git.code@siddh.me>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
+Changes in v7:
+- Stupidly reverted ordering in recv() too, fix that.
+- Remove redundant call to nfc_llcp_sock_free().
 
+Changes in v6:
+- Revert label introduction from v4, and thus also v5 entirely.
 
-Linus,
+Changes in v5:
+- Move reason = LLCP_DM_REJ under the fail_put_sock label.
+- Checkpatch now warns about == NULL check for new_sk, so fix that,
+  and also at other similar places in the same function.
 
-tracing fix for 6.7-rc6
+Changes in v4:
+- Fix put ordering and comments.
+- Separate freeing in recv() into end labels.
+- Remove obvious comment and add reasoning.
+- Picked up r-bs by Suman.
 
-While working on the ring buffer, I found one more bug with the timestamp
-code, and the fix for this removed the need for the final 64-bit cmpxchg!
+Changes in v3:
+- Fix missing freeing statements.
 
-The ring buffer events hold a "delta" from the previous event. If it is
-determined that the delta can not be calculated, it falls back to adding an
-absolute timestamp value. The way to know if the delta can be used is via
-two stored timestamps in the per-cpu buffer meta data:
+Changes in v2:
+- Add net-next in patch subject.
+- Removed unnecessary extra lock and hold nfc_dev ref when holding llcp_sock.
+- Remove last formatting patch.
+- Picked up r-b from Krzysztof for LLCP_BOUND patch.
 
- before_stamp and write_stamp
+---
 
-The before_stamp is written by every event before it tries to allocate its
-space on the ring buffer. The write_stamp is written after it allocates its
-space and knows that nothing came in after it read the previous
-before_stamp and write_stamp and the two matched.
+For connectionless transmission, llcp_sock_sendmsg() codepath will
+eventually call nfc_alloc_send_skb() which takes in an nfc_dev as
+an argument for calculating the total size for skb allocation.
 
-A previous fix dd9394257078 ("ring-buffer: Do not try to put back
-write_stamp") removed putting back the write_stamp to match the
-before_stamp so that the next event could use the delta, but races were
-found where the two would match, but not be for of the previous event.
+virtual_ncidev_close() codepath eventually releases socket by calling
+nfc_llcp_socket_release() (which sets the sk->sk_state to LLCP_CLOSED)
+and afterwards the nfc_dev will be eventually freed.
 
-It was determined to allow the event reservation to not have a valid
-write_stamp when it is finished, and this fixed a lot of races.
+When an ndev gets freed, llcp_sock_sendmsg() will result in an
+use-after-free as it
 
-The last use of the 64-bit timestamp cmpxchg depended on the write_stamp
-being valid after an interruption. But this is no longer the case, as if an
-event is interrupted by a softirq that writes an event, and that event gets
-interrupted by a hardirq or NMI and that writes an event, then the softirq
-could finish its reservation without a valid write_stamp.
+(1) doesn't have any checks in place for avoiding the datagram sending.
 
-In the slow path of the event reservation, a delta can still be used if the
-write_stamp is valid. Instead of using a cmpxchg against the write stamp,
-the before_stamp needs to be read again to validate the write_stamp. The
-cmpxchg is not needed.
+(2) calls nfc_llcp_send_ui_frame(), which also has a do-while loop
+    which can race with freeing. This loop contains the call to
+    nfc_alloc_send_skb() where we dereference the nfc_dev pointer.
 
-This updates the slowpath to validate the write_stamp by comparing it to
-the before_stamp and removes all rb_time_cmpxchg() as there are no more
-users of that function.
+nfc_dev is being freed because we do not hold a reference to it when
+we hold a reference to llcp_local. Thus, virtual_ncidev_close()
+eventually calls nfc_release() due to refcount going to 0.
 
-The removal of the 32-bit updates of rb_time_t will be done in the next
-merge window.
+Since state has to be LLCP_BOUND for datagram sending, we can bail out
+early in llcp_sock_sendmsg().
 
+Please review and let me know if any errors are there, and hopefully
+this gets accepted.
 
-Please pull the latest trace-v6.7-rc6 tree, which can be found at:
+Thanks,
+Siddh
 
+Siddh Raman Pant (2):
+  nfc: llcp_core: Hold a ref to llcp_local->dev when holding a ref to
+    llcp_local
+  nfc: Do not send datagram if socket state isn't LLCP_BOUND
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace-v6.7-rc6
+ net/nfc/llcp_core.c | 39 ++++++++++++++++++++++++++++++++++++---
+ net/nfc/llcp_sock.c |  5 +++++
+ 2 files changed, 41 insertions(+), 3 deletions(-)
 
-Tag SHA1: bdc7d9cf1ae1ca8e4e139c8bc6602f712e64f4fd
-Head SHA1: b803d7c664d55705831729d2f2e29c874bcd62ea
+-- 
+2.43.0
 
-
-Steven Rostedt (Google) (1):
-      ring-buffer: Fix slowpath of interrupted event
-
-----
- kernel/trace/ring_buffer.c | 79 ++++++++++++++--------------------------------
- 1 file changed, 24 insertions(+), 55 deletions(-)
----------------------------
-commit b803d7c664d55705831729d2f2e29c874bcd62ea
-Author: Steven Rostedt (Google) <rostedt@goodmis.org>
-Date:   Mon Dec 18 23:07:12 2023 -0500
-
-    ring-buffer: Fix slowpath of interrupted event
-    
-    To synchronize the timestamps with the ring buffer reservation, there are
-    two timestamps that are saved in the buffer meta data.
-    
-    1. before_stamp
-    2. write_stamp
-    
-    When the two are equal, the write_stamp is considered valid, as in, it may
-    be used to calculate the delta of the next event as the write_stamp is the
-    timestamp of the previous reserved event on the buffer.
-    
-    This is done by the following:
-    
-     /*A*/  w = current position on the ring buffer
-            before = before_stamp
-            after = write_stamp
-            ts = read current timestamp
-    
-            if (before != after) {
-                    write_stamp is not valid, force adding an absolute
-                    timestamp.
-            }
-    
-     /*B*/  before_stamp = ts
-    
-     /*C*/  write = local_add_return(event length, position on ring buffer)
-    
-            if (w == write - event length) {
-                    /* Nothing interrupted between A and C */
-     /*E*/          write_stamp = ts;
-                    delta = ts - after
-                    /*
-                     * If nothing interrupted again,
-                     * before_stamp == write_stamp and write_stamp
-                     * can be used to calculate the delta for
-                     * events that come in after this one.
-                     */
-            } else {
-    
-                    /*
-                     * The slow path!
-                     * Was interrupted between A and C.
-                     */
-    
-    This is the place that there's a bug. We currently have:
-    
-                    after = write_stamp
-                    ts = read current timestamp
-    
-     /*F*/          if (write == current position on the ring buffer &&
-                        after < ts && cmpxchg(write_stamp, after, ts)) {
-    
-                            delta = ts - after;
-    
-                    } else {
-                            delta = 0;
-                    }
-    
-    The assumption is that if the current position on the ring buffer hasn't
-    moved between C and F, then it also was not interrupted, and that the last
-    event written has a timestamp that matches the write_stamp. That is the
-    write_stamp is valid.
-    
-    But this may not be the case:
-    
-    If a task context event was interrupted by softirq between B and C.
-    
-    And the softirq wrote an event that got interrupted by a hard irq between
-    C and E.
-    
-    and the hard irq wrote an event (does not need to be interrupted)
-    
-    We have:
-    
-     /*B*/ before_stamp = ts of normal context
-    
-       ---> interrupted by softirq
-    
-            /*B*/ before_stamp = ts of softirq context
-    
-              ---> interrupted by hardirq
-    
-                    /*B*/ before_stamp = ts of hard irq context
-                    /*E*/ write_stamp = ts of hard irq context
-    
-                    /* matches and write_stamp valid */
-              <----
-    
-            /*E*/ write_stamp = ts of softirq context
-    
-            /* No longer matches before_stamp, write_stamp is not valid! */
-    
-       <---
-    
-     w != write - length, go to slow path
-    
-    // Right now the order of events in the ring buffer is:
-    //
-    // |-- softirq event --|-- hard irq event --|-- normal context event --|
-    //
-    
-     after = write_stamp (this is the ts of softirq)
-     ts = read current timestamp
-    
-     if (write == current position on the ring buffer [true] &&
-         after < ts [true] && cmpxchg(write_stamp, after, ts) [true]) {
-    
-            delta = ts - after  [Wrong!]
-    
-    The delta is to be between the hard irq event and the normal context
-    event, but the above logic made the delta between the softirq event and
-    the normal context event, where the hard irq event is between the two. This
-    will shift all the remaining event timestamps on the sub-buffer
-    incorrectly.
-    
-    The write_stamp is only valid if it matches the before_stamp. The cmpxchg
-    does nothing to help this.
-    
-    Instead, the following logic can be done to fix this:
-    
-            before = before_stamp
-            ts = read current timestamp
-            before_stamp = ts
-    
-            after = write_stamp
-    
-            if (write == current position on the ring buffer &&
-                after == before && after < ts) {
-    
-                    delta = ts - after
-    
-            } else {
-                    delta = 0;
-            }
-    
-    The above will only use the write_stamp if it still matches before_stamp
-    and was tested to not have changed since C.
-    
-    As a bonus, with this logic we do not need any 64-bit cmpxchg() at all!
-    
-    This means the 32-bit rb_time_t workaround can finally be removed. But
-    that's for a later time.
-    
-    Link: https://lore.kernel.org/linux-trace-kernel/20231218175229.58ec3daf@gandalf.local.home/
-    Link: https://lore.kernel.org/linux-trace-kernel/20231218230712.3a76b081@gandalf.local.home
-    
-    Cc: stable@vger.kernel.org
-    Cc: Masami Hiramatsu <mhiramat@kernel.org>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-    Cc: Linus Torvalds <torvalds@linux-foundation.org>
-    Fixes: dd93942570789 ("ring-buffer: Do not try to put back write_stamp")
-    Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 5a114e752f11..83eab547f1d1 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -700,48 +700,6 @@ rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
- 	return local_try_cmpxchg(l, &expect, set);
- }
- 
--static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
--{
--	unsigned long cnt, top, bottom, msb;
--	unsigned long cnt2, top2, bottom2, msb2;
--	u64 val;
--
--	/* Any interruptions in this function should cause a failure */
--	cnt = local_read(&t->cnt);
--
--	/* The cmpxchg always fails if it interrupted an update */
--	 if (!__rb_time_read(t, &val, &cnt2))
--		 return false;
--
--	 if (val != expect)
--		 return false;
--
--	 if ((cnt & 3) != cnt2)
--		 return false;
--
--	 cnt2 = cnt + 1;
--
--	 rb_time_split(val, &top, &bottom, &msb);
--	 msb = rb_time_val_cnt(msb, cnt);
--	 top = rb_time_val_cnt(top, cnt);
--	 bottom = rb_time_val_cnt(bottom, cnt);
--
--	 rb_time_split(set, &top2, &bottom2, &msb2);
--	 msb2 = rb_time_val_cnt(msb2, cnt);
--	 top2 = rb_time_val_cnt(top2, cnt2);
--	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
--
--	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->msb, msb, msb2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->top, top, top2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
--		return false;
--	return true;
--}
--
- #else /* 64 bits */
- 
- /* local64_t always succeeds */
-@@ -755,11 +713,6 @@ static void rb_time_set(rb_time_t *t, u64 val)
- {
- 	local64_set(&t->time, val);
- }
--
--static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
--{
--	return local64_try_cmpxchg(&t->time, &expect, set);
--}
- #endif
- 
- /*
-@@ -3610,20 +3563,36 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	} else {
- 		u64 ts;
- 		/* SLOW PATH - Interrupted between A and C */
--		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--		/* Was interrupted before here, write_stamp must be valid */
-+
-+		/* Save the old before_stamp */
-+		a_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
- 		RB_WARN_ON(cpu_buffer, !a_ok);
-+
-+		/*
-+		 * Read a new timestamp and update the before_stamp to make
-+		 * the next event after this one force using an absolute
-+		 * timestamp. This is in case an interrupt were to come in
-+		 * between E and F.
-+		 */
- 		ts = rb_time_stamp(cpu_buffer->buffer);
-+		rb_time_set(&cpu_buffer->before_stamp, ts);
-+
-+		barrier();
-+ /*E*/		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-+		/* Was interrupted before here, write_stamp must be valid */
-+		RB_WARN_ON(cpu_buffer, !a_ok);
- 		barrier();
-- /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
--		    info->after < ts &&
--		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
--				    info->after, ts)) {
--			/* Nothing came after this event between C and E */
-+ /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
-+		    info->after == info->before && info->after < ts) {
-+			/*
-+			 * Nothing came after this event between C and F, it is
-+			 * safe to use info->after for the delta as it
-+			 * matched info->before and is still valid.
-+			 */
- 			info->delta = ts - info->after;
- 		} else {
- 			/*
--			 * Interrupted between C and E:
-+			 * Interrupted between C and F:
- 			 * Lost the previous events time stamp. Just set the
- 			 * delta to zero, and this will be the same time as
- 			 * the event this event interrupted. And the events that
 
