@@ -1,205 +1,113 @@
-Return-Path: <linux-kernel+bounces-4980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E54C8184BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:46:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C738184BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28886284F16
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:46:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 016991C23AA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C821813FFF;
-	Tue, 19 Dec 2023 09:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45BE114A92;
+	Tue, 19 Dec 2023 09:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i/4uf4fP"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="RmULgbRO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE1813FE5
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3b9ed8c3472so453773b6e.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:45:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702979154; x=1703583954; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MkQbC/xyNrZkIWiwDp6IMwy7SGyY0b5UmnK4l5m5LgI=;
-        b=i/4uf4fPJOUdkSsHkFeBVbb7InuU1S+amW35RIe9XM4+zHoKF7vDgsGAKsJmed9pZB
-         0yLxrcxbU7C3egG0Jt361nUFyoEW2t0oc6/6UA4P+fs/jn9eN9VmI5Hgc723wmXazU+N
-         XDsSJsLsKr1B6jWQBDzSUI++GUrC71UE6FvmTARmsY31Hm0SSpssVhVSGzV/cnWBEE15
-         ir2b1Px2rBXmefVzoA+fl9PBAWFtUvHBSgxiO3u/W5eV3G2Ey0odsBkOL6CQVUKPWTi5
-         dmT3D+nZZSv/qI9Hx3GUqU5lSexzp0xDb6+6cEEOnLXwpz7IsBpGquRlw6rr0+2sE/z4
-         4i+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702979154; x=1703583954;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MkQbC/xyNrZkIWiwDp6IMwy7SGyY0b5UmnK4l5m5LgI=;
-        b=ikmHTbYC33HYO7XEv8dgq1j1qm8eHRA7/+GgeLUXlmqDWCCBCIIU6W/QvYXnWQ1pIr
-         8OhROCA1ABzNgRHyLoBtIPj0GzayDrXPa85LIdLy+wgpuKPXnW81iBvye8gkjUpzc7aE
-         slryctecf7TV4xEErGBl4m9qFLT4YqCTbMj4r+ZLFXQaQNgQgA/MpHfUJzxE9JYhKHE1
-         ek7IDiA7Mn4AUJp09R4YtXYMePWfWvX0hF8RtzhZeeSqYFG32WdMG0FCY43EcZPx48pj
-         hqIeEP+gxcPbNIRyO2ssX7bjuh0ao4zSa5o4a+ujeqaEi3/3zdRqg+wl5avA04zVlzmu
-         9DtA==
-X-Gm-Message-State: AOJu0Yz4/yzlXR42cT9NdDfqfurRQKoAsQUEnzOkQcka8l4e5Do8Nr/F
-	B7p4jAohjzaystMnzb3kuqtiZxEq9d5gnkXt38k=
-X-Google-Smtp-Source: AGHT+IGGNEiDhBcG8iHFE34HsdZISle57F+NS7CHQs5424Fk99e58FsftGrr8GxBUXq4xroikWAXO3kHBVOTaP4Fpj4=
-X-Received: by 2002:a05:6808:20a2:b0:3b9:de19:2fb9 with SMTP id
- s34-20020a05680820a200b003b9de192fb9mr34191884oiw.3.1702979154479; Tue, 19
- Dec 2023 01:45:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C7614A81
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1702979192; bh=EHuTVFe0psa/eENq4ArQJZ9JmWC1Lh/Q3+g2gf0owhM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=RmULgbROqYvyhIjUxvVb9QYlZwmjmZVBbLmeZU/JgobseKN/QAQ0hK1A8T9Y0XzTJ
+	 WG8xW1woqxAK/bPlI0IEw2ly2YwMTjqCWxYrw3BEsAmSko2vgBh5YKIu8W7KYhwA8D
+	 CUvV1ZvpupJCNj5Ls0WHbvJa2aHqlZilWves9SrQ=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id B9E8A2EF; Tue, 19 Dec 2023 17:46:30 +0800
+X-QQ-mid: xmsmtpt1702979190tf78g1637
+Message-ID: <tencent_B6953CE9AEEEFACC2C788A6D302F656DD80A@qq.com>
+X-QQ-XMAILINFO: Md1mxnKJDwB6jhS20nPKa3UtPjwCNPut6wHPFkreObgOlAHWolrR0nPP9nNACL
+	 0vVXv1FWegnOY4xV34aoUx2YpLdPdyWM5LR7OyF+uLtp0IrK+scv2vxKTD/OkMJDo9dxxXtqy69/
+	 ls4tEkK/pwStEaD8awvJlGLAHzNYndgkhERrsT6dmWDVI9RlzisOo3bgkBr98nG5mhDR3rhCRpvD
+	 zKCclFCKuPF/1ZgxWpuQR1gOs/QqmR20w4P6jnEttFgfDNeVEXZ+6NYOetDaIJZOg2BwsmkUi4n4
+	 Z0X0mCdRVUy51jHfNaWfKe/o3q698HXa49gJ9hUj/XrURtphnpvdG4uFlP6smMpFYeoaPvpFyJ9V
+	 Re5AqpWD5YGx25Kqd+yWYzXrOmk2uHXBowuywkXLdO0eCzhpvR8+umrFNNaysjzav7/MwCbkbRjb
+	 VMGfk3eivAQx5Oszmd9aK2dF+Ghxpe7RfzuULB+RAORoj6pG1x7p2Dk6rvKe0+vAkAZDv65ZgEDR
+	 P5lppGvO/1y6aDAxMbLKtSvm00CN/RNCKkNeRSRJ5RbUTG8ywh5I6ZmZu6UeWtAH8jZJQ7DzVZK8
+	 mDEhhtDRlQjkxQExKLHHY6lkn/RVhCXEozLV51Hn5kLiFWs/6oLf2QlJwAyNN5qiiEi2udfd33iC
+	 O0l571P8A6DvevNpC2E2mkv+/RiqTug1PGTmVxirsESe1BGKRjGkduFx8uyIl2kFjgz/4JWTOWWB
+	 58j9kyGeXR/Qb1M1AAkryZrEavEHBB6X2S3cmmCKh7loJZWrHuxMFNDZjSLMZFl8rNm+wSlQDtF/
+	 urjOgqqPGf2BY1tRv7hnLVgHaBx+JZpLrGLX73kWpbOPGHo/OB29jl5+weXn7kSLYngyfo6h70+w
+	 AJUSMUUVE4m/lo8b1gVPEahkJVid3N/6G7zh0Q2ASFp8yAGNM8eyKJFtHVyO0RL4GGqNOIBt0QCc
+	 ZGIDu56WaAF4mB7/EnxOH65updFhlD2zniTQ4UKvGw6FMI4G2ybA==
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in getname_kernel (2)
+Date: Tue, 19 Dec 2023 17:46:31 +0800
+X-OQ-MSGID: <20231219094630.2030656-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000d1a1d1060cc9c5e7@google.com>
+References: <000000000000d1a1d1060cc9c5e7@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsMbqw2qzWSCDfp3cNrYVJ1oxLv8Aixfm_Dt91x1cvFX4w@mail.gmail.com>
- <a99e6def-68be-3f2b-4e01-ac26cdb80f49@gmail.com> <CABXGCsM7JPxtQm6B7vk+ZcXfphgQm=ArJZKiDUdbk9hujyRtmg@mail.gmail.com>
- <43016018-4d0a-94dc-ce93-b4bff2dce71c@gmail.com> <90b1c9f8-1674-e9ec-e6d8-2fa1967439b3@gmail.com>
- <CABXGCsN2NutEmi==JBDD5G2Bj=DJ6vm87_Cbubycz-WowUOh5w@mail.gmail.com>
- <e2975d53-840c-a104-8b2d-c302f502c894@gmail.com> <CABXGCsOJkF=c4B+oQm7cuEO7Fr_oknmH2iB6e6OCzmFy=KYtAw@mail.gmail.com>
- <5cbba992-c4ce-01c1-2691-ed65ce66aad5@gmail.com> <CABXGCsMBWwRFRA+EJKF0v6BwZ+uTQHr4Yn9E9_iYgZ6KRbwsJQ@mail.gmail.com>
- <8bce512e-abb6-495d-85a4-63648229859e@gmail.com>
-In-Reply-To: <8bce512e-abb6-495d-85a4-63648229859e@gmail.com>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Tue, 19 Dec 2023 14:45:43 +0500
-Message-ID: <CABXGCsNAP_FOTOkNZ+BuJcPH8p1qpVsdiCyUEw9QWzJv81ut6w@mail.gmail.com>
-Subject: Re: amdgpu didn't start with pci=nocrs parameter, get error "Fatal
- error during GPU init"
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-Cc: amd-gfx list <amd-gfx@lists.freedesktop.org>, 
-	dri-devel <dri-devel@lists.freedesktop.org>, 
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
-	"Deucher, Alexander" <Alexander.Deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 15, 2023 at 5:37=E2=80=AFPM Christian K=C3=B6nig
-<ckoenig.leichtzumerken@gmail.com> wrote:
->
-> I have no idea :)
->
->  From the logs I can see that the AMDGPU now has the proper BARs assigned=
-:
->
-> [    5.722015] pci 0000:03:00.0: [1002:73df] type 00 class 0x038000
-> [    5.722051] pci 0000:03:00.0: reg 0x10: [mem
-> 0xf800000000-0xfbffffffff 64bit pref]
-> [    5.722081] pci 0000:03:00.0: reg 0x18: [mem
-> 0xfc00000000-0xfc0fffffff 64bit pref]
-> [    5.722112] pci 0000:03:00.0: reg 0x24: [mem 0xfca00000-0xfcafffff]
-> [    5.722134] pci 0000:03:00.0: reg 0x30: [mem 0xfcb00000-0xfcb1ffff pre=
-f]
-> [    5.722368] pci 0000:03:00.0: PME# supported from D1 D2 D3hot D3cold
-> [    5.722484] pci 0000:03:00.0: 63.008 Gb/s available PCIe bandwidth,
-> limited by 8.0 GT/s PCIe x8 link at 0000:00:01.1 (capable of 252.048
-> Gb/s with 16.0 GT/s PCIe x16 link)
->
-> And with that the driver can work perfectly fine.
->
-> Have you updated the BIOS or added/removed some other hardware? Maybe
-> somebody added a quirk for your BIOS into the PCIe code or something
-> like that.
+please test slab-out-of-bounds Read in getname_kernel
 
-No, nothing changed in hardware.
-But I found the commit which fixes it.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3bd7d7488169
 
-> git bisect unfixed
-92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6 is the first fixed commit
-commit 92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6
-Author: Vasant Hegde <vasant.hegde@amd.com>
-Date:   Thu Sep 21 09:21:45 2023 +0000
+diff --git a/mm/util.c b/mm/util.c
+index 744b4d7e3fae..2581d687df87 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -194,7 +194,7 @@ void *memdup_user(const void __user *src, size_t len)
+ {
+ 	void *p;
+ 
+-	p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN);
++	p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN | __GFP_ZERO);
+ 	if (!p)
+ 		return ERR_PTR(-ENOMEM);
+ 
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index f9544fda38e9..8318f6a21b3d 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_ioctl_dev_replace_args *args)
+ {
+-	int ret;
++	int ret, len;
+ 
+ 	switch (args->start.cont_reading_from_srcdev_mode) {
+ 	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
+@@ -740,8 +740,11 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+ 		return -EINVAL;
+ 	}
+ 
++	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
++	printk("l: %d, %s\n", len, __func__);
+ 	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+-	    args->start.tgtdev_name[0] == '\0')
++	    args->start.tgtdev_name[0] == '\0' ||
++	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
+ 		return -EINVAL;
+ 
+ 	ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
 
-    iommu/amd: Introduce iommu_dev_data.flags to track device capabilities
-
-    Currently we use struct iommu_dev_data.iommu_v2 to keep track of the de=
-vice
-    ATS, PRI, and PASID capabilities. But these capabilities can be enabled
-    independently (except PRI requires ATS support). Hence, replace
-    the iommu_v2 variable with a flags variable, which keep track of the de=
-vice
-    capabilities.
-
-    From commit 9bf49e36d718 ("PCI/ATS: Handle sharing of PF PRI Capability
-    with all VFs"), device PRI/PASID is shared between PF and any associate=
-d
-    VFs. Hence use pci_pri_supported() and pci_pasid_features() instead of
-    pci_find_ext_capability() to check device PRI/PASID support.
-
-    Signed-off-by: Vasant Hegde <vasant.hegde@amd.com>
-    Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-    Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-    Link: https://lore.kernel.org/r/20230921092147.5930-13-vasant.hegde@amd=
-.com
-    Signed-off-by: Joerg Roedel <jroedel@suse.de>
-
- drivers/iommu/amd/amd_iommu_types.h |  3 ++-
- drivers/iommu/amd/iommu.c           | 46 ++++++++++++++++++++++-----------=
-----
- 2 files changed, 30 insertions(+), 19 deletions(-)
-
-
-> git bisect log
-git bisect start '--term-new=3Dfixed' '--term-old=3Dunfixed'
-# status: waiting for both good and bad commits
-# fixed: [33cc938e65a98f1d29d0a18403dbbee050dcad9a] Linux 6.7-rc4
-git bisect fixed 33cc938e65a98f1d29d0a18403dbbee050dcad9a
-# status: waiting for good commit(s), bad commit known
-# unfixed: [ffc253263a1375a65fa6c9f62a893e9767fbebfa] Linux 6.6
-git bisect unfixed ffc253263a1375a65fa6c9f62a893e9767fbebfa
-# unfixed: [7d461b291e65938f15f56fe58da2303b07578a76] Merge tag
-'drm-next-2023-10-31-1' of git://anongit.freedesktop.org/drm/drm
-git bisect unfixed 7d461b291e65938f15f56fe58da2303b07578a76
-# unfixed: [e14aec23025eeb1f2159ba34dbc1458467c4c347] s390/ap: fix AP
-bus crash on early config change callback invocation
-git bisect unfixed e14aec23025eeb1f2159ba34dbc1458467c4c347
-# unfixed: [be3ca57cfb777ad820c6659d52e60bbdd36bf5ff] Merge tag
-'media/v6.7-1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media
-git bisect unfixed be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
-# fixed: [c0d12d769299e1e08338988c7745009e0db2a4a0] Merge tag
-'drm-next-2023-11-10' of git://anongit.freedesktop.org/drm/drm
-git bisect fixed c0d12d769299e1e08338988c7745009e0db2a4a0
-# fixed: [4bbdb725a36b0d235f3b832bd0c1e885f0442d9f] Merge tag
-'iommu-updates-v6.7' of
-git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu
-git bisect fixed 4bbdb725a36b0d235f3b832bd0c1e885f0442d9f
-# unfixed: [25b6377007ebe1c3ede773fd6979f613386db000] Merge tag
-'drm-next-2023-11-07' of git://anongit.freedesktop.org/drm/drm
-git bisect unfixed 25b6377007ebe1c3ede773fd6979f613386db000
-# unfixed: [67c0afb6424fee94238d9a32b97c407d0c97155e] Merge tag
-'exfat-for-6.7-rc1-part2' of
-git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
-git bisect unfixed 67c0afb6424fee94238d9a32b97c407d0c97155e
-# unfixed: [3613047280ec42a4e1350fdc1a6dd161ff4008cc] Merge tag
-'v6.6-rc7' into core
-git bisect unfixed 3613047280ec42a4e1350fdc1a6dd161ff4008cc
-# fixed: [cedc811c76778bdef91d405717acee0de54d8db5] iommu/amd: Remove
-DMA_FQ type from domain allocation path
-git bisect fixed cedc811c76778bdef91d405717acee0de54d8db5
-# unfixed: [b0cc5dae1ac0c18748706a4beb636e3b726dd744] iommu/amd:
-Rename ats related variables
-git bisect unfixed b0cc5dae1ac0c18748706a4beb636e3b726dd744
-# fixed: [5a0b11a180a9b82b4437a4be1cf73530053f139b] iommu/amd: Remove
-iommu_v2 module
-git bisect fixed 5a0b11a180a9b82b4437a4be1cf73530053f139b
-# fixed: [92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6] iommu/amd:
-Introduce iommu_dev_data.flags to track device capabilities
-git bisect fixed 92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6
-# unfixed: [739eb25514c90aa8ea053ed4d2b971f531e63ded] iommu/amd:
-Introduce iommu_dev_data.ppr
-git bisect unfixed 739eb25514c90aa8ea053ed4d2b971f531e63ded
-# first fixed commit: [92e2bd56a5f9fc44313fda802a43a63cc2a9c8f6]
-iommu/amd: Introduce iommu_dev_data.flags to track device capabilities
-
---=20
-Best Regards,
-Mike Gavrilov.
 
