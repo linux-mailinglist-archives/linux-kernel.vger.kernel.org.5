@@ -1,104 +1,183 @@
-Return-Path: <linux-kernel+bounces-4721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06EC5818128
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:51:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C48481812C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF4031F23D0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:51:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BADD81C23392
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2292746A;
-	Tue, 19 Dec 2023 05:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09537746A;
+	Tue, 19 Dec 2023 05:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U9tG77Hv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAD0749D;
-	Tue, 19 Dec 2023 05:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BJ5p64813981591, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BJ5p64813981591
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Dec 2023 13:51:06 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 19 Dec 2023 13:51:06 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 19 Dec 2023 13:51:06 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Tue, 19 Dec 2023 13:51:06 +0800
-From: =?big5?B?SmFtZXMgVGFpIFvAuafTrnBd?= <james.tai@realtek.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
-        "Rob
- Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        kernel test robot
-	<lkp@intel.com>
-Subject: RE: [PATCH v3 3/6] irqchip: Introduce RTD1319 support using the Realtek common interrupt controller driver
-Thread-Topic: [PATCH v3 3/6] irqchip: Introduce RTD1319 support using the
- Realtek common interrupt controller driver
-Thread-Index: AQHaIociD8/C4U5vBESKdaYAQOIKRbCfDcIAgBEkQIA=
-Date: Tue, 19 Dec 2023 05:51:06 +0000
-Message-ID: <981d456fe3724831903b3851f442f755@realtek.com>
-References: <20231129054339.3054202-1-james.tai@realtek.com>
- <20231129054339.3054202-4-james.tai@realtek.com> <87a5qkso1t.ffs@tglx>
-In-Reply-To: <87a5qkso1t.ffs@tglx>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5F8C123;
+	Tue, 19 Dec 2023 05:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso4816510a12.1;
+        Mon, 18 Dec 2023 21:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702965158; x=1703569958; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qjKvIfyh3X2uXJsjh+uNuHx78kVuqzdM9QpykL89Q5w=;
+        b=U9tG77HvAFCfTynoBOPrdlsYkEuy016lhzuTaPA9oNU9kz1USGAu+BFMu8i2D66Fj4
+         vwe+XDptxFaPB0GAzeX/Ry7BmmgLNm8gapVczsIQ0P9AW5N78Mb8Wc4wD89ClazkTF9d
+         yB6uczqKAxRIHcqbb86SF/K4iZA8XOTiOU8SKCiWzL6ORlQJDN2FEdah3ugJhe2SGVGQ
+         ykmj+l5xVJnTrJSO58MVjU+7aZPgz0CL+dUPXd6bhp6EwA3t0f+pQhpVPfmbmkCuJURC
+         OP4fd4Ly3ab5l9fG68wDHxHg2nJPwQb8gUFY5epax2bWeUSW30Bi5rZ5ff1Wz2Zoei99
+         cdfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702965158; x=1703569958;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qjKvIfyh3X2uXJsjh+uNuHx78kVuqzdM9QpykL89Q5w=;
+        b=ftKNloraiRWaueP0BVi6kBDCVU9VPCznRTE4dhWLtzX9HEdUFbsYZY144fyp0xVJkH
+         KKSh309P8EoMZ95X86Up71HLo/SlDBIXNUOPSKW8Q1YoUkY65QtFbEOfgrvooVcFvgeR
+         frEfb0X7w6XuwmHy6FiNuOpgcOPkhceH6Uk/jv/CTqMWrPHVmmE+uQHiZA4/Vsl79H+W
+         Xg00/jU1CP5WdTLDQz9FpM0HQycuUcCpJvn/hiNolZyNMsN9jVLEyJq7QIYaCzAmZl6g
+         Us72x6/oIR3aI8r9OzM3JAoef8x3mXindarMiP7MDlSWPdwmE+WPfgGayFIG1nMXH31m
+         Lskw==
+X-Gm-Message-State: AOJu0YxR0ZiVEpkKUYAT4wxZSmaRkZBSYUvqifLiYtOsUOCvx+uGXUgH
+	TxQTVxCkVoGxRnqoEBgRRmwL2VSC1Al2DxckUSE=
+X-Google-Smtp-Source: AGHT+IGlXUYN/xt/hszzXLDhAjr0+M4RYUQUIXhOimBvD2LNQHG/0zRErbSB4yuk1RCo8k4nCmk/S9lhj8X0NNxwyWY=
+X-Received: by 2002:a50:c35d:0:b0:553:88d0:f3f0 with SMTP id
+ q29-20020a50c35d000000b0055388d0f3f0mr186304edb.153.1702965157908; Mon, 18
+ Dec 2023 21:52:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+References: <20231217131716.830290-1-menglong8.dong@gmail.com>
+ <20231217131716.830290-3-menglong8.dong@gmail.com> <CAEf4Bza8UtCTCxe5QgstxexDhU1oz83MMmnT1w5xzV7czF+7zQ@mail.gmail.com>
+ <CADxym3Z6nVemG7_-jmCgfxVhKAYr7Joq6wgg7RRZFJ7hQVH2og@mail.gmail.com>
+In-Reply-To: <CADxym3Z6nVemG7_-jmCgfxVhKAYr7Joq6wgg7RRZFJ7hQVH2og@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 18 Dec 2023 21:52:25 -0800
+Message-ID: <CAEf4Bzak5OfPftovaAZw5LYPxuQxe1HRXVbPos=QOo_=cr8TsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: activate the OP_NE login
+ in range_cond()
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	alexei.starovoitov@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgVGhvbWFzLA0KDQo+T24gV2VkLCBOb3YgMjkgMjAyMyBhdCAxMzo0MywgSmFtZXMgVGFpIHdy
-b3RlOg0KPj4gQWRkIHN1cHBvcnQgZm9yIHRoZSBSVEQxMzE5IHBsYXRmb3JtLg0KPj4NCj4+IFJl
-cG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4+IENsb3NlczoN
-Cj4+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL29lLWtidWlsZC1hbGwvMjAyMzExMDYxMjA4LmhK
-bXhHcXltLWxrcEBpbnRlbC4NCj4+IGNvbS8NCj4NCj5BZ2FpbjogVGhlc2UgdGFncyBhcmUganVz
-dCB3cm9uZy4NCg0KSSB3aWxsIHJlbW92ZSBpdC4NCg0KPj4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZv
-cm1fZHJpdmVyIHJlYWx0ZWtfaW50Y19ydGQxMzE5X2RyaXZlciA9IHsNCj4+ICsgICAgIC5wcm9i
-ZSA9IHJ0ZDEzMTlfaW50Y19wcm9iZSwNCj4+ICsgICAgIC5kcml2ZXIgPSB7DQo+PiArICAgICAg
-ICAgICAgIC5uYW1lID0gInJlYWx0ZWtfaW50Y19ydGQxMzE5IiwNCj4+ICsgICAgICAgICAgICAg
-Lm9mX21hdGNoX3RhYmxlID0gcmVhbHRla19pbnRjX3J0ZDEzMTlfZHRfbWF0Y2hlcywNCj4+ICsg
-ICAgICAgICAgICAgLnN1cHByZXNzX2JpbmRfYXR0cnMgPSB0cnVlLA0KPj4gKyAgICAgICAgICAg
-ICAucG0gPSAmcmVhbHRla19pbnRjX3J0ZDEzMTlfcG1fb3BzLA0KPj4gKyAgICAgfSwNCj4NCj4g
-ICAgICAgIC5wcm9iZSAgPSBydGQxMzE5X2ludGNfcHJvYmUsDQo+ICAgICAgICAuZHJpdmVyID0g
-ew0KPiAgICAgICAgICAgICAgICAubmFtZSAgICAgICAgICAgICAgICAgICA9ICJyZWFsdGVrX2lu
-dGNfcnRkMTMxOSIsDQo+ICAgICAgICAgICAgICAgIC5vZl9tYXRjaF90YWJsZSAgICAgICAgID0N
-Cj5yZWFsdGVrX2ludGNfcnRkMTMxOV9kdF9tYXRjaGVzLA0KPiAgICAgICAgICAgICAgICAuLi4u
-DQo+DQo+UGxlYXNlLg0KPg0KSSB3aWxsIGZpeCBpdC4NCg0KPj4gK307DQo+PiArDQo+PiArc3Rh
-dGljIGludCBfX2luaXQgcmVhbHRla19pbnRjX3J0ZDEzMTlfaW5pdCh2b2lkKSB7DQo+PiArICAg
-ICByZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZyZWFsdGVrX2ludGNfcnRkMTMxOV9k
-cml2ZXIpOw0KPj4gK30NCj4+ICtjb3JlX2luaXRjYWxsKHJlYWx0ZWtfaW50Y19ydGQxMzE5X2lu
-aXQpOw0KPg0KPldoYXQ/IFRoaXMgY2FuIGJlIGJ1aWx0IGFzIGEgbW9kdWxlLiBTbyBob3cgaXMg
-Y29yZV9pbml0Y2FsbCgpIGluIGFueSB3YXkgY29ycmVjdA0KPmhlcmU/IG1vZHVsZV9pbml0KCkg
-cGVyaGFwcz8NCj4NCkkgd2FudCB0aGUgZHJpdmVyIHRvIGJlIGJ1aWxkYWJsZSBhcyBhIG1vZHVs
-ZS4gQmFzZWQgb24gbXkgdGVzdCwgdGhlICdjb3JlX2luaXRjYWxsKCknIHdvcmtzLg0KQnV0LCBJ
-IHdpbGwgdXNlICdtb2R1bGVfaW5pdCgpJyBpbnN0ZWFkLg0KDQpUaGFua3MgZm9yIHlvdXIgZmVl
-ZGJhY2suDQoNClJlZ2FyZHMsDQpKYW1lcw0KDQoNCg==
+On Mon, Dec 18, 2023 at 6:22=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> On Tue, Dec 19, 2023 at 1:58=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sun, Dec 17, 2023 at 5:18=E2=80=AFAM Menglong Dong <menglong8.dong@g=
+mail.com> wrote:
+> > >
+> > > The edge range checking for the registers is supported by the verifie=
+r
+> > > now, so we can activate the extended login in
+> > > tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to t=
+est
+> > > such logic.
+> > >
+> > > Besides, I added some cases to the "crafted_cases" array for this log=
+ic.
+> > > These cases are mainly used to test the edge of the src reg and dst r=
+eg.
+> > >
+> > > All reg bounds testings has passed in the SLOW_TESTS mode:
+> > >
+> > > $ export SLOW_TESTS=3D1 && ./test_progs -t reg_bounds -j
+> > > Summary: 65/18959832 PASSED, 0 SKIPPED, 0 FAILED
+> > >
+> > > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> > > ---
+> > > v3:
+> > > - do some adjustment to the crafted cases that we added
+> > > v2:
+> > > - add some cases to the "crafted_cases"
+> > > ---
+> > >  .../selftests/bpf/prog_tests/reg_bounds.c     | 20 +++++++++++++----=
+--
+> > >  1 file changed, 14 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/to=
+ols/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > > index 0c9abd279e18..c9dc9fe73211 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > > @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct rang=
+e x, struct range y,
+> > >                 *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, =
+y.b));
+> > >                 break;
+> > >         case OP_NE:
+> > > -               /* generic case, can't derive more information */
+> > > -               *newx =3D range(t, x.a, x.b);
+> > > -               *newy =3D range(t, y.a, y.b);
+> > > -               break;
+> > > -
+> > > -               /* below extended logic is not supported by verifier =
+just yet */
+> > > +               /* below logic is supported by the verifier now */
+> > >                 if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
+> > >                         /* X is a constant matching left side of Y */
+> > >                         *newx =3D range(t, x.a, x.b);
+> > > @@ -2101,6 +2096,19 @@ static struct subtest_case crafted_cases[] =3D=
+ {
+> > >         {S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2=
+, 0}},
+> > >         {S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
+> > >         {S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32=
+)S32_MIN, (u32)(s32)S32_MIN}},
+> > > +
+> > > +       /* edge overlap testings for BPF_NE, skipped some cases that =
+already
+> > > +        * exist above.
+> > > +        */
+> > > +       {U64, U64, {0, U64_MAX}, {U64_MAX, U64_MAX}},
+> > > +       {U64, U64, {0, U64_MAX}, {0, 0}},
+> > > +       {S64, U64, {S64_MIN, 0}, {S64_MIN, S64_MIN}},
+> > > +       {S64, U64, {S64_MIN, 0}, {0, 0}},
+> > > +       {S64, U64, {S64_MIN, S64_MAX}, {S64_MAX, S64_MAX}},
+> > > +       {U32, U32, {0, U32_MAX}, {0, 0}},
+> >
+> > missing case where we compare against U32_MAX constant?
+> >
+>
+> Hello,
+>
+> There seems to already be one existing above:
+>
+> {U32, S32, {0, U32_MAX}, {U32_MAX, U32_MAX}},
+>
+
+This one is doing S32 comparisons. For =3D=3D and !=3D it doesn't matter,
+but it is a different use case. So I'd add U32, U32 case nevertheless.
+
+> > > +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {0, 0}},
+> > > +       {S32, U32, {(u32)(s32)S32_MIN, 0}, {(u32)(s32)S32_MIN, (u32)(=
+s32)S32_MIN}},
+> > > +       {S32, U32, {(u32)(s32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
+> > >  };
+> > >
+> > >  /* Go over crafted hard-coded cases. This is fast, so we do it as pa=
+rt of
+> > > --
+> > > 2.39.2
+> > >
 
