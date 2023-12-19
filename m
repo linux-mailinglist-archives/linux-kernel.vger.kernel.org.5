@@ -1,212 +1,150 @@
-Return-Path: <linux-kernel+bounces-4718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6C14818123
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:51:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D6A4818126
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEA241C23269
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:51:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3EC91F2302E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45A879D0;
-	Tue, 19 Dec 2023 05:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD695C2C2;
+	Tue, 19 Dec 2023 05:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="flwxG/s8"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="cHEKPKrQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2066.outbound.protection.outlook.com [40.107.220.66])
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9366FAE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HLTXHyA8xxz++4ID3RtnnrejjHb1+qUNEhDUx6xJtXJmBFqLbz5S9wjK+wklbXvZH7QZYCYEvGUug/OS7+iV+hpCuzoZQUw8Sxq4BF0tgyW9RPwtsWDG5+vhUDjDLrtalP9bYZJvYfYrpyEw1tUDh/qPubEcPZOguKSSIKKx9l6S7wcQH8B1Wk8i3fwxf1SlwXbCopQojZ8u34bbRGiWfQLD+JWobSksbhMxDjDPa0sFrGeWeEpXOfL/TRF1U3KeaB6zScxZtYed6IDmtk/HKPgT29Q6biqBvG0SJ8OFJq0/5wS+kLk3dY/4rHks4lQXzDdlAW1Punkosr22Wdd5WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/Pl441ahlHTJgUCOp3kTIl0zOknnarfPNDQF9OJv0zg=;
- b=bJhjHm85uPRhC17oQIhhiamba3onPZVdOsS5cbqHIyKCtF4VjFMJsWy/QsvGRbkY1MXumyKD9uvAIJFAbkcPXeK8GbCJn22xaoyhi74gaH14b4jrY0K7LJvR2I2JIl6LNo760ymvNH+6Ar0qBZFCUPCKnvjQ+neMqIvomD9GYMi/wjAZ6U44p3rScl5V6sGgacYP/oNx7Ub9k/hzXumKVBbmvhGl1gjkp/ZQg4uPKT8Tw5zmORj4tIVYVbWox8nXDhex9aJ08pTBeol5vC98+Yc90navgh+TfUiZIE4ShYSz4rYwcLYMrslUNe5CN/6aP36T+/RKyxTsE+liArV4zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/Pl441ahlHTJgUCOp3kTIl0zOknnarfPNDQF9OJv0zg=;
- b=flwxG/s8r0FfNFKmxq6QAVuUJL38mvLYSjPoRHqn7FBqOHdEZP5xs0OuwGImGuPP7KHx9sKxb1wDriJye13YwK7CVAg8T2sltuiwYvQbioxQYHVNZiG2llK5O/XKq3EDGWz9uxSRvzdlS4OH0vceTxFI5zi4ZWDxTNbDadu5jNg=
-Received: from DM6PR01CA0011.prod.exchangelabs.com (2603:10b6:5:296::16) by
- CYYPR12MB8752.namprd12.prod.outlook.com (2603:10b6:930:b9::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.38; Tue, 19 Dec 2023 05:50:49 +0000
-Received: from DS3PEPF000099D8.namprd04.prod.outlook.com
- (2603:10b6:5:296:cafe::8e) by DM6PR01CA0011.outlook.office365.com
- (2603:10b6:5:296::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38 via Frontend
- Transport; Tue, 19 Dec 2023 05:50:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099D8.mail.protection.outlook.com (10.167.17.9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.14 via Frontend Transport; Tue, 19 Dec 2023 05:50:49 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 18 Dec
- 2023 23:50:48 -0600
-Received: from xsjarunbala50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Mon, 18 Dec 2023 23:50:47 -0600
-From: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-To: <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
-	<sai.krishna.potthuri@amd.com>, <linus.walleij@linaro.org>,
-	<nava.kishore.manne@amd.com>, <dhaval.r.shah@amd.com>, <robh@kernel.org>,
-	<marex@denx.de>, <roman.gushchin@linux.dev>, <arnd@arndb.de>,
-	<shubhrajyoti.datta@amd.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-Subject: [PATCH V2 2/2] drivers: soc: xilinx: add check for platform
-Date: Mon, 18 Dec 2023 21:50:25 -0800
-Message-ID: <20231219055025.27570-3-jay.buddhabhatti@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231219055025.27570-1-jay.buddhabhatti@amd.com>
-References: <20231219055025.27570-1-jay.buddhabhatti@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A819DBE59
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231219055054epoutp024ffac7649ecd261fc427873bb89fd5a8~iJbHHkN891602216022epoutp02a
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:50:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231219055054epoutp024ffac7649ecd261fc427873bb89fd5a8~iJbHHkN891602216022epoutp02a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1702965054;
+	bh=vS1oP5iGRxlsDO6czYXHKxfOWISMU1maD1ga+U6KYqU=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=cHEKPKrQ9C24XsPzoFidZJNBEgHd2vwOdKCrsSVj6FiEr31szGAPiYxYAP4yqRhD1
+	 uQZe94lqrrgJrMM1cjHVVpBdJKZL9bpY2x9880k1TkV3oSvTce3CG5LCmoSSEt8p6k
+	 ZTKGW1Ykgme+T6nQfj1M4N/6QAxKn13mqr8Bs2Lk=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+	20231219055054epcas2p41441ffa6ab7a24551330537018b50d57~iJbGsWXkM0806908069epcas2p4F;
+	Tue, 19 Dec 2023 05:50:54 +0000 (GMT)
+Received: from epsmgec2p1.samsung.com (unknown [182.195.36.92]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4SvQlx5VKxz4x9Q8; Tue, 19 Dec
+	2023 05:50:53 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+	epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	3C.7B.08648.D3F21856; Tue, 19 Dec 2023 14:50:53 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+	20231219055052epcas2p4bb1d8210f650ab18370711db2194e8e3~iJbFLfEkC1416214162epcas2p4F;
+	Tue, 19 Dec 2023 05:50:52 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20231219055052epsmtrp2a009a5976b11e6c6760815ccee5f3fb4~iJbFK1D491965519655epsmtrp22;
+	Tue, 19 Dec 2023 05:50:52 +0000 (GMT)
+X-AuditID: b6c32a43-721fd700000021c8-eb-65812f3d3ed7
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	CF.B9.08755.C3F21856; Tue, 19 Dec 2023 14:50:52 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.229.9.55]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20231219055052epsmtip2c7090de8b6f9c19b6b06dd8b455c5082~iJbE6muV52053220532epsmtip2K;
+	Tue, 19 Dec 2023 05:50:52 +0000 (GMT)
+From: Bumyong Lee <bumyong.lee@samsung.com>
+To: vkoul@kernel.org, p.zabel@pengutronix.de
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, Bumyong Lee
+	<bumyong.lee@samsung.com>
+Subject: [PATCH] dmaengine: pl330: issue_pending waits until WFP state
+Date: Tue, 19 Dec 2023 14:50:26 +0900
+Message-ID: <20231219055026.118695-1-bumyong.lee@samsung.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D8:EE_|CYYPR12MB8752:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4ee6bd79-91b5-4da6-0d8b-08dc00567417
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	UoZa+yfqtiFxoc4Kvp3GXFw5jESul4o05NKKIsnTUYZsAbMFib0HivTOl5+dFZGXz4h3XVraSMYAuhpRjKDs96CiEEG5mMjqmNbkdV6oTjUxIlutB7cg4GeH62bGMzxaWduOSZCIZfehMz2AAz/a7nvBMXI60IYeE8gKTENvPQvxkEk4eGritpnRhmVVMLzjSJxxPPMbI1E9T1UFmClzyTYmo4WaN/uKfdBSp1GC5oG/3CdqQbGSveLIN8NYxviO5Ya0l0hiyhxmSnPxDxRDHBZ7C8PYh9FVewCX/EAbo+7Bf8UmHBpDQoZI7tv9GiUQYQP2zE2ryK2pgB2jh9S0xVzC4lWETZV+IAKa6PQGs44Hzk+zv8aSx+ur3cuLWAE0rrg8GHi19oXaPlacNgMoWf4k54BCPlaiegYs2TK0Aorup3UXN9SMai3lPSUvX0md2uTBBQgUjMhQUb5m7KuQn8SQ1b6X12cMf8w/E1z6H0okI2PvB1KeetK3EYKgenRZ9OyzKxzzhdL2fgXEcdoT4Ed0o8KCZKM1y+oNVeUfxMZIFh6MA558de08gyHaTvh5P+R2gn0Zv9MiAn2apWFkoJugXHdiFIOIBVuEiW8T7Lw/Vv3YxRV06PAanQGdnfjcPWr08YcvygztpQTJyrKRuKiq1KPGuE6OMI/jOcrziouLDZIvVqROcOveWPdGVoLdjSTM3L+4vFBqe4NpGHyoAkIXGh4uQjNDdacx6hwDtBHGSQb03GaLdkDoRI0ABtCgLuyxb+kexVrs+V6jZdshCx4a3GyJse+hK2W/96EJ8a4=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(230922051799003)(82310400011)(186009)(1800799012)(451199024)(64100799003)(40470700004)(46966006)(36840700001)(83380400001)(2616005)(6636002)(54906003)(70586007)(70206006)(110136005)(316002)(40480700001)(478600001)(26005)(426003)(1076003)(336012)(44832011)(47076005)(40460700003)(4326008)(8676002)(8936002)(6666004)(36860700001)(5660300002)(2906002)(86362001)(81166007)(356005)(36756003)(82740400003)(41300700001)(921008)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 05:50:49.3685
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ee6bd79-91b5-4da6-0d8b-08dc00567417
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D8.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8752
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNKsWRmVeSWpSXmKPExsWy7bCmua6tfmOqwZO/WhZ7T1tYrJ76l9Xi
+	8q45bBZ3751gsdh55wSzA6vHplWdbB79fw08+rasYvT4vEkugCUq2yYjNTEltUghNS85PyUz
+	L91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKuSQlliTilQKCCxuFhJ386mKL+0
+	JFUhI7+4xFYptSAlp8C8QK84Mbe4NC9dLy+1xMrQwMDIFKgwITvjzsM+1oLL7BU9b/8yNzCu
+	Y+ti5OSQEDCRWLd/DWMXIxeHkMAORom2KVfYIJxPjBIPrp5lhnC+MUr8/7seyOEAa9kxpR4i
+	vpdRYtO6iywQzkdGibNzzrKDzGUT0JZ4dWACK4gtIqAj8efqEbB9zAIpEn2z3rOA2MICbhKn
+	N01kBLFZBFQlHi9dCNbLK2Ar8ffHGaj75CUW71jODBEXlDg58wkLxBx5ieats5kharaxSxy6
+	bA9hu0j8XrGIEcIWlnh1fAs7hC0l8fndXqiZ+RIz59xggbBrJL7e+wcVt5dYdOYnO8iTzAKa
+	Eut36UP8qyxx5BbUVj6JjsN/2SHCvBIdbUIQpqpE0816iBnSEsvOzGCFsD0krv6/wQRiCwnE
+	Sly7sIx9AqP8LCSvzELyyiyEtQsYmVcxiqUWFOempyYbFRjCYzQ5P3cTIzjVaTnvYLwy/5/e
+	IUYmDsZDjBIczEoivC6L6lOFeFMSK6tSi/Lji0pzUosPMZoCA3cis5Rocj4w2eaVxBuaWBqY
+	mJkZmhuZGpgrifPea52bIiSQnliSmp2aWpBaBNPHxMEp1cB0SZpdcRFXxAaD9VznV/29+S/5
+	a4WzhcbvqrcbRefMrrq3O7BlYumml2WRm/9fD2E590Zp2cPViZMDa1akTedccebW5Qfa93er
+	Cf8Wm5VddG/uqq3FRfPrf0skfVcP6X7YG22ZxLCkV5X7nHI6R2/Sh2KlYP/vlRcfebc3GDy4
+	ypZpxXvMXd74h43p0gUOL79UWpVczZ8iY9t87M55q/Z565L+nv9Y9I2vv6LO4TT/a55tM8vX
+	cSj3TxZ84nnqg16avL7YQx1bj0+d09SutjkJ2WXusnmp6jBx941Yu8dxk8Umef3Oyw09GL3y
+	fi5TGVeI7RQnIXu9GKNLfXF73vx2Wvr0iq5gkhO3RIXqJzklluKMREMt5qLiRAAzfNuM/gMA
+	AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDLMWRmVeSWpSXmKPExsWy7bCSvK6NfmOqQctlUYu9py0sVk/9y2px
+	edccNou7906wWOy8c4LZgdVj06pONo/+vwYefVtWMXp83iQXwBLFZZOSmpNZllqkb5fAlXHn
+	YR9rwWX2ip63f5kbGNexdTFycEgImEjsmFLfxcjJISSwm1Fi5gUpEFtCQFriRes3VghbWOJ+
+	yxEgmwuo5j2jxOvrsxlBEmwC2hKvDkwAKxIR0JOYufoAM4jNLJAm8ejtQTYQW1jATeL0polg
+	9SwCqhKPly5kB7F5BWwl/v44wwaxQF5i8Y7lzBBxQYmTM5+wQMyRl2jeOpt5AiPfLCSpWUhS
+	CxiZVjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBAegluYOxu2rPugdYmTiYDzEKMHB
+	rCTC67KoPlWINyWxsiq1KD++qDQntfgQozQHi5I4r/iL3hQhgfTEktTs1NSC1CKYLBMHp1QD
+	U9HcRvU3zK7Tky6dO/p61SXzSfZnHqxiKlvBdjLCUjPX2Ou+7ceCo0crniZMzy+Jf7mE5zr7
+	fMVHGV3/y3hUlrPkXPd/7XJRZprC20IR9dULKn03S7YL+bL9OxqxNWtKk0fURZkXrauVz7+O
+	T092mf7zrFj10jWxMg3nxc+9/9WwSjmiXTrp9Gw/tidMzvpi6QmBdxdybsoWaY5esuVl0pw/
+	X/7ZHL7wtjKr9eLjI8/i2c9Oclnx6ZNCp/0thQJPEd4XE9gKjgWWnc/3n+7fuv+0QESg0qJ+
+	CZFWJ6kQ078P3c/o+NwWapi3v5lppo73CtGC4Dlzmp/wXTy1OKvVW+pa7BueRTxM0UzhHY3J
+	SizFGYmGWsxFxYkAQszlr68CAAA=
+X-CMS-MailID: 20231219055052epcas2p4bb1d8210f650ab18370711db2194e8e3
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231219055052epcas2p4bb1d8210f650ab18370711db2194e8e3
+References: <CGME20231219055052epcas2p4bb1d8210f650ab18370711db2194e8e3@epcas2p4.samsung.com>
 
-Some error event IDs for Versal and Versal NET are different.
-Both the platforms should access their respective error event
-IDs so use sub_family_code to check for platform and check
-error IDs for respective platforms. The family code is passed
-via platform data to avoid platform detection again.
-Platform data is setup when even driver is registered.
+According to DMA-330 errata notice[1] 71930, DMAKILL
+cannot clear internal signal, named pipeline_req_active.
+it makes that pl330 would wait forever in WFP state
+although dma already send dma request if pl330 gets
+dma request before entering WFP state.
 
-Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
+The errata suggests that polling until entering WFP state
+as workaround and then peripherals allows to issue dma request.
+
+[1]: https://developer.arm.com/documentation/genc008428/latest
+Signed-off-by: Bumyong Lee <bumyong.lee@samsung.com>
 ---
- drivers/edac/versal_edac.c              |  4 ++--
- drivers/soc/xilinx/xlnx_event_manager.c | 25 ++++++++++++++++++++-----
- include/linux/firmware/xlnx-zynqmp.h    | 16 ++++++++++++----
- 3 files changed, 34 insertions(+), 11 deletions(-)
+ drivers/dma/pl330.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/edac/versal_edac.c b/drivers/edac/versal_edac.c
-index 8625de20fc71..62caf454b567 100644
---- a/drivers/edac/versal_edac.c
-+++ b/drivers/edac/versal_edac.c
-@@ -1005,7 +1005,7 @@ static int mc_probe(struct platform_device *pdev)
- 		goto free_edac_mc;
- 	}
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 3cf0b38387ae..c29744bfdf2c 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -1053,6 +1053,9 @@ static bool _trigger(struct pl330_thread *thrd)
  
--	rc = xlnx_register_event(PM_NOTIFY_CB, EVENT_ERROR_PMC_ERR1,
-+	rc = xlnx_register_event(PM_NOTIFY_CB, VERSAL_EVENT_ERROR_PMC_ERR1,
- 				 XPM_EVENT_ERROR_MASK_DDRMC_CR | XPM_EVENT_ERROR_MASK_DDRMC_NCR |
- 				 XPM_EVENT_ERROR_MASK_NOC_CR | XPM_EVENT_ERROR_MASK_NOC_NCR,
- 				 false, err_callback, mci);
-@@ -1042,7 +1042,7 @@ static int mc_remove(struct platform_device *pdev)
- 	debugfs_remove_recursive(priv->debugfs);
- #endif
+ 	thrd->req_running = idx;
  
--	xlnx_unregister_event(PM_NOTIFY_CB, EVENT_ERROR_PMC_ERR1,
-+	xlnx_unregister_event(PM_NOTIFY_CB, VERSAL_EVENT_ERROR_PMC_ERR1,
- 			      XPM_EVENT_ERROR_MASK_DDRMC_CR |
- 			      XPM_EVENT_ERROR_MASK_NOC_CR |
- 			      XPM_EVENT_ERROR_MASK_NOC_NCR |
-diff --git a/drivers/soc/xilinx/xlnx_event_manager.c b/drivers/soc/xilinx/xlnx_event_manager.c
-index 86a048a10a13..78f9a3c6ae11 100644
---- a/drivers/soc/xilinx/xlnx_event_manager.c
-+++ b/drivers/soc/xilinx/xlnx_event_manager.c
-@@ -77,11 +77,26 @@ struct registered_event_data {
- 
- static bool xlnx_is_error_event(const u32 node_id)
- {
--	if (node_id == EVENT_ERROR_PMC_ERR1 ||
--	    node_id == EVENT_ERROR_PMC_ERR2 ||
--	    node_id == EVENT_ERROR_PSM_ERR1 ||
--	    node_id == EVENT_ERROR_PSM_ERR2)
--		return true;
-+	u32 pm_family_code, pm_sub_family_code;
++	if (desc->rqtype == DMA_MEM_TO_DEV || desc->rqtype == DMA_DEV_TO_MEM)
++		UNTIL(thrd, PL330_STATE_WFP);
 +
-+	zynqmp_pm_get_family_info(&pm_family_code, &pm_sub_family_code);
-+
-+	if (pm_sub_family_code == VERSAL_SUB_FAMILY_CODE) {
-+		if (node_id == VERSAL_EVENT_ERROR_PMC_ERR1 ||
-+		    node_id == VERSAL_EVENT_ERROR_PMC_ERR2 ||
-+		    node_id == VERSAL_EVENT_ERROR_PSM_ERR1 ||
-+		    node_id == VERSAL_EVENT_ERROR_PSM_ERR2)
-+			return true;
-+	} else {
-+		if (node_id == VERSAL_NET_EVENT_ERROR_PMC_ERR1 ||
-+		    node_id == VERSAL_NET_EVENT_ERROR_PMC_ERR2 ||
-+		    node_id == VERSAL_NET_EVENT_ERROR_PMC_ERR3 ||
-+		    node_id == VERSAL_NET_EVENT_ERROR_PSM_ERR1 ||
-+		    node_id == VERSAL_NET_EVENT_ERROR_PSM_ERR2 ||
-+		    node_id == VERSAL_NET_EVENT_ERROR_PSM_ERR3 ||
-+		    node_id == VERSAL_NET_EVENT_ERROR_PSM_ERR4)
-+			return true;
-+	}
- 
- 	return false;
+ 	return true;
  }
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 2375ce9b38df..2cfd78f232dc 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -91,10 +91,18 @@
- /*
-  * Node IDs for the Error Events.
-  */
--#define EVENT_ERROR_PMC_ERR1	(0x28100000U)
--#define EVENT_ERROR_PMC_ERR2	(0x28104000U)
--#define EVENT_ERROR_PSM_ERR1	(0x28108000U)
--#define EVENT_ERROR_PSM_ERR2	(0x2810C000U)
-+#define VERSAL_EVENT_ERROR_PMC_ERR1	(0x28100000U)
-+#define VERSAL_EVENT_ERROR_PMC_ERR2	(0x28104000U)
-+#define VERSAL_EVENT_ERROR_PSM_ERR1	(0x28108000U)
-+#define VERSAL_EVENT_ERROR_PSM_ERR2	(0x2810C000U)
-+
-+#define VERSAL_NET_EVENT_ERROR_PMC_ERR1	(0x28100000U)
-+#define VERSAL_NET_EVENT_ERROR_PMC_ERR2	(0x28104000U)
-+#define VERSAL_NET_EVENT_ERROR_PMC_ERR3	(0x28108000U)
-+#define VERSAL_NET_EVENT_ERROR_PSM_ERR1	(0x2810C000U)
-+#define VERSAL_NET_EVENT_ERROR_PSM_ERR2	(0x28110000U)
-+#define VERSAL_NET_EVENT_ERROR_PSM_ERR3	(0x28114000U)
-+#define VERSAL_NET_EVENT_ERROR_PSM_ERR4	(0x28118000U)
  
- /* ZynqMP SD tap delay tuning */
- #define SD_ITAPDLY	0xFF180314
 -- 
-2.17.1
+2.43.0
 
 
