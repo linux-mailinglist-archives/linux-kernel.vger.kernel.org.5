@@ -1,110 +1,98 @@
-Return-Path: <linux-kernel+bounces-5164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A4681876D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DE8A818768
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7432B2419A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:26:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20DF8B236F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08F21802A;
-	Tue, 19 Dec 2023 12:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2CC18633;
+	Tue, 19 Dec 2023 12:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EXHt0E33"
+	dkim=pass (2048-bit key) header.d=walle.cc header.i=@walle.cc header.b="He1O7Dll"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6100518E25;
-	Tue, 19 Dec 2023 12:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702988746; x=1734524746;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nOywJRc0wAtqCFpYw86gMOujKnRir0lc3ARZNSoc0P0=;
-  b=EXHt0E33Mur7Hm+9MSxKx8PLY2mWHt/CMiUPt5m8YCinSU1PEzdrYxMz
-   TzPvgUZ5oNd+dUI0H8E+JvDdcVm/utHWjFnzFdiP4oW4oGZCIl1ggSDo8
-   86o6vR4xhet9ZlP3AThb/EHcgm0HoDkNMME8mjS9Gya7vUmZUE3f2bkkk
-   uoik5DAP2Sn9GwLWXtE2ZFwSnLc4zCBP7skA7NwDGnf9lnOzOTw5Xvjao
-   L7b/NQOf2rDR7ZescnjATHmUhdOojmO1qgGz5lJUKoYy46IyWLhL5zQpJ
-   N9vP9TQWx+vNannkLSydxaT4tujoVT3tJJ7u2K44up6S5Tt4ltAB01BJq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="2878899"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="2878899"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 04:25:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="17589275"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 19 Dec 2023 04:25:38 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFZAE-0005Ip-39;
-	Tue, 19 Dec 2023 12:25:34 +0000
-Date: Tue, 19 Dec 2023 20:24:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, x86@kernel.org,
-	akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
-	luto@kernel.org, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, hpa@zytor.com, mhocko@kernel.org,
-	tj@kernel.org, ying.huang@intel.com, gregory.price@memverge.com,
-	corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com,
-	honggyu.kim@sk.com, vtavarespetr@micron.com, peterz@infradead.org,
-	jgroves@micron.com, ravis.opensrc@micron.com, sthanneeru@micron.com,
-	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com
-Subject: Re: [PATCH v4 10/11] mm/mempolicy: add the mbind2 syscall
-Message-ID: <202312192014.47Qm5xxc-lkp@intel.com>
-References: <20231218194631.21667-11-gregory.price@memverge.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECA918622
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:24:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=walle.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=walle.cc
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id DF01B4FB;
+	Tue, 19 Dec 2023 13:24:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1702988696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zo1bvGMOlMzlZUMlT7LD46uyFfN2T/tY+yhbado4I8M=;
+	b=He1O7DllNLSQCRI6CEHrhhtQSLhUBhTSPm0+zqz/PciEb+AoKUZzy8JBzd6YwXkpsIpRBW
+	TTpAv/wll81uuH6JEE+lo8Y0DbtGW5cmDy7vAFEnODr4qkMiHZ6m/IVyXhVVJsv8YCG7sK
+	P839Gt7qOK/P3jzj1VE8v13HxpoF/pUjGJ9icNVTEQtdh7uoCz0X0GQpVI5OQFqoubRwZB
+	TpNtpiouXWABbvCy+Fdmx4Q53WvK4oNc8G50LqR/e0+4UYLJZ/D4OmQVQ3CIb2yt5VKDAZ
+	EK+N28j4deO+ku/qEPnzUc+J5QYeAvxbHpoMmSXQD2mP1CPVB5BdrTshtB1+uQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218194631.21667-11-gregory.price@memverge.com>
+Date: Tue, 19 Dec 2023 13:24:56 +0100
+From: Michael Walle <michael@walle.cc>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH v6.8 1/2] nvmem: layouts: refactor .add_cells() callback
+ arguments
+In-Reply-To: <20231219120104.3422-1-zajec5@gmail.com>
+References: <20231219120104.3422-1-zajec5@gmail.com>
+Message-ID: <dad4bd72d2d133b86385859a6978a72a@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Gregory,
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> Simply pass whole "struct nvmem_layout" instead of single variables.
+> There is nothing in "struct nvmem_layout" that we have to hide from
+> layout drivers. They also access it during .probe() and .remove().
+> 
+> Thanks to this change:
+> 
+> 1. API gets more consistent
+>    All layouts drivers callbacks get the same argument
+> 
+> 2. Layouts get correct device
+>    Before this change NVMEM core code was passing NVMEM device instead
+>    of layout device. That resulted in:
+>    * Confusing prints
+>    * Calling devm_*() helpers on wrong device
+>    * Helpers like of_device_get_match_data() dereferencing NULLs
+> 
+> 3. It gets possible to get match data
+>    First of all nvmem_layout_get_match_data() requires passing "struct
+>    nvmem_layout" which .add_cells() callback didn't have before this. 
+> It
+>    doesn't matter much as it's rather useless now anyway (and will be
+>    dropped).
+>    What's more important however is that of_device_get_match_data() can
+>    be used now thanks to owning a proper device pointer.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on perf-tools/perf-tools]
-[also build test ERROR on linus/master v6.7-rc6]
-[cannot apply to perf-tools-next/perf-tools-next tip/perf/core acme/perf/core next-20231219]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-Price/mm-mempolicy-implement-the-sysfs-based-weighted_interleave-interface/20231219-074837
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools
-patch link:    https://lore.kernel.org/r/20231218194631.21667-11-gregory.price%40memverge.com
-patch subject: [PATCH v4 10/11] mm/mempolicy: add the mbind2 syscall
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231219/202312192014.47Qm5xxc-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231219/202312192014.47Qm5xxc-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312192014.47Qm5xxc-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> aarch64-linux-ld: arch/arm64/kernel/sys32.o:(.rodata+0xe58): undefined reference to `__arm64_sys_get_mbind2'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+LGTM,
+Reviewed-by: Michael Walle <michael@walle.cc>
 
