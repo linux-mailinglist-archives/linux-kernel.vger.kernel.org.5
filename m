@@ -1,372 +1,109 @@
-Return-Path: <linux-kernel+bounces-5115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429D18186B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:54:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43BCC8186DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:01:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 464E71C23F0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:54:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE20F1F248E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0ABC1862B;
-	Tue, 19 Dec 2023 11:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1F918EB0;
+	Tue, 19 Dec 2023 12:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xCDBLGAm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qoUNWXG3";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xCDBLGAm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qoUNWXG3"
+	dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b="pD+ybuFa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF5D18622
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4122C210F6;
-	Tue, 19 Dec 2023 11:54:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702986853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=K8isFFGX5+9esQAtJvvPdJrw2W21fGJe+4EuBeGsdNQ=;
-	b=xCDBLGAmlZFLuG0Gk9uwe/LuAXC/6SYrk3pVej9Hjy7SCFKB2csDcQmIqTHFXVJyQ6xhhv
-	KuY02T5aO3Uoho1/Nc/KnU+rTbncRggoh0IRHjExpN4DvaJHCQSessdERdtwq7R4SdK5rv
-	Qd8fC+DnnIGp4pu/xr59UHTkaA54pdo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702986853;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=K8isFFGX5+9esQAtJvvPdJrw2W21fGJe+4EuBeGsdNQ=;
-	b=qoUNWXG32rt75naKgfcTJee2NCWaggr4XAkvxar4rgVRc9qOMuEDyw7rlomLY81r1WzhR4
-	MaqZCEAp+sHC/hAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702986853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=K8isFFGX5+9esQAtJvvPdJrw2W21fGJe+4EuBeGsdNQ=;
-	b=xCDBLGAmlZFLuG0Gk9uwe/LuAXC/6SYrk3pVej9Hjy7SCFKB2csDcQmIqTHFXVJyQ6xhhv
-	KuY02T5aO3Uoho1/Nc/KnU+rTbncRggoh0IRHjExpN4DvaJHCQSessdERdtwq7R4SdK5rv
-	Qd8fC+DnnIGp4pu/xr59UHTkaA54pdo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702986853;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=K8isFFGX5+9esQAtJvvPdJrw2W21fGJe+4EuBeGsdNQ=;
-	b=qoUNWXG32rt75naKgfcTJee2NCWaggr4XAkvxar4rgVRc9qOMuEDyw7rlomLY81r1WzhR4
-	MaqZCEAp+sHC/hAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C8C941375D;
-	Tue, 19 Dec 2023 11:54:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1xh1LWSEgWXVOQAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 19 Dec 2023 11:54:12 +0000
-Message-ID: <c40a4b0e-fb0e-40fa-985c-92c6895eb831@suse.de>
-Date: Tue, 19 Dec 2023 12:54:12 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5294618E15;
+	Tue, 19 Dec 2023 12:00:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnuweeb.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
+	s=default; t=1702986877;
+	bh=6y7QcMNqdf/KzxtBMRwl6JBNpcXBvZAGKI4OW6AiOww=;
+	h=From:To:Cc:Subject:Date;
+	b=pD+ybuFaLCHla+Xm8wAgMyEK5gI/x5SO96VdrCCQ/4lOTx/nw8I/t1HxZ5pk9CXuT
+	 YVz1SR6nR9AImqcJWVILoePxd3wsaW36909Cgh8fkpmMs6dqa75fHKccbXrsASRCoU
+	 5MV6dbpPUQ0FUOrKwFD0bBCYjM/14C8w2wQlYJH3vQDkJxK5V7Kp5VSUHz3iQfQv/P
+	 EsRS9w18Xb/Ype+DNYcctNnE+lkPWHSDqF57feR3Kul4GcGFD6iZ2BvHUPbDrF6aJL
+	 zu6eZR1heA06QblvA3ElBTaHvI9ZbtGx5Atn9zGIF3BMpURulPF3MVlcNy37I6x+AZ
+	 z5HG1iLqpA4cw==
+Received: from localhost.localdomain (unknown [182.253.230.19])
+	by gnuweeb.org (Postfix) with ESMTPSA id 1D1C724C190;
+	Tue, 19 Dec 2023 18:54:33 +0700 (WIB)
+From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+	Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
+	Michael William Jonathan <moe@gnuweeb.org>,
+	io-uring Mailing List <io-uring@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>
+Subject: [PATCH liburing v1 0/2] Makefile and t/no-mmap-inval updates
+Date: Tue, 19 Dec 2023 18:54:21 +0700
+Message-Id: <20231219115423.222134-1-ammarfaizi2@gnuweeb.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 17/17] nvmet-fc: add extensive debug logging
-Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
- Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
- James Smart <james.smart@broadcom.com>
-References: <20231218153105.12717-1-dwagner@suse.de>
- <20231218153105.12717-18-dwagner@suse.de>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20231218153105.12717-18-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=xCDBLGAm;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qoUNWXG3
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.50 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -4.50
-X-Rspamd-Queue-Id: 4122C210F6
-X-Spam-Flag: NO
 
-On 12/18/23 16:31, Daniel Wagner wrote:
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Hi Jens,
 
-Well ... all previous patches had 'XX/16', only this has '17/17'.
-Late addendum?
-But in either case, please ensure correct counting (and spelling!)
-on the next submission.
+There are two patches in this series:
 
-> ---
->   drivers/nvme/target/configfs.c |   4 +
->   drivers/nvme/target/core.c     |  13 ++++
->   drivers/nvme/target/fc.c       | 132 +++++++++++++++++++++++++++++----
->   3 files changed, 135 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/nvme/target/configfs.c b/drivers/nvme/target/configfs.c
-> index e307a044b1a1..ea05e8c62d4b 100644
-> --- a/drivers/nvme/target/configfs.c
-> +++ b/drivers/nvme/target/configfs.c
-> @@ -965,6 +965,7 @@ static int nvmet_port_subsys_allow_link(struct config_item *parent,
->   			goto out_free_link;
->   	}
->   
-> +	pr_info("%s: %s\n", __func__, subsys->subsysnqn);
+1. Makefile: Remove the `partcheck` target.
 
-If this is debug logging, would 'pr_debug' be more accurate?
+Remove the `partcheck` target because it has remained unused for nearly
+four years, and the associated TODO comment has not been actioned since
+its introduction in commit:
 
->   	if (list_empty(&port->subsystems)) {
->   		ret = nvmet_enable_port(port);
->   		if (ret)
-> @@ -1050,6 +1051,7 @@ static int nvmet_allowed_hosts_allow_link(struct config_item *parent,
->   		if (!strcmp(nvmet_host_name(p->host), nvmet_host_name(host)))
->   			goto out_free_link;
->   	}
-> +	pr_info("%s: adding hostnqn %s\n", __func__, nvmet_host_name(host));
->   	list_add_tail(&link->entry, &subsys->hosts);
->   	nvmet_subsys_disc_changed(subsys, host);
->   
-> @@ -1879,6 +1881,8 @@ static struct config_group *nvmet_ports_make(struct config_group *group,
->   	u16 portid;
->   	u32 i;
->   
-> +	pr_info("%s\n", __func__);
-> +
-The meaning of this is ... what?
-Of course this function is called when a port is created. So why do you 
-need to log that in the message log?
+  b57dbc2d308a849 ("configure/Makefile: introduce libdevdir defaults to $(libdir)")
 
->   	if (kstrtou16(name, 0, &portid))
->   		return ERR_PTR(-EINVAL);
->   
-> diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-> index 3935165048e7..4d5a9e4fcc9d 100644
-> --- a/drivers/nvme/target/core.c
-> +++ b/drivers/nvme/target/core.c
-> @@ -308,8 +308,11 @@ void nvmet_port_del_ctrls(struct nvmet_port *port, struct nvmet_subsys *subsys)
->   {
->   	struct nvmet_ctrl *ctrl;
->   
-> +	pr_info("%s: subsys %s port %p\n", __func__, subsys->subsysnqn, port);
-> +
-pr_debug()
 
->   	mutex_lock(&subsys->lock);
->   	list_for_each_entry(ctrl, &subsys->ctrls, subsys_entry) {
-> +		pr_info("%s: ctrl %p ctrl->port %p\n", __func__, ctrl, ctrl->port);
->   		if (ctrl->port == port)
->   			ctrl->ops->delete_ctrl(ctrl);
->   	}
-> @@ -1458,6 +1461,8 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
->   	mutex_unlock(&subsys->lock);
->   
->   	*ctrlp = ctrl;
-> +
-> +	pr_info("%s: ctrl %p, subsysnqn %s hostnqn %s\n", __func__, ctrl, subsysnqn, hostnqn);
+2. t/no-mmap-inval: Replace `valloc()` with `t_posix_memalign()`.
 
-Wouldn't it be better to list the controller id, too?
+Address the limitations of valloc(). This function, which is primarily
+used for allocating page-aligned memory, is not only absent in some
+systems but is also marked as obsolete according to the `man 3 valloc`.
 
->   	return 0;
->   
->   out_free_sqs:
-> @@ -1477,6 +1482,8 @@ static void nvmet_ctrl_free(struct kref *ref)
->   	struct nvmet_ctrl *ctrl = container_of(ref, struct nvmet_ctrl, ref);
->   	struct nvmet_subsys *subsys = ctrl->subsys;
->   
-> +	pr_info("%s: ctrl %p %s\n", __func__, ctrl, ctrl->subsysnqn);
-> +
+Replace valloc() with t_posix_memalign() to fix the following build
+error:
 
-Please, no pointer, use the controller id instead.
+  no-mmap-inval.c:28:56: warning: call to undeclared function 'valloc'; ISO C99 and \
+  later do not support implicit function declarations [-Wimplicit-function-declaration]
+          p.cq_off.user_addr = (unsigned long long) (uintptr_t) valloc(8192);
+                                                                ^
+  1 warning generated.
 
->   	mutex_lock(&subsys->lock);
->   	nvmet_release_p2p_ns_map(ctrl);
->   	list_del(&ctrl->subsys_entry);
-> @@ -1550,6 +1557,8 @@ struct nvmet_subsys *nvmet_subsys_alloc(const char *subsysnqn,
->   	char serial[NVMET_SN_MAX_SIZE / 2];
->   	int ret;
->   
-> +	pr_info("%s\n", __func__);
-> +
-See above. Pretty pointless.
+  ld.lld: error: undefined symbol: valloc
+  >>> referenced by no-mmap-inval.c:28
+  >>>               /tmp/no-mmap-inval-ea16a2.o:(main)
+  >>> did you mean: calloc
+  >>> defined in: /system/lib64/libc.so
+  clang-15: error: linker command failed with exit code 1 (use -v to see invocation)
+  make[1]: *** [Makefile:239: no-mmap-inval.t] Error 1
 
->   	subsys = kzalloc(sizeof(*subsys), GFP_KERNEL);
->   	if (!subsys)
->   		return ERR_PTR(-ENOMEM);
-> @@ -1620,6 +1629,8 @@ static void nvmet_subsys_free(struct kref *ref)
->   
->   	WARN_ON_ONCE(!xa_empty(&subsys->namespaces));
->   
-> +	pr_info("%s\n", __func__);
-> +
->   	xa_destroy(&subsys->namespaces);
->   	nvmet_passthru_subsys_free(subsys);
->   
-> @@ -1633,6 +1644,8 @@ void nvmet_subsys_del_ctrls(struct nvmet_subsys *subsys)
->   {
->   	struct nvmet_ctrl *ctrl;
->   
-> +	pr_info("%s\n", __func__);
-> +
->   	mutex_lock(&subsys->lock);
->   	list_for_each_entry(ctrl, &subsys->ctrls, subsys_entry)
->   		ctrl->ops->delete_ctrl(ctrl);
-> diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-> index 455d35ef97eb..d50ff29697fc 100644
-> --- a/drivers/nvme/target/fc.c
-> +++ b/drivers/nvme/target/fc.c
-> @@ -242,6 +242,31 @@ static LIST_HEAD(nvmet_fc_target_list);
->   static DEFINE_IDA(nvmet_fc_tgtport_cnt);
->   static LIST_HEAD(nvmet_fc_portentry_list);
->   
-> +static void __nvmet_fc_tgtport_put(struct nvmet_fc_tgtport *tgtport);
-> +static int __nvmet_fc_tgtport_get(struct nvmet_fc_tgtport *tgtport);
-> +
-> +#if 1
-> +#define nvmet_fc_tgtport_put(p)						\
-> +({									\
-> +	pr_info("nvmet_fc_tgtport_put: %p %d %s:%d\n",	\
-> +		p, atomic_read(&p->ref.refcount.refs),			\
-> +		__func__, __LINE__);					\
-> +	__nvmet_fc_tgtport_put(p);					\
-> +})
-> +
-> +#define nvmet_fc_tgtport_get(p)						\
-> +({									\
-> +	int ___r = __nvmet_fc_tgtport_get(p);				\
-> +									\
-> +	pr_info("nvmet_fc_tgtport_get: %p %d %s:%d\n",			\
-> +		p, atomic_read(&p->ref.refcount.refs),			\
-> +		__func__, __LINE__);					\
-> +	___r;								\
-> +})
-> +#else
-> +#define nvmet_fc_tgtport_put(p) __nvmet_fc_tgtport_put(p)
-> +#define nvmet_fc_tgtport_get(p) __nvmet_fc_tgtport_get(p)
-> +#endif
->   
->   static void nvmet_fc_handle_ls_rqst_work(struct work_struct *work);
->   static void nvmet_fc_fcp_rqst_op_defer_work(struct work_struct *work);
-> @@ -252,12 +277,84 @@ static void nvmet_fc_put_tgtport_work(struct work_struct *work)
->   
->   	nvmet_fc_tgtport_put(tgtport);
->   }
-> -static void nvmet_fc_tgt_a_put(struct nvmet_fc_tgt_assoc *assoc);
-> -static int nvmet_fc_tgt_a_get(struct nvmet_fc_tgt_assoc *assoc);
-> -static void nvmet_fc_tgt_q_put(struct nvmet_fc_tgt_queue *queue);
-> -static int nvmet_fc_tgt_q_get(struct nvmet_fc_tgt_queue *queue);
-> -static void nvmet_fc_tgtport_put(struct nvmet_fc_tgtport *tgtport);
-> -static int nvmet_fc_tgtport_get(struct nvmet_fc_tgtport *tgtport);
-> +static void __nvmet_fc_tgt_a_put(struct nvmet_fc_tgt_assoc *assoc);
-> +static int __nvmet_fc_tgt_a_get(struct nvmet_fc_tgt_assoc *assoc);
-> +
-> +#if 1
-> +#define nvmet_fc_tgt_a_put(a)						\
-> +({									\
-> +	pr_info("nvmet_fc_tgt_a_put: %d %d %s:%d \n",			\
-> +		a->a_id, atomic_read(&a->ref.refcount.refs),		\
-> +		__func__, __LINE__);					\
-> +	__nvmet_fc_tgt_a_put(a);					\
-> +})
-> +
-> +#define nvmet_fc_tgt_a_get(a)						\
-> +({									\
-> +	int ___r = __nvmet_fc_tgt_a_get(a);				\
-> +									\
-> +	pr_info("nvmet_fc_tgt_a_get: %d %d %s:%d\n",			\
-> +		a->a_id, atomic_read(&a->ref.refcount.refs),		\
-> +		__func__, __LINE__);					\
-> +	___r;								\
-> +})
-> +#else
-> +#define nvmet_fc_tgt_a_put(a) __nvmet_fc_tgt_a_put(a)
-> +#define nvmet_fc_tgt_a_get(a) __nvmet_fc_tgt_a_get(a)
-> +#endif
-> +
-> +static void __nvmet_fc_hostport_put(struct nvmet_fc_hostport *hostport);
-> +static int __nvmet_fc_hostport_get(struct nvmet_fc_hostport *hostport);
-> +
-> +#if 0
-> +#define nvmet_fc_hostport_put(p)					\
-> +({									\
-> +	pr_info("nvmet_fc_hostport_put: %p %d %s:%d\n",			\
-> +		p, atomic_read(&p->ref.refcount.refs),			\
-> +		__func__, __LINE__);					\
-> +	__nvmet_fc_hostport_put(p);					\
-> +})
-> +
-> +#define nvmet_fc_hostport_get(p)					\
-> +({									\
-> +	int ___r = __nvmet_fc_hostport_get(p);				\
-> +									\
-> +	pr_info("nvmet_fc_hostport_get: %p %d %s:%d\n",			\
-> +		p, atomic_read(&p->ref.refcount.refs),			\
-> +		__func__, __LINE__);					\
-> +	___r;								\
-> +})
-> +#else
-> +#define nvmet_fc_hostport_put(p) __nvmet_fc_hostport_put(p)
-> +#define nvmet_fc_hostport_get(p) __nvmet_fc_hostport_get(p)
-> +#endif
-> +
-> +static void __nvmet_fc_tgt_q_put(struct nvmet_fc_tgt_queue *queue);
-> +static int __nvmet_fc_tgt_q_get(struct nvmet_fc_tgt_queue *queue);
-> +
-> +#if 0
-If '0'?
-Please, no.
-Use dynamic debugging.
+Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+---
+Ammar Faizi (2):
+  Makefile: Remove the `partcheck` target
+  t/no-mmap-inval: Replace `valloc()` with `t_posix_memalign()`
 
-Cheers,
+ Makefile             | 3 ---
+ test/no-mmap-inval.c | 4 +++-
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-Hannes
+
+base-commit: bbd27495d302856b1f28d64b346d3ad80be3a86f
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Ivo Totev, Andrew McDonald,
-Werner Knoblich
+Ammar Faizi
 
 
