@@ -1,132 +1,153 @@
-Return-Path: <linux-kernel+bounces-4973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D2D81849D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:36:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0806B8184A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF95F1F23EA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:36:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C0A21F223C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6722F13AFA;
-	Tue, 19 Dec 2023 09:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3215613FFB;
+	Tue, 19 Dec 2023 09:36:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A8/6N720"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="K+pJZqym"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C091426E;
-	Tue, 19 Dec 2023 09:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3364c9ff8e1so2332926f8f.0;
-        Tue, 19 Dec 2023 01:35:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702978556; x=1703583356; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9tF4Z5Fm8wpvM9kENnxFg1GOt/6EcGOZ/wJLhLT6ong=;
-        b=A8/6N720USRCMuQzrUBk+LLcu2NW7I8D+EawQamNA3suLw6o4DKh4LTAansLvqMBZU
-         0gMF2d3H7B2s9FHVzR8qKijIqk/A8GbAbrS3ONLOfpDGPxdyz+khZBDtftxEcfG5LQas
-         QqqFoYPUG5C+xfoPO0VWqBHqTsAV7hVDJKtHoy28et+5x2ra5xDB3EFSRfx/XoGTn8d2
-         rmj6nZHFT5TfLhZz351hrQNJJKdiBULvDTNqyirTZUFKHsZPmwiWBuCQlEUaR9TP7iyd
-         WMAzl/mDYjU5B9frKIhd7OQmw2i1Ay4dDxFjn3MDkFcJt4yynexmj3wR8XVkYSDOVnrd
-         7Ylg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702978556; x=1703583356;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9tF4Z5Fm8wpvM9kENnxFg1GOt/6EcGOZ/wJLhLT6ong=;
-        b=QVX15ZfEA9A9436XFq/cj/pbuoLig0x4Xh/FrdprzfTwybGwcPzVkG66Iz5MLIk/a4
-         /Yu/ksHrkTkTHqH0n0mUBXwCUgAi0te2ODMSSB8wOoNlH3+hGK2n9TYGjfE1JZAG75N+
-         V+9CKlulMmsKqKxxRBXFxfQOAS60GlT8VZvsJ3oVWRLpds7L/kDOhq+MNurWWGAfj+J4
-         wbPR/CLUOZUpxSwu+P1TABSzGI5SK/Gk/Eq36N4EcPaoZYEJwK4Bb/NFpKEV6KCNIZzV
-         J4lwuc4rchxiggS49tyNN7RifMtIhcVMCOe/gH3mgFdxwKxQmK+u356x8Rj8FU0BJNkr
-         1ucg==
-X-Gm-Message-State: AOJu0YzVK77C6Hzt9ZUdSibXkn9D3bP8C29mq9Yl/mIoLgsOlpIETIoC
-	wqyv97HgVdDGBv/0kO0SNWk=
-X-Google-Smtp-Source: AGHT+IGpyp8BSukk+UDTj5z5JREfSz+alb3sH2oD1oIeAeVYhnVaLCG4dGSSt7Mw7T4w4HS/AypSpw==
-X-Received: by 2002:a05:600c:4f92:b0:40b:5e56:7b39 with SMTP id n18-20020a05600c4f9200b0040b5e567b39mr383986wmq.130.1702978556331;
-        Tue, 19 Dec 2023 01:35:56 -0800 (PST)
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id bh20-20020a05600c3d1400b0040d15dcb77asm1992713wmb.23.2023.12.19.01.35.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 01:35:56 -0800 (PST)
-Date: Tue, 19 Dec 2023 10:35:54 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: marvell-88q2xxx: add driver for the Marvell
- 88Q2220 PHY
-Message-ID: <20231219093554.GA6393@debian>
-References: <20231215213102.35994-1-dima.fedrau@gmail.com>
- <74d4b8f9-700e-45bc-af59-95a40a777b00@lunn.ch>
- <20231216221151.GA143483@debian>
- <28cc73bf-ed6d-49d8-b80b-4fbf5fa0442f@lunn.ch>
- <20231217111538.GA3591@debian>
- <ZX78ucHcNyEatXLD@eichest-laptop>
- <20231218090932.GA4319@debian>
- <ZYAqxPZHICtZO15O@eichest-laptop>
- <20231219081117.GA3479@debian>
- <ZYFfzei3SJSts5E/@eichest-laptop>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710E913FED;
+	Tue, 19 Dec 2023 09:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJ9RbBK011809;
+	Tue, 19 Dec 2023 09:36:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=d58GsqSxnfKHFjqOLCTqa4nWIQIG9ZGja3ABeUNg6vY=; b=K+
+	pJZqym7QCB10kyJowNBjTdz/yjEHgGi5KmsjLXcm79PY3a2rPSSr3IAV0G1kZWBH
+	9+yaLK3YMQYXea/1FlFCShFr8Qr7uu5bXSZ0ldWT+tuV7fqiC3PhEuSvqv4pmYn0
+	m0ru785i6Fq4XnJM4hnAr08vvJARkBU1iLDKSBNGjRs5s7MNVyK8Yx2fscrlc+p7
+	l0QL3U+ypRcmEgdNzDt6b7BpUIIKyx+dFKLYoJC6VqbMATP+Mc+vXcvKsCEijqIe
+	vEaoXSd57qqcUTVV/ITaDCMXc2Rw80pZFLtIUo8v241/aHqu1ZD5Zqhm5Y3c0lO3
+	OByuUjKVuZgUUK+BXNUg==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2mjftxxq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 09:36:23 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJ9aMbs005655
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 09:36:22 GMT
+Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
+ 2023 01:36:15 -0800
+Message-ID: <a8f168da-14f7-4377-8dea-f282a3eac0a4@quicinc.com>
+Date: Tue, 19 Dec 2023 17:36:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYFfzei3SJSts5E/@eichest-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] arm64: dts: qcom: sm8550: remove
+ address/size-cells from mdss_dsi1
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Tengfei Fan
+	<quic_tengfan@quicinc.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
+ <20231219003106.8663-2-quic_tengfan@quicinc.com>
+ <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
+From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+In-Reply-To: <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aRRjpTOFV6zuE_Hk06gZf8Pb0mTB9fEE
+X-Proofpoint-ORIG-GUID: aRRjpTOFV6zuE_Hk06gZf8Pb0mTB9fEE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ clxscore=1011 malwarescore=0 mlxscore=0 mlxlogscore=675 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312190071
 
-Am Tue, Dec 19, 2023 at 10:19:41AM +0100 schrieb Stefan Eichenberger:
-> On Tue, Dec 19, 2023 at 09:11:17AM +0100, Dimitri Fedrau wrote:
-> 
-> > I could add the init sequence for the 88Q2221 PHY. Then you could test
-> > it on your side. Would this be helpful to you ? Did you already have the
-> > chance to test the patch ?
-> 
-> Unfortunately I haven't had time to test it yet. I will try to do it on
-> Thursday, otherwise sadly it will be next year.
->
-Ok.
 
-> > You are right, but I would propose to stick to the reference init
-> > sequence and make sure the PHYs works with our code and then work on
-> > optimizing the code. We still can remove and/or document parts of it.
-> 
-> I am not sure that it will be accepted by the maintainers if you use a
-> lot of registers that are not documented. For this reason, keeping it to
-> a minimum might increase the chances of it being accepted.
->
-Ok. Will try to reduce them.
 
-> > Are you trying with the patch I provided or your own code ? If you use
-> > my patch you should wait until V3, because I found some problems with
-> > it. Switching from 1000Mbit/s to 100Mbit/s in autonegotiation mode doesn't
-> > work. I could fix it but the fix touches some code already upstreamed. So
-> > I tried to push parts of it yesterday. I forgot to cc you, just used the
-> > get_maintainer script. I will add you to the cc list. Until then you can
-> > look it up here: 20231218221814.69304-2-dima.fedrau@gmail.com
+On 12/19/2023 3:17 PM, Krzysztof Kozlowski wrote:
+> On 19/12/2023 01:31, Tengfei Fan wrote:
+>> The address/size-cells in mdss_dsi1 node have not ranges and child also
+>> have not reg, then this leads to dtc W=1 warnings:
 > 
-> I used my own code so far but I will try again with your patches. Maybe
-> send this and the other patches as a whole series so that it gets clear
-> why you need the changes as Andrew wrote.
+Comments can be more readable:
+"mdss_dsi1" node don't have "ranges" or child "reg" property, while it 
+have address/size-cells properties. This caused 
+"avoid_unnecessary_addr_size" warning from dtb check.
+Remove address/size-cells properties for "mdss_dsi1" node.
+
+> I cannot parse it. Address/size cells never have ranges or children.
+> They cannot have. These are uint32 properties.
+Pls help to comment on the revised commit message. Every time I write a 
+commit message, also takes a while for me to double confirm whether 
+others can understand me correctly as well. Feel free to let us know if 
+it is not readable to you. It will help us as non-English native developers.
 > 
-Ok. Will send an V3 including all patches.
+>>
+>>    sm8550.dtsi:2937.27-2992.6: Warning (avoid_unnecessary_addr_size): /soc@0/display-subsystem@ae00000/dsi@ae96000:
+>>      unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
+>>
+>>
+>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+> 
+> I disagreed with the patch before. You resubmit it without really
+> addressing my concerns.
+> 
+> I am not sure if this is correct fix and I want to fix all of such
+> errors (there are multiple of them) in the same way. Feel free to
+> propose common solution based on arguments.
+Per my understanding, "qcom,mdss-dsi-ctrl" driver node like "mdss_dsi1" 
+don't need to have address/size-cells properties.
+Feel free to let us know whether there is different idea of 
+"address/size-cells" needed for the "qcom,mdss-dsi-ctrl" driver node.
 
-> Regards,
-> Stefan
+If there is no valid reason to add "address/size-cells" properties for 
+"qcom,mdss-dsi-ctrl" driver node, the plan is that: Remove 
+address/size-cells properties for "qcom,mdss-dsi-ctrl" compatible node.
+While there are about 22 different soc dtsi and it's document binding 
+files needed to be fixed.Shall we fix it for all qcom related soc usage 
+in one patch, or we'd better to split into different patches according 
+to soc specifically?
+> 
+> I don't really want to NAKit but since you are resending without
+> finishing the discussion, which is quite impolite, then let's be like that:
+Acked your feelings. Feel free to NAK when you thought it is right thing 
+to do. :)
+> 
+> NAK
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Regards,
-Dimitri
+-- 
+Thx and BRs,
+Aiqun(Maria) Yu
 
