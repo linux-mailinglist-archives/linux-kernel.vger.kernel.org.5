@@ -1,133 +1,155 @@
-Return-Path: <linux-kernel+bounces-5787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49799818F79
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50227818F8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3F2F284EDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:15:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5D2B283DD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476F43985F;
-	Tue, 19 Dec 2023 18:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489FB39ADE;
+	Tue, 19 Dec 2023 18:11:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="azNZ5Vre"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OZ0fnjAw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376E44B5D2
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 18:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-daee86e2d70so4143184276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:10:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703009412; x=1703614212; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mvAoLESA2zdRbLlcTYxafJURAb6UEYn+4xsK4NwMYJA=;
-        b=azNZ5Vre4BZftuHTG8bhLIcMaBSRspFrD04piV9WBPy9SsdVALBz8GCdsKctkSav26
-         8kFPn9uwVeSSALmVrd0+yw962rUK8AuHb1KdSoUKVLtsIgFCVnFyGW5eL228qOiyF/mb
-         uS/H03em2kKp7lrQXTEo/rWa0m5LY6XVMcvwPMyRWMRUP/VnyZ6SOJfNFDDzoOIJ9xak
-         5/OKEsN5HnPrNLkuf8kgJ/hE9BkJ6Ra8Q1cyVQGZo4e/y3aALXF9/EHJ81UlA49IxxBF
-         ppAPV7BBEV+tlyhyOqjpXoccdXMkSEt/LkMaZrNOrovr/AyaWRArKCdNCXlW+jv0ieE4
-         rVCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703009412; x=1703614212;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mvAoLESA2zdRbLlcTYxafJURAb6UEYn+4xsK4NwMYJA=;
-        b=u4S/NpWDQxrGp6/FXOGW7chDWqgGO1+SnMTeHqNDgf6SlxgaAecsZIGjkqdCLU0NDV
-         W9ORGvoSlBvwTJXZPn+u8nHB4XJkFlI43byQl7PrMWX+OoNXGLzE4FJtZMNPiIHuLJfj
-         MmzIIufDxE4aEx18TuHBaKCKbCce8HQPhcSU6X7hJMVdxW8PgI4+TfrMMoe7+zCSFNnG
-         2+/qPXyWhgbmdt25fvjelo4xrJJwEEuFlncAxFYmvQTADxhXB92Il7SVbJ2QiRl8Zg14
-         +6+hILZI/ZbpBUvZk/svFvYPd9UHPmVtvsEpgPQky5pTS+qoe6anEjoVWkrds9Gj82sP
-         XFog==
-X-Gm-Message-State: AOJu0YzUUd6UeRfcho+cA8K6QJbpz4wbubRI4qsVESrNAyU4/viQOmzc
-	ykBobbehxhuHT13OTmP00PK0unPvDiuc
-X-Google-Smtp-Source: AGHT+IE4zRTTvZ21Iv4W2ugE3ZyUtrJKn38heipAOnYsOO9ir0lTwnm6D8XTaTiHvUN0O8ZdMrb4sLpansaP
-X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
- (user=tanzirh job=sendgmr) by 2002:a25:513:0:b0:dbc:c59e:fa7b with SMTP id
- 19-20020a250513000000b00dbcc59efa7bmr257444ybf.7.1703009412216; Tue, 19 Dec
- 2023 10:10:12 -0800 (PST)
-Date: Tue, 19 Dec 2023 18:09:52 +0000
-In-Reply-To: <20231219-libstringheader-v4-0-aaeb26495d2f@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706E039AC5;
+	Tue, 19 Dec 2023 18:11:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3539C433C7;
+	Tue, 19 Dec 2023 18:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1703009472;
+	bh=Pthe7kfGVzNx+JF4jvBNt3Kbd4VrCiAWzVLzdqj+bqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OZ0fnjAwvgLQE3MG8q2natKRb+qz0V7gqOZDHnB0bPWKcQ5H/xD97A1mlApd7aOXr
+	 jbemNa3WR8dEMnzqelMVvMugFw86p/97jy7RLX2YVQcyiYfTUXEfC66H4qloyP2ori
+	 D50L2DjOsttIXjqHGyCkHUmDglfckvLB7I8PpyPc=
+Date: Tue, 19 Dec 2023 19:11:09 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/2] fpga: set owner of fpga_manager_ops for
+ existing low-level modules
+Message-ID: <2023121927-desolate-choice-a2fe@gregkh>
+References: <20231218202809.84253-1-marpagan@redhat.com>
+ <20231218202809.84253-3-marpagan@redhat.com>
+ <2023121829-zealous-prissy-99cc@gregkh>
+ <9296941c-a3c8-4d55-9e52-f1277f1c3fc7@redhat.com>
+ <2023121924-extent-defender-fb06@gregkh>
+ <b2d3d88e-840d-48b1-86d4-0a89d6143683@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231219-libstringheader-v4-0-aaeb26495d2f@google.com>
-X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703009406; l=1526;
- i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
- bh=oJuDSXDF1SrZGjfYBC3bPo4h0yX2ibdKNK734XPYdhU=; b=BHcmOkZ4yRvMLJW6bIsrL9gXUQbeDMqFADLOIVUAPbJZ+Q+iXQ9nyodfoMCal8KsmwmlkCPfd
- puHiZ3ttK+pDGrk65vN2yG8fqzKwG0XNrmWBYH1G+xQ0jx3y96+Xj6y
-X-Mailer: b4 0.12.4
-Message-ID: <20231219-libstringheader-v4-2-aaeb26495d2f@google.com>
-Subject: [PATCH v4 2/2] lib/string: shrink lib/string.i via IWYU
-From: Tanzir Hasan <tanzirh@google.com>
-To: Kees Cook <keescook@chromium.org>, Nick DeSaulniers <nnn@google.com>
-Cc: Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	llvm@lists.linux.dev, Tanzir Hasan <tanzirh@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2d3d88e-840d-48b1-86d4-0a89d6143683@redhat.com>
 
-This diff uses an open source tool include-what-you-use (IWYU) to modify
-the include list changing indirect includes to direct includes.
-IWYU is implemented using the IWYUScripts github repository which is a tool that is
-currently undergoing development. These changes seek to improve build times.
+On Tue, Dec 19, 2023 at 06:17:20PM +0100, Marco Pagani wrote:
+> 
+> On 2023-12-19 16:10, Greg Kroah-Hartman wrote:
+> > On Tue, Dec 19, 2023 at 03:54:25PM +0100, Marco Pagani wrote:
+> >>
+> >>
+> >> On 2023-12-18 21:33, Greg Kroah-Hartman wrote:
+> >>> On Mon, Dec 18, 2023 at 09:28:09PM +0100, Marco Pagani wrote:
+> >>>> This patch tentatively set the owner field of fpga_manager_ops to
+> >>>> THIS_MODULE for existing fpga manager low-level control modules.
+> >>>>
+> >>>> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> >>>> ---
+> >>>>  drivers/fpga/altera-cvp.c             | 1 +
+> >>>>  drivers/fpga/altera-pr-ip-core.c      | 1 +
+> >>>>  drivers/fpga/altera-ps-spi.c          | 1 +
+> >>>>  drivers/fpga/dfl-fme-mgr.c            | 1 +
+> >>>>  drivers/fpga/ice40-spi.c              | 1 +
+> >>>>  drivers/fpga/lattice-sysconfig.c      | 1 +
+> >>>>  drivers/fpga/machxo2-spi.c            | 1 +
+> >>>>  drivers/fpga/microchip-spi.c          | 1 +
+> >>>>  drivers/fpga/socfpga-a10.c            | 1 +
+> >>>>  drivers/fpga/socfpga.c                | 1 +
+> >>>>  drivers/fpga/stratix10-soc.c          | 1 +
+> >>>>  drivers/fpga/tests/fpga-mgr-test.c    | 1 +
+> >>>>  drivers/fpga/tests/fpga-region-test.c | 1 +
+> >>>>  drivers/fpga/ts73xx-fpga.c            | 1 +
+> >>>>  drivers/fpga/versal-fpga.c            | 1 +
+> >>>>  drivers/fpga/xilinx-spi.c             | 1 +
+> >>>>  drivers/fpga/zynq-fpga.c              | 1 +
+> >>>>  drivers/fpga/zynqmp-fpga.c            | 1 +
+> >>>>  18 files changed, 18 insertions(+)
+> >>>>
+> >>>> diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
+> >>>> index 4ffb9da537d8..aeb913547dd8 100644
+> >>>> --- a/drivers/fpga/altera-cvp.c
+> >>>> +++ b/drivers/fpga/altera-cvp.c
+> >>>> @@ -520,6 +520,7 @@ static const struct fpga_manager_ops altera_cvp_ops = {
+> >>>>  	.write_init	= altera_cvp_write_init,
+> >>>>  	.write		= altera_cvp_write,
+> >>>>  	.write_complete	= altera_cvp_write_complete,
+> >>>> +	.owner		= THIS_MODULE,
+> >>>
+> >>> Note, this is not how to do this, force the compiler to set this for you
+> >>> automatically, otherwise everyone will always forget to do it.  Look at
+> >>> how functions like usb_register_driver() works.
+> >>>
+> >>> Also, are you _sure_ that you need a module owner in this structure?  I
+> >>> still don't know why...
+> >>>
+> >>
+> >> Do you mean moving the module owner field to the manager context and setting
+> >> it during registration with a helper macro?
+> > 
+> > I mean set it during registration with a helper macro.
+> > 
+> >> Something like:
+> >>
+> >> struct fpga_manager {
+> >> 	...
+> >> 	struct module *owner;
+> >> };
+> >>
+> >> #define fpga_mgr_register(parent, ...) \
+> >> 	__fpga_mgr_register(parent,..., THIS_MODULE)
+> >>
+> >> struct fpga_manager *
+> >> __fpga_mgr_register(struct device *parent, ..., struct module *owner)
+> >> {
+> >> 	...
+> >> 	mgr->owner = owner;
+> >> }
+> > 
+> > Yes.
+> > 
+> > But again, is a module owner even needed?  I don't think you all have
+> > proven that yet...
+> 
+> Programming an FPGA involves a potentially lengthy sequence of interactions
+> with the reconfiguration engine. The manager conceptually organizes these
+> interactions as a sequence of ops. Low-level modules implement these ops/steps
+> for a specific device. If we don't protect the low-level module, someone might
+> unload it right when we are in the middle of a low-level op programming the
+> FPGA. As far as I know, the kernel would crash in that case.
 
-This change to lib/string.c resulted in a preprocessed size of
-lib/string.i from 26371 lines to 5321 lines (-80%) for the x86
-defconfig.
+The only way an unload of a module can happen is if a user explicitly
+asks for it to be unloaded.  So they get what they ask for, right?
 
-Link: https://github.com/ClangBuiltLinux/IWYUScripts
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Tanzir Hasan <tanzirh@google.com>
----
- lib/string.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+How do you "know" it is active?  And why doesn't the normal
+"driver/device" bindings prevent unloading from being a problem?  When
+you unload a module, you stop all ops on the driver, and then unregister
+it, which causes any future ones to fail.
 
-diff --git a/lib/string.c b/lib/string.c
-index be26623953d2..06d9b46875ef 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -15,19 +15,20 @@
-  */
- 
- #define __NO_FORTIFY
--#include <linux/types.h>
--#include <linux/string.h>
--#include <linux/ctype.h>
--#include <linux/kernel.h>
--#include <linux/export.h>
-+#include <linux/bits.h>
- #include <linux/bug.h>
-+#include <linux/ctype.h>
- #include <linux/errno.h>
--#include <linux/slab.h>
-+#include <linux/limits.h>
-+#include <linux/linkage.h>
-+#include <linux/stddef.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
- 
-+#include <asm/page.h>
-+#include <asm/rwonce.h>
- #include <asm/unaligned.h>
--#include <asm/byteorder.h>
- #include <asm/word-at-a-time.h>
--#include <asm/page.h>
- 
- #ifndef __HAVE_ARCH_STRNCASECMP
- /**
+Or am I missing something here?
 
--- 
-2.43.0.472.g3155946c3a-goog
+thanks,
 
+greg k-h
 
