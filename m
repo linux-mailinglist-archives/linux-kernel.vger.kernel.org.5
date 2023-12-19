@@ -1,115 +1,107 @@
-Return-Path: <linux-kernel+bounces-5474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8589E818B10
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:20:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326C7818B13
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC8A41C2459C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:20:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A68941F23215
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055E31CA92;
-	Tue, 19 Dec 2023 15:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6448B1CA91;
+	Tue, 19 Dec 2023 15:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WJHawXb3"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="cI5fDbWI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAC71CA81
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702999203; x=1734535203;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WPUC94aeFkxTDRSMtq6zQgY3UiFBP1Ldi/bE9BU6ccY=;
-  b=WJHawXb3StAQpWwzW6CgiZQHuHnhLGGuDPRvseV53GBdjyk415gr+iNQ
-   61yUx8Ae0gohdngSw1T7WDrPa30zYZMOdm+Y7ExgcK8b/dz3rkii5qdnD
-   bPIXp8v7tTuQKfxWV2cd1R5IIU2akamcCdnbyN+tViIsJUZNejgXBUvb7
-   L2cUhCb91nB3iXnB/YBPVp7wKn2NneWRj3oD6KkO2qjYkKQ3wbBPOdN4t
-   X6Gzad/8/2FKE0OIEzh76fb00sV2ayr4O/J2FF+zjnQRn7KhQvK+9Jh3C
-   OolApd9yyEp5Hx8M/QTj7FUlRqQfO15uufoBs77M1js4/A2LYOCIkcMCU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="2890856"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="2890856"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 07:20:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="810266239"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="810266239"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 19 Dec 2023 07:19:58 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id E2C2623A; Tue, 19 Dec 2023 17:19:56 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	dri-devel@lists.freedesktop.org,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: David Airlie <airlied@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] drm/virtio: Spelling fixes
-Date: Tue, 19 Dec 2023 17:19:55 +0200
-Message-ID: <20231219151955.2477488-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4F71CA81
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d3ae9d1109so5197685ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:22:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1702999360; x=1703604160; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l4X/t+TrQywqn2cB1k4Ph2OrjI7UqsZZQOkDIluIw2Y=;
+        b=cI5fDbWIt3vivpt4qfJ+xERO3f3ISJ+agd8v8pTtWUfwnKWaAi47BNHPynbuTB3As2
+         lx7q6fQeTKA/slGZW2rXjvjZGp1i+UmvbqDb1GT5djDl1PPwA46D/zMsjnip8AwAT1X+
+         ZJ37MG7bjsZtUIfa1ehC5Qx9h6iSXyma7V4h8HQ4/6sRKcxik/ci1e7YS73coDynIehR
+         F79+9ZVoVpp6OziFwUH2hjo+AHW2rC8NMZBMUyI/iXzBQSw8yqyRbV2+fn+5Dlq6JsjU
+         HVsx6aXRviAwcdi4DVW0fXBJi/uQZ8Wwc2Mx5jyphdT9mffEzxNwfz2VCabejT229nij
+         Q93Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702999360; x=1703604160;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l4X/t+TrQywqn2cB1k4Ph2OrjI7UqsZZQOkDIluIw2Y=;
+        b=KbmkKnPnXApCj2l3aPLCXKa7YagYqZyuDlZTSeyfP/cHumIzhlv8kjDcXb7pan3OrP
+         mB5Z169uiLHbpfE5Z0X2qv2Mbsu0M6geDR/Km4VT1fihEE8h1MkpjUwKYhxqtlShPL+X
+         a5PYQmWc+b5nEC81mFkjT/+RsNpUE4AompE9fUAA0suiDLroQvaXjPSFAnekqiF0Ht9p
+         n5+OhIUT/qx2Op7pqYoe0davE5kAGmHscqExHi3/29ZU+YpTPY9W9tuUXqS23brGyOek
+         HXEL8MwjRMr8XDC9cD/WrGwBC3ibudoZV8kVFIldtI8BG+ElQYHQmkidB4am+25mRVHa
+         sqgQ==
+X-Gm-Message-State: AOJu0YyYx2U47CwDkbiYocNVa/oOS12VF9nmcxZKuh/hBFgt6hXVLNyl
+	czb4etcRnbvh317EP7+jMBXU8g==
+X-Google-Smtp-Source: AGHT+IFFVPgVeQrzoWw4fxcoePk6KxRxSLLaAhp376iURBzFhdb+zXuHnkKxClPLX2ufrx/iRuaPgw==
+X-Received: by 2002:a17:902:db12:b0:1d3:dbdc:4c9d with SMTP id m18-20020a170902db1200b001d3dbdc4c9dmr2677146plx.3.1702999360121;
+        Tue, 19 Dec 2023 07:22:40 -0800 (PST)
+Received: from [127.0.0.1] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id s14-20020a170902ea0e00b001cff9cd5129sm4331741plg.298.2023.12.19.07.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 07:22:39 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc: Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>, 
+ Michael William Jonathan <moe@gnuweeb.org>, 
+ io-uring Mailing List <io-uring@vger.kernel.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+ GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>
+In-Reply-To: <20231219115423.222134-1-ammarfaizi2@gnuweeb.org>
+References: <20231219115423.222134-1-ammarfaizi2@gnuweeb.org>
+Subject: Re: [PATCH liburing v1 0/2] Makefile and t/no-mmap-inval updates
+Message-Id: <170299935907.459636.7506375582198265132.b4-ty@kernel.dk>
+Date: Tue, 19 Dec 2023 08:22:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-7edf1
 
-While making a spelling mistake myself for `git grep kvalloc`
-I found that the only file has such a typo. Fix it and update
-to the standard de facto of how we refer to the functions.
-Also spell usr-out as user-out, it seems this driver uses its
-own terminology nobody else can decypher, make it more readable.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpu/drm/virtio/virtgpu_submit.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Tue, 19 Dec 2023 18:54:21 +0700, Ammar Faizi wrote:
+> There are two patches in this series:
+> 
+> 1. Makefile: Remove the `partcheck` target.
+> 
+> Remove the `partcheck` target because it has remained unused for nearly
+> four years, and the associated TODO comment has not been actioned since
+> its introduction in commit:
+> 
+> [...]
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_submit.c b/drivers/gpu/drm/virtio/virtgpu_submit.c
-index 5c514946bbad..1c7c7f61a222 100644
---- a/drivers/gpu/drm/virtio/virtgpu_submit.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_submit.c
-@@ -99,8 +99,8 @@ virtio_gpu_parse_deps(struct virtio_gpu_submit *submit)
- 		return 0;
- 
- 	/*
--	 * kvalloc at first tries to allocate memory using kmalloc and
--	 * falls back to vmalloc only on failure. It also uses __GFP_NOWARN
-+	 * kvmalloc() at first tries to allocate memory using kmalloc() and
-+	 * falls back to vmalloc() only on failure. It also uses __GFP_NOWARN
- 	 * internally for allocations larger than a page size, preventing
- 	 * storm of KMSG warnings.
- 	 */
-@@ -529,7 +529,7 @@ int virtio_gpu_execbuffer_ioctl(struct drm_device *dev, void *data,
- 	virtio_gpu_submit(&submit);
- 
- 	/*
--	 * Set up usr-out data after submitting the job to optimize
-+	 * Set up user-out data after submitting the job to optimize
- 	 * the job submission path.
- 	 */
- 	virtio_gpu_install_out_fence_fd(&submit);
+Applied, thanks!
+
+[1/2] Makefile: Remove the `partcheck` target
+      commit: 4ea77f3a1561bbd3140cc0de03698a67d08f4f27
+[2/2] t/no-mmap-inval: Replace `valloc()` with `t_posix_memalign()`
+      commit: 7524a6adf4d6720a47bfa617b5cb2fd8d57f16d2
+
+Best regards,
 -- 
-2.43.0.rc1.1.gbec44491f096
+Jens Axboe
+
+
 
 
