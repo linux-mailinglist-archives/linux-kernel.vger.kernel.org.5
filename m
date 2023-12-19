@@ -1,94 +1,124 @@
-Return-Path: <linux-kernel+bounces-5572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F0A818C75
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B41818C78
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:41:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91D052876D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:40:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBED628777F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9CA1208BC;
-	Tue, 19 Dec 2023 16:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DAC120DE3;
+	Tue, 19 Dec 2023 16:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="OppyjfV7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+JztzBj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B843B31752;
-	Tue, 19 Dec 2023 16:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A2C9040E00C6;
-	Tue, 19 Dec 2023 16:40:12 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Rr90sW9rsmbo; Tue, 19 Dec 2023 16:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1703004010; bh=N8TQERT7AY2VyJaorMXPyl/oOPj/llXaA3DFOWpy1Ig=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2EDF20327;
+	Tue, 19 Dec 2023 16:40:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E19FC433CA;
+	Tue, 19 Dec 2023 16:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703004020;
+	bh=UrJeoHAbToGIFVIb+Xcf13zbgC5RX/uC16n/ATc0Wpo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OppyjfV7405XNI1UY5ZHnCUGpzNOREqLzP5oMwhiKRTUxQ8xqpvmYwz1NFZ4rxJaA
-	 8OPE7/X4H/cfnj/MFWvE4yMqbSxjvbbVtPkYCNAcC7GrliAVCrAI9X1CMws1hXyrrf
-	 NXnxHv+G3vbOrz0lX6VBC+Z5GXi9xhv2lBEv6RXudAY3mG+edq5qhOe72lhvr1m1cm
-	 z3b5PdDK3/wZi02Paq9kP5b4HqXJS4HyX+fob5zPhtaKIa/xH9gIhNXLjG5YU5xRgc
-	 KFNfHzMB84W5cyJsp5vNURqbEsHmDL182GJAddiarA8iPbnIwnZKs6r1RVryaVhTIr
-	 SfstgSIZ7XP9q4RwfqBF2bVrH3+GXNSNTno3ynWs0mQsxLfn2UuNhvuUKENvdoVNjc
-	 Km7mNR59htLEXRLGj+5BzQoYvuIT6EtDIh3tcZ65ym2Bp6+3PRqTQ25nwKQrdzwmt4
-	 PY+8mTkVC265aIQWMCuO3QvJ+L8+cJc8Vb+wNccQ0+2oQwTvltjg1WCmJIfx/nhg4J
-	 dyNke5T+x+scmfmqm+BaVTvVO24lIYtN2rGv3qwehuPnqR1QFr8ftuU1OzfbkEM0+a
-	 g/AqbAZ/iFKqEo/gY/rQKHKURu/pr5BQkbJWfgmZAvVYvop0KE1qbhpGbEWQJbTiVo
-	 P1haWAvY1xOFnwjtp3jjDVno=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7F6B740E00CB;
-	Tue, 19 Dec 2023 16:40:02 +0000 (UTC)
-Date: Tue, 19 Dec 2023 17:39:56 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-	avadhut.naik@amd.com, tony.luck@intel.com, john.allen@amd.com,
-	william.roche@oracle.com, muralidhara.mk@amd.com
-Subject: Re: [PATCH v4 1/3] RAS: Introduce AMD Address Translation Library
-Message-ID: <20231219163956.GTZYHHXG0rSNKZyIOd@fat_crate.local>
-References: <20231218190406.27479-1-yazen.ghannam@amd.com>
- <20231218190406.27479-2-yazen.ghannam@amd.com>
+	b=Y+JztzBj6Q+lWk209Lf5Rz9LMGwgNxsCPAxj1RKiE9Hai/Ygi1rRSArt3TEMQ+AKl
+	 yTcDQuZuIk3rWI/HTWhLKOs2A7SPpUU4gmGxFAIUlQg587cS/Evr5B7FiWRt/J3WQP
+	 o0Lr4H4Hn8j/zXdLx0DKCeZpn0rO7RsfEHe7GjVptHE13v4j72hdFcsh6sOdjUY+ox
+	 SoLBIbED0cAo7D8lPdSmf0Pq+wmBznH1rfubAuFlP3wCl7IJEeKucxEGv5BCDYlbsY
+	 fWe1hzHZ3SzD+QvLj18dr4aUrZgKgvQXHMk4XLO0aH+2wcIiu7k0/DrI9b/V5a3lYX
+	 ROaEaTwSlzSEQ==
+Date: Tue, 19 Dec 2023 16:40:15 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Elad Nachman <enachman@marvell.com>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
+	sebastian.hesselbarth@gmail.com, pali@kernel.org,
+	mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
+Subject: Re: [PATCH 1/2] dt-bindings: arm64: add Marvell 7k COMe boards
+Message-ID: <20231219-briskness-proving-374376a874c3@spud>
+References: <20231218154431.3789032-1-enachman@marvell.com>
+ <20231218154431.3789032-2-enachman@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bgIjMIk+f7m35qjd"
 Content-Disposition: inline
-In-Reply-To: <20231218190406.27479-2-yazen.ghannam@amd.com>
+In-Reply-To: <20231218154431.3789032-2-enachman@marvell.com>
 
-On Mon, Dec 18, 2023 at 01:04:04PM -0600, Yazen Ghannam wrote:
-> +unsigned long norm_to_sys_addr(u8 socket_id, u8 die_id, u8 coh_st_inst_id, unsigned long addr)
-> +{
-> +	struct addr_ctx ctx;
+
+--bgIjMIk+f7m35qjd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Dec 18, 2023 at 05:44:30PM +0200, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+>=20
+> Add dt bindings for:
+> Armada 7020 COM Express CPU module
+> Falcon DB-98CX85x0 COM Express type 7 Carrier board
+> Falcon DB-98CX85x0 COM Express type 7 Carrier board
+> with an Armada 7020 COM Express CPU module
+>=20
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> ---
+>  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.y=
+aml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+> index 52d78521e412..24d8031a533d 100644
+> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+> @@ -21,6 +21,17 @@ properties:
+>            - const: marvell,armada-ap806-dual
+>            - const: marvell,armada-ap806
+> =20
+> +      - description:
+> +          Falcon (DB-98CX85x0) Development board COM Express Carrier plus
+> +          Armada 7020 SoC COM Express CPU module
+> +        items:
+> +          - const: marvell,armada7020-falcon-carrier
+> +          - const: marvell,db-falcon-carrier
+> +          - const: marvell,armada7020-cpu-module
+> +          - const: marvell,armada7020
+> +          - const: marvell,armada-ap806-dual
+> +          - const: marvell,armada-ap806
 > +
-> +	if (df_cfg.rev == UNKNOWN)
-> +		return -EINVAL;
+>        - description: Armada 7040 SoC
+>          items:
+>            - const: marvell,armada7040
+> --=20
+> 2.25.1
+>=20
 
-Right, I know I suggested this but, will we ever have valid system
-physical addresses in the range of
+--bgIjMIk+f7m35qjd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-0xfffffffffffff001 (-MAX_ERRNO) - 0xffffffffffffffff (-EPERM)
+-----BEGIN PGP SIGNATURE-----
 
-?
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYHHbwAKCRB4tDGHoIJi
+0r52AQCVptlobL+rozOxXgvJoDTVfNuy1jh+4NgtosowA1P02gD/fNkY3+irVsq8
+vzFW78WV3R+9oycwXBcSZR1oW08qdQ0=
+=PiDp
+-----END PGP SIGNATURE-----
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--bgIjMIk+f7m35qjd--
 
