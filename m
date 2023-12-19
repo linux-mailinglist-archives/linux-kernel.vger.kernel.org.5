@@ -1,217 +1,216 @@
-Return-Path: <linux-kernel+bounces-5596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 811B3818CD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:49:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 171C9818CDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4657B252BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:49:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98A221F25A0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B412D603;
-	Tue, 19 Dec 2023 16:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B934836AF7;
+	Tue, 19 Dec 2023 16:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SgWzghve"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Azl9s/nF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BCF31755;
-	Tue, 19 Dec 2023 16:47:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5C99C433C7;
-	Tue, 19 Dec 2023 16:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703004447;
-	bh=we6gDnHjzWtXB38iDs3+0ZZ94OTyknFvETc+KMtcjk8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SgWzghveC/CRQRZaO2+TeTtzgcafaW+zJzJSBPLv9vhdHye219lc7binmqGDJnp2P
-	 nL9VqeU+kwG7R2BU4EqO1AbijJHFynaPyygbgB9DoTEK8wXIsb1sQuudIPcmA5LB1x
-	 PX/I1q8xjG2tPy/fgvLhOuvyQ/2oyjZ4ciCOoynAGDqw6j2IhN6PMqx7taXYb4emT6
-	 08MDiqgdivBxPFwfwxMPMvtF+vHPirbLV9l60gqmxQDWM7PPP+sykht8oHU+1Xcyoj
-	 1oUEAf9dnvIyKWLpzNSQIPgwYHldEq/1evQ2s7dIIlCGHdANit3vtTL3ZwEOl6vZqA
-	 YvJXVaOf3jxgw==
-Date: Tue, 19 Dec 2023 16:47:22 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: "Matyas, Daniel" <Daniel.Matyas@analog.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH 2/3] bindings: hwmon: Add adi,adaq4224_temp as compatible
- string
-Message-ID: <20231219-scraggly-gravel-d677a6eba3cc@spud>
-References: <20231214143648.175336-1-daniel.matyas@analog.com>
- <20231214143648.175336-2-daniel.matyas@analog.com>
- <43c3f6cb-aeb2-40c8-a79d-c2222414b49c@linaro.org>
- <a5bc25d5-f59c-43ce-a44a-3eabc4b2d06c@roeck-us.net>
- <SJ0PR03MB67643A8DD1F7AD8CEF66BBBE8990A@SJ0PR03MB6764.namprd03.prod.outlook.com>
- <86e0e357-5b31-4984-a66f-d27128178470@roeck-us.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CEF364A8;
+	Tue, 19 Dec 2023 16:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703004481; x=1734540481;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=oetnxeft6YahVtinLZb4u6Ax4AjXbd59FAXz7ye9yvc=;
+  b=Azl9s/nF4UwE1/v8FoqXnWyGvQbmrCPmlRCcy/MWsNkRiyAHyAnLIOgE
+   MjKr5ceKQguGLZah6V2ljCIdWBZIV83YRFfF3aAhimoYUlicHs76Vgbj2
+   7mUj/TY2cFW907PSk87kzFvMZA7DM8o3Q4bbVpAMt32rqZt57tf5wWBtM
+   3sZzmdZ/7CS4ndIO6EJMiUAu19LeqMyEyLx2PD0NOgHbgjPDCDIeBJ2Ef
+   D8D8tJZUS/oPG1xXGeGl2y6xasm3yI55JesBF+IetTlIpItDQQSj2H/JN
+   V1W0F3l0UKQX/D4daZcxbxNUkaNyOs/jhI8Y8Q7H/xQOYTNz8y3wDYoIc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="462138764"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="462138764"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 08:48:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="752216268"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="752216268"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Dec 2023 08:47:58 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Dec 2023 08:47:56 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Dec 2023 08:47:54 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 19 Dec 2023 08:47:54 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 19 Dec 2023 08:47:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MOji6RN4tIQ3eRUc0E0DHEupp/Wh6AIi4ioTyMqEluCrELhlKOunONWE+g6RAxOw1lP9Hm5sN24LqhgxWWCR/6VXZsZ4zmsGx1Yy1pQis1G5oD6qH5//ZPDutYndkVvzv4M2LwNwbCM+Wn85iBUoYItFw6wRh8WiaNNQAm1Zh3VVarEJYtx/Fw7stYdvnljtZCmYAnxl0VVduyNnCG4BEJD0Xw/01iuW7SLMNZeUCmpQDwxYw5VWo6AMXcTsO8vutKjGuBYy5FjSoJO9MfDMAzJ9FPMco873OzI+liJNt4vvyypK+u1KBjvEsek+x4RDDN8w92Ne1TfS0scYdh9NPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8ZgA2WL3lvuDCtENH1znb2BvRD0rbzrhehfwd55Atb0=;
+ b=e/hrCqBdnsiv8wcx2ZbCcdElGR3qIi1F5S0qM7YnquwTUOdrYrB3+bSZyxm0+VrVVg3PLNpbFU3RO544os5qL6ss1PTmIeUbYPnIpXfLr7FfUHYzHuXzRmQ5fazHQHQgssk38fWZKP4YQQNgh1iqR5oGyHW6O7NniJ0b3cYxh7luP9gjV+wcTslBI1z4iuq+ksVLAoYzo/YBRL+0WVOPWQLYbix3JBg41kjzpnQCRXVXqOQCZmC5GwEFPHf3NWre34egjto5ZW/Byr+Okk3oRt1DKuc0cDuTWUanmhJU3c201svmJx3hLeUTOoIydhavnCPlp1DRM5QG9TCq7jMjdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ LV3PR11MB8556.namprd11.prod.outlook.com (2603:10b6:408:1b4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
+ 2023 16:47:50 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ee54:9452:634e:8c53]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ee54:9452:634e:8c53%7]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
+ 16:47:50 +0000
+Date: Tue, 19 Dec 2023 17:47:44 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Vladimir Oltean <vladimir.oltean@nxp.com>
+CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, "Tony
+ Nguyen" <anthony.l.nguyen@intel.com>, =?iso-8859-1?Q?Bj=F6rn_T=F6pel?=
+	<bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, "Jonathan
+ Lemon" <jonathan.lemon@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Larysa Zaremba
+	<larysa.zaremba@intel.com>
+Subject: Re: [PATCH net-next] xsk: make struct xsk_cb_desc available outside
+ CONFIG_XDP_SOCKETS
+Message-ID: <ZYHJMM6pjwD0UbqW@boxer>
+References: <20231219110205.1289506-1-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231219110205.1289506-1-vladimir.oltean@nxp.com>
+X-ClientProxiedBy: FR0P281CA0068.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:49::13) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oDv1AnXBRXc1GwHh"
-Content-Disposition: inline
-In-Reply-To: <86e0e357-5b31-4984-a66f-d27128178470@roeck-us.net>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|LV3PR11MB8556:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73ecb61c-548b-45e5-4dc5-08dc00b23caa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nSwHS+R6wX9NVjh/bZAIPFJAH0tFFT0UmuJNevtbWQPEgr7cFbdbyatSaruC6dPp183Bfe57FEftG3vybf2VxBUJi2UOwgw2shXglhRTuVBBq/KhhHQHVxOA7/RBjNTlgtEw8B5h0ZNxzvRJqEUN51uKsFbbwAOd3KEON8XtXz14gpCSebhANN0+x/wgNSMGANHgTFOiEXJ2vAvR0cCZdMsC4B7T28Cn3orr+BwClDKNUQPX2QzapCVogHBNYj3SHsgKGP8uhVWdWmgQDmOoK5KMdjEyA46q/GlVWRxt2b5v69nYKPeJZioev+RJw7hmnfL+DmycFdMTpKJuQVg5yW0pH2bP+ccX4cDCYbI0sw0y9BI5y65CYQs4ZGoD2cpas+iAANauGr53wJMB7cKWaJRxKG40B/lVr67g9bxbgDAFM1wIMZQpxp5cBezW8zbzLyRWWt0bUILYVJqhQQtLOXkBLnwM1T6oAhdSRQT8zEin31Js8qmPN3AjjN4poSNuCcdxso8sp1o0dDBWRAkcefN3AO4JRerQ+gzeTOmQlh0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(136003)(376002)(39860400002)(366004)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(83380400001)(107886003)(6512007)(9686003)(6506007)(4326008)(44832011)(5660300002)(41300700001)(966005)(7416002)(2906002)(316002)(6666004)(33716001)(478600001)(8676002)(54906003)(6486002)(8936002)(66556008)(6916009)(86362001)(66946007)(66476007)(82960400001)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9Exq5+Ri8OOoAixdyKDFW1jYx0ouXWqqCxJ+tvyaHOMfbqNb49ygsLdeb7Gw?=
+ =?us-ascii?Q?hc0B1p32L/y46SW4Fv3mq4mEf2D9q9sofbU8heRnAL6OCpq+Zlr69jVSqEJM?=
+ =?us-ascii?Q?E0233nB5YlxyzhssSvfGlhJBvbD85H8xpQ2KJmidWJVxtUWfvL6ki3HCczWA?=
+ =?us-ascii?Q?xHFG0Us/oBHpDPeQjOf05y+C6Rr7qIFGViBXQ61TVik8u6l9ooTQl++tbhF1?=
+ =?us-ascii?Q?EI2bKpO3zMZLcRl7JfPUPR/bR1gpRzzSlnXWPYwTxMHROhRG0qWjNnvcuHIH?=
+ =?us-ascii?Q?O7gYb0iAdGyi3aU5tfVc5TKbp3UlsIrZUFC3hOmWXr4VVHNylhSpS1QZobjD?=
+ =?us-ascii?Q?g3g+1EtU2cc+hp8s/57nkE+sWKLkbqbag3r6x9zO4GKqHutaR0+G9JFPo/C7?=
+ =?us-ascii?Q?MiWb4EKTbkqdLvSbZEnNUYBHwQgcVLYS+FoU5Oh0KiG3oE1CRsj3VC+8k8jo?=
+ =?us-ascii?Q?ulRyoWoDXfaVLqR7H+NnQKD1XyRSxdtG4C7q8xT8WBf8BZH1VPUSRW9CZJE1?=
+ =?us-ascii?Q?Y+fdowWzqiXM5by4gn8MkNcFSrYZUe5Fg/oFzmkrxnezlwQX7Joqx1wm5Was?=
+ =?us-ascii?Q?fBdNcRz8aXHCwOOwIa083o3XFBwJlXbebA5FWeouqwT5ljurdYfQewqGbxnB?=
+ =?us-ascii?Q?+3OMTqCiR19V0UU9IBa6iAJC9g9AsTlZqaDItsELqIzEk/at34RwoOwuMkaO?=
+ =?us-ascii?Q?ETNctuKH0EMm6LRn4S4Tz/j/JLOievVxqZlUAqBB7cYugktSMWR1PK9tA+eC?=
+ =?us-ascii?Q?yBD5D5/D3q1GHuBm2FzWugugxEixCZj+HeokOFUH52MP79nt+20Gp67IG/cP?=
+ =?us-ascii?Q?YjIzDtZxOv7PCYTaQrn2zA33c5/6Yqb1/b5JZVhEGg0XtKfxdKZxfyjZtc9L?=
+ =?us-ascii?Q?U2ekt++qw/JnkoI8cgK1xuhqX9I3Y3aOyAXkZplXARqjZ7KgdXUvWZwjGgvq?=
+ =?us-ascii?Q?mcEoMgtRZFz2fzKRQhj5JsttaXiCOTMI/sZdPkUQgkA0y1ooZaXSDiEBEuKI?=
+ =?us-ascii?Q?LGc3J6kacfIs7Ugb+1yrkWGyMn3KtfGN2F7xKyT87U3papoUUYiGCxOQX6tI?=
+ =?us-ascii?Q?BAAx5yVnUb2MBagPKNSoSY+WaighDprymSEti1zozjuZZDfXKHYdhRCIj5U0?=
+ =?us-ascii?Q?f6QUACkeP8kwNPLe8AIYq/hRvU06ovnruYYTFfwhxqTpVJ7fs7Uve208RW/+?=
+ =?us-ascii?Q?/9SnCJvs6A/VmM9pZAHUG4eAxu8LigUrQeJ9aQPGg0H25qEekYENL+h0g2x5?=
+ =?us-ascii?Q?C/PKZ13iWMienmH+eoMr7iLveli/834eYLTh/7pueLLXsJ9e232KSfWR2F+Z?=
+ =?us-ascii?Q?v3qGjvrcTq0Z2eK0yd3O4tZgs/hQKIwTYp7xHWRopmm5AsbuXK+jswuIIz8g?=
+ =?us-ascii?Q?BuxzUo9Lk5797q2DTpzTr/U7dJ7DvX5YZczYeaodbxdvBSIny3mvLZ+lJaRc?=
+ =?us-ascii?Q?ZFo3zpaYt4oeztIaA1tG6gmXGRCEENcq+hqJfmBFbpwHHBOcSzj5ExIK9NPC?=
+ =?us-ascii?Q?COj0VpTUXSXSuDUADKbv8Fgd+YeK/L7XJZATgGDfMumDWflOmN3sVHP0XQpL?=
+ =?us-ascii?Q?vV3Kpuhc1KVUIhATI1AvFTCaZyQVZMLe990nsTGXUB4sv+yZlF2ziBzNaxUS?=
+ =?us-ascii?Q?EA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73ecb61c-548b-45e5-4dc5-08dc00b23caa
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 16:47:50.2818
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mrfPNmGbqqeu8CnT5yQ5AGMXo+d7/c3ViMBudqf5uSE1USZw8orSgFyyCNthztUBPaTDfo0k0bM2lETZbNPeWPaqxg7ZEFuz4uAtdexwtOs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8556
+X-OriginatorOrg: intel.com
 
+On Tue, Dec 19, 2023 at 01:02:05PM +0200, Vladimir Oltean wrote:
+> The ice driver fails to build when CONFIG_XDP_SOCKETS is disabled.
+> 
+> drivers/net/ethernet/intel/ice/ice_base.c:533:21: error:
+> variable has incomplete type 'struct xsk_cb_desc'
+>         struct xsk_cb_desc desc = {};
+>                            ^
+> include/net/xsk_buff_pool.h:15:8: note:
+> forward declaration of 'struct xsk_cb_desc'
+> struct xsk_cb_desc;
+>        ^
+> 
+> Fixes: d68d707dcbbf ("ice: Support XDP hints in AF_XDP ZC mode")
+> Closes: https://lore.kernel.org/netdev/8b76dad3-8847-475b-aa17-613c9c978f7a@infradead.org/
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
---oDv1AnXBRXc1GwHh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-On Mon, Dec 18, 2023 at 09:22:19AM -0800, Guenter Roeck wrote:
-> On 12/18/23 01:08, Matyas, Daniel wrote:
-> >=20
-> >=20
-> > > -----Original Message-----
-> > > From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
-> > > Sent: Friday, December 15, 2023 6:03 PM
-> > > To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Matyas, Dan=
-iel
-> > > <Daniel.Matyas@analog.com>
-> > > Cc: Jean Delvare <jdelvare@suse.com>; Rob Herring
-> > > <robh+dt@kernel.org>; Krzysztof Kozlowski
-> > > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> > > <conor+dt@kernel.org>; Jonathan Corbet <corbet@lwn.net>; linux-
-> > > hwmon@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> > > kernel@vger.kernel.org; linux-doc@vger.kernel.org
-> > > Subject: Re: [PATCH 2/3] bindings: hwmon: Add adi,adaq4224_temp as
-> > > compatible string
-> > >=20
-> > > [External]
-> > >=20
-> > > On 12/15/23 00:49, Krzysztof Kozlowski wrote:
-> > > > On 14/12/2023 15:36, Daniel Matyas wrote:
-> > > > > In the device ada4224 the max31827 temperature sensor will be use=
-d,
-> > > > > so the default values corresponding to adaq4224_temp are the same
-> > > for
-> > > > > max31827.
-> > > > >=20
-> > > > > Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
-> > > >=20
-> > > > Please use subject prefixes matching the subsystem. You can get them
-> > > > for example with `git log --oneline -- DIRECTORY_OR_FILE` on the
-> > > > directory your patch is touching.
-> > > >=20
-> > > > > ---
-> > > > >    Documentation/devicetree/bindings/hwmon/adi,max31827.yaml | 5
-> > > ++++-
-> > > > >    1 file changed, 4 insertions(+), 1 deletion(-)
-> > > > >=20
-> > > > > diff --git
-> > > > > a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> > > > > b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> > > > > index f60e06ab7d0a..9f3b0839aa46 100644
-> > > > > --- a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> > > > > +++
-> > > b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> > > > > @@ -20,6 +20,7 @@ properties:
-> > > > >          - const: adi,max31827
-> > > > >          - items:
-> > > > >              - enum:
-> > > > > +              - adi,adaq4224_temp
-> > > >=20
-> > > > Underscores are not allowed
-> > > >=20
-> > >=20
-> > > That isn't the main problem with this patch.
-> > > https://urldefense.com/v3/__https://github.com/analogdevicesinc/linux/
-> > > tree/dev_adaq4224_dts__;!!A3Ni8CS0y2Y!_2D1w1DD5sjJrNyArZYZ3QW9
-> > > nS8URmP6X0n6R7q1sBnDB1HPL6jROhD_w9u3fJixt2hDDNtO6VpgLM1Jka
-> > > Q$
-> > > suggests that it may be a development system which utilizes the
-> > > max31827.
-> > >   From there, we can see that there is a devicetree description of a =
-board
-> > > with that name which uses
-> > >=20
-> > >                   temperature1: temperature@5f {
-> > >                           compatible =3D "adi,adaq4224_temp";
-> > >                           reg =3D <0x5f>;
-> > >                           vref-supply =3D <&vio>;
-> > >=20
-> > >                           adi,comp-int;
-> > >                           adi,alarm-pol =3D <0>;
-> > >                           adi,fault-q =3D <1>;
-> > >                           adi,timeout-enable;
-> > >                   };
-> > >=20
-> > > That doesn't make sense to me. I don't know why they don't just
-> > > reference max31827.
-> > > I am most definitely not going to accept a driver change just to map
-> > > adi,adaq4224_temp (or adi,adaq4224-temp) to the actually used
-> > > temperature sensor chip. If we start accepting that, we'd end up with=
- no
-> > > end of "<vendor>,<board_name>-{temp,voltage,current,power,...}"
-> > > compatibles.
-> > >=20
-> > > Looking more into the above mentioned repository/branch, an earlier
-> > > version of the dts file did reference adi,max31827 for that chip. It =
-also
-> > > looks like there may be an adaq4224 ADC (per drivers/iio/adc/ad4630.c=
-),
-> > > but that would be a SPI chip. It seems highly unlikely that a SPI ADC=
- would
-> > > have a separate I2C interface connected to a temperature sensor.
-> > > Confusing.
-> > >=20
-> > > There is also some indication that this may some IP to be loaded into=
- an
-> > > FPGA.
-> > > which utilizes an FPGA implementation of max31827 (or maybe connects
-> > > to one).
-> > > If that is the case, it should still be referenced as max31827.
-> > >=20
-> > > All that wasted time because of "let's provide as little as possible
-> > > information about what we are actually doing" :-(.
-> > >=20
-> > > Guenter
-> >=20
-> > I asked around to get some more clarification on the matter. There will=
- be a new chip released, named adaq4224. This chip will have the max31827 i=
-mplemented in the silicon, so the driver used to get temperature informatio=
-n would be max31827.c. The chip will have spi and i2c communication too. Th=
-e other driver you mentioned, the ad4630.c will communicate through spi.
-> >=20
-> > Because the chip has a different name, I was asked to add a new label f=
-or the max31827, so that it will be clear for the user, that the max31827 i=
-s part of the chip.
-> >=20
->=20
-> It is still a max31827 core. If there is no difference in programming
-> to max31827, it can possibly be reflected in devicetree as
-> "adi,adaq4224-temp", in addition to "adi,max31827". This would not
-> require a change in the driver code as "adi,max31827" would still
-> be mandatory.
+Thanks Vladimir for acting upon this. Later on let us think about moving
+this definition to xdp_sock.h maybe.
 
-I am inclined to agree, but it is very hard to review these bindings
-when only partial functionality of the hardware is submitted. Then
-subtract any documentation of the device from the picture and clearly
-reviewing becomes quite challenging.
-
---oDv1AnXBRXc1GwHh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYHJGgAKCRB4tDGHoIJi
-0r5ZAQD2OUq3Tet+pNyBthNr4GLGNP/UcqLAwUxJQEQkwFYTQgD+PmkagnoaRIHv
-7KA7azTlh3z0MCTtg6pX4n35iw06SwU=
-=y1Tm
------END PGP SIGNATURE-----
-
---oDv1AnXBRXc1GwHh--
+> ---
+> Posting to net-next since this tree is broken at this stage, not only
+> bpf-next.
+> 
+>  include/net/xdp_sock_drv.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+> index b62bb8525a5f..526c1e7f505e 100644
+> --- a/include/net/xdp_sock_drv.h
+> +++ b/include/net/xdp_sock_drv.h
+> @@ -12,14 +12,14 @@
+>  #define XDP_UMEM_MIN_CHUNK_SHIFT 11
+>  #define XDP_UMEM_MIN_CHUNK_SIZE (1 << XDP_UMEM_MIN_CHUNK_SHIFT)
+>  
+> -#ifdef CONFIG_XDP_SOCKETS
+> -
+>  struct xsk_cb_desc {
+>  	void *src;
+>  	u8 off;
+>  	u8 bytes;
+>  };
+>  
+> +#ifdef CONFIG_XDP_SOCKETS
+> +
+>  void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries);
+>  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc);
+>  u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max);
+> -- 
+> 2.34.1
+> 
 
