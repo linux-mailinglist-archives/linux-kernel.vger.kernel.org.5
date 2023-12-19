@@ -1,133 +1,128 @@
-Return-Path: <linux-kernel+bounces-6119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9492B8194D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:56:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D4CF8194D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 494121F2242D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:56:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05A24B22EB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BF640BEC;
-	Tue, 19 Dec 2023 23:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="GOFGxc/E"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6DD3FB0C;
+	Tue, 19 Dec 2023 23:58:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA03F40BE3;
-	Tue, 19 Dec 2023 23:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1703030168;
-	bh=NLVVHDWoo4m9iV9XvG532dnuIVRB29z5UhevReT02ss=;
-	h=Date:From:To:Cc:Subject:From;
-	b=GOFGxc/EXg4t8Q81hlp7wTBJEzma4pTGro4f+Ku01X+fHL19gw6Wpe8ElOYWhSQL7
-	 8kWez2H7MtSv3unqU1vGc7xZbsx4r6cAQJRY2eCUjUEAsslqChDSXJSFo3qIEA/6cc
-	 Uyak7e09rnA/RuOleRw0VacSqoGSITzmByv9YbH/OWxLkHZtLckBjHU+gWU+7qfi/1
-	 GDAh78GAZvG3TpDIlbsQPG8sndNsVLfoGQSDD2Xuyz2m0es/eImTdNvi/sNF+9RU0y
-	 grEdvV5QDDA0RRACyPximZtPItWkeGzsuLfJHSbYLlQ3D1XktDULHo1tlOgaTsogwq
-	 myp8nwp313cOw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Svtr65D82z4wdB;
-	Wed, 20 Dec 2023 10:56:06 +1100 (AEDT)
-Date: Wed, 20 Dec 2023 10:56:05 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Al Viro <viro@ZenIV.linux.org.uk>, Miklos Szeredi <miklos@szeredi.hu>,
- Amir Goldstein <amir73il@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the vfs tree with the overlayfs-fixes
- tree
-Message-ID: <20231220105605.6f288fb6@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044EE3EA95
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7f94a4e22so87774439f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:58:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703030304; x=1703635104;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6RPUwxcaMGcNgknXbLzKNZenAsKBOcBCmI4hbQ536sU=;
+        b=TEKOc88ihjTDuEPB5kPx5adQgmK20yRWbFoR4CwnWmL8kXM5aJSsR9VGvOU/l4Zgjd
+         Bo+mH096qgpT4AUtutoYm582TSMFBCJDE3VFuCiLqEvLj6UoRtLFnLlUairgPq/5gcd2
+         ZpuVWQjUJ9DoDA3CaQrsA7A5TyydjTw8PrXBTGN9xBspuCVSnMU4VJECyHwwCl62OM5O
+         Mae7RQNslb+AAepheiKNL0klYzHfSwy/SIT0pAJm8bIec0UWQyH0AFTBdS2OCmk2AWnr
+         LwgsQdLU/wAJJJA36nUhfw7RuMGoyr/eBcmbOyaDmU1gvb5grjKEx5Mb2vz+lr9I/+De
+         zYkA==
+X-Gm-Message-State: AOJu0Yzft1nCyjVaUp2i6LdEcaMMJoS/1wXxPOsdUlkCCfqLUp+mfW5p
+	XKN2carN6gOZ6LZE0g/fS2u+kekLOGr63eNLbAWtxSAN0Kpr
+X-Google-Smtp-Source: AGHT+IEdyoSXQSBEDKJGIuMT2YXVb+CmvXMv//Nae85gDsZk3xglbfdnyAl5X9qD1qZKp3jP2GiZl1dYh/BEG6nhSFc5h9Ea5nqy
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6g6=DC18imHbQW_6+JNOh7b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a92:d147:0:b0:35d:6c12:a6e4 with SMTP id
+ t7-20020a92d147000000b0035d6c12a6e4mr1064502ilg.1.1703030304085; Tue, 19 Dec
+ 2023 15:58:24 -0800 (PST)
+Date: Tue, 19 Dec 2023 15:58:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000511e9a060ce5a45c@google.com>
+Subject: [syzbot] [arm?] WARNING in do_sve_acc
+From: syzbot <syzbot+95ffb6a83b20ea7f4f55@syzkaller.appspotmail.com>
+To: catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
---Sig_/6g6=DC18imHbQW_6+JNOh7b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot found the following issue on:
 
-Today's linux-next merge of the vfs tree got a conflict in:
+HEAD commit:    3f7168591ebf Merge tag '6.7-rc5-smb3-client-fixes' of git:..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=108baf71e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8cf3c4f966189832
+dashboard link: https://syzkaller.appspot.com/bug?extid=95ffb6a83b20ea7f4f55
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-  fs/overlayfs/copy_up.c
+Unfortunately, I don't have any reproducer for this issue yet.
 
-between commit:
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-3f716859.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/fc2a62c05f31/vmlinux-3f716859.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4dac83fca8af/Image-3f716859.gz.xz
 
-  413ba91089c7 ("ovl: fix dentry reference leak after changes to underlying=
- layers")
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+95ffb6a83b20ea7f4f55@syzkaller.appspotmail.com
 
-from the overlayfs-fixes tree and commit:
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 16446 at arch/arm64/kernel/fpsimd.c:1394 do_sve_acc+0x6c/0x10c arch/arm64/kernel/fpsimd.c:1393
+Modules linked in:
+CPU: 0 PID: 16446 Comm: syz-executor.0 Not tainted 6.7.0-rc5-syzkaller-00134-g3f7168591ebf #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 01400009 (nzcv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+pc : do_sve_acc+0x6c/0x10c arch/arm64/kernel/fpsimd.c:1394
+lr : do_sve_acc+0x5c/0x10c arch/arm64/kernel/fpsimd.c:1391
+sp : ffff800082d1be60
+x29: ffff800082d1be60 x28: fbff00000648af40 x27: 0000000000000000
+x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+x23: 0000000080001000 x22: 0000ffffa04568d4 x21: 00000000ffffffff
+x20: fbff00000648bec8 x19: fbff00000648af40 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
+x8 : faff000029208888 x7 : 0000000000000000 x6 : 000000000000003f
+x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
+x2 : 0000000000000000 x1 : ffff7ffffd52e000 x0 : 0000000000800000
+Call trace:
+ do_sve_acc+0x6c/0x10c arch/arm64/kernel/fpsimd.c:1393
+ el0_sve_acc+0x2c/0x98 arch/arm64/kernel/entry-common.c:580
+ el0t_64_sync_handler+0xf4/0x12c arch/arm64/kernel/entry-common.c:708
+ el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
+---[ end trace 0000000000000000 ]---
 
-  a8b0026847b8 ("rename(): avoid a deadlock in the case of parents having n=
-o common ancestor")
 
-from the vfs tree.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
---=20
-Cheers,
-Stephen Rothwell
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-diff --cc fs/overlayfs/copy_up.c
-index 696478f09cc1,e44dc5f66161..000000000000
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@@ -779,13 -757,14 +779,15 @@@ static int ovl_copy_up_workdir(struct o
-  	 * lock ordering with sb_writers, which shouldn't be held when calling
-  	 * ovl_copy_up_data(), so lock workdir and destdir and make sure that
-  	 * temp wasn't moved before copy up completion or cleanup.
- -	 * If temp was moved, abort without the cleanup.
-  	 */
-  	ovl_start_write(c->dentry);
-- 	if (lock_rename(c->workdir, c->destdir) !=3D NULL ||
-- 	    temp->d_parent !=3D c->workdir) {
-+ 	trap =3D lock_rename(c->workdir, c->destdir);
-+ 	if (trap || temp->d_parent !=3D c->workdir) {
- +		/* temp or workdir moved underneath us? abort without cleanup */
- +		dput(temp);
-  		err =3D -EIO;
-+ 		if (IS_ERR(trap))
-+ 			goto out;
-  		goto unlock;
-  	} else if (err) {
-  		goto cleanup;
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
---Sig_/6g6=DC18imHbQW_6+JNOh7b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWCLZUACgkQAVBC80lX
-0Gy9ZQf/TKvMMRNi2k9D3lsqVxFiufLXa2OFmMjxwlWt31G/X7V0Xahdf4Rsbiye
-n8x6fxhIHw4Q8dnGjVxHibQqChCb7LCzIW/g7Wdk3LlgnnBRzxBeJWNKN04309LA
-LHw943nz7ZLTgilDCs6Yztzf7Rzlj6fT/guFCxDIEqK2bGhS/KSoIFO10fO+kdI4
-p23fevEVZIH7WuzTeQHtDln+29HWBGVKjfhrB7yeVhzlOTmm1UX7b73DRS44RfV3
-C5sCicivmXoBau2TKyb0hpOPN9dtHH2aTjfbGIToDzC77DAjgGeKf/C8GbUIi7ID
-6cLLrcDDrRc7FXNfNSKIzQNCc7Bc3A==
-=fRHf
------END PGP SIGNATURE-----
-
---Sig_/6g6=DC18imHbQW_6+JNOh7b--
+If you want to undo deduplication, reply with:
+#syz undup
 
