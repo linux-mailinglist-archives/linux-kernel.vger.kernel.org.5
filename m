@@ -1,219 +1,239 @@
-Return-Path: <linux-kernel+bounces-5920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E8481918A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:33:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D50819184
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22786B25266
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:33:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75C981F275F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B3239AEC;
-	Tue, 19 Dec 2023 20:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA712FE08;
+	Tue, 19 Dec 2023 20:32:20 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C2F39AD0;
-	Tue, 19 Dec 2023 20:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
-	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJI4Nsj024775;
-	Tue, 19 Dec 2023 15:32:27 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3v3g4s8f76-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 15:32:26 -0500 (EST)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3BJKWPNJ064498
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 19 Dec 2023 15:32:25 -0500
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 19 Dec 2023 15:32:24 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 19 Dec 2023 15:32:24 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 19 Dec 2023 15:32:24 -0500
-Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3BJKW5Om030174;
-	Tue, 19 Dec 2023 15:32:07 -0500
-From: Marcelo Schmitt <marcelo.schmitt@analog.com>
-To: <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
-        <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
-        <Michael.Hennerich@analog.com>, <lars@metafoo.de>, <jic23@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <dan.carpenter@linaro.org>,
-        <dlechner@baylibre.com>, <marcelo.schmitt1@gmail.com>
-CC: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v5 09/11] dt-bindings: iio: Add AD7091R-8
-Date: Tue, 19 Dec 2023 17:32:04 -0300
-Message-ID: <632eb34801ae54feda453b6a65d60fc8ac2891fd.1703013352.git.marcelo.schmitt1@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1703013352.git.marcelo.schmitt1@gmail.com>
-References: <cover.1703013352.git.marcelo.schmitt1@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C11F3B189;
+	Tue, 19 Dec 2023 20:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5909156aea9so824263eaf.0;
+        Tue, 19 Dec 2023 12:32:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703017937; x=1703622737;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rz5E3fjvqMyLiddSP1uy19E5YF0I/DE0BxWP+hMc2sY=;
+        b=Srs7JWmRR6w4JVHEzSM/ON8hMG5CuVWPuaU6f5WMUVyWBeexb0R+ctE3e+vZmrB7J+
+         ugI1xkeuzi65qA4JEJHfYm4RmQLQ91mDU8kzetDEz5E3nXV6orWIfxRwX9QLWdR6Qkv5
+         Hd/PHhvHhoFDRspJOU1EuAmpVKqG+UrdN4r4mGYaaNl7suANUfHwnPGkUjLV4p7iCabO
+         Y2o5pGTOMDUtd4cwpj9GHSJtxW7hoIr2FkuREJjX0IkmVDjmKZU1VwmXRcjkjp3SJAy1
+         kQr5L8GxDrAbhxMXRZk0zK5s60sG+zXqGiHZPLVEx1uxjTvfBYVwSDTEHttP6Z2ddQTr
+         tz8A==
+X-Gm-Message-State: AOJu0YzquOFZQxk8ePQLm8PvNOSKRyJhH/U88CWLCkvwaAOk3c56DLeS
+	DlugQIs/VGEs22glnHrPm/kX3ALJq/LKjCYb98Q=
+X-Google-Smtp-Source: AGHT+IFrvP3cd4l9qiGv8wHmvWjEFk33NEFWy3dIkDhtiPiXQFYL1qUAv1fkOpeyH7+Sf1CUIrnD+1hfXn0GhEHxN/c=
+X-Received: by 2002:a05:6820:2484:b0:591:4861:6b02 with SMTP id
+ cq4-20020a056820248400b0059148616b02mr21185640oob.1.1703017937385; Tue, 19
+ Dec 2023 12:32:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: 4pq9g2vjMxkJG4rhify5c23kyB9YT0k2
-X-Proofpoint-GUID: 4pq9g2vjMxkJG4rhify5c23kyB9YT0k2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
- clxscore=1011 mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312190153
+References: <170245316678.651355.6640896026073025688.stgit@mhiramat.roam.corp.google.com>
+ <170245317569.651355.7858730719579399805.stgit@mhiramat.roam.corp.google.com>
+In-Reply-To: <170245317569.651355.7858730719579399805.stgit@mhiramat.roam.corp.google.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 19 Dec 2023 21:32:06 +0100
+Message-ID: <CAJZ5v0j1eD9soyh2JmqfphvwVBApKD_ikFOr3+XYvS4f_0cboA@mail.gmail.com>
+Subject: Re: [PATCH v6] PM: sleep: Expose last succeeded resumed timestamp in sysfs
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, suleiman@google.com, briannorris@google.com, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add device tree documentation for AD7091R-8.
+On Wed, Dec 13, 2023 at 8:39=E2=80=AFAM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
+>
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+>
+> Expose last succeeded resumed timestamp as last_success_resume_time
+> attribute of suspend_stats in sysfs so that user can use this time
+> stamp as a reference point of resuming user space.
+>
+> There are some printk()s for printing the similar resume timing to
+> dmesg, but those are recorded with local_clock(), and user can not
+> compare it with current time.
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
----
- .../bindings/iio/adc/adi,ad7091r5.yaml        | 82 ++++++++++++++++++-
- 1 file changed, 78 insertions(+), 4 deletions(-)
+You'd need to explain why.
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
-index ce7ba634643c..ddec9747436c 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
-@@ -4,36 +4,92 @@
- $id: http://devicetree.org/schemas/iio/adc/adi,ad7091r5.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Analog Devices AD7091R5 4-Channel 12-Bit ADC
-+title: Analog Devices AD7091R-2/-4/-5/-8 Multi-Channel 12-Bit ADCs
- 
- maintainers:
-   - Michael Hennerich <michael.hennerich@analog.com>
-+  - Marcelo Schmitt <marcelo.schmitt@analog.com>
- 
- description: |
--  Analog Devices AD7091R5 4-Channel 12-Bit ADC
-+  Analog Devices AD7091R5 4-Channel 12-Bit ADC supporting I2C interface
-   https://www.analog.com/media/en/technical-documentation/data-sheets/ad7091r-5.pdf
-+  Analog Devices AD7091R-2/AD7091R-4/AD7091R-8 2-/4-/8-Channel 12-Bit ADCs
-+  supporting SPI interface
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/AD7091R-2_7091R-4_7091R-8.pdf
- 
- properties:
-   compatible:
-     enum:
-+      - adi,ad7091r2
-+      - adi,ad7091r4
-       - adi,ad7091r5
-+      - adi,ad7091r8
- 
-   reg:
-     maxItems: 1
- 
-+  vdd-supply:
-+    description:
-+      Provide VDD power to the sensor (VDD range is from 2.7V to 5.25V).
-+
-+  vdrive-supply:
-+    description:
-+      Determines the voltage level at which the interface logic will operate.
-+      The V_drive voltage range is from 1.8V to 5.25V and must not exceed VDD by
-+      more than 0.3V.
-+
-   vref-supply:
-     description:
-       Phandle to the vref power supply
- 
--  interrupts:
-+  convst-gpios:
-+    description:
-+      GPIO connected to the CONVST pin.
-+      This logic input is used to initiate conversions on the analog
-+      input channels.
-     maxItems: 1
- 
-+  reset-gpios:
-+    maxItems: 1
-+
-+  interrupts:
-+    description:
-+      Interrupt for signaling when conversion results exceed the high limit for
-+      ADC readings or fall below the low limit for them. Interrupt source must
-+      be attached to ALERT/BUSY/GPO0 pin.
-+    maxItems: 1
- 
- required:
-   - compatible
-   - reg
- 
--additionalProperties: false
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+  # AD7091R-2 does not have ALERT/BUSY/GPO pin
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,ad7091r2
-+    then:
-+      properties:
-+        interrupts: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,ad7091r2
-+              - adi,ad7091r4
-+              - adi,ad7091r8
-+    then:
-+      required:
-+        - convst-gpios
-+
-+unevaluatedProperties: false
- 
- examples:
-   - |
-@@ -51,4 +107,22 @@ examples:
-             interrupt-parent = <&gpio>;
-         };
-     };
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        adc@0 {
-+            compatible = "adi,ad7091r8";
-+            reg = <0x0>;
-+            spi-max-frequency = <1000000>;
-+            vref-supply = <&adc_vref>;
-+            convst-gpios = <&gpio 25 GPIO_ACTIVE_LOW>;
-+            reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
-+            interrupts = <22 IRQ_TYPE_EDGE_FALLING>;
-+            interrupt-parent = <&gpio>;
-+        };
-+    };
- ...
--- 
-2.42.0
+> We also have tracing events but it requires CAP_SYS_ADMIN to use it.
+>
+> This suspend_stats attribute is easy to access and only expose the
+> timestamp in CLOCK_MONOTONIC. User can find the actual resumed
+> time and measure the elapsed time from the time when the kernel
+> finished the resume
 
+So now it is the time when the kernel has started thawing tasks.
+
+> to the user-space action (e.g. display the UI)
+> and use it as a performance metric of user process resuming time.
+
+The whole "user process resuming time" idea is highly questionable,
+because it assumes that the user space task has been notified of the
+system suspend somehow and so it knows that it will be resuming
+subsequently.
+
+I'm wondering what exactly is going on?
+
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  Changes in v6:
+>   - Fix to record resume time before thawing user processes.
+>  Changes in v5:
+>   - Just updated for v6.7-rc3.
+>  Changes in v4.1:
+>   - Fix document typo (again).
+>  Changes in v4:
+>   - Update description to add why.
+>   - Fix document typo.
+>  Changes in v3:
+>   - Add (unsigned long long) casting for %llu.
+>   - Add a line after last_success_resume_time_show().
+>  Changes in v2:
+>   - Use %llu instead of %lu for printing u64 value.
+>   - Remove unneeded indent spaces from the last_success_resume_time
+>     line in the debugfs suspend_stat file.
+> ---
+>  Documentation/ABI/testing/sysfs-power |   10 ++++++++++
+>  include/linux/suspend.h               |    2 ++
+>  kernel/power/main.c                   |   15 +++++++++++++++
+>  kernel/power/suspend.c                |    3 +++
+>  4 files changed, 30 insertions(+)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-power b/Documentation/ABI/te=
+sting/sysfs-power
+> index a3942b1036e2..e14975859766 100644
+> --- a/Documentation/ABI/testing/sysfs-power
+> +++ b/Documentation/ABI/testing/sysfs-power
+> @@ -442,6 +442,16 @@ Description:
+>                 'total_hw_sleep' and 'last_hw_sleep' may not be accurate.
+>                 This number is measured in microseconds.
+>
+> +What:          /sys/power/suspend_stats/last_success_resume_time
+> +Date:          Oct 2023
+> +Contact:       Masami Hiramatsu <mhiramat@kernel.org>
+> +Description:
+> +               The /sys/power/suspend_stats/last_success_resume_time fil=
+e
+> +               contains the timestamp of when the kernel successfully
+> +               resumed from suspend/hibernate.
+
+It needs to say what exactly the time is.
+
+> +               This floating point number is measured in seconds by mono=
+tonic
+> +               clock.
+> +
+>  What:          /sys/power/sync_on_suspend
+>  Date:          October 2019
+>  Contact:       Jonas Meurer <jonas@freesources.org>
+> diff --git a/include/linux/suspend.h b/include/linux/suspend.h
+> index ef503088942d..ddd789044960 100644
+> --- a/include/linux/suspend.h
+> +++ b/include/linux/suspend.h
+> @@ -8,6 +8,7 @@
+>  #include <linux/pm.h>
+>  #include <linux/mm.h>
+>  #include <linux/freezer.h>
+> +#include <linux/timekeeping.h>
+>  #include <asm/errno.h>
+>
+>  #ifdef CONFIG_VT
+> @@ -71,6 +72,7 @@ struct suspend_stats {
+>         u64     last_hw_sleep;
+>         u64     total_hw_sleep;
+>         u64     max_hw_sleep;
+> +       struct timespec64 last_success_resume_time;
+>         enum suspend_stat_step  failed_steps[REC_FAILED_NUM];
+>  };
+>
+> diff --git a/kernel/power/main.c b/kernel/power/main.c
+> index f6425ae3e8b0..2ab23fd3daac 100644
+> --- a/kernel/power/main.c
+> +++ b/kernel/power/main.c
+> @@ -421,6 +421,17 @@ static ssize_t last_failed_step_show(struct kobject =
+*kobj,
+>  }
+>  static struct kobj_attribute last_failed_step =3D __ATTR_RO(last_failed_=
+step);
+>
+> +static ssize_t last_success_resume_time_show(struct kobject *kobj,
+> +               struct kobj_attribute *attr, char *buf)
+> +{
+> +       return sprintf(buf, "%llu.%llu\n",
+> +               (unsigned long long)suspend_stats.last_success_resume_tim=
+e.tv_sec,
+> +               (unsigned long long)suspend_stats.last_success_resume_tim=
+e.tv_nsec);
+> +}
+> +
+> +static struct kobj_attribute last_success_resume_time =3D
+> +                       __ATTR_RO(last_success_resume_time);
+> +
+>  static struct attribute *suspend_attrs[] =3D {
+>         &success.attr,
+>         &fail.attr,
+> @@ -438,6 +449,7 @@ static struct attribute *suspend_attrs[] =3D {
+>         &last_hw_sleep.attr,
+>         &total_hw_sleep.attr,
+>         &max_hw_sleep.attr,
+> +       &last_success_resume_time.attr,
+>         NULL,
+>  };
+>
+> @@ -514,6 +526,9 @@ static int suspend_stats_show(struct seq_file *s, voi=
+d *unused)
+>                         suspend_step_name(
+>                                 suspend_stats.failed_steps[index]));
+>         }
+> +       seq_printf(s,   "last_success_resume_time:\t%-llu.%llu\n",
+> +                  (unsigned long long)suspend_stats.last_success_resume_=
+time.tv_sec,
+> +                  (unsigned long long)suspend_stats.last_success_resume_=
+time.tv_nsec);
+>
+>         return 0;
+>  }
+> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> index fa3bf161d13f..b85889358f53 100644
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+> @@ -595,6 +595,9 @@ static int enter_state(suspend_state_t state)
+>   Finish:
+>         events_check_enabled =3D false;
+>         pm_pr_dbg("Finishing wakeup.\n");
+> +       /* Record last succeeded resume time before thawing processes. */
+
+IMV the comment should explain why this particular time is recorded or
+it is not very useful otherwise.
+
+> +       if (!error)
+> +               ktime_get_ts64(&suspend_stats.last_success_resume_time);
+
+A blank line here, please.
+
+>         suspend_finish();
+>   Unlock:
+>         mutex_unlock(&system_transition_mutex);
+>
+>
 
