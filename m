@@ -1,98 +1,98 @@
-Return-Path: <linux-kernel+bounces-5137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D72908186EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:03:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97D818186FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:06:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72CB1286F17
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:03:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 473DF1F24017
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67ABE17988;
-	Tue, 19 Dec 2023 12:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4A41804F;
+	Tue, 19 Dec 2023 12:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="opRfUd5M"
+	dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b="XrZKKm2s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D414C171AB;
-	Tue, 19 Dec 2023 12:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=qnVFcIvF1gJlcIQoJO6+eF3Hs5GGqy+0hcHu9D8VlGw=;
-	t=1702987396; x=1704196996; b=opRfUd5MJoE6PH3QdKYhZMHFOHHN5TVegTfb87enuOrdN6M
-	yEwyRTKYdB6pM96Kfat6yNk9+u5/Nr4VCc9i6wBsUF1j6bqYZ/dUuHJkN4cUryeQJXJQrtfppHFY1
-	MdEyOX1gqpum0jJUmroxSFuBi2tV81MlOpcXzz+2/KwiRwF49Jh9ycXH1zXNGxQK2xLOgdXowIfbh
-	vx2zcU144bpQrAlZvTohs3i8xYKRfqIodrhf6h9oTxysmb7A/4cAbDKLTFwqKKT51nzqcdoWh3Mou
-	S819DAXGpPywl7VR8WjKy09Kp9a0WguDO2NJyif3POOLDJKc1fuA29FB+6YUKGkA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rFYob-0000000014Q-33V0;
-	Tue, 19 Dec 2023 13:03:13 +0100
-Message-ID: <798e32d457e3ea029fecd423fdb2b1317016e02f.camel@sipsolutions.net>
-Subject: Re: [Regression] debugfs warnings when resuming from suspend on
- 6.7-rc5
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Mateusz =?UTF-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>, Miri Korenblit
-	 <miriam.rachel.korenblit@intel.com>
-Cc: Gregory Greenman <gregory.greenman@intel.com>, 
-	linux-wireless@vger.kernel.org, "linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>
-Date: Tue, 19 Dec 2023 13:03:12 +0100
-In-Reply-To: <d8aef271-418c-4644-a3fd-72ee5f1959b7@o2.pl>
-References: <da91e776-b192-4e2b-9157-e83a5a2659b1@o2.pl>
-	 <d8aef271-418c-4644-a3fd-72ee5f1959b7@o2.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB2B179A7;
+	Tue, 19 Dec 2023 12:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnuweeb.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
+	s=default; t=1702987556;
+	bh=26lrHcQfnoq0P3eDGcD/6wC6C+pTFV1KRGECV4Wp3dk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=XrZKKm2sK/dqby8SVweE+b0JVyN/S/wf/IHyluSOg7Fts0XfB2zF+Rh3BOrPoyiVK
+	 1m0VYPfJtRfz48g0ZvQyOeacjkjSTMoJ4BXEpJ2jBD0FXapLCxw9VgRy7bLvmpeRHS
+	 ppuS5BRjYZPbgZicMnoO2ISsSluiZyiNd3EP/IVFYq8p1uLmKKpO0pHC3V8THSWrRI
+	 7rGjhD8XaaNi42YrlG4z7xHDm8pZOhwTwZeIJOuHi9xVdRM199nmXvgxJxwFsMN8Pl
+	 haRRch/SJWV5SObqPU0MMcBXAcCOT65K4LC/vPFPMUsYcPMVdEHCFAo2908scZe0Gy
+	 Yol6AMCbuWuvQ==
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	by gnuweeb.org (Postfix) with ESMTPSA id C7B9F24C1A7;
+	Tue, 19 Dec 2023 19:05:56 +0700 (WIB)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d3ad3ad517so9978085ad.0;
+        Tue, 19 Dec 2023 04:05:56 -0800 (PST)
+X-Gm-Message-State: AOJu0YyVsgqJQE/qgV9zdtwRUWx8qMDC1/6LwdQJHNzvsO5SnsE9VuLt
+	g7x+6bXT4H+mfehDvn9Bd5fmW884xnxnSiJjN5A=
+X-Google-Smtp-Source: AGHT+IHDs/Fo/z4xwpOWfja653H002HMKNwLfbTm+78Jr7DOFHnjl0FMk4VXluS/Brsvlus5sGjIjlqu6pfRRsY+7qk=
+X-Received: by 2002:a17:902:d486:b0:1d3:65b0:8399 with SMTP id
+ c6-20020a170902d48600b001d365b08399mr5476484plg.59.1702987555969; Tue, 19 Dec
+ 2023 04:05:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+References: <20231219115423.222134-1-ammarfaizi2@gnuweeb.org> <20231219115423.222134-3-ammarfaizi2@gnuweeb.org>
+In-Reply-To: <20231219115423.222134-3-ammarfaizi2@gnuweeb.org>
+From: Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>
+Date: Tue, 19 Dec 2023 19:05:44 +0700
+X-Gmail-Original-Message-ID: <CAOG64qMdX08_apxfsvxg1wvyo7EWv9K-Swti3AN2vt_Lxfdcjw@mail.gmail.com>
+Message-ID: <CAOG64qMdX08_apxfsvxg1wvyo7EWv9K-Swti3AN2vt_Lxfdcjw@mail.gmail.com>
+Subject: Re: [PATCH liburing v1 2/2] t/no-mmap-inval: Replace `valloc()` with `t_posix_memalign()`
+To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Michael William Jonathan <moe@gnuweeb.org>, 
+	io-uring Mailing List <io-uring@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	"GNU/Weeb Mailing List" <gwml@vger.gnuweeb.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2023-12-14 at 22:49 +0100, Mateusz Jo=C5=84czyk wrote:
-> W dniu 14.12.2023 o=C2=A022:45, Mateusz Jo=C5=84czyk pisze:
-> > Hello,
-> >=20
-> > Since upgrading to 6.7-rc kernels, I have been getting the following er=
-ror
-> > message in dmesg
-> > while resuming from suspend:
-> >=20
-> > [=C2=A0=C2=A0 83.302944] debugfs: Directory 'iwlmvm' with parent 'netde=
-v:wlp2s0' already
-> > present!
-> > [=C2=A0=C2=A0 83.302963] iwlwifi 0000:02:00.0: Failed to create debugfs=
- directory under
-> > netdev:wlp2s0
-> >=20
-> OK, now I see
->=20
-> https://patchwork.kernel.org/project/linux-wireless/patch/20231211085121.=
-88a950f43e16.Id71181780994649219685887c0fcad33d387cc78@changeid/
->=20
-> ("wifi: mac80211: don't re-add debugfs during reconfig")
->=20
-> Will see if this fixes the issue.
->=20
+On Tue, Dec 19, 2023 at 6:54=E2=80=AFPM Ammar Faizi wrote:
+> Address the limitations of valloc(). This function, which is primarily
+> used for allocating page-aligned memory, is not only absent in some
+> systems but is also marked as obsolete according to the `man 3 valloc`.
+>
+> Replace valloc() with t_posix_memalign() to fix the following build
+> error:
+>
+>   no-mmap-inval.c:28:56: warning: call to undeclared function 'valloc'; I=
+SO C99 and \
+>   later do not support implicit function declarations [-Wimplicit-functio=
+n-declaration]
+>           p.cq_off.user_addr =3D (unsigned long long) (uintptr_t) valloc(=
+8192);
+>                                                                 ^
+>   1 warning generated.
+>
+>   ld.lld: error: undefined symbol: valloc
+>   >>> referenced by no-mmap-inval.c:28
+>   >>>               /tmp/no-mmap-inval-ea16a2.o:(main)
+>   >>> did you mean: calloc
+>   >>> defined in: /system/lib64/libc.so
+>   clang-15: error: linker command failed with exit code 1 (use -v to see =
+invocation)
+>   make[1]: *** [Makefile:239: no-mmap-inval.t] Error 1
+>
+> Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
 
-Did that work? I think we need
+Reviewed-by: Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>
 
-https://patchwork.kernel.org/project/linux-wireless/patch/20231220043149.dd=
-d48c66ec6b.Ia81080d92129ceecf462eceb4966bab80df12060@changeid/
-
-in addition ...
-
-johannes
+-- Viro
 
