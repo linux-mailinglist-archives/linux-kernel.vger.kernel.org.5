@@ -1,106 +1,76 @@
-Return-Path: <linux-kernel+bounces-4736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF8F881815B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:10:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6882481815D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D51CD1C23392
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:10:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEAE01F23DA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A01A79F5;
-	Tue, 19 Dec 2023 06:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="l4sNEkA+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346C87487;
+	Tue, 19 Dec 2023 06:15:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2837C120
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 06:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from pop-os.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id FTIhr2VyFBU01FTIirj4Uz; Tue, 19 Dec 2023 07:09:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1702966198;
-	bh=KTpDymoJN4gJQumbzCdvVykjTutbaVEe/yWH87l7ENk=;
-	h=From:To:Cc:Subject:Date;
-	b=l4sNEkA+xYvOVabsBHk5M0V29A4uXKj/0Sg02aRcWKjiQPusnJVoVkEQnl31zJhC1
-	 1kuD5X4u/bdZgbo3J/2l+b2n2FIV25CUYmI2Mg7gyf3MYVUWRz/nHOlXmh16IneGE1
-	 woS7spuhSBnaRrQF1/L85iKji1QV6Ohsw//Mx3Y/TNE7s2ZCCYIEaAHmfbC4zVTBe/
-	 MpyyG9ivIqPulDzIUiAR2cL0+/2wXqUrrOxUFnbaZa75PvGxsT71I5ZIdlfS1FT4rt
-	 mXG9GWNvnUQQiX/3pmrjmTX7dItovt2Tfr95ZIKGflzxJlFEHNizqOX5BkTIuCKzlf
-	 0gaHpwJ69r0uA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 19 Dec 2023 07:09:58 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-pci@vger.kernel.org
-Subject: [PATCH] dw-xdata: Remove usage of the deprecated ida_simple_xx() API
-Date: Tue, 19 Dec 2023 07:09:54 +0100
-Message-Id: <cc01721cec2d416d7bdf47086943b17ef44b7286.1702966181.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BFB746A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 06:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7b738d08e3bso440182439f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 22:15:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702966503; x=1703571303;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sq/Szv5lROvis43gxuf6LJLhUW+RhT5kP9APALjfg/8=;
+        b=gugfvBNAeF+h1GQCI0iMCsn6l2NxCk165WigzeG2YDb86xXvQjCr0s8MlqBjwOjuVP
+         0XGcPw3OpuCw5iNQEwS6ZmFNBXpb4D4jzLmtOpvWFr9DtcwD8StqW5MOXtLQhWHItqGK
+         0JkPTdupL1FLvuPQLgn4eeliIVYFQfErvSVziQChvMjG9ULZ3HxjoiE7djhw76ehX1Ip
+         UIcpIB/YFrnXe7f+3B7xJEODJo9wyiM+cgZNSsmbOCZvgXiEfScVHJhVv2776OJ7upjr
+         K1mdh18vJThIbIs4JC0pMsnIs5kfodbwSv5V5H1ZDsK6nne8DWMF0RLTbguwrhabOvZl
+         Dnjw==
+X-Gm-Message-State: AOJu0YyAuRynWixthJezLqkIqWgIfrsLbImzGRDDMxiD9RcBhymSoDh3
+	b5XkNWCFAblqfqVdTDzTXkaiqnS1ctIYKZdEb22nG3A/dZK5
+X-Google-Smtp-Source: AGHT+IFoV/QZu28dBYZSeosOCtVwsWoTPYjF+U3ci6FMO2SbipZitb8VfpGM/IDQmrmxuUaZmRlkPTwDHQO0iOoD4qEECKWUo4uf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:238f:b0:46b:49e5:a22c with SMTP id
+ q15-20020a056638238f00b0046b49e5a22cmr252833jat.1.1702966503755; Mon, 18 Dec
+ 2023 22:15:03 -0800 (PST)
+Date: Mon, 18 Dec 2023 22:15:03 -0800
+In-Reply-To: <tencent_D55B49852EFAAEE78C9D67DB46EB52F44606@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008552b6060cd6c925@google.com>
+Subject: Re: [syzbot] [block?] INFO: task hung in blkdev_flush_mapping
+From: syzbot <syzbot+20e9a5e0dd424a875f55@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+Hello,
 
-This is less verbose.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/misc/dw-xdata-pcie.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Reported-and-tested-by: syzbot+20e9a5e0dd424a875f55@syzkaller.appspotmail.com
 
-diff --git a/drivers/misc/dw-xdata-pcie.c b/drivers/misc/dw-xdata-pcie.c
-index 257c25da5199..efd0ca8cc925 100644
---- a/drivers/misc/dw-xdata-pcie.c
-+++ b/drivers/misc/dw-xdata-pcie.c
-@@ -333,7 +333,7 @@ static int dw_xdata_pcie_probe(struct pci_dev *pdev,
- 
- 	dw->pdev = pdev;
- 
--	id = ida_simple_get(&xdata_ida, 0, 0, GFP_KERNEL);
-+	id = ida_alloc(&xdata_ida, GFP_KERNEL);
- 	if (id < 0) {
- 		dev_err(dev, "xData: unable to get id\n");
- 		return id;
-@@ -377,7 +377,7 @@ static int dw_xdata_pcie_probe(struct pci_dev *pdev,
- 	kfree(dw->misc_dev.name);
- 
- err_ida_remove:
--	ida_simple_remove(&xdata_ida, id);
-+	ida_free(&xdata_ida, id);
- 
- 	return err;
- }
-@@ -396,7 +396,7 @@ static void dw_xdata_pcie_remove(struct pci_dev *pdev)
- 	dw_xdata_stop(dw);
- 	misc_deregister(&dw->misc_dev);
- 	kfree(dw->misc_dev.name);
--	ida_simple_remove(&xdata_ida, id);
-+	ida_free(&xdata_ida, id);
- }
- 
- static const struct pci_device_id dw_xdata_pcie_id_table[] = {
--- 
-2.34.1
+Tested on:
 
+commit:         5bd7ef53 Merge tag 'pull-fixes' of git://git.kernel.or..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=115c1601e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e043d554f0a5f852
+dashboard link: https://syzkaller.appspot.com/bug?extid=20e9a5e0dd424a875f55
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10d37de6e80000
+
+Note: testing is done by a robot and is best-effort only.
 
