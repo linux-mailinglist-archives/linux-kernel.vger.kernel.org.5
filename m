@@ -1,166 +1,149 @@
-Return-Path: <linux-kernel+bounces-6085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5674781946F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:16:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94ABA819473
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42E91F26945
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:16:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C24731C242DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196443D0CB;
-	Tue, 19 Dec 2023 23:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0FD33D0BC;
+	Tue, 19 Dec 2023 23:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UzsTN0Z6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FQWTkX72"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A9840BE8
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c2db0ca48so6755e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:16:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703027761; x=1703632561; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kahqyf6EB8HB0c0Ey1lJeYZwJGl+WMUYDsC/ZwyeTQc=;
-        b=UzsTN0Z6D+M/liSrurBeqyj8Ypt5Uf7FrEZhFlS0KD8KM6j8gmpuajcaraxiWEnofp
-         JKD6CKUeEzinEI4nRF0T/0xFlyH64xu971wVzMWG7vlBf8wNmAH7RGoczW2P+Mc9q9VV
-         yQp7dINUWME9Z28g2wB9sY/cCbZhA7VNTU+g39myD9evTpk7WjuhCTi5ToNrORsgdUlq
-         vxU/SFFwHXCPUTtdoZ9rKLKV2DaEpJlQ4JlCVYmgQWtogP5nRHVZo2/4yvQH0e+HXHlV
-         7QgCbAso3uFWa9tkB9Xl3FomvlNm+e8LalL5yJAi6/cpcJInYcrwqKPLh4oVpReR682h
-         AH9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703027761; x=1703632561;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kahqyf6EB8HB0c0Ey1lJeYZwJGl+WMUYDsC/ZwyeTQc=;
-        b=CfJ8ajVUxrwAiYxwag1vumuwppnZqAGoCqOZcqas/PDVBHnf3s53CuudpA+RPSbATO
-         tOmkmkDGtgl+J8pI6OOdQPuqi2jAZuNoFuv8v7r4vHUkpOYbGCr2sgA8ZwwRH+lnNX65
-         NZuQMxNTjztCEuGAby5kX0JE077cfYl8az2/PuVsRuLMP3TwgFiHwZNN20sSQSjwb3fT
-         XkK+LuDCYkZmZzk1vRAJAE1DkvL51FNzoOQReHh9bnG6xpnW2cgq+uKTie4XwCqNKmRq
-         eMlYAilxgFe99CMQajFgv73etCio6y4lXW7Sysy1/pxULp16JGeLvWGO72zxmp/In3Sg
-         DwyA==
-X-Gm-Message-State: AOJu0Yxvbj9PM7zUZcIaB5oOV2iNFuaqAxD8afVH8MtlhZ0+EzdswmpE
-	yWrT738Aj0X5+IOyxtsGsDvwgUePDsSO8Ya7IiE5eygVdtdI
-X-Google-Smtp-Source: AGHT+IF6MI1wVycgHpzsT64FxzIlg02O0Ehd0poLvCBSUiKTOrBvGUK468ckS6AkENtIKk0QfEwLl3Wda81ZivTeuvI=
-X-Received: by 2002:a1c:4b19:0:b0:40d:174c:9295 with SMTP id
- y25-20020a1c4b19000000b0040d174c9295mr29772wma.3.1703027760939; Tue, 19 Dec
- 2023 15:16:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC6D3D0BD;
+	Tue, 19 Dec 2023 23:16:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 889BCC433C8;
+	Tue, 19 Dec 2023 23:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703027774;
+	bh=4LTuUnlzAhnPPUW3BQv1N8PC27cgGsXXiht0pyrfmx4=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=FQWTkX72neD17DeH1TSu+fwsCICJIw/fB5ZNuNXjA/PdlrFj7AKxnWkyJbi9cvHvk
+	 IvF1LgZxgum4+Zdvfa0csutiDmgDByySRyOp11gyW8g0b9Gtt9o2wj7hUoeMDJWBhS
+	 IhYXqgyWfBPB0mKIPn8kGxGLmKGchotRltUOhKSPnzCOdEMgbO8LNy5dm96q9PKxpR
+	 LMZKAPdKktlwkmkM6BQ24Iaj2xrOM8r1jb6EzQk52A6jZLGLeYYxqcsctaC9v86NiL
+	 GEmzxf4878qQMA2R9/xuja/rh/L/vNzvHPkv4q4Bn+GO0rajaGw5v/GTno7WasuBMo
+	 N/m4y6xl8n8Bg==
+Message-ID: <897fe92cfe40a086832e0c85ef5358bc.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218161044.215640-1-rf@opensource.cirrus.com> <20231218161044.215640-2-rf@opensource.cirrus.com>
-In-Reply-To: <20231218161044.215640-2-rf@opensource.cirrus.com>
-From: Rae Moar <rmoar@google.com>
-Date: Tue, 19 Dec 2023 18:15:48 -0500
-Message-ID: <CA+GJov7jyn461d-wyTMr=kN5TyFP=muox75rtj4M3kYeu4=JfQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kunit: Add example of kunit_activate_static_stub()
- with pointer-to-function
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: brendan.higgins@linux.dev, davidgow@google.com, 
-	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231218-mbly-clk-v1-4-44ce54108f06@bootlin.com>
+References: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com> <20231218-mbly-clk-v1-4-44ce54108f06@bootlin.com>
+Subject: Re: [PATCH 4/5] clk: eyeq5: add OSPI table-based divider clock
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>, =?utf-8?q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>
+To: Conor Dooley <conor+dt@kernel.org>, Gregory CLEMENT <gregory.clement@bootlin.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, =?utf-8?q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>
+Date: Tue, 19 Dec 2023 15:16:12 -0800
+User-Agent: alot/0.10
 
-On Mon, Dec 18, 2023 at 11:10=E2=80=AFAM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Adds a variant of example_static_stub_test() that shows use of a
-> pointer-to-function with kunit_activate_static_stub().
->
-> A const pointer to the add_one() function is declared. This
-> pointer-to-function is passed to kunit_activate_static_stub() and
-> kunit_deactivate_static_stub() instead of passing add_one directly.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-
-Hello!
-
-This test looks good to me. However, I had issues applying this patch
-so I think it needs rebasing due to the newest additions to
-kselftest/kunit. But otherwise this patch looks good other than my
-very small comment below.
-
-Thanks!
--Rae
-
+Quoting Th=C3=A9o Lebrun (2023-12-18 09:14:19)
+> The driver supports PLLs on the platform. Add the single divider clock
+> of the platform.
+>=20
+> Helpers from include/linux/clk-provider.h could have been used if it was
+> not for the use of regmap to access the register.
+>=20
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 > ---
->  lib/kunit/kunit-example-test.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->
-> diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-tes=
-t.c
-> index d2f7a3c62c18..9e57f341dc37 100644
-> --- a/lib/kunit/kunit-example-test.c
-> +++ b/lib/kunit/kunit-example-test.c
-> @@ -168,6 +168,8 @@ static int subtract_one(int i)
->         return i - 1;
->  }
->
-> +static int (* const add_one_fn_ptr)(int i) =3D add_one;
 
-This is a bit of a nit but could you add a brief comment above this
-pointer definition? This would then match the commenting on the other
-functions in kunit-example-test and provide more context for those
-looking at the example tests.
+This patch should be squashed with the previous one.
 
+> diff --git a/drivers/clk/clk-eyeq5.c b/drivers/clk/clk-eyeq5.c
+> index 74bcb8cec5c1..3382f4d870d7 100644
+> --- a/drivers/clk/clk-eyeq5.c
+> +++ b/drivers/clk/clk-eyeq5.c
+> @@ -77,6 +78,8 @@ static const struct eq5c_pll {
+[...]
 > +
->  /*
->   * This test shows the use of static stubs.
->   */
-> @@ -187,6 +189,30 @@ static void example_static_stub_test(struct kunit *t=
-est)
->         KUNIT_EXPECT_EQ(test, add_one(1), 2);
->  }
->
-> +/*
-> + * This test shows the use of static stubs when the function being
-> + * replaced is provided as a pointer-to-function instead of the
-> + * actual function. This is useful for providing access to static
-> + * functions in a module by exporting a pointer to that function
-> + * instead of having to change the static function to a non-static
-> + * exported function.
-> + */
-> +static void example_static_stub_using_fn_ptr_test(struct kunit *test)
+> +static int eq5c_ospi_div_set_rate(struct clk_hw *hw,
+> +                                 unsigned long rate, unsigned long paren=
+t_rate)
 > +{
-> +       /* By default, function is not stubbed. */
-> +       KUNIT_EXPECT_EQ(test, add_one(1), 2);
+> +       struct eq5c_ospi_div *div =3D clk_hw_to_ospi_priv(hw);
+> +       unsigned int val;
+> +       int value, ret;
 > +
-> +       /* Replace add_one() with subtract_one(). */
-> +       kunit_activate_static_stub(test, add_one_fn_ptr, subtract_one);
+> +       value =3D divider_get_val(rate, parent_rate, eq5c_ospi_div_table,
+> +                               OLB_OSPI_DIV_MASK_WIDTH, 0);
+> +       if (value < 0)
+> +               return value;
 > +
-> +       /* add_one() is now replaced. */
-> +       KUNIT_EXPECT_EQ(test, add_one(1), 0);
+> +       ret =3D regmap_read(div->olb, OLB_OSPI_REG, &val);
+> +       if (ret) {
+> +               pr_err("%s: regmap_read failed: %d\n", __func__, ret);
+> +               return -ret;
+
+Why negative ret?
+
+> +       }
 > +
-> +       /* Return add_one() to normal. */
-> +       kunit_deactivate_static_stub(test, add_one_fn_ptr);
-> +       KUNIT_EXPECT_EQ(test, add_one(1), 2);
+> +       val &=3D ~OLB_OSPI_DIV_MASK;
+> +       val |=3D FIELD_PREP(OLB_OSPI_DIV_MASK, value);
+> +
+> +       ret =3D regmap_write(div->olb, OLB_OSPI_REG, val);
+> +       if (ret) {
+> +               pr_err("%s: regmap_write failed: %d\n", __func__, ret);
+> +               return -ret;
+
+Why negative ret?
+
+> +       }
+> +
+> +       return 0;
 > +}
 > +
->  static const struct example_param {
->         int value;
->  } example_params_array[] =3D {
-> @@ -245,6 +271,7 @@ static struct kunit_case example_test_cases[] =3D {
->         KUNIT_CASE(example_mark_skipped_test),
->         KUNIT_CASE(example_all_expect_macros_test),
->         KUNIT_CASE(example_static_stub_test),
-> +       KUNIT_CASE(example_static_stub_using_fn_ptr_test),
->         KUNIT_CASE_PARAM(example_params_test, example_gen_params),
->         KUNIT_CASE_SLOW(example_slow_test),
->         {}
-> --
-> 2.30.2
->
+> +const struct clk_ops eq5c_ospi_div_ops =3D {
+
+static?
+
+> +       .recalc_rate =3D eq5c_ospi_div_recalc_rate,
+> +       .round_rate =3D eq5c_ospi_div_round_rate,
+> +       .determine_rate =3D eq5c_ospi_div_determine_rate,
+> +       .set_rate =3D eq5c_ospi_div_set_rate,
+> +};
+> +
+> +static struct clk_hw *eq5c_init_ospi_div(const struct clk_hw *parent,
+> +                                        struct regmap *olb)
+> +{
+> +       struct eq5c_ospi_div *div;
+> +       int ret;
+> +
+> +       div =3D kzalloc(sizeof(*div), GFP_KERNEL);
+> +       if (!div)
+> +               return ERR_PTR(-ENOENT);
+> +
+> +       div->olb =3D olb;
+> +       div->hw.init =3D CLK_HW_INIT_HW(EQ5C_OSPI_DIV_CLK_NAME, parent,
+> +                                     &eq5c_ospi_div_ops, 0);
+> +
+> +       ret =3D clk_hw_register(NULL, &div->hw);
+> +       if (ret) {
+> +               pr_err("failed registering div_ospi: %d\n", ret);
+> +               kfree(div);
+> +               return ERR_PTR(-ENOENT);
+
+return ERR_PTR(ret)
+
+> +       }
+> +
+> +       return &div->hw;
+> +}
+> +
+>  static void eq5c_init(struct device_node *np)
+>  {
+>         struct device_node *parent_np =3D of_get_parent(np);
 
