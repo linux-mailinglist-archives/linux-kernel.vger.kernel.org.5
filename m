@@ -1,105 +1,101 @@
-Return-Path: <linux-kernel+bounces-5248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67119818882
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:20:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31461818887
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:21:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D1481C21CFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:20:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6B391F248CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A273A18E3C;
-	Tue, 19 Dec 2023 13:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FBD18EB0;
+	Tue, 19 Dec 2023 13:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="erPv+WI/"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1wTMgGGD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1153D18E1C;
-	Tue, 19 Dec 2023 13:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=/n2XJ
-	IfcbrULIis+G3+HtQ6D4FhSo/cN2GijjyoaIW4=; b=erPv+WI/kNMr9h89V3TyF
-	udkUWO1/NK5CPRRU9i292Aw3Ru/uZTCW80fcgjVcr09j9DMvmhLXSDF1AkYARwz6
-	QJ1KYn7nnac3Xqyh7eOerqfQHFY4Xi2qcobC7uOOZOnQsEME2ODDyVPm7iZo4Be5
-	ZqyBNuECX0HM1ZcQwlldLU=
-Received: from ubuntu22.localdomain (unknown [117.176.219.50])
-	by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wDHz15qmIFlPM9qGA--.1378S2;
-	Tue, 19 Dec 2023 21:19:39 +0800 (CST)
-From: chenguanxi11234@163.com
-To: rafael@kernel.org
-Cc: len.brown@intel.com,
-	pavel@ucw.cz,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Haonan <chen.haonan2@zte.com.cn>
-Subject: [PATCH linux-next v2] kernel/power: Use kmap_local_page() in snapshot.c
-Date: Tue, 19 Dec 2023 21:19:36 +0800
-Message-Id: <19e305896a2357d305f955fa14cc379e40e512bd.1702977429.git.chen.haonan2@zte.com.cn>
-X-Mailer: git-send-email 2.34.1
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341451944B;
+	Tue, 19 Dec 2023 13:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1702992060;
+	bh=TsO3xC5LiEC2Q1rDd6j5HFyylembdHw/NQAvbMXny7I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=1wTMgGGDN41nxiK38PIzsZRseLY07AikSD3kZrb6PZ/3ByZMDE7oCm8FOQWDXzzFD
+	 ym4/CBeHqaC2rghNXq8jIxH5xOeU2qE3gXG8fQoQPo8Lb6cy/mHXSIDQp41qpMLEWK
+	 EI6d1quKbBpZCn8o4BaTxt8nmkSCmPgueu7RmSk/IDBQl2PEMAB58kYAObV3Ng1oyT
+	 nzaIHtWLIKRUZVA2BWM/XL91BQ9ZUl824xjvkjFDZME9LagsP8wkrWOlSDwPWWielV
+	 cVmXBkCGeo1OAX1vfUxbC90Cv6/ref42de0inLmjCDs0RtMkow7xpCvtrNlAPPsjbM
+	 lOkKmBOzqlhng==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5AB9F378145A;
+	Tue, 19 Dec 2023 13:20:58 +0000 (UTC)
+Message-ID: <0451e5a9-0cfb-42a5-b74b-2012e2c0d326@collabora.com>
+Date: Tue, 19 Dec 2023 15:20:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHz15qmIFlPM9qGA--.1378S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur1fKFWkZF18tF1fCr43GFg_yoW8WFy8pF
-	4UAFyDG3yYva48t34IqF1vkry3WwnxA3yrJFW3A3WfZrnIgwnFvr1Iqa18t3W3trWxJFWr
-	ArZrtayvkFs5KwUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jCxRDUUUUU=
-X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/1tbiQA9L+mVOAjNiVQAAsT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/9] Enable networking support for StarFive JH7100 SoC
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
+ Samin Guo <samin.guo@starfivetech.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Hal Feng <hal.feng@starfivetech.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20231218214451.2345691-1-cristian.ciocaltea@collabora.com>
+ <a37d2df9-e593-476f-bfef-d9abaf063daa@lunn.ch>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <a37d2df9-e593-476f-bfef-d9abaf063daa@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Chen Haonan <chen.haonan2@zte.com.cn>
+On 12/19/23 11:03, Andrew Lunn wrote:
+> On Mon, Dec 18, 2023 at 11:44:40PM +0200, Cristian Ciocaltea wrote:
+>> This patch series adds ethernet support for the StarFive JH7100 SoC and makes it
+>> available for the StarFive VisionFive V1 and BeagleV Starlight boards, although
+>> I could only validate on the former SBC.  Thank you Emil and Geert for helping
+>> with tests on BeagleV!
+> 
+> You will need to split this into patch sets per subsystem. The changes
+> to the stmmac driver can then go via netdev, and the rest via each
+> subsystem maintainer. It should then all meet in linux-next and work
+> there.
 
-kmap_atomic() has been deprecated in favor of kmap_local_page().
+Thanks for the reviews and your support to get those networking issues
+properly handled!
 
-kmap_atomic() disables page-faults and preemption (the latter 
-only for !PREEMPT_RT kernels).The code between the mapping and 
-un-mapping in this patch does not depend on the above-mentioned 
-side effects.So simply replaced kmap_atomic() with kmap_local_page().
+Just to confirm the split will be done correctly, I'm going to keep just
+the bindings and dts patches in v5, while the networking driver and
+clock related patches will be submitted as part of two additional sets.
 
-Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
----
- kernel/power/snapshot.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-index e3e8f1c6e75f..5c96ff067c64 100644
---- a/kernel/power/snapshot.c
-+++ b/kernel/power/snapshot.c
-@@ -1487,11 +1487,11 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
- 	s_page = pfn_to_page(src_pfn);
- 	d_page = pfn_to_page(dst_pfn);
- 	if (PageHighMem(s_page)) {
--		src = kmap_atomic(s_page);
--		dst = kmap_atomic(d_page);
-+		src = kmap_local_page(s_page);
-+		dst = kmap_local_page(d_page);
- 		zeros_only = do_copy_page(dst, src);
--		kunmap_atomic(dst);
--		kunmap_atomic(src);
-+		kunmap_local(dst);
-+		kunmap_local(src);
- 	} else {
- 		if (PageHighMem(d_page)) {
- 			/*
-@@ -1499,9 +1499,9 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
- 			 * data modified by kmap_atomic()
- 			 */
- 			zeros_only = safe_copy_page(buffer, s_page);
--			dst = kmap_atomic(d_page);
-+			dst = kmap_local_page(d_page);
- 			copy_page(dst, buffer);
--			kunmap_atomic(dst);
-+			kunmap_local(dst);
- 		} else {
- 			zeros_only = safe_copy_page(page_address(d_page), s_page);
- 		}
--- 
-2.25.1
-
+Regards,
+Cristian
 
