@@ -1,116 +1,87 @@
-Return-Path: <linux-kernel+bounces-5232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD774818844
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:07:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3738818846
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E6B71F2287B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:07:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 904DC287230
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5237218ED2;
-	Tue, 19 Dec 2023 13:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820411A5A5;
+	Tue, 19 Dec 2023 13:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fsVEC5wr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLLRjAtY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6650D18EA0;
-	Tue, 19 Dec 2023 13:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJAgmYt023604;
-	Tue, 19 Dec 2023 13:06:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=QivfX9dR/w5DQ1pMwXDcAJ5dv1UM9wtRLMwtkpY0jus=; b=fs
-	VEC5wrDFBWxJ8h91HJn8GZKw4MyyMd45BGc2ErQfKqstJCU//wgHtQgZ5erxUddH
-	od8KlqkmROtRrwn8JHGCC8qdfYQR8Sd/O4HeyKgwiH+mNnZgzNlCdlgwgXMScdTl
-	W0wh+9ZPDaq7zXXMkHZsSo0EqwH6O7F638O9BaCXHselCWUHqM/6aZxMz9T1ZaeW
-	TP8lotqhDG0gNDiWD+oiMFBKVN1xrVRO2BDnyPjy+y/skX8UX9g88qO1qtYLDlob
-	NO4iERHsPubjN0Tdogb1Y8WS/SQpgxO/CAchv7pRRLA2bFzx8+vlmVZQeiIu0fBL
-	a8mVCz3aGx7/8h0n3d6g==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v39n8rbry-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 13:06:41 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJD6eqM003237
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 13:06:40 GMT
-Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
- 2023 05:06:34 -0800
-Message-ID: <d5291beb-7384-4ee9-a7a4-8aad931d7bc8@quicinc.com>
-Date: Tue, 19 Dec 2023 18:36:31 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94151A286
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:07:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EED0C433CA;
+	Tue, 19 Dec 2023 13:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702991235;
+	bh=dDa8HGYYMKaUJHXbo4gPTqDJdCPvsm8/sJAF+uyYnz8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=VLLRjAtYFN+GJhGaM438RoklTOgEtiU89OchSbVBwGcO1a62xiz3qepwjoDNCTMRS
+	 kFpBy8AIIw3jpseWA6GtvwKV5FVlUkqEHsWCwUVVvoaRl9VhfmX03GeCyOKKKtAqqG
+	 UPUcC+JVMwnlsPX/4LR2VV6wcofNSEceeNfSYBlNL4G3JW7YNiF74zAMRSBW+EvvVK
+	 V02pAvpI4zbxG76rmCtCPFlRThqYUeIyQ5UeQa2niPmBvRD+yoK/vXfg1p2mjlQRZQ
+	 zqdxbO997rkHyO7HIOx4ghXDrdYgoE0YQg/NffzL9BEwaEzPYksBG3bx04p4PMgNLN
+	 rBe1wGw5kyb5w==
+From: Christian Brauner <brauner@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Anton Altaparmakov <anton@tuxera.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	linux-ntfs-dev@lists.sourceforge.net,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] ntfs: dir.c: fix kernel-doc function parameter warnings
+Date: Tue, 19 Dec 2023 14:07:08 +0100
+Message-ID: <20231219-lockruf-passt-c4ac862c57cb@brauner>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231219045414.24670-1-rdunlap@infradead.org>
+References: <20231219045414.24670-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/5] iommu/arm-smmu: re-enable context caching in smmu
- reset operation
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <will@kernel.org>,
-        <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <dmitry.baryshkov@linaro.org>, <jsnitsel@redhat.com>,
-        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
-        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
-        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
-        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
-        <quic_molvera@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <qipl.kernel.upstream@quicinc.com>
-References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
- <20231215101827.30549-6-quic_bibekkum@quicinc.com>
- <3c7b8c2c-7174-4ced-8954-5a249f792c1e@linaro.org>
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-In-Reply-To: <3c7b8c2c-7174-4ced-8954-5a249f792c1e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: O6cKu9jgX6SHlCA8_-p4qhVgRs9Y6LeR
-X-Proofpoint-GUID: O6cKu9jgX6SHlCA8_-p4qhVgRs9Y6LeR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- suspectscore=0 phishscore=0 mlxlogscore=697 lowpriorityscore=0 spamscore=0
- impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312190097
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1253; i=brauner@kernel.org; h=from:subject:message-id; bh=dDa8HGYYMKaUJHXbo4gPTqDJdCPvsm8/sJAF+uyYnz8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQ2Tq0W7N7/XWSmyN878/dJCv9bEMI2ZWPjx7ULt9eve xW/4BfPwY5SFgYxLgZZMUUWh3aTcLnlPBWbjTI1YOawMoEMYeDiFICJmD9j+F8R0rW3R2B/jNpE h392E1yTZKWus2/6KHo3Y/Etb73rTQYM/8vWG89y9D56cM0az6aVj0pZJ6/dZWNTdaREr7FpnUP 8TwYA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-
-
-On 12/16/2023 5:24 AM, Konrad Dybcio wrote:
-[...]
->> +
->> +	arm_mmu500_reset(smmu);
-> We should check the return value here, in case the function is modified
-> some day in a way that makes it return something else than 0
+On Mon, 18 Dec 2023 20:54:14 -0800, Randy Dunlap wrote:
+> Correct the kernel-doc function parameter warnings for function
+> ntfs_dir_fsync() to prevent the following kernel-doc warnings:
 > 
-
-Thanks for pointing this actually. I crosschecked on the
-arm_mmu500_reset function behavior, looks like there's no return value
-other than 0 and so the functionality won't change. I think we can
-keep it as it is in this case.
-
-Thanks,
-Bibek
-
-> LGTM otherwise!
+> dir.c:1489: warning: Function parameter or member 'start' not described in 'ntfs_dir_fsync'
+> dir.c:1489: warning: Function parameter or member 'end' not described in 'ntfs_dir_fsync'
+> dir.c:1489: warning: Excess function parameter 'dentry' description in 'ntfs_dir_fsync'
 > 
-> Konrad
+> [...]
+
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] ntfs: dir.c: fix kernel-doc function parameter warnings
+      https://git.kernel.org/vfs/vfs/c/be4887a964e2
 
