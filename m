@@ -1,202 +1,158 @@
-Return-Path: <linux-kernel+bounces-4869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17C4818320
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:14:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F8FB81827D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A58651C238C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:14:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 362EA1C23734
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A0611CBF;
-	Tue, 19 Dec 2023 08:14:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96764C8C2;
+	Tue, 19 Dec 2023 07:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="0eHkGldz"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="r+Kf4vYi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38BB11C88;
-	Tue, 19 Dec 2023 08:14:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=ibU7eg0z0uiFU9/s/3+6t+5Fs4lzRvL9ofz4jQb4xO8=; b=0eHkGldz0gqBXDpUGKKVYwIoW8
-	YdSyGS6p8JgB2Hyp+JjsEtlRmCHCkgpyKd0k7gz6s2r5MC74sIr/AW98hHhUPl8bIYK26v2O/v+Qs
-	d95CTEqAELFkuQvQ/tlR22ljc80CGaRd/zUmLHHRWu8T0Y4uoexyQtARwRI/P00Ef5vyPLEBGq34Z
-	sZnC4zkwKXJehFD9LqU8c8INPk5k6yF0EF/9vD5QGU+bfbV8Mv18TivBJWoECR5nE/rN38u5+zFzf
-	XU2sLf+JQb9omqa9A6M6fG3zsUsYsgZ+GohB3m1yFgCKHF4E698ZSGoxUsBJDEW9ImuFm2xONx2Xw
-	HxD8e8ww==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1rFUl0-000GId-Pc; Tue, 19 Dec 2023 08:43:14 +0100
-Received: from [80.62.117.166] (helo=localhost)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <esben@geanix.com>)
-	id 1rFUl0-000PHd-2Q; Tue, 19 Dec 2023 08:43:14 +0100
-From: esben@geanix.com
-To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,  Pengutronix Kernel Team
- <kernel@pengutronix.de>,  Andi Shyti <andi.shyti@kernel.org>,  Shawn Guo
- <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,  Fabio
- Estevam <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,
-  linux-i2c@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  linux@ew.tq-group.com
-Subject: Re: [PATCH] i2c: i2c-imx: allow bus recovery on non-muxable pads
-In-Reply-To: <20231218-i2c-imx-recovery-v1-1-f69fa85b228c@ew.tq-group.com>
-	(Gregor Herburger's message of "Mon, 18 Dec 2023 18:06:12 +0100")
-References: <20231218-i2c-imx-recovery-v1-1-f69fa85b228c@ew.tq-group.com>
-Date: Tue, 19 Dec 2023 08:43:13 +0100
-Message-ID: <87frzyprhq.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C7F11CA8;
+	Tue, 19 Dec 2023 07:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1702971807; x=1703576607; i=deller@gmx.de;
+	bh=ao3lASXOiNWcc7cDKLYuzfMPAsA0HEJVIK0BWVEMLLc=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=r+Kf4vYixeIXa6UCNjgw+98vUWhaq8/hY1QiUt2t+wRJM6mQA45rTnKJBFcc6Seh
+	 iovi/lzSIc70rrFzksoZk1w6FUODGMIP9/EkCF78OQi5Swe9SgBeS2Du+3DCLgN3w
+	 HHPqrKhVsXPbFX6kXFVh/bisVCys+BgYg5ttNECFLMB3CxrtfDYeJts3jpMjMXLiq
+	 M8EhX3wEgB0uUG+MJBsiMP0POqbSmzg1bP0ShJbtPQw/DP21/3CHW9GVGDy8pSLMt
+	 oviGb7dslVPIOIOP0JzQ+WV1InPBgYNWsE2vUEU2lqnZ1iLiHkrd9BH196NMIGQPn
+	 HzdwC7JvCqxCmwfmYw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([94.134.148.220]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7iCg-1rBlee41Ks-014mb8; Tue, 19
+ Dec 2023 08:43:27 +0100
+Message-ID: <4dd7ec87-eceb-4015-a0a0-45f6f0c12e9d@gmx.de>
+Date: Tue, 19 Dec 2023 08:43:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27127/Mon Dec 18 10:39:04 2023)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] fb: flush deferred work in fb_deferred_io_fsync()
+Content-Language: en-US
+To: Nam Cao <namcao@linutronix.de>, Daniel Vetter <daniel@ffwll.ch>,
+ Antonino Daplas <adaplas@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Paul Mundt <lethal@linux-sh.org>,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Cc: bigeasy@linutronix.de, stable@vger.kernel.org
+References: <cover.1702890493.git.namcao@linutronix.de>
+ <d15187348e7d7f76b7a1adf95aa5e3e3ecfc10b4.1702890493.git.namcao@linutronix.de>
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
+ HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
+ r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
+ CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
+ 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
+ dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
+ Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
+ GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
+ aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
+ 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
+ ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
+ FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
+ uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
+ uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
+ REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
+ qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
+ iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
+ gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
+ Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
+ qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
+ 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
+ dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
+ rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
+ UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
+ eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
+ ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
+ dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
+ lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
+ 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
+ xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
+ wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
+ fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
+ Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
+ l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
+ RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
+ BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
+ Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
+ XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
+ MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
+ FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
+ 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
+ ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
+In-Reply-To: <d15187348e7d7f76b7a1adf95aa5e3e3ecfc10b4.1702890493.git.namcao@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:U75OHBIVqTUSxk9MGyO4MovlBguzl0rDduhnVmoBCtMXnVzK7E6
+ CZjB/wq7rsbDmVN+9TfXcEIf55plUqCFHaKHoP7F/SIQA6k4PNHCE3mypVrpXGcRVZDQFkk
+ T2j2i8a7+toZJd5VxuO1T1MJ6g4F5qM9VDHbmZ6GAXTbZy8xZ6ipFomrbgmS30YOXrHyzG2
+ TGBZZeHqdG8i99r9krSow==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:akZ1uFC8LKI=;SYz2qC5Is+YGsi/0WP8MeST33CJ
+ WRjUOtO3uj2MsdHcy/faov7wT0Blwg8j75A8ZON1mKk/EDWF7kSLd9Ai8q00td5c1pX6wwWCh
+ Gs9FAxM2kL0q+aXy+Ik6qHziLhwdLk556oGhyH7hoROIWwX8g5q4DNIyk+1s+7SZ7IE2fYyd/
+ UJdUTF4BgR1Wq3KT0ros9aNPqzzi8eaA58ZHLITkN/Nnw1vTGrHudj7+h3RmGooLcQDU3Prbh
+ kWpBNCe9QGtSJN+/aOzwh70QxhAL0IuVrndKIso5fGWeECS1pgR648WbMqOFR3WJEh9FErK2y
+ kJPSR88SKHleZqkkKGtz6QjSwbtUkpYB9BUERW+Vs/gxOKWWgOZef3PrlcKK+2Wx1WxPL5zao
+ 1vjlmKgrFhLYAkiNLuC3yvZm4uZTBADG+KGc+LJziTL/88A6Vqiuy+veAyC5B/9TRtdD368P2
+ fZXnpp01NhrQxZnU+mgDdGBMGgfbQevWhPvktAJCEqba+48pUlvy/yOoiWfnF7nd9Ue6NZ3fn
+ 33ZHnIPB31x06XZ8CekmzCOt5hlblkCKEMAyVK53lMrBNgm+yZXusOyo10pJ/PdyDIr+qTm1f
+ tQiUB30FDeoStV0RYIr7S/+mnULmDmPpZygwrXWbr529bxW6/P6nO78+/psWM9T2NCVzxnlSI
+ kSI7SvkoXrtxVdQ2HstlPUJicre7LIuQMv4wMBcUvCiJUjqJwJcdi/Z1T0ghq/ETMNBSSl1JR
+ w16kpNKulcRnOg6dqluM+k1tNylbLuQij6NLdSWEWq2Rg+RJ9XSsguyx8wbGM6WgNiq43gDoL
+ Gyqv5YRNudf0jopADhODxWG9rMZ+az2FqH7joyrPiH6c4cfM3SxdZXuh00JDFyaAIBelcJ3+I
+ 9NzXfIa4/qWUoaCilteXMXHplsY5bzz5CLmrxV5iuzvUqQhy17Sf22iG6AO8zjpsOuA8Ph0vo
+ 1qrh3w==
 
-Gregor Herburger <gregor.herburger@ew.tq-group.com> writes:
-
-> Currently the i2c-imx driver assumes that for bus recovery the i2c pins
-> can be reconfigured as gpio via pinctrl.
+On 12/18/23 10:57, Nam Cao wrote:
+> The driver's fsync() is supposed to flush any pending operation to
+> hardware. It is implemented in this driver by cancelling the queued
+> deferred IO first, then schedule it for "immediate execution" by calling
+> schedule_delayed_work() again with delay=3D0. However, setting delay=3D0
+> only means the work is scheduled immediately, it does not mean the work
+> is executed immediately. There is no guarantee that the work is finished
+> after schedule_delayed_work() returns. After this driver's fsync()
+> returns, there can still be pending work. Furthermore, if close() is
+> called by users immediately after fsync(), the pending work gets
+> cancelled and fsync() may do nothing.
 >
-> But bus recovery can also be done with a gpio electrically connected to
-> i2c scl.
+> To ensure that the deferred IO completes, use flush_delayed_work()
+> instead. Write operations to this driver either write to the device
+> directly, or invoke schedule_delayed_work(); so by flushing the
+> workqueue, it can be guaranteed that all previous writes make it to the
+> device.
 >
-> Modify i2c_imx_init_recovery_info to allow bus recovery on platforms
-> without pinctrl. In this case only use scl-gpio and
-> i2c_generic_scl_recovery.
+> Fixes: 5e841b88d23d ("fb: fsync() method for deferred I/O flush.")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Nam Cao <namcao@linutronix.de>
+> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>   drivers/video/fbdev/core/fb_defio.c | 6 +-----
+>   1 file changed, 1 insertion(+), 5 deletions(-)
 
-Why not move to use the generic GPIO recovery instead?  Will something
-like this be able to cover at least the same scenarios as your change?
+both patches applied to fbdev for-next git tree.
 
-From 7e432496bae8c7ac35c21504bc1cd03f1dfef97f Mon Sep 17 00:00:00 2001
-Message-ID: <7e432496bae8c7ac35c21504bc1cd03f1dfef97f.1702971634.git.esben@geanix.com>
-From: Esben Haabendal <esben@geanix.com>
-Date: Tue, 25 May 2021 11:25:44 +0200
-Subject: [PATCH] i2c: imx: move to generic GPIO recovery
+Thanks!
+Helge
 
-Starting with
-commit 75820314de26 ("i2c: core: add generic I2C GPIO recovery")
-GPIO bus recovery is supported by the I2C core, so we can remove the
-driver implementation and use that one instead.
-
-As a nice side-effect, pinctrl becomes optional, allowing bus recovery on
-LS1021A, which does not have such luxury, but can be wired up to use extra
-fixed GPIO pins.
-
-Signed-off-by: Esben Haabendal <esben@geanix.com>
----
- drivers/i2c/busses/i2c-imx.c | 62 ++++--------------------------------
- 1 file changed, 7 insertions(+), 55 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index 1775a79aeba2..824d8bbb9be5 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -212,10 +212,6 @@ struct imx_i2c_struct {
- 	const struct imx_i2c_hwdata	*hwdata;
- 	struct i2c_bus_recovery_info rinfo;
- 
--	struct pinctrl *pinctrl;
--	struct pinctrl_state *pinctrl_pins_default;
--	struct pinctrl_state *pinctrl_pins_gpio;
--
- 	struct imx_i2c_dma	*dma;
- 	struct i2c_client	*slave;
- 	enum i2c_slave_event last_slave_event;
-@@ -1357,24 +1353,6 @@ static int i2c_imx_xfer_atomic(struct i2c_adapter *adapter,
- 	return result;
- }
- 
--static void i2c_imx_prepare_recovery(struct i2c_adapter *adap)
--{
--	struct imx_i2c_struct *i2c_imx;
--
--	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
--
--	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_gpio);
--}
--
--static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
--{
--	struct imx_i2c_struct *i2c_imx;
--
--	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
--
--	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_default);
--}
--
- /*
-  * We switch SCL and SDA to their GPIO function and do some bitbanging
-  * for bus recovery. These alternative pinmux settings can be
-@@ -1385,43 +1363,17 @@ static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
- static int i2c_imx_init_recovery_info(struct imx_i2c_struct *i2c_imx,
- 		struct platform_device *pdev)
- {
--	struct i2c_bus_recovery_info *rinfo = &i2c_imx->rinfo;
-+	struct i2c_bus_recovery_info *bri = &i2c_imx->rinfo;
- 
--	i2c_imx->pinctrl = devm_pinctrl_get(&pdev->dev);
--	if (!i2c_imx->pinctrl) {
--		dev_info(&pdev->dev, "pinctrl unavailable, bus recovery not supported\n");
-+	bri->pinctrl = devm_pinctrl_get(&pdev->dev);
-+	if (PTR_ERR(bri->pinctrl) == -ENODEV) {
-+		bri->pinctrl = NULL;
- 		return 0;
- 	}
--	if (IS_ERR(i2c_imx->pinctrl)) {
--		dev_info(&pdev->dev, "can't get pinctrl, bus recovery not supported\n");
--		return PTR_ERR(i2c_imx->pinctrl);
--	}
--
--	i2c_imx->pinctrl_pins_default = pinctrl_lookup_state(i2c_imx->pinctrl,
--			PINCTRL_STATE_DEFAULT);
--	i2c_imx->pinctrl_pins_gpio = pinctrl_lookup_state(i2c_imx->pinctrl,
--			"gpio");
--	rinfo->sda_gpiod = devm_gpiod_get(&pdev->dev, "sda", GPIOD_IN);
--	rinfo->scl_gpiod = devm_gpiod_get(&pdev->dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
--
--	if (PTR_ERR(rinfo->sda_gpiod) == -EPROBE_DEFER ||
--	    PTR_ERR(rinfo->scl_gpiod) == -EPROBE_DEFER) {
--		return -EPROBE_DEFER;
--	} else if (IS_ERR(rinfo->sda_gpiod) ||
--		   IS_ERR(rinfo->scl_gpiod) ||
--		   IS_ERR(i2c_imx->pinctrl_pins_default) ||
--		   IS_ERR(i2c_imx->pinctrl_pins_gpio)) {
--		dev_dbg(&pdev->dev, "recovery information incomplete\n");
--		return 0;
--	}
--
--	dev_dbg(&pdev->dev, "using scl%s for recovery\n",
--		rinfo->sda_gpiod ? ",sda" : "");
-+	if (IS_ERR(bri->pinctrl))
-+		return PTR_ERR(bri->pinctrl);
- 
--	rinfo->prepare_recovery = i2c_imx_prepare_recovery;
--	rinfo->unprepare_recovery = i2c_imx_unprepare_recovery;
--	rinfo->recover_bus = i2c_generic_scl_recovery;
--	i2c_imx->adapter.bus_recovery_info = rinfo;
-+	i2c_imx->adapter.bus_recovery_info = bri;
- 
- 	return 0;
- }
--- 
-2.43.0
-
-
-/Esben
 
