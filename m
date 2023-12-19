@@ -1,173 +1,145 @@
-Return-Path: <linux-kernel+bounces-5870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2AD8190BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:30:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FABE8190C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:32:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67B081F25E9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:30:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B1DEB24D0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A50539856;
-	Tue, 19 Dec 2023 19:30:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C39039850;
+	Tue, 19 Dec 2023 19:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="hASqtFp8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EUlFPhz6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CEE639AC0;
-	Tue, 19 Dec 2023 19:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1703014190;
-	bh=GMFosoqH618A0escG3KIeky1Bglzu9iNu3oJdI75r2c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hASqtFp8t11cv7FEJdQUJ9GxREwItyc99qkE4NvBl5NoggRb0wDTMY60eN8hn4LNd
-	 Hny29ryLOertfQrxFYW+0RZTky3PESA471v0LguQi8ddRcFuZ8BLut0FkPqxGTRU/4
-	 QNqIiynuflzz2mjSZu2gyKOFTH79xuPyRZR/t7DQ=
-Date: Tue, 19 Dec 2023 20:29:50 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Luis Chamberlain <mcgrof@kernel.org>, 
-	Julia Lawall <julia.lawall@inria.fr>
-Cc: Joel Granados <j.granados@samsung.com>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Kees Cook <keescook@chromium.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Iurii Zaikin <yzaikin@google.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-Message-ID: <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
-References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
- <20231207104357.kndqvzkhxqkwkkjo@localhost>
- <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
- <20231208095926.aavsjrtqbb5rygmb@localhost>
- <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
- <20231212090930.y4omk62wenxgo5by@localhost>
- <ZXligolK0ekZ+Zuf@bombadil.infradead.org>
- <20231217120201.z4gr3ksjd4ai2nlk@localhost>
- <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
- <ZYC37Vco1p4vD8ji@bombadil.infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AEAF38F8B;
+	Tue, 19 Dec 2023 19:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40c60dfa5bfso58503255e9.0;
+        Tue, 19 Dec 2023 11:32:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703014345; x=1703619145; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IF8GvvowDjNbUwrAOPiYPKi0zKWqFwVvQy27RkH1Gsk=;
+        b=EUlFPhz6a1dx/qOW6Dt+QoNIEToLKIwgbPwPu1N/A4FQqjCRC414mAJW/k5dgYzM0O
+         RmzDTnjVJsJvQ2BkLcwlS/nZXKg594MJ/uwO17UFUQUlfmiJ6mwyE+BHKdy5JZAtZGfy
+         laY5MEdcIc4vwlhdelUAN6acRv6WKlHHW23QP9McLuy2ZkmwBWrDqSfe3W09i/9ArHff
+         k50IfEg9OkL4e4XbuF09KeeDjNNBodxAvwJyyqK2YCvR/OLAZ6SQ/qd7ejOltAabTWmS
+         ZTWzypNxNuZGlpPtK+PV7gr6piowmvdJZO/6A7I36k+nP86VPgxvI+E2C80nwL5ZjKHj
+         tNxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703014345; x=1703619145;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IF8GvvowDjNbUwrAOPiYPKi0zKWqFwVvQy27RkH1Gsk=;
+        b=qN9K0dXYHwTj7RA2/E8esIxw/mcpQkBrW5AvSruZMecZtvSUkxeW3oNANTHtQSOpnT
+         DkCFgVNDvJ3gz29rZzU/bo5CC87uy3uuP/Z2IeFURIjVZ8pKd930W5Q+guil9pIWv9vk
+         w3baH4CuObKP0b4UCVU5TQbnBQl9G6o9df0AYBzPfKXyFN/vw14Z1j96HVZwLZ7dV1+a
+         yyBi4HuBGGh/jeCwmUMFyy/nDCj2HKZN3QVHsnezvwrUdUAzEizcJh8HNKrtoEvxKHyD
+         FjGbbO7WSLhH8UgmnGfCC3PJ50J2Lvi7i7gb2uvn2hw7zZKDZt5ISORo9mybCsMXr/Rd
+         kZQA==
+X-Gm-Message-State: AOJu0YxvoBLZ4IEm60HiYPIGWi18POQmWTNwHayIaEfRSI5/7OLuiLaQ
+	vxhtIHHQXsqwq6Yyk0nKUYM=
+X-Google-Smtp-Source: AGHT+IHE4Q+XrID+wd7CG0y5dR6aqT5vs4T6IimX/UtgQxOmMxgL8h+GtjZcd0WDGzJQeg/+2yvCtg==
+X-Received: by 2002:a05:600c:5020:b0:40c:6ca7:f001 with SMTP id n32-20020a05600c502000b0040c6ca7f001mr4330598wmr.56.1703014344981;
+        Tue, 19 Dec 2023 11:32:24 -0800 (PST)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id hg12-20020a05600c538c00b0040c41846923sm4130537wmb.26.2023.12.19.11.32.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 11:32:24 -0800 (PST)
+Message-ID: <f16ded3f-1744-4bac-a7ca-fff2d425ec99@gmail.com>
+Date: Tue, 19 Dec 2023 20:32:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/surface: aggregator: make ssam_bus_type constant
+ and static
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, hdegoede@redhat.com
+Cc: linux-kernel@vger.kernel.org,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ platform-driver-x86@vger.kernel.org
+References: <2023121957-tapered-upswing-8326@gregkh>
+From: Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <2023121957-tapered-upswing-8326@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZYC37Vco1p4vD8ji@bombadil.infradead.org>
 
-Hi Luis and Julia,
-
-(Julia, there is a question and context for you inline, marked with your name)
-
-On 2023-12-18 13:21:49-0800, Luis Chamberlain wrote:
-> So we can split this up concentually in two:
+On 12/19/23 18:18, Greg Kroah-Hartman wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the ssam_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
 > 
->  * constificaiton of the table handlers
->  * constification of the table struct itself
+> It's also never used outside of
+> drivers/platform/surface/aggregator/bus.c so make it static and don't
+> export it as no one is using it.
+
+Thanks! Looks good to me.
+
+Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+
+> Cc: Maximilian Luz <luzmaximilian@gmail.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
+> Cc: platform-driver-x86@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>   drivers/platform/surface/aggregator/bus.c | 5 +++--
+>   include/linux/surface_aggregator/device.h | 1 -
+>   2 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> On Sun, Dec 17, 2023 at 11:10:15PM +0100, Thomas Weißschuh wrote:
-> > The handlers can already be made const as shown in this series,
-> 
-> The series did already produce issues with some builds, and so
-> Julia's point is confirmed that the series only proves hanlders
-> which you did build and for which 0-day has coverage for.
-> 
-> The challenge here was to see if we could draw up a test case
-> that would prove this without build tests, and what occurred to
-> me was coccinelle or smatch.
-
-I used the following coccinelle script to find more handlers that I
-missed before:
-
-virtual patch
-virtual context
-virtual report
-
-@@
-identifier func;
-identifier ctl;
-identifier write;
-identifier buffer;
-identifier lenp;
-identifier ppos;
-type loff_t;
-@@
-
-int func(
-- struct ctl_table *ctl,
-+ const struct ctl_table *ctl,
-  int write, void *buffer, size_t *lenp, loff_t *ppos) { ... }
-
-It did not find any additional occurrences while it was able to match
-the existing changes.
-
-After that I manually reviewed all handlers that they are not modifying
-their table argument, which they don't.
-
-Should we do more?
-
-
-For Julia:
-
-Maybe you could advise on how to use coccinelle to find where a const
-function argument or one of its members are modified directly or passed
-to some other function as non-const arguments.
-See the coccinelle patch above.
-
-Is this possible?
-
-> > > If that is indeed what you are proposing, you might not even need the
-> > > un-register step as all the mutability that I have seen occurs before
-> > > the register. So maybe instead of re-registering it, you can so a copy
-> > > (of the changed ctl_table) to a const pointer and then pass that along
-> > > to the register function.
-> > 
-> > Tables that are modified, but *not* through the handler, would crop
-> > during the constification of the table structs.
-> > Which should be a second step.
-> 
-> Instead of "croping up" at build time again, I wonder if we can do
-> better with coccinelle / smatch.
-
-As for smatch:
-
-Doesn't smatch itself run as part of a normal build [0]?
-So it would have the same visibility issues as the compiler itself.
-
-> Joel, and yes, what you described is what I was suggesting, that is to
-> avoid having to add a non-const handler a first step, instead we modify
-> those callers which do require to modify the table by first a
-> deregistration and later a registration. In fact to make this even
-> easier a new call would be nice so to aslo be able to git grep when
-> this is done in the kernel.
-> 
-> But if what you suggest is true that there are no registrations which
-> later modify the table, we don't need that. It is the uncertainty that
-> we might have that this is a true statment that I wanted to challenge
-> to see if we could do better. Can we avoid this being a stupid
-> regression later by doing code analysis with coccinelle / smatch?
-> 
-> The template of the above endeavor seems useful not only to this use
-> case but to any place in the kernel where this previously has been done
-> before, and hence my suggestion that this seems like a sensible thing
-> to think over to see if we could generalize.
-
-I'd like to split the series and submit the part up until and including
-the constification of arguments first and on its own.
-It keeps the subsystem maintainers out of the discussion of the core
-sysctl changes.
-
-I'll submit the core sysctl changes after I figure out proper responses
-to all review comments and we can do this in parallel to the tree-wide
-preparation.
-
-What do you think Luis and Joel?
-
-[0] https://repo.or.cz/smatch.git/blob/HEAD:/smatch_scripts/test_kernel.sh
+> diff --git a/drivers/platform/surface/aggregator/bus.c b/drivers/platform/surface/aggregator/bus.c
+> index 42ccd7f1c9b9..118caa651bec 100644
+> --- a/drivers/platform/surface/aggregator/bus.c
+> +++ b/drivers/platform/surface/aggregator/bus.c
+> @@ -35,6 +35,8 @@ static struct attribute *ssam_device_attrs[] = {
+>   };
+>   ATTRIBUTE_GROUPS(ssam_device);
+>   
+> +static const struct bus_type ssam_bus_type;
+> +
+>   static int ssam_device_uevent(const struct device *dev, struct kobj_uevent_env *env)
+>   {
+>   	const struct ssam_device *sdev = to_ssam_device(dev);
+> @@ -329,13 +331,12 @@ static void ssam_bus_remove(struct device *dev)
+>   		sdrv->remove(to_ssam_device(dev));
+>   }
+>   
+> -struct bus_type ssam_bus_type = {
+> +static const struct bus_type ssam_bus_type = {
+>   	.name   = "surface_aggregator",
+>   	.match  = ssam_bus_match,
+>   	.probe  = ssam_bus_probe,
+>   	.remove = ssam_bus_remove,
+>   };
+> -EXPORT_SYMBOL_GPL(ssam_bus_type);
+>   
+>   /**
+>    * __ssam_device_driver_register() - Register a SSAM client device driver.
+> diff --git a/include/linux/surface_aggregator/device.h b/include/linux/surface_aggregator/device.h
+> index 42b249b4c24b..8cd8c38cf3f3 100644
+> --- a/include/linux/surface_aggregator/device.h
+> +++ b/include/linux/surface_aggregator/device.h
+> @@ -193,7 +193,6 @@ struct ssam_device_driver {
+>   
+>   #ifdef CONFIG_SURFACE_AGGREGATOR_BUS
+>   
+> -extern struct bus_type ssam_bus_type;
+>   extern const struct device_type ssam_device_type;
+>   
+>   /**
 
