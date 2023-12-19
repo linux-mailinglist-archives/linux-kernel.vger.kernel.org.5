@@ -1,145 +1,152 @@
-Return-Path: <linux-kernel+bounces-5602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 420C1818CEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C55D5818CF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:51:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF196288883
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:51:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74958284423
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E5D2032C;
-	Tue, 19 Dec 2023 16:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54FD224E2;
+	Tue, 19 Dec 2023 16:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="KwMAAjV4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aPZlxTVv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3833456E;
-	Tue, 19 Dec 2023 16:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
-Received: from sunspire (unknown [188.24.94.216])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD23208D0
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703004696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w5Xe1M0Gz0LaWjI/lQS6+uzcaH3a3lGFMV4s4r+jDpI=;
+	b=aPZlxTVv+6+lsiyXNLWMlVR/kgCvPX0deuTBGVpdtRMad/lMhzZE5YVPYoo51Pm/KFKRN4
+	urUkOSbV/kZDlSaXtWxFBHD3v3YIn9ZiwX4SZa+Mlm+00MQB1YtIKVKTWV4uItlYvxEb40
+	nWITFmOQGP3YLnXIJmzU0Wcokqg7dMM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-538-SZhKt4N1MPKXfQGXxUAb8Q-1; Tue, 19 Dec 2023 11:51:31 -0500
+X-MC-Unique: SZhKt4N1MPKXfQGXxUAb8Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 26CC728B50B;
-	Tue, 19 Dec 2023 16:51:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-	s=skycaves; t=1703004668;
-	bh=veNOinDTAb64HC+IDzgM+dbyIHOuQpU8BV5YLj+GHx0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=KwMAAjV407nb8RnrE+LhyXpGclMA6l6DOcdztvli/nBs1bed3i9DgGAgWX3SRm4xV
-	 1sK7lc2QWe4X98rdZM+LXzV1WNJ/it8XW2pUUyhcLGbjMaAZjQs+tkA9cWoqTyEsfK
-	 pXcX297cHbBhww88CYT8tu8htglH9elFZiQTOsnY=
-Date: Tue, 19 Dec 2023 18:51:06 +0200
-From: Petre Rodan <petre.rodan@subdimension.ro>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Angel Iglesias <ang.iglesiasg@gmail.com>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Andreas Klinger <ak@it-klinger.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH 2/2] iio: pressure: change driver for Honeywell MPR series
-Message-ID: <ZYHJ-vkLEiN2sFxv@sunspire>
-References: <20231219130230.32584-1-petre.rodan@subdimension.ro>
- <20231219130230.32584-3-petre.rodan@subdimension.ro>
- <ZYG5pZaDN11eht7A@smile.fi.intel.com>
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 544C185A589;
+	Tue, 19 Dec 2023 16:51:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 745142166B31;
+	Tue, 19 Dec 2023 16:51:27 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <d1d4f3996f55cb98ab6297844a51bc905e2ce631.camel@kernel.org>
+References: <d1d4f3996f55cb98ab6297844a51bc905e2ce631.camel@kernel.org> <20231213152350.431591-1-dhowells@redhat.com> <20231213152350.431591-37-dhowells@redhat.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: dhowells@redhat.com, Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 36/39] netfs: Implement a write-through caching option
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OdreSIYuALwCjV8t"
-Content-Disposition: inline
-In-Reply-To: <ZYG5pZaDN11eht7A@smile.fi.intel.com>
-
-
---OdreSIYuALwCjV8t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1075259.1703004686.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
+Date: Tue, 19 Dec 2023 16:51:26 +0000
+Message-ID: <1075260.1703004686@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Tue, Dec 19, 2023 at 05:41:25PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 19, 2023 at 03:02:21PM +0200, Petre Rodan wrote:
-> > ChangeLog
-> >  - rewrite flow so that driver can use either i2c or spi as communicati=
-on bus
-> >  - add spi driver (tested on MPRLS0015PA0000SA)
-> >  - add pressure-triplet property that automatically sets pmin, pmax
-> >  - fix transfer-function enum typo based on previous review [1]
-> >  - fix interrupt example in binding file (FALLING -> RISING edge)
-> >  - indentation changes based on previous code reviews
-> >  - renamed mpr_read_pressure to mpr_read_conversion since the sensor is
-> >    supposed to also provide temperature measuremets
-> >    (but I think mine is broken since the raw temperature value is always
-> >    0x800000 - so temp reading not currently implemented)
->=20
-> Changelog...
->=20
-> > I've been told in the past that the use of mutexes is redundant in thes=
-e cases
-> > so please assess if the guard() from the driver code is required or sho=
-uld be
-> > removed.
->=20
-> A comment...
->=20
-> > patch uses device_property_match_property_string() from the 'togreg' br=
-anch
->=20
-> Another comment...
->=20
-> > [1]: https://lore.kernel.org/lkml/20231116-grudge-hankering-b7a71d831b9=
-3@squawk/T/
->=20
-> Some Link: (should it be a tag?)...
+Jeff Layton <jlayton@kernel.org> wrote:
 
-it's a reference link that was pointed to within the text above.
-it emulates `lynx --dump foo.html`. designed for human reading, sorry if it
-broke some parsing script.
+> > This can't be used with content encryption as that may require expansi=
+on of
+> > the write RPC beyond the write being made.
+> > =
 
-> Where is the commit message? Or is this just an intermediate change
-> to show what will be in the next version? I'm confused.
+> > This doesn't affect writes via mmap - those are written back in the no=
+rmal
+> > way; similarly failed writethrough writes are marked dirty and left to
+> > writeback to retry.  Another option would be to simply invalidate them=
+, but
+> > the contents can be simultaneously accessed by read() and through mmap=
+.
+> > =
 
-the commit message is between the end of the mail header and before the act=
-ual
-patch. the two comments were also placed for human interaction.
-they will be removed later on when we get close to acceptance and someone
-replies to them. and yes, the entire patch is full and self-contained in th=
-ese
-3 messages.
+> =
 
-very best regards,
-peter
+> I do wish Linux were less of a mess in this regard. Different
+> filesystems behave differently when writeback fails.
 
---OdreSIYuALwCjV8t
-Content-Type: application/pgp-signature; name="signature.asc"
+Cifs is particularly, um, entertaining in this regard as it allows the wri=
+te
+to fail on the server due to a checksum failure if the source data changes
+during the write and then just retries it later.
 
------BEGIN PGP SIGNATURE-----
+> That said, the modern consensus with local filesystems is to just leave
+> the pages clean when buffered writeback fails, but set a writeback error
+> on the inode. That at least keeps dirty pages from stacking up in the
+> cache. In the case of something like a netfs, we usually invalidate the
+> inode and the pages -- netfs's usually have to spontaneously deal with
+> that anyway, so we might as well.
+> =
 
-iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWByfYACgkQzyaZmYRO
-fzCo7Q/+LgL4tQSgwiqKEzmiqz8GK0zTJch094QCkyCLUrjCJtbiBzEi3IvT6bz6
-gOx2nO0H2ijjP1Rxxi7KWWCRzRMl82Oaf2ncj49uUjMrLBHFQmTVlsaJ4viCYUzU
-IMG+JajAWnZkpMh/h/Nw8N9833g/g59nD/CuxxzIR7LsIh4xxa9jkIchbWpAzylI
-pI3fP4HZapo0o/k9OOcF5ccOaS7jTpRCATqN3syDhT2fwq5T3lXIJyJ+V3gmgA08
-r61eW0T3am9Y4/J9CUZtdKEWqEXsRGO6tHTUEQVhpuw41SIJ/mUVyfK45Em2KoYa
-RRtPR3ra6KTFhi0UF7neMIzleVPd4vMU+dfKz6cuZTwf3e7KleN3tLbR0u+1TaYk
-dw9P/oAd9Kl+Yk7mT9lIT85J52lP0rqoBgv5kyrDWe4ApzfUCp7DV/q4HGa9uZ6v
-B/qnL0R+b4cyACRTDrAdP604O7NKaZalSb8jZifYmokq9zkEto8DCG+TgGRJOMzL
-kiVuk8DrflalpXlqeU3SxbC3e63W0Qnpz5AWwcUM5z34TZY7XyyXZ0qzJ7brYhfl
-9JI3y8pqIYDmzoi6j5LL504/CMlpeowAcK/VXhR3o1pm0DKtQ1TXKzFAmAsMC/5i
-wcL7IfJZ9/y9WqNXTGz7LzxJgvbZobf5vDqJR8GA3JNsRRK7Gak=
-=1KU9
------END PGP SIGNATURE-----
+> Marking the pages dirty here should mean that they'll effectively get a
+> second try at writeback, which is a change in behavior from most
+> filesystems. I'm not sure it's a bad one, but writeback can take a long
+> time if you have a laggy network.
 
---OdreSIYuALwCjV8t--
+I'm not sure what the best thing to do is.  If everything is doing
+O_DSYNC/writethrough I/O on an inode and there is no mmap, then invalidati=
+ng
+the pages is probably not a bad way to deal with failure here.
+
+> When a write has already failed once, why do you think it'll succeed on
+> a second attempt (and probably with page-aligned I/O, I guess)?
+
+See above with cifs.  I wonder if the pages being written to should be mad=
+e RO
+and page_mkwrite() forced to lock against DSYNC writethrough.
+
+> Another question: when the writeback is (re)attempted, will it end up
+> just doing page-aligned I/O, or is the byte range still going to be
+> limited to the written range?
+
+At the moment, it then happens exactly as it would if it wasn't doing
+writethrough - so it will write partial folios if it's doing a streaming w=
+rite
+and will do full folios otherwise.
+
+> The more I consider it, I think it might be a lot simpler to just "fail
+> fast" here rather than remarking the write dirty.
+
+You may be right - but, again, mmap:-/
+
+David
+
 
