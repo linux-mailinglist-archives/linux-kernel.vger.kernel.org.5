@@ -1,120 +1,154 @@
-Return-Path: <linux-kernel+bounces-5862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F49E819078
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C6D481908C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 604761C247BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:16:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F6C01C24710
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C11838F80;
-	Tue, 19 Dec 2023 19:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F0C38F94;
+	Tue, 19 Dec 2023 19:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dZt4bysl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2bvE3cIP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63BD3984A;
-	Tue, 19 Dec 2023 19:16:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE9BC433C9;
-	Tue, 19 Dec 2023 19:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703013367;
-	bh=a5lFahzKlrRL4P7ohRe8Cfy1Uo6XmMsEJQeMU3iI95g=;
-	h=From:Date:Subject:To:Cc:From;
-	b=dZt4byslP6DiMXmFUkvkmN2tN2LG1JTx3kf8/ZxaAGV58MQrH87vV4FFsIuEkdwG/
-	 QBP1lPcaV04KWu+/4vW2LPAN0wt6CBNa16t5MI9EQpGEM2Z47hy7Mi7spEQ00fJl2l
-	 TmSbAnwlZlRLyOJeVvOYeGrllETJPJ+9dcvPRHwpe/r0QsgoHJWJqg5k1n3JTXJHkF
-	 sTFS6HcaQrSq5Mjj4lTe5o4sH7F0DQiKk3M/8B9PsltouydwMbuEwnrhloi3w918WD
-	 St34tQuc2iWHSS43xvri0odwAc3XGjIfzCWM1ZOTJi4zGoAsXwaBorC3T94WfmDVYC
-	 byNH8zg74pTUw==
-From: Mark Brown <broonie@kernel.org>
-Date: Tue, 19 Dec 2023 19:15:54 +0000
-Subject: [PATCH] selftests/seccomp: Try to fit runtime of benchmark into
- timeout
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9762B38DF5
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso4026661276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:18:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703013520; x=1703618320; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vk2WOblYJMsl3hzTJZL7x+a3eKwopbV7abftu0jaO3o=;
+        b=2bvE3cIP9WLqH3jxFHYx8WGEXiBcMIHTsBFjQ0vJQ0VDKGwcGUXZUblGqb74e4LMU8
+         AoFyG/o310lTCk/JxALjDMFmgM8B9C2huzSFMVSdT1xUH2s4PyWfWLXGe+VYnl+ljPsa
+         hhoWaO/uimwlzVpZxIJ0gCvP2zypE52fBmRX5ZCIdFiGX+F8y1MoFzTn8Z0nfWAcYC2w
+         JJtm1el9IqjYeVjX8DFTVnjq/drjpXTuyCWKQ7JEQhUtzhuU6fBFv4HIQojeMF8dhUbT
+         IHb2dZO4+DsjadmBMhgMGj+I/DBll1+iA/nJORoFgZN1PIgiTRcqWj5+S73klOHbIz4g
+         5aQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703013520; x=1703618320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vk2WOblYJMsl3hzTJZL7x+a3eKwopbV7abftu0jaO3o=;
+        b=Hjj8+baeTNl8+X/K6Wqtq+aBCl9c13FwvxxAQNpmIUkjmwwh9fsK8Eru//0lUs4nsr
+         vEY8melp/wHdIs52HgPESVwhkp5EUqKoqyXHFTPOXxPzH/ac+m947B9jni1TEUu+CFyd
+         tVkDNhvC809D169gtHMJ7DDDXSxOYEcSPwA+89iwXkm+ps+MLQqo4PlpDkzE9VlnkORq
+         PUz7sTYf1DdtY1cdBmTRsbtTTXBqTRgo/qf96Vb3hvhutuYaMoyrUMga6rq/vT48fTKD
+         73Hoa+29Uy4G5Vsa5U15qrx0c/YQ4Q+a/XSGj90AiFCwz/c76cqkusI0/aYVCJQv2JXO
+         jvOA==
+X-Gm-Message-State: AOJu0YzsD1hnP9aiA7OFb9qxNwjDvEYIzQ/Q/ZWl6ZwDa6a137i9V/Nv
+	nPmnbi+zgbn59yPJFWB+MyYJrYRhSoZhsR0x5hrZzA==
+X-Google-Smtp-Source: AGHT+IEQnJH2FyDceXOzOBMy4ilQPUAbQxXDL6OLSAh4zACKDqdNbLqCjwWUh4R2wa3Q2YxVRYIHrhk3t3bA+xnDWvc=
+X-Received: by 2002:a25:fc20:0:b0:dbc:dea7:19a8 with SMTP id
+ v32-20020a25fc20000000b00dbcdea719a8mr6143146ybd.121.1703013520291; Tue, 19
+ Dec 2023 11:18:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231219-b4-kselftest-seccomp-benchmark-timeout-v1-1-8515c73015b9@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAOnrgWUC/x3NQQ6CMBBG4auQWTsJrYrBqxgWtP2RCbaQTjUmh
- LvbuPw27+2kyAKle7NTxkdU1lRhTg35eUxPsIRqsq09G2t6dhdeFK+pQAsrvF/jxg7Jz3HMCxe
- JWN+F26vrOtyC7YOhGtsyJvn+R4/hOH7IZ21MeAAAAA==
-To: Kees Cook <keescook@chromium.org>, 
- Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-5c066
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2084; i=broonie@kernel.org;
- h=from:subject:message-id; bh=a5lFahzKlrRL4P7ohRe8Cfy1Uo6XmMsEJQeMU3iI95g=;
- b=owGbwMvMwMWocq27KDak/QLjabUkhtTG11/EZ7a+ml7nxS8qorxS8l3g48OT+ljn53Oq/24TiNu8
- mVOrk9GYhYGRi0FWTJFl7bOMVenhElvnP5r/CmYQKxPIFAYuTgGYSOF89n8qV+p16t4YOFSbCTtOfV
- wd6Ru63f63uqGZx5xbrpK1DcUHRQMUVkqYfipsW5d9q6Z0kvn687/3tKh+ZNUokFlhVyT+I6p1ZkKI
- sL8Ny7fMu05uE07c+fqlSXjL78AvAn2KF09K/OdluM3++d8lqx0BXl9YWXUY7602O6s3L2H5og3NRo
- xSk+7pGsoWFzvHyCxj6TK3a7NqSVhvqGmndWz+q9IAx8pNLWr+RpVbFh5lCoh5VlxkucM85Y51q9SV
- 7GU2HAKL+iedNDm44ERJtYKgOU9ugJiN9dqzIdXth174TU1c39cd8KbanatiQueGsC0v46IbxCMCpH
- oXJsjq778fNKVM4rzF92972zkA
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+References: <202312191507.348721d2-oliver.sang@intel.com> <20231219095821.GAZYFpPUSKexZAcl05@fat_crate.local>
+ <CAHk-=wimbX8UF6ECo53Hm4Vz0tCC7jjN9e3tEhZfoEtsxyfU-A@mail.gmail.com>
+In-Reply-To: <CAHk-=wimbX8UF6ECo53Hm4Vz0tCC7jjN9e3tEhZfoEtsxyfU-A@mail.gmail.com>
+From: Sami Tolvanen <samitolvanen@google.com>
+Date: Tue, 19 Dec 2023 11:18:02 -0800
+Message-ID: <CABCJKufi2_BcSwc+j=L9VMwGVteSFX509RO6QCC3g-ZtRo5cGQ@mail.gmail.com>
+Subject: Re: [linus:master] [x86/entry] be5341eb0d: WARNING:CPU:#PID:#at_int80_emulation
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Borislav Petkov <bp@alien8.de>, kernel test robot <oliver.sang@intel.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, xen-devel@lists.xenproject.org, 
+	Kees Cook <keescook@chromium.org>, Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The seccomp benchmark runs five scenarios, one calibration run with no
-seccomp filters enabled then four further runs each adding a filter. The
-calibration run times itself for 15s and then each additional run executes
-for the same number of times.
+On Tue, Dec 19, 2023 at 10:21=E2=80=AFAM Linus Torvalds
+<torvalds@linuxfoundation.org> wrote:
+>
+> On Tue, 19 Dec 2023 at 01:58, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > Looking at the dmesg, I think you missed the most important part - the
+> > preceding line:
+> >
+> > [   13.480504][   T48] CFI failure at int80_emulation+0x67/0xb0 (target=
+: sys_ni_posix_timers+0x0/0x70; expected type: 0xb02b34d9)
+> >                         ^^^^^^^^^^^
+>
+> So I think the issue here is that sys_ni_posix_timers is just linker
+> alias that is used for any non-implemented posix timer system call.
+>
+> See:
+>
+>   #define __SYS_NI(abi, name)                                            =
+ \
+>         SYSCALL_ALIAS(__##abi##_##name, sys_ni_posix_timers);
+>
+> and this all worked fine when the actual call to this was done in
+> assembly code that happily just called that function directly and
+> didn't care about any argument types.
 
-Currently the seccomp tests, including the benchmark, run with an extended
-120s timeout but this is not sufficient to robustly run the tests on a lot
-of platforms. Sample timings from some recent runs:
+Yes, that's exactly the issue.
 
-   Platform          Run 1  Run 2  Run 3  Run 4
-   ---------         -----  -----  -----  -----
-   PowerEdge R200    16.6s  16.6s  31.6s  37.4s
-   BBB (arm)         20.4s  20.4s  54.5s
-   Synquacer (arm64) 20.7s  23.7s  40.3s
+> But commit be5341eb0d43 ("x86/entry: Convert INT 0x80 emulation to
+> IDTENTRY") moved that call from assembly into C, and in the process
+> ended up enabling CFI for it all, and now the compiler will check that
+> the function types match. Which they don't, because we use that dummy
+> function (I don't think they do in general).
+>
+> I don't know what the best fix is. Either CFI should be turned off for
+> that call, or we should make sure to generate those NI system calls
+> with the proper types.
 
-The x86 runs from the PowerEdge are quite marginal and routinely fail, for
-the successful run reported here the timed portions of the run are at
-117.2s leaving less than 3s of margin which is frequently breached. The
-added overhead of adding filters on the other platforms is such that there
-is no prospect of their runs fitting into the 120s timeout, especially
-on 32 bit arm where there is no BPF JIT.
+Probably the easiest fix would be to use SYSCALL_DEFINE0 for
+sys_ni_posix_timers, and for architectures that implement syscall
+wrappers, change sys_ni_posix_timers references to
+__<abi>_sys_ni_posix_timers.
 
-While we could lower the time we calibrate for I'm also already seeing the
-currently completing runs reporting issues with the per filter overheads
-not matching expectations:
+Something like this should fix the issue for x86, but it looks like
+arm64, riscv, and s390 would need similar syscall wrapper changes:
 
-Let's instead raise the timeout to 180s which is only a 50% increase on the
-current timeout which is itself not *too* large given that there's only two
-tests in this suite.
+diff --git a/arch/x86/include/asm/syscall_wrapper.h
+b/arch/x86/include/asm/syscall_wrapper.h
+index fd2669b1cb2d..ed38265cad27 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -87,7 +87,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *r=
+egs);
+        }
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/seccomp/settings | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ #define __SYS_NI(abi, name)                                            \
+-       SYSCALL_ALIAS(__##abi##_##name, sys_ni_posix_timers);
++       SYSCALL_ALIAS(__##abi##_##name, __##abi##_sys_ni_posix_timers);
 
-diff --git a/tools/testing/selftests/seccomp/settings b/tools/testing/selftests/seccomp/settings
-index 6091b45d226b..a953c96aa16e 100644
---- a/tools/testing/selftests/seccomp/settings
-+++ b/tools/testing/selftests/seccomp/settings
-@@ -1 +1 @@
--timeout=120
-+timeout=180
+ #ifdef CONFIG_X86_64
+ #define __X64_SYS_STUB0(name)                                          \
+diff --git a/kernel/time/posix-stubs.c b/kernel/time/posix-stubs.c
+index 828aeecbd1e8..d58f976ec926 100644
+--- a/kernel/time/posix-stubs.c
++++ b/kernel/time/posix-stubs.c
+@@ -22,7 +22,7 @@
+ #include <asm/syscall_wrapper.h>
+ #endif
 
----
-base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
-change-id: 20231219-b4-kselftest-seccomp-benchmark-timeout-05b66e7d29d1
+-asmlinkage long sys_ni_posix_timers(void)
++SYSCALL_DEFINE0(ni_posix_timers)
+ {
+        pr_err_once("process %d (%s) attempted a POSIX timer syscall "
+                    "while CONFIG_POSIX_TIMERS is not set\n",
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+Sami
 
