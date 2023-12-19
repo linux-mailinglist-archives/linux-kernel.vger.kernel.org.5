@@ -1,146 +1,190 @@
-Return-Path: <linux-kernel+bounces-4889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7009181835D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:30:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E202981835F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 254061F24D41
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:30:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23664B2235B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA7B11725;
-	Tue, 19 Dec 2023 08:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bG4Lhs3L"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15EA2125C2;
+	Tue, 19 Dec 2023 08:30:20 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1C83125CC
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702974609; x=1734510609;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TFvk/efFGED3uKW4jz6Wb+17MhEzSYGtlBq2AKXhvJ8=;
-  b=bG4Lhs3L6gI7ecFuLz7Srnk6LSvx27YiiRjGjNJg6zxLheDomiMEbmVh
-   D4nKhmGCkvgTfofJvw0rb55uxx0+l3XRhY/ZKvvq7O0Y3IzvK32riwbKB
-   7hHkltN7OzGxG2tfpcn7jSZ1dCuIvFUUo+fT4idyQutDvcdZwV8z8DvJY
-   /GC1WpP+PC/WRsZNwP1vFcm6jIxWXYAW/DUMhk36Iw712UT4x4G3RuoD/
-   fTzEu16IxOWMcBzCZL1UG4lMQCeU3xVa01ArJS1pa6Iu1/hKamdM9AZjh
-   TczpyBKYzySLg7MI32Vy6XjxOIfTwyA7Xrv4Wtz0vcsmccSB2vpGnUFDA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="375115821"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="375115821"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 00:30:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="1023065694"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="1023065694"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 19 Dec 2023 00:30:06 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFVUK-000541-06;
-	Tue, 19 Dec 2023 08:30:04 +0000
-Date: Tue, 19 Dec 2023 16:29:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	Keith Busch <kbusch@kernel.org>,
-	James Smart <james.smart@broadcom.com>,
-	Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PATCH v3 15/16] nvmet-fc: avoid deadlock on delete association
- path
-Message-ID: <202312191634.ASof5mm8-lkp@intel.com>
-References: <20231218153105.12717-16-dwagner@suse.de>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B373179C6
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 334421FB;
+	Tue, 19 Dec 2023 00:31:01 -0800 (PST)
+Received: from [10.57.75.230] (unknown [10.57.75.230])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 121813F738;
+	Tue, 19 Dec 2023 00:30:12 -0800 (PST)
+Message-ID: <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
+Date: Tue, 19 Dec 2023 08:30:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153105.12717-16-dwagner@suse.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
+ Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
+ <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
+ Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
+ Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231218105100.172635-1-ryan.roberts@arm.com>
+ <20231218105100.172635-3-ryan.roberts@arm.com>
+ <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Daniel,
+On 18/12/2023 17:47, David Hildenbrand wrote:
+> On 18.12.23 11:50, Ryan Roberts wrote:
+>> Convert copy_pte_range() to copy a batch of ptes in one go. A given
+>> batch is determined by the architecture with the new helper,
+>> pte_batch_remaining(), and maps a physically contiguous block of memory,
+>> all belonging to the same folio. A pte batch is then write-protected in
+>> one go in the parent using the new helper, ptep_set_wrprotects() and is
+>> set in one go in the child using the new helper, set_ptes_full().
+>>
+>> The primary motivation for this change is to reduce the number of tlb
+>> maintenance operations that the arm64 backend has to perform during
+>> fork, as it is about to add transparent support for the "contiguous bit"
+>> in its ptes. By write-protecting the parent using the new
+>> ptep_set_wrprotects() (note the 's' at the end) function, the backend
+>> can avoid having to unfold contig ranges of PTEs, which is expensive,
+>> when all ptes in the range are being write-protected. Similarly, by
+>> using set_ptes_full() rather than set_pte_at() to set up ptes in the
+>> child, the backend does not need to fold a contiguous range once they
+>> are all populated - they can be initially populated as a contiguous
+>> range in the first place.
+>>
+>> This code is very performance sensitive, and a significant amount of
+>> effort has been put into not regressing performance for the order-0
+>> folio case. By default, pte_batch_remaining() is compile constant 1,
+>> which enables the compiler to simplify the extra loops that are added
+>> for batching and produce code that is equivalent (and equally
+>> performant) as the previous implementation.
+>>
+>> This change addresses the core-mm refactoring only and a separate change
+>> will implement pte_batch_remaining(), ptep_set_wrprotects() and
+>> set_ptes_full() in the arm64 backend to realize the performance
+>> improvement as part of the work to enable contpte mappings.
+>>
+>> To ensure the arm64 is performant once implemented, this change is very
+>> careful to only call ptep_get() once per pte batch.
+>>
+>> The following microbenchmark results demonstate that there is no
+>> significant performance change after this patch. Fork is called in a
+>> tight loop in a process with 1G of populated memory and the time for the
+>> function to execute is measured. 100 iterations per run, 8 runs
+>> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
+>> performed for case where 1G memory is comprised of order-0 folios and
+>> case where comprised of pte-mapped order-9 folios. Negative is faster,
+>> positive is slower, compared to baseline upon which the series is based:
+>>
+>> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
+>> | fork          |-------------------|-------------------|
+>> | microbench    |    mean |   stdev |    mean |   stdev |
+>> |---------------|---------|---------|---------|---------|
+>> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
+>> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
+>>
+>> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
+>> | fork          |-------------------|-------------------|
+>> | microbench    |    mean |   stdev |    mean |   stdev |
+>> |---------------|---------|---------|---------|---------|
+>> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
+>> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
+>>
+>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>   include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
+>>   mm/memory.c             | 92 ++++++++++++++++++++++++++---------------
+>>   2 files changed, 139 insertions(+), 33 deletions(-)
+>>
+>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>> index af7639c3b0a3..db93fb81465a 100644
+>> --- a/include/linux/pgtable.h
+>> +++ b/include/linux/pgtable.h
+>> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
+>>   #define arch_flush_lazy_mmu_mode()    do {} while (0)
+>>   #endif
+>>   +#ifndef pte_batch_remaining
+>> +/**
+>> + * pte_batch_remaining - Number of pages from addr to next batch boundary.
+>> + * @pte: Page table entry for the first page.
+>> + * @addr: Address of the first page.
+>> + * @end: Batch ceiling (e.g. end of vma).
+>> + *
+>> + * Some architectures (arm64) can efficiently modify a contiguous batch of ptes.
+>> + * In such cases, this function returns the remaining number of pages to the end
+>> + * of the current batch, as defined by addr. This can be useful when iterating
+>> + * over ptes.
+>> + *
+>> + * May be overridden by the architecture, else batch size is always 1.
+>> + */
+>> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long addr,
+>> +                        unsigned long end)
+>> +{
+>> +    return 1;
+>> +}
+>> +#endif
+> 
+> It's a shame we now lose the optimization for all other archtiectures.
+> 
+> Was there no way to have some basic batching mechanism that doesn't require arch
+> specifics?
 
-kernel test robot noticed the following build errors:
+I tried a bunch of things but ultimately the way I've done it was the only way
+to reduce the order-0 fork regression to 0.
 
-[auto build test ERROR on linux-nvme/nvme-6.8]
-[also build test ERROR on linus/master v6.7-rc6 next-20231219]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Wagner/nvmet-fc-remove-unnecessary-bracket/20231219-003117
-base:   git://git.infradead.org/nvme.git nvme-6.8
-patch link:    https://lore.kernel.org/r/20231218153105.12717-16-dwagner%40suse.de
-patch subject: [PATCH v3 15/16] nvmet-fc: avoid deadlock on delete association path
-config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20231219/202312191634.ASof5mm8-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231219/202312191634.ASof5mm8-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312191634.ASof5mm8-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   drivers/nvme/target/fc.c: In function 'nvmet_fc_put_tgtport_work':
->> drivers/nvme/target/fc.c:253:9: error: implicit declaration of function 'nvmet_fc_tgtport_put'; did you mean 'nvmet_ctrl_put'? [-Werror=implicit-function-declaration]
-     253 |         nvmet_fc_tgtport_put(tgtport);
-         |         ^~~~~~~~~~~~~~~~~~~~
-         |         nvmet_ctrl_put
-   drivers/nvme/target/fc.c: At top level:
->> drivers/nvme/target/fc.c:259:13: warning: conflicting types for 'nvmet_fc_tgtport_put'; have 'void(struct nvmet_fc_tgtport *)'
-     259 | static void nvmet_fc_tgtport_put(struct nvmet_fc_tgtport *tgtport);
-         |             ^~~~~~~~~~~~~~~~~~~~
-   drivers/nvme/target/fc.c:259:13: error: static declaration of 'nvmet_fc_tgtport_put' follows non-static declaration
-   drivers/nvme/target/fc.c:253:9: note: previous implicit declaration of 'nvmet_fc_tgtport_put' with type 'void(struct nvmet_fc_tgtport *)'
-     253 |         nvmet_fc_tgtport_put(tgtport);
-         |         ^~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+My original v3 posting was costing 5% extra and even my first attempt at an
+arch-specific version that didn't resolve to a compile-time constant 1 still
+cost an extra 3%.
 
 
-vim +253 drivers/nvme/target/fc.c
+> 
+> I'd have thought that something very basic would have worked like:
+> 
+> * Check if PTE is the same when setting the PFN to 0.
+> * Check that PFN is consecutive
+> * Check that all PFNs belong to the same folio
 
-   244	
-   245	
-   246	static void nvmet_fc_handle_ls_rqst_work(struct work_struct *work);
-   247	static void nvmet_fc_fcp_rqst_op_defer_work(struct work_struct *work);
-   248	static void nvmet_fc_put_tgtport_work(struct work_struct *work)
-   249	{
-   250		struct nvmet_fc_tgtport *tgtport =
-   251			container_of(work, struct nvmet_fc_tgtport, put_work);
-   252	
- > 253		nvmet_fc_tgtport_put(tgtport);
-   254	}
-   255	static void nvmet_fc_tgt_a_put(struct nvmet_fc_tgt_assoc *assoc);
-   256	static int nvmet_fc_tgt_a_get(struct nvmet_fc_tgt_assoc *assoc);
-   257	static void nvmet_fc_tgt_q_put(struct nvmet_fc_tgt_queue *queue);
-   258	static int nvmet_fc_tgt_q_get(struct nvmet_fc_tgt_queue *queue);
- > 259	static void nvmet_fc_tgtport_put(struct nvmet_fc_tgtport *tgtport);
-   260	static int nvmet_fc_tgtport_get(struct nvmet_fc_tgtport *tgtport);
-   261	static void nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
-   262						struct nvmet_fc_fcp_iod *fod);
-   263	static void nvmet_fc_delete_target_assoc(struct nvmet_fc_tgt_assoc *assoc);
-   264	static void nvmet_fc_xmt_ls_rsp(struct nvmet_fc_tgtport *tgtport,
-   265					struct nvmet_fc_ls_iod *iod);
-   266	
-   267	
+I haven't tried this exact approach, but I'd be surprised if I can get the
+regression under 4% with this. Further along the series I spent a lot of time
+having to fiddle with the arm64 implementation; every conditional and every
+memory read (even when in cache) was a problem. There is just so little in the
+inner loop that every instruction matters. (At least on Ampere Altra and Apple M2).
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Of course if you're willing to pay that 4-5% for order-0 then the benefit to
+order-9 is around 10% in my measurements. Personally though, I'd prefer to play
+safe and ensure the common order-0 case doesn't regress, as you previously
+suggested.
+
 
