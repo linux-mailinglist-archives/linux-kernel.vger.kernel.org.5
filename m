@@ -1,82 +1,88 @@
-Return-Path: <linux-kernel+bounces-4711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82028180F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:21:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A4C9818102
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:30:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE2521C218B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:21:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4CE1C21903
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4AFF8BE2;
-	Tue, 19 Dec 2023 05:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E868493;
+	Tue, 19 Dec 2023 05:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zg4T8xC7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50138472;
-	Tue, 19 Dec 2023 05:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 9A84268AFE; Tue, 19 Dec 2023 06:21:21 +0100 (CET)
-Date: Tue, 19 Dec 2023 06:21:21 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: John Garry <john.g.garry@oracle.com>, Christoph Hellwig <hch@lst.de>,
-	axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-	ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
-Subject: Re: [PATCH v2 00/16] block atomic writes
-Message-ID: <20231219052121.GA338@lst.de>
-References: <20231212110844.19698-1-john.g.garry@oracle.com> <20231212163246.GA24594@lst.de> <b8b0a9d7-88d2-45a9-877a-ecc5e0f1e645@oracle.com> <20231213154409.GA7724@lst.de> <c729b03c-b1d1-4458-9983-113f8cd752cd@oracle.com> <20231219051456.GB3964019@frogsfrogsfrogs>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5FA6FCE
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1702963801; bh=I2awE1lJaTlqqkdyjpo87BzMEp2fNSxxS6Cb/6JrL0k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=zg4T8xC7DD9A8qUJHOnGPejgk01oNzmliWgUrKHcq0eb+BNK6QBRSbM/ySZeXTpIZ
+	 uZybpH9m4GopuyH3XmjJh7pffEtDUSpAxiFQPkNUkbmvWSyA3M5l7MXiwuWIEL1hsF
+	 qBb1AdKE7aKuoYQ5PvclsgIXfc1S2cGqrGvwvyKk=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 5F9AD815; Tue, 19 Dec 2023 13:23:57 +0800
+X-QQ-mid: xmsmtpt1702963437tbwlodod7
+Message-ID: <tencent_D55B49852EFAAEE78C9D67DB46EB52F44606@qq.com>
+X-QQ-XMAILINFO: MR/iVh5QLeieHB9v/AIEcRCwh4pChVC/FFsoHNMCEnQZCNkfQSf1to6BetoCxh
+	 UnFqnS1bg0RhU27i64xkHDqQw8jVTR+zHKXSh7eL8JT4ozxtHPMbHQR8zR/AYqSr3IMS05H6Wmj4
+	 IqT5JReu/eZi/rsYcQaUFDOScvBGkqsQ4ruWU3iXWqzivijcPLOcP0nqHeMbLCChzRTHM+1c7LXb
+	 NgqJatBifvExUCaeehilW8/ceIGl7dXkwFjuWJU1dpUcSOWBYDXWRskgMMVXvbVC6eSTN/FsYwoG
+	 MqBByopnBhr8NqX8LclyCrK9Tr6xIVUYUKyvwRBQ/qJcJ7FRC/XKd0qUx65+b0KqzR2qgRWsNh7d
+	 3oGvDUm0wVYFzXl6x+4UoVAWYwnQ1Orw3A1nXQqQ2xwl2rJpZw6xiJDYXXRgV2TfHvmJGRqaShWo
+	 i4LuLyJpGy2ZyW7oEj9XE7ncmTrvtBwLz51kPUc5ctMQXHmpVBuH9tLvxarsoYUMF8nWc6/9QtdS
+	 njM+lphGEdgtRixhqa2j80sZvkV46UdZQaM7g8rYa1Vr6PSmKnUmK9wsZHKKwsgIbIdW/Fr3iGKf
+	 XE3QRutXaVy44bYnblZ6ZU1127VZEFnzOz3aahQ+yIDnpVdH/lmJKM73sKHe1mA9gWhkdAJWnRM3
+	 YnDoBTaYCkF3lZLGCeerVcclut+G3trielD8OhDNvmfbLJcrd5+wRtABDkX8mQUMojBlmlnIRGAF
+	 vbRmQkowqnW0eFv1qjhM/4cXkI0DWdkSdFqOJJ3xYeNzMlyqAmNsMNvWd1UD8iOI1ykgDUk6mK2G
+	 P2tOxWYZX0D8WDRkpM9FSkvIXi0rURf6Et7AQm0IBGiOR7bZYzl5LnToB7YESs3Dn7MGDN39zx5z
+	 Jnw+OLo25PpxbQB4McCgxO+tQCQ+dRmDZsVtCPTQZVMhx479aUawJwnrl53rXiSuXg8xTaVaSemi
+	 d6tAM6jAtN+pj/TvwqFg==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+20e9a5e0dd424a875f55@syzkaller.appspotmail.com
+Cc: axboe@kernel.dk,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] INFO: task hung in blkdev_flush_mapping
+Date: Tue, 19 Dec 2023 13:23:58 +0800
+X-OQ-MSGID: <20231219052357.1770891-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <0000000000008e6074060cc640bc@google.com>
+References: <0000000000008e6074060cc640bc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219051456.GB3964019@frogsfrogsfrogs>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 18, 2023 at 09:14:56PM -0800, Darrick J. Wong wrote:
-> /me stumbles back in with plenty of covidbrain to go around.
-> 
-> So ... Christoph, you're asking for a common API for
-> sysadmins/applications to signal to the filesystem that they want all
-> data allocations aligned to a given value, right?
-> 
-> e.g. if a nvme device advertises a capability for untorn writes between
-> $lbasize and 64k, then we need a way to set up each untorn-file with
-> some alignment between $lbasize and 64k?
-> 
-> or if cxl storage becomes not ung-dly expensive, then we'd want a way to
-> set up files with an alignment of 2M (x86) or 512M (arm64lol) to take
-> advantage of PMD mmap mappings?
+please test task hung in blkdev_flush_mapping
 
-The most important point is to not mix these up.
-
-If we want to use a file for atomic writes I should tell the fs about
-it, and preferably in a way that does not require me to know about weird
-internal implementation details of every file system.  I really just
-want to use atomic writes.  Preferably I'd just start using them after
-asking for the limits.  But that's obviously not going to work for
-file systems that use the hardware offload and don't otherwise align
-to the limit (which would suck for very small files anyway :))
-
-So as a compromise I tell the file system before writing or otherwise
-adding any data [1] to file that I want to use atomic writes so that
-the fs can take the right decisions.
-
-[1] reflinking data into a such marked file will be ... interesting.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 5bd7ef53ffe5
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index b6414e1e645b..31656364d8a3 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1394,6 +1394,9 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 	}
+ 	set_bit(NBD_RT_HAS_PID_FILE, &config->runtime_flags);
+ 
++	if (num_connections == 1 && !nbd->tag_set.timeout)
++		nbd->tag_set.timeout = HZ * 1024;
++
+ 	nbd_dev_dbg_init(nbd);
+ 	for (i = 0; i < num_connections; i++) {
+ 		struct recv_thread_args *args;
 
 
