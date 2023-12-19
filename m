@@ -1,102 +1,111 @@
-Return-Path: <linux-kernel+bounces-5408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6DE818A5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:44:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86328818A5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BFB51F2D5D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3436128F958
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E3E1C296;
-	Tue, 19 Dec 2023 14:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dehLBIGr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F5B1C284;
+	Tue, 19 Dec 2023 14:44:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648B01C282;
-	Tue, 19 Dec 2023 14:44:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5A9EC433C8;
-	Tue, 19 Dec 2023 14:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702997061;
-	bh=Ec49Y1Ch4Y7DbynL5qJ3/M6jv5kHIuiLATbynFYdEYk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dehLBIGr1LajE1OtvLVTLPVToTCjSzGsWdAe/pHVJeX2MIrC9m1mPTvooMTQrt3ta
-	 7RGV4aXSoxoCh+Xnx0YICqWv36ry11nHS/nzEb8E87JqaOK6O/XvQtbWdjvWtFdlFk
-	 Ax4IumnD102EC7x7VhIiWz1tdIygL5RL82izs263RsC/22KrDePCqEiQffo0bzg/fx
-	 IH02+GzjOlMJyhx/ApVqSUrufavub2gGPQRrSNemUpbfH1eoTb1/7OlF+Izlp0YFig
-	 o46oeV75pUDtP1526DL2IImMqbrWtaAdCOgm36G8fWwsiUQCOCxzS0D6au1TxDVNBI
-	 BlUl90OFPwCbA==
-Date: Tue, 19 Dec 2023 14:44:17 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Baoquan He <bhe@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-	joe@perches.com, nathan@kernel.org
-Subject: Re: [PATCH v4 5/7] kexec_file, ricv: print out debugging message if
- required
-Message-ID: <20231219-twitch-many-ca8877857182@spud>
-References: <20231213055747.61826-1-bhe@redhat.com>
- <20231213055747.61826-6-bhe@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14ECD1B29A;
+	Tue, 19 Dec 2023 14:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="375157592"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="375157592"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 06:44:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="775998710"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="775998710"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 06:44:25 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy.shevchenko@gmail.com>)
+	id 1rFbKY-00000007Hta-0ZWB;
+	Tue, 19 Dec 2023 16:44:22 +0200
+Date: Tue, 19 Dec 2023 16:44:21 +0200
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: xiongxin <xiongxin@kylinos.cn>, hoan@os.amperecomputing.com,
+	linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@kernel.org,
+	Riwen Lu <luriwen@kylinos.cn>
+Subject: Re: [PATCH v3] gpio: dwapb: mask/unmask IRQ when disable/enale it
+Message-ID: <ZYGsRXJUcrLKEzUn@smile.fi.intel.com>
+References: <20231219013751.20386-1-xiongxin@kylinos.cn>
+ <7zdg5ujizncarxvdyahnusojiq44rzxx2zybqj4kzsonzr27gq@fm5wj7npqsk3>
+ <CAHp75VceVAZYTNsJaYYRN+EMExFZSQARsJowd-CvDLRtuOPKSg@mail.gmail.com>
+ <euhbczna4hk5sacb23i2xwqh2jewlek7cfceprfslpsiijhwk3@3d6vtybmgag5>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="s/6JoYHenWk4BZK6"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231213055747.61826-6-bhe@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <euhbczna4hk5sacb23i2xwqh2jewlek7cfceprfslpsiijhwk3@3d6vtybmgag5>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Tue, Dec 19, 2023 at 05:31:38PM +0300, Serge Semin wrote:
+> On Tue, Dec 19, 2023 at 04:17:16PM +0200, Andy Shevchenko wrote:
+> > On Tue, Dec 19, 2023 at 11:14 AM Serge Semin <fancer.lancer@gmail.com> wrote:
+> > > On Tue, Dec 19, 2023 at 09:37:51AM +0800, xiongxin wrote:
+> > 
+> > ...
+> > 
+> > > Also note all the tags you've already got must be preserved on the
+> > > next patch revisions. One more time:
+> > 
+> > > Acked-by: Serge Semin <fancer.lancer@gmail.com>
+> > 
+> > I recommend using `b4` for that.
+> > 
+> > it harvests tags from the email thread, so no need to care about
+> > possible misses.
+> 
+> AFAICS it doesn't pick up the tags from the previous revisions at
+> least if the new patch wasn't submitted as in-reply-to the prev one.
+
+???
+
+> Just tested it on v3. b4 found my new ab-tag only and no yours rb-tag.
+> Did you mean something other than I thought you did?
+
+Grabbing thread from lore.kernel.org/all/mdogxxro42ymeaykrgqpld2kqbppopbywcm76osskuf3df72sl@5jalt26vzcv4/t.mbox.gz
+Analyzing 4 messages in the thread
+Checking attestation on all messages, may take a moment...
+---
+  [PATCH v2] gpio: dwapb: mask/unmask IRQ when disable/enale it
+    + Reviewed-by: Andy Shevchenko <andy@kernel.org>
+    + Acked-by: Serge Semin <fancer.lancer@gmail.com> (✓ DKIM/gmail.com)
+
+The flow you need to follow is that
+
+	git checkout $BASE # gpio/for-next in this case
+	b4 am ... # as above
+	git am ...
+	...address comments...
+	git commit -a -s --amend
+	git format-patch ... -1 HEAD~0
+	git send-email ...
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---s/6JoYHenWk4BZK6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Dec 13, 2023 at 01:57:45PM +0800, Baoquan He wrote:
-> Then when specifying '-d' for kexec_file_load interface, loaded
-> locations of kernel/initrd/cmdline etc can be printed out to help debug.
->=20
-> Here replace pr_debug() with the newly added kexec_dprintk() in kexec_file
-> loading related codes.
->=20
-> And also replace pr_notice() with kexec_dprintk() in elf_kexec_load()
-> because loaded location of purgatory and device tree are only printed
-> out for debugging, it doesn't make sense to always print them out.
->=20
-> And also remove kexec_image_info() because the content has been printed
-> out in generic code.
->=20
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-
-I'm sorry - I meant to look at this several days ago but I forgot.
-Apart from the typo that crept back into $subject, this version explains
-the rationale behind what you're changing a lot better, thanks.
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
---s/6JoYHenWk4BZK6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYGsQQAKCRB4tDGHoIJi
-0m1fAP9g+8AFIV/8mpsN7yszSR98AoukUk319L4Cyd7Ffhkl6wEA7poQh+JBuAOa
-YQJL75j4TedEPF5Y6iyMMP3w1MeKMAs=
-=JnLd
------END PGP SIGNATURE-----
-
---s/6JoYHenWk4BZK6--
 
