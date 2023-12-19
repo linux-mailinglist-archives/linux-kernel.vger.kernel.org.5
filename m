@@ -1,138 +1,149 @@
-Return-Path: <linux-kernel+bounces-4617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20283817FF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:51:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83662818000
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C1131C22A1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:51:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC7C01F24252
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F255749F;
-	Tue, 19 Dec 2023 02:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVp2ouTD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45CF4426;
+	Tue, 19 Dec 2023 03:02:37 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364CE6FAD;
-	Tue, 19 Dec 2023 02:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-28b6ea19368so1925915a91.1;
-        Mon, 18 Dec 2023 18:50:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702954251; x=1703559051; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b6KMMB/HsazvvB+R5aNcKj6sbn+ODriqkPfyxArm1ds=;
-        b=ZVp2ouTDDkWlZK1WnUTctZ6P09xg0xEEpqsAI/MhzpiwdxNzl0dXlxC+4znxP9EDvq
-         ximgasFVpcjm5p1OrNxhJNrbuzeh8xuBoowG63oN46Niof8ciWT/ynxUcBnkHzz4WZ6o
-         2Ynx/YFNVHwOfCDkw/J2vFLCoNqj+L8gv36+CEvKb1486owxfje2XNfn8tDzqSqIJmpD
-         5tfsstNv5R92ns7i3RoxydqgUMADUYnZg36X94F06tk5RkoT0dSZWJzg39EEMLzdyP9N
-         BFV2wahk1iKuczT4LUTz+wPWhYPHvteOp6nawv3UXxwhGZ9znkDO3A8EY2lU0QaRn9Ji
-         CEKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702954251; x=1703559051;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b6KMMB/HsazvvB+R5aNcKj6sbn+ODriqkPfyxArm1ds=;
-        b=SQQYQ5sx9kOzn3ait4ghxsRKYxlNxuvj998NwdAdj0GDUKtzNbimHz37eJg/z9jPSK
-         JkHEv4FKEL88rt9Gs8Nqp5ZnxR6V5gQWsXA7MMtkwjEtU0uetqEvf3xdUJ3ir0lXBag/
-         B/cKaIhZH+TihyAiQFgaPZYTxIj4HOjBnwbLIcRtpv60NSTgpqZEUwpUfrPk/3D6aRio
-         aAX1F0Miln82pOudHygqoeLDSFLt5FSDPWtJbdf9aFSR4SImkgC5THLFG99yftx2kef5
-         Wb+yG/dVpTH07Ns4kfGg18WzLmlIScbS3JFTcckslpu1EoPYqO0vy+nkss3YigZP1lhG
-         zQrQ==
-X-Gm-Message-State: AOJu0YyHBE3U+Qd3B2nMKyvewPKEtbOm/LGshWHkSAs48nIwrTE8U5oH
-	062OF/+0wd8f+y3rinxz1sU=
-X-Google-Smtp-Source: AGHT+IE+lwry5NghZCyWmAqCQ2YE92qagSNsqtV0PaWtRYxGPjp7bhyPfdCAmxV43mYiQ5yU6PAe/A==
-X-Received: by 2002:a17:902:7ec8:b0:1d0:8cbf:39db with SMTP id p8-20020a1709027ec800b001d08cbf39dbmr15255381plb.88.1702954251261;
-        Mon, 18 Dec 2023 18:50:51 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:e0f5:2344:80e4:a1fc])
-        by smtp.gmail.com with ESMTPSA id l18-20020a170903245200b001d34126d64dsm3950852pls.222.2023.12.18.18.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 18:50:51 -0800 (PST)
-Date: Mon, 18 Dec 2023 18:50:48 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Antonios Salios <antonios@mwa.re>, Arnd Bergmann <arnd@arndb.de>,
-	Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: rydberg@bitmath.org, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Jan Henrik Weinstock <jan@mwa.re>,
-	Lukas =?iso-8859-1?Q?J=FCnger?= <lukas@mwa.re>
-Subject: Re: element sizes in input_event struct on riscv32
-Message-ID: <ZYEFCHBC75rjCE0n@google.com>
-References: <c812ea74dd02d1baf85dc6fb32701e103984d25d.camel@mwa.re>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C53468A;
+	Tue, 19 Dec 2023 03:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 5C71081DC;
+	Tue, 19 Dec 2023 11:02:23 +0800 (CST)
+Received: from EXMBX162.cuchost.com (172.16.6.72) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 19 Dec
+ 2023 11:02:23 +0800
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX162.cuchost.com
+ (172.16.6.72) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 19 Dec
+ 2023 11:02:22 +0800
+Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
+ EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
+ 15.00.1497.044; Tue, 19 Dec 2023 11:02:22 +0800
+From: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	"kernel@esmil.dk" <kernel@esmil.dk>, "conor@kernel.org" <conor@kernel.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "palmer@dabbelt.com"
+	<palmer@dabbelt.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"mturquette@baylibre.com" <mturquette@baylibre.com>, "sboyd@kernel.org"
+	<sboyd@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "Hal
+ Feng" <hal.feng@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>
+CC: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Leyfoon Tan
+	<leyfoon.tan@starfivetech.com>
+Subject: RE: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock generator
+ driver
+Thread-Topic: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock
+ generator driver
+Thread-Index: AQHaKDp8qa+gHWDJHkGDh0MGWRuwVrCfD58AgAXCtdCAAc4FgIAJXVZw
+Date: Tue, 19 Dec 2023 03:02:22 +0000
+Message-ID: <d35d3cf480064c69b1125ba07d615446@EXMBX066.cuchost.com>
+References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
+ <20231206115000.295825-7-jeeheng.sia@starfivetech.com>
+ <CAJM55Z_VgBGvCPuvwmQahMcMfuWKnOKpZ9bBbbhei_Teu5Apeg@mail.gmail.com>
+ <9ae86c6786bc4ac7b93c971ba00084a6@EXMBX066.cuchost.com>
+ <CAJM55Z9GVFGuwqe=zLXQvBwDfVSz4eA2EXDd4sqWVCKJF2J+fg@mail.gmail.com>
+In-Reply-To: <CAJM55Z9GVFGuwqe=zLXQvBwDfVSz4eA2EXDd4sqWVCKJF2J+fg@mail.gmail.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-exchange-transport-fromentityheader: Hosted
+x-yovoleruleagent: yovoleflag
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c812ea74dd02d1baf85dc6fb32701e103984d25d.camel@mwa.re>
 
-Hi Antonious,
-
-On Thu, Dec 14, 2023 at 11:11:18AM +0100, Antonios Salios wrote:
-> Hi all.
-> 
-> I'm having trouble getting evdev to run in a simulated Buildroot
-> environment on riscv32. Evtest (and the x11 driver) seems to be
-> receiving garbage data from input devices.
-> 
-> Analyzing the input_event struct shows that the kernel uses 32-bit (aka
-> __kernel_ulong_t) values for __sec & __usec.
-> Evtest on the other hand interprets these variables as 64-bit time_t
-> values in a timeval struct, resulting in a mismatch between the kernel
-> and userspace.
-> 
-> What would be the correct size for these values on a 32-bit
-> architecture that uses 64-bit time_t values?
-
-I think there is misunderstanding - we do not have *2* 64-bit values on
-32-but architectures. Here is what was done:
-
-commit 152194fe9c3f03232b9c0d0264793a7fa4af82f8
-Author: Deepa Dinamani <deepa.kernel@gmail.com>
-Date:   Sun Jan 7 17:44:42 2018 -0800
-
-    Input: extend usable life of event timestamps to 2106 on 32 bit systems
-
-    The input events use struct timeval to store event time, unfortunately
-    this structure is not y2038 safe and is being replaced in kernel with
-    y2038 safe structures.
-
-    Because of ABI concerns we can not change the size or the layout of
-    structure input_event, so we opt to re-interpreting the 'seconds' part
-    of timestamp as an unsigned value, effectively doubling the range of
-    values, to year 2106.
-
-    Newer glibc that has support for 32 bit applications to use 64 bit
-    time_t supplies __USE_TIME_BITS64 define [1], that we can use to present
-    the userspace with updated input_event layout. The updated layout will
-    cause the compile time breakage, alerting applications and distributions
-    maintainers to the issue. Existing 32 binaries will continue working
-    without any changes until 2038.
-
-    Ultimately userspace applications should switch to using monotonic or
-    boot time clocks, as realtime clock is not very well suited for input
-    event timestamps as it can go backwards (see a80b83b7b8 "Input: evdev -
-    add CLOCK_BOOTTIME support" by by John Stultz). With monotonic clock the
-    practical range of reported times will always fit into the pair of 32
-    bit values, as we do not expect any system to stay up for a hundred
-    years without a single reboot.
-
-    [1] https://sourceware.org/glibc/wiki/Y2038ProofnessDesign
-
-I'll let Arnd and Deepa to comment further.
-
-Thanks.
-
--- 
-Dmitry
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRW1pbCBSZW5uZXIgQmVy
+dGhpbmcgPGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+DQo+IFNlbnQ6IFdlZG5l
+c2RheSwgRGVjZW1iZXIgMTMsIDIwMjMgNzo1NyBQTQ0KPiBUbzogSmVlSGVuZyBTaWEgPGplZWhl
+bmcuc2lhQHN0YXJmaXZldGVjaC5jb20+OyBFbWlsIFJlbm5lciBCZXJ0aGluZyA8ZW1pbC5yZW5u
+ZXIuYmVydGhpbmdAY2Fub25pY2FsLmNvbT47IGtlcm5lbEBlc21pbC5kazsNCj4gY29ub3JAa2Vy
+bmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOyBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFy
+by5vcmc7IHBhdWwud2FsbXNsZXlAc2lmaXZlLmNvbTsgcGFsbWVyQGRhYmJlbHQuY29tOw0KPiBh
+b3VAZWVjcy5iZXJrZWxleS5lZHU7IG10dXJxdWV0dGVAYmF5bGlicmUuY29tOyBzYm95ZEBrZXJu
+ZWwub3JnOyBwLnphYmVsQHBlbmd1dHJvbml4LmRlOyBIYWwgRmVuZw0KPiA8aGFsLmZlbmdAc3Rh
+cmZpdmV0ZWNoLmNvbT47IFhpbmd5dSBXdSA8eGluZ3l1Lnd1QHN0YXJmaXZldGVjaC5jb20+DQo+
+IENjOiBsaW51eC1yaXNjdkBsaXN0cy5pbmZyYWRlYWQub3JnOyBkZXZpY2V0cmVlQHZnZXIua2Vy
+bmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtY2xrQHZnZXIua2Vy
+bmVsLm9yZzsgTGV5Zm9vbiBUYW4NCj4gPGxleWZvb24udGFuQHN0YXJmaXZldGVjaC5jb20+DQo+
+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggdjEgMDYvMTZdIGNsazogc3RhcmZpdmU6IEFkZCBKSDgxMDAg
+U3lzdGVtIGNsb2NrIGdlbmVyYXRvciBkcml2ZXINCj4gDQo+IEplZUhlbmcgU2lhIHdyb3RlOg0K
+PiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IEVtaWwgUmVubmVy
+IEJlcnRoaW5nIDxlbWlsLnJlbm5lci5iZXJ0aGluZ0BjYW5vbmljYWwuY29tPg0KPiA+ID4gU2Vu
+dDogU2F0dXJkYXksIERlY2VtYmVyIDksIDIwMjMgMTI6MjUgQU0NCj4gPiA+IFRvOiBKZWVIZW5n
+IFNpYSA8amVlaGVuZy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT47IGtlcm5lbEBlc21pbC5kazsgY29u
+b3JAa2VybmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiA+ID4ga3J6eXN6dG9mLmtvemxv
+d3NraStkdEBsaW5hcm8ub3JnOyBwYXVsLndhbG1zbGV5QHNpZml2ZS5jb207IHBhbG1lckBkYWJi
+ZWx0LmNvbTsgYW91QGVlY3MuYmVya2VsZXkuZWR1Ow0KPiA+ID4gbXR1cnF1ZXR0ZUBiYXlsaWJy
+ZS5jb207IHNib3lkQGtlcm5lbC5vcmc7IHAuemFiZWxAcGVuZ3V0cm9uaXguZGU7IGVtaWwucmVu
+bmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb207IEhhbCBGZW5nDQo+ID4gPiA8aGFsLmZlbmdAc3Rh
+cmZpdmV0ZWNoLmNvbT47IFhpbmd5dSBXdSA8eGluZ3l1Lnd1QHN0YXJmaXZldGVjaC5jb20+DQo+
+ID4gPiBDYzogbGludXgtcmlzY3ZAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2Vy
+Lmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWNsa0B2Z2Vy
+Lmtlcm5lbC5vcmc7IExleWZvb24NCj4gVGFuDQo+ID4gPiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0
+ZWNoLmNvbT4NCj4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjEgMDYvMTZdIGNsazogc3RhcmZp
+dmU6IEFkZCBKSDgxMDAgU3lzdGVtIGNsb2NrIGdlbmVyYXRvciBkcml2ZXINCj4gPiA+DQo+ID4g
+PiBTaWEgSmVlIEhlbmcgd3JvdGU6DQo+ID4gPiA+IEFkZCBzdXBwb3J0IGZvciBKSDgxMDAgU3lz
+dGVtIGNsb2NrIGdlbmVyYXRvci4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogU2lh
+IEplZSBIZW5nIDxqZWVoZW5nLnNpYUBzdGFyZml2ZXRlY2guY29tPg0KPiA+ID4gPiBSZXZpZXdl
+ZC1ieTogTGV5IEZvb24gVGFuIDxsZXlmb29uLnRhbkBzdGFyZml2ZXRlY2guY29tPg0KPiA+ID4g
+PiAtLS0NCj4gPiA+ID4gIE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgOCArDQo+ID4gPiA+ICBkcml2ZXJzL2Nsay9zdGFyZml2ZS9LY29uZmlnICAgICAg
+ICAgICAgICAgICAgfCAgIDkgKw0KPiA+ID4gPiAgZHJpdmVycy9jbGsvc3RhcmZpdmUvTWFrZWZp
+bGUgICAgICAgICAgICAgICAgIHwgICAxICsNCj4gPiA+ID4gIGRyaXZlcnMvY2xrL3N0YXJmaXZl
+L2Nsay1zdGFyZml2ZS1jb21tb24uaCAgICB8ICAgOSArLQ0KPiA+ID4gPiAgZHJpdmVycy9jbGsv
+c3RhcmZpdmUvamg4MTAwL01ha2VmaWxlICAgICAgICAgIHwgICAzICsNCj4gPiA+ID4gIC4uLi9j
+bGsvc3RhcmZpdmUvamg4MTAwL2Nsay1zdGFyZml2ZS1qaDgxMDAuaCB8ICAxMSArDQo+ID4gPiA+
+ICBkcml2ZXJzL2Nsay9zdGFyZml2ZS9qaDgxMDAvY2xrLXN5cy5jICAgICAgICAgfCA0NTUgKysr
+KysrKysrKysrKysrKysrDQo+ID4gPiA+ICA3IGZpbGVzIGNoYW5nZWQsIDQ5NSBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9j
+bGsvc3RhcmZpdmUvamg4MTAwL01ha2VmaWxlDQo+ID4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+ZHJpdmVycy9jbGsvc3RhcmZpdmUvamg4MTAwL2Nsay1zdGFyZml2ZS1qaDgxMDAuaA0KPiA+ID4g
+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvY2xrL3N0YXJmaXZlL2poODEwMC9jbGstc3lz
+LmMNCj4gLi4uDQo+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9zdGFyZml2ZS9NYWtl
+ZmlsZSBiL2RyaXZlcnMvY2xrL3N0YXJmaXZlL01ha2VmaWxlDQo+ID4gPiA+IGluZGV4IDAxMmY3
+ZWU4M2Y4ZS4uNmNiM2NlODIzMzMwIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2Nsay9z
+dGFyZml2ZS9NYWtlZmlsZQ0KPiA+ID4gPiArKysgYi9kcml2ZXJzL2Nsay9zdGFyZml2ZS9NYWtl
+ZmlsZQ0KPiA+ID4gPiBAQCAtMTAsMyArMTAsNCBAQCBvYmotJChDT05GSUdfQ0xLX1NUQVJGSVZF
+X0pINzExMF9BT04pCSs9IGNsay1zdGFyZml2ZS1qaDcxMTAtYW9uLm8NCj4gPiA+ID4gIG9iai0k
+KENPTkZJR19DTEtfU1RBUkZJVkVfSkg3MTEwX1NURykJKz0gY2xrLXN0YXJmaXZlLWpoNzExMC1z
+dGcubw0KPiA+ID4gPiAgb2JqLSQoQ09ORklHX0NMS19TVEFSRklWRV9KSDcxMTBfSVNQKQkrPSBj
+bGstc3RhcmZpdmUtamg3MTEwLWlzcC5vDQo+ID4gPiA+ICBvYmotJChDT05GSUdfQ0xLX1NUQVJG
+SVZFX0pINzExMF9WT1VUKQkrPSBjbGstc3RhcmZpdmUtamg3MTEwLXZvdXQubw0KPiA+ID4gPiAr
+b2JqLSQoQ09ORklHX0NMS19TVEFSRklWRV9KSDgxMDBfU1lTKQkrPSBqaDgxMDAvDQo+ID4gPg0K
+PiA+ID4gSSBkb24ndCByZWFsbHkgc2VlIHdoeSBkbyB5b3UgbmVlZCBhIHNwZWNpYWwgc3ViZGly
+ZWN0b3J5IGZvciB0aGUgSkg4MTAwPyBUaGUNCj4gPiA+IEpINzExMCBkcml2ZXJzIGRvIGZpbmUg
+d2l0aG91dCBpdC4NCj4gPiBFYWNoIHN1YmZvbGRlciBjYW4gcmVwcmVzZW50IGEgZGlmZmVyZW50
+IHBsYXRmb3JtLCBtYWtpbmcgaXQgZWFzaWVyIHRvDQo+ID4gbG9jYXRlIGFuZCBtYWludGFpbiBw
+bGF0Zm9ybS1zcGVjaWZpYyBjb2RlLiBTaW5jZSB0aGUgY29kZSBpcyBleHBlY3RlZA0KPiA+IHRv
+IGdyb3cgaW4gdGhlIGZ1dHVyZSwgbGV0J3Mgc3RhcnQgb3JnYW5pemluZyBpdCBpbiBhIGZvbGRl
+ci1iYXNlZCBzdHJ1Y3R1cmUNCj4gPiBmb3IgZWFzaWVyIG1haW50ZW5hbmNlIGF0IGEgbGF0ZXIg
+c3RhZ2UuDQo+IA0KPiBZZXMsIGJ1dCB0aGF0J3Mgbm90IHdoYXQgeW91J3JlIGRvaW5nIGhlcmUu
+IFlvdSdyZSBtYWtpbmcganVzdCBvbmUgb2YgdGhlIDMNCj4gYWxtb3N0IGlkZW50aWNhbCBkcml2
+ZXJzIGJlIGRpZmZlcmVudCBmb3Igbm8gZ29vZCByZWFzb24uDQpJIHdpbGwgcmVzdHJ1Y3R1cmUg
+aXQgZm9yIHRoZSBvdGhlciAyIHBsYXRmb3Jtcy4NCj4gDQpbLi4uXQ0K
 
