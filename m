@@ -1,178 +1,135 @@
-Return-Path: <linux-kernel+bounces-6075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E9C4819443
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:01:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C2AE819450
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A39B4B23211
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:01:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A14FE1F238C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7FC3D0AE;
-	Tue, 19 Dec 2023 23:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FCE405C9;
+	Tue, 19 Dec 2023 23:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0Abku/Gk"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0hEGtwKv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4313D0A4
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF7C3FE33
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-552eaf800abso5610a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:01:40 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a233bf14cafso400639366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:05:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703026899; x=1703631699; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1703027099; x=1703631899; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tJBKIVMxwZw2B/0wRnInm6AhoZ+wrkkWV1uAdEbTnzk=;
-        b=0Abku/GkVyr5XL2raqIIZ1Dxk+/90pFJFIsjfG0yYdzENMDN0GaflT2vFbhqEH7m9B
-         CbE8S5mrjt8IeKGj4sBmWP3InbOHuFxxahg/fT8lrW0sEm/cq4WzLNBDs6GvuCOEU8BE
-         Z0saMzk51JOlWsT5clszgm8oUorw0+z9F/KEY0pCISiYFIe6IyHiSB2/PIDgCOiJWQ6s
-         Pp69r5lTILwT3Gv8LZhzNOPDAEVTxI5mPW8+dTvR5j/txoRaFYEfLXj0rdl2uxhX2EAN
-         27+W4GLlSwRjce4Y+hrT9psYsfWyhN8kwN6xvv2MVrvfRA2ZciIiT0uQLs9l1aAxagtN
-         btFw==
+        bh=Wjlb2xD4zDGVWcimGI9Z7TsBUKL0jEGuKCpV9aRuFgI=;
+        b=0hEGtwKvUlf/hwQB8xU2pOtr+BCiQE9cly6bqNT/r4tI5N5Ur+9gXZoMtGKQh+5H+/
+         2CRW9lnfGxsCSVeZJ19z172xRjbMLs3bGUMxQxIGoSAIDKZYoCdNVMgDN07LFYAdnvP0
+         h1ZfdFsuJoJ0+9v2IxTqIKVWPvcyHS1tDKk/vuELrzJ8w6PH5kGgI97beABkUK/M7fA7
+         vEa+HpoinQY7Ar4Mk90RDbsB7s9A3uL1OSFYizNXyyx9SSN993ZYcT9WUpD2fG2TlF1z
+         gXqLscZL7hIAaDADkdPMvk2AKeV10Gzq4kq+MNu4ZNxEjlfLvhu1+BYZ5oMAyMlxbdVh
+         qkfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703026899; x=1703631699;
+        d=1e100.net; s=20230601; t=1703027099; x=1703631899;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tJBKIVMxwZw2B/0wRnInm6AhoZ+wrkkWV1uAdEbTnzk=;
-        b=VELVAz/BKAZZcJ384eFYvBBk5ddQ34l1QRZRMONQ6K8L8Rcz5XiSKSOTLu4/FDecUa
-         AA7YEwqzW1N8J+rmKGKWQo6XcD4k0poQ3MzOCseIRqOcJNpBj9qD5uAcKea5yhq64eTS
-         cWX5MddCbZ5Bb3wlFwg0cYsDJQtOtXYiLr/XZyO6dbS2bxk/0ObwgiiBk6DvRaiTVkjt
-         YQQsZn0pEtB87jr6+GRB1N9h5LeXSbIfVDOL50C2rfRHP/hTE7LzdFgjG0wN9VTTZ9Rp
-         Bw43Z69tLrHea96Ch7W47RxSUQPt4nzMfhhd5I8Fo+XUnkD26VsWC2wjLGZEUnMQrBar
-         Gm8g==
-X-Gm-Message-State: AOJu0YwJaJyI4cv/ORTOaGA1JZ+Tp31MpWlyMeQwo9sVVrjQ7471fDI8
-	IXr6+w+kivpax3Nzogzg6+0r7aNHcrMtnllBCPzib4rapKkL
-X-Google-Smtp-Source: AGHT+IEnD16yDeBoH8vHeGXt/po5r40RhLX0x2wLWPJ3Qs9KkumHHID3+syMZCqvIBy1lxwwX9jr69q2YeA2+74v3Og=
-X-Received: by 2002:a50:c11a:0:b0:553:6de7:43d7 with SMTP id
- l26-20020a50c11a000000b005536de743d7mr41886edf.6.1703026899366; Tue, 19 Dec
- 2023 15:01:39 -0800 (PST)
+        bh=Wjlb2xD4zDGVWcimGI9Z7TsBUKL0jEGuKCpV9aRuFgI=;
+        b=sUl8FOAY6Jz7G9Sq7H/I4wPqpXRXwMKHkMIILU2iZg/rKFz9C7oqzyVF5vlvQJDM+W
+         kdQZ/QSKdouM90QfMsvnnc1r4/JyOAUkRaHetndO1b7vwa2JoDbul0/MV90lQU+HkVPf
+         5GEUB5Y08NUB2vKL18y/QAnXG+VJxC/04eilq37cFo5ZDEVQq6tbbNi02Kldv+BmrPPD
+         bVN0zuOpz46f9YSx5w33RMmr44C+u9BlzX/ZD2fFazcqaCpZXL9D/jl25XIOrooJ19+p
+         4yPFRlv8vXWaci9DFbqQ6uFgLNGp5AtlTny8MDORwoogk7wUh6AT81oI8ieD1HngMbtK
+         N+DQ==
+X-Gm-Message-State: AOJu0Ywtj1y9zgGuYMaCxVnwwGhB+00TS2pbJylmLInKP4IwDp6M4OW9
+	msmQQwL80rB8fH/FiPAJgtdzxStVjn9lX2TmxGdhdw==
+X-Google-Smtp-Source: AGHT+IEOol19QAQyQLoFhmQKQrZwtShEcJHLRQqN99VwivYG2K+37PLO2dvI6gc85MP+BHjtlaYnTcNPqwUub20I5nc=
+X-Received: by 2002:a17:907:6e8a:b0:a23:5dc7:7f16 with SMTP id
+ sh10-20020a1709076e8a00b00a235dc77f16mr2637963ejc.89.1703027099172; Tue, 19
+ Dec 2023 15:04:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218161044.215640-1-rf@opensource.cirrus.com>
-In-Reply-To: <20231218161044.215640-1-rf@opensource.cirrus.com>
-From: Rae Moar <rmoar@google.com>
-Date: Tue, 19 Dec 2023 18:01:27 -0500
-Message-ID: <CA+GJov4nSo0Zh7p7CA63Jame-+Y88zRyFqRy_=ezW2wYykjXeg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kunit: Allow passing function pointer to kunit_activate_static_stub()
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: brendan.higgins@linux.dev, davidgow@google.com, 
-	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+References: <20231213-zswap-dstmem-v3-0-4eac09b94ece@bytedance.com>
+ <20231213-zswap-dstmem-v3-6-4eac09b94ece@bytedance.com> <CAF8kJuOv+k0TcKJhs8wEWi20=B84bomj5BvpUAHvj6k3A+WE5A@mail.gmail.com>
+ <CAKEwX=P=frZmEXm26uTBN05gqLXoL-Shgk5P=EsMpYR16dW-sw@mail.gmail.com>
+ <CAJD7tkb2gWz1uQ7C6NQ7mAB=QQgaKHSwDFr0XS9ZrGFPOP1tTQ@mail.gmail.com> <CAF8kJuPxCrJHE=7k0hBs7Caqhc=UvwyL0kh7Yk2e9Usboz1Vug@mail.gmail.com>
+In-Reply-To: <CAF8kJuPxCrJHE=7k0hBs7Caqhc=UvwyL0kh7Yk2e9Usboz1Vug@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 19 Dec 2023 15:04:21 -0800
+Message-ID: <CAJD7tkaZDb_XwdCov1kpGbvY-VfR9_nMagOE_ajCs+bKxC8yQQ@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] mm/zswap: directly use percpu mutex and buffer in load/store
+To: Chris Li <chrisl@kernel.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <zhouchengming@bytedance.com>, 
+	Seth Jennings <sjenning@redhat.com>, Vitaly Wool <vitaly.wool@konsulko.com>, 
+	Dan Streetman <ddstreet@ieee.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 11:10=E2=80=AFAM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
+On Tue, Dec 19, 2023 at 2:49=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
 >
-> Swap the arguments to typecheck_fn() in kunit_activate_static_stub()
-> so that real_fn_addr can be either the function itself or a pointer
-> to that function.
+> Hi Yosry,
 >
-> This is useful to simplify redirecting static functions in a module.
-> Having to pass the actual function meant that it must be exported
-> from the module. Either making the 'static' and EXPORT_SYMBOL*()
-> conditional (which makes the code messy), or change it to always
-> exported (which increases the export namespace and prevents the
-> compiler inlining a trivial stub function in non-test builds).
+> On Tue, Dec 19, 2023 at 1:39=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> > My main concern is that the struct name is specific for the crypto
+> > acomp stuff, but that buffer and mutex are not.
+> > How about we keep it in the struct, but refactor the struct as follows:
 >
-> With the original definition of kunit_activate_static_stub() the
-> address of real_fn_addr was passed to typecheck_fn() as the type to
-> be passed. This meant that if real_fn_addr was a pointer-to-function
-> it would resolve to a ** instead of a *, giving an error like this:
+> If it is the naming of the struct you are not happy about. We can
+> change the naming.
 >
->    error: initialization of =E2=80=98int (**)(int)=E2=80=99 from incompat=
-ible pointer
->    type =E2=80=98int (*)(int)=E2=80=99 [-Werror=3Dincompatible-pointer-ty=
-pes]
->    kunit_activate_static_stub(test, add_one_fn_ptr, subtract_one);
->       |                             ^~~~~~~~~~~~
->    ./include/linux/typecheck.h:21:25: note: in definition of macro
->    =E2=80=98typecheck_fn=E2=80=99
->    21 | ({ typeof(type) __tmp =3D function; \
+> >
+> > struct zswap_ctx {
+> >     struct {
+> >         struct crypto_acomp *acomp;
+> >         struct acomp_req *req;
+> >         struct crypto_wait wait;
+> >     }  acomp_ctx;
+> >     u8 *dstmem;
+> >     struct mutex *mutex;
+> > };
 >
-> Swapping the arguments to typecheck_fn makes it take the type of a
-> pointer to the replacement function. Either a function or a pointer
-> to function can be assigned to that. For example:
+> The compression and decompression requires the buffer and mutex. The
+> mutex is not used other than compress and decompress, right?
+> In my mind, they are fine staying in the struct. I am not sure adding
+> an level acomp_ctx provides anything. It makes access structure
+> members deeper.
 >
-> static int some_function(int x)
-> {
->     /* whatever */
-> }
->
-> int (* some_function_ptr)(int) =3D some_function;
->
-> static int replacement(int x)
-> {
->     /* whatever */
-> }
->
-> Then:
->   kunit_activate_static_stub(test, some_function, replacement);
-> yields:
->   typecheck_fn(typeof(&replacement), some_function);
->
-> and:
->   kunit_activate_static_stub(test, some_function_ptr, replacement);
-> yields:
->   typecheck_fn(typeof(&replacement), some_function_ptr);
->
-> The two typecheck_fn() then resolve to:
->
->   int (*__tmp)(int) =3D some_function;
-> and
->   int (*__tmp)(int) =3D some_function_ptr;
->
-> Both of these are valid. In the first case the compiler inserts
-> an implicit '&' to take the address of the supplied function, and
-> in the second case the RHS is already a pointer to the same type.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> If you care about separating out the crypto acomp,  how about just
+> remove acomp_ctx and make it an anonymous structure.
+> struct zswap_comp_ctx {
+>     struct /* cryto acomp context */ {
+>         struct crypto_acomp *acomp;
+>         struct acomp_req *req;
+>         struct crypto_wait wait;
+>      };
+>      u8 *dstmem;
+>      struct mutex *mutex;
+>  };
 
-Hello!
+I prefer naming the internal struct, but I am fine with an anonymous
+struct as well. I just think it's a semantically sound separation.
 
-This seems fine to me. I have tested it and the reasoning behind this
-seems sensible. However, let's see what David thinks when he returns
-to office as he is the expert on static stubbing.
-
-Reviewed-by: Rae Moar <rmoar@google.com>
-
--Rae
-
-> ---
->  include/kunit/static_stub.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/include/kunit/static_stub.h b/include/kunit/static_stub.h
-> index 85315c80b303..bf940322dfc0 100644
-> --- a/include/kunit/static_stub.h
-> +++ b/include/kunit/static_stub.h
-> @@ -93,7 +93,7 @@ void __kunit_activate_static_stub(struct kunit *test,
->   * The redirection can be disabled again with kunit_deactivate_static_st=
-ub().
->   */
->  #define kunit_activate_static_stub(test, real_fn_addr, replacement_addr)=
- do {  \
-> -       typecheck_fn(typeof(&real_fn_addr), replacement_addr);           =
-       \
-> +       typecheck_fn(typeof(&replacement_addr), real_fn_addr);           =
-       \
->         __kunit_activate_static_stub(test, real_fn_addr, replacement_addr=
-);     \
->  } while (0)
+> Then we remove other per_cpu_load as well.
 >
-> --
-> 2.30.2
->
+> I also think the original struct name is fine, we don't need to change
+> the struct name.
+
+The original struct name makes it seems like the data in the struct is
+only used for the crypto acomp API, which is not the case.
 
