@@ -1,102 +1,87 @@
-Return-Path: <linux-kernel+bounces-5990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B74881928F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:52:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29B5381928D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:52:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D859E1C247BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:52:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BB8B1C241A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD873B781;
-	Tue, 19 Dec 2023 21:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EFF33B793;
+	Tue, 19 Dec 2023 21:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fv8d9YE4"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HDSZgooh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1063D0B0;
-	Tue, 19 Dec 2023 21:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3ba4850f65dso2809271b6e.2;
-        Tue, 19 Dec 2023 13:52:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703022740; x=1703627540; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h/HELoxRBihubnQTIbfT46yyuCF92jjoc5j2WnCAxMg=;
-        b=fv8d9YE4jjzwa9pobauF+LktaPrWbOyWqFtWHYxi0I4noweJfbMFeiC3i7Wo/eEWkZ
-         najZ+n42kfZxF2QviCmiH0G4kgeniEIGpEkHU98vAwoa4CZx60LLd01tjN4AFcpO3Qyn
-         T+KpSc6RwBFZJmRoboLhVgOHBpDUZhCXEf/sOIZON28KvYq7GGnirpjR53mY54frmEDD
-         C+SlycOrdDGxJoHZHDTu+7VQ0rNA+8+W46apOE+pktdAjL6sn3Pc1ssKyTc/ijD1ihBj
-         9BAWdgdh69KBhfyAEAqKkBcHhDatH0Q5tBl2HBopryvV7O8+5L/ssueVi5ZAfJbj1xKY
-         l7mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703022740; x=1703627540;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h/HELoxRBihubnQTIbfT46yyuCF92jjoc5j2WnCAxMg=;
-        b=UwPHggbZw3heVYuoJnxGd6oenTdF3UEd47AypBFARlApYKgq4opBovxqc/lbFO+RQq
-         T0KykHMwkqTqklOyGCG7mp4DasLBSlYjrRM5MTVo3PCyxvixshLiuPC32GMy32L0o1o/
-         2SqgW3TzZ9us0G6l57B/nbwsKlgNkHlyAL1k4jJH/yhYbpP89W0+WOqLdRfWdP67HNoZ
-         QaLEMisNT9GAcKjcdzqvi81gH25Jp27meLqnqzi+ooJAO4spTOwjtlQLOyN5D8Thfn3C
-         ZSpP42z5dG0fX5IMgGf6iF8E3cZ6BNlLGGrlI+Qe8G/zQP1DCqY/VnUsVfxfeJelRHkO
-         HWQg==
-X-Gm-Message-State: AOJu0YwVeTyxs785u5dY+5AKVVdvdJdDgvHgON/fZ8GUeGh5I2oYgQki
-	CAvQSRu3DK1K493x/qYRJu9i3M0QaXA5oiKMiiU=
-X-Google-Smtp-Source: AGHT+IEYMovugHC3Wx2wWk978fWVMiH69UO6ZUgo0IecWqN29PEQku+lqbLZS9m5zTdKhg7b9KpHO8lfRDjZN6HORQs=
-X-Received: by 2002:a05:6808:10d4:b0:3bb:67fb:a451 with SMTP id
- s20-20020a05680810d400b003bb67fba451mr1114878ois.114.1703022739808; Tue, 19
- Dec 2023 13:52:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32BC3B786;
+	Tue, 19 Dec 2023 21:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=gVd47evYyjxYsUBmxgwI2kdHq36z+sE1ylaz9D0MCCM=; b=HDSZgoohkuO0F/vcntn/Pp24jx
+	53FgXclHwvGi6RQBCc/AICMcLkQG9P/w6jIr2wlQfO/z7QBOdtx3556hPx7HSdCmFSI43UqWtoZ+S
+	+OqpaAgUysNro18l045Qa7HHAvns6WGIjP9JgXTJLgRufqTWG0/3TmPDcC9/nBfo/2owiLx6AkYYc
+	g+EcJS9lErwwCsyIB4sPA9clKtx+mBOIrilZFlfL/AKDL+pnk+lIq+V6XaPRTi6TgWaL30nJHRSG1
+	zuz3dCbQIEuHjZtSz70iq+Qdf7B3PVoPX5+MDVBPYonZhn8DPTh2mUnsYSmZvYHAKBHyCaMvO0OD9
+	ZkBB4thQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFi0R-00FWw8-1k;
+	Tue, 19 Dec 2023 21:52:03 +0000
+Date: Tue, 19 Dec 2023 13:52:03 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Changbin Du <changbin.du@huawei.com>, linux-modules@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Hui Wang <hw.huiwang@huawei.com>,
+	Xiaoyi Su <suxiaoyi@huawei.com>
+Subject: Re: [PATCH] modules: wait do_free_init correctly
+Message-ID: <ZYIQgz+de/JQl10N@bombadil.infradead.org>
+References: <20231219141231.2218215-1-changbin.du@huawei.com>
+ <20231219125151.4a042a259edf3c916580ccfe@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219-libstringheader-v5-0-206d4afd309a@google.com> <20231219-libstringheader-v5-1-206d4afd309a@google.com>
-In-Reply-To: <20231219-libstringheader-v5-1-206d4afd309a@google.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 19 Dec 2023 23:51:43 +0200
-Message-ID: <CAHp75VfS7rYZwRP50cm5vYq_EO9ozA=_qrEm4u7jB1WMwOVc0A@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] kernel.h: removed REPEAT_BYTE from kernel.h
-To: Tanzir Hasan <tanzirh@google.com>
-Cc: Kees Cook <keescook@chromium.org>, Nick Desaulniers <nnn@google.com>, 
-	Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Greg KH <gregkh@linuxfoundation.org>, llvm@lists.linux.dev, 
-	Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219125151.4a042a259edf3c916580ccfe@linux-foundation.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Tue, Dec 19, 2023 at 8:48=E2=80=AFPM Tanzir Hasan <tanzirh@google.com> w=
-rote:
->
-> This patch creates wordpart.h and includes it in asm/word-at-a-time.h
-> for the all architectures. WORD_AT_A_TIME_CONSTANTS depends on kernel.h
-> because of REPEAT_BYTE. Moving this to another header and including it
-> where necessary allows us to not include the bloated kernel.h. Making
-> this implicit dependency on REPEAT_BYTE explicit allows for later
-> improvements in the lib/string.c inclusion list.
+On Tue, Dec 19, 2023 at 12:51:51PM -0800, Andrew Morton wrote:
+> On Tue, 19 Dec 2023 22:12:31 +0800 Changbin Du <changbin.du@huawei.com> wrote:
+> 
+> > The commit 1a7b7d922081 ("modules: Use vmalloc special flag") moves
+> > do_free_init() into a global workqueue instead of call_rcu(). So now
+> > we should wait it via flush_work().
+> 
+> What are the runtime effects of this change?
 
-Same comments as per v4 apply here.
-According to the Submitting Patches the best time between versions is
-~1w. I understand your desire to close this quicker, but the result is
-actually the opposite. Take your time and check carefully what others
-commented and recommended. With this series it's fine to send a couple
-of times per (working) week. It sounds to me balanced between the
-complexity of the change and the people's willingness (having time?)
-to review.
+Indeed that's needed given how old this culprit commit is:
 
-Otherwise it's a good start!
+git describe --contains 1a7b7d922081
+v5.2-rc1~192^2~5
 
---=20
-With Best Regards,
-Andy Shevchenko
+Who did this work and for what reason? What triggered this itch?
+
+Is it perhaps for an out of tree driver that did something funky
+on its module exit?
+
+As per Documentation/RCU/rcubarrier.rst rcu_barrier will ensure the
+callbacks complete, so interms of determinism both mechanisms will
+have waited for the free. It seems we're now just limiting the scope.
+
+This could also mean initialization grew used to having RCU calls on
+init complete at this point in time, even for modules, and so localizing
+this wait may now also introduce other unexpected behaviour.
+
+  Luis
 
