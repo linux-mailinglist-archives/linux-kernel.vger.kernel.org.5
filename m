@@ -1,212 +1,160 @@
-Return-Path: <linux-kernel+bounces-4654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3608B818050
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:57:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34669818056
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5CCC283360
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:57:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46EFE1C22AE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58517848E;
-	Tue, 19 Dec 2023 03:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AAC48480;
+	Tue, 19 Dec 2023 04:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="E0gaK5zu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UN0y24/C"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2D18474;
-	Tue, 19 Dec 2023 03:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1702958258;
-	bh=1wUCeG4DTjZol+zbKVzUI7RIWsRC0afzTNkzQR3IfSA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=E0gaK5zuCeDJHqWX2XHEMt8o7/ks3Nuj3rQrewfm6t5WvS+XMI+FxM3vNkibBV2/7
-	 b0wgPj7i11trP0FMGtmDgF1xEHrZ4EQmKnd3FwgQWnAcsou8dtxh4yw7JSzch/TihP
-	 UWU38ffZgqtID0Fpym+CIxknLYqUlkON3T/6+sf47Lr3j/lB17aDqvCSyxKsr859J6
-	 /cP8pxs/7TfzTBGNdZg72bjmn73cNmF8LsKIHBcZuN1db+B6mD+VutqsSuEOv5CQLK
-	 kWAIjqmXF8eYmQrdvdOGSR1ujMfKTtKay7DMaxA2IYlDTWOuSW0EXbbqPlvMwTgilT
-	 ED6RmnMnS83BQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SvNFF18zBz4x2V;
-	Tue, 19 Dec 2023 14:57:36 +1100 (AEDT)
-Date: Tue, 19 Dec 2023 14:57:34 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Kent Overstreet <kent.overstreet@linux.dev>, Dave Airlie
- <airlied@redhat.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Ville =?UTF-8?B?U3lyasOkbMOk?=
- <ville.syrjala@linux.intel.com>, DRI <dri-devel@lists.freedesktop.org>
-Subject: Re: linux-next: build failure after merge of the header_cleanup
- tree
-Message-ID: <20231219145734.13e40e1e@canb.auug.org.au>
-In-Reply-To: <20231218174030.3ed72f54@canb.auug.org.au>
-References: <20231218174030.3ed72f54@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF198460
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:00:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80BEAC433C8;
+	Tue, 19 Dec 2023 03:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702958400;
+	bh=X9vOHMO2c6gHb12PdnxbGCbecCiIn2ZXcfJQ210ch5Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=UN0y24/C2FMO9YNlISh0hSmm2JZPCbcGiwDPmDBrQxW73rSXny5dz34aacmjZyk5r
+	 7nhbYFZrMckqQtl+VJBNzVk4dcG5jNk3sp3q3Tfz0zblrJfJgmFRTTWG5kKVl3JNRE
+	 0I8tcT9hlpgELWA/Zg6KZ0Vkrqr5yT9bEwq2xxFKC7kkqh4Dd3SDKBnJdybNJEJ92U
+	 W/eU9fUwQ2Skfixq9TTinVc2Q7pUQkwgvSdk/4SbqKJb39YsJdIUw44/z79mTPzot7
+	 nTv2CuzgG+mYnJJNpGruFiflt1ySgx8EbDaY/wVXvv+rHrv9px/TZE35o6CAE5uWaU
+	 hamzAg//lIyzA==
+Message-ID: <6c553a75-4842-4b28-9725-ba5e297ff793@kernel.org>
+Date: Tue, 19 Dec 2023 11:59:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kbDiBDX1yGNRcZQ/EkQuPt9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4] f2fs: show more discard status by sysfs
+Content-Language: en-US
+To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ niuzhiguo84@gmail.com, ke.wang@unisoc.com
+References: <1702952464-22050-1-git-send-email-zhiguo.niu@unisoc.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <1702952464-22050-1-git-send-email-zhiguo.niu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_/kbDiBDX1yGNRcZQ/EkQuPt9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2023/12/19 10:21, Zhiguo Niu wrote:
+> The current pending_discard attr just only shows the discard_cmd_cnt
+> information. More discard status can be shown so that we can check
+> them through sysfs when needed.
+> 
+> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> ---
+> changes of v2: Improve the patch according to Chao's suggestions.
+> changes of v3: Add a blank line for easy reading.
+> changes of v4: Split to three entries
+> ---
+> ---
+>   Documentation/ABI/testing/sysfs-fs-f2fs | 15 +++++++++++++++
+>   fs/f2fs/sysfs.c                         | 33 +++++++++++++++++++++++++++++++++
+>   2 files changed, 48 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index 4f1d4e6..606a298 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -159,6 +159,21 @@ Date:		November 2021
+>   Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
+>   Description:	Shows the number of pending discard commands in the queue.
+>   
+> +What:           /sys/fs/f2fs/<disk>/issued_discard
 
-Hi all,
+Add them to /sys/fs/f2fs/<disk>/stat/?
 
-On Mon, 18 Dec 2023 17:40:30 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the header_cleanup tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
->=20
-> In file included from include/linux/kernel.h:27,
->                  from drivers/gpu/ipu-v3/ipu-dp.c:7:
-> include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
-> include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of functi=
-on 'mul_u32_u32' [-Werror=3Dimplicit-function-declaration]
->    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
-ut, (1 << bit_precision) - 1),
->       |                                              ^~~~~~~~~~~
-> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
-EST_ULL'
->   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
->       |                                    ^
-> In file included from include/linux/time.h:6,
->                  from include/linux/videodev2.h:59,
->                  from include/video/imx-ipu-v3.h:16,
->                  from drivers/gpu/ipu-v3/ipu-dp.c:14:
-> include/linux/math64.h: At top level:
-> include/linux/math64.h:155:19: error: conflicting types for 'mul_u32_u32'=
-; have 'u64(u32,  u32)' {aka 'long long unsigned int(unsigned int,  unsigne=
-d int)'}
->   155 | static inline u64 mul_u32_u32(u32 a, u32 b)
->       |                   ^~~~~~~~~~~
-> include/drm/drm_color_mgmt.h:45:46: note: previous implicit declaration o=
-f 'mul_u32_u32' with type 'int()'
->    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
-ut, (1 << bit_precision) - 1),
->       |                                              ^~~~~~~~~~~
-> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
-EST_ULL'
->   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
->       |                                    ^
-> cc1: some warnings being treated as errors
-> In file included from include/linux/kernel.h:27,
->                  from drivers/gpu/drm/omapdrm/dss/dispc_coefs.c:7:
-> include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
-> include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of functi=
-on 'mul_u32_u32' [-Werror=3Dimplicit-function-declaration]
->    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
-ut, (1 << bit_precision) - 1),
->       |                                              ^~~~~~~~~~~
-> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
-EST_ULL'
->   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
->       |                                    ^
-> In file included from include/linux/jiffies.h:7,
->                  from include/linux/ktime.h:25,
->                  from include/linux/timer.h:6,
->                  from include/linux/workqueue.h:9,
->                  from include/linux/mm_types.h:19,
->                  from include/linux/mmzone.h:22,
->                  from include/linux/gfp.h:7,
->                  from include/linux/stackdepot.h:25,
->                  from include/drm/drm_modeset_lock.h:28,
->                  from include/drm/drm_crtc.h:30,
->                  from drivers/gpu/drm/omapdrm/dss/omapdss.h:11,
->                  from drivers/gpu/drm/omapdrm/dss/dispc_coefs.c:9:
-> include/linux/math64.h: At top level:
-> include/linux/math64.h:155:19: error: conflicting types for 'mul_u32_u32'=
-; have 'u64(u32,  u32)' {aka 'long long unsigned int(unsigned int,  unsigne=
-d int)'}
->   155 | static inline u64 mul_u32_u32(u32 a, u32 b)
->       |                   ^~~~~~~~~~~
-> include/drm/drm_color_mgmt.h:45:46: note: previous implicit declaration o=
-f 'mul_u32_u32' with type 'int()'
->    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
-ut, (1 << bit_precision) - 1),
->       |                                              ^~~~~~~~~~~
-> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
-EST_ULL'
->   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
->       |                                    ^
-> cc1: some warnings being treated as errors
+Thanks,
 
-This turns out to be a semantic conflict (or exposing a bug in commit
-
- c6fbb6bca108 ("drm: Fix color LUT rounding")
-
-from the drm tree.
-
-I have applied the following merge fix up patch (which should probably
-be applied to the drm tree, if possible).
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 19 Dec 2023 14:43:41 +1100
-Subject: [PATCH] drm: using mul_u32_u32() requires linux/math64.h
-
-Some pending include file cleanups produced this error:
-
-In file included from include/linux/kernel.h:27,
-                 from drivers/gpu/ipu-v3/ipu-dp.c:7:
-include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
-include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of function=
- 'mul_u32_u32' [-Werror=3Dimplicit-function-declaration]
-   45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input=
-, (1 << bit_precision) - 1),
-      |                                              ^~~~~~~~~~~
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- include/drm/drm_color_mgmt.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
-index 54b2b2467bfd..ed81741036d7 100644
---- a/include/drm/drm_color_mgmt.h
-+++ b/include/drm/drm_color_mgmt.h
-@@ -24,6 +24,7 @@
- #define __DRM_COLOR_MGMT_H__
-=20
- #include <linux/ctype.h>
-+#include <linux/math64.h>
- #include <drm/drm_property.h>
-=20
- struct drm_crtc;
---=20
-2.40.1
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/kbDiBDX1yGNRcZQ/EkQuPt9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWBFK4ACgkQAVBC80lX
-0Gx95ggAjzxLekfkqt/d/rGtV4AWZfTveEEEXDDbbOyiopjNDr8fRuXc+M7hcjtY
-F6+etu13w5f+g6hbcEumWMEq5978ZysjO2Ue/5E+hfRj9ajzG9JJv7/GwKKdqLSE
-QSXLSHRpU6TyUvcGsq6vwDTl0bXGwB1YUyYwfV/pQgCHjENzTVtMHZZc5ilsqnxZ
-3np39vt/u1lXPKb3rIOgrURKgsvCYlZPFb7UXhcBnt+3KIuQJ/rbXoAr7ricZ5fq
-2hXspPTeryVpPL33Fm7FO/2Tj9jE/Ow4r9yizU15i5aGUfIFVbNZVF0SjGyouJgE
-VzbabnsFU/jxwAZXF+0ycn+Vq9j8jQ==
-=nZec
------END PGP SIGNATURE-----
-
---Sig_/kbDiBDX1yGNRcZQ/EkQuPt9--
+> +Date:           December 2023
+> +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
+> +Description:    Shows the number of issued discard.
+> +
+> +What:           /sys/fs/f2fs/<disk>/queued_discard
+> +Date:           December 2023
+> +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
+> +Description:    Shows the number of queued discard.
+> +
+> +What:           /sys/fs/f2fs/<disk>/undiscard_blks
+> +Date:           December 2023
+> +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
+> +Description:    Shows the total number of undiscard blocks.
+> +
+>   What:		/sys/fs/f2fs/<disk>/max_victim_search
+>   Date:		January 2014
+>   Contact:	"Jaegeuk Kim" <jaegeuk.kim@samsung.com>
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 7099ffa..666efdd 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -143,6 +143,33 @@ static ssize_t pending_discard_show(struct f2fs_attr *a,
+>   				&SM_I(sbi)->dcc_info->discard_cmd_cnt));
+>   }
+>   
+> +static ssize_t issued_discard_show(struct f2fs_attr *a,
+> +		struct f2fs_sb_info *sbi, char *buf)
+> +{
+> +	if (!SM_I(sbi)->dcc_info)
+> +		return -EINVAL;
+> +	return sysfs_emit(buf, "%llu\n", (unsigned long long)atomic_read(
+> +				&SM_I(sbi)->dcc_info->issued_discard));
+> +}
+> +
+> +static ssize_t queued_discard_show(struct f2fs_attr *a,
+> +		struct f2fs_sb_info *sbi, char *buf)
+> +{
+> +	if (!SM_I(sbi)->dcc_info)
+> +		return -EINVAL;
+> +	return sysfs_emit(buf, "%llu\n", (unsigned long long)atomic_read(
+> +				&SM_I(sbi)->dcc_info->queued_discard));
+> +}
+> +
+> +static ssize_t undiscard_blks_show(struct f2fs_attr *a,
+> +		struct f2fs_sb_info *sbi, char *buf)
+> +{
+> +	if (!SM_I(sbi)->dcc_info)
+> +		return -EINVAL;
+> +	return sysfs_emit(buf, "%u\n",
+> +				SM_I(sbi)->dcc_info->undiscard_blks);
+> +}
+> +
+>   static ssize_t gc_mode_show(struct f2fs_attr *a,
+>   		struct f2fs_sb_info *sbi, char *buf)
+>   {
+> @@ -1025,6 +1052,9 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
+>   F2FS_GENERAL_RO_ATTR(mounted_time_sec);
+>   F2FS_GENERAL_RO_ATTR(main_blkaddr);
+>   F2FS_GENERAL_RO_ATTR(pending_discard);
+> +F2FS_GENERAL_RO_ATTR(issued_discard);
+> +F2FS_GENERAL_RO_ATTR(queued_discard);
+> +F2FS_GENERAL_RO_ATTR(undiscard_blks);
+>   F2FS_GENERAL_RO_ATTR(gc_mode);
+>   #ifdef CONFIG_F2FS_STAT_FS
+>   F2FS_GENERAL_RO_ATTR(moved_blocks_background);
+> @@ -1084,6 +1114,9 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
+>   	ATTR_LIST(max_ordered_discard),
+>   	ATTR_LIST(discard_io_aware),
+>   	ATTR_LIST(pending_discard),
+> +	ATTR_LIST(issued_discard),
+> +	ATTR_LIST(queued_discard),
+> +	ATTR_LIST(undiscard_blks),
+>   	ATTR_LIST(gc_mode),
+>   	ATTR_LIST(ipu_policy),
+>   	ATTR_LIST(min_ipu_util),
 
