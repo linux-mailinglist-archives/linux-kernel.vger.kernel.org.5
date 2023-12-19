@@ -1,110 +1,150 @@
-Return-Path: <linux-kernel+bounces-5375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B29EC818A0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:33:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A01D818A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:36:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 664471F25F02
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:33:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 402501C245EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0758E1CFB5;
-	Tue, 19 Dec 2023 14:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD572C6BF;
+	Tue, 19 Dec 2023 14:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxCD58sh"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZACObj+l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2A91D53F;
-	Tue, 19 Dec 2023 14:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2ca04b1cc37so45257541fa.1;
-        Tue, 19 Dec 2023 06:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702996302; x=1703601102; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WyA9uR2so4rEGMydW8w1UnQ0pww6PlgrH3NKuDhjS1A=;
-        b=dxCD58sh2AQdO3Iz7i3+dwj2fiPGBbAZy0taBxCU3GxPjT4hWqshC8dMyp3upN9lIC
-         gvs5Gs0yIbgAHDejZVuVyj17vAcLYYYXxyeITY4mw1inm7cT9hDD5D493YzVbiGNTt4x
-         BjWezEVuFqroj9luw5YRe37U7cr6xeezZhBr9rwHrfJXfg8evmWxcbjWdg1xnvQwm+4f
-         /XKUizYtQE9WBoAYjdH6XkXnTC0awHgpz/sBU8nOwVf6a0Zr7v1bsZTuC7PWoR8ZJDFN
-         rQhE04IgjhgvU463DaVXf3APOXcPaA3eZOnwWE4J/vrknEujYsAN95yGRt9AOMpW7qUK
-         xyUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702996302; x=1703601102;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WyA9uR2so4rEGMydW8w1UnQ0pww6PlgrH3NKuDhjS1A=;
-        b=ep94380giuez3zUhV6onY66+IdPA6ZVcLG1TdJAKe51mMh+1PCrrYX/VbpzL3GYS19
-         jrKplEFCobT45jkkOBcUwboaMuHHvNuipD6Vs6I4OpDHZSJX87P1zQQvypUN6pM4IRLq
-         MHfYxqZPHAXT23Zwuy0mOg/5WXAALGQmiblnkqQWJRY4DQuD6mKZS4uDjLguhDFDPvms
-         BcmSYEWV8nn4zzDZRP0gwTw16HtEF8mF86JNyByDerlpfgIDNrLb6HM8vgtFT3+jdkGX
-         piZz0TA3dKleIjfsxAV4EojaUbqKPpXUPBK06XzWovYgWatm8TylYlA8vqWk5F4EBq6k
-         wRIA==
-X-Gm-Message-State: AOJu0Yzulg/m/lAAktjbKc5fzeR4OazpiEOhJnMa8idU3xhAXyuY/LaX
-	zyKL8FQ1kNgkWSBw9LfIDOg=
-X-Google-Smtp-Source: AGHT+IHhHCyRsL72DRpdrORUD2XCeOSYWjCbvA6Qqs+EvG1GjQbAKWiShou4dtBv7zW1m7iDBOUN8w==
-X-Received: by 2002:a2e:8746:0:b0:2cc:7019:4cee with SMTP id q6-20020a2e8746000000b002cc70194ceemr745805ljj.24.1702996301628;
-        Tue, 19 Dec 2023 06:31:41 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id w22-20020a2e9bd6000000b002cc710614besm784454ljj.0.2023.12.19.06.31.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 06:31:41 -0800 (PST)
-Date: Tue, 19 Dec 2023 17:31:38 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: xiongxin <xiongxin@kylinos.cn>, Andy Shevchenko <andy@kernel.org>, 
-	hoan@os.amperecomputing.com, linus.walleij@linaro.org, brgl@bgdev.pl, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, stable@kernel.org, 
-	Riwen Lu <luriwen@kylinos.cn>
-Subject: Re: [PATCH v3] gpio: dwapb: mask/unmask IRQ when disable/enale it
-Message-ID: <euhbczna4hk5sacb23i2xwqh2jewlek7cfceprfslpsiijhwk3@3d6vtybmgag5>
-References: <20231219013751.20386-1-xiongxin@kylinos.cn>
- <7zdg5ujizncarxvdyahnusojiq44rzxx2zybqj4kzsonzr27gq@fm5wj7npqsk3>
- <CAHp75VceVAZYTNsJaYYRN+EMExFZSQARsJowd-CvDLRtuOPKSg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2398D2E3E4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702996322;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fcH5mhNCfy4Npx8m9bnDGoyerhb2vmsJtBvMFIY3PE4=;
+	b=ZACObj+l4w7skWKmFjJ3e5SzDrq0EGk0kfsjaxEXQEJXxM390+ahrlC3d8T+QfJSVo7vT2
+	B2g20LvVIZ2ZEvzghRi/Tco6g36jPgFFucfzddBSKqQMpjyU1h6syyQKsiLhiRPuegovvh
+	p7y0SIY3+RccdI+AXtTge7PQcPvnlqo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-646-E3lE2-3DM7eN9FhE4GCjsQ-1; Tue, 19 Dec 2023 09:31:58 -0500
+X-MC-Unique: E3lE2-3DM7eN9FhE4GCjsQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A58A6101AA4D;
+	Tue, 19 Dec 2023 14:31:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A72882166B31;
+	Tue, 19 Dec 2023 14:31:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <367107fa03540f7ddd2e8de51c751348bd7eb42c.camel@kernel.org>
+References: <367107fa03540f7ddd2e8de51c751348bd7eb42c.camel@kernel.org> <20231213152350.431591-1-dhowells@redhat.com> <20231213152350.431591-13-dhowells@redhat.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: dhowells@redhat.com, Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 12/39] netfs: Add iov_iters to (sub)requests to describe various buffers
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VceVAZYTNsJaYYRN+EMExFZSQARsJowd-CvDLRtuOPKSg@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <488522.1702996313.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 19 Dec 2023 14:31:53 +0000
+Message-ID: <488523.1702996313@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Tue, Dec 19, 2023 at 04:17:16PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 19, 2023 at 11:14 AM Serge Semin <fancer.lancer@gmail.com> wrote:
-> > On Tue, Dec 19, 2023 at 09:37:51AM +0800, xiongxin wrote:
-> 
-> ...
-> 
-> > Also note all the tags you've already got must be preserved on the
-> > next patch revisions. One more time:
-> 
-> > Acked-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> I recommend using `b4` for that.
-> 
-> it harvests tags from the email thread, so no need to care about
-> possible misses.
+Jeff Layton <jlayton@kernel.org> wrote:
 
-AFAICS it doesn't pick up the tags from the previous revisions at
-least if the new patch wasn't submitted as in-reply-to the prev one.
-Just tested it on v3. b4 found my new ab-tag only and no yours rb-tag.
-Did you mean something other than I thought you did?
+> > @@ -408,6 +417,10 @@ int netfs_write_begin(struct netfs_inode *ctx,
+> >  	ractl._nr_pages =3D folio_nr_pages(folio);
+> >  	netfs_rreq_expand(rreq, &ractl);
+> >  =
 
--Serge(y)
+> > +	/* Set up the output buffer */
+> > +	iov_iter_xarray(&rreq->iter, ITER_DEST, &mapping->i_pages,
+> > +			rreq->start, rreq->len);
+> =
 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+> Should the above be ITER_SOURCE ?
+
+No - we're in ->write_begin() and are prefetching.  If you look in the cod=
+e,
+there's a netfs_begin_read() call a few lines below.  The output buffer fo=
+r
+the read is the page we're going to write into.
+
+Note that netfs_write_begin() should be considered deprecated as the whole
+perform_write thing will get replaced.
+
+> > @@ -88,6 +78,11 @@ static void netfs_read_from_server(struct netfs_io_=
+request *rreq,
+> >  				   struct netfs_io_subrequest *subreq)
+> >  {
+> >  	netfs_stat(&netfs_n_rh_download);
+> > +	if (iov_iter_count(&subreq->io_iter) !=3D subreq->len - subreq->tran=
+sferred)
+> > +		pr_warn("R=3D%08x[%u] ITER PRE-MISMATCH %zx !=3D %zx-%zx %lx\n",
+> > +			rreq->debug_id, subreq->debug_index,
+> > +			iov_iter_count(&subreq->io_iter), subreq->len,
+> > +			subreq->transferred, subreq->flags);
+> =
+
+> pr_warn is a bit alarmist, esp given the cryptic message.  Maybe demote
+> this to INFO or DEBUG?
+> =
+
+> Does this indicate a bug in the client or that the server is sending us
+> malformed frames?
+
+Good question.  The network filesystem updated subreq->transferred to indi=
+cate
+it had transferred X amount of data, but the iterator had been updated to
+indicate Y amount of data was transferred.  They really ought to match as =
+it
+may otherwise indicate an underrun (and potential leakage of old data).
+Overruns are less of a problem since the iterator would have to 'go negati=
+ve'
+as it were.
+
+However, it might be better just to leave io_iter unchecked since we end u=
+p
+resetting it anyway each time we reinvoke the ->issue_read() op.  It's alw=
+ays
+possible that it will get copied and a different iterator get passed to th=
+e
+network layer or cache fs - and so the change to the iterator then has to =
+be
+manually propagated just to avoid the warning.
+
+David
+
 
