@@ -1,163 +1,376 @@
-Return-Path: <linux-kernel+bounces-5394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2526818A2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:39:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B6D818A2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFE241C248B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA26B28C40B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B9B1D548;
-	Tue, 19 Dec 2023 14:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A425C1C29C;
+	Tue, 19 Dec 2023 14:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WDxRS0z7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CUveShWS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3581D522
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cc6ea4452cso31295211fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 06:37:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702996639; x=1703601439; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4iVTm9oZMtqSZBwJqdXJb3hYZoPtCTwqTZfX2l30DHE=;
-        b=WDxRS0z7FMZPbZFRFQveKG6oIfR+CLw9BZoAPROsOa+Pn938Z1MysjsKXfyoavTBbc
-         yrQtGOlmzPTBEqpFu1JCcewIotAl+vrYETA8y5931iF4VceU16Fklp2HWMt2y3i/5p/J
-         KdWOx7Tp0T1FM1+tGKgIGwYDW7u233T16n9IY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702996639; x=1703601439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4iVTm9oZMtqSZBwJqdXJb3hYZoPtCTwqTZfX2l30DHE=;
-        b=AvS3UorxXcS+tL8HAB5QZNz6KPLM32PPA/VcubWklTmF5A9yVRsGjHUnB1RIP0PxMk
-         36TRmQnxy9TscBp/2cAoK3S4HxizxHg5ofcOlOiBtU63/jWiZsnyx0p3on8PWnLrHYCt
-         1hEqI1mTHpmBmdM1OUL90cmyCXl9Giz4xqeYxfjS2ryJ2Bl8rflwxyJ3RD8f+2LcQmu7
-         wRCljcn3s5sQAM1+sVxF07+sapKKiaHDv6N39CcijvLkvfOHiEh5eb0Rs0rMP9l7j440
-         Yhlw9bESO6nw/Mb/v6vHJvpRRuosGnnDXjN+tMVQ/KnZ5uLjJ3OX7GmYSC5mmpGObqbi
-         kH8g==
-X-Gm-Message-State: AOJu0Yz7ECq2hX6FdJGKOdDDzNbF7FtFL4fuecnUz0nEEq4XPkSl7CuM
-	TOcTeKxHxhCWku5DAnNLg7ijOeTRn3x40XxO5Hh9TJPiE2W6YEx3xWE=
-X-Google-Smtp-Source: AGHT+IF+H7kOVCN0x8tihXqTBGeYLFioCMUVffwheMbHBbtqT5BVKyYtINt45F1GTcg91mvhaJk51Q85tOmD548iLIo=
-X-Received: by 2002:a2e:be8b:0:b0:2cc:6bf0:8ee with SMTP id
- a11-20020a2ebe8b000000b002cc6bf008eemr2117097ljr.81.1702996638780; Tue, 19
- Dec 2023 06:37:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06CE734568;
+	Tue, 19 Dec 2023 14:37:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E9DC433C8;
+	Tue, 19 Dec 2023 14:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702996634;
+	bh=dt3Vkwbmgo6+aUzUtSM3/E9hO5HxGX/FfRFljhsgTsU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CUveShWSsyN/5X/hyeC96wTtLuYjOgrC12CwTxIB9lGzjqH9re+FOS1pR3NR201Ua
+	 JiG/JWJ+EvnDoFryM9hL+yLbD1bp8P8NPN7YE0iz9vsY3fxtQgop66eM7ZrZUX3lqT
+	 EvwEE62/Ch22parcfAzxXIpfQgV6ArdJwp7UNAcgSAlZbienbNNCPN/OiHB3Q28Y+9
+	 NoUbB5JZBiY+VVyqUE+NDSWg2ImkBJTQRbC7nGXg33gO+JfgNO1bukTUkrh6IEF3PC
+	 BYerdEt3KiwwnPlXxS6mdRzPzVWqGMRXRH37N6koj92w0sW2hJ0dhK5oFrRBGIH6lt
+	 WC4jQ9E5uRnyA==
+Date: Tue, 19 Dec 2023 23:37:10 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] ring-buffer: Fix slowpath of interrupted event
+Message-Id: <20231219233710.21b48850676e65da2a37fe22@kernel.org>
+In-Reply-To: <20231218230712.3a76b081@gandalf.local.home>
+References: <20231218230712.3a76b081@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231218151842.2756673-1-stevensd@google.com> <aae229d7-0675-47c5-9a02-5ba0b6a64906@redhat.com>
-In-Reply-To: <aae229d7-0675-47c5-9a02-5ba0b6a64906@redhat.com>
-From: David Stevens <stevensd@chromium.org>
-Date: Tue, 19 Dec 2023 09:37:07 -0500
-Message-ID: <CAD=HUj4jzxVB3=9kYVr+Y+3Ef2EUVztA4aVOXvha2zsCyzDGQQ@mail.gmail.com>
-Subject: Re: [PATCH v2] virtio_balloon: stay awake while adjusting balloon
-To: David Hildenbrand <david@redhat.com>
-Cc: "Michael S . Tsirkin" <mst@redhat.com>, virtualization@lists.linux-foundation.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 18, 2023 at 12:33=E2=80=AFPM David Hildenbrand <david@redhat.co=
-m> wrote:
->
-> On 18.12.23 16:18, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
-> >
-> > A virtio_balloon's parent device may be configured so that a
-> > configuration change interrupt is a wakeup event. Extend the processing
-> > of such a wakeup event until the balloon finishes inflating or deflatin=
-g
-> > by calling pm_stay_awake/pm_relax in the virtio_balloon driver. Note
-> > that these calls are no-ops if the parent device doesn't support wakeup
-> > events or if the wakeup events are not enabled.
-> >
-> > This change allows the guest to use system power states such as s2idle
-> > without running the risk the virtio_balloon's cooperative memory
-> > management becoming unresponsive to the host's requests.
-> >
-> > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > ---
-> > v1 -> v2:
-> >   - Use adjustment_signal_pending flag instead of a sequence number
-> >   - Call pm_stay_awake/pm_relax on parent device instead of adding a wa=
-ke
-> >     event to the virtio balloon device
-> >
-> >   drivers/virtio/virtio_balloon.c | 57 +++++++++++++++++++++++++++-----=
--
-> >   1 file changed, 47 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_ba=
-lloon.c
-> > index 1fe93e93f5bc..a3c11159cbe0 100644
-> > --- a/drivers/virtio/virtio_balloon.c
-> > +++ b/drivers/virtio/virtio_balloon.c
-> > @@ -119,6 +119,11 @@ struct virtio_balloon {
-> >       /* Free page reporting device */
-> >       struct virtqueue *reporting_vq;
-> >       struct page_reporting_dev_info pr_dev_info;
-> > +
-> > +     /* State for keeping the wakeup_source active while adjusting the=
- balloon */
-> > +     spinlock_t adjustment_lock;
-> > +     bool adjustment_signal_pending;
-> > +     bool adjustment_in_progress;
-> >   };
-> >
-> >   static const struct virtio_device_id id_table[] =3D {
-> > @@ -437,6 +442,31 @@ static void virtio_balloon_queue_free_page_work(st=
-ruct virtio_balloon *vb)
-> >       queue_work(vb->balloon_wq, &vb->report_free_page_work);
-> >   }
-> >
-> > +static void start_update_balloon_size(struct virtio_balloon *vb)
-> > +{
-> > +     unsigned long flags;
-> > +
-> > +     spin_lock_irqsave(&vb->adjustment_lock, flags);
-> > +     vb->adjustment_signal_pending =3D true;
-> > +     if (!vb->adjustment_in_progress) {
-> > +             vb->adjustment_in_progress =3D true;
-> > +             pm_stay_awake(vb->vdev->dev.parent);
-> > +     }
-> > +     spin_unlock_irqrestore(&vb->adjustment_lock, flags);
-> > +
-> > +     queue_work(system_freezable_wq, &vb->update_balloon_size_work);
-> > +}
-> > +
-> > +static void end_update_balloon_size(struct virtio_balloon *vb)
-> > +{
-> > +     spin_lock(&vb->adjustment_lock);
-> > +     if (!vb->adjustment_signal_pending && vb->adjustment_in_progress)=
- {
->
-> How could vb->adjustment_in_progress ever not be set at this point?
->
-> > +             vb->adjustment_in_progress =3D false;
-> > +             pm_relax(vb->vdev->dev.parent);
-> > +     }
-> > +     spin_unlock(&vb->adjustment_lock);
-> > +}
-> > +
->
-> LGTM, although I wonder what happens when calling pm_stay_awake() etc.
-> on a parent device that is not wakeup-even-capable?
+On Mon, 18 Dec 2023 23:07:12 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-If the parent device is not wakeup capable or if wakeup isn't enabled,
-then the vb->vdev->dev.parent->power.wakeup pointer will be NULL, so
-the NULL checks in __pm_relax/__pm_stay_awake will immediately return.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> To synchronize the timestamps with the ring buffer reservation, there are
+> two timestamps that are saved in the buffer meta data.
+> 
+> 1. before_stamp
+> 2. write_stamp
+> 
+> When the two are equal, the write_stamp is considered valid, as in, it may
+> be used to calculate the delta of the next event as the write_stamp is the
+> timestamp of the previous reserved event on the buffer.
+> 
+> This is done by the following:
+> 
+>  /*A*/	w = current position on the ring buffer
+> 	before = before_stamp
+> 	after = write_stamp
+> 	ts = read current timestamp
+> 
+> 	if (before != after) {
+> 		write_stamp is not valid, force adding an absolute
+> 		timestamp.
 
--David
+(additional comment)
+This happens if this caller interrupts another reservation process's B to E.
+(thus the original one only updates "before_stamp", but "write_stamp" is old.)
+
+> 	}
+> 
+>  /*B*/	before_stamp = ts
+> 
+>  /*C*/	write = local_add_return(event length, position on ring buffer)
+> 
+> 	if (w == write - event length) {
+> 		/* Nothing interrupted between A and C */
+>  /*E*/		write_stamp = ts;
+> 		delta = ts - after
+> 		/*
+> 		 * If nothing interrupted again,
+> 		 * before_stamp == write_stamp and write_stamp
+> 		 * can be used to calculate the delta for
+> 		 * events that come in after this one.
+> 		 */
+
+(additional comment)
+If something interrupts between C and E, the write_stamp goes backward
+because interrupted one updates the before_stamp and write_stamp with
+new timestamp. But in this case, write_stamp(=ts) != before_stamp(=new ts).
+Thus anyway the next entry will use absolute time stamp forcibly.
+
+> 	} else {
+> 
+> 		/*
+> 		 * The slow path!
+> 		 * Was interrupted between A and C.
+> 		 */
+> 
+> This is the place that there's a bug. We currently have:
+> 
+> 		after = write_stamp
+> 		ts = read current timestamp
+> 
+>  /*F*/		if (write == current position on the ring buffer &&
+> 		    after < ts && cmpxchg(write_stamp, after, ts)) {
+> 
+> 			delta = ts - after;
+> 
+> 		} else {
+> 			delta = 0;
+> 		}
+> 
+> The assumption is that if the current position on the ring buffer hasn't
+> moved between C and F, then it also was not interrupted, and that the last
+> event written has a timestamp that matches the write_stamp. That is the
+> write_stamp is valid.
+> 
+> But this may not be the case:
+> 
+> If a task context event was interrupted by softirq between B and C.
+> 
+> And the softirq wrote an event that got interrupted by a hard irq between
+> C and E.
+> 
+> and the hard irq wrote an event (does not need to be interrupted)
+> 
+> We have:
+> 
+>  /*B*/ before_stamp = ts of normal context
+> 
+>    ---> interrupted by softirq
+> 
+> 	/*B*/ before_stamp = ts of softirq context
+> 
+> 	  ---> interrupted by hardirq
+> 
+> 		/*B*/ before_stamp = ts of hard irq context
+> 		/*E*/ write_stamp = ts of hard irq context
+> 
+> 		/* matches and write_stamp valid */
+> 	  <----
+> 
+> 	/*E*/ write_stamp = ts of softirq context
+> 
+> 	/* No longer matches before_stamp, write_stamp is not valid! */
+> 
+>    <---
+> 
+>  w != write - length, go to slow path
+> 
+> // Right now the order of events in the ring buffer is:
+> //
+> // |-- softirq event --|-- hard irq event --|-- normal context event --|
+> //
+> 
+>  after = write_stamp (this is the ts of softirq)
+>  ts = read current timestamp
+> 
+>  if (write == current position on the ring buffer [true] &&
+>      after < ts [true] && cmpxchg(write_stamp, after, ts) [true]) {
+> 
+> 	delta = ts - after  [Wrong!]
+> 
+> The delta is to be between the hard irq event and the normal context
+> event, but the above logic made the delta between the softirq event and
+> the normal context event, where the hard irq event is between the two. This
+> will shift all the remaining event timestamps on the sub-buffer
+> incorrectly.
+> 
+> The write_stamp is only valid if it matches the before_stamp. The cmpxchg
+> does nothing to help this.
+
+That's right. Even if someone interrupts between A and C, we can write
+the ts to write_stamp. In this case, write_stamp(old) != before_stamp(new)
+so the next entry will forcibly record the absolute timestamp.
+In this case, what we need to do here is using the absolute timestamp instead
+of delta.
+
+> 
+> Instead, the following logic can be done to fix this:
+> 
+> 	before = before_stamp
+> 	ts = read current timestamp
+> 	before_stamp = ts
+> 
+> 	after = write_stamp
+> 
+> 	if (write == current position on the ring buffer &&
+> 	    after == before && after < ts) {
+> 
+> 		delta = ts - after
+> 
+> 	} else {
+> 		delta = 0;
+> 	}
+
+Ah, this is a good idea. Instead of using the old timestamp, use
+delta = 0, thus it will reuse the interrupted timestamp if someone
+interrupts between A and C.
+
+Yeah the above works, but my question is, do we really need this
+really slow path? I mean;
+
+> 	if (w == write - event length) {
+> 		/* Nothing interrupted between A and C */
+>  /*E*/		write_stamp = ts;
+> 		delta = ts - after
+
+	} else {
+		/*
+		  Something interrupted between A and C, which should record
+		  a new entry before this reserved entry with newer timestamp.
+		  we reuse it.
+		 */
+	 	ts = after = write_stamp;
+		delta = 0;
+	}
+
+Isn't this enough?
+
+Thank you,
+
+> 
+> The above will only use the write_stamp if it still matches before_stamp
+> and was tested to not have changed since C.
+> 
+> As a bonus, with this logic we do not need any 64-bit cmpxchg() at all!
+> 
+> This mean the 32-bit rb_time_t workaround can finally be removed. But
+> that's for a later time.
+> 
+> Link: https://lore.kernel.org/linux-trace-kernel/20231218175229.58ec3daf@gandalf.local.home/
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: dd93942570789 ("ring-buffer: Do not try to put back write_stamp")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ring_buffer.c | 79 ++++++++++++--------------------------
+>  1 file changed, 24 insertions(+), 55 deletions(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 5a114e752f11..e7055f52afe0 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -700,48 +700,6 @@ rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
+>  	return local_try_cmpxchg(l, &expect, set);
+>  }
+>  
+> -static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+> -{
+> -	unsigned long cnt, top, bottom, msb;
+> -	unsigned long cnt2, top2, bottom2, msb2;
+> -	u64 val;
+> -
+> -	/* Any interruptions in this function should cause a failure */
+> -	cnt = local_read(&t->cnt);
+> -
+> -	/* The cmpxchg always fails if it interrupted an update */
+> -	 if (!__rb_time_read(t, &val, &cnt2))
+> -		 return false;
+> -
+> -	 if (val != expect)
+> -		 return false;
+> -
+> -	 if ((cnt & 3) != cnt2)
+> -		 return false;
+> -
+> -	 cnt2 = cnt + 1;
+> -
+> -	 rb_time_split(val, &top, &bottom, &msb);
+> -	 msb = rb_time_val_cnt(msb, cnt);
+> -	 top = rb_time_val_cnt(top, cnt);
+> -	 bottom = rb_time_val_cnt(bottom, cnt);
+> -
+> -	 rb_time_split(set, &top2, &bottom2, &msb2);
+> -	 msb2 = rb_time_val_cnt(msb2, cnt);
+> -	 top2 = rb_time_val_cnt(top2, cnt2);
+> -	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
+> -
+> -	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
+> -		return false;
+> -	if (!rb_time_read_cmpxchg(&t->msb, msb, msb2))
+> -		return false;
+> -	if (!rb_time_read_cmpxchg(&t->top, top, top2))
+> -		return false;
+> -	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
+> -		return false;
+> -	return true;
+> -}
+> -
+>  #else /* 64 bits */
+>  
+>  /* local64_t always succeeds */
+> @@ -755,11 +713,6 @@ static void rb_time_set(rb_time_t *t, u64 val)
+>  {
+>  	local64_set(&t->time, val);
+>  }
+> -
+> -static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+> -{
+> -	return local64_try_cmpxchg(&t->time, &expect, set);
+> -}
+>  #endif
+>  
+>  /*
+> @@ -3610,20 +3563,36 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+>  	} else {
+>  		u64 ts;
+>  		/* SLOW PATH - Interrupted between A and C */
+> -		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+> -		/* Was interrupted before here, write_stamp must be valid */
+> +
+> +		/* Save the old before_stamp */
+> +		a_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
+>  		RB_WARN_ON(cpu_buffer, !a_ok);
+> +
+> +		/*
+> +		 * Read a new timestamp and update the before_stamp to make
+> +		 * the next event after this one force using an absolute
+> +		 * timestamp. This is in case an interrupt were to come in
+> +		 * between E and F.
+> +		 */
+>  		ts = rb_time_stamp(cpu_buffer->buffer);
+> +		rb_time_set(&cpu_buffer->before_stamp, ts);
+> +
+> +		barrier();
+> + /*E*/		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+> +		/* Was interrupted before here, write_stamp must be valid */
+> +		RB_WARN_ON(cpu_buffer, !a_ok);
+>  		barrier();
+> - /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+> -		    info->after < ts &&
+> -		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
+> -				    info->after, ts)) {
+> -			/* Nothing came after this event between C and E */
+> + /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+> +		    info->after == info->before && info->after < ts) {
+> +			/*
+> +			 * Nothing came after this event between C and F, it is
+> +			 * safe to use info->after for the delta as it
+> +			 * matched info->before and is still valid.
+> +			 */
+>  			info->delta = ts - info->after;
+>  		} else {
+>  			/*
+> -			 * Interrupted between C and E:
+> +			 * Interrupted between C and F:
+>  			 * Lost the previous events time stamp. Just set the
+>  			 * delta to zero, and this will be the same time as
+>  			 * the event this event interrupted. And the events that
+> -- 
+> 2.42.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
