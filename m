@@ -1,143 +1,109 @@
-Return-Path: <linux-kernel+bounces-5898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2E1D81913E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:18:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BC8881913F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A6E11F25C95
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:18:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48FFA1C23A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7262F39ADE;
-	Tue, 19 Dec 2023 20:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD1F39AC6;
+	Tue, 19 Dec 2023 20:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="fYBOgBhO"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="BINQLL0Z"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940D839AD1
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4b6e5c64ea1so220426e0c.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:17:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D256C39AD2
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55372c1338bso2923727a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:18:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703017069; x=1703621869; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=av1n9OJZGg5AWOWJRoSVZmbeuDxmI+iTFMe3cfVJAFg=;
-        b=fYBOgBhOr7cDUfspYqCPWPvh8Dm0q7L4ziXmLqF0+M+kICIvCROb6rz2Ari6T9ypJf
-         htUNxuvJA790w/a40Hr9uJsVmp8H+/oIJTrjElB2Eofa7OauDw6LKVGeA6FwPAKsnnxa
-         O2R7+z6HYnXZ9g/2xzbfVZIXZ7WYsi3ELA41QWtF+o2hQa6p3XZwED2mAlV3TM0KgykM
-         gsZ91WzUAfYf6jJJ/ft90LJN9r5lCBlxyEhVo4BzhrAkiTnO5TobF7c1DdlZO/StkgV9
-         E+h1AhBzf1HkkLSqVW33VRjpLxyWTh74aQBwHXrbDDMzgM65sOCUD5W/Di4JPcwO8Efd
-         nQJw==
+        d=linuxfoundation.org; s=google; t=1703017079; x=1703621879; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2YQISh9f/hMVihywyg7rkbccdS6kJ5BjuKERfau1fMo=;
+        b=BINQLL0ZCytOwwUk4TikD+1YZY+GffE85dzn99BGsE1oa0Kd8jEhgC4tRWjwFIOUKA
+         GdzqFpj/hmH98FrC96QUk+7VndK/U5NfHAs4+o+DcMc7scfRIt6CLK26CMSaB4H5bPJJ
+         9aiZDyWNuRg88OY2uMQmp5FV5dpV0m/z4Hu6A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703017069; x=1703621869;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=av1n9OJZGg5AWOWJRoSVZmbeuDxmI+iTFMe3cfVJAFg=;
-        b=qQ2Av1t3BqnatPH2bL+3ynj0ung9D4z06S938t66jQzNQYc7B6AQ6GEMGxRN9cekBI
-         2E9MDcFIUCWJJlYlceL8LnYWmY8KiK9n5DFBvnyob6pgAIjxeJ2XLCPyT0VU4NImYwTx
-         725dYhfm4qnP+przGSP08/sey5JoT/BcmQI7FAQj2P5/Ct/GzQAWEXuQwXxtvjJWDaFD
-         HOXU/LJUWANvrsL8w9+25AT3dtSIVKIO21Vhaqb5qEOHVYkq5KvW9YXp+dOBSnKCBJGD
-         zUDpskOjTj+l5mV08Y6lX600/b0BPQy9h7/Ki8NlXRV9iTNCBoSP2ak3TFjxC4MX6535
-         i4bw==
-X-Gm-Message-State: AOJu0YyXCHu/Ns4oYMJxP1iJKiNlXx5fm+PLg/UEvCAqs5WNUZSf3WHq
-	OtzfqWqkeutZxqwP2hQ5JoGHUayUNFfseFp0tIRlvg==
-X-Google-Smtp-Source: AGHT+IELixplTSZD1hK7e+W9C5kRfBjAbzmG32SkyE5j4fCgRilXWf7SYAXSp3MldVrUxyVV04rV2cbNnVzlDRYbbDk=
-X-Received: by 2002:a05:6122:3c42:b0:4b6:c815:bedd with SMTP id
- fv2-20020a0561223c4200b004b6c815beddmr2342192vkb.18.1703017069499; Tue, 19
- Dec 2023 12:17:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703017079; x=1703621879;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2YQISh9f/hMVihywyg7rkbccdS6kJ5BjuKERfau1fMo=;
+        b=QVHD0908MVDG51ngnv6pCjOfvYnxUUf7kk6BXf2UK45wsmJUWQYE8i7rgwnKS6vvKk
+         H6PJe0FWF6+d/eHSq/1T+7yJxzFarorJrDTvYamapsw4XC7qWV8HLlzLklTG06eblyu0
+         pWkMk8NONoV8hRClxd/COcOaWRusV45yDwmsIko7XVDa6ZgsldncXbanc3OTBkMNDsMn
+         rjD5Bubtlee42Ze8tgTUrbJI38DlaQ5kknxt179kS38zmhKyVNKrUeMjzunxwOQZnWOE
+         apYaFkvMaEoDHXCc8a9Zc5Ni8MNmvkF4YqbkwWUm3NoTBWmD7bIWq1Ftikmac5s/dRt4
+         TFdQ==
+X-Gm-Message-State: AOJu0YyTLqMiQ+X3Dnp7yFVdXdn2ti6vJebn/CwC+jLvqwfGjaH++5cN
+	2bqFZRmqZk2s8eC4F7EZAWEroWXMP8zFSAA7dHsyTpIB
+X-Google-Smtp-Source: AGHT+IHbOFS5c91S6SD490UlGgBKYHbDHr7hquam4MKMkK3GCHdtCVzEVQoFQXQb/ZPlhXc+3yZa0w==
+X-Received: by 2002:a17:906:4c58:b0:a24:8deb:351e with SMTP id d24-20020a1709064c5800b00a248deb351emr728806ejw.83.1703017079002;
+        Tue, 19 Dec 2023 12:17:59 -0800 (PST)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id l18-20020a1709065a9200b00a250c28ef83sm987229ejq.75.2023.12.19.12.17.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 12:17:58 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so561256466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:17:58 -0800 (PST)
+X-Received: by 2002:a17:906:aed8:b0:a23:7576:3551 with SMTP id
+ me24-20020a170906aed800b00a2375763551mr696466ejb.109.1703017078207; Tue, 19
+ Dec 2023 12:17:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231115165915.2936349-1-brgl@bgdev.pl> <CAMRc=MfoE93Aum4s-pweeb_idqYgUG-DBpXnhT5UW_WhVkLwHw@mail.gmail.com>
- <CAMRc=Md6fCbXco-VOZeDM=cAy_a6HGjM8N5jse5OM7AXSha4dw@mail.gmail.com> <CAMRc=MeLCUQ1dGT2RsgrWMBMbGmjQ9tGwEWJ7nBCOss9TfvvGw@mail.gmail.com>
-In-Reply-To: <CAMRc=MeLCUQ1dGT2RsgrWMBMbGmjQ9tGwEWJ7nBCOss9TfvvGw@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 19 Dec 2023 21:17:38 +0100
-Message-ID: <CAMRc=MdibLmNYTk6eO7GUu20aaOmsVVX8bHCug8r8yR6EYSefg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 0/4] genirq/irq_sim: misc updates
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Yury Norov <yury.norov@gmail.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Marc Zyngier <marc.zyngier@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Rasmus Villemoes <linux@rasmusvillemoes.dk>
+References: <202312191507.348721d2-oliver.sang@intel.com> <20231219095821.GAZYFpPUSKexZAcl05@fat_crate.local>
+ <CAHk-=wimbX8UF6ECo53Hm4Vz0tCC7jjN9e3tEhZfoEtsxyfU-A@mail.gmail.com> <87013f74-5828-4bef-848b-ffedde8e86f5@citrix.com>
+In-Reply-To: <87013f74-5828-4bef-848b-ffedde8e86f5@citrix.com>
+From: Linus Torvalds <torvalds@linuxfoundation.org>
+Date: Tue, 19 Dec 2023 12:17:40 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh=z-aXw6o8Hi9SiC5-vwP403-ZpDHUOXdXmLbaG93dvQ@mail.gmail.com>
+Message-ID: <CAHk-=wh=z-aXw6o8Hi9SiC5-vwP403-ZpDHUOXdXmLbaG93dvQ@mail.gmail.com>
+Subject: Re: [linus:master] [x86/entry] be5341eb0d: WARNING:CPU:#PID:#at_int80_emulation
+To: Andrew Cooper <andrew.cooper3@citrix.com>
+Cc: Borislav Petkov <bp@alien8.de>, kernel test robot <oliver.sang@intel.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, xen-devel@lists.xenproject.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 11, 2023 at 10:14=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
+On Tue, 19 Dec 2023 at 11:15, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
 >
-> On Mon, Dec 4, 2023 at 9:47=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
-> >
-> > On Wed, Nov 29, 2023 at 10:18=E2=80=AFAM Bartosz Golaszewski <brgl@bgde=
-v.pl> wrote:
-> > >
-> > > On Wed, Nov 15, 2023 at 5:59=E2=80=AFPM Bartosz Golaszewski <brgl@bgd=
-ev.pl> wrote:
-> > > >
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > Here are a couple of updates to the interrupt simulator. Two are mi=
-nor:
-> > > > remove an unused field and reorder includes for readability. The th=
-ird
-> > > > one simplifies the error paths by using new cleanup macros. To that=
- end
-> > > > we also add a cleanup definition for dynamic bitmaps.
-> > > >
-> > > > Resending rebased on top of v6.7-rc1 and with tags collected.
-> > > >
-> > > > v1 -> v2:
-> > > > - add a NULL-pointer check to the bitmap cleanup macro as advised b=
-y
-> > > >   Peter Zijlstra
-> > > > - initialize managed pointers when declaring them to create a clear=
- pairing
-> > > >   between the type and the cleanup action
-> > > >
-> > > > Bartosz Golaszewski (4):
-> > > >   bitmap: define a cleanup function for bitmaps
-> > > >   genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
-> > > >   genirq/irq_sim: order headers alphabetically
-> > > >   genirq/irq_sim: shrink code by using cleanup helpers
-> > > >
-> > > >  include/linux/bitmap.h |  3 +++
-> > > >  kernel/irq/irq_sim.c   | 30 ++++++++++++------------------
-> > > >  2 files changed, 15 insertions(+), 18 deletions(-)
-> > > >
-> > > > --
-> > > > 2.40.1
-> > > >
-> > >
-> > > It's been two weeks since this submission and ~2.5 months since the
-> > > first one so I guess, a gentle ping is in order. This is not a very
-> > > controversial series - can this be applied?
-> > >
-> > > Bart
-> >
-> > Another ping...
-> >
-> > Bartosz
->
-> Thomas,
->
-> Is there any formal reason why this cannot be processed?
->
-> Bartosz
+> -asmlinkage long sys_ni_posix_timers(void);
+> +asmlinkage long sys_ni_posix_timers(const struct pt_regs *regs);
 
-Ping.
+I don't think it should be asmlinkage. That means "use legacy asm
+calling conventions", and for x86-32 that means pass on stack. Which I
+don't think these actually are.
 
-Bartosz
+I think it's an old artefect, and it doesn't matter for something that
+doesn't take any arguments, but when you add an argument it's actively
+wrong.
+
+Of course, that argument isn't _used_, so it still doesn't matter, but
+if the point is to use the right prototype, I think we should just
+make it be
+
+    long sys_ni_posix_timers(const struct pt_regs *regs);
+
+although I think Sami's suggestion is probably nicer.
+
+That said, I still think that just getting rid of this horrid special
+case for posix timers is the right thing, and we should just remove
+that SYS_NI() alias thing entirely.
+
+          Linus
 
