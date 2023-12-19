@@ -1,61 +1,54 @@
-Return-Path: <linux-kernel+bounces-4511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB1F4817E63
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:05:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5754E817EA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D30531C22F4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:05:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABB511F241F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6E6EA5;
-	Tue, 19 Dec 2023 00:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6546DA42;
+	Tue, 19 Dec 2023 00:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HRxTGq7D"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="n4gcTTj5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0E5163
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 00:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7b714a7835cso46339439f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:05:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702944343; x=1703549143; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2ASVO3g6/SUkBVBnev9A1RPubmA9KlOdv0JVABQZqVc=;
-        b=HRxTGq7D5y5voHIC7KoLSUmp1y82Qc5B7szajng18693AThAZbhBO4IaNd+Vo23e7x
-         foLBc8A5+NbkHoKK3QX8611wkJuFWWgfPx5XHGJn4vOYRLy9Wwr6ctJRdBVYh+dYwFZP
-         nxPn+PzbPkldn9Ih0mf5GroNgiVfeXPBx7Q+8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702944343; x=1703549143;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ASVO3g6/SUkBVBnev9A1RPubmA9KlOdv0JVABQZqVc=;
-        b=MOGrelTH5DRHwdAd9wfwCvrfOeDUUwLDSWanjD06YA0jwwt+Cg2xF2Fxqccgcgfe2e
-         blD+PlV2HWVgHUaaUaKVLJq56zGKMPGmsKysIAZbkBNOyCGx2i+XMNRFtQ6iIYac+riB
-         YvhFTNr8MNQXtSSElNAstEh00ugjY1UzxKFyn/0uE6oDrD26A4hhuLnZRzM/9JTajPUi
-         P3qWglE24jBU4xK7RW1fbgyYE6h6fz3TpYY5ji1CY7SB53kLRtfjZVuVdNi2BXi+mgPq
-         8hofbRKXjgIqXB+qv2NnM3MPh3Ct3RKBlun7JbtjEQzynbvSvoq8ZtUrojszDvhfilxt
-         gLgg==
-X-Gm-Message-State: AOJu0YySOzQYHvpjkPgoZd+Mym3+44nKKz5p3ujNIkCVt5U6qqSPfD9f
-	FJL39h162BOi3t6rXwggWB6+y5x3vB8Gm8tviAA=
-X-Google-Smtp-Source: AGHT+IHX+IYcIQTYnX65LVEa5z67GrV2LmbPR3MOFrcjtLCdraPQGV1DyNYjiqydFVLzbDh5RfA02w==
-X-Received: by 2002:a05:6e02:1b08:b0:35f:b559:c2c7 with SMTP id i8-20020a056e021b0800b0035fb559c2c7mr3484991ilv.3.1702944343011;
-        Mon, 18 Dec 2023 16:05:43 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id x7-20020a056e021bc700b0035f73763259sm1977748ilv.69.2023.12.18.16.05.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 16:05:42 -0800 (PST)
-Message-ID: <e112680a-2efe-4c29-96dd-0b8261bb72b1@linuxfoundation.org>
-Date: Mon, 18 Dec 2023 17:05:41 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD69387;
+	Tue, 19 Dec 2023 00:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BINlqaQ010864;
+	Tue, 19 Dec 2023 00:14:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=dGXSqUx9e0/zV1axVohzeeNVwd6d8r2agKMGrqkSKyM=; b=n4
+	gcTTj5Vlc6L39T6Ms9D8eSRtYV2x4fSlDpJQ8quPX2dspeekRmWCNy5X3QIoIH0n
+	pzUoabugakx/R1pBigJbCh5/JxSYEDUzDcEQcVfeY2DIoM8zV+k0qtY+jBdAOgqd
+	NzUnt3ILSz8vT8JmkXfTqwtz1v1jqJlMnBbcrHSVNz2OXrLScv/vH9/FqpqeYHI4
+	j6V4buStE3Srtg2w3LUDfPXukdBSZJvop/wMAekjlsPlP+L21mGpM8pmQkkRkW8f
+	R4JyyPO7c93n8XtWsqh6wZPvPo/aYlK1cXVU80rJ7IZAXkJDwOOH2+1WpxFrMRuR
+	ywvFYUqY7re+bBQ88QXA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2vhrge8w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 00:14:47 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJ0EkeD019235
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 00:14:46 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
+ 2023 16:14:41 -0800
+Message-ID: <cdde7597-2c1c-4570-a604-91b87eef9455@quicinc.com>
+Date: Tue, 19 Dec 2023 08:14:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,46 +56,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.19 00/36] 4.19.303-rc1 review
+Subject: Re: [PATCH v3 1/8] dt-bindings: arm: Add support for CMB element size
 Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20231218135041.876499958@linuxfoundation.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231218135041.876499958@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio
+	<konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang
+	<quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-2-git-send-email-quic_taozha@quicinc.com>
+ <270d759f-74b3-42f0-96ec-f97bee7116b8@linaro.org>
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <270d759f-74b3-42f0-96ec-f97bee7116b8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ddVfqoYWTLaRBv0Pas59xQ8gSFcofQzn
+X-Proofpoint-GUID: ddVfqoYWTLaRBv0Pas59xQ8gSFcofQzn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ adultscore=0 bulkscore=0 priorityscore=1501 impostorscore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1011 mlxlogscore=724
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312190000
 
-On 12/18/23 06:51, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.303 release.
-> There are 36 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.303-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-Compiled and booted on my test system. No dmesg regressions.
+On 11/21/2023 3:24 PM, Krzysztof Kozlowski wrote:
+> On 21/11/2023 03:24, Tao Zhang wrote:
+>> Add property "qcom,cmb-elem-size" to support CMB(Continuous
+>> Multi-Bit) element for TPDM. The associated aggregator will read
+>> this size before it is enabled. CMB element size currently only
+>> supports 32-bit and 64-bit.
+>
+>>     qcom,dsb-msrs-num:
+>>       description:
+>>         Specifies the number of DSB(Discrete Single Bit) MSR(mux select register)
+>> @@ -110,4 +119,23 @@ examples:
+>>         };
+>>       };
+>>   
+>> +    tpdm@6c29000 {
+>> +      compatible = "qcom,coresight-tpdm", "arm,primecell";
+>> +      reg = <0x06c29000 0x1000>;
+>> +      reg-names = "tpdm-base";
+>> +
+>> +      qcom,cmb-element-size = /bits/ 8 <64>;
+> One new property usually does not justify new example. Why it cannot be
+> added to existing example?
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Because the existing example tpdm "tpdm@684c000" which only supports dsb 
+sub-unit.  Most
 
-thanks,
--- Shuah
+TPDMs only support one type of sub-unit.
+
+>
+> Anyway, I prefer not to take any new Qualcomm Coresight bindings or
+> Qualcomm SoC DTS nodes with Coresight till we fix all existing warnings.
+> I don't know how to fix them, so I need help with them. No such fixing
+> happened so far from Qcom, so pushback is my only way to get any attention.
+>
+> I already commented on this in other email thread.
+
+Jinlong has fixed the warnings from coresight bindings. I will prepare 
+my next patch
+
+series soon.
+
+
+Best,
+
+Tao
+
+>
+> Best regards,
+> Krzysztof
+>
 
