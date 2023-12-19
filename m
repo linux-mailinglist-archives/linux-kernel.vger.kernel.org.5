@@ -1,99 +1,101 @@
-Return-Path: <linux-kernel+bounces-4928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12618183EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:57:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 880308183FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:59:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35421C23999
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:57:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40CDC282241
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D6A125CE;
-	Tue, 19 Dec 2023 08:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1A812B80;
+	Tue, 19 Dec 2023 08:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DousJW5s"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="kZwHzqjK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D87713FE3;
-	Tue, 19 Dec 2023 08:57:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 646F1C433C7;
-	Tue, 19 Dec 2023 08:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702976241;
-	bh=uFQlqLQP1G7wjfdANmp5BLEZwEILv8d1iFYDF7MRx6I=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=DousJW5sjM7HJvwYXPYiinIAEyL5QyeWPfBccOPDbCW9/vX6nAuGHK8CYUk92nNCr
-	 WVvnmY7iNQAXEyVd0FGlNlwBSFhyPA10aY+f9fEL3jatPPRT2zHJUNfbWHnhH3EQan
-	 wEJ8M3i4AF5vXnFdOxVdQPCcSAcnYlUbthzzkclg8btFNWh+fnsgXZuhplku7n/kZF
-	 WHHLO/DYbF/MnNgm1uDsaGt2DhJ9txxWy3+DDwR1uVKQflE1+sWs8vkkCfpjFZKj6a
-	 /G8dcSSrNWlHFDBSG8FthDg8VyyHeEHi1EOSg8AtmrH2s4evGToRVDJOdX6hl9vWP8
-	 l7LJlbtqdEzCg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Arend Van Spriel <arend.vanspriel@broadcom.com>
-Cc: Hector Martin <marcan@marcan.st>,  Arend van Spriel <aspriel@gmail.com>,
-  Franky Lin <franky.lin@broadcom.com>,  Hante Meuleman
- <hante.meuleman@broadcom.com>,  Daniel Berlin <dberlin@dberlin.org>,
-  <linux-wireless@vger.kernel.org>,  <brcm80211-dev-list.pdl@broadcom.com>,
-  <SHA-cyfmac-dev-list@infineon.com>,  <linux-kernel@vger.kernel.org>,
-  <asahi@lists.linux.dev>
-Subject: Re: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
-References: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
-	<170281231651.2255653.7498073085103487666.kvalo@kernel.org>
-	<18c80d15e30.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-Date: Tue, 19 Dec 2023 10:57:17 +0200
-In-Reply-To: <18c80d15e30.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-	(Arend Van Spriel's message of "Tue, 19 Dec 2023 09:52:23 +0100")
-Message-ID: <877clash76.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DA7125B5;
+	Tue, 19 Dec 2023 08:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=mApDO3T9Xz1helbAZSFet16out2mW7MWySk8mjZ5wDE=; b=kZwHzqjKiWEgoZn1veK4cqHCKR
+	SerS327V6zs7qE4E6zPYWmsCCljxHbsbPRP8PnWbjTURrTEHbkjZ8o2iz5NzhD8JA+Ff7VkMuDU7y
+	IuyEa1zVHU6FlNhAMzyxTvwbEkuOczsw1MpSllM/sbokb9AG9DcNbi1v0/8T47H9dxsI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rFVvb-003JjA-OP; Tue, 19 Dec 2023 09:58:15 +0100
+Date: Tue, 19 Dec 2023 09:58:15 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Samin Guo <samin.guo@starfivetech.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Hal Feng <hal.feng@starfivetech.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Subject: Re: [PATCH v4 6/9] riscv: dts: starfive: visionfive-v1: Setup
+ ethernet phy
+Message-ID: <962691a4-993d-44c0-861f-d0fd5bbc2da9@lunn.ch>
+References: <20231218214451.2345691-1-cristian.ciocaltea@collabora.com>
+ <20231218214451.2345691-7-cristian.ciocaltea@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218214451.2345691-7-cristian.ciocaltea@collabora.com>
 
-Arend Van Spriel <arend.vanspriel@broadcom.com> writes:
+On Mon, Dec 18, 2023 at 11:44:46PM +0200, Cristian Ciocaltea wrote:
+> The StarFive VisionFive V1 SBC uses a Motorcomm YT8521 PHY supporting
+> RGMII-ID, but requires manual adjustment of the RX internal delay to
+> work properly.
+> 
+> The default RX delay provided by the driver is 1.95 ns, which proves to
+> be too high. Applying a 50% reduction seems to mitigate the issue.
+> 
+> Also note this adjustment is not necessary on BeagleV Starlight SBC,
+> which uses a Microchip PHY.  Hence, there is no indication of a
+> misbehaviour on the GMAC side, but most likely the issue stems from
+> the Motorcomm PHY.
+> 
+> While at it, drop the redundant gpio include, which is already provided
+> by jh7100-common.dtsi.
+> 
+> Co-developed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 
-> On December 17, 2023 12:25:23 PM Kalle Valo <kvalo@kernel.org> wrote:
->
->> Hector Martin <marcan@marcan.st> wrote:
->>
->>> Using the WSEC command instead of sae_password seems to be the supported
->>> mechanism on newer firmware, and also how the brcmdhd driver does it.
->>>
->>> According to user reports [1], the sae_password codepath doesn't actually
->>> work on machines with Cypress chips anyway, so no harm in removing it.
->>>
->>> This makes WPA3 work with iwd, or with wpa_supplicant pending a support
->>> patchset [2].
->>>
->>> [1] https://rachelbythebay.com/w/2023/11/06/wpa3/
->>> [2] http://lists.infradead.org/pipermail/hostap/2023-July/041653.html
->>>
->>> Signed-off-by: Hector Martin <marcan@marcan.st>
->>> Reviewed-by: Neal Gompa <neal@gompa.dev>
->>
->> Arend, what do you think?
->>
->> We recently talked about people testing brcmfmac patches, has anyone else
->> tested this?
->
-> Not sure I already replied so maybe I am repeating myself. I would
-> prefer to keep the Cypress sae_password path as well although it
-> reportedly does not work. The vendor support in the driver can be used
-> to accommodate for that. The other option would be to have people with
-> Cypress chipset test this patch. If that works for both we can
-> consider dropping the sae_password path.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Ok, thanks for checking.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+    Andrew
 
