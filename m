@@ -1,35 +1,35 @@
-Return-Path: <linux-kernel+bounces-4567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B41817F65
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2E9D817F66
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE6ACB24151
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:43:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF439B241A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CEC882A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00548C15;
 	Tue, 19 Dec 2023 01:42:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF39117CF;
-	Tue, 19 Dec 2023 01:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82DA17D5;
+	Tue, 19 Dec 2023 01:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SvKD71frkz29gF8;
-	Tue, 19 Dec 2023 09:41:27 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SvKFG49cXzMnyL;
+	Tue, 19 Dec 2023 09:42:26 +0800 (CST)
 Received: from kwepemm000007.china.huawei.com (unknown [7.193.23.189])
-	by mail.maildlp.com (Postfix) with ESMTPS id 965DC1400DA;
-	Tue, 19 Dec 2023 09:42:39 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 27C88140121;
+	Tue, 19 Dec 2023 09:42:40 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 09:42:38 +0800
+ 15.1.2507.35; Tue, 19 Dec 2023 09:42:39 +0800
 From: Jijie Shao <shaojijie@huawei.com>
 To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -38,9 +38,9 @@ CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
 	<liuyonglong@huawei.com>, <lanhao@huawei.com>, <wangpeiyang1@huawei.com>,
 	<shaojijie@huawei.com>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH V4 net-next 2/4] net: hns3: move constants from hclge_debugfs.h to hclge_debugfs.c
-Date: Tue, 19 Dec 2023 09:35:11 +0800
-Message-ID: <20231219013513.2589845-3-shaojijie@huawei.com>
+Subject: [PATCH V4 net-next 3/4] net: hns3: dump more reg info based on ras mod
+Date: Tue, 19 Dec 2023 09:35:12 +0800
+Message-ID: <20231219013513.2589845-4-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20231219013513.2589845-1-shaojijie@huawei.com>
 References: <20231219013513.2589845-1-shaojijie@huawei.com>
@@ -55,1318 +55,661 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm000007.china.huawei.com (7.193.23.189)
 
-some constants are defined in hclge_debugfs.h,
-but only used in hclge_debugfs.c.
-so move them from hclge_debugfs.h to hclge_debugfs.c.
+From: Peiyang Wang <wangpeiyang1@huawei.com>
 
+Dump more reg info base on ras mod before reset, which is useful to
+analyze the ras error.
+
+Signed-off-by: Peiyang Wang <wangpeiyang1@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 640 ++++++++++++++++++
- .../hisilicon/hns3/hns3pf/hclge_debugfs.h     | 640 ------------------
- 2 files changed, 640 insertions(+), 640 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |   4 +
+ .../hns3/hns3_common/hclge_comm_cmd.c         |   1 +
+ .../hns3/hns3_common/hclge_comm_cmd.h         |   2 +
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     |   6 +-
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.h     |   3 +
+ .../hisilicon/hns3/hns3pf/hclge_err.c         | 434 +++++++++++++++++-
+ .../hisilicon/hns3/hns3pf/hclge_err.h         |  36 ++
+ 7 files changed, 478 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-index 9ec471ced3d6..243be19a7557 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-@@ -18,6 +18,646 @@ static const char * const hclge_mac_state_str[] = {
- 
- static const char * const tc_map_mode_str[] = { "PRIO", "DSCP" };
- 
-+static const struct hclge_dbg_dfx_message hclge_dbg_bios_common_reg[] = {
-+	{false, "Reserved"},
-+	{true,	"BP_CPU_STATE"},
-+	{true,	"DFX_MSIX_INFO_NIC_0"},
-+	{true,	"DFX_MSIX_INFO_NIC_1"},
-+	{true,	"DFX_MSIX_INFO_NIC_2"},
-+	{true,	"DFX_MSIX_INFO_NIC_3"},
-+
-+	{true,	"DFX_MSIX_INFO_ROC_0"},
-+	{true,	"DFX_MSIX_INFO_ROC_1"},
-+	{true,	"DFX_MSIX_INFO_ROC_2"},
-+	{true,	"DFX_MSIX_INFO_ROC_3"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_ssu_reg_0[] = {
-+	{false, "Reserved"},
-+	{true,	"SSU_ETS_PORT_STATUS"},
-+	{true,	"SSU_ETS_TCG_STATUS"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{true,	"SSU_BP_STATUS_0"},
-+
-+	{true,	"SSU_BP_STATUS_1"},
-+	{true,	"SSU_BP_STATUS_2"},
-+	{true,	"SSU_BP_STATUS_3"},
-+	{true,	"SSU_BP_STATUS_4"},
-+	{true,	"SSU_BP_STATUS_5"},
-+	{true,	"SSU_MAC_TX_PFC_IND"},
-+
-+	{true,	"MAC_SSU_RX_PFC_IND"},
-+	{true,	"BTMP_AGEING_ST_B0"},
-+	{true,	"BTMP_AGEING_ST_B1"},
-+	{true,	"BTMP_AGEING_ST_B2"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+
-+	{true,	"FULL_DROP_NUM"},
-+	{true,	"PART_DROP_NUM"},
-+	{true,	"PPP_KEY_DROP_NUM"},
-+	{true,	"PPP_RLT_DROP_NUM"},
-+	{true,	"LO_PRI_UNICAST_RLT_DROP_NUM"},
-+	{true,	"HI_PRI_MULTICAST_RLT_DROP_NUM"},
-+
-+	{true,	"LO_PRI_MULTICAST_RLT_DROP_NUM"},
-+	{true,	"NCSI_PACKET_CURR_BUFFER_CNT"},
-+	{true,	"BTMP_AGEING_RLS_CNT_BANK0"},
-+	{true,	"BTMP_AGEING_RLS_CNT_BANK1"},
-+	{true,	"BTMP_AGEING_RLS_CNT_BANK2"},
-+	{true,	"SSU_MB_RD_RLT_DROP_CNT"},
-+
-+	{true,	"SSU_PPP_MAC_KEY_NUM_L"},
-+	{true,	"SSU_PPP_MAC_KEY_NUM_H"},
-+	{true,	"SSU_PPP_HOST_KEY_NUM_L"},
-+	{true,	"SSU_PPP_HOST_KEY_NUM_H"},
-+	{true,	"PPP_SSU_MAC_RLT_NUM_L"},
-+	{true,	"PPP_SSU_MAC_RLT_NUM_H"},
-+
-+	{true,	"PPP_SSU_HOST_RLT_NUM_L"},
-+	{true,	"PPP_SSU_HOST_RLT_NUM_H"},
-+	{true,	"NCSI_RX_PACKET_IN_CNT_L"},
-+	{true,	"NCSI_RX_PACKET_IN_CNT_H"},
-+	{true,	"NCSI_TX_PACKET_OUT_CNT_L"},
-+	{true,	"NCSI_TX_PACKET_OUT_CNT_H"},
-+
-+	{true,	"SSU_KEY_DROP_NUM"},
-+	{true,	"MB_UNCOPY_NUM"},
-+	{true,	"RX_OQ_DROP_PKT_CNT"},
-+	{true,	"TX_OQ_DROP_PKT_CNT"},
-+	{true,	"BANK_UNBALANCE_DROP_CNT"},
-+	{true,	"BANK_UNBALANCE_RX_DROP_CNT"},
-+
-+	{true,	"NIC_L2_ERR_DROP_PKT_CNT"},
-+	{true,	"ROC_L2_ERR_DROP_PKT_CNT"},
-+	{true,	"NIC_L2_ERR_DROP_PKT_CNT_RX"},
-+	{true,	"ROC_L2_ERR_DROP_PKT_CNT_RX"},
-+	{true,	"RX_OQ_GLB_DROP_PKT_CNT"},
-+	{false, "Reserved"},
-+
-+	{true,	"LO_PRI_UNICAST_CUR_CNT"},
-+	{true,	"HI_PRI_MULTICAST_CUR_CNT"},
-+	{true,	"LO_PRI_MULTICAST_CUR_CNT"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_ssu_reg_1[] = {
-+	{true,	"prt_id"},
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_0"},
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_1"},
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_2"},
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_3"},
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_4"},
-+
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_5"},
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_6"},
-+	{true,	"PACKET_TC_CURR_BUFFER_CNT_7"},
-+	{true,	"PACKET_CURR_BUFFER_CNT"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+
-+	{true,	"RX_PACKET_IN_CNT_L"},
-+	{true,	"RX_PACKET_IN_CNT_H"},
-+	{true,	"RX_PACKET_OUT_CNT_L"},
-+	{true,	"RX_PACKET_OUT_CNT_H"},
-+	{true,	"TX_PACKET_IN_CNT_L"},
-+	{true,	"TX_PACKET_IN_CNT_H"},
-+
-+	{true,	"TX_PACKET_OUT_CNT_L"},
-+	{true,	"TX_PACKET_OUT_CNT_H"},
-+	{true,	"ROC_RX_PACKET_IN_CNT_L"},
-+	{true,	"ROC_RX_PACKET_IN_CNT_H"},
-+	{true,	"ROC_TX_PACKET_OUT_CNT_L"},
-+	{true,	"ROC_TX_PACKET_OUT_CNT_H"},
-+
-+	{true,	"RX_PACKET_TC_IN_CNT_0_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_0_H"},
-+	{true,	"RX_PACKET_TC_IN_CNT_1_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_1_H"},
-+	{true,	"RX_PACKET_TC_IN_CNT_2_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_2_H"},
-+
-+	{true,	"RX_PACKET_TC_IN_CNT_3_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_3_H"},
-+	{true,	"RX_PACKET_TC_IN_CNT_4_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_4_H"},
-+	{true,	"RX_PACKET_TC_IN_CNT_5_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_5_H"},
-+
-+	{true,	"RX_PACKET_TC_IN_CNT_6_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_6_H"},
-+	{true,	"RX_PACKET_TC_IN_CNT_7_L"},
-+	{true,	"RX_PACKET_TC_IN_CNT_7_H"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_0_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_0_H"},
-+
-+	{true,	"RX_PACKET_TC_OUT_CNT_1_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_1_H"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_2_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_2_H"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_3_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_3_H"},
-+
-+	{true,	"RX_PACKET_TC_OUT_CNT_4_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_4_H"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_5_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_5_H"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_6_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_6_H"},
-+
-+	{true,	"RX_PACKET_TC_OUT_CNT_7_L"},
-+	{true,	"RX_PACKET_TC_OUT_CNT_7_H"},
-+	{true,	"TX_PACKET_TC_IN_CNT_0_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_0_H"},
-+	{true,	"TX_PACKET_TC_IN_CNT_1_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_1_H"},
-+
-+	{true,	"TX_PACKET_TC_IN_CNT_2_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_2_H"},
-+	{true,	"TX_PACKET_TC_IN_CNT_3_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_3_H"},
-+	{true,	"TX_PACKET_TC_IN_CNT_4_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_4_H"},
-+
-+	{true,	"TX_PACKET_TC_IN_CNT_5_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_5_H"},
-+	{true,	"TX_PACKET_TC_IN_CNT_6_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_6_H"},
-+	{true,	"TX_PACKET_TC_IN_CNT_7_L"},
-+	{true,	"TX_PACKET_TC_IN_CNT_7_H"},
-+
-+	{true,	"TX_PACKET_TC_OUT_CNT_0_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_0_H"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_1_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_1_H"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_2_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_2_H"},
-+
-+	{true,	"TX_PACKET_TC_OUT_CNT_3_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_3_H"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_4_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_4_H"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_5_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_5_H"},
-+
-+	{true,	"TX_PACKET_TC_OUT_CNT_6_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_6_H"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_7_L"},
-+	{true,	"TX_PACKET_TC_OUT_CNT_7_H"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_ssu_reg_2[] = {
-+	{true,	"OQ_INDEX"},
-+	{true,	"QUEUE_CNT"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_igu_egu_reg[] = {
-+	{true,	"prt_id"},
-+	{true,	"IGU_RX_ERR_PKT"},
-+	{true,	"IGU_RX_NO_SOF_PKT"},
-+	{true,	"EGU_TX_1588_SHORT_PKT"},
-+	{true,	"EGU_TX_1588_PKT"},
-+	{true,	"EGU_TX_ERR_PKT"},
-+
-+	{true,	"IGU_RX_OUT_L2_PKT"},
-+	{true,	"IGU_RX_OUT_L3_PKT"},
-+	{true,	"IGU_RX_OUT_L4_PKT"},
-+	{true,	"IGU_RX_IN_L2_PKT"},
-+	{true,	"IGU_RX_IN_L3_PKT"},
-+	{true,	"IGU_RX_IN_L4_PKT"},
-+
-+	{true,	"IGU_RX_EL3E_PKT"},
-+	{true,	"IGU_RX_EL4E_PKT"},
-+	{true,	"IGU_RX_L3E_PKT"},
-+	{true,	"IGU_RX_L4E_PKT"},
-+	{true,	"IGU_RX_ROCEE_PKT"},
-+	{true,	"IGU_RX_OUT_UDP0_PKT"},
-+
-+	{true,	"IGU_RX_IN_UDP0_PKT"},
-+	{true,	"IGU_MC_CAR_DROP_PKT_L"},
-+	{true,	"IGU_MC_CAR_DROP_PKT_H"},
-+	{true,	"IGU_BC_CAR_DROP_PKT_L"},
-+	{true,	"IGU_BC_CAR_DROP_PKT_H"},
-+	{false, "Reserved"},
-+
-+	{true,	"IGU_RX_OVERSIZE_PKT_L"},
-+	{true,	"IGU_RX_OVERSIZE_PKT_H"},
-+	{true,	"IGU_RX_UNDERSIZE_PKT_L"},
-+	{true,	"IGU_RX_UNDERSIZE_PKT_H"},
-+	{true,	"IGU_RX_OUT_ALL_PKT_L"},
-+	{true,	"IGU_RX_OUT_ALL_PKT_H"},
-+
-+	{true,	"IGU_TX_OUT_ALL_PKT_L"},
-+	{true,	"IGU_TX_OUT_ALL_PKT_H"},
-+	{true,	"IGU_RX_UNI_PKT_L"},
-+	{true,	"IGU_RX_UNI_PKT_H"},
-+	{true,	"IGU_RX_MULTI_PKT_L"},
-+	{true,	"IGU_RX_MULTI_PKT_H"},
-+
-+	{true,	"IGU_RX_BROAD_PKT_L"},
-+	{true,	"IGU_RX_BROAD_PKT_H"},
-+	{true,	"EGU_TX_OUT_ALL_PKT_L"},
-+	{true,	"EGU_TX_OUT_ALL_PKT_H"},
-+	{true,	"EGU_TX_UNI_PKT_L"},
-+	{true,	"EGU_TX_UNI_PKT_H"},
-+
-+	{true,	"EGU_TX_MULTI_PKT_L"},
-+	{true,	"EGU_TX_MULTI_PKT_H"},
-+	{true,	"EGU_TX_BROAD_PKT_L"},
-+	{true,	"EGU_TX_BROAD_PKT_H"},
-+	{true,	"IGU_TX_KEY_NUM_L"},
-+	{true,	"IGU_TX_KEY_NUM_H"},
-+
-+	{true,	"IGU_RX_NON_TUN_PKT_L"},
-+	{true,	"IGU_RX_NON_TUN_PKT_H"},
-+	{true,	"IGU_RX_TUN_PKT_L"},
-+	{true,	"IGU_RX_TUN_PKT_H"},
-+	{false,	"Reserved"},
-+	{false,	"Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_rpu_reg_0[] = {
-+	{true, "tc_queue_num"},
-+	{true, "FSM_DFX_ST0"},
-+	{true, "FSM_DFX_ST1"},
-+	{true, "RPU_RX_PKT_DROP_CNT"},
-+	{true, "BUF_WAIT_TIMEOUT"},
-+	{true, "BUF_WAIT_TIMEOUT_QID"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_rpu_reg_1[] = {
-+	{false, "Reserved"},
-+	{true,	"FIFO_DFX_ST0"},
-+	{true,	"FIFO_DFX_ST1"},
-+	{true,	"FIFO_DFX_ST2"},
-+	{true,	"FIFO_DFX_ST3"},
-+	{true,	"FIFO_DFX_ST4"},
-+
-+	{true,	"FIFO_DFX_ST5"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_ncsi_reg[] = {
-+	{false, "Reserved"},
-+	{true,	"NCSI_EGU_TX_FIFO_STS"},
-+	{true,	"NCSI_PAUSE_STATUS"},
-+	{true,	"NCSI_RX_CTRL_DMAC_ERR_CNT"},
-+	{true,	"NCSI_RX_CTRL_SMAC_ERR_CNT"},
-+	{true,	"NCSI_RX_CTRL_CKS_ERR_CNT"},
-+
-+	{true,	"NCSI_RX_CTRL_PKT_CNT"},
-+	{true,	"NCSI_RX_PT_DMAC_ERR_CNT"},
-+	{true,	"NCSI_RX_PT_SMAC_ERR_CNT"},
-+	{true,	"NCSI_RX_PT_PKT_CNT"},
-+	{true,	"NCSI_RX_FCS_ERR_CNT"},
-+	{true,	"NCSI_TX_CTRL_DMAC_ERR_CNT"},
-+
-+	{true,	"NCSI_TX_CTRL_SMAC_ERR_CNT"},
-+	{true,	"NCSI_TX_CTRL_PKT_CNT"},
-+	{true,	"NCSI_TX_PT_DMAC_ERR_CNT"},
-+	{true,	"NCSI_TX_PT_SMAC_ERR_CNT"},
-+	{true,	"NCSI_TX_PT_PKT_CNT"},
-+	{true,	"NCSI_TX_PT_PKT_TRUNC_CNT"},
-+
-+	{true,	"NCSI_TX_PT_PKT_ERR_CNT"},
-+	{true,	"NCSI_TX_CTRL_PKT_ERR_CNT"},
-+	{true,	"NCSI_RX_CTRL_PKT_TRUNC_CNT"},
-+	{true,	"NCSI_RX_CTRL_PKT_CFLIT_CNT"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+
-+	{true,	"NCSI_MAC_RX_OCTETS_OK"},
-+	{true,	"NCSI_MAC_RX_OCTETS_BAD"},
-+	{true,	"NCSI_MAC_RX_UC_PKTS"},
-+	{true,	"NCSI_MAC_RX_MC_PKTS"},
-+	{true,	"NCSI_MAC_RX_BC_PKTS"},
-+	{true,	"NCSI_MAC_RX_PKTS_64OCTETS"},
-+
-+	{true,	"NCSI_MAC_RX_PKTS_65TO127OCTETS"},
-+	{true,	"NCSI_MAC_RX_PKTS_128TO255OCTETS"},
-+	{true,	"NCSI_MAC_RX_PKTS_255TO511OCTETS"},
-+	{true,	"NCSI_MAC_RX_PKTS_512TO1023OCTETS"},
-+	{true,	"NCSI_MAC_RX_PKTS_1024TO1518OCTETS"},
-+	{true,	"NCSI_MAC_RX_PKTS_1519TOMAXOCTETS"},
-+
-+	{true,	"NCSI_MAC_RX_FCS_ERRORS"},
-+	{true,	"NCSI_MAC_RX_LONG_ERRORS"},
-+	{true,	"NCSI_MAC_RX_JABBER_ERRORS"},
-+	{true,	"NCSI_MAC_RX_RUNT_ERR_CNT"},
-+	{true,	"NCSI_MAC_RX_SHORT_ERR_CNT"},
-+	{true,	"NCSI_MAC_RX_FILT_PKT_CNT"},
-+
-+	{true,	"NCSI_MAC_RX_OCTETS_TOTAL_FILT"},
-+	{true,	"NCSI_MAC_TX_OCTETS_OK"},
-+	{true,	"NCSI_MAC_TX_OCTETS_BAD"},
-+	{true,	"NCSI_MAC_TX_UC_PKTS"},
-+	{true,	"NCSI_MAC_TX_MC_PKTS"},
-+	{true,	"NCSI_MAC_TX_BC_PKTS"},
-+
-+	{true,	"NCSI_MAC_TX_PKTS_64OCTETS"},
-+	{true,	"NCSI_MAC_TX_PKTS_65TO127OCTETS"},
-+	{true,	"NCSI_MAC_TX_PKTS_128TO255OCTETS"},
-+	{true,	"NCSI_MAC_TX_PKTS_256TO511OCTETS"},
-+	{true,	"NCSI_MAC_TX_PKTS_512TO1023OCTETS"},
-+	{true,	"NCSI_MAC_TX_PKTS_1024TO1518OCTETS"},
-+
-+	{true,	"NCSI_MAC_TX_PKTS_1519TOMAXOCTETS"},
-+	{true,	"NCSI_MAC_TX_UNDERRUN"},
-+	{true,	"NCSI_MAC_TX_CRC_ERROR"},
-+	{true,	"NCSI_MAC_TX_PAUSE_FRAMES"},
-+	{true,	"NCSI_MAC_RX_PAD_PKTS"},
-+	{true,	"NCSI_MAC_RX_PAUSE_FRAMES"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_rtc_reg[] = {
-+	{false, "Reserved"},
-+	{true,	"LGE_IGU_AFIFO_DFX_0"},
-+	{true,	"LGE_IGU_AFIFO_DFX_1"},
-+	{true,	"LGE_IGU_AFIFO_DFX_2"},
-+	{true,	"LGE_IGU_AFIFO_DFX_3"},
-+	{true,	"LGE_IGU_AFIFO_DFX_4"},
-+
-+	{true,	"LGE_IGU_AFIFO_DFX_5"},
-+	{true,	"LGE_IGU_AFIFO_DFX_6"},
-+	{true,	"LGE_IGU_AFIFO_DFX_7"},
-+	{true,	"LGE_EGU_AFIFO_DFX_0"},
-+	{true,	"LGE_EGU_AFIFO_DFX_1"},
-+	{true,	"LGE_EGU_AFIFO_DFX_2"},
-+
-+	{true,	"LGE_EGU_AFIFO_DFX_3"},
-+	{true,	"LGE_EGU_AFIFO_DFX_4"},
-+	{true,	"LGE_EGU_AFIFO_DFX_5"},
-+	{true,	"LGE_EGU_AFIFO_DFX_6"},
-+	{true,	"LGE_EGU_AFIFO_DFX_7"},
-+	{true,	"CGE_IGU_AFIFO_DFX_0"},
-+
-+	{true,	"CGE_IGU_AFIFO_DFX_1"},
-+	{true,	"CGE_EGU_AFIFO_DFX_0"},
-+	{true,	"CGE_EGU_AFIFO_DFX_1"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_ppp_reg[] = {
-+	{false, "Reserved"},
-+	{true,	"DROP_FROM_PRT_PKT_CNT"},
-+	{true,	"DROP_FROM_HOST_PKT_CNT"},
-+	{true,	"DROP_TX_VLAN_PROC_CNT"},
-+	{true,	"DROP_MNG_CNT"},
-+	{true,	"DROP_FD_CNT"},
-+
-+	{true,	"DROP_NO_DST_CNT"},
-+	{true,	"DROP_MC_MBID_FULL_CNT"},
-+	{true,	"DROP_SC_FILTERED"},
-+	{true,	"PPP_MC_DROP_PKT_CNT"},
-+	{true,	"DROP_PT_CNT"},
-+	{true,	"DROP_MAC_ANTI_SPOOF_CNT"},
-+
-+	{true,	"DROP_IG_VFV_CNT"},
-+	{true,	"DROP_IG_PRTV_CNT"},
-+	{true,	"DROP_CNM_PFC_PAUSE_CNT"},
-+	{true,	"DROP_TORUS_TC_CNT"},
-+	{true,	"DROP_TORUS_LPBK_CNT"},
-+	{true,	"PPP_HFS_STS"},
-+
-+	{true,	"PPP_MC_RSLT_STS"},
-+	{true,	"PPP_P3U_STS"},
-+	{true,	"PPP_RSLT_DESCR_STS"},
-+	{true,	"PPP_UMV_STS_0"},
-+	{true,	"PPP_UMV_STS_1"},
-+	{true,	"PPP_VFV_STS"},
-+
-+	{true,	"PPP_GRO_KEY_CNT"},
-+	{true,	"PPP_GRO_INFO_CNT"},
-+	{true,	"PPP_GRO_DROP_CNT"},
-+	{true,	"PPP_GRO_OUT_CNT"},
-+	{true,	"PPP_GRO_KEY_MATCH_DATA_CNT"},
-+	{true,	"PPP_GRO_KEY_MATCH_TCAM_CNT"},
-+
-+	{true,	"PPP_GRO_INFO_MATCH_CNT"},
-+	{true,	"PPP_GRO_FREE_ENTRY_CNT"},
-+	{true,	"PPP_GRO_INNER_DFX_SIGNAL"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+
-+	{true,	"GET_RX_PKT_CNT_L"},
-+	{true,	"GET_RX_PKT_CNT_H"},
-+	{true,	"GET_TX_PKT_CNT_L"},
-+	{true,	"GET_TX_PKT_CNT_H"},
-+	{true,	"SEND_UC_PRT2HOST_PKT_CNT_L"},
-+	{true,	"SEND_UC_PRT2HOST_PKT_CNT_H"},
-+
-+	{true,	"SEND_UC_PRT2PRT_PKT_CNT_L"},
-+	{true,	"SEND_UC_PRT2PRT_PKT_CNT_H"},
-+	{true,	"SEND_UC_HOST2HOST_PKT_CNT_L"},
-+	{true,	"SEND_UC_HOST2HOST_PKT_CNT_H"},
-+	{true,	"SEND_UC_HOST2PRT_PKT_CNT_L"},
-+	{true,	"SEND_UC_HOST2PRT_PKT_CNT_H"},
-+
-+	{true,	"SEND_MC_FROM_PRT_CNT_L"},
-+	{true,	"SEND_MC_FROM_PRT_CNT_H"},
-+	{true,	"SEND_MC_FROM_HOST_CNT_L"},
-+	{true,	"SEND_MC_FROM_HOST_CNT_H"},
-+	{true,	"SSU_MC_RD_CNT_L"},
-+	{true,	"SSU_MC_RD_CNT_H"},
-+
-+	{true,	"SSU_MC_DROP_CNT_L"},
-+	{true,	"SSU_MC_DROP_CNT_H"},
-+	{true,	"SSU_MC_RD_PKT_CNT_L"},
-+	{true,	"SSU_MC_RD_PKT_CNT_H"},
-+	{true,	"PPP_MC_2HOST_PKT_CNT_L"},
-+	{true,	"PPP_MC_2HOST_PKT_CNT_H"},
-+
-+	{true,	"PPP_MC_2PRT_PKT_CNT_L"},
-+	{true,	"PPP_MC_2PRT_PKT_CNT_H"},
-+	{true,	"NTSNOS_PKT_CNT_L"},
-+	{true,	"NTSNOS_PKT_CNT_H"},
-+	{true,	"NTUP_PKT_CNT_L"},
-+	{true,	"NTUP_PKT_CNT_H"},
-+
-+	{true,	"NTLCL_PKT_CNT_L"},
-+	{true,	"NTLCL_PKT_CNT_H"},
-+	{true,	"NTTGT_PKT_CNT_L"},
-+	{true,	"NTTGT_PKT_CNT_H"},
-+	{true,	"RTNS_PKT_CNT_L"},
-+	{true,	"RTNS_PKT_CNT_H"},
-+
-+	{true,	"RTLPBK_PKT_CNT_L"},
-+	{true,	"RTLPBK_PKT_CNT_H"},
-+	{true,	"NR_PKT_CNT_L"},
-+	{true,	"NR_PKT_CNT_H"},
-+	{true,	"RR_PKT_CNT_L"},
-+	{true,	"RR_PKT_CNT_H"},
-+
-+	{true,	"MNG_TBL_HIT_CNT_L"},
-+	{true,	"MNG_TBL_HIT_CNT_H"},
-+	{true,	"FD_TBL_HIT_CNT_L"},
-+	{true,	"FD_TBL_HIT_CNT_H"},
-+	{true,	"FD_LKUP_CNT_L"},
-+	{true,	"FD_LKUP_CNT_H"},
-+
-+	{true,	"BC_HIT_CNT_L"},
-+	{true,	"BC_HIT_CNT_H"},
-+	{true,	"UM_TBL_UC_HIT_CNT_L"},
-+	{true,	"UM_TBL_UC_HIT_CNT_H"},
-+	{true,	"UM_TBL_MC_HIT_CNT_L"},
-+	{true,	"UM_TBL_MC_HIT_CNT_H"},
-+
-+	{true,	"UM_TBL_VMDQ1_HIT_CNT_L"},
-+	{true,	"UM_TBL_VMDQ1_HIT_CNT_H"},
-+	{true,	"MTA_TBL_HIT_CNT_L"},
-+	{true,	"MTA_TBL_HIT_CNT_H"},
-+	{true,	"FWD_BONDING_HIT_CNT_L"},
-+	{true,	"FWD_BONDING_HIT_CNT_H"},
-+
-+	{true,	"PROMIS_TBL_HIT_CNT_L"},
-+	{true,	"PROMIS_TBL_HIT_CNT_H"},
-+	{true,	"GET_TUNL_PKT_CNT_L"},
-+	{true,	"GET_TUNL_PKT_CNT_H"},
-+	{true,	"GET_BMC_PKT_CNT_L"},
-+	{true,	"GET_BMC_PKT_CNT_H"},
-+
-+	{true,	"SEND_UC_PRT2BMC_PKT_CNT_L"},
-+	{true,	"SEND_UC_PRT2BMC_PKT_CNT_H"},
-+	{true,	"SEND_UC_HOST2BMC_PKT_CNT_L"},
-+	{true,	"SEND_UC_HOST2BMC_PKT_CNT_H"},
-+	{true,	"SEND_UC_BMC2HOST_PKT_CNT_L"},
-+	{true,	"SEND_UC_BMC2HOST_PKT_CNT_H"},
-+
-+	{true,	"SEND_UC_BMC2PRT_PKT_CNT_L"},
-+	{true,	"SEND_UC_BMC2PRT_PKT_CNT_H"},
-+	{true,	"PPP_MC_2BMC_PKT_CNT_L"},
-+	{true,	"PPP_MC_2BMC_PKT_CNT_H"},
-+	{true,	"VLAN_MIRR_CNT_L"},
-+	{true,	"VLAN_MIRR_CNT_H"},
-+
-+	{true,	"IG_MIRR_CNT_L"},
-+	{true,	"IG_MIRR_CNT_H"},
-+	{true,	"EG_MIRR_CNT_L"},
-+	{true,	"EG_MIRR_CNT_H"},
-+	{true,	"RX_DEFAULT_HOST_HIT_CNT_L"},
-+	{true,	"RX_DEFAULT_HOST_HIT_CNT_H"},
-+
-+	{true,	"LAN_PAIR_CNT_L"},
-+	{true,	"LAN_PAIR_CNT_H"},
-+	{true,	"UM_TBL_MC_HIT_PKT_CNT_L"},
-+	{true,	"UM_TBL_MC_HIT_PKT_CNT_H"},
-+	{true,	"MTA_TBL_HIT_PKT_CNT_L"},
-+	{true,	"MTA_TBL_HIT_PKT_CNT_H"},
-+
-+	{true,	"PROMIS_TBL_HIT_PKT_CNT_L"},
-+	{true,	"PROMIS_TBL_HIT_PKT_CNT_H"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_rcb_reg[] = {
-+	{false, "Reserved"},
-+	{true,	"FSM_DFX_ST0"},
-+	{true,	"FSM_DFX_ST1"},
-+	{true,	"FSM_DFX_ST2"},
-+	{true,	"FIFO_DFX_ST0"},
-+	{true,	"FIFO_DFX_ST1"},
-+
-+	{true,	"FIFO_DFX_ST2"},
-+	{true,	"FIFO_DFX_ST3"},
-+	{true,	"FIFO_DFX_ST4"},
-+	{true,	"FIFO_DFX_ST5"},
-+	{true,	"FIFO_DFX_ST6"},
-+	{true,	"FIFO_DFX_ST7"},
-+
-+	{true,	"FIFO_DFX_ST8"},
-+	{true,	"FIFO_DFX_ST9"},
-+	{true,	"FIFO_DFX_ST10"},
-+	{true,	"FIFO_DFX_ST11"},
-+	{true,	"Q_CREDIT_VLD_0"},
-+	{true,	"Q_CREDIT_VLD_1"},
-+
-+	{true,	"Q_CREDIT_VLD_2"},
-+	{true,	"Q_CREDIT_VLD_3"},
-+	{true,	"Q_CREDIT_VLD_4"},
-+	{true,	"Q_CREDIT_VLD_5"},
-+	{true,	"Q_CREDIT_VLD_6"},
-+	{true,	"Q_CREDIT_VLD_7"},
-+
-+	{true,	"Q_CREDIT_VLD_8"},
-+	{true,	"Q_CREDIT_VLD_9"},
-+	{true,	"Q_CREDIT_VLD_10"},
-+	{true,	"Q_CREDIT_VLD_11"},
-+	{true,	"Q_CREDIT_VLD_12"},
-+	{true,	"Q_CREDIT_VLD_13"},
-+
-+	{true,	"Q_CREDIT_VLD_14"},
-+	{true,	"Q_CREDIT_VLD_15"},
-+	{true,	"Q_CREDIT_VLD_16"},
-+	{true,	"Q_CREDIT_VLD_17"},
-+	{true,	"Q_CREDIT_VLD_18"},
-+	{true,	"Q_CREDIT_VLD_19"},
-+
-+	{true,	"Q_CREDIT_VLD_20"},
-+	{true,	"Q_CREDIT_VLD_21"},
-+	{true,	"Q_CREDIT_VLD_22"},
-+	{true,	"Q_CREDIT_VLD_23"},
-+	{true,	"Q_CREDIT_VLD_24"},
-+	{true,	"Q_CREDIT_VLD_25"},
-+
-+	{true,	"Q_CREDIT_VLD_26"},
-+	{true,	"Q_CREDIT_VLD_27"},
-+	{true,	"Q_CREDIT_VLD_28"},
-+	{true,	"Q_CREDIT_VLD_29"},
-+	{true,	"Q_CREDIT_VLD_30"},
-+	{true,	"Q_CREDIT_VLD_31"},
-+
-+	{true,	"GRO_BD_SERR_CNT"},
-+	{true,	"GRO_CONTEXT_SERR_CNT"},
-+	{true,	"RX_STASH_CFG_SERR_CNT"},
-+	{true,	"AXI_RD_FBD_SERR_CNT"},
-+	{true,	"GRO_BD_MERR_CNT"},
-+	{true,	"GRO_CONTEXT_MERR_CNT"},
-+
-+	{true,	"RX_STASH_CFG_MERR_CNT"},
-+	{true,	"AXI_RD_FBD_MERR_CNT"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+	{false, "Reserved"},
-+};
-+
-+static const struct hclge_dbg_dfx_message hclge_dbg_tqp_reg[] = {
-+	{true, "q_num"},
-+	{true, "RCB_CFG_RX_RING_TAIL"},
-+	{true, "RCB_CFG_RX_RING_HEAD"},
-+	{true, "RCB_CFG_RX_RING_FBDNUM"},
-+	{true, "RCB_CFG_RX_RING_OFFSET"},
-+	{true, "RCB_CFG_RX_RING_FBDOFFSET"},
-+
-+	{true, "RCB_CFG_RX_RING_PKTNUM_RECORD"},
-+	{true, "RCB_CFG_TX_RING_TAIL"},
-+	{true, "RCB_CFG_TX_RING_HEAD"},
-+	{true, "RCB_CFG_TX_RING_FBDNUM"},
-+	{true, "RCB_CFG_TX_RING_OFFSET"},
-+	{true, "RCB_CFG_TX_RING_EBDNUM"},
-+};
-+
- static const struct hclge_dbg_reg_type_info hclge_dbg_reg_info[] = {
- 	{ .cmd = HNAE3_DBG_CMD_REG_BIOS_COMMON,
- 	  .dfx_msg = &hclge_dbg_bios_common_reg[0],
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
-index 724052928b88..31a775fb032b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
-@@ -99,646 +99,6 @@ struct hclge_dbg_status_dfx_info {
- 	char message[HCLGE_DBG_MAX_DFX_MSG_LEN];
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+index d7e175a9cb49..ff475b0eac22 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+@@ -104,6 +104,7 @@ enum HNAE3_DEV_CAP_BITS {
+ 	HNAE3_DEV_SUPPORT_WOL_B,
+ 	HNAE3_DEV_SUPPORT_TM_FLUSH_B,
+ 	HNAE3_DEV_SUPPORT_VF_FAULT_B,
++	HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B,
  };
  
--static const struct hclge_dbg_dfx_message hclge_dbg_bios_common_reg[] = {
--	{false, "Reserved"},
--	{true,	"BP_CPU_STATE"},
--	{true,	"DFX_MSIX_INFO_NIC_0"},
--	{true,	"DFX_MSIX_INFO_NIC_1"},
--	{true,	"DFX_MSIX_INFO_NIC_2"},
--	{true,	"DFX_MSIX_INFO_NIC_3"},
--
--	{true,	"DFX_MSIX_INFO_ROC_0"},
--	{true,	"DFX_MSIX_INFO_ROC_1"},
--	{true,	"DFX_MSIX_INFO_ROC_2"},
--	{true,	"DFX_MSIX_INFO_ROC_3"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_ssu_reg_0[] = {
--	{false, "Reserved"},
--	{true,	"SSU_ETS_PORT_STATUS"},
--	{true,	"SSU_ETS_TCG_STATUS"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{true,	"SSU_BP_STATUS_0"},
--
--	{true,	"SSU_BP_STATUS_1"},
--	{true,	"SSU_BP_STATUS_2"},
--	{true,	"SSU_BP_STATUS_3"},
--	{true,	"SSU_BP_STATUS_4"},
--	{true,	"SSU_BP_STATUS_5"},
--	{true,	"SSU_MAC_TX_PFC_IND"},
--
--	{true,	"MAC_SSU_RX_PFC_IND"},
--	{true,	"BTMP_AGEING_ST_B0"},
--	{true,	"BTMP_AGEING_ST_B1"},
--	{true,	"BTMP_AGEING_ST_B2"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--
--	{true,	"FULL_DROP_NUM"},
--	{true,	"PART_DROP_NUM"},
--	{true,	"PPP_KEY_DROP_NUM"},
--	{true,	"PPP_RLT_DROP_NUM"},
--	{true,	"LO_PRI_UNICAST_RLT_DROP_NUM"},
--	{true,	"HI_PRI_MULTICAST_RLT_DROP_NUM"},
--
--	{true,	"LO_PRI_MULTICAST_RLT_DROP_NUM"},
--	{true,	"NCSI_PACKET_CURR_BUFFER_CNT"},
--	{true,	"BTMP_AGEING_RLS_CNT_BANK0"},
--	{true,	"BTMP_AGEING_RLS_CNT_BANK1"},
--	{true,	"BTMP_AGEING_RLS_CNT_BANK2"},
--	{true,	"SSU_MB_RD_RLT_DROP_CNT"},
--
--	{true,	"SSU_PPP_MAC_KEY_NUM_L"},
--	{true,	"SSU_PPP_MAC_KEY_NUM_H"},
--	{true,	"SSU_PPP_HOST_KEY_NUM_L"},
--	{true,	"SSU_PPP_HOST_KEY_NUM_H"},
--	{true,	"PPP_SSU_MAC_RLT_NUM_L"},
--	{true,	"PPP_SSU_MAC_RLT_NUM_H"},
--
--	{true,	"PPP_SSU_HOST_RLT_NUM_L"},
--	{true,	"PPP_SSU_HOST_RLT_NUM_H"},
--	{true,	"NCSI_RX_PACKET_IN_CNT_L"},
--	{true,	"NCSI_RX_PACKET_IN_CNT_H"},
--	{true,	"NCSI_TX_PACKET_OUT_CNT_L"},
--	{true,	"NCSI_TX_PACKET_OUT_CNT_H"},
--
--	{true,	"SSU_KEY_DROP_NUM"},
--	{true,	"MB_UNCOPY_NUM"},
--	{true,	"RX_OQ_DROP_PKT_CNT"},
--	{true,	"TX_OQ_DROP_PKT_CNT"},
--	{true,	"BANK_UNBALANCE_DROP_CNT"},
--	{true,	"BANK_UNBALANCE_RX_DROP_CNT"},
--
--	{true,	"NIC_L2_ERR_DROP_PKT_CNT"},
--	{true,	"ROC_L2_ERR_DROP_PKT_CNT"},
--	{true,	"NIC_L2_ERR_DROP_PKT_CNT_RX"},
--	{true,	"ROC_L2_ERR_DROP_PKT_CNT_RX"},
--	{true,	"RX_OQ_GLB_DROP_PKT_CNT"},
--	{false, "Reserved"},
--
--	{true,	"LO_PRI_UNICAST_CUR_CNT"},
--	{true,	"HI_PRI_MULTICAST_CUR_CNT"},
--	{true,	"LO_PRI_MULTICAST_CUR_CNT"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_ssu_reg_1[] = {
--	{true,	"prt_id"},
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_0"},
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_1"},
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_2"},
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_3"},
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_4"},
--
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_5"},
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_6"},
--	{true,	"PACKET_TC_CURR_BUFFER_CNT_7"},
--	{true,	"PACKET_CURR_BUFFER_CNT"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--
--	{true,	"RX_PACKET_IN_CNT_L"},
--	{true,	"RX_PACKET_IN_CNT_H"},
--	{true,	"RX_PACKET_OUT_CNT_L"},
--	{true,	"RX_PACKET_OUT_CNT_H"},
--	{true,	"TX_PACKET_IN_CNT_L"},
--	{true,	"TX_PACKET_IN_CNT_H"},
--
--	{true,	"TX_PACKET_OUT_CNT_L"},
--	{true,	"TX_PACKET_OUT_CNT_H"},
--	{true,	"ROC_RX_PACKET_IN_CNT_L"},
--	{true,	"ROC_RX_PACKET_IN_CNT_H"},
--	{true,	"ROC_TX_PACKET_OUT_CNT_L"},
--	{true,	"ROC_TX_PACKET_OUT_CNT_H"},
--
--	{true,	"RX_PACKET_TC_IN_CNT_0_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_0_H"},
--	{true,	"RX_PACKET_TC_IN_CNT_1_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_1_H"},
--	{true,	"RX_PACKET_TC_IN_CNT_2_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_2_H"},
--
--	{true,	"RX_PACKET_TC_IN_CNT_3_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_3_H"},
--	{true,	"RX_PACKET_TC_IN_CNT_4_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_4_H"},
--	{true,	"RX_PACKET_TC_IN_CNT_5_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_5_H"},
--
--	{true,	"RX_PACKET_TC_IN_CNT_6_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_6_H"},
--	{true,	"RX_PACKET_TC_IN_CNT_7_L"},
--	{true,	"RX_PACKET_TC_IN_CNT_7_H"},
--	{true,	"RX_PACKET_TC_OUT_CNT_0_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_0_H"},
--
--	{true,	"RX_PACKET_TC_OUT_CNT_1_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_1_H"},
--	{true,	"RX_PACKET_TC_OUT_CNT_2_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_2_H"},
--	{true,	"RX_PACKET_TC_OUT_CNT_3_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_3_H"},
--
--	{true,	"RX_PACKET_TC_OUT_CNT_4_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_4_H"},
--	{true,	"RX_PACKET_TC_OUT_CNT_5_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_5_H"},
--	{true,	"RX_PACKET_TC_OUT_CNT_6_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_6_H"},
--
--	{true,	"RX_PACKET_TC_OUT_CNT_7_L"},
--	{true,	"RX_PACKET_TC_OUT_CNT_7_H"},
--	{true,	"TX_PACKET_TC_IN_CNT_0_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_0_H"},
--	{true,	"TX_PACKET_TC_IN_CNT_1_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_1_H"},
--
--	{true,	"TX_PACKET_TC_IN_CNT_2_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_2_H"},
--	{true,	"TX_PACKET_TC_IN_CNT_3_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_3_H"},
--	{true,	"TX_PACKET_TC_IN_CNT_4_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_4_H"},
--
--	{true,	"TX_PACKET_TC_IN_CNT_5_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_5_H"},
--	{true,	"TX_PACKET_TC_IN_CNT_6_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_6_H"},
--	{true,	"TX_PACKET_TC_IN_CNT_7_L"},
--	{true,	"TX_PACKET_TC_IN_CNT_7_H"},
--
--	{true,	"TX_PACKET_TC_OUT_CNT_0_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_0_H"},
--	{true,	"TX_PACKET_TC_OUT_CNT_1_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_1_H"},
--	{true,	"TX_PACKET_TC_OUT_CNT_2_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_2_H"},
--
--	{true,	"TX_PACKET_TC_OUT_CNT_3_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_3_H"},
--	{true,	"TX_PACKET_TC_OUT_CNT_4_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_4_H"},
--	{true,	"TX_PACKET_TC_OUT_CNT_5_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_5_H"},
--
--	{true,	"TX_PACKET_TC_OUT_CNT_6_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_6_H"},
--	{true,	"TX_PACKET_TC_OUT_CNT_7_L"},
--	{true,	"TX_PACKET_TC_OUT_CNT_7_H"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_ssu_reg_2[] = {
--	{true,	"OQ_INDEX"},
--	{true,	"QUEUE_CNT"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_igu_egu_reg[] = {
--	{true,	"prt_id"},
--	{true,	"IGU_RX_ERR_PKT"},
--	{true,	"IGU_RX_NO_SOF_PKT"},
--	{true,	"EGU_TX_1588_SHORT_PKT"},
--	{true,	"EGU_TX_1588_PKT"},
--	{true,	"EGU_TX_ERR_PKT"},
--
--	{true,	"IGU_RX_OUT_L2_PKT"},
--	{true,	"IGU_RX_OUT_L3_PKT"},
--	{true,	"IGU_RX_OUT_L4_PKT"},
--	{true,	"IGU_RX_IN_L2_PKT"},
--	{true,	"IGU_RX_IN_L3_PKT"},
--	{true,	"IGU_RX_IN_L4_PKT"},
--
--	{true,	"IGU_RX_EL3E_PKT"},
--	{true,	"IGU_RX_EL4E_PKT"},
--	{true,	"IGU_RX_L3E_PKT"},
--	{true,	"IGU_RX_L4E_PKT"},
--	{true,	"IGU_RX_ROCEE_PKT"},
--	{true,	"IGU_RX_OUT_UDP0_PKT"},
--
--	{true,	"IGU_RX_IN_UDP0_PKT"},
--	{true,	"IGU_MC_CAR_DROP_PKT_L"},
--	{true,	"IGU_MC_CAR_DROP_PKT_H"},
--	{true,	"IGU_BC_CAR_DROP_PKT_L"},
--	{true,	"IGU_BC_CAR_DROP_PKT_H"},
--	{false, "Reserved"},
--
--	{true,	"IGU_RX_OVERSIZE_PKT_L"},
--	{true,	"IGU_RX_OVERSIZE_PKT_H"},
--	{true,	"IGU_RX_UNDERSIZE_PKT_L"},
--	{true,	"IGU_RX_UNDERSIZE_PKT_H"},
--	{true,	"IGU_RX_OUT_ALL_PKT_L"},
--	{true,	"IGU_RX_OUT_ALL_PKT_H"},
--
--	{true,	"IGU_TX_OUT_ALL_PKT_L"},
--	{true,	"IGU_TX_OUT_ALL_PKT_H"},
--	{true,	"IGU_RX_UNI_PKT_L"},
--	{true,	"IGU_RX_UNI_PKT_H"},
--	{true,	"IGU_RX_MULTI_PKT_L"},
--	{true,	"IGU_RX_MULTI_PKT_H"},
--
--	{true,	"IGU_RX_BROAD_PKT_L"},
--	{true,	"IGU_RX_BROAD_PKT_H"},
--	{true,	"EGU_TX_OUT_ALL_PKT_L"},
--	{true,	"EGU_TX_OUT_ALL_PKT_H"},
--	{true,	"EGU_TX_UNI_PKT_L"},
--	{true,	"EGU_TX_UNI_PKT_H"},
--
--	{true,	"EGU_TX_MULTI_PKT_L"},
--	{true,	"EGU_TX_MULTI_PKT_H"},
--	{true,	"EGU_TX_BROAD_PKT_L"},
--	{true,	"EGU_TX_BROAD_PKT_H"},
--	{true,	"IGU_TX_KEY_NUM_L"},
--	{true,	"IGU_TX_KEY_NUM_H"},
--
--	{true,	"IGU_RX_NON_TUN_PKT_L"},
--	{true,	"IGU_RX_NON_TUN_PKT_H"},
--	{true,	"IGU_RX_TUN_PKT_L"},
--	{true,	"IGU_RX_TUN_PKT_H"},
--	{false,	"Reserved"},
--	{false,	"Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_rpu_reg_0[] = {
--	{true, "tc_queue_num"},
--	{true, "FSM_DFX_ST0"},
--	{true, "FSM_DFX_ST1"},
--	{true, "RPU_RX_PKT_DROP_CNT"},
--	{true, "BUF_WAIT_TIMEOUT"},
--	{true, "BUF_WAIT_TIMEOUT_QID"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_rpu_reg_1[] = {
--	{false, "Reserved"},
--	{true,	"FIFO_DFX_ST0"},
--	{true,	"FIFO_DFX_ST1"},
--	{true,	"FIFO_DFX_ST2"},
--	{true,	"FIFO_DFX_ST3"},
--	{true,	"FIFO_DFX_ST4"},
--
--	{true,	"FIFO_DFX_ST5"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_ncsi_reg[] = {
--	{false, "Reserved"},
--	{true,	"NCSI_EGU_TX_FIFO_STS"},
--	{true,	"NCSI_PAUSE_STATUS"},
--	{true,	"NCSI_RX_CTRL_DMAC_ERR_CNT"},
--	{true,	"NCSI_RX_CTRL_SMAC_ERR_CNT"},
--	{true,	"NCSI_RX_CTRL_CKS_ERR_CNT"},
--
--	{true,	"NCSI_RX_CTRL_PKT_CNT"},
--	{true,	"NCSI_RX_PT_DMAC_ERR_CNT"},
--	{true,	"NCSI_RX_PT_SMAC_ERR_CNT"},
--	{true,	"NCSI_RX_PT_PKT_CNT"},
--	{true,	"NCSI_RX_FCS_ERR_CNT"},
--	{true,	"NCSI_TX_CTRL_DMAC_ERR_CNT"},
--
--	{true,	"NCSI_TX_CTRL_SMAC_ERR_CNT"},
--	{true,	"NCSI_TX_CTRL_PKT_CNT"},
--	{true,	"NCSI_TX_PT_DMAC_ERR_CNT"},
--	{true,	"NCSI_TX_PT_SMAC_ERR_CNT"},
--	{true,	"NCSI_TX_PT_PKT_CNT"},
--	{true,	"NCSI_TX_PT_PKT_TRUNC_CNT"},
--
--	{true,	"NCSI_TX_PT_PKT_ERR_CNT"},
--	{true,	"NCSI_TX_CTRL_PKT_ERR_CNT"},
--	{true,	"NCSI_RX_CTRL_PKT_TRUNC_CNT"},
--	{true,	"NCSI_RX_CTRL_PKT_CFLIT_CNT"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--
--	{true,	"NCSI_MAC_RX_OCTETS_OK"},
--	{true,	"NCSI_MAC_RX_OCTETS_BAD"},
--	{true,	"NCSI_MAC_RX_UC_PKTS"},
--	{true,	"NCSI_MAC_RX_MC_PKTS"},
--	{true,	"NCSI_MAC_RX_BC_PKTS"},
--	{true,	"NCSI_MAC_RX_PKTS_64OCTETS"},
--
--	{true,	"NCSI_MAC_RX_PKTS_65TO127OCTETS"},
--	{true,	"NCSI_MAC_RX_PKTS_128TO255OCTETS"},
--	{true,	"NCSI_MAC_RX_PKTS_255TO511OCTETS"},
--	{true,	"NCSI_MAC_RX_PKTS_512TO1023OCTETS"},
--	{true,	"NCSI_MAC_RX_PKTS_1024TO1518OCTETS"},
--	{true,	"NCSI_MAC_RX_PKTS_1519TOMAXOCTETS"},
--
--	{true,	"NCSI_MAC_RX_FCS_ERRORS"},
--	{true,	"NCSI_MAC_RX_LONG_ERRORS"},
--	{true,	"NCSI_MAC_RX_JABBER_ERRORS"},
--	{true,	"NCSI_MAC_RX_RUNT_ERR_CNT"},
--	{true,	"NCSI_MAC_RX_SHORT_ERR_CNT"},
--	{true,	"NCSI_MAC_RX_FILT_PKT_CNT"},
--
--	{true,	"NCSI_MAC_RX_OCTETS_TOTAL_FILT"},
--	{true,	"NCSI_MAC_TX_OCTETS_OK"},
--	{true,	"NCSI_MAC_TX_OCTETS_BAD"},
--	{true,	"NCSI_MAC_TX_UC_PKTS"},
--	{true,	"NCSI_MAC_TX_MC_PKTS"},
--	{true,	"NCSI_MAC_TX_BC_PKTS"},
--
--	{true,	"NCSI_MAC_TX_PKTS_64OCTETS"},
--	{true,	"NCSI_MAC_TX_PKTS_65TO127OCTETS"},
--	{true,	"NCSI_MAC_TX_PKTS_128TO255OCTETS"},
--	{true,	"NCSI_MAC_TX_PKTS_256TO511OCTETS"},
--	{true,	"NCSI_MAC_TX_PKTS_512TO1023OCTETS"},
--	{true,	"NCSI_MAC_TX_PKTS_1024TO1518OCTETS"},
--
--	{true,	"NCSI_MAC_TX_PKTS_1519TOMAXOCTETS"},
--	{true,	"NCSI_MAC_TX_UNDERRUN"},
--	{true,	"NCSI_MAC_TX_CRC_ERROR"},
--	{true,	"NCSI_MAC_TX_PAUSE_FRAMES"},
--	{true,	"NCSI_MAC_RX_PAD_PKTS"},
--	{true,	"NCSI_MAC_RX_PAUSE_FRAMES"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_rtc_reg[] = {
--	{false, "Reserved"},
--	{true,	"LGE_IGU_AFIFO_DFX_0"},
--	{true,	"LGE_IGU_AFIFO_DFX_1"},
--	{true,	"LGE_IGU_AFIFO_DFX_2"},
--	{true,	"LGE_IGU_AFIFO_DFX_3"},
--	{true,	"LGE_IGU_AFIFO_DFX_4"},
--
--	{true,	"LGE_IGU_AFIFO_DFX_5"},
--	{true,	"LGE_IGU_AFIFO_DFX_6"},
--	{true,	"LGE_IGU_AFIFO_DFX_7"},
--	{true,	"LGE_EGU_AFIFO_DFX_0"},
--	{true,	"LGE_EGU_AFIFO_DFX_1"},
--	{true,	"LGE_EGU_AFIFO_DFX_2"},
--
--	{true,	"LGE_EGU_AFIFO_DFX_3"},
--	{true,	"LGE_EGU_AFIFO_DFX_4"},
--	{true,	"LGE_EGU_AFIFO_DFX_5"},
--	{true,	"LGE_EGU_AFIFO_DFX_6"},
--	{true,	"LGE_EGU_AFIFO_DFX_7"},
--	{true,	"CGE_IGU_AFIFO_DFX_0"},
--
--	{true,	"CGE_IGU_AFIFO_DFX_1"},
--	{true,	"CGE_EGU_AFIFO_DFX_0"},
--	{true,	"CGE_EGU_AFIFO_DFX_1"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_ppp_reg[] = {
--	{false, "Reserved"},
--	{true,	"DROP_FROM_PRT_PKT_CNT"},
--	{true,	"DROP_FROM_HOST_PKT_CNT"},
--	{true,	"DROP_TX_VLAN_PROC_CNT"},
--	{true,	"DROP_MNG_CNT"},
--	{true,	"DROP_FD_CNT"},
--
--	{true,	"DROP_NO_DST_CNT"},
--	{true,	"DROP_MC_MBID_FULL_CNT"},
--	{true,	"DROP_SC_FILTERED"},
--	{true,	"PPP_MC_DROP_PKT_CNT"},
--	{true,	"DROP_PT_CNT"},
--	{true,	"DROP_MAC_ANTI_SPOOF_CNT"},
--
--	{true,	"DROP_IG_VFV_CNT"},
--	{true,	"DROP_IG_PRTV_CNT"},
--	{true,	"DROP_CNM_PFC_PAUSE_CNT"},
--	{true,	"DROP_TORUS_TC_CNT"},
--	{true,	"DROP_TORUS_LPBK_CNT"},
--	{true,	"PPP_HFS_STS"},
--
--	{true,	"PPP_MC_RSLT_STS"},
--	{true,	"PPP_P3U_STS"},
--	{true,	"PPP_RSLT_DESCR_STS"},
--	{true,	"PPP_UMV_STS_0"},
--	{true,	"PPP_UMV_STS_1"},
--	{true,	"PPP_VFV_STS"},
--
--	{true,	"PPP_GRO_KEY_CNT"},
--	{true,	"PPP_GRO_INFO_CNT"},
--	{true,	"PPP_GRO_DROP_CNT"},
--	{true,	"PPP_GRO_OUT_CNT"},
--	{true,	"PPP_GRO_KEY_MATCH_DATA_CNT"},
--	{true,	"PPP_GRO_KEY_MATCH_TCAM_CNT"},
--
--	{true,	"PPP_GRO_INFO_MATCH_CNT"},
--	{true,	"PPP_GRO_FREE_ENTRY_CNT"},
--	{true,	"PPP_GRO_INNER_DFX_SIGNAL"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--
--	{true,	"GET_RX_PKT_CNT_L"},
--	{true,	"GET_RX_PKT_CNT_H"},
--	{true,	"GET_TX_PKT_CNT_L"},
--	{true,	"GET_TX_PKT_CNT_H"},
--	{true,	"SEND_UC_PRT2HOST_PKT_CNT_L"},
--	{true,	"SEND_UC_PRT2HOST_PKT_CNT_H"},
--
--	{true,	"SEND_UC_PRT2PRT_PKT_CNT_L"},
--	{true,	"SEND_UC_PRT2PRT_PKT_CNT_H"},
--	{true,	"SEND_UC_HOST2HOST_PKT_CNT_L"},
--	{true,	"SEND_UC_HOST2HOST_PKT_CNT_H"},
--	{true,	"SEND_UC_HOST2PRT_PKT_CNT_L"},
--	{true,	"SEND_UC_HOST2PRT_PKT_CNT_H"},
--
--	{true,	"SEND_MC_FROM_PRT_CNT_L"},
--	{true,	"SEND_MC_FROM_PRT_CNT_H"},
--	{true,	"SEND_MC_FROM_HOST_CNT_L"},
--	{true,	"SEND_MC_FROM_HOST_CNT_H"},
--	{true,	"SSU_MC_RD_CNT_L"},
--	{true,	"SSU_MC_RD_CNT_H"},
--
--	{true,	"SSU_MC_DROP_CNT_L"},
--	{true,	"SSU_MC_DROP_CNT_H"},
--	{true,	"SSU_MC_RD_PKT_CNT_L"},
--	{true,	"SSU_MC_RD_PKT_CNT_H"},
--	{true,	"PPP_MC_2HOST_PKT_CNT_L"},
--	{true,	"PPP_MC_2HOST_PKT_CNT_H"},
--
--	{true,	"PPP_MC_2PRT_PKT_CNT_L"},
--	{true,	"PPP_MC_2PRT_PKT_CNT_H"},
--	{true,	"NTSNOS_PKT_CNT_L"},
--	{true,	"NTSNOS_PKT_CNT_H"},
--	{true,	"NTUP_PKT_CNT_L"},
--	{true,	"NTUP_PKT_CNT_H"},
--
--	{true,	"NTLCL_PKT_CNT_L"},
--	{true,	"NTLCL_PKT_CNT_H"},
--	{true,	"NTTGT_PKT_CNT_L"},
--	{true,	"NTTGT_PKT_CNT_H"},
--	{true,	"RTNS_PKT_CNT_L"},
--	{true,	"RTNS_PKT_CNT_H"},
--
--	{true,	"RTLPBK_PKT_CNT_L"},
--	{true,	"RTLPBK_PKT_CNT_H"},
--	{true,	"NR_PKT_CNT_L"},
--	{true,	"NR_PKT_CNT_H"},
--	{true,	"RR_PKT_CNT_L"},
--	{true,	"RR_PKT_CNT_H"},
--
--	{true,	"MNG_TBL_HIT_CNT_L"},
--	{true,	"MNG_TBL_HIT_CNT_H"},
--	{true,	"FD_TBL_HIT_CNT_L"},
--	{true,	"FD_TBL_HIT_CNT_H"},
--	{true,	"FD_LKUP_CNT_L"},
--	{true,	"FD_LKUP_CNT_H"},
--
--	{true,	"BC_HIT_CNT_L"},
--	{true,	"BC_HIT_CNT_H"},
--	{true,	"UM_TBL_UC_HIT_CNT_L"},
--	{true,	"UM_TBL_UC_HIT_CNT_H"},
--	{true,	"UM_TBL_MC_HIT_CNT_L"},
--	{true,	"UM_TBL_MC_HIT_CNT_H"},
--
--	{true,	"UM_TBL_VMDQ1_HIT_CNT_L"},
--	{true,	"UM_TBL_VMDQ1_HIT_CNT_H"},
--	{true,	"MTA_TBL_HIT_CNT_L"},
--	{true,	"MTA_TBL_HIT_CNT_H"},
--	{true,	"FWD_BONDING_HIT_CNT_L"},
--	{true,	"FWD_BONDING_HIT_CNT_H"},
--
--	{true,	"PROMIS_TBL_HIT_CNT_L"},
--	{true,	"PROMIS_TBL_HIT_CNT_H"},
--	{true,	"GET_TUNL_PKT_CNT_L"},
--	{true,	"GET_TUNL_PKT_CNT_H"},
--	{true,	"GET_BMC_PKT_CNT_L"},
--	{true,	"GET_BMC_PKT_CNT_H"},
--
--	{true,	"SEND_UC_PRT2BMC_PKT_CNT_L"},
--	{true,	"SEND_UC_PRT2BMC_PKT_CNT_H"},
--	{true,	"SEND_UC_HOST2BMC_PKT_CNT_L"},
--	{true,	"SEND_UC_HOST2BMC_PKT_CNT_H"},
--	{true,	"SEND_UC_BMC2HOST_PKT_CNT_L"},
--	{true,	"SEND_UC_BMC2HOST_PKT_CNT_H"},
--
--	{true,	"SEND_UC_BMC2PRT_PKT_CNT_L"},
--	{true,	"SEND_UC_BMC2PRT_PKT_CNT_H"},
--	{true,	"PPP_MC_2BMC_PKT_CNT_L"},
--	{true,	"PPP_MC_2BMC_PKT_CNT_H"},
--	{true,	"VLAN_MIRR_CNT_L"},
--	{true,	"VLAN_MIRR_CNT_H"},
--
--	{true,	"IG_MIRR_CNT_L"},
--	{true,	"IG_MIRR_CNT_H"},
--	{true,	"EG_MIRR_CNT_L"},
--	{true,	"EG_MIRR_CNT_H"},
--	{true,	"RX_DEFAULT_HOST_HIT_CNT_L"},
--	{true,	"RX_DEFAULT_HOST_HIT_CNT_H"},
--
--	{true,	"LAN_PAIR_CNT_L"},
--	{true,	"LAN_PAIR_CNT_H"},
--	{true,	"UM_TBL_MC_HIT_PKT_CNT_L"},
--	{true,	"UM_TBL_MC_HIT_PKT_CNT_H"},
--	{true,	"MTA_TBL_HIT_PKT_CNT_L"},
--	{true,	"MTA_TBL_HIT_PKT_CNT_H"},
--
--	{true,	"PROMIS_TBL_HIT_PKT_CNT_L"},
--	{true,	"PROMIS_TBL_HIT_PKT_CNT_H"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_rcb_reg[] = {
--	{false, "Reserved"},
--	{true,	"FSM_DFX_ST0"},
--	{true,	"FSM_DFX_ST1"},
--	{true,	"FSM_DFX_ST2"},
--	{true,	"FIFO_DFX_ST0"},
--	{true,	"FIFO_DFX_ST1"},
--
--	{true,	"FIFO_DFX_ST2"},
--	{true,	"FIFO_DFX_ST3"},
--	{true,	"FIFO_DFX_ST4"},
--	{true,	"FIFO_DFX_ST5"},
--	{true,	"FIFO_DFX_ST6"},
--	{true,	"FIFO_DFX_ST7"},
--
--	{true,	"FIFO_DFX_ST8"},
--	{true,	"FIFO_DFX_ST9"},
--	{true,	"FIFO_DFX_ST10"},
--	{true,	"FIFO_DFX_ST11"},
--	{true,	"Q_CREDIT_VLD_0"},
--	{true,	"Q_CREDIT_VLD_1"},
--
--	{true,	"Q_CREDIT_VLD_2"},
--	{true,	"Q_CREDIT_VLD_3"},
--	{true,	"Q_CREDIT_VLD_4"},
--	{true,	"Q_CREDIT_VLD_5"},
--	{true,	"Q_CREDIT_VLD_6"},
--	{true,	"Q_CREDIT_VLD_7"},
--
--	{true,	"Q_CREDIT_VLD_8"},
--	{true,	"Q_CREDIT_VLD_9"},
--	{true,	"Q_CREDIT_VLD_10"},
--	{true,	"Q_CREDIT_VLD_11"},
--	{true,	"Q_CREDIT_VLD_12"},
--	{true,	"Q_CREDIT_VLD_13"},
--
--	{true,	"Q_CREDIT_VLD_14"},
--	{true,	"Q_CREDIT_VLD_15"},
--	{true,	"Q_CREDIT_VLD_16"},
--	{true,	"Q_CREDIT_VLD_17"},
--	{true,	"Q_CREDIT_VLD_18"},
--	{true,	"Q_CREDIT_VLD_19"},
--
--	{true,	"Q_CREDIT_VLD_20"},
--	{true,	"Q_CREDIT_VLD_21"},
--	{true,	"Q_CREDIT_VLD_22"},
--	{true,	"Q_CREDIT_VLD_23"},
--	{true,	"Q_CREDIT_VLD_24"},
--	{true,	"Q_CREDIT_VLD_25"},
--
--	{true,	"Q_CREDIT_VLD_26"},
--	{true,	"Q_CREDIT_VLD_27"},
--	{true,	"Q_CREDIT_VLD_28"},
--	{true,	"Q_CREDIT_VLD_29"},
--	{true,	"Q_CREDIT_VLD_30"},
--	{true,	"Q_CREDIT_VLD_31"},
--
--	{true,	"GRO_BD_SERR_CNT"},
--	{true,	"GRO_CONTEXT_SERR_CNT"},
--	{true,	"RX_STASH_CFG_SERR_CNT"},
--	{true,	"AXI_RD_FBD_SERR_CNT"},
--	{true,	"GRO_BD_MERR_CNT"},
--	{true,	"GRO_CONTEXT_MERR_CNT"},
--
--	{true,	"RX_STASH_CFG_MERR_CNT"},
--	{true,	"AXI_RD_FBD_MERR_CNT"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--	{false, "Reserved"},
--};
--
--static const struct hclge_dbg_dfx_message hclge_dbg_tqp_reg[] = {
--	{true, "q_num"},
--	{true, "RCB_CFG_RX_RING_TAIL"},
--	{true, "RCB_CFG_RX_RING_HEAD"},
--	{true, "RCB_CFG_RX_RING_FBDNUM"},
--	{true, "RCB_CFG_RX_RING_OFFSET"},
--	{true, "RCB_CFG_RX_RING_FBDOFFSET"},
--
--	{true, "RCB_CFG_RX_RING_PKTNUM_RECORD"},
--	{true, "RCB_CFG_TX_RING_TAIL"},
--	{true, "RCB_CFG_TX_RING_HEAD"},
--	{true, "RCB_CFG_TX_RING_FBDNUM"},
--	{true, "RCB_CFG_TX_RING_OFFSET"},
--	{true, "RCB_CFG_TX_RING_EBDNUM"},
--};
--
- #define HCLGE_DBG_INFO_LEN			256
- #define HCLGE_DBG_VLAN_FLTR_INFO_LEN		256
- #define HCLGE_DBG_VLAN_OFFLOAD_INFO_LEN		512
+ #define hnae3_ae_dev_fd_supported(ae_dev) \
+@@ -181,6 +182,9 @@ enum HNAE3_DEV_CAP_BITS {
+ #define hnae3_ae_dev_vf_fault_supported(ae_dev) \
+ 	test_bit(HNAE3_DEV_SUPPORT_VF_FAULT_B, (ae_dev)->caps)
+ 
++#define hnae3_ae_dev_gen_reg_dfx_supported(hdev) \
++	test_bit(HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B, (hdev)->ae_dev->caps)
++
+ enum HNAE3_PF_CAP_BITS {
+ 	HNAE3_PF_SUPPORT_VLAN_FLTR_MDF_B = 0,
+ };
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
+index 8ee5d62a7577..cb602a7b730f 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
+@@ -158,6 +158,7 @@ static const struct hclge_comm_caps_bit_map hclge_pf_cmd_caps[] = {
+ 	{HCLGE_COMM_CAP_WOL_B, HNAE3_DEV_SUPPORT_WOL_B},
+ 	{HCLGE_COMM_CAP_TM_FLUSH_B, HNAE3_DEV_SUPPORT_TM_FLUSH_B},
+ 	{HCLGE_COMM_CAP_VF_FAULT_B, HNAE3_DEV_SUPPORT_VF_FAULT_B},
++	{HCLGE_COMM_CAP_ERR_MOD_GEN_REG_B, HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B},
+ };
+ 
+ static const struct hclge_comm_caps_bit_map hclge_vf_cmd_caps[] = {
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+index 387807b47d9a..02a0a7df49cc 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+@@ -91,6 +91,7 @@ enum hclge_opcode_type {
+ 	HCLGE_OPC_DFX_RCB_REG		= 0x004D,
+ 	HCLGE_OPC_DFX_TQP_REG		= 0x004E,
+ 	HCLGE_OPC_DFX_SSU_REG_2		= 0x004F,
++	HCLGE_OPC_DFX_GEN_REG		= 0x7038,
+ 
+ 	HCLGE_OPC_QUERY_DEV_SPECS	= 0x0050,
+ 	HCLGE_OPC_GET_QUEUE_ERR_VF      = 0x0067,
+@@ -353,6 +354,7 @@ enum HCLGE_COMM_CAP_BITS {
+ 	HCLGE_COMM_CAP_LANE_NUM_B = 27,
+ 	HCLGE_COMM_CAP_WOL_B = 28,
+ 	HCLGE_COMM_CAP_TM_FLUSH_B = 31,
++	HCLGE_COMM_CAP_ERR_MOD_GEN_REG_B = 32,
+ };
+ 
+ enum HCLGE_COMM_API_CAP_BITS {
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index 243be19a7557..debf143e9940 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -801,10 +801,8 @@ static int hclge_dbg_get_dfx_bd_num(struct hclge_dev *hdev, int offset,
+ 	return 0;
+ }
+ 
+-static int hclge_dbg_cmd_send(struct hclge_dev *hdev,
+-			      struct hclge_desc *desc_src,
+-			      int index, int bd_num,
+-			      enum hclge_opcode_type cmd)
++int hclge_dbg_cmd_send(struct hclge_dev *hdev, struct hclge_desc *desc_src,
++		       int index, int bd_num, enum hclge_opcode_type cmd)
+ {
+ 	struct hclge_desc *desc = desc_src;
+ 	int ret, i;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
+index 31a775fb032b..2b998cbed826 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
+@@ -131,4 +131,7 @@ struct hclge_dbg_vlan_cfg {
+ 	u8 pri_only2;
+ };
+ 
++int hclge_dbg_cmd_send(struct hclge_dev *hdev, struct hclge_desc *desc_src,
++		       int index, int bd_num, enum hclge_opcode_type cmd);
++
+ #endif
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
+index d63e114f93d0..468372b7253d 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
+@@ -1198,6 +1198,426 @@ static const struct hclge_hw_error hclge_rocee_qmm_ovf_err_int[] = {
+ 	}
+ };
+ 
++static const struct hclge_mod_reg_info hclge_ssu_reg_0_info[] = {
++	{
++		.reg_name = "SSU_BP_STATUS_0~5",
++		.reg_offset_group = { 5, 6, 7, 8, 9, 10},
++		.group_size = 6
++	}, {
++		.reg_name = "LO_PRI_UNICAST_CUR_CNT",
++		.reg_offset_group = {54},
++		.group_size = 1
++	}, {
++		.reg_name = "HI/LO_PRI_MULTICAST_CUR_CNT",
++		.reg_offset_group = {55, 56},
++		.group_size = 2
++	}, {
++		.reg_name = "SSU_MB_RD_RLT_DROP_CNT",
++		.reg_offset_group = {29},
++		.group_size = 1
++	}, {
++		.reg_name = "SSU_PPP_MAC_KEY_NUM",
++		.reg_offset_group = {31, 30},
++		.group_size = 2
++	}, {
++		.reg_name = "SSU_PPP_HOST_KEY_NUM",
++		.reg_offset_group = {33, 32},
++		.group_size = 2
++	}, {
++		.reg_name = "PPP_SSU_MAC/HOST_RLT_NUM",
++		.reg_offset_group = {35, 34, 37, 36},
++		.group_size = 4
++	}, {
++		.reg_name = "FULL/PART_DROP_NUM",
++		.reg_offset_group = {18, 19},
++		.group_size = 2
++	}, {
++		.reg_name = "PPP_KEY/RLT_DROP_NUM",
++		.reg_offset_group = {20, 21},
++		.group_size = 2
++	}, {
++		.reg_name = "NIC/ROC_L2_ERR_DROP_PKT_CNT",
++		.reg_offset_group = {48, 49},
++		.group_size = 2
++	}, {
++		.reg_name = "NIC/ROC_L2_ERR_DROP_PKT_CNT_RX",
++		.reg_offset_group = {50, 51},
++		.group_size = 2
++	},
++};
++
++static const struct hclge_mod_reg_info hclge_ssu_reg_1_info[] = {
++	{
++		.reg_name = "RX_PACKET_IN/OUT_CNT",
++		.reg_offset_group = {13, 12, 15, 14},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_IN/OUT_CNT",
++		.reg_offset_group = {17, 16, 19, 18},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC0_IN/OUT_CNT",
++		.reg_offset_group = {25, 24, 41, 40},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC1_IN/OUT_CNT",
++		.reg_offset_group = {27, 26, 43, 42},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC2_IN/OUT_CNT",
++		.reg_offset_group = {29, 28, 45, 44},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC3_IN/OUT_CNT",
++		.reg_offset_group = {31, 30, 47, 46},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC4_IN/OUT_CNT",
++		.reg_offset_group = {33, 32, 49, 48},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC5_IN/OUT_CNT",
++		.reg_offset_group = {35, 34, 51, 50},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC6_IN/OUT_CNT",
++		.reg_offset_group = {37, 36, 53, 52},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC7_IN/OUT_CNT",
++		.reg_offset_group = {39, 38, 55, 54},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC0_IN/OUT_CNT",
++		.reg_offset_group = {57, 56, 73, 72},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC1_IN/OUT_CNT",
++		.reg_offset_group = {59, 58, 75, 74},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC2_IN/OUT_CNT",
++		.reg_offset_group = {61, 60, 77, 76},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC3_IN/OUT_CNT",
++		.reg_offset_group = {63, 62, 79, 78},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC4_IN/OUT_CNT",
++		.reg_offset_group = {65, 64, 81, 80},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC5_IN/OUT_CNT",
++		.reg_offset_group = {67, 66, 83, 82},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC6_IN/OUT_CNT",
++		.reg_offset_group = {69, 68, 85, 84},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC7_IN/OUT_CNT",
++		.reg_offset_group = {71, 70, 87, 86},
++		.group_size = 4
++	}, {
++		.reg_name = "PACKET_TC0~3_CURR_BUFFER_CNT",
++		.reg_offset_group = {1, 2, 3, 4},
++		.group_size = 4
++	}, {
++		.reg_name = "PACKET_TC4~7_CURR_BUFFER_CNT",
++		.reg_offset_group = {5, 6, 7, 8},
++		.group_size = 4
++	}, {
++		.reg_name = "ROC_RX_PACKET_IN_CNT",
++		.reg_offset_group = {21, 20},
++		.group_size = 2
++	}, {
++		.reg_name = "ROC_TX_PACKET_OUT_CNT",
++		.reg_offset_group = {23, 22},
++		.group_size = 2
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_rpu_reg_0_info[] = {
++	{
++		.reg_name = "RPU_FSM_DFX_ST0/ST1_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {1, 2},
++		.group_size = 2
++	}, {
++		.reg_name = "RPU_RX_PKT_DROP_CNT_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {3},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_rpu_reg_1_info[] = {
++	{
++		.reg_name = "FIFO_DFX_ST0_1_2_4",
++		.reg_offset_group = {1, 2, 3, 5},
++		.group_size = 4
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_igu_egu_reg_info[] = {
++	{
++		.reg_name = "IGU_RX_ERR_PKT",
++		.reg_offset_group = {1},
++		.group_size = 1
++	}, {
++		.reg_name = "IGU_RX_OUT_ALL_PKT",
++		.reg_offset_group = {29, 28},
++		.group_size = 2
++	}, {
++		.reg_name = "EGU_TX_OUT_ALL_PKT",
++		.reg_offset_group = {39, 38},
++		.group_size = 2
++	}, {
++		.reg_name = "EGU_TX_ERR_PKT",
++		.reg_offset_group = {5},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_gen_reg_info_tnl[] = {
++	{
++		.reg_name = "SSU2RPU_TNL_WR_PKT_CNT_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {1},
++		.group_size = 1
++	}, {
++		.reg_name = "RPU2HST_TNL_WR_PKT_CNT_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {12},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_gen_reg_info[] = {
++	{
++		.reg_name = "SSU_OVERSIZE_DROP_CNT",
++		.reg_offset_group = {12},
++		.group_size = 1
++	}, {
++		.reg_name = "ROCE_RX_BYPASS_5NS_DROP_NUM",
++		.reg_offset_group = {13},
++		.group_size = 1
++	}, {
++		.reg_name = "RX_PKT_IN/OUT_ERR_CNT",
++		.reg_offset_group = {15, 14, 19, 18},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PKT_IN/OUT_ERR_CNT",
++		.reg_offset_group = {17, 16, 21, 20},
++		.group_size = 4
++	}, {
++		.reg_name = "ETS_TC_READY",
++		.reg_offset_group = {22},
++		.group_size = 1
++	}, {
++		.reg_name = "MIB_TX/RX_BAD_PKTS",
++		.reg_offset_group = {19, 18, 29, 28},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX/RX_GOOD_PKTS",
++		.reg_offset_group = {21, 20, 31, 30},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX/RX_TOTAL_PKTS",
++		.reg_offset_group = {23, 22, 33, 32},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX/RX_PAUSE_PKTS",
++		.reg_offset_group = {25, 24, 35, 34},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX_ERR_ALL_PKTS",
++		.reg_offset_group = {27, 26},
++		.group_size = 2
++	}, {
++		.reg_name = "MIB_RX_FCS_ERR_PKTS",
++		.reg_offset_group = {37, 36},
++		.group_size = 2
++	}, {
++		.reg_name = "IGU_EGU_AUTO_GATE_EN",
++		.reg_offset_group = {42},
++		.group_size = 1
++	}, {
++		.reg_name = "IGU_EGU_INT_SRC",
++		.reg_offset_group = {43},
++		.group_size = 1
++	}, {
++		.reg_name = "EGU_READY_NUM_CFG",
++		.reg_offset_group = {44},
++		.group_size = 1
++	}, {
++		.reg_name = "IGU_EGU_TNL_DFX",
++		.reg_offset_group = {45},
++		.group_size = 1
++	}, {
++		.reg_name = "TX_TNL_NOTE_PKT",
++		.reg_offset_group = {46},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_common_msg hclge_ssu_reg_common_msg[] = {
++	{
++		.cmd = HCLGE_OPC_DFX_SSU_REG_0,
++		.result_regs = hclge_ssu_reg_0_info,
++		.bd_num = HCLGE_BD_NUM_SSU_REG_0,
++		.result_regs_size = ARRAY_SIZE(hclge_ssu_reg_0_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_SSU_REG_1,
++		.result_regs = hclge_ssu_reg_1_info,
++		.bd_num = HCLGE_BD_NUM_SSU_REG_1,
++		.result_regs_size = ARRAY_SIZE(hclge_ssu_reg_1_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_RPU_REG_0,
++		.result_regs = hclge_rpu_reg_0_info,
++		.bd_num = HCLGE_BD_NUM_RPU_REG_0,
++		.result_regs_size = ARRAY_SIZE(hclge_rpu_reg_0_info),
++		.need_para = true
++	}, {
++		.cmd = HCLGE_OPC_DFX_RPU_REG_1,
++		.result_regs = hclge_rpu_reg_1_info,
++		.bd_num = HCLGE_BD_NUM_RPU_REG_1,
++		.result_regs_size = ARRAY_SIZE(hclge_rpu_reg_1_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_IGU_EGU_REG,
++		.result_regs = hclge_igu_egu_reg_info,
++		.bd_num = HCLGE_BD_NUM_IGU_EGU_REG,
++		.result_regs_size = ARRAY_SIZE(hclge_igu_egu_reg_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_GEN_REG,
++		.result_regs = hclge_gen_reg_info_tnl,
++		.bd_num = HCLGE_BD_NUM_GEN_REG,
++		.result_regs_size = ARRAY_SIZE(hclge_gen_reg_info_tnl),
++		.need_para = true
++	}, {
++		.cmd = HCLGE_OPC_DFX_GEN_REG,
++		.result_regs = hclge_gen_reg_info,
++		.bd_num = HCLGE_BD_NUM_GEN_REG,
++		.result_regs_size = ARRAY_SIZE(hclge_gen_reg_info)
++	}
++};
++
++static int
++hclge_print_mod_reg_info(struct device *dev, struct hclge_desc *desc,
++			 const struct hclge_mod_reg_info *reg_info, int size)
++{
++	int i, j, pos, actual_len;
++	u8 offset, bd_idx, index;
++	char *buf;
++
++	buf = kzalloc(HCLGE_MOD_REG_INFO_LEN_MAX, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	for (i = 0; i < size; i++) {
++		actual_len = strlen(reg_info[i].reg_name) +
++			     HCLGE_MOD_REG_EXTRA_LEN +
++			     HCLGE_MOD_REG_VALUE_LEN * reg_info[i].group_size;
++		if (actual_len > HCLGE_MOD_REG_INFO_LEN_MAX) {
++			dev_info(dev, "length of reg(%s) is invalid, len=%d\n",
++				 reg_info[i].reg_name, actual_len);
++			continue;
++		}
++
++		pos = scnprintf(buf, HCLGE_MOD_REG_INFO_LEN_MAX, "%s",
++				reg_info[i].reg_name);
++		if (reg_info[i].has_suffix)
++			pos += scnprintf(buf + pos,
++					 HCLGE_MOD_REG_INFO_LEN_MAX - pos, "%u",
++					 le32_to_cpu(desc->data[0]));
++		pos += scnprintf(buf + pos,
++				 HCLGE_MOD_REG_INFO_LEN_MAX - pos,
++				 ":");
++		for (j = 0; j < reg_info[i].group_size; j++) {
++			offset = reg_info[i].reg_offset_group[j];
++			index = offset % HCLGE_DESC_DATA_LEN;
++			bd_idx = offset / HCLGE_DESC_DATA_LEN;
++			pos += scnprintf(buf + pos,
++					 HCLGE_MOD_REG_INFO_LEN_MAX - pos,
++					 " %08x",
++					 le32_to_cpu(desc[bd_idx].data[index]));
++		}
++		buf[pos] = '\0';
++		dev_info(dev, "%s\n", buf);
++	}
++
++	kfree(buf);
++	return 0;
++}
++
++static bool hclge_err_mod_check_support_cmd(enum hclge_opcode_type opcode,
++					    struct hclge_dev *hdev)
++{
++	if (opcode == HCLGE_OPC_DFX_GEN_REG &&
++	    !hnae3_ae_dev_gen_reg_dfx_supported(hdev))
++		return false;
++	return true;
++}
++
++/* For each common msg, send cmdq to IMP and print result reg info.
++ * If there is a parameter, loop it and request.
++ */
++static void
++hclge_query_reg_info(struct hclge_dev *hdev,
++		     struct hclge_mod_reg_common_msg *msg, u32 loop_time,
++		     u32 *loop_para)
++{
++	int desc_len, i, ret;
++
++	desc_len = msg->bd_num * sizeof(struct hclge_desc);
++	msg->desc = kzalloc(desc_len, GFP_KERNEL);
++	if (!msg->desc) {
++		dev_err(&hdev->pdev->dev, "failed to query reg info, ret=%d",
++			-ENOMEM);
++		return;
++	}
++
++	for (i = 0; i < loop_time; i++) {
++		ret = hclge_dbg_cmd_send(hdev, msg->desc, *loop_para,
++					 msg->bd_num, msg->cmd);
++		loop_para++;
++		if (ret)
++			continue;
++		ret = hclge_print_mod_reg_info(&hdev->pdev->dev, msg->desc,
++					       msg->result_regs,
++					       msg->result_regs_size);
++		if (ret)
++			dev_err(&hdev->pdev->dev, "failed to print mod reg info, ret=%d\n",
++				ret);
++	}
++
++	kfree(msg->desc);
++}
++
++static void hclge_query_reg_info_of_ssu(struct hclge_dev *hdev)
++{
++	u32 loop_para[HCLGE_MOD_MSG_PARA_ARRAY_MAX_SIZE] = {0};
++	struct hclge_mod_reg_common_msg msg;
++	u8 i, j, num;
++	u32 loop_time;
++
++	num = ARRAY_SIZE(hclge_ssu_reg_common_msg);
++	for (i = 0; i < num; i++) {
++		msg = hclge_ssu_reg_common_msg[i];
++		if (!hclge_err_mod_check_support_cmd(msg.cmd, hdev))
++			continue;
++		loop_time = 1;
++		loop_para[0] = 0;
++		if (msg.need_para) {
++			loop_time = hdev->ae_dev->dev_specs.tnl_num;
++			for (j = 0; j < loop_time; j++)
++				loop_para[j] = j + 1;
++		}
++		hclge_query_reg_info(hdev, &msg, loop_time, loop_para);
++	}
++}
++
+ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
+ 	{
+ 		.module_id = MODULE_NONE,
+@@ -1210,7 +1630,8 @@ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
+ 		.msg = "MODULE_GE"
+ 	}, {
+ 		.module_id = MODULE_IGU_EGU,
+-		.msg = "MODULE_IGU_EGU"
++		.msg = "MODULE_IGU_EGU",
++		.query_reg_info = hclge_query_reg_info_of_ssu
+ 	}, {
+ 		.module_id = MODULE_LGE,
+ 		.msg = "MODULE_LGE"
+@@ -1231,7 +1652,8 @@ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
+ 		.msg = "MODULE_RTC"
+ 	}, {
+ 		.module_id = MODULE_SSU,
+-		.msg = "MODULE_SSU"
++		.msg = "MODULE_SSU",
++		.query_reg_info = hclge_query_reg_info_of_ssu
+ 	}, {
+ 		.module_id = MODULE_TM,
+ 		.msg = "MODULE_TM"
+@@ -2762,7 +3184,7 @@ void hclge_handle_occurred_error(struct hclge_dev *hdev)
+ }
+ 
+ static bool
+-hclge_handle_error_type_reg_log(struct device *dev,
++hclge_handle_error_type_reg_log(struct hclge_dev *hdev,
+ 				struct hclge_mod_err_info *mod_info,
+ 				struct hclge_type_reg_err_info *type_reg_info)
+ {
+@@ -2770,6 +3192,7 @@ hclge_handle_error_type_reg_log(struct device *dev,
+ #define HCLGE_ERR_TYPE_IS_RAS_OFFSET 7
+ 
+ 	u8 mod_id, total_module, type_id, total_type, i, is_ras;
++	struct device *dev = &hdev->pdev->dev;
+ 	u8 index_module = MODULE_NONE;
+ 	u8 index_type = NONE_ERROR;
+ 	bool cause_by_vf = false;
+@@ -2810,6 +3233,9 @@ hclge_handle_error_type_reg_log(struct device *dev,
+ 	for (i = 0; i < type_reg_info->reg_num; i++)
+ 		dev_err(dev, "0x%08x\n", type_reg_info->hclge_reg[i]);
+ 
++	if (hclge_hw_module_id_st[index_module].query_reg_info)
++		hclge_hw_module_id_st[index_module].query_reg_info(hdev);
++
+ 	return cause_by_vf;
+ }
+ 
+@@ -2850,7 +3276,7 @@ static void hclge_handle_error_module_log(struct hnae3_ae_dev *ae_dev,
+ 
+ 			type_reg_info = (struct hclge_type_reg_err_info *)
+ 					    &buf[offset++];
+-			if (hclge_handle_error_type_reg_log(dev, mod_info,
++			if (hclge_handle_error_type_reg_log(hdev, mod_info,
+ 							    type_reg_info))
+ 				cause_by_vf = true;
+ 
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
+index 68b738affa66..45a783a50643 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
+@@ -5,6 +5,7 @@
+ #define __HCLGE_ERR_H
+ 
+ #include "hclge_main.h"
++#include "hclge_debugfs.h"
+ #include "hnae3.h"
+ 
+ #define HCLGE_MPF_RAS_INT_MIN_BD_NUM	10
+@@ -115,6 +116,18 @@
+ #define HCLGE_REG_NUM_MAX			256
+ #define HCLGE_DESC_NO_DATA_LEN			8
+ 
++#define HCLGE_BD_NUM_SSU_REG_0		10
++#define HCLGE_BD_NUM_SSU_REG_1		15
++#define HCLGE_BD_NUM_RPU_REG_0		1
++#define HCLGE_BD_NUM_RPU_REG_1		2
++#define HCLGE_BD_NUM_IGU_EGU_REG	9
++#define HCLGE_BD_NUM_GEN_REG		8
++#define HCLGE_MOD_REG_INFO_LEN_MAX	256
++#define HCLGE_MOD_REG_EXTRA_LEN		11
++#define HCLGE_MOD_REG_VALUE_LEN		9
++#define HCLGE_MOD_REG_GROUP_MAX_SIZE	6
++#define HCLGE_MOD_MSG_PARA_ARRAY_MAX_SIZE	8
++
+ enum hclge_err_int_type {
+ 	HCLGE_ERR_INT_MSIX = 0,
+ 	HCLGE_ERR_INT_RAS_CE = 1,
+@@ -191,6 +204,7 @@ struct hclge_hw_error {
+ struct hclge_hw_module_id {
+ 	enum hclge_mod_name_list module_id;
+ 	const char *msg;
++	void (*query_reg_info)(struct hclge_dev *hdev);
+ };
+ 
+ struct hclge_hw_type_id {
+@@ -218,6 +232,28 @@ struct hclge_type_reg_err_info {
+ 	u32 hclge_reg[HCLGE_REG_NUM_MAX];
+ };
+ 
++struct hclge_mod_reg_info {
++	const char *reg_name;
++	bool has_suffix; /* add suffix for register name */
++	/* the positions of reg values in hclge_desc.data */
++	u8 reg_offset_group[HCLGE_MOD_REG_GROUP_MAX_SIZE];
++	u8 group_size;
++};
++
++/* This structure defines cmdq used to query the hardware module debug
++ * regisgers.
++ */
++struct hclge_mod_reg_common_msg {
++	enum hclge_opcode_type cmd;
++	struct hclge_desc *desc;
++	u8 bd_num; /* the bd number of hclge_desc used */
++	bool need_para; /* whether this cmdq needs to add para */
++
++	/* the regs need to print */
++	const struct hclge_mod_reg_info *result_regs;
++	u16 result_regs_size;
++};
++
+ int hclge_config_mac_tnl_int(struct hclge_dev *hdev, bool en);
+ int hclge_config_nic_hw_error(struct hclge_dev *hdev, bool state);
+ int hclge_config_rocee_ras_interrupt(struct hclge_dev *hdev, bool en);
 -- 
 2.30.0
 
