@@ -1,164 +1,105 @@
-Return-Path: <linux-kernel+bounces-4575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11359817F87
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:03:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 074C6817F89
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:03:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A60971F24452
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:03:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 837A6B2359B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B65A1FB9;
-	Tue, 19 Dec 2023 02:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="Xjlv5j/p"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D79C1FB6;
+	Tue, 19 Dec 2023 02:03:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B9F17D5
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40c69403b3eso39581055e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:03:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1702951393; x=1703556193; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wjsAHbjfMeDwtBP8wrx8HGvaKAxkSsjCBhep4ZbKU2k=;
-        b=Xjlv5j/p/JeyugKxAljebVR7bkCLcw0+Z71qAklY64xXgDqZ0zE7y5p51cgcW6xXe7
-         AvdvN7e7KvjUL6z+QppAmkXcmsh4xrEKNY4xhhIgS9bIH1YSDUxrhkDH8iR07Wq+Fg03
-         Fzpz/07lNuSTaBeeKRBBqWMpdojmtE58Fo1I+hEALzkdRUM1A3CZk3USVE3bnzuGicsC
-         WBdYqqvqOoY5SPNDZBZKnBJTXrQ32ByzuIdEQNMdff0ExKz4qze9DIzLO/3Vvjh0ZFbG
-         7udnPWEC9KlKx8BPQsQ2IdntMLUXT3W7caKUBq8OPKzvm3qzRlMMu69XaJaPAGXHj748
-         lJnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702951393; x=1703556193;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wjsAHbjfMeDwtBP8wrx8HGvaKAxkSsjCBhep4ZbKU2k=;
-        b=auaRAIToUTd4eHQr43RShJq4so8UMhwWP+kAiF90mrKtOokNqLvxLwaw2ZByshgqhc
-         M1TrlhaNdxw1L1/lYaM+JX2gupRdK+6hOeiRx2OeAMtPnr9yYAijRuAKYc1I/djBQ1Dg
-         HdlvhycQ71RI04nY6Iu+SlcjUWit/xo8bge3h1y4l1HQyEN9AKJDBvTeZAJr7pl/+TeX
-         yIJfVDHP+AwLlycfALcI0iNUBkWRhFPoW/BYwVoXa0Aa5SGfzeNBnMKyVYtIXy+5NMdx
-         PdAnboRnU2cHHqtJoRmAty5QaKpAGrUgPFokqrh6kGX9a32BrIuNwXMOAo6UeS1n0Dbd
-         +GAA==
-X-Gm-Message-State: AOJu0YwzntgGcvaufoNyqq0IKY2sZrEeKe1mrE6YSksOX3v6FrehRvPb
-	Qz0EyNA5eznLHdf0HX3QJY2p4w==
-X-Google-Smtp-Source: AGHT+IF/kNWkZMYNHeVVL3RUNGwgYlxAj7dA/S+cQyieGNqNAtjbstLMUDuonlQ07VWTyaXlrIyung==
-X-Received: by 2002:a05:600c:358d:b0:40d:27d3:8f2c with SMTP id p13-20020a05600c358d00b0040d27d38f2cmr25810wmq.56.1702951393183;
-        Mon, 18 Dec 2023 18:03:13 -0800 (PST)
-Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id r19-20020a05600c35d300b0040c495b1c90sm590084wmq.11.2023.12.18.18.03.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 18:03:12 -0800 (PST)
-From: Dmitry Safonov <dima@arista.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Dmitry Safonov <dima@arista.com>,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH net-next] selftest/tcp-ao: Rectify out-of-tree build
-Date: Tue, 19 Dec 2023 02:03:05 +0000
-Message-ID: <20231219-b4-tcp-ao-selftests-out-of-tree-v1-1-0fff92d26eac@arista.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62768187F
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VyogQL4_1702951421;
+Received: from 30.221.145.29(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0VyogQL4_1702951421)
+          by smtp.aliyun-inc.com;
+          Tue, 19 Dec 2023 10:03:42 +0800
+Message-ID: <112dd87b-1072-4568-93d5-3b13ed818511@linux.alibaba.com>
+Date: Tue, 19 Dec 2023 10:03:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.13-dev-b6b4b
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702951385; l=3173; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=kXGv43WpVA4QuiP4NyRqa0KCrJ/VO9r5P4J8vlLiCw4=; b=1kOnNm8p4AmUsY6Nx+/rLZt4zV6JjEDoQl4HTO7eoE4E/lSubDKnwS+Igmo/2rYam28n2VLEx I0by5+u8dJJCTRd323F9YsGNn3GyyBehrNSJVuJnaY7J2b0MMRoyxZ0
-X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: fix arithmetic for bdi min_ratio and max_ratio
+Content-Language: en-US
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: shr@devkernel.io, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ joseph.qi@linux.alibaba.com
+References: <20231218031640.77983-1-jefflexu@linux.alibaba.com>
+ <20231218102117.c91ab02353ff76b952f3ec9e@linux-foundation.org>
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <20231218102117.c91ab02353ff76b952f3ec9e@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Trivial fix for out-of-tree build that I wasn't testing previously:
 
-1. Create a directory for library object files, fixes:
-> gcc lib/kconfig.c -Wall -O2 -g -D_GNU_SOURCE -fno-strict-aliasing -I ../../../../../usr/include/ -iquote /tmp/kselftest/kselftest/net/tcp_ao/lib -I ../../../../include/  -o /tmp/kselftest/kselftest/net/tcp_ao/lib/kconfig.o -c
-> Assembler messages:
-> Fatal error: can't create /tmp/kselftest/kselftest/net/tcp_ao/lib/kconfig.o: No such file or directory
-> make[1]: *** [Makefile:46: /tmp/kselftest/kselftest/net/tcp_ao/lib/kconfig.o] Error 1
 
-2. Include $(KHDR_INCLUDES) that's exported by selftests/Makefile, fixes:
-> In file included from lib/kconfig.c:6:
-> lib/aolib.h:320:45: warning: ‘struct tcp_ao_add’ declared inside parameter list will not be visible outside of this definition or declaration
->   320 | extern int test_prepare_key_sockaddr(struct tcp_ao_add *ao, const char *alg,
->       |                                             ^~~~~~~~~~
-...
+On 12/19/23 2:21 AM, Andrew Morton wrote:
+> On Mon, 18 Dec 2023 11:16:40 +0800 Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
+> 
+>> bdi->[min|max]_ratio are both part per million.  Fix the wrong
+>> arithmetic when setting bdi's min_ratio and max_ratio.
+>>
+>> Fixes: efc3e6ad53ea ("mm: split off __bdi_set_max_ratio() function")
+>> Fixes: 8021fb3232f2 ("mm: split off __bdi_set_min_ratio() function")
+> 
+> As we have two Fixes:, it would be better to have two patches please.
 
-3. While at here, clean-up $(KSFT_KHDR_INSTALL): it's not needed anymore
-   since commit f2745dc0ba3d ("selftests: stop using KSFT_KHDR_INSTALL")
+Sounds reasonable.  Thanks.
 
-4. Also, while at here, drop .DEFAULT_GOAL definition: that has a
-   self-explaining comment, that was valid when I made these selftests
-   compile on local v4.19 kernel, but not needed since
-   commit 8ce72dc32578 ("selftests: fix headers_install circular dependency")
+> 
+>> --- a/mm/page-writeback.c
+>> +++ b/mm/page-writeback.c
+>> @@ -692,7 +692,6 @@ static int __bdi_set_min_ratio(struct backing_dev_info *bdi, unsigned int min_ra
+>>  
+>>  	if (min_ratio > 100 * BDI_RATIO_SCALE)
+>>  		return -EINVAL;
+>> -	min_ratio *= BDI_RATIO_SCALE;
 
-Fixes: cfbab37b3da0 ("selftests/net: Add TCP-AO library")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202312190645.q76MmHyq-lkp@intel.com/
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- tools/testing/selftests/net/tcp_ao/Makefile | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+This indeed has visible runtime effect as follows:
 
-diff --git a/tools/testing/selftests/net/tcp_ao/Makefile b/tools/testing/selftests/net/tcp_ao/Makefile
-index 6343cfcf919b..8e60bae67aa9 100644
---- a/tools/testing/selftests/net/tcp_ao/Makefile
-+++ b/tools/testing/selftests/net/tcp_ao/Makefile
-@@ -17,22 +17,18 @@ TEST_IPV6_PROGS := $(TEST_BOTH_AF:%=%_ipv6)
- TEST_GEN_PROGS := $(TEST_IPV4_PROGS) $(TEST_IPV6_PROGS)
- 
- top_srcdir	  := ../../../../..
--KSFT_KHDR_INSTALL := 1
- include ../../lib.mk
- 
- HOSTAR ?= ar
- 
--# Drop it on port to linux/master with commit 8ce72dc32578
--.DEFAULT_GOAL := all
--
- LIBDIR	:= $(OUTPUT)/lib
- LIB	:= $(LIBDIR)/libaotst.a
- LDLIBS	+= $(LIB) -pthread
- LIBDEPS	:= lib/aolib.h Makefile
- 
- CFLAGS	:= -Wall -O2 -g -D_GNU_SOURCE -fno-strict-aliasing
--CFLAGS	+= -I ../../../../../usr/include/ -iquote $(LIBDIR)
--CFLAGS	+= -I ../../../../include/
-+CFLAGS	+= $(KHDR_INCLUDES)
-+CFLAGS	+= -iquote ./lib/ -I ../../../../include/
- 
- # Library
- LIBSRC	:= kconfig.c netlink.c proc.c repair.c setup.c sock.c utils.c
-@@ -43,6 +39,7 @@ $(LIB): $(LIBOBJ)
- 	$(HOSTAR) rcs $@ $^
- 
- $(LIBDIR)/%.o: ./lib/%.c $(LIBDEPS)
-+	mkdir -p $(LIBDIR)
- 	$(CC) $< $(CFLAGS) $(CPPFLAGS) -o $@ -c
- 
- $(TEST_GEN_PROGS): $(LIB)
+# cat /sys/class/bdi/253\:0/min_ratio
+0
+# cat /sys/class/bdi/253\:0/max_ratio
+100
+# echo 1 > /sys/class/bdi/253\:0/min_ratio
+-bash: echo: write error: Invalid argument
 
----
-base-commit: ceb2fe0d438644e1de06b9a6468a1fb8e2199c70
-change-id: 20231219-b4-tcp-ao-selftests-out-of-tree-452f787f2d58
+Setting min_ratio will fail with -EINVAL, as the above code tries to set
+min_ratio with (min_ratio * BDI_RATIO_SCALE)%, i.e. 10000% in the above
+example.
 
-Best regards,
+>>  
+>>  	spin_lock_bh(&bdi_lock);
+>>  	if (min_ratio > bdi->max_ratio) {
+>> @@ -729,7 +728,8 @@ static int __bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ra
+>>  		ret = -EINVAL;
+>>  	} else {
+>>  		bdi->max_ratio = max_ratio;
+>> -		bdi->max_prop_frac = (FPROP_FRAC_BASE * max_ratio) / 100;
+>> +		bdi->max_prop_frac = div64_u64(FPROP_FRAC_BASE * max_ratio,
+>> +					       100UL * BDI_RATIO_SCALE);
+>>  	}
+>>  	spin_unlock_bh(&bdi_lock);
+
+This one has no visible runtime effect, but I believe this would affect
+the incrementing of writeout completion count when max_ratio is not 100%.
+
+
 -- 
-Dmitry Safonov <dima@arista.com>
-
+Thanks,
+Jingbo
 
