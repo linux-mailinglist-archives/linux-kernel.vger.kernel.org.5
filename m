@@ -1,238 +1,266 @@
-Return-Path: <linux-kernel+bounces-4940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68445818421
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:09:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7F1818426
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E163528472C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:08:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA6511F23963
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8F112B96;
-	Tue, 19 Dec 2023 09:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6EA134C5;
+	Tue, 19 Dec 2023 09:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i/Md7IfK"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oyDaiWY3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95A412B69
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7caff8105dcso1258320241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:08:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1FD5134BD
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--alpic.bounces.google.com
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-33349915d3cso2904070f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:09:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702976929; x=1703581729; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w0DJ+lmLJruEBqjMY41BOoK6VhsWNmE0oRWPKlfV7Nk=;
-        b=i/Md7IfKn7LAt15ZgwyDR0yvjrJ8NVn8h3wSpQRyu6fr3w0VFhkigaPUy+VVvlBmLc
-         NhpeKZER4f2j6+IGFQ1RxakS9xQuL5gfamI12CGi0GFc7tyOQQAHd/lpWNEbL0Kmjv5D
-         XHik+je4iFihv0ZxBeZ6IGvKzxwgjt3FNaFdH/VpB8k4d47yz4h7dbNnIyB5PLMTA1qb
-         1iJJhlVexlKYV2Je0jA3pzxWrsYKya2WQ0yWg4O2Nw2YRQCxCC1X/wDf0TV5a/Gb6k/Z
-         G1FuHyDwtID/wb1nfsweN3c2wQPFJLiCaPRze9dJGDVVEJoNPEKgZ1da6TQ087R/jB8i
-         rA6w==
+        d=google.com; s=20230601; t=1702976953; x=1703581753; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KCOKKTCrhMmhELn2KaA9tA7ePXojaySJZUnrODbepzU=;
+        b=oyDaiWY3JkcRZh6LwIo30LyVDU+PLZk3j9VwX2NoD3ufljIaS4xdNasuPMf//+fewn
+         tOV3im96Zm83Rtb9CZMS/vyL79KtLuxt0d2bx1UMK+ik2yMGQvYhwJfpqKQHq7QRZvfA
+         y2JsFKQcaIZGn8SlHx6eesE5jlQd74wU6b2vwRS/iCZivwVvEpfzk+eWDQXx6EyYtKg7
+         DhK9ie6CJM4eZnI0jKJT4d+f2gvjfYM35XUZnxqNmWq7WCahHu7dYlO2UX8dYFMg3KQC
+         nU316h2F9RNkCHYoaMHAlH0/AQqVGmfTo4+WlfLuUABKHu+0m2qHEUOrjJAZ2uxsMLpI
+         Pitg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702976929; x=1703581729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w0DJ+lmLJruEBqjMY41BOoK6VhsWNmE0oRWPKlfV7Nk=;
-        b=MuN3GJkSQzmYZnFhpOiDrruDOv48lVTJmsb0sX2QaXsDrMG7r9XhqiYcAPGeI9Bg/P
-         +kwnL58fNSPZum3tMQ2GMQKTFPfgpaGjbkekP4sF8dq1MoRewXVtdBNKfDNvaq9kXHr9
-         10YWXHJHYyFQmAlrfge9cn6zVxm83/VrvmX+zoeE+t7jhBSgvmLu4Aun0zGU8rmljKiW
-         8+n41S7ErXYj5Rtw2H2wkagqpdySgKeavcKqzb+TA2SiGZjsn3fXjkJgBm5Xt+LCZLZR
-         AdtbCAUNJ58oGf9MzS05xWMXdxQt2TFW62FowiorLxB4oiqY2T9vfjguSgIG73ByQMfp
-         /mZw==
-X-Gm-Message-State: AOJu0Yxhgbvj5U35y7irlGKEhAcVI+8QEPUd6z++QyUCFJZvKqKfVXKp
-	h6FZkXkZXglyCdaVT0ItKswfDj3VB6zTKg/GKgF9Sg==
-X-Google-Smtp-Source: AGHT+IFwxEB7g6rZPx9nMm+0XL1kHjozA2phuq94ZsK+h9tICVNDiE+KiLKE77eEKaMHAg1Es076GJzmssT0fbcePoo=
-X-Received: by 2002:a05:6102:fa4:b0:466:9ac5:d014 with SMTP id
- e36-20020a0561020fa400b004669ac5d014mr2301780vsv.2.1702976929597; Tue, 19 Dec
- 2023 01:08:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702976953; x=1703581753;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KCOKKTCrhMmhELn2KaA9tA7ePXojaySJZUnrODbepzU=;
+        b=NxCrEQ1TEojUmD2QFx0sFbdpUHxwI/sp5aco8O0T3qGznuOm5tuJ9/kc0OSiLp/hlj
+         mYOqF8vE1OJCcc0607LdVdebPsj+s1GfrayaWjvJw7rizeOtM6kE0bVhSKY7eGH+WjjJ
+         +RWBMe44Kym0wNtgYm8lZ96MsAoe0mK/MubyqA650jXOsCcuJNp8ymKEeDms0xJOzUEp
+         yJ5bTU+o2KQ2uXMVO4Q50G/lxbrTVzp35IVFO1TUFAljciZwMoVS9oHFZpmj8myZuQ+1
+         U19AJ/AaIRLCmDfviTxhOiuOuxoJZcbV8weVAwChJcgJ4gVj5hH5q93T1uqorjK4eT1L
+         DwzQ==
+X-Gm-Message-State: AOJu0Yy0NNDP8pYi2OwQOqqLH8KZ6XGsxPZoDoGVbN9tV52PlpLSd+bb
+	jHGS0nUAUBflW4pYIU5wVQdxv1IXRw==
+X-Google-Smtp-Source: AGHT+IEMgpUJJImbF9sB0A1C2/ml9W2nIwssmwxL5xAbJRxOKk/6C14WdhWsYo1M1JBwCQapz4Lay/+LIA==
+X-Received: from alpic.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1bf2])
+ (user=alpic job=sendgmr) by 2002:a5d:64a5:0:b0:336:60b6:28a2 with SMTP id
+ m5-20020a5d64a5000000b0033660b628a2mr25056wrp.1.1702976952862; Tue, 19 Dec
+ 2023 01:09:12 -0800 (PST)
+Date: Tue, 19 Dec 2023 10:09:09 +0100
+In-Reply-To: <20230906102557.3432236-1-alpic@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231218135042.748715259@linuxfoundation.org>
-In-Reply-To: <20231218135042.748715259@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 19 Dec 2023 14:38:38 +0530
-Message-ID: <CA+G9fYv9DAjegnefQ7PQ_M_-isfz+rCftRfkxjU8MDwqwVT0LA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/40] 5.4.265-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Mime-Version: 1.0
+References: <20230906102557.3432236-1-alpic@google.com>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231219090909.2827497-1-alpic@google.com>
+Subject: [PATCH] security: new security_file_ioctl_compat() hook
+From: Alfred Piccioni <alpic@google.com>
+To: Paul Moore <paul@paul-moore.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Eric Paris <eparis@parisplace.org>
+Cc: linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	stable@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alfred Piccioni <alpic@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 18 Dec 2023 at 19:40, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.265 release.
-> There are 40 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.265-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Some ioctl commands do not require ioctl permission, but are routed to
+other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
+done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+However, if a 32-bit process is running on a 64-bit kernel, it emits
+32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
+being checked erroneously, which leads to these ioctl operations being
+routed to the ioctl permission, rather than the correct file
+permissions.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This was also noted in a RED-PEN finding from a while back -
+"/* RED-PEN how should LSM module know it's handling 32bit? */".
 
-## Build
-* kernel: 5.4.265-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.4.y
-* git commit: 2be881e1152507e5593dc93294d1b0c3127350e2
-* git describe: v5.4.264-41-g2be881e11525
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.2=
-64-41-g2be881e11525
+This patch introduces a new hook, security_file_ioctl_compat, that is
+called from the compat ioctl syscall. All current LSMs have been changed
+to support this hook.
 
-## Test Regressions (compared to v5.4.264)
+Reviewing the three places where we are currently using
+security_file_ioctl, it appears that only SELinux needs a dedicated
+compat change; TOMOYO and SMACK appear to be functional without any
+change.
 
-## Metric Regressions (compared to v5.4.264)
+Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
+Signed-off-by: Alfred Piccioni <alpic@google.com>
+Cc: stable@vger.kernel.org
+---
+ fs/ioctl.c                    |  3 +--
+ include/linux/lsm_hook_defs.h |  2 ++
+ include/linux/security.h      |  7 +++++++
+ security/security.c           | 17 +++++++++++++++++
+ security/selinux/hooks.c      | 28 ++++++++++++++++++++++++++++
+ security/smack/smack_lsm.c    |  1 +
+ security/tomoyo/tomoyo.c      |  1 +
+ 7 files changed, 57 insertions(+), 2 deletions(-)
 
-## Test Fixes (compared to v5.4.264)
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index f5fd99d6b0d4..76cf22ac97d7 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -920,8 +920,7 @@ COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
+ 	if (!f.file)
+ 		return -EBADF;
+ 
+-	/* RED-PEN how should LSM module know it's handling 32bit? */
+-	error = security_file_ioctl(f.file, cmd, arg);
++	error = security_file_ioctl_compat(f.file, cmd, arg);
+ 	if (error)
+ 		goto out;
+ 
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index ac962c4cb44b..626aa8cf930d 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -171,6 +171,8 @@ LSM_HOOK(int, 0, file_alloc_security, struct file *file)
+ LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
+ LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
+ 	 unsigned long arg)
++LSM_HOOK(int, 0, file_ioctl_compat, struct file *file, unsigned int cmd,
++	 unsigned long arg)
+ LSM_HOOK(int, 0, mmap_addr, unsigned long addr)
+ LSM_HOOK(int, 0, mmap_file, struct file *file, unsigned long reqprot,
+ 	 unsigned long prot, unsigned long flags)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 5f16eecde00b..22a82b7c59f1 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -389,6 +389,7 @@ int security_file_permission(struct file *file, int mask);
+ int security_file_alloc(struct file *file);
+ void security_file_free(struct file *file);
+ int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
++int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg);
+ int security_mmap_file(struct file *file, unsigned long prot,
+ 			unsigned long flags);
+ int security_mmap_addr(unsigned long addr);
+@@ -987,6 +988,12 @@ static inline int security_file_ioctl(struct file *file, unsigned int cmd,
+ 	return 0;
+ }
+ 
++static inline int security_file_ioctl_compat(struct file *file, unsigned int cmd,
++				      unsigned long arg)
++{
++	return 0;
++}
++
+ static inline int security_mmap_file(struct file *file, unsigned long prot,
+ 				     unsigned long flags)
+ {
+diff --git a/security/security.c b/security/security.c
+index 23b129d482a7..5c16ffc99b1e 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2648,6 +2648,23 @@ int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ }
+ EXPORT_SYMBOL_GPL(security_file_ioctl);
+ 
++/**
++ * security_file_ioctl_compat() - Check if an ioctl is allowed in 32-bit compat mode
++ * @file: associated file
++ * @cmd: ioctl cmd
++ * @arg: ioctl arguments
++ *
++ * Compat version of security_file_ioctl() that correctly handles 32-bit processes
++ * running on 64-bit kernels.
++ *
++ * Return: Returns 0 if permission is granted.
++ */
++int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	return call_int_hook(file_ioctl_compat, 0, file, cmd, arg);
++}
++EXPORT_SYMBOL_GPL(security_file_ioctl_compat);
++
+ static inline unsigned long mmap_prot(struct file *file, unsigned long prot)
+ {
+ 	/*
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 2aa0e219d721..c617ae21dba8 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -3731,6 +3731,33 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
+ 	return error;
+ }
+ 
++static int selinux_file_ioctl_compat(struct file *file, unsigned int cmd,
++			      unsigned long arg)
++{
++	/*
++	 * If we are in a 64-bit kernel running 32-bit userspace, we need to make
++	 * sure we don't compare 32-bit flags to 64-bit flags.
++	 */
++	switch (cmd) {
++	case FS_IOC32_GETFLAGS:
++		cmd = FS_IOC_GETFLAGS;
++		break;
++	case FS_IOC32_SETFLAGS:
++		cmd = FS_IOC_SETFLAGS;
++		break;
++	case FS_IOC32_GETVERSION:
++		cmd = FS_IOC_GETVERSION;
++		break;
++	case FS_IOC32_SETVERSION:
++		cmd = FS_IOC_SETVERSION;
++		break;
++	default:
++		break;
++	}
++
++	return selinux_file_ioctl(file, cmd, arg);
++}
++
+ static int default_noexec __ro_after_init;
+ 
+ static int file_map_prot_check(struct file *file, unsigned long prot, int shared)
+@@ -7036,6 +7063,7 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
+ 	LSM_HOOK_INIT(file_permission, selinux_file_permission),
+ 	LSM_HOOK_INIT(file_alloc_security, selinux_file_alloc_security),
+ 	LSM_HOOK_INIT(file_ioctl, selinux_file_ioctl),
++	LSM_HOOK_INIT(file_ioctl_compat, selinux_file_ioctl_compat),
+ 	LSM_HOOK_INIT(mmap_file, selinux_mmap_file),
+ 	LSM_HOOK_INIT(mmap_addr, selinux_mmap_addr),
+ 	LSM_HOOK_INIT(file_mprotect, selinux_file_mprotect),
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index 65130a791f57..1f1ea8529421 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -4973,6 +4973,7 @@ static struct security_hook_list smack_hooks[] __ro_after_init = {
+ 
+ 	LSM_HOOK_INIT(file_alloc_security, smack_file_alloc_security),
+ 	LSM_HOOK_INIT(file_ioctl, smack_file_ioctl),
++	LSM_HOOK_INIT(file_ioctl_compat, smack_file_ioctl),
+ 	LSM_HOOK_INIT(file_lock, smack_file_lock),
+ 	LSM_HOOK_INIT(file_fcntl, smack_file_fcntl),
+ 	LSM_HOOK_INIT(mmap_file, smack_mmap_file),
+diff --git a/security/tomoyo/tomoyo.c b/security/tomoyo/tomoyo.c
+index 25006fddc964..298d182759c2 100644
+--- a/security/tomoyo/tomoyo.c
++++ b/security/tomoyo/tomoyo.c
+@@ -568,6 +568,7 @@ static struct security_hook_list tomoyo_hooks[] __ro_after_init = {
+ 	LSM_HOOK_INIT(path_rename, tomoyo_path_rename),
+ 	LSM_HOOK_INIT(inode_getattr, tomoyo_inode_getattr),
+ 	LSM_HOOK_INIT(file_ioctl, tomoyo_file_ioctl),
++	LSM_HOOK_INIT(file_ioctl_compat, tomoyo_file_ioctl),
+ 	LSM_HOOK_INIT(path_chmod, tomoyo_path_chmod),
+ 	LSM_HOOK_INIT(path_chown, tomoyo_path_chown),
+ 	LSM_HOOK_INIT(path_chroot, tomoyo_path_chroot),
 
-## Metric Fixes (compared to v5.4.264)
+base-commit: 196e95aa8305aecafc4e1857b7d3eff200d953b6
+-- 
+2.43.0.472.g3155946c3a-goog
 
-## Test result summary
-total: 93105, pass: 72959, fail: 2338, skip: 17758, xfail: 50
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 148 total, 148 passed, 0 failed
-* arm64: 47 total, 45 passed, 2 failed
-* i386: 30 total, 24 passed, 6 failed
-* mips: 27 total, 27 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 32 total, 32 passed, 0 failed
-* riscv: 15 total, 15 passed, 0 failed
-* s390: 8 total, 8 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 41 total, 41 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
