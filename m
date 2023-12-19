@@ -1,369 +1,179 @@
-Return-Path: <linux-kernel+bounces-4580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18581817F96
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A81817F9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:17:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A23121F2446E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:14:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C689C1F2305E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA34440D;
-	Tue, 19 Dec 2023 02:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085D44426;
+	Tue, 19 Dec 2023 02:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Qqu4oZ0J"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TgY5r3BW";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="CyULU+G2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BB91C3D;
-	Tue, 19 Dec 2023 02:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJ2B63Z005082;
-	Tue, 19 Dec 2023 02:13:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=sTN7UOc46rKDjPmwJEWvp+TJ5sQTmaOvICL80XOr2jM=; b=Qq
-	u4oZ0JDbUIPMMNOKelHMMCmIDw6x2MapoNC1umsDRLOp1YOIAa/oXNhZazjtWMgA
-	IC4+cF//TBccJcmHFuKJ1i9Yg8yfsv+xOb4EOENCFzDsdEdjllEnrm+h4PcqHdnY
-	fqkAXMrh4Zyj3zEYB+njp8kBEPkwp6ebQo4ABGHIUofsipDlfhB+V59hXseRPMnp
-	EGFFbRsP4webvpVZ7iYnWtapZNq2M2+CRXQaKKaeXo8imvS8tnf66JeYhYruFMa0
-	qTWhkxOmNw/J0B0KarJO1/MVNOgHq39ltTrKPzqiwBksNx4ltrSCZnCpw2kZwaIn
-	djAQ05V9OvOMXiz/D4Ew==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2n179yf9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 02:13:48 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJ2DmCt018555
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 02:13:48 GMT
-Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
- 2023 18:13:44 -0800
-Message-ID: <b5965008-b51d-4bb7-8cf2-d21aa35d2205@quicinc.com>
-Date: Tue, 19 Dec 2023 10:13:41 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF74B1FAA;
+	Tue, 19 Dec 2023 02:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ0JLMH022710;
+	Tue, 19 Dec 2023 02:16:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=GF0NE0aM8Gl7VmDPCTV28HzkFNrv9GSHqmDCPllvbNg=;
+ b=TgY5r3BWh7GBYqlcR/01ZBrFMhuouhce4T0fzfKPzczrgjHt1Wh/aOvoJp/I0c0RKwz2
+ ZeDIh1iNaHNVUguJtc87exUjj41AJlP2q1WwfkFe2ds/CZmfZW+MOOSUyrYabF9W3sPG
+ vEE25ebMtyGrite00rXEXbbA25UsIMyLMc669Hx1NoL74FJBRs2oUk29X9woDmE15zBf
+ IZv5WcI/Ub6WUtVEyISI2KkuEYSZQjQJ0hcblAGxdzN1Z4Q5YYagR+jvL+vjGoN8snGX
+ 4VUxkEz3ovrnlIygyd/5CuKUv7OF3AcrM+cy5L0oahSTpldVWEycn3zw1NQkuBeBIEBM dg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3v13sb4p6c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Dec 2023 02:16:52 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ02KcW020176;
+	Tue, 19 Dec 2023 02:16:51 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3v12bc6nhw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Dec 2023 02:16:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gRujpUJWjlA7mwuD5xsj41dv11yX7Nb9mcHrw1Bkd9wIOL36Pmxq4jpfAZOHgTWNVyU3o47ygrV+glQCDtIIEElyqlbFfr4RcXWWTymL5+BHLoG2cDvG62FM24DepSo0DZom7/I3uwN/nwPvz3nHdlhgHW4Rye+4G1XajUKt0+B91W5+b2aUHNYwIrtBDV7aIGPwNDfovPWq0OLFy6ryPkl0zcskWRptA/FN+UpQYxKa0NjQtoV32DSK+FuKFqj9cmMOq7z5CFv6nobtcGFp2n5jLJDQFZZWlVpfkRX2A4HA+fNkI6wEdksP4ZjG7h2DmhZuCy2TpJhh2UUK1MDAtg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GF0NE0aM8Gl7VmDPCTV28HzkFNrv9GSHqmDCPllvbNg=;
+ b=jyN/RI2xxTo8QY2UmMgtSCwDvSObR3KgO/3PjAve8zpcszR50diO3bu0ZCOzTpo57/xkvT5g0mEtiLpdWHHHSK+GwA+unN6EE2STRAfDzACZznCH6ogTf5CJLjJrAmEzMH5H+YgiQrlZQ5X92lN2+baoJ/zRFq1gWBMyZwTjlSJgtUldFHiNfKO0GyH80drpZfoRuAdV1X7t5cdkLcM43b3p1ag1FVB2Ur14Adbpm7dUoY2AEP4MSaD/1wgccDL995aKYEZ9Feu2Wjuj3WLuRDZ1sELvomTWloD6PrabEIkYW2+qTXTDuWba2TI6ACBWe472W0cZJT7DjpBXhHgW8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GF0NE0aM8Gl7VmDPCTV28HzkFNrv9GSHqmDCPllvbNg=;
+ b=CyULU+G2suiDNaHFt6GCyyyRPib7NCcBGf7vaqFSGEYtfoZbC5OoOxNEAoDKpiZjnSeGd7p4ZtDYSXYVHHCavWQV6A1u90fUsGZKEQl3GV+O1+KpMhWaVfiFW+ONr5k0n3G2cwidKdIfgcvg3/wIuqvr6F8M0wt93fFxFTRQNjg=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by CH3PR10MB7986.namprd10.prod.outlook.com (2603:10b6:610:1cc::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
+ 2023 02:16:49 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
+ 02:16:48 +0000
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Damien Le Moal
+ <dlemoal@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        dm-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux.dev, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: remove support for the host aware zoned model
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1le9rc4y7.fsf@ca-mkp.ca.oracle.com>
+References: <20231217165359.604246-1-hch@lst.de>
+Date: Mon, 18 Dec 2023 21:16:46 -0500
+In-Reply-To: <20231217165359.604246-1-hch@lst.de> (Christoph Hellwig's message
+	of "Sun, 17 Dec 2023 17:53:54 +0100")
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0342.namprd03.prod.outlook.com
+ (2603:10b6:a03:39c::17) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/8] coresight-tpda: Add support to configure CMB
- element
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang
-	<quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <andersson@kernel.org>
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-3-git-send-email-quic_taozha@quicinc.com>
- <88e51407-344e-4584-8711-29cc014c782b@arm.com>
-From: Tao Zhang <quic_taozha@quicinc.com>
-In-Reply-To: <88e51407-344e-4584-8711-29cc014c782b@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 473NI2uD5T8E9JM_pxSc1842BBoxOGGP
-X-Proofpoint-GUID: 473NI2uD5T8E9JM_pxSc1842BBoxOGGP
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CH3PR10MB7986:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6532cc07-13cd-4758-a9b1-08dc00388e6c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	3GC5xXMx1Tpj2ExnmvlvH4YI6uBRDgKN56kC7xfkc8l86jfV8XvzEClsl+gpIeaUpzXMlq6cHL89jj8r/koi9H8GywRQZvR/TJb4bD6bncY61mFld7mJTq2W2Jqx4VRSgVBpxCfUlbSiHkxBMYg/UVN32Gh1r0O+bR+XZZFNedz41yhP6tsbnrD3O28DMhH722fRGUvqWIqj9h8GyhkJs0ZLtIgy8K+YYHGtv+9O0Z6bIsv4E0NdUydAUoU531hUw8qK8XPkcPHPWc5h0J/E1WSkdnyIopq67nix2bo4TJ3+lnkVOIJBzD1DR5RfmRKznx3ygIgRbC4Vv2y1KN58rfFMzNKtVBM97aSC9mDkzBSyjpyz8B69aL/njaeFhwu20M7Sl/FC0UUBQlkL1HZz1EjMWnIHX5qK+MrLAHTBUd4DixOAackQ5fWHWalrJzKZdjZQ408UE0wgOj6JdwWDUl3MCLfi8jL+cKmJYc13oNRlANBfOzgNBkh0N4ETWGfdujIsspqlRIQsF5MXSeORJF8sZO7BMDx+MN9FWIjzzRgcqQpkq5n5wCrEhSc2ooLJ
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(26005)(86362001)(38100700002)(5660300002)(6512007)(36916002)(8676002)(4326008)(8936002)(66556008)(66946007)(316002)(6916009)(66476007)(2906002)(6486002)(7416002)(54906003)(4744005)(478600001)(41300700001)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?Su58NUmDcDMO/9vw247v0WY8s6Q1jAjJrUXmL/cLoppO7U9S0gqAzBTk+4Lm?=
+ =?us-ascii?Q?lCiVdzuiqisUT+0Fq1akgBeGO5oHq5u6FimSarQ8YM6k5r6r1kT25QEbbFgr?=
+ =?us-ascii?Q?V9GRnZcCRcbaKzagVIS5hLM3H4tRfVI1Ww4unmXjMug8BS5c6gCM0RJGttar?=
+ =?us-ascii?Q?dI9QAUY4avH7FnZdEBq1lTRoioRGR0AqmwksFXkJgxjeXvM+c1eaVK9hFHkI?=
+ =?us-ascii?Q?YFGg3ZUIezTi1tnM5zJAPhiQvP7mA8JzlH0n8jpv5rXZVeD0PNTWNkjKA0Ol?=
+ =?us-ascii?Q?bSd8/60CYehccEv3vG3mq48tGfBIMgcRvkY/JljDxs61cgJyxezRjq9f8o4n?=
+ =?us-ascii?Q?yrIflfMloOoaZc/Xf1qoWQzANWGPGQ2pIBp9VCo4t78qs+jwV5vY0qWmRtpm?=
+ =?us-ascii?Q?r3dZ5YbLKrRn/J7ufKA1mjAgDH/m/MvSPBCNW015t+1nR18lc4pYABwIx0vs?=
+ =?us-ascii?Q?1u9MobJijRx/oOJj7ftoIQVrka0Npub8k/5IXO0oxDggJfDg22OtnQ1JuyJl?=
+ =?us-ascii?Q?WbD/FiLyYktasItYowcLCQsJJ+w5H3tQJbhouj47Wl1CLqQjSN4nd8mjhTdZ?=
+ =?us-ascii?Q?ZqrBN7iGKybkr1AJfC8fNQgcXgg3jgbbHQ20V7is9POIZQ7gVxU+sfPm+AuT?=
+ =?us-ascii?Q?itu7TlzZJC/ZmfbZ6mZJXZlQdBCj5unjmrGv6A21FPMzLqOjE05hi2LzH/VY?=
+ =?us-ascii?Q?mp97xjkaIxnWuzC3V7Di13qc3XFv14AGeBurgGOPo4aPHTGXtOkeGbih9oQK?=
+ =?us-ascii?Q?466yic0vYV+NrMduxH6c1YuHVnes7tcdWHhQ4cuVkMxCLeF7j1f17BSQNHUf?=
+ =?us-ascii?Q?aFnJ9a7YHuGa1tkvotwd6qGX2FTZPLlu1yU7CjsE+ZbBYtt9NKSKF9VRrXtF?=
+ =?us-ascii?Q?aNAGbd4jP5g4OMGmdSoDb0PA1J+aslTQfinnUW7bnIbqoeRmRfhJFp3YoFNb?=
+ =?us-ascii?Q?Oh872cz4I3h27FX8NpXjbnHdmEAvxWuJ3+yIXlYavAFAXzu8SguoeiwhwfNO?=
+ =?us-ascii?Q?xZsE+LCwfnekJz6tuXLICpopQtfK5trhfp0OxHET47EgKXJt01qCLcKxCLlS?=
+ =?us-ascii?Q?tbDiqs82yMJN/eaCFMtfLIoKMlnE6x/i8eZKLuSPPq1Q2AU1vyqmZqDSjkQu?=
+ =?us-ascii?Q?FqtO2MjqZmimggbaMk7mEsbWQ6DmkltSj2vJ+Sy3utsbtpwnjjp+JQFiTpXK?=
+ =?us-ascii?Q?EPxxstCBP91AqwkNWJgYMezEaFBm8pEIMGI+rqwMOPVTN1xqe6GTYs8HjU9Q?=
+ =?us-ascii?Q?KfIewULBbKYDXmdeEc3bmBuU3nNJJAFxaK4J1eEZUoKzVGlbKbnv/zAmtD9s?=
+ =?us-ascii?Q?Qi1MEm863zSiiHgBJZSm/3Pl0H1xCwsjzhm3SOW3d9wHXeu1de9PyrNIKca9?=
+ =?us-ascii?Q?3snHz4XXiUnHXZy7Z2ysDrJxtZilurfs8S9uNRbo2Nuu5+RCMoeOkNF2q6X1?=
+ =?us-ascii?Q?5tt6F3cD6DTFFgUKa5EMxcWFBnkBtD1dWWLAmtt4NHpG2mbf989Nc9GB3f5k?=
+ =?us-ascii?Q?m8KzlEzq86WgjAS6+PNYaXdGFaSrIuvm+YjTvuLPS+/PPq23zmiteBERnmWb?=
+ =?us-ascii?Q?kHsvpmCgmXyf25BWMqEHJ1glVGWJl9RE2YCQcYRTCFlRvQoMu2iGUAUAkg1b?=
+ =?us-ascii?Q?gg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	1BrS6xHxtkGc+gaKYrVs6qwzPBPWii/vOsvC3RkXn9Oacy3Jd4gaChvv2RIM73rt3nZExXfMvRG7t6HdEEL7SQtoMdNIAI27rTe/ywQi8wXzYyw1OKmH2fWgq5btxmgblUqfo7Hh7H58kR+OkpV2YWKVM4DkXfEgunLLkgcmkdLhZGQ9gTZ4N7+FmQE3UHm1+SeQi9jHetTLfrQXbVX+DOPJHZL/aV9/8gxsJ8ln2UO+hO6+oTglLCYJvJO8+sBACbzEglzkUgkf72+1kLQmaYPOphgu7nu29KpSDHO+rwMxZbIct6BIJPFNnV1V+iJyv2dCfg6I6NJ+pMQVjdNYs9qicVOC7vzspudjBUHYysbSjwNbJcW3HhadmhJKdmeyD5hq51SdLV9mq/QjreNKOFwyAacD+kboJK6IwVoujRM+5AKB00W6/zZz4aKTfMNUvONa3R3TfLWQV8TL2C4stiI4xvrpMRfMa1HlDhGZd/xjLpba37DihE7pgiwwfW5jsRo0lUJb0nGPWeTMROvdEGKPCop+VnAUw7qTtAsMGlQO3OsBgRTsyWrAKQ+0pnyPHS5Bv9tSVoizAZAMmmxZ8ugImpCmFne3sJiRaQy/iPE=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6532cc07-13cd-4758-a9b1-08dc00388e6c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 02:16:48.8524
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /e/d173UqCIjA5rASusJo9ol6xvFYyGB4j5i03RYUqFlfJLbCLTqWSeDjOsYuk+QTFfD6V7rteTmBgrErdEMFZfwHXKWnRfcM3pLLWifHnU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7986
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 adultscore=0 clxscore=1015
- priorityscore=1501 suspectscore=0 malwarescore=0 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312190015
+ definitions=2023-12-18_15,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312190016
+X-Proofpoint-ORIG-GUID: MJkdcGrpWyfclLxx9a4RtFQ6AR278pdT
+X-Proofpoint-GUID: MJkdcGrpWyfclLxx9a4RtFQ6AR278pdT
 
 
-On 12/18/2023 6:27 PM, Suzuki K Poulose wrote:
-> On 21/11/2023 02:24, Tao Zhang wrote:
->> Read the CMB element size from the device tree. Set the register
->> bit that controls the CMB element size of the corresponding port.
->>
->> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-tpda.c | 117 +++++++++++--------
->>   drivers/hwtracing/coresight/coresight-tpda.h |   6 +
->>   2 files changed, 74 insertions(+), 49 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c 
->> b/drivers/hwtracing/coresight/coresight-tpda.c
->> index 5f82737c37bb..e3762f38abb3 100644
->> --- a/drivers/hwtracing/coresight/coresight-tpda.c
->> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
->> @@ -28,24 +28,54 @@ static bool coresight_device_is_tpdm(struct 
->> coresight_device *csdev)
->>               CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
->>   }
->>   +static void tpdm_clear_element_size(struct coresight_device *csdev)
->> +{
->> +    struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->> +
->> +    if (drvdata->dsb_esize)
->> +        drvdata->dsb_esize = 0;
->> +    if (drvdata->cmb_esize)
->> +        drvdata->cmb_esize = 0;
->
-> Why do we need the if (...) check here ?
+Christoph,
 
-The element size of all the TPDM sub-unit should be set to 0 here.
+> Fortunately only a few HDD prototypes shipped using this model which
+> never made it to mass production. Drop the support before it is too
+> late. Note that any such host aware prototype HDD can still be used
+> with Linux as we'll now treat it as a conventional HDD.
 
-I will update this in the next patch series.
+Looks good to me!
 
->
->> +}
->> +
->> +static void tpda_set_element_size(struct tpda_drvdata *drvdata, u32 
->> *val)
->> +{
->> +
->> +    if (drvdata->dsb_esize == 64)
->> +        *val |= TPDA_Pn_CR_DSBSIZE;
->> +    else if (drvdata->dsb_esize == 32)
->> +        *val &= ~TPDA_Pn_CR_DSBSIZE;
->> +
->> +    if (drvdata->cmb_esize == 64)
->> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
->> +    else if (drvdata->cmb_esize == 32)
->> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
->> +    else if (drvdata->cmb_esize == 8)
->> +        *val &= ~TPDA_Pn_CR_CMBSIZE;
->> +}
->> +
->
->
->>   /*
->> - * Read the DSB element size from the TPDM device
->> + * Read the element size from the TPDM device
->>    * Returns
->> - *    The dsb element size read from the devicetree if available.
->> + *    The element size read from the devicetree if available.
->>    *    0 - Otherwise, with a warning once.
->
-> This doesn't match the function ? It return 0 on success and
-> error (-EINVAL) on failure ?
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-0 means the element size property is found from the devicetree.
-
-Otherwise, it will return error(-EINVAL).
-
-I will update this in the next patch series.
-
->
->>    */
->> -static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
->> +static int tpdm_read_element_size(struct tpda_drvdata *drvdata,
->> +                  struct coresight_device *csdev)
->>   {
->> -    int rc = 0;
->> -    u8 size = 0;
->> -
->> -    rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
->> -            "qcom,dsb-element-size", &size);
->> +    int rc = -EINVAL;
->> +
->> +    if (!fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
->> +            "qcom,dsb-element-size", &drvdata->dsb_esize))
->> +        rc = 0;
->> +    if (!fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
->> +            "qcom,cmb-element-size", &drvdata->cmb_esize))
->> +        rc = 0;
->
-> Are we not silently resetting the error if the former failed ?
->
-> Could we not :
->
->     rc |= fwnode_...
->
->     rc |= fwnode_...
->
-> instead ?
->
-> Also what is the expectation here ? Are these properties a MUST for
-> TPDM ?
-
-The TPDM must have one of the element size property. As long as one
-
-can be found, this TPDM configuration can be considered valid. So this
-
-function will return 0 if one of the element size property is found.
-
-
-Best,
-
-Tao
-
->
->>       if (rc)
->>           dev_warn_once(&csdev->dev,
->> -            "Failed to read TPDM DSB Element size: %d\n", rc);
->> +            "Failed to read TPDM Element size: %d\n", rc);
->>   -    return size;
->> +    return rc;
->>   }
->>     /*
->> @@ -56,11 +86,12 @@ static int tpdm_read_dsb_element_size(struct 
->> coresight_device *csdev)
->>    * Parameter "inport" is used to pass in the input port number
->>    * of TPDA, and it is set to -1 in the recursize call.
->>    */
->> -static int tpda_get_element_size(struct coresight_device *csdev,
->> +static int tpda_get_element_size(struct tpda_drvdata *drvdata,
->> +                 struct coresight_device *csdev,
->>                    int inport)
->>   {
->> -    int dsb_size = -ENOENT;
->> -    int i, size;
->> +    int rc = 0;
->> +    int i;
->>       struct coresight_device *in;
->>         for (i = 0; i < csdev->pdata->nr_inconns; i++) {
->> @@ -74,25 +105,21 @@ static int tpda_get_element_size(struct 
->> coresight_device *csdev,
->>               continue;
->>             if (coresight_device_is_tpdm(in)) {
->> -            size = tpdm_read_dsb_element_size(in);
->> +            if ((drvdata->dsb_esize) || (drvdata->cmb_esize))
->> +                return -EEXIST;
->> +            rc = tpdm_read_element_size(drvdata, in);
->> +            if (rc)
->> +                return rc;
->>           } else {
->>               /* Recurse down the path */
->> -            size = tpda_get_element_size(in, -1);
->> -        }
->> -
->> -        if (size < 0)
->> -            return size;
->> -
->> -        if (dsb_size < 0) {
->> -            /* Found a size, save it. */
->> -            dsb_size = size;
->> -        } else {
->> -            /* Found duplicate TPDMs */
->> -            return -EEXIST;
->> +            rc = tpda_get_element_size(drvdata, in, -1);
->> +            if (rc)
->> +                return rc;
->>           }
->>       }
->>   -    return dsb_size;
->> +
->> +    return rc;
->>   }
->>     /* Settings pre enabling port control register */
->> @@ -109,7 +136,7 @@ static void tpda_enable_pre_port(struct 
->> tpda_drvdata *drvdata)
->>   static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
->>   {
->>       u32 val;
->> -    int size;
->> +    int rc;
->>         val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
->>       /*
->> @@ -117,29 +144,21 @@ static int tpda_enable_port(struct tpda_drvdata 
->> *drvdata, int port)
->>        * Set the bit to 0 if the size is 32
->>        * Set the bit to 1 if the size is 64
->>        */
->> -    size = tpda_get_element_size(drvdata->csdev, port);
->> -    switch (size) {
->> -    case 32:
->> -        val &= ~TPDA_Pn_CR_DSBSIZE;
->> -        break;
->> -    case 64:
->> -        val |= TPDA_Pn_CR_DSBSIZE;
->> -        break;
->> -    case 0:
->> -        return -EEXIST;
->> -    case -EEXIST:
->> +    tpdm_clear_element_size(drvdata->csdev);
->> +    rc = tpda_get_element_size(drvdata, drvdata->csdev, port);
->> +    if (!rc && ((drvdata->dsb_esize) || (drvdata->cmb_esize))) {
->> +        tpda_set_element_size(drvdata, &val);
->> +        /* Enable the port */
->> +        val |= TPDA_Pn_CR_ENA;
->> +        writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
->> +    } else if (rc == -EEXIST)
->>           dev_warn_once(&drvdata->csdev->dev,
->> -            "Detected multiple TPDMs on port %d", -EEXIST);
->> -        return -EEXIST;
->> -    default:
->> -        return -EINVAL;
->> -    }
->> -
->> -    /* Enable the port */
->> -    val |= TPDA_Pn_CR_ENA;
->> -    writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
->> +                  "Detected multiple TPDMs on port %d", -EEXIST);
->> +    else
->> +        dev_warn_once(&drvdata->csdev->dev,
->> +                  "Didn't find TPDM elem size");
->
-> "element size"
->
->>   -    return 0;
->> +    return rc;
->>   }
->>     static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
->> diff --git a/drivers/hwtracing/coresight/coresight-tpda.h 
->> b/drivers/hwtracing/coresight/coresight-tpda.h
->> index b3b38fd41b64..29164fd9711f 100644
->> --- a/drivers/hwtracing/coresight/coresight-tpda.h
->> +++ b/drivers/hwtracing/coresight/coresight-tpda.h
->> @@ -10,6 +10,8 @@
->>   #define TPDA_Pn_CR(n)        (0x004 + (n * 4))
->>   /* Aggregator port enable bit */
->>   #define TPDA_Pn_CR_ENA        BIT(0)
->> +/* Aggregator port CMB data set element size bit */
->> +#define TPDA_Pn_CR_CMBSIZE        GENMASK(7, 6)
->>   /* Aggregator port DSB data set element size bit */
->>   #define TPDA_Pn_CR_DSBSIZE        BIT(8)
->>   @@ -25,6 +27,8 @@
->>    * @csdev:      component vitals needed by the framework.
->>    * @spinlock:   lock for the drvdata value.
->>    * @enable:     enable status of the component.
->> + * @dsb_esize   Record the DSB element size.
->> + * @cmb_esize   Record the CMB element size.
->>    */
->>   struct tpda_drvdata {
->>       void __iomem        *base;
->> @@ -32,6 +36,8 @@ struct tpda_drvdata {
->>       struct coresight_device    *csdev;
->>       spinlock_t        spinlock;
->>       u8            atid;
->> +    u8            dsb_esize;
->> +    u8            cmb_esize;
->>   };
->>     #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
->
-> Suzuki
->
->
+-- 
+Martin K. Petersen	Oracle Linux Engineering
 
