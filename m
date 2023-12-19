@@ -1,160 +1,202 @@
-Return-Path: <linux-kernel+bounces-4820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95583818277
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:43:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C17C4818320
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:14:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 184831F2333D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:43:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A58651C238C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2D4C8C2;
-	Tue, 19 Dec 2023 07:43:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A0611CBF;
+	Tue, 19 Dec 2023 08:14:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LCtbv/Oz"
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="0eHkGldz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B4711728
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a1fae88e66eso466425866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:42:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702971777; x=1703576577; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mJ49kIpAj/7cTmva1d1d/qasvpypHVWNHhlak+1keSU=;
-        b=LCtbv/Ozb4Vh4zXe58eDwbz3UjfTT/DVH5e3VGKksqBSyr5U6EyEo882eEycFhds4f
-         bd0VE+fBuCR7dYD9a5hak88RFL9wvs/HdeYpWacW1lXKQEINPJuDSpYyHZZFA+YAB07D
-         UTHl5FzeUamx4KDzSpxBeQ7CxBPpPK7odH4Ej2AUTXfr0PrKE0DwPZxJci3yz3Cd1dKj
-         3Rrzmr2unrz1YNTkXEUFLFVwMpYz+l3OiHq3jdh/oVmV72ovO2k0XxC8jjDenq35wSGb
-         gIEeuKsgurm+R+7yr9uQ4DkL2fAswpU6RXfXjzFUYDD7HgZVmOYTVJRqMkb6fcTWvhEW
-         cF0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702971777; x=1703576577;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mJ49kIpAj/7cTmva1d1d/qasvpypHVWNHhlak+1keSU=;
-        b=LATJ9+VhdgAowJE41pb69jl0VsbRBIWU3A9XfJWQzQeiW0jpXK2mTvXQzl2UAcFwIq
-         A3L/YaesCZGRgv/cDlntEi2I6d7FDz7m+x71s8Nc+TN//TMjUpVs/wLox3VI2kiM1pz2
-         YiB8zvD3EgE+UtWzI3qRslQvAOrY+bgezLU8YgegDLFZcDxCHtHWRg4Gk5lBLLUlcTK2
-         38uxEV8GgYa7M+hYOlnisX8ygrdPYFFLXlp5TnQLhbpfzxP0fSCLQ4jbr8hbuLjB1zsR
-         89mqsQlJSKxHx7nO0sTHRIsB/VOSN2/UAgFpwR42B/YpZr+w4xmX90BO+H80EOYr22Aa
-         QLpg==
-X-Gm-Message-State: AOJu0YyiMkW4fycgukeM/5vil8f4BXXbO3B7iGu7GEyAcO79kT8noog8
-	1HEkgp2NZb/Z1cmy/T/+J5VL9A==
-X-Google-Smtp-Source: AGHT+IH4PuF3KE85F/cocTKSpKkVtkm+uqrcvPBQX/KDBI2uVnsrLuSEjwu0w723cKIugerQrD780A==
-X-Received: by 2002:a17:907:72d6:b0:a1b:68e6:9d4c with SMTP id du22-20020a17090772d600b00a1b68e69d4cmr9407914ejc.71.1702971777318;
-        Mon, 18 Dec 2023 23:42:57 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vi7-20020a170907d40700b00a1dc7e789fbsm14935769ejc.21.2023.12.18.23.42.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 23:42:56 -0800 (PST)
-Message-ID: <521e7e47-099c-4a95-8681-cb690f159ccb@linaro.org>
-Date: Tue, 19 Dec 2023 08:42:55 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38BB11C88;
+	Tue, 19 Dec 2023 08:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=ibU7eg0z0uiFU9/s/3+6t+5Fs4lzRvL9ofz4jQb4xO8=; b=0eHkGldz0gqBXDpUGKKVYwIoW8
+	YdSyGS6p8JgB2Hyp+JjsEtlRmCHCkgpyKd0k7gz6s2r5MC74sIr/AW98hHhUPl8bIYK26v2O/v+Qs
+	d95CTEqAELFkuQvQ/tlR22ljc80CGaRd/zUmLHHRWu8T0Y4uoexyQtARwRI/P00Ef5vyPLEBGq34Z
+	sZnC4zkwKXJehFD9LqU8c8INPk5k6yF0EF/9vD5QGU+bfbV8Mv18TivBJWoECR5nE/rN38u5+zFzf
+	XU2sLf+JQb9omqa9A6M6fG3zsUsYsgZ+GohB3m1yFgCKHF4E698ZSGoxUsBJDEW9ImuFm2xONx2Xw
+	HxD8e8ww==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1rFUl0-000GId-Pc; Tue, 19 Dec 2023 08:43:14 +0100
+Received: from [80.62.117.166] (helo=localhost)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <esben@geanix.com>)
+	id 1rFUl0-000PHd-2Q; Tue, 19 Dec 2023 08:43:14 +0100
+From: esben@geanix.com
+To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,  Pengutronix Kernel Team
+ <kernel@pengutronix.de>,  Andi Shyti <andi.shyti@kernel.org>,  Shawn Guo
+ <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,  Fabio
+ Estevam <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,
+  linux-i2c@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  linux@ew.tq-group.com
+Subject: Re: [PATCH] i2c: i2c-imx: allow bus recovery on non-muxable pads
+In-Reply-To: <20231218-i2c-imx-recovery-v1-1-f69fa85b228c@ew.tq-group.com>
+	(Gregor Herburger's message of "Mon, 18 Dec 2023 18:06:12 +0100")
+References: <20231218-i2c-imx-recovery-v1-1-f69fa85b228c@ew.tq-group.com>
+Date: Tue, 19 Dec 2023 08:43:13 +0100
+Message-ID: <87frzyprhq.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/5] dt-bindings: hwmon: Add Amphenol ChipCap 2
-Content-Language: en-US
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jean Delvare <jdelvare@suse.com>,
- Guenter Roeck <linux@roeck-us.net>, Jonathan Corbet <corbet@lwn.net>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
- linux-doc@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>
-References: <20231020-topic-chipcap2-v4-0-7940cfa7613a@gmail.com>
- <20231020-topic-chipcap2-v4-4-7940cfa7613a@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231020-topic-chipcap2-v4-4-7940cfa7613a@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27127/Mon Dec 18 10:39:04 2023)
 
-On 18/12/2023 20:10, Javier Carrasco wrote:
-> Add device tree bindings and an example for the ChipCap 2 humidity
-> and temperature sensor.
-> 
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
->  .../bindings/hwmon/amphenol,chipcap2.yaml          | 77 ++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
-> 
+Gregor Herburger <gregor.herburger@ew.tq-group.com> writes:
+
+> Currently the i2c-imx driver assumes that for bus recovery the i2c pins
+> can be reconfigured as gpio via pinctrl.
+>
+> But bus recovery can also be done with a gpio electrically connected to
+> i2c scl.
+>
+> Modify i2c_imx_init_recovery_info to allow bus recovery on platforms
+> without pinctrl. In this case only use scl-gpio and
+> i2c_generic_scl_recovery.
+
+Why not move to use the generic GPIO recovery instead?  Will something
+like this be able to cover at least the same scenarios as your change?
+
+From 7e432496bae8c7ac35c21504bc1cd03f1dfef97f Mon Sep 17 00:00:00 2001
+Message-ID: <7e432496bae8c7ac35c21504bc1cd03f1dfef97f.1702971634.git.esben@geanix.com>
+From: Esben Haabendal <esben@geanix.com>
+Date: Tue, 25 May 2021 11:25:44 +0200
+Subject: [PATCH] i2c: imx: move to generic GPIO recovery
+
+Starting with
+commit 75820314de26 ("i2c: core: add generic I2C GPIO recovery")
+GPIO bus recovery is supported by the I2C core, so we can remove the
+driver implementation and use that one instead.
+
+As a nice side-effect, pinctrl becomes optional, allowing bus recovery on
+LS1021A, which does not have such luxury, but can be wired up to use extra
+fixed GPIO pins.
+
+Signed-off-by: Esben Haabendal <esben@geanix.com>
+---
+ drivers/i2c/busses/i2c-imx.c | 62 ++++--------------------------------
+ 1 file changed, 7 insertions(+), 55 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+index 1775a79aeba2..824d8bbb9be5 100644
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -212,10 +212,6 @@ struct imx_i2c_struct {
+ 	const struct imx_i2c_hwdata	*hwdata;
+ 	struct i2c_bus_recovery_info rinfo;
+ 
+-	struct pinctrl *pinctrl;
+-	struct pinctrl_state *pinctrl_pins_default;
+-	struct pinctrl_state *pinctrl_pins_gpio;
+-
+ 	struct imx_i2c_dma	*dma;
+ 	struct i2c_client	*slave;
+ 	enum i2c_slave_event last_slave_event;
+@@ -1357,24 +1353,6 @@ static int i2c_imx_xfer_atomic(struct i2c_adapter *adapter,
+ 	return result;
+ }
+ 
+-static void i2c_imx_prepare_recovery(struct i2c_adapter *adap)
+-{
+-	struct imx_i2c_struct *i2c_imx;
+-
+-	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
+-
+-	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_gpio);
+-}
+-
+-static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
+-{
+-	struct imx_i2c_struct *i2c_imx;
+-
+-	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
+-
+-	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_default);
+-}
+-
+ /*
+  * We switch SCL and SDA to their GPIO function and do some bitbanging
+  * for bus recovery. These alternative pinmux settings can be
+@@ -1385,43 +1363,17 @@ static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
+ static int i2c_imx_init_recovery_info(struct imx_i2c_struct *i2c_imx,
+ 		struct platform_device *pdev)
+ {
+-	struct i2c_bus_recovery_info *rinfo = &i2c_imx->rinfo;
++	struct i2c_bus_recovery_info *bri = &i2c_imx->rinfo;
+ 
+-	i2c_imx->pinctrl = devm_pinctrl_get(&pdev->dev);
+-	if (!i2c_imx->pinctrl) {
+-		dev_info(&pdev->dev, "pinctrl unavailable, bus recovery not supported\n");
++	bri->pinctrl = devm_pinctrl_get(&pdev->dev);
++	if (PTR_ERR(bri->pinctrl) == -ENODEV) {
++		bri->pinctrl = NULL;
+ 		return 0;
+ 	}
+-	if (IS_ERR(i2c_imx->pinctrl)) {
+-		dev_info(&pdev->dev, "can't get pinctrl, bus recovery not supported\n");
+-		return PTR_ERR(i2c_imx->pinctrl);
+-	}
+-
+-	i2c_imx->pinctrl_pins_default = pinctrl_lookup_state(i2c_imx->pinctrl,
+-			PINCTRL_STATE_DEFAULT);
+-	i2c_imx->pinctrl_pins_gpio = pinctrl_lookup_state(i2c_imx->pinctrl,
+-			"gpio");
+-	rinfo->sda_gpiod = devm_gpiod_get(&pdev->dev, "sda", GPIOD_IN);
+-	rinfo->scl_gpiod = devm_gpiod_get(&pdev->dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
+-
+-	if (PTR_ERR(rinfo->sda_gpiod) == -EPROBE_DEFER ||
+-	    PTR_ERR(rinfo->scl_gpiod) == -EPROBE_DEFER) {
+-		return -EPROBE_DEFER;
+-	} else if (IS_ERR(rinfo->sda_gpiod) ||
+-		   IS_ERR(rinfo->scl_gpiod) ||
+-		   IS_ERR(i2c_imx->pinctrl_pins_default) ||
+-		   IS_ERR(i2c_imx->pinctrl_pins_gpio)) {
+-		dev_dbg(&pdev->dev, "recovery information incomplete\n");
+-		return 0;
+-	}
+-
+-	dev_dbg(&pdev->dev, "using scl%s for recovery\n",
+-		rinfo->sda_gpiod ? ",sda" : "");
++	if (IS_ERR(bri->pinctrl))
++		return PTR_ERR(bri->pinctrl);
+ 
+-	rinfo->prepare_recovery = i2c_imx_prepare_recovery;
+-	rinfo->unprepare_recovery = i2c_imx_unprepare_recovery;
+-	rinfo->recover_bus = i2c_generic_scl_recovery;
+-	i2c_imx->adapter.bus_recovery_info = rinfo;
++	i2c_imx->adapter.bus_recovery_info = bri;
+ 
+ 	return 0;
+ }
+-- 
+2.43.0
 
 
-> +
-> +description: |
-> +  Relative humidity and temperature sensor on I2C bus.
-> +
-> +  Datasheets:
-> +    https://www.amphenol-sensors.com/en/telaire/humidity/527-humidity-sensors/3095-chipcap-2
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: amphenol,cc2d23
-
-Please test your patches before sending.
-
-Best regards,
-Krzysztof
-
+/Esben
 
