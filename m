@@ -1,190 +1,171 @@
-Return-Path: <linux-kernel+bounces-4904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4287B8183A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:44:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AACE68183B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:45:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5D63286217
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:44:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0E7F1C21632
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE99311C9D;
-	Tue, 19 Dec 2023 08:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2734A11CA8;
+	Tue, 19 Dec 2023 08:45:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033D714A87;
-	Tue, 19 Dec 2023 08:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B7C81FB;
-	Tue, 19 Dec 2023 00:44:45 -0800 (PST)
-Received: from [10.57.85.227] (unknown [10.57.85.227])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A7933F738;
-	Tue, 19 Dec 2023 00:43:58 -0800 (PST)
-Message-ID: <9f7ec4e9-b076-4ba2-af27-1ed74e0355a7@arm.com>
-Date: Tue, 19 Dec 2023 08:45:04 +0000
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B0A12B69;
+	Tue, 19 Dec 2023 08:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VyqKZpy_1702975536;
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyqKZpy_1702975536)
+          by smtp.aliyun-inc.com;
+          Tue, 19 Dec 2023 16:45:38 +0800
+From: Wen Gu <guwen@linux.alibaba.com>
+To: wintera@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kgraul@linux.ibm.com,
+	jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com,
+	svens@linux.ibm.com,
+	alibuda@linux.alibaba.com,
+	tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com,
+	raspl@linux.ibm.com,
+	schnelle@linux.ibm.com,
+	guangguan.wang@linux.alibaba.com,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v7 00/10] net/smc: implement SMCv2.1 virtual ISM device support
+Date: Tue, 19 Dec 2023 16:45:26 +0800
+Message-Id: <20231219084536.8158-1-guwen@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 10/23] PM: EM: Add API for memory allocations for new
- tables
-Content-Language: en-US
-To: Qais Yousef <qyousef@layalina.io>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
- rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
- amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, wvw@google.com
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
- <20231129110853.94344-11-lukasz.luba@arm.com>
- <20231217175954.ascmdio7smqwmnfi@airbuntu>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231217175954.ascmdio7smqwmnfi@airbuntu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+The fourth edition of SMCv2 adds the SMC version 2.1 feature updates for
+SMC-Dv2 with virtual ISM. Virtual ISM are created and supported mainly by
+OS or hypervisor software, comparable to IBM ISM which is based on platform
+firmware or hardware.
 
+With the introduction of virtual ISM, SMCv2.1 makes some updates:
 
-On 12/17/23 17:59, Qais Yousef wrote:
-> On 11/29/23 11:08, Lukasz Luba wrote:
->> The runtime modified EM table can be provided from drivers. Create
->> mechanism which allows safely allocate and free the table for device
->> drivers. The same table can be used by the EAS in task scheduler code
->> paths, so make sure the memory is not freed when the device driver module
->> is unloaded.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   include/linux/energy_model.h | 11 +++++++++
->>   kernel/power/energy_model.c  | 44 ++++++++++++++++++++++++++++++++++--
->>   2 files changed, 53 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
->> index 94a77a813724..e785211828fe 100644
->> --- a/include/linux/energy_model.h
->> +++ b/include/linux/energy_model.h
->> @@ -5,6 +5,7 @@
->>   #include <linux/device.h>
->>   #include <linux/jump_label.h>
->>   #include <linux/kobject.h>
->> +#include <linux/kref.h>
->>   #include <linux/rcupdate.h>
->>   #include <linux/sched/cpufreq.h>
->>   #include <linux/sched/topology.h>
->> @@ -39,10 +40,12 @@ struct em_perf_state {
->>   /**
->>    * struct em_perf_table - Performance states table
->>    * @rcu:	RCU used for safe access and destruction
->> + * @refcount:	Reference count to track the owners
->>    * @state:	List of performance states, in ascending order
->>    */
->>   struct em_perf_table {
->>   	struct rcu_head rcu;
->> +	struct kref refcount;
->>   	struct em_perf_state state[];
->>   };
->>   
->> @@ -184,6 +187,8 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
->>   				struct em_data_callback *cb, cpumask_t *span,
->>   				bool microwatts);
->>   void em_dev_unregister_perf_domain(struct device *dev);
->> +struct em_perf_table __rcu *em_allocate_table(struct em_perf_domain *pd);
->> +void em_free_table(struct em_perf_table __rcu *table);
->>   
->>   /**
->>    * em_pd_get_efficient_state() - Get an efficient performance state from the EM
->> @@ -368,6 +373,12 @@ static inline int em_pd_nr_perf_states(struct em_perf_domain *pd)
->>   {
->>   	return 0;
->>   }
->> +static inline
->> +struct em_perf_table __rcu *em_allocate_table(struct em_perf_domain *pd)
->> +{
->> +	return NULL;
->> +}
->> +static inline void em_free_table(struct em_perf_table __rcu *table) {}
->>   #endif
->>   
->>   #endif
->> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
->> index 489287666705..489a358b9a00 100644
->> --- a/kernel/power/energy_model.c
->> +++ b/kernel/power/energy_model.c
->> @@ -114,12 +114,46 @@ static void em_destroy_table_rcu(struct rcu_head *rp)
->>   	kfree(runtime_table);
->>   }
->>   
->> -static void em_free_table(struct em_perf_table __rcu *table)
->> +static void em_release_table_kref(struct kref *kref)
->>   {
->> +	struct em_perf_table __rcu *table;
->> +
->> +	/* It was the last owner of this table so we can free */
->> +	table = container_of(kref, struct em_perf_table, refcount);
->> +
->>   	call_rcu(&table->rcu, em_destroy_table_rcu);
->>   }
->>   
->> -static struct em_perf_table __rcu *
->> +static inline void em_inc_usage(struct em_perf_table __rcu *table)
->> +{
->> +	kref_get(&table->refcount);
->> +}
->> +
->> +static void em_dec_usage(struct em_perf_table __rcu *table)
->> +{
->> +	kref_put(&table->refcount, em_release_table_kref);
->> +}
-> 
-> nit: em_table_inc/dec() instead? matches general theme elsewhere in the code
-> base.
+- Introduce feature bitmask to indicate supplemental features.
+- Reserve a range of CHIDs for virtual ISM.
+- Support extended GIDs (128 bits) in CLC handshake.
 
-Looks good, I will change it.
+So this patch set aims to implement these updates in Linux kernel. And it
+acts as the first part of SMC-D virtual ISM extension & loopback-ism [1].
 
-> 
->> +
->> +/**
->> + * em_free_table() - Handles safe free of the EM table when needed
->> + * @table : EM memory which is going to be freed
->> + *
->> + * No return values.
->> + */
->> +void em_free_table(struct em_perf_table __rcu *table)
->> +{
->> +	em_dec_usage(table);
->> +}
->> +
->> +/**
->> + * em_allocate_table() - Handles safe allocation of the new EM table
->> + * @table : EM memory which is going to be freed
->> + *
->> + * Increments the reference counter to mark that there is an owner of that
->> + * EM table. That might be a device driver module or EAS.
->> + * Returns allocated table or error.
->> + */
->> +struct em_perf_table __rcu *
->>   em_allocate_table(struct em_perf_domain *pd)
->>   {
->>   	struct em_perf_table __rcu *table;
->> @@ -128,6 +162,12 @@ em_allocate_table(struct em_perf_domain *pd)
->>   	table_size = sizeof(struct em_perf_state) * pd->nr_perf_states;
->>   
->>   	table = kzalloc(sizeof(*table) + table_size, GFP_KERNEL);
->> +	if (!table)
->> +		return table;
->> +
->> +	kref_init(&table->refcount);
->> +	em_inc_usage(table);
-> 
-> Doesn't kref_init() initialize to the count to 1 already? Is the em_inc_usage()
-> needed here?
+[1] https://lore.kernel.org/netdev/1695568613-125057-1-git-send-email-guwen@linux.alibaba.com/
 
-Good catch this is not needed here. Thanks!
+v7->v6:
+- Collect the Reviewed-by tag in v6;
+- Patch #3: redefine the struct smc_clc_msg_accept_confirm;
+- Patch #7: Because that the Patch #3 already adds '__packed' to
+  smc_clc_msg_accept_confirm, so Patch #7 doesn't need to do the same thing.
+  But this is a minor change, so I kept the 'Reviewed-by' tag.
+
+Other changes in previous versions but not yet acked:
+- Patch #1: Some minor changes in subject and fix the format issue
+  (length exceeds 80 columns) compared to v3.
+- Patch #5: removes useless ini->feature_mask assignment in __smc_connect()
+  and smc_listen_v2_check() compared to v4.
+- Patch #8: new added, compared to v3.
+
+v6->v5:
+- Add 'Reviewed-by' label given in the previous versions:
+  * Patch #4, #6, #9, #10 have nothing changed since v3;
+- Patch #2:
+  * fix the format issue (Alignment should match open parenthesis) compared to v5;
+  * remove useless clc->hdr.length assignment in smcr_clc_prep_confirm_accept()
+    compared to v5;
+- Patch #3: new added compared to v5.
+- Patch #7: some minor changes like aclc_v2->aclc or clc_v2->clc compared to v5
+  due to the introduction of Patch #3. Since there were no major changes, I kept
+  the 'Reviewed-by' label.
+
+Other changes in previous versions but not yet acked:
+- Patch #1: Some minor changes in subject and fix the format issue
+  (length exceeds 80 columns) compared to v3.
+- Patch #5: removes useless ini->feature_mask assignment in __smc_connect()
+  and smc_listen_v2_check() compared to v4.
+- Patch #8: new added, compared to v3.
+
+v5->v4:
+- Patch #6: improve the comment of SMCD_CLC_MAX_V2_GID_ENTRIES;
+- Patch #4: remove useless ini->feature_mask assignment;
+
+v4->v3:
+- Patch #6: use SMCD_CLC_MAX_V2_GID_ENTRIES to indicate the max gid
+  entries in CLC proposal and using SMC_MAX_V2_ISM_DEVS to indicate the
+  max devices to propose;
+- Patch #6: use i and i+1 in smc_find_ism_v2_device_serv();
+- Patch #2: replace the large if-else block in smc_clc_send_confirm_accept()
+  with 2 subfunctions;
+- Fix missing byte order conversion of GID and token in CLC handshake,
+  which is in a separate patch sending to net:
+  https://lore.kernel.org/netdev/1701882157-87956-1-git-send-email-guwen@linux.alibaba.com/
+- Patch #7: add extended GID in SMC-D lgr netlink attribute;
+
+v3->v2:
+- Rename smc_clc_fill_fce as smc_clc_fill_fce_v2x;
+- Remove ISM_IDENT_MASK from drivers/s390/net/ism.h;
+- Add explicitly assigning 'false' to ism_v2_capable in ism_dev_init();
+- Remove smc_ism_set_v2_capable() helper for now, and introduce it in
+  later loopback-ism implementation;
+
+v2->v1:
+- Fix sparse complaint;
+- Rebase to the latest net-next;
+
+Wen Gu (10):
+  net/smc: rename some 'fce' to 'fce_v2x' for clarity
+  net/smc: introduce sub-functions for smc_clc_send_confirm_accept()
+  net/smc: unify the structs of accept or confirm message for v1 and v2
+  net/smc: support SMCv2.x supplemental features negotiation
+  net/smc: introduce virtual ISM device support feature
+  net/smc: define a reserved CHID range for virtual ISM devices
+  net/smc: compatible with 128-bits extended GID of virtual ISM device
+  net/smc: support extended GID in SMC-D lgr netlink attribute
+  net/smc: disable SEID on non-s390 archs where virtual ISM may be used
+  net/smc: manage system EID in SMC stack instead of ISM driver
+
+ drivers/s390/net/ism.h        |   7 -
+ drivers/s390/net/ism_drv.c    |  57 ++----
+ include/linux/ism.h           |   1 -
+ include/net/smc.h             |  16 +-
+ include/uapi/linux/smc.h      |   2 +
+ include/uapi/linux/smc_diag.h |   2 +
+ net/smc/af_smc.c              | 118 ++++++++-----
+ net/smc/smc.h                 |  10 +-
+ net/smc/smc_clc.c             | 318 +++++++++++++++++++++-------------
+ net/smc/smc_clc.h             |  64 +++----
+ net/smc/smc_core.c            |  37 ++--
+ net/smc/smc_core.h            |  18 +-
+ net/smc/smc_diag.c            |   9 +-
+ net/smc/smc_ism.c             |  50 ++++--
+ net/smc/smc_ism.h             |  30 +++-
+ net/smc/smc_pnet.c            |   4 +-
+ 16 files changed, 448 insertions(+), 295 deletions(-)
+
+-- 
+2.32.0.3.g01195cf9f
+
 
