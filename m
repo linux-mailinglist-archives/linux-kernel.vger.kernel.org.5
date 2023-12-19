@@ -1,98 +1,90 @@
-Return-Path: <linux-kernel+bounces-5649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF802818D99
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:10:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BFCD818D9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F62A1F25464
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BA5D1F22228
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F42C45C1C;
-	Tue, 19 Dec 2023 17:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5924F3174A;
+	Tue, 19 Dec 2023 17:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mq3DhxDQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4400731A63
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rFdTX-0001Qs-Pt; Tue, 19 Dec 2023 18:01:47 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rFdTW-0003n2-AU; Tue, 19 Dec 2023 18:01:47 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rFdTX-000BWR-4H; Tue, 19 Dec 2023 18:01:47 +0100
-Date: Tue, 19 Dec 2023 18:01:47 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Sean Young <sean@mess.org>
-Cc: linux-media@vger.kernel.org, linux-pwm@vger.kernel.org, 
-	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 2/6] pwm: Replace ENOTSUPP with EOPNOTSUPP
-Message-ID: <eeewkabfujbszz226tibtsmry2gf2nygwqcs4au7y2rulqoobt@qgdyyvlbcoma>
-References: <cover.1703003288.git.sean@mess.org>
- <7d6c10b52bbb29925fff9d2f16788a65c138921e.1703003288.git.sean@mess.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428EE20DE3
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so15506a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:02:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703005344; x=1703610144; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3nRM2voBOWeWgYPSs3P1rkp2QaxKc2DKwbIgLygSDQM=;
+        b=mq3DhxDQBWn07zKMgws3Xugcvnh9bSyOy3UzcbFkCdJsJ/G3gqKP1uluy/+WP2P4jU
+         1e4p+xsX2yfTjpzUB2co0VlAZbyAywPrIf84YSPVLkG0VGNnb0XfdJUJ+jXkk8jlaFfw
+         8vcBHzH8i1dhMIeRpeZJT953Aavph2qWFF4KpOghn53GUJJ4X/Xe9cAC8Xp5rjBygtwg
+         DDEJtvTd2vtMlnNcNtF++wUenq9dMZxvOEG6MccquUXKkMwqcKx72JlM8PyNJwTPT2cB
+         kFmanMQJ8Fb4hqCcMP4Dkm9rOxbm3RiQRqJJOUl5xo9ct3PdfGYv0EW0mlVeXksXKl58
+         f4mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703005344; x=1703610144;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3nRM2voBOWeWgYPSs3P1rkp2QaxKc2DKwbIgLygSDQM=;
+        b=MCy6E+1QcO6G4FUlmRdO8qv2J1hMp9n8Yoymqmv9MpmaHeSqefgRVncveEHRg5TrFp
+         nZvkDXyPctY24Ge8uGRJ7TCWRASEnIbiuti4fDzbLu60/49nmzwFl/2spIHFUXMljED1
+         Aq08JHF0nPjxsfxTKaqGx8vuHtMLWocgpQbhLDkcrCp+AAwsWVeT+9Y8odNrymK2M8lZ
+         UtqJyUztiuZG06ImCwlNpeOutSQ9ICDuzFtgf9JOM4Z4CT4H43w32CPQf1ROPYKHuFBj
+         Q4SNqFbowQfkOOpAozVr+dvIPFk8V1jJz0uSZkzAZ/9IAyscnqT9TLFNOhJ/cUpg1phD
+         DXhA==
+X-Gm-Message-State: AOJu0YxUnMJcUb88ezo1D5PPrrl9mCUTjfRcetzzp8nQcaPgEG5QVjDZ
+	0zKQPucPHWRsD0fQhlQ9+qBA63icnvVvHRNK1uSmuK6SfzIIufUTcWs388wxnA==
+X-Google-Smtp-Source: AGHT+IGp9ihenLbhfTpRo1AlD/nvyc0zBpF9guPowYjRPujjexXL3HOA0CI6mqrrvkUN92vD5xOF/2dKoZVGh8twVbU=
+X-Received: by 2002:a50:9fab:0:b0:54c:f4fd:3427 with SMTP id
+ c40-20020a509fab000000b0054cf4fd3427mr207958edf.7.1703005344201; Tue, 19 Dec
+ 2023 09:02:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xsvd72fnpkymohhj"
-Content-Disposition: inline
-In-Reply-To: <7d6c10b52bbb29925fff9d2f16788a65c138921e.1703003288.git.sean@mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---xsvd72fnpkymohhj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <20231219081453.718489-1-faizal.abdul.rahim@linux.intel.com>
+In-Reply-To: <20231219081453.718489-1-faizal.abdul.rahim@linux.intel.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 19 Dec 2023 18:02:12 +0100
+Message-ID: <CANn89iJvbXKgT3OSyLYMXpvoOXc+OEUt1eTzbHnZ0wG8ibvqcw@mail.gmail.com>
+Subject: Re: [PATCH v3 net 0/4] qbv cycle time extension/truncation
+To: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>, 
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Jamal Hadi Salim <jhs@mojatatu.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	"David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 04:30:25PM +0000, Sean Young wrote:
-> According to Documentation/dev-tools/checkpatch.rst ENOTSUPP is
-> not recommended and EOPNOTSUPP should be used instead.
->=20
-> Signed-off-by: Sean Young <sean@mess.org>
+On Tue, Dec 19, 2023 at 9:17=E2=80=AFAM Faizal Rahim
+<faizal.abdul.rahim@linux.intel.com> wrote:
+>
+> According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension,
+> the Cycle Time Extension variable allows this extension of the last old
+> cycle to be done in a defined way. If the last complete old cycle would
+> normally end less than OperCycleTimeExtension nanoseconds before the new
+> base time, then the last complete cycle before AdminBaseTime is reached
+> is extended so that it ends at AdminBaseTime.
+>
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---xsvd72fnpkymohhj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWBzHoACgkQj4D7WH0S
-/k6t8AgAhDIOQQmuFx+ge4Psp5comBBYf6kTwTuMMJJU5VPdMg5GO1CY3dV7zAyW
-0HQ1Zxqf4ZHL622v7BH/b4p2m6zhVbbzWylrn9AqvWF8/X9tiXK87jrrmFhsVHde
-tkZny1d1RXLy6kiNJD5gSHyVNH5Fc73POTIVlL8ImfyynqAOvhq85LaCu9oHTTSI
-mYgwY2zXVBArbs9kfOz+U31eeVCkKr3U8U3nXfqAbHD9CEMw7upVNF5zgTeupFHH
-k72B3ZZqDrt/6CTeEKzlfihsPTQ69jyXDJm8paIkmXsw7De2qYyLhhpfPJluQZnT
-nHOh3Wn/Lorr7vQg08vVEnk8voY+lQ==
-=zASY
------END PGP SIGNATURE-----
-
---xsvd72fnpkymohhj--
+Hmm... Is this series fixing any of the pending syzbot bugs ?
 
