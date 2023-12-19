@@ -1,292 +1,844 @@
-Return-Path: <linux-kernel+bounces-5887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 920E0819108
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:46:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B17C781910D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:54:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0D1A1C24E63
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:46:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F110A286FB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B1D39864;
-	Tue, 19 Dec 2023 19:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="LDfBUAGv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D40B3986E;
+	Tue, 19 Dec 2023 19:54:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2125.outbound.protection.outlook.com [40.107.114.125])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536CA39854;
-	Tue, 19 Dec 2023 19:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jGTkp7G7NJ0FWXK3YTcxtQi6rP1QwLgXOmfkdw5C7vuDW1l0nrxQXcu06BNmYctGytoh4XOV+9H+8Js5vXeWo5ye3rKmcCTHKUY+psa/0hTR9+eeerSzHbj8D4IPkWHvUXd5dTk5iJxZP7CF3ZHwWukFQ5nLBnAleUv3iKVp2ZGxYsv+uBZtzNBA1o8X5fKa2w3F/0l3qb/pGSarAWDY1BHtpD6iRtYzzPkISu+m6WRYP3uHH4RXa5ffYpCtkJH1aVURLgujCAfehzjtrgYQJOgg/ssmKoOVDAhGbl+YSqdn+ygTLcvljVbR5P2b6oPUFPNLHgA0Jp2U5wVjPHVqIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KKlPTCfBj4+1XG7cUKV4ID/Z/67XWer3t88ySW6aiAA=;
- b=ikBvAWCajPR3AO0/1niRqmLKH/e2c2SqmBpqpo6h8ibdAVa2sB+vb7KsSRyXH/y97mzmmY8FCe4DUyDlHAFkmwahtRzJmjxK1ApVPhDexWOTv7W4vb0RnPDOQa3v92yzyig09eA35n+YbQcLGJsFSp5rlYnXEgdgO9JfnoqBfPRzYsx3cfTEwzWDg1EE6xjtqpNIBUrUJFj5xY/U76bJKbKgpUGK9IVCvpllaGnSa42+H+UFoxo0q4tlTyzHjII3fLbRxb1SE8oh2QZtHe+wueH2UwDPJLETK+3jd9klOywU2gDei/XH+Rqgxl/vClZaVcStzyOY08kIWHHukDW52g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KKlPTCfBj4+1XG7cUKV4ID/Z/67XWer3t88ySW6aiAA=;
- b=LDfBUAGvXfUV+age3IdUH8ZVUZ+N5qBDtwTMcf9J5s4LufYIltv+CUAvSvyYHxL1MXEDFi2NMIfsi6WuC4XxzeiuA9M5iDlkc4vWjnxvfEMdYPJSALm5LBrN1qWo++o9z2gvwXpV+gCkP6AjWmCjaIjrKKMp1pII5S4JMXsHb3w=
-Received: from OSZPR01MB7019.jpnprd01.prod.outlook.com (2603:1096:604:13c::8)
- by TY3PR01MB10337.jpnprd01.prod.outlook.com (2603:1096:400:251::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.16; Tue, 19 Dec
- 2023 19:46:35 +0000
-Received: from OSZPR01MB7019.jpnprd01.prod.outlook.com
- ([fe80::6a25:e98a:8e0c:c57c]) by OSZPR01MB7019.jpnprd01.prod.outlook.com
- ([fe80::6a25:e98a:8e0c:c57c%7]) with mapi id 15.20.7113.010; Tue, 19 Dec 2023
- 19:46:35 +0000
-From: Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Conor Dooley <conor@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>
-CC: Conor Dooley <conor.dooley@microchip.com>, "prabhakar.csengg@gmail.com"
-	<prabhakar.csengg@gmail.com>, "geert+renesas@glider.be"
-	<geert+renesas@glider.be>, Atish Patra <atishp@rivosinc.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, "apatel@ventanamicro.com"
-	<apatel@ventanamicro.com>, "alexghiti@rivosinc.com" <alexghiti@rivosinc.com>,
-	Bjorn Topel <bjorn@rivosinc.com>, "suagrfillet@gmail.com"
-	<suagrfillet@gmail.com>, "jeeheng.sia@starfivetech.com"
-	<jeeheng.sia@starfivetech.com>, "petrtesarik@huaweicloud.com"
-	<petrtesarik@huaweicloud.com>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>
-Subject: RE: [RFT 1/2] RISC-V: handle missing "no-map" properties for
- OpenSBI's PMP protected regions
-Thread-Topic: [RFT 1/2] RISC-V: handle missing "no-map" properties for
- OpenSBI's PMP protected regions
-Thread-Index:
- AQHaKE/Uj1kSBoBrKE6vg5v7tZ0OfrCdyoEAgAACn4CAEyD4gIAAAXdggAAMFQCAAAcsUIAABwEAgAALeDA=
-Date: Tue, 19 Dec 2023 19:46:35 +0000
-Message-ID:
- <OSZPR01MB701955EDCAB2043A3A60B338AA97A@OSZPR01MB7019.jpnprd01.prod.outlook.com>
-References:
- <OSZPR01MB70195C6084CF2CDA5EE13D68AA97A@OSZPR01MB7019.jpnprd01.prod.outlook.com>
- <mhng-378700ef-2f59-431a-bba6-2c70e0584738@palmer-ri-x1c9a>
- <OSZPR01MB7019F6BECABB1C57BBC8FAE0AA97A@OSZPR01MB7019.jpnprd01.prod.outlook.com>
- <870F0819-2354-4359-B474-F0C0BE1587B2@kernel.org>
-In-Reply-To: <870F0819-2354-4359-B474-F0C0BE1587B2@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OSZPR01MB7019:EE_|TY3PR01MB10337:EE_
-x-ms-office365-filtering-correlation-id: 5ac0bdce-5b5e-4de4-72d4-08dc00cb3546
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 5JjxLB044gFP1ol6uRr0l43yyhkstZhWWuamaFw5DxdC4YDK9r2gqRI3jNPh4LeERzIiXOKxPst5ehDvT6cIJC5H7AlBpOXEyTgewsqlIerZC/BXJgF4mFlTuCEPO8txXq8hdsTAVxrvHuQLP6bM7pUzMgTerMPhtjswCwYDGUcjtWtWkIY0vocoMiDV7Uy9S1OW4wZIhvWlCO8AgFj2H3J/R8lnHubTUq1O7z/7Yc3Bs6JdKJh24NlskT17behPSTa2+paZAVT4R4c7Q+ZP0gIvcaPwNhtD6NoZRnr0D0izT3UotSQKdo/B2O5LIJa8J1GbE2S8cbfYEVwRnrOdZVyHA+EizObDgNxzcK24dSovn+5Vm69nhj2yNFq5k5dgDnAxvHAnM+Ji1YcvFqyWAjdZIVzyDBgcaCApOKapi09MO7Y0zYeWczdx31946EUynLnfLEiYAcdDd/9K5MfiMlM/rRWK5AUP90f5hj773tmpYBzHJX6RA/k++fJBO/M564vZB3m4BpKOzRuTimfyFkMcpH29d2eRdtCXBPtiiS80kJuUqxLMt4J9E5KcDH9Zy6qvz+dfibHT2Fvs1/igcD3eWc46OuV3lZXx4gQCUlsp3m9p/NPBwDK+wM1cotL2L2aw3+N9asr9+Kg5WJZiRA==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSZPR01MB7019.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(346002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(8936002)(8676002)(5660300002)(38100700002)(2906002)(122000001)(52536014)(4326008)(6506007)(9686003)(7696005)(53546011)(71200400001)(110136005)(45080400002)(83380400001)(316002)(64756008)(54906003)(66556008)(7416002)(66446008)(55016003)(66946007)(76116006)(66476007)(26005)(33656002)(86362001)(478600001)(966005)(41300700001)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?Tnc3eTBUMW1CbmNQZ3dsMzdmOEdaL1ZFYkRMK28xdk1mVHRpMzdsWlEyQitI?=
- =?utf-8?B?OVlSQ05WMjk1YUdKS3RqMkRKay9UZWgwdUx5QnM0Y0REejV0Q0FmcVk4M2l0?=
- =?utf-8?B?ZEQ1WVpBblVRa3ZvbkxQczdDUjZQTnZPbDhMM2FudUsxRnpaczVqanlJSnVJ?=
- =?utf-8?B?K1pkUXBva09yY2NKdTJ1Yi9FWDgwMUNGV2xteUkxMi8wc0haTEJHTU52NnJo?=
- =?utf-8?B?NlJOWUhwY2xUWDFqK2J6UHg4MkVreFVzeEZRTmdBbmNGcWg5TEc4amxYTngx?=
- =?utf-8?B?ck5pVmszdUt2dDYvdnd4U1BGVVJpbHhzMTcxWFZDazh6eTdrYXg2U0h3SkZN?=
- =?utf-8?B?NFVQT2FGcitqYXdXQjBBSVo4TXR0OFc2TG5XT3RzbzA4RlNNZnZ6cC9MOW1h?=
- =?utf-8?B?Rm5oREp0UkdVSDV2QjU3dVJvTzZQd2NFOFVqOTlrYnlWTjNoK3hnQU11RlJS?=
- =?utf-8?B?Ulg2RWdZMUNleGszUFk5L3d4V1JEekxYUzNKT3dlUkdra2oxTStpeHVxdW00?=
- =?utf-8?B?RHpRVlJkZnd0d3p4OTZBQjhxQXNpUXVZUHpET0g1S2phTjJMWE5hTnk1Qmlv?=
- =?utf-8?B?bmVJUXFNdTA5YmdJS0JWc3pHRXA2WGx5ZEJhVlRIby9mM1d3bmpxUG5VSFhs?=
- =?utf-8?B?Z0Y5VUtONFJiRlJmbE9xNVcyekpnYjYrTVNaMkVINlBQdEdjT0QyT3dLTXdI?=
- =?utf-8?B?WEwrU0VWWkRwbnlnMXgwUnhxcW9PcTE1cS9JQ25rc3QzaURBd0FDZ2VUaElB?=
- =?utf-8?B?N2p3QytaR0t2T1NRazRqOEprT0lBeWk0ZlZ2bnlpNm41VFBGY252a2FRUXVv?=
- =?utf-8?B?dlBWWDBSYmJxWEV5RVNPTDA2c2FZTjRvUndpdDJWc0tTdVNCUkg0dnZzWldq?=
- =?utf-8?B?Tk1UZ2s1eEZNR1hXcTh3TDMrMjR6NjVxdk15SmlLSEx4U1B1eC9uYWQ4OE4x?=
- =?utf-8?B?aFFwV2J5M0FJTEc1SmwyQnlwMWdUNmtCeXBMeHNQV2NRK1JFb1NIU2ZzMmpV?=
- =?utf-8?B?aXJQZzM3Ui9PQ3pFS2kramsxdXJHRDN3eDFXalhLVDE3UTJMalhzRzFpNkRi?=
- =?utf-8?B?djMzRmZiMHR2NVF1MnA4NTdLb2xVbkNUYWQ2d0JjSEkyVmt3b25TVzAvaCtG?=
- =?utf-8?B?ZFpoMHVJbEN0VUtndm1hd0NxeGtkcGRQMVU3cmxPQnJWRC92NjV3U1grTHox?=
- =?utf-8?B?ODVUODRYUWgrWHFNOXNqci9hNXVxVXZvRE9hall0Rko4bGJYWWRzR3o1Y3Va?=
- =?utf-8?B?TFBLR3BlWC9OdUE0QngzUzF0T3RjSmhkMmtZTURoYnVRSjVNSTVqT0tqMitM?=
- =?utf-8?B?VW0yRkxHaHQ0OUJJMStSMXRJQkNlVjErdUJRN1VMYXNwV0dYOUpxMU10YVRF?=
- =?utf-8?B?U1RjZm84RUEyb2xlamYyMmFpV1hpZlFRSm1VMlpFdFl1TXI3R242R1dMUjl3?=
- =?utf-8?B?eXhMVmlJUFEzNjJoOXU2bHVYMFFKK3E1Q1JMVWFzai9CNE9EdStTU0lPbFdE?=
- =?utf-8?B?Ry8wdmdCTkxhWm9yZG5WWHNyVWJnVkJPWlNYV0RnWkpqei9OaDZXamlvWmNS?=
- =?utf-8?B?RVkxOVZxSkg2REdvUmpYa3FzZ2IzWHpVSlBSblBhMytHNncraytCOVlja1JU?=
- =?utf-8?B?elh1SHB1OEFQVnhpYXhNaEZQMUc0cStZQ0NrSUFPbTR2SUlrL3E2K3hBNklU?=
- =?utf-8?B?SEFhS2dJd1RNV0MzZklyZHdPaXdGQWM5Qklzbk43VFY0aisrbk5zNTl5bW1K?=
- =?utf-8?B?bnJQcXpzZTEzbTgvbzhMdElmSTNzeUNaendYRFpOVjFBVHZ2cjFpckZrL1J4?=
- =?utf-8?B?TkY4dzhhQ2c0cFhyd3lFeDVKRFlvR2lkWm9DZEswZmZOYlpGeDk0ZllNcURQ?=
- =?utf-8?B?VU1iS21Udk1jMUNDZjBxZWdRVlRXdnNmK0xRT2xBM1p1OTFTdWlGUDBzK3lS?=
- =?utf-8?B?UFJLUlA4UnRmWkF3STYvRk80WGs1QmpWZ1FYOEdYM2JTY200QXlHWmoyWXUw?=
- =?utf-8?B?YXpuN0Z6bCtTOFZaZGpKcENxN2hnakgwWkFVYkRQcERHODVYQlN3MjVCdER0?=
- =?utf-8?B?YTZLOWhtTXNaNHI1N3VMSXpUK3pNMHFLZ2cvOXBjSmV0MmtWczZXN3EyQWd1?=
- =?utf-8?B?dkJVRlBOc211N0FXYUtNYXdQRi9PZ1JTcUt3TVI1cnVhclgxR2xKQkRrUGo4?=
- =?utf-8?Q?VJcLWTsnk6BknHg8PUvHtDA=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D393984B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rFgAP-0002WC-OQ; Tue, 19 Dec 2023 20:54:13 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rFgAM-0005Sc-UO; Tue, 19 Dec 2023 20:54:12 +0100
+Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rFgAN-007pE3-U7; Tue, 19 Dec 2023 20:54:11 +0100
+Date: Tue, 19 Dec 2023 20:54:11 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Kamel Bouhara <kamel.bouhara@bootlin.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Jeff LaBundy <jeff@labundy.com>,
+	catalin.popescu@leica-geosystems.com,
+	mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
+	hannah.rossiter@touchnetix.com,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	bsp-development.geo@leica-geosystems.com
+Subject: Re: [PATCH v5 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
+Message-ID: <20231219195411.nlbeo3hvvem6cmgm@pengutronix.de>
+References: <20231211121430.1689139-1-kamel.bouhara@bootlin.com>
+ <20231211121430.1689139-4-kamel.bouhara@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSZPR01MB7019.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ac0bdce-5b5e-4de4-72d4-08dc00cb3546
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Dec 2023 19:46:35.1866
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yyKYQnknRYNWRvFIzItk+pghMZWTLqWA+WQrpCYizkqBksE7ElGFz4xtMZwrYIiuqYRO5PAQklHq3SdO3DwZxmubsUXTMunM9Ix6uGId5m84s68XedFYnXyeDQaudS28
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10337
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211121430.1689139-4-kamel.bouhara@bootlin.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBDb25vciBEb29sZXkgPGNvbm9y
-QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFR1ZXNkYXksIERlY2VtYmVyIDE5LCAyMDIzIDY6NTggUE0N
-Cj4gVG86IFByYWJoYWthciBNYWhhZGV2IExhZCA8cHJhYmhha2FyLm1haGFkZXYtbGFkLnJqQGJw
-LnJlbmVzYXMuY29tPjsgUGFsbWVyIERhYmJlbHQNCj4gPHBhbG1lckBkYWJiZWx0LmNvbT4NCj4g
-Q2M6IENvbm9yIERvb2xleSA8Y29ub3IuZG9vbGV5QG1pY3JvY2hpcC5jb20+OyBwcmFiaGFrYXIu
-Y3NlbmdnQGdtYWlsLmNvbTsgZ2VlcnQrcmVuZXNhc0BnbGlkZXIuYmU7DQo+IEF0aXNoIFBhdHJh
-IDxhdGlzaHBAcml2b3NpbmMuY29tPjsgUGF1bCBXYWxtc2xleSA8cGF1bC53YWxtc2xleUBzaWZp
-dmUuY29tPjsgYXBhdGVsQHZlbnRhbmFtaWNyby5jb207DQo+IGFsZXhnaGl0aUByaXZvc2luYy5j
-b207IEJqb3JuIFRvcGVsIDxiam9ybkByaXZvc2luYy5jb20+OyBzdWFncmZpbGxldEBnbWFpbC5j
-b207DQo+IGplZWhlbmcuc2lhQHN0YXJmaXZldGVjaC5jb207IHBldHJ0ZXNhcmlrQGh1YXdlaWNs
-b3VkLmNvbTsgbGludXgtcmlzY3ZAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgtDQo+IGtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmc7IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUkU6
-IFtSRlQgMS8yXSBSSVNDLVY6IGhhbmRsZSBtaXNzaW5nICJuby1tYXAiIHByb3BlcnRpZXMgZm9y
-IE9wZW5TQkkncyBQTVAgcHJvdGVjdGVkIHJlZ2lvbnMNCj4gDQo+IA0KPiANCj4gT24gMTkgRGVj
-ZW1iZXIgMjAyMyAxODozODozMCBHTVQsIFByYWJoYWthciBNYWhhZGV2IExhZCA8cHJhYmhha2Fy
-Lm1haGFkZXYtbGFkLnJqQGJwLnJlbmVzYXMuY29tPg0KPiB3cm90ZToNCj4gPkhpIFBhbG1lciwN
-Cj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBQYWxtZXIg
-RGFiYmVsdCA8cGFsbWVyQGRhYmJlbHQuY29tPg0KPiA+PiBTZW50OiBUdWVzZGF5LCBEZWNlbWJl
-ciAxOSwgMjAyMyA2OjA3IFBNDQo+ID4+IFRvOiBQcmFiaGFrYXIgTWFoYWRldiBMYWQgPHByYWJo
-YWthci5tYWhhZGV2LWxhZC5yakBicC5yZW5lc2FzLmNvbT4NCj4gPj4gQ2M6IENvbm9yIERvb2xl
-eSA8Y29ub3JAa2VybmVsLm9yZz47IENvbm9yIERvb2xleQ0KPiA+PiA8Y29ub3IuZG9vbGV5QG1p
-Y3JvY2hpcC5jb20+OyBwcmFiaGFrYXIuY3NlbmdnQGdtYWlsLmNvbTsNCj4gPj4gZ2VlcnQrcmVu
-ZXNhc0BnbGlkZXIuYmU7IEF0aXNoIFBhdHJhIDxhdGlzaHBAcml2b3NpbmMuY29tPjsgUGF1bA0K
-PiA+PiBXYWxtc2xleSA8cGF1bC53YWxtc2xleUBzaWZpdmUuY29tPjsgYXBhdGVsQHZlbnRhbmFt
-aWNyby5jb207DQo+ID4+IGFsZXhnaGl0aUByaXZvc2luYy5jb207IEJqb3JuIFRvcGVsIDxiam9y
-bkByaXZvc2luYy5jb20+Ow0KPiA+PiBzdWFncmZpbGxldEBnbWFpbC5jb207IGplZWhlbmcuc2lh
-QHN0YXJmaXZldGVjaC5jb207DQo+ID4+IHBldHJ0ZXNhcmlrQGh1YXdlaWNsb3VkLmNvbTsgbGlu
-dXgtcmlzY3ZAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gPj4gbGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZzsgc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiA+PiBTdWJqZWN0OiBSRTogW1JGVCAx
-LzJdIFJJU0MtVjogaGFuZGxlIG1pc3NpbmcgIm5vLW1hcCIgcHJvcGVydGllcyBmb3INCj4gPj4g
-T3BlblNCSSdzIFBNUCBwcm90ZWN0ZWQgcmVnaW9ucw0KPiA+Pg0KPiA+PiBPbiBUdWUsIDE5IERl
-YyAyMDIzIDA5OjI3OjQyIFBTVCAoLTA4MDApLCBwcmFiaGFrYXIubWFoYWRldi1sYWQucmpAYnAu
-cmVuZXNhcy5jb20gd3JvdGU6DQo+ID4+ID4gSGkgQ29ub3IsDQo+ID4+ID4NCj4gPj4gPj4gLS0t
-LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPj4gPj4gRnJvbTogQ29ub3IgRG9vbGV5IDxjb25v
-ckBrZXJuZWwub3JnPg0KPiA+PiA+PiBTZW50OiBUdWVzZGF5LCBEZWNlbWJlciAxOSwgMjAyMyA1
-OjE4IFBNDQo+ID4+ID4+IFRvOiBDb25vciBEb29sZXkgPGNvbm9yLmRvb2xleUBtaWNyb2NoaXAu
-Y29tPg0KPiA+PiA+PiBDYzogTGFkLCBQcmFiaGFrYXIgPHByYWJoYWthci5jc2VuZ2dAZ21haWwu
-Y29tPjsgUGFsbWVyIERhYmJlbHQNCj4gPj4gPj4gPHBhbG1lckBkYWJiZWx0LmNvbT47DQo+ID4+
-ID4+IGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlOyBBdGlzaCBQYXRyYSA8YXRpc2hwQHJpdm9zaW5j
-LmNvbT47IFBhdWwNCj4gPj4gPj4gZ2VlcnQrV2FsbXNsZXkgPHBhdWwud2FsbXNsZXlAc2lmaXZl
-LmNvbT47DQo+ID4+ID4+IGFwYXRlbEB2ZW50YW5hbWljcm8uY29tOyBhbGV4Z2hpdGlAcml2b3Np
-bmMuY29tOyBCam9ybiBUb3BlbA0KPiA+PiA+PiA8Ympvcm5Acml2b3NpbmMuY29tPjsgc3VhZ3Jm
-aWxsZXRAZ21haWwuY29tOw0KPiA+PiA+PiBqZWVoZW5nLnNpYUBzdGFyZml2ZXRlY2guY29tOyBw
-ZXRydGVzYXJpa0BodWF3ZWljbG91ZC5jb207IGxpbnV4LQ0KPiA+PiA+PiByaXNjdkBsaXN0cy5p
-bmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiA+PiA+PiBzdGFi
-bGVAdmdlci5rZXJuZWwub3JnOyBQcmFiaGFrYXIgTWFoYWRldiBMYWQNCj4gPj4gPj4gPHByYWJo
-YWthci5tYWhhZGV2LWxhZC5yakBicC5yZW5lc2FzLmNvbT4NCj4gPj4gPj4gU3ViamVjdDogUmU6
-IFtSRlQgMS8yXSBSSVNDLVY6IGhhbmRsZSBtaXNzaW5nICJuby1tYXAiIHByb3BlcnRpZXMNCj4g
-Pj4gPj4gZm9yIE9wZW5TQkkncyBQTVAgcHJvdGVjdGVkIHJlZ2lvbnMNCj4gPj4gPj4NCj4gPj4g
-Pj4gSGV5LA0KPiA+PiA+Pg0KPiA+PiA+PiBPbiBUaHUsIERlYyAwNywgMjAyMyBhdCAwMToxMToy
-M1BNICswMDAwLCBDb25vciBEb29sZXkgd3JvdGU6DQo+ID4+ID4+ID4gT24gVGh1LCBEZWMgMDcs
-IDIwMjMgYXQgMDE6MDI6MDBQTSArMDAwMCwgTGFkLCBQcmFiaGFrYXIgd3JvdGU6DQo+ID4+ID4+
-ID4gPiBPbiBXZWQsIERlYyA2LCAyMDIzIGF0IDI6MjbigK9QTSBDb25vciBEb29sZXkgPGNvbm9y
-QGtlcm5lbC5vcmc+IHdyb3RlOg0KPiA+PiA+PiA+ID4gPiBPbiBXZWQsIERlYyAwNiwgMjAyMyBh
-dCAwNDo1MjoxMUFNIC0wODAwLCBQYWxtZXIgRGFiYmVsdCB3cm90ZToNCj4gPj4gPj4gPiA+ID4g
-PiBPbiBUaHUsIDEwIEF1ZyAyMDIzIDAyOjA3OjEwIFBEVCAoLTA3MDApLCBDb25vciBEb29sZXkg
-d3JvdGU6DQo+ID4+ID4+ID4NCj4gPj4gPj4gPiA+ID4gPiA+IEknbSBwZXJmZWN0bHkgaGFwcHkg
-dG8gZHJvcCB0aGlzIHNlcmllcyB0aG91Z2gsIGlmDQo+ID4+ID4+ID4gPiA+ID4gPiBwZW9wbGUg
-Z2VuZXJhbGx5IGFyZSBvZiB0aGUgb3BpbmlvbiB0aGF0IHRoaXMgc29ydCBvZiBmaXJtd2FyZSB3
-b3JrYXJvdW5kIGlzIGlsbC0NCj4gYWR2aXNlZC4NCj4gPj4gPj4gPiA+ID4gPiA+IFdlIGFyZSB1
-bmFmZmVjdGVkIGJ5IGl0LCBzbyBJIGNlcnRhaW5seSBoYXZlIG5vIHByZXNzdXJlDQo+ID4+ID4+
-ID4gPiA+ID4gPiB0byBoYXZlIHNvbWV0aGluZyB3b3JraW5nIGhlcmUuIEl0J3MgbXkgZGVzaXJl
-IG5vdCB0byBiZQ0KPiA+PiA+PiA+ID4gPiA+ID4gdXNlci1ob3N0aWxlIHRoYXQgbW90aXZhdGVk
-IHRoaXMgcGF0Y2guDQo+ID4+ID4+ID4gPiA+ID4NCj4gPj4gPj4gPiA+ID4gPiBJSVVDIHlvdSBn
-dXlzIGFuZCBSZW5lYXMgYXJlIHRoZSBvbmx5IG9uZXMgd2hvIGhhdmUNCj4gPj4gPj4gPiA+ID4g
-PiBoYXJkd2FyZSB0aGF0IG1pZ2h0IGJlIGluIGEgc3BvdCB3aGVyZSB1c2VycyBhcmVuJ3QgYWJs
-ZQ0KPiA+PiA+PiA+ID4gPiA+IHRvIHVwZGF0ZSB0aGUgZmlybXdhcmUgKGllLCBpdCdzIG91dCBp
-biBwcm9kdWN0aW9uIHNvbWV3aGVyZSkuDQo+ID4+ID4+ID4gPiA+DQo+ID4+ID4+ID4gPiA+IEkg
-ZHVubm8gaWYgd2UgY2FuIHJlYWxseSBrZWVwIHRoaW5raW5nIGxpa2UgdGhhdCB0aG91Z2guIElu
-DQo+ID4+ID4+ID4gPiA+IHRlcm1zIG9mIHBlb3BsZSB3aG8gaGF2ZSBkZXZpY2V0cmVlcyBpbiB0
-aGUga2VybmVsIGFuZCBzdHVmZg0KPiA+PiA+PiA+ID4gPiBhdmFpbGFibGUgaW4gd2VzdGVybiBj
-YXRhbG9nIGRpc3RyaWJ1dGlvbiwgc3VyZS4NCj4gPj4gPj4gPiA+ID4gSSBkb24ndCB0aGluayB3
-ZSBjYW4gYXNzdW1lIHRoYXQgdGhhdCBjb3ZlcnMgYWxsIHVzZXJzDQo+ID4+ID4+ID4gPiA+IHRo
-b3VnaCwgY2VydGFpbmx5IHRoZSBzeW50YWNvcmUgZm9sa3MgcG9wIHVwIGV2ZXJ5IG5vdyBhbmQN
-Cj4gPj4gPj4gPiA+ID4gdGhlbiwgYW5kIEkgc3VyZSBob3BlIHRoYXQgQW5kZXMgZXRjIGhhdmUg
-bGFyZ2VyIGN1c3RvbWVyDQo+ID4+ID4+ID4gPiA+IGJhc2VzIHRoYW4gdGhlIGluLWtlcm5lbCB1
-c2VycyB3b3VsZCBzdWdnZXN0Lg0KPiA+PiA+PiA+ID4gPg0KPiA+PiA+PiA+ID4gPiA+IFNvIEkn
-bSBhZGRpbmcgR2VlcnQsIHRob3VnaCBoZSBwcm9iYWJseSBzYXcgdGhpcyBtb250aHMgYWdvLi4u
-DQo+ID4+ID4+ID4gPiA+DQo+ID4+ID4+ID4gPiA+IFByYWJoYWthciBtaWdodCBiZSBhIGdvb2Qg
-Y2FsbCBvbiB0aGF0IGZyb250LiBJJ20gbm90IHN1cmUNCj4gPj4gPj4gPiA+ID4gaWYgdGhlIFJl
-bmVzYXMgc3R1ZmYgd29ya3Mgb24gYWZmZWN0ZWQgdmVyc2lvbnMgb2YgT3BlblNCSQ0KPiA+PiA+
-PiA+ID4gPiB0aG91Z2gsIGd1ZXNzIGl0IGRlcGVuZHMgb24gdGhlIHNlcXVlbmNpbmcgb2YgdGhl
-IHN1cHBvcnQNCj4gPj4gPj4gPiA+ID4gZm9yIHRoZSBub24tY29oZXJlbnQgc3R1ZmYgYW5kIHdo
-ZW4gdGhpcyBidWcgd2FzIGZpeGVkLg0KPiA+PiA+PiA+ID4gPg0KPiA+PiA+PiA+ID4gQVRNLCBJ
-IGRvbnQgdGhpbmsgdGhlcmUgYXJlIGFueSB1c2VycyB3aG8gYXJlIHVzaW5nIHRoZQ0KPiA+PiA+
-PiA+ID4gdXBzdHJlYW0ga2VybmVsICsgT3BlblNCSSAoYXBhcnQgZnJvbSBtZSBhbmQgR2VlcnQh
-KS4NCj4gPj4gPj4gPiA+IEN1cnJlbnRseSB0aGUgY3VzdG9tZXJzIGFyZSB1c2luZyB0aGUgQlNQ
-IHJlbGVhc2VzLg0KPiA+PiA+PiA+DQo+ID4+ID4+ID4gVGhhdCBkb2Vzbid0IHJlYWxseSBhbnN3
-ZXIgd2hldGhlciBvciBub3QgeW91IChhbmQgeW91cg0KPiA+PiA+PiA+IGN1c3RvbWVycykgYXJl
-IHVzaW5nIGFuIGFmZmVjdGVkIHZlcnNpb24gb2YgdGhlIHZlbmRvciBPcGVuU0JJPw0KPiA+PiA+
-PiA+IFRoZSBhZmZlY3RlZCByYW5nZSBmb3IgT3BlblNCSSBpdHNlbGYgaXMgW3YwLjggdG8gdjEu
-MykuDQo+ID4+ID4+DQo+ID4+ID4+IERpZCB5b3UgcGVyaGFwcyBtaXNzIHRoaXMgbWFpbCBQcmFi
-aGFrYXI/DQo+ID4+ID4+DQo+ID4+ID4gT29wcyBzb3JyeSBmb3IgdGhhdC4NCj4gPj4gPg0KPiA+
-PiA+IEkgY2FuIGNvbmZpcm0gdGhlIEJTUCB2ZXJzaW9uIHVzZWQgYnkgdGhlIGN1c3RvbWVycyBp
-cyB2MS4wIFswXS4NCj4gPj4gPg0KPiA+PiA+IFswXQ0KPiA+PiA+IGh0dHBzOi8vanBuMDEuc2Fm
-ZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmcNCj4gPj4g
-PiBpdGglMkYmZGF0YT0wNSU3QzAyJTdDcHJhYmhha2FyLm1haGFkZXYtbGFkLnJqJTQwYnAucmVu
-ZXNhcy5jb20lN0M2DQo+ID4+ID4gMzI1OWQzYmJkYTM0M2NjZGUzZTA4ZGMwMGM0NjA1NCU3QzUz
-ZDgyNTcxZGExOTQ3ZTQ5Y2I0NjI1YTE2NmE0YTJhJQ0KPiA+PiA+IDdDMCU3QzAlN0M2MzgzODYw
-OTA2Mjk4NjQ3NTAlN0NVbmtub3duJTdDVFdGcGJHWnNiM2Q4ZXlKV0lqb2lNQzR3TGoNCj4gPj4g
-PiBBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazFoYVd3aUxDSlhWQ0k2TW4wJTNEJTdD
-MzAwMCU3QyU3QyU3DQo+ID4+ID4gQyZzZGF0YT14ZWJwUWdxWTlXMDNIU0Rkb0wwU2kydGFKMlJr
-T2dUaVI4SDZrb1NLTnE4JTNEJnJlc2VydmVkPTANCj4gPj4gPiB1Yi5jb20lMkZyZW5lc2FzLXJ6
-JTJGcnpfb3BlbnNiaSUyRmNvbW1pdHMlMkZ3b3JrJTJGT3BlblNCSS1QTUElMkYmDQo+ID4+ID4g
-ZGF0DQo+ID4+ID4gYT0wNSU3QzAyJTdDcHJhYmhha2FyLm1haGFkZXYtbGFkLnJqJTQwYnAucmVu
-ZXNhcy5jb20lN0MwMTRjZjRkZGZkMQ0KPiA+PiA+IGU0OA0KPiA+PiA+IDFmZjViYzA4ZGMwMGJk
-NDY3ZiU3QzUzZDgyNTcxZGExOTQ3ZTQ5Y2I0NjI1YTE2NmE0YTJhJTdDMCU3QzAlN0M2MzgNCj4g
-Pj4gPiAzODYNCj4gPj4gPiAwNjAxMzA0MTA3MzElN0NVbmtub3duJTdDVFdGcGJHWnNiM2Q4ZXlK
-V0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYyDQo+ID4+ID4gbHVNDQo+ID4+ID4geklpTENKQlRp
-STZJazFoYVd3aUxDSlhWQ0k2TW4wJTNEJTdDMzAwMCU3QyU3QyU3QyZzZGF0YT1hMHRjc1hZNEVR
-bA0KPiA+PiA+IE9EaQ0KPiA+PiA+IEkzNFF5Z1hTOVFwSm5WQnFMOGJOa3hFOE41SjJnJTNEJnJl
-c2VydmVkPTANCj4gPj4NCj4gPj4gT0ssIHNvIHNvdW5kcyBsaWtlIHdvdWxkIGVuZCB1cCB3aXRo
-IGJyb2tlbiBzeXN0ZW1zIGZyb20gdGhpcyBidWcsIHRoZW4/DQo+ID4+DQo+ID4+IElJUkMgd2Ug
-c3RpbGwgaGF2ZSB0aGUgUmVuZXNhcyBzeXN0ZW1zIGFzIE5PTlBPUlRBQkxFIGR1ZSB0byB0aGF0
-IERNQQ0KPiA+PiBwb29sIEtjb25maWcgY29uZmxpY3QuICBTbyBpZiBpdCdzIHJlYWxseSBvbmx5
-IHRoZXNlIFJlbmVzYXMgc3lzdGVtcw0KPiA+PiB0aGF0IGhhdmUgdGhlIGJ1ZywgbWF5YmUgd2Ug
-Y2FuIHN0aWxsIHJlbW92ZSBoaWJlcm5hdGlvbiBmcm9tDQo+ID4+IE5PTlBPUlRBQkxFIGFuZCBq
-dXN0IGFkZCBpbiBzb21lIHNvcnQgb2YgS2NvbmZpZyB0byBkaXNhYmxlIHRoZQ0KPiA+PiBSZW5l
-c2FzK2hpYmVybmF0aW9uIGNvbWJpbmF0aW9ucyB0aGF0IHdvdWxkIGJyZWFrPw0KPiA+Pg0KPiA+
-V2VsbCBjdXN0b21lcnMgdXNpbmcgQlNQIHVzZXMgdjEuMCBmb3IgT3BlblNCSSBhbmQga2VybmVs
-IDUuMTAtY2lwLCBhbmQgcGVvcGxlIHdhbnRpbmcgdG8gcnVuDQo+IHVwc3RyZWFtIGtlcm5lbCB3
-aWxsIGhhdmUgdG8gb25seSB1c2UgdGhlIHVwc3RyZWFtIE9wZW5TQkkgYXMgdGhlIE9wZW5TQkkg
-dXNlZCBpbiBCU1AgaXMgbm90DQo+IGNvbXBhdGlibGUgd2l0aCB1cHN0cmVhbSBrZXJuZWwoTGlu
-dXggZG9lc27igJl0IGJvb3R1cCkuDQo+ID4NCj4gPkFUTSBJIGNhbiBzYXkgdGhhdCBpdHMgb25s
-eSBtZSBhbmQgR2VlcnQgdXNpbmcgdXBzdHJlYW0gT3BlbkJTSSBhbmQgdXBzdHJlYW0ga2VybmVs
-Lg0KPiA+DQo+ID5XaXRoIHRoYXQgaW4gbWluZCB3b3VsZCB3ZSBzdGlsbCByZXF1aXJlIHRoYXQg
-Y2hhbmdlPw0KPiANCj4gNS4xMCBkb2Vzbid0IGhhdmUgaGliZXJuYXRpb24gc3VwcG9ydCBpbiBp
-dCwgYWx0aG91Z2ggSSdtIG5vdCBzdXJlIHdoeSBhbnlvbmUgd291bGQgcmVhbGx5IHdhbnQgdG8g
-dXNlDQo+IGEga2VybmVsIHRoYXQgb2xkIHdpdGggYSBSSVNDLVYgc3lzdGVtLg0KPiANCkF0IFJl
-bmVzYXMgd2UgaGF2ZSB0aGUgQlNQcyBiYXNlZCBvbiB0aGUgQ0lQIGtlcm5lbC4gQ3VycmVudGx5
-IHRoZSBCU1BzIGFyZSBiYXNlZCBvbiA1LjEwLWNpcCBbMF0gKHdlIHBsYW4gdG8gdXBncmFkZSBp
-dCB0byA2LjEtY2lwKS4NCg0KPiBUaGUgdXBzdHJlYW0gdmVyc2lvbnMgb2Ygb3BlbnNiaSB0aGF0
-IHN1cHBvcnQgdGhlIHJlbmVzYXMgc3R1ZmYgaGF2ZSB0aGUgbm8tbWFwIGZpeCwgcmlnaHQ/DQo+
-IElmIHRoYXQncyB0aGUgY2FzZSwgdGhlbiBub3RoaW5nIHNwZWNpYWwgY29uZmlnIHdpc2UgaXMg
-bGlrZWx5IHJlcXVpcmVkLg0KPiANClllcyBpdCBkb2VzLg0KDQo+IEknbSBzdGlsbCB3YXJ5IG9m
-IG90aGVyIHN5c3RlbXMgdGhvdWdoLCB3ZSBhcmUgYWN0aW5nIGFzIGlmIGl0IGlzIG9ubHkgTWlj
-cm9jaGlwIGFuZCBSZW5lc2FzIGFyZSB0aGUNCj4gInJlYWwiIHVzZXJzLg0KDQpbMF0gaHR0cHM6
-Ly9naXRsYWIuY29tL2NpcC1wcm9qZWN0L2NpcC1rZXJuZWwvbGludXgtY2lwLy0vdHJlZS9saW51
-eC01LjEwLnktY2lwP3JlZl90eXBlPWhlYWRzDQoNCkNoZWVycywNClByYWJoYWthcg0K
+Hi Kamel,
+
+On 23-12-11, Kamel Bouhara wrote:
+> Add a new driver for the TouchNetix's axiom family of
+> touchscreen controllers. This driver only supports i2c
+> and can be later adapted for SPI and USB support.
+> 
+> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> ---
+>  MAINTAINERS                                  |   1 +
+>  drivers/input/touchscreen/Kconfig            |  12 +
+>  drivers/input/touchscreen/Makefile           |   1 +
+>  drivers/input/touchscreen/touchnetix_axiom.c | 667 +++++++++++++++++++
+>  4 files changed, 681 insertions(+)
+>  create mode 100644 drivers/input/touchscreen/touchnetix_axiom.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4752d8436dbb..337ddac6c74b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21436,6 +21436,7 @@ M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
+>  L:	linux-input@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+> +F:	drivers/input/touchscreen/touchnetix_axiom.c
+>  
+>  THUNDERBOLT DMA TRAFFIC TEST DRIVER
+>  M:	Isaac Hazan <isaac.hazan@intel.com>
+> diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+> index e3e2324547b9..f36bee8d8696 100644
+> --- a/drivers/input/touchscreen/Kconfig
+> +++ b/drivers/input/touchscreen/Kconfig
+> @@ -803,6 +803,18 @@ config TOUCHSCREEN_MIGOR
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called migor_ts.
+>  
+> +config TOUCHSCREEN_TOUCHNETIX_AXIOM
+> +	tristate "TouchNetix AXIOM based touchscreen controllers"
+> +	depends on I2C
+> +	help
+> +	  Say Y here if you have a axiom touchscreen connected to
+> +	  your system.
+> +
+> +	  If unsure, say N.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called axiom.
+> +
+>  config TOUCHSCREEN_TOUCHRIGHT
+>  	tristate "Touchright serial touchscreen"
+>  	select SERIO
+> diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+> index 62bd24f3ac8e..8e32a2df5e18 100644
+> --- a/drivers/input/touchscreen/Makefile
+> +++ b/drivers/input/touchscreen/Makefile
+> @@ -88,6 +88,7 @@ obj-$(CONFIG_TOUCHSCREEN_SUR40)		+= sur40.o
+>  obj-$(CONFIG_TOUCHSCREEN_SURFACE3_SPI)	+= surface3_spi.o
+>  obj-$(CONFIG_TOUCHSCREEN_TI_AM335X_TSC)	+= ti_am335x_tsc.o
+>  obj-$(CONFIG_TOUCHSCREEN_TOUCHIT213)	+= touchit213.o
+> +obj-$(CONFIG_TOUCHSCREEN_TOUCHNETIX_AXIOM)	+= touchnetix_axiom.o
+>  obj-$(CONFIG_TOUCHSCREEN_TOUCHRIGHT)	+= touchright.o
+>  obj-$(CONFIG_TOUCHSCREEN_TOUCHWIN)	+= touchwin.o
+>  obj-$(CONFIG_TOUCHSCREEN_TS4800)	+= ts4800-ts.o
+> diff --git a/drivers/input/touchscreen/touchnetix_axiom.c b/drivers/input/touchscreen/touchnetix_axiom.c
+> new file mode 100644
+> index 000000000000..4ade2d1adba0
+> --- /dev/null
+> +++ b/drivers/input/touchscreen/touchnetix_axiom.c
+> @@ -0,0 +1,667 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * TouchNetix axiom Touchscreen Driver
+> + *
+> + * Copyright (C) 2020-2023 TouchNetix Ltd.
+> + *
+> + * Author(s): Bart Prescott <bartp@baasheep.co.uk>
+> + *            Pedro Torruella <pedro.torruella@touchnetix.com>
+> + *            Mark Satterthwaite <mark.satterthwaite@touchnetix.com>
+> + *            Hannah Rossiter <hannah.rossiter@touchnetix.com>
+> + *            Kamel Bouhara <kamel.bouhara@bootlin.com>
+> + *
+> + */
+> +#include <linux/bitfield.h>
+> +#include <linux/crc16.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/i2c.h>
+> +#include <linux/input.h>
+> +#include <linux/input/mt.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +
+> +#define AXIOM_PROX_LEVEL		-128
+> +/*
+> + * Register group u31 has 2 pages for usage table entries.
+> + */
+> +#define AXIOM_U31_MAX_USAGES		((2 * AXIOM_COMMS_PAGE_SIZE) / AXIOM_U31_BYTES_PER_USAGE)
+> +#define AXIOM_U31_BYTES_PER_USAGE	6
+> +#define AXIOM_U31_PAGE0_LENGTH		0x0C
+> +#define AXIOM_U31_BOOTMODE_MASK		BIT(7)
+> +#define AXIOM_U31_DEVID_MASK		GENMASK(14, 0)
+> +
+> +#define AXIOM_CMD_HEADER_READ_MASK	BIT(15)
+> +#define AXIOM_U41_MAX_TARGETS		10
+> +
+> +#define AXIOM_U46_AUX_CHANNELS		4
+> +#define AXIOM_U46_AUX_MASK		GENMASK(11, 0)
+> +
+> +#define AXIOM_COMMS_MAX_USAGE_PAGES	3
+> +#define AXIOM_COMMS_PAGE_SIZE		256
+> +#define AXIOM_COMMS_REPORT_LEN_MASK	GENMASK(6, 0)
+> +
+> +#define AXIOM_REPORT_USAGE_ID		0x34
+> +#define AXIOM_DEVINFO_USAGE_ID		0x31
+> +#define AXIOM_USAGE_2HB_REPORT_ID	0x01
+> +#define AXIOM_USAGE_2AUX_REPORT_ID	0x46
+> +#define AXIOM_USAGE_2DCTS_REPORT_ID	0x41
+> +
+> +#define AXIOM_PAGE_OFFSET_MASK		GENMASK(6, 0)
+> +
+> +struct axiom_devinfo {
+> +	u16 device_id;
+> +	u8 fw_minor;
+> +	u8 fw_major;
+> +	u8 fw_info_extra;
+> +	u8 tcp_revision;
+> +	u8 bootloader_fw_minor;
+> +	u8 bootloader_fw_major;
+> +	u16 jedec_id;
+> +	u8 num_usages;
+> +} __packed;
+> +
+> +/*
+> + * Describes parameters of a specific usage, essentially a single element of
+> + * the "Usage Table"
+> + */
+> +struct axiom_usage_entry {
+> +	u8 id;
+> +	u8 is_report;
+> +	u8 start_page;
+> +	u8 num_pages;
+> +};
+> +
+> +/*
+> + * Represents state of a touch or target when detected prior a touch (eg.
+> + * hover or proximity events).
+> + */
+> +enum axiom_target_state {
+> +	AXIOM_TARGET_STATE_NOT_PRESENT = 0,
+> +	AXIOM_TARGET_STATE_PROX = 1,
+> +	AXIOM_TARGET_STATE_HOVER = 2,
+> +	AXIOM_TARGET_STATE_TOUCHING = 3,
+> +};
+> +
+> +struct axiom_u41_target {
+> +	enum axiom_target_state state;
+> +	u16 x;
+> +	u16 y;
+> +	s8 z;
+> +	bool insert;
+> +	bool touch;
+> +};
+> +
+> +struct axiom_target_report {
+> +	u8 index;
+> +	u8 present;
+> +	u16 x;
+> +	u16 y;
+> +	s8 z;
+> +};
+> +
+> +struct axiom_cmd_header {
+> +	__le16 target_address;
+> +	__le16 length;
+> +} __packed;
+> +
+> +struct axiom_data {
+> +	struct axiom_devinfo devinfo;
+> +	struct device *dev;
+> +	struct gpio_desc *reset_gpio;
+> +	struct i2c_client *client;
+> +	struct input_dev *input_dev;
+> +	u32 max_report_len;
+> +	char rx_buf[AXIOM_COMMS_MAX_USAGE_PAGES * AXIOM_COMMS_PAGE_SIZE];
+> +	struct axiom_u41_target targets[AXIOM_U41_MAX_TARGETS];
+> +	struct axiom_usage_entry usage_table[AXIOM_U31_MAX_USAGES];
+
+Still, why do you not use 0xff as max value? This elimates looping over
+the usage table within axiom_usage_to_target_address() since you can
+use the usage directly via ts->usage_table[usage] IIRC.
+
+> +	bool usage_table_populated;
+> +	struct regulator *vdda;
+> +	struct regulator *vddi;
+> +};
+> +
+> +/*
+> + * axiom devices are typically configured to report
+> + * touches at a rate of 100Hz (10ms). For systems
+> + * that require polling for reports.
+> + * When reports are polled, it will be expected to
+> + * occasionally observe the overflow bit being set
+> + * in the reports. This indicates that reports are not
+> + * being read fast enough.
+> + */
+> +#define POLL_INTERVAL_DEFAULT_MS 10
+> +
+> +/* Translate usage/page/offset triplet into physical address. */
+> +static u16 axiom_usage_to_target_address(struct axiom_data *ts, char usage, char page,
+> +					 char offset)
+> +{
+> +	u32 i;
+> +
+> +	/* At the moment the convention is that u31 is always at physical address 0x0 */
+> +	if (!ts->usage_table_populated) {
+> +		if (usage == AXIOM_DEVINFO_USAGE_ID)
+> +			return ((page << 8) + offset);
+> +		else
+> +			return 0xffff;
+> +	}
+> +
+> +	for (i = 0; i < ts->devinfo.num_usages; i++) {
+> +		if (ts->usage_table[i].id != usage)
+> +			continue;
+> +
+> +		if (page >= ts->usage_table[i].num_pages) {
+> +			dev_err(ts->dev, "Invalid usage table! usage: %u, page: %u, offset: %u\n",
+> +				usage, page, offset);
+> +			return 0xffff;
+> +		}
+> +		break;
+> +	}
+> +
+> +	return ((ts->usage_table[i].start_page + page) << 8) + offset;
+> +}
+> +
+> +static int axiom_i2c_read(struct i2c_client *client, u8 usage, u8 page, u8 *buf, u16 len)
+> +{
+> +	struct axiom_data *ts = i2c_get_clientdata(client);
+> +	struct axiom_cmd_header cmd_header;
+> +	struct i2c_msg msg[2];
+> +	int error;
+> +
+> +	cmd_header.target_address = cpu_to_le16(axiom_usage_to_target_address(ts, usage, page, 0));
+> +	cmd_header.length = cpu_to_le16(len | AXIOM_CMD_HEADER_READ_MASK);
+> +
+> +	msg[0].addr = client->addr;
+> +	msg[0].flags = 0;
+> +	msg[0].len = sizeof(cmd_header);
+> +	msg[0].buf = (u8 *)&cmd_header;
+> +
+> +	msg[1].addr = client->addr;
+> +	msg[1].flags = I2C_M_RD;
+> +	msg[1].len = len;
+> +	msg[1].buf = (char *)buf;
+> +
+> +	error = i2c_transfer(client->adapter, msg, ARRAY_SIZE(msg));
+> +	if (error != ARRAY_SIZE(msg)) {
+> +		dev_err(&client->dev,
+> +			"Failed reading usage %#x page %#x, error=%d\n",
+> +			usage, page, error);
+> +		return -EIO;
+> +	}
+> +
+> +	usleep_range(250, 300);
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * One of the main purposes for reading the usage table is to identify
+> + * which usages reside at which target address.
+> + * When performing subsequent reads or writes to AXIOM, the target address
+> + * is used to specify which usage is being accessed.
+> + * Consider the following discovery code which will build up the usage table.
+> + */
+> +static u32 axiom_populate_usage_table(struct axiom_data *ts)
+> +{
+> +	struct axiom_usage_entry *usage_table;
+> +	u32 max_report_len = 0;
+> +	char *rx_data = ts->rx_buf;
+> +	u32 usage_id;
+> +	int error;
+> +
+> +	usage_table = ts->usage_table;
+> +
+> +	/* Read the second page of usage u31 to get the usage table */
+> +	error = axiom_i2c_read(ts->client, AXIOM_DEVINFO_USAGE_ID, 1, rx_data,
+> +			       (AXIOM_U31_BYTES_PER_USAGE * ts->devinfo.num_usages));
+> +	if (error)
+> +		return error;
+> +
+> +	for (usage_id = 0; usage_id < ts->devinfo.num_usages; usage_id++) {
+> +		u16 offset = (usage_id * AXIOM_U31_BYTES_PER_USAGE);
+> +		u8 id = rx_data[offset + 0];
+> +		u8 start_page = rx_data[offset + 1];
+> +		u8 num_pages = rx_data[offset + 2];
+> +		u32 max_offset = ((rx_data[offset + 3] & AXIOM_PAGE_OFFSET_MASK) + 1) * 2;
+> +
+> +		if (!num_pages)
+> +			usage_table[usage_id].is_report = true;
+> +
+> +		/* Store the entry into the usage table */
+> +		usage_table[usage_id].id = id;
+> +		usage_table[usage_id].start_page = start_page;
+> +		usage_table[usage_id].num_pages = num_pages;
+> +
+> +		dev_dbg(ts->dev, "Usage u%02x Info: %*ph\n", id,
+> +			AXIOM_U31_BYTES_PER_USAGE, &rx_data[offset]);
+> +
+> +		/* Identify the max report length the module will receive */
+> +		if (usage_table[usage_id].is_report && max_offset > max_report_len)
+> +			max_report_len = max_offset;
+> +	}
+> +
+> +	ts->usage_table_populated = true;
+> +
+> +	return max_report_len;
+> +}
+> +
+> +static int axiom_discover(struct axiom_data *ts)
+> +{
+> +	int error;
+> +
+> +	/*
+> +	 * Fetch the first page of usage u31 to get the
+> +	 * device information and the number of usages
+> +	 */
+> +	error = axiom_i2c_read(ts->client, AXIOM_DEVINFO_USAGE_ID, 0, (char *)&ts->devinfo,
+> +			       AXIOM_U31_PAGE0_LENGTH);
+> +	if (error)
+> +		return error;
+> +
+> +	dev_dbg(ts->dev, "  Boot Mode      : %s\n",
+> +		FIELD_GET(AXIOM_U31_BOOTMODE_MASK, ts->devinfo.device_id) ? "BLP" : "TCP");
+> +	dev_dbg(ts->dev, "  Device ID      : %04lx\n",
+> +		FIELD_GET(AXIOM_U31_DEVID_MASK,	ts->devinfo.device_id));
+> +	dev_dbg(ts->dev, "  Firmware Rev   : %02x.%02x\n", ts->devinfo.fw_major,
+> +		ts->devinfo.fw_minor);
+> +	dev_dbg(ts->dev, "  Bootloader Rev : %02x.%02x\n", ts->devinfo.bootloader_fw_major,
+> +		ts->devinfo.bootloader_fw_minor);
+> +	dev_dbg(ts->dev, "  FW Extra Info  : %04x\n", ts->devinfo.fw_info_extra);
+> +	dev_dbg(ts->dev, "  Silicon        : %04x\n", ts->devinfo.jedec_id);
+> +	dev_dbg(ts->dev, "  Number usages        : %04x\n", ts->devinfo.num_usages);
+> +
+> +	ts->max_report_len = axiom_populate_usage_table(ts);
+> +	if (!ts->max_report_len || !ts->devinfo.num_usages)
+> +		return -EINVAL;
+> +
+> +	dev_dbg(ts->dev, "Max Report Length: %u\n", ts->max_report_len);
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Support function to axiom_process_u41_report.
+> + * Generates input-subsystem events for every target.
+> + * After calling this function the caller shall issue
+> + * a Sync to the input sub-system.
+> + */
+> +static bool axiom_process_u41_report_target(struct axiom_data *ts,
+> +					    struct axiom_target_report *target)
+> +{
+> +	struct input_dev *input_dev = ts->input_dev;
+> +	struct axiom_u41_target *target_prev_state;
+> +	enum axiom_target_state current_state;
+> +	bool update = false;
+> +	int slot;
+> +
+> +	/* Verify the target index */
+> +	if (target->index >= AXIOM_U41_MAX_TARGETS) {
+> +		dev_dbg(ts->dev, "Invalid target index! %u\n", target->index);
+> +		return false;
+> +	}
+> +
+> +	target_prev_state = &ts->targets[target->index];
+> +
+> +	current_state = AXIOM_TARGET_STATE_NOT_PRESENT;
+> +
+> +	if (target->present) {
+> +		if (target->z >= 0)
+> +			current_state = AXIOM_TARGET_STATE_TOUCHING;
+> +		else if (target->z > AXIOM_PROX_LEVEL && target->z < 0)
+> +			current_state = AXIOM_TARGET_STATE_HOVER;
+> +		else if (target->z == AXIOM_PROX_LEVEL)
+> +			current_state = AXIOM_TARGET_STATE_PROX;
+> +	}
+> +
+> +	if (target_prev_state->state == current_state &&
+> +	    target_prev_state->x == target->x &&
+> +	    target_prev_state->y == target->y &&
+> +	    target_prev_state->z == target->z) {
+> +		return false;
+> +	}
+> +
+> +	slot = target->index;
+> +
+> +	dev_dbg(ts->dev, "U41 Target T%u, slot:%u present:%u, x:%u, y:%u, z:%d\n",
+> +		target->index, slot, target->present,
+> +		target->x, target->y, target->z);
+> +
+> +	switch (current_state) {
+> +	case AXIOM_TARGET_STATE_NOT_PRESENT:
+> +	case AXIOM_TARGET_STATE_PROX:
+> +		if (!target_prev_state->insert)
+> +			break;
+> +		update = true;
+> +		target_prev_state->insert = false;
+> +		input_mt_slot(input_dev, slot);
+> +
+> +		if (!slot)
+> +			input_report_key(input_dev, BTN_TOUCH, 0);
+> +
+> +		input_mt_report_slot_inactive(input_dev);
+> +		/*
+> +		 * make sure the previous coordinates are
+> +		 * all off screen when the finger comes back
+> +		 */
+> +		target->x = 65535;
+> +		target->y = 65535;
+> +		target->z = AXIOM_PROX_LEVEL;
+> +		break;
+> +	case AXIOM_TARGET_STATE_HOVER:
+> +	case AXIOM_TARGET_STATE_TOUCHING:
+> +		target_prev_state->insert = true;
+> +		update = true;
+> +		input_mt_slot(input_dev, slot);
+> +		input_report_abs(input_dev, ABS_MT_TRACKING_ID, slot);
+> +		input_report_abs(input_dev, ABS_MT_POSITION_X, target->x);
+> +		input_report_abs(input_dev, ABS_X, target->x);
+> +		input_report_abs(input_dev, ABS_MT_POSITION_Y, target->y);
+> +		input_report_abs(input_dev, ABS_Y, target->y);
+> +
+> +		if (current_state == AXIOM_TARGET_STATE_TOUCHING) {
+> +			input_report_abs(input_dev, ABS_MT_DISTANCE, 0);
+> +			input_report_abs(input_dev, ABS_DISTANCE, 0);
+> +			input_report_abs(input_dev, ABS_MT_PRESSURE, target->z);
+> +			input_report_abs(input_dev, ABS_PRESSURE, target->z);
+> +		} else {
+> +			input_report_abs(input_dev, ABS_MT_DISTANCE, -target->z);
+> +			input_report_abs(input_dev, ABS_DISTANCE, -target->z);
+> +			input_report_abs(input_dev, ABS_MT_PRESSURE, 0);
+> +			input_report_abs(input_dev, ABS_PRESSURE, 0);
+> +		}
+> +
+> +		if (!slot)
+> +			input_report_key(input_dev, BTN_TOUCH, (current_state ==
+> +					 AXIOM_TARGET_STATE_TOUCHING));
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	target_prev_state->state = current_state;
+> +	target_prev_state->x = target->x;
+> +	target_prev_state->y = target->y;
+> +	target_prev_state->z = target->z;
+> +
+> +	return update;
+> +}
+> +
+> +/*
+> + * U41 is the output report of the 2D CTS and contains the status of targets
+> + * (including contacts and pre-contacts) along with their X,Y,Z values.
+> + * When a target has been removed (no longer detected),
+> + * the corresponding X,Y,Z values will be zeroed.
+> + */
+> +static bool axiom_process_u41_report(struct axiom_data *ts, char *rx_buf)
+> +{
+> +	struct axiom_target_report target;
+> +	bool update_done = false;
+> +	u16 target_status;
+> +	u32 i;
+> +
+> +	target_status = ((rx_buf[1]) | (rx_buf[2] << 8));
+> +
+> +	for (i = 0; i < AXIOM_U41_MAX_TARGETS; i++) {
+> +		char target_step = i * 4;
+> +
+> +		target.index = i;
+> +		target.present = ((target_status & (1 << i)) != 0) ? 1 : 0;
+> +		target.x = (rx_buf[(target_step + 3)] | (rx_buf[target_step + 4] << 8));
+> +		target.y = (rx_buf[(target_step + 5)] | (rx_buf[target_step + 6] << 8));
+> +		target.z = (s8)(rx_buf[i + 43]);
+> +		update_done |= axiom_process_u41_report_target(ts, &target);
+> +	}
+> +
+> +	return update_done;
+> +}
+> +
+> +/*
+> + * U46 report contains a low level measurement data generated by the CDS
+> + * algorithms from the AUX channels. This information is useful when tuning
+> + * multi-press to assess mechanical consistency in the unit's construction.
+> + */
+> +static void axiom_process_u46_report(struct axiom_data *ts, char *rx_buf)
+> +{
+> +	struct input_dev *input_dev = ts->input_dev;
+> +	u32 event_value;
+> +	u16 aux_value;
+> +	u32 i = 0;
+> +
+> +	for (i = 0; i < AXIOM_U46_AUX_CHANNELS; i++) {
+> +		char target_step = i * 2;
+> +
+> +		aux_value = ((rx_buf[target_step + 2] << 8) | (rx_buf[target_step + 1]))
+> +			     & AXIOM_U46_AUX_MASK;
+> +		event_value = (i << 16) | (aux_value);
+> +		input_event(input_dev, EV_MSC, MSC_RAW, event_value);
+> +	}
+> +}
+> +
+> +/*
+> + * Validates the crc and demultiplexes the axiom reports to the appropriate
+> + * report handler
+> + */
+> +static int axiom_handle_events(struct axiom_data *ts)
+> +{
+> +	struct input_dev *input_dev = ts->input_dev;
+> +	char *report_data = ts->rx_buf;
+> +	struct device *dev = ts->dev;
+> +	u16 crc_report;
+> +	u16 crc_calc;
+> +	int error;
+> +	char len;
+> +
+> +	error = axiom_i2c_read(ts->client, AXIOM_REPORT_USAGE_ID, 0, report_data,
+> +			       ts->max_report_len);
+> +	if (error)
+> +		return error;
+> +
+> +	len = (report_data[0] & AXIOM_COMMS_REPORT_LEN_MASK) << 1;
+> +	if (!len) {
+> +		dev_err(dev, "Zero length report discarded.\n");
+> +		return -ENODATA;
+> +	}
+> +
+> +	/* Validate the report CRC */
+> +	crc_report = (report_data[len - 1] << 8) | (report_data[len - 2]);
+> +	/* Length is in 16 bit words and remove the size of the CRC16 itself */
+> +	crc_calc = crc16(0, report_data, (len - 2));
+> +
+> +	if (crc_calc != crc_report) {
+> +		dev_err(dev,
+> +			"CRC mismatch! Expected: %#x, Calculated CRC: %#x.\n",
+> +			crc_report, crc_calc);
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (report_data[1]) {
+> +	case AXIOM_USAGE_2DCTS_REPORT_ID:
+> +		if (axiom_process_u41_report(ts, &report_data[1])) {
+> +			input_mt_sync_frame(input_dev);
+> +			input_sync(input_dev);
+> +		}
+> +		break;
+> +
+> +	case AXIOM_USAGE_2AUX_REPORT_ID:
+> +		/* This is an aux report (force) */
+> +		axiom_process_u46_report(ts, &report_data[1]);
+> +		input_mt_sync(input_dev);
+> +		input_sync(input_dev);
+> +		break;
+> +
+> +	case AXIOM_USAGE_2HB_REPORT_ID:
+> +		/* This is a heartbeat report */
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void axiom_i2c_poll(struct input_dev *input_dev)
+> +{
+> +	struct axiom_data *ts = input_get_drvdata(input_dev);
+> +
+> +	axiom_handle_events(ts);
+> +}
+> +
+> +static irqreturn_t axiom_irq(int irq, void *dev_id)
+> +{
+> +	struct axiom_data *ts = dev_id;
+> +
+> +	axiom_handle_events(ts);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static void axiom_reset(struct gpio_desc *reset_gpio)
+> +{
+> +	gpiod_set_value_cansleep(reset_gpio, 1);
+> +	usleep_range(1000, 2000);
+> +	gpiod_set_value_cansleep(reset_gpio, 0);
+> +	msleep(110);
+> +}
+> +
+> +static int axiom_i2c_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct input_dev *input_dev;
+> +	struct axiom_data *ts;
+> +	u32 startup_delay_ms;
+> +	u32 poll_interval;
+> +	int target;
+> +	int error;
+> +
+> +	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
+> +	if (!ts)
+> +		return -ENOMEM;
+> +
+> +	ts->client = client;
+> +	i2c_set_clientdata(client, ts);
+> +	ts->dev = dev;
+> +
+> +	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(ts->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
+> +
+> +	if (ts->reset_gpio)
+> +		axiom_reset(ts->reset_gpio);
+> +
+> +	ts->vddi = devm_regulator_get_optional(dev, "VDDI");
+
+A rough review, this can't work since you made the regulator names
+lower-case. Same below.
+
+> +	if (!IS_ERR(ts->vddi)) {
+
+No !IS_ERR is required here since we do require it from API pov. DTS
+enabled platforms will provide a dummy regulator if not specified, ACPI
+is not supported right now so you don't need to care about. Same below.
+
+> +		error = regulator_enable(ts->vddi);
+
+If we don't provide any (runtime-)pm you can use:
+devm_regulator_get_enable(). Same below.
+
+> +		if (error)
+> +			return dev_err_probe(&client->dev, error,
+> +					     "Failed to enable VDDI regulator\n");
+> +	}
+> +
+> +	ts->vdda = devm_regulator_get_optional(dev, "VDDA");
+> +	if (!IS_ERR(ts->vdda)) {
+> +		error = regulator_enable(ts->vdda);
+> +		if (error) {
+> +			dev_err(dev, "Failed to get VDDA regulator\n");
+> +			regulator_disable(ts->vddi);
+> +			return error;
+> +		}
+> +		if (!device_property_read_u32(dev, "startup-time-ms", &startup_delay_ms))
+							^
+This property is not documented and also is related to the regulator
+itself.
+
+> +			msleep(startup_delay_ms);
+> +	}
+> +
+> +	error = axiom_discover(ts);
+> +	if (error)
+> +		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
+> +
+> +	input_dev = devm_input_allocate_device(ts->dev);
+> +	if (!input_dev)
+> +		return -ENOMEM;
+> +
+> +	input_dev->name = "TouchNetix axiom Touchscreen";
+> +	input_dev->phys = "input/axiom_ts";
+> +
+> +	/* Single Touch */
+> +	input_set_abs_params(input_dev, ABS_X, 0, 65535, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_Y, 0, 65535, 0, 0);
+> +
+> +	/* Multi Touch */
+> +	/* Min, Max, Fuzz (expected noise in px, try 4?) and Flat */
+> +	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
+> +	/* Min, Max, Fuzz (expected noise in px, try 4?) and Flat */
+> +	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
+> +
+> +	input_set_capability(input_dev, EV_KEY, BTN_TOUCH);
+> +
+> +	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
+> +	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
+> +	if (error)
+> +		return error;
+> +
+> +	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
+> +	set_bit(EV_REL, input_dev->evbit);
+> +	set_bit(EV_MSC, input_dev->evbit);
+> +	/* Declare that we support "RAW" Miscellaneous events */
+> +	set_bit(MSC_RAW, input_dev->mscbit);
+> +
+> +	ts->input_dev = input_dev;
+> +	input_set_drvdata(ts->input_dev, ts);
+> +
+> +	/* Ensure that all reports are initialised to not be present. */
+> +	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
+> +		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
+> +
+> +	error = input_register_device(input_dev);
+> +	if (error)
+> +		return dev_err_probe(ts->dev, error,
+> +				     "Could not register with Input Sub-system.\n");
+> +
+> +	error = devm_request_threaded_irq(dev, client->irq, NULL,
+> +					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
+> +	if (error < 0) {
+> +		dev_warn(dev, "Request irq failed, falling back to polling mode");
+
+Why do you print a warning? I thought this is possible use-case in case
+that the IRQ line was not connected "on purpose".
+
+> +		error = input_setup_polling(input_dev, axiom_i2c_poll);
+> +		if (error)
+> +			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
+> +
+> +		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
+
+Nit: poll_intervall can be local within this if block:
+
+		u32 poll_interval = POLL_INTERVAL_DEFAULT_MS;
+
+> +			input_set_poll_interval(input_dev, poll_interval);
+> +		else
+> +			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
+
+and this else can be dropped.
+
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct i2c_device_id axiom_i2c_id_table[] = {
+> +	{ "ax54a" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
+> +
+> +static const struct of_device_id axiom_i2c_of_match[] = {
+> +	{ .compatible = "touchnetix,ax54a", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, axiom_i2c_of_match);
+> +
+> +static struct i2c_driver axiom_i2c_driver = {
+> +	.driver = {
+> +		   .name = "axiom",
+> +		   .of_match_table = axiom_i2c_of_match,
+> +	},
+> +	.id_table = axiom_i2c_id_table,
+> +	.probe = axiom_i2c_probe,
+> +};
+> +module_i2c_driver(axiom_i2c_driver);
+> +MODULE_AUTHOR("Bart Prescott <bartp@baasheep.co.uk>");
+> +MODULE_AUTHOR("Pedro Torruella <pedro.torruella@touchnetix.com>");
+> +MODULE_AUTHOR("Mark Satterthwaite <mark.satterthwaite@touchnetix.com>");
+> +MODULE_AUTHOR("Hannah Rossiter <hannah.rossiter@touchnetix.com>");
+> +MODULE_AUTHOR("Kamel Bouhara <kamel.bouhara@bootlin.com>");
+> +MODULE_DESCRIPTION("TouchNetix axiom touchscreen I2C bus driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
+> 
+> 
 
