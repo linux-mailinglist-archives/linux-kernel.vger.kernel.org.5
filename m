@@ -1,139 +1,126 @@
-Return-Path: <linux-kernel+bounces-5742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63FC2818EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:57:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93DC4818EFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:58:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06C09B257D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:57:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ED3C287FE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A341B46425;
-	Tue, 19 Dec 2023 17:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E133F4B120;
+	Tue, 19 Dec 2023 17:52:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="rvP2Vcnj"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SPGBc47L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A73A42070
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=a4fN2kEgK9MheAjxSRsReB+gR+8YaI8Z7oUYP+S6p5c=;
-  b=rvP2Vcnjf9WVfmPwN5tKp8pkR7uWCw566RUigYJqXbdTPgshAjFr0oRP
-   LGr9G/BOYX2yDdKLpCr0NIhgSdeJAsMrAreNtfjyDSFVcROTvg8YJgHiR
-   WQdh+aJJteoKl6gGUYPwjDMMX+LwQ10eYAQ8Y3IaS9xWgujpmPoDbcFfb
-   M=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,289,1695679200"; 
-   d="scan'208";a="143185550"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 18:51:18 +0100
-Date: Tue, 19 Dec 2023 18:51:18 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
-    linux-kernel@vger.kernel.org
-Subject: Re: EEVDF and NUMA balancing
-In-Reply-To: <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
-Message-ID: <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr>
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien> <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
- <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien> <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
- <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B6E4B13B;
+	Tue, 19 Dec 2023 17:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJHW8xU000888;
+	Tue, 19 Dec 2023 17:52:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=/G7gx/nF4hhpjw41JIWC4gDPqAOm1ZXfb+1VpMRGg7o=;
+ b=SPGBc47Ld4paTgCmTQmnIEkHioU5l+3SNMkJthqzk1dWaciwrt8hMkKMqw1y8OKHw1+U
+ VaUsGGsQAj5OiwG5Dagy6n6zufvaJxQYyP7UpjmkeHTQQnX2ANTVqxh0plOhub6eNjaP
+ rq+9qF/7U673O4nTKPj+vZmiYpII7iQGm0iFp4hu9aDXn/2S76W+Nmi2BLIOjpbM1yf0
+ jGOqQGU9IfbR3ym3xJSA5UpYQr6ehTGGVaN23MGa1kJJCNITpW6RODhM0hd5J2iC3Khi
+ 4cO+4umvhceUSQgEukNn7zDjTk4PajomSbt1+gec+uBITTDU0Oz5HXnyZL+7BLDd1/W2 mA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3fngrf6e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 17:52:17 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BJHhatD005939;
+	Tue, 19 Dec 2023 17:52:16 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3fngrf64-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 17:52:16 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJHo6x5010885;
+	Tue, 19 Dec 2023 17:52:15 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7nhefh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 17:52:15 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BJHqDZe43450688
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Dec 2023 17:52:13 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5708520040;
+	Tue, 19 Dec 2023 17:52:13 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 166762004D;
+	Tue, 19 Dec 2023 17:52:11 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.61.138.145])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Dec 2023 17:52:10 +0000 (GMT)
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: linux-unionfs@vger.kernel.org
+Cc: Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Seth Forshee <sforshee@kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Subject: [PATCH v2 0/3] evm: disable EVM on overlayfs
+Date: Tue, 19 Dec 2023 12:52:03 -0500
+Message-Id: <20231219175206.12342-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: pB-8N_KLuBm7kbVeTuD99iuHW2-CzLEL
+X-Proofpoint-ORIG-GUID: bvmvuLSS8K3RAQnO1sL-wHBB4yByMKm8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-19_10,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=661 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ suspectscore=0 clxscore=1015 spamscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312190133
 
-> > One CPU has 2 threads, and the others have one.  The one with two threads
-> > is returned as the busiest one.  But nothing happens, because both of them
-> > prefer the socket that they are on.
->
-> This explains way load_balance uses migrate_util and not migrate_task.
-> One CPU with 2 threads can be overloaded
->
-> ok, so it seems that your 1st problem is that you have 2 threads on
-> the same CPU whereas you should have an idle core in this numa node.
-> All cores are sharing the same LLC, aren't they ?
+EVM verifies the existing 'security.evm' value, before allowing it
+to be updated.  The EVM HMAC and the original file signatures contain
+filesystem specific metadata (e.g. i_ino, i_generation and s_uuid).
 
-Sorry, not following this.
+This poses a challenge when transitioning from the lower backing file
+to the upper backing file.
 
-Socket 1 has N-1 threads, and thus an idle CPU.
-Socket 2 has N+1 threads, and thus one CPU with two threads.
+Until a complete solution is developed, disable EVM on overlayfs.
 
-Socket 1 tries to steal from that one CPU with two threads, but that
-fails, because both threads prefer being on Socket 2.
+Changelog v2:
+Addressed Amir's comments:
+- Simplified security_inode_copy_up_xattr() return.
+- Identified filesystems that don't support EVM based on a new SB_I flag.
 
-Since most (or all?) of the threads on Socket 2 perfer being on Socket 2.
-the only hope for Socket 1 to fill in its idle core is active balancing.
-But active balancing is not triggered because of migrate_util and because
-CPU_NEWLY_IDLE prevents the failure counter from ebing increased.
+Mimi Zohar (3):
+  evm: don't copy up 'security.evm' xattr
+  evm: add support to disable EVM on unsupported filesystems
+  overlay: disable EVM
 
-The part that I am currently missing to understand is that when I convert
-CPU_NEWLY_IDLE to CPU_IDLE, it typically picks a CPU with only one thread
-as busiest.  I have the impression that the fbq_type intervenes to cause
-it to avoid the CPU with two threads that already prefer Socket 2.  But I
-don't know at the moment why that is the case.  In any case, it's fine to
-active balance from a CPU with only one thread, because Socket 2 will
-even itself out afterwards.
+ fs/overlayfs/super.c              |  1 +
+ include/linux/evm.h               |  6 +++++
+ include/linux/fs.h                |  1 +
+ security/integrity/evm/evm_main.c | 42 ++++++++++++++++++++++++++++++-
+ security/security.c               |  2 +-
+ 5 files changed, 50 insertions(+), 2 deletions(-)
 
->
-> You should not have more than 1 thread per CPU when there are N+1
-> threads on a node with N cores / 2N CPUs.
+-- 
+2.39.3
 
-Hmm, I think there is a miscommunication about cores and CPUs.  The
-machine has two sockets with 16 physical cores each, and thus 32
-hyperthreads.  There are 64 threads running.
-
-julia
-
-> This will enable the
-> load_balance to try to migrate a task instead of some util(ization)
-> and you should reach the active load balance.
->
-> >
-> > > In theory you should have the
-> > > local "group_has_spare" and the busiest "group_fully_busy" (at most).
-> > > This means that no group should be overloaded and load_balance should
-> > > not try to migrate utli but only task
-> >
-> > I didn't collect information about the groups.  I will look into that.
-> >
-> > julia
-> >
-> > >
-> > >
-> > > >
-> > > > and changing the above test to:
-> > > >
-> > > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
-> > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
-> > > >
-> > > > seems to solve the problem.
-> > > >
-> > > > I will test this on more applications.  But let me know if the above
-> > > > solution seems completely inappropriate.  Maybe it violates some other
-> > > > constraints.
-> > > >
-> > > > I have no idea why this problem became more visible with EEVDF.  It seems
-> > > > to have to do with the time slices all turning out to be the same.  I got
-> > > > the same behavior in 6.5 by overwriting the timeslice calculation to
-> > > > always return 1.  But I don't see the connection between the timeslice and
-> > > > the behavior of the idle task.
-> > > >
-> > > > thanks,
-> > > > julia
-> > >
->
 
