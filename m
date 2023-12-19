@@ -1,178 +1,345 @@
-Return-Path: <linux-kernel+bounces-4920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445018183D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:49:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 301508183D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C61B21F25278
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:49:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A60D1F22BBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350D013FEC;
-	Tue, 19 Dec 2023 08:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E660D12B8F;
+	Tue, 19 Dec 2023 08:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gtMjDmmK"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JUXeBQVY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8239E134D2
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e23c620e8so4002718e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 00:48:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702975690; x=1703580490; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J2mdxIH6SwaV5wLRowQyUYSmtGsRKst3D4PQbdAQRMU=;
-        b=gtMjDmmKu1GSGnwdnwRbP35m7tDSMLG631tYhyZtRsjHGSmjaKxE3vYYDipQGmX9oV
-         QbzfzsEVj7kUPGl0e3gK/NDqoKKDj58LYTfS/Wm8ayssNE/pi0KsMUxbNnIca/F9Eat4
-         85ohSnGFaoo4gVlbjHH2GEu0FCSHXaDKnEdnwLjbR7Z+xNDompLVziVRtetDz+mUkoD9
-         UBe1+jFk21mfnMnNMznInrUxk1UF0coftvWNqSEIsP4vlGfTt7w0TXgIgtuMCOvO28uj
-         2rdShvhxyeG5g00IzMsGUE8wzqz6DgJZ2kmM1tVoAlb9jXIYM/C8XyR3p84XnQBo9yey
-         g+/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702975690; x=1703580490;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J2mdxIH6SwaV5wLRowQyUYSmtGsRKst3D4PQbdAQRMU=;
-        b=fuEeOje4vzvKJbUwqZoTI+Ko4IbcuWfGssImXfbphb5GUiO8e9jeLln+1EQfDIm+G5
-         j+F5s/Sx2H+p8IiXm6YiHve0suVx9WOEXY4SqAvoNpZ835uTeLS/oW6kfDGRmmWvxOwY
-         ud/1CgCXR/lM7xNH+U6ev1ajI6YzMtXBqOaUVeIU2nlong7fIjGuEqWEjWF+Vq5f5ODl
-         l6tJgK63yMokMTwBavkr0cHo9YDRr2JxFBc+Cm/VaMbENe9NiE3o5jg5t8RsQnjP/RTC
-         irVfDVRTq+QcSMrG3NLZhvpt3sM09I0SjfDe2wq/UfDKQ77hzkKAN9Y4X4RPA/VAxJq6
-         C7CA==
-X-Gm-Message-State: AOJu0YzlfiMLN1sLF4Dzb8lCbp91HnLHJ3+ysbOcokXBhB0NKvZL9+G1
-	fY59S+I/z0yKDzWcw6R3ItAR+g==
-X-Google-Smtp-Source: AGHT+IGjRRMHapmH8gfgShQO1nVf+WcloM6VGWz3/o4tsIMaS47VADmRI2ZtV9Cauacsb/q1gZz6GA==
-X-Received: by 2002:ac2:5ed0:0:b0:50e:274e:b880 with SMTP id d16-20020ac25ed0000000b0050e274eb880mr2027683lfq.72.1702975690535;
-        Tue, 19 Dec 2023 00:48:10 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id ll9-20020a170907190900b00a1cbb289a7csm15014494ejc.183.2023.12.19.00.48.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 00:48:09 -0800 (PST)
-Message-ID: <fbb29d81-9ea0-4468-ad47-f6668c2be277@linaro.org>
-Date: Tue, 19 Dec 2023 09:48:07 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A220513AFC;
+	Tue, 19 Dec 2023 08:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ8jxaP025229;
+	Tue, 19 Dec 2023 08:48:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mERsX5DVghWe7Cby9Tl5RfxFrUohW4KW8CsEVitxVMk=;
+ b=JUXeBQVYAM57hhLBrEZfqoVfXilBauPw2K68VTwnCssipseEFTmE1XpFj7k2MU59uNz8
+ iMWMz/4kbxXSHy9cPJvxo1K9Xo4DeVoLwGLc/StsX6OJK5Z1/JRzS0DFhT0z4ubn+dRp
+ DQtPow+hYU4QKqnxAKdQZTQWkURTlMWAIu//3Vfa53uOqncls32XGbXeFGOh0FNM7L94
+ lVVbe64M8qr2htiHM5c/cCNHqvqLeFdp0B9ZVksQOev2Oan4YKbsffUszSzTX0Lwf1gS
+ daMB9vwmBOHiAtBzCllIr6vSjTj2biSfhnmcR0ujWOaM2vFdRKZ+H0/hiBn7MkG5zUpw ZA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v373c9mbw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 08:48:51 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BJ8k8om026654;
+	Tue, 19 Dec 2023 08:48:50 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v373c9mb7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 08:48:50 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJ8Z92K027072;
+	Tue, 19 Dec 2023 08:48:49 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v1rejx3hs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 08:48:49 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BJ8mlMl44237490
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Dec 2023 08:48:47 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6B50A20043;
+	Tue, 19 Dec 2023 08:48:47 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BD35620040;
+	Tue, 19 Dec 2023 08:48:42 +0000 (GMT)
+Received: from [9.179.31.204] (unknown [9.179.31.204])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Dec 2023 08:48:42 +0000 (GMT)
+Message-ID: <4b465a74-a991-3612-096c-18d430ea2734@linux.ibm.com>
+Date: Tue, 19 Dec 2023 14:18:41 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] dts: iot2050: Support IOT2050-SM variant
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH V3 1/7] perf mem: Add mem_events into the supported
+ perf_pmu
+To: kan.liang@linux.intel.com, acme@kernel.org, irogers@google.com,
+        peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
+        jolsa@kernel.org, adrian.hunter@intel.com, john.g.garry@oracle.com,
+        will@kernel.org, james.clark@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, yuhaixin.yhx@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com, tmricht@linux.ibm.com,
+        ravi.bangoria@amd.com, atrajeev@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231213195154.1085945-1-kan.liang@linux.intel.com>
+ <20231213195154.1085945-2-kan.liang@linux.intel.com>
 Content-Language: en-US
-To: Jan Kiszka <jan.kiszka@siemens.com>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bao Cheng Su <baocheng.su@siemens.com>,
- Chao Zeng <chao.zeng@siemens.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Li Hua Qian <huaqian.li@siemens.com>
-References: <cover.1702917360.git.jan.kiszka@siemens.com>
- <11e0b0c8b828254567a8ff89820c067cacad2150.1702917360.git.jan.kiszka@siemens.com>
- <8b3daa3c-dbf8-4286-b04e-011cd9b0efa5@linaro.org>
- <4c31adc5-3fc5-47bc-9766-6d3d1eeddb65@siemens.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <4c31adc5-3fc5-47bc-9766-6d3d1eeddb65@siemens.com>
+From: kajoljain <kjain@linux.ibm.com>
+In-Reply-To: <20231213195154.1085945-2-kan.liang@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 377YIRE0M6t9xPsqwI3CHb9kRx5tSM7R
+X-Proofpoint-GUID: SikFQ6ouO1968zFvYYKfN7OvtTU2T1QQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-19_04,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 clxscore=1011 phishscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312190064
 
-On 19/12/2023 09:22, Jan Kiszka wrote:
->>
->>> +			gpios = <&wkup_gpio0 53 GPIO_ACTIVE_HIGH>;
->>
->> Ditto
->>
+Patch looks fine to me.
+
+Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
+Tested-by: Kajol Jain<kjain@linux.ibm.com>
+
+Thanks,
+Kajol Jain
+
+On 12/14/23 01:21, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> This is adjusting the existing LED nodes in k3-am65-iot2050-common.dtsi,
-> not introducing new ones. We can add the color properties in a separate
-
-
-Then why aren't you overriding by phandle/label?
-
-> patch, but the node names are now part of the kernel ABI. Changing them
-> would break existing userland.
-
-You mean label. Why node names became the ABI? Which interface exposes them?
-
+> With the mem_events, perf doesn't need to read sysfs for each PMU to
+> find the mem-events-supported PMU. The patch also makes it possible to
+> clean up the related __weak functions later.
 > 
->>
->>> +
->>> +&dwc3_0 {
->>> +	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
->>> +				 <&k3_clks 151 9>;  /* set PIPE3_TXB_CLK to CLK_12M_RC/256 (for HS only) */
->>> +	/delete-property/ phys;
->>> +	/delete-property/ phy-names;
->>
->> If your board need to remove phys from the SoC node, something is wrong.
->> Either your board or SoC.
->>
->> Any removal of properties in DTS is weird and unexpected. It deserves
->> comments.
+> The patch is only to add the mem_events into the perf_pmu for all ARCHs.
+> It will be used in the later cleanup patches.
 > 
-> This goes along disabling USB3 which is by default enabled via
-> k3-am65-iot2050-common-pg2.dtsi
-
-Isn't this mistake? Common part enables only these pieces which are
-working in common hardware SoM. If your common part of hardware, which
-DTSI should represent, has USB3 then why is it being disabled here? If
-common hardware design does not have USB3, then why is it being enabled
-in DTSI?
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> Suggested-by: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  tools/perf/arch/arm/util/pmu.c          | 3 +++
+>  tools/perf/arch/arm64/util/mem-events.c | 7 ++++---
+>  tools/perf/arch/arm64/util/mem-events.h | 7 +++++++
+>  tools/perf/arch/s390/util/pmu.c         | 3 +++
+>  tools/perf/arch/x86/util/mem-events.c   | 4 ++--
+>  tools/perf/arch/x86/util/mem-events.h   | 9 +++++++++
+>  tools/perf/arch/x86/util/pmu.c          | 7 +++++++
+>  tools/perf/util/mem-events.c            | 2 +-
+>  tools/perf/util/mem-events.h            | 1 +
+>  tools/perf/util/pmu.c                   | 4 +++-
+>  tools/perf/util/pmu.h                   | 7 +++++++
+>  11 files changed, 47 insertions(+), 7 deletions(-)
+>  create mode 100644 tools/perf/arch/arm64/util/mem-events.h
+>  create mode 100644 tools/perf/arch/x86/util/mem-events.h
 > 
-
-Best regards,
-Krzysztof
-
+> diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
+> index 7f3af3b97f3b..8b7cb68ba1a8 100644
+> --- a/tools/perf/arch/arm/util/pmu.c
+> +++ b/tools/perf/arch/arm/util/pmu.c
+> @@ -13,6 +13,7 @@
+>  #include "hisi-ptt.h"
+>  #include "../../../util/pmu.h"
+>  #include "../../../util/cs-etm.h"
+> +#include "../../arm64/util/mem-events.h"
+>  
+>  void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+>  {
+> @@ -26,6 +27,8 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+>  		pmu->selectable = true;
+>  		pmu->is_uncore = false;
+>  		pmu->perf_event_attr_init_default = arm_spe_pmu_default_config;
+> +		if (!strcmp(pmu->name, "arm_spe_0"))
+> +			pmu->mem_events = perf_mem_events_arm;
+>  	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
+>  		pmu->selectable = true;
+>  #endif
+> diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/arm64/util/mem-events.c
+> index 3bcc5c7035c2..edf8207f7812 100644
+> --- a/tools/perf/arch/arm64/util/mem-events.c
+> +++ b/tools/perf/arch/arm64/util/mem-events.c
+> @@ -1,10 +1,11 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -#include "map_symbol.h"
+> +#include "util/map_symbol.h"
+> +#include "util/mem-events.h"
+>  #include "mem-events.h"
+>  
+>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>  
+> -static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+> +struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] = {
+>  	E("spe-load",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=0,min_latency=%u/",	"arm_spe_0"),
+>  	E("spe-store",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=0,store_filter=1/",			"arm_spe_0"),
+>  	E("spe-ldst",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=1,min_latency=%u/",	"arm_spe_0"),
+> @@ -17,7 +18,7 @@ struct perf_mem_event *perf_mem_events__ptr(int i)
+>  	if (i >= PERF_MEM_EVENTS__MAX)
+>  		return NULL;
+>  
+> -	return &perf_mem_events[i];
+> +	return &perf_mem_events_arm[i];
+>  }
+>  
+>  const char *perf_mem_events__name(int i, const char *pmu_name __maybe_unused)
+> diff --git a/tools/perf/arch/arm64/util/mem-events.h b/tools/perf/arch/arm64/util/mem-events.h
+> new file mode 100644
+> index 000000000000..5fc50be4be38
+> --- /dev/null
+> +++ b/tools/perf/arch/arm64/util/mem-events.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ARM64_MEM_EVENTS_H
+> +#define _ARM64_MEM_EVENTS_H
+> +
+> +extern struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX];
+> +
+> +#endif /* _ARM64_MEM_EVENTS_H */
+> diff --git a/tools/perf/arch/s390/util/pmu.c b/tools/perf/arch/s390/util/pmu.c
+> index 886c30e001fa..225d7dc2379c 100644
+> --- a/tools/perf/arch/s390/util/pmu.c
+> +++ b/tools/perf/arch/s390/util/pmu.c
+> @@ -19,4 +19,7 @@ void perf_pmu__arch_init(struct perf_pmu *pmu)
+>  	    !strcmp(pmu->name, S390_PMUPAI_EXT) ||
+>  	    !strcmp(pmu->name, S390_PMUCPUM_CF))
+>  		pmu->selectable = true;
+> +
+> +	if (pmu->is_core)
+> +		pmu->mem_events = perf_mem_events;
+>  }
+> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
+> index 191b372f9a2d..2b81d229982c 100644
+> --- a/tools/perf/arch/x86/util/mem-events.c
+> +++ b/tools/perf/arch/x86/util/mem-events.c
+> @@ -16,13 +16,13 @@ static char mem_stores_name[100];
+>  
+>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>  
+> -static struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX] = {
+> +struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX] = {
+>  	E("ldlat-loads",	"%s/mem-loads,ldlat=%u/P",	"%s/events/mem-loads"),
+>  	E("ldlat-stores",	"%s/mem-stores/P",		"%s/events/mem-stores"),
+>  	E(NULL,			NULL,				NULL),
+>  };
+>  
+> -static struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] = {
+> +struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] = {
+>  	E(NULL,		NULL,		NULL),
+>  	E(NULL,		NULL,		NULL),
+>  	E("mem-ldst",	"ibs_op//",	"ibs_op"),
+> diff --git a/tools/perf/arch/x86/util/mem-events.h b/tools/perf/arch/x86/util/mem-events.h
+> new file mode 100644
+> index 000000000000..3959e427f482
+> --- /dev/null
+> +++ b/tools/perf/arch/x86/util/mem-events.h
+> @@ -0,0 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _X86_MEM_EVENTS_H
+> +#define _X86_MEM_EVENTS_H
+> +
+> +extern struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX];
+> +
+> +extern struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX];
+> +
+> +#endif /* _X86_MEM_EVENTS_H */
+> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+> index 469555ae9b3c..cd22e80e5657 100644
+> --- a/tools/perf/arch/x86/util/pmu.c
+> +++ b/tools/perf/arch/x86/util/pmu.c
+> @@ -15,6 +15,7 @@
+>  #include "../../../util/pmu.h"
+>  #include "../../../util/fncache.h"
+>  #include "../../../util/pmus.h"
+> +#include "mem-events.h"
+>  #include "env.h"
+>  
+>  void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+> @@ -30,6 +31,12 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+>  		pmu->selectable = true;
+>  	}
+>  #endif
+> +
+> +	if (x86__is_amd_cpu()) {
+> +		if (!strcmp(pmu->name, "ibs_op"))
+> +			pmu->mem_events = perf_mem_events_amd;
+> +	} else if (pmu->is_core)
+> +		pmu->mem_events = perf_mem_events_intel;
+>  }
+>  
+>  int perf_pmus__num_mem_pmus(void)
+> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+> index 3a2e3687878c..0a8f415f5efe 100644
+> --- a/tools/perf/util/mem-events.c
+> +++ b/tools/perf/util/mem-events.c
+> @@ -19,7 +19,7 @@ unsigned int perf_mem_events__loads_ldlat = 30;
+>  
+>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>  
+> -static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+> +struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+>  	E("ldlat-loads",	"cpu/mem-loads,ldlat=%u/P",	"cpu/events/mem-loads"),
+>  	E("ldlat-stores",	"cpu/mem-stores/P",		"cpu/events/mem-stores"),
+>  	E(NULL,			NULL,				NULL),
+> diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
+> index b40ad6ea93fc..8c5694b2d0b0 100644
+> --- a/tools/perf/util/mem-events.h
+> +++ b/tools/perf/util/mem-events.h
+> @@ -34,6 +34,7 @@ enum {
+>  };
+>  
+>  extern unsigned int perf_mem_events__loads_ldlat;
+> +extern struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX];
+>  
+>  int perf_mem_events__parse(const char *str);
+>  int perf_mem_events__init(void);
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 3c9609944a2f..3d4373b8ab63 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -986,8 +986,10 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
+>  }
+>  
+>  void __weak
+> -perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+> +perf_pmu__arch_init(struct perf_pmu *pmu)
+>  {
+> +	if (pmu->is_core)
+> +		pmu->mem_events = perf_mem_events;
+>  }
+>  
+>  struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *name)
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 424c3fee0949..e35d985206db 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -10,6 +10,8 @@
+>  #include <stdio.h>
+>  #include "parse-events.h"
+>  #include "pmu-events/pmu-events.h"
+> +#include "map_symbol.h"
+> +#include "mem-events.h"
+>  
+>  struct evsel_config_term;
+>  struct perf_cpu_map;
+> @@ -162,6 +164,11 @@ struct perf_pmu {
+>  		 */
+>  		bool exclude_guest;
+>  	} missing_features;
+> +
+> +	/**
+> +	 * @mem_events: List of the supported mem events
+> +	 */
+> +	struct perf_mem_event *mem_events;
+>  };
+>  
+>  /** @perf_pmu__fake: A special global PMU used for testing. */
 
