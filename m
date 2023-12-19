@@ -1,151 +1,319 @@
-Return-Path: <linux-kernel+bounces-5916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2A05819179
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:30:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1650F819175
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D7FBB258A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:30:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80C821F26F25
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5543A1AF;
-	Tue, 19 Dec 2023 20:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E953A3A269;
+	Tue, 19 Dec 2023 20:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q2sJLIxe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F4239AFF;
-	Tue, 19 Dec 2023 20:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.72.19) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 19 Dec
- 2023 23:29:44 +0300
-Subject: Re: [PATCH net-next v2 17/21] net: ravb: Keep clock request
- operations grouped together
-To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-18-claudiu.beznea.uj@bp.renesas.com>
- <2cb29821-7135-4369-ebc7-c742226e6230@omp.ru>
- <15c867d9-f77e-4b92-8b90-08d27116ce84@tuxon.dev>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <1a5f0b9c-3d8b-d9ae-d516-048856a2d0f9@omp.ru>
-Date: Tue, 19 Dec 2023 23:29:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E4439AD7;
+	Tue, 19 Dec 2023 20:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6d3954833a5so3352032b3a.3;
+        Tue, 19 Dec 2023 12:29:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703017785; x=1703622585; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sgi54jcBpJMUVlLVE91Nm95ggB0vCG1IsrQJtp0aQPk=;
+        b=Q2sJLIxerawHpDD8k6LllWor1wSpXo3+RBGjqM8se+jygP58qMQPIn7DDb/w4gl0QG
+         aVurjFw3Y8xEoffJ1CtSZOmWEbD861m0NIA2NdeR1wrCt7TQlNHzjGyfsJwPy0W+BYLS
+         I16HNdhe8i23hup00XyI0sN1EY9o4rmP0l1dwFPALyqi5hhFOfP32GaCLD+9OXBeJvur
+         7hUGw6Ir8TE8HYMRMq/++CS6kZAI/Q53NVBIuBsbjk0RRABkmqUy5B/Ob5WHRPEjqMJK
+         /O9yI5C3EbONwKAYG3M1/OlK8RDa+zRXlHetHfCyNoPeEylgrnvpRtWdniJfAeAPEvZx
+         dldQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703017785; x=1703622585;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sgi54jcBpJMUVlLVE91Nm95ggB0vCG1IsrQJtp0aQPk=;
+        b=ma/ddoV8x2X5+kGDRjIZur2obN6I1uNpHZnyi0SA8pBwABqHx9Y35KT2wvPd/pbO0p
+         aAxKpEtAs+EjZp25wYSox290nwrooSiMao/uj1V8YHd+VNG5R4KShyGh/IDxQGSU5K1/
+         lmLge3oz4W+CFRJheBUvPw1NQKCfD482ssf7TU3oppv4zZq5Bvzz1tJ/vWg6uRfxELE+
+         QpKkEJT/bBcLYK7TJgYnUrIzuBn1at9R+xvmhanfHiOP6FEheRUlF6GVvx3qmROXFKIw
+         NSrGe3CtZ0CCPPn727EaVXSqO5glBRPq0Y8v9Gr2UKD+So87iX9aSkrxDfOlBhA42UL5
+         /iDA==
+X-Gm-Message-State: AOJu0YzwAUAhvQiakB4NCbNQLLxkI/IEm+IjwtIMhQrJ0VHeKdgQ0N31
+	ff+yQNP5D+KEOmREfyThrqs=
+X-Google-Smtp-Source: AGHT+IEKIC3d38crpXG7CcdA2N7p3pHEpTqsP5xxR2hdU9UZNW1H9G5R3qGOHksK21qS+vXaZwo0mg==
+X-Received: by 2002:a05:6a20:320f:b0:18f:97c:6177 with SMTP id hl15-20020a056a20320f00b0018f097c6177mr19169698pzc.116.1703017785244;
+        Tue, 19 Dec 2023 12:29:45 -0800 (PST)
+Received: from localhost ([98.97.32.4])
+        by smtp.gmail.com with ESMTPSA id a21-20020a17090a481500b0028bc2035c09sm1294872pjh.34.2023.12.19.12.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 12:29:44 -0800 (PST)
+Date: Tue, 19 Dec 2023 12:29:43 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: John Fastabend <john.fastabend@gmail.com>, 
+ Kuniyuki Iwashima <kuniyu@amazon.com>, 
+ xrivendell7@gmail.com
+Cc: alexander@mihalicyn.com, 
+ bpf@vger.kernel.org, 
+ daan.j.demeyer@gmail.com, 
+ davem@davemloft.net, 
+ dhowells@redhat.com, 
+ edumazet@google.com, 
+ john.fastabend@gmail.com, 
+ kuba@kernel.org, 
+ kuniyu@amazon.com, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com
+Message-ID: <6581fd3754b79_95e63208f@john.notmuch>
+In-Reply-To: <6581f509a56ea_90e25208c7@john.notmuch>
+References: <CABOYnLwXyxPukiaL36NvGvSa6yW3y0rXgrU=ABOzE-1gDAc4-g@mail.gmail.com>
+ <20231219155057.12716-1-kuniyu@amazon.com>
+ <6581f509a56ea_90e25208c7@john.notmuch>
+Subject: Re: memory leak in unix_create1/copy_process/security_prepare_creds
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <15c867d9-f77e-4b92-8b90-08d27116ce84@tuxon.dev>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/19/2023 20:16:21
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 182236 [Dec 19 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;178.176.72.19:7.7.3,7.4.1;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.19
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/19/2023 20:21:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/19/2023 6:03:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 12/17/23 4:22 PM, claudiu beznea wrote:
+John Fastabend wrote:
+> Kuniyuki Iwashima wrote:
+> > From: xingwei lee <xrivendell7@gmail.com>
+> > Date: Tue, 19 Dec 2023 17:12:25 +0800
+> > > Hello I found a bug in net/af_unix in the lastest upstream linux
+> > > 6.7.rc5 and comfired in lastest net/net-next/bpf/bpf-next tree.
+> > > Titled "TITLE: memory leak in unix_create1=E2=80=9D and I also uplo=
+ad the
+> > > repro.c and repro.txt.
+> > > =
 
-[...]
+> > > If you fix this issue, please add the following tag to the commit:
+> > > Reported-by: xingwei Lee <xrivendell7@gmail.com>
+> > =
 
->>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> Keep clock request operations grouped togeter to have all clock-related
->>> code in a single place. This makes the code simpler to follow.
->>>
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>> ---
->>>
->>> Changes in v2:
->>> - none; this patch is new
->>>
->>>  drivers/net/ethernet/renesas/ravb_main.c | 28 ++++++++++++------------
->>>  1 file changed, 14 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->>> index 38999ef1ea85..a2a64c22ec41 100644
->>> --- a/drivers/net/ethernet/renesas/ravb_main.c
->>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->>> @@ -2768,6 +2768,20 @@ static int ravb_probe(struct platform_device *pdev)
->>>  	if (error)
->>>  		goto out_reset_assert;
->>>  
->>> +	priv->clk = devm_clk_get(&pdev->dev, NULL);
->>> +	if (IS_ERR(priv->clk)) {
->>> +		error = PTR_ERR(priv->clk);
->>> +		goto out_reset_assert;
->>> +	}
->>> +
->>> +	if (info->gptp_ref_clk) {
->>> +		priv->gptp_clk = devm_clk_get(&pdev->dev, "gptp");
->>> +		if (IS_ERR(priv->gptp_clk)) {
->>> +			error = PTR_ERR(priv->gptp_clk);
->>> +			goto out_reset_assert;
->>> +		}
->>> +	}
->>> +
->>>  	priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
->>>  	if (IS_ERR(priv->refclk)) {
->>>  		error = PTR_ERR(priv->refclk);
->>
->>    Hmm... I think we currently have all these calls in one place.
->> Perhaps you just shouldn't have moved this code around?
-> 
-> refclk have been moved at this point due to runtime PM. As refclk was
-> changed to be part of driver's runtime PM APIs we need to have it requested
-> (and prepared) before pm_runtime_resume_and_get(). Calling
-> pm_runtime_resume_and_get() will call driver's runtime PM resume.
-> 
-> The idea with this patch was to have all clock requests (clk, gptp, refclk)
-> in a single place (it's easier to follow the code this way, in my opinion).
-> If you prefer I can squash this patch with patch 07/21 "net: ravb: Move
-> reference clock enable/disable on runtime PM APIs". Please, let me know
-> what do you think.
+> > Thanks for reporting!
+> > =
 
-   Yes, please move all 3 clocks at once.
+> > It seems 8866730aed510 forgot to add sock_put().
+> > I've confirmed that the diff below silenced kmemleak but will check
+> > more before posting a patch.
+> =
 
-MBR, Sergey
+> Did it really silence the memleak?
+
+Yes reverting the patch fixed the issue for me.
+
+> =
+
+> > =
+
+> > ---8<---
+> > diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
+> > index 7ea7c3a0d0d0..32daba9e7f8b 100644
+> > --- a/net/unix/unix_bpf.c
+> > +++ b/net/unix/unix_bpf.c
+> > @@ -164,6 +164,7 @@ int unix_stream_bpf_update_proto(struct sock *sk,=
+ struct sk_psock *psock, bool r
+> >  	if (restore) {
+> >  		sk->sk_write_space =3D psock->saved_write_space;
+> >  		sock_replace_proto(sk, psock->sk_proto);
+> > +		sock_put(psock->sk_pair);
+> >  		return 0;
+> =
+
+> The reason the sock_put is not in this routine but in the sk_psock_dest=
+ory
+> is because we need to wait a RCU grace period for any pending queued
+> BPF sends to also be flushed.
+
+So we need a different fix here. I'll look into it.
+
+> =
+
+> >  	}
+> >  =
+
+> > ---8<---
+> > =
+
+> > Thanks!
+> > =
+
+> > =
+
+> =
+
+> I'm also trying to understand how this adds up to
+> unix_stream_bpf_update_proto() issue. The reproduce has a map_create
+> followed by two map_delete() calls. I can't see how the unix socket
+> ever got added to the BPF map and the deletes should be empty?
+> =
+
+> > > =
+
+> > > lastest net tree: 979e90173af8d2f52f671d988189aab98c6d1be6
+> > > Kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfi=
+g&x=3D8c4e4700f1727d30
+> > > =
+
+> > > in the lastest net tree, the crash like:
+> > > Linux syzkaller 6.7.0-rc5-00172-g979e90173af8 #4 SMP PREEMPT_DYNAMI=
+C
+> > > Tue Dec 19 11:03:58 HKT 2023 x86_4
+> > > =
+
+> > > TITLE: memory leak in security_prepare_creds
+> > >    [<ffffffff8129291a>] copy_process+0x6aa/0x25c0 kernel/fork.c:236=
+6
+> > >    [<ffffffff812949db>] kernel_clone+0x11b/0x690 kernel/fork.c:2907=
+
+> > >    [<ffffffff81294fcc>] __do_sys_clone+0x7c/0xb0 kernel/fork.c:3050=
+
+> > >    [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [=
+inline]
+> > >    [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/com=
+mon.c:83
+> > >    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> =
+
+> ...
+> =
+
+> > > uint64_t r[1] =3D {0xffffffffffffffff};
+> > > =
+
+> > > void execute_one(void) {
+> > >  intptr_t res =3D 0;
+> > >  syscall(__NR_socketpair, /*domain=3D*/1ul, /*type=3D*/1ul, /*proto=
+=3D*/0,
+> > >          /*fds=3D*/0x20000000ul);
+> > >  *(uint32_t*)0x200000c0 =3D 0x12;
+> > >  *(uint32_t*)0x200000c4 =3D 2;
+> > >  *(uint32_t*)0x200000c8 =3D 4;
+> > >  *(uint32_t*)0x200000cc =3D 1;
+> > >  *(uint32_t*)0x200000d0 =3D 0;
+> > >  *(uint32_t*)0x200000d4 =3D -1;
+> > >  *(uint32_t*)0x200000d8 =3D 0;
+> =
+
+> =
+
+> > >  memset((void*)0x200000dc, 0, 16);
+> > >  *(uint32_t*)0x200000ec =3D 0;
+> > >  *(uint32_t*)0x200000f0 =3D -1;
+> > >  *(uint32_t*)0x200000f4 =3D 0;
+> > >  *(uint32_t*)0x200000f8 =3D 0;
+> > >  *(uint32_t*)0x200000fc =3D 0;
+> > >  *(uint64_t*)0x20000100 =3D 0;
+> > >  res =3D syscall(__NR_bpf, /*cmd=3D*/0ul, /*arg=3D*/0x200000c0ul, /=
+*size=3D*/0x48ul);
+> =
+
+> mapfd =3D map_create( bpf_attr { SOCKHASH, 1 entry, 0 flags, ...} )
+> =
+
+> > >  if (res !=3D -1) r[0] =3D res;
+> > >  *(uint32_t*)0x200003c0 =3D r[0];
+> > >  *(uint64_t*)0x200003c8 =3D 0x20000040;
+> > >  *(uint64_t*)0x200003d0 =3D 0x20000000;
+> > >  *(uint64_t*)0x200003d8 =3D 0;
+> > >  syscall(__NR_bpf, /*cmd=3D*/2ul, /*arg=3D*/0x200003c0ul, /*size=3D=
+*/0x20ul);
+> =
+
+> map_delete(mapfd, key=3D0x20000040, value=3D0x20000000, flags =3D 0)
+> =
+
+> > >  *(uint32_t*)0x200003c0 =3D r[0];
+> > >  *(uint64_t*)0x200003c8 =3D 0x20000040;
+> > >  *(uint64_t*)0x200003d0 =3D 0x20000000;
+> > >  *(uint64_t*)0x200003d8 =3D 0;
+> > >  syscall(__NR_bpf, /*cmd=3D*/2ul, /*arg=3D*/0x200003c0ul, /*size=3D=
+*/0x20ul);
+> =
+
+> map_delete(mapfd, key=3D0x20000040, value=3D0x20000000, flags =3D 0)
+
+cmd=3D2 is update so this splat makes more sense.
+
+> =
+
+> so same as repro.txt below makes sense. But, if the sockets are
+> never added to the sockhash then we never touched the proto from
+> BPF side. And both of these deletes should return errors.
+> =
+
+> > > }
+> > > int main(void) {
+> > >  syscall(__NR_mmap, /*addr=3D*/0x1ffff000ul, /*len=3D*/0x1000ul, /*=
+prot=3D*/0ul,
+> > >          /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+> > >  syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0x1000000ul,=
+ /*prot=3D*/7ul,
+> > >          /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+> > >  syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul, /*=
+prot=3D*/0ul,
+> > >          /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+> > >  setup_leak();
+> > >  loop();
+> > >  return 0;
+> > > }
+> > > =
+
+> > > =
+
+> > > =
+
+> > > =3D* repro.txt =3D*
+> > > socketpair(0x1, 0x1, 0x0, &(0x7f0000000000))
+> > > r0 =3D bpf$MAP_CREATE(0x0, &(0x7f00000000c0)=3D@base=3D{0x12, 0x2, =
+0x4, 0x1}, 0x48)
+> > > bpf$MAP_DELETE_ELEM(0x2, &(0x7f00000003c0)=3D{r0, &(0x7f0000000040)=
+,
+> > > 0x20000000}, 0x20)
+> > > bpf$MAP_DELETE_ELEM(0x2, &(0x7f00000003c0)=3D{r0, &(0x7f0000000040)=
+,
+> > > 0x20000000}, 0x20)
+> =
+
+> So not making sense to me how we got to blaming the proto delete
+> logic here. It doesn't look like we ever added the psock and
+> configured the proto?
+
+Not sure why these is delete cmd=3D0x2.
+
+#define ___BPF_FUNC_MAPPER(FN, ctx...)                  \
+        FN(unspec, 0, ##ctx)                            \
+        FN(map_lookup_elem, 1, ##ctx)                   \            =
+
+        FN(map_update_elem, 2, ##ctx)                   \
+
+
+> =
+
+> Did a bisect really blame the mentioned patch? I can likely try here
+> as well.
+
+Seems so.
+
+> =
+
+> Thanks,
+> John
+
+
 
