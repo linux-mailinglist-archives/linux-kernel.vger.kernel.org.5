@@ -1,37 +1,38 @@
-Return-Path: <linux-kernel+bounces-6041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321D2819383
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:29:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 881ED819384
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:29:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB26285AF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:29:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB4911C23632
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:29:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E851D3D0C7;
-	Tue, 19 Dec 2023 22:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635173D0D6;
+	Tue, 19 Dec 2023 22:29:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cmqIC4mq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qtqOsejh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D113D0A2
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 22:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6557E3D0AB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 22:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703024951;
+	t=1703024952;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=4hIWKlq3vwUHvNMJIcXvuTboO6P/RRCs5XS67UMRG18=;
-	b=cmqIC4mq/S1If3wT0VfK4ZSI8XnX48OZPjpLmv8Nch6LR34oryd27ZqdCEKyY6LHfFJJsq
-	eErX9SPgAzm7ap40rzJt2NtwXY3A7eaRiArCtrdS3JJsvDA853U3/0S6FWfyzlfKznN6hI
-	IldQO8JAQsTlsxMRb2XrXbDrvagtAkI=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=65Nj55va0LyidH/qJFPAhjUaSN3kZxL0lL8iCsNvyX4=;
+	b=qtqOsejhFRAQXz/SAXNo9IB1G73IEgw3a9jUz4FGb8dWQiMSemlTQ9pIavZ+Zr7zX4kUJ8
+	0olVIm0l45jMoaa0ZeX7DsQotFdRhNCybCgNQh0s4gGlUfcs17lifVGwAZhMGf9p4P7gCO
+	LcI0++R63ENC8BHKVFsfmjkGqnOvA4Y=
 From: andrey.konovalov@linux.dev
 To: Marco Elver <elver@google.com>,
 	Alexander Potapenko <glider@google.com>
@@ -46,9 +47,11 @@ Cc: Andrey Konovalov <andreyknvl@gmail.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH mm 00/21] kasan: save mempool stack traces
-Date: Tue, 19 Dec 2023 23:28:44 +0100
-Message-Id: <cover.1703024586.git.andreyknvl@google.com>
+Subject: [PATCH mm 01/21] kasan: rename kasan_slab_free_mempool to kasan_mempool_poison_object
+Date: Tue, 19 Dec 2023 23:28:45 +0100
+Message-Id: <c5618685abb7cdbf9fb4897f565e7759f601da84.1703024586.git.andreyknvl@google.com>
+In-Reply-To: <cover.1703024586.git.andreyknvl@google.com>
+References: <cover.1703024586.git.andreyknvl@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,71 +63,101 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-This series updates KASAN to save alloc and free stack traces for
-secondary-level allocators that cache and reuse allocations internally
-instead of giving them back to the underlying allocator (e.g. mempool).
+Rename kasan_slab_free_mempool to kasan_mempool_poison_object.
 
-As a part of this change, introduce and document a set of KASAN hooks:
+kasan_slab_free_mempool is a slightly confusing name: it is unclear
+whether this function poisons the object when it is freed into mempool
+or does something when the object is freed from mempool to the underlying
+allocator.
 
-bool kasan_mempool_poison_pages(struct page *page, unsigned int order);
-void kasan_mempool_unpoison_pages(struct page *page, unsigned int order);
-bool kasan_mempool_poison_object(void *ptr);
-void kasan_mempool_unpoison_object(void *ptr, size_t size);
+The new name also aligns with other mempool-related KASAN hooks added in
+the following patches in this series.
 
-and use them in the mempool code.
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
+ include/linux/kasan.h  | 8 ++++----
+ io_uring/alloc_cache.h | 3 +--
+ mm/kasan/common.c      | 4 ++--
+ mm/mempool.c           | 2 +-
+ 4 files changed, 8 insertions(+), 9 deletions(-)
 
-Besides mempool, skbuff and io_uring also cache allocations and already
-use KASAN hooks to poison those. Their code is updated to use the new
-mempool hooks.
-
-The new hooks save alloc and free stack traces (for normal kmalloc and
-slab objects; stack traces for large kmalloc objects and page_alloc are
-not supported by KASAN yet), improve the readability of the users' code,
-and also allow the users to prevent double-free and invalid-free bugs;
-see the patches for the details.
-
-There doesn't appear to be any conflicts with the KASAN patches that are
-currently in mm, but I rebased the patchset on top just in case.
-
-Changes RFC->v1:
-- New patch "mempool: skip slub_debug poisoning when KASAN is enabled".
-- Replace mempool_use_prealloc_only API with mempool_alloc_preallocated.
-- Avoid triggering slub_debug-detected corruptions in mempool tests.
-
-Andrey Konovalov (21):
-  kasan: rename kasan_slab_free_mempool to kasan_mempool_poison_object
-  kasan: move kasan_mempool_poison_object
-  kasan: document kasan_mempool_poison_object
-  kasan: add return value for kasan_mempool_poison_object
-  kasan: introduce kasan_mempool_unpoison_object
-  kasan: introduce kasan_mempool_poison_pages
-  kasan: introduce kasan_mempool_unpoison_pages
-  kasan: clean up __kasan_mempool_poison_object
-  kasan: save free stack traces for slab mempools
-  kasan: clean up and rename ____kasan_kmalloc
-  kasan: introduce poison_kmalloc_large_redzone
-  kasan: save alloc stack traces for mempool
-  mempool: skip slub_debug poisoning when KASAN is enabled
-  mempool: use new mempool KASAN hooks
-  mempool: introduce mempool_use_prealloc_only
-  kasan: add mempool tests
-  kasan: rename pagealloc tests
-  kasan: reorder tests
-  kasan: rename and document kasan_(un)poison_object_data
-  skbuff: use mempool KASAN hooks
-  io_uring: use mempool KASAN hook
-
- include/linux/kasan.h   | 161 +++++++-
- include/linux/mempool.h |   1 +
- io_uring/alloc_cache.h  |   5 +-
- mm/kasan/common.c       | 221 ++++++----
- mm/kasan/kasan_test.c   | 870 +++++++++++++++++++++++++++-------------
- mm/mempool.c            |  67 +++-
- mm/slab.c               |  10 +-
- mm/slub.c               |   4 +-
- net/core/skbuff.c       |  10 +-
- 9 files changed, 954 insertions(+), 395 deletions(-)
-
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 72cb693b075b..6310435f528b 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -172,11 +172,11 @@ static __always_inline void kasan_kfree_large(void *ptr)
+ 		__kasan_kfree_large(ptr, _RET_IP_);
+ }
+ 
+-void __kasan_slab_free_mempool(void *ptr, unsigned long ip);
+-static __always_inline void kasan_slab_free_mempool(void *ptr)
++void __kasan_mempool_poison_object(void *ptr, unsigned long ip);
++static __always_inline void kasan_mempool_poison_object(void *ptr)
+ {
+ 	if (kasan_enabled())
+-		__kasan_slab_free_mempool(ptr, _RET_IP_);
++		__kasan_mempool_poison_object(ptr, _RET_IP_);
+ }
+ 
+ void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
+@@ -256,7 +256,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object, bool init
+ 	return false;
+ }
+ static inline void kasan_kfree_large(void *ptr) {}
+-static inline void kasan_slab_free_mempool(void *ptr) {}
++static inline void kasan_mempool_poison_object(void *ptr) {}
+ static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
+ 				   gfp_t flags, bool init)
+ {
+diff --git a/io_uring/alloc_cache.h b/io_uring/alloc_cache.h
+index 241245cb54a6..8de0414e8efe 100644
+--- a/io_uring/alloc_cache.h
++++ b/io_uring/alloc_cache.h
+@@ -16,8 +16,7 @@ static inline bool io_alloc_cache_put(struct io_alloc_cache *cache,
+ 	if (cache->nr_cached < cache->max_cached) {
+ 		cache->nr_cached++;
+ 		wq_stack_add_head(&entry->node, &cache->list);
+-		/* KASAN poisons object */
+-		kasan_slab_free_mempool(entry);
++		kasan_mempool_poison_object(entry);
+ 		return true;
+ 	}
+ 	return false;
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index fe6c4b43ad9f..e0394d0ee7f1 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -271,7 +271,7 @@ static inline bool ____kasan_kfree_large(void *ptr, unsigned long ip)
+ 
+ 	/*
+ 	 * The object will be poisoned by kasan_poison_pages() or
+-	 * kasan_slab_free_mempool().
++	 * kasan_mempool_poison_object().
+ 	 */
+ 
+ 	return false;
+@@ -282,7 +282,7 @@ void __kasan_kfree_large(void *ptr, unsigned long ip)
+ 	____kasan_kfree_large(ptr, ip);
+ }
+ 
+-void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
++void __kasan_mempool_poison_object(void *ptr, unsigned long ip)
+ {
+ 	struct folio *folio;
+ 
+diff --git a/mm/mempool.c b/mm/mempool.c
+index b3d2084fd989..7e1c729f292b 100644
+--- a/mm/mempool.c
++++ b/mm/mempool.c
+@@ -107,7 +107,7 @@ static inline void poison_element(mempool_t *pool, void *element)
+ static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
+ {
+ 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+-		kasan_slab_free_mempool(element);
++		kasan_mempool_poison_object(element);
+ 	else if (pool->alloc == mempool_alloc_pages)
+ 		kasan_poison_pages(element, (unsigned long)pool->pool_data,
+ 				   false);
 -- 
 2.25.1
 
