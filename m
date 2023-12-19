@@ -1,299 +1,137 @@
-Return-Path: <linux-kernel+bounces-4605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1457817FDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0953C817FDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:34:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2479B21B8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:34:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BFE8B2375E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466815244;
-	Tue, 19 Dec 2023 02:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A488E6D3F;
+	Tue, 19 Dec 2023 02:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Bq5G6vTX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661F4469D;
-	Tue, 19 Dec 2023 02:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rFPva-0008K2-0T;
-	Tue, 19 Dec 2023 02:33:51 +0000
-Date: Tue, 19 Dec 2023 02:33:48 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 7/7] mtd: ubi: provide NVMEM layer over UBI volumes
-Message-ID: <82ceb13954f7e701bf47c112333e7b15a57fc360.1702952891.git.daniel@makrotopia.org>
-References: <cover.1702952891.git.daniel@makrotopia.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A35A4C8A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42778277d9aso846211cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:34:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1702953282; x=1703558082; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D9QkIhhrk9atF5NzOy+uO1AzHmVd/CKbg5xM+XgezA8=;
+        b=Bq5G6vTX7AycPA46eJnEM4NUP/4HEhiaK6kq19V/+8BxJido1YAqNmCyZKiX6mli7r
+         QOQmIINFqvmqZ3ZtnyBJd3mwQkZ1cXkUIrvepJ+ElL6N0PoQQe03PhIpSZMUH1IVJoAr
+         LkgSGriQkYrOat2c5yhYFNCbjW6SOi2EYcR6Ke0ZMCRZQ1SU3itAoGnA5AShqi4TFo+i
+         MfwXxhc0w5YYsKFApu9chd6c4ZhUK4I8NHhfUqlvgPWtoramXoY2eBN80WRaLi0MNS4O
+         UJxtBK7hRatrzvTTPeItWCKT1nqnWkbb2Rkgtmq8V/V3Mn83lGq9ptutCbNDc6CMvlOb
+         11rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702953282; x=1703558082;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=D9QkIhhrk9atF5NzOy+uO1AzHmVd/CKbg5xM+XgezA8=;
+        b=gEGz//7374XMu5AgUWnJNBYtYdwtsIxniXqU34E3MqUm4IXqvy09N0e9wJOcUzVZ6Q
+         JgZN0jlUz5o4Z6K4nuw+uI1ixAOpTQ5R9tndN9R8ceoH5Gz0B0BmIaxiYqxfuqNj0OGx
+         Kygz7qvt7OELnwcpkdp5y4eBfGOnF3HaYVSQn71mgS3/BtD4I+kIOiayclyYQ3r+y8UE
+         EQCxtYY1MlglP3+QWGVh8u+9+nXMwynUaXxIj73BxJ71uG67+W4WH0xgRI4XQeA8N4V2
+         EX6bv5ndxh1gOx0wjQCerJTO4Bgp99VMJCnBPMMyaUOlNchnMYJVaxtOC8ZZ4Bv5G+Qm
+         D04Q==
+X-Gm-Message-State: AOJu0YwHFRhobQDnXLCjdHYYDaWsQz3vCKGFznVyrIm8OBChrZq9MJ0a
+	vFHBXGeOpOUss3fptRr8XMM1ZQ==
+X-Google-Smtp-Source: AGHT+IHsFgkgz+k2eXh+Ho5A/KHaCd16u7/K+YstrOpkAJ59a8FRHMBI1Q/QtcqiaOOXoo/87BlMaw==
+X-Received: by 2002:ac8:5790:0:b0:425:8637:f81a with SMTP id v16-20020ac85790000000b004258637f81amr22848990qta.71.1702953282222;
+        Mon, 18 Dec 2023 18:34:42 -0800 (PST)
+Received: from [10.84.146.214] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id qc12-20020a17090b288c00b0028b6f522fedsm252431pjb.43.2023.12.18.18.34.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 18:34:41 -0800 (PST)
+Message-ID: <00ffc2e3-446b-473e-89b9-a859f36e43dd@bytedance.com>
+Date: Tue, 19 Dec 2023 10:34:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1702952891.git.daniel@makrotopia.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] maple_tree: Avoid checking other gaps after getting the
+ largest gap
+To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+References: <20231215074632.82045-1-zhangpeng.00@bytedance.com>
+ <20231218202014.mpotsekdkszasn4t@revolver>
+ <20231218202845.buffbdq3vhpiv2py@revolver>
+Cc: maple-tree@lists.infradead.org, akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Peng Zhang <zhangpeng.00@bytedance.com>
+From: Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <20231218202845.buffbdq3vhpiv2py@revolver>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-In an ideal world we would like UBI to be used where ever possible on a
-NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
-is possible to achieve an (almost-)all-UBI flash layout. Hence the need
-for a way to also use UBI volumes to store board-level constants, such
-as MAC addresses and calibration data of wireless interfaces.
 
-Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
-providers. Allow UBI devices to have a "volumes" firmware subnode with
-volumes which may be compatible with "nvmem-cells".
-Access to UBI volumes via the NVMEM interface at this point is
-read-only, and it is slow, opening and closing the UBI volume for each
-access due to limitations of the NVMEM provider API.
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/Kconfig  |  12 +++
- drivers/mtd/ubi/Makefile |   1 +
- drivers/mtd/ubi/nvmem.c  | 188 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 201 insertions(+)
- create mode 100644 drivers/mtd/ubi/nvmem.c
-
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 2ed77b7b3fcb5..45d939bbfa853 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
- 
- 	   If in doubt, say "N".
- 
-+config MTD_UBI_NVMEM
-+	tristate "UBI virtual NVMEM"
-+	default n
-+	depends on NVMEM
-+	help
-+	   This option enabled an additional driver exposing UBI volumes as NVMEM
-+	   providers, intended for platforms where UBI is part of the firmware
-+	   specification and used to store also e.g. MAC addresses or board-
-+	   specific Wi-Fi calibration data.
-+
-+	   If in doubt, say "N".
-+
- endif # MTD_UBI
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index 543673605ca72..4b51aaf00d1a2 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
- ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
- 
- obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
-+obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-new file mode 100644
-index 0000000000000..b7a93c495d172
---- /dev/null
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ */
-+
-+/* UBI NVMEM provider */
-+#include "ubi.h"
-+#include <linux/nvmem-provider.h>
-+#include <asm/div64.h>
-+
-+/* List of all NVMEM devices */
-+static LIST_HEAD(nvmem_devices);
-+static DEFINE_MUTEX(devices_mutex);
-+
-+struct ubi_nvmem {
-+	struct nvmem_device *nvmem;
-+	int ubi_num;
-+	int vol_id;
-+	int usable_leb_size;
-+	struct list_head list;
-+};
-+
-+static int ubi_nvmem_reg_read(void *priv, unsigned int from,
-+			      void *val, size_t bytes)
-+{
-+	int err = 0, lnum = from, offs, bytes_left = bytes, to_read;
-+	struct ubi_nvmem *unv = priv;
-+	struct ubi_volume_desc *desc;
-+
-+	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	offs = do_div(lnum, unv->usable_leb_size);
-+	while (bytes_left) {
-+		to_read = unv->usable_leb_size - offs;
-+
-+		if (to_read > bytes_left)
-+			to_read = bytes_left;
-+
-+		err = ubi_read(desc, lnum, val, offs, to_read);
-+		if (err)
-+			break;
-+
-+		lnum += 1;
-+		offs = 0;
-+		bytes_left -= to_read;
-+		val += to_read;
-+	}
-+	ubi_close_volume(desc);
-+
-+	if (err)
-+		return err;
-+
-+	return bytes_left == 0 ? 0 : -EIO;
-+}
-+
-+static int ubi_nvmem_add(struct ubi_volume_info *vi)
-+{
-+	struct device_node *np = dev_of_node(vi->dev);
-+	struct nvmem_config config = {};
-+	struct ubi_nvmem *unv;
-+	int ret;
-+
-+	if (!np)
-+		return 0;
-+
-+	if (!of_get_child_by_name(np, "nvmem-layout"))
-+		return 0;
-+
-+	if (WARN_ON_ONCE(vi->usable_leb_size <= 0) ||
-+	    WARN_ON_ONCE(vi->size <= 0))
-+		return -EINVAL;
-+
-+	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
-+	if (!unv)
-+		return -ENOMEM;
-+
-+	config.id = NVMEM_DEVID_NONE;
-+	config.dev = vi->dev;
-+	config.name = dev_name(vi->dev);
-+	config.owner = THIS_MODULE;
-+	config.priv = unv;
-+	config.reg_read = ubi_nvmem_reg_read;
-+	config.size = vi->usable_leb_size * vi->size;
-+	config.word_size = 1;
-+	config.stride = 1;
-+	config.read_only = true;
-+	config.root_only = true;
-+	config.ignore_wp = true;
-+	config.of_node = np;
-+
-+	unv->ubi_num = vi->ubi_num;
-+	unv->vol_id = vi->vol_id;
-+	unv->usable_leb_size = vi->usable_leb_size;
-+	unv->nvmem = nvmem_register(&config);
-+	if (IS_ERR(unv->nvmem)) {
-+		ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
-+				    "Failed to register NVMEM device\n");
-+		kfree(unv);
-+		return ret;
-+	}
-+
-+	mutex_lock(&devices_mutex);
-+	list_add_tail(&unv->list, &nvmem_devices);
-+	mutex_unlock(&devices_mutex);
-+
-+	return 0;
-+}
-+
-+static void ubi_nvmem_remove(struct ubi_volume_info *vi)
-+{
-+	struct ubi_nvmem *unv_c, *unv = NULL;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry(unv_c, &nvmem_devices, list)
-+		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
-+			unv = unv_c;
-+			break;
-+		}
-+
-+	if (!unv) {
-+		mutex_unlock(&devices_mutex);
-+		return;
-+	}
-+
-+	list_del(&unv->list);
-+	mutex_unlock(&devices_mutex);
-+	nvmem_unregister(unv->nvmem);
-+	kfree(unv);
-+}
-+
-+/**
-+ * nvmem_notify - UBI notification handler.
-+ * @nb: registered notifier block
-+ * @l: notification type
-+ * @ns_ptr: pointer to the &struct ubi_notification object
-+ */
-+static int nvmem_notify(struct notifier_block *nb, unsigned long l,
-+			 void *ns_ptr)
-+{
-+	struct ubi_notification *nt = ns_ptr;
-+
-+	switch (l) {
-+	case UBI_VOLUME_RESIZED:
-+		ubi_nvmem_remove(&nt->vi);
-+		fallthrough;
-+	case UBI_VOLUME_ADDED:
-+		ubi_nvmem_add(&nt->vi);
-+		break;
-+	case UBI_VOLUME_SHUTDOWN:
-+		ubi_nvmem_remove(&nt->vi);
-+		break;
-+	default:
-+		break;
-+	}
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block nvmem_notifier = {
-+	.notifier_call = nvmem_notify,
-+};
-+
-+static int __init ubi_nvmem_init(void)
-+{
-+	return ubi_register_volume_notifier(&nvmem_notifier, 0);
-+}
-+
-+static void __exit ubi_nvmem_exit(void)
-+{
-+	struct ubi_nvmem *unv, *tmp;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
-+		nvmem_unregister(unv->nvmem);
-+		list_del(&unv->list);
-+		kfree(unv);
-+	}
-+	mutex_unlock(&devices_mutex);
-+
-+	ubi_unregister_volume_notifier(&nvmem_notifier);
-+}
-+
-+module_init(ubi_nvmem_init);
-+module_exit(ubi_nvmem_exit);
-+MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
-+MODULE_AUTHOR("Daniel Golle");
-+MODULE_LICENSE("GPL");
--- 
-2.43.0
+在 2023/12/19 04:28, Liam R. Howlett 写道:
+> * Liam R. Howlett <Liam.Howlett@Oracle.com> [231218 15:20]:
+>> * Peng Zhang <zhangpeng.00@bytedance.com> [231215 02:46]:
+>>> The last range stored in maple tree is typically quite large. By
+>>> checking if it exceeds the sum of the remaining ranges in that node, it
+>>> is possible to avoid checking all other gaps.
+>>>
+>>> Running the maple tree test suite in user mode almost always results in
+>>> a near 100% hit rate for this optimization.
+>>
+>> This should only be triggered for right-most nodes and root though,
+>> correct (mas->max  == ULONG_MAX from just before this)?
+Yes, only for right-most nodes and root.
+>>
+>> I wonder if it's worth special case checking the first gap if the node
+>> min is 0 as well.  Might be worth looking at, but this patch is
+>> certainly worth doing.
+> 
+> Actually, not just when the min is 0, we have a special case close to
+> here for slot 0 so we could just check the same sort of thing there.
+I think that the first slot in a node does not have any special
+significance. It has a lower probability of being the largest gap,
+so it may not be worth considering.
+> 
+>>
+>>>
+>>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+>>
+>> Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+>>
+>>> ---
+>>>   lib/maple_tree.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+>>> index c9a970ea20dd..6f241bb38799 100644
+>>> --- a/lib/maple_tree.c
+>>> +++ b/lib/maple_tree.c
+>>> @@ -1518,6 +1518,9 @@ static unsigned long mas_leaf_max_gap(struct ma_state *mas)
+>>>   		gap = ULONG_MAX - pivots[max_piv];
+>>>   		if (gap > max_gap)
+>>>   			max_gap = gap;
+>>> +
+>>> +		if (max_gap > pivots[max_piv] - mas->min)
+>>> +			return max_gap;
+>>>   	}
+>>>   
+>>>   	for (; i <= max_piv; i++) {
+>>> -- 
+>>> 2.20.1
+>>>
+> 
 
