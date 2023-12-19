@@ -1,223 +1,176 @@
-Return-Path: <linux-kernel+bounces-5524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4910818BA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA53B818BAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D86A285579
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:56:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6929B286EB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:57:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FC61CFA0;
-	Tue, 19 Dec 2023 15:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874A31CF9C;
+	Tue, 19 Dec 2023 15:57:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TmLZkRBn"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SD7jof4r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C343A1D544
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e24e92432so4468793e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:56:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703001365; x=1703606165; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=DH0ZN4htvDgevVbwjpJ3dPTlC+dFVZGya7CGgORl3y4=;
-        b=TmLZkRBn5L6XHoePMDrGQCF7zJmegTX48qc18V/61oKbZAI07NmHOYYaXKOJ0cQ/jY
-         J1OLFKPGVtaSbjpXm5LrUs53leemsh1mCLxtfn+JKkPQTqT7tx0kSvHZnc7HY576Asat
-         Gkh2oSTezIvTGQ7gk9LYZjI/7HiFUfbIcRWBya0Py8J2//AGL8MQlKa+iWnLykthVHZw
-         sWSbh8b321FGud3k10hdLyQZLUGPbo7vKQoDu753IP5diSnbK3hxuVS66ZRzSPdRqass
-         UyTFYrjCgwuchOdIzJRpC7cZdCrF5m1Dljwr/+aQk0PQtti6RCz+vYSBlE6PwTDq3APP
-         1E9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703001365; x=1703606165;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DH0ZN4htvDgevVbwjpJ3dPTlC+dFVZGya7CGgORl3y4=;
-        b=YQsLxRGun50XA5Pp5zST4hBVBav13ooHA8M3SDdMSKnO7EMPhQRfxhDx0Xsv5J7xgv
-         2j5m3OYYj7PCpoyYCwKgp5WKChK2bi+NTR6dABi136MuPPnpe7rAB+heUQjsylrls/i2
-         s5IUT5EsFV+f+8TIpUa5lGZ1IIJ7viYjZmkVheiG+GwtYxgk8hYe6J5gsVfSEmr+udAy
-         ACmDR1s5hnANQ3zObBU3uShLLHQmewRrsD4AADsUubRWnoxHhVFSGP5Z/eg+uYhszu+O
-         avKxMkUCZpKDkZ2Zk+6jRKpIWwfT3sVDWxdXNkzIPKuacYErPvQfI1THefgYISOfWfjB
-         myFg==
-X-Gm-Message-State: AOJu0YwNwwp19z9nqvIw2L5PuEIlq81Wd0RkHudNTrIvgcKkbdWCMafS
-	Sna89kBzaAo97UjgsmfssAHgSg==
-X-Google-Smtp-Source: AGHT+IH87KW+UITzwTQEd78aKP15Yr/mAp+tTdOpTiuS8GQc3pmMrBSHUlckog+ERe+BqPlnqv3Fuw==
-X-Received: by 2002:ac2:4a67:0:b0:50e:30fd:f92a with SMTP id q7-20020ac24a67000000b0050e30fdf92amr2245608lfp.7.1703001364672;
-        Tue, 19 Dec 2023 07:56:04 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id li18-20020a170907199200b00a1e4558e450sm15541799ejc.156.2023.12.19.07.56.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 07:56:03 -0800 (PST)
-Message-ID: <be4011c2-4628-45d7-a2c2-6d936ad2b636@linaro.org>
-Date: Tue, 19 Dec 2023 16:56:01 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8FC1D133
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703001435;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7bA0rWbgQnctRs+jPodqQaIsJ8wyX5O5TT/EwQR+FiA=;
+	b=SD7jof4r5VsQaTffABS8C42RulA07FyhYePFsRjyCf7H/iRMQzBt0oczd3B8YYWLkNDV3T
+	do7ThBOjHek0kRVaxRjKKhpdn2WIvR+aGp55yvqX72glLD6Wu7nKgPiGSGoyo/J0KBKc7U
+	Mn9WU6CqdInxlz3MI2EywZV8H03BQ5s=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-643-WLlpUzjFNi-2Mn7jzOTcKA-1; Tue, 19 Dec 2023 10:57:12 -0500
+X-MC-Unique: WLlpUzjFNi-2Mn7jzOTcKA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BA6338A67E0;
+	Tue, 19 Dec 2023 15:57:11 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.39.192.165])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 2FD66C1596E;
+	Tue, 19 Dec 2023 15:57:08 +0000 (UTC)
+From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+To: masahiroy@kernel.org
+Cc: dcavalca@meta.com,
+	jtornosm@redhat.com,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	nathan@kernel.org,
+	ndesaulniers@google.com,
+	nicolas@fjasle.eu,
+	stable@vger.kernel.org
+Subject: [PATCH v3] rpm-pkg: simplify installkernel %post
+Date: Tue, 19 Dec 2023 16:56:59 +0100
+Message-ID: <20231219155659.1591792-1-jtornosm@redhat.com>
+In-Reply-To: <CAK7LNATu-4TSSWpyFyVQYrkS++fUQbfp2tVjEpf3oZBV8ihq8w@mail.gmail.com>
+References: <CAK7LNATu-4TSSWpyFyVQYrkS++fUQbfp2tVjEpf3oZBV8ihq8w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] dts: iot2050: Support IOT2050-SM variant
-To: Jan Kiszka <jan.kiszka@siemens.com>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bao Cheng Su <baocheng.su@siemens.com>,
- Chao Zeng <chao.zeng@siemens.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Li Hua Qian <huaqian.li@siemens.com>
-References: <cover.1702917360.git.jan.kiszka@siemens.com>
- <11e0b0c8b828254567a8ff89820c067cacad2150.1702917360.git.jan.kiszka@siemens.com>
- <8b3daa3c-dbf8-4286-b04e-011cd9b0efa5@linaro.org>
- <4c31adc5-3fc5-47bc-9766-6d3d1eeddb65@siemens.com>
- <fbb29d81-9ea0-4468-ad47-f6668c2be277@linaro.org>
- <de3f4778-51d6-48ab-9d4d-451f2ba01a3c@siemens.com>
- <3d2662be-3a55-4390-bd2a-cfa5cc53510f@linaro.org>
- <ef5a6cf0-4350-483d-a1e9-ce8b0ef71280@siemens.com>
- <ce6b002b-f2a6-4056-bf81-53a6c948b946@linaro.org>
- <62be89bb-1ae1-4bf6-9f9e-b6eb68e6504d@siemens.com>
- <f6241b58-202e-4624-ae83-ce52fc286edf@linaro.org>
- <29c030e1-c493-4521-b5e8-db3f484eefb8@siemens.com>
- <7edab40c-1ac2-4044-9337-9f26e80024a1@linaro.org>
- <cc6b7f99-3439-45a1-b4b4-0b5796dcbbbf@siemens.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <cc6b7f99-3439-45a1-b4b4-0b5796dcbbbf@siemens.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On 19/12/2023 16:48, Jan Kiszka wrote:
-> On 19.12.23 16:42, Krzysztof Kozlowski wrote:
->> On 19/12/2023 16:40, Jan Kiszka wrote:
->>> On 19.12.23 16:39, Krzysztof Kozlowski wrote:
->>>> On 19/12/2023 16:37, Jan Kiszka wrote:
->>>>>>>>
->>>>>>>> You have label for that... Somehow all these nodes are half-baked,
->>>>>>>> without all the expected properties and now you call node name as ABI.
->>>>>>>> The node name is not the ABI.
->>>>>>>
->>>>>>> Well, existing userspace uses those names, and adding the properties
->>>>>>> would break that interface. Now, does Linux do that?
->>>>>>
->>>>>> I don't think you understood the concept. There is no change for
->>>>>> userspace. Same interface, same names. No ABI break.
->>>>>
->>>>> I do understand the impact very well:
->>>>> open("/sys/class/leds/user-led1-red") has to work for all the variants,
->>>>> consistently and backward-compatible for userspace.
->>>>
->>>> And it will. The name is the same.
->>>
->>> Nope, it's not - I tried that already :)
->>>
->>> root@iot2050-debian:~# ls -l /sys/class/leds/
->>> total 0
->>> lrwxrwxrwx 1 root root 0 Dec 19 09:49 green:indicator -> ../../devices/platform/leds/leds/green:indicator
->>
->> And how does your DTS look like?
->>
->> Because I also tried and it is exactly the same.
->>
-> 
-> I played with
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-> index 402afa4bc1b6..a791444eeb93 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-> @@ -10,6 +10,7 @@
->   */
->  
->  #include "k3-am654.dtsi"
-> +#include <dt-bindings/leds/common.h>
->  #include <dt-bindings/phy/phy.h>
->  #include <dt-bindings/net/ti-dp83867.h>
->  
-> @@ -84,27 +85,39 @@ leds {
->  		pinctrl-0 = <&leds_pins_default>;
->  
->  		status-led-red {
-> +			color = <LED_COLOR_ID_RED>;
-> +			function = LED_FUNCTION_STATUS;
->  			gpios = <&wkup_gpio0 32 GPIO_ACTIVE_HIGH>;
->  			panic-indicator;
+The new installkernel application that is now included in systemd-udev
+package allows installation although destination files are already present
+in the boot directory of the kernel package, but is failing with the
+implemented workaround for the old installkernel application from grubby
+package.
 
-And where is the label property?
+For the new installkernel application, as Davide says:
+<<The %post currently does a shuffling dance before calling installkernel.
+This isn't actually necessary afaict, and the current implementation
+ends up triggering downstream issues such as
+https://github.com/systemd/systemd/issues/29568
+This commit simplifies the logic to remove the shuffling. For reference,
+the original logic was added in commit 3c9c7a14b627("rpm-pkg: add %post
+section to create initramfs and grub hooks").>>
 
-Please read my message again:
+But we need to keep the old behavior as well, because the old installkernel
+application from grubby package, does not allow this simplification and
+we need to be backward compatible to avoid issues with the different
+packages.
 
->> You:
->> patch, but the node names are now part of the kernel ABI. Changing
-them would break existing userland.
-> Me:
-> You mean label. Why node names became the ABI? Which interface exposes
-them?
+Mimic Fedora shipping process and store vmlinuz, config amd System.map
+in the module directory instead of the boot directory. In this way, we will
+avoid the commented problem for all the cases, because the new destination
+files are not going to exist in the boot directory of the kernel package.
 
+Replace installkernel tool with kernel-install tool, because the latter is
+more complete. Suitable manual actions are added as a default if tool is not
+present (unusual).
 
->> You:
->> root@iot2050-debian:~# ls -l /sys/class/leds/
-> Me:
-> I replied too fast previous and did not include answer here:
-> You have label for that...
+Special installation case for discontinued architecture ia64 has been
+removed.
 
-So again: The stable ABI is fulfilled by using label property. Not the
-Devicetree "label" phandle in front of the node, but the dedicated property.
+cc: stable@vger.kernel.org
+Co-Developed-by: Davide Cavalca <dcavalca@meta.com>
+Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+---
+V1 -> V2:
+- Complete to be backward compatible with the previous installkernel
+application.
+V2 -> V3:
+- Follow the suggestions from Masahiro Yamada and change the installation
+destination to avoid problems instead of checking the package.
 
-Best regards,
-Krzysztof
+ scripts/package/kernel.spec | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
+index 3eee0143e0c5..17e7196c9be1 100644
+--- a/scripts/package/kernel.spec
++++ b/scripts/package/kernel.spec
+@@ -55,18 +55,12 @@ patch -p1 < %{SOURCE2}
+ %{make} %{makeflags} KERNELRELEASE=%{KERNELRELEASE} KBUILD_BUILD_VERSION=%{release}
+ 
+ %install
+-mkdir -p %{buildroot}/boot
+-%ifarch ia64
+-mkdir -p %{buildroot}/boot/efi
+-cp $(%{make} %{makeflags} -s image_name) %{buildroot}/boot/efi/vmlinuz-%{KERNELRELEASE}
+-ln -s efi/vmlinuz-%{KERNELRELEASE} %{buildroot}/boot/
+-%else
+-cp $(%{make} %{makeflags} -s image_name) %{buildroot}/boot/vmlinuz-%{KERNELRELEASE}
+-%endif
++mkdir -p %{buildroot}/lib/modules/%{KERNELRELEASE}
++cp $(%{make} %{makeflags} -s image_name) %{buildroot}/lib/modules/%{KERNELRELEASE}/vmlinuz
+ %{make} %{makeflags} INSTALL_MOD_PATH=%{buildroot} modules_install
+ %{make} %{makeflags} INSTALL_HDR_PATH=%{buildroot}/usr headers_install
+-cp System.map %{buildroot}/boot/System.map-%{KERNELRELEASE}
+-cp .config %{buildroot}/boot/config-%{KERNELRELEASE}
++cp System.map %{buildroot}/lib/modules/%{KERNELRELEASE}
++cp .config %{buildroot}/lib/modules/%{KERNELRELEASE}
+ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEASE}/build
+ %if %{with_devel}
+ %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='${srctree}/scripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE}'
+@@ -76,12 +70,12 @@ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEA
+ rm -rf %{buildroot}
+ 
+ %post
+-if [ -x /sbin/installkernel -a -r /boot/vmlinuz-%{KERNELRELEASE} -a -r /boot/System.map-%{KERNELRELEASE} ]; then
+-cp /boot/vmlinuz-%{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm
+-cp /boot/System.map-%{KERNELRELEASE} /boot/.System.map-%{KERNELRELEASE}-rpm
+-rm -f /boot/vmlinuz-%{KERNELRELEASE} /boot/System.map-%{KERNELRELEASE}
+-/sbin/installkernel %{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
+-rm -f /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
++if [ -x /usr/bin/kernel-install ]; then
++kernel-install add %{KERNELRELEASE} /lib/modules/%{KERNELRELEASE}/vmlinuz
++else
++cp /lib/modules/%{KERNELRELEASE}/vmlinuz /boot/vmlinuz-%{KERNELRELEASE}
++cp /lib/modules/%{KERNELRELEASE}/System.map /boot/System.map-%{KERNELRELEASE}
++cp /lib/modules/%{KERNELRELEASE}/config /boot/config-%{KERNELRELEASE}
+ fi
+ 
+ %preun
+@@ -100,7 +94,6 @@ fi
+ %defattr (-, root, root)
+ /lib/modules/%{KERNELRELEASE}
+ %exclude /lib/modules/%{KERNELRELEASE}/build
+-/boot/*
+ 
+ %files headers
+ %defattr (-, root, root)
+-- 
+2.43.0
 
 
