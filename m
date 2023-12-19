@@ -1,182 +1,199 @@
-Return-Path: <linux-kernel+bounces-5611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6345818D16
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:57:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E84E818D1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85B322832E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:57:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A56A01C24AC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E2D20DC7;
-	Tue, 19 Dec 2023 16:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3174225B2;
+	Tue, 19 Dec 2023 16:58:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0631C20DE7
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A2C51FB;
-	Tue, 19 Dec 2023 08:58:31 -0800 (PST)
-Received: from [10.57.85.119] (unknown [10.57.85.119])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BD333F738;
-	Tue, 19 Dec 2023 08:57:45 -0800 (PST)
-Message-ID: <daac75e5-bb80-461f-a77b-939a184d3caa@arm.com>
-Date: Tue, 19 Dec 2023 16:57:42 +0000
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1C920B1B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFdPy-0007od-5Z; Tue, 19 Dec 2023 17:58:06 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFdPw-0003mc-EF; Tue, 19 Dec 2023 17:58:05 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFdPx-000BOf-7p; Tue, 19 Dec 2023 17:58:05 +0100
+Date: Tue, 19 Dec 2023 17:58:05 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sean Young <sean@mess.org>
+Cc: linux-media@vger.kernel.org, linux-pwm@vger.kernel.org, 
+	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, 
+	Scott Branden <sbranden@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, linux-rpi-kernel@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 5/6] pwm: bcm2835: Allow PWM driver to be used in
+ atomic context
+Message-ID: <3tkfjp64hw42kzj4pex2ql6lyp7r6gm2u42nq6e3av736cinrq@ykylo7d2zs3i>
+References: <cover.1703003288.git.sean@mess.org>
+ <6c5852c902e6603571e4fde5955d1aeb537059ba.1703003288.git.sean@mess.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Could external jtag debugger trap page fault instead of kernel
- handler?
-Content-Language: en-GB
-To: Hsia-Jun Li <Randy.Li@synaptics.com>, linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- catalin.marinas@arm.com, will@kernel.org, sumit.garg@linaro.org,
- daniel.thompson@linaro.org, liwei391@huawei.com, ayaka <ayaka@soulik.info>
-References: <b8ccbd62-7a0d-49eb-bc32-c48e59adeae6@synaptics.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <b8ccbd62-7a0d-49eb-bc32-c48e59adeae6@synaptics.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ykfv3uzkobwzwt6x"
+Content-Disposition: inline
+In-Reply-To: <6c5852c902e6603571e4fde5955d1aeb537059ba.1703003288.git.sean@mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 2023-12-19 7:47 am, Hsia-Jun Li wrote:
-> Hello
-> 
-> I am trying to debug an illegal memory access problem for a kernel 
-> driver. The JTAG could trap the kernel function likes 
-> die_kernel_fault(). But it won't provide a context environment in the 
-> place where this bug happens.
-> 
-> I know such page fault is more like a software interrupter, is there a 
-> way that I could move my debugging context back?
 
-Right, you don't want to be looking at the current running context of 
-the exception handler itself, you want to be looking at the exception 
-context that's stored in "regs" at this point. I've never used GDB for 
-that, but I'd hope it has some command for inspecting a stack at an 
-arbitrary address other than the current SP register.
+--ykfv3uzkobwzwt6x
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-However, if you haven't already, it looks like enabling 
-CONFIG_DEBUG_LIST might help catch this particular issue sooner, as 
-you've clearly got some LIST_POISON values there.
+On Tue, Dec 19, 2023 at 04:30:28PM +0000, Sean Young wrote:
+> clk_get_rate() may do a mutex lock. Fetch the clock rate once, and prevent
+> rate changes using clk_rate_exclusive_get().
+>=20
+> Signed-off-by: Sean Young <sean@mess.org>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+>  drivers/pwm/pwm-bcm2835.c | 34 +++++++++++++++++++++++++---------
+>  1 file changed, 25 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
+> index ab30667f4f95..d9ac50a5b04e 100644
+> --- a/drivers/pwm/pwm-bcm2835.c
+> +++ b/drivers/pwm/pwm-bcm2835.c
+> @@ -28,6 +28,7 @@ struct bcm2835_pwm {
+>  	struct device *dev;
+>  	void __iomem *base;
+>  	struct clk *clk;
+> +	unsigned long rate;
+>  };
+> =20
+>  static inline struct bcm2835_pwm *to_bcm2835_pwm(struct pwm_chip *chip)
+> @@ -63,17 +64,11 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, s=
+truct pwm_device *pwm,
+>  {
+> =20
+>  	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
+> -	unsigned long rate =3D clk_get_rate(pc->clk);
+>  	unsigned long long period_cycles;
+>  	u64 max_period;
+> =20
+>  	u32 val;
+> =20
+> -	if (!rate) {
+> -		dev_err(pc->dev, "failed to get clock rate\n");
+> -		return -EINVAL;
+> -	}
+> -
+>  	/*
+>  	 * period_cycles must be a 32 bit value, so period * rate / NSEC_PER_SEC
+>  	 * must be <=3D U32_MAX. As U32_MAX * NSEC_PER_SEC < U64_MAX the
+> @@ -88,13 +83,13 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, s=
+truct pwm_device *pwm,
+>  	 * <=3D> period < ((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2) / rate
+>  	 * <=3D> period <=3D ceil((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2) / r=
+ate) - 1
+>  	 */
+> -	max_period =3D DIV_ROUND_UP_ULL((u64)U32_MAX * NSEC_PER_SEC + NSEC_PER_=
+SEC / 2, rate) - 1;
+> +	max_period =3D DIV_ROUND_UP_ULL((u64)U32_MAX * NSEC_PER_SEC + NSEC_PER_=
+SEC / 2, pc->rate) - 1;
+> =20
+>  	if (state->period > max_period)
+>  		return -EINVAL;
+> =20
+>  	/* set period */
+> -	period_cycles =3D DIV_ROUND_CLOSEST_ULL(state->period * rate, NSEC_PER_=
+SEC);
+> +	period_cycles =3D DIV_ROUND_CLOSEST_ULL(state->period * pc->rate, NSEC_=
+PER_SEC);
+> =20
+>  	/* don't accept a period that is too small */
+>  	if (period_cycles < PERIOD_MIN)
+> @@ -103,7 +98,7 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, st=
+ruct pwm_device *pwm,
+>  	writel(period_cycles, pc->base + PERIOD(pwm->hwpwm));
+> =20
+>  	/* set duty cycle */
+> -	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle * rate, NSEC_PER_SEC);
+> +	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle * pc->rate, NSEC_PER_SE=
+C);
+>  	writel(val, pc->base + DUTY(pwm->hwpwm));
+> =20
+>  	/* set polarity */
+> @@ -131,6 +126,13 @@ static const struct pwm_ops bcm2835_pwm_ops =3D {
+>  	.apply =3D bcm2835_pwm_apply,
+>  };
+> =20
+> +static void devm_clk_rate_exclusive_put(void *data)
+> +{
+> +	struct clk *clk =3D data;
+> +
+> +	clk_rate_exclusive_put(clk);
+> +}
+> +
+>  static int bcm2835_pwm_probe(struct platform_device *pdev)
+>  {
+>  	struct bcm2835_pwm *pc;
+> @@ -151,8 +153,22 @@ static int bcm2835_pwm_probe(struct platform_device =
+*pdev)
+>  		return dev_err_probe(&pdev->dev, PTR_ERR(pc->clk),
+>  				     "clock not found\n");
+> =20
+> +	ret =3D clk_rate_exclusive_get(pc->clk);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret,
+> +				     "fail to get exclusive rate\n");
+> +
+> +	devm_add_action_or_reset(&pdev->dev, devm_clk_rate_exclusive_put,
+> +				 pc->clk);
 
-Robin.
+Missing error checking.
 
-> Here is what I got from gdb connected to openocd.
-> (gdb) bt
-> #0  __do_kernel_fault (addr=16045481047390945544, addr@entry=264, 
-> esr=2516582468, regs=0xffffff802937b940)
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/arch/arm64/mm/fault.c:372
-> #1  0xffffffc00802c174 in do_bad_area (regs=<optimized out>, 
-> esr=<optimized out>, far=16045481047390945544)
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/arch/arm64/mm/fault.c:485
-> #2  do_translation_fault (far=16045481047390945544, esr=<optimized out>, 
-> regs=<optimized out>)
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/arch/arm64/mm/fault.c:782
-> #3  0xffffffc00802c2cc in do_mem_abort (far=16045481047390945544, 
-> esr=2516582468, regs=0xffffff802937b940)
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/arch/arm64/mm/fault.c:918
-> #4  0xffffffc00889738c in skb_dump (level=0xdead000000000108 "", 
-> skb=0xffffff802937b940, full_pkt=112)
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/net/core/skbuff.c:834
-> #5  0x0000000000000000 in ?? ()
-> Backtrace stopped: not enough registers or memory available to unwind 
-> further
-> (gdb) info threads
->    Id   Target Id         Frame
->    1    Thread 1 "vs640.cpu_a53.0" (Name: vs640.cpu_a53.0, state: 
-> debug-request) 0xffffffc008898038 in nf_l4proto_log_inv
-> alid (skb=0xffffffc0086391a0 <psci_enter_idle_state>, state=0xffffffff, 
-> protonum=0 '\000', fmt=0x258208 "")
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/net/netfilter/nf_conntrack_proto.c:62
-> * 2    Thread 2 "vs640.cpu_a53.1" (Name: vs640.cpu_a53.1, state: 
-> breakpoint)    __do_kernel_fault (
->      addr=16045481047390945544, addr@entry=264, esr=2516582468, 
-> regs=0xffffff802937b940)
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/arch/arm64/mm/fault.c:372
->    3    Thread 3 "vs640.cpu_a53.2" (Name: vs640.cpu_a53.2, state: 
-> debug-request) 0xffffffc008898038 in nf_l4proto_log_inv
-> alid (skb=0xffffffc0086391a0 <psci_enter_idle_state>, state=0xffffffff, 
-> protonum=0 '\000', fmt=0x9f2270 "")
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/net/netfilter/nf_conntrack_proto.c:62
->    4    Thread 4 "vs640.cpu_a53.3" (Name: vs640.cpu_a53.3, state: 
-> debug-request) 0xffffffc008898038 in nf_l4proto_log_inv
-> alid (skb=0xffffffc0086391a0 <psci_enter_idle_state>, state=0xffffffff, 
-> protonum=0 '\000', fmt=0x20ded8 "")
->      at 
-> /Codebase_s/ranl/workspace/vs680/kernel/linux-syna/net/netfilter/nf_conntrack_proto.c:62
-> 
-> And here is the issue I am trying to debug:
-> [ 5478.863161] Unable to handle kernel paging request at virtual address 
-> dead000000000108
-> [ 5478.871093] Mem abort info:
-> [ 5478.873886]   ESR = 0x96000044
-> [ 5478.876938]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [ 5478.882249]   SET = 0, FnV = 0
-> [ 5478.885301]   EA = 0, S1PTW = 0
-> [ 5478.888440]   FSC = 0x04: level 0 translation fault
-> [ 5478.893318] Data abort info:
-> [ 5478.896195]   ISV = 0, ISS = 0x00000044
-> [ 5478.900029]   CM = 0, WnR = 1
-> [ 5478.902996] [dead000000000108] address between user and kernel 
-> address ranges
-> [ 5478.910129] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-> [ 5478.915701] Modules linked in: vpu videobuf2_memops v4l2_mem2mem 
-> videobuf2_v4l2 videobuf2_common videodev mc synap(O)
->   pvrsrvkm syna_drm cfg80211 rfkill amp_bm
-> [ 5478.929897] CPU: 0 PID: 6613 Comm: gst-launch-1.0 Tainted: G        W 
->   O      5.15.62 #1
-> [ 5478.937988] Hardware name: Synaptics VS640 EVK (DT)
-> [ 5478.942864] pstate: 204000c9 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS 
-> BTYPE=--)
-> [ 5478.949825] pc : v4l2_m2m_buf_remove+0x50/0x90 [v4l2_mem2mem]
-> [ 5478.955582] lr : v4l2_m2m_buf_remove+0x20/0x90 [v4l2_mem2mem]
-> [ 5478.961329] sp : ffffff8026c4fa90
-> [ 5478.964643] x29: ffffff8026c4fa90 x28: ffffff8026c201b0 x27: 
-> 0000000000000000
-> [ 5478.971784] x26: 0000000000000000 x25: ffffff8026c4fd28 x24: 
-> ffffff8009774270
-> [ 5478.978921] x23: ffffff8025f4c100 x22: 0000000000000001 x21: 
-> ffffff8025e1f3a0
-> [ 5478.986059] x20: ffffff8025e6d7b0 x19: ffffff8025e1f028 x18: 
-> 0000000000000000
-> [ 5478.993197] x17: 0000000000000000 x16: 0000000000000000 x15: 
-> 00000055a1955a10
-> [ 5479.000335] x14: 0000000000000000 x13: 0000000000000000 x12: 
-> 0000000000000000
-> [ 5479.007472] x11: 0000000000000000 x10: 0000000000000000 x9 : 
-> 0000000000000000
-> [ 5479.014609] x8 : 0000000000000000 x7 : 0000000000000000 x6 : 
-> 0000000000000005
-> [ 5479.021746] x5 : dead000000000100 x4 : dead000000000122 x3 : 
-> dead000000000100
-> [ 5479.028884] x2 : dead000000000122 x1 : 0000000000000000 x0 : 
-> ffffff8025e1f3a0
-> [ 5479.036021] Call trace:
-> [ 5479.038467]  v4l2_m2m_buf_remove+0x50/0x90 [v4l2_mem2mem]
-> [ 5479.043867]  vb2ops_vdec_stop_streaming+0x98/0x160 [vpu]
-> [ 5479.049184]  __vb2_queue_cancel+0x30/0x210 [videobuf2_common]
-> [ 5479.054936]  vb2_core_streamoff+0x20/0xb4 [videobuf2_common]
-> [ 5479.060597]  vb2_streamoff+0x18/0x64 [videobuf2_v4l2]
-> [ 5479.065654]  v4l2_m2m_streamoff+0x70/0x140 [v4l2_mem2mem]
-> [ 5479.071055]  v4l2_m2m_ioctl_streamoff+0x14/0x20 [v4l2_mem2mem]
-> [ 5479.076889]  v4l_streamoff+0x20/0x30 [videodev]
-> [ 5479.081455]  __video_do_ioctl+0x174/0x3d0 [videodev]
-> 
-> Sincerely
+Otherwise looks good now.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ykfv3uzkobwzwt6x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWBy5wACgkQj4D7WH0S
+/k6gJQgAgo9tsiy0//qsFfI4pYOet8s3QDSprouQpHeAfs3PK2lwF890jwSSnqMf
+Zf4vjZqjRqFqI9fG7I46hZ5bXZs0fEDCRqwjgSpQlvdTnLuAnbDHI3lS5zdHeqr+
+TkH5oA/8ad1mJLqFOnoUjatDhvrlvvSV54mGmFa9DuqxNrmWWLAVJWHfKZsWIgjz
+8sXf2bbY4iF7Wr8qveVUqrKgrb26ewpJljgDBF4jPpQ12vN0I/7yxzrUbsko1yIZ
+D/b8LLJOmCnL+96YEQ04ECl5nuU3yaWFdn+rxkYG/Do0/Kx4Qhm2DHlxKIXy3RNR
+J2sTmUvbW67H7EkD+3s65bVEf9JP3A==
+=G8Df
+-----END PGP SIGNATURE-----
+
+--ykfv3uzkobwzwt6x--
 
