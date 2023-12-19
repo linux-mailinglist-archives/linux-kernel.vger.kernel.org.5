@@ -1,250 +1,237 @@
-Return-Path: <linux-kernel+bounces-5973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B38A3819254
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:34:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9685C819256
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BBB6287E38
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:34:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E0BE287F55
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCD83B287;
-	Tue, 19 Dec 2023 21:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570703B78B;
+	Tue, 19 Dec 2023 21:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IidnZyUz"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kOChbYds"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59AF83A8EE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5d12853cb89so65684637b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:34:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7F33B2BB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4277c62426fso5293791cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:34:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703021658; x=1703626458; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zwUh/psHh6P+Upw6vf+C67rCFJVu4fC5VMYu2ZcViuI=;
-        b=IidnZyUzF7CTa0ZKvy/4GlNK7tP6vMag1X2nRqoa3sZIeR4Jh7v4eqTP+wHDJcuPRj
-         L98WZPdzp9FWXH0cfm3v6riQlakGR9rZrhHJStfPQCQfen/0FEHx4MkAoQsxukeQiTt5
-         SyjQ+D226LqErd50PaITcBl7/DnygpBUwBkIcK+AnzJhMpdEAQ2/Nu3bRY38zTYbrKR2
-         KtBxokZRQjnbPNuyx2LmJm0zhYGX1qGrPr3s+ohn2dQA4oFeZL/LQn1UKT+frmX39qeA
-         rBA0oJZEjdpUNEuHi5/k/bdlDtAQzsGPjkZUjyARNr2cbbNRV8G6AUC0bFhJs1tDXRdL
-         L6eQ==
+        d=chromium.org; s=google; t=1703021679; x=1703626479; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pQ6HZXMgbmpTgr8PpNdjNqBO87Wu/Pv5RD/wkslCUu8=;
+        b=kOChbYds8LKiYWTLDjgFKVAev8hxT8A/zEQjNv5EHVcUIvfiLNZY8BKB9mS99SqyRS
+         5mERBPQea1psmM0/6nj9EB2b3iCfO5K73PZV7a6AIECFKrzP68exYCjXy36N/m1ElNKV
+         Ud8cYui69djsq58pKwlLygx0921HIxY6XJlZ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703021658; x=1703626458;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zwUh/psHh6P+Upw6vf+C67rCFJVu4fC5VMYu2ZcViuI=;
-        b=RD/TBf1f+S3AzhWcq9AeVuj9zNUiGOkNdR3bLwQ9+6HHm1u2EkjBmZpytdia+p70Ud
-         RfGuJpKHvT+jRW5o9fCt1Z5nNEc7wB30OqJf4kNS13aXB78YcbY11nhsrPzJHAL14T+P
-         tv52hixE4DAMs/R/vv0+MR6ttIExahIzpkXdg5ResvDthDJ9dhNMn0X85An94zJxypU8
-         ArizMMreeLj9Zpty4/iPwDD+xo4Bx3G7kDlYNbdqwvcaqsJSSDR1utQIkXgJ9DZni+VB
-         9/zh3G/JFPm5yntcJzXQJsvQ0K35S93ryGHFHt7oxuxKBT5OSfOGD8HClz0qyF1q537v
-         ExBg==
-X-Gm-Message-State: AOJu0YzUWJvaJ0kd4IEXpQr5oxDOAXmu5uCteQtwaYK0cgmuFMSOfDYy
-	AKluNc3myxDCu7Yj1zxrWXSfaEv7ZuV1hWnsAA==
-X-Google-Smtp-Source: AGHT+IFfWmrwvJ+LQE/+3L58Im6RK0bH8l2Luf5pEP/hNf0sGSRgxZVXWy3OWx7eYylbwxOUqOGEzrLuQfcmLj4PEQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:690c:3507:b0:5e8:885:ae15 with
- SMTP id fq7-20020a05690c350700b005e80885ae15mr500864ywb.10.1703021658435;
- Tue, 19 Dec 2023 13:34:18 -0800 (PST)
-Date: Tue, 19 Dec 2023 21:34:15 +0000
+        d=1e100.net; s=20230601; t=1703021679; x=1703626479;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pQ6HZXMgbmpTgr8PpNdjNqBO87Wu/Pv5RD/wkslCUu8=;
+        b=nOvXkKauie+Kt96KZBjzMOi0jr0niTdpKPcHlhOM1bE+03v6FvDfpaz9XN+7u64Qfg
+         doHuAGJwjrXcfjOqBkAV3SX1fvZ0ykST6+63ZQw5VH4KP8ungkX440An8BW0kb8PKl6w
+         G8MIvauAqmc+yUKZGaHVmRXjbeyOSzciE4aGetO8XEpDJoOBkFAwZUVF5NDRroVKTYVB
+         fYUYLadf6whPZGmPtyZGQKPrAvdDso+OMQeAnOZoFCZj34OtGSzM4f1flBDGtvcs7GUm
+         epWgkFVp7N2Q/XLxiTqwjXjBqXJ1z5qfDeGsN6GLnK/UeknWOD4OJPoR6VIJfB46ALRD
+         ntsw==
+X-Gm-Message-State: AOJu0YxopxBOKdx1wUBojyQmU+BGBuM1pIRPiAW6i0kByoF9tZj4jF2O
+	7cLVCfmoODzf9kOQZ1dDKtOj2Q==
+X-Google-Smtp-Source: AGHT+IG3+LxITZAJ8ZF0p+BbVZRrdPBBw1tYDmppXKgewWa3mwUDq59cHMLuQel1aog8vcQ+Erx+Gg==
+X-Received: by 2002:ac8:7f94:0:b0:425:a5ba:f126 with SMTP id z20-20020ac87f94000000b00425a5baf126mr26650374qtj.105.1703021679273;
+        Tue, 19 Dec 2023 13:34:39 -0800 (PST)
+Received: from eshimanovich.nyc.corp.google.com ([2620:0:1003:314:e32b:502a:7a4:a977])
+        by smtp.gmail.com with ESMTPSA id t22-20020ac85316000000b0041cb787ff41sm10510228qtn.67.2023.12.19.13.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 13:34:39 -0800 (PST)
+From: Esther Shimanovich <eshimanovich@chromium.org>
+Date: Tue, 19 Dec 2023 16:34:33 -0500
+Subject: [PATCH v2] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFYMgmUC/5XNQQ6CMBCF4auYrh3TThGKK+9hXGA74CRKSUsai
- OHuVhca40aX7y2+/yYiBaYodqubCJQ4su/zKNYrYc9N3xGwy1ugRC1rVBDH0NthBhc4UYjA7GE
- IfuIrjzPEqdZYgAVjdaGrsiqlrkXGhkAtT8/Q4Zj3mePow/zsJvV4/04kBQoKMg5N6xRVdt953
- 11oY/1VPBoJX66SWP7sYnYtUUlbd6qk/Hb120WFP7s6uyfTkMLWmmbrPtxlWe6aYjCEjQEAAA= =
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703021657; l=5996;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=zV8ob/kKeQOCUbTGD4IgUwF1RW2GLaqMgJg6k7u3Ffw=; b=cMMYIbX/ROmR2FxtRFigqf4i65Cb6JavIys72kWHi4zVnvBBVxNg7xh2rRhoIr1s6OuNLenWC
- QexnKn6MD5CAckUhrZtwSEc1pUyJ9Vh0RG6bzsg7cf5QcXGheJLqbvd
-X-Mailer: b4 0.12.3
-Message-ID: <20231219-strncpy-drivers-iio-proximity-sx9324-c-v4-1-d49ed29ee952@google.com>
-Subject: [PATCH v4] iio: sx9324: avoid copying property strings
-From: Justin Stitt <justinstitt@google.com>
-To: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: Stephen Boyd <swboyd@chromium.org>, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231219-thunderbolt-pci-patch-4-v2-1-ec2d7af45a9b@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAGkMgmUC/4WNQQqDMBBFryKz7hSTCGpXvYe40DiagWpkEqVFv
+ HtTL9Dle/DfPyCQMAV4ZAcI7RzYLwn0LQPrumUi5CEx6FwbpVWN0W3LQNL7V8TVMq5dtA4LpIF
+ KZfvKGFtAWq9CI7+vctMmdhyil891tKuf/d/cFSosqCJTlmbMu/ppnfiZt/nuZYL2PM8vOsi9h
+ sEAAAA=
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Rajat Jain <rajatja@google.com>, 
+ Esther Shimanovich <eshimanovich@chromium.org>
+X-Mailer: b4 0.12.3
 
-We're doing some needless string copies when trying to assign the proper
-`prop` string. We can make `prop` a const char* and simply assign to
-string literals.
+On Lenovo X1 Carbon Gen 7/8 devices, when a platform enables a policy to
+distrust removable PCI devices, the build-in USB-C ports stop working at
+all.
+This happens because these X1 Carbon models have a unique feature; a
+Thunderbolt controller that is discrete from the SoC. The software sees
+this controller, and incorrectly assumes it is a removable PCI device,
+even though it is fixed to the computer and is wired to the computer's
+own USB-C ports.
 
-For the case where a format string is used, let's extract the parsing
-logic out into sx9324_parse_phase_prop(). We no longer need to create
-copies or allocate new memory.
+Relabel all the components of the JHL6540 controller as DEVICE_FIXED,
+and where applicable, external_facing.
 
-sx9324_parse_phase_prop() will simply return the default def value if it
-fails.
+Ensure that the security policy to distrust external PCI devices works
+as intended, and that the device's USB-C ports are able to enumerate
+even when the policy is enabled.
 
-This also cleans up some deprecated strncpy() uses [1].
-
-Furthermore, let's clean up this code further by removing some unused
-defines:
-|  #define SX9324_PIN_DEF "semtech,ph0-pin"
-|  #define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
-|  #define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
+Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
 ---
-Changes in v4:
-- use u8 return type (thanks Stephen)
-- remove unused defines (thanks Stephen et al.)
-- tweaks to sx9324_parse_phase_prop related to defaults (thanks Stephen)
-- Link to v3: https://lore.kernel.org/r/20231212-strncpy-drivers-iio-proximity-sx9324-c-v3-1-b8ae12fc8a5d@google.com
-
-Changes in v3:
-- extract logic into sx9324_parse_phase_prop() and use string literals
-  (thanks Stephen)
-- rebase onto mainline bee0e7762ad2c602
-- Link to v2: https://lore.kernel.org/r/20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com
-
 Changes in v2:
-- make prop a const char* and do simple assignments (thanks Jonathan)
-- rebase onto 3a568e3a961ba330
-- Link to v1: https://lore.kernel.org/r/20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com
+- nothing new, v1 was just a test run to see if the ASCII diagram would
+  be rendered properly in mutt and k-9
+- for folks using gmail, make sure to select "show original" on the top
+  right, as otherwise the diagram will be garbled by the standard
+  non-monospace font
+- Link to v1: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v1-1-4e8e3773f0a9@chromium.org
 ---
----
- drivers/iio/proximity/sx9324.c | 70 ++++++++++++++++++++++++------------------
- 1 file changed, 40 insertions(+), 30 deletions(-)
+ drivers/pci/quirks.c | 110 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
 
-diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
-index 438f9c9aba6e..3daad7167c63 100644
---- a/drivers/iio/proximity/sx9324.c
-+++ b/drivers/iio/proximity/sx9324.c
-@@ -873,6 +873,29 @@ static int sx9324_init_compensation(struct iio_dev *indio_dev)
- 					20000, 2000000);
- }
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index ea476252280a..58401b099407 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3873,6 +3873,116 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
+ 			       quirk_apple_poweroff_thunderbolt);
+ #endif
  
-+static u8 sx9324_parse_phase_prop(struct device *dev,
-+				  struct sx_common_reg_default *reg_def,
-+				  const char *prop)
++/*
++ * On most ThinkPad Carbon 7/8s, JHL6540 Thunderbolt 3 bridges are set
++ * incorrectly as DEVICE_REMOVABLE despite being built into the device.
++ * This is the side effect of a unique hardware configuration.
++ *
++ * Normally, Thunderbolt functionality is integrated to the SoC and
++ * its root ports.
++ *
++ *                          Most devices:
++ *                    root port --> USB-C port
++ *
++ * But X1 Carbon Gen 7/8 uses Whiskey Lake and Comet Lake SoC, which
++ * don't come with Thunderbolt functionality. Therefore, a discrete
++ * Thunderbolt Host PCI controller was added between the root port and
++ * the USB-C port.
++ *
++ *                        Thinkpad Carbon 7/8s
++ *                 (w/ Whiskey Lake and Comet Lake SoC):
++ *                root port -->  JHL6540   --> USB-C port
++ *
++ * Because the root port is labeled by FW as "ExternalFacingPort", as
++ * required by the DMAR ACPI spec, the JHL6540 chip is inaccurately
++ * labeled as DEVICE_REMOVABLE by the kernel pci driver.
++ * Therefore, the built-in USB-C ports do not enumerate when policies
++ * forbidding external pci devices are enforced.
++ *
++ * This fix relabels the pci components in the built-in JHL6540 chip as
++ * DEVICE_FIXED, ensuring that the built-in USB-C ports always enumerate
++ * properly as intended.
++ *
++ * This fix also labels the external facing components of the JHL6540 as
++ * external_facing, so that the pci attach policy works as intended.
++ *
++ * The ASCII diagram below describes the pci layout of the JHL6540 chip.
++ *
++ *                         Root Port
++ *                 [8086:02b4] or [8086:9db4]
++ *                             |
++ *                        JHL6540 Chip
++ *     __________________________________________________
++ *    |                      Bridge                      |
++ *    |        PCI ID ->  [8086:15d3]                    |
++ *    |         DEVFN ->      (00)                       |
++ *    |       _________________|__________________       |
++ *    |      |           |            |           |      |
++ *    |    Bridge     Bridge        Bridge      Bridge   |
++ *    | [8086:15d3] [8086:15d3]  [8086:15d3] [8086:15d3] |
++ *    |    (00)        (08)         (10)        (20)     |
++ *    |      |           |            |           |      |
++ *    |     NHI          |     USB Controller     |      |
++ *    | [8086:15d2]      |       [8086:15d4]      |      |
++ *    |    (00)          |          (00)          |      |
++ *    |      |___________|            |___________|      |
++ *    |____________|________________________|____________|
++ *                 |                        |
++ *             USB-C Port               USB-C Port
++ *
++ *
++ * Based on what a JHL6549 pci component's pci id, subsystem device id
++ * and devfn are, we can infer if it is fixed and if it faces a usb port;
++ * which would mean it is external facing.
++ * This quirk uses these values to identify the pci components and set the
++ * properties accordingly.
++ */
++static void carbon_X1_fixup_relabel_alpine_ridge(struct pci_dev *dev)
 +{
-+	unsigned int pin_defs[SX9324_NUM_PINS];
-+	int count, ret, pin;
-+	u32 raw = 0;
++	if (!dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon 7th") &&
++	    !dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon Gen 8"))
++		return;
 +
-+	count = device_property_count_u32(dev, prop);
-+	if (count != ARRAY_SIZE(pin_defs))
-+		return reg_def->def;
-+	ret = device_property_read_u32_array(dev, prop, pin_defs,
-+					     ARRAY_SIZE(pin_defs));
-+	if (ret)
-+		return reg_def->def;
++	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
++	if (dev->subsystem_vendor != 0x17aa)
++		return;
 +
-+	for (pin = 0; pin < SX9324_NUM_PINS; pin++)
-+		raw |= (pin_defs[pin] << (2 * pin)) &
-+		       SX9324_REG_AFE_PH0_PIN_MASK(pin);
++	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
++	if (dev->subsystem_device != 0x22be && // Gen 8
++	    dev->subsystem_device != 0x2292) { // Gen 7
++		return;
++	}
 +
-+	return raw;
++	dev_set_removable(&dev->dev, DEVICE_FIXED);
++
++	/* Not all 0x15d3 components are external facing */
++	if (dev->device == 0x15d3 &&
++	    dev->devfn != 0x08 &&
++	    dev->devfn != 0x20) {
++		return;
++	}
++
++	dev->external_facing = true;
 +}
 +
- static const struct sx_common_reg_default *
- sx9324_get_default_reg(struct device *dev, int idx,
- 		       struct sx_common_reg_default *reg_def)
-@@ -881,38 +904,29 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 		"highest" };
- 	static const char * const sx9324_csidle[] = { "hi-z", "hi-z", "gnd",
- 		"vdd" };
--#define SX9324_PIN_DEF "semtech,ph0-pin"
--#define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
--#define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
--	unsigned int pin_defs[SX9324_NUM_PINS];
--	char prop[] = SX9324_PROXRAW_DEF;
- 	u32 start = 0, raw = 0, pos = 0;
--	int ret, count, ph, pin;
--	const char *res;
-+	const char *prop, *res;
-+	int ret;
- 
- 	memcpy(reg_def, &sx9324_default_regs[idx], sizeof(*reg_def));
- 
- 	sx_common_get_raw_register_config(dev, reg_def);
- 	switch (reg_def->reg) {
- 	case SX9324_REG_AFE_PH0:
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph0-pin");
-+		break;
- 	case SX9324_REG_AFE_PH1:
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph1-pin");
-+		break;
- 	case SX9324_REG_AFE_PH2:
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph2-pin");
-+		break;
- 	case SX9324_REG_AFE_PH3:
--		ph = reg_def->reg - SX9324_REG_AFE_PH0;
--		snprintf(prop, ARRAY_SIZE(prop), "semtech,ph%d-pin", ph);
--
--		count = device_property_count_u32(dev, prop);
--		if (count != ARRAY_SIZE(pin_defs))
--			break;
--		ret = device_property_read_u32_array(dev, prop, pin_defs,
--						     ARRAY_SIZE(pin_defs));
--		if (ret)
--			break;
--
--		for (pin = 0; pin < SX9324_NUM_PINS; pin++)
--			raw |= (pin_defs[pin] << (2 * pin)) &
--			       SX9324_REG_AFE_PH0_PIN_MASK(pin);
--		reg_def->def = raw;
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph3-pin");
- 		break;
- 	case SX9324_REG_AFE_CTRL0:
- 		ret = device_property_read_string(dev,
-@@ -937,11 +951,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 	case SX9324_REG_AFE_CTRL4:
- 	case SX9324_REG_AFE_CTRL7:
- 		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
--			strncpy(prop, "semtech,ph01-resolution",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph01-resolution";
- 		else
--			strncpy(prop, "semtech,ph23-resolution",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph23-resolution";
- 
- 		ret = device_property_read_u32(dev, prop, &raw);
- 		if (ret)
-@@ -1012,11 +1024,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 	case SX9324_REG_PROX_CTRL0:
- 	case SX9324_REG_PROX_CTRL1:
- 		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
--			strncpy(prop, "semtech,ph01-proxraw-strength",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph01-proxraw-strength";
- 		else
--			strncpy(prop, "semtech,ph23-proxraw-strength",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph23-proxraw-strength";
- 		ret = device_property_read_u32(dev, prop, &raw);
- 		if (ret)
- 			break;
++/*
++ * We also need to relabel the root port as a consequence of changing
++ * the JHL6540's PCIE hierarchy.
++ */
++static void carbon_X1_fixup_rootport_not_removable(struct pci_dev *dev)
++{
++	if (!dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon 7th") &&
++	    !dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon Gen 8"))
++		return;
++
++	dev->external_facing = false;
++}
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d3, carbon_X1_fixup_relabel_alpine_ridge);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d2, carbon_X1_fixup_relabel_alpine_ridge);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d4, carbon_X1_fixup_relabel_alpine_ridge);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x02b4, carbon_X1_fixup_rootport_not_removable);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9db4, carbon_X1_fixup_rootport_not_removable);
++
+ /*
+  * Following are device-specific reset methods which can be used to
+  * reset a single function if other methods (e.g. FLR, PM D0->D3) are
 
 ---
-base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-change-id: 20230921-strncpy-drivers-iio-proximity-sx9324-c-8c3437676039
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231219-thunderbolt-pci-patch-4-ede71cb833c4
 
 Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-- 
+Esther Shimanovich <eshimanovich@chromium.org>
 
 
