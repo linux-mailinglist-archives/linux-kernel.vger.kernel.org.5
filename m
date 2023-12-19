@@ -1,118 +1,101 @@
-Return-Path: <linux-kernel+bounces-5929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BAA08191A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:38:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F6BB8191A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C98AC1F250CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:38:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739121C218F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B0039AD7;
-	Tue, 19 Dec 2023 20:38:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D994F39ADF;
+	Tue, 19 Dec 2023 20:39:38 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEC91DFEF;
-	Tue, 19 Dec 2023 20:38:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC630C433C8;
-	Tue, 19 Dec 2023 20:38:26 +0000 (UTC)
-Date: Tue, 19 Dec 2023 15:39:24 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v8 0/2] Introducing trace buffer mapping by user-space
-Message-ID: <20231219153924.2ff9c132@gandalf.local.home>
-In-Reply-To: <20231219184556.1552951-1-vdonnefort@google.com>
-References: <20231219184556.1552951-1-vdonnefort@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369373B781;
+	Tue, 19 Dec 2023 20:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-203aa9c19ceso379521fac.0;
+        Tue, 19 Dec 2023 12:39:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703018376; x=1703623176;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8DziJ3fXpCSH0YjUbI03bbXMEuMGLYmct7c4S80aLAE=;
+        b=OndTq5WRlzMWY02UkB5odCjAjMFy9QdRf0CUGGEr8iQ1vzduu24U1eCJ1eqyiLnf6y
+         7F/tn189EIFahZUZI7nhMJFJKL0Wx9p5yeiDKgp21FkEATTAHbTXC4RfE7vhrg3rcHxu
+         K0T5jzXmE7ck31XwEEoP7NsEsdrqY1hJlkHftyGDMinmZxWRFExB58RjvtpTLkD1G0aP
+         kgY8AASboubuhlDk0/Hok0t3i2wKZh46iXK9gii0XyrmVm/sfLKViyLsKvfPROOc/PCj
+         J4mkjmUKeCAr1NUYzJmLQ/pW9Q+7PefAWvpRaDAHf/8I7qx7WsbbF+KE2oeNnZV4F2JB
+         yzqg==
+X-Gm-Message-State: AOJu0YzTrDrZi3AfsVLb8faQo+3oqiVt064KdYMFtFrEddxzGR+fzQqO
+	Qi0CmJhpf+V6kCC+P+zA93GNbI1BRZAPYWaMf8jQ+HfO
+X-Google-Smtp-Source: AGHT+IGgzXWzuvzaB3dYH5OY42sOHe01Du+gCgqovbDyT6GvFO2cJ6bnyXded158X3RY1nvsSFsINqUuHOn4fg38bxs=
+X-Received: by 2002:a05:6870:7014:b0:203:d0d0:5707 with SMTP id
+ u20-20020a056870701400b00203d0d05707mr6439646oae.4.1703018376268; Tue, 19 Dec
+ 2023 12:39:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231213102808.94695-1-yaozhenguo1@gmail.com> <CAJZ5v0i4DAtzoJUyN0H-4rL=HR=cNntqrrJaDj12suF=7JiyeQ@mail.gmail.com>
+ <9adc18c94f160cad550e762571a952baa7f8df36.camel@linux.intel.com>
+In-Reply-To: <9adc18c94f160cad550e762571a952baa7f8df36.camel@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 19 Dec 2023 21:39:25 +0100
+Message-ID: <CAJZ5v0i19-o9qecaT4y6U8NhEEyR9aKCzyGccdrWXDW5RVHhag@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Add Emerald Rapids support in
+ no-HWP mode
+To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>, 
+	Zhenguo Yao <yaozhenguo1@gmail.com>
+Cc: lenb@kernel.org, viresh.kumar@linaro.org, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, yaozhenguo@jd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 19 Dec 2023 18:45:54 +0000
-Vincent Donnefort <vdonnefort@google.com> wrote:
+On Tue, Dec 19, 2023 at 9:33=E2=80=AFPM srinivas pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Tue, 2023-12-19 at 21:22 +0100, Rafael J. Wysocki wrote:
+> > On Wed, Dec 13, 2023 at 11:28=E2=80=AFAM Zhenguo Yao <yaozhenguo1@gmail=
+.com>
+> > wrote:
+> > >
+> > > Users may disable HWP in firmware, in which case intel_pstate
+> > > wouldn't load
+> > > unless the CPU model is explicitly supported.
+> > >
+> > > See also the following past commits:
+> > >
+> > > commit df51f287b5de ("cpufreq: intel_pstate: Add Sapphire Rapids
+> > > support
+> > > in no-HWP mode")
+> > > commit d8de7a44e11f ("cpufreq: intel_pstate: Add Skylake servers
+> > > support")
+> > > commit 706c5328851d ("cpufreq: intel_pstate: Add Cometlake support
+> > > in
+> > > no-HWP mode")
+> > > commit fbdc21e9b038 ("cpufreq: intel_pstate: Add Icelake servers
+> > > support in
+> > > no-HWP mode")
+> > > commit 71bb5c82aaae ("cpufreq: intel_pstate: Add Tigerlake support
+> > > in
+> > > no-HWP mode")
+> > >
+> > > Signed-off-by: Zhenguo Yao <yaozhenguo1@gmail.com>
+> >
+> > Srinivas, any objections?
+> No.
+>
+> Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-> The tracing ring-buffers can be stored on disk or sent to network
-> without any copy via splice. However the later doesn't allow real time
-> processing of the traces. A solution is to give userspace direct access
-> to the ring-buffer pages via a mapping. An application can now become a
-> consumer of the ring-buffer, in a similar fashion to what trace_pipe
-> offers.
-> 
-> Attached to this cover letter an example of consuming read for a
-> ring-buffer, using libtracefs.
-> 
-
-I'm still testing this, but I needed to add this patch to fix two bugs. One
-is that you are calling rb_wakeup_waiters() for both the buffer and the
-cpu_buffer, and it needs to know which one to use the container_of() macro.
-
-The other is a "goto unlock" that unlocks two locks where only one was taken.
-
--- Steve
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 35f3736f660b..987ad7bd1e8b 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -389,6 +389,7 @@ struct rb_irq_work {
- 	bool				waiters_pending;
- 	bool				full_waiters_pending;
- 	bool				wakeup_full;
-+	bool				is_cpu_buffer;
- };
- 
- /*
-@@ -771,10 +772,20 @@ static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
- static void rb_wake_up_waiters(struct irq_work *work)
- {
- 	struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
--	struct ring_buffer_per_cpu *cpu_buffer =
--		container_of(rbwork, struct ring_buffer_per_cpu, irq_work);
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+	struct trace_buffer *buffer;
-+	int cpu;
- 
--	rb_update_meta_page(cpu_buffer);
-+	if (rbwork->is_cpu_buffer) {
-+		cpu_buffer = container_of(rbwork, struct ring_buffer_per_cpu, irq_work);
-+		rb_update_meta_page(cpu_buffer);
-+	} else {
-+		buffer = container_of(rbwork, struct trace_buffer, irq_work);
-+		for_each_buffer_cpu(buffer, cpu) {
-+			cpu_buffer = buffer->buffers[cpu];
-+			rb_update_meta_page(cpu_buffer);
-+		}
-+	}
- 
- 	wake_up_all(&rbwork->waiters);
- 	if (rbwork->full_waiters_pending || rbwork->wakeup_full) {
-@@ -1569,6 +1580,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
- 	init_waitqueue_head(&cpu_buffer->irq_work.waiters);
- 	init_waitqueue_head(&cpu_buffer->irq_work.full_waiters);
- 	mutex_init(&cpu_buffer->mapping_lock);
-+	cpu_buffer->irq_work.is_cpu_buffer = true;
- 
- 	bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
- 			    GFP_KERNEL, cpu_to_node(cpu));
-@@ -6209,7 +6221,8 @@ int ring_buffer_map(struct trace_buffer *buffer, int cpu)
- 
- 	if (cpu_buffer->mapped) {
- 		WRITE_ONCE(cpu_buffer->mapped, cpu_buffer->mapped + 1);
--		goto unlock;
-+		mutex_unlock(&cpu_buffer->mapping_lock);
-+		return 0;
- 	}
- 
- 	/* prevent another thread from changing buffer sizes */
+Applied as 6.8 material (with some minor edits in the changelog), thanks!
 
