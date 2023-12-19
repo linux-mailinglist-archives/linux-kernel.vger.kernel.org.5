@@ -1,140 +1,123 @@
-Return-Path: <linux-kernel+bounces-4671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF42E81807A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:23:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEBEF818083
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D326B233BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:23:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BFAC2825D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5108C158;
-	Tue, 19 Dec 2023 04:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C5915EBF;
+	Tue, 19 Dec 2023 04:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QT669H8b"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IvABewiw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BF96FB4
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702959753;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Igax5UgIuAw00YDf5GDEbl6lhbS7QUhnxvUBz1O2KrM=;
-	b=QT669H8biv0ramN14eSOZuXyDzIzRLRtBx3s3FQRscjsw2lNa6jhWHljzkx/AW9rqMN7/3
-	iir0xDQ/n32l3lB7jVTy0/9J/d0V+6rDxmREPrpQTnTCH0Aq1H70eCjXbhFbCErFa9zVgs
-	UZKi82vE6kpMkHtieb6zHkhZaM9gVOI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-214-GwesIK5LNZ-Romlg7SDN4A-1; Mon,
- 18 Dec 2023 23:22:29 -0500
-X-MC-Unique: GwesIK5LNZ-Romlg7SDN4A-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 868FB15E8E;
+	Tue, 19 Dec 2023 04:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1702959947;
+	bh=/GodJswsfgqvQ6EUOQlKVjRhHjooClJBbxpLEL4Lp+c=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IvABewiwU7VR3DEmYN/Ikix6Z2lpm4HxYo24jIZ4XwYpsVntKAmgxrCXIEC6gkW83
+	 vcbxb5xahivU6aseKKw8QESs7rIdhIWkT2a5LMREDo416bYir11e2AWgu4CUa1l88/
+	 rJL4HdK+IVRVhVLLE3ArKBEsQ6zqLyMAd2i4suqowFI4gWhj5XUy1qSeGGVA09PJak
+	 /o4yk4JO/uAbsd7aQEY+PjVIuj9WoNbm84AjJOoy7/h5Vt74/pZlALwHKInyUra6lv
+	 /hpOMgRW35KvX4ImCgtJZQFQ4NhJvFdRqaWk2tua/Mae9OFE1FrlC9sz9Y8K9bDxF8
+	 /5nz6lQL7iKMA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2BB573813F22;
-	Tue, 19 Dec 2023 04:22:28 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.38])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id F16F6492BF0;
-	Tue, 19 Dec 2023 04:22:26 +0000 (UTC)
-Date: Tue, 19 Dec 2023 12:22:22 +0800
-From: Baoquan He <bhe@redhat.com>
-To: James Gowans <jgowans@amazon.com>, akpm@linux-foundation.org
-Cc: Eric Biederman <ebiederm@xmission.com>,
-	Sean Christopherson <seanjc@google.com>, kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-	Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, Pavel Machek <pavel@ucw.cz>,
-	Sebastian Reichel <sre@kernel.org>,
-	Orson Zhai <orsonzhai@gmail.com>, Alexander Graf <graf@amazon.de>,
-	"Jan H . Schoenherr" <jschoenh@amazon.de>
-Subject: Re: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
-Message-ID: <ZYEafpms++a3a8ch@MiWiFi-R3L-srv>
-References: <20231213064004.2419447-1-jgowans@amazon.com>
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SvNsl35Yqz4wx5;
+	Tue, 19 Dec 2023 15:25:47 +1100 (AEDT)
+Date: Tue, 19 Dec 2023 15:25:45 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the header_cleanup tree
+Message-ID: <20231219152545.54ac44cd@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213064004.2419447-1-jgowans@amazon.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: multipart/signed; boundary="Sig_/RGIQnRG2=vNVQrSH7Ep8Adi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Add Andrew to CC as Andrew helps to pick kexec/kdump patches.
+--Sig_/RGIQnRG2=vNVQrSH7Ep8Adi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 12/13/23 at 08:40am, James Gowans wrote:
-......
-> This has been tested by doing a kexec on x86_64 and aarch64.
+Hi all,
 
-Hi James,
+After merging the header_cleanup tree, today's linux-next build (s390
+defconfig) failed like this:
 
-Thanks for this great patch. My colleagues have opened bug in rhel to
-track this and try to veryfy this patch. However, they can't reproduce
-the issue this patch is fixing. Could you tell more about where and how
-to reproduce so that we can be aware of it better? Thanks in advance.
+arch/s390/kernel/signal.c: In function 'arch_do_signal_or_restart':
+arch/s390/kernel/signal.c:491:17: error: implicit declaration of function '=
+rseq_signal_deliver' [-Werror=3Dimplicit-function-declaration]
+  491 |                 rseq_signal_deliver(&ksig, regs);
+      |                 ^~~~~~~~~~~~~~~~~~~
 
-Thanks
-Baoquan
+Presumably caused by commit
 
-> 
-> Fixes: 6735150b6997 ("KVM: Use syscore_ops instead of reboot_notifier to hook restart/shutdown")
-> 
-> Signed-off-by: James Gowans <jgowans@amazon.com>
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Cc: Samuel Holland <samuel@sholland.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Alexander Graf <graf@amazon.de>
-> Cc: Jan H. Schoenherr <jschoenh@amazon.de>
-> ---
->  kernel/kexec_core.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> index be5642a4ec49..b926c4db8a91 100644
-> --- a/kernel/kexec_core.c
-> +++ b/kernel/kexec_core.c
-> @@ -1254,6 +1254,7 @@ int kernel_kexec(void)
->  		kexec_in_progress = true;
->  		kernel_restart_prepare("kexec reboot");
->  		migrate_to_reboot_cpu();
-> +		syscore_shutdown();
->  
->  		/*
->  		 * migrate_to_reboot_cpu() disables CPU hotplug assuming that
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
-> 
+  cd1146fc0ad3 ("rseq: Split out rseq.h from sched.h")
 
+I have applied the following patch for today:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 19 Dec 2023 15:19:02 +1100
+Subject: [PATCH] fixup for s390 and "rseq: Split out rseq.h from sched.h"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/s390/kernel/signal.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
+index 27bcc43fe1b7..43e9661cd715 100644
+--- a/arch/s390/kernel/signal.c
++++ b/arch/s390/kernel/signal.c
+@@ -12,6 +12,7 @@
+=20
+ #include <linux/sched.h>
+ #include <linux/sched/task_stack.h>
++#include <linux/rseq.h>
+ #include <linux/mm.h>
+ #include <linux/smp.h>
+ #include <linux/kernel.h>
+--=20
+2.40.1
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/RGIQnRG2=vNVQrSH7Ep8Adi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWBG0kACgkQAVBC80lX
+0Gy2lQf+PYLqj1egA7gvBit6/aroG/tphR/VlMKW84xwkx6kSJCwFX03w5cXRCLI
+r7QtWvXpidvm8Fnle75l4w/YkWj0K9TSN5yMtqdrFNHafq8X3SXiw4otzBjRTEL/
+tp5/7JVlga9mVcVjnAjlL+jfMzxIKmzslYwQlnlAfvZmGyapK9YgXOiqULtkk2RM
+n7KhZyfCNeNK2cNpHqDB1NPFY8WccG4uTN6asaBKqrZhFeDLHzy6TjvvfZmHZROb
+PHHuhf+mKaubsdQprHcM7WL1A24LwS1RD6jJ/K1CQcLh7qITX/OrZsVdy0Xjmguw
+W40wX4rgCvquHzkCARhu3QgD0KirlA==
+=Qt8u
+-----END PGP SIGNATURE-----
+
+--Sig_/RGIQnRG2=vNVQrSH7Ep8Adi--
 
