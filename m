@@ -1,191 +1,144 @@
-Return-Path: <linux-kernel+bounces-4597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35704817FCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:30:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5212C817FC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F78D28345C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:30:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D59F0B23138
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 831375253;
-	Tue, 19 Dec 2023 02:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V7OG5Zvi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B300D468F;
+	Tue, 19 Dec 2023 02:29:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9704468A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702953038; x=1734489038;
-  h=date:from:to:cc:subject:message-id;
-  bh=In0QvpJjkggc3cIkkX2AG89mlryu++eRlRsTBAIj5Dc=;
-  b=V7OG5ZviPrDed2ZncrLcz0L0Ze8Bgk3X2GbEcAUTBcnehPtXMfYXbVfu
-   DVGEVpS/OFgOrNwRdZzfHLJv8tHtIvj2o/H7zzsta7EAN0kOD3hTnSkt3
-   C//eYZgLNNpWK90vuyw5Ycm45xAV5WNltnKS6jFTMrOu6GYzZehc4tntO
-   cCSKrwhO6Wwpmj+Uz/tQ9d4K3Bl2UpGESpOHgL9+wH5KrT5ToVLre+LiD
-   gvh7HEjMe2jaRWnQb6UzJlPbMA74z/450hSJbwSTAo9UmnQmbahALkHju
-   P5EeAlhOS88VrM4msiCcDMLgKpeG3BBEVNgvfPwRxGbtXRZOddY//qNN+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="398381694"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="398381694"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 18:30:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="804733157"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="804733157"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 18 Dec 2023 18:30:36 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFPsG-0004ko-0Y;
-	Tue, 19 Dec 2023 02:30:28 +0000
-Date: Tue, 19 Dec 2023 10:28:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- d5a10b976ecb77fa49b95f3f1016ca2997c122cb
-Message-ID: <202312191031.423bEfVo-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06554409;
+	Tue, 19 Dec 2023 02:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SvLHB6Mh1zMnyZ;
+	Tue, 19 Dec 2023 10:29:10 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8085814068C;
+	Tue, 19 Dec 2023 10:29:09 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Dec 2023 10:29:08 +0800
+Message-ID: <7e0f5796-99eb-867d-8885-8df553de8df9@huawei.com>
+Date: Tue, 19 Dec 2023 10:29:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 3/4] ext4: avoid bb_free and bb_fragments inconsistency in
+ mb_free_blocks()
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
+CC: <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
+References: <20231218141814.1477338-1-libaokun1@huawei.com>
+ <20231218141814.1477338-4-libaokun1@huawei.com>
+ <20231218151455.yqph44iz4ihsujz5@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20231218151455.yqph44iz4ihsujz5@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: d5a10b976ecb77fa49b95f3f1016ca2997c122cb  x86/acpi: Handle bogus MADT APIC tables gracefully
+On 2023/12/18 23:14, Jan Kara wrote:
+> On Mon 18-12-23 22:18:13, Baokun Li wrote:
+>> After updating bb_free in mb_free_blocks, it is possible to return without
+>> updating bb_fragments because the block being freed is found to have
+>> already been freed, which leads to inconsistency between bb_free and
+>> bb_fragments.
+>>
+>> Since the group may be unlocked in ext4_grp_locked_error(), this can lead
+>> to problems such as dividing by zero when calculating the average fragment
+>> length. Therefore, to ensure consistency, move the update of bb_free to
+>> after the block double-free check.
+>>
+>> Fixes: eabe0444df90 ("ext4: speed-up releasing blocks on commit")
+>> CC: stable@vger.kernel.org # 3.10
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> I agree there's no point in updating the allocation info if the bitmap is
+> corrupted. We will not try to allocate (or free) blocks in that group
+> anymore. I'm just a bit unsure about the EXT4_FC_REPLAY state where we
+> don't mark the bitmap as corrupted although some blocks were already marked
+> as freed. So in this case the free space statistics tracking will go
+> permanently wrong. I'm kind of wondering in which case does fast-commit
+> free already freed blocks. Ted, any idea?
+>
+> 								Honza
+Some additional information, this judgment was introduced in
+commit 8016e29f4362 ("ext4: fast commit recovery path") in v5.10-rc1,
+at which point mb_regenerate_buddy() was called to regenerate the
+buddy when it was found to be freeing a block that had already been
+freed, so there was no problem. Until v5.11-rc1 commit 6bd97bf273bd
+("ext4: remove redundant mb_regenerate_buddy()") removes the logic
+to regenerate the buddy, it looks like the free space statistics will
+remain wrong. If this normal scenario exists, perhaps buddy should
+be regenerated here?
 
-elapsed time: 740m
-
-configs tested: 109
-configs skipped: 134
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                           imxrt_defconfig   gcc  
-arm                      jornada720_defconfig   gcc  
-arm                          pxa910_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231218   gcc  
-i386         buildonly-randconfig-002-20231218   gcc  
-i386         buildonly-randconfig-003-20231218   gcc  
-i386         buildonly-randconfig-004-20231218   gcc  
-i386         buildonly-randconfig-005-20231218   gcc  
-i386         buildonly-randconfig-006-20231218   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231218   gcc  
-i386                  randconfig-002-20231218   gcc  
-i386                  randconfig-003-20231218   gcc  
-i386                  randconfig-004-20231218   gcc  
-i386                  randconfig-005-20231218   gcc  
-i386                  randconfig-006-20231218   gcc  
-i386                  randconfig-011-20231218   clang
-i386                  randconfig-011-20231219   gcc  
-i386                  randconfig-012-20231218   clang
-i386                  randconfig-012-20231219   gcc  
-i386                  randconfig-013-20231218   clang
-i386                  randconfig-013-20231219   gcc  
-i386                  randconfig-014-20231218   clang
-i386                  randconfig-014-20231219   gcc  
-i386                  randconfig-015-20231218   clang
-i386                  randconfig-015-20231219   gcc  
-i386                  randconfig-016-20231218   clang
-i386                  randconfig-016-20231219   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             alldefconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                            q40_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                       lemote2f_defconfig   gcc  
-mips                     loongson2k_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                       virt_defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      mgcoge_defconfig   gcc  
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc                  storcenter_defconfig   gcc  
-riscv                               defconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                                defconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                           se7343_defconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231219   clang
-x86_64       buildonly-randconfig-002-20231219   clang
-x86_64       buildonly-randconfig-003-20231219   clang
-x86_64       buildonly-randconfig-004-20231219   clang
-x86_64       buildonly-randconfig-005-20231219   clang
-x86_64       buildonly-randconfig-006-20231219   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20231219   clang
-x86_64                randconfig-012-20231219   clang
-x86_64                randconfig-013-20231219   clang
-x86_64                randconfig-014-20231219   clang
-x86_64                randconfig-015-20231219   clang
-x86_64                randconfig-016-20231219   clang
-x86_64                randconfig-071-20231219   clang
-x86_64                randconfig-072-20231219   clang
-x86_64                randconfig-073-20231219   clang
-x86_64                randconfig-074-20231219   clang
-x86_64                randconfig-075-20231219   clang
-x86_64                randconfig-076-20231219   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Baokun
+>> ---
+>>   fs/ext4/mballoc.c | 13 ++++++-------
+>>   1 file changed, 6 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index a95fa6e2b0f9..2fbee0f0f5c3 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -1892,11 +1892,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>>   	mb_check_buddy(e4b);
+>>   	mb_free_blocks_double(inode, e4b, first, count);
+>>   
+>> -	this_cpu_inc(discard_pa_seq);
+>> -	e4b->bd_info->bb_free += count;
+>> -	if (first < e4b->bd_info->bb_first_free)
+>> -		e4b->bd_info->bb_first_free = first;
+>> -
+>>   	/* access memory sequentially: check left neighbour,
+>>   	 * clear range and then check right neighbour
+>>   	 */
+>> @@ -1922,9 +1917,14 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>>   				sb, e4b->bd_group,
+>>   				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>>   		}
+>> -		goto done;
+>> +		return;
+>>   	}
+>>   
+>> +	this_cpu_inc(discard_pa_seq);
+>> +	e4b->bd_info->bb_free += count;
+>> +	if (first < e4b->bd_info->bb_first_free)
+>> +		e4b->bd_info->bb_first_free = first;
+>> +
+>>   	/* let's maintain fragments counter */
+>>   	if (left_is_free && right_is_free)
+>>   		e4b->bd_info->bb_fragments--;
+>> @@ -1949,7 +1949,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>>   	if (first <= last)
+>>   		mb_buddy_mark_free(e4b, first >> 1, last >> 1);
+>>   
+>> -done:
+>>   	mb_set_largest_free_order(sb, e4b->bd_info);
+>>   	mb_update_avg_fragment_size(sb, e4b->bd_info);
+>>   	mb_check_buddy(e4b);
+>> -- 
+>> 2.31.1
+>>
 
