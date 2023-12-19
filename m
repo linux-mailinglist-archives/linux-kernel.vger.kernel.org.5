@@ -1,208 +1,204 @@
-Return-Path: <linux-kernel+bounces-5967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FB9819238
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:22:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B8BA819239
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:22:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38388B24BDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:22:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B74632877D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8630E3C495;
-	Tue, 19 Dec 2023 21:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6FB3D0A3;
+	Tue, 19 Dec 2023 21:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SHvpMbPs"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BLfKU/60"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76EC3DB80;
-	Tue, 19 Dec 2023 21:21:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5B28C43395;
-	Tue, 19 Dec 2023 21:21:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703020895;
-	bh=oA1pNNbJ63oV11EYi9Wh6Pn+MBONE49Y/f+8c5yfJbw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=SHvpMbPsZ7dBP2btm3EjUSGBxL5/UhcQLmA6zmhiHyL9EIHspgoFFvMkIwZLDZW4F
-	 ALsXSzzekC86VG73Y51lOc7PItd71kADnawDQwRgTTutdGLDjBuTZzWAg9vqhzFDtn
-	 HlZ7k4DDV/H4UXpb7sim0H/O4PtYoL6JZvg8Xes0YrHv8+PwYvNiS0Ub2HaM2tg8YN
-	 zqWVRXelcW52Jhb2si/JCIVDYoSwPGoULyHW00PSH1/cFq3/mYwOARyBAEBiEHkEHV
-	 7bbkvPaLRetDixMh4B8xPy8+nPqGpX5Pt9ABxAnfne2Tn/CC4IXIfv/j/wKNBmhb+a
-	 6Iql2UVKSPZSg==
-From: Mark Brown <broonie@kernel.org>
-Date: Tue, 19 Dec 2023 21:21:20 +0000
-Subject: [PATCH 2/2] kselftest/seccomp: Report each expectation we assert
- as a KTAP test
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082853D0A5
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:22:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7cbf6ce782dso488738241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:22:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703020923; x=1703625723; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8LGegP+G5PWWJJoK9xgDRxY4ivR1WBT3Si9rlrLcuhs=;
+        b=BLfKU/60GmFLDOteu0Ir3XZ0xybACjQKaidD+D+jP1bqZNQUfCIk3r8uDRf4Dppvnt
+         MtYrnma6B7L77EcdPiVc/fjJyXodvQ0+WCBFfkqlJgK7iR5BtbSy9YfRPZkQXEKMgiiV
+         IWWed5SI/cH64/t4BPN6/y+/YjQ+gJllt24xPChwxMfMrfl5tkfLxcSQt90ebyD5z1aH
+         3NWivXCMUEUbONIrZzOwZsBYZ31GumyDjHpuSfMSiuKtQ1unaBcaFmjJTmal+FPHMTFv
+         pVlWfsjSwLJIzEincycUbb5x0hQb8EjrurMJmtXmNvajEMjV+vYZ3SFbKM/c2D+vJapj
+         dLmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703020923; x=1703625723;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8LGegP+G5PWWJJoK9xgDRxY4ivR1WBT3Si9rlrLcuhs=;
+        b=qT3VhtmFZ4BsEo8zhEp4+bAk4hqjN4NW+ab9eJ7Q20bRtW0ki9Vzo7KIqN3e21fHqm
+         NvOOsVh/DhLOZ+pfToOpYw5Aonu35C1TBjC913Bge39UxJpIzOzMFhU6Xqju2I8tcDc5
+         ztuAUraWRUEjI1BwrSlzHQ/uVcIvxgJITzIZIOLxEkg0JlOi0wa6ONmoNdVZezXv6A4I
+         bWLGztoJZcP63g4bM01PGLSmZPCcgj6HjO/7RnClA6V74Fi4PsUBMHc8RuG0faiDwsdJ
+         TO9dJsXyN5rvewHdGZx4xYVrMAbKtdpneGaoSv7ozG7rO3Q6kfy4kElofRJaV+deHiRa
+         J4PA==
+X-Gm-Message-State: AOJu0Yw9jZtdUnO0NUKo9Dsy6kNOvb8tZ0bREU2c1MoLPlcoTTj9/72+
+	ZOzuM7WoJII09xY4skCFHFq2G20ZnCR2S0Ha7Z0rbw==
+X-Google-Smtp-Source: AGHT+IHWRL7HUoJ48zzjc4DtaZvkU/8q41KHmjYkBneQNQbK6qR6g17/1aTX9jjBAw67Ydn0aFF+kLsNpG0V0YW1W58=
+X-Received: by 2002:a05:6102:559e:b0:466:9bec:ae53 with SMTP id
+ dc30-20020a056102559e00b004669becae53mr2855956vsb.25.1703020922750; Tue, 19
+ Dec 2023 13:22:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-2-f99e228631b0@kernel.org>
-References: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org>
-In-Reply-To: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org>
-To: Kees Cook <keescook@chromium.org>, 
- Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-5c066
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4967; i=broonie@kernel.org;
- h=from:subject:message-id; bh=oA1pNNbJ63oV11EYi9Wh6Pn+MBONE49Y/f+8c5yfJbw=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlgglYESeKHvJrPrwFkWxo4TJbTH8YEb4zmiEYdAzx
- PebQDZ6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZYIJWAAKCRAk1otyXVSH0JoWB/
- 9vgsFFxdsHgH+8hjqI3qPD2D1DdeuyCO8vYvasUYRqvkyMUZaOp0rQll2+nMWgYk+gNxu8Wc6pxbv1
- xKlk1zYOiiHDb5o89SYoXdlZ918i1TY0B1V0RTii7OnrOhjZmH5QkmnEmsSOKmbCS/nP5iEePtZO0g
- ESdaVNBqjHxJjl20baGYT4UfAvMm663COAMA6+LdIv0gWL7JJiwKr0nBuLz6hDKhGb/RXAPFjU02oW
- CDerwPTxrzyqm3il2pXSqkf2A7DBtgNB1hVr8NO7eQQohL/6BrncR2HXEUa9yeiLqD2pvgtP8qzAxi
- CWlPpB+gM0R2zI7PYgEhN3nk3xXAU9
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+References: <cover.1703020707.git.andreyknvl@google.com> <1606b960e2f746862d1f459515972f9695bf448a.1703020707.git.andreyknvl@google.com>
+In-Reply-To: <1606b960e2f746862d1f459515972f9695bf448a.1703020707.git.andreyknvl@google.com>
+From: Marco Elver <elver@google.com>
+Date: Tue, 19 Dec 2023 22:21:25 +0100
+Message-ID: <CANpmjNMAL0FRdewOfEpTZWBTLquJ_k0L4QdCd_Uau6ewg2hAxQ@mail.gmail.com>
+Subject: Re: [PATCH v3 mm 2/4] kasan: handle concurrent kasan_record_aux_stack calls
+To: andrey.konovalov@linux.dev
+Cc: Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, 
+	Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	kasan-dev@googlegroups.com, Evgenii Stepanov <eugenis@google.com>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>, 
+	syzbot+186b55175d8360728234@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-The seccomp benchmark test makes a number of checks on the performance it
-measures and logs them to the output but does so in a custom format which
-none of the automated test runners understand meaning that the chances that
-anyone is paying attention are slim. Let's additionally log each result in
-KTAP format so that automated systems parsing the test output will see each
-comparison as a test case. The original logs are left in place since they
-provide the actual numbers for analysis.
+On Tue, 19 Dec 2023 at 22:19, <andrey.konovalov@linux.dev> wrote:
+>
+> From: Andrey Konovalov <andreyknvl@google.com>
+>
+> kasan_record_aux_stack can be called concurrently on the same object.
+> This might lead to a race condition when rotating the saved aux stack
+> trace handles, which in turns leads to incorrect accounting of stack
+> depot handles and refcount underflows in the stack depot code.
+>
+> Fix by introducing a raw spinlock to protect the aux stack trace handles
+> in kasan_record_aux_stack.
+>
+> Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+> Reported-by: syzbot+186b55175d8360728234@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000784b1c060b0074a2@google.com/
+> Fixes: 773688a6cb24 ("kasan: use stack_depot_put for Generic mode")
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-As part of this rework the flow for the main program so that when we skip
-tests we still log all the tests we skip, this is because the standard KTAP
-headers and footers include counts of the number of expected and run tests.
----
- .../testing/selftests/seccomp/seccomp_benchmark.c  | 62 +++++++++++++++-------
- 1 file changed, 42 insertions(+), 20 deletions(-)
+Reviewed-by: Marco Elver <elver@google.com>
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_benchmark.c b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-index 93168dd2c1e3..436a527b8235 100644
---- a/tools/testing/selftests/seccomp/seccomp_benchmark.c
-+++ b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-@@ -98,24 +98,36 @@ bool le(int i_one, int i_two)
- }
- 
- long compare(const char *name_one, const char *name_eval, const char *name_two,
--	     unsigned long long one, bool (*eval)(int, int), unsigned long long two)
-+	     unsigned long long one, bool (*eval)(int, int), unsigned long long two,
-+	     bool skip)
- {
- 	bool good;
- 
-+	if (skip) {
-+		ksft_test_result_skip("%s %s %s\n", name_one, name_eval,
-+				      name_two);
-+		return 0;
-+	}
-+
- 	ksft_print_msg("\t%s %s %s (%lld %s %lld): ", name_one, name_eval, name_two,
- 		       (long long)one, name_eval, (long long)two);
- 	if (one > INT_MAX) {
- 		ksft_print_msg("Miscalculation! Measurement went negative: %lld\n", (long long)one);
--		return 1;
-+		good = false;
-+		goto out;
- 	}
- 	if (two > INT_MAX) {
- 		ksft_print_msg("Miscalculation! Measurement went negative: %lld\n", (long long)two);
--		return 1;
-+		good = false;
-+		goto out;
- 	}
- 
- 	good = eval(one, two);
- 	printf("%s\n", good ? "✔️" : "❌");
- 
-+out:
-+	ksft_test_result(good, "%s %s %s\n", name_one, name_eval, name_two);
-+
- 	return good ? 0 : 1;
- }
- 
-@@ -142,9 +154,13 @@ int main(int argc, char *argv[])
- 	unsigned long long samples, calc;
- 	unsigned long long native, filter1, filter2, bitmap1, bitmap2;
- 	unsigned long long entry, per_filter1, per_filter2;
-+	bool skip = false;
- 
- 	setbuf(stdout, NULL);
- 
-+	ksft_print_header();
-+	ksft_set_plan(7);
-+
- 	ksft_print_msg("Running on:\n");
- 	ksft_print_msg("");
- 	system("uname -a");
-@@ -202,8 +218,10 @@ int main(int argc, char *argv[])
- #define ESTIMATE(fmt, var, what)	do {			\
- 		var = (what);					\
- 		ksft_print_msg("Estimated " fmt ": %llu ns\n", var);	\
--		if (var > INT_MAX)				\
--			goto more_samples;			\
-+		if (var > INT_MAX) {				\
-+			skip = true;				\
-+			ret |= 1;				\
-+		}						\
- 	} while (0)
- 
- 	ESTIMATE("total seccomp overhead for 1 bitmapped filter", calc,
-@@ -222,30 +240,34 @@ int main(int argc, char *argv[])
- 		 (filter2 - native - entry) / 4);
- 
- 	ksft_print_msg("Expectations:\n");
--	ret |= compare("native", "≤", "1 bitmap", native, le, bitmap1);
--	bits = compare("native", "≤", "1 filter", native, le, filter1);
-+	ret |= compare("native", "≤", "1 bitmap", native, le, bitmap1,
-+		       skip);
-+	bits = compare("native", "≤", "1 filter", native, le, filter1,
-+		       skip);
- 	if (bits)
--		goto more_samples;
-+		skip = true;
- 
- 	ret |= compare("per-filter (last 2 diff)", "≈", "per-filter (filters / 4)",
--			per_filter1, approx, per_filter2);
-+		       per_filter1, approx, per_filter2, skip);
- 
- 	bits = compare("1 bitmapped", "≈", "2 bitmapped",
--			bitmap1 - native, approx, bitmap2 - native);
-+		       bitmap1 - native, approx, bitmap2 - native, skip);
- 	if (bits) {
- 		ksft_print_msg("Skipping constant action bitmap expectations: they appear unsupported.\n");
--		goto out;
-+		skip = true;
- 	}
- 
--	ret |= compare("entry", "≈", "1 bitmapped", entry, approx, bitmap1 - native);
--	ret |= compare("entry", "≈", "2 bitmapped", entry, approx, bitmap2 - native);
-+	ret |= compare("entry", "≈", "1 bitmapped", entry, approx,
-+		       bitmap1 - native, skip);
-+	ret |= compare("entry", "≈", "2 bitmapped", entry, approx,
-+		       bitmap2 - native, skip);
- 	ret |= compare("native + entry + (per filter * 4)", "≈", "4 filters total",
--			entry + (per_filter1 * 4) + native, approx, filter2);
--	if (ret == 0)
--		goto out;
-+		       entry + (per_filter1 * 4) + native, approx, filter2,
-+		       skip);
- 
--more_samples:
--	ksft_print_msg("Saw unexpected benchmark result. Try running again with more samples?\n");
--out:
--	return 0;
-+	if (ret) {
-+		ksft_print_msg("Saw unexpected benchmark result. Try running again with more samples?\n");
-+	}
-+
-+	ksft_finished();
- }
-
--- 
-2.30.2
-
+> ---
+>
+> Changes v2->v3:
+> - Use raw spinlock to avoid lockdep complaints on RT kernels.
+>
+> Changes v1->v2:
+> - Use per-object spinlock instead of a global one.
+> ---
+>  mm/kasan/generic.c | 32 +++++++++++++++++++++++++++++---
+>  mm/kasan/kasan.h   |  8 ++++++++
+>  2 files changed, 37 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 54e20b2bc3e1..55e6b5db2cae 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/sched/task_stack.h>
+>  #include <linux/slab.h>
+> +#include <linux/spinlock.h>
+>  #include <linux/stackdepot.h>
+>  #include <linux/stacktrace.h>
+>  #include <linux/string.h>
+> @@ -471,8 +472,18 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+>         struct kasan_free_meta *free_meta;
+>
+>         alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (alloc_meta)
+> +       if (alloc_meta) {
+>                 __memset(alloc_meta, 0, sizeof(*alloc_meta));
+> +
+> +               /*
+> +                * Temporarily disable KASAN bug reporting to allow instrumented
+> +                * raw_spin_lock_init to access aux_lock, which resides inside
+> +                * of a redzone.
+> +                */
+> +               kasan_disable_current();
+> +               raw_spin_lock_init(&alloc_meta->aux_lock);
+> +               kasan_enable_current();
+> +       }
+>         free_meta = kasan_get_free_meta(cache, object);
+>         if (free_meta)
+>                 __memset(free_meta, 0, sizeof(*free_meta));
+> @@ -502,6 +513,8 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+>         struct kmem_cache *cache;
+>         struct kasan_alloc_meta *alloc_meta;
+>         void *object;
+> +       depot_stack_handle_t new_handle, old_handle;
+> +       unsigned long flags;
+>
+>         if (is_kfence_address(addr) || !slab)
+>                 return;
+> @@ -512,9 +525,22 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+>         if (!alloc_meta)
+>                 return;
+>
+> -       stack_depot_put(alloc_meta->aux_stack[1]);
+> +       new_handle = kasan_save_stack(0, depot_flags);
+> +
+> +       /*
+> +        * Temporarily disable KASAN bug reporting to allow instrumented
+> +        * spinlock functions to access aux_lock, which resides inside of a
+> +        * redzone.
+> +        */
+> +       kasan_disable_current();
+> +       raw_spin_lock_irqsave(&alloc_meta->aux_lock, flags);
+> +       old_handle = alloc_meta->aux_stack[1];
+>         alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
+> -       alloc_meta->aux_stack[0] = kasan_save_stack(0, depot_flags);
+> +       alloc_meta->aux_stack[0] = new_handle;
+> +       raw_spin_unlock_irqrestore(&alloc_meta->aux_lock, flags);
+> +       kasan_enable_current();
+> +
+> +       stack_depot_put(old_handle);
+>  }
+>
+>  void kasan_record_aux_stack(void *addr)
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 5e298e3ac909..69e4f5e58e33 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -6,6 +6,7 @@
+>  #include <linux/kasan.h>
+>  #include <linux/kasan-tags.h>
+>  #include <linux/kfence.h>
+> +#include <linux/spinlock.h>
+>  #include <linux/stackdepot.h>
+>
+>  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+> @@ -249,6 +250,13 @@ struct kasan_global {
+>  struct kasan_alloc_meta {
+>         struct kasan_track alloc_track;
+>         /* Free track is stored in kasan_free_meta. */
+> +       /*
+> +        * aux_lock protects aux_stack from accesses from concurrent
+> +        * kasan_record_aux_stack calls. It is a raw spinlock to avoid sleeping
+> +        * on RT kernels, as kasan_record_aux_stack_noalloc can be called from
+> +        * non-sleepable contexts.
+> +        */
+> +       raw_spinlock_t aux_lock;
+>         depot_stack_handle_t aux_stack[2];
+>  };
+>
+> --
+> 2.25.1
+>
 
