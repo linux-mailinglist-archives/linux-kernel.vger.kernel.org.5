@@ -1,187 +1,175 @@
-Return-Path: <linux-kernel+bounces-4893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35BE481836A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:35:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29C3A818382
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:37:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F68BB24385
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:35:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA7481F2501E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A06711C96;
-	Tue, 19 Dec 2023 08:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6E211739;
+	Tue, 19 Dec 2023 08:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nL/EnZSl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2068.outbound.protection.outlook.com [40.107.237.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F5E1172A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b7ac24cef5so403774639f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 00:35:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702974909; x=1703579709;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wSVL8QDIUac2OHhlf5opsGRO6P8IJbftbVT+XkeQvJU=;
-        b=p0dxn339lGyZAq/IgfQrMkwXUmyGXE2CcUs0DMQxh2vTK40cwInSjYBF3r57WLI7hl
-         r2Bqu0k1cD/D+lIxaCgzTPNavpXrZiW6AiAVq3qSs3SHwbWS/fLqZPmVgcVN3k5jC2dd
-         vem8oZgXxVnf3aQBUUXY9rfVNcmEAGZ0aMWIpUAg8JN/fvGuPedd+I5LwF7uPpa7jVtF
-         8uVYoVesGmyc4fxJxE8PhBxpnNg3OTGckBdZp8gbhEuU59+MEfOJPJDUZh9s1qsUKYn7
-         EFkOxauTiWFsJZwlKnH0YgmMNyTpV4TzP3H0DC4tA2qmBHy93/8uNkDPrfyvSjPiPO7A
-         xm2g==
-X-Gm-Message-State: AOJu0YwFYYtqEumzE8NK+SkIfer9z51sAmSiY2k4Ww+QX9Gf1Cdn9a7e
-	4iuDEjPAybeGmd666AGKTnNbvZd4nJuvAw8vLvrqf1lXcg2z
-X-Google-Smtp-Source: AGHT+IE/0Y76tVNpO5kvNk2v4mmuOVqW5K35fsL7HKLrWz6Aiccv/PKIx+7lg5OeoBmI9poaKQur2/9RUPwJ5j+fqQgBhhCfqxwm
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D80168C5;
+	Tue, 19 Dec 2023 08:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OsMNrxLG0nSt3DYvlk64oxxvpXgrG2iX96a5B5bXQkmdoJ7Qxl/qyRVAY6fjBd3CiA7phtJra8fgxa4+9K2d0aNY7q2JhDszioL3F6R8mwT9CTz9G6XB5nXdn22H8KKAmHBXfgM43tI8HvoaJ2EC36XaKJNps6Xtv0krkwGhjTund5DIaG8KLyNSwYXlycDA8Iy4oEQp86jHGmaA3AUmuwW2CUzuWEHRlhLzrZHGONmg1tynm13wxxKKPkZbwiw5Hu8CbZo7nfZklqx8J0m2yrsTspAQuZcT4tn6Uid5lNRff27bFdn3IWYOhGLatSy+b6Gq1/VACX6LotAtNe0G1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7xTL/EFpDweU1C4lyRIvdNrye2m0HJfvpHAsy9Ox+e4=;
+ b=Tnnp9xBMq77TVLgRroswdFlqiJCmNivH6Y7idvlwlDAZbSKqmlZd41ASbK0I3k+geQXWop3gZ1yM2oD1jOxh8Hta5YSInkqJW7j8FHf3zKQEzMuytS+eXazxwBjFJvbBSn6NK+muPJvKg5RnZqYh71xYtB0OUcgvlxRYchvEaG6OiGBV8If6exd8cEGK0bOAHtQ/3HfqFTPUe3enagbSgtTrpkV2knJP6gofh8M8dPqHE7ZCnvINMDaxRwK4YPjz5lEn5SpCZ6eafaJxN7O4Elm1F4DMCkd3bWVJOJ0svgtNbSyjL0AdauFva4PAztVwsPTUrsh4cPlEf8LucQE8vQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7xTL/EFpDweU1C4lyRIvdNrye2m0HJfvpHAsy9Ox+e4=;
+ b=nL/EnZSlWLf5cnS6ViFWzGunTbDxSIpZLW9xNlG3fcFr/0bht2KgrtLHP3GcqOQbtKrLVEmmhQci7XJ40SsblGBh9zk/mFIe6mdaxCzftSF6RXwocMmeKC4YgohfzanXSnxBiN12sPZZ2nojuvTnPBxHewmTxuNoXcgt3Puk5T3lmOtbb3yr7u5b1tk7Fv1bZgU5dUVUhj8qSP3XCFkDvaUTP2ddV03fzDBoQdkw8SeYJoOFQicE+W7xI3mVaNuV+qSd3h2wMx3pNoK0ADqo3lvqJ9mavaHJBIQwufN6SdQLO+SksAIIKVelExv3lBrngukWG08eOiqTDiFswdsOWw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH7PR12MB7426.namprd12.prod.outlook.com (2603:10b6:510:201::18)
+ by PH8PR12MB7111.namprd12.prod.outlook.com (2603:10b6:510:22d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Tue, 19 Dec
+ 2023 08:35:47 +0000
+Received: from PH7PR12MB7426.namprd12.prod.outlook.com
+ ([fe80::7f6d:9dd0:95c4:3194]) by PH7PR12MB7426.namprd12.prod.outlook.com
+ ([fe80::7f6d:9dd0:95c4:3194%4]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
+ 08:35:46 +0000
+Message-ID: <41021c57-33de-44de-a76e-3fb2ef426417@nvidia.com>
+Date: Tue, 19 Dec 2023 14:05:37 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] iommu: Don't reserve 0-length IOVA region
+To: joro@8bytes.org, will@kernel.org, robin.murphy@arm.com, treding@nvidia.com
+Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-tegra@vger.kernel.org
+References: <20231205065656.9544-1-amhetre@nvidia.com>
+Content-Language: en-US
+From: Ashish Mhetre <amhetre@nvidia.com>
+In-Reply-To: <20231205065656.9544-1-amhetre@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BM1P287CA0003.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:40::16) To PH7PR12MB7426.namprd12.prod.outlook.com
+ (2603:10b6:510:201::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:238f:b0:46b:49e5:a22c with SMTP id
- q15-20020a056638238f00b0046b49e5a22cmr267858jat.1.1702974909424; Tue, 19 Dec
- 2023 00:35:09 -0800 (PST)
-Date: Tue, 19 Dec 2023 00:35:09 -0800
-In-Reply-To: <tencent_9AECA6CDE47A4E6E702CA96FEC95B4EA3E0A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000089ce25060cd8bee5@google.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in
- getname_kernel (2)
-From: syzbot <syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-out-of-bounds Read in btrfs_dev_replace_by_ioctl
-
-BTRFS info (device loop0): disabling free space tree
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-==================================================================
-BUG: KASAN: slab-out-of-bounds in btrfs_dev_replace_by_ioctl+0xb6/0x2010 fs/btrfs/dev-replace.c:735
-Read of size 8 at addr ffff8880239268d8 by task syz-executor.0/5475
-
-CPU: 1 PID: 5475 Comm: syz-executor.0 Not tainted 6.7.0-rc5-syzkaller-00200-g3bd7d7488169-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x142/0x170 mm/kasan/report.c:588
- btrfs_dev_replace_by_ioctl+0xb6/0x2010 fs/btrfs/dev-replace.c:735
- btrfs_ioctl_dev_replace+0x2c9/0x390 fs/btrfs/ioctl.c:3299
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7ff58447cba9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff5852580c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ff58459bf80 RCX: 00007ff58447cba9
-RDX: 0000000020000540 RSI: 00000000ca289435 RDI: 0000000000000005
-RBP: 00007ff5844c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007ff58459bf80 R15: 00007fff749803c8
- </TASK>
-
-Allocated by task 5475:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1007 [inline]
- __kmalloc_node_track_caller+0xb1/0x190 mm/slab_common.c:1027
- memdup_user+0x2b/0xc0 mm/util.c:197
- btrfs_ioctl_dev_replace+0xb8/0x390 fs/btrfs/ioctl.c:3286
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-The buggy address belongs to the object at ffff8880239268c0
- which belongs to the cache kmalloc-32 of size 32
-The buggy address is located 7 bytes to the right of
- allocated 17-byte region [ffff8880239268c0, ffff8880239268d1)
-
-The buggy address belongs to the physical page:
-page:ffffea00008e4980 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x23926
-flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff888012c41500 ffffea000099dd40 dead000000000002
-raw: 0000000000000000 0000000080400040 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, tgid 1 (swapper/0), ts 11104550106, free_ts 11081252843
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
- prep_new_page mm/page_alloc.c:1544 [inline]
- get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3312
- __alloc_pages+0x255/0x680 mm/page_alloc.c:4568
- alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
- alloc_slab_page+0x6a/0x170 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc8a/0x1330 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc_node_track_caller+0xa0/0x190 mm/slab_common.c:1027
- kvasprintf+0xdf/0x190 lib/kasprintf.c:25
- __kthread_create_on_node+0x1a9/0x3c0 kernel/kthread.c:444
- kthread_create_on_node+0xde/0x120 kernel/kthread.c:512
- vivid_create_instance drivers/media/test-drivers/vivid/vivid-core.c:1927 [inline]
- vivid_probe+0x5422/0x6fa0 drivers/media/test-drivers/vivid/vivid-core.c:2004
- platform_probe+0x135/0x1b0 drivers/base/platform.c:1404
- really_probe+0x294/0xc30 drivers/base/dd.c:658
- __driver_probe_device+0x1a2/0x3d0 drivers/base/dd.c:800
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1137 [inline]
- free_unref_page_prepare+0x931/0xa60 mm/page_alloc.c:2347
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
- mm_free_pgd kernel/fork.c:803 [inline]
- __mmdrop+0xb8/0x3d0 kernel/fork.c:919
- free_bprm+0x144/0x330 fs/exec.c:1490
- kernel_execve+0x8f7/0xa20 fs/exec.c:2024
- call_usermodehelper_exec_async+0x233/0x370 kernel/umh.c:110
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-Memory state around the buggy address:
- ffff888023926780: 00 00 00 00 fc fc fc fc 00 00 00 00 fc fc fc fc
- ffff888023926800: fb fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
->ffff888023926880: fb fb fb fb fc fc fc fc 00 00 01 fc fc fc fc fc
-                                                    ^
- ffff888023926900: 00 00 03 fc fc fc fc fc 00 00 00 fc fc fc fc fc
- ffff888023926980: fb fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
-==================================================================
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB7426:EE_|PH8PR12MB7111:EE_
+X-MS-Office365-Filtering-Correlation-Id: e8c1a75a-da6e-46b9-a917-08dc006d7f07
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	jGKRVZh02m+klSk7atNu+e9VqvsGDDh3bbRCi1P6sWVsEeXB3HZCjldUCP4/2N+TVtzc2w213JV3v7TJVWRMTwMyw466husIZP98m2Mn5JJ3QMp0VjO7EE3/F7HGax4ZrFIm7PkhUFGKwJm7RUeL3709WKyDo99YDe1y1KEDRERCmZe2NQJ0bshV2gvFDIvlT0DRbyiJ9X+PD4brRHlEopLDVjaw1DRA7SoQe7cL6cqsaF5xENiyozxRK/MA7sLXaaNrFSEVkp6E7s7L5GduFdMPaZ4B2Q2DVKI2mmJvAqRiwOtBXur02d81CHjipNQHxcZRJ9wJSDSbuAnVO5CwAQ3wzyT+In9zx5Zjt8Ymbum8QCMXxNI2WiePknOcZ83sbtqiDQZUPs1/Jw1oLi7TmKeCQtOWgbCF6A/+tKXyMrZnEj/VQk6Kjw5/Ri0PeM23srVvKQDyZFfK2Ujf9NZgA6Dp8/wNyGL+/f3DEi46O+9BMmRVmbhkvBpcDQ9SZr98Ev6l3U88LEN399X7cVcX87sYgXqKA6L2XHXQ+pNzhme2g6+rUejc++cfjSIIiJ3MXlOBsyQ4ALnbrX1bA8i/gG+ZgsMnNpvmkaqEQ/rTesYFxCLw5RoLSkkhLfEKyEftl1gnEgsOBb0xngckgGRZLHJwBaFfiXHhSoOU8RD6ZNk9B2wZ07NbwuvyCkvlSLKB
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB7426.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(346002)(39860400002)(366004)(230273577357003)(230173577357003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(66899024)(36756003)(66556008)(316002)(6636002)(83380400001)(66476007)(66946007)(2906002)(8676002)(4326008)(8936002)(5660300002)(6666004)(53546011)(6512007)(26005)(31686004)(478600001)(6486002)(86362001)(38100700002)(2616005)(31696002)(41300700001)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?KzhrS3JhZDdzR21GRWxGYnVJY1o0Si8zc3JMd2JCWWdQYk4zTTBMMW5aL0tl?=
+ =?utf-8?B?NHZHL2JqN3BKdzN6d3AwZXJ2blhlNzJvOXlDSWRJQkFOTFFSRVF6WHRrMTg1?=
+ =?utf-8?B?YlpVL2ZaNGp5MmtmSjM1V3JIcnh5TGdWWDZQdUVqeFNqa2dkdUNFcTM0K2JS?=
+ =?utf-8?B?YTI4UHR4WFVlSDNHZmRhTE5iOXBJTFc4Vk1WK1F3Y3IzcmZ4SVVGYlgyS3g3?=
+ =?utf-8?B?NnU5OG5kRHNJL2p2UndIWUtVS24vQTR2WTkrT1JNazRUZWFCZEFFWlVSNVA2?=
+ =?utf-8?B?L01hMTdwdWIwVm9heXJwdUVJV0NLOENld3NiOE5nU3k3T0xTVTUrTEN6Q2to?=
+ =?utf-8?B?TnQrZzE0RFVrWmFtV3JVM3AzWFlpQi9NUWhFbXc5MHNicUZmdFdLbElqR2xv?=
+ =?utf-8?B?emM4YWdwaFcydlIxenVlbVdTR0x3c0FDMjZheHdJeGwxenhWdUlFczZNZ1lM?=
+ =?utf-8?B?Q3ozeWRCbHl2WHNSbDdmbFFJVTFjZTZ6VGFzZUhhejhSWDVETFk5ZXRWUFV6?=
+ =?utf-8?B?d1BRS0FoQVdYa2xQYkNEcnhRSmdTMVV5amQ4UzZhMkpub0dHa2RvSnJnL0E2?=
+ =?utf-8?B?dWR5V213NVh5Vi8zdU5ZVHVIdm14NzhLWnE5SUx3OWhwRW5PdS93WCtON2dH?=
+ =?utf-8?B?czJuU29mQ3RRVjhlT0dZMmVzblpCUzNDSUlWS01BVUFRQUp4VnlpRWFHVnZB?=
+ =?utf-8?B?dTI1UUJRUTcrTHlPRitsUk8zSWhIYUdQWGE5Zm9lT3RkWEsvcXJDanJraE1w?=
+ =?utf-8?B?REpOdmRrRlRMaWVDRkpQblBIZDVpeklZaGFXenduZ0ZoNm1LWS9tRXZqOUFE?=
+ =?utf-8?B?em0xYzB4enZPbkc1VUZaK3pCWUprYWVVOENsV0k2NWNpMDFCRGNuTG5HSUZB?=
+ =?utf-8?B?dmxXeEpqc21GWUJ5T0tzOGZaUCt3VmVCa21NOEQzcVpIaWJzRTBibTJPQndT?=
+ =?utf-8?B?MnVoZm4yaGRKN0RiSWphajVGcHd5dzZiT25GTC8xRVloM00xVlhXZnZzMzdD?=
+ =?utf-8?B?amZES09KYzhmdFNvS204VGIxeldmRElmY3JnK0NvVFVBR3ZNOXVGQVkveXRx?=
+ =?utf-8?B?Vll6VXdRcTgwcVhYbEhTOTRjQXl5QTZzMmpGNk5PM1lPSHZLRjR1QWlpOUla?=
+ =?utf-8?B?UEhPcEIzMW0vNEcwN1NzZUlnTTZPM0k2VHFXWG5PbTFES1VmQ3c1T0lxVnhU?=
+ =?utf-8?B?d2FBak94ODJRTFRPTmcrNGRBclVwc1VYNEhXVFNHTzk4d0VtN0M0OVc4YjRT?=
+ =?utf-8?B?RWpEdy8vRk1jdndzeUhJSCszeVpWemtYUG5pTnFQbzYrcGQ0dEhGM3lDOVB0?=
+ =?utf-8?B?VW1iSHFFS0w3R255clF2Z1VwYnU0eDhyMDlOa0dQUVpJQW5JOGxsRVdaL2pG?=
+ =?utf-8?B?aWFtU3RCUjBtSHVHTUJKaUFlTTJDbUhJZk1UMnV3OEx2clN3SHFZOGlLWmox?=
+ =?utf-8?B?dkNGVkVBM05NblAxT0tHZ1BJeVUvblBmcXYxdk43R290Zkd6SnZwbHRBSHZi?=
+ =?utf-8?B?RXlSOGFNMGZ4ZE9WRnpicGE0QUg5SERnN0FzeVhSblMwcW1KYnRGM0VZRFVW?=
+ =?utf-8?B?eEdOOS8zWG5ycXUwUXduNnpzcW5WWHR5VlRTa205amdvWVN5QmI1aExQZmpr?=
+ =?utf-8?B?RHRzSzFxK0pGY1drcEtiVzJyODEzS1pSclNzR0RkS2c3WW9odlFPNDJLb1Bx?=
+ =?utf-8?B?MWJaQzl3TFowSnA2QUVESXY4dmtjaXZseEI3ZlJabC9EZGRtanNPZ0VITUU3?=
+ =?utf-8?B?U3doZVd1SFFtK2NJVUFhV214RVZsUnpUYkNXd1JSWWVHWWhVVGpTOEJRYmN3?=
+ =?utf-8?B?ODhpNHNGZWFFMFBxUitjVEtJUkFsWU9yU2piMmRoTUF4VTlhRTRlMU9ST0Fr?=
+ =?utf-8?B?Z1RxTy93Z2YrQWI0V2RxMnRORjVpQk5TR1N4U2RhUTd4UWpjd1cvSC80cWw2?=
+ =?utf-8?B?R1dVY1dvNENWQWtpWFEreWN1MGx1akxSV2NNZUtnWkJWSkIxK2NLeXR0aGtW?=
+ =?utf-8?B?VXliNVlocU1vVWxxaGpKWXNET1U4d2JNRXhkSTM3TW9GNkRiejByT1crV2x3?=
+ =?utf-8?B?eDNwcnppRXdEUW9aYUorL25SYTBNSXEwOVRDZWlhVzBkSWpNckRQMFNTWHZt?=
+ =?utf-8?Q?qGOh1yW17E3X4X5RQLUrvgRz8?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8c1a75a-da6e-46b9-a917-08dc006d7f07
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB7426.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 08:35:46.6054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 64KP/dJwyBnOqx0HqZeLbKzYlP+fC1ccLesVc6WPrawy089jgfe6qm42t4XfLhhM4uFhimr1B4+cvCLfE8ek7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7111
 
 
-Tested on:
+On 12/5/2023 12:26 PM, Ashish Mhetre wrote:
+> When the bootloader/firmware doesn't setup the framebuffers, their
+> address and size are 0 in "iommu-addresses" property. If IOVA region is
+> reserved with 0 length, then it ends up corrupting the IOVA rbtree with
+> an entry which has pfn_hi < pfn_lo.
+> If we intend to use display driver in kernel without framebuffer then
+> it's causing the display IOMMU mappings to fail as entire valid IOVA
+> space is reserved when address and length are passed as 0.
+> An ideal solution would be firmware removing the "iommu-addresses"
+> property and corresponding "memory-region" if display is not present.
+> But the kernel should be able to handle this by checking for size of
+> IOVA region and skipping the IOVA reservation if size is 0. Also, add
+> a warning if firmware is requesting 0-length IOVA region reservation.
+>
+> Fixes: a5bf3cfce8cb ("iommu: Implement of_iommu_get_resv_regions()")
+> Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
+> ---
+>   drivers/iommu/of_iommu.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index 47302b637cc0..42cffb0ee5e2 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -264,6 +264,10 @@ void of_iommu_get_resv_regions(struct device *dev, struct list_head *list)
+>   					prot |= IOMMU_CACHE;
+>   
+>   				maps = of_translate_dma_region(np, maps, &iova, &length);
+> +				if (length == 0) {
+> +					dev_warn(dev, "Cannot reserve IOVA region of 0 size\n");
+> +					continue;
+> +				}
+>   				type = iommu_resv_region_get_type(dev, &phys, iova, length);
+>   
+>   				region = iommu_alloc_resv_region(iova, length, prot, type,
+Hi all,
 
-commit:         3bd7d748 Merge tag 'io_uring-6.7-2023-12-15' of git://..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a3149ee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
-dashboard link: https://syzkaller.appspot.com/bug?extid=33f23b49ac24f986c9e8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12152276e80000
+Can you please review this patch and provide feedback?
 
+Thank you,
+Ashish Mhetre
 
