@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-5925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A6A2819199
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9C7D81919D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FDA91C2460E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:35:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5FB1C22025
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4553A29F;
-	Tue, 19 Dec 2023 20:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A593A1AF;
+	Tue, 19 Dec 2023 20:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dLgAYduu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VPeJrMK5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD17C3A1AF
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0892D39AE9
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703018082;
+	s=mimecast20190719; t=1703018090;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s2gh7avZ+webTJh4GlB/OmJjsr2TX31NuZTJbonK+AA=;
-	b=dLgAYduu8IzquaNG4shid8jzvjqJ4hzBuKcHhDH1hfxe4+ZTjk/hO1ZeGWhKyr5fqhCzwj
-	r0sLdHDu3F1dGcuGQK+6JQd8uMPBLywNJ1dWSwhjs+YzqeENj9KZc7qad+ET/mO8g6jSEC
-	ig49hTHxQ7KBZQ0K3zNfHMc3LadK2ro=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=NiVYl512QhGYSepDsrAuE1nuD6kWmIVdAFOPcanDwvc=;
+	b=VPeJrMK5cZpfvIkreg8KGKK1BrgTyalOQRHLpy9yFCsY+f8zfOZ6hWy4kzkIO5Qctkjbv8
+	iaEFsCbOn33qHCva5nV6fblApO8pA55cFRUle/BMBDl00Z5ypcs74XdRAx8RvxUinKu/fi
+	roa/MXrlZLCvGjYaC8OLy+Z7QB3fcro=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-562-dqkXM-91MM2flvkJBqpHuQ-1; Tue, 19 Dec 2023 15:34:41 -0500
-X-MC-Unique: dqkXM-91MM2flvkJBqpHuQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33667fef12aso1353357f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:34:41 -0800 (PST)
+ us-mta-627-Su_4lqvtPNq5vtrcgyJnYg-1; Tue, 19 Dec 2023 15:34:46 -0500
+X-MC-Unique: Su_4lqvtPNq5vtrcgyJnYg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40d2f6f2787so4263135e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:34:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703018079; x=1703622879;
+        d=1e100.net; s=20230601; t=1703018084; x=1703622884;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s2gh7avZ+webTJh4GlB/OmJjsr2TX31NuZTJbonK+AA=;
-        b=hZFg9JpLehi1G3tX/9Hn2mIDNpc387znkUO4J0J1IFI0KNkhRPHxWg65v2I75MglcE
-         ewB+W2jqSX283JNTDPcWf0HSxLUKXAuvDyFPLF4MknnWJHmcUSI3fpoxl1LDUlbNaZ8h
-         CoYJm3czMTv+Z+7URPtbBB3uNJzcOgebpYt2KfuJArEKnqY97qDbpWsmtX0s0mpqY4xu
-         iXq1TJXajg62dzBN0nyKWqdgyCGSfP9T0VmGV4NO+b5cUu2uPDM94LZP3E3TGVdC34be
-         KJVM1JeKcONt2bsq/eJQrxbIJvjugoR5aeMYIpY/N47og1nEBjEasRysccSfMthFtETy
-         72eQ==
-X-Gm-Message-State: AOJu0YzsQ3bqDA1jW2hnKI7yMA21j0u4vmh9e1HLtU5Vek1G6nw5BwpT
-	f/A99JDoMtq5xvjg2jWqbdx/VvsmTWlHW71kqBQS9bphxl2TMNaf9/UqWFzfmMnNptNHhPZm8Of
-	sj8ptmBbGdVP8NKzcEpiKWhXD2rJbp1QQlbHOU/wcCV2QuNlzyzaWEQpDm2y/wDTtoWlyswHCa9
-	vEyvqnB7U=
-X-Received: by 2002:adf:fbc5:0:b0:32f:7c6c:aa14 with SMTP id d5-20020adffbc5000000b0032f7c6caa14mr9345903wrs.37.1703018079157;
-        Tue, 19 Dec 2023 12:34:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHfz12dyj5qQB1RZu3obqwFvurn6HeBaxHioQSLuCusvAEiMmUqPMMF1GzfYjGC0YmrWBecYw==
-X-Received: by 2002:adf:fbc5:0:b0:32f:7c6c:aa14 with SMTP id d5-20020adffbc5000000b0032f7c6caa14mr9345884wrs.37.1703018078853;
-        Tue, 19 Dec 2023 12:34:38 -0800 (PST)
+        bh=NiVYl512QhGYSepDsrAuE1nuD6kWmIVdAFOPcanDwvc=;
+        b=b6uaIElkYgq8yGMo3gtGzSbFOKfDmoh3R17KG/glT01U5J2bUhwEU3x0cQMaGcccVZ
+         LIBQUEbeeTvfnY0seIPhWAQBLO56KRPN8CVUjFLjN4GvTmLSTDK2k3R/XuM5NgZmSxMh
+         4E93bSsLlMWqLuRBA0HmSNz5XN3bYTG19RYuNH2Ul6MRpqPynb25TVstzbzUCZagbCRh
+         5/M7jz0sJm7Wf9jNQzw/x4/cC1PP3rbIrpzQe7ab2ywNXOJTQy0HkXlF/9rX7ndr76Xc
+         3uLIkbbAuKoDOOlMk4Q+4+LkuEqXBYcBaFz+4M7mTpszOTqftNIjWf0L1H3pakEgz2sM
+         mB9g==
+X-Gm-Message-State: AOJu0YzjOVC9b6yY+xYnQlfxgcMQOvQioZHhhbQsk0nxBD5D1R/2U3uS
+	CiHZE+Ql5WjyrifTquWvcXBehJmXA+IuVFrCT1egjKeTvFOpEY3r41NcFrX+SDg7ivZXrOljnbB
+	XouT63umLC3e4omP9iz8ajZ62Qr7kxwMP1nwd7U2v7HIKwnysmg1renJBqAwLiD6CMdWXwHCqH0
+	SgqM5Jz1Y=
+X-Received: by 2002:a05:600c:44c7:b0:40c:2bb8:70c9 with SMTP id f7-20020a05600c44c700b0040c2bb870c9mr9608774wmo.150.1703018084422;
+        Tue, 19 Dec 2023 12:34:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG6aQ1XQXOizk6reDjlxoJMiPmuIWJ0QcHegbS1RgeL9ztmoE3yAj4OKXbYEsvTfcyds5jWDQ==
+X-Received: by 2002:a05:600c:44c7:b0:40c:2bb8:70c9 with SMTP id f7-20020a05600c44c700b0040c2bb870c9mr9608753wmo.150.1703018084172;
+        Tue, 19 Dec 2023 12:34:44 -0800 (PST)
 Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b0040c11fbe581sm4472994wmq.27.2023.12.19.12.34.36
+        by smtp.gmail.com with ESMTPSA id c5-20020a05600c0ac500b0040a3f9862e3sm43508wmr.1.2023.12.19.12.34.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 12:34:38 -0800 (PST)
+        Tue, 19 Dec 2023 12:34:43 -0800 (PST)
 From: Javier Martinez Canillas <javierm@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -83,9 +83,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	devicetree@vger.kernel.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 1/4] dt-bindings: display: ssd1307fb: Add vendor prefix to width and height
-Date: Tue, 19 Dec 2023 21:34:06 +0100
-Message-ID: <20231219203416.2299702-2-javierm@redhat.com>
+Subject: [PATCH v3 2/4] dt-bindings: display: ssd132x: Add vendor prefix to width and height
+Date: Tue, 19 Dec 2023 21:34:07 +0100
+Message-ID: <20231219203416.2299702-3-javierm@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231219203416.2299702-1-javierm@redhat.com>
 References: <20231219203416.2299702-1-javierm@redhat.com>
@@ -97,13 +97,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The commit 591825fba8a2 ("dt-bindings: display: ssd1307fb: Remove default
-width and height values") used the wrong properties for width and height,
-instead of the correct "solomon,width" and "solomon,height" properties.
+Commit 2d23e7d6bacb ("dt-bindings: display: Add SSD132x OLED controllers")
+used the wrong properties for width and height, instead of the correct
+"solomon,width" and "solomon,height" properties.
 
 Fix this by adding the vendor prefix to the width and height properties.
 
-Fixes: 591825fba8a2 ("dt-bindings: display: ssd1307fb: Remove default width and height values")
+Fixes: 2d23e7d6bacb ("dt-bindings: display: Add SSD132x OLED controllers")
 Reported-by: Conor Dooley <conor@kernel.org>
 Closes: https://lore.kernel.org/dri-devel/20231218-example-envision-b41ca8efa251@spud/
 Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
@@ -111,39 +111,27 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
 (no changes since v1)
 
- .../bindings/display/solomon,ssd1307fb.yaml   | 20 +++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ .../devicetree/bindings/display/solomon,ssd132x.yaml | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/solomon,ssd1307fb.yaml b/Documentation/devicetree/bindings/display/solomon,ssd1307fb.yaml
-index 3afbb52d1b7f..153ff86fb405 100644
---- a/Documentation/devicetree/bindings/display/solomon,ssd1307fb.yaml
-+++ b/Documentation/devicetree/bindings/display/solomon,ssd1307fb.yaml
-@@ -131,9 +131,9 @@ allOf:
-             const: sinowealth,sh1106
+diff --git a/Documentation/devicetree/bindings/display/solomon,ssd132x.yaml b/Documentation/devicetree/bindings/display/solomon,ssd132x.yaml
+index 37975ee61c5a..dd7939989cf4 100644
+--- a/Documentation/devicetree/bindings/display/solomon,ssd132x.yaml
++++ b/Documentation/devicetree/bindings/display/solomon,ssd132x.yaml
+@@ -30,9 +30,9 @@ allOf:
+             const: solomon,ssd1322
      then:
        properties:
 -        width:
 +        solomon,width:
-           default: 132
+           default: 480
 -        height:
 +        solomon,height:
-           default: 64
-         solomon,dclk-div:
-           default: 1
-@@ -149,9 +149,9 @@ allOf:
-               - solomon,ssd1305
-     then:
-       properties:
--        width:
-+        solomon,width:
-           default: 132
--        height:
-+        solomon,height:
-           default: 64
-         solomon,dclk-div:
-           default: 1
-@@ -167,9 +167,9 @@ allOf:
-               - solomon,ssd1306
+           default: 128
+ 
+   - if:
+@@ -42,9 +42,9 @@ allOf:
+             const: solomon,ssd1325
      then:
        properties:
 -        width:
@@ -151,11 +139,11 @@ index 3afbb52d1b7f..153ff86fb405 100644
            default: 128
 -        height:
 +        solomon,height:
-           default: 64
-         solomon,dclk-div:
-           default: 1
-@@ -185,9 +185,9 @@ allOf:
-               - solomon,ssd1307
+           default: 80
+ 
+   - if:
+@@ -54,9 +54,9 @@ allOf:
+             const: solomon,ssd1327
      then:
        properties:
 -        width:
@@ -163,21 +151,9 @@ index 3afbb52d1b7f..153ff86fb405 100644
            default: 128
 -        height:
 +        solomon,height:
-           default: 39
-         solomon,dclk-div:
-           default: 2
-@@ -205,9 +205,9 @@ allOf:
-               - solomon,ssd1309
-     then:
-       properties:
--        width:
-+        solomon,width:
            default: 128
--        height:
-+        solomon,height:
-           default: 64
-         solomon,dclk-div:
-           default: 1
+ 
+ unevaluatedProperties: false
 -- 
 2.43.0
 
