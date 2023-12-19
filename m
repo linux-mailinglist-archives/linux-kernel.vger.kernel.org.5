@@ -1,143 +1,115 @@
-Return-Path: <linux-kernel+bounces-4959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED68818463
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD7F818440
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08C771C23CCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:26:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED60F1C23AC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D7314F77;
-	Tue, 19 Dec 2023 09:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B70D13AC4;
+	Tue, 19 Dec 2023 09:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OeYI+tOF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [5.144.164.163])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A9914F6C
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (82-72-63-87.cable.dynamic.v4.ziggo.nl [82.72.63.87])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 7089820058;
-	Tue, 19 Dec 2023 10:17:18 +0100 (CET)
-Date: Tue, 19 Dec 2023 10:17:16 +0100
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Lee Jones <lee@kernel.org>, phone-devel@vger.kernel.org, 
-	Pavel Machek <pavel@ucw.cz>, Bjorn Andersson <bjorn.andersson@linaro.org>, 
-	~postmarketos/upstreaming@lists.sr.ht, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, Konrad Dybcio <konrad.dybcio@somainline.org>, 
-	Martin Botka <martin.botka@somainline.org>, Jami Kettunen <jami.kettunen@somainline.org>, 
-	linux-arm-msm@vger.kernel.org, linux-leds@vger.kernel.org, Rob Herring <robh@kernel.org>, 
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Stephen Boyd <swboyd@chromium.org>, Satya Priya <quic_c_skakit@quicinc.com>
-Subject: Re: [PATCH v4 2/2] leds: qcom-lpg: Add PM660L configuration and
- compatible
-Message-ID: <3lsapoxlqijes5m4nqcbhdfhhs4chq3mcq3jaty7v2zihsqnwu@nn67a4h6425k>
-References: <20220719211848.1653920-1-marijn.suijten@somainline.org>
- <20220719211848.1653920-2-marijn.suijten@somainline.org>
- <ZYFS04cznE5bhOeV@hovoldconsulting.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4197D134A7
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702977557;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZHyjrBTzzv8hgHUAyTnHinUm2FdompoSEVgOa1MaGBo=;
+	b=OeYI+tOFD7SI8oxWYEgDUN/amSA4F1nUQG0If01+j7Ef2GXk/th/DogpS2iAxn5GcrZQnU
+	roL9MxF7u7i3bnacv9w9OjLNiWbrJXelKxnKPlcsKD2uiwr+9ln4BcQ2p4Ns+CZUMpPUAw
+	TgoUUuidmS9e/drkwqlWiVIztdx6/rw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-66-HhQqZ5ucNfyrPdjeY6iuxA-1; Tue, 19 Dec 2023 04:19:15 -0500
+X-MC-Unique: HhQqZ5ucNfyrPdjeY6iuxA-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-552ab0a61d0so501379a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:19:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702977554; x=1703582354;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHyjrBTzzv8hgHUAyTnHinUm2FdompoSEVgOa1MaGBo=;
+        b=se296R/lTy39O4PU3S4e8KDZSDYmOPCoHEbZonKRHlqJnjK3cLDq/lHkAxbhC0zB4W
+         gPAruNM3RXpkIPj8D357Fjfr4o/4gZihbXavONpRG3SYAAtVtOY+JNAzyiXcOLQmOuYJ
+         CcAHbvUvXmY6bqmOtrldeNrWWSMcmHsh/5NuEhg6keY9JvNGJ7+rh4zNqVSQmQvWfBXH
+         qVCGQ0QLd+KypJnL73H0FERXzoRgEVSzB4gWm9JX51jp4LwbTAmlzVrj2856Z7O1A3bi
+         ttoqBwNZ7eiK4qxwQee3KwzI1eiG3Jc0GS/4cXUnyzFNodeF22ywN0BFvEBojKIw632X
+         DdIA==
+X-Gm-Message-State: AOJu0Yx0/4Rvn9co4QuuQ1MGkBH02J246Vqs/6f9KS06oTFYmQ2qqyja
+	AbJzOPLJMl3H3T+zlt3qXvjKWkCW2zpA1tO0Lpg+ZMKjdIl0nz+LDoogRR7qya0ZpO49GI3KO7Z
+	PChZxK4iD0Av6YDpy+/7qpl/P
+X-Received: by 2002:a50:9fa6:0:b0:553:1f7:7387 with SMTP id c35-20020a509fa6000000b0055301f77387mr5639704edf.1.1702977554698;
+        Tue, 19 Dec 2023 01:19:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE7d4mpHOiz14mHEHcX8qOxC6qX1Gv0owpqbGC1A5Zys6PvNEyn2xG+HLYZwZ+mq0Pu03opJA==
+X-Received: by 2002:a50:9fa6:0:b0:553:1f7:7387 with SMTP id c35-20020a509fa6000000b0055301f77387mr5639682edf.1.1702977554343;
+        Tue, 19 Dec 2023 01:19:14 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-246-245.dyn.eolo.it. [146.241.246.245])
+        by smtp.gmail.com with ESMTPSA id i41-20020a0564020f2900b00553854de928sm721798eda.36.2023.12.19.01.19.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 01:19:14 -0800 (PST)
+Message-ID: <f91f45a72f789a1f31646a5d7ed579194807b102.camel@redhat.com>
+Subject: Re: [PATCH] sfc: fix a double-free bug in efx_probe_filters
+From: Paolo Abeni <pabeni@redhat.com>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Edward Cree <ecree.xilinx@gmail.com>, Martin Habets
+ <habetsm.xilinx@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ netdev@vger.kernel.org,  linux-net-drivers@amd.com,
+ linux-kernel@vger.kernel.org
+Date: Tue, 19 Dec 2023 10:19:12 +0100
+In-Reply-To: <20231214152247.3482788-1-alexious@zju.edu.cn>
+References: <20231214152247.3482788-1-alexious@zju.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYFS04cznE5bhOeV@hovoldconsulting.com>
 
-Hi Johan and Lee,
+Hi,
 
-On 2023-12-19 09:22:43, Johan Hovold wrote:
-> Hi Marijn and Lee,
-> 
-> On Tue, Jul 19, 2022 at 11:18:48PM +0200, Marijn Suijten wrote:
-> > Inherit PM660L PMIC LPG/triled block configuration from downstream
-> > drivers and DT sources, consisting of a triled block with automatic
-> > trickle charge control and source selection, three colored led channels
-> > belonging to the synchronized triled block and one loose PWM channel.
-> > 
-> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v3:
-> > - Rebased on -next;
-> > - (series) dropped DTS patches that have been applied through the
-> >   Qualcomm DTS tree, leaving only leds changes (driver and
-> >   accompanying dt-bindings).
-> 
-> > diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-> > index 02f51cc61837..102ab0c33887 100644
-> > --- a/drivers/leds/rgb/leds-qcom-lpg.c
-> > +++ b/drivers/leds/rgb/leds-qcom-lpg.c
-> > @@ -1304,6 +1304,23 @@ static int lpg_remove(struct platform_device *pdev)
-> >  	return 0;
-> >  }
-> >  
-> > +static const struct lpg_data pm660l_lpg_data = {
-> > +	.lut_base = 0xb000,
-> > +	.lut_size = 49,
-> > +
-> > +	.triled_base = 0xd000,
-> > +	.triled_has_atc_ctl = true,
-> > +	.triled_has_src_sel = true,
-> > +
-> > +	.num_channels = 4,
-> > +	.channels = (const struct lpg_channel_data[]) {
-> > +		{ .base = 0xb100, .triled_mask = BIT(5) },
-> > +		{ .base = 0xb200, .triled_mask = BIT(6) },
-> > +		{ .base = 0xb300, .triled_mask = BIT(7) },
-> > +		{ .base = 0xb400 },
-> > +	},
-> > +};
-> > +
-> >  static const struct lpg_data pm8916_pwm_data = {
-> >  	.num_channels = 1,
-> >  	.channels = (const struct lpg_channel_data[]) {
-> > @@ -1424,6 +1441,7 @@ static const struct lpg_data pm8350c_pwm_data = {
-> >  };
-> >  
-> >  static const struct of_device_id lpg_of_table[] = {
-> > +	{ .compatible = "qcom,pm660l-lpg", .data = &pm660l_lpg_data },
-> >  	{ .compatible = "qcom,pm8150b-lpg", .data = &pm8150b_lpg_data },
-> >  	{ .compatible = "qcom,pm8150l-lpg", .data = &pm8150l_lpg_data },
-> >  	{ .compatible = "qcom,pm8350c-pwm", .data = &pm8350c_pwm_data },
-> 
-> When reviewing the Qualcomm SPMI PMIC bindings I noticed that this patch
-> was never picked up by the LEDs maintainer, while the binding and dtsi
-> changes made it in:
-> 
-> 	https://lore.kernel.org/r/20220719211848.1653920-2-marijn.suijten@somainline.org
-> 
-> Looks like it may still apply cleanly, but otherwise, would you mind
-> rebasing and resending so that Lee can pick this one up?
-> 
-> Johan
+On Thu, 2023-12-14 at 23:22 +0800, Zhipeng Lu wrote:
+> In efx_probe_filters, the channel->rps_flow_id is freed in a
+> efx_for_each_channel marco  when success equals to 0.
+> However, after the following call chain:
+>=20
+> efx_probe_filters
+>   |-> ef100_net_open
+>         |-> ef100_net_stop
+>               |-> efx_remove_filters
+>=20
+> The channel->rps_flow_id is freed again in the efx_for_each_channel of
+> efx_remove_filters, triggering a double-free bug.
+>=20
+> Fixes: a9dc3d5612ce ("sfc_ef100: RX filter table management and related g=
+ubbins")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 
-Coincidentally I haven't touched this device/platform for months... until last
-weekend where I noticed the same.  It does not apply cleanly and I had to solve
-some conflicts:
-
-https://github.com/SoMainline/linux/commit/8ec5d02eaffcec24fcab6a989ab117a5b72b96b6
-
-I'll gladly resend this!
-
-Note that I have one more unmerged leds patch around, that hasn't been looked
-at either.  Would it help to send this once again, perhaps with more reviewers/
-testing (Johan, would you mind taking a look too)?
-
-https://lore.kernel.org/linux-leds/20220719213034.1664056-1-marijn.suijten@somainline.org/
+The patch LGTM, but could you please update the commit message as per
+Simon's suggestions make it more consistent? You can retain Simon's RB
+tag.
 
 Thanks!
 
-- Marijn
+Paolo
+
 
