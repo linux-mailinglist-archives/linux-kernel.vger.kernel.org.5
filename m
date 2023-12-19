@@ -1,305 +1,205 @@
-Return-Path: <linux-kernel+bounces-4917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD17B8183D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:48:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B128183D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38A5D28816E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:48:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A4431C2399C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E68D18AEA;
-	Tue, 19 Dec 2023 08:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A95919444;
+	Tue, 19 Dec 2023 08:46:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1969B182A4;
-	Tue, 19 Dec 2023 08:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VyqJ4yo_1702975561;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyqJ4yo_1702975561)
-          by smtp.aliyun-inc.com;
-          Tue, 19 Dec 2023 16:46:03 +0800
-From: Wen Gu <guwen@linux.alibaba.com>
-To: wintera@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kgraul@linux.ibm.com,
-	jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com,
-	svens@linux.ibm.com,
-	alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	raspl@linux.ibm.com,
-	schnelle@linux.ibm.com,
-	guangguan.wang@linux.alibaba.com,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v7 10/10] net/smc: manage system EID in SMC stack instead of ISM driver
-Date: Tue, 19 Dec 2023 16:45:36 +0800
-Message-Id: <20231219084536.8158-11-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20231219084536.8158-1-guwen@linux.alibaba.com>
-References: <20231219084536.8158-1-guwen@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E7915AED
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7ce620dd9so348349939f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 00:46:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702975569; x=1703580369;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HP/HAeRSHRCyN+rzUH4bE5GcmZLApQK+3qc/EGCkhWc=;
+        b=DBgD9k9fdyO0TnOqiBC2+Q344vhVTq691ncv3Zaa9q/ptKhlTajDMK11rma8jJxrjs
+         J5RDuVlOODKB4xd8tru9w4scHvYT2+AD1JNc4gRR4sIGDvxO7iaLOWMk9S4XbbHH4E0X
+         d/FmRGEeqFaQtUi8Ri8tzva9G1/vASFQNdnT88iJhLP1PKT95CsA0QZJ3eQUFA8d2C0J
+         BI8vuyyonPfgxhBuJEyg9W8KcmymmfdBOcSEI4G7uKDozMcn9GwNxHuPpvTymlVnKR8I
+         kGnzgJHaCiyWdT8NF6n0KKQzxZd+btdgphbDjKB+aykn0pNqLh+xkE3ITTATWCSaiLFA
+         rIOg==
+X-Gm-Message-State: AOJu0YwCIh4TjLX0Fv0ChoVims5ZLCl/xC+CxJV+Cs2pFsk4DUcVAkaj
+	vewu97OlgZnHW0ekDx2rk3wQL++xcVnCE8S7K4GGICQ62Pjs
+X-Google-Smtp-Source: AGHT+IHnEGM9QbF3dD69r5kaZy6QhE272B/RXS9JRyxqo9vpq1KQ3dBLrZNdB/kZsoXv0BLcdq4szO8j0GUuTYvD8q2GBcj3NwJJ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c56e:0:b0:35f:a839:9a6a with SMTP id
+ b14-20020a92c56e000000b0035fa8399a6amr716566ilj.6.1702975569001; Tue, 19 Dec
+ 2023 00:46:09 -0800 (PST)
+Date: Tue, 19 Dec 2023 00:46:08 -0800
+In-Reply-To: <tencent_23960436F84A82754D76C767CE3C75373809@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000da03bd060cd8e5ca@google.com>
+Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in
+ getname_kernel (2)
+From: syzbot <syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The System EID (SEID) is an internal EID that is used by the SMCv2
-software stack that has a predefined and constant value representing
-the s390 physical machine that the OS is executing on. So it should
-be managed by SMC stack instead of ISM driver and be consistent for
-all ISMv2 device (including virtual ISM devices) on s390 architecture.
+Hello,
 
-Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-Reviewed-and-tested-by: Wenjia Zhang <wenjia@linux.ibm.com>
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
----
- drivers/s390/net/ism.h     |  7 -------
- drivers/s390/net/ism_drv.c | 38 ++++++--------------------------------
- include/linux/ism.h        |  1 -
- include/net/smc.h          |  1 -
- net/smc/smc_ism.c          | 33 ++++++++++++++++++++++++---------
- net/smc/smc_ism.h          |  7 +++++++
- 6 files changed, 37 insertions(+), 50 deletions(-)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-out-of-bounds Read in btrfs_dev_replace_by_ioctl
 
-diff --git a/drivers/s390/net/ism.h b/drivers/s390/net/ism.h
-index 70c5bbda0fea..047fa6101555 100644
---- a/drivers/s390/net/ism.h
-+++ b/drivers/s390/net/ism.h
-@@ -16,7 +16,6 @@
-  */
- #define ISM_DMB_WORD_OFFSET	1
- #define ISM_DMB_BIT_OFFSET	(ISM_DMB_WORD_OFFSET * 32)
--#define ISM_IDENT_MASK		0x00FFFF
- 
- #define ISM_REG_SBA	0x1
- #define ISM_REG_IEQ	0x2
-@@ -192,12 +191,6 @@ struct ism_sba {
- #define ISM_CREATE_REQ(dmb, idx, sf, offset)		\
- 	((dmb) | (idx) << 24 | (sf) << 23 | (offset))
- 
--struct ism_systemeid {
--	u8	seid_string[24];
--	u8	serial_number[4];
--	u8	type[4];
--};
--
- static inline void __ism_read_cmd(struct ism_dev *ism, void *data,
- 				  unsigned long offset, unsigned long len)
- {
-diff --git a/drivers/s390/net/ism_drv.c b/drivers/s390/net/ism_drv.c
-index 34dd06324e38..2c8e964425dc 100644
---- a/drivers/s390/net/ism_drv.c
-+++ b/drivers/s390/net/ism_drv.c
-@@ -36,6 +36,7 @@ static struct ism_client *clients[MAX_CLIENTS];	/* use an array rather than */
- 						/* a list for fast mapping  */
- static u8 max_client;
- static DEFINE_MUTEX(clients_lock);
-+static bool ism_v2_capable;
- struct ism_dev_list {
- 	struct list_head list;
- 	struct mutex mutex; /* protects ism device list */
-@@ -443,32 +444,6 @@ int ism_move(struct ism_dev *ism, u64 dmb_tok, unsigned int idx, bool sf,
- }
- EXPORT_SYMBOL_GPL(ism_move);
- 
--static struct ism_systemeid SYSTEM_EID = {
--	.seid_string = "IBM-SYSZ-ISMSEID00000000",
--	.serial_number = "0000",
--	.type = "0000",
--};
--
--static void ism_create_system_eid(void)
--{
--	struct cpuid id;
--	u16 ident_tail;
--	char tmp[5];
--
--	get_cpu_id(&id);
--	ident_tail = (u16)(id.ident & ISM_IDENT_MASK);
--	snprintf(tmp, 5, "%04X", ident_tail);
--	memcpy(&SYSTEM_EID.serial_number, tmp, 4);
--	snprintf(tmp, 5, "%04X", id.machine);
--	memcpy(&SYSTEM_EID.type, tmp, 4);
--}
--
--u8 *ism_get_seid(void)
--{
--	return SYSTEM_EID.seid_string;
--}
--EXPORT_SYMBOL_GPL(ism_get_seid);
--
- static void ism_handle_event(struct ism_dev *ism)
- {
- 	struct ism_event *entry;
-@@ -560,7 +535,9 @@ static int ism_dev_init(struct ism_dev *ism)
- 
- 	if (!ism_add_vlan_id(ism, ISM_RESERVED_VLANID))
- 		/* hardware is V2 capable */
--		ism_create_system_eid();
-+		ism_v2_capable = true;
-+	else
-+		ism_v2_capable = false;
- 
- 	mutex_lock(&ism_dev_list.mutex);
- 	mutex_lock(&clients_lock);
-@@ -665,8 +642,7 @@ static void ism_dev_exit(struct ism_dev *ism)
- 	}
- 	mutex_unlock(&clients_lock);
- 
--	if (SYSTEM_EID.serial_number[0] != '0' ||
--	    SYSTEM_EID.type[0] != '0')
-+	if (ism_v2_capable)
- 		ism_del_vlan_id(ism, ISM_RESERVED_VLANID);
- 	unregister_ieq(ism);
- 	unregister_sba(ism);
-@@ -813,8 +789,7 @@ static int smcd_move(struct smcd_dev *smcd, u64 dmb_tok, unsigned int idx,
- 
- static int smcd_supports_v2(void)
- {
--	return SYSTEM_EID.serial_number[0] != '0' ||
--		SYSTEM_EID.type[0] != '0';
-+	return ism_v2_capable;
- }
- 
- static u64 ism_get_local_gid(struct ism_dev *ism)
-@@ -860,7 +835,6 @@ static const struct smcd_ops ism_ops = {
- 	.signal_event = smcd_signal_ieq,
- 	.move_data = smcd_move,
- 	.supports_v2 = smcd_supports_v2,
--	.get_system_eid = ism_get_seid,
- 	.get_local_gid = smcd_get_local_gid,
- 	.get_chid = smcd_get_chid,
- 	.get_dev = smcd_get_dev,
-diff --git a/include/linux/ism.h b/include/linux/ism.h
-index 9a4c204df3da..5428edd90982 100644
---- a/include/linux/ism.h
-+++ b/include/linux/ism.h
-@@ -86,7 +86,6 @@ int  ism_register_dmb(struct ism_dev *dev, struct ism_dmb *dmb,
- int  ism_unregister_dmb(struct ism_dev *dev, struct ism_dmb *dmb);
- int  ism_move(struct ism_dev *dev, u64 dmb_tok, unsigned int idx, bool sf,
- 	      unsigned int offset, void *data, unsigned int size);
--u8  *ism_get_seid(void);
- 
- const struct smcd_ops *ism_get_smcd_ops(void);
- 
-diff --git a/include/net/smc.h b/include/net/smc.h
-index a0dc1187e96e..c9dcb30e3fd9 100644
---- a/include/net/smc.h
-+++ b/include/net/smc.h
-@@ -73,7 +73,6 @@ struct smcd_ops {
- 			 bool sf, unsigned int offset, void *data,
- 			 unsigned int size);
- 	int (*supports_v2)(void);
--	u8* (*get_system_eid)(void);
- 	void (*get_local_gid)(struct smcd_dev *dev, struct smcd_gid *gid);
- 	u16 (*get_chid)(struct smcd_dev *dev);
- 	struct device* (*get_dev)(struct smcd_dev *dev);
-diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
-index a33f861cf7c1..ac88de2a06a0 100644
---- a/net/smc/smc_ism.c
-+++ b/net/smc/smc_ism.c
-@@ -43,6 +43,27 @@ static struct ism_client smc_ism_client = {
- };
- #endif
- 
-+static void smc_ism_create_system_eid(void)
-+{
-+	struct smc_ism_seid *seid =
-+		(struct smc_ism_seid *)smc_ism_v2_system_eid;
-+#if IS_ENABLED(CONFIG_S390)
-+	struct cpuid id;
-+	u16 ident_tail;
-+	char tmp[5];
-+
-+	memcpy(seid->seid_string, "IBM-SYSZ-ISMSEID00000000", 24);
-+	get_cpu_id(&id);
-+	ident_tail = (u16)(id.ident & SMC_ISM_IDENT_MASK);
-+	snprintf(tmp, 5, "%04X", ident_tail);
-+	memcpy(seid->serial_number, tmp, 4);
-+	snprintf(tmp, 5, "%04X", id.machine);
-+	memcpy(seid->type, tmp, 4);
-+#else
-+	memset(seid, 0, SMC_MAX_EID_LEN);
-+#endif
-+}
-+
- /* Test if an ISM communication is possible - same CPC */
- int smc_ism_cantalk(struct smcd_gid *peer_gid, unsigned short vlan_id,
- 		    struct smcd_dev *smcd)
-@@ -431,14 +452,8 @@ static void smcd_register_dev(struct ism_dev *ism)
- 
- 	mutex_lock(&smcd_dev_list.mutex);
- 	if (list_empty(&smcd_dev_list.list)) {
--		u8 *system_eid = NULL;
--
--		system_eid = smcd->ops->get_system_eid();
--		if (smcd->ops->supports_v2()) {
-+		if (smcd->ops->supports_v2())
- 			smc_ism_v2_capable = true;
--			memcpy(smc_ism_v2_system_eid, system_eid,
--			       SMC_MAX_EID_LEN);
--		}
- 	}
- 	/* sort list: devices without pnetid before devices with pnetid */
- 	if (smcd->pnetid[0])
-@@ -542,10 +557,10 @@ int smc_ism_init(void)
- {
- 	int rc = 0;
- 
--#if IS_ENABLED(CONFIG_ISM)
- 	smc_ism_v2_capable = false;
--	memset(smc_ism_v2_system_eid, 0, SMC_MAX_EID_LEN);
-+	smc_ism_create_system_eid();
- 
-+#if IS_ENABLED(CONFIG_ISM)
- 	rc = ism_register_client(&smc_ism_client);
- #endif
- 	return rc;
-diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
-index 0e5e563099ec..ffff40c30a06 100644
---- a/net/smc/smc_ism.h
-+++ b/net/smc/smc_ism.h
-@@ -16,6 +16,7 @@
- #include "smc.h"
- 
- #define SMC_VIRTUAL_ISM_CHID_MASK	0xFF00
-+#define SMC_ISM_IDENT_MASK		0x00FFFF
- 
- struct smcd_dev_list {	/* List of SMCD devices */
- 	struct list_head list;
-@@ -30,6 +31,12 @@ struct smc_ism_vlanid {			/* VLAN id set on ISM device */
- 	refcount_t refcnt;		/* Reference count */
- };
- 
-+struct smc_ism_seid {
-+	u8 seid_string[24];
-+	u8 serial_number[4];
-+	u8 type[4];
-+};
-+
- struct smcd_dev;
- 
- int smc_ism_cantalk(struct smcd_gid *peer_gid, unsigned short vlan_id,
--- 
-2.32.0.3.g01195cf9f
+BTRFS info (device loop0): disabling free space tree
+BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
+BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
+==================================================================
+BUG: KASAN: slab-out-of-bounds in btrfs_dev_replace_by_ioctl+0x1dc5/0x2010 fs/btrfs/dev-replace.c:744
+Read of size 1 at addr ffff888021b2a421 by task syz-executor.0/5480
+
+CPU: 1 PID: 5480 Comm: syz-executor.0 Not tainted 6.7.0-rc5-syzkaller-00200-g3bd7d7488169-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x142/0x170 mm/kasan/report.c:588
+ btrfs_dev_replace_by_ioctl+0x1dc5/0x2010 fs/btrfs/dev-replace.c:744
+ btrfs_ioctl_dev_replace+0x2c9/0x390 fs/btrfs/ioctl.c:3299
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f695d67cba9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f695e45a0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f695d79bf80 RCX: 00007f695d67cba9
+RDX: 0000000020000540 RSI: 00000000ca289435 RDI: 0000000000000005
+RBP: 00007f695d6c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f695d79bf80 R15: 00007ffe9e2e6458
+ </TASK>
+
+Allocated by task 5480:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1007 [inline]
+ __kmalloc_node_track_caller+0xb1/0x190 mm/slab_common.c:1027
+ memdup_user+0x2b/0xc0 mm/util.c:197
+ btrfs_ioctl_dev_replace+0xb8/0x390 fs/btrfs/ioctl.c:3286
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+The buggy address belongs to the object at ffff888021b2a000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 15 bytes to the right of
+ allocated 1042-byte region [ffff888021b2a000, ffff888021b2a412)
+
+The buggy address belongs to the physical page:
+page:ffffea000086ca00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x21b28
+head:ffffea000086ca00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c42000 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 4502, tgid 4502 (klogd), ts 85479727402, free_ts 85422702099
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
+ prep_new_page mm/page_alloc.c:1544 [inline]
+ get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3312
+ __alloc_pages+0x255/0x680 mm/page_alloc.c:4568
+ alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
+ alloc_slab_page+0x6a/0x170 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc8a/0x1330 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
+ kmalloc_trace+0x2a/0x60 mm/slab_common.c:1098
+ kmalloc include/linux/slab.h:600 [inline]
+ syslog_print+0x121/0x9b0 kernel/printk/printk.c:1550
+ do_syslog+0x505/0x890 kernel/printk/printk.c:1728
+ __do_sys_syslog kernel/printk/printk.c:1820 [inline]
+ __se_sys_syslog kernel/printk/printk.c:1818 [inline]
+ __x64_sys_syslog+0x7c/0x90 kernel/printk/printk.c:1818
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1137 [inline]
+ free_unref_page_prepare+0x931/0xa60 mm/page_alloc.c:2347
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
+ discard_slab mm/slub.c:2116 [inline]
+ __unfreeze_partials+0x1e0/0x220 mm/slub.c:2655
+ put_cpu_partial+0x17b/0x250 mm/slub.c:2731
+ __slab_free+0x2b6/0x390 mm/slub.c:3679
+ qlink_free mm/kasan/quarantine.c:168 [inline]
+ qlist_free_all+0x75/0xe0 mm/kasan/quarantine.c:187
+ kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:294
+ __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook+0x6c/0x3c0 mm/slab.h:763
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x19e/0x2b0 mm/slub.c:3502
+ alloc_reserved_tree_block fs/btrfs/extent-tree.c:4876 [inline]
+ run_delayed_tree_ref fs/btrfs/extent-tree.c:1765 [inline]
+ run_one_delayed_ref fs/btrfs/extent-tree.c:1799 [inline]
+ btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2064 [inline]
+ __btrfs_run_delayed_refs+0x14af/0x46c0 fs/btrfs/extent-tree.c:2134
+ btrfs_run_delayed_refs+0x188/0x2c0 fs/btrfs/extent-tree.c:2246
+ commit_cowonly_roots+0x66b/0x860 fs/btrfs/transaction.c:1416
+ btrfs_commit_transaction+0xff5/0x3740 fs/btrfs/transaction.c:2485
+ btrfs_rebuild_free_space_tree+0x1de/0x370 fs/btrfs/free-space-tree.c:1344
+ btrfs_start_pre_rw_mount+0xef3/0x1340 fs/btrfs/disk-io.c:2965
+
+Memory state around the buggy address:
+ ffff888021b2a300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888021b2a380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888021b2a400: 00 00 02 fc fc fc fc fc fc fc fc fc fc fc fc fc
+                               ^
+ ffff888021b2a480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888021b2a500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+Tested on:
+
+commit:         3bd7d748 Merge tag 'io_uring-6.7-2023-12-15' of git://..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b1a6c6e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
+dashboard link: https://syzkaller.appspot.com/bug?extid=33f23b49ac24f986c9e8
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=100aa8d6e80000
 
 
