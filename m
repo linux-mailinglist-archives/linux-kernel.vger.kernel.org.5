@@ -1,266 +1,118 @@
-Return-Path: <linux-kernel+bounces-4941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E7F1818426
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:09:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A25E0818428
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA6511F23963
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:09:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5268028719B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6EA134C5;
-	Tue, 19 Dec 2023 09:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B8412E44;
+	Tue, 19 Dec 2023 09:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oyDaiWY3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FLkJqo/t"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1FD5134BD
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--alpic.bounces.google.com
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-33349915d3cso2904070f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:09:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A573134AE;
+	Tue, 19 Dec 2023 09:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5cdc159034eso49209a12.0;
+        Tue, 19 Dec 2023 01:09:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702976953; x=1703581753; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KCOKKTCrhMmhELn2KaA9tA7ePXojaySJZUnrODbepzU=;
-        b=oyDaiWY3JkcRZh6LwIo30LyVDU+PLZk3j9VwX2NoD3ufljIaS4xdNasuPMf//+fewn
-         tOV3im96Zm83Rtb9CZMS/vyL79KtLuxt0d2bx1UMK+ik2yMGQvYhwJfpqKQHq7QRZvfA
-         y2JsFKQcaIZGn8SlHx6eesE5jlQd74wU6b2vwRS/iCZivwVvEpfzk+eWDQXx6EyYtKg7
-         DhK9ie6CJM4eZnI0jKJT4d+f2gvjfYM35XUZnxqNmWq7WCahHu7dYlO2UX8dYFMg3KQC
-         nU316h2F9RNkCHYoaMHAlH0/AQqVGmfTo4+WlfLuUABKHu+0m2qHEUOrjJAZ2uxsMLpI
-         Pitg==
+        d=gmail.com; s=20230601; t=1702976971; x=1703581771; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MUeSDdZw8uPeQ2XORpdHymUrGMNnnZoNXCwu3+iQlGc=;
+        b=FLkJqo/tLRRlWROKKRTlberWFPlEgdWloTW35BBfcTju/p8a0vGDc00UREKarUCnwM
+         m3SFtVQj7N69L1zhEfMLUiVrJvY3asatdVD77bKnKaVxiruOc09mTwq3S5HY0R/9UqZq
+         xrs9MNKhq7uzaQwTriVnKThBGtCj19sPwqWGdqu3HSo+zoFIxSn/puL0IcdrntpKNBEM
+         WK6qzMi1S9JtXlMOnWZ3eWV1DwednpWODtfV4gHRvwGk51RsqaPbE8/SE/V9a65azOWv
+         4Jmlxi8FeHtr0UGlgZnb+TQY8qpanCLi7lJbRYkhe2FN+pYT2ylH0zBcfyyrPJI9B/zZ
+         JihA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702976953; x=1703581753;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KCOKKTCrhMmhELn2KaA9tA7ePXojaySJZUnrODbepzU=;
-        b=NxCrEQ1TEojUmD2QFx0sFbdpUHxwI/sp5aco8O0T3qGznuOm5tuJ9/kc0OSiLp/hlj
-         mYOqF8vE1OJCcc0607LdVdebPsj+s1GfrayaWjvJw7rizeOtM6kE0bVhSKY7eGH+WjjJ
-         +RWBMe44Kym0wNtgYm8lZ96MsAoe0mK/MubyqA650jXOsCcuJNp8ymKEeDms0xJOzUEp
-         yJ5bTU+o2KQ2uXMVO4Q50G/lxbrTVzp35IVFO1TUFAljciZwMoVS9oHFZpmj8myZuQ+1
-         U19AJ/AaIRLCmDfviTxhOiuOuxoJZcbV8weVAwChJcgJ4gVj5hH5q93T1uqorjK4eT1L
-         DwzQ==
-X-Gm-Message-State: AOJu0Yy0NNDP8pYi2OwQOqqLH8KZ6XGsxPZoDoGVbN9tV52PlpLSd+bb
-	jHGS0nUAUBflW4pYIU5wVQdxv1IXRw==
-X-Google-Smtp-Source: AGHT+IEMgpUJJImbF9sB0A1C2/ml9W2nIwssmwxL5xAbJRxOKk/6C14WdhWsYo1M1JBwCQapz4Lay/+LIA==
-X-Received: from alpic.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1bf2])
- (user=alpic job=sendgmr) by 2002:a5d:64a5:0:b0:336:60b6:28a2 with SMTP id
- m5-20020a5d64a5000000b0033660b628a2mr25056wrp.1.1702976952862; Tue, 19 Dec
- 2023 01:09:12 -0800 (PST)
-Date: Tue, 19 Dec 2023 10:09:09 +0100
-In-Reply-To: <20230906102557.3432236-1-alpic@google.com>
+        d=1e100.net; s=20230601; t=1702976971; x=1703581771;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MUeSDdZw8uPeQ2XORpdHymUrGMNnnZoNXCwu3+iQlGc=;
+        b=bRuxrgOP/HTOHGnKfLysWzMGgg9RSi3Qa2URCnjIv4Ld+A9/3nBPckOzjus03OM7N7
+         0AIxZ91XFcMFUp9qZjefxsX9+yj2Ae8GW9sCFuA7X2ks1icouYehLJMjDEOtFs3ya93H
+         Ugb/L/ADlCJo6dLoz1+ZK35T7FrtiYLFM2RSwUw9SohFnZVwZIovmGIFcfu3LwjqDMBB
+         YgxEjfsOYX1DjeC1Q/iGRo3x/5DviPPT2JRWmfe5LI4hI9DlE6PQG131ZIGZTFI2JYdj
+         L5Iyqyv4Ku4KcbdsqDvxOMtFj4ctvhhj1oTcOcCxgTNLSEo8n+6bC59kH+fabThJUzKY
+         CRdA==
+X-Gm-Message-State: AOJu0YwivWhthAql3SvzF6TQJBf1e3dzdjMu4CZGFmpqCAOkh9GXgAPg
+	dNSQk2sy/jDClQUqCLhlyj4vqq8A/Ww=
+X-Google-Smtp-Source: AGHT+IG2yOOGtRSe+pLzQg4kdVa4susxKnGV96oGSYuCCkD6NA3l78QmqUTqm9Qo5bGXhE1eZzpI7w==
+X-Received: by 2002:a05:6a20:7d9c:b0:190:31c1:31aa with SMTP id v28-20020a056a207d9c00b0019031c131aamr10212260pzj.49.1702976970716;
+        Tue, 19 Dec 2023 01:09:30 -0800 (PST)
+Received: from carrot.. (i118-19-13-241.s42.a014.ap.plala.or.jp. [118.19.13.241])
+        by smtp.gmail.com with ESMTPSA id h10-20020a170902704a00b001d35223d0besm7435399plt.251.2023.12.19.01.09.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 01:09:29 -0800 (PST)
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-nilfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] nilfs2: Add missing set_freezable() for freezable kthread
+Date: Tue, 19 Dec 2023 18:09:18 +0900
+Message-Id: <20231219090918.2329-1-konishi.ryusuke@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230906102557.3432236-1-alpic@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231219090909.2827497-1-alpic@google.com>
-Subject: [PATCH] security: new security_file_ioctl_compat() hook
-From: Alfred Piccioni <alpic@google.com>
-To: Paul Moore <paul@paul-moore.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Eric Paris <eparis@parisplace.org>
-Cc: linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	stable@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alfred Piccioni <alpic@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Some ioctl commands do not require ioctl permission, but are routed to
-other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
-done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
+From: Kevin Hao <haokexin@gmail.com>
 
-However, if a 32-bit process is running on a 64-bit kernel, it emits
-32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
-being checked erroneously, which leads to these ioctl operations being
-routed to the ioctl permission, rather than the correct file
-permissions.
+The kernel thread function nilfs_segctor_thread() invokes
+the try_to_freeze() in its loop. But all the kernel threads are
+non-freezable by default. So if we want to make a kernel thread to be
+freezable, we have to invoke set_freezable() explicitly.
 
-This was also noted in a RED-PEN finding from a while back -
-"/* RED-PEN how should LSM module know it's handling 32bit? */".
-
-This patch introduces a new hook, security_file_ioctl_compat, that is
-called from the compat ioctl syscall. All current LSMs have been changed
-to support this hook.
-
-Reviewing the three places where we are currently using
-security_file_ioctl, it appears that only SELinux needs a dedicated
-compat change; TOMOYO and SMACK appear to be functional without any
-change.
-
-Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
-Signed-off-by: Alfred Piccioni <alpic@google.com>
-Cc: stable@vger.kernel.org
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 ---
- fs/ioctl.c                    |  3 +--
- include/linux/lsm_hook_defs.h |  2 ++
- include/linux/security.h      |  7 +++++++
- security/security.c           | 17 +++++++++++++++++
- security/selinux/hooks.c      | 28 ++++++++++++++++++++++++++++
- security/smack/smack_lsm.c    |  1 +
- security/tomoyo/tomoyo.c      |  1 +
- 7 files changed, 57 insertions(+), 2 deletions(-)
+Andrew, please add this to the queue for the next merge window (if
+it's still ok).  This fixes an issue where the log writer thread was
+not calling try_to_freeze() as intended when starting suspend or
+hibernation.
 
-diff --git a/fs/ioctl.c b/fs/ioctl.c
-index f5fd99d6b0d4..76cf22ac97d7 100644
---- a/fs/ioctl.c
-+++ b/fs/ioctl.c
-@@ -920,8 +920,7 @@ COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
- 	if (!f.file)
- 		return -EBADF;
- 
--	/* RED-PEN how should LSM module know it's handling 32bit? */
--	error = security_file_ioctl(f.file, cmd, arg);
-+	error = security_file_ioctl_compat(f.file, cmd, arg);
- 	if (error)
- 		goto out;
- 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index ac962c4cb44b..626aa8cf930d 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -171,6 +171,8 @@ LSM_HOOK(int, 0, file_alloc_security, struct file *file)
- LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
- LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
- 	 unsigned long arg)
-+LSM_HOOK(int, 0, file_ioctl_compat, struct file *file, unsigned int cmd,
-+	 unsigned long arg)
- LSM_HOOK(int, 0, mmap_addr, unsigned long addr)
- LSM_HOOK(int, 0, mmap_file, struct file *file, unsigned long reqprot,
- 	 unsigned long prot, unsigned long flags)
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 5f16eecde00b..22a82b7c59f1 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -389,6 +389,7 @@ int security_file_permission(struct file *file, int mask);
- int security_file_alloc(struct file *file);
- void security_file_free(struct file *file);
- int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
-+int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg);
- int security_mmap_file(struct file *file, unsigned long prot,
- 			unsigned long flags);
- int security_mmap_addr(unsigned long addr);
-@@ -987,6 +988,12 @@ static inline int security_file_ioctl(struct file *file, unsigned int cmd,
- 	return 0;
- }
- 
-+static inline int security_file_ioctl_compat(struct file *file, unsigned int cmd,
-+				      unsigned long arg)
-+{
-+	return 0;
-+}
-+
- static inline int security_mmap_file(struct file *file, unsigned long prot,
- 				     unsigned long flags)
- {
-diff --git a/security/security.c b/security/security.c
-index 23b129d482a7..5c16ffc99b1e 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2648,6 +2648,23 @@ int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- }
- EXPORT_SYMBOL_GPL(security_file_ioctl);
- 
-+/**
-+ * security_file_ioctl_compat() - Check if an ioctl is allowed in 32-bit compat mode
-+ * @file: associated file
-+ * @cmd: ioctl cmd
-+ * @arg: ioctl arguments
-+ *
-+ * Compat version of security_file_ioctl() that correctly handles 32-bit processes
-+ * running on 64-bit kernels.
-+ *
-+ * Return: Returns 0 if permission is granted.
-+ */
-+int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	return call_int_hook(file_ioctl_compat, 0, file, cmd, arg);
-+}
-+EXPORT_SYMBOL_GPL(security_file_ioctl_compat);
-+
- static inline unsigned long mmap_prot(struct file *file, unsigned long prot)
- {
- 	/*
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 2aa0e219d721..c617ae21dba8 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -3731,6 +3731,33 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
- 	return error;
- }
- 
-+static int selinux_file_ioctl_compat(struct file *file, unsigned int cmd,
-+			      unsigned long arg)
-+{
-+	/*
-+	 * If we are in a 64-bit kernel running 32-bit userspace, we need to make
-+	 * sure we don't compare 32-bit flags to 64-bit flags.
-+	 */
-+	switch (cmd) {
-+	case FS_IOC32_GETFLAGS:
-+		cmd = FS_IOC_GETFLAGS;
-+		break;
-+	case FS_IOC32_SETFLAGS:
-+		cmd = FS_IOC_SETFLAGS;
-+		break;
-+	case FS_IOC32_GETVERSION:
-+		cmd = FS_IOC_GETVERSION;
-+		break;
-+	case FS_IOC32_SETVERSION:
-+		cmd = FS_IOC_SETVERSION;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return selinux_file_ioctl(file, cmd, arg);
-+}
-+
- static int default_noexec __ro_after_init;
- 
- static int file_map_prot_check(struct file *file, unsigned long prot, int shared)
-@@ -7036,6 +7063,7 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(file_permission, selinux_file_permission),
- 	LSM_HOOK_INIT(file_alloc_security, selinux_file_alloc_security),
- 	LSM_HOOK_INIT(file_ioctl, selinux_file_ioctl),
-+	LSM_HOOK_INIT(file_ioctl_compat, selinux_file_ioctl_compat),
- 	LSM_HOOK_INIT(mmap_file, selinux_mmap_file),
- 	LSM_HOOK_INIT(mmap_addr, selinux_mmap_addr),
- 	LSM_HOOK_INIT(file_mprotect, selinux_file_mprotect),
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 65130a791f57..1f1ea8529421 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -4973,6 +4973,7 @@ static struct security_hook_list smack_hooks[] __ro_after_init = {
- 
- 	LSM_HOOK_INIT(file_alloc_security, smack_file_alloc_security),
- 	LSM_HOOK_INIT(file_ioctl, smack_file_ioctl),
-+	LSM_HOOK_INIT(file_ioctl_compat, smack_file_ioctl),
- 	LSM_HOOK_INIT(file_lock, smack_file_lock),
- 	LSM_HOOK_INIT(file_fcntl, smack_file_fcntl),
- 	LSM_HOOK_INIT(mmap_file, smack_mmap_file),
-diff --git a/security/tomoyo/tomoyo.c b/security/tomoyo/tomoyo.c
-index 25006fddc964..298d182759c2 100644
---- a/security/tomoyo/tomoyo.c
-+++ b/security/tomoyo/tomoyo.c
-@@ -568,6 +568,7 @@ static struct security_hook_list tomoyo_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(path_rename, tomoyo_path_rename),
- 	LSM_HOOK_INIT(inode_getattr, tomoyo_inode_getattr),
- 	LSM_HOOK_INIT(file_ioctl, tomoyo_file_ioctl),
-+	LSM_HOOK_INIT(file_ioctl_compat, tomoyo_file_ioctl),
- 	LSM_HOOK_INIT(path_chmod, tomoyo_path_chmod),
- 	LSM_HOOK_INIT(path_chown, tomoyo_path_chown),
- 	LSM_HOOK_INIT(path_chroot, tomoyo_path_chroot),
+I haven't run into any problems with or without this change in various
+suspend/hibernation tests so far, so I haven't added a Cc tag to the
+stable team.
 
-base-commit: 196e95aa8305aecafc4e1857b7d3eff200d953b6
+If any suspend failures are reported due to the lack of this setup,
+I will separately request the stable team to backport this.
+
+Thanks,
+Ryusuke Konishi
+
+fs/nilfs2/segment.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 52995838f2de..2590a0860eab 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -2588,6 +2588,7 @@ static int nilfs_segctor_thread(void *arg)
+ 		   "segctord starting. Construction interval = %lu seconds, CP frequency < %lu seconds",
+ 		   sci->sc_interval / HZ, sci->sc_mjcp_freq / HZ);
+ 
++	set_freezable();
+ 	spin_lock(&sci->sc_state_lock);
+  loop:
+ 	for (;;) {
 -- 
-2.43.0.472.g3155946c3a-goog
+2.34.1
 
 
