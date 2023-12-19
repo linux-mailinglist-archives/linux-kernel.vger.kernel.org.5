@@ -1,96 +1,133 @@
-Return-Path: <linux-kernel+bounces-5455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E4D4818ADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:09:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8014E818ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:10:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E18F281CB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:09:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 208971F234E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488A61C68E;
-	Tue, 19 Dec 2023 15:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B281D54A;
+	Tue, 19 Dec 2023 15:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="VrOFsnWz"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ytz86OmW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329AA1C697;
-	Tue, 19 Dec 2023 15:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702998566; x=1734534566;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gqCZICqTsn1ZAWtUxDZg9+U6l8m0uHS+deZJRdybB1c=;
-  b=VrOFsnWzzd2qIQDqo+bjVTp38kVXrVFsChV/WwykHK+s5g9Z138wM3H3
-   mAIGFne+vX5LYvHaTM2eFekbLia6a1WdhFRxrOBKbvIRrReQ5hnBrl94D
-   28meiocyDvUoCBv3VO7ssJc8B50uFdZIWoVMO7Q9m4HrVvxa5XXfS5n9Z
-   k=;
-X-IronPort-AV: E=Sophos;i="6.04,288,1695686400"; 
-   d="scan'208";a="260445655"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 15:09:23 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-	by email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com (Postfix) with ESMTPS id F327882E2E;
-	Tue, 19 Dec 2023 15:09:22 +0000 (UTC)
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.7.35:38779]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.28.164:2525] with esmtp (Farcaster)
- id a73f32d0-54d2-499f-b599-5a7df5d71c0c; Tue, 19 Dec 2023 15:09:22 +0000 (UTC)
-X-Farcaster-Flow-ID: a73f32d0-54d2-499f-b599-5a7df5d71c0c
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Dec 2023 15:09:21 +0000
-Received: from 88665a182662.ant.amazon.com (10.118.248.48) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Dec 2023 15:09:17 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <mengkanglai2@huawei.com>
-CC: <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
-	<fengtao40@huawei.com>, <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <yanan@huawei.com>,
-	<kuniyu@amazon.com>
-Subject: Re: [Consult]kernel tcp socket lack of refcnt for net may cause uaf problem?
-Date: Wed, 20 Dec 2023 00:09:07 +0900
-Message-ID: <20231219150907.9338-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <26f7811f5ee247c389ddd38034d8747d@huawei.com>
-References: <26f7811f5ee247c389ddd38034d8747d@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6811D529;
+	Tue, 19 Dec 2023 15:10:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EE83C433C7;
+	Tue, 19 Dec 2023 15:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702998604;
+	bh=YG1opOXiv2eFAz9+JFxAGHHuQKweCGIP9rMOp7rwHcg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ytz86OmWaegIRsBA2unUSBkc6kLq8StD0r0jhGgzWrF62fM313/boELTJtKvyhIEw
+	 lUM+8Ys08phuamymX4VWV80dLjSxAcdwzA9pmiN8tt06HZKjCZ2PtmcYk+f7w2PAuA
+	 tYvdTOUZzBkoFpLy8HQaQukWkxcwslTBMJO5119s=
+Date: Tue, 19 Dec 2023 16:10:02 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/2] fpga: set owner of fpga_manager_ops for
+ existing low-level modules
+Message-ID: <2023121924-extent-defender-fb06@gregkh>
+References: <20231218202809.84253-1-marpagan@redhat.com>
+ <20231218202809.84253-3-marpagan@redhat.com>
+ <2023121829-zealous-prissy-99cc@gregkh>
+ <9296941c-a3c8-4d55-9e52-f1277f1c3fc7@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D042UWA002.ant.amazon.com (10.13.139.17) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9296941c-a3c8-4d55-9e52-f1277f1c3fc7@redhat.com>
 
-From: mengkanglai <mengkanglai2@huawei.com>
-Date: Tue, 19 Dec 2023 13:44:36 +0000
-> Hello, Eric:
+On Tue, Dec 19, 2023 at 03:54:25PM +0100, Marco Pagani wrote:
 > 
-> I found upstream have fixed a UAF issue (smc: Fix use-after-free in
-> tcp_write_timer_handler()):
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9744d2bf19762703704ecba885b7ac282c02eacf
 > 
-> When create a kernel socket use sock_create_kern , it won't call get_net()
-> to increase refcnt for net where the socket is located.
-> I found some other subsystem(like rds and sunrpc) also use sock_create_kern
-> to create kernel tcp socket, I want to know if they have same UAF problem?
+> On 2023-12-18 21:33, Greg Kroah-Hartman wrote:
+> > On Mon, Dec 18, 2023 at 09:28:09PM +0100, Marco Pagani wrote:
+> >> This patch tentatively set the owner field of fpga_manager_ops to
+> >> THIS_MODULE for existing fpga manager low-level control modules.
+> >>
+> >> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> >> ---
+> >>  drivers/fpga/altera-cvp.c             | 1 +
+> >>  drivers/fpga/altera-pr-ip-core.c      | 1 +
+> >>  drivers/fpga/altera-ps-spi.c          | 1 +
+> >>  drivers/fpga/dfl-fme-mgr.c            | 1 +
+> >>  drivers/fpga/ice40-spi.c              | 1 +
+> >>  drivers/fpga/lattice-sysconfig.c      | 1 +
+> >>  drivers/fpga/machxo2-spi.c            | 1 +
+> >>  drivers/fpga/microchip-spi.c          | 1 +
+> >>  drivers/fpga/socfpga-a10.c            | 1 +
+> >>  drivers/fpga/socfpga.c                | 1 +
+> >>  drivers/fpga/stratix10-soc.c          | 1 +
+> >>  drivers/fpga/tests/fpga-mgr-test.c    | 1 +
+> >>  drivers/fpga/tests/fpga-region-test.c | 1 +
+> >>  drivers/fpga/ts73xx-fpga.c            | 1 +
+> >>  drivers/fpga/versal-fpga.c            | 1 +
+> >>  drivers/fpga/xilinx-spi.c             | 1 +
+> >>  drivers/fpga/zynq-fpga.c              | 1 +
+> >>  drivers/fpga/zynqmp-fpga.c            | 1 +
+> >>  18 files changed, 18 insertions(+)
+> >>
+> >> diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
+> >> index 4ffb9da537d8..aeb913547dd8 100644
+> >> --- a/drivers/fpga/altera-cvp.c
+> >> +++ b/drivers/fpga/altera-cvp.c
+> >> @@ -520,6 +520,7 @@ static const struct fpga_manager_ops altera_cvp_ops = {
+> >>  	.write_init	= altera_cvp_write_init,
+> >>  	.write		= altera_cvp_write,
+> >>  	.write_complete	= altera_cvp_write_complete,
+> >> +	.owner		= THIS_MODULE,
+> > 
+> > Note, this is not how to do this, force the compiler to set this for you
+> > automatically, otherwise everyone will always forget to do it.  Look at
+> > how functions like usb_register_driver() works.
+> > 
+> > Also, are you _sure_ that you need a module owner in this structure?  I
+> > still don't know why...
+> >
+> 
+> Do you mean moving the module owner field to the manager context and setting
+> it during registration with a helper macro?
 
-You need to check if the subsystem itself holds net refcnt (not per socket)
-and if it waits for TCP timer to be fired before destroying a socket.
+I mean set it during registration with a helper macro.
 
-It seems that runrpc holds net refcnt (xprt_net) and rds holds per-socket
-net refcnt.
+> Something like:
+> 
+> struct fpga_manager {
+> 	...
+> 	struct module *owner;
+> };
+> 
+> #define fpga_mgr_register(parent, ...) \
+> 	__fpga_mgr_register(parent,..., THIS_MODULE)
+> 
+> struct fpga_manager *
+> __fpga_mgr_register(struct device *parent, ..., struct module *owner)
+> {
+> 	...
+> 	mgr->owner = owner;
+> }
+
+Yes.
+
+But again, is a module owner even needed?  I don't think you all have
+proven that yet...
+
+thanks,
+
+greg k-h
 
