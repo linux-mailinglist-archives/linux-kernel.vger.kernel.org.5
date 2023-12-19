@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-5678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70D2F818DF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:21:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6378818DFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3C111C24F00
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:21:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5738A1F2391A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6287A38DFE;
-	Tue, 19 Dec 2023 17:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6524A3B19C;
+	Tue, 19 Dec 2023 17:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="Es1tOgue"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="O5luuWiZ"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D3B3717E;
-	Tue, 19 Dec 2023 17:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F4D374CE;
+	Tue, 19 Dec 2023 17:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=s/yWW4Vy76vXSiHl0gv7O0Csm0Ex/rL0yRa8UtQ/IPg=; b=Es1tOgueRS7EWff0ucpzQMT/2F
-	ynxAniJZI5jETkempKC8oIKdGZVd/qzbspc6QMaPmxCkvgFG8AZX2Dw/IIwHtzAuVxeij9tTtZPtZ
-	fZVDY8dgmNcTWMRIt4XoNNJ0Zugu7rudi5acE9ot7GdWzJaoT2nMqoOmfYX3ZHq7OAt0=;
+	bh=gUAAQFKZm/4AQCPRUH7PAQYTLzlSP8EudxDx5BySHoI=; b=O5luuWiZQkMMPrB0k4ShlsWyRX
+	NFLKiiP6zWS1mVso7TGCKyZohscLty08HiRki2VHTr9psFhaexicFs+dD4pck+bPe0XtSUK53kHpk
+	1SrmcdE/7cMWxi7zdh43H5MUKu1H+llWLf6MCSpWgz7KRNjJAvXs6vi3BEZ22mcDsBuk=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:40128 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rFdkT-0007Ao-PK; Tue, 19 Dec 2023 12:19:18 -0500
+	id 1rFdkU-0007Ao-PP; Tue, 19 Dec 2023 12:19:19 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -44,8 +44,8 @@ Cc: linux-kernel@vger.kernel.org,
 	hugo@hugovil.com,
 	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
 	Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 19 Dec 2023 12:18:55 -0500
-Message-Id: <20231219171903.3530985-12-hugo@hugovil.com>
+Date: Tue, 19 Dec 2023 12:18:56 -0500
+Message-Id: <20231219171903.3530985-13-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231219171903.3530985-1-hugo@hugovil.com>
 References: <20231219171903.3530985-1-hugo@hugovil.com>
@@ -62,49 +62,34 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH 11/18] serial: sc16is7xx: add explicit return for some switch default cases
+Subject: [PATCH 12/18] serial: sc16is7xx: replace hardcoded divisor value with BIT() macro
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Allows to simplify code by removing the break statement in the default
-switch/case in some functions.
+To better show why the limit is what it is, since we have only 16 bits for
+the divisor.
 
 Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/tty/serial/sc16is7xx.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/tty/serial/sc16is7xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 7d5eec2d0e94..feb50d9271ac 100644
+index feb50d9271ac..133538f91390 100644
 --- a/drivers/tty/serial/sc16is7xx.c
 +++ b/drivers/tty/serial/sc16is7xx.c
-@@ -460,10 +460,8 @@ static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
- 	case SC16IS7XX_IOCONTROL_REG:
- 		return true;
- 	default:
--		break;
-+		return false;
- 	}
--
--	return false;
- }
+@@ -486,7 +486,7 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
+ 	u8 prescaler = 0;
+ 	unsigned long clk = port->uartclk, div = clk / 16 / baud;
  
- static bool sc16is7xx_regmap_precious(struct device *dev, unsigned int reg)
-@@ -472,10 +470,8 @@ static bool sc16is7xx_regmap_precious(struct device *dev, unsigned int reg)
- 	case SC16IS7XX_RHR_REG:
- 		return true;
- 	default:
--		break;
-+		return false;
+-	if (div > 0xffff) {
++	if (div >= BIT(16)) {
+ 		prescaler = SC16IS7XX_MCR_CLKSEL_BIT;
+ 		div /= 4;
  	}
--
--	return false;
- }
- 
- static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
 -- 
 2.39.2
 
