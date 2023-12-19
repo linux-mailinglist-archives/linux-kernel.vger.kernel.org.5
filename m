@@ -1,284 +1,269 @@
-Return-Path: <linux-kernel+bounces-5295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF51C818919
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:56:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A49C6818916
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F3BA1C23E62
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:56:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDFA31C23F35
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4519A1B27A;
-	Tue, 19 Dec 2023 13:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cwTcTN3D"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5D31A58F;
+	Tue, 19 Dec 2023 13:56:33 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5B11A594
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-77f3790a187so294642785a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:56:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702994206; x=1703599006; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xf7vDZZkz6GwHHPc1HLYA9mBh21UgE7DpY4iGTWyAz0=;
-        b=cwTcTN3D6Y+IEM2OqV/TxVdImZpQMDK1Sn3yMYSwKY3+YQfSmYvqsc/3i7Je3Xlxpq
-         v7nS4TK03+jYJ7n3bD/1Q1v4eW3oNsJ1ESZTxtYmlp9TMyXnewTb/PlCAUYrL/47l0Jd
-         PL8CSqmGY22lg/Uf/A0x0ImRuh2MYU4vs+j0eu6YVNo27XFyNEyJ5RIW+YyN5wp61Jh4
-         nI9auUgV2IyAtJ+a6/TjWzYOIA2JuqB4amaeGFsppN4+KDnSQ3gl0UHcgzPAF1z7qcaW
-         veLp/JP7Y7osL4ukzpBJaD9STAwdLLXfHlhDUYM9bZNNcE2NbVKR/zEWsVXBlOy0hDSu
-         369w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702994206; x=1703599006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xf7vDZZkz6GwHHPc1HLYA9mBh21UgE7DpY4iGTWyAz0=;
-        b=b7ByzVqDIWityDz/ALZepMThLAEdH7h8MB3x9fVS5LJt4ztdgMAHn4cZfWP3K6U49q
-         eJ1b+3JxcA6K0MwIepIUZT9a8UmGoHqFS5fBlHHAOKcTDLRXKjdxpSAJUIvjORiu3Nbi
-         eLD1k5doCzGUWaDndPNbcDqKEkRELhmkwWzVeyWCG2BU610/b3ChdgBxq1CvMht2IwD9
-         DoDA0qb/xXpV4USxmGc22l/PXT6+9IBzM8YCj7jiRW9PAwX1LyHvyKJ8Xj7TGCPnUvni
-         q2CfH81gKhFHPCIAusswnCg184k40ApQp2EEjvWs46FWeHUcGQM5xIE1to6wY/m8r6+p
-         BZlA==
-X-Gm-Message-State: AOJu0YwFWzlvLFvdJhLU+O8e61orJg/lb2tq3c/b1dhmRud8YrP+5jPK
-	IBNn8X7E4InGWS8mn2jxEBFYEGxLvaVIvulI2WtV3w==
-X-Google-Smtp-Source: AGHT+IFw6K+fSd7zNP5OAxlt5t49hDrYdU0WXtNNHDZXZBZ8B6avCWXoXQDOZ5AXqAPY1WKVaGYcD4jL72/J/7w57No=
-X-Received: by 2002:a05:6214:242e:b0:67f:28b7:a685 with SMTP id
- gy14-20020a056214242e00b0067f28b7a685mr7666971qvb.7.1702994205632; Tue, 19
- Dec 2023 05:56:45 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B121A58B;
+	Tue, 19 Dec 2023 13:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C01681FB;
+	Tue, 19 Dec 2023 05:57:14 -0800 (PST)
+Received: from [10.57.46.64] (unknown [10.57.46.64])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8CB33F5A1;
+	Tue, 19 Dec 2023 05:56:27 -0800 (PST)
+Message-ID: <df433a15-2698-4e1f-9d15-db52befb7541@arm.com>
+Date: Tue, 19 Dec 2023 13:56:26 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000f66a3005fa578223@google.com> <20231213104950.1587730-1-glider@google.com>
- <ZXofF2lXuIUvKi/c@rh> <ZXopGGh/YqNIdtMJ@dread.disaster.area>
- <CAG_fn=UukAf5sPrwqQtmL7-_dyUs3neBpa75JAaeACUzXsHwOA@mail.gmail.com>
- <ZXt2BklghFSmDbhg@dread.disaster.area> <CAG_fn=VqSEyt+vwZ7viviiJtipPPYyzEhkuDjdnmRcW-UXZkYg@mail.gmail.com>
- <ZXzMU9DQ7JqeYwvb@dread.disaster.area> <CANp29Y5XPoH3tdZ_ZEJK3oUZnFf5awQn1w3E95YJFJ-wPxQQ4g@mail.gmail.com>
- <ZYGPZUerlEaCVRq8@dread.disaster.area>
-In-Reply-To: <ZYGPZUerlEaCVRq8@dread.disaster.area>
-From: Alexander Potapenko <glider@google.com>
-Date: Tue, 19 Dec 2023 14:56:04 +0100
-Message-ID: <CAG_fn=XaT0pt0j-=BoOKFU9nh+R7NY3qgwtk5sTS3afDunnmwA@mail.gmail.com>
-Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in __crc32c_le_base (3)
-To: Dave Chinner <david@fromorbit.com>
-Cc: Aleksandr Nogikh <nogikh@google.com>, Dave Chinner <dchinner@redhat.com>, 
-	syzbot+a6d6b8fffa294705dbd8@syzkaller.appspotmail.com, hch@lst.de, 
-	davem@davemloft.net, herbert@gondor.apana.org.au, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, linux-xfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/8] coresight-tpdm: Add CMB dataset support
+Content-Language: en-GB
+To: Tao Zhang <quic_taozha@quicinc.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-4-git-send-email-quic_taozha@quicinc.com>
+ <f4ed3577-f78b-4b78-b306-8284ccb96043@arm.com>
+ <8dcafd9a-ff90-439a-9337-fb957d2fcad1@quicinc.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <8dcafd9a-ff90-439a-9337-fb957d2fcad1@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 19, 2023 at 1:41=E2=80=AFPM Dave Chinner <david@fromorbit.com> =
-wrote:
->
-> On Mon, Dec 18, 2023 at 11:22:40AM +0100, Aleksandr Nogikh wrote:
-> > Hi Dave,
-> >
-> > > KMSAN has been used for quite a long time with syzbot, however,
-> > > and it's supposed to find these problems, too. Yet it's only been
-> > > finding this for 6 months?
-> >
-> > As Alex already mentioned, there were big fs fuzzing improvements in
-> > 2022, and that's exactly when we started seeing "KMSAN: uninit-value
-> > in __crc32c_le_base" (I've just checked crash history). Before that
-> > moment the code was likely just not exercised on syzbot.
->
-> Can you tell us what these "big fuzzing improvements" were? I mean,
-> you're trying to fuzz our code and we've been working on rejecting
-> fuzzing for the last 15 years, so if you're doing something novel it
-> would help us work out how to defeat it quickly and effciently.
->
-> > On Fri, Dec 15, 2023 at 10:59=E2=80=AFPM 'Dave Chinner' via syzkaller-b=
-ugs
-> > <syzkaller-bugs@googlegroups.com> wrote:
-> > >
-> > > On Fri, Dec 15, 2023 at 03:41:49PM +0100, Alexander Potapenko wrote:
-> > > >
-> > > > You are right, syzbot used to mount XFS way before 2022.
-> > > > On the other hand, last fall there were some major changes to the w=
-ay
-> > > > syz_mount_image() works, so I am attributing the newly detected bug=
-s
-> > > > to those changes.
-> > >
-> > > Oh, so that's when syzbot first turned on XFS V5 format testing?
-> > >
-> > > Or was that done in April, when this issue was first reported?
-> > >
-> > > > Unfortunately we don't have much insight into reasons behind syzkal=
-ler
-> > > > being able to trigger one bug or another: once a bug is found for t=
-he
-> > > > first time, the likelihood to trigger it again increases, but findi=
-ng
-> > > > it initially might be tricky.
-> > > >
-> > > > I don't understand much how trivial is the repro at
-> > > > https://gist.github.com/xrivendell7/c7bb6ddde87a892818ed1ce206a429c=
-4,
-> > >
-> > > I just looked at it - all it does is create a new file. It's
-> > > effectively "mount; touch", which is exactly what I said earlier
-> > > in the thread should reproduce this issue every single time.
-> > >
-> > > > but overall we are not drilling deep enough into XFS.
-> > > > https://storage.googleapis.com/syzbot-assets/8547e3dd1cca/ci-upstre=
-am-kmsan-gce-c7402612.html
-> > > > (ouch, 230Mb!) shows very limited coverage.
-> > >
-> > > *sigh*
-> > >
-> > > Did you think to look at the coverage results to check why the
-> > > numbers for XFS, ext4 and btrfs are all at 1%?
-> >
-> > Hmmm, thanks for pointing it out!
-> >
-> > Our ci-upstream-kmsan-gce instance is configured in such a way that
-> > the fuzzer program is quite restricted in what it can do. Apparently,
-> > it also lacks capabilities to do mounts, so we get almost no coverage
-> > in fs/*/**. I'll check whether the lack of permissions to mount() was
-> > intended.
-> >
-> > On the other hand, the ci-upstream-kmsan-gce-386 instance does not
-> > have such restrictions at all and we do see fs/ coverage there:
-> > https://storage.googleapis.com/syzbot-assets/609dc759f08b/ci-upstream-k=
-msan-gce-386-0e389834.html
-> >
-> > It's still quite low for fs/xfs, which is explainable -- we almost
-> > immediately hit "KMSAN: uninit-value in __crc32c_le_base". For the
-> > same reason, it's also somewhat lower than could be elsewhere as well
-> > -- we spend too much time restarting VMs after crashes. Once the fix
-> > patch reaches the fuzzed kernel tree, ci-upstream-kmsan-gce-386 should
-> > be back to normal.
-> >
-> > If we want to see how deep syzbot can go into the fs/ code in general,
-> > it's better to look at the KASAN instance coverage:
-> > https://storage.googleapis.com/syzbot-assets/12b7d6ca74e6/ci-upstream-k=
-asan-gce-root-0e389834.html
-> >  (*)
-> >
-> > Here e.g. fs/ext4 is already 63% and fs/xfs is 16%.
->
-> Actually, that XFS number is an excellent result. I don't think we
-> can do much better than that.
->
-> I know, that's not the response you expected.
->
-> Everyone knows that higher coverage numbers are better because it
-> means we've tested more code, right?
->
-> Wrong.
->
-> When it comes to fuzzing based attacks, the earlier the bad data is
-> detected and rejected the better the result. We should see lower
-> coverage of the code the better the detection and rejection
-> algorithms get.  i.e. The detection code should be extensively
-> covered, but the rest of the code should have very little coverage
-> because of how quickly the filesystem reacts to fatal object
-> corruption.
->
-> And the evidence for this in the XFS coverage results?
->
-> Take a look at fs/xfs/libxfs/xfs_inode_buf.c. Every single line of
-> the disk inode format verifiers has been covered (i.e. every
-> possible corruption case we can detect has been exercised).
->
-> That's good.
->
-> However, there is zero coverage of core formatting functions like
-> xfs_inode_to_disk() that indicate no inodes have been successfully
-> modified and written back to disk.
->
-> That's *even better*.
->
-> Think about that for a minute.
->
-> The coverage data is telling us that we've read lots of corrupt
-> inodes and rejected them, but the testing has made almost no
-> successful inode modifications that have been written back to stable
-> storage. That's because of widespread corruption in the images
-> resulting in a fatal corruption being detected before modofications
-> are being made or are being aborted before they are pushed back to
-> the corrupt image.
->
-> The same pattern appears for most other major on-disk subsystems.
-> They either have not been exercised at all (e.g. extent btree code) or
-> the only code in the subsystem that has significant coverage is the
-> object lookup code and the format verifiers the lookup code runs.
->
-> This is an excellent result because it proves that XFS is detecting
-> the majority of corrupt structures in it's initial object
-> search iteration paths. Corruption is not getting past the
-> first read from disk and so no code other than the search/lookup
-> code and the verifiers is getting run.
->
-> Put simply: we are not letting corrupt structures get into code
-> paths where they can be mis-interpretted and do damage.
->
-> From my perspective as an experienced filesystem developer, this is
-> exactly the sort of coverage pattern I would like to see from -all
-> filesystems- when they are fed nothing but extensively corrupted
-> filesystems the way syzbot does.
->
-> The basic truth is that if filesystems are good at corruption
-> detection and rejection, they should have very low code coverage
-> numbers from syzbot testing.
->
-> -Dave.
+On 19/12/2023 09:22, Tao Zhang wrote:
+> 
+> On 12/18/2023 6:34 PM, Suzuki K Poulose wrote:
+>> On 21/11/2023 02:24, Tao Zhang wrote:
+>>> CMB (continuous multi-bit) is one of TPDM's dataset type. CMB subunit
+>>> can be enabled for data collection by writing 1 to the first bit of
+>>> CMB_CR register. This change is to add enable/disable function for
+>>> CMB dataset by writing CMB_CR register.
+>>>
+>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+>>> ---
+>>>   drivers/hwtracing/coresight/coresight-tpdm.c | 31 ++++++++++++++++++++
+>>>   drivers/hwtracing/coresight/coresight-tpdm.h |  8 +++++
+>>>   2 files changed, 39 insertions(+)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> index 97654aa4b772..c8bb38822e08 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> @@ -131,6 +131,11 @@ static bool tpdm_has_dsb_dataset(struct 
+>>> tpdm_drvdata *drvdata)
+>>>       return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
+>>>   }
+>>>   +static bool tpdm_has_cmb_dataset(struct tpdm_drvdata *drvdata)
+>>> +{
+>>> +    return (drvdata->datasets & TPDM_PIDR0_DS_CMB);
+>>> +}
+>>> +
+>>>   static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
+>>>                      struct attribute *attr, int n)
+>>>   {
+>>> @@ -267,6 +272,17 @@ static void tpdm_enable_dsb(struct tpdm_drvdata 
+>>> *drvdata)
+>>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>>   }
+>>>   +static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+>>> +{
+>>> +    u32 val;
+>>> +
+>>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>>> +    val |= TPDM_CMB_CR_ENA;
+>>> +
+>>> +    /* Set the enable bit of CMB control register to 1 */
+>>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>>> +}
+>>> +
+>>>   /*
+>>>    * TPDM enable operations
+>>>    * The TPDM or Monitor serves as data collection component for various
+>>> @@ -281,6 +297,8 @@ static void __tpdm_enable(struct tpdm_drvdata 
+>>> *drvdata)
+>>>         if (tpdm_has_dsb_dataset(drvdata))
+>>>           tpdm_enable_dsb(drvdata);
+>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>> +        tpdm_enable_cmb(drvdata);
+>>
+>> Don't we need to add this check in the "property read" section ?
+>> Otherwise, we could generate warnings unnecessarily ?
+>>
+>> i.e, if (tpdm_has_cmb_..())
+>>       rc |= fwnode_..read_property(cmb-elem-size...)
+>>
+>> Similarly for DSB.
+> 
+> TPDM and TPDA are two independent hardware. If you want to modify them 
+> in this way, the
+> 
 
-It is quite insightful that if we throw random garbage at a
-well-written API then low coverage indicates that the checks are doing
-their job.
+You don't have to, as long as the header files are included ?
 
-But this is not how syzkaller works.
-Our goal is to produce as many well-formed inputs as possible to
-exercise most of the code under test.
-Then, a small step sideways from every well-formed input might trigger
-a bug here or there.
-It might as well be rejected early by the elaborate input checks (in
-which case we won't be finding any new bugs), but anyway we should be
-covering bigger parts of the code by just running valid inputs.
+Read my response in the other patch, where it applies.
 
-For certain subsystems with very limited APIs it is fairly easy to
-generate all the possible valid inputs by simply combining syscalls.
-In most cases we are still limited by the combinatorial explosion of
-the search space though.
-But if there are implicit dependencies that the fuzzer cannot deduce
-from the descriptions, it will blindly flip bits in known inputs in
-the hope to produce a new valid input - mostly in vain.
-So seeing little coverage for a subsystem usually means that for some
-reason we are just barely scratching the API surface.
+Suzuki
 
-Compare this with fuzzing a C compiler.
-Doing something like `head /dev/random > 1.c && gcc -c 1.c` in a loop
-may eventually trigger interesting bugs in the compiler backend, but
-most of the time the programs will be rejected by the lexer which is
-smart enough to not accept garbage.
-Is the lexer written correctly? Yes, as long as it does not crash on
-these random inputs.
-Does low coverage indicate that the whole compiler is written
-correctly? Not necessarily. Tools like csmith will easily get past the
-lexer checks by generating structurally valid programs that might be
-broken from the semantic point of view.
+> two independent drivers will be coupled to each other. At the same time, 
+> this configuration
+> 
+> is manually set in the devicetree by the users, and this check cannot 
+> avoid manual setting errors.
+> 
+>   Even if the configuration is wrong, it will not cause the driver to 
+> stop working, it will only cause
+> 
+> the data to be lost from the TPDM.
+> 
+>>
+>>>       CS_LOCK(drvdata->base);
+>>>   }
+>>> @@ -314,6 +332,17 @@ static void tpdm_disable_dsb(struct tpdm_drvdata 
+>>> *drvdata)
+>>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>>   }
+>>>   +static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
+>>> +{
+>>> +    u32 val;
+>>> +
+>>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>>> +    val &= ~TPDM_CMB_CR_ENA;
+>>> +
+>>> +    /* Set the enable bit of CMB control register to 0 */
+>>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>>> +}
+>>> +
+>>>   /* TPDM disable operations */
+>>>   static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+>>>   {
+>>> @@ -321,6 +350,8 @@ static void __tpdm_disable(struct tpdm_drvdata 
+>>> *drvdata)
+>>>         if (tpdm_has_dsb_dataset(drvdata))
+>>>           tpdm_disable_dsb(drvdata);
+>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>> +        tpdm_disable_cmb(drvdata);
+>>
+>> minor nit: Instead of having these :
+>>
+>>     if (tpdm_has_XY_()
+>>         tpdm_{enable/disable}_XY_()
+>> I prefer :
+>>
+>>     tpdm_{enable/disable}_XY_
+>>
+>> and the helper take care of returning early if the feature is
+>> not present.
+> Does the following sample modification meet your expectation?
+> static void tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
+> {
+>      u32 val;
+> 
+>      if (tpdm_has_dsb_dataset(drvdata)) {
+>          /* Set the enable bit of DSB control register to 0 */
+>          val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+>          val &= ~TPDM_DSB_CR_ENA;
+>          writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>      }
+> }
+> 
+> static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
+> {
+>      u32 val;
+> 
+>      if (tpdm_has_cmb_dataset(drvdata)) {
+>          val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>          val &= ~TPDM_CMB_CR_ENA;
+> 
+>          /* Set the enable bit of CMB control register to 0 */
+>          writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>      }
+> }
+> 
+> /* TPDM disable operations */
+> static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+> {
+>      CS_UNLOCK(drvdata->base);
+> 
+>      tpdm_disable_dsb(drvdata);
+>      tpdm_disable_cmb(drvdata);
+> 
 
-For some parts of the kernel syzkaller acts like csmith, because its
-knowledge of the data layout is just enough to generate valid inputs.
-For file systems, however, we might be lagging behind.
-The last year changes in the fuzzer that we mentioned earlier improved
-the initial seeding of file system images and added some basic
-mutations, but there is still a lot to do.
+Yes, thats exactly I was looking for.
 
-Hope this helps.
+>      CS_LOCK(drvdata->base);
+> 
+> }
+> 
+> 
+> Best,
+> 
+> Tao
+> 
+>>
+>>
+>> Suzuki
+>>
+>>
+>>>         CS_LOCK(drvdata->base);
+>>>   }
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
+>>> b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>> index 4115b2a17b8d..0098c58dfdd6 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>> @@ -9,6 +9,12 @@
+>>>   /* The max number of the datasets that TPDM supports */
+>>>   #define TPDM_DATASETS       7
+>>>   +/* CMB Subunit Registers */
+>>> +#define TPDM_CMB_CR        (0xA00)
+>>> +
+>>> +/* Enable bit for CMB subunit */
+>>> +#define TPDM_CMB_CR_ENA        BIT(0)
+>>> +
+>>>   /* DSB Subunit Registers */
+>>>   #define TPDM_DSB_CR        (0x780)
+>>>   #define TPDM_DSB_TIER        (0x784)
+>>> @@ -79,10 +85,12 @@
+>>>    *
+>>>    * PERIPHIDR0[0] : Fix to 1 if ImplDef subunit present, else 0
+>>>    * PERIPHIDR0[1] : Fix to 1 if DSB subunit present, else 0
+>>> + * PERIPHIDR0[2] : Fix to 1 if CMB subunit present, else 0
+>>>    */
+>>>     #define TPDM_PIDR0_DS_IMPDEF    BIT(0)
+>>>   #define TPDM_PIDR0_DS_DSB    BIT(1)
+>>> +#define TPDM_PIDR0_DS_CMB    BIT(2)
+>>>     #define TPDM_DSB_MAX_LINES    256
+>>>   /* MAX number of EDCR registers */
+>>
+
 
