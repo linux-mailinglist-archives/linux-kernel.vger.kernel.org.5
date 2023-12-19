@@ -1,123 +1,211 @@
-Return-Path: <linux-kernel+bounces-5119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C75908186BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:57:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CFCA8186BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBB481C23A9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:57:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07727284968
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D985418E20;
-	Tue, 19 Dec 2023 11:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CCBB15E90;
+	Tue, 19 Dec 2023 11:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sUoBuG6g"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Fj4jtHZx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3B0818B04;
-	Tue, 19 Dec 2023 11:56:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2799C433C8;
-	Tue, 19 Dec 2023 11:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702987013;
-	bh=zHISBvsIcJR3OT2FDj6duE1bfStgYazzhYoF/8iQEvM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sUoBuG6ga2p+k2lnkG33dKZ6x5zB4zLfgae7TsCT/D3yYb4nUX7+uXuej/GaO6H4G
-	 xABOiYmHr2G8gP57997/aN5aA9Hi/YG3xyENJXKvZ1SufFx80IgGipzwdiZxCey61w
-	 GKfGGugatD9/KLoXpvXtCfml5yj+yanI8Ga3PZWcFfyERm3BTni+6z+Fjh5WpI8tEN
-	 ILyb/O2dBjM7FmPI05QSNnvL6YCEvvwqyJGwNhu/jO6cc4JH9KQsnznRbF+Yvg1HLO
-	 9os382r35AvC3X7DB4SMfbwZ6FXSgDY3+nWE3ef90jnU7crClhxLMRCjcft9Wqd0/+
-	 W5rOlz/Pz8Vpg==
-Date: Tue, 19 Dec 2023 12:56:50 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/3] rcu: Defer RCU kthreads wakeup when CPU is dying
-Message-ID: <ZYGFAtLNQsLUWGPr@lothringen>
-References: <20231218231916.11719-1-frederic@kernel.org>
- <20231218231916.11719-3-frederic@kernel.org>
- <65811051.d40a0220.75c79.66cf@mx.google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4BFB19BBD
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so5494339a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 03:57:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702987020; x=1703591820; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ybdWg0p5ieAxtL6thx9FlqVpkKiWZwVkAS/JvS6cgMc=;
+        b=Fj4jtHZxA7wMv+c9GAvWzMgNPt7fmryevnzjAnQxLzFVD6BjgckUqHAh/EMfROSksY
+         I2o+f79qFH9Xl78z74ewMqvKCIKXv5K87WrF1L1gy/JcVl69ar5LmfkULP1N5yXsOPcz
+         JMJn9Dk4LUWlJcXH52NAk39pxjiZFU5qGQ0IBSNoTqrj8NxYRXGEpblfzFhI82x0y50G
+         LW/IJs2A92Cu04Tqujn2n+G1z8LwHx019van5ST6rDSU80mE9PgJnZbAeIejYFksIxuX
+         FRy1GhCSEDKDP/D+kFnKsMA5AbJj5gOoluFyRaSVJSKRo0HE7OQN9q9fRb73aOzURP95
+         G6sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702987020; x=1703591820;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ybdWg0p5ieAxtL6thx9FlqVpkKiWZwVkAS/JvS6cgMc=;
+        b=NBvK1OAaPIPyP/mEmzuJi/L0p4eVwhWczY5BC/3OeP9Or8de0MMcXAGYxJtBYdBjtm
+         4zS9XuIQfOQRQ3/u2RUjOAsPk0pxF8AKJJmV86JvHZ933bujxF0MZvks7lnCCUMYdnie
+         c89U3DxlAev1+CW3RpqdIAD+v7A1nGsdHHerTO2ejS06pRH9rxO6Ges1FQjMa1U78pHF
+         oPqjhtJoHtJprxLeZ/Q+6idkFt5RDS57WQbQKzk6zrDBwzWoq/XbPGzeEhVPe5PJzKEU
+         8oXjEDhwgSa4GHO3RdtcSs4Tzx2DgpgsLy1NsftTyinii95Ki3rSgZEnmnPfjwso4FKH
+         quCg==
+X-Gm-Message-State: AOJu0YwaWQkwzmYcy9aLK5+hyOYHdWBRHRwO7WJdU39iSqrHGE6pwnkS
+	g9PpD9exI1Cj4iB+qXGkkiUiHV7anpbxX77n854=
+X-Google-Smtp-Source: AGHT+IFr/VSXFaGrMriE3FvKF1pNiIXNzuKVUdZZ1ydYQaWnE16tajT3EdnNVw5gCcv8KtDH1tcfXw==
+X-Received: by 2002:a17:907:8688:b0:a23:682b:519b with SMTP id qa8-20020a170907868800b00a23682b519bmr994903ejc.152.1702987020005;
+        Tue, 19 Dec 2023 03:57:00 -0800 (PST)
+Received: from [192.168.199.59] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
+        by smtp.gmail.com with ESMTPSA id x24-20020a170906135800b00a25501f4160sm458297ejb.1.2023.12.19.03.56.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 03:56:59 -0800 (PST)
+Message-ID: <cb2a921c-5c8e-44c8-af1d-78d877977b62@linaro.org>
+Date: Tue, 19 Dec 2023 12:56:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65811051.d40a0220.75c79.66cf@mx.google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 17/34] media: iris: implement vb2_ops queue setup
+Content-Language: en-US
+To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
+ andersson@kernel.org, mchehab@kernel.org, bryan.odonoghue@linaro.org
+Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-18-git-send-email-quic_dikshita@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <1702899149-21321-18-git-send-email-quic_dikshita@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 18, 2023 at 10:38:52PM -0500, Joel Fernandes wrote:
-> On Tue, Dec 19, 2023 at 12:19:15AM +0100, Frederic Weisbecker wrote:
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 3ac3c846105f..157f3ca2a9b5 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1013,6 +1013,38 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
-> >  	return needmore;
-> >  }
-> >  
-> > +static void swake_up_one_online_ipi(void *arg)
-> > +{
-> > +	struct swait_queue_head *wqh = arg;
-> > +
-> > +	swake_up_one(wqh);
-> > +}
+On 18.12.2023 12:32, Dikshita Agarwal wrote:
+> Implement queue_setup vb2_ops.
+> Calculate the buffer count and buffer size as par video
+> hardware requirement and updates to client.
+> Also, allocate the video driver buffers for output and
+> capture plane.
 > 
-> Speaking of, the scheduler refuses to do remote-IPI-style wakeups
-> (TTWU_QUEUE) whenever the destination CPU is in a hotplug state.
-> 
-> static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
-> {
-> 	/*
-> 	 * Do not complicate things with the async wake_list while the CPU is
-> 	 * in hotplug state.
-> 	 */
-> 	if (!cpu_active(cpu))
-> 		return false;
-> 	...
-> }
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> ---
+[...]
 
-Yes, because all irrelevant tasks must be migrated out upon
-CPUHP_AP_SCHED_WAIT_EMPTY, thanks to balance_push_set().
+> +static int input_min_count(struct iris_inst *inst)
+> +{
+> +	return MIN_BUFFERS;
+> +}
+Why is this a function?
 
-(Though right now I'm missing the flush_smp_call_function_queue() call that flushes
-the ttwu queue between sched_cpu_deactivate() and sched_cpu_wait_empty())
+> +
+> +static int output_min_count(struct iris_inst *inst)
+> +{
+> +	int output_min_count;
+> +
+> +	switch (inst->codec) {
+> +	case H264:
+> +	case HEVC:
+> +		output_min_count = 4;
+> +		break;
+> +	case VP9:
+> +		output_min_count = 9;
+> +		break;
+> +	default:
+> +		output_min_count = 4;
+> +		break;
+> +	}
 
-> 
-> Along these lines, I wonder if, it is safe to do a wakeup in this fashion (as
-> done by this patch) if the destination CPU was also going down.
-> 
-> Also the same ttwu_queue_cond() checks for CPU affinities before deciding to
-> not do the IPI-style queue.
-> 
-> 	/* Ensure the task will still be allowed to run on the CPU. */
-> 	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
-> 		return false;
-> 
-> Not that anyone should be changing RCU thread priorities around while the IPI
-> is in flight, but...
-> 
-> I wonder if the reason TTWU is excessively paranoid is that the IPI can be
-> delayed for example, leading to race conditions.
+switch (inst->codec) {
+case VP9:
+	return 9;
+case H264:
+case HEVC:
+default:
+	return 4;
+}
 
-It's because nothing irrelevant must be queued after sched_cpu_wait_empty().
+> +
+> +	return output_min_count;
+> +}
+> +
+> +int iris_get_buf_min_count(struct iris_inst *inst,
+> +			   enum iris_buffer_type buffer_type)
+> +{
+> +	switch (buffer_type) {
+> +	case BUF_INPUT:
+> +		return input_min_count(inst);
+> +	case BUF_OUTPUT:
+> +		return output_min_count(inst);
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static u32 input_buffer_size(struct iris_inst *inst)
+> +{
+> +	u32 base_res_mbs = NUM_MBS_4k;
+> +	u32 frame_size, num_mbs;
+> +	struct v4l2_format *f;
+> +	u32 div_factor = 1;
+> +	u32 codec;
+> +
+> +	f = inst->fmt_src;
+> +	codec = f->fmt.pix_mp.pixelformat;
+> +
+> +	num_mbs = get_mbpf(inst);
+> +	if (num_mbs > NUM_MBS_4k) {
+> +		div_factor = 4;
+> +		base_res_mbs = inst->cap[MBPF].value;
+> +	} else {
+> +		base_res_mbs = NUM_MBS_4k;
+> +		if (codec == V4L2_PIX_FMT_VP9)
+> +			div_factor = 1;
+> +		else
+> +			div_factor = 2;
+> +	}
+> +
+> +	frame_size = base_res_mbs * MB_IN_PIXEL * 3 / 2 / div_factor;
+that's a bit magic..
 
-But note this patch does something different, it doesn't defer the runqueue
-enqueue like ttwu queue does. It defers the whole actual wakeup. This means that the
-decision as to where to queue the task is delegated to an online CPU. So it's
-not the same constraints. Waking up a task _from_ a CPU that is active or not but
-at least online is supposed to be fine.
+> +
+> +	 /* multiply by 10/8 (1.25) to get size for 10 bit case */
+misaligned
 
-Thanks.
+
+Konrad
 
