@@ -1,179 +1,154 @@
-Return-Path: <linux-kernel+bounces-5404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B28E8818A51
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C09F818A58
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:43:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D851B1C248F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:42:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28231C2493F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CDE1C6B4;
-	Tue, 19 Dec 2023 14:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30C61F933;
+	Tue, 19 Dec 2023 14:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0tuLIkT"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Yu9lYrTm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2088.outbound.protection.outlook.com [40.107.92.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF5ED2FC;
-	Tue, 19 Dec 2023 14:42:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5A3FC433C8;
-	Tue, 19 Dec 2023 14:42:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702996935;
-	bh=eBFadiHuXwmJfGGqWpIvFNr/M7Pv8cI/lMfcRTLRiAM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=c0tuLIkTYsPGnlHcAqYGRIeFk6q49PcnQUqZOMVID722iDuTnl3CMxcCyNKxZRWSd
-	 F1aDctTLeA3ISQgMRhwWd5JHEY3nrLGTKwLAYYnKPIUW3tfpDjQZabLBjEE15ZE1/+
-	 xtI4oerLSn8apddbF1b3bpT4bvopRC1LhkyFDWLkekXOP2t3mP/khcxYe28XbBCU6c
-	 jdvY+ZUoS9wzXJ6So72ILzPHJ2ZGCc6914ATV77RuFod3WHGEmUuMj2jXEiOpej4eb
-	 WR+Mnqgvvdrle+eHgqkbh/Q9JSQe6HrPxPXJsjAIyNWlwXpWo+PdiPRW0liPAJl6lp
-	 saiKTvmDjuaoQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Daniel Berlin <dberlin@dberlin.org>
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>,  Arend van Spriel
- <aspriel@gmail.com>,  Franky Lin <franky.lin@broadcom.com>,  Hante
- Meuleman <hante.meuleman@broadcom.com>,  Hector Martin <marcan@marcan.st>,
-  SHA-cyfmac-dev-list@infineon.com,  asahi@lists.linux.dev,
-  brcm80211-dev-list.pdl@broadcom.com,  linux-kernel@vger.kernel.org,
-  linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
-References: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
-	<170281231651.2255653.7498073085103487666.kvalo@kernel.org>
-	<18c80d15e30.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-	<1b51997f-2994-46e8-ac58-90106d1c486d@marcan.st>
-	<c392f901-789a-42e2-8cf7-5e246365a1ca@broadcom.com>
-	<CAF4BwTXNtu30DAgBXo4auDaDK0iWc9Ch8f=EH+facQ-_F-oMUQ@mail.gmail.com>
-Date: Tue, 19 Dec 2023 16:42:10 +0200
-In-Reply-To: <CAF4BwTXNtu30DAgBXo4auDaDK0iWc9Ch8f=EH+facQ-_F-oMUQ@mail.gmail.com>
-	(Daniel Berlin's message of "Tue, 19 Dec 2023 08:07:16 -0600")
-Message-ID: <87r0jiqmnx.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402EC1DA46
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kqRlpY14uZXnPeD0ETWMfRHLaWa3GLJwMO9aalIBkyj7Hgsjnfw+JeuEBjVUhUtdtpmIGURFDolg5kgW6g/Pxg1gIy7ZXA96SlsnOyf/VRBbyBKrcNVCpEJD1Lsa02yVvL2raDct78QQ9vIR5Gc9UM5X72HvqQ5yr0ctM6XuZ7ULaHe59m/n55gOcVAEAibqQj5e4CIzC4/UXpqV7nLxOam0jq9LTpq+AdgOyZLf/6bXsd5tTfSvYSIRFAOOzLMOqEQvB4Ba+sgRo9zgbpWy/XyJsicYtgJVEjrwYUNl5/WmF+ZtEWwHxVwtHPxcJP/oFq+zRQ4e3oGz/EAp5m2zGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=baN8nImSBKBLQmJyElcaqE4QREh7oO7NQzpEacqSzIg=;
+ b=UsCdVBJYJP+rET64f3L/5ZFD79mQ6j2Y9WP1OwuURfKb91LkZhtVmJr66vmRZQEK19GEL7zpFkm+S4fw3aaXA7kBChnZzIc6Z61wV1V6E/yQeU61bc+gTz/aRqADoQB1IsyiInWuGl1bI+w6EwLRH+c67ocTPqX5RpVlFt0m+70rktnJWHJW8rF7w8tOqN4Tsyt1gjBuvWUqnUBCu1DXsxgb035wuNYk3DvX/hSmbs/FMOw158AWq3W7GcOE/flbFGCpkZP4nt2pnqDjw9bxfPlfW4FRt7MBJNn/30r9NNz53ntp3SA/r4Umx38qXmxBcsuO4xjUGIEUB7IVpJK12g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=baN8nImSBKBLQmJyElcaqE4QREh7oO7NQzpEacqSzIg=;
+ b=Yu9lYrTmKSd83p0FNlu7G2DJ9nP1Npm+GR3ulinro/KmJ/Z13yGx+Z9p2G5S+WWaGE5bg6hNYDMVjl6mhF93ITNjj7RTL7ObVwXY7gINcZwtbd4bupHF2gRFx0uC14diwBvFM+QEqKYjAvrFff7K6KwykJloCqHNjXIsbKBf/2n2dTHy/eHG0QStGkWnFrMe92wTZv75A6vdpKqKojmY4j0WePjVRfRlBn2ttGVPMe/jNB9EDQma2ryqaX8QnciC/Rq1oBaY5upnx7PjKBWjZB5FW+HIIw9agOZ2HfCILCtC7IvlAzcoT9Ic3bZXNbx88EdKhSCnyvWSdzHR061aUw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5040.namprd12.prod.outlook.com (2603:10b6:5:38b::19)
+ by IA0PR12MB7507.namprd12.prod.outlook.com (2603:10b6:208:441::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.39; Tue, 19 Dec
+ 2023 14:42:26 +0000
+Received: from DM4PR12MB5040.namprd12.prod.outlook.com
+ ([fe80::6f3c:cedb:bf1e:7504]) by DM4PR12MB5040.namprd12.prod.outlook.com
+ ([fe80::6f3c:cedb:bf1e:7504%4]) with mapi id 15.20.7091.034; Tue, 19 Dec 2023
+ 14:42:26 +0000
+Message-ID: <acd4f5b1-b1d7-40e0-ac80-573e2d5cfe85@nvidia.com>
+Date: Tue, 19 Dec 2023 16:42:20 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/6] nvme: add csi, ms and nuse to sysfs
+To: Keith Busch <kbusch@kernel.org>, Daniel Wagner <dwagner@suse.de>
+Cc: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+ Hannes Reinecke <hare@suse.de>, Chaitanya Kulkarni <chaitanyak@nvidia.com>
+References: <20231218165954.29652-1-dwagner@suse.de>
+ <ZYDN_G-VP2_pn3kC@kbusch-mbp.dhcp.thefacebook.com>
+Content-Language: en-US
+From: Max Gurtovoy <mgurtovoy@nvidia.com>
+In-Reply-To: <ZYDN_G-VP2_pn3kC@kbusch-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P265CA0160.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2c7::19) To DM4PR12MB5040.namprd12.prod.outlook.com
+ (2603:10b6:5:38b::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5040:EE_|IA0PR12MB7507:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1c92d742-f570-48f1-9e2e-08dc00a0b7bd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	AEHO73r8AaSBMfv3s9go3FfvK0Y2wYhQsjAcSSsqghCd27R8Ju4KPhtgaeDzJmG55o+K0DVLkwE6rJDE6uo5XtsTg5cgydR6qPYEengUTLi0/jA7wKK04bHKVnCkeHpYO6b3ArMB/N/k3E8wOOkk3u83KVhqZWC7VIH6o3YQVONf+J7/CBDpNq4Avm46TbDCgNjkQl89sIukG0tgsz224Vm1e+k4LgymM7BFOrU47HU52DVlvU4r9wSV06LapvIjiYRn7shR0pNJAK3mSzWj+sK14hYHkHapCxAV/yc1dwZx7IGTzNqex3inc3lfGeeiL4gRN8bliuILz2rWTRIwigvlKWMC0DBZ/xRA/ZXzq2h4HzYspERTo/CfL9WlDf4dARjY7y+2KkVHryT8DT32iMrvJ2OPM1YwSV+wLgQ+d8fMleVB4Bqur+dYYq65vKrWpZ+QmzkvqGUGKXGVuaXwrbtfuEtMXkMEkfOSN3ZMWl0Srpwbo/zJE9+2+6l7OIEgbrY3mNOJv1AZrBL+a+Ut3KiQ9YapuFgPV+UPyz5ZFc4EeX0uZ6cVM4/RwIYBcxt1FiQO4mHIp6RY+YKVTUiQApepeibi4PgeXPJlo3wCC9gpFotvBS9/p36+54KXzbRu4wxUMuF+UrJRJRvgFJqdhQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5040.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(366004)(346002)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(38100700002)(2616005)(107886003)(26005)(36756003)(86362001)(31696002)(31686004)(6512007)(6666004)(6506007)(478600001)(316002)(54906003)(110136005)(66946007)(66556008)(66476007)(4744005)(4326008)(8676002)(8936002)(2906002)(5660300002)(53546011)(41300700001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ai95MFlEb0U1WWNIOG95R2JOd1BYZjNZUkRPL0l6cXpvQkJ0bXVGNmNxRnF4?=
+ =?utf-8?B?YnB4RDIwMUppM0ZleURYZklPaXlUUjdpU3paeXFQQXJYSGpjQ0pBcHp6MjNL?=
+ =?utf-8?B?dmI0MTV6blFnRjRtZXlRM2NVWUw2RzlBQWlyYWdHYndZRjVjVVp5ekxPb01G?=
+ =?utf-8?B?dnc4Y25Feko1cTd1Q2lISDBXU3hmZ1Q4MUNNZ0pqTkdNTG5YenFOS3huTnpz?=
+ =?utf-8?B?VWpwclhtYkVJWExMNi9XTHVwZ01sWWpZWG1ZbFRGNnRuREhSR05LckpaVFJp?=
+ =?utf-8?B?bERWdGNvRGMxRlZiTjFjVHVMUG5vV29NT3c5NWVDdmkrUmdrTmtFaUtBWWht?=
+ =?utf-8?B?OE9DZzJGOU5lUnZiVzVuc0I0cmZTdTMzV3U3UWRDRk5zRzRtMHBiSUpSZmwz?=
+ =?utf-8?B?YVpPUEZHdUtKZms1WWx2S2ZKY0ZZdm42OUNYa04wb1k1RW4wY1hUait3YlM0?=
+ =?utf-8?B?SWNaUkRDeE5CNG5Nck1JUzR5a1kxcG85NW5Ua1ljYzdvOWN1U3hubXcrNy9v?=
+ =?utf-8?B?Q1R4ak4vTVh4SzBCY1YwZkgxWGh3MGc4UGllTzdaUWEreERmSzR0aVhic00v?=
+ =?utf-8?B?a3RPYmtYWlY3UGtLTDNOSVZxTFJRTjJZa2NYdzlvaldGQnBmcmlESDBoa0V6?=
+ =?utf-8?B?WC90Q3BqUWI3MU1WTEx3RGNBQlUrVnRONmdVVXR3VGw0dnJSVElpdVp0R1Bp?=
+ =?utf-8?B?UnVrZnlFUG9VMFFWa1BaWjAwUmNndXY5R2N5WlNnM2ZBOHpGVXMrUXRpM3FZ?=
+ =?utf-8?B?dmNBZ3BYY0czRlY1a0dxN21SN3ArVXowaVZmMlRYNHg4NkZvbFdWSkN1U0tR?=
+ =?utf-8?B?bFZhR3pWa0RuQTFRK0hlRndvd3Vod3RQZ1A0WVVGNGg2d1dONGRIWmNoZ1dB?=
+ =?utf-8?B?OExMaUNOZDNGamRKQVVqL2lCVFR1bmJIamcyVHpqcyttRTJNTmtQTWtUTEdH?=
+ =?utf-8?B?dXZLWTF2ZTJPUGV5YlpsL1pIZWV0WVQ5UEVBWjd6SmtNb1V1QlRONk1vVmVy?=
+ =?utf-8?B?MWsrcFBzTUlURjI0eEVZaTYrczF0NFNsVWRNYlZEOFJRV0lQd1lTcW44R3N5?=
+ =?utf-8?B?RDd0K21vdmdjNlNPSGwvYU1kTFdwOU1sU1JWMCt1Nm9yTE5vZldWdWVaazg0?=
+ =?utf-8?B?bFhWTVcwMHRKWkF2SExadWlWTlY1MHRkWnhTSVhWNmIxZi8wMk1ObzJSa2ZF?=
+ =?utf-8?B?WWFxbHFKN0FYVHNCeXljd3RmdFNXYTdKcTA3SEpMY0Npbk1wVGFGWUtTbHI2?=
+ =?utf-8?B?TUlsNGg2c3RDcGxFR0tvSmRRUWw0SHVhNXFhbzcwWTVZbFpIUEpQQlZEUC9O?=
+ =?utf-8?B?dXlaZVhrcmFEdkI2cmI3SWt2eXcvNW1qdnQzNTJ6SlAyTnJCcDloWi9lVVk2?=
+ =?utf-8?B?aUhQL1lNSzBET3R1a1pyTGpZUU1Zc2JIYTB6V0xDNWZ5M0gyMnlCZEkrOTFH?=
+ =?utf-8?B?Vnd5NXJ0WjdLRktKUmlUMXFjS1BqUTl3Sk5oNnROVTIxRzlpL1BtL0NtWGFV?=
+ =?utf-8?B?eXd4VkNOc1VlUTB3V3p3Zk55VkluSTB2TENad240VU5ZS1hZTnhXVjNGQ2Yz?=
+ =?utf-8?B?NnQ5Z29PbUduSlpaR2V4Tkc0SmZ2UXh2MEdkN2hNZVFKejlKRzhqV2pyR24v?=
+ =?utf-8?B?Q0tpaUY0WldpbGExakhPdUxsS2lQU1JKZ3pEWG95ZFJ0NVE4QmJneGtheGVL?=
+ =?utf-8?B?NTYxdERCbEQzK0c0Zi9aWnc2UGJzc3BpckJudE9jdDMrV0dJeWRWOUxsN0xT?=
+ =?utf-8?B?cUZDQlFTVWpsV3BZaGp1d1loSWdGT1VBRUNnQWttc1lIbnpoSmhsVjRyS2lj?=
+ =?utf-8?B?YjExeDEwODdSUGVLQ1VVeU9aOERkVUtsTDVPVUZZeGg4aUYyZXhwNWhTZVNq?=
+ =?utf-8?B?Y2pVWFBiTnVDdCttZXFhRzNYTERHNDZQQjYwZnovZWhpbEs0Zm1EeFZXa0Y0?=
+ =?utf-8?B?d2NhSjdHNFUwZGlqRjJuajIrS3lGTTk5MGFUZkJtb2laUXJ0ajVpSW1ZZk5P?=
+ =?utf-8?B?cWJFaXkzdllSTlBwRDU4OERVRWdCWjA4VXVzNk1pMWZPeEFYcjJJNDRkNWw3?=
+ =?utf-8?B?eTFuM0pJTW02N1FDYjNlVk54TkpJVmJWQll5R0lLRWZJdFN5Q085TWZNZHU3?=
+ =?utf-8?Q?LMs7hqPSXxYo00SotHvDGFITF?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c92d742-f570-48f1-9e2e-08dc00a0b7bd
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5040.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 14:42:25.9745
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dBC7kDDtQlIjTcKLiczVJs15HsnDsfImiwsTP2nSTsPrGOpFk1p7Nerk0nBNmlWZRr7m9zTKGNmqwB9YNyvtKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7507
 
-Daniel Berlin <dberlin@dberlin.org> writes:
+Hi Keith,
 
-> On Tue, Dec 19, 2023 at 7:46=E2=80=AFAM Arend van Spriel <arend.vanspriel=
-@broadcom.com> wrote:
->
->  On 12/19/2023 12:01 PM, Hector Martin wrote:
->  >=20
->  >=20
->  > On 2023/12/19 17:52, Arend Van Spriel wrote:
->  >> On December 17, 2023 12:25:23 PM Kalle Valo <kvalo@kernel.org> wrote:
->  >>
->  >>> Hector Martin <marcan@marcan.st> wrote:
->  >>>
->  >>>> Using the WSEC command instead of sae_password seems to be the supp=
-orted
->  >>>> mechanism on newer firmware, and also how the brcmdhd driver does i=
-t.
->  >>>>
->  >>>> According to user reports [1], the sae_password codepath doesn't ac=
-tually
->  >>>> work on machines with Cypress chips anyway, so no harm in removing =
-it.
->  >>>>
->  >>>> This makes WPA3 work with iwd, or with wpa_supplicant pending a sup=
-port
->  >>>> patchset [2].
->  >>>>
->  >>>> [1] https://rachelbythebay.com/w/2023/11/06/wpa3/
->  >>>> [2] http://lists.infradead.org/pipermail/hostap/2023-July/041653.ht=
-ml
->  >>>>
->  >>>> Signed-off-by: Hector Martin <marcan@marcan.st>
->  >>>> Reviewed-by: Neal Gompa <neal@gompa.dev>
->  >>>
->  >>> Arend, what do you think?
->  >>>
->  >>> We recently talked about people testing brcmfmac patches, has anyone=
- else
->  >>> tested this?
->  >>
->  >> Not sure I already replied so maybe I am repeating myself. I would pr=
-efer
->  >> to keep the Cypress sae_password path as well although it reportedly =
-does
->  >> not work. The vendor support in the driver can be used to accommodate=
- for
->  >> that. The other option would be to have people with Cypress chipset t=
-est
->  >> this patch. If that works for both we can consider dropping the
->  >> sae_password path.
->  >>
->  >> Regards,
->  >> Arend
->  >=20
->  > So, if nobody from Cypress chimes in ever, and nobody cares nor tests
->  > Cypress chipsets, are we keeping any and all existing Cypress code-pat=
-hs
->  > as bitrotting code forever and adding gratuitous conditionals every ti=
-me
->  > any functionality needs to change "just in case it breaks Cypress" even
->  > though it has been tested compatible on Broadcom chipsets/firmware?
->  >=20
->  > Because that's not sustainable long term.
->
->  You should look into WEXT just for the fun of it. If it were up to me=20
->  and a bunch of other people that would have been gone decades ago. Maybe=
-=20
->  a bad example if the sae_password is indeed not working, but the Cypress=
-=20
->  chipset is used in RPi3 and RPi4 so there must be a couple of users.
->
-> None of this refutes what he said
->
-> We already know it doesn't work for the rpi3/4 users because they are
-> blogging about it. The fact that you (not personally but as a
-> maintainer) don't know what works for who or doesn't is part of the
-> issue. Who are the users who this is for, how are you getting feedback
-> on what is working or not, how are you testing that it stays working?
->
-> I'm with Hector - this approach has mainly resulted in a driver that
-> kind of works for some people with no rhyme or reason - but nobody
-> knows who and what works for them. This isn't sustainable. You need
-> testing and feedback loops from some defined populations.
->
-> Of course, This will all become moot as we argue about it - more and
-> more is breaking for more and more people (for example, management
-> frames are totally broken on newer chips because we silently assume
-> version 1).
->
-> The driver is about one real upgrade cycle away from not working, in
-> current form, for the vast majority of its users.
->
-> One would hope we don't sit and argue about how to support the future
-> while waiting for that to happen, instead we should be moving the
-> driver forward. If we need to worry about specific older chip users,
-> we should name who they are, how many there are, and what the limits
-> of support are. We should then talk about the best way to support them
-> while still moving the world forward.
+On 19/12/2023 0:55, Keith Busch wrote:
+> On Mon, Dec 18, 2023 at 05:59:48PM +0100, Daniel Wagner wrote:
+>> Rebased on the current nvme/nvme-6.8 branch and added the Review tags. Also
+>> addressed the printk format issue pointed out by Chaitanya.
+> 
+> Thanks, added to nvme-6.8.
 
-Why is it that every patch Hector submits seems to end up with flame
-wars? Look, we have a lot to do and please understand that our time is
-limited. PLEASE listen to the review feedback and try to fix the patches
-for the next review round, so that we can get this patch applied and
-move forward.
+I'm rebasing my fixes to the PI bug (which are not trivial) on top of 
+nvme-6.8 and Daniel's series.
+I've found that this branch is missing some fixes from the master that 
+I've added manually to local nvme-6.8 branch.
+When do you plan to rebase the nvme-6.8 on top of master ?
+It will be helpful, otherwise my patches will not apply cleanly on your 
+branch. :)
 
-And also these "we know better than you do" comments from people who
-clearly are not really familiar with Linux wireless project, or even
-kernel development, are not helping. Especially if it's in an HTML mail
-(which our lists automatically drop).
+-Max.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
 
