@@ -1,245 +1,326 @@
-Return-Path: <linux-kernel+bounces-5024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69E42818578
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A4E8681857E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15483287061
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:44:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F53A287057
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9E514AA9;
-	Tue, 19 Dec 2023 10:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D0114AB9;
+	Tue, 19 Dec 2023 10:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FlvQAZDK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fZTUtm5v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1371714AA1
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5e74b4d5445so11527497b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:44:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD1914F61;
+	Tue, 19 Dec 2023 10:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d13e4f7abso26011855e9.2;
+        Tue, 19 Dec 2023 02:46:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702982656; x=1703587456; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UhHMpNMfgbUMAhgoV28Lk3mFhziVxmC13GCk6Yqzxho=;
-        b=FlvQAZDK2NGKqimF0d69b+vwqXwxF37k7NQZVMXpvKINr5W+oK+8bjWKhcCvHmrDHk
-         En+7MvXISxLLkhlx7SzkC4qGW1lPLub0kYiUh8icMUE1mtfF8+uIibE2194ztrY5/rNa
-         a2h+p6yMfjvx8DjPN48J0YlTUsArQ3A8msIzSccBB/cHte1aXJKb/OyRVl3QKmb9NVqR
-         BY+KPneB9cK+4WH5Fcxtv7q+G5YgN4+iK1t3nwywEtSjJrwyY4mwtu5tnpYL+EhBD9YQ
-         iOguKWpCVWmSDX/FvVprE8xcPcbC7HUmqnOX0PlNAyTAw1IKPYXlAGbXU9Eju6CERIAR
-         VxTQ==
+        d=gmail.com; s=20230601; t=1702982795; x=1703587595; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Ejj+XmDiZPNI7Zwigx9aUrZADahAhBeoVbqDqfrS6w=;
+        b=fZTUtm5vE7L6DgoEhKCuqefygDxXofUjk+v2uEGaCpxES51UcY3d0GbZ3OKsKfq5Rf
+         52GURl3qzegeAyXK1v+Qc2Z5mB+p3c5Rqc5l3UwH7BGkdS7URt2kXwAHhKF+rXsHavEN
+         vKSIQ4gY2woiJA5MBlExIRqpvte69To/rCOVPjzjiXdAR5Pmgj+21xt0tBBmGMa0oDUP
+         OYHLXDeHG2f3XD95cD0n1fprkJ8SafcfqV43xbKU6h0bzVM/qKwThETSAN6rmsL0YN6B
+         D9cmSawx74bnVZBa3v8KgWKlynwl/yaZjPVtnklZoFPTCr3nXK/wcB4zf8x+YBZGhzUc
+         ir5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702982656; x=1703587456;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1702982795; x=1703587595;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UhHMpNMfgbUMAhgoV28Lk3mFhziVxmC13GCk6Yqzxho=;
-        b=ZEqO9N2MZ5rf+J4BX+t++fwYUcdMD1BrVaTcHjQLy2lC1V5uG9cedYyacN27I9m6Lq
-         NrUXClOuzwn4Rkn05hI8kT9GgLTlEzsq6ZrPh0ofXyTpa6G54ltY2tUmlmKzm7ok5nHz
-         Z/XOnkdTMZ6SgWf7e0KFhWia18inyiwSuLkdLiuHJ67cTGu8xWxnC1RoOPYw631l6F2M
-         WMhSYdCEdNOSVQ/T5IMWcngV4sSRi9NVUgmx4YTRFQTNfX3PRLccfoC7V0/c3DdpabuG
-         m2hl9Gym+P4NDSUIa/1oOwjiMuU0uB10WE+0nrvd8M6XWt23Uj+/SbJtLwLGOQzJuiE6
-         mJXg==
-X-Gm-Message-State: AOJu0Yze9o4fermH181GffOv8xAOKV4pW6fWqIB662vykzpLvBrw1eJa
-	zT2AkNZCVloXdHiP/qp0TNmfuJY/X3sKYPlH/PmK0fV6t1uEhczC
-X-Google-Smtp-Source: AGHT+IHTaEa7kOE3mg3Gh8oLBjIrqCu+lelBOtWFUHxSSfSOL8LGAFgO8agvUeI5nMN6QbzwB2QB/ReQX8tMrnZPcfw=
-X-Received: by 2002:a25:d408:0:b0:dbc:fe47:36df with SMTP id
- m8-20020a25d408000000b00dbcfe4736dfmr4029713ybf.22.1702982655984; Tue, 19 Dec
- 2023 02:44:15 -0800 (PST)
+        bh=7Ejj+XmDiZPNI7Zwigx9aUrZADahAhBeoVbqDqfrS6w=;
+        b=Y1SzVbvMxx1Q91CyUB4GSo+qrh4MrxRKfiaMh7YqKl4MabRtH4783QMlug2wTjLIj8
+         5MgstQ8oo+6m49kVccr1cEWNey2hy64qdwjVaBz6lyEPiKfDG3DtYl46WwZ/JO4dOEc8
+         c9G8MJLE8t1FO6y73IutnTK1/MQpZmny1sgx8W2Hw3MP8CFKRwrcDI/NF16edvM9LC0Z
+         dEgdzP/oRxAF3fN6m7u91zo2x/yUIYCrV2xG5fF8klpy5DhsJjBXLep87MLYduVYhine
+         DL7MJv/JSnPZWEQ50xT9BHSYQ/CMAd4EqRv0IVQI/Et+kqdtvZCSiRqDBG7cZUJbe7cJ
+         d+Fg==
+X-Gm-Message-State: AOJu0Yxlqx+6r4/CXn3E6EBbA58tR7eHIjVPeY3XolXHZ0B+oSrAJ3rT
+	FfVsZKIINX3soVtHjFk0pHHT3J7x0Ro7LnkK710=
+X-Google-Smtp-Source: AGHT+IFQracZD3k/ijwNvenXuQq4FFqzBwonwm6n213AXpReHbpgZsFCc7/mwQQwQrQTeicbe/pniA==
+X-Received: by 2002:a05:600c:3093:b0:40c:2b93:6a08 with SMTP id g19-20020a05600c309300b0040c2b936a08mr9473060wmn.16.1702982794776;
+        Tue, 19 Dec 2023 02:46:34 -0800 (PST)
+Received: from HYB-hhAwRlzzMZb.ad.analog.com ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id bh12-20020a05600c3d0c00b003fee6e170f9sm2277960wmb.45.2023.12.19.02.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 02:46:34 -0800 (PST)
+From: Dumitru Ceclan <mitrutzceclan@gmail.com>
+To: 
+Cc: linus.walleij@linaro.org,
+	brgl@bgdev.pl,
+	andy@kernel.org,
+	linux-gpio@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	ChiaEn Wu <chiaen_wu@richtek.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+	Mike Looijmans <mike.looijmans@topic.nl>,
+	Haibo Chen <haibo.chen@nxp.com>,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Ceclan Dumitru <dumitru.ceclan@analog.com>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dumitru Ceclan <mitrutzceclan@gmail.com>
+Subject: [PATCH v10 1/2] dt-bindings: adc: add AD7173
+Date: Tue, 19 Dec 2023 12:46:12 +0200
+Message-ID: <20231219104631.28256-1-mitrutzceclan@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
- <20231215101827.30549-4-quic_bibekkum@quicinc.com> <CAA8EJppcsr1sbeD1fK0nZ+rASABNcetBK3yMvaP7OiA4JPwskw@mail.gmail.com>
- <c9493c5f-ccf8-4e21-b00c-5fbc2a5f2edb@quicinc.com> <b7f2bbf9-fb5a-430d-aa32-3a220b46c2f0@arm.com>
- <1eee8bae-59f0-4066-9d04-8c3a5f750d3a@linaro.org> <42d627af-164b-4b50-973e-fa71d86cb84c@linaro.org>
- <aa8b2ccd-33da-404b-9a93-3d88cf63ec77@quicinc.com> <8338db1e-0216-4fc5-b6ab-ddf43adf3648@linaro.org>
- <a363c860-62be-43a7-930c-cab8a6f3fa6c@quicinc.com> <CAA8EJpoMwrwQ9wBZE6AcobLLkCchFtN23SnHhw3enNOfX3CzTQ@mail.gmail.com>
- <334bc814-07d2-4966-93e3-f2cfbabc15b2@quicinc.com>
-In-Reply-To: <334bc814-07d2-4966-93e3-f2cfbabc15b2@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 19 Dec 2023 12:44:04 +0200
-Message-ID: <CAA8EJprL8pHQyWcdHiS+GReJsTMrddL=SCgkPhePR_7HvsQpsQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] iommu/arm-smmu: add ACTLR data and support for SM8550
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Robin Murphy <robin.murphy@arm.com>, will@kernel.org, 
-	joro@8bytes.org, jsnitsel@redhat.com, quic_bjorande@quicinc.com, 
-	mani@kernel.org, quic_eberman@quicinc.com, robdclark@chromium.org, 
-	u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com, 
-	quic_pkondeti@quicinc.com, quic_molvera@quicinc.com, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	qipl.kernel.upstream@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 19 Dec 2023 at 12:37, Bibek Kumar Patro
-<quic_bibekkum@quicinc.com> wrote:
->
->
->
-> On 12/19/2023 3:51 PM, Dmitry Baryshkov wrote:
-> > On Tue, 19 Dec 2023 at 10:25, Bibek Kumar Patro
-> > <quic_bibekkum@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 12/18/2023 7:51 PM, Dmitry Baryshkov wrote:
-> >>> On 18/12/2023 13:23, Bibek Kumar Patro wrote:
-> >>>>
-> >>>>
-> >>>> On 12/16/2023 9:45 PM, Dmitry Baryshkov wrote:
-> >>>>> On 16/12/2023 02:03, Konrad Dybcio wrote:
-> >>>>>> On 15.12.2023 13:54, Robin Murphy wrote:
-> >>>>>>> On 2023-12-15 12:20 pm, Bibek Kumar Patro wrote:
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> On 12/15/2023 4:14 PM, Dmitry Baryshkov wrote:
-> >>>>>>>>> On Fri, 15 Dec 2023 at 12:19, Bibek Kumar Patro
-> >>>>>>>>> <quic_bibekkum@quicinc.com> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> Add ACTLR data table for SM8550 along with support for
-> >>>>>>>>>> same including SM8550 specific implementation operations.
-> >>>>>>>>>>
-> >>>>>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-> >>>>>>>>>> ---
-> >>>>>>>>>>     drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 89
-> >>>>>>>>>> ++++++++++++++++++++++
-> >>>>>>>>>>     1 file changed, 89 insertions(+)
-> >>>>>>>>>>
-> >>>>>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>>>> index cb49291f5233..d2006f610243 100644
-> >>>>>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>>>>>>>>> @@ -20,6 +20,85 @@ struct actlr_config {
-> >>>>>>>>>>            u32 actlr;
-> >>>>>>>>>>     };
-> >>>>>>>>>>
-> >>>>>>>>>> +/*
-> >>>>>>>>>> + * SMMU-500 TRM defines BIT(0) as CMTLB (Enable context caching
-> >>>>>>>>>> in the
-> >>>>>>>>>> + * macro TLB) and BIT(1) as CPRE (Enable context caching in the
-> >>>>>>>>>> prefetch
-> >>>>>>>>>> + * buffer). The remaining bits are implementation defined and
-> >>>>>>>>>> vary across
-> >>>>>>>>>> + * SoCs.
-> >>>>>>>>>> + */
-> >>>>>>>>>> +
-> >>>>>>>>>> +#define PREFETCH_DEFAULT       0
-> >>>>>>>>>> +#define PREFETCH_SHALLOW       BIT(8)
-> >>>>>>>>>> +#define PREFETCH_MODERATE      BIT(9)
-> >>>>>>>>>> +#define PREFETCH_DEEP          (BIT(9) | BIT(8))
-> >>>>>>>>>
-> >>>>>>>>> I thin the following might be more correct:
-> >>>>>>>>>
-> >>>>>>>>> #include <linux/bitfield.h>
-> >>>>>>>>>
-> >>>>>>>>> #define PREFETCH_MASK GENMASK(9, 8)
-> >>>>>>>>> #define PREFETCH_DEFAULT FIELD_PREP(PREFETCH_MASK, 0)
-> >>>>>>>>> #define PREFETCH_SHALLOW FIELD_PREP(PREFETCH_MASK, 1)
-> >>>>>>>>> #define PREFETCH_MODERATE FIELD_PREP(PREFETCH_MASK, 2)
-> >>>>>>>>> #define PREFETCH_DEEP FIELD_PREP(PREFETCH_MASK, 3)
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Ack, thanks for this suggestion. Let me try this out using
-> >>>>>>>> GENMASK. Once tested, will take care of this in next version.
-> >>>>>>>
-> >>>>>>> FWIW the more typical usage would be to just define the named
-> >>>>>>> macros for the raw field values, then put the FIELD_PREP() at the
-> >>>>>>> point of use. However in this case that's liable to get pretty
-> >>>>>>> verbose, so although I'm usually a fan of bitfield.h, the most
-> >>>>>>> readable option here might actually be to stick with simpler
-> >>>>>>> definitions of "(0 << 8)", "(1 << 8)", etc. However it's not really
-> >>>>>>> a big deal either way, and I defer to whatever Dmitry and Konrad
-> >>>>>>> prefer, since they're the ones looking after arm-smmu-qcom the most :)
-> >>>>>> My 5 cents would be to just use the "common" style of doing this, so:
-> >>>>>>
-> >>>>>> #define ACTRL_PREFETCH    GENMASK(9, 8)
-> >>>>>>    #define PREFETCH_DEFAULT 0
-> >>>>>>    #define PREFETCH_SHALLOW 1
-> >>>>>>    #define PREFETCH_MODERATE 2
-> >>>>>>    #define PREFETCH_DEEP 3
-> >>>>>>
-> >>>>>> and then use
-> >>>>>>
-> >>>>>> | FIELD_PREP(ACTRL_PREFETCH, PREFETCH_x)
-> >>>>>>
-> >>>>>> it can get verbose, but.. arguably that's good, since you really want
-> >>>>>> to make sure the right bits are set here
-> >>>>>
-> >>>>> Sounds good to me.
-> >>>>>
-> >>>>
-> >>>> Konrad, Dimitry, just checked FIELD_PREP() implementation
-> >>>>
-> >>>> #define FIELD_FIT(_mask, _val)
-> >>>> ({                                                              \
-> >>>>                    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");  \
-> >>>>                    ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask); \
-> >>>> })
-> >>>>
-> >>>> since it is defined as a block, it won't be possible to use FIELD_PREP
-> >>>> in macro or as a structure value, and can only be used inside a
-> >>>> block/function. Orelse would show compilation errors as following
-> >>>>
-> >>>> kernel/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c:94:20: note: in
-> >>>> expansion of macro 'PREFETCH_SHALLOW'
-> >>>>     { 0x1947, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
-> >>>>                       ^
-> >>>> kernel/include/linux/bitfield.h:113:2: error: braced-group within
-> >>>> expression allowed only inside a function
-> >>>>     ({        \
-> >>>>     ^
-> >>>>
-> >>>> So as per my understanding I think, we might need to go ahead with the
-> >>>> generic implementation only. Let me know if I missed something.
-> >>>
-> >>> Then anyway (foo << bar) is better compared to BIT(n) | BIT(m).
-> >>>
-> >>
-> >> Sure Dmitry, (foo << bar) would be simpler as well as Robin mentioned
-> >> earlier in his reply.
-> >> I can implement the defines as:
-> >>
-> >> #define PREFETCH_DEFAULT       0
-> >> #define PREFETCH_SHALLOW       (1 << 8)
-> >> #define PREFETCH_MODERATE      (1 << 9)
-> >
-> > 2 << 8. Isn't that hard.
-> >
->
-> Ah, right. This is nice! .
-> Will use 2 << 8 instead. Thanks for the suggestion.
+The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+which can be used in high precision, low noise single channel applications
+or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+primarily for measurement of signals close to DC but also delivers
+outstanding performance with input bandwidths out to ~10kHz.
 
-It might still be useful to define the PREFETCH_SHIFT equal to 8.
+Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+---
 
->
-> Thanks,
-> Bibek
->
-> >> #define PREFETCH_DEEP          (3 << 8)
-> >>
-> >> This should be okay I think ?
-> >>
-> >> Thanks,
-> >> Bibek
-> >>
-> >
-> >
+V9->V10
+ - Fix dt_binding_check type warning from adi,reference-select
+V8->v9
+ - Add gpio-controller and "#gpio-cells" properties
+ - Add missing avdd2 and iovdd supplies
+ - Add string type to reference-select
+V7->V8
+ - include missing fix from V6
+V6->V7 <no changes>
+V5->V6
+ - Moved global required property to proper placement
+V4 -> V5
+ - Use string enum instead of integers for "adi,reference-select"
+ - Fix conditional checking in regards to compatible
+V3 -> V4
+ - include supply attributes
+ - add channel attribute for selecting conversion reference
+V2 -> V3
+ - remove redundant descriptions
+ - use referenced 'bipolar' property
+ - remove newlines from example
+V1 -> V2 <no changes>
 
+ .../bindings/iio/adc/adi,ad7173.yaml          | 184 ++++++++++++++++++
+ 1 file changed, 184 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
 
-
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+new file mode 100644
+index 000000000000..8353dcd4e8f6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+@@ -0,0 +1,184 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AD7173 ADC
++
++maintainers:
++  - Ceclan Dumitru <dumitru.ceclan@analog.com>
++
++description: |
++  Bindings for the Analog Devices AD717X ADC's. Datasheets for supported chips:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,ad7172-2
++      - adi,ad7173-8
++      - adi,ad7175-2
++      - adi,ad7176-2
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  spi-max-frequency:
++    maximum: 20000000
++
++  gpio-controller:
++    description: Marks the device node as a GPIO controller.
++
++  "#gpio-cells":
++    const: 1
++
++  refin-supply:
++    description: external reference supply, can be used as reference for conversion.
++
++  refin2-supply:
++    description: external reference supply, can be used as reference for conversion.
++
++  avdd-supply:
++    description: avdd supply, can be used as reference for conversion.
++
++  avdd2-supply:
++    description: avdd2 supply, used as the input to the internal voltage regulator.
++
++  iovdd-supply:
++    description: iovdd supply, used for the chip digital interface.
++
++patternProperties:
++  "^channel@[0-9a-f]$":
++    type: object
++    $ref: adc.yaml
++    unevaluatedProperties: false
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 15
++
++      diff-channels:
++        items:
++          minimum: 0
++          maximum: 31
++
++      adi,reference-select:
++        description: |
++          Select the reference source to use when converting on
++          the specific channel. Valid values are:
++          refin      : REFIN(+)/REFIN(−).
++          refin2     : REFIN2(+)/REFIN2(−)
++          refout-avss: REFOUT/AVSS (Internal reference)
++          avdd       : AVDD
++
++          External reference refin2 only available on ad7173-8.
++          If not specified, internal reference used.
++        $ref: /schemas/types.yaml#/definitions/string
++        enum:
++          - refin
++          - refin2
++          - refout-avss
++          - avdd
++        default: refout-avss
++
++    required:
++      - reg
++      - diff-channels
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++  - if:
++      properties:
++        compatible:
++          not:
++            contains:
++              const: adi,ad7173-8
++    then:
++      properties:
++        refin2-supply: false
++      patternProperties:
++        "^channel@[0-9a-f]$":
++          properties:
++            adi,reference-select:
++              enum:
++                - refin
++                - refout-avss
++                - avdd
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      adc@0 {
++        compatible = "adi,ad7173-8";
++        reg = <0>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
++        interrupt-parent = <&gpio>;
++        spi-max-frequency = <5000000>;
++        gpio-controller;
++
++        refin-supply = <&dummy_regulator>;
++
++        channel@0 {
++          reg = <0>;
++          bipolar;
++          diff-channels = <0 1>;
++          adi,reference-select = "refin";
++        };
++
++        channel@1 {
++          reg = <1>;
++          diff-channels = <2 3>;
++        };
++
++        channel@2 {
++          reg = <2>;
++          bipolar;
++          diff-channels = <4 5>;
++        };
++
++        channel@3 {
++          reg = <3>;
++          bipolar;
++          diff-channels = <6 7>;
++        };
++
++        channel@4 {
++          reg = <4>;
++          diff-channels = <8 9>;
++          adi,reference-select = "avdd";
++        };
++      };
++    };
 -- 
-With best wishes
-Dmitry
+2.42.0
+
 
