@@ -1,117 +1,95 @@
-Return-Path: <linux-kernel+bounces-5411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B536818A64
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:47:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 399C2818A6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:48:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EED491C21806
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:47:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4CC1F2DAAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7459B1C288;
-	Tue, 19 Dec 2023 14:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BA41C691;
+	Tue, 19 Dec 2023 14:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CKM/Xn7g"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gLOfTDHz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F681BDCB;
-	Tue, 19 Dec 2023 14:47:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-67f47b15fa3so14125876d6.1;
-        Tue, 19 Dec 2023 06:47:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702997245; x=1703602045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zlUxM8agQFht/Im8QSE/t73OtBt36Jo3dQYhethqDtk=;
-        b=CKM/Xn7gcHG/SDJ8ARD/WpPVJ0qFEeIkcP3wAbXLgCmR4F8XxfALFthpZiP3AwiEV8
-         iZjo1pkVQaKBTc++7EYONWwgoLjeMPrtX7SXBbwhXg7qpK2gYFcCPb2y2EtdkafJzh+4
-         E6HVxxvI4AA+gWAJ99e1Vqlicmj+fuJlHVOObHsTtQUYyQZqYYYQWwGbEeTe9lTuHjoY
-         8kLzD2QvrE2cWWeXLnTP5BL56VKtZW/XHXiODo5HOYBSKihqOXX3eA9LB3dff8LXmpXF
-         Y5UT3aQhlti8rAOR0/rHGRpU/fPY1kbm6sThmV1TbqBDc+tlE7FnLR9+WB6r58MsGcSm
-         WDVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702997245; x=1703602045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zlUxM8agQFht/Im8QSE/t73OtBt36Jo3dQYhethqDtk=;
-        b=VuWlI8uFaUpwXN/kA4421fcRjcq4n7knfQZja4hqXIBUjC73ytSOFp+8tnIR7HgLZa
-         KTie8epiRYPznrjfRm1Y2PFtqlpA8xfLxNbeR33lJ1BhTdVm9Be+YaldDUG8QN/OWKjK
-         HtrpJw5ILwiOcI/NVw+ij5IBSymQCsImtRhULiwFclugcAo0vTAYRy2o4xUdDjOkUr0A
-         m81QRdFPGYvmekBeY1mTcf7gMk83RIcdO4dAKfTWR+hg5QHQTYZiiohDTlj3H5A3dnqJ
-         hnrGUkAR42IYDj7IazNhtA7G9xJ27VBZuSe8x/rAfa80fAIAAzvzlLI/KQcPisQ2mwuC
-         eIdg==
-X-Gm-Message-State: AOJu0YyuzOAlYSN4bKTVLLcGmORuFOWAd5VPX5PkBFnXlpNpFWHGK1s7
-	Hv4UpCkzWYmFEnu0rDFki34zl/3BbUG+tjlIu0A=
-X-Google-Smtp-Source: AGHT+IFgOnMLQDOxvtlxSolOpF3BG+QjC3iZIQoGyb7nHvaMJ3LbRonwYDI9SE8Yz2xE4dYji1sfPH+tvB/1DPL3iaM=
-X-Received: by 2002:a05:6214:416:b0:67f:5152:705b with SMTP id
- z22-20020a056214041600b0067f5152705bmr2957837qvx.46.1702997245321; Tue, 19
- Dec 2023 06:47:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5625C1C28A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702997316;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UWtsZhR3mqpEo9xJldP9MDyJRchqzHme83vu4hlTHKQ=;
+	b=gLOfTDHzkbvZKLWmaYhvL7LCZ/Hi3FMjL2uY/NaGhuS6b/6c/I46RGVQiY8W6aghI+8t7E
+	syRIi8HyUX+UIBvb/rCUr4w+wq3TD9QMW7worhly2AGlP+/7GaUIqpkqvEKbVnS0O/+/Hg
+	fMn3C6sVxwoSuExEX3LFV2cMZ3Iowoc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-215-Vp4WzdsaO4ChcYxqYCX88g-1; Tue,
+ 19 Dec 2023 09:48:32 -0500
+X-MC-Unique: Vp4WzdsaO4ChcYxqYCX88g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5FC511C0513E;
+	Tue, 19 Dec 2023 14:48:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 936FD1121306;
+	Tue, 19 Dec 2023 14:48:28 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <488867.1702996927@warthog.procyon.org.uk>
+References: <488867.1702996927@warthog.procyon.org.uk> <6f8c3f22f77e9e0154f4131260559c39d6740678.camel@kernel.org> <20231213152350.431591-1-dhowells@redhat.com> <20231213152350.431591-19-dhowells@redhat.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: dhowells@redhat.com, Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 18/39] netfs: Export netfs_put_subrequest() and some tracepoints
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219134901.96300-1-zohar@linux.ibm.com> <20231219134901.96300-3-zohar@linux.ibm.com>
-In-Reply-To: <20231219134901.96300-3-zohar@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 19 Dec 2023 16:47:14 +0200
-Message-ID: <CAOQ4uxhti7BybvXKAxckQM3UghehVVEWD3Kod+55SL+i13-wog@mail.gmail.com>
-Subject: Re: [PATCH 2/2] evm: add support to disable EVM on unsupported filesystems
-To: Mimi Zohar <zohar@linux.ibm.com>
-Cc: linux-unionfs@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
-	Seth Forshee <sforshee@kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <489636.1702997307.1@warthog.procyon.org.uk>
+Date: Tue, 19 Dec 2023 14:48:27 +0000
+Message-ID: <489637.1702997307@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Tue, Dec 19, 2023 at 3:49=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
-ote:
->
-> Don't verify, write, remove or update 'security.evm' on unsupported
-> filesystems.
->
-> Temporarily define overlayfs as an unsupported filesystem until
-> a complete solution is developed.
->
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> ---
->  security/integrity/evm/evm_main.c | 35 ++++++++++++++++++++++++++++++-
->  1 file changed, 34 insertions(+), 1 deletion(-)
->
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/e=
-vm_main.c
-> index 02adba635b02..aa6d32a07d20 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -151,6 +151,17 @@ static int evm_find_protected_xattrs(struct dentry *=
-dentry)
->         return count;
->  }
->
-> +static int is_unsupported_fs(struct dentry *dentry)
-> +{
-> +       struct inode *inode =3D d_backing_inode(dentry);
-> +
-> +       if (strcmp(inode->i_sb->s_type->name, "overlay") =3D=3D 0) {
-> +               pr_info_once("overlayfs not supported\n");
-> +               return 1;
-> +       }
+David Howells <dhowells@redhat.com> wrote:
 
-Please do not special case overlayfs in and please do not use the
-fs name to detect support.
+> Jeff Layton <jlayton@kernel.org> wrote:
+> 
+> > Erm...why? Are these called directly from module code in a later patch?
+> 
+> Yes.  I'll expand the commit message.
 
-Please define an sb flag like SB_I_IMA_UNVERIFIABLE_SIGNATURE
-to disable EVM and set this flag in ovl_fill_super().
+That said, only trace_netfs_sreq() is required.  The other two can be dropped.
 
-Thanks,
-Amir.
+David
+
 
