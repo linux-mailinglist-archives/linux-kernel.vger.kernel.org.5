@@ -1,168 +1,154 @@
-Return-Path: <linux-kernel+bounces-4989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4B228184E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:58:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1298184E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:58:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9E7D1C23B7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:58:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B15D1F24B61
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA6C1426D;
-	Tue, 19 Dec 2023 09:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9131D14017;
+	Tue, 19 Dec 2023 09:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I1Goqhkc"
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bD6HE4bs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2A21401E
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:58:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-552ff8d681aso5949373a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702979886; x=1703584686; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CwsWtsLOvWK+82mVjpkuXTM6g0jEIlPmXvx1Ed249No=;
-        b=I1Goqhkc8qdXXJBmFR+LXYh/paUf1J8Q8x03kL9c0hJr7Jo3BalkyFtYpP5xrVFF3I
-         c9w532E6+Mp8KSlSw+n9ABeuJVajKgjzJ6dVRpIqy9Gh15A6YT74i5ajaYCq30fzFbMh
-         YI49wH3DUeQ9mIC01Ii5oDvsJ8qNMPb8okfhMJFgrXU0HxlFK4G6tSYOHtl1n3WZn6X9
-         i6QQ5LIGtmo9U/PA4UhhFVB5yzj/p65HeGkhHbdvUkzTKJx2P9s2ZT2aMtUr6B6p2Ykg
-         rVNy8Zkww1xBdIDhbX/lbju0gJeubgO2CmRg/ofsATFDLIVyQfpS/Ts+0bbb6ac7SeU9
-         MI8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702979886; x=1703584686;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CwsWtsLOvWK+82mVjpkuXTM6g0jEIlPmXvx1Ed249No=;
-        b=X3Qizvfiqo0myysk3uxwYObvtDMqDP5+M7AyWBwojmzLPtxEleYViJDqrRVbU4FdW4
-         fQ2y3dpZElxpGRUAJC0YKnk3eSMNCS0Wi73mqo6XM2F5TakJcWQqOJSWzwau4i82Op9k
-         cXz3hePPSXm4I0v2G4Q6k+mS3ULisYFCBAcrfLtKMobqz9/kPk0a6+CrByAK/Y0J8n5m
-         bxtJTBSxjHxc/k6YEGEjo/b1wWURYM9VLV//7ZgZ1MD+7Jq26UN3Oz+c5bN+tKt7cTtn
-         FZtD8ZqWzapLZHW4rVa1ZKlokaqiK3XD8nR2PuDxP6B8T53WvoTY8TRV7x3jAjsIDKQZ
-         Uv+Q==
-X-Gm-Message-State: AOJu0Yw3+ioN3EdKPPR3ti0R/7sqYrS7otwMAPB3Q/9NrMvbrXvh/4aX
-	I9qsxteaxj+/GtGaNNreWhsDt9KsRPZjnw==
-X-Google-Smtp-Source: AGHT+IGGkBDH89HhG9Pb+xdjQGhocl7zpOM+JCK0M1KUP90SdmzVLmbQG2KdUXjsxQYhK+xDBj7XJA==
-X-Received: by 2002:a17:906:4b04:b0:a1f:6ec8:2f6f with SMTP id y4-20020a1709064b0400b00a1f6ec82f6fmr701308eju.28.1702979886034;
-        Tue, 19 Dec 2023 01:58:06 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vq6-20020a170907a4c600b00a19b7362dcfsm15230770ejc.139.2023.12.19.01.58.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 01:58:05 -0800 (PST)
-Message-ID: <ce6b002b-f2a6-4056-bf81-53a6c948b946@linaro.org>
-Date: Tue, 19 Dec 2023 10:58:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7DC1426E
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F1E9D40E00CD;
+	Tue, 19 Dec 2023 09:58:40 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id nodqOZyKC-fR; Tue, 19 Dec 2023 09:58:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1702979917; bh=S3JFK1fju4B6xZ8eBdvZm+1HPPTszSQfGOo5AjwDssQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bD6HE4bsbc2OQkFhBB+xvJpvtivUcbd5wsY25h5phYM5J0eGRJUdNjmLwiAj6o7KK
+	 gx3zGOLBwaZx5irPCWSX12wRoLv0IAl+XUNK4E8HxoZ13p5mWNyp7yOwWULdywRjH6
+	 5gcskawHSQTCP5ivxwfiClK6fMubzKPAFW/U/3aJr+7UCIMSODR6bs3edM6SJn5czn
+	 OACfG3Zv8y47kzDmIxIJBxWYXwYmvrBX5dI8WxQDRb81xltEcbxECtWtaEmO25zyvM
+	 gtmYY37HJsGk/je25y3mVFSnMcvmYnQ+bbLsWxcMqP3vb2HvCE+542GrIWJDvJ5bRj
+	 7m/8UuT8KN8+aGySZnllMiqnK+PtqnftUlpKm2CMmD+Y/20l0XG7C44Ii+8UbsuYHo
+	 LBb5YUD34PfChNkUKqSH16PxRKNYvEx5lYTfDNBscw4HdZQHBfVAZl97LSdeWyJRiv
+	 TMNVslgsF7WUUOnfafwU4plYk5Z34hf8X+u+TqQw2K7mebiWcIapQ95JrjyNCh0vTr
+	 l7rDMR+1oW20WEJrPQouBQ49B75bWuGLMQiKJ9i+UkxYjGUKqjgH4diOo/GzmaOIxt
+	 gKgbNwYUU3zVG7Y+Hk5s7Wda4a8TTj75z9yFOYxO/5ZEkj/SL6tOK54uo4eMq0YXp5
+	 tqSoCzkE/3DJJCyAfh/NHjzw=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 52F0440E00C9;
+	Tue, 19 Dec 2023 09:58:28 +0000 (UTC)
+Date: Tue, 19 Dec 2023 10:58:21 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Linus Torvalds <torvalds@linuxfoundation.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	xen-devel@lists.xenproject.org
+Subject: Re: [linus:master] [x86/entry]  be5341eb0d:
+ WARNING:CPU:#PID:#at_int80_emulation
+Message-ID: <20231219095821.GAZYFpPUSKexZAcl05@fat_crate.local>
+References: <202312191507.348721d2-oliver.sang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] dts: iot2050: Support IOT2050-SM variant
-Content-Language: en-US
-To: Jan Kiszka <jan.kiszka@siemens.com>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bao Cheng Su <baocheng.su@siemens.com>,
- Chao Zeng <chao.zeng@siemens.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Li Hua Qian <huaqian.li@siemens.com>
-References: <cover.1702917360.git.jan.kiszka@siemens.com>
- <11e0b0c8b828254567a8ff89820c067cacad2150.1702917360.git.jan.kiszka@siemens.com>
- <8b3daa3c-dbf8-4286-b04e-011cd9b0efa5@linaro.org>
- <4c31adc5-3fc5-47bc-9766-6d3d1eeddb65@siemens.com>
- <fbb29d81-9ea0-4468-ad47-f6668c2be277@linaro.org>
- <de3f4778-51d6-48ab-9d4d-451f2ba01a3c@siemens.com>
- <3d2662be-3a55-4390-bd2a-cfa5cc53510f@linaro.org>
- <ef5a6cf0-4350-483d-a1e9-ce8b0ef71280@siemens.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ef5a6cf0-4350-483d-a1e9-ce8b0ef71280@siemens.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202312191507.348721d2-oliver.sang@intel.com>
+Content-Transfer-Encoding: quoted-printable
 
-On 19/12/2023 10:54, Jan Kiszka wrote:
->>>> You mean label. Why node names became the ABI? Which interface exposes them?
->>>
->>> root@iot2050-debian:~# ls -l /sys/class/leds/
->>> total 0
->>> lrwxrwxrwx 1 root root 0 Dec 19 08:55 mmc0:: -> ../../devices/platform/bus@100000/4fa0000.mmc/leds/mmc0::
->>> lrwxrwxrwx 1 root root 0 Dec 19 08:55 mmc1:: -> ../../devices/platform/bus@100000/4f80000.mmc/leds/mmc1::
->>> lrwxrwxrwx 1 root root 0 Dec 14 21:12 status-led-green -> ../../devices/platform/leds/leds/status-led-green
->>> lrwxrwxrwx 1 root root 0 Dec 19 08:55 status-led-red -> ../../devices/platform/leds/leds/status-led-red
->>> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led1-green -> ../../devices/platform/leds/leds/user-led1-green
->>> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led1-red -> ../../devices/platform/leds/leds/user-led1-red
->>> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led2-green -> ../../devices/platform/leds/leds/user-led2-green
->>> lrwxrwxrwx 1 root root 0 Dec 19 08:55 user-led2-red -> ../../devices/platform/leds/leds/user-led2-red
->>
->> I replied too fast previous and did not include answer here:
->>
->> You have label for that... Somehow all these nodes are half-baked,
->> without all the expected properties and now you call node name as ABI.
->> The node name is not the ABI.
-> 
-> Well, existing userspace uses those names, and adding the properties
-> would break that interface. Now, does Linux do that?
+On Tue, Dec 19, 2023 at 04:49:14PM +0800, kernel test robot wrote:
+> [ 13.481107][ T48] WARNING: CPU: 0 PID: 48 at int80_emulation (arch/x86=
+/entry/common.c:164)=20
+> [   13.481454][   T48] Modules linked in:
+> [   13.481655][   T48] CPU: 0 PID: 48 Comm: init Tainted: G            =
+     N 6.7.0-rc4-00002-gbe5341eb0d43 #1
+> [ 13.482162][ T48] RIP: 0010:int80_emulation (arch/x86/entry/common.c:1=
+64)=20
 
-I don't think you understood the concept. There is no change for
-userspace. Same interface, same names. No ABI break.
+Looking at the dmesg, I think you missed the most important part - the
+preceding line:
 
-Anyway, changing them is not part of this patchset since these are not
-new nodes.
+[   13.480504][   T48] CFI failure at int80_emulation+0x67/0xb0 (target: =
+sys_ni_posix_timers+0x0/0x70; expected type: 0xb02b34d9)
+			^^^^^^^^^^^
 
-Best regards,
-Krzysztof
+[   13.481107][   T48] WARNING: CPU: 0 PID: 48 at int80_emulation+0x67/0x=
+b0
+[   13.481454][   T48] Modules linked in:
+[   13.481655][   T48] CPU: 0 PID: 48 Comm: init Tainted: G              =
+   N 6.7.0-rc4-00002-gbe5341eb0d43 #1
 
+The CFI bla is also in the stack trace.
+
+Now, decode_cfi_insn() has a comment there which says what the compiler
+generates about indirect call checks:
+
+         * =C2=A0 movl    -<id>, %r10d       ; 6 bytes
+         *   addl    -4(%reg), %r10d    ; 4 bytes
+         *   je      .Ltmp1             ; 2 bytes
+         *   ud2                        ; <- regs->ip
+         *   .Ltmp1:
+
+
+and the opcodes you decoded...
+
+> [ 13.482437][ T48] Code: 01 00 00 77 43 89 c1 48 81 f9 c9 01 00 00 48 1=
+9 c9 21 c1 48 89 df 4c 8b 1c cd 90 12 20 9a 41 ba 27 cb d4 4f 45 03 53 fc=
+ 74 02 <0f> 0b 41 ff d3 48 89 c1 48 89 4b 50 90 48 89 df 5b 41 5e 31 c0 3=
+1
+> All code
+> =3D=3D=3D=3D=3D=3D=3D=3D
+>    0:	01 00                	add    %eax,(%rax)
+>    2:	00 77 43             	add    %dh,0x43(%rdi)
+>    5:	89 c1                	mov    %eax,%ecx
+>    7:	48 81 f9 c9 01 00 00 	cmp    $0x1c9,%rcx
+>    e:	48 19 c9             	sbb    %rcx,%rcx
+>   11:	21 c1                	and    %eax,%ecx
+>   13:	48 89 df             	mov    %rbx,%rdi
+>   16:	4c 8b 1c cd 90 12 20 	mov    -0x65dfed70(,%rcx,8),%r11
+>   1d:	9a=20
+>   1e:	41 ba 27 cb d4 4f    	mov    $0x4fd4cb27,%r10d
+>   24:	45 03 53 fc          	add    -0x4(%r11),%r10d
+>   28:	74 02                	je     0x2c
+>   2a:*	0f 0b                	ud2		<-- trapping instruction
+
+... these guys here, look exactly like what the compiler did issue.
+
+This is the first time I'm looking at this CFI bla but it sounds like it
+is trying to compare the syscall target's address of
+sys_ni_posix_timers with something it is expecting to call and the
+comparison doesn't work out (%r10 is not 0).
+
+There's that special symbol __cfi_sys_ni_posix_timers which also gets
+generated...
+
+Someone would need to dig into that whole CFI gunk to figure out why
+this is not happy.
+
+Oh well.
+
+--=20
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
