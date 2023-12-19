@@ -1,119 +1,253 @@
-Return-Path: <linux-kernel+bounces-5482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06B9B818B2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:25:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 239FC818B32
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:26:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9B8B1F2403C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:25:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D91AB24871
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2AF61C69D;
-	Tue, 19 Dec 2023 15:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Bzg5gOKN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C3A1D54A;
+	Tue, 19 Dec 2023 15:25:28 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933AE1CA88;
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724CA1C6B2;
 	Tue, 19 Dec 2023 15:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJDWS5G001797;
-	Tue, 19 Dec 2023 15:25:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=RcKcDrB1hs/i3VF5GVWi4TmC2CSiOkBqWt3RLoIoTsQ=;
- b=Bzg5gOKNqitFmy7vfJ9RMsDlNFHDs+sOw2lWCNy2FGcMo2HCfmB0dYJu5jaOoN4L8Buc
- 49FgbCgCif0/gyBfoiXCKWZIQ6lkq6PTYw2/3DLnU0ZuRuwNWOe1M8o3RWt4H1jPGq1n
- Eyny9A4I94TE8esL2d6XHJVMY+5NyWtCdvT+8Y190Fno2x/fGuUhZ7F7L/YzQvOpwozL
- tj6fyzczZ8esw2IZpqE2zIG7uCYCprLTk8zSGRNH78n4/uW4BTK2XL3FaUmQXZiMnLGI
- 7NfPVOCtIpka3qJVrrjjoqnHw4uOI7dxcVWXcSyH0DdoC+6jJgpYCbFjoQBCfJnmaFm6 zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3c52u689-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 15:25:19 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BJErslP014769;
-	Tue, 19 Dec 2023 15:25:19 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3c52u678-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 15:25:19 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJD0r36010870;
-	Tue, 19 Dec 2023 15:25:17 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7ngjvh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 15:25:17 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BJFPEv013894268
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Dec 2023 15:25:14 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 82E9F20043;
-	Tue, 19 Dec 2023 15:25:14 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C5C0F20040;
-	Tue, 19 Dec 2023 15:25:13 +0000 (GMT)
-Received: from [9.179.0.97] (unknown [9.179.0.97])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Dec 2023 15:25:13 +0000 (GMT)
-Message-ID: <8ab61ee331b8087b8a26a2a38b3ae0c72cc31bb0.camel@linux.ibm.com>
-Subject: Re: [PATCH] icuv: make iucv_bus const
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, wintera@linux.ibm.com,
-        wenjia@linux.ibm.com
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo
- Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org
-Date: Tue, 19 Dec 2023 16:25:13 +0100
-In-Reply-To: <2023121950-prankster-stomp-a1aa@gregkh>
-References: <2023121950-prankster-stomp-a1aa@gregkh>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11FBE1FB;
+	Tue, 19 Dec 2023 07:26:06 -0800 (PST)
+Received: from [10.57.85.119] (unknown [10.57.85.119])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B84953F738;
+	Tue, 19 Dec 2023 07:25:19 -0800 (PST)
+Message-ID: <ab6a34c7-a0f9-4263-a6ea-08026e2bade9@arm.com>
+Date: Tue, 19 Dec 2023 15:25:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: posuTIFkQp8GRJgX1Bndj_RLuxyNur2h
-X-Proofpoint-ORIG-GUID: C9vaImxA8fX9KFkH9iUT5YeLqQ4ESDQi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-19_08,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 suspectscore=0 mlxscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 spamscore=0 mlxlogscore=696 phishscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312190115
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] dt-bindings: iommu: Convert msm,iommu-v0 to yaml
+Content-Language: en-GB
+To: David Heidelberg <david@ixit.cz>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: iommu@lists.linux.dev, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20231216002242.112310-2-david@ixit.cz>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231216002242.112310-2-david@ixit.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2023-12-19 at 16:07 +0100, Greg Kroah-Hartman wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the iucv_bus variable to be a constant structure as well, placing
-> it into read-only memory which can not be modified at runtime.
->=20
-> Cc: Alexandra Winter <wintera@linux.ibm.com>
-> Cc: Wenjia Zhang <wenjia@linux.ibm.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: linux-s390@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On 2023-12-16 12:22 am, David Heidelberg wrote:
+> Convert Qualcomm IOMMU v0 implementation to yaml format.
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
+> v5:
+>   - updated example (thx @Konrad)
+>   - ordering of requirements + dropped > and | and reformatted (thx @Konrad)
+> v4:
+>   - renamed to qcom,apq8064-iommu as Rob requested
+>   - changed title to Qualcomm APQ8064 IOMMU
+>   - dropped quotes around URLs
+>   - dropped mdp node
+>   - dropped unused mdp_port0 label
+> 
+> v3:
+>   - I kept the name as -v0, since we have other binding -v1 and it look
+>     good, I can change thou in v4 if requested.
+>   - dropped non-existent smmu_clk part (and adjusted example, which was
+>     using it)
+>   - dropped iommu description
+>   - moved iommu-cells description to the property #iommu-cells
+> 
+> v2:
+>   - fix wrong path in binding $id
+>   - comment qcom,mdp4 node example (we don't want to validate it yet)
+> 
+>   .../bindings/iommu/msm,iommu-v0.txt           | 64 ---------------
+>   .../bindings/iommu/qcom,apq8064-iommu.yaml    | 82 +++++++++++++++++++
+>   2 files changed, 82 insertions(+), 64 deletions(-)
+>   delete mode 100644 Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
+>   create mode 100644 Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt b/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
+> deleted file mode 100644
+> index 20236385f26e..000000000000
+> --- a/Documentation/devicetree/bindings/iommu/msm,iommu-v0.txt
+> +++ /dev/null
+> @@ -1,64 +0,0 @@
+> -* QCOM IOMMU
+> -
+> -The MSM IOMMU is an implementation compatible with the ARM VMSA short
+> -descriptor page tables. It provides address translation for bus masters outside
+> -of the CPU, each connected to the IOMMU through a port called micro-TLB.
+> -
+> -Required Properties:
+> -
+> -  - compatible: Must contain "qcom,apq8064-iommu".
+> -  - reg: Base address and size of the IOMMU registers.
+> -  - interrupts: Specifiers for the MMU fault interrupts. For instances that
+> -    support secure mode two interrupts must be specified, for non-secure and
+> -    secure mode, in that order. For instances that don't support secure mode a
+> -    single interrupt must be specified.
+> -  - #iommu-cells: The number of cells needed to specify the stream id. This
+> -		  is always 1.
+> -  - qcom,ncb:	  The total number of context banks in the IOMMU.
+> -  - clocks	: List of clocks to be used during SMMU register access. See
+> -		  Documentation/devicetree/bindings/clock/clock-bindings.txt
+> -		  for information about the format. For each clock specified
+> -		  here, there must be a corresponding entry in clock-names
+> -		  (see below).
+> -
+> -  - clock-names	: List of clock names corresponding to the clocks specified in
+> -		  the "clocks" property (above).
+> -		  Should be "smmu_pclk" for specifying the interface clock
+> -		  required for iommu's register accesses.
+> -		  Should be "smmu_clk" for specifying the functional clock
+> -		  required by iommu for bus accesses.
+> -
+> -Each bus master connected to an IOMMU must reference the IOMMU in its device
+> -node with the following property:
+> -
+> -  - iommus: A reference to the IOMMU in multiple cells. The first cell is a
+> -	    phandle to the IOMMU and the second cell is the stream id.
+> -	    A single master device can be connected to more than one iommu
+> -	    and multiple contexts in each of the iommu. So multiple entries
+> -	    are required to list all the iommus and the stream ids that the
+> -	    master is connected to.
+> -
+> -Example: mdp iommu and its bus master
+> -
+> -                mdp_port0: iommu@7500000 {
+> -			compatible = "qcom,apq8064-iommu";
+> -			#iommu-cells = <1>;
+> -			clock-names =
+> -			    "smmu_pclk",
+> -			    "smmu_clk";
+> -			clocks =
+> -			    <&mmcc SMMU_AHB_CLK>,
+> -			    <&mmcc MDP_AXI_CLK>;
+> -			reg = <0x07500000 0x100000>;
+> -			interrupts =
+> -			    <GIC_SPI 63 0>,
+> -			    <GIC_SPI 64 0>;
+> -			qcom,ncb = <2>;
+> -		};
+> -
+> -		mdp: qcom,mdp@5100000 {
+> -			compatible = "qcom,mdp";
+> -			...
+> -			iommus = <&mdp_port0 0
+> -				  &mdp_port0 2>;
+> -		};
+> diff --git a/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml b/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
+> new file mode 100644
+> index 000000000000..5af59305d277
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iommu/qcom,apq8064-iommu.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/iommu/qcom,apq8064-iommu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm APQ8064 IOMMU
+> +
+> +maintainers:
+> +  - Will Deacon <will@kernel.org>
+> +
+> +description:
+> +  The MSM IOMMU is an implementation compatible with the ARM VMSA short
+> +  descriptor page tables. It provides address translation for bus masters
+> +  outside of the CPU, each connected to the IOMMU through a port called micro-TLB.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,apq8064-iommu
+> +
+> +  clocks:
+> +    items:
+> +      - description: interface clock for register accesses
+> +      - description: functional clock for bus accesses
+> +
+> +  clock-names:
+> +    items:
+> +      - const: smmu_pclk
+> +      - const: iommu_clk
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Specifiers for the MMU fault interrupts.
+> +    minItems: 1
+> +    items:
+> +      - description: non-secure mode interrupt
+> +      - description: secure mode interrupt (for instances which supports it)
+> +
+> +  "#iommu-cells":
+> +    const: 1
+> +    description:
+> +      The first cell is a phandle to the IOMMU and the second cell
+> +      is the stream id.
+> +      A single master device can be connected to more than one iommu
+> +      and multiple contexts in each of the iommu.
+> +      So multiple entries are required to list all the iommus and
+> +      the stream ids that the master is connected to.
 
-Nit: There seems to be a typo in the subject line s/icuv/iucv/
+This seems pretty confusing since it's the description for some other 
+property, not this one. FWIW I'd just put this as something like "Each 
+IOMMU specifier describes a single Stream ID.", and if you think it's 
+really worth calling out that clients can have multiple IOMMU 
+specifiers, I'd stick that in the overall description.
+
+Thanks,
+Robin.
+
+> +
+> +  qcom,ncb:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: The total number of context banks in the IOMMU.
+> +
+> +required:
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - qcom,ncb
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,mmcc-msm8960.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    iommu@7500000 {
+> +            compatible = "qcom,apq8064-iommu";
+> +            reg = <0x07500000 0x100000>;
+> +            interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&clk SMMU_AHB_CLK>,
+> +                     <&clk MDP_AXI_CLK>;
+> +            clock-names = "smmu_pclk",
+> +                          "iommu_clk";
+> +            #iommu-cells = <1>;
+> +            qcom,ncb = <2>;
+> +    };
 
