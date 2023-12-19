@@ -1,124 +1,92 @@
-Return-Path: <linux-kernel+bounces-4662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC1D818061
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:09:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE4281804B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:53:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34D9F1F24C58
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:09:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B07D4285B05
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6DE35393;
-	Tue, 19 Dec 2023 04:09:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BDA53BD;
+	Tue, 19 Dec 2023 03:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RVv+5zx5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-m17229.xmail.ntesmail.com (mail-m17229.xmail.ntesmail.com [45.195.17.229])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26AE75235
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from [10.9.0.130] (unknown [211.103.144.18])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id BD8ED260127;
-	Tue, 19 Dec 2023 11:50:33 +0800 (CST)
-Message-ID: <c797bdde-b5a5-4b2b-9106-c1386a0e7516@easystack.cn>
-Date: Tue, 19 Dec 2023 11:50:32 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7D75232;
+	Tue, 19 Dec 2023 03:52:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7b70c2422a8so45378939f.0;
+        Mon, 18 Dec 2023 19:52:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702957973; x=1703562773; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VbWLFBtyAplRUFACvI5DMGuOtgKln1xEAx0ADZAOZvs=;
+        b=RVv+5zx5ounedfYmgw1E76X6TqzmNhxYaLpnIMSlNNiYMYrQWmcKY4Ojl5btvK+Ez2
+         5lphJDqD/jzcqXbMTCgqKVmQNlHn1/q+NKZncCVIDPvh+jaFLlY4Dr6TQi5WgQcVk86h
+         m0VAGpl3WDy41OdstVAGBpDF5k76l9txC5Da1M5ynV3s5mmFvc63v+wRlv8RHg8Osi6v
+         S7fUc0zYi7pyNUuf2FfPU/I0R5/xN6E4ObHKFk7RW4uFwZwcbiDqr8znjTUb+NIAgKoK
+         q3yqgWkB1xXboX7uxJeAbOCEQPN4RSNh8gl6YCH9AOUMBWv0BWq/ex8ML6lkSKk1f2QE
+         fkGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702957973; x=1703562773;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VbWLFBtyAplRUFACvI5DMGuOtgKln1xEAx0ADZAOZvs=;
+        b=Z5JAMMJAy3VYTHYcbKsN3UlyX9vVAJxY1oOxNpy9mYj73EOnMpmKuSm/emmP9mCbTG
+         QYWB+SLORrvXsyGWGZ2sZHRyoy5rVWIBaPwyBlQ//UsL7hGVTvbM/isaWnsrQd54kiwe
+         S9oemRxcRMzB5rwrCoSWxjrTO/lfzz84De8ZzbeOWea9rB3xGzje6hvR+z0OQkDj79m9
+         ij1GOO5oQO94ZFHAeRC2/NDs89DUBN4rvPfEV0NQRZfU69dGjpQidWGV/IWWMkJUHK+c
+         WcJf8llxSZ07XA+JXCBTjy/hW0pOF1Mp/PXfrAwh96RnCJe6Jl20F4Rsi1MiK+Czd+sC
+         P+Hw==
+X-Gm-Message-State: AOJu0YynKkCnfEOvg+yAuwMEMs3xebdsqE+IBpvELe00Sdvk86hBf1xq
+	q2kpLo1sSV7v8FL82IvJNCk=
+X-Google-Smtp-Source: AGHT+IHqwILNzHq9Znt1NMHD9YqI9sR3dgZOD2VHNoAOEXofNHBXUdaunMZMP7YFTu18vM19urNoKA==
+X-Received: by 2002:a5d:9f05:0:b0:7b7:d4c3:65c0 with SMTP id q5-20020a5d9f05000000b007b7d4c365c0mr3938876iot.2.1702957972740;
+        Mon, 18 Dec 2023 19:52:52 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id w2-20020a654102000000b005c65ed23b65sm15635364pgp.94.2023.12.18.19.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 19:52:52 -0800 (PST)
+Date: Mon, 18 Dec 2023 19:52:50 -0800
+From: Richard Cochran <richardcochran@gmail.com>
+To: Min Li <lnimi@hotmail.com>
+Cc: lee@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v4 1/2] ptp: introduce PTP_CLOCK_EXTOFF event
+ for the measured external offset
+Message-ID: <ZYETkpALegYmGMZU@hoboy.vegasvil.org>
+References: <PH7PR03MB7064ADDCABE34B67FA9C30E8A090A@PH7PR03MB7064.namprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kexec: avoid out of bounds in crash_exclude_mem_range()
-Content-Language: en-US
-To: Yuntao Wang <ytcoode@gmail.com>
-Cc: bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
- linux-kernel@vger.kernel.org, vgoyal@redhat.com
-References: <2fc2ad7d-13be-4a9a-b984-67b1bf04c56b@easystack.cn>
- <20231219024727.35016-1-ytcoode@gmail.com>
-From: fuqiang wang <fuqiang.wang@easystack.cn>
-In-Reply-To: <20231219024727.35016-1-ytcoode@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlDQktLVk4fT0JOTR9CTUtNT1UZERMWGhIXJBQOD1
-	lXWRgSC1lBWUlKSlVKS0hVSk9PVUpDWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
-	++
-X-HM-Tid: 0a8c803268680276kunmbd8ed260127
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kwg6Nww*FTEwKwIfKQkiDw0a
-	PVEaCx1VSlVKTEtJQk5MQ0hMT0JCVTMWGhIXVR0OChIaFRxVDBoVHDseGggCCA8aGBBVGBVFWVdZ
-	EgtZQVlJSkpVSktIVUpPT1VKQ1lXWQgBWUFITU1JNwY+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR03MB7064ADDCABE34B67FA9C30E8A090A@PH7PR03MB7064.namprd03.prod.outlook.com>
 
-在 2023/12/19 10:47, Yuntao Wang 写道:
+On Mon, Dec 18, 2023 at 11:50:44AM -0500, Min Li wrote:
+> @@ -50,6 +52,11 @@
+>  					 PTP_RISING_EDGE |	\
+>  					 PTP_FALLING_EDGE)
+>  
+> +/*
+> + * flag fields valid for the ptp_extts_event report.
+> + */
+> +#define PTP_EXTTS_EVENT_VALID_FLAGS	(PTP_ENABLE_FEATURE)
 
-> Hi fuqiang,
->
-> Yesterday, I posted two patches that happen to address the bugs you an Baoquan
-> are currently discussing here, I wasn't aware that you both were also working
-> on fixing these issues.
->
-> Baoquan suggested I talk to you about it.
->
-> If you're interested, you can take a look at my patches and review them to see
-> if there are any issues. If everything is fine, and if you're willing, you can
-> also add a 'Reviewed-by' tag there.
->
-> The following link is for the two patches I posted yesterday:
->
-> https://lore.kernel.org/lkml/20231218081915.24120-3-ytcoode@gmail.com/t/#u
->
-> Sincerely,
-> Yuntao
+Nit: Can we please call this PTP_EXTTS_EVENT_VALID without the _FLAGS suffix?
 
-Hi Yuntao,
-
-I'm glad you've also noticed this issue. But I'm sorry, I want to solve this
-problem myself because this is my first time posting a patch in the community,
-and I cherish this opportunity very much.
-
-I have carefully reviewed your patch. There is some changes where my views differ
-from yours:
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index c92d88680dbf..3be46f4b441e 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -282,10 +282,6 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
-      struct crash_memmap_data cmd;
-      struct crash_mem *cmem;
-
--    cmem = vzalloc(struct_size(cmem, ranges, 1));
--    if (!cmem)
--        return -ENOMEM;
--
-      memset(&cmd, 0, sizeof(struct crash_memmap_data));
-      cmd.params = params;
-
-@@ -321,6 +317,11 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
-      }
-
-      /* Exclude some ranges from crashk_res and add rest to memmap */
-+    cmem = vzalloc(struct_size(cmem, ranges, 1));
-+    if (!cmem)
-+        return -ENOMEM;
-+    cmem->max_nr_ranges = 1;
-+
-      ret = memmap_exclude_ranges(image, cmem, crashk_res.start, crashk_res.end);
-      if (ret)
-          goto out;
-
-1. I don't feel very good that you have moved vzalloc() to in front of
-memmap_exclude_ranges. Because if memory allocation fails, there is no need to
-do anything else afterwards.
-
-2. The cmem->max_nr_ranges should be set to 2. Because in
-memmap_exclude_ranges, a cmem->ranges[] will be filled in and if a split occurs
-later, another one will be added.
-
-Thanks
-fuqiang
-
+Thanks,
+Richard
 
