@@ -1,97 +1,108 @@
-Return-Path: <linux-kernel+bounces-5655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B70F818DAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:12:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3BC818DAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF929B25DED
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:12:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFAF91C24E8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082AE23769;
-	Tue, 19 Dec 2023 17:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLbcc1MT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C4A2136B;
+	Tue, 19 Dec 2023 17:12:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9453174A;
-	Tue, 19 Dec 2023 17:11:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3C68C433C7;
-	Tue, 19 Dec 2023 17:11:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703005891;
-	bh=bHyMqohUpG3TgYf+LaLoP+IOoy7SIqBFB/tROxy5Kps=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dLbcc1MT8AkJroDXZHNVC4rIGmJ5mSwe4TcZTvDcLnGuJdXJlMnsMuA04rSDu7dvf
-	 YNj4lHpGIiPutWsfmhil1SWrhHiQJh1n+oxjdc3R3LMlWF2KIRZrwCpaQS4zvWZyrJ
-	 6F9eoKmpxdJG0/biI80m9+ZRCX6Z5wU1VMCLC58oB3yKmTM/X/ytcaBZDZK+pTB6nl
-	 4rzbPrVGpRwpsBtQc3SKpnwp/cannJpbvkfpXF+mw7cI3mMJ75RFA/URo6o9c7rDSj
-	 jMI+QbtdZQ32xr+m+gYn7m52lju/mjH0Y49L5lif1U7EFV8KntgnYEuJamTDDv6Nsv
-	 PsqflFqVEM40A==
-Date: Tue, 19 Dec 2023 11:11:29 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Cc: Andy Gross <agross@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Yassine Oudjana <yassine.oudjana@gmail.com>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: msm8996: Define UFS UniPro clock limits
-Message-ID: <qjz546574l3jp6w7gza7kj43slwotitsrt3rodtp7g5lnqgbhf@2htxa5m4bvtw>
-References: <20231218133917.78770-1-y.oudjana@protonmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449DC374E7;
+	Tue, 19 Dec 2023 17:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SvjrK4lPFz6K9KR;
+	Wed, 20 Dec 2023 01:10:41 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 83AA7140F7F;
+	Wed, 20 Dec 2023 01:12:25 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Dec
+ 2023 17:12:11 +0000
+Date: Tue, 19 Dec 2023 17:12:10 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, Dan Williams
+	<dan.j.williams@intel.com>, Shiju Jose <shiju.jose@huawei.com>, "Yazen
+ Ghannam" <yazen.ghannam@amd.com>, Davidlohr Bueso <dave@stgolabs.net>, "Dave
+ Jiang" <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>, "Ard Biesheuvel" <ardb@kernel.org>,
+	<linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH RFC v4 5/6] firmware/efi: Process CXL Component Events
+Message-ID: <20231219171210.000078a6@Huawei.com>
+In-Reply-To: <657a2ff3bcc0b_25c9c7294ab@iweiny-mobl.notmuch>
+References: <20230601-cxl-cper-v4-0-47bb901f135e@intel.com>
+	<20230601-cxl-cper-v4-5-47bb901f135e@intel.com>
+	<7ec6d2af-c860-9b05-7eaf-c82f50f8e66e@amd.com>
+	<65674a71ef4d0_a1b25294e4@iweiny-mobl.notmuch>
+	<20231213171351.00004579@Huawei.com>
+	<657a2ff3bcc0b_25c9c7294ab@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218133917.78770-1-y.oudjana@protonmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Dec 18, 2023 at 01:39:42PM +0000, Yassine Oudjana wrote:
-> These limits were always defined as 0, but that didn't cause any issue
-> since the driver had hardcoded limits. In commit b4e13e1ae95e ("scsi: ufs:
-> qcom: Add multiple frequency support for MAX_CORE_CLK_1US_CYCLES") the
-> hardcoded limits were removed and the driver started reading them from DT,
-> causing UFS to stop working on MSM8996. Add real UniPro clock limits to fix
-> UFS.
+On Wed, 13 Dec 2023 14:28:03 -0800
+Ira Weiny <ira.weiny@intel.com> wrote:
+
+> Jonathan Cameron wrote:
+> > On Wed, 29 Nov 2023 06:28:01 -0800
+> > Ira Weiny <ira.weiny@intel.com> wrote:
+> >   
 > 
-
-Such driver changes are not acceptable, as they break backwards
-compatibility with existing DeviceTree.
-
-Can you please try to fix the driver to handle this case?
-
-After that is done, I'd be happy to take this patch.
-
-Thanks,
-Bjorn
-
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
-> ---
->  arch/arm64/boot/dts/qcom/msm8996.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> [snip]
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> index 13667886f50a..4f9939b13c3c 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> @@ -2064,7 +2064,7 @@ ufshc: ufshc@624000 {
->  				<0 0>,
->  				<0 0>,
->  				<150000000 300000000>,
-> -				<0 0>,
-> +				<75000000 150000000>,
->  				<0 0>,
->  				<0 0>,
->  				<0 0>,
-> -- 
-> 2.43.0
+> > > > __packed attribute just for cper_cxl_event_rec still fails to properly 
+> > > > align structure elements. Looks like, __packed attribute is needed for 
+> > > > all structs (cper_cxl_event_devid and cper_cxl_event_sn) inside 
+> > > > cper_cxl_event_rec.
+> > > > 
+> > > > Seems easier to use global pragma instead.. I could test and obtain the 
+> > > > output as expected using pragma..    
+> > > 
+> > > I did not know that was acceptable in the kernel but I see you used it in
+> > > cper_cxl.h before...
+> > > 
+> > > Ok I'll do that and spin again.
+> > > 
+> > > Thanks so much for testing this!  I was out last week and still don't have
+> > > a test environment.  
+> > 
+> > Easy to hack into QEMU :)  Hmm. I have a CCIX patch set from years ago
+> > somewhere that does similar. Would be easy to repurposed. Looks like
+> > I never published them (just told people to ask if they wanted them :( ).
+> > 
+> > Anyhow, if useful I can dig them out.  
 > 
+> If you have a branch with them with a somewhat latest qemu that could work
+> too.
+They are ancient and based on GHES emulation that got reworked before being
+merged. I had a quick go at a forwards port but this is a bigger job than
+I expected. May be a little while :(
+
+Jonathan
+
 > 
+> Ira
+
 
