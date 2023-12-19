@@ -1,92 +1,161 @@
-Return-Path: <linux-kernel+bounces-5599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F11C818CE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:50:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A08F9818CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E0A9B2515F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:50:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4024E1F25877
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849EE20B14;
-	Tue, 19 Dec 2023 16:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QY8N5XhP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE976210EC;
+	Tue, 19 Dec 2023 16:49:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560131F955
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3366e78d872so1945292f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:49:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703004579; x=1703609379; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VRDzLjiMAJP8BbJu7ca4CzlHn8br6Q4rynefqovgK2E=;
-        b=QY8N5XhP1A7bL5nrQ29AhKQmm7Vur6a3nChzQq4+z3HVTNQqsWc4ADP5JQbivf/tsM
-         yOo5qSbWfh2xvUuGGd3OPjQrwqXVQHLTWoSBdOg8Aw0eS48r9HCFRYTFhX/aZmyvN/es
-         SFVWn7lAufgamo1ylbmkF1SN0Mwt7btEr1b0mGq7EkWBblrUhf3ifDEIJdPfTcDcchxQ
-         b9Qx+C7dtZmD5Blrssrj/jqNo0eFCXu+09cxk2lC3M2Vjp9L5PJumLZ2e9JT/WMt7Jeg
-         EsZypGiPpcPdQyTAttR9hvUzcv8Y3zv9uJ/btJqGhp7KMNIoNwVCLJSaLBt785a+8uDa
-         Qvwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703004579; x=1703609379;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VRDzLjiMAJP8BbJu7ca4CzlHn8br6Q4rynefqovgK2E=;
-        b=Wve8ozVolbzkE0E0lskMsO/4HQMN+xiwSYg2rVDd9HSbZ8QAzmKZPevl0LZFJ8cZxP
-         EfSxQL6npWuzBNOiPmM/DzRfgFqLCpJ+ZSpiDw6wY7V6EzwpExcwgoTx9hJnlDiChg8H
-         GBGRPduAvmYutHDUvyrHgPzZUds8u5+zvhnaGAjTAvo3pNMaXJnidsKoIlronS3XJxgz
-         8cMkJho6j3yPFVPhuZRzbR1Co0jaX01OCkt8lrJ/Yx/6ioSSUn3o+mlt018Q79oSR7hp
-         FaawXpAGw5BI7o7BlpvFWYnLR5TIlbhb3hXaBsjQhxyiLmGu0Gh1bKY5rrMvEHw4rlcQ
-         yv/Q==
-X-Gm-Message-State: AOJu0YwrkTPzlesWcpBbh+TTetwM5uw62eO2XMCqASqSdggTRRuymCBC
-	D62D4qZLWFSE6JeCQOO5yGBGZ6J/Ap8gCNh3zMDkwgJpr0gg3n+EP7I=
-X-Google-Smtp-Source: AGHT+IGkSnbETqevyS5YLD3SJEnIfiIu+J0X0Py1heMFhXlPrhe8Yn8VmdFtz1I98N0U0C5dSxJ7i2tWrus4KMvpVek=
-X-Received: by 2002:adf:fb49:0:b0:333:53b9:441b with SMTP id
- c9-20020adffb49000000b0033353b9441bmr4989922wrs.47.1703004579412; Tue, 19 Dec
- 2023 08:49:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339CD20DFE;
+	Tue, 19 Dec 2023 16:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (178.176.72.19) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 19 Dec
+ 2023 19:49:30 +0300
+Subject: Re: [PATCH net 1/2] net: ravb: Wait for operation mode to be applied
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<claudiu.beznea.uj@bp.renesas.com>, <yoshihiro.shimoda.uh@renesas.com>,
+	<wsa+renesas@sang-engineering.com>, <niklas.soderlund+renesas@ragnatech.se>,
+	<biju.das.jz@bp.renesas.com>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	<mitsuhiro.kimura.kc@renesas.com>, <geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214113137.2450292-2-claudiu.beznea.uj@bp.renesas.com>
+ <d08dbbd4-2e63-c436-6935-df68c291bf75@omp.ru>
+ <0b807496-f387-4aef-8650-a43a9249468f@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <2e70a095-8079-84f1-f842-eb90059610ed@omp.ru>
+Date: Tue, 19 Dec 2023 19:49:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215-llvm-decode-stacktrace-v1-1-201cb86f4879@quicinc.com>
- <CAKwvOdmY=Jysqai3KOYO8+c5idP9JjNGKL2xZn2sDNdj5MjTVA@mail.gmail.com> <CAFhGd8qA8Hh63iZPP33Nsxu61OycP7oqT50mDgUO-HFNUWHZxQ@mail.gmail.com>
-In-Reply-To: <CAFhGd8qA8Hh63iZPP33Nsxu61OycP7oqT50mDgUO-HFNUWHZxQ@mail.gmail.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Tue, 19 Dec 2023 08:49:28 -0800
-Message-ID: <CAKwvOdmMCmcHVd7+ymKgVUe5uZrSvUYMaD9Fz5GSBtHBMPTnSQ@mail.gmail.com>
-Subject: Re: [PATCH] scripts/decode_stacktrace.sh: Use LLVM environment variable
-To: Justin Stitt <justinstitt@google.com>
-Cc: Elliot Berman <quic_eberman@quicinc.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>, Manuel Traut <manut@linutronix.de>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0b807496-f387-4aef-8650-a43a9249468f@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/19/2023 16:26:24
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182235 [Dec 19 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;178.176.72.19:7.7.3,7.4.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.19
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/19/2023 16:32:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/19/2023 2:00:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Mon, Dec 18, 2023 at 4:17=E2=80=AFPM Justin Stitt <justinstitt@google.co=
-m> wrote:
->
-> Interestingly, I am getting good stack traces on mainline with a
-> LLVM-built kernel -- both with and without that patch.
+On 12/15/23 1:04 PM, claudiu beznea wrote:
+[...]
+>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> CSR.OPS bits specify the current operating mode and (according to
+>>> documentation) they are updated when the operating mode change request
+>>> is processed. Thus, check CSR.OPS before proceeding.
+>>
+>>    The manuals I have indeed say we need to check CSR.OPS... But we only
+>> need to wait iff we transfer from the operation mode to the config mode...
+> 
+> RZ/G3S manual say about CSR.OPS "These bits are updated when an operating
 
-Probably because:
-1. you have GNU binutils installed.
-2. you're not testing .o files from an LTO build (which GNU binutils
-cannot decode).
+   I was unable to find the RZ/G3 manuals on ther Renesas' website... :-(
 
---=20
-Thanks,
-~Nick Desaulniers
+> mode changes is processed". From this I get we need to check it for any mode.
+
+  I don't argue with the (safety) checking of CSR.OPS, I was just pointing
+out that the R-Car gen3 manual says that only transfer from operation to
+the config mode happens after a considerable amount of time, other transfers
+do happen immediately after updating CCC.OPC.
+
+> Also, on configuration procedure (of RZ/G3S) it say CSR.OPS need to be
+> checked when switching from reset -> config.
+
+   Just checked or waited on?
+   The R-car does have a specific algorithm for transferring from the operation
+to the reset mode (you need to set CC.DTSR first and then wait for CSR.DTS to
+clear before updating CCC.OPC)...
+
+[...]
+
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>> ---
+>>>  drivers/net/ethernet/renesas/ravb_main.c | 47 ++++++++++++++++++++----
+>>>  1 file changed, 39 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>> index 9178f6d60e74..ce95eb5af354 100644
+>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+[...]
+>>> @@ -1744,6 +1747,18 @@ static inline int ravb_hook_irq(unsigned int irq, irq_handler_t handler,
+>>>  	return error;
+>>>  }
+>>>  
+>>> +static int ravb_set_reset_mode(struct net_device *ndev)
+>>> +{
+>>> +	int error;
+>>> +
+>>> +	ravb_write(ndev, CCC_OPC_RESET, CCC);
+>>> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_RESET);
+>>> +	if (error)
+>>> +		netdev_err(ndev, "failed to switch device to reset mode\n");
+>>> +
+>>> +	return error;
+>>> +}
+>>> +
+>>
+>>    Again, ravb_wait() call doesn't seem necessary here...
+> 
+> Ok. I followed the guideline from the description of CSR.OPS. Let me know
+> if you want to keep it or not. I think I haven't saw any issues w/o this.
+
+  Yes, please remove the waiting.
+
+[...]
+
+MBR, Sergey
 
