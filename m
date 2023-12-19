@@ -1,112 +1,136 @@
-Return-Path: <linux-kernel+bounces-5468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7829A818AF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:14:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7C44818AF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:15:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87EB01C21671
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:14:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 036DCB23EA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:15:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E461C6BE;
-	Tue, 19 Dec 2023 15:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9A81CA81;
+	Tue, 19 Dec 2023 15:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A1wJ1ein"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XccugP6V";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="548TD8AN";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XccugP6V";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="548TD8AN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA33D1C68A;
-	Tue, 19 Dec 2023 15:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3366ddd1eddso1994927f8f.0;
-        Tue, 19 Dec 2023 07:14:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702998878; x=1703603678; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bRzX3hUbPtrAVrbHdB/NlfsXUqLfq91OinN9p1IBzVk=;
-        b=A1wJ1einY1p/eknjGE9iWj56vm+k4achQ2i604++5T9LRVTdF/6aLqVoIXgFsbp0e6
-         WXQEjzr7ukQBa7YJC6NwT6nvF89qyi/Fks66UkUNNxLDDJpVzE7Pk7stLVpcArgP9HE5
-         PYZAY4qMEdxb9hFchuDYXpi/kjcxB2VKt7sBcktcfjob3IImeZhfjH+ECmJw17EcY6NG
-         eTni7zAKIMlVfUF5c6IZyfP+dz22vDslqYgARhSNv/gnv92F+ydxh8Y1hmJXHiCLENMS
-         PYzm775WPKecsdVAtbZIZDsC6R2FE/+TCNKB/haEBuLGRB4AuqmlA/k+SuGwVJJNoC6p
-         9pSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702998878; x=1703603678;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bRzX3hUbPtrAVrbHdB/NlfsXUqLfq91OinN9p1IBzVk=;
-        b=eR9dMVJELAbMmb2Wz46ANO4enWGLW32NtZAI12wH8Z55ivR3bnRmAIdBW7SeVyodJW
-         v0KqLJHzykNXelTsPjf7+K1lR1wZggLBd3U1ySdv4yH7W1XAm06cbbouuK7zzP4aciHH
-         78eZnAY/GZG4Vi3ztyKRM8mQEtfXE+FgaA/AQs9sDgC0275KpSwzgVlsurYmz6UnnXCL
-         lMpfREYsP5koizZuQ7P4jhpPEWMWyefFZx5sBdAK/VgO4dR7lTnWTiAw8iM4DEpg8iRF
-         1jEBmrVfr0CvUFSZrheeLE35tJmLboaTe7ilFiSMaobSamdbbgtSwcPhUCxSnqo4vv47
-         VJIg==
-X-Gm-Message-State: AOJu0YyASKNuq6j9m6eGdE/85Tk0gfYzq75atuggyTVHfRP9lanwdY1J
-	zVTzO9ZQ/FeLQb5nVYc0+B8=
-X-Google-Smtp-Source: AGHT+IEgxSk4I/pZ3tdRsHVUcpmoX5T3UR/Qn+n42lmm5pkIOSmNqTF+iyUc87KbTBOBW/gp1MkJuQ==
-X-Received: by 2002:a5d:47cf:0:b0:336:3db1:1c1f with SMTP id o15-20020a5d47cf000000b003363db11c1fmr4370056wrc.235.1702998877941;
-        Tue, 19 Dec 2023 07:14:37 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id v30-20020adfa1de000000b003366cb73f74sm4217956wrv.66.2023.12.19.07.14.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 07:14:37 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Helge Deller <deller@gmx.de>,
-	Nikita Romanyuk <ufh8945@gmail.com>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: video: logo: use %u format specifier for unsigned int values
-Date: Tue, 19 Dec 2023 15:14:36 +0000
-Message-Id: <20231219151436.368696-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B801C69D
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4AF4E1F7C9;
+	Tue, 19 Dec 2023 15:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702998902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7e5XCCyINAJ+NzY1e0bqdj0ZqmCV70DZ2zp5UsU/L/o=;
+	b=XccugP6V9mOSqAF3XMjc+FNyX8RyzRFKXkiS9xTrx3Kk3dsKooTXU1QtJyn2fsn9yNn6x/
+	HY7gu1MzDv/mNjDyNSepFtSpZjyT53Q0kSB3Yw5og6bzY7uS1SfZxsmOl4UmBgwv1XKpkk
+	Ors64/EJkLoNClSQR+pIf4V2IsJOheA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702998902;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7e5XCCyINAJ+NzY1e0bqdj0ZqmCV70DZ2zp5UsU/L/o=;
+	b=548TD8ANtNA0cf5N0kK6iobtEySQVB71WWm72LLAHrEeJs7oaNoruMJp/y99lWtmEnxe27
+	8LOM8Cdn9GNVpjCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702998902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7e5XCCyINAJ+NzY1e0bqdj0ZqmCV70DZ2zp5UsU/L/o=;
+	b=XccugP6V9mOSqAF3XMjc+FNyX8RyzRFKXkiS9xTrx3Kk3dsKooTXU1QtJyn2fsn9yNn6x/
+	HY7gu1MzDv/mNjDyNSepFtSpZjyT53Q0kSB3Yw5og6bzY7uS1SfZxsmOl4UmBgwv1XKpkk
+	Ors64/EJkLoNClSQR+pIf4V2IsJOheA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702998902;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7e5XCCyINAJ+NzY1e0bqdj0ZqmCV70DZ2zp5UsU/L/o=;
+	b=548TD8ANtNA0cf5N0kK6iobtEySQVB71WWm72LLAHrEeJs7oaNoruMJp/y99lWtmEnxe27
+	8LOM8Cdn9GNVpjCA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 36DF013B9B;
+	Tue, 19 Dec 2023 15:15:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 9vLjC3azgWUyfgAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Tue, 19 Dec 2023 15:15:02 +0000
+Date: Tue, 19 Dec 2023 16:15:01 +0100
+From: Daniel Wagner <dwagner@suse.de>
+To: Hannes Reinecke <hare@suse.de>
+Cc: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+	Keith Busch <kbusch@kernel.org>, James Smart <james.smart@broadcom.com>
+Subject: Re: [PATCH v3 01/16] nvmet: report ioccsz and iorcsz for disc ctrl
+Message-ID: <zxwj5jupg7rlbtdrqloecw3ta4oybfguue5hrdlf2j3o35xusv@wp6kq4kujfli>
+References: <20231218153105.12717-1-dwagner@suse.de>
+ <20231218153105.12717-2-dwagner@suse.de>
+ <e0eb22cd-9959-44cb-b913-4c1be9a2a2f6@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0eb22cd-9959-44cb-b913-4c1be9a2a2f6@suse.de>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -7.79
+X-Spamd-Result: default: False [-7.79 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.99)[99.96%]
+X-Spam-Flag: NO
 
-Currently the %d format specifier is being used for unsigned int values.
-Fix this by using the correct %u format specifier. Cleans up cppcheck
-warnings:
+On Tue, Dec 19, 2023 at 08:24:58AM +0100, Hannes Reinecke wrote:
+> > +	 * Disable in-capsule data for Metadata capable controllers.
+> > +	 */
+> > +	cmd_capsule_size = sizeof(struct nvme_command);
+> > +	if (!ctrl->pi_support)
+> > +		cmd_capsule_size += req->port->inline_data_size;
+> > +	id->ioccsz = cpu_to_le32(cmd_capsule_size / 16);
+> 
+> Why the division by 16?
 
-warning: %d in format string (no. 1) requires 'int' but the argument
-type is 'unsigned int'. [invalidPrintfArgType_sint]
+The unit size is 16 bytes:
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/video/logo/pnmtologo.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/video/logo/pnmtologo.c b/drivers/video/logo/pnmtologo.c
-index ada5ef6e51b7..2434a25afb64 100644
---- a/drivers/video/logo/pnmtologo.c
-+++ b/drivers/video/logo/pnmtologo.c
-@@ -249,10 +249,10 @@ static void write_footer(void)
- 	fputs("\n};\n\n", out);
- 	fprintf(out, "const struct linux_logo %s __initconst = {\n", logoname);
- 	fprintf(out, "\t.type\t\t= %s,\n", logo_types[logo_type]);
--	fprintf(out, "\t.width\t\t= %d,\n", logo_width);
--	fprintf(out, "\t.height\t\t= %d,\n", logo_height);
-+	fprintf(out, "\t.width\t\t= %u,\n", logo_width);
-+	fprintf(out, "\t.height\t\t= %u,\n", logo_height);
- 	if (logo_type == LINUX_LOGO_CLUT224) {
--		fprintf(out, "\t.clutsize\t= %d,\n", logo_clutsize);
-+		fprintf(out, "\t.clutsize\t= %u,\n", logo_clutsize);
- 		fprintf(out, "\t.clut\t\t= %s_clut,\n", logoname);
- 	}
- 	fprintf(out, "\t.data\t\t= %s_data\n", logoname);
--- 
-2.39.2
-
+  I/O Queue Command Capsule Supported Size (IOCCSZ): This field defines the
+  maximum I/O command capsule size in 16 byte units.
 
