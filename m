@@ -1,71 +1,113 @@
-Return-Path: <linux-kernel+bounces-5935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30A298191AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:42:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF108191B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81F67B22ACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:42:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F14B2287983
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4753B78A;
-	Tue, 19 Dec 2023 20:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B904439AF5;
+	Tue, 19 Dec 2023 20:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TwUEZGxQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uInVRD/s"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0913B29D
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:41:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EF5CAC433C9;
-	Tue, 19 Dec 2023 20:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0074F39ADF;
+	Tue, 19 Dec 2023 20:50:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F4DC433C7;
+	Tue, 19 Dec 2023 20:50:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703018518;
-	bh=IGs2C3Wv5l8ipm2943bFpvRyxIRZS2lbR5fsFwi8FGg=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=TwUEZGxQYHT/yLT4sxP9c1sndn8Ok0VrBj6ySjt1xF6Mgxc6907Xs+xxUsYJbpBlM
-	 nLFiPQHuRjEfLlO6e6bSc9knq9Gq5XGsaiiUVhEj/vIyZOEK5ryrYLfoh8CbTsusB9
-	 LDn9k9m5FN8CBtdOjVvZ17rFLycQWRPqY7oIQ3qPFL79ts/v1f0H+w5yKYZGG5uAMD
-	 LTmdfKE9XDQ4qAhd6NpjqOs3pY2mBcu0nUkeRLV4EsG46lG3yQ1gCAW9k0TESLmRd/
-	 KuFSdnZVdjPPU1385j0L/U39MVCVPCISBSa+/NBDQoYlBNZinG0u0eEg4DnFc13pod
-	 2WTw1F/b3FDqA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DA95BC41677;
-	Tue, 19 Dec 2023 20:41:57 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: fix for 6.7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20231219124923.0841ca34@gandalf.local.home>
-References: <20231219124923.0841ca34@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231219124923.0841ca34@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.7-rc6
-X-PR-Tracked-Commit-Id: b803d7c664d55705831729d2f2e29c874bcd62ea
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 55cb5f43689d7a9ea5bf35ef050f12334f197347
-Message-Id: <170301851788.10204.3949337881841515333.pr-tracker-bot@kernel.org>
-Date: Tue, 19 Dec 2023 20:41:57 +0000
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+	s=k20201202; t=1703019029;
+	bh=xb8dk6p1RHhv4INmJ7zZ89M+91T1HlupPCg4fGHi3AU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uInVRD/sdb+mv3EVpFUzOgm7aOKLUxR1fpXol3XYR+rF+3U+XLg+CVBt/ZPC2wlmD
+	 EVU4KFlJhMuc8JJLXOpS3R+mJh/MWFGV0Y43a/GFLhZhUj7HDfZvAIkXZKkelwOfkS
+	 jji7q3QkWxr5gcYhmiXcgjAJczWOcXzCYyIS6GyQ3SRaJdDbUYzTNa0b2F9woA7K39
+	 mCfMwZiKSB1sLWGOnOjc/tQrxvbJRt82m8dMdVos92NWbZYKfxcMl5iQQAO7QENQL0
+	 q2CGukfzFIYrYiCT6zdZ+0ULAz+GMeTEbwvIQSXYSw4uF3S4mv57aqgb4/E+Fds76m
+	 dvDUI4E0bmdBg==
+Date: Tue, 19 Dec 2023 21:50:25 +0100
+From: "wsa@kernel.org" <wsa@kernel.org>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	"andi.shyti@kernel.org" <andi.shyti@kernel.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
+Message-ID: <ZYICEczlao+pg8kd@shikoro>
+Mail-Followup-To: "wsa@kernel.org" <wsa@kernel.org>,
+	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	"andi.shyti@kernel.org" <andi.shyti@kernel.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231115035753.925534-1-chris.packham@alliedtelesis.co.nz>
+ <20231115035753.925534-2-chris.packham@alliedtelesis.co.nz>
+ <f24b9b2d-aeb1-47f7-bf21-4383fdcf94aa@linaro.org>
+ <5a52b0c9-8858-4f55-8dd7-9269c29c10a7@alliedtelesis.co.nz>
+ <ZYHMvZ3plIQ0zXWa@shikoro>
+ <601d07b5-264d-4322-b92e-63d58b3d69fa@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KAQIevLhiSubidkk"
+Content-Disposition: inline
+In-Reply-To: <601d07b5-264d-4322-b92e-63d58b3d69fa@alliedtelesis.co.nz>
 
-The pull request you sent on Tue, 19 Dec 2023 12:49:23 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.7-rc6
+--KAQIevLhiSubidkk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/55cb5f43689d7a9ea5bf35ef050f12334f197347
 
-Thank you!
+> I personally would like to see it accepted but it seems there are=20
+> objections to this approach. I've yet to come up with anything better to=
+=20
+> offer as an alternative.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I see. Thanks for the heads up!
+
+
+--KAQIevLhiSubidkk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWCAg0ACgkQFA3kzBSg
+KbYzrw/9HTP8AzWQLqcM+C6TIAYaKJLjE4spZJpDJzE9JJNPDc1avUNCE/2SBn0D
+Y+NHTDDs4mTISseTNlJMAdTC5eRZaaTXYc2OOf6E5F9puJK2bwK7xRsTIHy9IodF
+80Gf3zGyiV6+Xw8XDVDrzL8aPyV+jb/Zwq+iju5RlnqSazNwCJZogyhfcmRbiqQU
+8fQ9arUMHkro0/4lgQmSG4q4cU+uYHuFdXWdiPDSAz1YKym1PHx1wGUu9gHzsFz0
+Q9eczVHvttrWDqa2NEpdAd81rftgsNvywuUwk3Gq7gb3snUne0fKNTrTbNqF7W5t
++H1KV6CcBdAHlbm8Tkbt8ncOx6EpIb71d6KcW98o9Vrqomu3Yo28CaSopresBv9D
+/ZoWEkoSBNkrxYTdG8i/BE5NCH+r8c1WEdKrzCbuVBekJDDvw+oC4tU1rcmUW5Lc
+9rtvQ/q3CjqIaywMmLjqoNWeSYqCdTO/9BWfAZf5bocxwF3vzoJgIsamy1NgRAHB
+X9BlMCv8tvnxQN7siHVR6axNDcOpGmmWYgR4v3Twkh62vyyW4CLqAiAWSaYde3OH
+V3wO1kd1DjxCMtNZ+mUGNQPs6NiWx1KKj8ZoUSusdtZBp9n6yJlKaul5Hll0tx97
+cRAfSfUy6UfVKQLSloM2uloMeA8yR1WbmB8yF4q5RbnMNqPFf0g=
+=kggI
+-----END PGP SIGNATURE-----
+
+--KAQIevLhiSubidkk--
 
