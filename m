@@ -1,112 +1,99 @@
-Return-Path: <linux-kernel+bounces-4613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DE47817FEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:47:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB940817FF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:47:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83D51F23DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:47:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E0212816EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1217E468F;
-	Tue, 19 Dec 2023 02:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A360379C6;
+	Tue, 19 Dec 2023 02:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CkbpSk0d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l5lRuXM/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603734411
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-336437ae847so4192406f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:47:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B407468
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:47:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d89f278cc9so861107b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:47:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702954034; x=1703558834; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702954053; x=1703558853; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bnwKqS75fmoBKZ6JUfdCyxecRAaSaUAJyW+9JW8x254=;
-        b=CkbpSk0dBithTV5/aI2vEc83UGFpw8ZDkOh01gNZ1a9mh5qzJFRQbtEUwrXC3mCtRI
-         0/yuEjxpIHcifcjItTAWS8kvO1L7CU+x1MpZqHuktTa/UDh5bnxV96kazNejv2yv9VcD
-         +WNLiRMm4r8D/lohiCz0YCJ8FZACN/G/gobJn3xJ6mGUYUrt1LxvFXRv7VokfvbljvKJ
-         NzZwBgnpXThs90BDoVm+oC2zHrPRqww514Rz/GHFTs8fIFSiyCQHaVkPPMJRWjBnzKEX
-         Ie4us8tnxAolZZWQw90enihgV5orD8gokgoh01Rw5J7pE5NODujPhmqv+sAff4VLhb1G
-         QX4Q==
+        bh=sC/Syu1LO9CGekxHr4hyDiqB1I8nqPv3BQMH/cbp20c=;
+        b=l5lRuXM/oFZigd2dq8kx16aWTHzDEp58H460x+KF8EcTPIMcQFl1eUYXNFWk2KJTte
+         JPPuoBIUyFGk3zljPVft9gjkULxBMPNR+pW2k+u+195VBRQvyNsZsAtRLb2G4IFVD9R/
+         SieYfTvC+TmvgYCuJPxUZYK1QzReSmJswNAspsLFZKFL0YOM90zWEaL7cxlMqWlOIRQu
+         MdrHXVgFmySps1LlM+XffdmkkRg6c3P3hEjTVGTUnQ0D+6n8yBi6fNxSLcMz+CkAskdX
+         eUuQ4/st9DE+LDoaSlJh6q542va+ND3axviUhPNyXaKOVNdRliltmktA/vBquDQHXeoP
+         9jvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702954034; x=1703558834;
+        d=1e100.net; s=20230601; t=1702954053; x=1703558853;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bnwKqS75fmoBKZ6JUfdCyxecRAaSaUAJyW+9JW8x254=;
-        b=nKCor33fOGwt9nADu6cwwHxvzeUgy6vO304xAQdiftR5wGRxxfmcuGC3GGgSbQyRU2
-         10pHdhqTeZFFWxSz/LnL4U4FmXYZ3pXGGkUNVOhMveToNa4XrViS7msu8yPfmQRDSVjv
-         s5GySrQ2vMXVsXTurNSm0IPlCAWtDJTSULnUt/zEnfMATbMwIhHYDaDg63XsteZphqei
-         +N1m6fz/jjrqMQ2W/xSeN0LQBMv6fOrpQap51RUvpC+upW2kWiaOSz+zcFdmmgPVRHWp
-         JXaJjEmugXM4ZWS/stpBn3ZjtyWgP0dUm9MPn7xBY0A7NhGTAKfTSckFHVAcoEWGknuH
-         xrRw==
-X-Gm-Message-State: AOJu0Yx/k0KeDeKH6VW9sI/LY4OslqTwSBLh1z1hEe+7ly/Pg6KB65f3
-	80Xd82goA3sDSGBbqmETtRIVNQ==
-X-Google-Smtp-Source: AGHT+IH1es16u7uh0bMTqgZjbsRgfKYgVlo+U8MgK2DplnFlSN3lmCiHelfm/k/tTubXGi9FelB20w==
-X-Received: by 2002:adf:ffc4:0:b0:336:6701:e80 with SMTP id x4-20020adfffc4000000b0033667010e80mr1869086wrs.94.1702954034493;
-        Mon, 18 Dec 2023 18:47:14 -0800 (PST)
-Received: from 1.. ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id e6-20020adf9bc6000000b003366cac55f4sm2717124wrc.107.2023.12.18.18.47.13
+        bh=sC/Syu1LO9CGekxHr4hyDiqB1I8nqPv3BQMH/cbp20c=;
+        b=GVav6K48bAn5te3SpCTQhJji7F3KvxrjG2yezz6252xFyav4Io6jvHOcsETOepV8hg
+         H3J68J7xuFLW/Uol0XKpIZojMcpya7bZyiEhFLbGaHkqR7ejq9/7K+RKH/xE2sMtgHpa
+         pFTiExSuQSGcHbeCp0OZP4GLKrkNb21/AIMdwjNihoydLJ/BPGclwQ29WUF8yNhmB22C
+         yv3EBnpaYNofYkzhy//RfT90AsWACfqfYiAHnb/U1T56CwJeN2nHG/CXjyr0J5l4STWq
+         UgZ+jFy7dYCZ9cm5PQkKkuoD7dcpQeDqfokcVP3e/+qZhOxzB2g5RTKFnGXqU+7qJVJn
+         yiog==
+X-Gm-Message-State: AOJu0YwXXo+oRgZahC85FOl/cUW8Qlfnq/q3IrbY/So5GDFXStLjmdPE
+	s/e0hxtkD1OJCbE2ztaJmOk=
+X-Google-Smtp-Source: AGHT+IHRNqb5kUfBYi12nhyKHU/bcfBy4RNNO0tbkNkX84gE5c5tAlV/+LxFS36wLXSa90oZaRNxvg==
+X-Received: by 2002:a05:6a00:330c:b0:6d2:74fc:1f1e with SMTP id cq12-20020a056a00330c00b006d274fc1f1emr542127pfb.14.1702954052994;
+        Mon, 18 Dec 2023 18:47:32 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id h25-20020aa786d9000000b006d559d1a674sm3620275pfo.160.2023.12.18.18.47.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 18:47:14 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: richard@nod.at,
-	jaimeliao@mxic.com.tw,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] mtd: spi-nor: mark the flash name as obsolete
-Date: Tue, 19 Dec 2023 04:47:11 +0200
-Message-Id: <170295399037.64561.10229495240556989288.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231215082138.16063-1-tudor.ambarus@linaro.org>
-References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
+        Mon, 18 Dec 2023 18:47:32 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: fuqiang.wang@easystack.cn
+Cc: bhe@redhat.com,
+	dyoung@redhat.com,
+	kexec@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	vgoyal@redhat.com
+Subject: Re: [PATCH] kexec: avoid out of bounds in crash_exclude_mem_range()
+Date: Tue, 19 Dec 2023 10:47:27 +0800
+Message-ID: <20231219024727.35016-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <2fc2ad7d-13be-4a9a-b984-67b1bf04c56b@easystack.cn>
+References: <2fc2ad7d-13be-4a9a-b984-67b1bf04c56b@easystack.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=935; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=3k65lHxgY8sTNdZdKmSGqZ9DWwsAKEbwE62VkhhJp5g=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlgQQtyDhGCTtoQ/AWoWIAMvk3UvtDtHhhM2ESp wP9cH/Ae6uJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZYEELQAKCRBLVU9HpY0U 6dTQB/4qnGysk7VNTyLTeMGD+fDu+sYw8EkWK0XRsJFfPLTJCMi0jFz2qDDBr2ZnyzqS5UO8NYB eZoeWUXae8SnLa1X/55GFvJAbk9ws/oi3dA4I381Gss3HISPzJ7YvNse9891R4D00pbY3OqCAkd pHgvSDQLZj8OsNHqkoPAGlgbBQqozYZISYoEJkuXQqzYPuLevV/c7aDSX4Elwoy2UXoxkJjlaTR po/dWCQZ5nGc6oxByL55mnlWks2roaSZE/dlaYxJo1smhcTMb82+LjwxmFfCp2JBxMdnBvaoj5X yvAjDqvq/xEOSsyHMEEbBDIPTz88tO5evVJhTcqqtfWao9aI
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 Content-Transfer-Encoding: 8bit
 
-On Fri, 15 Dec 2023 10:21:34 +0200, Tudor Ambarus wrote:
-> The flash name is unreliable as we saw flash ID collisions. Mark the
-> flash name as obsolete and print the manufacturer and device ID where
-> name was printed.
-> 
-> JaimeLiao (1):
->   mtd: spi-nor: sysfs: hide the flash name if not set
-> 
-> [...]
+Hi fuqiang,
 
-Dropped unused variables, fixed typos and
-applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
+Yesterday, I posted two patches that happen to address the bugs you an Baoquan
+are currently discussing here, I wasn't aware that you both were also working
+on fixing these issues.
 
-[1/4] mtd: spi-nor: print flash ID instead of name
-      https://git.kernel.org/mtd/c/9fcb0999345e
-[2/4] mtd: spi-nor: mark the flash name as obsolete
-      https://git.kernel.org/mtd/c/15eb8303bb42
-[3/4] mtd: spi-nor: sysfs: hide the flash name if not set
-      https://git.kernel.org/mtd/c/62f92e62c1ef
-[4/4] mtd: spi-nor: drop superfluous debug prints
-      https://git.kernel.org/mtd/c/7bf018ea5cb6
+Baoquan suggested I talk to you about it.
 
-Cheers,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
+If you're interested, you can take a look at my patches and review them to see
+if there are any issues. If everything is fine, and if you're willing, you can
+also add a 'Reviewed-by' tag there.
+
+The following link is for the two patches I posted yesterday:
+
+https://lore.kernel.org/lkml/20231218081915.24120-3-ytcoode@gmail.com/t/#u
+
+Sincerely,
+Yuntao
 
