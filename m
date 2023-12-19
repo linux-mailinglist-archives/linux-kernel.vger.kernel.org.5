@@ -1,115 +1,123 @@
-Return-Path: <linux-kernel+bounces-6037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B7E819366
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E1081936C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02B1EB257A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:16:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FD7AB21288
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F8A3D0AC;
-	Tue, 19 Dec 2023 22:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003A73D0A7;
+	Tue, 19 Dec 2023 22:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NbgAFucS"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="uuWjB7BL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39ED43D0A2;
-	Tue, 19 Dec 2023 22:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50e2bd8c396so4315376e87.0;
-        Tue, 19 Dec 2023 14:16:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703024165; x=1703628965; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dpXY5hYmX0qfZxaaRZ2hbLsbfa0QJNMCX/B4+utVEqE=;
-        b=NbgAFucSE66H6QmKfjsVKB4arUmg6nGTps15MM5sR7p/67c/OjW5/s21wUvEvdpIwe
-         0YXVGR9knvg1C7eA8AAKLahOrTZi8XoZSNgqW5aluRZ7OL2PrygHuvpfhcwDhkvu2ZNu
-         /x6BW+lhEif9y5PwFJ4yT9ue0iTqZjRTO+uytaNkvzOnbe0qoZuKeg4/USvQO0Et9oZN
-         AYBw2eWg1USgoyE3Mm0gEJCCkozSzawo+7kJJ722cdFAfGOsKe7Z59VCNO8eOpl3e1Za
-         TAmltFTaq4Tp/lpGZA9ue1ft18RmZgy8jlMDDZYzAGkr/Xiu0BgVQdbf3VJ9Lm0m4IyM
-         lPJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703024165; x=1703628965;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dpXY5hYmX0qfZxaaRZ2hbLsbfa0QJNMCX/B4+utVEqE=;
-        b=xMSsIHbqk9amUcc6mPg8leO0F0gwepD+GFSsWzoYo1oCcQ4qYPz8LzvLycBujiuwTj
-         WIk0FfHFcC+9gHctIO852Mu8x3D96wGKRCUL/b7nxcOvtEUOzzNkaB8NDK1MeUNFk0EI
-         E9rUiyK+d8vlIDrTGF1ZPSy9OwzTF1yQGhpAqoA17ZLpg/0WJ4gNrsvsYRGu264gFZa+
-         7B+RYQaTfaNfcSpnkr01a6xI7Z2mpNxDu3Jh2eDqzPZhr+y8Pr/8gB2NPFG7a3JB7xAW
-         ZJXm0FGOO4KhBa/QwEIgbf4OCtjE6flJpwidhvyccMHA7ZQ6P9dXZdvsed05yjTDSQZi
-         jN/w==
-X-Gm-Message-State: AOJu0YztuygP9+CQ0cNhLPbKNXkyLIx+oTwnUaQkVQ4bblJfeXOfEpIk
-	Cvy8cikYvZbm4URzWIUCsmA=
-X-Google-Smtp-Source: AGHT+IFBo7Yg9h7ls15O6tkpIx5j3Mp2CgGeRXnr3DznPPjsgogxAHyDZOD9jrg8dYGvrnsS9ykWzA==
-X-Received: by 2002:a05:6512:b84:b0:50e:3b0b:8cd1 with SMTP id b4-20020a0565120b8400b0050e3b0b8cd1mr2421659lfv.95.1703024165047;
-        Tue, 19 Dec 2023 14:16:05 -0800 (PST)
-Received: from mobilestation ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id s25-20020a056512315900b0050bf8ddb1c3sm1085234lfi.272.2023.12.19.14.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 14:16:04 -0800 (PST)
-Date: Wed, 20 Dec 2023 01:16:02 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	xiongxin <xiongxin@kylinos.cn>, Andy Shevchenko <andy@kernel.org>, hoan@os.amperecomputing.com, 
-	linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@kernel.org, Riwen Lu <luriwen@kylinos.cn>
-Subject: Re: [PATCH v3] gpio: dwapb: mask/unmask IRQ when disable/enale it
-Message-ID: <kj6r7ovlim3nd22rvkpfgmssl3vhef4qfo4kxguxbfrtdsgaly@ir3bjtayl7pn>
-References: <20231219013751.20386-1-xiongxin@kylinos.cn>
- <7zdg5ujizncarxvdyahnusojiq44rzxx2zybqj4kzsonzr27gq@fm5wj7npqsk3>
- <CAHp75VceVAZYTNsJaYYRN+EMExFZSQARsJowd-CvDLRtuOPKSg@mail.gmail.com>
- <euhbczna4hk5sacb23i2xwqh2jewlek7cfceprfslpsiijhwk3@3d6vtybmgag5>
- <20231219-whispering-independent-bonobo-d14a04@lemur>
- <yko4bwzrnlvncljpgyxlsvioqeyf3zxb255qexlawooqjxvedn@dkr7i7fame3n>
- <20231219-fluffy-labrador-of-inquire-fafb28@lemur>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC01D3D0AB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 22:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6005a.ext.cloudfilter.net ([10.0.30.201])
+	by cmsmtp with ESMTPS
+	id FffbrATzVWcCIFiR3rl33y; Tue, 19 Dec 2023 22:19:33 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id FiR3rESny8KNvFiR3rdhQm; Tue, 19 Dec 2023 22:19:33 +0000
+X-Authority-Analysis: v=2.4 cv=dp3Itns4 c=1 sm=1 tr=0 ts=658216f5
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=7i6jQBsDwpSr8TU23jQ8sQBZIk5tH7uhMXJxPtQ0VF4=; b=uuWjB7BLccvnHXB7COsDti99se
+	Zv8bmOhqW8DrOolH5wdbGLcPGCmgagcGtt0baehEEM30LNo65JaofheTxxmk1zBQU9cGtAnhXUppH
+	rql5fUANvL5RaPzS6UkvlgG/OHKaI78kWkq8GepaDcFR2uhD2Wy1Zt/nKe1ZN5rXlV5SVY9LFgT5I
+	p1FDgP1OM2y7b4rRHec7bKyoLJH8cYZAyhqP7l3xIlaazo+A0HO8NULSonYeHbPaSqpdNNsz7Knxt
+	lQonwh+7BZdHMPtVua2Rn+UMfJhgSbnWUYcKK4gwCeYhZ+N+5pbvo3S15D/qtPHTm3bSxhzoEHV9H
+	tmxliYug==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:60640 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rFiR0-0044oU-29;
+	Tue, 19 Dec 2023 15:19:30 -0700
+Subject: Re: [PATCH 6.1 000/106] 6.1.69-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20231218135055.005497074@linuxfoundation.org>
+In-Reply-To: <20231218135055.005497074@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <c05cdde6-cf05-9af4-13af-4b38511de0d5@w6rz.net>
+Date: Tue, 19 Dec 2023 14:19:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219-fluffy-labrador-of-inquire-fafb28@lemur>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rFiR0-0044oU-29
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:60640
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfIVTEq7mM07yQw7VY7o8qsgTG0MUeuyKRFSoStJ7rIn04haGhq6kcHusnF9xo8UjgapIJAjhTjl/XDlt8KhMHB0urZmEf/dQxE8DgxLcU8sgLo/nCli8
+ +yKgz6fJfsiCB6x97qTdCphuZJRLp6cOun+HzvPN61aJ/E+5rQ425+UpZlJ5iDqPBaVCKRhqY3mL3vwbWkQdKW9BYLlptrS5guo=
 
-On Tue, Dec 19, 2023 at 05:10:02PM -0500, Konstantin Ryabitsev wrote:
-> On Wed, Dec 20, 2023 at 12:58:16AM +0300, Serge Semin wrote:
-> > > It's a known limitation at this time, but it will be improved in the near
-> > > future and we'll be able to grab trailers across revisions as long as the
-> > > patch-id remains the same.
-> > 
-> > Ok. Thanks for the note.
-> > 
-> > I am sure you are well aware of that, but in some cases the tags are
-> > intentionally omitted in the new patch revisions for instance due to
-> > significant patch body change. How are you going to handle that?
-> 
+On 12/18/23 5:50 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.69 release.
+> There are 106 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.69-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> The patch-id (generated with `git patch-id --stable`), would change if the
-> patch body is changed (except things like whitespace). This is exactly the
-> behaviour that we need -- if a tag was sent to a different version of the
-> patch, then we no longer want to retrieve it.
-> 
-> > Just make the tags picking up optional? Perhaps making the tags handling
-> > interactive with printing a text/context around the tag?
-> 
-> We may indeed be able to do --interactive for some of the commands in the
-> future, but the goal is to automate things away.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Got it. Thanks. Can't wait to see that in action.
+Tested-by: Ron Economos <re@w6rz.net>
 
--Serge(y)
-
-> 
-> -K
 
