@@ -1,229 +1,243 @@
-Return-Path: <linux-kernel+bounces-5966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97294819236
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:22:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB83819234
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:21:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58EFF2878A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:22:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83A462876AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF4E3D0B4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F843C6A4;
 	Tue, 19 Dec 2023 21:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OXdOslmS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3D03B795;
-	Tue, 19 Dec 2023 21:21:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7C7C433CB;
-	Tue, 19 Dec 2023 21:21:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703020893;
-	bh=/6Du62khS6+mPSPQl4NojRywrcNucj3y1bs+UHh2N8s=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=OXdOslmSRGeSw/+OMUsivb/kKzI+9FouykNEE4GpU/0ODqi3Fwu+flD6SvKib0Wxt
-	 MjB5ErEmP5FlpAPBuwKVtfX5aOnbRxeyppFwWh7WjzLcxiwgiaSgwV/s8aS8zW1TKd
-	 lp2TZDj6XYAX6k1IYba7rcVmHdPr01IopVM+WUNdoaCxnRveIuUFGDpmmflm7/RC6Q
-	 zXukACwOe++PuEcJks89O39FxzxnMs4wu2TQdoNH/yHeawegU9VUNmk/LGZRw7eHSQ
-	 eOXlI3sYUN2Si5oEkPFXmfOcaG2Otz8YqO5IrupiTpHEsMz9n+t4TAd0iGaSLFCccK
-	 nYdILJ+G3PWaA==
-From: Mark Brown <broonie@kernel.org>
-Date: Tue, 19 Dec 2023 21:21:19 +0000
-Subject: [PATCH 1/2] kselftest/seccomp: Use kselftest output functions for
- benchmark
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF5A3D0AE
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:21:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFhWj-0002Z3-GW; Tue, 19 Dec 2023 22:21:21 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFhWh-0006UQ-J8; Tue, 19 Dec 2023 22:21:20 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rFhWi-000KNt-Cu; Tue, 19 Dec 2023 22:21:20 +0100
+Date: Tue, 19 Dec 2023 22:21:20 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, 
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] [ARM] locomo: make locomo_bus_type constant and static
+Message-ID: <amnspbf2euablvmtl2bpng423cnkbjkvtsf7dhqmoyrzbgtpwb@3rgazgmuqjcx>
+References: <2023121905-idiom-opossum-1ba3@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-1-f99e228631b0@kernel.org>
-References: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org>
-In-Reply-To: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org>
-To: Kees Cook <keescook@chromium.org>, 
- Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-5c066
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6298; i=broonie@kernel.org;
- h=from:subject:message-id; bh=/6Du62khS6+mPSPQl4NojRywrcNucj3y1bs+UHh2N8s=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlgglY3Xqud3QDQGsOnu6Bl17eNqabR/vKtLwyr5JZ
- uRGIzIeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZYIJWAAKCRAk1otyXVSH0NSjB/
- 9gD1x2kzPfLXrhhQNuWZ+Okq9MOR363rrV1tgbPP/4y6f84snqLvjABf5o2wTYSg6euIuuhcNUbYXH
- c314rrtmK+sVHptDlndr+pbYWZGZlsznLGOLo8rerX18RfQKsPykt04XlMigV00/DfUsSCIXdAnOev
- eeVqd1L/XVdbYwjNCqzZjLMWqgpoMQqkCJMS8BEmy+kGXh5PWJpO9XixtllYRpYRJpP4n8xreqtHgO
- homNQrHpG5fNtqqKCBEcYUf6UUtxjxTQFZMT6v2YyWjYf4+hOp+MsnVfhJjJe0jm/Vt1PDJ6ddE6Ed
- 0TtQEsx/kljB6lv/Hre3MQOgt7mf/u
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qbaukj4aixzynuuu"
+Content-Disposition: inline
+In-Reply-To: <2023121905-idiom-opossum-1ba3@gregkh>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-In preparation for trying to output the test results themselves in TAP
-format rework all the prints in the benchmark to use the kselftest output
-functions. The uses of system() all produce single line output so we can
-avoid having to deal with fully managing the child process and continue to
-use system() by simply printing an empty message before we invoke system().
-We also leave one printf() used to complete a line of output in place.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../testing/selftests/seccomp/seccomp_benchmark.c  | 45 ++++++++++++----------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+--qbaukj4aixzynuuu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_benchmark.c b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-index 5b5c9d558dee..93168dd2c1e3 100644
---- a/tools/testing/selftests/seccomp/seccomp_benchmark.c
-+++ b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-@@ -38,10 +38,10 @@ unsigned long long timing(clockid_t clk_id, unsigned long long samples)
- 	i *= 1000000000ULL;
- 	i += finish.tv_nsec - start.tv_nsec;
- 
--	printf("%lu.%09lu - %lu.%09lu = %llu (%.1fs)\n",
--		finish.tv_sec, finish.tv_nsec,
--		start.tv_sec, start.tv_nsec,
--		i, (double)i / 1000000000.0);
-+	ksft_print_msg("%lu.%09lu - %lu.%09lu = %llu (%.1fs)\n",
-+		       finish.tv_sec, finish.tv_nsec,
-+		       start.tv_sec, start.tv_nsec,
-+		       i, (double)i / 1000000000.0);
- 
- 	return i;
+On Tue, Dec 19, 2023 at 07:33:06PM +0100, Greg Kroah-Hartman wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the locomo_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+>=20
+> It's also never used outside of arch/arm/common/locomo.c so make it
+> static and don't export it as no one is using it.
+>=20
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix.de>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  arch/arm/common/locomo.c               | 4 +++-
+>  arch/arm/include/asm/hardware/locomo.h | 2 --
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/arm/common/locomo.c b/arch/arm/common/locomo.c
+> index 70480dd9e96d..6d0c9f7268ba 100644
+> --- a/arch/arm/common/locomo.c
+> +++ b/arch/arm/common/locomo.c
+> @@ -68,6 +68,8 @@ struct locomo {
+>  #endif
+>  };
+> =20
+> +static const struct bus_type locomo_bus_type;
+> +
+
+If you move up locomo_bus_type together with its three callbacks before
+locomo_init_one_child, you don't need the extra declaration here.
+
+That would be:
+
+diff --git a/arch/arm/common/locomo.c b/arch/arm/common/locomo.c
+index 6d0c9f7268ba..676e98802561 100644
+--- a/arch/arm/common/locomo.c
++++ b/arch/arm/common/locomo.c
+@@ -68,8 +68,6 @@ struct locomo {
+ #endif
+ };
+=20
+-static const struct bus_type locomo_bus_type;
+-
+ struct locomo_dev_info {
+ 	unsigned long	offset;
+ 	unsigned long	length;
+@@ -216,6 +214,47 @@ static void locomo_dev_release(struct device *_dev)
+ 	kfree(dev);
  }
-@@ -53,7 +53,7 @@ unsigned long long calibrate(void)
- 	pid_t pid, ret;
- 	int seconds = 15;
- 
--	printf("Calibrating sample size for %d seconds worth of syscalls ...\n", seconds);
-+	ksft_print_msg("Calibrating sample size for %d seconds worth of syscalls ...\n", seconds);
- 
- 	samples = 0;
- 	pid = getpid();
-@@ -102,14 +102,14 @@ long compare(const char *name_one, const char *name_eval, const char *name_two,
+=20
++/*
++ *	LoCoMo "Register Access Bus."
++ *
++ *	We model this as a regular bus type, and hang devices directly
++ *	off this.
++ */
++static int locomo_match(struct device *_dev, struct device_driver *_drv)
++{
++	struct locomo_dev *dev =3D LOCOMO_DEV(_dev);
++	struct locomo_driver *drv =3D LOCOMO_DRV(_drv);
++
++	return dev->devid =3D=3D drv->devid;
++}
++
++static int locomo_bus_probe(struct device *dev)
++{
++	struct locomo_dev *ldev =3D LOCOMO_DEV(dev);
++	struct locomo_driver *drv =3D LOCOMO_DRV(dev->driver);
++	int ret =3D -ENODEV;
++
++	if (drv->probe)
++		ret =3D drv->probe(ldev);
++	return ret;
++}
++
++static void locomo_bus_remove(struct device *dev)
++{
++	struct locomo_dev *ldev =3D LOCOMO_DEV(dev);
++	struct locomo_driver *drv =3D LOCOMO_DRV(dev->driver);
++
++	if (drv->remove)
++		drv->remove(ldev);
++}
++
++static const struct bus_type locomo_bus_type =3D {
++	.name		=3D "locomo-bus",
++	.match		=3D locomo_match,
++	.probe		=3D locomo_bus_probe,
++	.remove		=3D locomo_bus_remove,
++};
++
+ static int
+ locomo_init_one_child(struct locomo *lchip, struct locomo_dev_info *info)
  {
- 	bool good;
- 
--	printf("\t%s %s %s (%lld %s %lld): ", name_one, name_eval, name_two,
--	       (long long)one, name_eval, (long long)two);
-+	ksft_print_msg("\t%s %s %s (%lld %s %lld): ", name_one, name_eval, name_two,
-+		       (long long)one, name_eval, (long long)two);
- 	if (one > INT_MAX) {
--		printf("Miscalculation! Measurement went negative: %lld\n", (long long)one);
-+		ksft_print_msg("Miscalculation! Measurement went negative: %lld\n", (long long)one);
- 		return 1;
- 	}
- 	if (two > INT_MAX) {
--		printf("Miscalculation! Measurement went negative: %lld\n", (long long)two);
-+		ksft_print_msg("Miscalculation! Measurement went negative: %lld\n", (long long)two);
- 		return 1;
- 	}
- 
-@@ -145,12 +145,15 @@ int main(int argc, char *argv[])
- 
- 	setbuf(stdout, NULL);
- 
--	printf("Running on:\n");
-+	ksft_print_msg("Running on:\n");
-+	ksft_print_msg("");
- 	system("uname -a");
- 
--	printf("Current BPF sysctl settings:\n");
-+	ksft_print_msg("Current BPF sysctl settings:\n");
- 	/* Avoid using "sysctl" which may not be installed. */
-+	ksft_print_msg("");
- 	system("grep -H . /proc/sys/net/core/bpf_jit_enable");
-+	ksft_print_msg("");
- 	system("grep -H . /proc/sys/net/core/bpf_jit_harden");
- 
- 	if (argc > 1)
-@@ -158,11 +161,11 @@ int main(int argc, char *argv[])
- 	else
- 		samples = calibrate();
- 
--	printf("Benchmarking %llu syscalls...\n", samples);
-+	ksft_print_msg("Benchmarking %llu syscalls...\n", samples);
- 
- 	/* Native call */
- 	native = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
--	printf("getpid native: %llu ns\n", native);
-+	ksft_print_msg("getpid native: %llu ns\n", native);
- 
- 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
- 	assert(ret == 0);
-@@ -172,33 +175,33 @@ int main(int argc, char *argv[])
- 	assert(ret == 0);
- 
- 	bitmap1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
--	printf("getpid RET_ALLOW 1 filter (bitmap): %llu ns\n", bitmap1);
-+	ksft_print_msg("getpid RET_ALLOW 1 filter (bitmap): %llu ns\n", bitmap1);
- 
- 	/* Second filter resulting in a bitmap */
- 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &bitmap_prog);
- 	assert(ret == 0);
- 
- 	bitmap2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
--	printf("getpid RET_ALLOW 2 filters (bitmap): %llu ns\n", bitmap2);
-+	ksft_print_msg("getpid RET_ALLOW 2 filters (bitmap): %llu ns\n", bitmap2);
- 
- 	/* Third filter, can no longer be converted to bitmap */
- 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog);
- 	assert(ret == 0);
- 
- 	filter1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
--	printf("getpid RET_ALLOW 3 filters (full): %llu ns\n", filter1);
-+	ksft_print_msg("getpid RET_ALLOW 3 filters (full): %llu ns\n", filter1);
- 
- 	/* Fourth filter, can not be converted to bitmap because of filter 3 */
- 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &bitmap_prog);
- 	assert(ret == 0);
- 
- 	filter2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
--	printf("getpid RET_ALLOW 4 filters (full): %llu ns\n", filter2);
-+	ksft_print_msg("getpid RET_ALLOW 4 filters (full): %llu ns\n", filter2);
- 
- 	/* Estimations */
- #define ESTIMATE(fmt, var, what)	do {			\
- 		var = (what);					\
--		printf("Estimated " fmt ": %llu ns\n", var);	\
-+		ksft_print_msg("Estimated " fmt ": %llu ns\n", var);	\
- 		if (var > INT_MAX)				\
- 			goto more_samples;			\
- 	} while (0)
-@@ -218,7 +221,7 @@ int main(int argc, char *argv[])
- 	ESTIMATE("seccomp per-filter overhead (filters / 4)", per_filter2,
- 		 (filter2 - native - entry) / 4);
- 
--	printf("Expectations:\n");
-+	ksft_print_msg("Expectations:\n");
- 	ret |= compare("native", "≤", "1 bitmap", native, le, bitmap1);
- 	bits = compare("native", "≤", "1 filter", native, le, filter1);
- 	if (bits)
-@@ -230,7 +233,7 @@ int main(int argc, char *argv[])
- 	bits = compare("1 bitmapped", "≈", "2 bitmapped",
- 			bitmap1 - native, approx, bitmap2 - native);
- 	if (bits) {
--		printf("Skipping constant action bitmap expectations: they appear unsupported.\n");
-+		ksft_print_msg("Skipping constant action bitmap expectations: they appear unsupported.\n");
- 		goto out;
- 	}
- 
-@@ -242,7 +245,7 @@ int main(int argc, char *argv[])
- 		goto out;
- 
- more_samples:
--	printf("Saw unexpected benchmark result. Try running again with more samples?\n");
-+	ksft_print_msg("Saw unexpected benchmark result. Try running again with more samples?\n");
- out:
- 	return 0;
+@@ -810,47 +849,6 @@ void locomo_frontlight_set(struct locomo_dev *dev, int=
+ duty, int vr, int bpwf)
  }
+ EXPORT_SYMBOL(locomo_frontlight_set);
+=20
+-/*
+- *	LoCoMo "Register Access Bus."
+- *
+- *	We model this as a regular bus type, and hang devices directly
+- *	off this.
+- */
+-static int locomo_match(struct device *_dev, struct device_driver *_drv)
+-{
+-	struct locomo_dev *dev =3D LOCOMO_DEV(_dev);
+-	struct locomo_driver *drv =3D LOCOMO_DRV(_drv);
+-
+-	return dev->devid =3D=3D drv->devid;
+-}
+-
+-static int locomo_bus_probe(struct device *dev)
+-{
+-	struct locomo_dev *ldev =3D LOCOMO_DEV(dev);
+-	struct locomo_driver *drv =3D LOCOMO_DRV(dev->driver);
+-	int ret =3D -ENODEV;
+-
+-	if (drv->probe)
+-		ret =3D drv->probe(ldev);
+-	return ret;
+-}
+-
+-static void locomo_bus_remove(struct device *dev)
+-{
+-	struct locomo_dev *ldev =3D LOCOMO_DEV(dev);
+-	struct locomo_driver *drv =3D LOCOMO_DRV(dev->driver);
+-
+-	if (drv->remove)
+-		drv->remove(ldev);
+-}
+-
+-static const struct bus_type locomo_bus_type =3D {
+-	.name		=3D "locomo-bus",
+-	.match		=3D locomo_match,
+-	.probe		=3D locomo_bus_probe,
+-	.remove		=3D locomo_bus_remove,
+-};
+-
+ int locomo_driver_register(struct locomo_driver *driver)
+ {
+ 	driver->drv.bus =3D &locomo_bus_type;
 
--- 
-2.30.2
+Feel free to squash this into your patch for a v2 if you like it.
 
+Or is that better done as a separate change on top of yours?
+
+Otherwise looks fine to me.
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--qbaukj4aixzynuuu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWCCU8ACgkQj4D7WH0S
+/k4fkwgAkf1whKE3whP9WAyRRNjmXl8H9nThSCUHfBV41aLXlutxAmHO5d5pyeEj
+rElRtJl3aAmrzoh7W9s1plEEJ997+bVYKZlxFGtpvQH7eZCR5UTsHxPqjYc6y+4k
+ZogRkQJY6KS1VWXQQBE58fFIVWQHjDkpplPIA62WE88PpFfk+wONrISIX2q2QcVV
+lV4SYG05AUwTQirbiuAYSdNMczZs2rsY5w3lWmpgcWSikLya1eiWQRoIBQbw16ad
+wXBgqMLtFlTLB237e4ycffQqCZYsZDDjCXxVVjdBADVe5bbOa90ydC66TXZKrpl1
+Yp0iY6sEYabjtFmAvRngN/qW9fagFg==
+=n25+
+-----END PGP SIGNATURE-----
+
+--qbaukj4aixzynuuu--
 
