@@ -1,98 +1,87 @@
-Return-Path: <linux-kernel+bounces-5536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCD64818BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:06:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E37E1818BD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67AA628781D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:06:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3D62877B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0126D1D54B;
-	Tue, 19 Dec 2023 16:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8DE1D148;
+	Tue, 19 Dec 2023 16:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sl0irgBN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMFVXhRT"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46AC020B34;
-	Tue, 19 Dec 2023 16:05:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DB48C433C7;
-	Tue, 19 Dec 2023 16:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E4F1D125
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:07:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86D83C433C7;
+	Tue, 19 Dec 2023 16:07:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703001951;
-	bh=wOOLPNOS6Wdenq2YMCXYX637AGsdeEONrDQ0EipOGM0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Sl0irgBN4Po4Qo20Sl0qGNtmJUhnIP3EOb9EMDDVocMhShoFeDVV0QQjBnuj0WRV1
-	 7CNzsJfUF5ko4jAlf4w8z1GQXPTszA/y6uiE1UNsmLdE1LTk//Sdde1y8ERaHcnDQc
-	 vtqmuhTKbMIajlLoXP2O2o2yeIkK80AvhMpvTTPWCYgYZBYJeg+TLx4+7l33mHP4j+
-	 O6X/WjNl/sLr8gyQcmohEyDEYQxUc+ReXcYzjTFB3hblT0iMKtyaxLQHEuOCl9je6F
-	 SHTqo/fkTnt9cUdKMroaun13XvBrVfQaqdJ2ONw14x0fV95e9UCJ/dwN+QZzgs5+hq
-	 pq9YE9EhtZQDA==
-From: Mark Brown <broonie@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org
-In-Reply-To: <20231219075749.25308-1-johan+linaro@kernel.org>
-References: <20231219075749.25308-1-johan+linaro@kernel.org>
-Subject: Re: [PATCH] dt-bindings: regulator: qcom,usb-vbus-regulator: clean
- up example
-Message-Id: <170300194921.59203.15876137715050350812.b4-ty@kernel.org>
-Date: Tue, 19 Dec 2023 16:05:49 +0000
+	s=k20201202; t=1703002064;
+	bh=179zRTP4CAGhjZ3EpQVeRAlCewCRC30TMoZOeWZPh0A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EMFVXhRT1DSUBIYPUFklbKygEmsOeSaRZMn4zdJekEA0C0jD69XTIrwRavK3DVD/a
+	 QusbaRrXzXuz6B5rLOXuyHnVtbMkTvyIJiXjZFs6chg5pHEk/yxxxrxB2wqXMlrjMb
+	 TmkfT3D8hbdpbzs1GHwUyvqLLPEcI+efOHU979fWfAS8F6sB4fVCp5lFSJlEerbrRF
+	 yLixDJTo55aQIUBLy5v/2zK6unx+wZ0Y+SqhEZDuIsw+MOBKsTWGLGug5IMWYoNaFA
+	 3kZemesC6lh43XlOiKIu+lJwfyuZhE7OK2ciOG6sY9r3lp9Cg2aoLlhcbSlaJ1omp9
+	 9nbyf9FcpDJGQ==
+Date: Tue, 19 Dec 2023 09:07:42 -0700
+From: Keith Busch <kbusch@kernel.org>
+To: Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc: Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>, Hannes Reinecke <hare@suse.de>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>
+Subject: Re: [PATCH v6 0/6] nvme: add csi, ms and nuse to sysfs
+Message-ID: <ZYG_zlnvfLOJHEJM@kbusch-mbp>
+References: <20231218165954.29652-1-dwagner@suse.de>
+ <ZYDN_G-VP2_pn3kC@kbusch-mbp.dhcp.thefacebook.com>
+ <acd4f5b1-b1d7-40e0-ac80-573e2d5cfe85@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <acd4f5b1-b1d7-40e0-ac80-573e2d5cfe85@nvidia.com>
 
-On Tue, 19 Dec 2023 08:57:49 +0100, Johan Hovold wrote:
-> Devicetree node names should be generic; fix up the
-> qcom,usb-vbus-regulator binding example accordingly.
+On Tue, Dec 19, 2023 at 04:42:20PM +0200, Max Gurtovoy wrote:
+> Hi Keith,
 > 
-> While at it, drop an unnecessary label and add a newline separator
-> before the child node to improve readability.
+> On 19/12/2023 0:55, Keith Busch wrote:
+> > On Mon, Dec 18, 2023 at 05:59:48PM +0100, Daniel Wagner wrote:
+> > > Rebased on the current nvme/nvme-6.8 branch and added the Review tags. Also
+> > > addressed the printk format issue pointed out by Chaitanya.
+> > 
+> > Thanks, added to nvme-6.8.
 > 
-> 
-> [...]
+> I'm rebasing my fixes to the PI bug (which are not trivial) on top of
+> nvme-6.8 and Daniel's series.
+> I've found that this branch is missing some fixes from the master that I've
+> added manually to local nvme-6.8 branch.
+> When do you plan to rebase the nvme-6.8 on top of master ?
+> It will be helpful, otherwise my patches will not apply cleanly on your
+> branch. :)
 
-Applied to
+linux-nvme pulls go through Jens' linux-block repo, so we have to be
+based on the appropriate branch from there. We already have some late
+fixes in 6.7 that create minor merge conflicts for our existing 6.8
+branch, so we may provide a reference resolution branch with the pull
+request if conflicts are non-trivial. That might be an option for your
+fixes if you can make them work atop existing nvme-6.8 without the
+conflicting 6.7 changes.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] dt-bindings: regulator: qcom,usb-vbus-regulator: clean up example
-      commit: d939c02359a656a624d03c6f14ccadae4a1c66ac
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Sometime after the next merge window opens, Jens will rebase his 6.8
+block tree to Linus', and we usually get a 2nd feature pull request
+within the merge window from that new baseline. That might be an option
+if you want to wait a couple more weeks.
 
