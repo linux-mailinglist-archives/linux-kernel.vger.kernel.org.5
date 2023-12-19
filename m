@@ -1,105 +1,97 @@
-Return-Path: <linux-kernel+bounces-5337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6BC3818986
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:14:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3792818988
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:14:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5188E2838A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:14:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 785281F21571
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CE91C281;
-	Tue, 19 Dec 2023 14:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46B01CAB6;
+	Tue, 19 Dec 2023 14:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gqxu7Cvf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H17fNdqC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6268B1C6BB;
-	Tue, 19 Dec 2023 14:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40c69403b3eso45764205e9.3;
-        Tue, 19 Dec 2023 06:13:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702995186; x=1703599986; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eLbYqKVXpKfZkItp604TBY/NArF8Wh1bP5WaaocHCRs=;
-        b=gqxu7CvfLqC3EEXKAgUJ0rSHaSDcK2wba2jafKBgZ9c/U7MvzR2+lN81VTL0au4o8p
-         cqatqO80WHjVFrq0QPryqXKUh8Bdow/AVV9bdDALlMq2IN/482zX0sZdn9132MdzROKd
-         YcNNnpmNz/N4CZQrtFn9jE2yaIdwiZRBGsb4tP31QDmD9Mbt4NnDY9qiytdmAhjiJoNd
-         RAbISMpDNf+2Yq9EC09pvdQgLy+xqo1M7smRzdasIW6UactL6nGq3SHTgnZgD1xHTbbf
-         yaJw9+ek1M+VwbP6QpdmwpHGu/kflQ8OdxWeG+eQoVO4W+LF8D1VxXdWgwCqkoUSta/k
-         VNqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702995186; x=1703599986;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eLbYqKVXpKfZkItp604TBY/NArF8Wh1bP5WaaocHCRs=;
-        b=uc43w929aKGZYvOzwwW2OHQDtbla4vTt4Qz5xInzEqiEk7h2dBsvkHTcI73CpcHATk
-         +J1xAoWJCYHb+rsdPUB7N1MaHTgSnkeEHzLzDTRO2VyEANwY7SYpFd/P4MhmKZncg/0y
-         FSN4n73v/tXZBXSIaH0vzmQtOgEQ50dkjUW/Z/vCiGl7B94dcyXzCu5kN1GmpFirIJnt
-         kuBkAjqiKZuQCZrahK23PIKbT8Zs0CZIEgg/qpttJhWT5TjR0ibaslQ8WByr01aGz5EI
-         iPVHjlhGGYKLo2lWJFZEr0YeZrZ8BHzS/xeMp1VhnUPBiIrUcnBPM5reRJViU7+90iyg
-         yu0A==
-X-Gm-Message-State: AOJu0YxhzQgMn2RJ7ZBTzO5AcP1TK9cKEYv+Zt4EtneZfpOCmBAoNJPE
-	dcPW2TuVqUXHT4X4EBSfUao=
-X-Google-Smtp-Source: AGHT+IGiZvpq8seznrPK6I15r0/2QKiYfqoD1ONyXzlANJSzcDpwpJSuJIe+/qbSX0lhNqenhmQf+w==
-X-Received: by 2002:a05:600c:b41:b0:40c:2a41:4a35 with SMTP id k1-20020a05600c0b4100b0040c2a414a35mr9337746wmr.130.1702995186239;
-        Tue, 19 Dec 2023 06:13:06 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id t18-20020adfa2d2000000b003364aa5cc13sm59375wra.1.2023.12.19.06.13.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 06:13:05 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/boot: remove redundant initialization of variable delta
-Date: Tue, 19 Dec 2023 14:13:04 +0000
-Message-Id: <20231219141304.367200-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC5A1CA80;
+	Tue, 19 Dec 2023 14:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702995233; x=1734531233;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=pVmG1M/f3vvE7SKtQpLdyTLljqNz0CKt12Ayopk87d0=;
+  b=H17fNdqC5sAai30jJbTIGXJkgws3V40CUuxBHB26Kr7yH51GISnEW+SB
+   zBiR0mwqhkAqF4G+2yN1v9p1ahpwL+uyMolr9R8gQ8oQ90Xn1IHD7GfSm
+   iw+loxTuWv/TZLsi9yetV89EwOfabPVusTENhDlLPMwbyDE6OB20ZIhPZ
+   1L0ir2g1Mq/2yGHQIT9KoDfeh6HxGMKFILcry6hh9gGKin7sU/KFsKUtz
+   le3ak9H88w3GNfTV1Ebmg2yzlllFegDvnzFfnqveLv0OaBqRJRinOBT7i
+   +ov4zKjQIpdT1x19PJutFYFlcsVJTvYxALmDVOAG3GVToqCDX5ld6rWp3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="399496510"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="399496510"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 06:13:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="769251734"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="769251734"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 06:13:50 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rFaqx-00000007HK8-1tI6;
+	Tue, 19 Dec 2023 16:13:47 +0200
+Date: Tue, 19 Dec 2023 16:13:47 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Wolfram Sang <wsa@kernel.org>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v5 00/24] i2c: designware: code consolidation & cleanups
+Message-ID: <ZYGlG3SKd-waZau6@smile.fi.intel.com>
+References: <20231207141653.2785124-1-andriy.shevchenko@linux.intel.com>
+ <ZYBgB3J51hfGQSVX@smile.fi.intel.com>
+ <ZYFvEn0/xxIhGnlT@shikoro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYFvEn0/xxIhGnlT@shikoro>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The variable delta is being initialized with a value that is never
-read. The assignment is redundant and can be removed.
+On Tue, Dec 19, 2023 at 11:23:14AM +0100, Wolfram Sang wrote:
+> 
+> > Wolfram, is there any chance to get this into this (v6.8) cycle?
+> 
+> Sure, due to lots of travels and other issues I am in general very late
+> with preparing the merge window.
+> 
+> Applied to for-next, thanks!
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- arch/x86/boot/string.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Awesome!
+Thank you and happy holidays!
 
-diff --git a/arch/x86/boot/string.c b/arch/x86/boot/string.c
-index 1c8541ae3b3a..c23f3b9c84fe 100644
---- a/arch/x86/boot/string.c
-+++ b/arch/x86/boot/string.c
-@@ -49,7 +49,7 @@ int strcmp(const char *str1, const char *str2)
- {
- 	const unsigned char *s1 = (const unsigned char *)str1;
- 	const unsigned char *s2 = (const unsigned char *)str2;
--	int delta = 0;
-+	int delta;
- 
- 	while (*s1 || *s2) {
- 		delta = *s1 - *s2;
 -- 
-2.39.2
+With Best Regards,
+Andy Shevchenko
+
 
 
