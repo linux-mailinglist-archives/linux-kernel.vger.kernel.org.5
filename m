@@ -1,308 +1,193 @@
-Return-Path: <linux-kernel+bounces-4660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3B9781805D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:06:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4D42818063
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C4D3285A73
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:06:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBB361C21898
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C3553B4;
-	Tue, 19 Dec 2023 04:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A983747E;
+	Tue, 19 Dec 2023 04:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ejf3EksZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031CC11700;
-	Tue, 19 Dec 2023 04:06:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC995C433C8;
-	Tue, 19 Dec 2023 04:06:15 +0000 (UTC)
-Date: Mon, 18 Dec 2023 23:07:12 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH] ring-buffer: Fix slowpath of interrupted event
-Message-ID: <20231218230712.3a76b081@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E77E5233
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso4854349a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 20:09:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702958964; x=1703563764; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z9zHDHO13PjWbb8KHC4s3wKUUXJJ6KzWnl5bkPnl1h8=;
+        b=Ejf3EksZL82nncjJbA9emU3qmirm7l+HHjzlwSutnNsrW6NiG6zeiDeQZkEU8RsrCQ
+         IJd42ewXyr/yw/LR8qY4Dvdc8+8zAK67pt9PWBhvvgmTyeiNqSZyVk2ATROu0h3x+Gjc
+         TS7a0qiUXa/VLrkDp103aRrSkff+qulxK5W9lY7/Cqe+ZxCrIfMLBhQUIqvfdoR/XVh0
+         RNYNNVy5z6DfcTA9fXZ6XwHUbC2BjvHrWjHE6XRTg0i5WxkosSdSNDaUfjBYzFXeLTGm
+         vqXJfdK0FB3yb7SHCqCMJb6ys8zM8hooHLhyrF4hkjkJ8SWK8eGqfcqhv1bqdx6jg1Ei
+         YFXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702958964; x=1703563764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z9zHDHO13PjWbb8KHC4s3wKUUXJJ6KzWnl5bkPnl1h8=;
+        b=HpojXVyt/x2J2xKpfHideUDtHEfz5vb0t8oe328RkyKxnUahZZWkoDp5RHhKfaqg75
+         7ROuYcrcuVh2xjtvTOAF+aXl7nVqxKwo8J7R/pdHAdReNJy/BhLyzYSXjVyz5yDxFt6T
+         Wc7hgJY2TqIhdRAq6OEoi9WOEtq+BQpuombFTLbQOpEki6MDCO+IJt+e4aZUfk0VLEfK
+         6UZhfo9eaB0j/9bfx75kFH0Mtssn7u/yIHhRuQ6w8ZDsCtVqtmRJH02OtMN0pASUdUI0
+         BOYjAKpOsIEnTKsUInsGPjfgGT0+oZkzdVjXExre892tOW5UoG8fNgruErqIYrB+GUm5
+         +VIQ==
+X-Gm-Message-State: AOJu0Yw8eLQrWy9VfUA5nezwr2P64YoroENsV1uF9jNZ4LgGGcgVgr1h
+	RK121hNobrqCOshZQ2zX4nDzQVzhDb2ll8XrO38=
+X-Google-Smtp-Source: AGHT+IFiuuV9fgrhO2LvtNhi2Ggp6UadwZA3xMpQGF68AkzGPueMilXlEIPqu4wbZ1OOOb1hUrKAtIVsba4Jk85BU4o=
+X-Received: by 2002:a50:d69b:0:b0:553:9cb9:a3d6 with SMTP id
+ r27-20020a50d69b000000b005539cb9a3d6mr73172edi.8.1702958964032; Mon, 18 Dec
+ 2023 20:09:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1702952464-22050-1-git-send-email-zhiguo.niu@unisoc.com> <6c553a75-4842-4b28-9725-ba5e297ff793@kernel.org>
+In-Reply-To: <6c553a75-4842-4b28-9725-ba5e297ff793@kernel.org>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Tue, 19 Dec 2023 12:09:12 +0800
+Message-ID: <CAHJ8P3LgQB9Q_TQj0nmjKXLsk95uVA2xvPXdvpK8Gjsonz-fHg@mail.gmail.com>
+Subject: Re: [PATCH V4] f2fs: show more discard status by sysfs
+To: Chao Yu <chao@kernel.org>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	ke.wang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-
-To synchronize the timestamps with the ring buffer reservation, there are
-two timestamps that are saved in the buffer meta data.
-
-1. before_stamp
-2. write_stamp
-
-When the two are equal, the write_stamp is considered valid, as in, it may
-be used to calculate the delta of the next event as the write_stamp is the
-timestamp of the previous reserved event on the buffer.
-
-This is done by the following:
-
- /*A*/	w = current position on the ring buffer
-	before = before_stamp
-	after = write_stamp
-	ts = read current timestamp
-
-	if (before != after) {
-		write_stamp is not valid, force adding an absolute
-		timestamp.
-	}
-
- /*B*/	before_stamp = ts
-
- /*C*/	write = local_add_return(event length, position on ring buffer)
-
-	if (w == write - event length) {
-		/* Nothing interrupted between A and C */
- /*E*/		write_stamp = ts;
-		delta = ts - after
-		/*
-		 * If nothing interrupted again,
-		 * before_stamp == write_stamp and write_stamp
-		 * can be used to calculate the delta for
-		 * events that come in after this one.
-		 */
-	} else {
-
-		/*
-		 * The slow path!
-		 * Was interrupted between A and C.
-		 */
-
-This is the place that there's a bug. We currently have:
-
-		after = write_stamp
-		ts = read current timestamp
-
- /*F*/		if (write == current position on the ring buffer &&
-		    after < ts && cmpxchg(write_stamp, after, ts)) {
-
-			delta = ts - after;
-
-		} else {
-			delta = 0;
-		}
-
-The assumption is that if the current position on the ring buffer hasn't
-moved between C and F, then it also was not interrupted, and that the last
-event written has a timestamp that matches the write_stamp. That is the
-write_stamp is valid.
-
-But this may not be the case:
-
-If a task context event was interrupted by softirq between B and C.
-
-And the softirq wrote an event that got interrupted by a hard irq between
-C and E.
-
-and the hard irq wrote an event (does not need to be interrupted)
-
-We have:
-
- /*B*/ before_stamp = ts of normal context
-
-   ---> interrupted by softirq
-
-	/*B*/ before_stamp = ts of softirq context
-
-	  ---> interrupted by hardirq
-
-		/*B*/ before_stamp = ts of hard irq context
-		/*E*/ write_stamp = ts of hard irq context
-
-		/* matches and write_stamp valid */
-	  <----
-
-	/*E*/ write_stamp = ts of softirq context
-
-	/* No longer matches before_stamp, write_stamp is not valid! */
-
-   <---
-
- w != write - length, go to slow path
-
-// Right now the order of events in the ring buffer is:
-//
-// |-- softirq event --|-- hard irq event --|-- normal context event --|
-//
-
- after = write_stamp (this is the ts of softirq)
- ts = read current timestamp
-
- if (write == current position on the ring buffer [true] &&
-     after < ts [true] && cmpxchg(write_stamp, after, ts) [true]) {
-
-	delta = ts - after  [Wrong!]
-
-The delta is to be between the hard irq event and the normal context
-event, but the above logic made the delta between the softirq event and
-the normal context event, where the hard irq event is between the two. This
-will shift all the remaining event timestamps on the sub-buffer
-incorrectly.
-
-The write_stamp is only valid if it matches the before_stamp. The cmpxchg
-does nothing to help this.
-
-Instead, the following logic can be done to fix this:
-
-	before = before_stamp
-	ts = read current timestamp
-	before_stamp = ts
-
-	after = write_stamp
-
-	if (write == current position on the ring buffer &&
-	    after == before && after < ts) {
-
-		delta = ts - after
-
-	} else {
-		delta = 0;
-	}
-
-The above will only use the write_stamp if it still matches before_stamp
-and was tested to not have changed since C.
-
-As a bonus, with this logic we do not need any 64-bit cmpxchg() at all!
-
-This mean the 32-bit rb_time_t workaround can finally be removed. But
-that's for a later time.
-
-Link: https://lore.kernel.org/linux-trace-kernel/20231218175229.58ec3daf@gandalf.local.home/
-
-Cc: stable@vger.kernel.org
-Fixes: dd93942570789 ("ring-buffer: Do not try to put back write_stamp")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 79 ++++++++++++--------------------------
- 1 file changed, 24 insertions(+), 55 deletions(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 5a114e752f11..e7055f52afe0 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -700,48 +700,6 @@ rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
- 	return local_try_cmpxchg(l, &expect, set);
- }
- 
--static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
--{
--	unsigned long cnt, top, bottom, msb;
--	unsigned long cnt2, top2, bottom2, msb2;
--	u64 val;
--
--	/* Any interruptions in this function should cause a failure */
--	cnt = local_read(&t->cnt);
--
--	/* The cmpxchg always fails if it interrupted an update */
--	 if (!__rb_time_read(t, &val, &cnt2))
--		 return false;
--
--	 if (val != expect)
--		 return false;
--
--	 if ((cnt & 3) != cnt2)
--		 return false;
--
--	 cnt2 = cnt + 1;
--
--	 rb_time_split(val, &top, &bottom, &msb);
--	 msb = rb_time_val_cnt(msb, cnt);
--	 top = rb_time_val_cnt(top, cnt);
--	 bottom = rb_time_val_cnt(bottom, cnt);
--
--	 rb_time_split(set, &top2, &bottom2, &msb2);
--	 msb2 = rb_time_val_cnt(msb2, cnt);
--	 top2 = rb_time_val_cnt(top2, cnt2);
--	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
--
--	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->msb, msb, msb2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->top, top, top2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
--		return false;
--	return true;
--}
--
- #else /* 64 bits */
- 
- /* local64_t always succeeds */
-@@ -755,11 +713,6 @@ static void rb_time_set(rb_time_t *t, u64 val)
- {
- 	local64_set(&t->time, val);
- }
--
--static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
--{
--	return local64_try_cmpxchg(&t->time, &expect, set);
--}
- #endif
- 
- /*
-@@ -3610,20 +3563,36 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	} else {
- 		u64 ts;
- 		/* SLOW PATH - Interrupted between A and C */
--		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--		/* Was interrupted before here, write_stamp must be valid */
-+
-+		/* Save the old before_stamp */
-+		a_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
- 		RB_WARN_ON(cpu_buffer, !a_ok);
-+
-+		/*
-+		 * Read a new timestamp and update the before_stamp to make
-+		 * the next event after this one force using an absolute
-+		 * timestamp. This is in case an interrupt were to come in
-+		 * between E and F.
-+		 */
- 		ts = rb_time_stamp(cpu_buffer->buffer);
-+		rb_time_set(&cpu_buffer->before_stamp, ts);
-+
-+		barrier();
-+ /*E*/		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-+		/* Was interrupted before here, write_stamp must be valid */
-+		RB_WARN_ON(cpu_buffer, !a_ok);
- 		barrier();
-- /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
--		    info->after < ts &&
--		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
--				    info->after, ts)) {
--			/* Nothing came after this event between C and E */
-+ /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
-+		    info->after == info->before && info->after < ts) {
-+			/*
-+			 * Nothing came after this event between C and F, it is
-+			 * safe to use info->after for the delta as it
-+			 * matched info->before and is still valid.
-+			 */
- 			info->delta = ts - info->after;
- 		} else {
- 			/*
--			 * Interrupted between C and E:
-+			 * Interrupted between C and F:
- 			 * Lost the previous events time stamp. Just set the
- 			 * delta to zero, and this will be the same time as
- 			 * the event this event interrupted. And the events that
--- 
-2.42.0
-
+On Tue, Dec 19, 2023 at 12:00=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
+>
+> On 2023/12/19 10:21, Zhiguo Niu wrote:
+> > The current pending_discard attr just only shows the discard_cmd_cnt
+> > information. More discard status can be shown so that we can check
+> > them through sysfs when needed.
+> >
+> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > ---
+> > changes of v2: Improve the patch according to Chao's suggestions.
+> > changes of v3: Add a blank line for easy reading.
+> > changes of v4: Split to three entries
+> > ---
+> > ---
+> >   Documentation/ABI/testing/sysfs-fs-f2fs | 15 +++++++++++++++
+> >   fs/f2fs/sysfs.c                         | 33 ++++++++++++++++++++++++=
++++++++++
+> >   2 files changed, 48 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/AB=
+I/testing/sysfs-fs-f2fs
+> > index 4f1d4e6..606a298 100644
+> > --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> > +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> > @@ -159,6 +159,21 @@ Date:            November 2021
+> >   Contact:    "Jaegeuk Kim" <jaegeuk@kernel.org>
+> >   Description:        Shows the number of pending discard commands in t=
+he queue.
+> >
+> > +What:           /sys/fs/f2fs/<disk>/issued_discard
+>
+> Add them to /sys/fs/f2fs/<disk>/stat/?
+I just want to keep them consistent with the entry "pending_discard"
+if they are split to 3 entries.
+they are all discard related infos.
+Thanks
+>
+> Thanks,
+>
+> > +Date:           December 2023
+> > +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
+> > +Description:    Shows the number of issued discard.
+> > +
+> > +What:           /sys/fs/f2fs/<disk>/queued_discard
+> > +Date:           December 2023
+> > +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
+> > +Description:    Shows the number of queued discard.
+> > +
+> > +What:           /sys/fs/f2fs/<disk>/undiscard_blks
+> > +Date:           December 2023
+> > +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
+> > +Description:    Shows the total number of undiscard blocks.
+> > +
+> >   What:               /sys/fs/f2fs/<disk>/max_victim_search
+> >   Date:               January 2014
+> >   Contact:    "Jaegeuk Kim" <jaegeuk.kim@samsung.com>
+> > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> > index 7099ffa..666efdd 100644
+> > --- a/fs/f2fs/sysfs.c
+> > +++ b/fs/f2fs/sysfs.c
+> > @@ -143,6 +143,33 @@ static ssize_t pending_discard_show(struct f2fs_at=
+tr *a,
+> >                               &SM_I(sbi)->dcc_info->discard_cmd_cnt));
+> >   }
+> >
+> > +static ssize_t issued_discard_show(struct f2fs_attr *a,
+> > +             struct f2fs_sb_info *sbi, char *buf)
+> > +{
+> > +     if (!SM_I(sbi)->dcc_info)
+> > +             return -EINVAL;
+> > +     return sysfs_emit(buf, "%llu\n", (unsigned long long)atomic_read(
+> > +                             &SM_I(sbi)->dcc_info->issued_discard));
+> > +}
+> > +
+> > +static ssize_t queued_discard_show(struct f2fs_attr *a,
+> > +             struct f2fs_sb_info *sbi, char *buf)
+> > +{
+> > +     if (!SM_I(sbi)->dcc_info)
+> > +             return -EINVAL;
+> > +     return sysfs_emit(buf, "%llu\n", (unsigned long long)atomic_read(
+> > +                             &SM_I(sbi)->dcc_info->queued_discard));
+> > +}
+> > +
+> > +static ssize_t undiscard_blks_show(struct f2fs_attr *a,
+> > +             struct f2fs_sb_info *sbi, char *buf)
+> > +{
+> > +     if (!SM_I(sbi)->dcc_info)
+> > +             return -EINVAL;
+> > +     return sysfs_emit(buf, "%u\n",
+> > +                             SM_I(sbi)->dcc_info->undiscard_blks);
+> > +}
+> > +
+> >   static ssize_t gc_mode_show(struct f2fs_attr *a,
+> >               struct f2fs_sb_info *sbi, char *buf)
+> >   {
+> > @@ -1025,6 +1052,9 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_a=
+ttr *a,
+> >   F2FS_GENERAL_RO_ATTR(mounted_time_sec);
+> >   F2FS_GENERAL_RO_ATTR(main_blkaddr);
+> >   F2FS_GENERAL_RO_ATTR(pending_discard);
+> > +F2FS_GENERAL_RO_ATTR(issued_discard);
+> > +F2FS_GENERAL_RO_ATTR(queued_discard);
+> > +F2FS_GENERAL_RO_ATTR(undiscard_blks);
+> >   F2FS_GENERAL_RO_ATTR(gc_mode);
+> >   #ifdef CONFIG_F2FS_STAT_FS
+> >   F2FS_GENERAL_RO_ATTR(moved_blocks_background);
+> > @@ -1084,6 +1114,9 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_a=
+ttr *a,
+> >       ATTR_LIST(max_ordered_discard),
+> >       ATTR_LIST(discard_io_aware),
+> >       ATTR_LIST(pending_discard),
+> > +     ATTR_LIST(issued_discard),
+> > +     ATTR_LIST(queued_discard),
+> > +     ATTR_LIST(undiscard_blks),
+> >       ATTR_LIST(gc_mode),
+> >       ATTR_LIST(ipu_policy),
+> >       ATTR_LIST(min_ipu_util),
 
