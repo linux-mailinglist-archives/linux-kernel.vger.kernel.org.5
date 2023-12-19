@@ -1,159 +1,99 @@
-Return-Path: <linux-kernel+bounces-5766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622B3818F3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:06:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36514818F3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 872FF1C21EE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:06:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96C76B25F64
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1847E38FA5;
-	Tue, 19 Dec 2023 18:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870DF37D16;
+	Tue, 19 Dec 2023 18:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0x1jHOM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A16138DCA
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 18:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35facd4238bso40451105ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:06:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703009188; x=1703613988;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3UbpdPske9+0a0Vc1FEcrTZ1/WyUsWYEAt/9ne5SDRo=;
-        b=k+gqtj+ZW0d11UMF08QnUHFWFf8ROn0qaPTafpPNJ/z5ck3OFKrqmaAAsOMrzw5TgY
-         lgPDoBGWj40KNHI3T7eq5xSwWY2jlen6F334iVXwHe+JOFG9BrZhaw9ZCysgsrXgLhp2
-         ohTQigJp+k0tdidiC3Jv0MEyPY4mQf2O5FkefTpGA9InCVkJSxPXyvR/RSdkSfVzGtEj
-         M0AQOR7kkvVoClCqYOX+cvaZHr3aImBi5HTNG4PYJ3PAYLH1UUE7huxVirq+Z0bCyRSK
-         g3ECZuQZUjovyK1yKrev0EGrakJzMpIylb7Tr3+NVYgSbEU9G3dc4ncVMIugDg9tstrb
-         Xstw==
-X-Gm-Message-State: AOJu0YztnxuwgmEtZhfrbD0SMDHMFqRa1dbAdlFfxeCIg/jH/RNqkSnW
-	VPX0WvkbV7GHrINzp9+aRCdTfKz1UUcy2XjU4AYAoTBwIsT2
-X-Google-Smtp-Source: AGHT+IE3CDj7nVBlj5XGQASnYOsOUQ3b+aTPpzcoXF820SJjjKjOaghaMz82PmSJt/AbH5rPN5jaSoVN3dI8sT91mjxQDaOFtDxO
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E1F37870;
+	Tue, 19 Dec 2023 18:06:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FC1EC433C8;
+	Tue, 19 Dec 2023 18:06:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703009199;
+	bh=2AlFxLi7oJh7Wa2NVO96A7tL3W01cNMV+NcW1zh9qDM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=n0x1jHOM5g1uy9hxI58NgHZwTsQEJjCGuV3K/cBxMRRFgUyHp/TndRdTCsbAlSNud
+	 F2fV1NFM8jwNWonTXby5r/bEyKmcc4qTFXE6RhHQRHe7k2Wfa9u4snAogXXEoU2sbQ
+	 jULiZXGkQ1uzOzqf7Nol9zwJ9O/8EFhmdGcgUFSqeAVv26irpJ62lzFHFo/wTJe/a9
+	 g59D7OcAyl+B+YvhpMbR+WqGwmRYWEnS1J/R56kDJuWceOcFJvomejes37rlEZxYYu
+	 i38C2M1kPKzrR6OG+/hbCSczVKLbDAOqgR89+V2tkvMzeJ4XDtIukGdjfBif5LmLQk
+	 o5V3yMKRvh5SA==
+From: Mark Brown <broonie@kernel.org>
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Neil Armstrong <neil.armstrong@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, 
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
+References: <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
+Subject: Re: [PATCH 0/2] ASoC: qcom: add sound card support for SM8650
+Message-Id: <170300919611.125466.12203726463843347252.b4-ty@kernel.org>
+Date: Tue, 19 Dec 2023 18:06:36 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d09:b0:35f:a338:44ae with SMTP id
- i9-20020a056e021d0900b0035fa33844aemr835304ila.3.1703009188670; Tue, 19 Dec
- 2023 10:06:28 -0800 (PST)
-Date: Tue, 19 Dec 2023 10:06:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bd76a8060ce0b9a5@google.com>
-Subject: [syzbot] [reiserfs?] kernel BUG in flush_commit_list (2)
-From: syzbot <syzbot+99bd43b50bec81a1e6e3@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-5c066
 
-Hello,
+On Tue, 12 Dec 2023 09:08:18 +0100, Neil Armstrong wrote:
+> Document the SM8650 sound card using the SM8450 fallback
+> and add the SM8650 compatible to the sc8280xp sound card
+> driver to use the sm8650 card driver_name like SM8450 & SM8550.
+> 
+> 
 
-syzbot found the following issue on:
+Applied to
 
-HEAD commit:    3f7168591ebf Merge tag '6.7-rc5-smb3-client-fixes' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16940dc1e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
-dashboard link: https://syzkaller.appspot.com/bug?extid=99bd43b50bec81a1e6e3
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Thanks!
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/adeb888d7857/disk-3f716859.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a6ed44d5ad04/vmlinux-3f716859.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a04c379bea2a/bzImage-3f716859.xz
+[1/2] ASoC: dt-bindings: qcom,sm8250: document SM8650 sound card
+      commit: 773df207fdd6e17d7a43abf83ea155ade9a95f79
+[2/2] ASoC: qcom: sc8280xp: Add support for SM8650
+      commit: 7211094dd065908747a143f9adeff41cfdcf37c0
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+99bd43b50bec81a1e6e3@syzkaller.appspotmail.com
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-------------[ cut here ]------------
-kernel BUG at fs/reiserfs/journal.c:1107!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 17565 Comm: syz-executor.3 Not tainted 6.7.0-rc5-syzkaller-00134-g3f7168591ebf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:flush_commit_list+0x1c1e/0x1c50 fs/reiserfs/journal.c:1107
-Code: ff 90 0f 0b e8 73 54 54 ff 90 0f 0b e8 6b 54 54 ff 90 0f 0b e8 63 54 54 ff 90 0f 0b e8 5b 54 54 ff 90 0f 0b e8 53 54 54 ff 90 <0f> 0b e8 4b 54 54 ff 90 0f 0b 44 89 f1 80 e1 07 80 c1 03 38 c1 0f
-RSP: 0018:ffffc90014caf2e0 EFLAGS: 00010246
-RAX: ffffffff823a28ed RBX: ffff888027da34d0 RCX: 0000000000040000
-RDX: ffffc9000b8bc000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: 0000000000000002 R08: ffffffff823a1d75 R09: 1ffff11006ed153f
-R10: dffffc0000000000 R11: ffffed1006ed1540 R12: ffff888027da341c
-R13: dffffc0000000000 R14: ffff888142a78000 R15: 1ffff11004fb469a
-FS:  00007f607875e6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555555a40978 CR3: 0000000012d8a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- flush_journal_list+0x2a8/0x1c80 fs/reiserfs/journal.c:1390
- flush_used_journal_lists+0x1256/0x15d0 fs/reiserfs/journal.c:1828
- do_journal_end+0x3d51/0x4b40
- do_journal_begin_r+0x970/0x1030
- journal_begin+0x14c/0x360 fs/reiserfs/journal.c:3254
- reiserfs_remount+0xf6f/0x18f0 fs/reiserfs/super.c:1559
- reconfigure_super+0x440/0x870 fs/super.c:1143
- vfs_cmd_reconfigure fs/fsopen.c:267 [inline]
- vfs_fsconfig_locked fs/fsopen.c:296 [inline]
- __do_sys_fsconfig fs/fsopen.c:476 [inline]
- __se_sys_fsconfig+0xab5/0xec0 fs/fsopen.c:349
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f6077a7cba9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f607875e0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
-RAX: ffffffffffffffda RBX: 00007f6077b9bf80 RCX: 00007f6077a7cba9
-RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000004
-RBP: 00007f6077ac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f6077b9bf80 R15: 00007ffcea3279c8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:flush_commit_list+0x1c1e/0x1c50 fs/reiserfs/journal.c:1107
-Code: ff 90 0f 0b e8 73 54 54 ff 90 0f 0b e8 6b 54 54 ff 90 0f 0b e8 63 54 54 ff 90 0f 0b e8 5b 54 54 ff 90 0f 0b e8 53 54 54 ff 90 <0f> 0b e8 4b 54 54 ff 90 0f 0b 44 89 f1 80 e1 07 80 c1 03 38 c1 0f
-RSP: 0018:ffffc90014caf2e0 EFLAGS: 00010246
-RAX: ffffffff823a28ed RBX: ffff888027da34d0 RCX: 0000000000040000
-RDX: ffffc9000b8bc000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: 0000000000000002 R08: ffffffff823a1d75 R09: 1ffff11006ed153f
-R10: dffffc0000000000 R11: ffffed1006ed1540 R12: ffff888027da341c
-R13: dffffc0000000000 R14: ffff888142a78000 R15: 1ffff11004fb469a
-FS:  00007f607875e6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4f92bfe000 CR3: 0000000012d8a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Mark
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
