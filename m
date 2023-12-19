@@ -1,232 +1,365 @@
-Return-Path: <linux-kernel+bounces-5166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0EF7818772
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:27:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A13F818778
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B52E285A21
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:27:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01A5528614A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F851863E;
-	Tue, 19 Dec 2023 12:26:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvgkqJtb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBAE179AB;
+	Tue, 19 Dec 2023 12:28:35 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867C118627;
-	Tue, 19 Dec 2023 12:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702988802; x=1734524802;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=NVUFPpae8F8jyThuVAWdOzVmRorZrFfAKHgtb/njqPI=;
-  b=FvgkqJtbjjiYzmPEYSjM8znr2cPrfi1XhwESuaz420FaEQUBTSBT4gW0
-   bx8KZoHxrZg+p49LnNKBQ7o1+713BnkGKCNIaLwlgFBkNrOnWZSinprD0
-   itDe6JgZ6/HESCFIaFC/lfM/6FpAmtUrhHZ0PFQIJq+c7Z4gUIB3DC4zf
-   yo5tmzrTZECNiMhddG8oymRyG3YnhycoeXF8oAARjqJmd0hrtAAl4GLHc
-   8Xqn5q+rPJsI/RNa9yK+1zpwrZmVuF9O/g2oZs9Tf17vQPTZqohwuEOp+
-   Wo1Hln9/3KK/bapSy+rEO140dcUm/EcsKvLc1Uu7BW09JPbSbXGO9rLr/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="399482441"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="399482441"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 04:26:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="899345154"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="899345154"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 19 Dec 2023 04:26:36 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 26EDA54B; Tue, 19 Dec 2023 14:26:34 +0200 (EET)
-Date: Tue, 19 Dec 2023 14:26:34 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Sanath S <sanaths2@amd.com>
-Cc: Sanath S <Sanath.S@amd.com>, mario.limonciello@amd.com,
-	andreas.noever@gmail.com, michael.jamet@intel.com,
-	YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset
- downstream ports created by boot firmware
-Message-ID: <20231219122634.GJ1074920@black.fi.intel.com>
-References: <c7d174d3-028f-9ce4-7ef5-3e033c195159@amd.com>
- <20231215140224.GX1074920@black.fi.intel.com>
- <866cb714-b9a8-a7d4-4c59-6ba771ef325f@amd.com>
- <20231218104234.GB1074920@black.fi.intel.com>
- <c433f29b-597c-b6d6-aa48-2b84a26dc623@amd.com>
- <20231218113151.GC1074920@black.fi.intel.com>
- <20231218122312.GE1074920@black.fi.intel.com>
- <997f2a94-66d9-fb95-8f75-46d61937f7e8@amd.com>
- <20231218131840.GH1074920@black.fi.intel.com>
- <0fd5c09f-1cf2-8813-a8f9-1bd856e3a298@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F8D17980
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:28:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 479E6C433C9;
+	Tue, 19 Dec 2023 12:28:34 +0000 (UTC)
+Date: Tue, 19 Dec 2023 07:29:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [for-linus][PATCH] ring-buffer: Fix slowpath of interrupted event
+Message-ID: <20231219072932.0d7383f2@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0fd5c09f-1cf2-8813-a8f9-1bd856e3a298@amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 19, 2023 at 02:41:08PM +0530, Sanath S wrote:
-> 
-> On 12/18/2023 6:48 PM, Mika Westerberg wrote:
-> > On Mon, Dec 18, 2023 at 06:35:13PM +0530, Sanath S wrote:
-> > > On 12/18/2023 5:53 PM, Mika Westerberg wrote:
-> > > > On Mon, Dec 18, 2023 at 01:31:51PM +0200, Mika Westerberg wrote:
-> > > > > On Mon, Dec 18, 2023 at 04:49:13PM +0530, Sanath S wrote:
-> > > > > > > The discover part should not do anything (like write the hardware) so
-> > > > > > > perhaps it is just some timing thing (but that's weird too).
-> > > > > > > 
-> > > > > > > I think we should do something like this:
-> > > > > > > 
-> > > > > > > 1. Disable all enabled protocol adapters (reset them to defaults).
-> > > > > > > 2. Clear all protocol adapter paths.
-> > > > > > > 3. Issue DPR over all enabled USB4 ports.
-> > > > > > > 
-> > > > > > > BTW, what you mean "didn't work"?
-> > > > > > Path activation would go fine after DPR like below:
-> > > > > > 
-> > > > > > [   15.090905] thunderbolt 0000:c4:00.5: 0:5 <-> 2:9 (PCI): activating
-> > > > > > [   15.090932] thunderbolt 0000:c4:00.5: activating PCIe Down path from 0:5
-> > > > > > to 2:9
-> > > > > > [   15.091602] thunderbolt 0000:c4:00.5: activating PCIe Up path from 2:9 to
-> > > > > > 0:5
-> > > > > > 
-> > > > > > But, PCIE enumeration doesn't happen (pcie link up will not happen, will not
-> > > > > > see below logs)
-> > > > > > [   15.134223] pcieport 0000:00:03.1: pciehp: Slot(0-1): Card present
-> > > > > > [   15.134243] pcieport 0000:00:03.1: pciehp: Slot(0-1): Link Up
-> > > > > Okay, what if you like reset the PCIe adapter config spaces back to the
-> > > > > defaults? Just as an experiment.
-> > > > If this turns out to be really complex then I guess it is better to do
-> > > > it like you did originally using discovery but at least it would be nice
-> > > > to see what the end result of this experiment looks like :)
-> I feel it's better to go with discover and then reset for now (as v3).
-> I'll keep this experiment as "to do" and will send out when I crack it down.
 
-Fair enough.
+While working on the ring buffer, I found one more bug with the timestamp
+code, and the fix for this removed the need for the final 64-bit cmpxchg!
 
-> > > Yes, I'll give a try.
-> > > As an experiment, I tried to compare the path deactivation that occurs at
-> > > two place.
-> > > 1. In tb_switch_reset where we are calling tb_path_deactivate_hop(port, i).
-> > > 2. While we get a unplug event after doing DPR.
-> > > 
-> > > I observed both have different hop_index and port numbers.
-> > > So, are we calling tb_path_deactivate_hop with wrong hop ids ?
-> > Wrong adapters possibly.
-> > 
-> > >  From deactivate tunnel (called while unplug) :
-> > > [    3.408268] thunderbolt 0000:c4:00.5: deactivating PCIe Down path from
-> > > 2:9 to 0:5
-> > > [    3.408282] deactivate hop port = 9 hop_index=8
-> > > [    3.408328] deactivate hop port = 2 hop_index=10
-> > Definitely should be port = 5 (that's PCIe down in your log) and
-> > hop_index = 8 (that's the one used with PCIe).
-> > 
-> > > Deactivate from tb_switch_reset() :
-> > > deactivate hop port = 5 hop_index=8
-> > Can you add some more logging and provide me the dmesg or
-> > alternativively investigate it yourself. You can use tb_port_dbg() to
-> > get the port numbers to the log.
-> I've sent you complete dmesg.
+The ring buffer events hold a "delta" from the previous event. If it is
+determined that the delta can not be calculated, it falls back to adding an
+absolute timestamp value. The way to know if the delta can be used is via
+two stored timestamps in the per-cpu buffer meta data:
 
-Got it, thanks!
+ before_stamp and write_stamp
 
-> Here is the log w.r.t port numbers and path clean up.
-> 
-> [    3.389038] thunderbolt 0000:c4:00.5: 0:3: Downstream port, setting DPR
-> [    3.389065] Calling usb4_port_reset
-> [    3.389068] thunderbolt 0000:c4:00.5: 0:4: Found USB3 DOWN
-> [    3.389193] thunderbolt 0000:c4:00.5: 0:4: In reset, cleaning up path,
-> port->port = 4 hopid = 8
-> [    3.389203] thunderbolt 0000:c4:00.5: 0:4: deactivating_hop port = 4
-> hop_index=8
-> [    3.389682] thunderbolt 0000:c4:00.5: 0:5: Found PCI Down
-> [    3.389811] thunderbolt 0000:c4:00.5: 0:5: In reset, cleaning up path,
-> port->port = 5 hopid = 8
-> [    3.389817] thunderbolt 0000:c4:00.5: 0:5: deactivating_hop port = 5
-> hop_index=8
-> [    3.390296] thunderbolt 0000:c4:00.5: 0:6: Found DP IN
-> [    3.390555] thunderbolt 0000:c4:00.5: 0:6: In reset, cleaning up path,
-> port->port = 6 hopid = 8
-> [    3.390558] thunderbolt 0000:c4:00.5: 0:6: deactivating_hop port = 6
-> hop_index=8
-> [    3.390686] thunderbolt 0000:c4:00.5: 0:6: In reset, cleaning up path,
-> port->port = 6 hopid = 9
-> [    3.390689] thunderbolt 0000:c4:00.5: 0:6: deactivating_hop port = 6
-> hop_index=9
-> [    3.390816] thunderbolt 0000:c4:00.5: 0:7: Found DP IN
-> [    3.391077] thunderbolt 0000:c4:00.5: 0:7: In reset, cleaning up path,
-> port->port = 7 hopid = 8
-> [    3.391080] thunderbolt 0000:c4:00.5: 0:7: deactivating_hop port = 7
-> hop_index=8
-> [    3.391213] thunderbolt 0000:c4:00.5: 0:7: In reset, cleaning up path,
-> port->port = 7 hopid = 9
-> [    3.391217] thunderbolt 0000:c4:00.5: 0:7: deactivating_hop port = 7
-> hop_index=9
-> [    3.391342] Reset success
-> [    3.391391] thunderbolt 0000:c4:00.5: 0:2: switch unplugged
-> [    3.391434] thunderbolt 0000:c4:00.5: 0:4 <-> 2:16 (USB3): deactivating
-> [    3.391471] thunderbolt 0000:c4:00.5: deactivating USB3 Down path from
-> 0:4 to 2:16
-> [    3.391477] thunderbolt 0000:c4:00.5: 0:4: deactivating_hop port = 4
-> hop_index=8
-> [    3.391641] thunderbolt 0000:c4:00.5: 2:1: deactivating_hop port = 1
-> hop_index=9
-> [    3.391651] thunderbolt 0000:c4:00.5: deactivating USB3 Up path from 2:16
-> to 0:4
-> [    3.391659] thunderbolt 0000:c4:00.5: 2:16: deactivating_hop port = 16
-> hop_index=8
-> [    3.391664] thunderbolt 0000:c4:00.5: 0:2: deactivating_hop port = 2
-> hop_index=9
-> [    3.391701] thunderbolt 0000:c4:00.6: total paths: 3
-> [    3.391720] thunderbolt 0000:c4:00.6: IOMMU DMA protection is disabled
-> [    3.392027] thunderbolt 0000:c4:00.5: 0:5 <-> 2:9 (PCI): deactivating
-> [    3.392154] thunderbolt 0000:c4:00.5: deactivating PCIe Down path from
-> 2:9 to 0:5
-> [    3.392163] thunderbolt 0000:c4:00.5: 2:9: deactivating_hop port = 9
-> hop_index=8
-> [    3.392170] thunderbolt 0000:c4:00.5: 0:2: deactivating_hop port = 2
-> hop_index=10
-> [    3.392534] thunderbolt 0000:c4:00.5: deactivating PCIe Up path from 0:5
-> to 2:9
-> [    3.392539] thunderbolt 0000:c4:00.5: 0:5: deactivating_hop port = 5
-> hop_index=8
-> [    3.392637] thunderbolt 0000:c4:00.5: 2:1: deactivating_hop port = 1
-> hop_index=10
-> [    3.392799] thunderbolt 0-2: device disconnected
-> 
-> But it seems like we are not cleaning up all the paths ?
+The before_stamp is written by every event before it tries to allocate its
+space on the ring buffer. The write_stamp is written after it allocates its
+space and knows that nothing came in after it read the previous
+before_stamp and write_stamp and the two matched.
 
-To me this looks correct and even your dmesg the PCIe tunnel that gets
-established after the "reset" seems to be working just fine. I also see
-that in your log you are doing the discovery before reset even though
-the original idea was to avoid it.
+A previous fix dd9394257078 ("ring-buffer: Do not try to put back
+write_stamp") removed putting back the write_stamp to match the
+before_stamp so that the next event could use the delta, but races were
+found where the two would match, but not be for of the previous event.
 
-In any case this was a good experiment. I will see if I can get this
-working on my side if I have some spare time during holidays.
+It was determined to allow the event reservation to not have a valid
+write_stamp when it is finished, and this fixed a lot of races.
 
-I guess we can to with the discovery but taking into account the
-"host_reset".
+The last use of the 64-bit timestamp cmpxchg depended on the write_stamp
+being valid after an interruption. But this is no longer the case, as if an
+event is interrupted by a softirq that writes an event, and that event gets
+interrupted by a hardirq or NMI and that writes an event, then the softirq
+could finish its reservation without a valid write_stamp.
 
-One additional question though, say we have PCIe tunnel established by
-the BIOS CM and we do the "reset", that means there will be hot-remove
-on the PCIe side and then hotplug again, does this slow down the boot
-considerably? We have some delays there in the PCIe code that might hit
-us here although I agree that we definitely prefer working system rather
-than fast-booting non-working system but perhaps the delays are not
-noticeable by the end-user?
+In the slow path of the event reservation, a delta can still be used if the
+write_stamp is valid. Instead of using a cmpxchg against the write stamp,
+the before_stamp needs to be read again to validate the write_stamp. The
+cmpxchg is not needed.
+
+This updates the slowpath to validate the write_stamp by comparing it to
+the before_stamp and removes all rb_time_cmpxchg() as there are no more
+users of that function.
+
+The removal of the 32-bit updates of rb_time_t will be done in the next
+merge window.
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+trace/urgent
+
+Head SHA1: b803d7c664d55705831729d2f2e29c874bcd62ea
+
+
+Steven Rostedt (Google) (1):
+      ring-buffer: Fix slowpath of interrupted event
+
+----
+ kernel/trace/ring_buffer.c | 79 ++++++++++++++--------------------------------
+ 1 file changed, 24 insertions(+), 55 deletions(-)
+---------------------------
+commit b803d7c664d55705831729d2f2e29c874bcd62ea
+Author: Steven Rostedt (Google) <rostedt@goodmis.org>
+Date:   Mon Dec 18 23:07:12 2023 -0500
+
+    ring-buffer: Fix slowpath of interrupted event
+    
+    To synchronize the timestamps with the ring buffer reservation, there are
+    two timestamps that are saved in the buffer meta data.
+    
+    1. before_stamp
+    2. write_stamp
+    
+    When the two are equal, the write_stamp is considered valid, as in, it may
+    be used to calculate the delta of the next event as the write_stamp is the
+    timestamp of the previous reserved event on the buffer.
+    
+    This is done by the following:
+    
+     /*A*/  w = current position on the ring buffer
+            before = before_stamp
+            after = write_stamp
+            ts = read current timestamp
+    
+            if (before != after) {
+                    write_stamp is not valid, force adding an absolute
+                    timestamp.
+            }
+    
+     /*B*/  before_stamp = ts
+    
+     /*C*/  write = local_add_return(event length, position on ring buffer)
+    
+            if (w == write - event length) {
+                    /* Nothing interrupted between A and C */
+     /*E*/          write_stamp = ts;
+                    delta = ts - after
+                    /*
+                     * If nothing interrupted again,
+                     * before_stamp == write_stamp and write_stamp
+                     * can be used to calculate the delta for
+                     * events that come in after this one.
+                     */
+            } else {
+    
+                    /*
+                     * The slow path!
+                     * Was interrupted between A and C.
+                     */
+    
+    This is the place that there's a bug. We currently have:
+    
+                    after = write_stamp
+                    ts = read current timestamp
+    
+     /*F*/          if (write == current position on the ring buffer &&
+                        after < ts && cmpxchg(write_stamp, after, ts)) {
+    
+                            delta = ts - after;
+    
+                    } else {
+                            delta = 0;
+                    }
+    
+    The assumption is that if the current position on the ring buffer hasn't
+    moved between C and F, then it also was not interrupted, and that the last
+    event written has a timestamp that matches the write_stamp. That is the
+    write_stamp is valid.
+    
+    But this may not be the case:
+    
+    If a task context event was interrupted by softirq between B and C.
+    
+    And the softirq wrote an event that got interrupted by a hard irq between
+    C and E.
+    
+    and the hard irq wrote an event (does not need to be interrupted)
+    
+    We have:
+    
+     /*B*/ before_stamp = ts of normal context
+    
+       ---> interrupted by softirq
+    
+            /*B*/ before_stamp = ts of softirq context
+    
+              ---> interrupted by hardirq
+    
+                    /*B*/ before_stamp = ts of hard irq context
+                    /*E*/ write_stamp = ts of hard irq context
+    
+                    /* matches and write_stamp valid */
+              <----
+    
+            /*E*/ write_stamp = ts of softirq context
+    
+            /* No longer matches before_stamp, write_stamp is not valid! */
+    
+       <---
+    
+     w != write - length, go to slow path
+    
+    // Right now the order of events in the ring buffer is:
+    //
+    // |-- softirq event --|-- hard irq event --|-- normal context event --|
+    //
+    
+     after = write_stamp (this is the ts of softirq)
+     ts = read current timestamp
+    
+     if (write == current position on the ring buffer [true] &&
+         after < ts [true] && cmpxchg(write_stamp, after, ts) [true]) {
+    
+            delta = ts - after  [Wrong!]
+    
+    The delta is to be between the hard irq event and the normal context
+    event, but the above logic made the delta between the softirq event and
+    the normal context event, where the hard irq event is between the two. This
+    will shift all the remaining event timestamps on the sub-buffer
+    incorrectly.
+    
+    The write_stamp is only valid if it matches the before_stamp. The cmpxchg
+    does nothing to help this.
+    
+    Instead, the following logic can be done to fix this:
+    
+            before = before_stamp
+            ts = read current timestamp
+            before_stamp = ts
+    
+            after = write_stamp
+    
+            if (write == current position on the ring buffer &&
+                after == before && after < ts) {
+    
+                    delta = ts - after
+    
+            } else {
+                    delta = 0;
+            }
+    
+    The above will only use the write_stamp if it still matches before_stamp
+    and was tested to not have changed since C.
+    
+    As a bonus, with this logic we do not need any 64-bit cmpxchg() at all!
+    
+    This means the 32-bit rb_time_t workaround can finally be removed. But
+    that's for a later time.
+    
+    Link: https://lore.kernel.org/linux-trace-kernel/20231218175229.58ec3daf@gandalf.local.home/
+    Link: https://lore.kernel.org/linux-trace-kernel/20231218230712.3a76b081@gandalf.local.home
+    
+    Cc: stable@vger.kernel.org
+    Cc: Masami Hiramatsu <mhiramat@kernel.org>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+    Cc: Linus Torvalds <torvalds@linux-foundation.org>
+    Fixes: dd93942570789 ("ring-buffer: Do not try to put back write_stamp")
+    Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 5a114e752f11..83eab547f1d1 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -700,48 +700,6 @@ rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
+ 	return local_try_cmpxchg(l, &expect, set);
+ }
+ 
+-static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+-{
+-	unsigned long cnt, top, bottom, msb;
+-	unsigned long cnt2, top2, bottom2, msb2;
+-	u64 val;
+-
+-	/* Any interruptions in this function should cause a failure */
+-	cnt = local_read(&t->cnt);
+-
+-	/* The cmpxchg always fails if it interrupted an update */
+-	 if (!__rb_time_read(t, &val, &cnt2))
+-		 return false;
+-
+-	 if (val != expect)
+-		 return false;
+-
+-	 if ((cnt & 3) != cnt2)
+-		 return false;
+-
+-	 cnt2 = cnt + 1;
+-
+-	 rb_time_split(val, &top, &bottom, &msb);
+-	 msb = rb_time_val_cnt(msb, cnt);
+-	 top = rb_time_val_cnt(top, cnt);
+-	 bottom = rb_time_val_cnt(bottom, cnt);
+-
+-	 rb_time_split(set, &top2, &bottom2, &msb2);
+-	 msb2 = rb_time_val_cnt(msb2, cnt);
+-	 top2 = rb_time_val_cnt(top2, cnt2);
+-	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
+-
+-	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
+-		return false;
+-	if (!rb_time_read_cmpxchg(&t->msb, msb, msb2))
+-		return false;
+-	if (!rb_time_read_cmpxchg(&t->top, top, top2))
+-		return false;
+-	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
+-		return false;
+-	return true;
+-}
+-
+ #else /* 64 bits */
+ 
+ /* local64_t always succeeds */
+@@ -755,11 +713,6 @@ static void rb_time_set(rb_time_t *t, u64 val)
+ {
+ 	local64_set(&t->time, val);
+ }
+-
+-static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+-{
+-	return local64_try_cmpxchg(&t->time, &expect, set);
+-}
+ #endif
+ 
+ /*
+@@ -3610,20 +3563,36 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	} else {
+ 		u64 ts;
+ 		/* SLOW PATH - Interrupted between A and C */
+-		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-		/* Was interrupted before here, write_stamp must be valid */
++
++		/* Save the old before_stamp */
++		a_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
+ 		RB_WARN_ON(cpu_buffer, !a_ok);
++
++		/*
++		 * Read a new timestamp and update the before_stamp to make
++		 * the next event after this one force using an absolute
++		 * timestamp. This is in case an interrupt were to come in
++		 * between E and F.
++		 */
+ 		ts = rb_time_stamp(cpu_buffer->buffer);
++		rb_time_set(&cpu_buffer->before_stamp, ts);
++
++		barrier();
++ /*E*/		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
++		/* Was interrupted before here, write_stamp must be valid */
++		RB_WARN_ON(cpu_buffer, !a_ok);
+ 		barrier();
+- /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+-		    info->after < ts &&
+-		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
+-				    info->after, ts)) {
+-			/* Nothing came after this event between C and E */
++ /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
++		    info->after == info->before && info->after < ts) {
++			/*
++			 * Nothing came after this event between C and F, it is
++			 * safe to use info->after for the delta as it
++			 * matched info->before and is still valid.
++			 */
+ 			info->delta = ts - info->after;
+ 		} else {
+ 			/*
+-			 * Interrupted between C and E:
++			 * Interrupted between C and F:
+ 			 * Lost the previous events time stamp. Just set the
+ 			 * delta to zero, and this will be the same time as
+ 			 * the event this event interrupted. And the events that
 
