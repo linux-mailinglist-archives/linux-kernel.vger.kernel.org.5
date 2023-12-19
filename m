@@ -1,289 +1,172 @@
-Return-Path: <linux-kernel+bounces-4800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E11818236
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:25:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57480818233
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92772286715
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:25:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D910C1F264A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51205125B2;
-	Tue, 19 Dec 2023 07:25:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657BEC13E;
+	Tue, 19 Dec 2023 07:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NJq2AQN+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ngbu+k1q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCED311C9C
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:25:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702970710;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UkWc107WslIsjYWu6NdM2GJXQDzS36cheHCrid7fhLY=;
-	b=NJq2AQN+4xwLNImqHsL/cVcWYXDcNyrpLJcXrKcMt9/kA93EKZVAyN8cdHUZd61W5tgAMS
-	Qswml9wnkwumnnwP+FV3Pgu0+KOwAT7DCfOzbwmb+F1IglAYtgwhpbz7c6ymlRqHtx9l9q
-	eL1pP+pi9a98+H5BvYQQGPyi8qsXLk4=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-125-ZajPPnIdNdKCI_wAvT6AUA-1; Tue, 19 Dec 2023 02:25:08 -0500
-X-MC-Unique: ZajPPnIdNdKCI_wAvT6AUA-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5e74c97832aso14945917b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:25:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3729A882A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5533ca9cc00so2957894a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:24:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702970695; x=1703575495; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UlhGozfg7dmxL6emSh7I25mqheijAutqkIGD6E3t8e0=;
+        b=Ngbu+k1qT7SNnMNpVuElrCkHYXkgQd9G+puHuCBrNFasfjgqdVEj98VYksBdwEvdXb
+         yl4F9pe8a6Qqr0xhQMkAMTgvyIxziy7D/8xO3hMDXAPtr+bArgFYCblggMB3jUCY4khM
+         JWd7X0tmUU9uWlpq5h6TfgtG0H7o2lF7GNeXZ9t0VUbdCyvc+oyET1RyreTfljUzop/U
+         jjjl/qXMyonJMsp5MeKsS8JY8DuEHwOxCeUPyTOQJKI0sMW1y2E6/w2KYT5ZytwYnv5H
+         /+p+8vgULhay6pN15U9akhVj2eaXIGADzMaobGpey0KxMv+ZGmOtojy7wVPXQdpO7G7V
+         dt+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702970707; x=1703575507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UkWc107WslIsjYWu6NdM2GJXQDzS36cheHCrid7fhLY=;
-        b=B687PjOfx7kDokPdZJoxPtPE8t9wrEHxd2dJeYkpt8gk0EqzfRkkf2OTvmq95J3dxB
-         KwOfzzCbim4Lp1ipAarSULFo7MF75TWtcQd8Ok0RzrGV6cUZZv8pIpUcMnGPuvDO6vR0
-         iIymtfXzrpTsNjfQOoJ2lofvZZQT37sFvEPP+T6ZZJpyz3pcdIk1o/2bH4ux1ClcNFh2
-         Z7hC1RGd6Aan1TIPywxCs16lKxJ/Mu7EtD7f/HwFMveziyr01J1afXBB19HSK/3F7vln
-         NLTnYGwdHg0qHTQlsbWavQhDjD8PlkLYls1xuMaBXN/Wmp59UzClZ1fCrmD1wVYsQUzV
-         YnUQ==
-X-Gm-Message-State: AOJu0YyAbBq4s2juRY/3HHc0y//rEhn9O5p+LxREYagCMiQA9KRvzZVk
-	i48eocqWSbZakXpt4F7FnHjjrhwJzk0UoROBt4lzrb/QTAZpsyxDT+KE7qAWKEy+Rc08Kc+wBd9
-	S75qZTx9Sfc1K0NT4oYKdLwgOPkI6bTvBd5CI98C0
-X-Received: by 2002:a81:7104:0:b0:5d7:1940:53e6 with SMTP id m4-20020a817104000000b005d7194053e6mr14464206ywc.94.1702970707597;
-        Mon, 18 Dec 2023 23:25:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH1LsE3GaGAqWsW9AqPXMjRpH1qS88ZdQ93CYYePfjGI0qB+i6GhOZQWF/TSQzNAhO+bQMFD+JCyc35qdgjV5A=
-X-Received: by 2002:a81:7104:0:b0:5d7:1940:53e6 with SMTP id
- m4-20020a817104000000b005d7194053e6mr14464199ywc.94.1702970707330; Mon, 18
- Dec 2023 23:25:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702970695; x=1703575495;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UlhGozfg7dmxL6emSh7I25mqheijAutqkIGD6E3t8e0=;
+        b=o74tYx6KYm/0MdOHCmrTZaG+4JIIR/QzTt2oP0rn1226fAEEbSQUjTRaHG5HUNUalV
+         EAtUdoLrrXhEPkwmyKOv0+t40yH6Fz5p2/mwCabJU5tQmL2ozXfRpigOOZJWLNZ3O7Nl
+         aVJQYVD7ZErZByslCTih4Kg5dOllsi3ZAjiqVGUoajaiDZ9WetPBNuYw964H2A8Uoy8G
+         R1k+IkQOOYqkatOXQVhGECtyqj2krpIJy2pq0Wkafd7wMV+xSKb9ASUO8o4OgXbmVsyA
+         V2zuZFrAtZaJ7kjzzqhfg1IwgEbDuTJKu0yf+RbW5A1KLuorKhyMzLTabKqrSobgkYcZ
+         SIVA==
+X-Gm-Message-State: AOJu0YxTZoid1/dQlhCTHfXBlqbwjfntvSvxK8VBwWujSZ5jQTE8/bTc
+	HBflfJhKO3VjFXk+GqfAc5kobA==
+X-Google-Smtp-Source: AGHT+IGJrB1GS5Ds3Q//fBV9ifKcGRVUKGPJGkcEg6RUjoC9qIuQy8apORhMr/6zGO/JfJuDOCXC8A==
+X-Received: by 2002:a50:c011:0:b0:551:9caa:fac6 with SMTP id r17-20020a50c011000000b005519caafac6mr7563009edb.45.1702970695406;
+        Mon, 18 Dec 2023 23:24:55 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id x9-20020aa7cd89000000b0055289f60e3bsm4634626edv.79.2023.12.18.23.24.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 23:24:54 -0800 (PST)
+Message-ID: <92eb5f85-1241-429c-aca9-7a6a17f19ae5@linaro.org>
+Date: Tue, 19 Dec 2023 08:24:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205104609.876194-1-dtatulea@nvidia.com> <20231205104609.876194-5-dtatulea@nvidia.com>
- <CAJaqyWeEY9LNTE8QEnJgLhgS7HiXr5gJEwwPBrC3RRBsAE4_7Q@mail.gmail.com>
- <27312106-07b9-4719-970c-b8e1aed7c4eb@oracle.com> <075cf7d1ada0ee4ee30d46b993a1fe21acfe9d92.camel@nvidia.com>
- <20231214084526-mutt-send-email-mst@kernel.org> <9a6465a3d6c8fde63643fbbdde60d5dd84b921d4.camel@nvidia.com>
- <CAJaqyWfF9eVehQ+wutMDdwYToMq=G1+War_7wANmnyuONj=18g@mail.gmail.com>
- <9c387650e7c22118370fa0fe3588ee009ce56f11.camel@nvidia.com>
- <0bfb42ee1248b82eaedd88bdc9e97e83919f2405.camel@nvidia.com>
- <CAJaqyWdv5xAXp2jiAj=z+3+Bu+6=sXiE0HtOZrMSSZmvVsHeJw@mail.gmail.com>
- <161c7e63d9c7f64afc959b1ea4a068ee2ddafa6c.camel@nvidia.com>
- <CAJaqyWf=ZtoSDGdhYrJdXMQuFvahzF5FtWkdShBmTGaewvQLrw@mail.gmail.com>
- <7c267819eb52f933251c118ba2d1ceb75043c5b2.camel@nvidia.com>
- <CAJaqyWccZJFdfww-_vmj4kJvJkWKFt_VBWmujfVTsFxHohkiZg@mail.gmail.com> <8fc4e1f156b075ec3f4c65acc1e10439f767bf81.camel@nvidia.com>
-In-Reply-To: <8fc4e1f156b075ec3f4c65acc1e10439f767bf81.camel@nvidia.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Tue, 19 Dec 2023 08:24:31 +0100
-Message-ID: <CAJaqyWe-nfb4F2PxTKz3R=fKf6EZzSbKSPm_SwdXjxQCybVmdQ@mail.gmail.com>
-Subject: Re: [PATCH vhost v2 4/8] vdpa/mlx5: Mark vq addrs for modification in
- hw vq
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>, Parav Pandit <parav@nvidia.com>, 
-	Gal Pressman <gal@nvidia.com>, 
-	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"si-wei.liu@oracle.com" <si-wei.liu@oracle.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"mst@redhat.com" <mst@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	"jasowang@redhat.com" <jasowang@redhat.com>, "leon@kernel.org" <leon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/9] dt-bindings: net: starfive,jh7110-dwmac: Drop
+ redundant reset description
+Content-Language: en-US
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
+ Samin Guo <samin.guo@starfivetech.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Hal Feng <hal.feng@starfivetech.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20231218214451.2345691-1-cristian.ciocaltea@collabora.com>
+ <20231218214451.2345691-2-cristian.ciocaltea@collabora.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231218214451.2345691-2-cristian.ciocaltea@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 18, 2023 at 2:58=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
->
-> On Mon, 2023-12-18 at 13:06 +0100, Eugenio Perez Martin wrote:
-> > On Mon, Dec 18, 2023 at 11:52=E2=80=AFAM Dragos Tatulea <dtatulea@nvidi=
-a.com> wrote:
-> > >
-> > > On Mon, 2023-12-18 at 11:16 +0100, Eugenio Perez Martin wrote:
-> > > > On Sat, Dec 16, 2023 at 12:03=E2=80=AFPM Dragos Tatulea <dtatulea@n=
-vidia.com> wrote:
-> > > > >
-> > > > > On Fri, 2023-12-15 at 18:56 +0100, Eugenio Perez Martin wrote:
-> > > > > > On Fri, Dec 15, 2023 at 3:13=E2=80=AFPM Dragos Tatulea <dtatule=
-a@nvidia.com> wrote:
-> > > > > > >
-> > > > > > > On Fri, 2023-12-15 at 12:35 +0000, Dragos Tatulea wrote:
-> > > > > > > > On Thu, 2023-12-14 at 19:30 +0100, Eugenio Perez Martin wro=
-te:
-> > > > > > > > > On Thu, Dec 14, 2023 at 4:51=E2=80=AFPM Dragos Tatulea <d=
-tatulea@nvidia.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > On Thu, 2023-12-14 at 08:45 -0500, Michael S. Tsirkin w=
-rote:
-> > > > > > > > > > > On Thu, Dec 14, 2023 at 01:39:55PM +0000, Dragos Tatu=
-lea wrote:
-> > > > > > > > > > > > On Tue, 2023-12-12 at 15:44 -0800, Si-Wei Liu wrote=
-:
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > On 12/12/2023 11:21 AM, Eugenio Perez Martin wrot=
-e:
-> > > > > > > > > > > > > > On Tue, Dec 5, 2023 at 11:46=E2=80=AFAM Dragos =
-Tatulea <dtatulea@nvidia.com> wrote:
-> > > > > > > > > > > > > > > Addresses get set by .set_vq_address. hw vq a=
-ddresses will be updated on
-> > > > > > > > > > > > > > > next modify_virtqueue.
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > Signed-off-by: Dragos Tatulea <dtatulea@nvidi=
-a.com>
-> > > > > > > > > > > > > > > Reviewed-by: Gal Pressman <gal@nvidia.com>
-> > > > > > > > > > > > > > > Acked-by: Eugenio P=C3=A9rez <eperezma@redhat=
-.com>
-> > > > > > > > > > > > > > I'm kind of ok with this patch and the next one=
- about state, but I
-> > > > > > > > > > > > > > didn't ack them in the previous series.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > My main concern is that it is not valid to chan=
-ge the vq address after
-> > > > > > > > > > > > > > DRIVER_OK in VirtIO, which vDPA follows. Only m=
-emory maps are ok to
-> > > > > > > > > > > > > > change at this moment. I'm not sure about vq st=
-ate in vDPA, but vhost
-> > > > > > > > > > > > > > forbids changing it with an active backend.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Suspend is not defined in VirtIO at this moment=
- though, so maybe it is
-> > > > > > > > > > > > > > ok to decide that all of these parameters may c=
-hange during suspend.
-> > > > > > > > > > > > > > Maybe the best thing is to protect this with a =
-vDPA feature flag.
-> > > > > > > > > > > > > I think protect with vDPA feature flag could work=
-, while on the other
-> > > > > > > > > > > > > hand vDPA means vendor specific optimization is p=
-ossible around suspend
-> > > > > > > > > > > > > and resume (in case it helps performance), which =
-doesn't have to be
-> > > > > > > > > > > > > backed by virtio spec. Same applies to vhost user=
- backend features,
-> > > > > > > > > > > > > variations there were not backed by spec either. =
-Of course, we should
-> > > > > > > > > > > > > try best to make the default behavior backward co=
-mpatible with
-> > > > > > > > > > > > > virtio-based backend, but that circles back to no=
- suspend definition in
-> > > > > > > > > > > > > the current virtio spec, for which I hope we don'=
-t cease development on
-> > > > > > > > > > > > > vDPA indefinitely. After all, the virtio based vd=
-ap backend can well
-> > > > > > > > > > > > > define its own feature flag to describe (minor di=
-fference in) the
-> > > > > > > > > > > > > suspend behavior based on the later spec once it =
-is formed in future.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > So what is the way forward here? From what I unders=
-tand the options are:
-> > > > > > > > > > > >
-> > > > > > > > > > > > 1) Add a vdpa feature flag for changing device prop=
-erties while suspended.
-> > > > > > > > > > > >
-> > > > > > > > > > > > 2) Drop these 2 patches from the series for now. No=
-t sure if this makes sense as
-> > > > > > > > > > > > this. But then Si-Wei's qemu device suspend/resume =
-poc [0] that exercises this
-> > > > > > > > > > > > code won't work anymore. This means the series woul=
-d be less well tested.
-> > > > > > > > > > > >
-> > > > > > > > > > > > Are there other possible options? What do you think=
-?
-> > > > > > > > > > > >
-> > > > > > > > > > > > [0] https://github.com/siwliu-kernel/qemu/tree/svq-=
-resume-wip
-> > > > > > > > > > >
-> > > > > > > > > > > I am fine with either of these.
-> > > > > > > > > > >
-> > > > > > > > > > How about allowing the change only under the following =
-conditions:
-> > > > > > > > > >   vhost_vdpa_can_suspend && vhost_vdpa_can_resume &&
-> > > > > > > > > > VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK is set
-> > > > > > > > > >
-> > > > > > > > > > ?
-> > > > > > > > >
-> > > > > > > > > I think the best option by far is 1, as there is no hint =
-in the
-> > > > > > > > > combination of these 3 indicating that you can change dev=
-ice
-> > > > > > > > > properties in the suspended state.
-> > > > > > > > >
-> > > > > > > > Sure. Will respin a v3 without these two patches.
-> > > > > > > >
-> > > > > > > > Another series can implement option 2 and add these 2 patch=
-es on top.
-> > > > > > > Hmm...I misunderstood your statement and sent a erroneus v3. =
-You said that
-> > > > > > > having a feature flag is the best option.
-> > > > > > >
-> > > > > > > Will add a feature flag in v4: is this similar to the
-> > > > > > > VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag?
-> > > > > > >
-> > > > > >
-> > > > > > Right, it should be easy to return it from .get_backend_feature=
-s op if
-> > > > > > the FW returns that capability, isn't it?
-> > > > > >
-> > > > > Yes, that's easy. But I wonder if we need one feature bit for eac=
-h type of
-> > > > > change:
-> > > > > - VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND
-> > > > > - VHOST_BACKEND_F_CHANGEABLE_VQ_STATE_IN_SUSPEND
-> > > > >
-> > > >
-> > > > I'd say yes. Although we could configure SVQ initial state in userl=
-and
-> > > > as different than 0 for this first step, it would be needed in the
-> > > > long term.
-> > > >
-> > > > > Or would a big one VHOST_BACKEND_F_CAN_RECONFIG_VQ_IN_SUSPEND suf=
-fice?
-> > > > >
-> > > >
-> > > > I'd say "reconfig vq" is not valid as mlx driver doesn't allow
-> > > > changing queue sizes, for example, isn't it?
-> > > >
-> > > Modifying the queue size for a vq is indeed not supported by the mlx =
-device.
-> > >
-> > > > To define that it is
-> > > > valid to change "all parameters" seems very confident.
-> > > >
-> > > Ack
-> > >
-> > > > > To me having individual feature bits makes sense. But it could al=
-so takes too
-> > > > > many bits if more changes are required.
-> > > > >
-> > > >
-> > > > Yes, that's a good point. Maybe it is valid to define a subset of
-> > > > features that can be changed., but I think it is way clearer to jus=
-t
-> > > > check for individual feature bits.
-> > > >
-> > > I will prepare extra patches with the 2 feature bits approach.
-> > >
-> > > Is it necessary to add checks in the vdpa core that block changing th=
-ese
-> > > properties if the state is driver ok and the device doesn't support t=
-he feature?
-> > >
-> >
-> > Yes, I think it is better to protect for changes in vdpa core.
-> >
-> Hmmm... there is no suspended state available. I would only add checks fo=
-r the
-> DRIVER_OK state of the device because adding a is_suspended state/op seem=
-s out
-> of scope for this series. Any thoughts?
->
+On 18/12/2023 22:44, Cristian Ciocaltea wrote:
+> The reset description items are already provided by the referenced
+> snps,dwmac.yaml schema, hence replace them with the necessary
+> {min,max}Items.
+> 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> ---
+>  .../devicetree/bindings/net/starfive,jh7110-dwmac.yaml       | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> index 5e7cfbbebce6..d90cb82c1424 100644
+> --- a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> @@ -55,9 +55,8 @@ properties:
+>      maxItems: 3
+>  
+>    resets:
+> -    items:
+> -      - description: MAC Reset signal.
+> -      - description: AHB Reset signal.
+> +    minItems: 2
+> +    maxItems: 2
 
-I can develop it so you can include it in your series for sure, I will
-send it ASAP.
+Why changing only resets, but not reset-names?
 
-Thanks!
+Best regards,
+Krzysztof
 
 
