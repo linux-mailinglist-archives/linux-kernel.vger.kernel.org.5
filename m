@@ -1,351 +1,600 @@
-Return-Path: <linux-kernel+bounces-5031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5723F81859B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:49:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D0C8185AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91AA4B23E0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:49:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4271C234B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B281642D;
-	Tue, 19 Dec 2023 10:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03F914F9E;
+	Tue, 19 Dec 2023 10:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GUkuWpob"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rSlZHRW4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A9F156EC;
-	Tue, 19 Dec 2023 10:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJAhX1R024568;
-	Tue, 19 Dec 2023 10:48:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=cKTQ0RdG6g1Xng1WD0Hs4yjBN2F1MXmiqNVun3Q5LUw=; b=GU
-	kuWpobRzt1mOqIrzvHcHlVa0scG/Uyc3kca8cuiV2R65a4Fnk5EYLpfed0PORkq5
-	/vrCA6V02loDvD2RRtOCqg/wyFDqThsYxcIWCoZnSvfskPYrB0rZKZLcRcEmtX+r
-	XDO22WhkJA4DUMKnFkJBCHx8dnyL78jSsfVnhrRwH9yuZ2eeWvAmQX6tYP7XycwO
-	ul/lz9PZiszwB1MztRjQoOE0IXJP9tbsVdbfI7K9yjGZof4PfTxXxCFQcIieyQvW
-	a0kddeJdIzM33RIl2tAc9x/TZ2PejffkOYM6CLegm8im6nxXtx9azPHx3d9TH3Ta
-	15cqQ22xyMnawt4jYQyA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v39n8r0e2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 10:48:49 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJAmmeL022055
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 10:48:48 GMT
-Received: from [10.218.41.170] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
- 2023 02:48:37 -0800
-Message-ID: <102ba03f-62ac-4d08-a1a9-d7e25c1a0456@quicinc.com>
-Date: Tue, 19 Dec 2023 16:18:33 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B0414AB0;
+	Tue, 19 Dec 2023 10:50:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31AD2C433CC;
+	Tue, 19 Dec 2023 10:50:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702983050;
+	bh=boVSalnCGlkz1ODJ8LdCVIJrPZvD+WMXnOuvULILNQE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=rSlZHRW456R4j32VftJoUKWPnAHhgrIuErQlGx8+Pb2j2R6gm/6sZYXraynlQwSJs
+	 TODZF223NDWyXxssJTgkxKy6rklDM0pB2D9VpH/Suk5+j1EAaU+BGRLgN9kA8KVo9U
+	 r2oPJL08RVeXSdw5uCE+cwpHHgzhqG8mT7oE56WZwuqIgFi51SFwm2wJvMUzKaiZh1
+	 1VYQErzPuiks0CXWstQxrxt1yz+aISWsGTSWOkgseRb4fUCwJptc78m1r6bDvlSRTW
+	 IpYx/fSeDFqCkyZ561JICe2si5ZZLwXTD5H7RVULd+Br553Z19KVlyYriX5GClXcTk
+	 LKxuzNuAjwoCA==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50bce78f145so5041386e87.0;
+        Tue, 19 Dec 2023 02:50:50 -0800 (PST)
+X-Gm-Message-State: AOJu0YwEIYk0WsLI7svZXpuDZJSFfpGUfFe6U4cOyCD8TLk86vwdSXkO
+	N7n/2vPPbNz8cyBjMfdXZJAqxLJIIv1PM7v1lBQ=
+X-Google-Smtp-Source: AGHT+IHT4YrAB66G8KurFpT6fXhEv3LbPDu6EWrXwHUtM/XsyvcXI8i1oDj5YA/PvBYxWJPLDHFcZBjQli9onMeLIQ4=
+X-Received: by 2002:a19:c21a:0:b0:50e:2b00:1f99 with SMTP id
+ l26-20020a19c21a000000b0050e2b001f99mr864576lfc.100.1702983048284; Tue, 19
+ Dec 2023 02:50:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 3/3] net: stmmac: Add driver support for
- DWMAC5 common safety IRQ
-Content-Language: en-US
-To: Serge Semin <fancer.lancer@gmail.com>
-CC: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu
-	<joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Prasad Sodagudi
-	<psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
-	<robh@kernel.org>,
-        <kernel@quicinc.com>
-References: <20231212115841.3800241-1-quic_jsuraj@quicinc.com>
- <20231212115841.3800241-4-quic_jsuraj@quicinc.com>
- <bcppwdnscrebqtsap2fyfd6ltpi4al3ojm5dqytzp37h7y7rdy@zqy6bncdhzl2>
- <8ed8450f-a9c7-4e9d-97b8-3d26668c7eb4@quicinc.com>
- <5mcon3irbtcvrtwwl46bh66qkixddqtbotswmt4usdbkilatzi@c63klwlos4kf>
-From: Suraj Jaiswal <quic_jsuraj@quicinc.com>
-In-Reply-To: <5mcon3irbtcvrtwwl46bh66qkixddqtbotswmt4usdbkilatzi@c63klwlos4kf>
+References: <20231215122614.5481-1-tzimmermann@suse.de> <20231215122614.5481-2-tzimmermann@suse.de>
+In-Reply-To: <20231215122614.5481-2-tzimmermann@suse.de>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Tue, 19 Dec 2023 11:50:36 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG3rHSM=vkDYibe7ZCbk65vwa=vJaDDO1aW1VStzN+sug@mail.gmail.com>
+Message-ID: <CAMj1kXG3rHSM=vkDYibe7ZCbk65vwa=vJaDDO1aW1VStzN+sug@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] arch/x86: Move UAPI setup structures into setup_data.h
+To: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com, 
+	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, javierm@redhat.com, linux-arch@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: QP3GCwf07btUQPsPVoAMHvWzZ9snsx3z
-X-Proofpoint-GUID: QP3GCwf07btUQPsPVoAMHvWzZ9snsx3z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- suspectscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312190079
 
-Hi Serge,
-takan care of all commnets in V7 . Please review 
+Hi Thomas,
 
-Thanks
-Suraj
+On Fri, 15 Dec 2023 at 13:26, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+>
+> The type definition of struct pci_setup_rom in <asm/pci.h> requires
+> struct setup_data from <asm/bootparam.h>. Many drivers include
+> <linux/pci.h>, but do not use boot parameters. Changes to bootparam.h
+> or its included header files could easily trigger a large, unnecessary
+> rebuild of the kernel.
+>
+> Moving struct setup_data and related code into its own own header file
+> avoids including <asm/bootparam.h> in <asm/pci.h>. Instead include the
+> new header <asm/screen_data.h> and remove the include statement for
+> x86_init.h, which is unnecessary but pulls in bootparams.h.
+>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> ---
+>  arch/x86/include/asm/pci.h             |   2 +-
+>  arch/x86/include/uapi/asm/bootparam.h  | 218 +----------------------
+>  arch/x86/include/uapi/asm/setup_data.h | 229 +++++++++++++++++++++++++
+>  3 files changed, 231 insertions(+), 218 deletions(-)
+>  create mode 100644 arch/x86/include/uapi/asm/setup_data.h
+>
 
-On 12/18/2023 4:18 PM, Serge Semin wrote:
-> On Mon, Dec 18, 2023 at 03:27:54PM +0530, Suraj Jaiswal wrote:
->>
->> Hi Serge,
->> Please find commnet inline & let me know if any further action needed
->>
->> Thanks
->> Suraj
->>
->> On 12/14/2023 8:42 PM, Serge Semin wrote:
->>> Hi Suraj
->>>
->>> On Tue, Dec 12, 2023 at 05:28:41PM +0530, Suraj Jaiswal wrote:
->>>> Add support to listen HW safety IRQ like ECC(error
->>>> correction code), DPP(data path parity), FSM(finite state
->>>> machine) fault in common IRQ line.
->>>>
->>>> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
->>>> ---
->>>>  drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
->>>>  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 +++
->>>>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 21 +++++++++++++++++++
->>>>  .../ethernet/stmicro/stmmac/stmmac_platform.c |  9 ++++++++
->>>>  4 files changed, 34 insertions(+)
->>>>
->>>> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
->>>> index 721c1f8e892f..b9233b09b80f 100644
->>>> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
->>>> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
->>>> @@ -344,6 +344,7 @@ enum request_irq_err {
->>>>  	REQ_IRQ_ERR_ALL,
->>>>  	REQ_IRQ_ERR_TX,
->>>>  	REQ_IRQ_ERR_RX,
->>>> +	REQ_IRQ_ERR_SFTY,
->>>>  	REQ_IRQ_ERR_SFTY_UE,
->>>>  	REQ_IRQ_ERR_SFTY_CE,
->>>>  	REQ_IRQ_ERR_LPI,
->>>> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
->>>> index 9f89acf31050..ca3d93851bed 100644
->>>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
->>>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
->>>> @@ -31,6 +31,7 @@ struct stmmac_resources {
->>>>  	int wol_irq;
->>>>  	int lpi_irq;
->>>>  	int irq;
->>>> +	int sfty_irq;
->>>>  	int sfty_ce_irq;
->>>>  	int sfty_ue_irq;
->>>>  	int rx_irq[MTL_MAX_RX_QUEUES];
->>>> @@ -297,6 +298,7 @@ struct stmmac_priv {
->>>>  	void __iomem *ptpaddr;
->>>>  	void __iomem *estaddr;
->>>>  	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
->>>> +	int sfty_irq;
->>>>  	int sfty_ce_irq;
->>>>  	int sfty_ue_irq;
->>>>  	int rx_irq[MTL_MAX_RX_QUEUES];
->>>> @@ -305,6 +307,7 @@ struct stmmac_priv {
->>>>  	char int_name_mac[IFNAMSIZ + 9];
->>>>  	char int_name_wol[IFNAMSIZ + 9];
->>>>  	char int_name_lpi[IFNAMSIZ + 9];
->>>> +	char int_name_sfty[IFNAMSIZ + 10];
->>>>  	char int_name_sfty_ce[IFNAMSIZ + 10];
->>>>  	char int_name_sfty_ue[IFNAMSIZ + 10];
->>>>  	char int_name_rx_irq[MTL_MAX_TX_QUEUES][IFNAMSIZ + 14];
->>>> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->>>> index 47de466e432c..6cf289f192a7 100644
->>>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->>>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->>>> @@ -3592,6 +3592,10 @@ static void stmmac_free_irq(struct net_device *dev,
->>>>  		if (priv->wol_irq > 0 && priv->wol_irq != dev->irq)
->>>>  			free_irq(priv->wol_irq, dev);
->>>>  		fallthrough;
->>>> +	case REQ_IRQ_ERR_SFTY:
->>>> +		if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq)
->>>> +			free_irq(priv->sfty_irq, dev);
->>>> +		fallthrough;
->>>>  	case REQ_IRQ_ERR_WOL:
->>>>  		free_irq(dev->irq, dev);
->>>>  		fallthrough;
->>>> @@ -3759,6 +3763,7 @@ static int stmmac_request_irq_single(struct net_device *dev)
->>>>  	struct stmmac_priv *priv = netdev_priv(dev);
->>>>  	enum request_irq_err irq_err;
->>>>  	int ret;
->>>
->>>> +	char *int_name;
->>>
->>> See my comment below.
->>>
->>>>  
->>>>  	ret = request_irq(dev->irq, stmmac_interrupt,
->>>>  			  IRQF_SHARED, dev->name, dev);
->>>> @@ -3798,6 +3803,20 @@ static int stmmac_request_irq_single(struct net_device *dev)
->>>>  		}
->>>>  	}
->>>>  
->>>
->>>> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
->>>> +		int_name = priv->int_name_sfty;
->>>> +		sprintf(int_name, "%s:%s", dev->name, "safety");
->>>> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
->>>> +				  0, int_name, dev);
->>>> +		if (unlikely(ret < 0)) {
->>>> +			netdev_err(priv->dev,
->>>> +				   "%s: alloc safety failed %d (error: %d)\n",
->>>> +				   __func__, priv->sfty_irq, ret);
->>>> +			irq_err = REQ_IRQ_ERR_SFTY;
->>>> +			goto irq_error;
->>>> +		}
->>>> +	}
->>>> +
->>>
-> 
->>> Omg, I thought this change belonged to stmmac_request_irq_multi_msi().
->>> My bad, sorry. Please move the code above to
->>> stmmac_request_irq_multi_msi() and get back the part in
->>> stmmac_request_irq_single() as it was in v5,
-> 
-> Please note my comment regarding the common safety IRQ being supported
-> in both stmmac_request_irq_single() and stmmac_request_irq_multi_msi()
-> methods.
-> 
->> but instead of specifying
->>> "safety" IRQ name use "dev->name" as the rest of similar code snippets
->>> in here have:
->>>
->>> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
->>> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
->>> +				  0, dev->name, dev);
->>> +		if (unlikely(ret < 0)) {
->>> +			netdev_err(priv->dev,
->>> +				   "%s: alloc safety failed %d (error: %d)\n",
->>> +				   __func__, priv->sfty_irq, ret);
->>> +			irq_err = REQ_IRQ_ERR_SFTY;
->>> +			goto irq_error;
->>> +		}
->>> +	}
->>
-> 
->> <Suraj> We can not use "dev->name" as this is name already used by "stmmac_interrupt" @ https://elixir.bootlin.com/linux/v6.1.68/source/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c#L3655.
-> 
-> It's not that much of the problem. The main idea is to convert your
-> solution to following the _local_ coding convention. See, the rest of
-> the IRQs in stmmac_request_irq_single() are requested with "dev->name"
-> being specified as the IRQ name (irrespective to having such solution
-> being not that correct). That's what I was talking about. If you want
-> the safety IRQ to have an unique name, then please submit this patch
-> as I suggested above and _then_, on top of it, add a new patch which
-> would convert the entire stmmac_request_irq_single() method to
-> creating all IRQ names as it's, for instance, done in
-> stmmac_request_irq_multi_msi().
-> 
->> <
->> ret = request_irq(dev->irq, stmmac_interrupt,
->> 			  IRQF_SHARED, dev->name, dev);
->>>
-> 
->> if we are using same "dev->name" while requesting safety IRQ as well then  "/proc/interrupt" will show same name eth0/eth1 for  both "stmmac_interrupt" & "safety interrupt" and by looking at "/proc/interrupt" output we can not say which IRQ is for safety and which is for stmmac_interrupt.
-> 
-> Thanks. I am perfectly aware of that. Please see my comment above.
-> 
->>>
->>> I guess at some point afterwards we'll need to refactor the IRQs
->>> request part of this driver: replace stmmac_request_irq_single() body
->>> with the upper part of the stmmac_request_irq_multi_msi() method and
->>> then just make the former method being called from the later one...
->>>
->>>>  	return 0;
->>>>  
->>>>  irq_error:
->>>> @@ -7462,8 +7481,10 @@ int stmmac_dvr_probe(struct device *device,
->>>>  	priv->dev->irq = res->irq;
->>>>  	priv->wol_irq = res->wol_irq;
->>>>  	priv->lpi_irq = res->lpi_irq;
->>>> +	priv->sfty_irq = res->sfty_irq;
->>>>  	priv->sfty_ce_irq = res->sfty_ce_irq;
->>>>  	priv->sfty_ue_irq = res->sfty_ue_irq;
->>>
->>>> +
->>>
->>> Please drop this change. The code below is attached to the code above
->>> because it basically does the same but in the loop.
-> 
->> <Suraj> below loop code "for (i = 0; i < MTL_MAX_RX_QUEUES; i++) priv->rx_irq[i] = res->rx_irq[i];" is not for rx_irq array and will not help for safety irq.
->> Let me know if I got your commnet properly .
-> 
-> Sorry, you didn't. My comment concerned the _empty_ line you placed
-> between the code above and below. You shouldn't have done that.
-> 
->>>
->>>>  	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
->>>>  		priv->rx_irq[i] = res->rx_irq[i];
->>>>  	for (i = 0; i < MTL_MAX_TX_QUEUES; i++)
->>>> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
->>>> index 1ffde555da47..3808a3225a7d 100644
->>>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
->>>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
->>>> @@ -726,6 +726,15 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
->>>>  		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
->>>>  	}
->>>>  
->>>> +	stmmac_res->sfty_irq =
->>>> +		platform_get_irq_byname_optional(pdev, "sfty");
->>>
->>>> +
->>>
->>> Please drop this change too. It's normal to have a method call
->>> attached to the error check statement especially seeing the rest of
->>> the similar code snippets are designed that way in this function.
-> 
->> <Suraj> Do you means to remove all below code where we are printing the dev_info() message ?
-> 
-> No. I was referring to the _empty_ line between the method above and
-> the error check code below. It's pointless and at the very least
-> breaks the local coding convention.
-> 
-> -Serge(y)
-> 
->> We added this code similar to LPM code.
->>>
->>> -Serge(y)
->>>
->>>> +	if (stmmac_res->sfty_irq < 0) {
->>>> +		if (stmmac_res->sfty_irq == -EPROBE_DEFER)
->>>> +			return -EPROBE_DEFER;
->>>> +		dev_info(&pdev->dev, "IRQ safety IRQ not found\n");
->>>> +	}
->>>> +
->>>>  	stmmac_res->addr = devm_platform_ioremap_resource(pdev, 0);
->>>>  
->>>>  	return PTR_ERR_OR_ZERO(stmmac_res->addr);
->>>> -- 
->>>> 2.25.1
->>>>
->>>>
+This is an improvement but not quite what I had in mind: setup_data is
+a x86 specific linked list that is only referred to via a u64 in
+setup_header.
+
+So setup_data and all the specializations belong in setup_data.h.
+OTOH, setup_header, the XLF load flags, efi_info, the e820 related
+definitions etc are not related to setup_data at all but to
+setup_header. Whether or not setup_header could live in its own header
+too (along with those related definitions) is a separate question imo,
+but I don't think they belong in setup_data.h
+
+
+
+> diff --git a/arch/x86/include/asm/pci.h b/arch/x86/include/asm/pci.h
+> index b40c462b4af3..f6100df3652e 100644
+> --- a/arch/x86/include/asm/pci.h
+> +++ b/arch/x86/include/asm/pci.h
+> @@ -10,7 +10,7 @@
+>  #include <linux/numa.h>
+>  #include <asm/io.h>
+>  #include <asm/memtype.h>
+> -#include <asm/x86_init.h>
+> +#include <asm/setup_data.h>
+>
+>  struct pci_sysdata {
+>         int             domain;         /* PCI domain */
+> diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
+> index 01d19fc22346..f6361eb792fd 100644
+> --- a/arch/x86/include/uapi/asm/bootparam.h
+> +++ b/arch/x86/include/uapi/asm/bootparam.h
+> @@ -2,42 +2,7 @@
+>  #ifndef _ASM_X86_BOOTPARAM_H
+>  #define _ASM_X86_BOOTPARAM_H
+>
+> -/* setup_data/setup_indirect types */
+> -#define SETUP_NONE                     0
+> -#define SETUP_E820_EXT                 1
+> -#define SETUP_DTB                      2
+> -#define SETUP_PCI                      3
+> -#define SETUP_EFI                      4
+> -#define SETUP_APPLE_PROPERTIES         5
+> -#define SETUP_JAILHOUSE                        6
+> -#define SETUP_CC_BLOB                  7
+> -#define SETUP_IMA                      8
+> -#define SETUP_RNG_SEED                 9
+> -#define SETUP_ENUM_MAX                 SETUP_RNG_SEED
+> -
+> -#define SETUP_INDIRECT                 (1<<31)
+> -#define SETUP_TYPE_MAX                 (SETUP_ENUM_MAX | SETUP_INDIRECT)
+> -
+> -/* ram_size flags */
+> -#define RAMDISK_IMAGE_START_MASK       0x07FF
+> -#define RAMDISK_PROMPT_FLAG            0x8000
+> -#define RAMDISK_LOAD_FLAG              0x4000
+> -
+> -/* loadflags */
+> -#define LOADED_HIGH    (1<<0)
+> -#define KASLR_FLAG     (1<<1)
+> -#define QUIET_FLAG     (1<<5)
+> -#define KEEP_SEGMENTS  (1<<6)
+> -#define CAN_USE_HEAP   (1<<7)
+> -
+> -/* xloadflags */
+> -#define XLF_KERNEL_64                  (1<<0)
+> -#define XLF_CAN_BE_LOADED_ABOVE_4G     (1<<1)
+> -#define XLF_EFI_HANDOVER_32            (1<<2)
+> -#define XLF_EFI_HANDOVER_64            (1<<3)
+> -#define XLF_EFI_KEXEC                  (1<<4)
+> -#define XLF_5LEVEL                     (1<<5)
+> -#define XLF_5LEVEL_ENABLED             (1<<6)
+> +#include <asm/setup_data.h>
+>
+>  #ifndef __ASSEMBLY__
+>
+> @@ -48,139 +13,6 @@
+>  #include <asm/ist.h>
+>  #include <video/edid.h>
+>
+> -/* extensible setup data list node */
+> -struct setup_data {
+> -       __u64 next;
+> -       __u32 type;
+> -       __u32 len;
+> -       __u8 data[];
+> -};
+> -
+> -/* extensible setup indirect data node */
+> -struct setup_indirect {
+> -       __u32 type;
+> -       __u32 reserved;  /* Reserved, must be set to zero. */
+> -       __u64 len;
+> -       __u64 addr;
+> -};
+> -
+> -struct setup_header {
+> -       __u8    setup_sects;
+> -       __u16   root_flags;
+> -       __u32   syssize;
+> -       __u16   ram_size;
+> -       __u16   vid_mode;
+> -       __u16   root_dev;
+> -       __u16   boot_flag;
+> -       __u16   jump;
+> -       __u32   header;
+> -       __u16   version;
+> -       __u32   realmode_swtch;
+> -       __u16   start_sys_seg;
+> -       __u16   kernel_version;
+> -       __u8    type_of_loader;
+> -       __u8    loadflags;
+> -       __u16   setup_move_size;
+> -       __u32   code32_start;
+> -       __u32   ramdisk_image;
+> -       __u32   ramdisk_size;
+> -       __u32   bootsect_kludge;
+> -       __u16   heap_end_ptr;
+> -       __u8    ext_loader_ver;
+> -       __u8    ext_loader_type;
+> -       __u32   cmd_line_ptr;
+> -       __u32   initrd_addr_max;
+> -       __u32   kernel_alignment;
+> -       __u8    relocatable_kernel;
+> -       __u8    min_alignment;
+> -       __u16   xloadflags;
+> -       __u32   cmdline_size;
+> -       __u32   hardware_subarch;
+> -       __u64   hardware_subarch_data;
+> -       __u32   payload_offset;
+> -       __u32   payload_length;
+> -       __u64   setup_data;
+> -       __u64   pref_address;
+> -       __u32   init_size;
+> -       __u32   handover_offset;
+> -       __u32   kernel_info_offset;
+> -} __attribute__((packed));
+> -
+> -struct sys_desc_table {
+> -       __u16 length;
+> -       __u8  table[14];
+> -};
+> -
+> -/* Gleaned from OFW's set-parameters in cpu/x86/pc/linux.fth */
+> -struct olpc_ofw_header {
+> -       __u32 ofw_magic;        /* OFW signature */
+> -       __u32 ofw_version;
+> -       __u32 cif_handler;      /* callback into OFW */
+> -       __u32 irq_desc_table;
+> -} __attribute__((packed));
+> -
+> -struct efi_info {
+> -       __u32 efi_loader_signature;
+> -       __u32 efi_systab;
+> -       __u32 efi_memdesc_size;
+> -       __u32 efi_memdesc_version;
+> -       __u32 efi_memmap;
+> -       __u32 efi_memmap_size;
+> -       __u32 efi_systab_hi;
+> -       __u32 efi_memmap_hi;
+> -};
+> -
+> -/*
+> - * This is the maximum number of entries in struct boot_params::e820_table
+> - * (the zeropage), which is part of the x86 boot protocol ABI:
+> - */
+> -#define E820_MAX_ENTRIES_ZEROPAGE 128
+> -
+> -/*
+> - * The E820 memory region entry of the boot protocol ABI:
+> - */
+> -struct boot_e820_entry {
+> -       __u64 addr;
+> -       __u64 size;
+> -       __u32 type;
+> -} __attribute__((packed));
+> -
+> -/*
+> - * Smallest compatible version of jailhouse_setup_data required by this kernel.
+> - */
+> -#define JAILHOUSE_SETUP_REQUIRED_VERSION       1
+> -
+> -/*
+> - * The boot loader is passing platform information via this Jailhouse-specific
+> - * setup data structure.
+> - */
+> -struct jailhouse_setup_data {
+> -       struct {
+> -               __u16   version;
+> -               __u16   compatible_version;
+> -       } __attribute__((packed)) hdr;
+> -       struct {
+> -               __u16   pm_timer_address;
+> -               __u16   num_cpus;
+> -               __u64   pci_mmconfig_base;
+> -               __u32   tsc_khz;
+> -               __u32   apic_khz;
+> -               __u8    standard_ioapic;
+> -               __u8    cpu_ids[255];
+> -       } __attribute__((packed)) v1;
+> -       struct {
+> -               __u32   flags;
+> -       } __attribute__((packed)) v2;
+> -} __attribute__((packed));
+> -
+> -/*
+> - * IMA buffer setup data information from the previous kernel during kexec
+> - */
+> -struct ima_setup_data {
+> -       __u64 addr;
+> -       __u64 size;
+> -} __attribute__((packed));
+> -
+>  /* The so-called "zeropage" */
+>  struct boot_params {
+>         struct screen_info screen_info;                 /* 0x000 */
+> @@ -231,54 +63,6 @@ struct boot_params {
+>         __u8  _pad9[276];                               /* 0xeec */
+>  } __attribute__((packed));
+>
+> -/**
+> - * enum x86_hardware_subarch - x86 hardware subarchitecture
+> - *
+> - * The x86 hardware_subarch and hardware_subarch_data were added as of the x86
+> - * boot protocol 2.07 to help distinguish and support custom x86 boot
+> - * sequences. This enum represents accepted values for the x86
+> - * hardware_subarch.  Custom x86 boot sequences (not X86_SUBARCH_PC) do not
+> - * have or simply *cannot* make use of natural stubs like BIOS or EFI, the
+> - * hardware_subarch can be used on the Linux entry path to revector to a
+> - * subarchitecture stub when needed. This subarchitecture stub can be used to
+> - * set up Linux boot parameters or for special care to account for nonstandard
+> - * handling of page tables.
+> - *
+> - * These enums should only ever be used by x86 code, and the code that uses
+> - * it should be well contained and compartmentalized.
+> - *
+> - * KVM and Xen HVM do not have a subarch as these are expected to follow
+> - * standard x86 boot entries. If there is a genuine need for "hypervisor" type
+> - * that should be considered separately in the future. Future guest types
+> - * should seriously consider working with standard x86 boot stubs such as
+> - * the BIOS or EFI boot stubs.
+> - *
+> - * WARNING: this enum is only used for legacy hacks, for platform features that
+> - *         are not easily enumerated or discoverable. You should not ever use
+> - *         this for new features.
+> - *
+> - * @X86_SUBARCH_PC: Should be used if the hardware is enumerable using standard
+> - *     PC mechanisms (PCI, ACPI) and doesn't need a special boot flow.
+> - * @X86_SUBARCH_LGUEST: Used for x86 hypervisor demo, lguest, deprecated
+> - * @X86_SUBARCH_XEN: Used for Xen guest types which follow the PV boot path,
+> - *     which start at asm startup_xen() entry point and later jump to the C
+> - *     xen_start_kernel() entry point. Both domU and dom0 type of guests are
+> - *     currently supported through this PV boot path.
+> - * @X86_SUBARCH_INTEL_MID: Used for Intel MID (Mobile Internet Device) platform
+> - *     systems which do not have the PCI legacy interfaces.
+> - * @X86_SUBARCH_CE4100: Used for Intel CE media processor (CE4100) SoC
+> - *     for settop boxes and media devices, the use of a subarch for CE4100
+> - *     is more of a hack...
+> - */
+> -enum x86_hardware_subarch {
+> -       X86_SUBARCH_PC = 0,
+> -       X86_SUBARCH_LGUEST,
+> -       X86_SUBARCH_XEN,
+> -       X86_SUBARCH_INTEL_MID,
+> -       X86_SUBARCH_CE4100,
+> -       X86_NR_SUBARCHS,
+> -};
+> -
+>  #endif /* __ASSEMBLY__ */
+>
+>  #endif /* _ASM_X86_BOOTPARAM_H */
+> diff --git a/arch/x86/include/uapi/asm/setup_data.h b/arch/x86/include/uapi/asm/setup_data.h
+> new file mode 100644
+> index 000000000000..e1396e1bf048
+> --- /dev/null
+> +++ b/arch/x86/include/uapi/asm/setup_data.h
+> @@ -0,0 +1,229 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +#ifndef _UAPI_ASM_X86_SETUP_DATA_H
+> +#define _UAPI_ASM_X86_SETUP_DATA_H
+> +
+> +/* setup_data/setup_indirect types */
+> +#define SETUP_NONE                     0
+> +#define SETUP_E820_EXT                 1
+> +#define SETUP_DTB                      2
+> +#define SETUP_PCI                      3
+> +#define SETUP_EFI                      4
+> +#define SETUP_APPLE_PROPERTIES         5
+> +#define SETUP_JAILHOUSE                        6
+> +#define SETUP_CC_BLOB                  7
+> +#define SETUP_IMA                      8
+> +#define SETUP_RNG_SEED                 9
+> +#define SETUP_ENUM_MAX                 SETUP_RNG_SEED
+> +
+> +#define SETUP_INDIRECT                 (1<<31)
+> +#define SETUP_TYPE_MAX                 (SETUP_ENUM_MAX | SETUP_INDIRECT)
+> +
+> +/* ram_size flags */
+> +#define RAMDISK_IMAGE_START_MASK       0x07FF
+> +#define RAMDISK_PROMPT_FLAG            0x8000
+> +#define RAMDISK_LOAD_FLAG              0x4000
+> +
+> +/* loadflags */
+> +#define LOADED_HIGH    (1<<0)
+> +#define KASLR_FLAG     (1<<1)
+> +#define QUIET_FLAG     (1<<5)
+> +#define KEEP_SEGMENTS  (1<<6)
+> +#define CAN_USE_HEAP   (1<<7)
+> +
+> +/* xloadflags */
+> +#define XLF_KERNEL_64                  (1<<0)
+> +#define XLF_CAN_BE_LOADED_ABOVE_4G     (1<<1)
+> +#define XLF_EFI_HANDOVER_32            (1<<2)
+> +#define XLF_EFI_HANDOVER_64            (1<<3)
+> +#define XLF_EFI_KEXEC                  (1<<4)
+> +#define XLF_5LEVEL                     (1<<5)
+> +#define XLF_5LEVEL_ENABLED             (1<<6)
+> +
+> +#ifndef __ASSEMBLY__
+> +
+> +#include <linux/types.h>
+> +
+> +/* extensible setup data list node */
+> +struct setup_data {
+> +       __u64 next;
+> +       __u32 type;
+> +       __u32 len;
+> +       __u8 data[];
+> +};
+> +
+> +/* extensible setup indirect data node */
+> +struct setup_indirect {
+> +       __u32 type;
+> +       __u32 reserved;  /* Reserved, must be set to zero. */
+> +       __u64 len;
+> +       __u64 addr;
+> +};
+> +
+> +struct setup_header {
+> +       __u8    setup_sects;
+> +       __u16   root_flags;
+> +       __u32   syssize;
+> +       __u16   ram_size;
+> +       __u16   vid_mode;
+> +       __u16   root_dev;
+> +       __u16   boot_flag;
+> +       __u16   jump;
+> +       __u32   header;
+> +       __u16   version;
+> +       __u32   realmode_swtch;
+> +       __u16   start_sys_seg;
+> +       __u16   kernel_version;
+> +       __u8    type_of_loader;
+> +       __u8    loadflags;
+> +       __u16   setup_move_size;
+> +       __u32   code32_start;
+> +       __u32   ramdisk_image;
+> +       __u32   ramdisk_size;
+> +       __u32   bootsect_kludge;
+> +       __u16   heap_end_ptr;
+> +       __u8    ext_loader_ver;
+> +       __u8    ext_loader_type;
+> +       __u32   cmd_line_ptr;
+> +       __u32   initrd_addr_max;
+> +       __u32   kernel_alignment;
+> +       __u8    relocatable_kernel;
+> +       __u8    min_alignment;
+> +       __u16   xloadflags;
+> +       __u32   cmdline_size;
+> +       __u32   hardware_subarch;
+> +       __u64   hardware_subarch_data;
+> +       __u32   payload_offset;
+> +       __u32   payload_length;
+> +       __u64   setup_data;
+> +       __u64   pref_address;
+> +       __u32   init_size;
+> +       __u32   handover_offset;
+> +       __u32   kernel_info_offset;
+> +} __attribute__((packed));
+> +
+> +struct sys_desc_table {
+> +       __u16 length;
+> +       __u8  table[14];
+> +};
+> +
+> +/* Gleaned from OFW's set-parameters in cpu/x86/pc/linux.fth */
+> +struct olpc_ofw_header {
+> +       __u32 ofw_magic;        /* OFW signature */
+> +       __u32 ofw_version;
+> +       __u32 cif_handler;      /* callback into OFW */
+> +       __u32 irq_desc_table;
+> +} __attribute__((packed));
+> +
+> +struct efi_info {
+> +       __u32 efi_loader_signature;
+> +       __u32 efi_systab;
+> +       __u32 efi_memdesc_size;
+> +       __u32 efi_memdesc_version;
+> +       __u32 efi_memmap;
+> +       __u32 efi_memmap_size;
+> +       __u32 efi_systab_hi;
+> +       __u32 efi_memmap_hi;
+> +};
+> +
+> +/*
+> + * This is the maximum number of entries in struct boot_params::e820_table
+> + * (the zeropage), which is part of the x86 boot protocol ABI:
+> + */
+> +#define E820_MAX_ENTRIES_ZEROPAGE 128
+> +
+> +/*
+> + * The E820 memory region entry of the boot protocol ABI:
+> + */
+> +struct boot_e820_entry {
+> +       __u64 addr;
+> +       __u64 size;
+> +       __u32 type;
+> +} __attribute__((packed));
+> +
+> +/*
+> + * Smallest compatible version of jailhouse_setup_data required by this kernel.
+> + */
+> +#define JAILHOUSE_SETUP_REQUIRED_VERSION       1
+> +
+> +/*
+> + * The boot loader is passing platform information via this Jailhouse-specific
+> + * setup data structure.
+> + */
+> +struct jailhouse_setup_data {
+> +       struct {
+> +               __u16   version;
+> +               __u16   compatible_version;
+> +       } __attribute__((packed)) hdr;
+> +       struct {
+> +               __u16   pm_timer_address;
+> +               __u16   num_cpus;
+> +               __u64   pci_mmconfig_base;
+> +               __u32   tsc_khz;
+> +               __u32   apic_khz;
+> +               __u8    standard_ioapic;
+> +               __u8    cpu_ids[255];
+> +       } __attribute__((packed)) v1;
+> +       struct {
+> +               __u32   flags;
+> +       } __attribute__((packed)) v2;
+> +} __attribute__((packed));
+> +
+> +/*
+> + * IMA buffer setup data information from the previous kernel during kexec
+> + */
+> +struct ima_setup_data {
+> +       __u64 addr;
+> +       __u64 size;
+> +} __attribute__((packed));
+> +
+> +/**
+> + * enum x86_hardware_subarch - x86 hardware subarchitecture
+> + *
+> + * The x86 hardware_subarch and hardware_subarch_data were added as of the x86
+> + * boot protocol 2.07 to help distinguish and support custom x86 boot
+> + * sequences. This enum represents accepted values for the x86
+> + * hardware_subarch.  Custom x86 boot sequences (not X86_SUBARCH_PC) do not
+> + * have or simply *cannot* make use of natural stubs like BIOS or EFI, the
+> + * hardware_subarch can be used on the Linux entry path to revector to a
+> + * subarchitecture stub when needed. This subarchitecture stub can be used to
+> + * set up Linux boot parameters or for special care to account for nonstandard
+> + * handling of page tables.
+> + *
+> + * These enums should only ever be used by x86 code, and the code that uses
+> + * it should be well contained and compartmentalized.
+> + *
+> + * KVM and Xen HVM do not have a subarch as these are expected to follow
+> + * standard x86 boot entries. If there is a genuine need for "hypervisor" type
+> + * that should be considered separately in the future. Future guest types
+> + * should seriously consider working with standard x86 boot stubs such as
+> + * the BIOS or EFI boot stubs.
+> + *
+> + * WARNING: this enum is only used for legacy hacks, for platform features that
+> + *         are not easily enumerated or discoverable. You should not ever use
+> + *         this for new features.
+> + *
+> + * @X86_SUBARCH_PC: Should be used if the hardware is enumerable using standard
+> + *     PC mechanisms (PCI, ACPI) and doesn't need a special boot flow.
+> + * @X86_SUBARCH_LGUEST: Used for x86 hypervisor demo, lguest, deprecated
+> + * @X86_SUBARCH_XEN: Used for Xen guest types which follow the PV boot path,
+> + *     which start at asm startup_xen() entry point and later jump to the C
+> + *     xen_start_kernel() entry point. Both domU and dom0 type of guests are
+> + *     currently supported through this PV boot path.
+> + * @X86_SUBARCH_INTEL_MID: Used for Intel MID (Mobile Internet Device) platform
+> + *     systems which do not have the PCI legacy interfaces.
+> + * @X86_SUBARCH_CE4100: Used for Intel CE media processor (CE4100) SoC
+> + *     for settop boxes and media devices, the use of a subarch for CE4100
+> + *     is more of a hack...
+> + */
+> +enum x86_hardware_subarch {
+> +       X86_SUBARCH_PC = 0,
+> +       X86_SUBARCH_LGUEST,
+> +       X86_SUBARCH_XEN,
+> +       X86_SUBARCH_INTEL_MID,
+> +       X86_SUBARCH_CE4100,
+> +       X86_NR_SUBARCHS,
+> +};
+> +
+> +#endif /* __ASSEMBLY__ */
+> +
+> +#endif /* _UAPI_ASM_X86_SETUP_DATA_H */
+> --
+> 2.43.0
+>
+>
 
