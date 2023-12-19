@@ -1,116 +1,96 @@
-Return-Path: <linux-kernel+bounces-5663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39D06818DCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:19:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0B2B818DE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:20:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0B2AB24348
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:19:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D24D287364
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257DE225CE;
-	Tue, 19 Dec 2023 17:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18153529E;
+	Tue, 19 Dec 2023 17:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gEDyh+3q"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="TP8HLyeo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F6B31A6E;
-	Tue, 19 Dec 2023 17:19:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66050C433C7;
-	Tue, 19 Dec 2023 17:19:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703006343;
-	bh=oFlModBgHHrw6mw7QX5fJ8iZecR+dIhjZKfdEJupX78=;
-	h=From:To:Cc:Subject:Date:From;
-	b=gEDyh+3qajbt33sxBJRuS2q7Vhi3i6cm4LFQNegsV7joyO44Ap+b5HdAi/NfVWR3T
-	 8knT3xYXfKO0e6RMQYOP3Y3lFw/outxaVb30lV21E3IJrqYqxmFjn3k0vwoS96Qp3W
-	 dfnXihFT7lBnkSwsbZRDpFHsB68oU0dFfVOa9zLM=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: hdegoede@redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0154436B05;
+	Tue, 19 Dec 2023 17:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+	:From:subject:date:message-id:reply-to;
+	bh=pCFiEl099gN+IaylTnT0hoDSq03Y5bym/mkoj8GjOYI=; b=TP8HLyeol5TfMC88pf3h1hOSLC
+	yEkaZd4yEfGOhmzwIyuRi+z0hb5vv7YXuVdrc6AhmLa2X+GOHEZEE1iB0v7FBP0PxUVq/VDnsvGPQ
+	L8ja3zYXACIDVEhUy7YN5fT2JWrr042x+f3ELPiva32fXV8TxZaQ29dkVXpLijHFpGpM=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:40128 helo=pettiford.lan)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rFdkX-0007Ao-3F; Tue, 19 Dec 2023 12:19:21 -0500
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	jringle@gridpoint.com,
+	kubakici@wp.pl,
+	phil@raspberrypi.org,
+	bo.svangard@embeddedart.se
 Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH] platform/surface: aggregator: make ssam_bus_type constant and static
-Date: Tue, 19 Dec 2023 18:18:58 +0100
-Message-ID: <2023121957-tapered-upswing-8326@gregkh>
-X-Mailer: git-send-email 2.43.0
+	linux-serial@vger.kernel.org,
+	hugo@hugovil.com,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 19 Dec 2023 12:18:58 -0500
+Message-Id: <20231219171903.3530985-15-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231219171903.3530985-1-hugo@hugovil.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Lines: 60
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2207; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=oFlModBgHHrw6mw7QX5fJ8iZecR+dIhjZKfdEJupX78=; b=owGbwMvMwCRo6H6F97bub03G02pJDKmNF5oY5n3gUVu26WbCT7m3t/ezzFvW4HbCtVHVvdwv9 /SkzUfKO2JZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTGBDuDgFYCJ1sgzzVJZ9XHxYLK7Ui+WB d1N1Z8Cr9UxvGRbMZF0dFpV5NX1pi21Ban+XTZrLcn0A
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+Subject: [PATCH 14/18] serial: sc16is7xx: drop unneeded MODULE_ALIAS
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-Now that the driver core can properly handle constant struct bus_type,
-move the ssam_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-It's also never used outside of
-drivers/platform/surface/aggregator/bus.c so make it static and don't
-export it as no one is using it.
+The MODULE_DEVICE_TABLE already creates the proper aliases for the
+SPI driver.
 
-Cc: Maximilian Luz <luzmaximilian@gmail.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/platform/surface/aggregator/bus.c | 5 +++--
- include/linux/surface_aggregator/device.h | 1 -
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/tty/serial/sc16is7xx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/platform/surface/aggregator/bus.c b/drivers/platform/surface/aggregator/bus.c
-index 42ccd7f1c9b9..118caa651bec 100644
---- a/drivers/platform/surface/aggregator/bus.c
-+++ b/drivers/platform/surface/aggregator/bus.c
-@@ -35,6 +35,8 @@ static struct attribute *ssam_device_attrs[] = {
+diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+index 29089b11f6f1..a9e44e5ef713 100644
+--- a/drivers/tty/serial/sc16is7xx.c
++++ b/drivers/tty/serial/sc16is7xx.c
+@@ -1793,8 +1793,6 @@ static struct spi_driver sc16is7xx_spi_uart_driver = {
+ 	.remove		= sc16is7xx_spi_remove,
+ 	.id_table	= sc16is7xx_spi_id_table,
  };
- ATTRIBUTE_GROUPS(ssam_device);
+-
+-MODULE_ALIAS("spi:sc16is7xx");
+ #endif
  
-+static const struct bus_type ssam_bus_type;
-+
- static int ssam_device_uevent(const struct device *dev, struct kobj_uevent_env *env)
- {
- 	const struct ssam_device *sdev = to_ssam_device(dev);
-@@ -329,13 +331,12 @@ static void ssam_bus_remove(struct device *dev)
- 		sdrv->remove(to_ssam_device(dev));
- }
- 
--struct bus_type ssam_bus_type = {
-+static const struct bus_type ssam_bus_type = {
- 	.name   = "surface_aggregator",
- 	.match  = ssam_bus_match,
- 	.probe  = ssam_bus_probe,
- 	.remove = ssam_bus_remove,
- };
--EXPORT_SYMBOL_GPL(ssam_bus_type);
- 
- /**
-  * __ssam_device_driver_register() - Register a SSAM client device driver.
-diff --git a/include/linux/surface_aggregator/device.h b/include/linux/surface_aggregator/device.h
-index 42b249b4c24b..8cd8c38cf3f3 100644
---- a/include/linux/surface_aggregator/device.h
-+++ b/include/linux/surface_aggregator/device.h
-@@ -193,7 +193,6 @@ struct ssam_device_driver {
- 
- #ifdef CONFIG_SURFACE_AGGREGATOR_BUS
- 
--extern struct bus_type ssam_bus_type;
- extern const struct device_type ssam_device_type;
- 
- /**
+ #ifdef CONFIG_SERIAL_SC16IS7XX_I2C
 -- 
-2.43.0
+2.39.2
 
 
