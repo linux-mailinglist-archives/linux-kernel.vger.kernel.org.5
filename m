@@ -1,64 +1,65 @@
-Return-Path: <linux-kernel+bounces-5104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A7C581869C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:48:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C5D081869E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:49:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7811CB238E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:48:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 252FD284FCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4487E16407;
-	Tue, 19 Dec 2023 11:48:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A306015E95;
+	Tue, 19 Dec 2023 11:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vk3KrWML"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VITvBIzY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1440A15AD3
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C56171BF
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55370780c74so2336794a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 03:48:36 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5532b45c286so3429741a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 03:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702986515; x=1703591315; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wNbilt185g1wxKFzamONNfwxhQz25Ie/vMm1An19wsE=;
-        b=Vk3KrWMLb6L7/pCQ7YRqw9ZQjfDI21XdPSNxmRDBo1zewcuxQpNGmSanEOFNB8h0A/
-         34xl7nLNLy5nF+hKWaSvM3wiwmkCkIEYTLUQjzr2pe6TkBbyOtVhMIKrQMhY+zrA46hd
-         Xezl+VZ3AZcEEm+AT8EqlyjhUECcba9QHqTXphv2Mrzly03+ebpGR/ARLMFA6pWOOuWp
-         4ZdR+g74mK2NJ83WZT4aF2Igmm+APKGuklspG+6JLyngAN/j2TVAQH0eaN0JUdvcoQGC
-         fEEyVUMNgxNXJYRHCKpaWZe3JxPY6OngyPg/6HTy3AI+pcpMNn9ZR6Hz18MICQoE3BLb
-         BNCA==
+        d=linaro.org; s=google; t=1702986527; x=1703591327; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ihBuGoZ+1c73Nfos1FB6nej7cYQmBATwWMmsTrg8PFA=;
+        b=VITvBIzYLEXLngF9VfQ3woafFKRO/6pBf2VDg9/0d6oi94iY9yOBnov7EGsmqfyM5K
+         +Fi6b2G+t6uo1aLBEOE1T0PTKO6j5QsyReAG7boQMgFemt0H6w4UxkbAgqGYc0ODfg1V
+         1NN5Vez+dF4IqoBgw0X98q22EKo7XZFhkqYpnkBAMhq+IrYysG4tpyHszOLRHuObNC21
+         bvP74YYxTBp31WN2X3Bk+sw3ofpTvrjd8eTxSvKCDgztu+MlcEANiO11G/LlkRIBOs3j
+         vyghWr8pS3pxCFBivvEwrK+hK0I6D8eupTW8eJRWxdq5Q7kCWcbMeWakrJH3uFTm79Hn
+         k4lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702986515; x=1703591315;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wNbilt185g1wxKFzamONNfwxhQz25Ie/vMm1An19wsE=;
-        b=GXNgex+a/LV1K2Uf9wLBBHjzNCEp13mYd2TkL18D9jazRFHoF2tkeppBdfLYFl02BQ
-         Jwoh0601BdqXNdk0XqBiSXPAHHa0Egv8qnpvlRb/i9vyoG9x4z7gAhe1Upb9Bb6czDfw
-         9K7Mmsx9qVzUxx7ZuhqfnkIEd2OdfWZD6LFBJESurWrAvIOUKxQ6nzNoIa75cArmnWsn
-         nmraKIZ2WQrCiPc0zo0gANmnDa0yMm2xK5mru584Qz+cc/BDMX6hLwBimorAiBe1Lnzy
-         ZghgwsfuGMC3HiGWQl/oanT177myM8on07d2iwckxrH0qQNKDDqgnfO0mBOuCuFe3UTz
-         wbew==
-X-Gm-Message-State: AOJu0YwMaNQkx9PKF1jXUhxsNew4RaUjFXfV5THq2UvBksHE789RMDrx
-	v/XRVKlxvaCVJ38jEbgQZBvTYA==
-X-Google-Smtp-Source: AGHT+IE1UXczG2bSR4oKNwgUpRn2UY9X60VdQQvVnO04IFDUlJZ2TtqiChLrg2FvfIAkuxCzST688w==
-X-Received: by 2002:a50:99de:0:b0:553:35f8:e143 with SMTP id n30-20020a5099de000000b0055335f8e143mr2513712edb.67.1702986515321;
-        Tue, 19 Dec 2023 03:48:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702986527; x=1703591327;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ihBuGoZ+1c73Nfos1FB6nej7cYQmBATwWMmsTrg8PFA=;
+        b=CeThh/4WytGMrw5++BGJ9RMH/dc7M5gyl1KDkcRltJY8p1FqjnTfr8F4YL1cicgk0V
+         hiK7+2SY1vDgIUUTRPSsvVKZMxphTQe+uMQwH1iKWWLmtiUM8nnX5qR3TEnI44oySR78
+         jqOt+zPUrwcktfD/W0GNrlhbL78xxqu/2kd1PxU1GT9pGCFiTfTtgEnYlLG3UJadrau1
+         FBkmjsORy7t/73yURNUFVda+JqeU0gZYf7YbOhapOmxNWWIvpVpj28+Aw80EhllpbT++
+         0xwuDuaSmRzNThbYXo8Y+xVyLzdiWqOud6i+/MjHIDXcyyQ78q40BW8xK/ANiqSuPqd6
+         4Iow==
+X-Gm-Message-State: AOJu0Yyr/MhIw9Deg14y5cvEM/kEWzdHwb003ihTPAlxO+U3rkV/yme9
+	ex7maPD0/NtYb4EuHLgM8hv3kg==
+X-Google-Smtp-Source: AGHT+IG89ZtgUTw/LZK4GkiM0IqfWvz72Fos1zNlBWjwTIvFNbawUHVvMSrHDpX1L9W/mpK7g06sKQ==
+X-Received: by 2002:a50:c109:0:b0:553:9a7f:aefa with SMTP id l9-20020a50c109000000b005539a7faefamr198446edf.129.1702986526784;
+        Tue, 19 Dec 2023 03:48:46 -0800 (PST)
 Received: from [192.168.199.59] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
-        by smtp.gmail.com with ESMTPSA id q24-20020a056402041800b00553165eb4f7sm2966501edv.17.2023.12.19.03.48.34
+        by smtp.gmail.com with ESMTPSA id q24-20020a056402041800b00553165eb4f7sm2966501edv.17.2023.12.19.03.48.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 03:48:35 -0800 (PST)
-Message-ID: <23a3955e-744f-4436-adb7-790de9c2f084@linaro.org>
-Date: Tue, 19 Dec 2023 12:48:33 +0100
+        Tue, 19 Dec 2023 03:48:46 -0800 (PST)
+Message-ID: <1e151dcf-d4fc-4aec-9f68-c8ef372a00f2@linaro.org>
+Date: Tue, 19 Dec 2023 12:48:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,16 +67,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 15/34] media: iris: add handling for interrupt service
- routine(ISR) invoked by hardware
+Subject: Re: [PATCH] thermal: core: Print out thermal zone name on
+ update_temperature error
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+ Marijn Suijten <marijn.suijten@somainline.org>, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+References: <20231218-topic-thermaldbg-v1-1-451bcb723e1d@linaro.org>
+ <CAJZ5v0gkko7nWH2ePwEhbfXR-jAb9+f+rsfYXKBMSz04uW4rYg@mail.gmail.com>
 Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
- andersson@kernel.org, mchehab@kernel.org, bryan.odonoghue@linaro.org
-Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
-References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
- <1702899149-21321-16-git-send-email-quic_dikshita@quicinc.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -112,128 +113,32 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <1702899149-21321-16-git-send-email-quic_dikshita@quicinc.com>
+In-Reply-To: <CAJZ5v0gkko7nWH2ePwEhbfXR-jAb9+f+rsfYXKBMSz04uW4rYg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 18.12.2023 12:32, Dikshita Agarwal wrote:
-> Allocate interrupt resources, enable the interrupt line and IRQ handling.
-> Register the IRQ handler to be called when interrupt occurs and
-> the function to be called from IRQ handler thread.
-> The threads invoke the driver's response handler which handles
-> all different responses from firmware.
+On 18.12.2023 20:40, Rafael J. Wysocki wrote:
+> On Mon, Dec 18, 2023 at 3:40 PM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>
+>> Currently, we can encounter an error like this:
+>>
+>>   thermal thermal_zone48: failed to read out thermal zone (-19)
+>>
+>> It's good to know that there's been an issue, but on some occasions
+>> (like the error happening in the middle of a platform crash), one may
+>> not be able to look up what kind of thermal zone that is.
+>>
+>> Add the TZ name to the error message in order to speed up debugging.
 > 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> ---
-[...]
+> s/name/type/ ?  It looks like that's what you mean.
+> 
+> First, the tz type is not its name (because there may be multiple
+> zones of the same type) and it would be consistent with the first
+> paragraph above.
+That's possible, I'm no expert wrt thermal :)
 
-> +
-> +irqreturn_t iris_hfi_isr_handler(int irq, void *data)
-> +{
-> +	struct iris_core *core = data;
-> +
-> +	if (!core)
-> +		return IRQ_NONE;
-Should this even be possible?
-
-> +
-> +	mutex_lock(&core->lock);
-> +	call_vpu_op(core, clear_interrupt, core);
-> +	mutex_unlock(&core->lock);
-> +
-> +	__response_handler(core);
-> +
-> +	if (!call_vpu_op(core, watchdog, core, core->intr_status))
-> +		enable_irq(irq);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> diff --git a/drivers/media/platform/qcom/vcodec/iris/iris_hfi.h b/drivers/media/platform/qcom/vcodec/iris/iris_hfi.h
-> index 8a057cc..8a62986 100644
-> --- a/drivers/media/platform/qcom/vcodec/iris/iris_hfi.h
-> +++ b/drivers/media/platform/qcom/vcodec/iris/iris_hfi.h
-> @@ -14,4 +14,7 @@ int iris_hfi_core_deinit(struct iris_core *core);
->  int iris_hfi_session_open(struct iris_inst *inst);
->  int iris_hfi_session_close(struct iris_inst *inst);
->  
-> +irqreturn_t iris_hfi_isr(int irq, void *data);
-> +irqreturn_t iris_hfi_isr_handler(int irq, void *data);
-> +
->  #endif
-> diff --git a/drivers/media/platform/qcom/vcodec/iris/iris_hfi_response.c b/drivers/media/platform/qcom/vcodec/iris/iris_hfi_response.c
-> new file mode 100644
-> index 0000000..829f3f6
-> --- /dev/null
-> +++ b/drivers/media/platform/qcom/vcodec/iris/iris_hfi_response.c
-> @@ -0,0 +1,184 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#include "hfi_defines.h"
-> +#include "iris_hfi_packet.h"
-> +#include "iris_hfi_response.h"
-> +
-> +static void print_sfr_message(struct iris_core *core)
-I'm not sure how 'print' relates to what this function does
-
-[...]
-
-> +static int handle_system_error(struct iris_core *core,
-> +			       struct hfi_packet *pkt)
-> +{
-> +	print_sfr_message(core);
-> +
-> +	iris_core_deinit(core);
-Either take the return value of /\ into account, or make this function
-void.
-
-> +
-> +	return 0;
-> +}
-
-[...]
-
-> +
-> +struct sfr_buffer {
-> +	u32 bufsize;
-> +	u8 rg_data[];
-Looks like you skipped static code checks.. Use __counted_by
-
-[...]
-
-> @@ -17,6 +17,8 @@
->  #define CPU_CS_VCICMDARG0_IRIS3     (CPU_CS_BASE_OFFS_IRIS3 + 0x24)
->  #define CPU_CS_VCICMDARG1_IRIS3     (CPU_CS_BASE_OFFS_IRIS3 + 0x28)
->  
-> +#define CPU_CS_A2HSOFTINTCLR_IRIS3  (CPU_CS_BASE_OFFS_IRIS3 + 0x1C)
-You're mixing upper and lowercase hex throughout your defines.
-
-[...]
-
-> +static int clear_interrupt_iris3(struct iris_core *core)
-> +{
-> +	u32 intr_status = 0, mask = 0;
-> +	int ret;
-> +
-> +	ret = read_register(core, WRAPPER_INTR_STATUS_IRIS3, &intr_status);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mask = (WRAPPER_INTR_STATUS_A2H_BMSK_IRIS3 |
-> +		WRAPPER_INTR_STATUS_A2HWD_BMSK_IRIS3 |
-> +		CTRL_INIT_IDLE_MSG_BMSK_IRIS3);
-unnecesary parentheses
-
-> +
-> +	if (intr_status & mask)
-> +		core->intr_status |= intr_status;
-> +
-> +	ret = write_register(core, CPU_CS_A2HSOFTINTCLR_IRIS3, 1);
-> +
-> +	return ret;
-why not return write_register directly?
+Would you be okay with this change, together with an amended commit
+message?
 
 Konrad
 
