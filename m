@@ -1,378 +1,315 @@
-Return-Path: <linux-kernel+bounces-5307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D49D81893A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:03:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87A0481893B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75AFA1C2427F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:03:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19E192868E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526BD1BDC4;
-	Tue, 19 Dec 2023 14:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003C31A727;
+	Tue, 19 Dec 2023 14:03:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZLxYPHgz"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Una/sF9s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECC51A73C;
-	Tue, 19 Dec 2023 14:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJDHNUJ024743;
-	Tue, 19 Dec 2023 14:02:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=D/ip2igUaqT5q8X2/fMvDv1y0Nm1o6wFUX4WDzyWlbU=; b=ZL
-	xYPHgz29hjleUGdtQC1wfbdJSndxmDdksNqlBxD3c6xb9oXttwJFEpblt2deluMG
-	goszS60ZlYP2PyQxzv5RE+50246UQzH+23Uw7ZQQZkeIxQ8YGZ4pZHJ+G/b6iWhj
-	7fhk+O+UE7GstzWYAIQMYEtc3bDPBBeAMtYUBcCzMvaRgbmjDIPvw8kpI8ykb5gC
-	F7VYQdce+lTnnspf+lX2BHA9mnuvyMdO1GG3mE42QjnXhMfn4p/Q9X+didhcBs/I
-	TZ0EbPcQrORGqyOVMtRQ4Y6L+GydI1b5D4FUi1xSFo9LHlgmDX5COiGH9uQq5eEx
-	vquK16J/U5fkwWvlIRFQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37tr8qnv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 14:02:54 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJE2rMP013931
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 14:02:53 GMT
-Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Dec 2023 06:02:50 -0800
-From: Luo Jie <quic_luoj@quicinc.com>
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <p.zabel@pengutronix.de>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v13 2/4] dt-bindings: clock: add qca8386/qca8084 clock and reset definitions
-Date: Tue, 19 Dec 2023 22:02:27 +0800
-Message-ID: <20231219140229.19062-3-quic_luoj@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231219140229.19062-1-quic_luoj@quicinc.com>
-References: <20231219140229.19062-1-quic_luoj@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688161BDFC
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702994587;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z7pBhfHOUQ5GeQwzcNE9zvKhjGxyQjhxQqPSb40q/TQ=;
+	b=Una/sF9spmJoHzX/sru583KbGZz5OrbgkPSO6gYm+i/+xEEw89zxADvTJ62OQk6y/16VFv
+	CQxaNP8LZGMEMXQ9f1VVmCZHpIxrrpLvp1CHfm4vMAEF3dryRyEAfXnrb4x4mW1V1E0ZAm
+	lvFDFJ4B+PB29GOdN3xYwHrHAmnTl3c=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-HItUzOjjMBSohn8ke5x-fA-1; Tue, 19 Dec 2023 09:03:04 -0500
+X-MC-Unique: HItUzOjjMBSohn8ke5x-fA-1
+Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-dbd5bc42172so478167276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 06:03:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702994584; x=1703599384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z7pBhfHOUQ5GeQwzcNE9zvKhjGxyQjhxQqPSb40q/TQ=;
+        b=hqUiOKV2u+hEVncTa3dm1seCgn9ryANHDtcGEkf6Eny/EtLiTuWTo9TLxYu3Y94M9q
+         fkvXRbkAzxjVkjj7rsffqWipKP8GhT8yF/3vR8EMyCIKPvtmyV9XJNpnzZQalND7SAvc
+         yMS+MHaAfP0iW+DQVmiJifCoh6cBg1KrTuAn3fXlo8rZQ7O/9mgwx2+v8894YQ3BpJFx
+         /XZqqJnyf2i/CAKpU+9iHnpDKcSe5NuQmddwXOXi/SroT6Tyu1MMSS/2g2QXQ8bvcKkM
+         U/eGXjOmqKgV78NXkLJgyAyzt+CBynx7WEswnAhajqqyLsBHDjX2MGN8QxMyTU3iA8ht
+         L7Ww==
+X-Gm-Message-State: AOJu0YyKDJl+sOnuXUuSqxCod6lPhqhIfQqgTNnNNPvP4b+lQPHllm0D
+	XYKJRyhnKeo8zLvrr01J0cIE2louKZ3dSUl67sm2icKMR8HOlyvVm5xYU15qj+eOL22M9s74Z3s
+	DPNysWQgDEfaKEs2i1X1vwgUpv6ItAtihDCyvUSZO
+X-Received: by 2002:a5b:f81:0:b0:db5:41fe:30c with SMTP id q1-20020a5b0f81000000b00db541fe030cmr10513367ybh.64.1702994584012;
+        Tue, 19 Dec 2023 06:03:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEiU0YfzN07Vi8tPeRdLAu3jf0k0Strc/HI4vFI2e/A0/PT/h8UORzxQ4ReAVWzobSeFzElEt/DWZt36c0p7EQ=
+X-Received: by 2002:a5b:f81:0:b0:db5:41fe:30c with SMTP id q1-20020a5b0f81000000b00db541fe030cmr10513339ybh.64.1702994583529;
+ Tue, 19 Dec 2023 06:03:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: mWy8YO0tDkSxn0ECChQh67u0NVHJeKvL
-X-Proofpoint-GUID: mWy8YO0tDkSxn0ECChQh67u0NVHJeKvL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- clxscore=1015 lowpriorityscore=0 priorityscore=1501 mlxscore=0 spamscore=0
- malwarescore=0 phishscore=0 impostorscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312190105
+References: <20231205104609.876194-1-dtatulea@nvidia.com> <20231205104609.876194-5-dtatulea@nvidia.com>
+ <CAJaqyWeEY9LNTE8QEnJgLhgS7HiXr5gJEwwPBrC3RRBsAE4_7Q@mail.gmail.com>
+ <27312106-07b9-4719-970c-b8e1aed7c4eb@oracle.com> <075cf7d1ada0ee4ee30d46b993a1fe21acfe9d92.camel@nvidia.com>
+ <20231214084526-mutt-send-email-mst@kernel.org> <9a6465a3d6c8fde63643fbbdde60d5dd84b921d4.camel@nvidia.com>
+ <CAJaqyWfF9eVehQ+wutMDdwYToMq=G1+War_7wANmnyuONj=18g@mail.gmail.com>
+ <9c387650e7c22118370fa0fe3588ee009ce56f11.camel@nvidia.com>
+ <0bfb42ee1248b82eaedd88bdc9e97e83919f2405.camel@nvidia.com>
+ <CAJaqyWdv5xAXp2jiAj=z+3+Bu+6=sXiE0HtOZrMSSZmvVsHeJw@mail.gmail.com>
+ <161c7e63d9c7f64afc959b1ea4a068ee2ddafa6c.camel@nvidia.com>
+ <CAJaqyWf=ZtoSDGdhYrJdXMQuFvahzF5FtWkdShBmTGaewvQLrw@mail.gmail.com>
+ <7c267819eb52f933251c118ba2d1ceb75043c5b2.camel@nvidia.com>
+ <CAJaqyWccZJFdfww-_vmj4kJvJkWKFt_VBWmujfVTsFxHohkiZg@mail.gmail.com>
+ <8fc4e1f156b075ec3f4c65acc1e10439f767bf81.camel@nvidia.com>
+ <CAJaqyWe-nfb4F2PxTKz3R=fKf6EZzSbKSPm_SwdXjxQCybVmdQ@mail.gmail.com> <60ed697361d5a366a3a9a7ce6c8d3602cba40491.camel@nvidia.com>
+In-Reply-To: <60ed697361d5a366a3a9a7ce6c8d3602cba40491.camel@nvidia.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Tue, 19 Dec 2023 15:02:27 +0100
+Message-ID: <CAJaqyWcRnz5p0QzwbpFzdnpwJaH3JmMFBBV4Pux88yU6A0x5ZA@mail.gmail.com>
+Subject: Re: [PATCH vhost v2 4/8] vdpa/mlx5: Mark vq addrs for modification in
+ hw vq
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>, Parav Pandit <parav@nvidia.com>, 
+	Gal Pressman <gal@nvidia.com>, 
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"si-wei.liu@oracle.com" <si-wei.liu@oracle.com>, "mst@redhat.com" <mst@redhat.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
+	"jasowang@redhat.com" <jasowang@redhat.com>, "leon@kernel.org" <leon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-QCA8386/QCA8084 includes the clock & reset controller that is
-accessed by MDIO bus. Two work modes are supported, qca8386 works
-as switch mode, qca8084 works as PHY mode.
+On Tue, Dec 19, 2023 at 12:16=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.co=
+m> wrote:
+>
+> On Tue, 2023-12-19 at 08:24 +0100, Eugenio Perez Martin wrote:
+> > On Mon, Dec 18, 2023 at 2:58=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia=
+.com> wrote:
+> > >
+> > > On Mon, 2023-12-18 at 13:06 +0100, Eugenio Perez Martin wrote:
+> > > > On Mon, Dec 18, 2023 at 11:52=E2=80=AFAM Dragos Tatulea <dtatulea@n=
+vidia.com> wrote:
+> > > > >
+> > > > > On Mon, 2023-12-18 at 11:16 +0100, Eugenio Perez Martin wrote:
+> > > > > > On Sat, Dec 16, 2023 at 12:03=E2=80=AFPM Dragos Tatulea <dtatul=
+ea@nvidia.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, 2023-12-15 at 18:56 +0100, Eugenio Perez Martin wrote=
+:
+> > > > > > > > On Fri, Dec 15, 2023 at 3:13=E2=80=AFPM Dragos Tatulea <dta=
+tulea@nvidia.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Fri, 2023-12-15 at 12:35 +0000, Dragos Tatulea wrote:
+> > > > > > > > > > On Thu, 2023-12-14 at 19:30 +0100, Eugenio Perez Martin=
+ wrote:
+> > > > > > > > > > > On Thu, Dec 14, 2023 at 4:51=E2=80=AFPM Dragos Tatule=
+a <dtatulea@nvidia.com> wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > On Thu, 2023-12-14 at 08:45 -0500, Michael S. Tsirk=
+in wrote:
+> > > > > > > > > > > > > On Thu, Dec 14, 2023 at 01:39:55PM +0000, Dragos =
+Tatulea wrote:
+> > > > > > > > > > > > > > On Tue, 2023-12-12 at 15:44 -0800, Si-Wei Liu w=
+rote:
+> > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > On 12/12/2023 11:21 AM, Eugenio Perez Martin =
+wrote:
+> > > > > > > > > > > > > > > > On Tue, Dec 5, 2023 at 11:46=E2=80=AFAM Dra=
+gos Tatulea <dtatulea@nvidia.com> wrote:
+> > > > > > > > > > > > > > > > > Addresses get set by .set_vq_address. hw =
+vq addresses will be updated on
+> > > > > > > > > > > > > > > > > next modify_virtqueue.
+> > > > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > > > Signed-off-by: Dragos Tatulea <dtatulea@n=
+vidia.com>
+> > > > > > > > > > > > > > > > > Reviewed-by: Gal Pressman <gal@nvidia.com=
+>
+> > > > > > > > > > > > > > > > > Acked-by: Eugenio P=C3=A9rez <eperezma@re=
+dhat.com>
+> > > > > > > > > > > > > > > > I'm kind of ok with this patch and the next=
+ one about state, but I
+> > > > > > > > > > > > > > > > didn't ack them in the previous series.
+> > > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > > My main concern is that it is not valid to =
+change the vq address after
+> > > > > > > > > > > > > > > > DRIVER_OK in VirtIO, which vDPA follows. On=
+ly memory maps are ok to
+> > > > > > > > > > > > > > > > change at this moment. I'm not sure about v=
+q state in vDPA, but vhost
+> > > > > > > > > > > > > > > > forbids changing it with an active backend.
+> > > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > > Suspend is not defined in VirtIO at this mo=
+ment though, so maybe it is
+> > > > > > > > > > > > > > > > ok to decide that all of these parameters m=
+ay change during suspend.
+> > > > > > > > > > > > > > > > Maybe the best thing is to protect this wit=
+h a vDPA feature flag.
+> > > > > > > > > > > > > > > I think protect with vDPA feature flag could =
+work, while on the other
+> > > > > > > > > > > > > > > hand vDPA means vendor specific optimization =
+is possible around suspend
+> > > > > > > > > > > > > > > and resume (in case it helps performance), wh=
+ich doesn't have to be
+> > > > > > > > > > > > > > > backed by virtio spec. Same applies to vhost =
+user backend features,
+> > > > > > > > > > > > > > > variations there were not backed by spec eith=
+er. Of course, we should
+> > > > > > > > > > > > > > > try best to make the default behavior backwar=
+d compatible with
+> > > > > > > > > > > > > > > virtio-based backend, but that circles back t=
+o no suspend definition in
+> > > > > > > > > > > > > > > the current virtio spec, for which I hope we =
+don't cease development on
+> > > > > > > > > > > > > > > vDPA indefinitely. After all, the virtio base=
+d vdap backend can well
+> > > > > > > > > > > > > > > define its own feature flag to describe (mino=
+r difference in) the
+> > > > > > > > > > > > > > > suspend behavior based on the later spec once=
+ it is formed in future.
+> > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > So what is the way forward here? From what I un=
+derstand the options are:
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > 1) Add a vdpa feature flag for changing device =
+properties while suspended.
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > 2) Drop these 2 patches from the series for now=
+. Not sure if this makes sense as
+> > > > > > > > > > > > > > this. But then Si-Wei's qemu device suspend/res=
+ume poc [0] that exercises this
+> > > > > > > > > > > > > > code won't work anymore. This means the series =
+would be less well tested.
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > Are there other possible options? What do you t=
+hink?
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > [0] https://github.com/siwliu-kernel/qemu/tree/=
+svq-resume-wip
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > I am fine with either of these.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > How about allowing the change only under the follow=
+ing conditions:
+> > > > > > > > > > > >   vhost_vdpa_can_suspend && vhost_vdpa_can_resume &=
+&
+> > > > > > > > > > > > VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK is set
+> > > > > > > > > > > >
+> > > > > > > > > > > > ?
+> > > > > > > > > > >
+> > > > > > > > > > > I think the best option by far is 1, as there is no h=
+int in the
+> > > > > > > > > > > combination of these 3 indicating that you can change=
+ device
+> > > > > > > > > > > properties in the suspended state.
+> > > > > > > > > > >
+> > > > > > > > > > Sure. Will respin a v3 without these two patches.
+> > > > > > > > > >
+> > > > > > > > > > Another series can implement option 2 and add these 2 p=
+atches on top.
+> > > > > > > > > Hmm...I misunderstood your statement and sent a erroneus =
+v3. You said that
+> > > > > > > > > having a feature flag is the best option.
+> > > > > > > > >
+> > > > > > > > > Will add a feature flag in v4: is this similar to the
+> > > > > > > > > VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag?
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > Right, it should be easy to return it from .get_backend_fea=
+tures op if
+> > > > > > > > the FW returns that capability, isn't it?
+> > > > > > > >
+> > > > > > > Yes, that's easy. But I wonder if we need one feature bit for=
+ each type of
+> > > > > > > change:
+> > > > > > > - VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND
+> > > > > > > - VHOST_BACKEND_F_CHANGEABLE_VQ_STATE_IN_SUSPEND
+> > > > > > >
+> > > > > >
+> > > > > > I'd say yes. Although we could configure SVQ initial state in u=
+serland
+> > > > > > as different than 0 for this first step, it would be needed in =
+the
+> > > > > > long term.
+> > > > > >
+> > > > > > > Or would a big one VHOST_BACKEND_F_CAN_RECONFIG_VQ_IN_SUSPEND=
+ suffice?
+> > > > > > >
+> > > > > >
+> > > > > > I'd say "reconfig vq" is not valid as mlx driver doesn't allow
+> > > > > > changing queue sizes, for example, isn't it?
+> > > > > >
+> > > > > Modifying the queue size for a vq is indeed not supported by the =
+mlx device.
+> > > > >
+> > > > > > To define that it is
+> > > > > > valid to change "all parameters" seems very confident.
+> > > > > >
+> > > > > Ack
+> > > > >
+> > > > > > > To me having individual feature bits makes sense. But it coul=
+d also takes too
+> > > > > > > many bits if more changes are required.
+> > > > > > >
+> > > > > >
+> > > > > > Yes, that's a good point. Maybe it is valid to define a subset =
+of
+> > > > > > features that can be changed., but I think it is way clearer to=
+ just
+> > > > > > check for individual feature bits.
+> > > > > >
+> > > > > I will prepare extra patches with the 2 feature bits approach.
+> > > > >
+> > > > > Is it necessary to add checks in the vdpa core that block changin=
+g these
+> > > > > properties if the state is driver ok and the device doesn't suppo=
+rt the feature?
+> > > > >
+> > > >
+> > > > Yes, I think it is better to protect for changes in vdpa core.
+> > > >
+> > > Hmmm... there is no suspended state available. I would only add check=
+s for the
+> > > DRIVER_OK state of the device because adding a is_suspended state/op =
+seems out
+> > > of scope for this series. Any thoughts?
+> > >
+> >
+> > I can develop it so you can include it in your series for sure, I will
+> > send it ASAP.
+> >
+> If it's a matter of:
+> - Adding a suspended state to struct vhost_vdpa.
+> - Setting it to true on successful device suspend.
+> - Clearing it on successful device resume and device reset.
+>
+> I can add this patch. I'm just not sure about the locking part. But maybe=
+ I can
+> send it and we can debate on the code.
+>
 
-Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/clock/qcom,qca8k-nsscc.yaml      |  79 ++++++++++++++
- include/dt-bindings/clock/qcom,qca8k-nsscc.h  | 101 ++++++++++++++++++
- include/dt-bindings/reset/qcom,qca8k-nsscc.h  |  75 +++++++++++++
- 3 files changed, 255 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
- create mode 100644 include/dt-bindings/clock/qcom,qca8k-nsscc.h
- create mode 100644 include/dt-bindings/reset/qcom,qca8k-nsscc.h
+Yes, that was the plan basically.
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml b/Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
-new file mode 100644
-index 000000000000..21e7c4150b6b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/qcom,qca8k-nsscc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm NSS Clock & Reset Controller on QCA8386/QCA8084
-+
-+maintainers:
-+  - Bjorn Andersson <andersson@kernel.org>
-+  - Luo Jie <quic_luoj@quicinc.com>
-+
-+description: |
-+  Qualcomm NSS clock control module provides the clocks and resets
-+  on QCA8386(switch mode)/QCA8084(PHY mode)
-+
-+  See also::
-+    include/dt-bindings/clock/qcom,qca8k-nsscc.h
-+    include/dt-bindings/reset/qcom,qca8k-nsscc.h
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: qcom,qca8084-nsscc
-+      - items:
-+          - enum:
-+              - qcom,qca8082-nsscc
-+              - qcom,qca8085-nsscc
-+              - qcom,qca8384-nsscc
-+              - qcom,qca8385-nsscc
-+              - qcom,qca8386-nsscc
-+          - const: qcom,qca8084-nsscc
-+
-+  clocks:
-+    items:
-+      - description: Chip XO source
-+      - description: UNIPHY0 RX 312P5M/125M clock source
-+      - description: UNIPHY0 TX 312P5M/125M clock source
-+      - description: UNIPHY1 RX 312P5M/125M clock source
-+      - description: UNIPHY1 TX 312P5M/125M clock source
-+      - description: UNIPHY1 RX 312P5M clock source
-+      - description: UNIPHY1 TX 312P5M clock source
-+
-+  reg:
-+    items:
-+      - description: MDIO bus address for Clock & Reset Controller register
-+
-+required:
-+  - compatible
-+  - clocks
-+  - reg
-+
-+allOf:
-+  - $ref: qcom,gcc.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      clock-controller@18 {
-+        compatible = "qcom,qca8084-nsscc";
-+        reg = <0x18>;
-+        clocks = <&qca8k_xo>,
-+                 <&qca8k_uniphy0_rx>,
-+                 <&qca8k_uniphy0_tx>,
-+                 <&qca8k_uniphy1_rx>,
-+                 <&qca8k_uniphy1_tx>,
-+                 <&qca8k_uniphy1_rx312p5m>,
-+                 <&qca8k_uniphy1_tx312p5m>;
-+        #clock-cells = <1>;
-+        #reset-cells = <1>;
-+        #power-domain-cells = <1>;
-+      };
-+    };
-+...
-diff --git a/include/dt-bindings/clock/qcom,qca8k-nsscc.h b/include/dt-bindings/clock/qcom,qca8k-nsscc.h
-new file mode 100644
-index 000000000000..0ac3e4c69a1a
---- /dev/null
-+++ b/include/dt-bindings/clock/qcom,qca8k-nsscc.h
-@@ -0,0 +1,101 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef _DT_BINDINGS_CLK_QCOM_QCA8K_NSS_CC_H
-+#define _DT_BINDINGS_CLK_QCOM_QCA8K_NSS_CC_H
-+
-+#define NSS_CC_SWITCH_CORE_CLK_SRC				0
-+#define NSS_CC_SWITCH_CORE_CLK					1
-+#define NSS_CC_APB_BRIDGE_CLK					2
-+#define NSS_CC_MAC0_TX_CLK_SRC					3
-+#define NSS_CC_MAC0_TX_DIV_CLK_SRC				4
-+#define NSS_CC_MAC0_TX_CLK					5
-+#define NSS_CC_MAC0_TX_SRDS1_CLK				6
-+#define NSS_CC_MAC0_RX_CLK_SRC					7
-+#define NSS_CC_MAC0_RX_DIV_CLK_SRC				8
-+#define NSS_CC_MAC0_RX_CLK					9
-+#define NSS_CC_MAC0_RX_SRDS1_CLK				10
-+#define NSS_CC_MAC1_TX_CLK_SRC					11
-+#define NSS_CC_MAC1_TX_DIV_CLK_SRC				12
-+#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_DIV_CLK_SRC		13
-+#define NSS_CC_MAC1_SRDS1_CH0_RX_CLK				14
-+#define NSS_CC_MAC1_TX_CLK					15
-+#define NSS_CC_MAC1_GEPHY0_TX_CLK				16
-+#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_CLK			17
-+#define NSS_CC_MAC1_RX_CLK_SRC					18
-+#define NSS_CC_MAC1_RX_DIV_CLK_SRC				19
-+#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_DIV_CLK_SRC		20
-+#define NSS_CC_MAC1_SRDS1_CH0_TX_CLK				21
-+#define NSS_CC_MAC1_RX_CLK					22
-+#define NSS_CC_MAC1_GEPHY0_RX_CLK				23
-+#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_CLK			24
-+#define NSS_CC_MAC2_TX_CLK_SRC					25
-+#define NSS_CC_MAC2_TX_DIV_CLK_SRC				26
-+#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_DIV_CLK_SRC		27
-+#define NSS_CC_MAC2_SRDS1_CH1_RX_CLK				28
-+#define NSS_CC_MAC2_TX_CLK					29
-+#define NSS_CC_MAC2_GEPHY1_TX_CLK				30
-+#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_CLK			31
-+#define NSS_CC_MAC2_RX_CLK_SRC					32
-+#define NSS_CC_MAC2_RX_DIV_CLK_SRC				33
-+#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_DIV_CLK_SRC		34
-+#define NSS_CC_MAC2_SRDS1_CH1_TX_CLK				35
-+#define NSS_CC_MAC2_RX_CLK					36
-+#define NSS_CC_MAC2_GEPHY1_RX_CLK				37
-+#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_CLK			38
-+#define NSS_CC_MAC3_TX_CLK_SRC					39
-+#define NSS_CC_MAC3_TX_DIV_CLK_SRC				40
-+#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_DIV_CLK_SRC		41
-+#define NSS_CC_MAC3_SRDS1_CH2_RX_CLK				42
-+#define NSS_CC_MAC3_TX_CLK					43
-+#define NSS_CC_MAC3_GEPHY2_TX_CLK				44
-+#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_CLK			45
-+#define NSS_CC_MAC3_RX_CLK_SRC					46
-+#define NSS_CC_MAC3_RX_DIV_CLK_SRC				47
-+#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_DIV_CLK_SRC		48
-+#define NSS_CC_MAC3_SRDS1_CH2_TX_CLK				49
-+#define NSS_CC_MAC3_RX_CLK					50
-+#define NSS_CC_MAC3_GEPHY2_RX_CLK				51
-+#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_CLK			52
-+#define NSS_CC_MAC4_TX_CLK_SRC					53
-+#define NSS_CC_MAC4_TX_DIV_CLK_SRC				54
-+#define NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_DIV_CLK_SRC		55
-+#define NSS_CC_MAC4_SRDS1_CH3_RX_CLK				56
-+#define NSS_CC_MAC4_TX_CLK					57
-+#define NSS_CC_MAC4_GEPHY3_TX_CLK				58
-+#define NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_CLK			59
-+#define NSS_CC_MAC4_RX_CLK_SRC					60
-+#define NSS_CC_MAC4_RX_DIV_CLK_SRC				61
-+#define NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_DIV_CLK_SRC		62
-+#define NSS_CC_MAC4_SRDS1_CH3_TX_CLK				63
-+#define NSS_CC_MAC4_RX_CLK					64
-+#define NSS_CC_MAC4_GEPHY3_RX_CLK				65
-+#define NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_CLK			66
-+#define NSS_CC_MAC5_TX_CLK_SRC					67
-+#define NSS_CC_MAC5_TX_DIV_CLK_SRC				68
-+#define NSS_CC_MAC5_TX_SRDS0_CLK				69
-+#define NSS_CC_MAC5_TX_CLK					70
-+#define NSS_CC_MAC5_RX_CLK_SRC					71
-+#define NSS_CC_MAC5_RX_DIV_CLK_SRC				72
-+#define NSS_CC_MAC5_RX_SRDS0_CLK				73
-+#define NSS_CC_MAC5_RX_CLK					74
-+#define NSS_CC_MAC5_TX_SRDS0_CLK_SRC				75
-+#define NSS_CC_MAC5_RX_SRDS0_CLK_SRC				76
-+#define NSS_CC_AHB_CLK_SRC					77
-+#define NSS_CC_AHB_CLK						78
-+#define NSS_CC_SEC_CTRL_AHB_CLK					79
-+#define NSS_CC_TLMM_CLK						80
-+#define NSS_CC_TLMM_AHB_CLK					81
-+#define NSS_CC_CNOC_AHB_CLK					82
-+#define NSS_CC_MDIO_AHB_CLK					83
-+#define NSS_CC_MDIO_MASTER_AHB_CLK				84
-+#define NSS_CC_SYS_CLK_SRC					85
-+#define NSS_CC_SRDS0_SYS_CLK					86
-+#define NSS_CC_SRDS1_SYS_CLK					87
-+#define NSS_CC_GEPHY0_SYS_CLK					88
-+#define NSS_CC_GEPHY1_SYS_CLK					89
-+#define NSS_CC_GEPHY2_SYS_CLK					90
-+#define NSS_CC_GEPHY3_SYS_CLK					91
-+#endif
-diff --git a/include/dt-bindings/reset/qcom,qca8k-nsscc.h b/include/dt-bindings/reset/qcom,qca8k-nsscc.h
-new file mode 100644
-index 000000000000..79121a513823
---- /dev/null
-+++ b/include/dt-bindings/reset/qcom,qca8k-nsscc.h
-@@ -0,0 +1,75 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef _DT_BINDINGS_RESET_QCOM_QCA8K_NSS_CC_H
-+#define _DT_BINDINGS_RESET_QCOM_QCA8K_NSS_CC_H
-+
-+#define NSS_CC_SWITCH_CORE_ARES				1
-+#define NSS_CC_APB_BRIDGE_ARES				2
-+#define NSS_CC_MAC0_TX_ARES				3
-+#define NSS_CC_MAC0_TX_SRDS1_ARES			4
-+#define NSS_CC_MAC0_RX_ARES				5
-+#define NSS_CC_MAC0_RX_SRDS1_ARES			6
-+#define NSS_CC_MAC1_SRDS1_CH0_RX_ARES			7
-+#define NSS_CC_MAC1_TX_ARES				8
-+#define NSS_CC_MAC1_GEPHY0_TX_ARES			9
-+#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_ARES		10
-+#define NSS_CC_MAC1_SRDS1_CH0_TX_ARES			11
-+#define NSS_CC_MAC1_RX_ARES				12
-+#define NSS_CC_MAC1_GEPHY0_RX_ARES			13
-+#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_ARES		14
-+#define NSS_CC_MAC2_SRDS1_CH1_RX_ARES			15
-+#define NSS_CC_MAC2_TX_ARES				16
-+#define NSS_CC_MAC2_GEPHY1_TX_ARES			17
-+#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_ARES		18
-+#define NSS_CC_MAC2_SRDS1_CH1_TX_ARES			19
-+#define NSS_CC_MAC2_RX_ARES				20
-+#define NSS_CC_MAC2_GEPHY1_RX_ARES			21
-+#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_ARES		22
-+#define NSS_CC_MAC3_SRDS1_CH2_RX_ARES			23
-+#define NSS_CC_MAC3_TX_ARES				24
-+#define NSS_CC_MAC3_GEPHY2_TX_ARES			25
-+#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_ARES		26
-+#define NSS_CC_MAC3_SRDS1_CH2_TX_ARES			27
-+#define NSS_CC_MAC3_RX_ARES				28
-+#define NSS_CC_MAC3_GEPHY2_RX_ARES			29
-+#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_ARES		30
-+#define NSS_CC_MAC4_SRDS1_CH3_RX_ARES			31
-+#define NSS_CC_MAC4_TX_ARES				32
-+#define NSS_CC_MAC4_GEPHY3_TX_ARES			33
-+#define NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_ARES		34
-+#define NSS_CC_MAC4_SRDS1_CH3_TX_ARES			35
-+#define NSS_CC_MAC4_RX_ARES				36
-+#define NSS_CC_MAC4_GEPHY3_RX_ARES			37
-+#define NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_ARES		38
-+#define NSS_CC_MAC5_TX_ARES				39
-+#define NSS_CC_MAC5_TX_SRDS0_ARES			40
-+#define NSS_CC_MAC5_RX_ARES				41
-+#define NSS_CC_MAC5_RX_SRDS0_ARES			42
-+#define NSS_CC_AHB_ARES					43
-+#define NSS_CC_SEC_CTRL_AHB_ARES			44
-+#define NSS_CC_TLMM_ARES				45
-+#define NSS_CC_TLMM_AHB_ARES				46
-+#define NSS_CC_CNOC_AHB_ARES				47
-+#define NSS_CC_MDIO_AHB_ARES				48
-+#define NSS_CC_MDIO_MASTER_AHB_ARES			49
-+#define NSS_CC_SRDS0_SYS_ARES				50
-+#define NSS_CC_SRDS1_SYS_ARES				51
-+#define NSS_CC_GEPHY0_SYS_ARES				52
-+#define NSS_CC_GEPHY1_SYS_ARES				53
-+#define NSS_CC_GEPHY2_SYS_ARES				54
-+#define NSS_CC_GEPHY3_SYS_ARES				55
-+#define NSS_CC_SEC_CTRL_ARES				56
-+#define NSS_CC_SEC_CTRL_SENSE_ARES			57
-+#define NSS_CC_SLEEP_ARES				58
-+#define NSS_CC_DEBUG_ARES				59
-+#define NSS_CC_GEPHY0_ARES				60
-+#define NSS_CC_GEPHY1_ARES				61
-+#define NSS_CC_GEPHY2_ARES				62
-+#define NSS_CC_GEPHY3_ARES				63
-+#define NSS_CC_DSP_ARES					64
-+#define NSS_CC_GLOBAL_ARES				65
-+#define NSS_CC_XPCS_ARES				66
-+#endif
--- 
-2.42.0
+I think vhost_vdpa_suspend / vhost_vdpa_resume are already called from
+vhost_vdpa_unlocked_ioctl with the lock acquired, is that what you
+mean?
+
+Thanks!
 
 
