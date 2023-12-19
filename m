@@ -1,226 +1,136 @@
-Return-Path: <linux-kernel+bounces-5399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D167A818A3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:41:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8191818A33
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:39:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C3BBB20F06
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:41:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97D2C28CC73
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C521BDEB;
-	Tue, 19 Dec 2023 14:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3331C29D;
+	Tue, 19 Dec 2023 14:38:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kxKyryyK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431C71BDCB;
-	Tue, 19 Dec 2023 14:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SvfTn6Yx5z6JB74;
-	Tue, 19 Dec 2023 22:39:25 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 95B01140D26;
-	Tue, 19 Dec 2023 22:40:27 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Dec
- 2023 14:37:34 +0000
-Date: Tue, 19 Dec 2023 14:37:32 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dan Williams <dan.j.williams@intel.com>, Smita Koralahalli
-	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr Bueso" <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>, "Alison Schofield"
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Ard
- Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>
-Subject: Re: [PATCH v4 7/7] cxl/memdev: Register for and process CPER events
-Message-ID: <20231219143732.0000181e@Huawei.com>
-In-Reply-To: <20231215-cxl-cper-v4-7-01b6dab44fcd@intel.com>
-References: <20231215-cxl-cper-v4-0-01b6dab44fcd@intel.com>
-	<20231215-cxl-cper-v4-7-01b6dab44fcd@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886F21C68A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702996735; x=1734532735;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=wMPIkHALWhrTAxhwy+6v4FKmK24k0lzLDqtnejSmCiY=;
+  b=kxKyryyKm0rvbIPeSwi4DSoZBLngNeY0UFTrdNAYQ4zPduqjqnokToAY
+   NYjVqSOFgN2B5OgoNTmFC092hN/T+rFh+FBKRiVe5SMhk3j3xi2TxVIMm
+   FUmjwELYtigAnZhdPwlpIeIooDlMrMz2UMqK2h1JEx+maZyku0cs6AY9F
+   H0R9Thr9vCUgthrboq6rVh/pnD49JYphU1J6aOeyYEjoeshRJtQ8b5CmB
+   iBQqiw6Vg/uWk8qFzpeJWQ4obEcnK71M0RVP0DLi53Yp1E7/Z/KsSXhxi
+   NPDPIre+T8NtRIUSPkJA1QJ9S2TrMCxhsOEjaZiuVVtFv+WSj6+/2ExUV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="380650299"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="380650299"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 06:38:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="17898076"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmviesa001.fm.intel.com with ESMTP; 19 Dec 2023 06:38:54 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rFbFD-0005T0-24;
+	Tue, 19 Dec 2023 14:38:51 +0000
+Date: Tue, 19 Dec 2023 22:38:28 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/bcachefs/dirent.c:106:5-8: Unneeded variable: "ret". Return "  0"
+ on line 144
+Message-ID: <202312192216.GSjjPurf-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, 15 Dec 2023 15:26:33 -0800
-Ira Weiny <ira.weiny@intel.com> wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
+commit: b65db750e2bb9252321fd54c284edd73c1595a09 bcachefs: Enumerate fsck errors
+date:   7 weeks ago
+config: x86_64-randconfig-102-20231219 (https://download.01.org/0day-ci/archive/20231219/202312192216.GSjjPurf-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
 
-> If the firmware has configured CXL event support to be firmware first
-> the OS can process those events through CPER records.  The CXL layer has
-> unique DPA to HPA knowledge and standard event trace parsing in place.
-> 
-> CPER records contain Bus, Device, Function information which can be used
-> to identify the PCI device which is sending the event.
-> 
-> Change pci driver registration to include registration for a CXL CPER
-> notifier to process the events through the trace subsystem.
-> 
-> Define and use scoped based management to simplify the handling of the
-> pci device object.
-> 
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312192216.GSjjPurf-lkp@intel.com/
 
-I'd break out the pci guard stuff as a precursor patch.  That's likely
-to be used elsewhere so it would help for backporting for other users
-if it wasn't buried in a patch doing other stuff.
+cocci warnings: (new ones prefixed by >>)
+>> fs/bcachefs/dirent.c:106:5-8: Unneeded variable: "ret". Return "  0" on line 144
 
-Not to mention that has a different set of likely reviewers to the rest
-of this patch.
+vim +106 fs/bcachefs/dirent.c
 
-More generally maybe we should just hardcode the UUID in the tracepoint
-definitions?  I think for everything other than the generic one we
-only ever call trace_cxl_memory_module(... &mem_mod_event_uuid..)
-etc.
+    99	
+   100	int bch2_dirent_invalid(struct bch_fs *c, struct bkey_s_c k,
+   101				enum bkey_invalid_flags flags,
+   102				struct printbuf *err)
+   103	{
+   104		struct bkey_s_c_dirent d = bkey_s_c_to_dirent(k);
+   105		struct qstr d_name = bch2_dirent_get_name(d);
+ > 106		int ret = 0;
+   107	
+   108		bkey_fsck_err_on(!d_name.len, c, err,
+   109				 dirent_empty_name,
+   110				 "empty name");
+   111	
+   112		bkey_fsck_err_on(bkey_val_u64s(k.k) > dirent_val_u64s(d_name.len), c, err,
+   113				 dirent_val_too_big,
+   114				 "value too big (%zu > %u)",
+   115				 bkey_val_u64s(k.k), dirent_val_u64s(d_name.len));
+   116	
+   117		/*
+   118		 * Check new keys don't exceed the max length
+   119		 * (older keys may be larger.)
+   120		 */
+   121		bkey_fsck_err_on((flags & BKEY_INVALID_COMMIT) && d_name.len > BCH_NAME_MAX, c, err,
+   122				 dirent_name_too_long,
+   123				 "dirent name too big (%u > %u)",
+   124				 d_name.len, BCH_NAME_MAX);
+   125	
+   126		bkey_fsck_err_on(d_name.len != strnlen(d_name.name, d_name.len), c, err,
+   127				 dirent_name_embedded_nul,
+   128				 "dirent has stray data after name's NUL");
+   129	
+   130		bkey_fsck_err_on((d_name.len == 1 && !memcmp(d_name.name, ".", 1)) ||
+   131				 (d_name.len == 2 && !memcmp(d_name.name, "..", 2)), c, err,
+   132				 dirent_name_dot_or_dotdot,
+   133				 "invalid name");
+   134	
+   135		bkey_fsck_err_on(memchr(d_name.name, '/', d_name.len), c, err,
+   136				 dirent_name_has_slash,
+   137				 "name with /");
+   138	
+   139		bkey_fsck_err_on(d.v->d_type != DT_SUBVOL &&
+   140				 le64_to_cpu(d.v->d_inum) == d.k->p.inode, c, err,
+   141				 dirent_to_itself,
+   142				 "dirent points to own directory");
+   143	fsck_err:
+ > 144		return ret;
+   145	}
+   146	
 
-It's a little ugly to match on the UUID to call a function where it
-hard coded, but less so than inserting the UUID like this does.
-Better I think to make it obvious that this isn't actually a variable
-(for the ones we understand).
-
-Jonathan
-
-> 
-> ---
-> NOTE this patch depends on Dan's addition of a device guard[1].
-> 
-> [1] https://lore.kernel.org/all/170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com/
-> 
-> Changes for v3/v4:
-> [djbw: define a __free(pci_dev_put) to release the device automatically]
-> [djbw: use device guard from Vishal]
-> [iweiny: delete old notifier block structure]
-> [iweiny: adjust for new notifier interface]
-> ---
->  drivers/cxl/core/mbox.c | 31 +++++++++++++++++++++++-----
->  drivers/cxl/cxlmem.h    |  4 ++++
->  drivers/cxl/pci.c       | 55 ++++++++++++++++++++++++++++++++++++++++++++++++-
->  include/linux/pci.h     |  2 ++
->  4 files changed, 86 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index b7efa058a100..c9aa723e3391 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -840,9 +840,30 @@ static const uuid_t gen_media_event_uuid = CXL_EVENT_GEN_MEDIA_UUID;
->  static const uuid_t dram_event_uuid = CXL_EVENT_DRAM_UUID;
->  static const uuid_t mem_mod_event_uuid = CXL_EVENT_MEM_MODULE_UUID;
->  
-> -static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-> -				   enum cxl_event_log_type type,
-> -				   struct cxl_event_record_raw *record)
-> +void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-> +			    enum cxl_event_log_type type,
-> +			    enum cxl_event_type event_type,
-> +			    union cxl_event *event)
-> +{
-> +	switch (event_type) {
-> +	case CXL_CPER_EVENT_GEN_MEDIA:
-> +		trace_cxl_general_media(cxlmd, type, &gen_media_event_uuid,
-> +					&event->gen_media);
-> +		break;
-> +	case CXL_CPER_EVENT_DRAM:
-> +		trace_cxl_dram(cxlmd, type, &dram_event_uuid, &event->dram);
-> +		break;
-> +	case CXL_CPER_EVENT_MEM_MODULE:
-> +		trace_cxl_memory_module(cxlmd, type, &mem_mod_event_uuid,
-> +					&event->mem_module);
-> +		break;
-> +	}
-> +}
-> +EXPORT_SYMBOL_NS_GPL(cxl_event_trace_record, CXL);
-> +
-> +static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-> +				     enum cxl_event_log_type type,
-> +				     struct cxl_event_record_raw *record)
->  {
->  	union cxl_event *evt = &record->event;
->  	uuid_t *id = &record->id;
-> @@ -965,8 +986,8 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
->  			break;
->  
->  		for (i = 0; i < nr_rec; i++)
-> -			cxl_event_trace_record(cxlmd, type,
-> -					       &payload->records[i]);
-> +			__cxl_event_trace_record(cxlmd, type,
-> +						 &payload->records[i]);
->  
->  		if (payload->flags & CXL_GET_EVENT_FLAG_OVERFLOW)
->  			trace_cxl_overflow(cxlmd, type, payload);
-
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 0155fb66b580..638275569d63 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-> +#include <asm-generic/unaligned.h>
->  #include <linux/io-64-nonatomic-lo-hi.h>
->  #include <linux/moduleparam.h>
->  #include <linux/module.h>
-> @@ -969,6 +970,58 @@ static struct pci_driver cxl_pci_driver = {
->  	},
->  };
->  
-> +#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-> +static void cxl_cper_event_call(enum cxl_event_type ev_type,
-> +				struct cxl_cper_event_rec *rec)
-> +{
-> +	struct cper_cxl_event_devid *device_id = &rec->hdr.device_id;
-> +	struct pci_dev *pdev __free(pci_dev_put) = NULL;
-> +	struct cxl_dev_state *cxlds = NULL;
-> +	enum cxl_event_log_type log_type;
-> +	unsigned int devfn;
-> +	u32 hdr_flags;
-> +
-> +	devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-> +	pdev = pci_get_domain_bus_and_slot(device_id->segment_num,
-> +					   device_id->bus_num, devfn);
-> +	if (!pdev)
-> +		return;
-> +
-> +	guard(device)(&pdev->dev);
-> +	if (pdev->driver == &cxl_pci_driver)
-> +		cxlds = pci_get_drvdata(pdev);
-> +	if (!cxlds)
-> +		return;
-
-This is handling two conditions. I'd find it more readable split like:
-
-	if (pdev->driver != &cxl_pci_driver)
-		return;
-
-	cxlds = pci_get_drvdata(pdev);
-	if (!cxlds)
-		return;
-
-and drop the = NULL above.
-
-> +
-> +	/* Fabricate a log type */
-> +	hdr_flags = get_unaligned_le24(rec->event.generic.hdr.flags);
-> +	log_type = FIELD_GET(CXL_EVENT_HDR_FLAGS_REC_SEVERITY, hdr_flags);
-> +
-> +	cxl_event_trace_record(cxlds->cxlmd, log_type, ev_type, &rec->event);
-> +}
-> +
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
