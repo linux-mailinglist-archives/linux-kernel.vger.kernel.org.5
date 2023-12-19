@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-4845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAADB8182C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89AB78182C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:59:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F36001C23946
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:59:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FD231C23758
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D242E14ABF;
-	Tue, 19 Dec 2023 07:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE64811C9F;
+	Tue, 19 Dec 2023 07:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WJ5uv6AI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OTbHzUOh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1281314276
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B11F9E8
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702972689;
+	s=mimecast20190719; t=1702972702;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=z+0dGl/nMUgxPM498YSXtipz9Gb3hgqO7wNjJOzkT+E=;
-	b=WJ5uv6AILeMmCTjstbftPVsgN9LHSPpHbjYi2ptjB0nC8o39tMeo4GfnAnQ2wJhhFQuqG/
-	xA4RohhIoz5tWuf6a6b3y7luB4KPXpKdYfn/rqtcSlsFxhxaX1FzYUJxrKE5610Ljz2t9V
-	wlSWl3Cnda/sLwKss7seEWQ9httt7Rw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-678-9aIBjkYHNgawgyAMHjSpHg-1; Tue, 19 Dec 2023 02:58:05 -0500
-X-MC-Unique: 9aIBjkYHNgawgyAMHjSpHg-1
+	bh=z9BJA067XqZpd3Nf7GBMDnnzZoziQMnRZVuO9/Z3c+Q=;
+	b=OTbHzUOhD4SSDuCOhNfkUyCQ8I22WiCN9HszJvBQZiO2UTcyp1bji6bC0rr0/nUv/OVOjb
+	T26ATUEOh0iCI0SC5IKmNUOQgU8ynCbdWm/z7Jmr93+qefu3fNRZLB4PvDMX7Mj3pNU6/C
+	O479d6k+PFO20begR3/oXMxM4G3vG9w=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-175-dRyYBC1tOkeHiKu36YFQHw-1; Tue,
+ 19 Dec 2023 02:58:18 -0500
+X-MC-Unique: dRyYBC1tOkeHiKu36YFQHw-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 82F6C83BA88;
-	Tue, 19 Dec 2023 07:58:04 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7D4B63806720;
+	Tue, 19 Dec 2023 07:58:16 +0000 (UTC)
 Received: from x1n.redhat.com (unknown [10.72.116.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B7CD92026D66;
-	Tue, 19 Dec 2023 07:57:53 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 528C52026D66;
+	Tue, 19 Dec 2023 07:58:04 +0000 (UTC)
 From: peterx@redhat.com
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org
@@ -73,9 +73,9 @@ Cc: Matthew Wilcox <willy@infradead.org>,
 	Andrea Arcangeli <aarcange@redhat.com>,
 	peterx@redhat.com,
 	Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH 11/13] mm/gup: Handle huge pmd for follow_pmd_mask()
-Date: Tue, 19 Dec 2023 15:55:36 +0800
-Message-ID: <20231219075538.414708-12-peterx@redhat.com>
+Subject: [PATCH 12/13] mm/gup: Handle hugepd for follow_page()
+Date: Tue, 19 Dec 2023 15:55:37 +0800
+Message-ID: <20231219075538.414708-13-peterx@redhat.com>
 In-Reply-To: <20231219075538.414708-1-peterx@redhat.com>
 References: <20231219075538.414708-1-peterx@redhat.com>
 Precedence: bulk
@@ -89,298 +89,175 @@ X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
 From: Peter Xu <peterx@redhat.com>
 
-Replace pmd_trans_huge() with pmd_thp_or_huge() to also cover pmd_huge() as
-long as enabled.
+Hugepd is only used in PowerPC so far on 4K page size kernels where hash
+mmu is used.  follow_page_mask() used to leverage hugetlb APIs to access
+hugepd entries.  Teach follow_page_mask() itself on hugepd.
 
-FOLL_TOUCH and FOLL_SPLIT_PMD only apply to THP, not yet huge.
+With previous refactors on fast-gup gup_huge_pd(), most of the code can be
+easily leveraged.  There's something not needed for follow page, for
+example, gup_hugepte() tries to detect pgtable entry change which will
+never happen with slow gup (which has the pgtable lock held), but that's
+not a problem to check.
 
-Since now follow_trans_huge_pmd() can process hugetlb pages, renaming it
-into follow_huge_pmd() to match what it does.  Move it into gup.c so not
-depend on CONFIG_THP.
+Since follow_page() always only fetch one page, set the end to "address +
+PAGE_SIZE" should suffice.  We will still do the pgtable walk once for each
+hugetlb page by setting ctx->page_mask properly.
 
-When at it, move the ctx->page_mask setup into follow_huge_pmd(), only set
-it when the page is valid.  It was not a bug to set it before even if GUP
-failed (page==NULL), because follow_page_mask() callers always ignores
-page_mask if so.  But doing so makes the code cleaner.
+One thing worth mentioning is that some level of pgtable's _bad() helper
+will report is_hugepd() entries as TRUE on Power8 hash MMUs.  I think it at
+least applies to PUD on Power8 with 4K pgsize.  It means feeding a hugepd
+entry to pud_bad() will report a false positive. Let's leave that for now
+because it can be arch-specific where I am a bit declined to touch.  In
+this patch it's not a problem as long as hugepd is detected before any bad
+pgtable entries.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/gup.c         | 107 ++++++++++++++++++++++++++++++++++++++++++++---
- mm/huge_memory.c |  86 +------------------------------------
- mm/internal.h    |   5 +--
- 3 files changed, 105 insertions(+), 93 deletions(-)
+ mm/gup.c | 78 +++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 69 insertions(+), 9 deletions(-)
 
 diff --git a/mm/gup.c b/mm/gup.c
-index 5b14f91d2f6b..080dff79b650 100644
+index 080dff79b650..14a7d13e7bd6 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -580,6 +580,93 @@ static struct page *follow_huge_pud(struct vm_area_struct *vma,
+@@ -30,6 +30,11 @@ struct follow_page_context {
+ 	unsigned int page_mask;
+ };
  
- 	return page;
++static struct page *follow_hugepd(struct vm_area_struct *vma, hugepd_t hugepd,
++				  unsigned long addr, unsigned int pdshift,
++				  unsigned int flags,
++				  struct follow_page_context *ctx);
++
+ static inline void sanity_check_pinned_pages(struct page **pages,
+ 					     unsigned long npages)
+ {
+@@ -871,6 +876,9 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
+ 		return no_page_table(vma, flags, address);
+ 	if (!pmd_present(pmdval))
+ 		return no_page_table(vma, flags, address);
++	if (unlikely(is_hugepd(__hugepd(pmd_val(pmdval)))))
++		return follow_hugepd(vma, __hugepd(pmd_val(pmdval)),
++				     address, PMD_SHIFT, flags, ctx);
+ 	if (pmd_devmap(pmdval)) {
+ 		ptl = pmd_lock(mm, pmd);
+ 		page = follow_devmap_pmd(vma, address, pmd, flags, &ctx->pgmap);
+@@ -921,6 +929,9 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
+ 	pud = *pudp;
+ 	if (pud_none(pud) || !pud_present(pud))
+ 		return no_page_table(vma, flags, address);
++	if (unlikely(is_hugepd(__hugepd(pud_val(pud)))))
++		return follow_hugepd(vma, __hugepd(pud_val(pud)),
++				     address, PUD_SHIFT, flags, ctx);
+ 	if (pud_huge(pud)) {
+ 		ptl = pud_lock(mm, pudp);
+ 		page = follow_huge_pud(vma, address, pudp, flags, ctx);
+@@ -940,13 +951,17 @@ static struct page *follow_p4d_mask(struct vm_area_struct *vma,
+ 				    unsigned int flags,
+ 				    struct follow_page_context *ctx)
+ {
+-	p4d_t *p4d;
++	p4d_t *p4d, p4dval;
+ 
+ 	p4d = p4d_offset(pgdp, address);
+-	if (p4d_none(*p4d))
+-		return no_page_table(vma, flags, address);
+-	BUILD_BUG_ON(p4d_huge(*p4d));
+-	if (unlikely(p4d_bad(*p4d)))
++	p4dval = *p4d;
++	BUILD_BUG_ON(p4d_huge(p4dval));
++
++	if (unlikely(is_hugepd(__hugepd(p4d_val(p4dval)))))
++		return follow_hugepd(vma, __hugepd(p4d_val(p4dval)),
++				     address, P4D_SHIFT, flags, ctx);
++
++	if (p4d_none(p4dval) || unlikely(p4d_bad(p4dval)))
+ 		return no_page_table(vma, flags, address);
+ 
+ 	return follow_pud_mask(vma, address, p4d, flags, ctx);
+@@ -980,7 +995,7 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
+ 			      unsigned long address, unsigned int flags,
+ 			      struct follow_page_context *ctx)
+ {
+-	pgd_t *pgd;
++	pgd_t *pgd, pgdval;
+ 	struct mm_struct *mm = vma->vm_mm;
+ 
+ 	ctx->page_mask = 0;
+@@ -995,11 +1010,17 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
+ 						&ctx->page_mask);
+ 
+ 	pgd = pgd_offset(mm, address);
++	pgdval = *pgd;
+ 
+-	if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
+-		return no_page_table(vma, flags, address);
++	if (unlikely(is_hugepd(__hugepd(pgd_val(pgdval)))))
++		page = follow_hugepd(vma, __hugepd(pgd_val(pgdval)),
++				     address, PGDIR_SHIFT, flags, ctx);
++	else if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
++		page = no_page_table(vma, flags, address);
++	else
++		page = follow_p4d_mask(vma, address, pgd, flags, ctx);
+ 
+-	return follow_p4d_mask(vma, address, pgd, flags, ctx);
++	return page;
+ }
+ 
+ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
+@@ -3026,6 +3047,37 @@ static int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
+ 
+ 	return 1;
  }
 +
-+/* FOLL_FORCE can write to even unwritable PMDs in COW mappings. */
-+static inline bool can_follow_write_pmd(pmd_t pmd, struct page *page,
-+					struct vm_area_struct *vma,
-+					unsigned int flags)
++static struct page *follow_hugepd(struct vm_area_struct *vma, hugepd_t hugepd,
++				  unsigned long addr, unsigned int pdshift,
++				  unsigned int flags,
++				  struct follow_page_context *ctx)
 +{
-+	/* If the pmd is writable, we can write to the page. */
-+	if (pmd_write(pmd))
-+		return true;
-+
-+	/* Maybe FOLL_FORCE is set to override it? */
-+	if (!(flags & FOLL_FORCE))
-+		return false;
-+
-+	/* But FOLL_FORCE has no effect on shared mappings */
-+	if (vma->vm_flags & (VM_MAYSHARE | VM_SHARED))
-+		return false;
-+
-+	/* ... or read-only private ones */
-+	if (!(vma->vm_flags & VM_MAYWRITE))
-+		return false;
-+
-+	/* ... or already writable ones that just need to take a write fault */
-+	if (vma->vm_flags & VM_WRITE)
-+		return false;
-+
-+	/*
-+	 * See can_change_pte_writable(): we broke COW and could map the page
-+	 * writable if we have an exclusive anonymous page ...
-+	 */
-+	if (!page || !PageAnon(page) || !PageAnonExclusive(page))
-+		return false;
-+
-+	/* ... and a write-fault isn't required for other reasons. */
-+	if (vma_soft_dirty_enabled(vma) && !pmd_soft_dirty(pmd))
-+		return false;
-+	return !userfaultfd_huge_pmd_wp(vma, pmd);
-+}
-+
-+static struct page *follow_huge_pmd(struct vm_area_struct *vma,
-+				    unsigned long addr, pmd_t *pmd,
-+				    unsigned int flags,
-+				    struct follow_page_context *ctx)
-+{
-+	struct mm_struct *mm = vma->vm_mm;
-+	pmd_t pmdval = *pmd;
 +	struct page *page;
-+	int ret;
++	struct hstate *h;
++	spinlock_t *ptl;
++	int nr = 0, ret;
++	pte_t *ptep;
 +
-+	assert_spin_locked(pmd_lockptr(mm, pmd));
-+
-+	page = pmd_page(pmdval);
-+	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
-+
-+	if ((flags & FOLL_WRITE) &&
-+	    !can_follow_write_pmd(pmdval, page, vma, flags))
-+		return NULL;
-+
-+	/* Avoid dumping huge zero page */
-+	if ((flags & FOLL_DUMP) && is_huge_zero_pmd(pmdval))
++	/* Only hugetlb supports hugepd */
++	if (WARN_ON_ONCE(!is_vm_hugetlb_page(vma)))
 +		return ERR_PTR(-EFAULT);
 +
-+	if (pmd_protnone(*pmd) && !gup_can_follow_protnone(vma, flags))
-+		return NULL;
++	h = hstate_vma(vma);
++	ptep = hugepte_offset(hugepd, addr, pdshift);
++	ptl = huge_pte_lock(h, vma->vm_mm, ptep);
++	ret = gup_huge_pd(hugepd, addr, pdshift, addr + PAGE_SIZE,
++			  flags, &page, &nr);
++	spin_unlock(ptl);
 +
-+	if (!pmd_write(pmdval) && gup_must_unshare(vma, flags, page))
-+		return ERR_PTR(-EMLINK);
++	if (ret) {
++		WARN_ON_ONCE(nr != 1);
++		ctx->page_mask = (1U << huge_page_order(h)) - 1;
++		return page;
++	}
 +
-+	VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
-+			!PageAnonExclusive(page), page);
-+
-+	ret = try_grab_page(page, flags);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (pmd_trans_huge(pmdval) && (flags & FOLL_TOUCH))
-+		touch_pmd(vma, addr, pmd, flags & FOLL_WRITE);
-+#endif	/* CONFIG_TRANSPARENT_HUGEPAGE */
-+
-+	page += (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
-+	ctx->page_mask = HPAGE_PMD_NR - 1;
-+	VM_BUG_ON_PAGE(!PageCompound(page) && !is_zone_device_page(page), page);
-+
-+	return page;
++	return NULL;
 +}
-+
- #else  /* CONFIG_PGTABLE_HAS_HUGE_LEAVES */
- static struct page *follow_huge_pud(struct vm_area_struct *vma,
- 				    unsigned long addr, pud_t *pudp,
-@@ -587,6 +674,14 @@ static struct page *follow_huge_pud(struct vm_area_struct *vma,
+ #else
+ static inline int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
+ 		unsigned int pdshift, unsigned long end, unsigned int flags,
+@@ -3033,6 +3085,14 @@ static inline int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
  {
- 	return NULL;
+ 	return 0;
  }
 +
-+static struct page *follow_huge_pmd(struct vm_area_struct *vma,
-+				    unsigned long addr, pmd_t *pmd,
-+				    unsigned int flags,
-+				    struct follow_page_context *ctx)
++static struct page *follow_hugepd(struct vm_area_struct *vma, hugepd_t hugepd,
++				  unsigned long addr, unsigned int pdshift,
++				  unsigned int flags,
++				  struct follow_page_context *ctx)
 +{
 +	return NULL;
 +}
- #endif	/* CONFIG_PGTABLE_HAS_HUGE_LEAVES */
+ #endif /* CONFIG_ARCH_HAS_HUGEPD */
  
- static int follow_pfn_pte(struct vm_area_struct *vma, unsigned long address,
-@@ -784,31 +879,31 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 			return page;
- 		return no_page_table(vma, flags, address);
- 	}
--	if (likely(!pmd_trans_huge(pmdval)))
-+	if (likely(!pmd_thp_or_huge(pmdval)))
- 		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
- 
- 	if (pmd_protnone(pmdval) && !gup_can_follow_protnone(vma, flags))
- 		return no_page_table(vma, flags, address);
- 
- 	ptl = pmd_lock(mm, pmd);
--	if (unlikely(!pmd_present(*pmd))) {
-+	pmdval = *pmd;
-+	if (unlikely(!pmd_present(pmdval))) {
- 		spin_unlock(ptl);
- 		return no_page_table(vma, flags, address);
- 	}
--	if (unlikely(!pmd_trans_huge(*pmd))) {
-+	if (unlikely(!pmd_thp_or_huge(pmdval))) {
- 		spin_unlock(ptl);
- 		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
- 	}
--	if (flags & FOLL_SPLIT_PMD) {
-+	if (pmd_trans_huge(pmdval) && (flags & FOLL_SPLIT_PMD)) {
- 		spin_unlock(ptl);
- 		split_huge_pmd(vma, pmd, address);
- 		/* If pmd was left empty, stuff a page table in there quickly */
- 		return pte_alloc(mm, pmd) ? ERR_PTR(-ENOMEM) :
- 			follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
- 	}
--	page = follow_trans_huge_pmd(vma, address, pmd, flags);
-+	page = follow_huge_pmd(vma, address, pmd, flags, ctx);
- 	spin_unlock(ptl);
--	ctx->page_mask = HPAGE_PMD_NR - 1;
- 	return page;
- }
- 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index def1dbe0d7e8..930c59d7ceab 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1216,8 +1216,8 @@ vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool write)
- EXPORT_SYMBOL_GPL(vmf_insert_pfn_pud);
- #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
- 
--static void touch_pmd(struct vm_area_struct *vma, unsigned long addr,
--		      pmd_t *pmd, bool write)
-+void touch_pmd(struct vm_area_struct *vma, unsigned long addr,
-+	       pmd_t *pmd, bool write)
- {
- 	pmd_t _pmd;
- 
-@@ -1570,88 +1570,6 @@ static inline bool can_change_pmd_writable(struct vm_area_struct *vma,
- 	return pmd_dirty(pmd);
- }
- 
--/* FOLL_FORCE can write to even unwritable PMDs in COW mappings. */
--static inline bool can_follow_write_pmd(pmd_t pmd, struct page *page,
--					struct vm_area_struct *vma,
--					unsigned int flags)
--{
--	/* If the pmd is writable, we can write to the page. */
--	if (pmd_write(pmd))
--		return true;
--
--	/* Maybe FOLL_FORCE is set to override it? */
--	if (!(flags & FOLL_FORCE))
--		return false;
--
--	/* But FOLL_FORCE has no effect on shared mappings */
--	if (vma->vm_flags & (VM_MAYSHARE | VM_SHARED))
--		return false;
--
--	/* ... or read-only private ones */
--	if (!(vma->vm_flags & VM_MAYWRITE))
--		return false;
--
--	/* ... or already writable ones that just need to take a write fault */
--	if (vma->vm_flags & VM_WRITE)
--		return false;
--
--	/*
--	 * See can_change_pte_writable(): we broke COW and could map the page
--	 * writable if we have an exclusive anonymous page ...
--	 */
--	if (!page || !PageAnon(page) || !PageAnonExclusive(page))
--		return false;
--
--	/* ... and a write-fault isn't required for other reasons. */
--	if (vma_soft_dirty_enabled(vma) && !pmd_soft_dirty(pmd))
--		return false;
--	return !userfaultfd_huge_pmd_wp(vma, pmd);
--}
--
--struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
--				   unsigned long addr,
--				   pmd_t *pmd,
--				   unsigned int flags)
--{
--	struct mm_struct *mm = vma->vm_mm;
--	struct page *page;
--	int ret;
--
--	assert_spin_locked(pmd_lockptr(mm, pmd));
--
--	page = pmd_page(*pmd);
--	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
--
--	if ((flags & FOLL_WRITE) &&
--	    !can_follow_write_pmd(*pmd, page, vma, flags))
--		return NULL;
--
--	/* Avoid dumping huge zero page */
--	if ((flags & FOLL_DUMP) && is_huge_zero_pmd(*pmd))
--		return ERR_PTR(-EFAULT);
--
--	if (pmd_protnone(*pmd) && !gup_can_follow_protnone(vma, flags))
--		return NULL;
--
--	if (!pmd_write(*pmd) && gup_must_unshare(vma, flags, page))
--		return ERR_PTR(-EMLINK);
--
--	VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
--			!PageAnonExclusive(page), page);
--
--	ret = try_grab_page(page, flags);
--	if (ret)
--		return ERR_PTR(ret);
--
--	if (flags & FOLL_TOUCH)
--		touch_pmd(vma, addr, pmd, flags & FOLL_WRITE);
--
--	page += (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
--	VM_BUG_ON_PAGE(!PageCompound(page) && !is_zone_device_page(page), page);
--
--	return page;
--}
--
- /* NUMA hinting page fault entry point for trans huge pmds */
- vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
- {
-diff --git a/mm/internal.h b/mm/internal.h
-index 2fca14553d0f..c0e953a1eb62 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1009,9 +1009,8 @@ int __must_check try_grab_page(struct page *page, unsigned int flags);
-  */
- void touch_pud(struct vm_area_struct *vma, unsigned long addr,
- 	       pud_t *pud, bool write);
--struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
--				   unsigned long addr, pmd_t *pmd,
--				   unsigned int flags);
-+void touch_pmd(struct vm_area_struct *vma, unsigned long addr,
-+	       pmd_t *pmd, bool write);
- 
- /*
-  * mm/mmap.c
+ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
 -- 
 2.41.0
 
