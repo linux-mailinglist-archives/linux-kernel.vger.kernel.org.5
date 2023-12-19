@@ -1,126 +1,177 @@
-Return-Path: <linux-kernel+bounces-5567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46FD818C5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:34:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA641818C61
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64767B23798
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:34:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AB5F1F25934
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE333714F;
-	Tue, 19 Dec 2023 16:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063421DDCD;
+	Tue, 19 Dec 2023 16:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AKUPop6n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJt4o73u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A3437142
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:34:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d7f1109abcso1496576b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:34:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703003671; x=1703608471; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HTbe0FFkiWpC+TW0jPOJbtW/DMOk6SlTqa5fmcQzYNc=;
-        b=AKUPop6nE+15DM/I0uEQApQ6zpzF0Ufda4NZ9rQI7ZiiN2vf6qpLGnHF+LVgwh+vWV
-         TrpyjahuyscLMo7kK07Js1GwWuZFLs+wZyZK/KGuybj1kxoA7drgttISmEZZlVsZvFRq
-         poGv04RJMQTD4yTWWPd4oZoRrnH0WbF339HIHQZsEDzS/xlf9cscQxfFLsY1lNUDpihk
-         4Iuq2MtLbMMXvtvpUkA0x3gbKtrnfb2qQT+ZsPlR2k56eJ3rqC15BaQu1I6INAGqHLnw
-         dxwFwZDnvNN9r3Jjipr4kTzSp0TbTNCoGoDpkzXcFJ8QTDczlzPDEOEYBWcOSRX/EaSN
-         vhhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703003671; x=1703608471;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HTbe0FFkiWpC+TW0jPOJbtW/DMOk6SlTqa5fmcQzYNc=;
-        b=IfqI/w7JDSStX0ZLRoYpZwcTTGp/8BUq7DAJYg1dtMYb3F5eRzbswiOdBTcDpCR3/K
-         4VDVj5+KmfR2JIJy/AvO5+M3oFpD/0UeFCQZ00gJ0iBONKyKxFpMQl3ig4PpeT+TEoGD
-         YSbRRx674s1om/1gPKIyzUaH1qOdbngtv+Ds7NXMsc0FINebanp+hjhgfaxw0LQFAYh0
-         GVjW+7diGsQ5ws58UN2KB7f9k9cnq/G5oCeKIZZFQjp69bWQklqtCp+Wo9NM59G6DWMd
-         MkSRbNTbl2i2f5N2iaHuksDZhziR87HCW9Shbcuu3mm31g/Sz+7HZll4wsbKvp9qbfPS
-         MdTw==
-X-Gm-Message-State: AOJu0Yw2lLkT0HsneSnbHUpuZEe/yTqXT5wDqkvDRSTOK6APqq89rAOO
-	2+A2oOs73deLqDviN6ajVr64khk+Ars=
-X-Google-Smtp-Source: AGHT+IFby3sDY/fW2pan071Ch5YMA1tZy5GS/12pC3aFAT/8648QVZ7U1Wryd5SoCYIo2/SN0J3ttg==
-X-Received: by 2002:a05:6a20:9149:b0:18c:a9d3:4f96 with SMTP id x9-20020a056a20914900b0018ca9d34f96mr10624117pzc.32.1703003671264;
-        Tue, 19 Dec 2023 08:34:31 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id s9-20020a056a00178900b006ce789d8022sm20232551pfg.59.2023.12.19.08.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 08:34:30 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: akpm@linux-foundation.org
-Cc: bhe@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	dyoung@redhat.com,
-	hbathini@linux.ibm.com,
-	hpa@zytor.com,
-	kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	seanjc@google.com,
-	tglx@linutronix.de,
-	tiwai@suse.de,
-	vgoyal@redhat.com,
-	x86@kernel.org,
-	ytcoode@gmail.com
-Subject: [PATCH] crash_core: optimize crash_exclude_mem_range()
-Date: Wed, 20 Dec 2023 00:34:18 +0800
-Message-ID: <20231219163418.108591-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
-References: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C1E1D54D;
+	Tue, 19 Dec 2023 16:36:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1049C433C9;
+	Tue, 19 Dec 2023 16:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703003806;
+	bh=6ZE1ZWL+Q3XfV/BNZf6ItPtOJDRd9vjSskX9Wb4d1fA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BJt4o73uXCVxhYQStzPU9GZ1T2dfQ3ZN7KI957oAJIJPYoUaDpj3yIVuBPHCTXnIK
+	 /Xc0owDprCquptYak5XeHWW5j9cpk/0QRoflm4AZoma9e/TvdY4Mhawi32F2agDak1
+	 SATdmuFIaoFQxTgdHuWoJn7bjvx5FQ9DkHQUu3a/1Ts2gipvDwU5/Hz0HItXRA6VSI
+	 X7hfa1jGH03H5jt7d9Vb/1i9+FWl1iiDZELXcWM5f8UsFwIP5M3EXc51MofTvlu8e1
+	 Dkt8tYS5avfmmKFJ3H1BMDE90ip0gGZ7M+9Cs5U34IIsUcTrBEoDPylFilgDsADnW7
+	 GT0VdOq+XCj/Q==
+Date: Tue, 19 Dec 2023 09:36:44 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org,
+	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com,
+	paulmck@kernel.org, keescook@chromium.org,
+	dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
+	longman@redhat.com, boqun.feng@gmail.com, brauner@kernel.org
+Subject: Re: [PATCH 15/50] kernel/numa.c: Move logging out of numa.h
+Message-ID: <20231219163644.GA345795@dev-arch.thelio-3990X>
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-1-kent.overstreet@linux.dev>
+ <20231216032651.3553101-5-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231216032651.3553101-5-kent.overstreet@linux.dev>
 
-Because memory ranges in mem->ranges are stored in ascending order, when we
-detect `p_end < start`, we can break the for loop early, as the subsequent
-memory ranges must also be outside the range we are looking for.
+On Fri, Dec 15, 2023 at 10:26:14PM -0500, Kent Overstreet wrote:
+> Moving these stub functions to a .c file means we can kill a sched.h
+> dependency on printk.h.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>  include/linux/numa.h | 18 +++++-------------
+>  kernel/Makefile      |  1 +
+>  kernel/numa.c        | 24 ++++++++++++++++++++++++
+>  3 files changed, 30 insertions(+), 13 deletions(-)
+>  create mode 100644 kernel/numa.c
+> 
+> diff --git a/include/linux/numa.h b/include/linux/numa.h
+> index a904861de800..aeab3d9f57ae 100644
+> --- a/include/linux/numa.h
+> +++ b/include/linux/numa.h
+> @@ -22,34 +22,26 @@
+>  #endif
+>  
+>  #ifdef CONFIG_NUMA
+> -#include <linux/printk.h>
+>  #include <asm/sparsemem.h>
+>  
+>  /* Generic implementation available */
+>  int numa_nearest_node(int node, unsigned int state);
+>  
+>  #ifndef memory_add_physaddr_to_nid
+> -static inline int memory_add_physaddr_to_nid(u64 start)
+> -{
+> -	pr_info_once("Unknown online node for memory at 0x%llx, assuming node 0\n",
+> -			start);
+> -	return 0;
+> -}
+> +int memory_add_physaddr_to_nid(u64 start);
+>  #endif
+> +
+>  #ifndef phys_to_target_node
+> -static inline int phys_to_target_node(u64 start)
+> -{
+> -	pr_info_once("Unknown target node for memory at 0x%llx, assuming node 0\n",
+> -			start);
+> -	return 0;
+> -}
+> +int phys_to_target_node(u64 start);
+>  #endif
+> +
+>  #ifndef numa_fill_memblks
+>  static inline int __init numa_fill_memblks(u64 start, u64 end)
+>  {
+>  	return NUMA_NO_MEMBLK;
+>  }
+>  #endif
+> +
+>  #else /* !CONFIG_NUMA */
+>  static inline int numa_nearest_node(int node, unsigned int state)
+>  {
+> diff --git a/kernel/Makefile b/kernel/Makefile
+> index 3947122d618b..ce105a5558fc 100644
+> --- a/kernel/Makefile
+> +++ b/kernel/Makefile
+> @@ -114,6 +114,7 @@ obj-$(CONFIG_SHADOW_CALL_STACK) += scs.o
+>  obj-$(CONFIG_HAVE_STATIC_CALL) += static_call.o
+>  obj-$(CONFIG_HAVE_STATIC_CALL_INLINE) += static_call_inline.o
+>  obj-$(CONFIG_CFI_CLANG) += cfi.o
+> +obj-$(CONFIG_NUMA) += numa.o
+>  
+>  obj-$(CONFIG_PERF_EVENTS) += events/
+>  
+> diff --git a/kernel/numa.c b/kernel/numa.c
+> new file mode 100644
+> index 000000000000..c24c72f45989
+> --- /dev/null
+> +++ b/kernel/numa.c
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include <linux/printk.h>
+> +#include <linux/numa.h>
+> +
+> +/* Stub functions: */
+> +
+> +#ifndef memory_add_physaddr_to_nid
+> +int memory_add_physaddr_to_nid(u64 start)
+> +{
+> +	pr_info_once("Unknown online node for memory at 0x%llx, assuming node 0\n",
+> +			start);
+> +	return 0;
+> +}
+> +#endif
+> +
+> +#ifndef phys_to_target_node
+> +int phys_to_target_node(u64 start)
+> +{
+> +	pr_info_once("Unknown target node for memory at 0x%llx, assuming node 0\n",
+> +			start);
+> +	return 0;
+> +}
+> +#endif
+> -- 
+> 2.43.0
+> 
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-Hi Andrew,
+These need EXPORT_SYMBOL_GPL() now like the architecture specific
+implementations because they are no longer inlined. My arm64 builds fail
+with:
 
-Patch "[PATCH 2/2] crash_core: fix out-of-bounds access check in
-crash_exclude_mem_range()" can be ignored, use this patch instead.
+  ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/acpi/nfit/nfit.ko] undefined!
+  ERROR: modpost: "phys_to_target_node" [drivers/acpi/nfit/nfit.ko] undefined!
+  ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/virtio/virtio_mem.ko] undefined!
+  ERROR: modpost: "phys_to_target_node" [drivers/dax/dax_cxl.ko] undefined!
+  ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/dax/dax_cxl.ko] undefined!
+  ERROR: modpost: "phys_to_target_node" [drivers/cxl/cxl_acpi.ko] undefined!
+  ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/cxl/cxl_pmem.ko] undefined!
+  ERROR: modpost: "phys_to_target_node" [drivers/cxl/cxl_pmem.ko] undefined!
+  ERROR: modpost: "memory_add_physaddr_to_nid" [drivers/hv/hv_balloon.ko] undefined!
 
- kernel/crash_core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 9a219a918638..d425c4a106cd 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -575,9 +575,12 @@ int crash_exclude_mem_range(struct crash_mem *mem,
- 		p_start = mstart;
- 		p_end = mend;
- 
--		if (p_start > end || p_end < start)
-+		if (p_start > end)
- 			continue;
- 
-+		if (p_end < start)
-+			break;
-+
- 		/* Truncate any area outside of range */
- 		if (p_start < start)
- 			p_start = start;
--- 
-2.43.0
-
+Cheers,
+Nathan
 
