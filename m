@@ -1,79 +1,110 @@
-Return-Path: <linux-kernel+bounces-5882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C99E8190EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:36:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 708888190F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:37:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FB941C21DA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:36:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2A3F1C24FD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA5840C03;
-	Tue, 19 Dec 2023 19:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B8E40BEB;
+	Tue, 19 Dec 2023 19:34:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rVTiFcB+"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="URI7oMNT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5661A40BEE;
-	Tue, 19 Dec 2023 19:33:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0288BC433CA;
-	Tue, 19 Dec 2023 19:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703014433;
-	bh=qTvzK/jfkz6fbK674cOzB3mIEmGwGicrFlDP/BvzEGE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rVTiFcB+tBHZtf6tNMFPEvV9Eg4XlLbT4OuSJySPZdVPhYQu0mp7H7yS4/Yyvl0hE
-	 +9MQY8t4V+6luRIHo/QEKQs88JOBWWN2dqJvcPv8jg88Fq2HJu2qySzNv66u3VDloc
-	 yToA3Mqmu3qycyW7aqFcIM2kAZNBfJinAwFMgxU3SfawE2BAS79lxjjXj2UxDgXoRB
-	 moTjN+zxnfujV2pk9HAS/lFhaB/VWAV88gHZTXccsRvMPn0ekT6xl70MIfunj21J1l
-	 +9AukW0iLUIF9Gl5CLOISETdi1MUj8SYARTl7NTtXzyU1mdyDY7hnHMCTdn6vTw0vj
-	 qbmLLpoqrclIA==
-From: Bjorn Andersson <andersson@kernel.org>
-To: konrad.dybcio@linaro.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	Tengfei Fan <quic_tengfan@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@quicinc.com
-Subject: Re: (subset) [PATCH v3 0/1] arm64: dts: qcom: sm8550: remove
-Date: Tue, 19 Dec 2023 13:33:37 -0600
-Message-ID: <170301441259.365364.2180258670074890979.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231219003106.8663-1-quic_tengfan@quicinc.com>
-References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A162C405CB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id FfqmrwJWBO9apFfqmrMy24; Tue, 19 Dec 2023 20:33:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1703014439;
+	bh=7M2CUQpwgjxF1irpAVXAbKH37iRCkSgrRaBNR4Uhpg4=;
+	h=From:To:Cc:Subject:Date;
+	b=URI7oMNTP6dtjUHuREZTiAp0OXCfjCKk/WxX8Z/5LWVRXDE6iNQ8sZd5ELg062+Ed
+	 X26VgA/780AmEnGx6WzjoWPYTAxGCH7BGp7Vc3liOwUs5ETw5dtP78U1/0uCU0DIKa
+	 nQ876NuA0/sNogK10tU83cGBjnfgqdYz2DLPDwKmY82QIZoy3hz4I/1XGDrPMOlzx4
+	 bIL4uyOzTcgX5s+eGsk9gz7c8FDA6zYn9p9E79MPdPzcuACPg0mFHeBVJALAtPX0V+
+	 9q9CwQCgqCJN0GL82AlnXvnn4N0iOYDPjunx4xtwVP7IDnPTusJvKKh1yxAj+xgBId
+	 IGu30uiXGzy4g==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 19 Dec 2023 20:33:59 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Fenghua Yu <fenghua.yu@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	dmaengine@vger.kernel.org
+Subject: [PATCH v2] dmaengine: idxd: Remove usage of the deprecated ida_simple_xx() API
+Date: Tue, 19 Dec 2023 20:33:50 +0100
+Message-Id: <ac991f5f42112fa782a881d391d447529cbc4a23.1702967302.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-On Tue, 19 Dec 2023 08:31:05 +0800, Tengfei Fan wrote:
-> The address/size-cells in mdss_dsi1 node have not ranges and child also
-> have not reg, then this leads to dtc W=1 warnings:
-> 
->   sm8550.dtsi:2937.27-2992.6: Warning (avoid_unnecessary_addr_size): /soc@0/display-subsystem@ae00000/dsi@ae96000:
->     unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
-> 
-> 
-> [...]
+This is less verbose.
 
-Applied, thanks!
+Note that the upper limit of ida_simple_get() is exclusive, but the one of
+ida_alloc_range() is inclusive. Sothis change allows one more device.
 
-[1/1] arm64: dts: qcom: sm8550: remove address/size-cells from mdss_dsi1
-      commit: 53081095936cdb1501d6bcf6cb703fdd3ac71b85
+MINORMASK is ((1U << MINORBITS) - 1), so allowing MINORMASK as a maximum value
+makes sense. It is also consistent with other "ida_.*MINORMASK" and
+"ida_*MINOR()" usages.
 
-Best regards,
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Changes v2:
+  - remove note about compile tested only, now tested on hw by Fenghua Yu
+  - fix some wording in the commit description   [Fenghua Yu]
+  
+v1: https://lore.kernel.org/all/a899125f42c12fa782a881d341d147519cbb4a23.1702967302.git.christophe.jaillet@wanadoo.fr/
+---
+ drivers/dma/idxd/cdev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
+index 0423655f5a88..b00926abc69a 100644
+--- a/drivers/dma/idxd/cdev.c
++++ b/drivers/dma/idxd/cdev.c
+@@ -165,7 +165,7 @@ static void idxd_cdev_dev_release(struct device *dev)
+ 	struct idxd_wq *wq = idxd_cdev->wq;
+ 
+ 	cdev_ctx = &ictx[wq->idxd->data->type];
+-	ida_simple_remove(&cdev_ctx->minor_ida, idxd_cdev->minor);
++	ida_free(&cdev_ctx->minor_ida, idxd_cdev->minor);
+ 	kfree(idxd_cdev);
+ }
+ 
+@@ -463,7 +463,7 @@ int idxd_wq_add_cdev(struct idxd_wq *wq)
+ 	cdev = &idxd_cdev->cdev;
+ 	dev = cdev_dev(idxd_cdev);
+ 	cdev_ctx = &ictx[wq->idxd->data->type];
+-	minor = ida_simple_get(&cdev_ctx->minor_ida, 0, MINORMASK, GFP_KERNEL);
++	minor = ida_alloc_max(&cdev_ctx->minor_ida, MINORMASK, GFP_KERNEL);
+ 	if (minor < 0) {
+ 		kfree(idxd_cdev);
+ 		return minor;
 -- 
-Bjorn Andersson <andersson@kernel.org>
+2.34.1
+
 
