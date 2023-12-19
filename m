@@ -1,101 +1,95 @@
-Return-Path: <linux-kernel+bounces-5867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259AE8190B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:27:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D7FD8190B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C141C1F25DCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:27:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35E78281359
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AEEB38FAA;
-	Tue, 19 Dec 2023 19:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2EC39850;
+	Tue, 19 Dec 2023 19:28:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="LOcGV4LE";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="L43Z7KQC"
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="zuVlHzPR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3213A38F8B
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id EB9365C0219;
-	Tue, 19 Dec 2023 14:27:38 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 19 Dec 2023 14:27:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1703014058; x=1703100458; bh=IdOE+EaEoU
-	TDvjLvPvfWoPNhB/MSd5EUvGvJTZndkLA=; b=LOcGV4LEVtP3K1ZgNxq/a46BSP
-	XVukd5aNabEwdaaW01jK5FTKd+CVrB3E/rRe+t89I3OY95w62z52Y5oldIs0dMNd
-	hy15NCWNHO3aSWgeGjO4H5K20/KmeUw47oXHJyGH9hyam2IP8vii3ZpBEIgLVrqz
-	M3csy5AZEO5KIb0cRYOItirsuijnnG5yvfdxWNhlohnCDRVkRK8Txpn3ETwjQAY5
-	1gxO/ZZUHT1wmNwedCqkNdYZvi/l0+dn2rhvA3fma5QLqpkFD4YIPtCBh+i6yFYm
-	lsmqfrE5QiANc03cSpTO6YWhem4cFvQos9M+Oko3S/18NYC6vpOKhgcV5VEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703014058; x=1703100458; bh=IdOE+EaEoUTDvjLvPvfWoPNhB/MS
-	d5EUvGvJTZndkLA=; b=L43Z7KQCRL42aC7LVIdjdmKMjiVVQe+VSsnKY+pUndhQ
-	lD0W7Ph6iqxwAwiSpC6lw1a1AL1NjwJCo7bKODTcH2XNjXlTp5KnSaFsi6l1Vl7i
-	ERQhSxPQwpKHKWck7cNJTzSi+TRWUuiI8MWvbs2D8Hhd5WLuEhP7LsPH0OBphWrL
-	eh6KfMerxUK+fLUfVuQ+vEC8QuQK5Di1tnVNNszgQkwQFUYYU25Pqwq6a09qZFod
-	oR4mx92kHWJOqRM3QAMjhyZ/jjjwa9K6SU5BCUg+2OvSRltR9/VwP+Ukv128glRj
-	PNwAryM7IyrnsXVi7pXGCbmSjVUMHoQJP6krycfo7A==
-X-ME-Sender: <xms:qe6BZQ0gxp0c-tiLjLZfMdUNunwyr-6TcNMx6eKNLYx20uXcgmPvKA>
-    <xme:qe6BZbFvGUiLgmqTAdPlweK5nnjsDk_C2M_QZNls4I88aWXpMIn8XPvbHirgKUyDj
-    MwTt86-gmcaTsqm66c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddutddguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:qe6BZY7sufljCKge57Luql-CtqGcKNwhwz5gz5gBddRx9KJF8HjeeA>
-    <xmx:qe6BZZ24fNpB0gZgqZjNiWleQxnthD2VkhLtPQR4m_DbKthzwdo4fQ>
-    <xmx:qe6BZTFt96fBykzGKhpz3a4ivSYS8PNpQqReqln9jzIi_pTBVF4NtQ>
-    <xmx:qu6BZbC8upTg0VPz6-mPPuLfINplb4Jbq6vGRgScizx0RljRSiw_zA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C5121B6008D; Tue, 19 Dec 2023 14:27:37 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1350-g1d0a93a8fb-fm-20231218.001-g1d0a93a8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BD638F8B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:28:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3E2882C04C7;
+	Wed, 20 Dec 2023 08:28:44 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1703014124;
+	bh=tvMk96Xvb4gcD09CjBZE7bcSGGH4HaxjXg3tNU39+ek=;
+	h=From:To:Subject:Date:References:In-Reply-To:From;
+	b=zuVlHzPRfBziFqomB77rWV/gYvYy72KlrMLD33qp5DmqFHcYBVZUcGxYCCwl8uCj9
+	 dWNJz69N8TZ3L92REQsJJ67q5c3zI4kIF6NmixokchsFXSuaPRSF/ezs6tMcsnKb7f
+	 vr54b7PjGdrYPN+MUsW80H1CE0McweJoFyJSeaj3SS4ywzJK8JqY0b2py0cDJfgqTd
+	 ZKIiwFD7bKwn1mF1kXHi7N6jaF9zGOzYLIdNAgIFv4Ary+BzebUfL5i56UjfjvNX7c
+	 RpjBq4gN8TCyx2AGC70bIb+oXGY4NMvCf7w8YQdBYiwtlCr24aULJ4SdGmMs9zhDxN
+	 xwdf5S99usdyQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B6581eeec0001>; Wed, 20 Dec 2023 08:28:44 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 20 Dec 2023 08:28:43 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Wed, 20 Dec 2023 08:28:43 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "wsa@kernel.org" <wsa@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>, "andi.shyti@kernel.org"
+	<andi.shyti@kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "gregory.clement@bootlin.com"
+	<gregory.clement@bootlin.com>, "linux-i2c@vger.kernel.org"
+	<linux-i2c@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
+Thread-Topic: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
+Thread-Index: AQHaF3ftbmVMkvsnVUGkUfJZcnXixrB7DOKAgAAGpwCANR4BgIAAKL+A
+Date: Tue, 19 Dec 2023 19:28:43 +0000
+Message-ID: <601d07b5-264d-4322-b92e-63d58b3d69fa@alliedtelesis.co.nz>
+References: <20231115035753.925534-1-chris.packham@alliedtelesis.co.nz>
+ <20231115035753.925534-2-chris.packham@alliedtelesis.co.nz>
+ <f24b9b2d-aeb1-47f7-bf21-4383fdcf94aa@linaro.org>
+ <5a52b0c9-8858-4f55-8dd7-9269c29c10a7@alliedtelesis.co.nz>
+ <ZYHMvZ3plIQ0zXWa@shikoro>
+In-Reply-To: <ZYHMvZ3plIQ0zXWa@shikoro>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C91AAF41735B5546A22CFC7736B51905@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e5926d65-5fc9-4ab6-8b04-fdb6ba618a51@app.fastmail.com>
-In-Reply-To: <2023121905-idiom-opossum-1ba3@gregkh>
-References: <2023121905-idiom-opossum-1ba3@gregkh>
-Date: Tue, 19 Dec 2023 19:27:19 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, "Russell King" <linux@armlinux.org.uk>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- "Randy Dunlap" <rdunlap@infradead.org>
-Subject: Re: [PATCH] [ARM] locomo: make locomo_bus_type constant and static
-Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=CYB2G4jl c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=VwQbUJbxAAAA:8 a=1yuvT08Q3_qmqAvlgogA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+X-SEG-SpamProfiler-Score: 0
 
-On Tue, Dec 19, 2023, at 18:33, Greg Kroah-Hartman wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the locomo_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
->
-> It's also never used outside of arch/arm/common/locomo.c so make it
-> static and don't export it as no one is using it.
-
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+DQpPbiAyMC8xMi8yMyAwNjowMiwgd3NhQGtlcm5lbC5vcmcgd3JvdGU6DQo+Pj4gUHV0dGluZyBp
+dCBpbnRvIHRoZSBjb250cm9sbGVyIGJpbmRpbmdzIGxvb2tzIGxpa2Ugc29sdmluZyBPUyBpc3N1
+ZSB3aXRoDQo+Pj4gaW5jb3JyZWN0IGhhcmR3YXJlIGRlc2NyaXB0aW9uLg0KPj4gWWVzIHRoYXQn
+cyBlbnRpcmVseSB3aGF0cyBoYXBwZW5pbmcgaGVyZS4NCj4gU28sIHRoaXMgc2VyaWVzIGNhbiBi
+ZSBkcm9wcGVkPw0KPg0KSSBwZXJzb25hbGx5IHdvdWxkIGxpa2UgdG8gc2VlIGl0IGFjY2VwdGVk
+IGJ1dCBpdCBzZWVtcyB0aGVyZSBhcmUgDQpvYmplY3Rpb25zIHRvIHRoaXMgYXBwcm9hY2guIEkn
+dmUgeWV0IHRvIGNvbWUgdXAgd2l0aCBhbnl0aGluZyBiZXR0ZXIgdG8gDQpvZmZlciBhcyBhbiBh
+bHRlcm5hdGl2ZS4=
 
