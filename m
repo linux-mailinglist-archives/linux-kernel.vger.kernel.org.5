@@ -1,70 +1,44 @@
-Return-Path: <linux-kernel+bounces-5492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D828818B4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:35:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06B33818B50
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:36:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C17D4B232F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:35:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8359E286BD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4417B1CA91;
-	Tue, 19 Dec 2023 15:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D4E1CA97;
+	Tue, 19 Dec 2023 15:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dRf06mVM"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="NdSHAllz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE381CA83
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703000137;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p99ESQKY7iFMWcolC5b1pxUDyj4bwHXCNWig+NO0MP4=;
-	b=dRf06mVMqliWV2NwQ76Mqfy8GvTA1wiAoLTz2btk7RkarQ9a6gk5r3M+0OW8pFQL+jkVS4
-	/8c5dfrzMF9SbWOsC/45kZ7uKO704kBO6xLYPSPzVRKrimNq8knZrdrd028JKYSn8VObzQ
-	+vVaNwa6h43ZO3vMTGNgEe82CFQDbWw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-594-XOa21xG9NUGIrkw_P_XI0g-1; Tue, 19 Dec 2023 10:35:35 -0500
-X-MC-Unique: XOa21xG9NUGIrkw_P_XI0g-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-553b57272a1so63504a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:35:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703000134; x=1703604934;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p99ESQKY7iFMWcolC5b1pxUDyj4bwHXCNWig+NO0MP4=;
-        b=LmBXe3+/ILgbu5FgcuCQyhYWXJMY2ICdk0BnPB5+PTrp18Fg0aXE0N002ryxbG1bLN
-         Kj7QdCgnoDc0lNU0HRsAPlX4horhQeEpvLaFyffFmj0Cu6Ah+8zr4glFyea8J/EG4i7N
-         mq03IdPfR4G10kz5wY3dCOWmneZ7lPegtAd3IMxAZ0MaPRg2HDaXP0S3mKaEQAOI8JTR
-         RpC+HV1IS/fZ2ujKeB070HS+vb0sNFPwRJ/pqkdE0up8Z+A/+bOmDpcgh6CEbsm2c3WQ
-         ikY5h0ul+XkMGClZy30d6qUK6ocsswD0O2EOD1mmQnpMs0oV5PZqvmQ4I+DX7IqLoQL9
-         8iDw==
-X-Gm-Message-State: AOJu0Yyyx+b7CFxcN8oVGNasjQqoaTYWKEB0swA8UMeQY/WJtb1kHnem
-	E452XsTvYXB07wcvca5ghR0Ve6dc9u/PHLqfYsZkwzNcbaSkKMkryXOrVrXtvu/zeg7QMggS/1c
-	bGod3KOwt5nIYQ9OpqqXUoQaC
-X-Received: by 2002:a05:6402:1e87:b0:54d:9782:c3db with SMTP id f7-20020a0564021e8700b0054d9782c3dbmr9215040edf.84.1703000134414;
-        Tue, 19 Dec 2023 07:35:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGP76Za9ppm8rW8twFPzyF+1wYJU0pcIBQ3tT5tH0fSH39K2g7bfa64ib6HAvYJ+D1J0Gb7Yw==
-X-Received: by 2002:a05:6402:1e87:b0:54d:9782:c3db with SMTP id f7-20020a0564021e8700b0054d9782c3dbmr9215037edf.84.1703000134095;
-        Tue, 19 Dec 2023 07:35:34 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id m11-20020a50cc0b000000b0054cb316499dsm11626513edi.10.2023.12.19.07.35.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 07:35:33 -0800 (PST)
-Message-ID: <bfd55a50-7bcb-4f2d-b960-27a61ddd6509@redhat.com>
-Date: Tue, 19 Dec 2023 16:35:32 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C48C1CA82;
+	Tue, 19 Dec 2023 15:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703000172; x=1703604972; i=markus.elfring@web.de;
+	bh=behxKfyGna2w4fIuLyZUlD9UgVji5Pzaqh7fdVWijjk=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=NdSHAllz2ytmZIT0QQCD69MNm4qSxBOrxg96wlionm7kXZr/joZYDH7INPo3N3+g
+	 KoXYVYaKuknbstv0fU3v+mfBgQIbyEDDW8swCkjMzoWeb48bJ7eAcDyYH8hujKMD/
+	 4KHfJM37clRxBi0tVFEGCOe0B4R6aGOLKMVddak03dqlFH8yRJVZ2s6Yf6iI3Ragn
+	 iff1isB3nGfvsMf8+j8e4xnPaaZC8Haeb0L84L/w6b6UJ9kRE8eSMoXacv/qcPlrK
+	 ZUXxrZf3JaCyIpFJOrE3w5ux5K6GVOvFceRD53KmS4agGP/BMz+ZFWiWwLbAvS7hj
+	 Zuwpyown8cwj76WQlw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MGxQX-1rT2XA40kl-00EGMH; Tue, 19
+ Dec 2023 16:36:12 +0100
+Message-ID: <526df884-8d9f-4fe1-8a32-c98dfff261d7@web.de>
+Date: Tue, 19 Dec 2023 16:36:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,60 +46,67 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] platform/x86: wmi: ACPI improvements
-To: Armin Wolf <W_Armin@gmx.de>, ilpo.jarvinen@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231218192420.305411-1-W_Armin@gmx.de>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231218192420.305411-1-W_Armin@gmx.de>
+Subject: [PATCH 3/3] kobject: Delete an unnecessary variable initialisation in
+ kobject_uevent_env()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+To: kernel-janitors@vger.kernel.org, Andrew Morton
+ <akpm@linux-foundation.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+References: <e0543d9d-a02a-4c9c-b341-36771cfb5353@web.de>
+In-Reply-To: <e0543d9d-a02a-4c9c-b341-36771cfb5353@web.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Ty9JQzMTJdBwRgq27eu4X1MYwBgEoqbzGhLFiC0uyypy8ISyY/3
+ 04ttYsnYF4svdZvfzX2e0Q5LP9xnbZXCwWwLPotK0G3FSPKrDvSggC3MSn7WHsRqklFB8u8
+ Y/zvYhANVJwd/l7F38NBblZ6qZZHqwg+tm+flOv8n6ggTQHf/+98Jhh3Uyg15wdIWKJAzUW
+ rYw7t/s52WNc20JKw5meg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:bn4Ds0KTrg4=;i9ZeJm85eydOOEPORA+V0LPdHbM
+ 5dd4Z4bvbJMQeTztCMzJ5ZOE074edtSA8hze0krNwEGRBPzr+n7FGg/Tsth9nxgoKU8MsGE14
+ J5nDsA2n3dfOiqBE1I7KRw2+fwFlw/xcL9gIW/k++bHjNgZyOFA0RdXirtX997AEnkhAjFeYd
+ SXwLcOEPBp6sNLWCpSQCIlFluLBFxOizeDNFCfFeWIKtZwtr4b6WjeQZHnusPsfMDN4J93C1T
+ hPznwNJMqkBuXELcjpDLAnvWgd7tnnw3KMRKrkRxwKrjszWHVSokaUSiHqQJjCVUvgQcSOjmi
+ bAjZV81AHAvg00HRxZQ3GsyV1FUd6xJVvaT947/UhMeW9lTEC+n2pi+0Fg1XCoesBWupmbv+c
+ ufUM+YcVv/BaV33Vqd/4pHBwgIDzy+Sf6Vc7yap6TxhB6Lt1Pi28U1NSXDpyLtO+wWCfh5uko
+ is+/2jLi3fD+V22WB7Cy+Dg1UARlflZSBrHjKBjJjmCTstjPKg2TcgH7Y+jtCNj1l4B6s/GKA
+ LpJTVQC0ArOQjl1knDByBuFa6x1/Tw1ui5/gYQfPQXqCvIhYtbL34gHF8Bih8NasXSm3oRtph
+ k23pSlBWO8lte3tTJsUXc0VM+EjjWeQf8BxSxuHqf+UDxEanFGJyHWOcVvExZv+yF450YHJL7
+ B3b/BhVmj/UTqzC2S02Wh5zciuL96MDNyfgldgzZODcKKWugIZyBXjL3b3XIY9QvuXLh2zmWy
+ 2mHBlMLN9oXP33u0GK62z1SvHEpKOeI9naEUVZ2WDoQD0NS9VzCxEhAZKtrwQiz6sSqZl4Yhy
+ g5hFxtKusafBRxL9/Vn50YH0AEhWBRHTpcCtzLzXHqly5+4Gx7XAu/A8vNpfsJeRBgqShlNm4
+ r354EUyMvxkjZik6xZzKjBTJea6EEtimOVJYI3rNuCAiS3wIGYp7BA3ZSZObWDhOfHfd14MLI
+ +aTfAw==
 
-Hi,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 19 Dec 2023 16:03:39 +0100
 
-On 12/18/23 20:24, Armin Wolf wrote:
-> This patch series improves the ACPI handling inside the ACPI WMI driver.
-> The first patch removes an unused variable, while the second patch
-> changes the order in which the ACPI handlers are removed on shutdown.
-> The third patch simplifies the error handling during probe by using
-> devres to manage devie resources, while the next two patches decouple
-> the ACPI notify handler from the wmi_block_list. The last patch
-> simplifies yet another ACPI-related function.
-> 
-> All patches have been tested on a Dell Inspiron 3505 and appear to work.
-> 
-> Changes since v1:
-> - fix ACPI handler devres order
+The local variable =E2=80=9Cdevpath=E2=80=9D will eventually be set to an =
+appropriate
+pointer a bit later.
+Thus omit the explicit initialisation at the beginning.
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ lib/kobject_uevent.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-> 
-> Armin Wolf (6):
->   platform/x86: wmi: Remove unused variable in address space handler
->   platform/x86: wmi: Remove ACPI handlers after WMI devices
->   platform/x86: wmi: Use devres for resource handling
->   platform/x86: wmi: Create WMI bus device first
->   platform/x86: wmi: Decouple ACPI notify handler from wmi_block_list
->   platform/x86: wmi: Simplify get_subobj_info()
-> 
->  drivers/platform/x86/wmi.c | 143 ++++++++++++++++++-------------------
->  1 file changed, 71 insertions(+), 72 deletions(-)
-> 
-> --
-> 2.39.2
-> 
+diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
+index a9b1bc02f65c..1b7b42dc160c 100644
+=2D-- a/lib/kobject_uevent.c
++++ b/lib/kobject_uevent.c
+@@ -459,7 +459,7 @@ int kobject_uevent_env(struct kobject *kobj, enum kobj=
+ect_action action,
+ {
+ 	struct kobj_uevent_env *env;
+ 	const char *action_string =3D kobject_actions[action];
+-	const char *devpath =3D NULL;
++	const char *devpath;
+ 	const char *subsystem;
+ 	struct kobject *top_kobj;
+ 	struct kset *kset;
+=2D-
+2.43.0
 
 
