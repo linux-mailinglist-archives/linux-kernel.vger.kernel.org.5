@@ -1,146 +1,222 @@
-Return-Path: <linux-kernel+bounces-5253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA39D818894
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:24:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15BC5818899
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:24:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AA66B2384C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:24:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1933D1C21516
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE79F1A5A7;
-	Tue, 19 Dec 2023 13:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9538F1A590;
+	Tue, 19 Dec 2023 13:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BSdLH83p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SM5u7iyT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FE418EB3
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33671384e50so844589f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:23:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AB891BDE4;
+	Tue, 19 Dec 2023 13:23:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a1fae88e66eso506047066b.3;
+        Tue, 19 Dec 2023 05:23:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702992220; x=1703597020; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=p3LPY/wP+4u8xv3gDTbgceni72i0f7dLsgXss15/0/U=;
-        b=BSdLH83p31k+tIUHs2OgUKaP5mj0WqM6uP4LL0JAKxcWhFOyQ94TeEmicKwQEBNMnB
-         AY8S43MmicreYgZhJx6Tkc7hwBSgaHlIpUPR1tlVTTlH/g3oF2kQyc0k8q6JyTr66LqV
-         mk7Suu+a1EN648qBoUyS+nNZERrTMpc5WA4vu+Bm0s7hlKLgE9pRQ/kWxGwlcu8pSTxl
-         0dOE7jppv98yEBcBtOEOwXnrRW30E3vixuYNLGE9riQXUcW5ra1CTZALtTOWmbxaRBZ3
-         0ln6T0NAOgy0Xt4c2tGFEzDcQEuMs9LmKKnkCaPjm4uA9UrTpzMnTymrbpFwqk38pxD/
-         Frsw==
+        d=gmail.com; s=20230601; t=1702992231; x=1703597031; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ohwYq5yvCWylGOCoc6Y4haRzMcah4GL3U4oOACkoFzA=;
+        b=SM5u7iyTBNgorQl5b5reRwNHUYurdglIVUzCKJE0zHEem/+otcJq5ul9k/soESdCTR
+         VOtutIy5a66iETJ2fg1zSjz/ETRUuu8I44OTCuk9yEd3OGNjA/7TQxOCGdyU+aG1C4dT
+         FvTfZ60Iz+3LsEOuCXjLkOEECa3ldgC/Ip+w+1pQygdhr6N/jMMlNTO1OvYD7Un9ahrQ
+         ZBdCE/PT2aL7vygAvF8DtluHDE3dBrjU3u1Vhp4RKvoX/OvEEQeta1M1y+G9i5uWCATG
+         Mj2NINyxUVwREfXpGp9pGmQRxyrpMzFmjQ7SyYSIQ3zz/9hAtfQk6/APd+vhPZ2Li73F
+         FKaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702992220; x=1703597020;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p3LPY/wP+4u8xv3gDTbgceni72i0f7dLsgXss15/0/U=;
-        b=D04oGrzJ5IhGSQoxwBnckqqFlQszXsJmgCuGolseskBsoVep+bjzvOISxaHrC2wB7p
-         Y5Ac2Ho7w9FKZTZo+AdTTy+qd3TY3Ql25QpRfgP+KE3Iym2uUUxb3EAAisq+u+vEtD7s
-         B5MvMOC+oojvRYiH3lCzT3anuJJOBOtI8FtDpMDxW9R01FklNSnfK+lJ6ZP1PhlQyM34
-         yvlV0fdrLyUn3ug+yTQUl/1KiZ4tSEidxnIX1tdvAQp3sn2CNQhBto+43MS5X204kt5A
-         zDDYajlCrA+zrE+kBr3jaYxhvcpxz1MfFzA7Ipez7+VCwoyzY19F5UELbZCl7SmaONec
-         w6eQ==
-X-Gm-Message-State: AOJu0Ywfr9CP5ZtXth1k+3ETiUqqeibT/DTxLoshZkcfQByvFegWSQ8B
-	7Qhgz6n3GSgZZVLpc2QiG4ZpbA==
-X-Google-Smtp-Source: AGHT+IFHYzvyDi0corcqB0NWZOjE5iHCoZWBmG8HzPdskcKE9UWUerE1vnbScokBVmD2OSU8t9HD/g==
-X-Received: by 2002:a5d:45cf:0:b0:336:578e:2bd1 with SMTP id b15-20020a5d45cf000000b00336578e2bd1mr3224416wrs.108.1702992219991;
-        Tue, 19 Dec 2023 05:23:39 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfea44000000b00336471bc7ffsm15010151wrn.109.2023.12.19.05.23.39
+        d=1e100.net; s=20230601; t=1702992231; x=1703597031;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ohwYq5yvCWylGOCoc6Y4haRzMcah4GL3U4oOACkoFzA=;
+        b=iK45I26RlyHEANcEn+AngsQ4u+lQ03hTSI612w+Hed5Ndto9TPOv8hhpiQQEt7jFQt
+         NXboPJ2zdD+rp4RstAXzEuUiHqDwtrTu1ikhmk4x8nA7ybRGOv8uB8PpEm7SB/wj/gsM
+         oFQmYa2JTzOHTwDfN+dEC1/CCdySteRkJn/OEORm+srhWmzxDTInltx3AReHyo17OMxz
+         eBA+XyOgMn+6+ctLs0J/EVD9mvoYXelJ53DXTRnO6yBgZpUFJLwbw2sHzNNz9fowFAiM
+         WHJHcriIL6F72vb+Dx6TPZMNaU7xgd2aPgfpKvhOJsEeGmFwYs+bFCiQXD/N82kNTq1m
+         bx1Q==
+X-Gm-Message-State: AOJu0Yz6dQIGyEwUHZpq2H0Li6I+dSCrAbbcYMOUgrBiqGRwab0K1o/x
+	wSYbigC0t5yL+tuiYLVGq85PRLWtRJp/KA==
+X-Google-Smtp-Source: AGHT+IGRuUI5sjGWayqzk1nu+YcOF+NdSZNg0993gxhNqRabSi0YpJqlMgSlxTmgC+d4nSCVRZI+Fw==
+X-Received: by 2002:a17:906:21d:b0:a23:59ea:1065 with SMTP id 29-20020a170906021d00b00a2359ea1065mr1815968ejd.55.1702992231231;
+        Tue, 19 Dec 2023 05:23:51 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id vt6-20020a170907a60600b00a1ce98016b6sm15544493ejc.97.2023.12.19.05.23.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 05:23:39 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Tue, 19 Dec 2023 14:23:37 +0100
-Subject: [PATCH] ASoC: dt-bindings: qcom,lpass-va-macro: remove spurious
- contains in if statement
+        Tue, 19 Dec 2023 05:23:50 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 19 Dec 2023 14:23:48 +0100
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>,
+	linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 24/34] fprobe: Use ftrace_regs in fprobe entry handler
+Message-ID: <ZYGZZES--JmqQN_v@krava>
+References: <170290509018.220107.1347127510564358608.stgit@devnote2>
+ <170290538307.220107.14964448383069008953.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231219-topic-sm8x50-upstream-va-macro-bindings-fix-v1-1-ae133886f70e@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAFiZgWUC/x2NOw6DQAwFr4JcxxK7JFHIVSIKsxjiYj+yASEh7
- p5Vppsp3jvBWIUN3s0JyruY5FTF3RoIX0oLo0zVwbe+c971uOYiAS2+jkeLW7FVmSLuhJGCZhw
- lTZIWw1kO7P19rjyJOwd1sSjX/H/7DNf1A26qMf59AAAA
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- Banajit Goswami <bgoswami@quicinc.com>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, 
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1689;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=jX/VQsyuPIyHVsUjFUCTRKQIEp2WX+Su12Xn85ZrU+8=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlgZlaDrfW46D5usNUF+97Tkj84cNtskNX0ajIjSB4
- c2y3rGGJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZYGZWgAKCRB33NvayMhJ0YOND/
- 46yLraBMW6CnFYt7o5AHOdDFaYq3RCOhhkv53wUrp2UT+9o0dkTo/hdaKGwJlfGVtpIjkR1G/W1n0l
- p0DAmni76jmRO2lXdxtWY9XfPqYXaFDdgo6OOkaA4Y6CJwJvQqDsRo+wpXftMOvHtgjwbmum8DzLZW
- 70LxmqtfBXdA/5cxUDQecXMUtJt1RKpCDd84m1OsigYHQ0xVld+pem0MZRY1IHBZ8+e7NmeXKqwhJA
- 4pbEKd7WeekEhtE8IouZbs1TptF1VnkgL7tKBloFGy/6bh0fQj+nvKZG520uXczqi8u3kuDnJNn2dd
- Z7e/+jsEOq39jgYM8at/AGCksKx81laJRZ26/eXExBzOrtdCWQYrjq1rJI9/FeUK2MUSeESB6CS00J
- uGFsd0iaGjIU8mMWI6Swqf23/kR2ci/zLrdpPMsq97gyNbHQ8xq6zrAv5N5/TNMPA39cQ+cu+xDxjq
- zhODVdvJ2NDNBaMmRab4ZyGjH0WrzZgNeSXLuLU9DWtblMAJc/WjZFfq097FZhl0DkGiD1e3zZ31ej
- 1xr936utWiaifj2KSeILxMgX0zVAc+gO/BBC4tsvQZnSTOj0x0qzVmWh3dDsUBXG6eeCzsOs49NraC
- 176n4KxcOQHDA7kWYlN1tFI0aJFqGUNUfZh60WteKpzmVEaensgmrZU/UuDw==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170290538307.220107.14964448383069008953.stgit@devnote2>
 
-Remove this spurious "contains" which causes the bindings check of
-qcom,sm8450-lpass-va-macro compatible to fail with:
-codec@33f0000: clocks: [[156, 57, 1], [156, 102, 1], [156, 103, 1], [156, 70, 1]] is too long
-        from schema $id: http://devicetree.org/schemas/sound/qcom,lpass-va-macro.yaml#
-codec@33f0000: clock-names: ['mclk', 'macro', 'dcodec', 'npl'] is too long
-        from schema $id: http://devicetree.org/schemas/sound/qcom,lpass-va-macro.yaml#
+On Mon, Dec 18, 2023 at 10:16:23PM +0900, Masami Hiramatsu (Google) wrote:
 
-Seems the double "contains" was considered as valid by the tool but broke
-the entire if statements.
+SNIP
 
-Fixes: f243ef746d0a ("ASoC: dt-bindings: qcom,lpass-va-macro: Add SM8650 LPASS VA")
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 84e8a0f6e4e0..d3f8745d8ead 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2503,7 +2503,7 @@ static int __init bpf_event_init(void)
+>  fs_initcall(bpf_event_init);
+>  #endif /* CONFIG_MODULES */
+>  
+> -#ifdef CONFIG_FPROBE
+> +#if defined(CONFIG_FPROBE) && defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS)
+>  struct bpf_kprobe_multi_link {
+>  	struct bpf_link link;
+>  	struct fprobe fp;
+> @@ -2733,10 +2733,14 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+>  
+>  static int
+>  kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+> -			  unsigned long ret_ip, struct pt_regs *regs,
+> +			  unsigned long ret_ip, struct ftrace_regs *fregs,
+>  			  void *data)
+>  {
+>  	struct bpf_kprobe_multi_link *link;
+> +	struct pt_regs *regs = ftrace_get_regs(fregs);
+> +
+> +	if (!regs)
+> +		return 0;
+>  
+>  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+>  	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> @@ -3008,7 +3012,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>  	kvfree(cookies);
+>  	return err;
+>  }
+> -#else /* !CONFIG_FPROBE */
+> +#else /* !CONFIG_FPROBE || !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+>  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>  {
+>  	return -EOPNOTSUPP;
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 6cd2a4e3afb8..f12569494d8a 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -46,7 +46,7 @@ static inline void __fprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  	}
+>  
+>  	if (fp->entry_handler)
+> -		ret = fp->entry_handler(fp, ip, parent_ip, ftrace_get_regs(fregs), entry_data);
+> +		ret = fp->entry_handler(fp, ip, parent_ip, fregs, entry_data);
+>  
+>  	/* If entry_handler returns !0, nmissed is not counted. */
+>  	if (rh) {
+> @@ -182,7 +182,7 @@ static void fprobe_init(struct fprobe *fp)
+>  		fp->ops.func = fprobe_kprobe_handler;
+>  	else
+>  		fp->ops.func = fprobe_handler;
+> -	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
+> +	fp->ops.flags |= FTRACE_OPS_FL_SAVE_ARGS;
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-index c03ff9472a85..6b483fa3c428 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-@@ -121,9 +121,8 @@ allOf:
-       properties:
-         compatible:
-           contains:
--            contains:
--              enum:
--                - qcom,sm8550-lpass-va-macro
-+            enum:
-+              - qcom,sm8550-lpass-va-macro
-     then:
-       properties:
-         clocks:
+so with this change you move to ftrace_caller trampoline,
+but we need ftrace_regs_caller right?
 
----
-base-commit: aa4db8324c4d0e67aa4670356df4e9fae14b4d37
-change-id: 20231219-topic-sm8x50-upstream-va-macro-bindings-fix-924ffff6ae31
+otherwise the (!regs) check in kprobe_multi_link_handler
+will be allways true IIUC
 
-Best regards,
--- 
-Neil Armstrong <neil.armstrong@linaro.org>
+jirka
 
+>  }
+>  
+>  static int fprobe_init_rethook(struct fprobe *fp, int num)
+> diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+> index 7d2ddbcfa377..ef6b36fd05ae 100644
+> --- a/kernel/trace/trace_fprobe.c
+> +++ b/kernel/trace/trace_fprobe.c
+> @@ -320,12 +320,16 @@ NOKPROBE_SYMBOL(fexit_perf_func);
+>  #endif	/* CONFIG_PERF_EVENTS */
+>  
+>  static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+> -			     unsigned long ret_ip, struct pt_regs *regs,
+> +			     unsigned long ret_ip, struct ftrace_regs *fregs,
+>  			     void *entry_data)
+>  {
+>  	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
+> +	struct pt_regs *regs = ftrace_get_regs(fregs);
+>  	int ret = 0;
+>  
+> +	if (!regs)
+> +		return 0;
+> +
+>  	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
+>  		fentry_trace_func(tf, entry_ip, regs);
+>  #ifdef CONFIG_PERF_EVENTS
+> diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
+> index 24de0e5ff859..ff607babba18 100644
+> --- a/lib/test_fprobe.c
+> +++ b/lib/test_fprobe.c
+> @@ -40,7 +40,7 @@ static noinline u32 fprobe_selftest_nest_target(u32 value, u32 (*nest)(u32))
+>  
+>  static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
+>  				    unsigned long ret_ip,
+> -				    struct pt_regs *regs, void *data)
+> +				    struct ftrace_regs *fregs, void *data)
+>  {
+>  	KUNIT_EXPECT_FALSE(current_test, preemptible());
+>  	/* This can be called on the fprobe_selftest_target and the fprobe_selftest_target2 */
+> @@ -81,7 +81,7 @@ static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
+>  
+>  static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
+>  				      unsigned long ret_ip,
+> -				      struct pt_regs *regs, void *data)
+> +				      struct ftrace_regs *fregs, void *data)
+>  {
+>  	KUNIT_EXPECT_FALSE(current_test, preemptible());
+>  	return 0;
+> diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
+> index 64e715e7ed11..1545a1aac616 100644
+> --- a/samples/fprobe/fprobe_example.c
+> +++ b/samples/fprobe/fprobe_example.c
+> @@ -50,7 +50,7 @@ static void show_backtrace(void)
+>  
+>  static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
+>  				unsigned long ret_ip,
+> -				struct pt_regs *regs, void *data)
+> +				struct ftrace_regs *fregs, void *data)
+>  {
+>  	if (use_trace)
+>  		/*
+> 
 
