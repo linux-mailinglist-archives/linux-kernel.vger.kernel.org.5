@@ -1,209 +1,138 @@
-Return-Path: <linux-kernel+bounces-4630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82A7F818019
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:09:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E7E818026
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 875EA1C231B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:09:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D8E4285F24
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4755A12B98;
-	Tue, 19 Dec 2023 03:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4006D5235;
+	Tue, 19 Dec 2023 03:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="IJQE2hYq"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="LUxd9qXz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2002F1170E;
-	Tue, 19 Dec 2023 03:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702955269;
-	bh=VsdVshjW3wDguFc4wS/NQ6xhp6QJt6hm5jWcMmmqG2k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IJQE2hYqBhGwUSj0s6TUtYNO5jMuEndDAKJ9wWKtLQ0ATd9dnKbqvZNT3YpZPeF6/
-	 YeMyN4rrRbh2z+UdsP+IOHm7xdEzo516g/Pr9OQrWrsK1YgTM2RRpMciDLZKGz95sq
-	 CFLojYgjLs/MOl9+Iu7/DVJzUpusmsSCBAYHvM6Y8uS7yvM4BUbhooqjBrUsG3xS89
-	 jHf6XWhvk9x2mu41MoMpFvLZ0CrLvdsISLyvVQcIZ1stKrytvr7dxLhQT/c6tx8Bsi
-	 L3Qz5br65XzBnDkhar06ToeIB8+L7c7DijkwVHAvKk11q9ipLABF3jv/fLucJT1GI0
-	 qpW1rxo33Fg+w==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 875313781F7C;
-	Tue, 19 Dec 2023 03:07:49 +0000 (UTC)
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-	Emil Velikov <emil.velikov@collabora.com>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-	V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
-	Mastan Katragadda <Mastan.Katragadda@amd.com>,
-	Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sound-open-firmware@alsa-project.org,
-	kernel@collabora.com
-Subject: [PATCH v2 8/8] ASoC: SOF: amd: Compute file paths on firmware load
-Date: Tue, 19 Dec 2023 05:07:26 +0200
-Message-ID: <20231219030728.2431640-9-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
-References: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD077468;
+	Tue, 19 Dec 2023 03:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: ceafe8529e1c11eea5db2bebc7c28f94-20231219
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Uc8TGbTWFJXJZhL7Yec5wz80/Sme6MVdPJeQBPGh5sA=;
+	b=LUxd9qXzqm+t1GQlgRX9ahm9lfCO4kR2eQU2+yRgjDGb2ZvrHCtm07uBFgDVyObypGfqAAN/OeU9a50K7A7VU6TqBT+FNvj7Ipz1pVgA20HtnC2RD0j/4AM+WyO3lFWPd3zuuoFuWf3QNdKxlseItGXxjunctBl/Wt4KQ6ywqXM=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:49605fb5-4545-4306-9122-95f4c2686844,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:597e5a61-c89d-4129-91cb-8ebfae4653fc,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+	NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: ceafe8529e1c11eea5db2bebc7c28f94-20231219
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+	(envelope-from <bo.ye@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 563580467; Tue, 19 Dec 2023 11:15:05 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 19 Dec 2023 11:15:03 +0800
+Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 19 Dec 2023 11:15:02 +0800
+From: Bo Ye <bo.ye@mediatek.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano
+	<daniel.lezcano@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+CC: <yongdong.zhang@mediatek.com>, C Cheng <C.Cheng@mediatek.com>, Bo Ye
+	<bo.ye@mediatek.com>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2] fix overflow in idle exit_latency
+Date: Tue, 19 Dec 2023 11:14:42 +0800
+Message-ID: <20231219031444.91752-1-bo.ye@mediatek.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--0.581900-8.000000
+X-TMASE-MatchedRID: Bn0z3T9b+WALj6umkFEndkKcYi5Qw/RVwW1rM+V9HtIf/28+P8WCgP6r
+	IPjisOwVcto9nSFCcQUzAylM0q9+nMc7x4DEI6P2e7MO8jvmPSyAfODDLypXmvt592eq2xoTU7g
+	EPucszGdOJB5wP1oqhO1oMOv2nr2NkfRhdidsajMURSScn+QSXt0H8LFZNFG76sBnwpOylLPAPI
+	cR41PqunfVvfXf3EO2gRffnX50nm9u1jRmR2R6BTvyUDm8uVn3bYdPRFL+GVW7F+BBzr8amdrEU
+	qFrRQ4GM/cJLu1mnTkXRoPmWO3jekxwdkPqCq7vDEyN+J8hd+jCS9WgDXVPCn7cGd19dSFd
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--0.581900-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	11FAC9A90BC813C03769B41050A5049E53D6CBC065D06896E3C61187F7063FAB2000:8
+X-MTK: N
 
-Commit 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version fallback if
-firmware files are missing") changed the order of some operations and
-the firmware paths are not available anymore at snd_sof_probe() time.
+From: C Cheng <C.Cheng@mediatek.com>
 
-Precisely, fw_filename_prefix is set by sof_select_ipc_and_paths() via
+In detail:
 
-  plat_data->fw_filename_prefix = out_profile.fw_path;
+In C language, when you perform a multiplication operation, if
+both operands are of int type, the multiplication operation is
+performed on the int type, and then the result is converted to
+the target type. This means that if the product of int type
+multiplication exceeds the range that int type can represent,
+ an overflow will occur even if you store the result in a
+variable of int64_t type.
 
-but sof_init_environment() which calls this function was moved from
-snd_sof_device_probe() to sof_probe_continue(). Moreover,
-snd_sof_probe() was moved from sof_probe_continue() to
-sof_init_environment(), but before the call to
-sof_select_ipc_and_paths().
+For a multiplication of two int values, it is better to use
+mul_u32_u32() rather than s->exit_latency_ns = s->exit_latency *
+NSEC_PER_USEC to avoid potential overflow happenning.
 
-The problem here is that amd_sof_acp_probe() uses fw_filename_prefix to
-compute fw_code_bin and fw_data_bin paths, and because the field is not
-yet initialized, the paths end up containing (null):
-
-snd_sof_amd_vangogh 0000:04:00.5: Direct firmware load for (null)/sof-vangogh-code.bin failed with error -2
-snd_sof_amd_vangogh 0000:04:00.5: sof signed firmware code bin is missing
-snd_sof_amd_vangogh 0000:04:00.5: error: failed to load DSP firmware -2
-snd_sof_amd_vangogh: probe of 0000:04:00.5 failed with error -2
-
-Move usage of fw_filename_prefix right before request_firmware() calls
-in acp_sof_load_signed_firmware().
-
-Fixes: 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version fallback if firmware files are missing")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
+Signed-off-by: C Cheng <C.Cheng@mediatek.com>
+Signed-off-by: Bo Ye <bo.ye@mediatek.com>
 ---
- sound/soc/sof/amd/acp-loader.c | 32 ++++++++++++++++++++++++++------
- sound/soc/sof/amd/acp.c        |  7 ++-----
- 2 files changed, 28 insertions(+), 11 deletions(-)
+Change in v2:
+-remove Change-ID
+-correct patch author name
+-replace multiplication of two int values with mul_u32_u32
+-refine commit message
+---
+ drivers/cpuidle/driver.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/amd/acp-loader.c b/sound/soc/sof/amd/acp-loader.c
-index e05eb7a86dd4..d2d21478399e 100644
---- a/sound/soc/sof/amd/acp-loader.c
-+++ b/sound/soc/sof/amd/acp-loader.c
-@@ -267,29 +267,49 @@ int acp_sof_load_signed_firmware(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_pdata *plat_data = sdev->pdata;
- 	struct acp_dev_data *adata = plat_data->hw_pdata;
-+	const char *fw_filename;
- 	int ret;
+diff --git a/drivers/cpuidle/driver.c b/drivers/cpuidle/driver.c
+index d9cda7f6ccb9..cf5873cc45dc 100644
+--- a/drivers/cpuidle/driver.c
++++ b/drivers/cpuidle/driver.c
+@@ -16,6 +16,7 @@
+ #include <linux/cpumask.h>
+ #include <linux/tick.h>
+ #include <linux/cpu.h>
++#include <linux/math64.h>
  
--	ret = request_firmware(&sdev->basefw.fw, adata->fw_code_bin, sdev->dev);
-+	fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
-+				plat_data->fw_filename_prefix,
-+				adata->fw_code_bin);
-+	if (!fw_filename)
-+		return -ENOMEM;
-+
-+	ret = request_firmware(&sdev->basefw.fw, fw_filename, sdev->dev);
- 	if (ret < 0) {
-+		kfree(fw_filename);
- 		dev_err(sdev->dev, "sof signed firmware code bin is missing\n");
- 		return ret;
- 	} else {
--		dev_dbg(sdev->dev, "request_firmware %s successful\n", adata->fw_code_bin);
-+		dev_dbg(sdev->dev, "request_firmware %s successful\n", fw_filename);
- 	}
-+	kfree(fw_filename);
-+
- 	ret = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_IRAM, 0,
--				      (void *)sdev->basefw.fw->data, sdev->basefw.fw->size);
-+				      (void *)sdev->basefw.fw->data,
-+				      sdev->basefw.fw->size);
-+
-+	fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
-+				plat_data->fw_filename_prefix,
-+				adata->fw_data_bin);
-+	if (!fw_filename)
-+		return -ENOMEM;
+ #include "cpuidle.h"
  
--	ret = request_firmware(&adata->fw_dbin, adata->fw_data_bin, sdev->dev);
-+	ret = request_firmware(&adata->fw_dbin, fw_filename, sdev->dev);
- 	if (ret < 0) {
-+		kfree(fw_filename);
- 		dev_err(sdev->dev, "sof signed firmware data bin is missing\n");
- 		return ret;
+@@ -187,7 +188,7 @@ static void __cpuidle_driver_init(struct cpuidle_driver *drv)
+ 			s->target_residency = div_u64(s->target_residency_ns, NSEC_PER_USEC);
  
- 	} else {
--		dev_dbg(sdev->dev, "request_firmware %s successful\n", adata->fw_data_bin);
-+		dev_dbg(sdev->dev, "request_firmware %s successful\n", fw_filename);
- 	}
-+	kfree(fw_filename);
- 
- 	ret = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_DRAM, 0,
--				      (void *)adata->fw_dbin->data, adata->fw_dbin->size);
-+				      (void *)adata->fw_dbin->data,
-+				      adata->fw_dbin->size);
- 	return ret;
- }
- EXPORT_SYMBOL_NS(acp_sof_load_signed_firmware, SND_SOC_SOF_AMD_COMMON);
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 1e9840ae8938..87c5c71eac68 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -479,7 +479,6 @@ EXPORT_SYMBOL_NS(amd_sof_acp_resume, SND_SOC_SOF_AMD_COMMON);
- int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- {
- 	struct pci_dev *pci = to_pci_dev(sdev->dev);
--	struct snd_sof_pdata *plat_data = sdev->pdata;
- 	struct acp_dev_data *adata;
- 	const struct sof_amd_acp_desc *chip;
- 	const struct dmi_system_id *dmi_id;
-@@ -547,8 +546,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 	dmi_id = dmi_first_match(acp_sof_quirk_table);
- 	if (dmi_id && dmi_id->driver_data) {
- 		adata->fw_code_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
--						    "%s/sof-%s-code.bin",
--						    plat_data->fw_filename_prefix,
-+						    "sof-%s-code.bin",
- 						    chip->name);
- 		if (!adata->fw_code_bin) {
- 			ret = -ENOMEM;
-@@ -556,8 +554,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 		}
- 
- 		adata->fw_data_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
--						    "%s/sof-%s-data.bin",
--						    plat_data->fw_filename_prefix,
-+						    "sof-%s-data.bin",
- 						    chip->name);
- 		if (!adata->fw_data_bin) {
- 			ret = -ENOMEM;
+ 		if (s->exit_latency > 0)
+-			s->exit_latency_ns = s->exit_latency * NSEC_PER_USEC;
++			s->exit_latency_ns = mul_u32_u32(s->exit_latency, NSEC_PER_USEC);
+ 		else if (s->exit_latency_ns < 0)
+ 			s->exit_latency_ns =  0;
+ 		else
 -- 
-2.43.0
+2.18.0
 
 
