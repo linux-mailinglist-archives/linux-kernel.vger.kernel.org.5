@@ -1,84 +1,131 @@
-Return-Path: <linux-kernel+bounces-5595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACFDB818CD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:48:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E55BC818CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:48:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE1AA1C24B40
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:48:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24DE3B250C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890D2210EC;
-	Tue, 19 Dec 2023 16:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C040320B14;
+	Tue, 19 Dec 2023 16:47:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YUvsQkVW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xinhqs8t"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A9720311;
-	Tue, 19 Dec 2023 16:47:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Message-ID:References:In-Reply-To:Subject:To:From:Date:Sender:
-	Reply-To:Cc:Content-ID:Content-Description;
-	bh=EOCD7Shlg2KFEVb25pFCb4aRILZyHRKFnKAAS7R3DdM=; b=YUvsQkVW2VCdKuroGCXVzxdaZl
-	21cJwKUkRqR63J8X6RhppnFmHFYn/C+Ft6YRoCxEcn+6ppHrR3CZNwX1ckQ6d5waZWUQt8lUHekdl
-	k4EHJm9LeGidlILKwvWHic/XLw9Rt6+6LbqTg8B4bh3R/XzdVBDtuDi8fAqm+DcTZv/OdcNwe3yOR
-	u8J+z1elCamCtlwvEeeNWuZmqf//VckZq5qTwj3oEFxI4eRBWamhceUWzcuHCoabS+sEShd9hi1gl
-	m9b4+q/EzV8aocjU7AbZl2aBbeKHX4Xs1ZeK0SFn5EPpFbWU0EPrAq3Z+mLEfmdmYnvA6J61TeG/F
-	5KG8Obfg==;
-Received: from [2001:8b0:10b:5:20dd:b45a:6fd4:1db5] (helo=[IPv6:::1])
-	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFdEv-00DXFG-1F;
-	Tue, 19 Dec 2023 16:46:41 +0000
-Date: Tue, 19 Dec 2023 16:46:40 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Sean Christopherson <seanjc@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v11 16/19] KVM: xen: split up kvm_xen_set_evtchn_fast()
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20231219161109.1318-17-paul@xen.org>
-References: <20231219161109.1318-1-paul@xen.org> <20231219161109.1318-17-paul@xen.org>
-Message-ID: <5B3EDE03-67F4-4BA2-89AA-F882DB6DE702@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4218F37D01;
+	Tue, 19 Dec 2023 16:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a234dc0984fso323825566b.0;
+        Tue, 19 Dec 2023 08:47:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703004422; x=1703609222; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NeShSK6cVdZ3tR/tSiq3rkncbpvvwt6PkK61/vcn6JY=;
+        b=Xinhqs8tvxNzeIoc02/jCs+z9B4PbEIc65GByBLhPcXBwvNn+tzDvd9dQkVQAqC4Dd
+         Uxshn2jcRCoPz3I12lRUrruDq20mPALEKs27+qyI/qcsWv39rCz48F63eViK2Rf2qVlS
+         w6qR/6G3jXkLJaJMHecuMJqcEMCME5/bNRLHDgniGKodxwPtrt6QRk86BJFHKAcnTLGW
+         ryIQhwI5GQXEMlFju53aqXBASoTsnihmBtxwG50wU3K2PMjqs3QVfJ++S4fqlqBkNGBF
+         QuuAtMvXd+ALAkYsVYLAEXqdgT+xZetteYCQmw5tqev5fwI0DbebuUCWPLBUBUj83CjO
+         6Slw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703004422; x=1703609222;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NeShSK6cVdZ3tR/tSiq3rkncbpvvwt6PkK61/vcn6JY=;
+        b=mExwoPSa1OuFTQbMS9faXGya9dzmU4gccPcjqJ4HKwWG391pfq3Igczcq9Rpqd5za5
+         0jdZvefYdDAKXQv3xmQbmJ+9Vv5Ed9DGH0P5/QvwI1gOvBj1tr+SOmANyOErPdV0A1zW
+         QqUuofOsXH3PoBi/adgGyZftOqDMvgnXSMNlE/XQjVOZqLjAAIL8cP95Tt2d1m4kiw15
+         Z6OqfuW8bTqodw6ccVJFgpGOF5i1QoKUGZQGyur4WTmfGKAKZUrr7h6lVhfPlDdSNlpF
+         Lotd28xPk/QRtaYCQh2aVw8p5w9M+J7r535kFgm79b4PbaAvg+CNRuLzwi++fD1/LTww
+         0iGQ==
+X-Gm-Message-State: AOJu0YwFt83IvwEMZislhPlca8nQZGKbpwKLc7ho09JsXT1BlMrMT0xB
+	aDqkoTINxzyssIxt+dK6DDw=
+X-Google-Smtp-Source: AGHT+IG/BM4Mx/0Unwhzt2oGgH1Ni3lsEEn7GjfNPeGpMSmWn0LI6JdBChftgTkGEW3WIn9NXYk51A==
+X-Received: by 2002:a17:906:c214:b0:a19:a19b:78bd with SMTP id d20-20020a170906c21400b00a19a19b78bdmr8931356ejz.128.1703004422323;
+        Tue, 19 Dec 2023 08:47:02 -0800 (PST)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id x24-20020a170906135800b00a25501f4160sm780675ejb.1.2023.12.19.08.47.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 08:47:01 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>,
+ Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+ Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Frank Oltmanns <frank@oltmanns.dev>
+Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Frank Oltmanns <frank@oltmanns.dev>
+Subject:
+ Re: [PATCH 2/5] clk: sunxi-ng: a64: Add constraints on PLL-MIPI's n/m ratio
+ and parent rate
+Date: Tue, 19 Dec 2023 17:46:59 +0100
+Message-ID: <4881920.31r3eYUQgx@jernej-laptop>
+In-Reply-To: <20231218-pinephone-pll-fixes-v1-2-e238b6ed6dc1@oltmanns.dev>
+References:
+ <20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev>
+ <20231218-pinephone-pll-fixes-v1-2-e238b6ed6dc1@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On 19 December 2023 16:11:06 GMT, Paul Durrant <paul@xen=2Eorg> wrote:
->From: Paul Durrant <pdurrant@amazon=2Ecom>
->
->The implementation of kvm_xen_set_evtchn_fast() is a rather lengthy piece
->of code that performs two operations: updating of the shared_info
->evtchn_pending mask, and updating of the vcpu_info evtchn_pending_sel
->mask=2E Introduce a separate function to perform each of those operations=
- and
->re-work kvm_xen_set_evtchn_fast() to use them=2E
->
->No functional change intended=2E
->
->Signed-off-by: Paul Durrant <pdurrant@amazon=2Ecom
+Dne ponedeljek, 18. december 2023 ob 14:35:20 CET je Frank Oltmanns napisal(a):
+> The Allwinner A64 manual lists the following constraints for the
+> PLL-MIPI clock:
+>  - M/N >= 3
 
-Reviewed-by: <dwmw@amazon=2Eco=2Euk>
+Same as in previous patch, should be "<=".
 
-Would still like to see the xen_shinfo_test use an evtchn port# which trig=
-gers the bug in the precious version=2E
+Best regards,
+Jernej
+
+>  - (PLL_VIDEO0)/M >= 24MHz
+> 
+> Use these constraints.
+> 
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> ---
+>  drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+> index 8951ffc14ff5..c034ac027d1c 100644
+> --- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+> @@ -176,6 +176,8 @@ static struct ccu_nkm pll_mipi_clk = {
+>  	.n		= _SUNXI_CCU_MULT(8, 4),
+>  	.k		= _SUNXI_CCU_MULT_MIN(4, 2, 2),
+>  	.m		= _SUNXI_CCU_DIV(0, 4),
+> +	.max_mn_ratio	= 3,
+> +	.parent_wo_nk	= 24000000,
+>  	.common		= {
+>  		.reg		= 0x040,
+>  		.hw.init	= CLK_HW_INIT("pll-mipi", "pll-video0",
+> 
+> 
+
+
+
 
 
