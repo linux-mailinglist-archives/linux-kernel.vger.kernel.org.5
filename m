@@ -1,603 +1,169 @@
-Return-Path: <linux-kernel+bounces-4945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0024818435
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:12:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07FBB818439
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29A371F24B65
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:12:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DA921F24E87
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66C5134B4;
-	Tue, 19 Dec 2023 09:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2997A12E44;
+	Tue, 19 Dec 2023 09:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LTuLrRzs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XvKwqTxu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCE5134A5;
-	Tue, 19 Dec 2023 09:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E262B14267;
+	Tue, 19 Dec 2023 09:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6d7f1109abcso1152558b3a.3;
-        Tue, 19 Dec 2023 01:12:39 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ca0715f0faso51522641fa.0;
+        Tue, 19 Dec 2023 01:14:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702977158; x=1703581958; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=S0gp9Jxo3cDEk/nLtV7yts+X/4EkarkszSdWdET8Oek=;
-        b=LTuLrRzsrBha8PkRHwfeTotQM4e6VFZfcRSEFZVpF7OKZw+S9mfi8ekKm3rEin2ZzB
-         Gwi8EwEi9az0rsgqO0QFjI9leEjZBFYsJ78ku2uDTibT8rmR1+xrFivoh8phJNFU3W+B
-         FwUjM2lg/ph9XxuOLnqByBUc0qMYpwU0AGL4ojPlMWliZ4eameNK60Uq5h5MK4qkxfvR
-         K6HKQbp3GT6CAaBWSLdBgzashRP4dHoW0hk1VFODGZs2bg4jvdBcICK6Fgir71Ss1GP5
-         IJZLcGuTiNpJey9AEjJNAWJlopdPCdbKt2MFp1esQ7f+iyDB31tKW2NJLDb03s8UXTeh
-         GELw==
+        d=gmail.com; s=20230601; t=1702977281; x=1703582081; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O6OiXOUZXhtGYW35OzGLCeQh5EJuMC/9rPiUUV6bTLU=;
+        b=XvKwqTxuOwo2nL4QsdhctoGby4p4d4IKqmoc+LL+Hol0bZx/O0XBbFGIudV1maptEm
+         f6wMzjUV67yMi7cDyk9E6pewvJVmb38AgKeimx0aHk8OrXcO8xLL28G4m6+jxqgfngO/
+         qB9gKUif6ycE9DqEuvwHYfyOl9tt/PFue0P7qsVafbhe05G1Sjs+8MmzBOtiOgyswBV2
+         ZLPIfIlGtci+YOO8PqQFy3zsh3XTshgF/b+Zwf0Y6UhqBI6FlBnrISkDiuwIHz4DtC4V
+         uz72DTR+Eh24/aukeNhTJ4v4495psoVNLlsEDXrA6cc3OTXGLAE5z602EpV24a+EAA5K
+         5Bug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702977158; x=1703581958;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S0gp9Jxo3cDEk/nLtV7yts+X/4EkarkszSdWdET8Oek=;
-        b=Rki9UIfm0aGuVrFCTrOUZBP5WgNDG6NQJGBpLQ+u1D6yhjTuJUtfNOeBdwsEbTvonm
-         AtuCiRpeGGjqL4/Ok38RIYdn/qQHB4l/psab+o3ji2i76yxU7y7ci/qc897nK86eMzS6
-         GF52Y8bFfVccimHMYSVI4MTCOEYhlyzSkuGV1mWLstHxZRg0h0s+j/yiPhF8M5qBzx8P
-         ZfcFjgp/jdE0Vy4XQbvc6EZRrq8QLajzhX4g19O2YckG40a+6b961yCkUv+jqWNBtnD4
-         uqfYKrx/X79WfAPg7/aCeKPx+UjXjKDslh+XdMrqoKI9Xy9oIRYL2eoRkkjZpnCHvdag
-         n8PA==
-X-Gm-Message-State: AOJu0YyfxrgNzS+LYPWnkrKIe4aYe+EDSszs5bEuzhgBJ8vz4widK/dn
-	67S22rSs7seu2rdY5C+6JTKtp+1h6qLeK17kjrk=
-X-Google-Smtp-Source: AGHT+IHdnn5mMVHiI0MStsOIzuZheu6lYHSXTpe+iM5s21ZW7cQHqIfPphRas+VSv5P3yeEUdhdf9W8otGRUY286WUA=
-X-Received: by 2002:aa7:9f0b:0:b0:6d2:7e5f:8c6 with SMTP id
- g11-20020aa79f0b000000b006d27e5f08c6mr1978193pfr.41.1702977158374; Tue, 19
- Dec 2023 01:12:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702977281; x=1703582081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O6OiXOUZXhtGYW35OzGLCeQh5EJuMC/9rPiUUV6bTLU=;
+        b=FPvFDsIXI9nOGAYNrAin0hWDyr0WfEXTJiww7RBLauctegxlaNSkmwIa5ZGe3HOPpZ
+         0+3Kvu4UmQDDIt90NqLAiLPyCqQ2RYJt9+DsjuKNVka9S+HDDocM02TYwmUBO4kMqwNn
+         DU+byNFU2KKHr/XRns9Ki6k3cvBwtvqkVK0wkW+sXidEzLjIg8cCIMZAN7pnhhJqjzZg
+         wecrtC7Za+LkyaFxpRR3p474TZ+9HQs/rqL2BLKgCzYZQPHDGlWRGd2Yi/8jCaG+EJ3T
+         oyrJTV4iwWoehsf62G/2nTW3k+LixAqb7juQCrSbhLzwLF1Y23QtErj4rwuebKHVy5d5
+         xUBw==
+X-Gm-Message-State: AOJu0YwN93y+Tt6Ph3nsWImGjxPHGPvoDOUjlRb+8yonUoLXqLFKxdEb
+	jCgtoFScqKkR3w5WKAUght4=
+X-Google-Smtp-Source: AGHT+IFLYicXBKgraStbWTfJgP9ikiib+mUE28mqICzkCLHxENu1CfDsQci/VgLWHHE8o+ROJGWSUw==
+X-Received: by 2002:a2e:860b:0:b0:2cc:6e37:f0df with SMTP id a11-20020a2e860b000000b002cc6e37f0dfmr1667287lji.34.1702977280441;
+        Tue, 19 Dec 2023 01:14:40 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id y12-20020a05651c154c00b002cc701caf7asm746882ljp.21.2023.12.19.01.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 01:14:39 -0800 (PST)
+Date: Tue, 19 Dec 2023 12:14:38 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: xiongxin <xiongxin@kylinos.cn>, Andy Shevchenko <andy@kernel.org>
+Cc: hoan@os.amperecomputing.com, linus.walleij@linaro.org, brgl@bgdev.pl, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, stable@kernel.org, 
+	Riwen Lu <luriwen@kylinos.cn>
+Subject: Re: [PATCH v3] gpio: dwapb: mask/unmask IRQ when disable/enale it
+Message-ID: <7zdg5ujizncarxvdyahnusojiq44rzxx2zybqj4kzsonzr27gq@fm5wj7npqsk3>
+References: <20231219013751.20386-1-xiongxin@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: xingwei lee <xrivendell7@gmail.com>
-Date: Tue, 19 Dec 2023 17:12:25 +0800
-Message-ID: <CABOYnLwXyxPukiaL36NvGvSa6yW3y0rXgrU=ABOzE-1gDAc4-g@mail.gmail.com>
-Subject: memory leak in unix_create1/copy_process/security_prepare_creds
-To: davem@davemloft.net
-Cc: Eric Dumazet <edumazet@google.com>, kuba@kernel.org, pabeni@redhat.com, 
-	kuniyu@amazon.com, alexander@mihalicyn.com, dhowells@redhat.com, 
-	john.fastabend@gmail.com, daan.j.demeyer@gmail.com, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219013751.20386-1-xiongxin@kylinos.cn>
 
-Hello I found a bug in net/af_unix in the lastest upstream linux
-6.7.rc5 and comfired in lastest net/net-next/bpf/bpf-next tree.
-Titled "TITLE: memory leak in unix_create1=E2=80=9D and I also upload the
-repro.c and repro.txt.
+On Tue, Dec 19, 2023 at 09:37:51AM +0800, xiongxin wrote:
+> In the hardware implementation of the i2c hid driver based on dwapb gpio
+> irq, when the user continues to use the i2c hid device in the suspend
+> process, the i2c hid interrupt will be masked after the resume process
+> is finished.
+> 
+> This is because the disable_irq()/enable_irq() of the dwapb gpio driver
+> does not synchronize the irq mask register state. In normal use of the
+> i2c hid procedure, the gpio irq irq_mask()/irq_unmask() functions are
+> called in pairs. In case of an exception, i2c_hid_core_suspend() calls
+> disable_irq() to disable the gpio irq. With low probability, this causes
+> irq_unmask() to not be called, which causes the gpio irq to be masked
+> and not unmasked in enable_irq(), raising an exception.
+> 
+> Add synchronization to the masked register state in the
+> dwapb_irq_enable()/dwapb_irq_disable() function. mask the gpio irq
+> before disabling it. After enabling the gpio irq, unmask the irq.
+> 
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei Lee <xrivendell7@gmail.com>
+> v3:
+> 	* Modify the submitter's information
+> v2:
+> 	* Resubmit the patch to fix this exception from the dwapb gpio
+> 	  driver side.
+> v1:
+> 	* Resolve the exception from the IRQ core layer. (key point not
+> 	  found correctly)
 
-lastest net tree: 979e90173af8d2f52f671d988189aab98c6d1be6
-Kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3D8c=
-4e4700f1727d30
+This should have been placed below the '---' marker:
+Documentation/process/submitting-patches.rst
 
-in the lastest net tree, the crash like:
-Linux syzkaller 6.7.0-rc5-00172-g979e90173af8 #4 SMP PREEMPT_DYNAMIC
-Tue Dec 19 11:03:58 HKT 2023 x86_4
+> 
+> Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB GPIO block")
+> Cc: stable@kernel.org
+> Co-developed-by: Riwen Lu <luriwen@kylinos.cn>
+> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
 
-TITLE: memory leak in security_prepare_creds
-   [<ffffffff8129291a>] copy_process+0x6aa/0x25c0 kernel/fork.c:2366
-   [<ffffffff812949db>] kernel_clone+0x11b/0x690 kernel/fork.c:2907
-   [<ffffffff81294fcc>] __do_sys_clone+0x7c/0xb0 kernel/fork.c:3050
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-BUG: memory leak
-unreferenced object 0xffff8881408b9390 (size 16):
- comm "cd01", pid 8363, jiffies 4296754700 (age 12.260s)
- hex dump (first 16 bytes):
-   00 00 00 00 00 00 00 00 00 4b 99 00 81 88 ff ff  .........K......
- backtrace:
-   [<ffffffff816340fd>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff816340fd>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff816340fd>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff816340fd>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-   [<ffffffff8157f42b>] __do_kmalloc_node mm/slab_common.c:1006 [inline]
-   [<ffffffff8157f42b>] __kmalloc+0x4b/0x150 mm/slab_common.c:1020
-   [<ffffffff823695b1>] kmalloc include/linux/slab.h:604 [inline]
-   [<ffffffff823695b1>] kzalloc include/linux/slab.h:721 [inline]
-   [<ffffffff823695b1>] lsm_cred_alloc security/security.c:577 [inline]
-   [<ffffffff823695b1>] security_prepare_creds+0x121/0x140
-security/security.c:2950
-   [<ffffffff812e1189>] prepare_creds+0x329/0x4e0 kernel/cred.c:300
-   [<ffffffff812e18f4>] copy_creds+0x44/0x280 kernel/cred.c:373
-   [<ffffffff8129291a>] copy_process+0x6aa/0x25c0 kernel/fork.c:2366
-   [<ffffffff812949db>] kernel_clone+0x11b/0x690 kernel/fork.c:2907
-   [<ffffffff81294fcc>] __do_sys_clone+0x7c/0xb0 kernel/fork.c:3050
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Also note all the tags you've already got must be preserved on the
+next patch revisions. One more time:
 
-BUG: memory leak
-unreferenced object 0xffff888147c26b40 (size 112):
- comm "cd01", pid 8363, jiffies 4296754700 (age 12.260s)
- hex dump (first 32 bytes):
-   01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
- backtrace:
-   [<ffffffff81631578>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff81631578>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff81631578>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff81631578>] slab_alloc mm/slub.c:3486 [inline]
-   [<ffffffff81631578>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-   [<ffffffff81631578>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-   [<ffffffff812d30ca>] alloc_pid+0x6a/0x570 kernel/pid.c:183
-   [<ffffffff81293ab8>] copy_process+0x1848/0x25c0 kernel/fork.c:2518
-   [<ffffffff812949db>] kernel_clone+0x11b/0x690 kernel/fork.c:2907
-   [<ffffffff81294fcc>] __do_sys_clone+0x7c/0xb0 kernel/fork.c:3050
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-BUG: memory leak
-unreferenced object 0xffff88810813d040 (size 1088):
- comm "cd01", pid 8365, jiffies 4296754700 (age 12.260s)
- hex dump (first 32 bytes):
-   00 00 00 00 00 00 00 00 8a 00 00 00 00 00 00 00  ................
-   01 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
- backtrace:
-   [<ffffffff81631578>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff81631578>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff81631578>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff81631578>] slab_alloc mm/slub.c:3486 [inline]
-   [<ffffffff81631578>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-   [<ffffffff81631578>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-   [<ffffffff83ecc0ce>] sk_prot_alloc+0x3e/0x1b0 net/core/sock.c:2069
-   [<ffffffff83ecf506>] sk_alloc+0x36/0x2f0 net/core/sock.c:2128
-   [<ffffffff84371e34>] unix_create1+0x84/0x320 net/unix/af_unix.c:982
-   [<ffffffff84372168>] unix_create+0x98/0x130 net/unix/af_unix.c:1049
-   [<ffffffff83ec493f>] __sock_create+0x19f/0x2e0 net/socket.c:1569
-   [<ffffffff83ec8440>] sock_create net/socket.c:1620 [inline]
-   [<ffffffff83ec8440>] __sys_socketpair+0x160/0x370 net/socket.c:1771
-   [<ffffffff83ec866f>] __do_sys_socketpair net/socket.c:1820 [inline]
-   [<ffffffff83ec866f>] __se_sys_socketpair net/socket.c:1817 [inline]
-   [<ffffffff83ec866f>] __x64_sys_socketpair+0x1f/0x30 net/socket.c:1817
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+-Serge(y)
 
-BUG: memory leak
-unreferenced object 0xffff88811701bd10 (size 16):
- comm "cd01", pid 8365, jiffies 4296754700 (age 12.260s)
- hex dump (first 16 bytes):
-   00 4b 99 00 81 88 ff ff 00 00 00 00 00 00 00 00  .K..............
- backtrace:
-   [<ffffffff816340fd>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff816340fd>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff816340fd>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff816340fd>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-   [<ffffffff8157ed85>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-   [<ffffffff823a75c2>] kmalloc include/linux/slab.h:600 [inline]
-   [<ffffffff823a75c2>] kzalloc include/linux/slab.h:721 [inline]
-   [<ffffffff823a75c2>] apparmor_sk_alloc_security+0x52/0xd0
-security/apparmor/lsm.c:997
-   [<ffffffff8236b407>] security_sk_alloc+0x47/0x80 security/security.c:441=
-1
-   [<ffffffff83ecc11f>] sk_prot_alloc+0x8f/0x1b0 net/core/sock.c:2078
-   [<ffffffff83ecf506>] sk_alloc+0x36/0x2f0 net/core/sock.c:2128
-   [<ffffffff84371e34>] unix_create1+0x84/0x320 net/unix/af_unix.c:982
-   [<ffffffff84372168>] unix_create+0x98/0x130 net/unix/af_unix.c:1049
-   [<ffffffff83ec493f>] __sock_create+0x19f/0x2e0 net/socket.c:1569
-   [<ffffffff83ec8440>] sock_create net/socket.c:1620 [inline]
-   [<ffffffff83ec8440>] __sys_socketpair+0x160/0x370 net/socket.c:1771
-   [<ffffffff83ec866f>] __do_sys_socketpair net/socket.c:1820 [inline]
-   [<ffffffff83ec866f>] __se_sys_socketpair net/socket.c:1817 [inline]
-   [<ffffffff83ec866f>] __x64_sys_socketpair+0x1f/0x30 net/socket.c:1817
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-
-
-TITLE: memory leak in copy_process
-   [<ffffffff8129291a>] copy_process+0x6aa/0x25c0 kernel/fork.c:2366
-   [<ffffffff812949db>] kernel_clone+0x11b/0x690 kernel/fork.c:2907
-   [<ffffffff81294fcc>] __do_sys_clone+0x7c/0xb0 kernel/fork.c:3050
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-BUG: memory leak
-unreferenced object 0xffff888147c26b40 (size 112):
- comm "cd01", pid 8363, jiffies 4296754700 (age 12.260s)
- hex dump (first 32 bytes):
-   01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
- backtrace:
-   [<ffffffff81631578>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff81631578>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff81631578>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff81631578>] slab_alloc mm/slub.c:3486 [inline]
-   [<ffffffff81631578>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-   [<ffffffff81631578>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-   [<ffffffff812d30ca>] alloc_pid+0x6a/0x570 kernel/pid.c:183
-   [<ffffffff81293ab8>] copy_process+0x1848/0x25c0 kernel/fork.c:2518
-   [<ffffffff812949db>] kernel_clone+0x11b/0x690 kernel/fork.c:2907
-   [<ffffffff81294fcc>] __do_sys_clone+0x7c/0xb0 kernel/fork.c:3050
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-BUG: memory leak
-unreferenced object 0xffff88810813d040 (size 1088):
- comm "cd01", pid 8365, jiffies 4296754700 (age 12.260s)
- hex dump (first 32 bytes):
-   00 00 00 00 00 00 00 00 8a 00 00 00 00 00 00 00  ................
-   01 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
- backtrace:
-   [<ffffffff81631578>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff81631578>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff81631578>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff81631578>] slab_alloc mm/slub.c:3486 [inline]
-   [<ffffffff81631578>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-   [<ffffffff81631578>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-   [<ffffffff83ecc0ce>] sk_prot_alloc+0x3e/0x1b0 net/core/sock.c:2069
-   [<ffffffff83ecf506>] sk_alloc+0x36/0x2f0 net/core/sock.c:2128
-   [<ffffffff84371e34>] unix_create1+0x84/0x320 net/unix/af_unix.c:982
-   [<ffffffff84372168>] unix_create+0x98/0x130 net/unix/af_unix.c:1049
-   [<ffffffff83ec493f>] __sock_create+0x19f/0x2e0 net/socket.c:1569
-   [<ffffffff83ec8440>] sock_create net/socket.c:1620 [inline]
-   [<ffffffff83ec8440>] __sys_socketpair+0x160/0x370 net/socket.c:1771
-   [<ffffffff83ec866f>] __do_sys_socketpair net/socket.c:1820 [inline]
-   [<ffffffff83ec866f>] __se_sys_socketpair net/socket.c:1817 [inline]
-   [<ffffffff83ec866f>] __x64_sys_socketpair+0x1f/0x30 net/socket.c:1817
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-BUG: memory leak
-unreferenced object 0xffff88811701bd10 (size 16):
- comm "cd01", pid 8365, jiffies 4296754700 (age 12.260s)
- hex dump (first 16 bytes):
-   00 4b 99 00 81 88 ff ff 00 00 00 00 00 00 00 00  .K..............
- backtrace:
-   [<ffffffff816340fd>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff816340fd>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff816340fd>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff816340fd>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-   [<ffffffff8157ed85>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-   [<ffffffff823a75c2>] kmalloc include/linux/slab.h:600 [inline]
-   [<ffffffff823a75c2>] kzalloc include/linux/slab.h:721 [inline]
-   [<ffffffff823a75c2>] apparmor_sk_alloc_security+0x52/0xd0
-security/apparmor/lsm.c:997
-   [<ffffffff8236b407>] security_sk_alloc+0x47/0x80 security/security.c:441=
-1
-   [<ffffffff83ecc11f>] sk_prot_alloc+0x8f/0x1b0 net/core/sock.c:2078
-   [<ffffffff83ecf506>] sk_alloc+0x36/0x2f0 net/core/sock.c:2128
-   [<ffffffff84371e34>] unix_create1+0x84/0x320 net/unix/af_unix.c:982
-   [<ffffffff84372168>] unix_create+0x98/0x130 net/unix/af_unix.c:1049
-   [<ffffffff83ec493f>] __sock_create+0x19f/0x2e0 net/socket.c:1569
-   [<ffffffff83ec8440>] sock_create net/socket.c:1620 [inline]
-   [<ffffffff83ec8440>] __sys_socketpair+0x160/0x370 net/socket.c:1771
-   [<ffffffff83ec866f>] __do_sys_socketpair net/socket.c:1820 [inline]
-   [<ffffffff83ec866f>] __se_sys_socketpair net/socket.c:1817 [inline]
-   [<ffffffff83ec866f>] __x64_sys_socketpair+0x1f/0x30 net/socket.c:1817
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-TITLE: memory leak in unix_create1
-   [<ffffffff81293ab8>] copy_process+0x1848/0x25c0 kernel/fork.c:2518
-   [<ffffffff812949db>] kernel_clone+0x11b/0x690 kernel/fork.c:2907
-   [<ffffffff81294fcc>] __do_sys_clone+0x7c/0xb0 kernel/fork.c:3050
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-BUG: memory leak
-unreferenced object 0xffff88810813d040 (size 1088):
- comm "cd01", pid 8365, jiffies 4296754700 (age 12.260s)
- hex dump (first 32 bytes):
-   00 00 00 00 00 00 00 00 8a 00 00 00 00 00 00 00  ................
-   01 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
- backtrace:
-   [<ffffffff81631578>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff81631578>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff81631578>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff81631578>] slab_alloc mm/slub.c:3486 [inline]
-   [<ffffffff81631578>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-   [<ffffffff81631578>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-   [<ffffffff83ecc0ce>] sk_prot_alloc+0x3e/0x1b0 net/core/sock.c:2069
-   [<ffffffff83ecf506>] sk_alloc+0x36/0x2f0 net/core/sock.c:2128
-   [<ffffffff84371e34>] unix_create1+0x84/0x320 net/unix/af_unix.c:982
-   [<ffffffff84372168>] unix_create+0x98/0x130 net/unix/af_unix.c:1049
-   [<ffffffff83ec493f>] __sock_create+0x19f/0x2e0 net/socket.c:1569
-   [<ffffffff83ec8440>] sock_create net/socket.c:1620 [inline]
-   [<ffffffff83ec8440>] __sys_socketpair+0x160/0x370 net/socket.c:1771
-   [<ffffffff83ec866f>] __do_sys_socketpair net/socket.c:1820 [inline]
-   [<ffffffff83ec866f>] __se_sys_socketpair net/socket.c:1817 [inline]
-   [<ffffffff83ec866f>] __x64_sys_socketpair+0x1f/0x30 net/socket.c:1817
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-BUG: memory leak
-unreferenced object 0xffff88811701bd10 (size 16):
- comm "cd01", pid 8365, jiffies 4296754700 (age 12.260s)
- hex dump (first 16 bytes):
-   00 4b 99 00 81 88 ff ff 00 00 00 00 00 00 00 00  .K..............
- backtrace:
-   [<ffffffff816340fd>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:42 [inline]
-   [<ffffffff816340fd>] slab_post_alloc_hook mm/slab.h:766 [inline]
-   [<ffffffff816340fd>] slab_alloc_node mm/slub.c:3478 [inline]
-   [<ffffffff816340fd>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-   [<ffffffff8157ed85>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-   [<ffffffff823a75c2>] kmalloc include/linux/slab.h:600 [inline]
-   [<ffffffff823a75c2>] kzalloc include/linux/slab.h:721 [inline]
-   [<ffffffff823a75c2>] apparmor_sk_alloc_security+0x52/0xd0
-security/apparmor/lsm.c:997
-   [<ffffffff8236b407>] security_sk_alloc+0x47/0x80 security/security.c:441=
-1
-   [<ffffffff83ecc11f>] sk_prot_alloc+0x8f/0x1b0 net/core/sock.c:2078
-   [<ffffffff83ecf506>] sk_alloc+0x36/0x2f0 net/core/sock.c:2128
-   [<ffffffff84371e34>] unix_create1+0x84/0x320 net/unix/af_unix.c:982
-   [<ffffffff84372168>] unix_create+0x98/0x130 net/unix/af_unix.c:1049
-   [<ffffffff83ec493f>] __sock_create+0x19f/0x2e0 net/socket.c:1569
-   [<ffffffff83ec8440>] sock_create net/socket.c:1620 [inline]
-   [<ffffffff83ec8440>] __sys_socketpair+0x160/0x370 net/socket.c:1771
-   [<ffffffff83ec866f>] __do_sys_socketpair net/socket.c:1820 [inline]
-   [<ffffffff83ec866f>] __se_sys_socketpair net/socket.c:1817 [inline]
-   [<ffffffff83ec866f>] __x64_sys_socketpair+0x1f/0x30 net/socket.c:1817
-   [<ffffffff84b70dcf>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   [<ffffffff84b70dcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-   [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-=3D* repro.c =3D*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
-
-#define _GNU_SOURCE
-
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/prctl.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
-
-#ifndef __NR_bpf
-#define __NR_bpf 321
-#endif
-
-static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
-
-static uint64_t current_time_ms(void) {
- struct timespec ts;
- if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
- return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
-
-static bool write_file(const char* file, const char* what, ...) {
- char buf[1024];
- va_list args;
- va_start(args, what);
- vsnprintf(buf, sizeof(buf), what, args);
- va_end(args);
- buf[sizeof(buf) - 1] =3D 0;
- int len =3D strlen(buf);
- int fd =3D open(file, O_WRONLY | O_CLOEXEC);
- if (fd =3D=3D -1) return false;
- if (write(fd, buf, len) !=3D len) {
-   int err =3D errno;
-   close(fd);
-   errno =3D err;
-   return false;
- }
- close(fd);
- return true;
-}
-
-static void kill_and_wait(int pid, int* status) {
- kill(-pid, SIGKILL);
- kill(pid, SIGKILL);
- for (int i =3D 0; i < 100; i++) {
-   if (waitpid(-1, status, WNOHANG | __WALL) =3D=3D pid) return;
-   usleep(1000);
- }
- DIR* dir =3D opendir("/sys/fs/fuse/connections");
- if (dir) {
-   for (;;) {
-     struct dirent* ent =3D readdir(dir);
-     if (!ent) break;
-     if (strcmp(ent->d_name, ".") =3D=3D 0 || strcmp(ent->d_name, "..") =3D=
-=3D 0)
-       continue;
-     char abort[300];
-     snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
-              ent->d_name);
-     int fd =3D open(abort, O_WRONLY);
-     if (fd =3D=3D -1) {
-       continue;
-     }
-     if (write(fd, abort, 1) < 0) {
-     }
-     close(fd);
-   }
-   closedir(dir);
- } else {
- }
- while (waitpid(-1, status, __WALL) !=3D pid) {
- }
-}
-
-static void setup_test() {
- prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
- setpgrp();
- write_file("/proc/self/oom_score_adj", "1000");
-}
-
-#define KMEMLEAK_FILE "/sys/kernel/debug/kmemleak"
-
-static void setup_leak() {
- if (!write_file(KMEMLEAK_FILE, "scan")) exit(1);
- sleep(5);
- if (!write_file(KMEMLEAK_FILE, "scan")) exit(1);
- if (!write_file(KMEMLEAK_FILE, "clear")) exit(1);
-}
-
-static void check_leaks(void) {
- int fd =3D open(KMEMLEAK_FILE, O_RDWR);
- if (fd =3D=3D -1) exit(1);
- uint64_t start =3D current_time_ms();
- if (write(fd, "scan", 4) !=3D 4) exit(1);
- sleep(1);
- while (current_time_ms() - start < 4 * 1000) sleep(1);
- if (write(fd, "scan", 4) !=3D 4) exit(1);
- static char buf[128 << 10];
- ssize_t n =3D read(fd, buf, sizeof(buf) - 1);
- if (n < 0) exit(1);
- int nleaks =3D 0;
- if (n !=3D 0) {
-   sleep(1);
-   if (write(fd, "scan", 4) !=3D 4) exit(1);
-   if (lseek(fd, 0, SEEK_SET) < 0) exit(1);
-   n =3D read(fd, buf, sizeof(buf) - 1);
-   if (n < 0) exit(1);
-   buf[n] =3D 0;
-   char* pos =3D buf;
-   char* end =3D buf + n;
-   while (pos < end) {
-     char* next =3D strstr(pos + 1, "unreferenced object");
-     if (!next) next =3D end;
-     char prev =3D *next;
-     *next =3D 0;
-     fprintf(stderr, "BUG: memory leak\n%s\n", pos);
-     *next =3D prev;
-     pos =3D next;
-     nleaks++;
-   }
- }
- if (write(fd, "clear", 5) !=3D 5) exit(1);
- close(fd);
- if (nleaks) exit(1);
-}
-
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void) {
- int iter =3D 0;
- for (;; iter++) {
-   int pid =3D fork();
-   if (pid < 0) exit(1);
-   if (pid =3D=3D 0) {
-     setup_test();
-     execute_one();
-     exit(0);
-   }
-   int status =3D 0;
-   uint64_t start =3D current_time_ms();
-   for (;;) {
-     if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) =3D=3D pid) break;
-     sleep_ms(1);
-     if (current_time_ms() - start < 5000) continue;
-     kill_and_wait(pid, &status);
-     break;
-   }
-   check_leaks();
- }
-}
-
-uint64_t r[1] =3D {0xffffffffffffffff};
-
-void execute_one(void) {
- intptr_t res =3D 0;
- syscall(__NR_socketpair, /*domain=3D*/1ul, /*type=3D*/1ul, /*proto=3D*/0,
-         /*fds=3D*/0x20000000ul);
- *(uint32_t*)0x200000c0 =3D 0x12;
- *(uint32_t*)0x200000c4 =3D 2;
- *(uint32_t*)0x200000c8 =3D 4;
- *(uint32_t*)0x200000cc =3D 1;
- *(uint32_t*)0x200000d0 =3D 0;
- *(uint32_t*)0x200000d4 =3D -1;
- *(uint32_t*)0x200000d8 =3D 0;
- memset((void*)0x200000dc, 0, 16);
- *(uint32_t*)0x200000ec =3D 0;
- *(uint32_t*)0x200000f0 =3D -1;
- *(uint32_t*)0x200000f4 =3D 0;
- *(uint32_t*)0x200000f8 =3D 0;
- *(uint32_t*)0x200000fc =3D 0;
- *(uint64_t*)0x20000100 =3D 0;
- res =3D syscall(__NR_bpf, /*cmd=3D*/0ul, /*arg=3D*/0x200000c0ul, /*size=3D=
-*/0x48ul);
- if (res !=3D -1) r[0] =3D res;
- *(uint32_t*)0x200003c0 =3D r[0];
- *(uint64_t*)0x200003c8 =3D 0x20000040;
- *(uint64_t*)0x200003d0 =3D 0x20000000;
- *(uint64_t*)0x200003d8 =3D 0;
- syscall(__NR_bpf, /*cmd=3D*/2ul, /*arg=3D*/0x200003c0ul, /*size=3D*/0x20ul=
-);
- *(uint32_t*)0x200003c0 =3D r[0];
- *(uint64_t*)0x200003c8 =3D 0x20000040;
- *(uint64_t*)0x200003d0 =3D 0x20000000;
- *(uint64_t*)0x200003d8 =3D 0;
- syscall(__NR_bpf, /*cmd=3D*/2ul, /*arg=3D*/0x200003c0ul, /*size=3D*/0x20ul=
-);
-}
-int main(void) {
- syscall(__NR_mmap, /*addr=3D*/0x1ffff000ul, /*len=3D*/0x1000ul, /*prot=3D*=
-/0ul,
-         /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
- syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0x1000000ul, /*prot=
-=3D*/7ul,
-         /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
- syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul, /*prot=3D*=
-/0ul,
-         /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
- setup_leak();
- loop();
- return 0;
-}
-
-
-
-=3D* repro.txt =3D*
-socketpair(0x1, 0x1, 0x0, &(0x7f0000000000))
-r0 =3D bpf$MAP_CREATE(0x0, &(0x7f00000000c0)=3D@base=3D{0x12, 0x2, 0x4, 0x1=
-}, 0x48)
-bpf$MAP_DELETE_ELEM(0x2, &(0x7f00000003c0)=3D{r0, &(0x7f0000000040),
-0x20000000}, 0x20)
-bpf$MAP_DELETE_ELEM(0x2, &(0x7f00000003c0)=3D{r0, &(0x7f0000000040),
-0x20000000}, 0x20)
-
-
-Please see also
-https://gist.github.com/xrivendell7/80fc686da1e9223cf49ec87ad8e2ebfc
-
-I do not analysis it deeply but looks like it might be related to the
-bpf module so I aslo CC bpf maintainers.
-Hope it helps.
-Best regards.
-xingwei Lee
+> ---
+>  drivers/gpio/gpio-dwapb.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index 4a4f61bf6c58..8c59332429c2 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -282,13 +282,15 @@ static void dwapb_irq_enable(struct irq_data *d)
+>  {
+>  	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>  	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+>  	unsigned long flags;
+>  	u32 val;
+>  
+>  	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+> -	val = dwapb_read(gpio, GPIO_INTEN);
+> -	val |= BIT(irqd_to_hwirq(d));
+> +	val = dwapb_read(gpio, GPIO_INTEN) | BIT(hwirq);
+>  	dwapb_write(gpio, GPIO_INTEN, val);
+> +	val = dwapb_read(gpio, GPIO_INTMASK) & ~BIT(hwirq);
+> +	dwapb_write(gpio, GPIO_INTMASK, val);
+>  	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
+>  }
+>  
+> @@ -296,12 +298,14 @@ static void dwapb_irq_disable(struct irq_data *d)
+>  {
+>  	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>  	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+>  	unsigned long flags;
+>  	u32 val;
+>  
+>  	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+> -	val = dwapb_read(gpio, GPIO_INTEN);
+> -	val &= ~BIT(irqd_to_hwirq(d));
+> +	val = dwapb_read(gpio, GPIO_INTMASK) | BIT(hwirq);
+> +	dwapb_write(gpio, GPIO_INTMASK, val);
+> +	val = dwapb_read(gpio, GPIO_INTEN) & ~BIT(hwirq);
+>  	dwapb_write(gpio, GPIO_INTEN, val);
+>  	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
+>  }
+> -- 
+> 2.34.1
+> 
 
