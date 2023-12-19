@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-4623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A7BE818011
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:07:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 165E5818013
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:08:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3C51C23104
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:07:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A8DF1C2309A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD775253;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C60746C;
 	Tue, 19 Dec 2023 03:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KHCleshB"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OBRqJFWE"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE03A8474;
-	Tue, 19 Dec 2023 03:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8A9468A;
+	Tue, 19 Dec 2023 03:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702955262;
-	bh=yTI/2EyPQ8dikP4XMvHL83IpZe0+cQCB5jAsZLInsrI=;
+	s=mail; t=1702955263;
+	bh=FnwOT4udSoOtLQKVV79JIZooVh5Oz2VNKMvuC2X9zEk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KHCleshBag26U8woojapCZlBD6PfWUWH295Mm/EC+piz7H0TYxbwdQ9M0UVQcB5AQ
-	 G717lm33xF3d5fvfo905cscBVns7jyuJi/DjCdkRPdm360ztQwhV1LGb1baIYrMzQs
-	 k+AasryPn1T6SGbJOncBrF8IzRCkI5lZs4RIENjbED3v0oHbDb1MwP0GonY8gZ0/NX
-	 N8pAvAxqeUYgRkt/dHw0bx3s6zL7lFv+o3IshyXFIwSqCjuiv2RxRv5ZuoFQ1nwxzC
-	 Lb0i2AqYKyO2aUf1WdfP+Or4Iee2W6EEml/BPlD5aeRg1/XIEmH7wOZINVyhkYLsXS
-	 i6uh6Tp5KaNoQ==
+	b=OBRqJFWEEjuqBEjc/VsK7Ntf04jlW273Ux4ldBhmu8DI+lo3rx6nx1cDqAmMLtVpA
+	 3/oTLCQkMsRQP9ibTTehvGful48NN5S9gCL4cAxF6rUFYdSJy+EhDTfesMxlSh3n0o
+	 pZfzZ9jBBj/z6DSb5tV8EoTS2i/2AqNZnfybrAfUlAoHC32h8KzgQyzN+G3x4IRU8H
+	 wvrM5ytKJ2ChEMAW0T/jEaMHgakjdvxn1OuNQ2xF3jz4xp3wheh3VfXIgS2JbeISAH
+	 u7TWgHkRlIXFqpHCxkD0sJ6N5Rth8+c2eEQNRqMV4QPWiDK72vUbUuk+2WbsywjlGm
+	 y1cXxj+tDdzDA==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DA11F3781493;
-	Tue, 19 Dec 2023 03:07:41 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EFA123781495;
+	Tue, 19 Dec 2023 03:07:42 +0000 (UTC)
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -63,9 +63,9 @@ Cc: linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	sound-open-firmware@alsa-project.org,
 	kernel@collabora.com
-Subject: [PATCH v2 1/8] ASoC: amd: acp: Drop redundant initialization of machine driver data
-Date: Tue, 19 Dec 2023 05:07:19 +0200
-Message-ID: <20231219030728.2431640-2-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 2/8] ASoC: amd: acp: Make use of existing *_CODEC_DAI macros
+Date: Tue, 19 Dec 2023 05:07:20 +0200
+Message-ID: <20231219030728.2431640-3-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
 References: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
@@ -77,80 +77,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Simplify driver data configuration by removing redundant initialization
-of members in static structs.
+The generic ACP machine driver provides macros for NAU88221 and MAX98388
+codec DAI names, but in places it is still using directly the related
+strings.
+
+For consistency, replace all strings with the equivalent macros.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
 ---
- sound/soc/amd/acp/acp-sof-mach.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ sound/soc/amd/acp/acp-mach-common.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
-index 2a9fd3275e42..1d313fcb5f2d 100644
---- a/sound/soc/amd/acp/acp-sof-mach.c
-+++ b/sound/soc/amd/acp/acp-sof-mach.c
-@@ -28,7 +28,6 @@ static struct acp_card_drvdata sof_rt5682_rt1019_data = {
- 	.hs_codec_id = RT5682,
- 	.amp_codec_id = RT1019,
- 	.dmic_codec_id = DMIC,
--	.tdm_mode = false,
+diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
+index c90ec3419247..346f7514c81a 100644
+--- a/sound/soc/amd/acp/acp-mach-common.c
++++ b/sound/soc/amd/acp/acp-mach-common.c
+@@ -821,8 +821,8 @@ static const struct snd_soc_ops acp_card_maxim_ops = {
  };
  
- static struct acp_card_drvdata sof_rt5682_max_data = {
-@@ -38,7 +37,6 @@ static struct acp_card_drvdata sof_rt5682_max_data = {
- 	.hs_codec_id = RT5682,
- 	.amp_codec_id = MAX98360A,
- 	.dmic_codec_id = DMIC,
--	.tdm_mode = false,
- };
+ SND_SOC_DAILINK_DEF(max98388,
+-		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ADS8388:00", "max98388-aif1"),
+-				       COMP_CODEC("i2c-ADS8388:01", "max98388-aif1")));
++		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ADS8388:00", MAX98388_CODEC_DAI),
++				       COMP_CODEC("i2c-ADS8388:01", MAX98388_CODEC_DAI)));
  
- static struct acp_card_drvdata sof_rt5682s_rt1019_data = {
-@@ -48,7 +46,6 @@ static struct acp_card_drvdata sof_rt5682s_rt1019_data = {
- 	.hs_codec_id = RT5682S,
- 	.amp_codec_id = RT1019,
- 	.dmic_codec_id = DMIC,
--	.tdm_mode = false,
- };
+ static const struct snd_kcontrol_new max98388_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Left Spk"),
+@@ -1273,7 +1273,7 @@ static const struct snd_soc_ops acp_8821_ops = {
  
- static struct acp_card_drvdata sof_rt5682s_max_data = {
-@@ -58,7 +55,6 @@ static struct acp_card_drvdata sof_rt5682s_max_data = {
- 	.hs_codec_id = RT5682S,
- 	.amp_codec_id = MAX98360A,
- 	.dmic_codec_id = DMIC,
--	.tdm_mode = false,
- };
+ SND_SOC_DAILINK_DEF(nau8821,
+ 		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-NVTN2020:00",
+-						  "nau8821-hifi")));
++						  NAU8821_CODEC_DAI)));
  
- static struct acp_card_drvdata sof_nau8825_data = {
-@@ -69,7 +65,6 @@ static struct acp_card_drvdata sof_nau8825_data = {
- 	.amp_codec_id = MAX98360A,
- 	.dmic_codec_id = DMIC,
- 	.soc_mclk = true,
--	.tdm_mode = false,
- };
- 
- static struct acp_card_drvdata sof_rt5682s_hs_rt1019_data = {
-@@ -80,20 +75,15 @@ static struct acp_card_drvdata sof_rt5682s_hs_rt1019_data = {
- 	.amp_codec_id = RT1019,
- 	.dmic_codec_id = DMIC,
- 	.soc_mclk = true,
--	.tdm_mode = false,
- };
- 
- static struct acp_card_drvdata sof_nau8821_max98388_data = {
- 	.hs_cpu_id = I2S_SP,
- 	.amp_cpu_id = I2S_HS,
- 	.bt_cpu_id = I2S_BT,
--	.dmic_cpu_id = NONE,
- 	.hs_codec_id = NAU8821,
- 	.amp_codec_id = MAX98388,
--	.bt_codec_id = NONE,
--	.dmic_codec_id = NONE,
- 	.soc_mclk = true,
--	.tdm_mode = false,
- };
- 
- static int acp_sof_probe(struct platform_device *pdev)
+ /* Declare DMIC codec components */
+ SND_SOC_DAILINK_DEF(dmic_codec,
 -- 
 2.43.0
 
