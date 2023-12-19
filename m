@@ -1,55 +1,66 @@
-Return-Path: <linux-kernel+bounces-5936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BC878191AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:46:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F6C81913B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:17:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07919287482
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:46:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45EBF287CFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDFC39AC4;
-	Tue, 19 Dec 2023 20:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8294F39AC5;
+	Tue, 19 Dec 2023 20:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brun.one header.i=@brun.one header.b="HZDwUo/H"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="givioK5u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF08039AC7;
-	Tue, 19 Dec 2023 20:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=brun.one
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=brun.one
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
-	s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
-	References:From:To:Subject:Date:Message-ID:Reply-To;
-	bh=zv1tp5EJGy8vjqEhUz2XKQPecD+fBNOlCqIMeS8hFok=; b=HZDwUo/HPafCCF6LR6WBQcfZB0
-	W/7uxNvRnhBNOfvvH7YLkV34y29UK0zD7dytiRTcakH0Lo20grPg17B1cnOTAx2jf5Xsam/Ev+Qt2
-	rO2K5x/z+iZbMB8nFA9KYKeJDoXTmFv0RQsJUTbUmybP/X+T4h3PZNjKu+F9eAdlrwAsYSQHZWYU3
-	v5+NKDpn+uuQhfFyWRX5QlOAXvCqHFvz8ylnFp8OEok11hNlH+OOx8ruh2a7v7xF0pzsQbACubwqc
-	7r32ZKNkXe780MnPvE1iA+rO6HkCCjCh/vePDlQHjm7eR3g99EQDUVQ1fLVj7YUMIrp48gGBY74oY
-	Al4B57rA==;
-Received: from [212.51.153.89] (helo=blacklava.cluster.local)
-	by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <lorenz@dolansoft.org>)
-	id 1rFgUr-000rhY-1N;
-	Tue, 19 Dec 2023 20:15:21 +0000
-From: Lorenz Brun <lorenz@brun.one>
-To: James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hda: cs35l41: Add HP override
-Date: Tue, 19 Dec 2023 21:15:11 +0100
-Message-ID: <20231219201513.2172580-1-lorenz@brun.one>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F57215494
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703017051;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=01FhvVCGrz9P2bb0tXUNI0bFaaBVoUDAD7MiFwv5MeQ=;
+	b=givioK5umKbqDOIGdzqTWalPiunz9Nw1WQmfB/pK+aSRQvWDM7LMBg1HD8ehn+wfTTjeSi
+	2YO49VYBAi3TtEsoRJRqidjNgk3zy0qeHWdNwCDZhki8A38VTXIv8j6oKJNEVwLeF5eXmV
+	a2TAiOOpFltyjgA62u0YZdRKk1Ef7ws=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-558-zR7GIT9iP0SKCMMmAjc2xw-1; Tue,
+ 19 Dec 2023 15:17:27 -0500
+X-MC-Unique: zR7GIT9iP0SKCMMmAjc2xw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7B7D3C025D2;
+	Tue, 19 Dec 2023 20:17:25 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.39.192.165])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 67C6D1121306;
+	Tue, 19 Dec 2023 20:17:23 +0000 (UTC)
+From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+To: masahiroy@kernel.org
+Cc: dcavalca@meta.com,
+	jtornosm@redhat.com,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	nathan@kernel.org,
+	ndesaulniers@google.com,
+	nicolas@fjasle.eu,
+	stable@vger.kernel.org
+Subject: [PATCH v4] rpm-pkg: simplify installkernel %post
+Date: Tue, 19 Dec 2023 21:17:19 +0100
+Message-ID: <20231219201719.1967948-1-jtornosm@redhat.com>
+In-Reply-To: <CAK7LNASf7cOiWpcMsycVSBOg4Xp-dmUnAvGqdw5wAYR=KBzdig@mail.gmail.com>
+References: <CAK7LNASf7cOiWpcMsycVSBOg4Xp-dmUnAvGqdw5wAYR=KBzdig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,105 +68,102 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: lorenz@dolansoft.org
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-This adds an override for a series of notebooks using a common config
-taken from HP's proprietary Windows driver (csaudioext).
+The new installkernel application that is now included in systemd-udev
+package allows installation although destination files are already present
+in the boot directory of the kernel package, but is failing with the
+implemented workaround for the old installkernel application from grubby
+package.
 
-This has been tested on a HP 15-ey0xxxx device (subsystem 103C8A31)
-together with another Realtek quirk and the calibration files from the
-proprietary driver.
+For the new installkernel application, as Davide says:
+<<The %post currently does a shuffling dance before calling installkernel.
+This isn't actually necessary afaict, and the current implementation
+ends up triggering downstream issues such as
+https://github.com/systemd/systemd/issues/29568
+This commit simplifies the logic to remove the shuffling. For reference,
+the original logic was added in commit 3c9c7a14b627("rpm-pkg: add %post
+section to create initramfs and grub hooks").>>
 
-Signed-off-by: Lorenz Brun <lorenz@brun.one>
+But we need to keep the old behavior as well, because the old installkernel
+application from grubby package, does not allow this simplification and
+we need to be backward compatible to avoid issues with the different
+packages.
+
+Mimic Fedora shipping process and store vmlinuz, config amd System.map
+in the module directory instead of the boot directory. In this way, we will
+avoid the commented problem for all the cases, because the new destination
+files are not going to exist in the boot directory of the kernel package.
+
+Replace installkernel tool with kernel-install tool, because the latter is
+more complete. Suitable manual actions are added as a default if tool is not
+present (unusual).
+
+cc: stable@vger.kernel.org
+Co-Developed-by: Davide Cavalca <dcavalca@meta.com>
+Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
 ---
- sound/pci/hda/cs35l41_hda_property.c | 59 ++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+V1 -> V2:
+- Complete to be backward compatible with the previous installkernel
+application.
+V2 -> V3:
+- Follow the suggestions from Masahiro Yamada and change the installation
+V3 -> V4:
+- Make the patch applicable to linux-kbuild/for-next (ia64 support was
+already removed).
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index c83328971728..8135ea532a94 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -6,6 +6,7 @@
- //
- // Author: Stefan Binding <sbinding@opensource.cirrus.com>
+ scripts/package/kernel.spec | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
+
+diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
+index 89298983a169..17e7196c9be1 100644
+--- a/scripts/package/kernel.spec
++++ b/scripts/package/kernel.spec
+@@ -55,12 +55,12 @@ patch -p1 < %{SOURCE2}
+ %{make} %{makeflags} KERNELRELEASE=%{KERNELRELEASE} KBUILD_BUILD_VERSION=%{release}
  
-+#include <linux/acpi.h>
- #include <linux/gpio/consumer.h>
- #include <linux/string.h>
- #include "cs35l41_hda_property.h"
-@@ -81,6 +82,42 @@ static int hp_vision_acpi_fix(struct cs35l41_hda *cs35l41, struct device *physde
- 	return 0;
- }
+ %install
+-mkdir -p %{buildroot}/boot
+-cp $(%{make} %{makeflags} -s image_name) %{buildroot}/boot/vmlinuz-%{KERNELRELEASE}
++mkdir -p %{buildroot}/lib/modules/%{KERNELRELEASE}
++cp $(%{make} %{makeflags} -s image_name) %{buildroot}/lib/modules/%{KERNELRELEASE}/vmlinuz
+ %{make} %{makeflags} INSTALL_MOD_PATH=%{buildroot} modules_install
+ %{make} %{makeflags} INSTALL_HDR_PATH=%{buildroot}/usr headers_install
+-cp System.map %{buildroot}/boot/System.map-%{KERNELRELEASE}
+-cp .config %{buildroot}/boot/config-%{KERNELRELEASE}
++cp System.map %{buildroot}/lib/modules/%{KERNELRELEASE}
++cp .config %{buildroot}/lib/modules/%{KERNELRELEASE}/config
+ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEASE}/build
+ %if %{with_devel}
+ %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='${srctree}/scripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE}'
+@@ -70,12 +70,12 @@ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEA
+ rm -rf %{buildroot}
  
-+/*
-+ * HP 2-channel I2C configuration with internal boost (4.1A inductor current) with no _DSD,
-+ * reset GPIO can still be extracted from ACPI by index. Covers HP configurations 251, 252,
-+ * 253, 254, 351, 352 and 353 in the proprietary driver (csaudioext).
-+ */
-+static int hp_i2c_2ch_vbst_ipk41(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
-+			      const char *hid)
-+{
-+	// In case a valid _DSD exists, use that instead of the override. This stops applying
-+	// the override in case HP ever fixes their firmware.
-+	if (device_property_count_u32(physdev, "cirrus,dev-index") > 0)
-+		return -ENOENT;
-+
-+	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-+
-+	cs35l41->index = id == 0x40 ? 0 : 1;
-+	cs35l41->channel_index = 0;
-+	// Get reset GPIO (shared for both instances) from ACPI GpioIo at index 0.
-+	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
-+	// Speaker ID GPIO is ACPI GpioIo index 1.
-+	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 1);
-+
-+	hw_cfg->spk_pos = cs35l41->index ? 1 : 0; // left:right
-+	hw_cfg->gpio1.func = CS35L41_NOT_USED;
-+	hw_cfg->gpio1.valid = true;
-+	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
-+	hw_cfg->gpio2.valid = true;
-+	hw_cfg->bst_type = CS35L41_INT_BOOST;
-+	hw_cfg->bst_ind = 1000;
-+	hw_cfg->bst_ipk = 4100;
-+	hw_cfg->bst_cap = 10; // Exact value unknown, maps into correct range
-+	hw_cfg->valid = true;
-+
-+	return 0;
-+}
-+
- struct cs35l41_prop_model {
- 	const char *hid;
- 	const char *ssid;
-@@ -92,6 +129,28 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
- 	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
- 	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
-+	{ "CSC3551", "103C8A28", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A29", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A2A", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A2B", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A2C", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A2D", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A2E", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A30", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8A31", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BB3", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BB4", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BDF", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BE0", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BE1", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BE2", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BE9", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BDD", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BDE", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BE3", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BE5", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8BE6", hp_i2c_2ch_vbst_ipk41 },
-+	{ "CSC3551", "103C8B3A", hp_i2c_2ch_vbst_ipk41 },
- 	{}
- };
+ %post
+-if [ -x /sbin/installkernel -a -r /boot/vmlinuz-%{KERNELRELEASE} -a -r /boot/System.map-%{KERNELRELEASE} ]; then
+-cp /boot/vmlinuz-%{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm
+-cp /boot/System.map-%{KERNELRELEASE} /boot/.System.map-%{KERNELRELEASE}-rpm
+-rm -f /boot/vmlinuz-%{KERNELRELEASE} /boot/System.map-%{KERNELRELEASE}
+-/sbin/installkernel %{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
+-rm -f /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
++if [ -x /usr/bin/kernel-install ]; then
++kernel-install add %{KERNELRELEASE} /lib/modules/%{KERNELRELEASE}/vmlinuz
++else
++cp /lib/modules/%{KERNELRELEASE}/vmlinuz /boot/vmlinuz-%{KERNELRELEASE}
++cp /lib/modules/%{KERNELRELEASE}/System.map /boot/System.map-%{KERNELRELEASE}
++cp /lib/modules/%{KERNELRELEASE}/config /boot/config-%{KERNELRELEASE}
+ fi
  
+ %preun
+@@ -94,7 +94,6 @@ fi
+ %defattr (-, root, root)
+ /lib/modules/%{KERNELRELEASE}
+ %exclude /lib/modules/%{KERNELRELEASE}/build
+-/boot/*
+ 
+ %files headers
+ %defattr (-, root, root)
 -- 
-2.42.0
+2.43.0
 
 
