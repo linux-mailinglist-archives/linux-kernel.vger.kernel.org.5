@@ -1,108 +1,141 @@
-Return-Path: <linux-kernel+bounces-4507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE551817E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:01:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B27D8817E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E526A1C22DD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:01:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7B491C22E0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 00:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAB86129;
-	Tue, 19 Dec 2023 00:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6EE5C97;
+	Tue, 19 Dec 2023 00:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Bcjfhu0W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rr8a9wCc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D17D5C98
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 00:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7b7684f0fe4so25949439f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 16:00:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702944056; x=1703548856; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AcElKjkDPO0dV10cWP2L6pU0RVFW2OtHmlKmzqcZ7is=;
-        b=Bcjfhu0WCRw5kwKqyuTnYG5uBaP22Z7sGkT1ephyTtG0LGfu+wv8bGplMJlG68ROEX
-         HbXaIjhf5vNZvKJIgacJVRgs6P+en5pUSHc0UtIWCgAHgCZePQKxezO0DZK8griDxT+b
-         +tQaD1s9416AazhAPPgWOeRrqXwWFde9pzHsk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702944056; x=1703548856;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AcElKjkDPO0dV10cWP2L6pU0RVFW2OtHmlKmzqcZ7is=;
-        b=MgS46oFq14oToQCGpLd0dv7aG0J9cjgY+0U+l9oRN2swD/+c2bUB33M+1t2Pa3YXO2
-         MM1a27VpkuL9ZMkIopLkoKbUVUBc/8phly/bHcE0zkZa9ZmrGxzuPR+uv1WXu9sIlL/7
-         DA5EDCB3bgV/Tqyj2rCKZ6VD5JXn223KpRhi1muSSpUrnJ7KjFjVwyGFq2g1AYjDUxoB
-         iW/lh926fU70c8QcOFDymMPQJ0sMC93vKL3u+RUtJ5zAY+x1WFIbmTNipW79E2IAINOf
-         xyuONY1sTv1NV3Lj/y+uX7NEqShLf9yHR9d3GV27VyHNr8t/KPoCnG+SezxOXa3CeqWy
-         02DQ==
-X-Gm-Message-State: AOJu0Yzn+rpltL/o8e3j95U+5exl4hhx3zYlxj6NxH5NjXzVVUZGUqAP
-	KOf3k1QokjG7IUBBibJh5V4PUA==
-X-Google-Smtp-Source: AGHT+IHxpbtOB5tqCVef208T3slzQmA4nO/IZY2v9kdtJaGI54Sj07Z57g2cbuxe2QkkmJziqwcMlQ==
-X-Received: by 2002:a6b:a0d:0:b0:7b6:f0b4:92aa with SMTP id z13-20020a6b0a0d000000b007b6f0b492aamr29016897ioi.0.1702944056457;
-        Mon, 18 Dec 2023 16:00:56 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id w12-20020a056602034c00b007b45c1015b6sm5990878iou.31.2023.12.18.16.00.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 16:00:56 -0800 (PST)
-Message-ID: <f76015fc-94a1-4cc3-9780-6f0b9e8c9d42@linuxfoundation.org>
-Date: Mon, 18 Dec 2023 17:00:55 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7FE7472;
+	Tue, 19 Dec 2023 00:01:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C79BC433C8;
+	Tue, 19 Dec 2023 00:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702944079;
+	bh=fMgl5f1cxsDp2Ro+Gy0GmSHDb4UdBfrTzpxZdw6xSOI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rr8a9wCcxzUWjy+33BEpF+Rz/shtCM1gzDwv6ucq4Mp+VdWWx+hVaiF+tmXKbzUQ7
+	 wObo1de1uj0lA8td3opQu8p2rEAxvlh+inTqEEmqXhxdvD0qtAD6IhSfTs4NII0EIG
+	 lw+Zey2sh4dFZYPEWd/NGIGXAmjGKubHZm5SgQzagOwYliWG5sFMICElNin3u4lOHE
+	 f6rzfFg29C//Uw1vAdwPHRcW3a2mGwhnNKM0o95Z/7d3mbznhulW2VnALuxSiCMA34
+	 aRbeIFGIE9JczjyLsDc+cmS8RyBopRKqHd967KNsrt6slkFwU68j+plOP3/yNrqDAf
+	 r20wNTWUyx20g==
+Date: Mon, 18 Dec 2023 17:01:16 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP
+ redirect.
+Message-ID: <20231219000116.GA3956476@dev-arch.thelio-3990X>
+References: <20231215171020.687342-21-bigeasy@linutronix.de>
+ <202312161212.D5tju5i6-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 00/83] 5.15.144-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20231218135049.738602288@linuxfoundation.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231218135049.738602288@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202312161212.D5tju5i6-lkp@intel.com>
 
-On 12/18/23 06:51, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.144 release.
-> There are 83 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Sat, Dec 16, 2023 at 12:53:43PM +0800, kernel test robot wrote:
+> Hi Sebastian,
 > 
-> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
-> Anything received after that time might be too late.
+> kernel test robot noticed the following build errors:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.144-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+> [auto build test ERROR on net-next/main]
 > 
-> thanks,
+> url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/20231216-011911
+> base:   net-next/main
+> patch link:    https://lore.kernel.org/r/20231215171020.687342-21-bigeasy%40linutronix.de
+> patch subject: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP redirect.
+> config: arm-defconfig (https://download.01.org/0day-ci/archive/20231216/202312161212.D5tju5i6-lkp@intel.com/config)
+> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312161212.D5tju5i6-lkp@intel.com/reproduce)
 > 
-> greg k-h
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312161212.D5tju5i6-lkp@intel.com/
 > 
+> All errors (new ones prefixed by >>):
+> 
+> >> drivers/net/ethernet/intel/igb/igb_main.c:8620:3: error: cannot jump from this goto statement to its label
+>                    goto xdp_out;
+>                    ^
+>    drivers/net/ethernet/intel/igb/igb_main.c:8624:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
+>            guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+>            ^
+>    include/linux/cleanup.h:142:15: note: expanded from macro 'guard'
+>            CLASS(_name, __UNIQUE_ID(guard))
+>                         ^
+>    include/linux/compiler.h:180:29: note: expanded from macro '__UNIQUE_ID'
+>    #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
+>                                ^
+>    include/linux/compiler_types.h:84:22: note: expanded from macro '__PASTE'
+>    #define __PASTE(a,b) ___PASTE(a,b)
+>                         ^
+>    include/linux/compiler_types.h:83:23: note: expanded from macro '___PASTE'
+>    #define ___PASTE(a,b) a##b
+>                          ^
+>    <scratch space>:52:1: note: expanded from here
+>    __UNIQUE_ID_guard753
+>    ^
+>    1 error generated.
 
-Compiled and booted on my test system. No dmesg regressions.
+I initially thought that this may have been
+https://github.com/ClangBuiltLinux/linux/issues/1886 but asm goto is not
+involved here.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+This error occurs because jumping over the initialization of a variable
+declared with __attribute__((__cleanup__(...))) does not prevent the
+clean up function from running as one may expect it to, but could
+instead result in the clean up function getting run on uninitialized
+memory. A contrived example (see the bottom of the "Output" tabs for the
+execution output):
 
-thanks,
--- Shuah
+https://godbolt.org/z/9bvGboxvc
+
+While there is a warning from GCC in that example, I don't see one in
+the kernel's case. I see there is an open GCC issue around this problem:
+
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91951
+
+While it is possible that there may not actually be a problem with how
+the kernel uses __attribute__((__cleanup__(...))) and gotos, I think
+clang's behavior is reasonable given the potential footguns that this
+construct has.
+
+Cheers,
+Nathan
 
