@@ -1,84 +1,118 @@
-Return-Path: <linux-kernel+bounces-5036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AFE48185B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:53:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7FD48185B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9ABF281547
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:53:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 407B41F25086
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EDC714F91;
-	Tue, 19 Dec 2023 10:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rbhE/D2j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676EC14F77;
+	Tue, 19 Dec 2023 10:52:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D854E14F67;
-	Tue, 19 Dec 2023 10:53:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A142C433C8;
-	Tue, 19 Dec 2023 10:53:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702983202;
-	bh=otAQ38rB3LXDgplWgIxY+zsvLHAmBokvqcYg5UKjARE=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=rbhE/D2jR3UKWQeAxdjVuJIi/NUYeuh04EyBAD9uUCXzCbyZo72gr3CuFT1rcWKIH
-	 By+dSh5r2MSvcawDaKxggQPo0hlGHoPnBDFGU4yTNz7uE0CPIqI5Wyr57EpUEPb/KD
-	 R3YCGherpG+9FmFbr8sbYRtwAUTqSdKe4QF2LH8mueBBeRfLDZxBWXXWjJ2xls0eVO
-	 TvuAhnGSEq9bO5f4ffFV5RqybdMtoWplrYg8QcVSsxImpHlt0WirPf6hXxXeQYi9Pe
-	 fPOD2j70CxjdxaxXBe169GGGx85qsLwfzrVdaLbph8N9sWHlJc7M+5dZTiZxPUgjU6
-	 PXQeQKB0Qz8PQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Arend Van Spriel <arend.vanspriel@broadcom.com>,  Lukas Bulwahn
- <lukas.bulwahn@gmail.com>,  Arend van Spriel <aspriel@gmail.com>,  Franky
- Lin <franky.lin@broadcom.com>,  Hante Meuleman
- <hante.meuleman@broadcom.com>,  linux-wireless@vger.kernel.org,
-  brcm80211-dev-list.pdl@broadcom.com,  kernel-janitors@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: MAINTAINERS: wifi: brcm80211: remove non-existing
- SHA-cyfmac-dev-list@infineon.com
-References: <20231218121105.23882-1-lukas.bulwahn@gmail.com>
-	<170295913267.640718.8284035097366475252.kvalo@kernel.org>
-	<18c814f4890.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-	<29c3122ca8e4d72c07942d09dca7a0fbd0138024.camel@sipsolutions.net>
-Date: Tue, 19 Dec 2023 12:53:18 +0200
-In-Reply-To: <29c3122ca8e4d72c07942d09dca7a0fbd0138024.camel@sipsolutions.net>
-	(Johannes Berg's message of "Tue, 19 Dec 2023 11:41:18 +0100")
-Message-ID: <8734vysbtt.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23CE314F68;
+	Tue, 19 Dec 2023 10:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A00F1FB;
+	Tue, 19 Dec 2023 02:53:03 -0800 (PST)
+Received: from [10.57.85.227] (unknown [10.57.85.227])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CE713F738;
+	Tue, 19 Dec 2023 02:52:16 -0800 (PST)
+Message-ID: <b31672e4-ab41-4724-86ef-038606318663@arm.com>
+Date: Tue, 19 Dec 2023 10:53:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 03/23] PM: EM: Find first CPU active while updating OPP
+ efficiency
+Content-Language: en-US
+To: Qais Yousef <qyousef@layalina.io>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+ amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+ daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
+ pavel@ucw.cz, mhiramat@kernel.org, wvw@google.com
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <20231129110853.94344-4-lukasz.luba@arm.com>
+ <20231217175829.a6hqz7mqlvrujsvs@airbuntu>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231217175829.a6hqz7mqlvrujsvs@airbuntu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Johannes Berg <johannes@sipsolutions.net> writes:
 
-> On Tue, 2023-12-19 at 10:01 +0100, Arend Van Spriel wrote:
->> > 
->> > > When sending an email to SHA-cyfmac-dev-list@infineon.com, the server
->> > > responds '550 #5.1.0 Address rejected.'
->> 
->> Is the claim here true? In another thread I replied all including this list 
->> and I am not getting a bounce message.
->
-> I also got the bounce, FWIW. And Lukas is using gmail ... if you're not
-> accepting mail from gmail I'm not sure you get to call it "email" in the
-> 21st century, for (better or) worse...
 
-And is Infineon even contributing anything to upstream? At least I don't
-have recollection any recent activity, though happy to be proven wrong.
-We shouldn't have dormant information in MAINTAINERS file.
+On 12/17/23 17:58, Qais Yousef wrote:
+> On 11/29/23 11:08, Lukasz Luba wrote:
+>> The Energy Model might be updated at runtime and the energy efficiency
+>> for each OPP may change. Thus, there is a need to update also the
+>> cpufreq framework and make it aligned to the new values. In order to
+>> do that, use a first active CPU from the Performance Domain. This is
+>> needed since the first CPU in the cpumask might be offline when we
+>> run this code path.
+> 
+> I didn't understand the problem here. It seems you're fixing a race, but the
+> description is not clear to me what the race is.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+I have explained that in v1, v4 comments for this patch.
+When the EM is registered the fist CPU is always online. No problem
+for the old code, but for new code with runtime modification at
+later time, potentially from different subsystems - it it (e.g. thermal,
+drivers, etc). The fist CPU might be offline, but still such EM
+update for this domain shouldn'y fail. Although, when the CPU is offline
+we cannot get the valid policy...
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+We can get it for next cpu in the cpumask, that's what the code is
+doing.
+
+> 
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   kernel/power/energy_model.c | 11 +++++++++--
+>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+>> index 42486674b834..aa7c89f9e115 100644
+>> --- a/kernel/power/energy_model.c
+>> +++ b/kernel/power/energy_model.c
+>> @@ -243,12 +243,19 @@ em_cpufreq_update_efficiencies(struct device *dev, struct em_perf_state *table)
+>>   	struct em_perf_domain *pd = dev->em_pd;
+>>   	struct cpufreq_policy *policy;
+>>   	int found = 0;
+>> -	int i;
+>> +	int i, cpu;
+>>   
+>>   	if (!_is_cpu_device(dev) || !pd)
+>>   		return;
+>>   
+>> -	policy = cpufreq_cpu_get(cpumask_first(em_span_cpus(pd)));
+>> +	/* Try to get a CPU which is active and in this PD */
+>> +	cpu = cpumask_first_and(em_span_cpus(pd), cpu_active_mask);
+>> +	if (cpu >= nr_cpu_ids) {
+>> +		dev_warn(dev, "EM: No online CPU for CPUFreq policy\n");
+>> +		return;
+>> +	}
+>> +
+>> +	policy = cpufreq_cpu_get(cpu);
+> 
+> Shouldn't policy be NULL here if all policy->realted_cpus were offlined?
+
+It will be NULL but we will capture that fact in other way in the 'if'
+above.
+
+We want something else.
+
+We want to get policy using 'some' online CPU's id from our known
+cpumask. Then we can continue with such policy in the code.
 
