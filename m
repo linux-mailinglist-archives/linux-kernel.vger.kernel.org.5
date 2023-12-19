@@ -1,201 +1,183 @@
-Return-Path: <linux-kernel+bounces-5170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B4A818782
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:32:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C18A5818785
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 265EAB235C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:32:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 633F92866F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E30E1862E;
-	Tue, 19 Dec 2023 12:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B716179AD;
+	Tue, 19 Dec 2023 12:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="ogPokliN"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mRbNSKsh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF2E18626
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1702989128;
-	bh=yegy5KvHAjVR/3lUPtBaK8gT7xS7yxnnzH8gSTQaNjU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ogPokliNma+UCVMcfxvIV7oxKkXpzS8O7GpG2MFI3U3QwpBJnhuRXZ5G9G+UL5+WA
-	 h9dEoH+0QtZwmbDIZ3BC/Zi+JJ3RK1ISYnDsTa19zPr8qMmFeXSvvIqJUNElABkWvK
-	 yUo81kw3/oLJ6+SxTk2b8+nZ/cF+12wpJX1M57zdF1/AplmLIVFkwUyEmW+Ynq2HBN
-	 ai2lA8291/po9+dIZ2fesQ/IUNxPNZTe9ggDLqs8bZeHMv+js9otOwdpnhcQBKLQq/
-	 zvMHlQ1PIiMN+T77hXord8kqiLhkBKhs1e8pnQRiPytvcJgZx7JLSYDuT9MsfNatti
-	 IgSGpmuUcQ3Iw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Svbfw1vtbz4wdD;
-	Tue, 19 Dec 2023 23:32:08 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/64s: Increase default stack size to 32KB
-In-Reply-To: <20231215124449.317597-1-mpe@ellerman.id.au>
-References: <20231215124449.317597-1-mpe@ellerman.id.au>
-Date: Tue, 19 Dec 2023 23:32:07 +1100
-Message-ID: <87ttoel6ew.fsf@mail.lhotse>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C2D18E13
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:33:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40c3ceded81so44641785e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:33:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702989207; x=1703594007; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xA3u4t+UtUJ0McmzJljzqmFtcCuyXSppyAwUPeBeqLw=;
+        b=mRbNSKshcWCp5A30JNBv22Pht0GAk/9P4UH8anqaUOPwVPr8n7cFCy4hAVaWcZc37W
+         mzOTeWh0GWdnMImrCCECamLsycicic+uMGaPRb3PTTVtvIocV90761fTrMvIF/i5T+Z9
+         HHEyQDuP4q4tzvPph2CxYm6c4aRlu98e/uUc1kOlFvXNThwsJD2MLgHbXPZuN2XKQpaM
+         cRFz3JSG/wUOFZl5S1Tmep8Q5kOd8aEgEJGELuMlGiEwGLbBCF9Q3tXRTnFuRBXwpeZD
+         GAZYBtQ8YhBXjdTT0Hy9YYGXD8kuCvnztJ9H/Yh4yOEnU/AIIgulfiIZ+fbSREuZdMhZ
+         g+Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702989207; x=1703594007;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xA3u4t+UtUJ0McmzJljzqmFtcCuyXSppyAwUPeBeqLw=;
+        b=Jff7SHGWWwBHx4ik5TnRNCajpDNdJaRlxRvOnZcB3nHuahSKmy/badIsbnJnAfxdbz
+         +GHB1JU+OLvcusEQnfbNegapp57VG1gP0eBl99g/JtzP0z6z5wWmTHANBvRVIy6bzlxD
+         JoD3j1L40J5SjgUgmO2OBrDMHCcMVQDeomgg7BbXXM4AG5B79iIbO8qlPJMkUiailw+Y
+         uuKVlIUpeuUtIUr9H8hBg2/mkqJXYQEwiu6GJb6/lS3OKIzCZSOVnSovhxngqmCgwJXq
+         3noa5n8OiN1WEA3rBIGmYzlmzmNMhY4VwP7xG9FYIinCFhduzYIYP1pa56mWmQ7yB2Xg
+         5WVQ==
+X-Gm-Message-State: AOJu0YzXHyDymr9nug9Cx/incAY8OgU0yfDPQJBHVuqepfNhg85LKKbK
+	67V0NJw65rhEwdgjkPdBDbtKgA==
+X-Google-Smtp-Source: AGHT+IFzoKKAKbnPL7LRL39CV2dy6y+u+klABAwXLT5Oif8aLNSfNjfHBHfrrjrqv4ztFu1wS+PLvA==
+X-Received: by 2002:a05:600c:3502:b0:40d:18e2:895 with SMTP id h2-20020a05600c350200b0040d18e20895mr1948499wmq.98.1702989207121;
+        Tue, 19 Dec 2023 04:33:27 -0800 (PST)
+Received: from [192.168.10.46] ([37.167.119.56])
+        by smtp.googlemail.com with ESMTPSA id n33-20020a05600c502100b004030e8ff964sm2697092wmr.34.2023.12.19.04.33.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 04:33:26 -0800 (PST)
+Message-ID: <3a61d2d9-158f-4728-af19-a8700d5ce1a1@linaro.org>
+Date: Tue, 19 Dec 2023 13:33:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-
-Michael Ellerman <mpe@ellerman.id.au> writes:
-> There are reports of kernels crashing due to stack overflow while
-> running OpenShift (Kubernetes). The primary contributor to the stack
-> usage seems to be openvswitch, which is used by OVN-Kubernetes (based on
-> OVN (Open Virtual Network)), but NFS also contributes in some stack
-> traces.
-
-For the archives here's an example trace.
-
-This comes from the openshift CI:
-  https://prow.ci.openshift.org/view/gs/origin-ci-test/logs/periodic-ci-openshift-multiarch-master-nightly-4.14-ocp-e2e-ovn-remote-libvirt-ppc64le/1703597644732960768
-
-Which links through to the kdump.tar:
-  https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/origin-ci-test/logs/periodic-ci-openshift-multiarch-master-nightly-4.14-ocp-e2e-ovn-remote-libvirt-ppc64le/1703597644732960768/artifacts/ocp-e2e-ovn-remote-libvirt-ppc64le/ipi-conf-debug-kdump-gather-logs/artifacts/kdump.tar
-
-Which contains vmcore-dmesg.txt, which includes this trace:
-
-[ 1805.324030] do_IRQ: stack overflow: 1808
-[ 1805.324179] CPU: 0 PID: 263384 Comm: mount.nfs Kdump: loaded Not tainted 5.14.0-284.32.1.el9_2.ppc64le #1
-[ 1805.324184] Call Trace:
-[ 1805.324186] [c00000037d4806d0] [c0000000008427d0] dump_stack_lvl+0x74/0xa8 (unreliable)
-[ 1805.324199] [c00000037d480710] [c000000000016bbc] __do_IRQ+0x11c/0x130
-[ 1805.324205] [c00000037d4807a0] [c000000000016c10] do_IRQ+0x40/0xa0
-[ 1805.324210] [c00000037d4807d0] [c000000000009080] hardware_interrupt_common_virt+0x210/0x220
-[ 1805.324215] --- interrupt: 500 at slab_pre_alloc_hook.constprop.0+0x7c/0x340
-[ 1805.324221] NIP:  c0000000004feb3c LR: c0000000004feb24 CTR: c00000000092b770
-[ 1805.324223] REGS: c00000037d480840 TRAP: 0500   Not tainted  (5.14.0-284.32.1.el9_2.ppc64le)
-[ 1805.324226] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24424442  XER: 00000000
-[ 1805.324240] CFAR: c00000000045ef8c IRQMASK: 0 
-GPR00: c0000000004feb24 c00000037d480ae0 c000000002b12700 0000000000000000 
-GPR04: 0000000000000a20 c00000037d480b60 0000000000000001 0000000000000a20 
-GPR08: c00000000133ca80 0000000000000000 0000000000000028 0000000000004000 
-GPR12: c00000000092b770 c000000002ea0000 0000000000000000 0000000000000000 
-GPR16: 0000000000000005 0000000000000040 000000000000012e c0000000566930e0 
-GPR20: 0000000000000008 0000000000000000 c0000000566930e0 0000000000000000 
-GPR24: c00000000092bac4 c000000003010400 c00000037d480b60 0000000000000001 
-GPR28: 0000000000000000 0000000000000a20 0000000000000000 c000000003010400 
-[ 1805.324284] NIP [c0000000004feb3c] slab_pre_alloc_hook.constprop.0+0x7c/0x340
-[ 1805.324288] LR [c0000000004feb24] slab_pre_alloc_hook.constprop.0+0x64/0x340
-[ 1805.324291] --- interrupt: 500
-[ 1805.324292] [c00000037d480ae0] [0000000000000000] 0x0 (unreliable)
-[ 1805.324298] [c00000037d480b40] [c00000000050560c] __kmalloc+0x8c/0x5e0
-[ 1805.324302] [c00000037d480bc0] [c00000000092bac4] virtqueue_add_outbuf+0x354/0xac0
-[ 1805.324307] [c00000037d480cc0] [c0080000011b3a84] xmit_skb+0x1dc/0x350 [virtio_net]
-[ 1805.324317] [c00000037d480d50] [c0080000011b3ccc] start_xmit+0xd4/0x3b0 [virtio_net]
-[ 1805.324321] [c00000037d480e00] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
-[ 1805.324327] [c00000037d480e80] [c000000000cf1c8c] sch_direct_xmit+0xec/0x330
-[ 1805.324332] [c00000037d480f20] [c000000000c4a03c] __dev_xmit_skb+0x41c/0xa80
-[ 1805.324336] [c00000037d480f90] [c000000000c4c194] __dev_queue_xmit+0x414/0x950
-[ 1805.324340] [c00000037d481070] [c008000002abdfdc] ovs_vport_send+0xb4/0x210 [openvswitch]
-[ 1805.324351] [c00000037d4810f0] [c008000002aa14a4] do_output+0x7c/0x200 [openvswitch]
-[ 1805.324359] [c00000037d481140] [c008000002aa33b0] do_execute_actions+0xe48/0xeb0 [openvswitch]
-[ 1805.324366] [c00000037d481300] [c008000002aa3800] ovs_execute_actions+0x78/0x1f0 [openvswitch]
-[ 1805.324373] [c00000037d481380] [c008000002aa970c] ovs_dp_process_packet+0xb4/0x2e0 [openvswitch]
-[ 1805.324380] [c00000037d481450] [c008000002abde84] ovs_vport_receive+0x8c/0x130 [openvswitch]
-[ 1805.324388] [c00000037d481660] [c008000002abe638] internal_dev_xmit+0x40/0xd0 [openvswitch]
-[ 1805.324396] [c00000037d481690] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
-[ 1805.324401] [c00000037d481710] [c000000000c4c3b4] __dev_queue_xmit+0x634/0x950
-[ 1805.324405] [c00000037d4817f0] [c000000000d50810] neigh_hh_output+0xd0/0x180
-[ 1805.324410] [c00000037d481840] [c000000000d516ec] ip_finish_output2+0x31c/0x5c0
-[ 1805.324415] [c00000037d4818e0] [c000000000d53f94] ip_local_out+0x64/0x90
-[ 1805.324419] [c00000037d481920] [c000000000dd83e4] iptunnel_xmit+0x194/0x290
-[ 1805.324423] [c00000037d4819c0] [c008000003160408] udp_tunnel_xmit_skb+0x100/0x140 [udp_tunnel]
-[ 1805.324429] [c00000037d481a80] [c008000003203a54] geneve_xmit_skb+0x34c/0x610 [geneve]
-[ 1805.324434] [c00000037d481bb0] [c00800000320596c] geneve_xmit+0x94/0x1e8 [geneve]
-[ 1805.324438] [c00000037d481c30] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
-[ 1805.324442] [c00000037d481cb0] [c000000000c4c3b4] __dev_queue_xmit+0x634/0x950
-[ 1805.324446] [c00000037d481d90] [c008000002abdfdc] ovs_vport_send+0xb4/0x210 [openvswitch]
-[ 1805.324454] [c00000037d481e10] [c008000002aa14a4] do_output+0x7c/0x200 [openvswitch]
-[ 1805.324461] [c00000037d481e60] [c008000002aa33b0] do_execute_actions+0xe48/0xeb0 [openvswitch]
-[ 1805.324468] [c00000037d482020] [c008000002aa3800] ovs_execute_actions+0x78/0x1f0 [openvswitch]
-[ 1805.324475] [c00000037d4820a0] [c008000002aa970c] ovs_dp_process_packet+0xb4/0x2e0 [openvswitch]
-[ 1805.324482] [c00000037d482170] [c008000002aa36e0] clone_execute+0x2c8/0x370 [openvswitch]
-[ 1805.324489] [c00000037d482210] [c008000002aa2a20] do_execute_actions+0x4b8/0xeb0 [openvswitch]
-[ 1805.324495] [c00000037d4823d0] [c008000002aa3800] ovs_execute_actions+0x78/0x1f0 [openvswitch]
-[ 1805.324502] [c00000037d482450] [c008000002aa970c] ovs_dp_process_packet+0xb4/0x2e0 [openvswitch]
-[ 1805.324509] [c00000037d482520] [c008000002abde84] ovs_vport_receive+0x8c/0x130 [openvswitch]
-[ 1805.324516] [c00000037d482730] [c008000002abe638] internal_dev_xmit+0x40/0xd0 [openvswitch]
-[ 1805.324524] [c00000037d482760] [c000000000c4baac] dev_hard_start_xmit+0x11c/0x280
-[ 1805.324528] [c00000037d4827e0] [c000000000c4c3b4] __dev_queue_xmit+0x634/0x950
-[ 1805.324532] [c00000037d4828c0] [c000000000d50810] neigh_hh_output+0xd0/0x180
-[ 1805.324536] [c00000037d482910] [c000000000d516ec] ip_finish_output2+0x31c/0x5c0
-[ 1805.324541] [c00000037d4829b0] [c000000000d54440] __ip_queue_xmit+0x1b0/0x4f0
-[ 1805.324545] [c00000037d482a40] [c000000000d821e0] __tcp_transmit_skb+0x450/0x9a0
-[ 1805.324549] [c00000037d482b10] [c000000000d84230] tcp_write_xmit+0x4e0/0xb40
-[ 1805.324553] [c00000037d482be0] [c000000000d848d4] __tcp_push_pending_frames+0x44/0x130
-[ 1805.324557] [c00000037d482c50] [c000000000d63aac] __tcp_sock_set_cork.part.0+0x8c/0xb0
-[ 1805.324561] [c00000037d482c80] [c000000000d63b48] tcp_sock_set_cork+0x78/0xa0
-[ 1805.324565] [c00000037d482cb0] [c0080000061b2acc] xs_tcp_send_request+0x2d4/0x430 [sunrpc]
-[ 1805.324594] [c00000037d482e50] [c0080000061ab120] xprt_request_transmit.constprop.0+0xa8/0x3c0 [sunrpc]
-[ 1805.324619] [c00000037d482eb0] [c0080000061acc74] xprt_transmit+0x12c/0x260 [sunrpc]
-[ 1805.324644] [c00000037d482f20] [c0080000061a1de8] call_transmit+0xd0/0x100 [sunrpc]
-[ 1805.324667] [c00000037d482f50] [c0080000061c8dc4] __rpc_execute+0xec/0x570 [sunrpc]
-[ 1805.324696] [c00000037d482fd0] [c0080000061d00e0] rpc_execute+0x168/0x1d0 [sunrpc]
-[ 1805.324725] [c00000037d483010] [c0080000061a4a74] rpc_run_task+0x1cc/0x2a0 [sunrpc]
-[ 1805.324754] [c00000037d483070] [c008000006013970] nfs4_call_sync_sequence+0x98/0x100 [nfsv4]
-[ 1805.324811] [c00000037d483120] [c008000006013dec] _nfs4_server_capabilities+0xd4/0x3c0 [nfsv4]
-[ 1805.324832] [c00000037d483210] [c00800000602036c] nfs4_server_capabilities+0x74/0xd0 [nfsv4]
-[ 1805.324854] [c00000037d483270] [c008000006020404] nfs4_proc_get_root+0x3c/0x150 [nfsv4]
-[ 1805.324876] [c00000037d4832f0] [c0080000062bee54] nfs_get_root+0xac/0x660 [nfs]
-[ 1805.324907] [c00000037d483420] [c0080000062c7ccc] nfs_get_tree_common+0x104/0x5f0 [nfs]
-[ 1805.324946] Kernel panic - not syncing: corrupted stack end detected inside scheduler
-[ 1805.325103] CPU: 0 PID: 263384 Comm: mount.nfs Kdump: loaded Not tainted 5.14.0-284.32.1.el9_2.ppc64le #1
-[ 1805.325316] Call Trace:
-[ 1805.325368] [c00000037d482c50] [c0000000008427d0] dump_stack_lvl+0x74/0xa8 (unreliable)
-[ 1805.325549] [c00000037d482c90] [c0000000001492b4] panic+0x160/0x3ec
-[ 1805.325706] [c00000037d482d30] [c000000000efce90] __schedule+0x710/0x720
-[ 1805.325838] [c00000037d482e00] [c000000000efcf7c] schedule+0x3c/0xa0
-[ 1805.325978] [c00000037d482e30] [c0080000061c4f84] rpc_wait_bit_killable+0x3c/0x110 [sunrpc]
-[ 1805.326185] [c00000037d482e60] [c000000000efd664] __wait_on_bit+0xd4/0x210
-[ 1805.326325] [c00000037d482ee0] [c000000000efd840] out_of_line_wait_on_bit+0xa0/0xd0
-[ 1805.326502] [c00000037d482f50] [c0080000061c8e54] __rpc_execute+0x17c/0x570 [sunrpc]
-[ 1805.326751] [c00000037d482fd0] [c0080000061d00e0] rpc_execute+0x168/0x1d0 [sunrpc]
-[ 1805.326936] [c00000037d483010] [c0080000061a4a74] rpc_run_task+0x1cc/0x2a0 [sunrpc]
-[ 1805.327120] [c00000037d483070] [c008000006013970] nfs4_call_sync_sequence+0x98/0x100 [nfsv4]
-[ 1805.327346] [c00000037d483120] [c008000006013dec] _nfs4_server_capabilities+0xd4/0x3c0 [nfsv4]
-[ 1805.327548] [c00000037d483210] [c00800000602036c] nfs4_server_capabilities+0x74/0xd0 [nfsv4]
-[ 1805.327747] [c00000037d483270] [c008000006020404] nfs4_proc_get_root+0x3c/0x150 [nfsv4]
-[ 1805.327972] [c00000037d4832f0] [c0080000062bee54] nfs_get_root+0xac/0x660 [nfs]
-[ 1805.328174] [c00000037d483420] [c0080000062c7ccc] nfs_get_tree_common+0x104/0x5f0 [nfs]
-[ 1805.328366] [c00000037d4834b0] [c0080000062ec6f8] nfs_get_tree+0x90/0xc0 [nfs]
-[ 1805.328556] [c00000037d4834e0] [c00000000056cd38] vfs_get_tree+0x48/0x160
-[ 1805.328715] [c00000037d483560] [c0080000062d8b68] nfs_do_submount+0x170/0x210 [nfs]
-[ 1805.328911] [c00000037d483600] [c008000006055b58] nfs4_submount+0x250/0x360 [nfsv4]
-[ 1805.329115] [c00000037d4836b0] [c0080000062d8eac] nfs_d_automount+0x194/0x2d0 [nfs]
-[ 1805.329303] [c00000037d483710] [c00000000057c7f4] __traverse_mounts+0x114/0x330
-[ 1805.329459] [c00000037d483770] [c000000000583d54] step_into+0x364/0x4d0
-[ 1805.329581] [c00000037d4837f0] [c00000000058465c] walk_component+0x8c/0x300
-[ 1805.329700] [c00000037d483870] [c000000000585868] path_lookupat+0xa8/0x260
-[ 1805.329819] [c00000037d4838c0] [c000000000586ab8] filename_lookup+0xc8/0x230
-[ 1805.329962] [c00000037d483a00] [c000000000586d18] vfs_path_lookup+0x68/0xc0
-[ 1805.330093] [c00000037d483a60] [c0000000005b0760] mount_subtree+0xd0/0x1e0
-[ 1805.330214] [c00000037d483ad0] [c0080000060496b8] do_nfs4_mount+0x280/0x520 [nfsv4]
-[ 1805.330370] [c00000037d483ba0] [c0080000060499b8] nfs4_try_get_tree+0x60/0x140 [nfsv4]
-[ 1805.330526] [c00000037d483c20] [c0080000062ec6c8] nfs_get_tree+0x60/0xc0 [nfs]
-[ 1805.330681] [c00000037d483c50] [c00000000056cd38] vfs_get_tree+0x48/0x160
-[ 1805.330821] [c00000037d483cd0] [c0000000005ae154] do_new_mount+0x204/0x3c0
-[ 1805.330972] [c00000037d483d40] [c0000000005af8f8] sys_mount+0x168/0x1c0
-[ 1805.331086] [c00000037d483db0] [c00000000002f544] system_call_exception+0x164/0x310
-[ 1805.331227] [c00000037d483e10] [c00000000000bfe8] system_call_vectored_common+0xe8/0x278
-[ 1805.331367] --- interrupt: 3000 at 0x7fffb235f4d0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] PM: QoS: Add a performance QoS
+Content-Language: en-US
+To: Caleb Connolly <caleb.connolly@linaro.org>, rafael@kernel.org
+Cc: lina.iyer@linaro.org, lukasz.luba@arm.com, quic_manafm@quicinc.com,
+ quic_priyjain@quicinc.com, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
+References: <20231213175818.2826876-1-daniel.lezcano@linaro.org>
+ <20231213175818.2826876-2-daniel.lezcano@linaro.org>
+ <9f8566b8-71d3-4dbd-8bde-f9a4cfde8372@linaro.org>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <9f8566b8-71d3-4dbd-8bde-f9a4cfde8372@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-cheers
+Hi Caleb,
+
+[Cc'ed Viresh]
+
+On 13/12/2023 19:35, Caleb Connolly wrote:
+> Hi Daniel,
+> 
+> On 13/12/2023 17:58, Daniel Lezcano wrote:
+>> Currently cpufreq and devfreq are using the freq QoS to aggregate the
+>> requests for frequency ranges.
+>>
+>> However, there are new devices wanting to act not on a frequency range
+>> but on a performance index range. Those need also to export to
+>> userspace the knob to act on their performance limits.
+>>
+>> This change provides a performance limiter QoS based on a minimum /
+>> maximum performance values. At init time, the limits of the interval
+>> are 0 / 1024. It is up to the backend to convert the 1024 to the
+>> maximum performance state. So if the performance must be limited to
+>> 50%, it should set to maximum limit to 512 where the backend will end
+>> up by converting (max performance index / 2). The same applies for the
+>> minimum. Obviously, the min can not be greater than the max.
+> 
+> I really feel like it should be possible to have arbitrary min/max
+> performance values. As is the case with latency and frequency.
+
+We had an initial discussion about the performance QoS some weeks ago. 
+Rafael is reluctant to have arbitrary values. So it was proposed a 1024 
+based approach and let the back end to convert the value to its index.
+
+If we go for a similar approach to the frequencies, then we should have 
+more files to describe the different states. At least one defining the 
+current state, the min and the max.
+
+
+>>   1. With the example above, if there is a odd number like 5 for the
+>>   number of performance indexes and we ask for 512 (so 50%), what would
+>>   be the performance index computed? (5/2=2 or 5/2=3)? (I would say the
+>>   minimum otherwise we end up with a performance limit greater than
+>>   what we actually asked for).
+> 
+> For a device with just a handful of performance indices this is quite a
+> large margin for error. If there are just 3 for example, and some
+> algorithm is decreasing the performance level over time (e.g. due to
+> some thermal condition), the algorithm cannot determine at what point
+> the devices performance level has actually changed, making debugging and
+> tuning of behaviour needlessly difficult.
+
+Yes, it is a valid point. May be we can find an intermediate approach.
+
+If we define an additional information, let's call it "granularity" for 
+example and keep the 0-1023, then the userspace can rely on this 
+information to build the steps.
+
+If we take your example with a 3 performance states device, then the 
+granularity would be:
+
+1024 / 3 = 341.3
+
+As floating does not exist in the kernel, then it would be 342.
+
+State 0 = 0 x 342 = 0
+State 1 = 1 x 342 = 342
+State 2 = 2 x 342 = 684
+State 3 = 3 x 342 = 1026 (floored to 1024)
+
+So we end up with a fixed range, a way to quickly escalate the stairs 
+and three files in the device's power sysfs entry.
+
+> This also leaves it up to the backend driver to decide if it should
+> round up or down, something that should definitely be handled by the
+> framework.
+
+> Maybe I missed some previous discussion, but isn't this what
+> operating-points is designed for?
+> 
+> It has an `opp-level` property, but that is meant to be device-specific.
+> With the `opp-hz` property being the "normalised" values that the
+> framework deals with.
+> 
+> We would just want some way to defined an `opp-level` as a percentage
+> (or whatever), with an arbitrary `opp-performance-index` being the
+> device-specific property.
+> 
+> This also gracefully handles non-linear performance scaling.
+
+I think it is a different subject, we are talking about how to describe 
+the hardware and these performance states. But I agree, it is worth to 
+keep the opp description in mind.
+
+[ ... ]
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
