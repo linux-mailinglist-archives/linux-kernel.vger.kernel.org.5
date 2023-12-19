@@ -1,199 +1,147 @@
-Return-Path: <linux-kernel+bounces-5397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E930818A39
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:40:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB949818A41
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE38828CD72
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:40:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D76E1C215F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B0A1C28A;
-	Tue, 19 Dec 2023 14:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4891C298;
+	Tue, 19 Dec 2023 14:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePdiI+G7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K/wO6b9k"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF32B1B288;
-	Tue, 19 Dec 2023 14:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d05ebe642so16194875e9.0;
-        Tue, 19 Dec 2023 06:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702996771; x=1703601571; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nx2SKSg4StH2xypt44SaUQkkd1sbC97S0Nlq+vY2bSY=;
-        b=ePdiI+G7wzNB+cZgmOPfu5SBCYZxJP5ymr/H6Ewcpb84D/VT9wHQ2O2kRdetbaZ+M8
-         xKq2CjZbz7FK+2hEI1yxSmG2dNvU4hWxcpQEJ42Ke9SE1Yye93wZU3UdvA6ccwVFcNL8
-         56qQ/UHfGs6w8d6TMdrkWtXmvphfnKgz++Xv7HNW/kEePSt8js6RTxy51gP0+ZOdIegw
-         lRf/Ps4FIKxSwV0sQ7HabTNXJsVzPlUhZUoOZBDZfvfJnZ4mE5pq2pGheqpJuM/Tb4yL
-         l0sSjasDcAifeQRDHEYbLKPNGYHmXrRuAM+clMSXLD5hWgpSTsLg7c4BWSMjIGMmCd10
-         SWbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702996771; x=1703601571;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nx2SKSg4StH2xypt44SaUQkkd1sbC97S0Nlq+vY2bSY=;
-        b=bzts9Hijyq1dbORZ3IWEoxu/eNSLTT4yiZxOkDXqaE1fHs0beh6w9+TuCL/CwLf/f8
-         RvoDYKoTyOZtH62pRVzivPrjiwFTMBbKNfyq3p1P8yHkbmKL/qLb57ONEpovYx5R8RHn
-         4bSpPM3k/Chc8ruc+Pj/k2G4ZIOOIrewOtET6dZrXmqBNYCz2T9VV0FSg5p57RvY98DX
-         Iut0PGe1eETXT/5IUKLgx5CfGgVG+40omY5o1BptPbmMKVl2KCEgoDJlF53JIJETXey8
-         PIO6hORd40m1qOtOxTnBBwTxcmIajPHdLsPE29yuIg5AIyw11LGtriE9d2ptuPEuoaPo
-         5IVQ==
-X-Gm-Message-State: AOJu0YyhnjUj9tnWFW8WWWcBiAWo1lYZQ4UgkkyTKRHnTcnKVw1FSABi
-	meAFPNZv5VgCRlS4WSgd8D1pqHpt4mX3jA==
-X-Google-Smtp-Source: AGHT+IHCS4aIMnRNzSW0KQB552BVr+rnmPjXguatBBsBOxpsJevOlQQIsoPsVlfACnz4yy2pQqMfTA==
-X-Received: by 2002:a05:600c:6a81:b0:40c:6d5f:7b89 with SMTP id jl1-20020a05600c6a8100b0040c6d5f7b89mr468847wmb.73.1702996770850;
-        Tue, 19 Dec 2023 06:39:30 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d6b84000000b003365e9fea3esm9354226wrx.31.2023.12.19.06.39.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 06:39:30 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Hans de Goede <hdegoede@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: atomisp: remove redundant assignments to variables
-Date: Tue, 19 Dec 2023 14:39:29 +0000
-Message-Id: <20231219143929.367929-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8292C1BDD4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702996865;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7TWKhr2LMbpjEPBw/2MEwrqBs0s6c+M03rN98iODU4U=;
+	b=K/wO6b9kDg71P9hqnoa2b/7xXT2rlW/sQNe2aZfLoIGSIt0z9VyELn8/2w5Frx65ErQr7U
+	L36oPMVcleMbnMeLq2ETrYrtEsl0RZkEuG3o8zJninNqX04d2wyrP2KsSIsfVyZGiqgBjv
+	kYWqGjRe8Pp/01c0i0xuKX2QlklDrBE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-53-pxkXtkAlOI-jeHJPe9wIAw-1; Tue,
+ 19 Dec 2023 09:41:01 -0500
+X-MC-Unique: pxkXtkAlOI-jeHJPe9wIAw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7A47299E748;
+	Tue, 19 Dec 2023 14:40:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 27B1F1121306;
+	Tue, 19 Dec 2023 14:40:57 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <488523.1702996313@warthog.procyon.org.uk>
+References: <488523.1702996313@warthog.procyon.org.uk> <367107fa03540f7ddd2e8de51c751348bd7eb42c.camel@kernel.org> <20231213152350.431591-1-dhowells@redhat.com> <20231213152350.431591-13-dhowells@redhat.com>
+Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+    Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 12/39] netfs: Add iov_iters to (sub)requests to describe various buffers
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <488793.1702996856.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 19 Dec 2023 14:40:56 +0000
+Message-ID: <488794.1702996856@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-There are several variables that are being initialized with values
-that are never read, the assignment are redundant and can be removed.
-Cleans up cppcheck unreadVariable warnings.
+David Howells <dhowells@redhat.com> wrote:
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- .../atomisp/pci/base/circbuf/src/circbuf.c     |  2 +-
- .../pci/runtime/pipeline/src/pipeline.c        |  4 +---
- .../atomisp/pci/runtime/queue/src/queue.c      | 18 +++++++++---------
- 3 files changed, 11 insertions(+), 13 deletions(-)
+> > > @@ -88,6 +78,11 @@ static void netfs_read_from_server(struct netfs_i=
+o_request *rreq,
+> > >  				   struct netfs_io_subrequest *subreq)
+> > >  {
+> > >  	netfs_stat(&netfs_n_rh_download);
+> > > +	if (iov_iter_count(&subreq->io_iter) !=3D subreq->len - subreq->tr=
+ansferred)
+> > > +		pr_warn("R=3D%08x[%u] ITER PRE-MISMATCH %zx !=3D %zx-%zx %lx\n",
+> > > +			rreq->debug_id, subreq->debug_index,
+> > > +			iov_iter_count(&subreq->io_iter), subreq->len,
+> > > +			subreq->transferred, subreq->flags);
+> > =
 
-diff --git a/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c b/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c
-index d9f7c143794d..06f039236abc 100644
---- a/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c
-+++ b/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c
-@@ -207,7 +207,7 @@ bool ia_css_circbuf_increase_size(
- {
- 	u8 curr_size;
- 	u8 curr_end;
--	unsigned int i = 0;
-+	unsigned int i;
- 
- 	if (!cb || sz_delta == 0)
- 		return false;
-diff --git a/drivers/staging/media/atomisp/pci/runtime/pipeline/src/pipeline.c b/drivers/staging/media/atomisp/pci/runtime/pipeline/src/pipeline.c
-index 3d8741e7d5ca..966cb47b95d9 100644
---- a/drivers/staging/media/atomisp/pci/runtime/pipeline/src/pipeline.c
-+++ b/drivers/staging/media/atomisp/pci/runtime/pipeline/src/pipeline.c
-@@ -693,7 +691,7 @@ static void pipeline_init_defaults(
- static void ia_css_pipeline_set_zoom_stage(struct ia_css_pipeline *pipeline)
- {
- 	struct ia_css_pipeline_stage *stage = NULL;
--	int err = 0;
-+	int err;
- 
- 	assert(pipeline);
- 	if (pipeline->pipe_id == IA_CSS_PIPE_ID_PREVIEW) {
-diff --git a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
-index 2f1c2df59f71..c4d4062206a2 100644
---- a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
-+++ b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
-@@ -81,7 +81,7 @@ int ia_css_queue_uninit(ia_css_queue_t *qhandle)
- 
- int ia_css_queue_enqueue(ia_css_queue_t *qhandle, uint32_t item)
- {
--	int error = 0;
-+	int error;
- 
- 	if (!qhandle)
- 		return -EINVAL;
-@@ -138,7 +138,7 @@ int ia_css_queue_enqueue(ia_css_queue_t *qhandle, uint32_t item)
- 
- int ia_css_queue_dequeue(ia_css_queue_t *qhandle, uint32_t *item)
- {
--	int error = 0;
-+	int error;
- 
- 	if (!qhandle || NULL == item)
- 		return -EINVAL;
-@@ -193,7 +193,7 @@ int ia_css_queue_dequeue(ia_css_queue_t *qhandle, uint32_t *item)
- 
- int ia_css_queue_is_full(ia_css_queue_t *qhandle, bool *is_full)
- {
--	int error = 0;
-+	int error;
- 
- 	if ((!qhandle) || (!is_full))
- 		return -EINVAL;
-@@ -225,7 +225,7 @@ int ia_css_queue_is_full(ia_css_queue_t *qhandle, bool *is_full)
- 
- int ia_css_queue_get_free_space(ia_css_queue_t *qhandle, uint32_t *size)
- {
--	int error = 0;
-+	int error;
- 
- 	if ((!qhandle) || (!size))
- 		return -EINVAL;
-@@ -257,7 +257,7 @@ int ia_css_queue_get_free_space(ia_css_queue_t *qhandle, uint32_t *size)
- 
- int ia_css_queue_get_used_space(ia_css_queue_t *qhandle, uint32_t *size)
- {
--	int error = 0;
-+	int error;
- 
- 	if ((!qhandle) || (!size))
- 		return -EINVAL;
-@@ -289,8 +289,8 @@ int ia_css_queue_get_used_space(ia_css_queue_t *qhandle, uint32_t *size)
- 
- int ia_css_queue_peek(ia_css_queue_t *qhandle, u32 offset, uint32_t *element)
- {
--	u32 num_elems = 0;
--	int error = 0;
-+	u32 num_elems;
-+	int error;
- 
- 	if ((!qhandle) || (!element))
- 		return -EINVAL;
-@@ -338,7 +338,7 @@ int ia_css_queue_peek(ia_css_queue_t *qhandle, u32 offset, uint32_t *element)
- 
- int ia_css_queue_is_empty(ia_css_queue_t *qhandle, bool *is_empty)
- {
--	int error = 0;
-+	int error;
- 
- 	if ((!qhandle) || (!is_empty))
- 		return -EINVAL;
-@@ -370,7 +370,7 @@ int ia_css_queue_is_empty(ia_css_queue_t *qhandle, bool *is_empty)
- 
- int ia_css_queue_get_size(ia_css_queue_t *qhandle, uint32_t *size)
- {
--	int error = 0;
-+	int error;
- 
- 	if ((!qhandle) || (!size))
- 		return -EINVAL;
--- 
-2.39.2
+> > pr_warn is a bit alarmist, esp given the cryptic message.  Maybe demot=
+e
+> > this to INFO or DEBUG?
+> > =
+
+> > Does this indicate a bug in the client or that the server is sending u=
+s
+> > malformed frames?
+> =
+
+> Good question.  The network filesystem updated subreq->transferred to in=
+dicate
+> it had transferred X amount of data, but the iterator had been updated t=
+o
+> indicate Y amount of data was transferred.  They really ought to match a=
+s it
+> may otherwise indicate an underrun (and potential leakage of old data).
+> Overruns are less of a problem since the iterator would have to 'go nega=
+tive'
+> as it were.
+> =
+
+> However, it might be better just to leave io_iter unchecked since we end=
+ up
+> resetting it anyway each time we reinvoke the ->issue_read() op.  It's a=
+lways
+> possible that it will get copied and a different iterator get passed to =
+the
+> network layer or cache fs - and so the change to the iterator then has t=
+o be
+> manually propagated just to avoid the warning.
+
+Actually, it's more complicated than that.  It's an assertion that netfsli=
+b is
+doing the right prep.  This assertion is checked both when we initially ma=
+ke a
+request (in which case it definitely shouldn't fire) and when we perform a
+resubmission on partial/complete read failure when we need to carefully
+revalidate the numbers to make sure we don't end up with holes or wrinkles=
+ in
+the buffer.
+
+Anyway, it shouldn't happen - but if it does, it probably presages data
+corruption.
+
+David
 
 
