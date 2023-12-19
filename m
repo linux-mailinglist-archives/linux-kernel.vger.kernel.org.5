@@ -1,267 +1,144 @@
-Return-Path: <linux-kernel+bounces-5950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FE5581920E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:06:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ECB6819210
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE821F24FEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:06:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3BADB21C86
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B1BF3B191;
-	Tue, 19 Dec 2023 21:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5718339FD3;
+	Tue, 19 Dec 2023 21:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ku5qeKoS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QGSHw2+P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC03F39FD3;
-	Tue, 19 Dec 2023 21:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703019925; x=1734555925;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=50ShFUshASqKnK/G/mBSEMA/8Ue40ITNHhb0gtvBkrk=;
-  b=Ku5qeKoS65ntCBg1gY+N02IXySC8IjjZVdeLjTq8tOuSQrIJSYLc1vxK
-   LlmwQK8Rr2+tJnYYx4X5wu1AImWabiu1TR4h417ESnjfKD94Y1rjG1ObL
-   wuE9Fbf9BoxHmC1VMMM4UkGjps3dYnRWFPEfmeGx0FD3BunNHE0qiXWqt
-   acsQPht1Hmw1vTxVZ+KQ2lsxSKcaCinpqmRuX1HhDF3zhxrcNayq0L6iF
-   kpfZo+lYQ4n69eADCMAobV/0Cd5d2iA4uxapcZtZzjULqUbCgMb8jyiim
-   uYh4wkMbmd/hQqE3tnEMCEdRvvQiQv/UAJum+HQBt1uj+nfNEAwM/1oqD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="375211532"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="375211532"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 13:05:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="894433853"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="894433853"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Dec 2023 13:05:24 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 13:05:23 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 13:05:23 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 19 Dec 2023 13:05:23 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 19 Dec 2023 13:05:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=czPWH9vs1G2xvIlMvPg7jQCr258GGmmbzevdU63C41nyVQVWk3iyX91xK/nzHu4ymEsxknhQ4NlZ/vIWGYu30zXVfcGwrcOewL9XVzKyYgWz7t3C2Y6pN6b0x7e0j/N0tJdu+grmmRAVK90Zi/b66Z0s/UJs8AMQnCqpBTe5E2+wNI2L7Rn/qwx2Edt975C+mGy6vHwvZ2QhtW94quidzq4MxQJFP0PAK9qS+ljo6ivGC6PsSrxpn7hCQlzEtJ+zb5qzoMIGRQo5wANZt6suxu1iPjBeLoz1q45bgQIIag7y7R0zYXM1EaOO1nQkysN3uvyUh+ONeJM1myewwpopog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LmjyZo/ue1IUtgIY0zoBkcZbonlg5apRNk9WaU10Dm8=;
- b=QDxG9Df5Wg1V839Azd5v56cv6iMSSE8t3v/B4Pyj//X0q29BZj3nT0vjIVxetAlClU6NKHB+D4iZqY9flXT0GO+0+x2uffidTMqK2pSeOya7PsjB+gH1Mmrt0DWtwOnJbx17BU+jReETcSz9cwy3eVn+LS46j0uD9peAoQSTNSPHuaNWVyuIaZZ5omymUHKcpoyGFJGD/88jy+hh9oVmy6vTZuk5pbqtCoywQeyudDT7yg34X4fS0BuS4z+zynuwIiiAET0E42fjT8APKKxIxpsb1xE637SBmj31hFNYgdOnFgN4ZbQqA0u7iGv3epZcY71QNPOJDbTG0vd7dO2xjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by IA1PR11MB7200.namprd11.prod.outlook.com (2603:10b6:208:42f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Tue, 19 Dec
- 2023 21:05:20 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::dbee:4787:6eeb:57f5]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::dbee:4787:6eeb:57f5%4]) with mapi id 15.20.7113.016; Tue, 19 Dec 2023
- 21:05:20 +0000
-Message-ID: <fa937d9e-456e-4458-a5ea-8f912e64eb47@intel.com>
-Date: Tue, 19 Dec 2023 13:05:18 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net PATCH] octeontx2-af: Fix marking couple of structure as
- __packed
-Content-Language: en-US
-To: David Laight <David.Laight@ACULAB.COM>, Suman Ghosh <sumang@marvell.com>,
-	"davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "sgoutham@marvell.com"
-	<sgoutham@marvell.com>, "sbhatta@marvell.com" <sbhatta@marvell.com>,
-	"jerinj@marvell.com" <jerinj@marvell.com>, "gakula@marvell.com"
-	<gakula@marvell.com>, "hkelam@marvell.com" <hkelam@marvell.com>,
-	"lcherian@marvell.com" <lcherian@marvell.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-References: <20231218082758.247831-1-sumang@marvell.com>
- <c48b24d9-f05f-4c66-a0ca-5cd6f59bea0c@intel.com>
- <35751ffb2c4d436baaa93230c1430a03@AcuMS.aculab.com>
-From: Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <35751ffb2c4d436baaa93230c1430a03@AcuMS.aculab.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0093.namprd03.prod.outlook.com
- (2603:10b6:303:b7::8) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7219339FE5;
+	Tue, 19 Dec 2023 21:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d337dc9697so40479125ad.3;
+        Tue, 19 Dec 2023 13:06:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703019994; x=1703624794; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1HtBgLsrDCKPDZiIeB5v2t6k/pCPHllo2W6HG79J79o=;
+        b=QGSHw2+P5qXaXIkw3cVffIPsMVLqGkwUMniM0dr6RBLYr6+RlVw8SmGtizmwLVd9SD
+         NJhZwS8JNRVdo9LiVP0I1d4sk/aH+kPDYZKJDQG1CQroBqTombOqbzSHVubx9Q5RM0zA
+         l+Tj72wQvxFfh26OlBAAvxgFG8a+jlp6ag/WD+YRWahmYv36AQGBVUW1+buMeVyIGBns
+         rc6v3jYKtnqlWNcIwP8lmOR2cns1Zqe0XzeNovWITAjg9RadWTMaQQEDi1eVkWZOvW2d
+         v8W1V/EO5HqH3EKFe4Qa9eUjBkrW3ct7k27LAxWz5zA6s368vtdcqweKiDoiqJDn65+2
+         Q9Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703019994; x=1703624794;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1HtBgLsrDCKPDZiIeB5v2t6k/pCPHllo2W6HG79J79o=;
+        b=LrN/fA8QxbAE4JOaGdCL/dG7+WCmdEbF1EUWwzwsU9sMEXrU9xcDIfwG6VoyV3opFh
+         M6PGpprWxXrT0hQQpDiC1WmdROTXNViIs+z0SI6CLxg3ij79B3eZyJpokbeKIHC7wpd9
+         DOY7fW3BI6tk0giySss5QBQMtgLAgeU7hw+56okW4Zqvbs2ux40NsDWo9m9JpT5/X49P
+         zoBPvL0GKYl3z72/bg4cbqA+viiSht3VOKHHPv0vxjWVk7khs91uKRPX+S+DZrzHCMXv
+         dXGTGwVJIQcCBrOjqQNSOhZLO8n4zIM+dEmLwhjee5Y3Ra/NSNc3iceW2TIV6aa7pQo6
+         tU9g==
+X-Gm-Message-State: AOJu0YyFZLSRae5rEyl3Gd7ylE3BGawRwx08x9kTbp7VFplixZpYl/SG
+	IlUW3qTVR/Seib/1rTUZ/Fo=
+X-Google-Smtp-Source: AGHT+IFKFdsCx5FiUDjEHHh4b+4c6w1BbxswP7TvYkdEvJ1Kq5A3eErzRPdlR8zIofZOT4Cr93B1zA==
+X-Received: by 2002:a17:903:41c4:b0:1d0:4cde:6e23 with SMTP id u4-20020a17090341c400b001d04cde6e23mr21452804ple.53.1703019993631;
+        Tue, 19 Dec 2023 13:06:33 -0800 (PST)
+Received: from [192.168.159.133] ([37.175.73.215])
+        by smtp.gmail.com with ESMTPSA id n2-20020a170902d2c200b001d04c097d32sm21341007plc.270.2023.12.19.13.06.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 13:06:32 -0800 (PST)
+Message-ID: <bab1f782-78bd-4e36-8532-b8131f0ed626@gmail.com>
+Date: Tue, 19 Dec 2023 22:06:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|IA1PR11MB7200:EE_
-X-MS-Office365-Filtering-Correlation-Id: b170f1d5-8a01-4e48-7d91-08dc00d635db
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SfagE/HyDKvVaN1bxZgEas7u8ixPA6bTYr6IzicH1uG29zb6jcfq+lYcybSZgrt72H9ankK3l2AO8m/y5o7rC9Um48juMTo9VkFK0/aZui0r33g/WRS9K6xnQ4k0ewiuQM50PsyQteeJ+NQLnlNHD3/KW7Pu8PPs0FITDYdtViHnOqAFxLCIaToAAK3CCoNSov4QZ93au+v9rRvtX9EE+zpUlATp5NVtgSOr79d95p0rmJtmEphpMB35xZqjcgq+DUOZY0TShj4dY+AnwVlUu0NficqQz6JLozfYBmyPze5pATsBcpKFxHuRu2I2iUkCEdX8tm72bLIYyXtfpz14jCzOCX6qo8/IuZeo1q93ytA4lUpUpffPlCA2Zj2GfQb0FlPQVTyzQr6cHE4u/mtg9hUqFi6+YE/IyLRAc9ntHtKoaSzxGHm5o5qW30YXbgi4/3i6Wbs6y1alQ2lgLdf++yJfp9jowz1bU3vUIgYrNe/WYZal/GLA+4EKR0pIyMj/77aeQhrCN+LtPIDDRhqDHSvb4rw4u1tVYkd8Da5sqkfXdeRFE8f9Kj/OMyEheO288g36wap6SNJmWymtn515d78UnyT/SQIrVeWuzUAYu4v3j2NIbLrm6sWtPWdFN1MpcdSdzVzmRxp3xMnxInAtD1sncI1OUVm0Sp+/Db35m1U=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39860400002)(366004)(376002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(2906002)(7416002)(5660300002)(66899024)(31696002)(41300700001)(921008)(36756003)(86362001)(82960400001)(26005)(53546011)(6486002)(110136005)(2616005)(83380400001)(66946007)(66556008)(478600001)(316002)(66476007)(6506007)(38100700002)(8936002)(6512007)(31686004)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SjBqRi8vNkkreUJUenlRUWk1SEtLdFlGdDE2YndWRUhKRm1vWFJxQVROSVBl?=
- =?utf-8?B?R0xURW93cnBSaUM2bENHOUtOeGZPcnZrYVBkSERxK1duOWVSZ3VwcG5UckFK?=
- =?utf-8?B?aTJnN2l3T1Fnb3E4VFZYUUJoN0FoNkZBNG9Wc2I0MzBWSkQ4TTM1VUg5Y3VF?=
- =?utf-8?B?dStHNUJ2UlUzY1l3SmpuVkYzZkFMQStsLzdMYnpEWHcweVJRc21JSndabWI0?=
- =?utf-8?B?dXFjQnhQS255TkowRVNhSXRCVjNIMm9zUVowN09BZTNmT0p6c1l5NlJKS3cr?=
- =?utf-8?B?V3JHVFJDK2UrSnRhZWJXQmQxU0hhVDBKRDZhbCtkY1JYZVRCalp4TkZTckRh?=
- =?utf-8?B?dDRZL1dkdUdpSmhIMFVOblJTeHJWVm1PV09LWk0vYWNXWTlyU3RuSDUrUVdx?=
- =?utf-8?B?WWhjRzJuNi9KK2p3RmtJeUtNRk9nLytWeEFEaUFSU0hNME82U3NVbVhjN1Na?=
- =?utf-8?B?enh5TzdyNXVMc2kvcDE4TFlzKzBzUjRlT1k4VGRmUmJuWnFxbTl2QjR4REUv?=
- =?utf-8?B?QURxRDJNckp1OEV1U2dkZ1NOTG1IVXVRbkUzL1VUSFMrZVhaVWF3TXF2aTk4?=
- =?utf-8?B?VjZEbmNlNkNudXJDZzdoNlYzMy92a2JkVFM0Z0dxcG9XN2NLTWRPNjR5a1Bt?=
- =?utf-8?B?OWhKTDBnN3FFS05OOUpBMWFUR3NwemVEU3QvenlBQ3paSXlnTW1RWjB3RlA0?=
- =?utf-8?B?bXNPanB5WFNnVGZGaUtUY1N5MmpGVzR6dzRkcVZGSzBsdUt6ZG9PUHJSWEtw?=
- =?utf-8?B?My9GUTRTUWppRFkxS3UrWm5vTW5kVnova09kOGpTS05MdnIzejYxOHBpUDZP?=
- =?utf-8?B?M2t6Y1VYeWRiNXEzMFNqZmZoYUNISmhKWEQ5UUpqQzJ2UjZrYXRYMzB0ZlMy?=
- =?utf-8?B?dHF2NWw5a251bURZZXArT0x5T05aeXFwWUxXY2VKa0ZoTTVDYjBQZnF1N3M4?=
- =?utf-8?B?ZkYyVElNVmFiMDBHMCttVTVIdG5PbmhmYmFZSjZRSXltR0NDTDJQUFI4VUJr?=
- =?utf-8?B?dndWUjYvUWhiZ0hZS0IvWU92ZmFJR0QxclBLS2phM0VyenlMcmdNcXRYOXNa?=
- =?utf-8?B?U0tWOWp4cUIydHlnVDJwSGtYMkUraTljQi8wanU0bG1JWERIRDZrbmdVVnhJ?=
- =?utf-8?B?TzFFWlVhU1pEbkJ2dXppR1FHb3NuOU1nT3MxQ1IyUmI4QTZGZDZSUGxtTGR6?=
- =?utf-8?B?T3IrYWRsNG41VFFPNjFRTy9MMjBDa2luRFZRbUlNNzkvUGNJc3F4TjA1QlE0?=
- =?utf-8?B?bGhLV3NoZXRKRmhPUlBERUV4bHU4VkZlMkVWRmZMVGNDeFFOQ2VFbkw4UXhl?=
- =?utf-8?B?Y3Zlb2UyNWZIVjR5ZlYwZFJjSy9TTWNyejA3TmNJbmVCQm5TWnBBMjlJRkxT?=
- =?utf-8?B?S292MGFiVHl3NWZ5R0FmcEJZZXVaNVQ3NTlQc05jV2dQd1dvL1gvQnVoQ2ww?=
- =?utf-8?B?MVF5TURBdk0xK0lqM1VSRWxaZnhaNzA1TzRuOHIxWmY1TnpKSHE4RU9rdXpa?=
- =?utf-8?B?RTN1V3NLUzRhOVhYUVF3dHdUYXY2VkgrLzJNbzdBSnVRdXBuWGlLYVdjZldH?=
- =?utf-8?B?VFk5L2VJM1g3dURLWkZ5cG5MMmhCZnNVc0VMSnJTMW9PYk9KTU5peVRPRDkr?=
- =?utf-8?B?dG9RYU01ZnJDL2x5WUlsazNYYXZNSjcwamdqTHhIRkxPL3o4ak9qTFJWdjlB?=
- =?utf-8?B?WHdqc1lHRmpSUHB0dFJJRVhzZ0s5c256ZjNJZGtBY3drMnFJYzhtVXh0cUhP?=
- =?utf-8?B?QXVJbHQ2VkJiZnNTcW54cm11N3RuTWpjbDl3clpnWFpKdHlqRUpndnZUeEh2?=
- =?utf-8?B?L1JldTZMVGw0OE93bTQrRzlldlN6UndMUVA2NmJwZDVVamV1NGJkaVlKYVh6?=
- =?utf-8?B?Y2pCK2VTWlIwbGd4aEZ0endMcis4NTVpRkJOa1EzMEN4S3JPZkI3MjNJTlAw?=
- =?utf-8?B?dm5zcWUvQnJxK1IxUG9IOXRzQ1pRR2RVWC9DVGIrcGZKK2txQ0tobzVCUFIv?=
- =?utf-8?B?RzRucDN4ZDdZb0JycWxUdXZUdlc5NzJCWkZ4a3lzTzQvR09ZY1FCeGE4WUU5?=
- =?utf-8?B?eExwWlFTOHMvTmQ2NUp1Q0Fxa01tNElYYndDRXAxT0p2MUV5T3dHZkJITDR3?=
- =?utf-8?B?MDBPOEJjZVFldXlFN21PQTJWWjhHdG51NEVoenFPTWtLN3ZtcHR2cnpHMG5F?=
- =?utf-8?B?cUE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b170f1d5-8a01-4e48-7d91-08dc00d635db
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 21:05:20.7504
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bcPfh2ugCim7l4nrnxxUeeARPIAL5smAnleibYVnH9LUt2939ds8OfwVSQUoGDXDWmxqnUabssmWwNH7HEyliVPn1HlW2p55PYOXjV8NXjg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7200
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 00/60] 5.10.205-rc2 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20231219074407.947984749@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20231219074407.947984749@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
-On 12/19/2023 7:26 AM, David Laight wrote:
-> From: Jacob Keller
->> Sent: 18 December 2023 20:44
->>
->> On 12/18/2023 12:27 AM, Suman Ghosh wrote:
->>> Couple of structures was not marked as __packed which may have some
->>> performance implication. This patch fixes the same and mark them as
->>> __packed.
->>
->> Not sure I follow why lack of __packed would have performance
->> implications? I get that __packed is important to ensure layout is
->> correct or to ensure the whole structure has the right size rather than
->> unexpected gaps. I'd guess maybe because the structures size would
->> include padding without __packed, leading to a lot of gaps when
->> combining several structures together...
->>
->> I did test on my system with pahole, and even without __packed, I don't
->> get any gaps in the npc_lt_def_cfg structure:
->>
->>
->>> struct npc_lt_def_cfg {
->>>         struct npc_lt_def          rx_ol2;               /*     0     3 */
->>>         struct npc_lt_def          rx_oip4;              /*     3     3 */
->>>         struct npc_lt_def          rx_iip4;              /*     6     3 */
->>>         struct npc_lt_def          rx_oip6;              /*     9     3 */
->>>         struct npc_lt_def          rx_iip6;              /*    12     3 */
->>>         struct npc_lt_def          rx_otcp;              /*    15     3 */
->>>         struct npc_lt_def          rx_itcp;              /*    18     3 */
->>>         struct npc_lt_def          rx_oudp;              /*    21     3 */
->>>         struct npc_lt_def          rx_iudp;              /*    24     3 */
->>>         struct npc_lt_def          rx_osctp;             /*    27     3 */
->>>         struct npc_lt_def          rx_isctp;             /*    30     3 */
->>>         struct npc_lt_def_ipsec    rx_ipsec[2];          /*    33    10 */
->>>         struct npc_lt_def          pck_ol2;              /*    43     3 */
->>>         struct npc_lt_def          pck_oip4;             /*    46     3 */
->>>         struct npc_lt_def          pck_oip6;             /*    49     3 */
->>>         struct npc_lt_def          pck_iip4;             /*    52     3 */
->>>         struct npc_lt_def_apad     rx_apad0;             /*    55     4 */
->>>         struct npc_lt_def_apad     rx_apad1;             /*    59     4 */
->>>         struct npc_lt_def_color    ovlan;                /*    63     5 */
->>>         /* --- cacheline 1 boundary (64 bytes) was 4 bytes ago --- */
->>>         struct npc_lt_def_color    ivlan;                /*    68     5 */
->>>         struct npc_lt_def_color    rx_gen0_color;        /*    73     5 */
->>>         struct npc_lt_def_color    rx_gen1_color;        /*    78     5 */
->>>         struct npc_lt_def_et       rx_et[2];             /*    83    10 */
->>>
->>>         /* size: 93, cachelines: 2, members: 23 */
->>>         /* last cacheline: 29 bytes */
->>> };
->>
->>
->> However that may not be true across all compilers etc. Also all the
->> other structures are __packed. Makes sense.
+On 12/19/2023 8:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.205 release.
+> There are 60 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Or not - maybe all the __packed should be removed instead!
+> Responses should be made by Thu, 21 Dec 2023 07:43:52 +0000.
+> Anything received after that time might be too late.
 > 
-> Unless these structures (or any others) appear in 'messages' which
-> get transferred between systems they really shouldn't be __packed.
-> And a 93 byte 'message' with all those fields seems rather odd.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.205-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> The above breakdown seems to imply everything is 'unsigned char'
-> so the __packed makes no difference.
+> thanks,
 > 
-> Using __packed requires the compiler generate byte loads/store
-> with shifts (etc) on many architectures and should really be avoided
-> unless it is absolutely needed for binary compatibility.
-> 
-> Even then if the problem is a 64bit field that only needs to be
-> 32bit aligned (as is common for some compat32 code) then the 64bit
-> fields should be marked as being 32bit aligned.
-> 
-> 	David
-> 
-Right. Typically packed is only required when dealing with something
-where the exact binary layout matters (i.e. copying to/from hardware or
-across systems in such a way that the layout might change with different
-compilers/arch).
+> greg k-h
 
-If that isn't how this structure is used, then ya, removing __packed
-seems reasonable. And at least for one system I see no difference in the
-actual generated layout, making __packed redundant.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-However, its not clear to me at a glance how this structure is used and
-whether it really is copied between places where binary compatibility is
-a requirement.
-
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
