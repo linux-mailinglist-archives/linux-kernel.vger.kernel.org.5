@@ -1,41 +1,59 @@
-Return-Path: <linux-kernel+bounces-4738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D73F818160
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:15:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2FF7818162
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:16:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEBBF285434
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:15:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2494E1C23461
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F28B11728;
-	Tue, 19 Dec 2023 06:15:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43ED7468;
+	Tue, 19 Dec 2023 06:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="sneycZ7o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D2C11700;
-	Tue, 19 Dec 2023 06:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VyplgB7_1702966522;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VyplgB7_1702966522)
-          by smtp.aliyun-inc.com;
-          Tue, 19 Dec 2023 14:15:29 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: tom.zanussi@linux.intel.com
-Cc: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] crypto: iaa - remove unneeded semicolon
-Date: Tue, 19 Dec 2023 14:15:20 +0800
-Message-Id: <20231219061520.77128-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8690811736
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 06:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id FTOErgdxyaFNCFTOEr8Mcu; Tue, 19 Dec 2023 07:15:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1702966540;
+	bh=hZ/ES4F8KlXsJDilo3/jjs0U5UzZt61FLBeAEIKEj20=;
+	h=From:To:Cc:Subject:Date;
+	b=sneycZ7o9WnonV42dK78Ae0TmwxUy/D7s6X1rtjZ+xnrFB+Ei3pau/1gu/jJP+AnH
+	 JVMzR5+8h7QjbyAq2pPvmINJBh23C16O/yJKVswCw6XwkjieZ9ePfDS4BnAhxYYXER
+	 RGC69CTXnsGJWy4k7iBA2u9YoYbQc3StWoCklQ9fkAoiwrbIcDpDlnNWTxbNKKoFGK
+	 E/ZikTPxjPpOtGih3G20VCmgYLiqrTnMr4csN1V3uptr8isdJ2kEkOFwtbKq7wp2Nl
+	 DYMNxhmCRpHIdSegqcAJOsUNXJ/NDkzM9a7ToECEyPWZoofe4dE0WMIr8Qtj3Kp8GM
+	 HLjuiP0vsk0zw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 19 Dec 2023 07:15:40 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-pci@vger.kernel.org
+Subject: [PATCH] misc: pci_endpoint_test: Remove usage of the deprecated ida_simple_xx() API
+Date: Tue, 19 Dec 2023 07:15:37 +0100
+Message-Id: <47a30441242c4d5f0e00555cbddd7783350ff1b2.1702966523.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,31 +62,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-No functional modification involved.
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-./drivers/crypto/intel/iaa/iaa_crypto_main.c:979:2-3: Unneeded semicolon.
+This is less verbose.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7772
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/pci_endpoint_test.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index eafa2dd7a5bb..648da8740e6b 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -976,7 +976,7 @@ static int wq_table_add_wqs(int iaa, int cpu)
- 		pr_debug("rebalance: added wq for cpu=%d: iaa wq %d.%d\n",
- 			 cpu, iaa_wq->wq->idxd->id, iaa_wq->wq->id);
- 		n_wqs_added++;
--	};
-+	}
+diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
+index af519088732d..34124bdce68c 100644
+--- a/drivers/misc/pci_endpoint_test.c
++++ b/drivers/misc/pci_endpoint_test.c
+@@ -860,7 +860,7 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
  
- 	if (!n_wqs_added) {
- 		pr_debug("couldn't find any iaa wqs!\n");
+ 	pci_set_drvdata(pdev, test);
+ 
+-	id = ida_simple_get(&pci_endpoint_test_ida, 0, 0, GFP_KERNEL);
++	id = ida_alloc(&pci_endpoint_test_ida, GFP_KERNEL);
+ 	if (id < 0) {
+ 		err = id;
+ 		dev_err(dev, "Unable to get id\n");
+@@ -907,7 +907,7 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
+ 	kfree(test->name);
+ 
+ err_ida_remove:
+-	ida_simple_remove(&pci_endpoint_test_ida, id);
++	ida_free(&pci_endpoint_test_ida, id);
+ 
+ err_iounmap:
+ 	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
+@@ -943,7 +943,7 @@ static void pci_endpoint_test_remove(struct pci_dev *pdev)
+ 	misc_deregister(&test->miscdev);
+ 	kfree(misc_device->name);
+ 	kfree(test->name);
+-	ida_simple_remove(&pci_endpoint_test_ida, id);
++	ida_free(&pci_endpoint_test_ida, id);
+ 	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
+ 		if (test->bar[bar])
+ 			pci_iounmap(pdev, test->bar[bar]);
 -- 
-2.20.1.7.g153144c
+2.34.1
 
 
