@@ -1,240 +1,212 @@
-Return-Path: <linux-kernel+bounces-4656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAC67818055
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:59:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3608B818050
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 04:57:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55950284A59
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:59:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5CCC283360
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CFC5380;
-	Tue, 19 Dec 2023 03:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58517848E;
+	Tue, 19 Dec 2023 03:57:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eQ0nxbo1"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="E0gaK5zu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6254CBE55;
-	Tue, 19 Dec 2023 03:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702958356; x=1734494356;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=3s4M1Ke7Zp6dpbGPTolOm9J70ngTk0LFGbPc1ei/amY=;
-  b=eQ0nxbo1MXmiT5C6ACUpn4NouqgpK2BG95tsLpSDo8ZiqkFho4gnZ8MO
-   +R435YpmLXIbfTBKPOeX4snjc4DTfJsD/DcU2aFM4q/AaF9poU/JNC5yf
-   +Kqnn3gsbVNuxOuwev+swv9Hb/WLCxo26WXroIp/8ymKYb51oU4XaJ3iJ
-   9cc8jqrahruoBlMGU2ooH0VuCv/2PrmOGh4kQCuYv7MLBdS9uTGUOGzrT
-   YXnaw/BvrYh2yLTCHxJFgrlSI2RYxIegRdkBahOJG4mYy8ASVO6PudC6E
-   BbbMWnNzP7AUAGlW6CEfEiLUrZwzoNVvldXPkP4akBAEGmX/7FT9A4ABe
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="386023776"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="386023776"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 19:59:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="841740575"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="841740575"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 19:59:11 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Srinivasulu Thanneeru <sthanneeru@micron.com>
-Cc: Srinivasulu Opensrc <sthanneeru.opensrc@micron.com>,
-  "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-  "linux-mm@kvack.org" <linux-mm@kvack.org>,  "aneesh.kumar@linux.ibm.com"
- <aneesh.kumar@linux.ibm.com>,  "dan.j.williams@intel.com"
- <dan.j.williams@intel.com>,  gregory.price <gregory.price@memverge.com>,
-  "mhocko@suse.com" <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,
-  "john@jagalactic.com" <john@jagalactic.com>,  Eishan Mirakhur
- <emirakhur@micron.com>,  Vinicius Tavares Petrucci
- <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
-  "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Johannes
- Weiner <hannes@cmpxchg.org>, Wei Xu <weixugc@google.com>
-Subject: Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
-In-Reply-To: <PH0PR08MB79551628EFA3B1B3CB55DFFEA890A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	(Srinivasulu Thanneeru's message of "Mon, 18 Dec 2023 08:56:02 +0000")
-References: <20231213175329.594-1-sthanneeru.opensrc@micron.com>
-	<87cyv8qcqk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB79551628EFA3B1B3CB55DFFEA890A@PH0PR08MB7955.namprd08.prod.outlook.com>
-Date: Tue, 19 Dec 2023 11:57:12 +0800
-Message-ID: <87o7emn8tj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2D18474;
+	Tue, 19 Dec 2023 03:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1702958258;
+	bh=1wUCeG4DTjZol+zbKVzUI7RIWsRC0afzTNkzQR3IfSA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=E0gaK5zuCeDJHqWX2XHEMt8o7/ks3Nuj3rQrewfm6t5WvS+XMI+FxM3vNkibBV2/7
+	 b0wgPj7i11trP0FMGtmDgF1xEHrZ4EQmKnd3FwgQWnAcsou8dtxh4yw7JSzch/TihP
+	 UWU38ffZgqtID0Fpym+CIxknLYqUlkON3T/6+sf47Lr3j/lB17aDqvCSyxKsr859J6
+	 /cP8pxs/7TfzTBGNdZg72bjmn73cNmF8LsKIHBcZuN1db+B6mD+VutqsSuEOv5CQLK
+	 kWAIjqmXF8eYmQrdvdOGSR1ujMfKTtKay7DMaxA2IYlDTWOuSW0EXbbqPlvMwTgilT
+	 ED6RmnMnS83BQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SvNFF18zBz4x2V;
+	Tue, 19 Dec 2023 14:57:36 +1100 (AEDT)
+Date: Tue, 19 Dec 2023 14:57:34 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Kent Overstreet <kent.overstreet@linux.dev>, Dave Airlie
+ <airlied@redhat.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Ville =?UTF-8?B?U3lyasOkbMOk?=
+ <ville.syrjala@linux.intel.com>, DRI <dri-devel@lists.freedesktop.org>
+Subject: Re: linux-next: build failure after merge of the header_cleanup
+ tree
+Message-ID: <20231219145734.13e40e1e@canb.auug.org.au>
+In-Reply-To: <20231218174030.3ed72f54@canb.auug.org.au>
+References: <20231218174030.3ed72f54@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; boundary="Sig_/kbDiBDX1yGNRcZQ/EkQuPt9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/kbDiBDX1yGNRcZQ/EkQuPt9
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Srinivasulu,
+Hi all,
 
-Please use a email client that works for kernel patch review.  Your
-email is hard to read.  It's hard to identify which part is your text
-and which part is my text.  Please refer to,
+On Mon, 18 Dec 2023 17:40:30 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the header_cleanup tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+>=20
+> In file included from include/linux/kernel.h:27,
+>                  from drivers/gpu/ipu-v3/ipu-dp.c:7:
+> include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
+> include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of functi=
+on 'mul_u32_u32' [-Werror=3Dimplicit-function-declaration]
+>    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
+ut, (1 << bit_precision) - 1),
+>       |                                              ^~~~~~~~~~~
+> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
+EST_ULL'
+>   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
+>       |                                    ^
+> In file included from include/linux/time.h:6,
+>                  from include/linux/videodev2.h:59,
+>                  from include/video/imx-ipu-v3.h:16,
+>                  from drivers/gpu/ipu-v3/ipu-dp.c:14:
+> include/linux/math64.h: At top level:
+> include/linux/math64.h:155:19: error: conflicting types for 'mul_u32_u32'=
+; have 'u64(u32,  u32)' {aka 'long long unsigned int(unsigned int,  unsigne=
+d int)'}
+>   155 | static inline u64 mul_u32_u32(u32 a, u32 b)
+>       |                   ^~~~~~~~~~~
+> include/drm/drm_color_mgmt.h:45:46: note: previous implicit declaration o=
+f 'mul_u32_u32' with type 'int()'
+>    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
+ut, (1 << bit_precision) - 1),
+>       |                                              ^~~~~~~~~~~
+> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
+EST_ULL'
+>   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
+>       |                                    ^
+> cc1: some warnings being treated as errors
+> In file included from include/linux/kernel.h:27,
+>                  from drivers/gpu/drm/omapdrm/dss/dispc_coefs.c:7:
+> include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
+> include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of functi=
+on 'mul_u32_u32' [-Werror=3Dimplicit-function-declaration]
+>    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
+ut, (1 << bit_precision) - 1),
+>       |                                              ^~~~~~~~~~~
+> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
+EST_ULL'
+>   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
+>       |                                    ^
+> In file included from include/linux/jiffies.h:7,
+>                  from include/linux/ktime.h:25,
+>                  from include/linux/timer.h:6,
+>                  from include/linux/workqueue.h:9,
+>                  from include/linux/mm_types.h:19,
+>                  from include/linux/mmzone.h:22,
+>                  from include/linux/gfp.h:7,
+>                  from include/linux/stackdepot.h:25,
+>                  from include/drm/drm_modeset_lock.h:28,
+>                  from include/drm/drm_crtc.h:30,
+>                  from drivers/gpu/drm/omapdrm/dss/omapdss.h:11,
+>                  from drivers/gpu/drm/omapdrm/dss/dispc_coefs.c:9:
+> include/linux/math64.h: At top level:
+> include/linux/math64.h:155:19: error: conflicting types for 'mul_u32_u32'=
+; have 'u64(u32,  u32)' {aka 'long long unsigned int(unsigned int,  unsigne=
+d int)'}
+>   155 | static inline u64 mul_u32_u32(u32 a, u32 b)
+>       |                   ^~~~~~~~~~~
+> include/drm/drm_color_mgmt.h:45:46: note: previous implicit declaration o=
+f 'mul_u32_u32' with type 'int()'
+>    45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_inp=
+ut, (1 << bit_precision) - 1),
+>       |                                              ^~~~~~~~~~~
+> include/linux/math.h:104:36: note: in definition of macro 'DIV_ROUND_CLOS=
+EST_ULL'
+>   104 |         unsigned long long _tmp =3D (x) + (__d) / 2;      \
+>       |                                    ^
+> cc1: some warnings being treated as errors
 
-https://www.kernel.org/doc/html/latest/process/email-clients.html
+This turns out to be a semantic conflict (or exposing a bug in commit
 
-Or something similar, for example,
+ c6fbb6bca108 ("drm: Fix color LUT rounding")
 
-https://elinux.org/Mail_client_tips
+from the drm tree.
 
-Srinivasulu Thanneeru <sthanneeru@micron.com> writes:
+I have applied the following merge fix up patch (which should probably
+be applied to the drm tree, if possible).
 
-> Micron Confidential
->
->
->
-> Micron Confidential
-> ________________________________________
-> From: Huang, Ying <ying.huang@intel.com>
-> Sent: Friday, December 15, 2023 10:32 AM
-> To: Srinivasulu Opensrc
-> Cc: linux-cxl@vger.kernel.org; linux-mm@kvack.org; Srinivasulu
-> Thanneeru; aneesh.kumar@linux.ibm.com; dan.j.williams@intel.com;
-> gregory.price; mhocko@suse.com; tj@kernel.org; john@jagalactic.com;
-> Eishan Mirakhur; Vinicius Tavares Petrucci; Ravis OpenSrc;
-> Jonathan.Cameron@huawei.com; linux-kernel@vger.kernel.org
-> Subject: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
->
-> CAUTION: EXTERNAL EMAIL. Do not click links or open attachments unless yo=
-u recognize the sender and were expecting this message.
->
->
-> <sthanneeru.opensrc@micron.com> writes:
->
->> From: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
->>
->> The memory tiers feature allows nodes with similar memory types
->> or performance characteristics to be grouped together in a
->> memory tier. However, there is currently no provision for
->> moving a node from one tier to another on demand.
->>
->> This patch series aims to support node migration between tiers
->> on demand by sysadmin/root user using the provided sysfs for
->> node migration.
->>
->> To migrate a node to a tier, the corresponding node=E2=80=99s sysfs
->> memtier_override is written with target tier id.
->>
->> Example: Move node2 to memory tier2 from its default tier(i.e 4)
->>
->> 1. To check current memtier of node2
->> $cat  /sys/devices/system/node/node2/memtier_override
->> memory_tier4
->>
->> 2. To migrate node2 to memory_tier2
->> $echo 2 > /sys/devices/system/node/node2/memtier_override
->> $cat  /sys/devices/system/node/node2/memtier_override
->> memory_tier2
->>
->> Usecases:
->>
->> 1. Useful to move cxl nodes to the right tiers from userspace, when
->>    the hardware fails to assign the tiers correctly based on
->>    memorytypes.
->>
->>    On some platforms we have observed cxl memory being assigned to
->>    the same tier as DDR memory. This is arguably a system firmware
->>    bug, but it is true that tiers represent *ranges* of performance
->>    and we believe it's important for the system operator to have
->>    the ability to override bad firmware or OS decisions about tier
->>    assignment as a fail-safe against potential bad outcomes.
->>
->> 2. Useful if we want interleave weights to be applied on memory tiers
->>    instead of nodes.
->> In a previous thread, Huang Ying <ying.huang@intel.com> thought
->> this feature might be useful to overcome limitations of systems
->> where nodes with different bandwidth characteristics are grouped
->> in a single tier.
->> https://lore.kernel.org/lkml/87a5rw1wu8.fsf@yhuang6-desk2.ccr.corp.intel=
-.com/
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> Version Notes:
->>
->> V2 : Changed interface to memtier_override from adistance_offset.
->> memtier_override was recommended by
->> 1. John Groves <john@jagalactic.com>
->> 2. Ravi Shankar <ravis.opensrc@micron.com>
->> 3. Brice Goglin <Brice.Goglin@inria.fr>
->
-> It appears that you ignored my comments for V1 as follows ...
->
-> https://lore.kernel.org/lkml/87o7f62vur.fsf@yhuang6-desk2.ccr.corp.intel.=
-com/
->
-> Thank you Huang, Ying for pointing to this.
->
-> https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Live=
-%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
->
-> In the presentation above, the adistance_offsets are per memtype.
-> We believe that adistance_offset per node is more suitable and flexible
-> since we can change it per node. If we keep adistance_offset per memtype,
-> then we cannot change it for a specific node of a given memtype.
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 19 Dec 2023 14:43:41 +1100
+Subject: [PATCH] drm: using mul_u32_u32() requires linux/math64.h
 
-Why do you need to change it for a specific node?  Why do you needn't to
-chagne it for all nodes of a given memtype?
+Some pending include file cleanups produced this error:
 
-> https://lore.kernel.org/lkml/87jzpt2ft5.fsf@yhuang6-desk2.ccr.corp.intel.=
-com/
->
-> I guess that you need to move all NUMA nodes with same performance
-> metrics together?  If so, That is why we previously proposed to place
-> the knob in "memory_type"? (From: Huang, Ying )
->
-> Yes, memory_type would be group the related memories togather as single t=
-ier.
-> We should also have a flexibility to move nodes between tiers, to address=
- the issues described in usecases above.
->
-> https://lore.kernel.org/lkml/87a5qp2et0.fsf@yhuang6-desk2.ccr.corp.intel.=
-com/
->
-> This patch provides a way to move a node to the correct tier.
-> We observed in test setups where DRAM and CXL are put under the same
-> tier (memory_tier4).
-> By using this patch, we can move the CXL node away from the DRAM-linked
-> tier4 and put it in the desired tier.
+In file included from include/linux/kernel.h:27,
+                 from drivers/gpu/ipu-v3/ipu-dp.c:7:
+include/drm/drm_color_mgmt.h: In function 'drm_color_lut_extract':
+include/drm/drm_color_mgmt.h:45:46: error: implicit declaration of function=
+ 'mul_u32_u32' [-Werror=3Dimplicit-function-declaration]
+   45 |                 return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input=
+, (1 << bit_precision) - 1),
+      |                                              ^~~~~~~~~~~
 
-Good!  Can you give more details?  So I can resend the patch with your
-supporting data.
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ include/drm/drm_color_mgmt.h | 1 +
+ 1 file changed, 1 insertion(+)
 
---
-Best Regards,
-Huang, Ying
+diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+index 54b2b2467bfd..ed81741036d7 100644
+--- a/include/drm/drm_color_mgmt.h
++++ b/include/drm/drm_color_mgmt.h
+@@ -24,6 +24,7 @@
+ #define __DRM_COLOR_MGMT_H__
+=20
+ #include <linux/ctype.h>
++#include <linux/math64.h>
+ #include <drm/drm_property.h>
+=20
+ struct drm_crtc;
+--=20
+2.40.1
 
-> Regards,
-> Srini
->
-> --
-> Best Regards,
-> Huang, Ying
->
->> V1 : Introduced adistance_offset sysfs.
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> Srinivasulu Thanneeru (2):
->>   base/node: Add sysfs for memtier_override
->>   memory tier: Support node migration between tiers
->>
->>  Documentation/ABI/stable/sysfs-devices-node |  7 ++
->>  drivers/base/node.c                         | 47 ++++++++++++
->>  include/linux/memory-tiers.h                | 11 +++
->>  include/linux/node.h                        | 11 +++
->>  mm/memory-tiers.c                           | 85 ++++++++++++---------
->>  5 files changed, 125 insertions(+), 36 deletions(-)
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/kbDiBDX1yGNRcZQ/EkQuPt9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWBFK4ACgkQAVBC80lX
+0Gx95ggAjzxLekfkqt/d/rGtV4AWZfTveEEEXDDbbOyiopjNDr8fRuXc+M7hcjtY
+F6+etu13w5f+g6hbcEumWMEq5978ZysjO2Ue/5E+hfRj9ajzG9JJv7/GwKKdqLSE
+QSXLSHRpU6TyUvcGsq6vwDTl0bXGwB1YUyYwfV/pQgCHjENzTVtMHZZc5ilsqnxZ
+3np39vt/u1lXPKb3rIOgrURKgsvCYlZPFb7UXhcBnt+3KIuQJ/rbXoAr7ricZ5fq
+2hXspPTeryVpPL33Fm7FO/2Tj9jE/Ow4r9yizU15i5aGUfIFVbNZVF0SjGyouJgE
+VzbabnsFU/jxwAZXF+0ycn+Vq9j8jQ==
+=nZec
+-----END PGP SIGNATURE-----
+
+--Sig_/kbDiBDX1yGNRcZQ/EkQuPt9--
 
