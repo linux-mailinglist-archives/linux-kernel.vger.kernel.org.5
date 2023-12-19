@@ -1,70 +1,76 @@
-Return-Path: <linux-kernel+bounces-4885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC9F581834D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:27:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 306E8818352
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:28:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DD0AB23675
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:27:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 578581C23930
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65CF11725;
-	Tue, 19 Dec 2023 08:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13BBF13FE3;
+	Tue, 19 Dec 2023 08:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CzdXGrjQ"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="IYjGGDB+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C875813FE9
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3ba0dfc9001so1464456b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 00:27:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702974461; x=1703579261; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d9mjWg+9jf9K26duFvN0uz9/tUf2ZAojSB2YpAHDwss=;
-        b=CzdXGrjQx6F3XNhX/hDSAzQS0jExVqdRjZcnD3z3uFj74gTpAiq6wIPlniLZ+wgXh8
-         /GhIrem+FCyEHkluU4keYQ6iukBQZgp+BrrfLA3Ft9CLAWzILURybM7p1IIDa05F0F/O
-         sKIC6OFkpt3POSdBZhOMphSK/RGin8zl4UTZw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702974461; x=1703579261;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d9mjWg+9jf9K26duFvN0uz9/tUf2ZAojSB2YpAHDwss=;
-        b=VhoOD64m2UnfHBU3adENDMCqXDPkuJzywgmae/mN4Ud884phtL+GjKm76WGVPQVPUf
-         WyOQi57wQC8lyMc3y+04OoTclbn5IvqaSdn347805TvICa4Lcj2AEKYHLxa+IYq3pmbM
-         FaoHhjtmAAkkrsZ7krldLPH46Bc0W0MYrBuNVBYKcDj0szfpIL8tKKt/KolpWY90/eDs
-         1rrnhxiPVeeCJLRS3f5YmkUa/iFamjSqjUGQPCQ6h7x9LagQltWhynp9gdR6IBIJ4KrD
-         aZJFC1rgDSlxieRVTDS+u0K8ZDNSwbUiQ0OgWftJSFa38Mc0O84Wd8QHVHM9hWvjd8+g
-         TIcA==
-X-Gm-Message-State: AOJu0Yy4JfvqYYJ9cIeLCPWIHOi1JGdkkKadS1b8EosiMlOoejqHQnRJ
-	ygLj9zPjBRYIWmRvCzXL1KImBA==
-X-Google-Smtp-Source: AGHT+IE/rlWaZhIZsk9W2/LEBbaDvPfz7GUTydXmHDziltIOSmDwM7Hz0QYY4u8OBHGRZO0I5Yl0Ng==
-X-Received: by 2002:a05:6808:bcf:b0:3b8:b52b:5b65 with SMTP id o15-20020a0568080bcf00b003b8b52b5b65mr13762331oik.59.1702974460935;
-        Tue, 19 Dec 2023 00:27:40 -0800 (PST)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:a1d9:66f1:da29:6b6b])
-        by smtp.gmail.com with ESMTPSA id e8-20020aa78c48000000b006d7e67d2e74sm2930644pfd.32.2023.12.19.00.27.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 00:27:40 -0800 (PST)
-From: Chen-Yu Tsai <wenst@chromium.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>,
-	Lukasz Luba <lukasz.luba@arm.com>
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
-	linux-pm@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458E7134BD
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231219082758epoutp0160a82c40ad8e27cf5bd9ffe01b153684~iLkQNM8Vx3028830288epoutp01D
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:27:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231219082758epoutp0160a82c40ad8e27cf5bd9ffe01b153684~iLkQNM8Vx3028830288epoutp01D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1702974478;
+	bh=Lkyebhrd6+24n9nfaxXooVLJcoZKM0pcEuToIgbdeGU=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=IYjGGDB+BTxamjrqtwqJys6c6kj6jeWP9j5OOMzvUmkk5jBI3O6ygkij5IUPuJHqG
+	 wtu8kzLpT2D+IneqKnc9OLETdLdpeaK+aJwclWZ7LHzLU7EXcuU8Bz66lfgY6NOcjo
+	 hmlySkZNgpi4H9sy1kD3wiAk15CmSkF4OSA8F5xw=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20231219082758epcas1p1a948778fb0e77d048cd05cbbb14220d7~iLkPrWCwG2492424924epcas1p1F;
+	Tue, 19 Dec 2023 08:27:58 +0000 (GMT)
+Received: from epsmgec1p1-new.samsung.com (unknown [182.195.38.242]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4SvVF951JHz4x9Pt; Tue, 19 Dec
+	2023 08:27:57 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+	epsmgec1p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	7B.09.19104.D0451856; Tue, 19 Dec 2023 17:27:57 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+	20231219082757epcas1p33bda4e0723d3d57552132054d3e5a3fe~iLkOmFrH10837108371epcas1p3v;
+	Tue, 19 Dec 2023 08:27:57 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20231219082757epsmtrp26cd44266f4c6ffc8aa51380f26380ad3~iLkOk9DcT1117211172epsmtrp2S;
+	Tue, 19 Dec 2023 08:27:57 +0000 (GMT)
+X-AuditID: b6c32a4c-80dff70000004aa0-ec-6581540deb96
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	C8.20.18939.C0451856; Tue, 19 Dec 2023 17:27:57 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.100.232]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20231219082756epsmtip2a68e637137f7a0073d3d41aada0ef488~iLkOU2T8k1132911329epsmtip2s;
+	Tue, 19 Dec 2023 08:27:56 +0000 (GMT)
+From: Chanwoo Lee <cw9316.lee@samsung.com>
+To: mani@kernel.org, agross@kernel.org, andersson@kernel.org,
+	konrad.dybcio@linaro.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal/core: Correctly free tz->tzp in thermal zone registration error path
-Date: Tue, 19 Dec 2023 16:27:24 +0800
-Message-ID: <20231219082726.844508-1-wenst@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Cc: grant.jung@samsung.com, jt77.jang@samsung.com, dh0421.hwang@samsung.com,
+	sh043.lee@samsung.com, ChanWoo Lee <cw9316.lee@samsung.com>
+Subject: [PATCH] scsi: ufs: qcom: Remove unnecessary goto statement from
+ ufs_qcom_config_esi function
+Date: Tue, 19 Dec 2023 17:27:40 +0900
+Message-Id: <20231219082740.27644-1-cw9316.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,62 +78,89 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPJsWRmVeSWpSXmKPExsWy7bCmri5vSGOqwZUnyhbnHv9msdjWYWMx
+	41Qbq8W+ayfZLX79Xc9usejGNiaLHc/PsFt0TN7OYjFx/1l2i8u75rBZdF/fwWZx4MMqRovl
+	x/8xWTT92cfiwOexaVUnm8eda3vYPCYsOsDo8fHpLRaPvi2rGD0+b5ILYIvKtslITUxJLVJI
+	zUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLxCdB1y8wBulZJoSwxpxQoFJBYXKyk
+	b2dTlF9akqqQkV9cYquUWpCSU2BWoFecmFtcmpeul5daYmVoYGBkClSYkJ2x/PQixoJ3HBV7
+	5j9jb2BsZ+9i5OSQEDCRuLRpJVsXIxeHkMAeRonH11qZQRJCAp8YJb7eNIdIANl71r0EquIA
+	63jXoQYR38kocer5V6juL4wSax72sYAUsQloSdw+5g0SFxF4yiixa8ckFhCHWaCLUeLXwS4W
+	kBXCAukSx1ueMoM0sAioSnxcKQ0S5hWwlthyajcrxHnyEn/u9zBDxAUlTs58AtbKDBRv3jqb
+	GWSmhEAnh8SVJ+9YIBpcJJY+WwNlC0u8Or4F6k8pic/v9rJBNDQzSix8cxyqewKjxJePt9kg
+	quwlmlubwf5kFtCUWL9LH2Ibn8S7rz2sEO/zSnS0CUFUq0jM6TrHBjP/443HUEd7SCye/oIJ
+	EoyxEqf2b2OZwCg3C8kPs5D8MAth2QJG5lWMUqkFxbnpqcmGBYa6eanl8NhMzs/dxAhOqVo+
+	Oxi/r/+rd4iRiYPxEKMEB7OSCK/LovpUId6UxMqq1KL8+KLSnNTiQ4ymwICdyCwlmpwPTOp5
+	JfGGJpYGJmZGJhbGlsZmSuK8Z66UpQoJpCeWpGanphakFsH0MXFwSjUwJVmc23IxlGfZ/mkP
+	/jRuMFIvN/E8VJFi671Vs2rmHd13HTkGtSfnPiuM0i42L1nGUjL3xOqzQsuOpzzoj/tV+sqw
+	WFrGX+ZT+V1J583ZkzwT96tO2af0oE5q83eGT6WrsupDnnVZun/kjg4IurTQ58b3xqatTt++
+	MlcUvnjE8kJfYs4Wla7MLzvXTts4OeWu85+gFl7bUmY3RslwvWN+Sy9USp6ZcOGLgMKmyfEZ
+	OUv0L3f3OqdueOyV+e9TWonsPaUp8zpLXq4+xjF9wpWiYLk4uRUXn0n6MT3M3Leh+lxN4P5H
+	8atTRV4IeZkbMWWuOnbwZ7Dd0bmJ9l/UX6/5e5tlnubCUB9HMT0FIzU/JZbijERDLeai4kQA
+	wriaVTIEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrALMWRmVeSWpSXmKPExsWy7bCSvC5vSGOqwZtVzBbnHv9msdjWYWMx
+	41Qbq8W+ayfZLX79Xc9usejGNiaLHc/PsFt0TN7OYjFx/1l2i8u75rBZdF/fwWZx4MMqRovl
+	x/8xWTT92cfiwOexaVUnm8eda3vYPCYsOsDo8fHpLRaPvi2rGD0+b5ILYIvisklJzcksSy3S
+	t0vgylh+ehFjwTuOij3zn7E3MLazdzFycEgImEi861DrYuTiEBLYzijR/mIfUxcjJ1BcSmL3
+	/vNsEDXCEocPF0PUfGKUOHtzNxNInE1AS+L2MW+QuIjAe0aJ/+fXMoM4zAITGCUWX3nLDDJI
+	WCBV4vqdGYwgDSwCqhIfV0qDhHkFrCW2nNrNCrFLXuLP/R5miLigxMmZT1hAbGagePPW2cwT
+	GPlmIUnNQpJawMi0ilE0taA4Nz03ucBQrzgxt7g0L10vOT93EyM40LWCdjAuW/9X7xAjEwfj
+	IUYJDmYlEV6XRfWpQrwpiZVVqUX58UWlOanFhxilOViUxHmVczpThATSE0tSs1NTC1KLYLJM
+	HJxSDUwavWcv5YkExjT8yy/6HyqRb3bAL8KuVPrYFY3C8oR/hxLLnu8/cvql+JyZx1ROffuT
+	PkMucOGscp+CWVH2p97w3PFSv+u3f+21/farb/HOlFLbdIinYIbG2y7/qinb7Iv8tFeZKV1/
+	5sl15gzjWsU918835zUqrHC35/kWx8tULj5jk8obAY654e9KtrUoGTJ/Dl3xz+zA03uZ/fNP
+	V1fuce1dV7DhcbHslD/cmWnzhf9dfyyz5LzYr2N1nFOMVopv8RF+mrXbUd4lx/F1wRsn2W88
+	Jy0nqCTtaYySWfs7IyNMPv7X9FZNPjn513ffqkT7blcP2zj/+sPwMsPYmFlzL30/buLNahJ1
+	ar/J1cNKLMUZiYZazEXFiQBxZjCH4wIAAA==
+X-CMS-MailID: 20231219082757epcas1p33bda4e0723d3d57552132054d3e5a3fe
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231219082757epcas1p33bda4e0723d3d57552132054d3e5a3fe
+References: <CGME20231219082757epcas1p33bda4e0723d3d57552132054d3e5a3fe@epcas1p3.samsung.com>
 
-After commit 3d439b1a2ad3 ("thermal/core: Alloc-copy-free the thermal
-zone parameters structure"), the core now copies the thermal zone
-parameters structure, and frees it if an error happens during thermal
-zone device registration, or upon unregistration of the device.
+From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-In the error path, if device_register() was called, then `tz` disappears
-before kfree(tz->tzp) happens, causing a NULL pointer deference crash.
+There is only one place where goto is used,
+and it is unnecessary to check the ret value through 'goto out'
+because the ret value is already true.
 
-In my case, the error path was entered from the sbs power supply driver,
-which through the power supply core registers a thermal zone *without
-trip points* for the battery temperature sensor. This combined with
-setting the default thermal governor to "power allocator", which
-*requires* trip_max, causes the thermal zone registration to error out.
+Therefore, remove the goto statement and
+integrate the '!ret' condition into the existing code.
 
-The error path should handle the two cases, one where device_register
-has not happened and the kobj hasn't been reference counted, and vice
-versa where it has. The original commit tried to cover the first case,
-but fails for the second. Fix this by adding kfree(tz->tzp) before
-put_device() to cover the second case, and check if `tz` is still valid
-before calling kfree(tz->tzp) to avoid crashing in the second case.
-
-Fixes: 3d439b1a2ad3 ("thermal/core: Alloc-copy-free the thermal zone parameters structure")
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
 ---
-This includes the minimal changes to fix the crash. I suppose some other
-things in the thermal core could be reworked:
-- Don't use "power allocator" for thermal zones without trip points
-- Move some of the thermal zone cleanup code into the release function
+ drivers/ufs/host/ufs-qcom.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
- drivers/thermal/thermal_core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 2415dc50c31d..e47826d82062 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1392,12 +1392,16 @@ thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *t
- unregister:
- 	device_del(&tz->device);
- release_device:
-+	/* Free tz->tzp before tz goes away. */
-+	kfree(tz->tzp);
- 	put_device(&tz->device);
- 	tz = NULL;
- remove_id:
- 	ida_free(&thermal_tz_ida, id);
- free_tzp:
--	kfree(tz->tzp);
-+	/* If we arrived here before device_register() was called. */
-+	if (tz)
-+		kfree(tz->tzp);
- free_tz:
- 	kfree(tz);
- 	return ERR_PTR(result);
+diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+index 17e24270477d..8cf803806326 100644
+--- a/drivers/ufs/host/ufs-qcom.c
++++ b/drivers/ufs/host/ufs-qcom.c
+@@ -1929,7 +1929,7 @@ static int ufs_qcom_config_esi(struct ufs_hba *hba)
+ 					     ufs_qcom_write_msi_msg);
+ 	if (ret) {
+ 		dev_err(hba->dev, "Failed to request Platform MSI %d\n", ret);
+-		goto out;
++		return ret;
+ 	}
+ 
+ 	msi_lock_descs(hba->dev);
+@@ -1964,11 +1964,8 @@ static int ufs_qcom_config_esi(struct ufs_hba *hba)
+ 				      REG_UFS_CFG3);
+ 		}
+ 		ufshcd_mcq_enable_esi(hba);
+-	}
+-
+-out:
+-	if (!ret)
+ 		host->esi_enabled = true;
++	}
+ 
+ 	return ret;
+ }
 -- 
-2.43.0.472.g3155946c3a-goog
+2.29.0
 
 
