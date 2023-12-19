@@ -1,237 +1,142 @@
-Return-Path: <linux-kernel+bounces-5974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9685C819256
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:34:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF871819271
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E0BE287F55
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:34:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46EB1C22073
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570703B78B;
-	Tue, 19 Dec 2023 21:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDCBE3D0BC;
+	Tue, 19 Dec 2023 21:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kOChbYds"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J4MVHs9J"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7F33B2BB
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4277c62426fso5293791cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:34:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2393D0C5
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33660cf2296so4090232f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:39:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703021679; x=1703626479; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pQ6HZXMgbmpTgr8PpNdjNqBO87Wu/Pv5RD/wkslCUu8=;
-        b=kOChbYds8LKiYWTLDjgFKVAev8hxT8A/zEQjNv5EHVcUIvfiLNZY8BKB9mS99SqyRS
-         5mERBPQea1psmM0/6nj9EB2b3iCfO5K73PZV7a6AIECFKrzP68exYCjXy36N/m1ElNKV
-         Ud8cYui69djsq58pKwlLygx0921HIxY6XJlZ8=
+        d=google.com; s=20230601; t=1703021994; x=1703626794; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PqnUL3STGI/mTYPrGHX2qTH/VZgVQ1K394F/fVIBFiQ=;
+        b=J4MVHs9JKaoJO8AiodnuHabZObtFwf4Frn2eV+zgp6zXYTaDWJJg9vC1gATlLFs6Jc
+         rCgEQZ+85iqUtHcpVrWqu+tSKx37U3+rOufrkwDT/86ryr8hrsOe1/52mbr8PnkEYUv1
+         oVNrmqx+yFP6QWI2VBGaRoM2818/jIZB9VwfAcHAJ4UsAq7v/G50zw23QvAwaLhQpFt3
+         U1PtKMYQBQEQGIVQXlJeO+tUhVNJUl+5FhsXc8C5vF4fxZOVm0snUg2b7IEaHFEn6t8d
+         /A8yoYAJTP6/0XRmTJXlE4ia5hGKPpkFccLjx8+39j+w2ZTyZfOKJ04/gC78e6DNUERJ
+         gxIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703021679; x=1703626479;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pQ6HZXMgbmpTgr8PpNdjNqBO87Wu/Pv5RD/wkslCUu8=;
-        b=nOvXkKauie+Kt96KZBjzMOi0jr0niTdpKPcHlhOM1bE+03v6FvDfpaz9XN+7u64Qfg
-         doHuAGJwjrXcfjOqBkAV3SX1fvZ0ykST6+63ZQw5VH4KP8ungkX440An8BW0kb8PKl6w
-         G8MIvauAqmc+yUKZGaHVmRXjbeyOSzciE4aGetO8XEpDJoOBkFAwZUVF5NDRroVKTYVB
-         fYUYLadf6whPZGmPtyZGQKPrAvdDso+OMQeAnOZoFCZj34OtGSzM4f1flBDGtvcs7GUm
-         epWgkFVp7N2Q/XLxiTqwjXjBqXJ1z5qfDeGsN6GLnK/UeknWOD4OJPoR6VIJfB46ALRD
-         ntsw==
-X-Gm-Message-State: AOJu0YxopxBOKdx1wUBojyQmU+BGBuM1pIRPiAW6i0kByoF9tZj4jF2O
-	7cLVCfmoODzf9kOQZ1dDKtOj2Q==
-X-Google-Smtp-Source: AGHT+IG3+LxITZAJ8ZF0p+BbVZRrdPBBw1tYDmppXKgewWa3mwUDq59cHMLuQel1aog8vcQ+Erx+Gg==
-X-Received: by 2002:ac8:7f94:0:b0:425:a5ba:f126 with SMTP id z20-20020ac87f94000000b00425a5baf126mr26650374qtj.105.1703021679273;
-        Tue, 19 Dec 2023 13:34:39 -0800 (PST)
-Received: from eshimanovich.nyc.corp.google.com ([2620:0:1003:314:e32b:502a:7a4:a977])
-        by smtp.gmail.com with ESMTPSA id t22-20020ac85316000000b0041cb787ff41sm10510228qtn.67.2023.12.19.13.34.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 13:34:39 -0800 (PST)
-From: Esther Shimanovich <eshimanovich@chromium.org>
-Date: Tue, 19 Dec 2023 16:34:33 -0500
-Subject: [PATCH v2] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
+        d=1e100.net; s=20230601; t=1703021994; x=1703626794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PqnUL3STGI/mTYPrGHX2qTH/VZgVQ1K394F/fVIBFiQ=;
+        b=qdHI2hum8krc3DcjJlISF54clFfBHAJ10f02MNwJ7Kf2dga3lyjmtt8VhOCi28eZ4f
+         ymwbreUY2vYvQBimvfVEyvwUpmsHM8XVCm/Vplg6uXgMGFOPGDxbslQJy+sMFCBBxT+5
+         gaNqcBOF4V1Q9+CLznyR3GNd9kiT5ZTsNogzWSZmd7McM/5QEsgXDekiUhE8i7eezg/i
+         ZdgkJ8ahwHSKb6HjE+5FpKByGD44eGI7KB4B/6YQUI91ZMWZGm0G0vIKdUBS7sDtQ5LG
+         jdLAZ/6w4lTIIfVnKQ3sWvCpAtvU0ayUuimM8q9yMSsxEh4leFV+omIrkUWg3YTtl/r/
+         ot+w==
+X-Gm-Message-State: AOJu0Yzb6dEJmk56mdnmTvmEfAJrXZjL+RVg/6r3d9n13ef38rQn+me9
+	A0BhRrL1UQ+FTMjOmeb6j0so2PGkGDZSGbG0MQwh1Q==
+X-Google-Smtp-Source: AGHT+IHDjOPMB0Rw4CsegtN+gghw2G+4WfN33bekHI42mt3gv0tuLFeWAGQoVBxh0Y/JHausWNTzYfD+Oecrm6SQwms=
+X-Received: by 2002:a5d:6586:0:b0:336:788b:335c with SMTP id
+ q6-20020a5d6586000000b00336788b335cmr196486wru.106.1703021993678; Tue, 19 Dec
+ 2023 13:39:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231219-thunderbolt-pci-patch-4-v2-1-ec2d7af45a9b@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAGkMgmUC/4WNQQqDMBBFryKz7hSTCGpXvYe40DiagWpkEqVFv
- HtTL9Dle/DfPyCQMAV4ZAcI7RzYLwn0LQPrumUi5CEx6FwbpVWN0W3LQNL7V8TVMq5dtA4LpIF
- KZfvKGFtAWq9CI7+vctMmdhyil891tKuf/d/cFSosqCJTlmbMu/ppnfiZt/nuZYL2PM8vOsi9h
- sEAAAA=
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Rajat Jain <rajatja@google.com>, 
- Esther Shimanovich <eshimanovich@chromium.org>
-X-Mailer: b4 0.12.3
+References: <20231213-zswap-dstmem-v3-0-4eac09b94ece@bytedance.com>
+ <20231213-zswap-dstmem-v3-6-4eac09b94ece@bytedance.com> <CAF8kJuOv+k0TcKJhs8wEWi20=B84bomj5BvpUAHvj6k3A+WE5A@mail.gmail.com>
+ <CAKEwX=P=frZmEXm26uTBN05gqLXoL-Shgk5P=EsMpYR16dW-sw@mail.gmail.com>
+In-Reply-To: <CAKEwX=P=frZmEXm26uTBN05gqLXoL-Shgk5P=EsMpYR16dW-sw@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 19 Dec 2023 13:39:15 -0800
+Message-ID: <CAJD7tkb2gWz1uQ7C6NQ7mAB=QQgaKHSwDFr0XS9ZrGFPOP1tTQ@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] mm/zswap: directly use percpu mutex and buffer in load/store
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Chris Li <chrisl@kernel.org>, Chengming Zhou <zhouchengming@bytedance.com>, 
+	Seth Jennings <sjenning@redhat.com>, Vitaly Wool <vitaly.wool@konsulko.com>, 
+	Dan Streetman <ddstreet@ieee.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Lenovo X1 Carbon Gen 7/8 devices, when a platform enables a policy to
-distrust removable PCI devices, the build-in USB-C ports stop working at
-all.
-This happens because these X1 Carbon models have a unique feature; a
-Thunderbolt controller that is discrete from the SoC. The software sees
-this controller, and incorrectly assumes it is a removable PCI device,
-even though it is fixed to the computer and is wired to the computer's
-own USB-C ports.
+On Tue, Dec 19, 2023 at 10:43=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> On Tue, Dec 19, 2023 at 5:29=E2=80=AFAM Chris Li <chrisl@kernel.org> wrot=
+e:
+> >
+> > Hi Chengming and Yosry,
+> >
+> > On Mon, Dec 18, 2023 at 3:50=E2=80=AFAM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> > >
+> > > Since the introduce of reusing the dstmem in the load path, it seems
+> > > confusing that we are now using acomp_ctx->dstmem and acomp_ctx->mute=
+x
+> > > now for purposes other than what the naming suggests.
+> > >
+> > > Yosry suggested removing these two fields from acomp_ctx, and directl=
+y
+> > > using zswap_dstmem and zswap_mutex in both the load and store paths,
+> > > rename them, and add proper comments above their definitions that the=
+y
+> > > are for generic percpu buffering on the load and store paths.
+> > >
+> > > So this patch remove dstmem and mutex from acomp_ctx, and rename the
+> > > zswap_dstmem to zswap_buffer, using the percpu mutex and buffer on
+> > > the load and store paths.
+> >
+> > Sorry joining this discussion late.
+> >
+> > I get the rename of "dstmem" to "buffer". Because the buffer is used
+> > for both load and store as well. What I don't get is that, why do we
+> > move it out of the acomp_ctx struct. Now we have 3 per cpu entry:
+> > buffer, mutex and acomp_ctx. I think we should do the reverse, fold
+> > this three per cpu entry into one struct the acomp_ctx. Each per_cpu
+> > load() has a sequence of dance around the cpu id and disable preempt
+> > etc, while each of the struct member load is just a plan memory load.
+> > It seems to me it would be more optimal to combine this three per cpu
+> > entry into acomp_ctx. Just do the per cpu for the acomp_ctx once.
+>
+> I agree with Chris. From a practicality POV, what Chris says here
+> makes sense. From a semantic POV, this buffer is only used in
+> (de)compression contexts - be it in store, load, or writeback - so it
+> belonging to the orignal struct still makes sense to me. Why separate
+> it out, without any benefits. Just rename the old field buffer or
+> zswap_buffer and call it a day? It will be a smaller patch too!
+>
 
-Relabel all the components of the JHL6540 controller as DEVICE_FIXED,
-and where applicable, external_facing.
+My main concern is that the struct name is specific for the crypto
+acomp stuff, but that buffer and mutex are not.
+How about we keep it in the struct, but refactor the struct as follows:
 
-Ensure that the security policy to distrust external PCI devices works
-as intended, and that the device's USB-C ports are able to enumerate
-even when the policy is enabled.
+struct zswap_ctx {
+    struct {
+        struct crypto_acomp *acomp;
+        struct acomp_req *req;
+        struct crypto_wait wait;
+    }  acomp_ctx;
+    u8 *dstmem;
+    struct mutex *mutex;
+};
 
-Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
----
-Changes in v2:
-- nothing new, v1 was just a test run to see if the ASCII diagram would
-  be rendered properly in mutt and k-9
-- for folks using gmail, make sure to select "show original" on the top
-  right, as otherwise the diagram will be garbled by the standard
-  non-monospace font
-- Link to v1: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v1-1-4e8e3773f0a9@chromium.org
----
- drivers/pci/quirks.c | 110 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 110 insertions(+)
-
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index ea476252280a..58401b099407 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3873,6 +3873,116 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
- 			       quirk_apple_poweroff_thunderbolt);
- #endif
- 
-+/*
-+ * On most ThinkPad Carbon 7/8s, JHL6540 Thunderbolt 3 bridges are set
-+ * incorrectly as DEVICE_REMOVABLE despite being built into the device.
-+ * This is the side effect of a unique hardware configuration.
-+ *
-+ * Normally, Thunderbolt functionality is integrated to the SoC and
-+ * its root ports.
-+ *
-+ *                          Most devices:
-+ *                    root port --> USB-C port
-+ *
-+ * But X1 Carbon Gen 7/8 uses Whiskey Lake and Comet Lake SoC, which
-+ * don't come with Thunderbolt functionality. Therefore, a discrete
-+ * Thunderbolt Host PCI controller was added between the root port and
-+ * the USB-C port.
-+ *
-+ *                        Thinkpad Carbon 7/8s
-+ *                 (w/ Whiskey Lake and Comet Lake SoC):
-+ *                root port -->  JHL6540   --> USB-C port
-+ *
-+ * Because the root port is labeled by FW as "ExternalFacingPort", as
-+ * required by the DMAR ACPI spec, the JHL6540 chip is inaccurately
-+ * labeled as DEVICE_REMOVABLE by the kernel pci driver.
-+ * Therefore, the built-in USB-C ports do not enumerate when policies
-+ * forbidding external pci devices are enforced.
-+ *
-+ * This fix relabels the pci components in the built-in JHL6540 chip as
-+ * DEVICE_FIXED, ensuring that the built-in USB-C ports always enumerate
-+ * properly as intended.
-+ *
-+ * This fix also labels the external facing components of the JHL6540 as
-+ * external_facing, so that the pci attach policy works as intended.
-+ *
-+ * The ASCII diagram below describes the pci layout of the JHL6540 chip.
-+ *
-+ *                         Root Port
-+ *                 [8086:02b4] or [8086:9db4]
-+ *                             |
-+ *                        JHL6540 Chip
-+ *     __________________________________________________
-+ *    |                      Bridge                      |
-+ *    |        PCI ID ->  [8086:15d3]                    |
-+ *    |         DEVFN ->      (00)                       |
-+ *    |       _________________|__________________       |
-+ *    |      |           |            |           |      |
-+ *    |    Bridge     Bridge        Bridge      Bridge   |
-+ *    | [8086:15d3] [8086:15d3]  [8086:15d3] [8086:15d3] |
-+ *    |    (00)        (08)         (10)        (20)     |
-+ *    |      |           |            |           |      |
-+ *    |     NHI          |     USB Controller     |      |
-+ *    | [8086:15d2]      |       [8086:15d4]      |      |
-+ *    |    (00)          |          (00)          |      |
-+ *    |      |___________|            |___________|      |
-+ *    |____________|________________________|____________|
-+ *                 |                        |
-+ *             USB-C Port               USB-C Port
-+ *
-+ *
-+ * Based on what a JHL6549 pci component's pci id, subsystem device id
-+ * and devfn are, we can infer if it is fixed and if it faces a usb port;
-+ * which would mean it is external facing.
-+ * This quirk uses these values to identify the pci components and set the
-+ * properties accordingly.
-+ */
-+static void carbon_X1_fixup_relabel_alpine_ridge(struct pci_dev *dev)
-+{
-+	if (!dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon 7th") &&
-+	    !dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon Gen 8"))
-+		return;
-+
-+	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
-+	if (dev->subsystem_vendor != 0x17aa)
-+		return;
-+
-+	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
-+	if (dev->subsystem_device != 0x22be && // Gen 8
-+	    dev->subsystem_device != 0x2292) { // Gen 7
-+		return;
-+	}
-+
-+	dev_set_removable(&dev->dev, DEVICE_FIXED);
-+
-+	/* Not all 0x15d3 components are external facing */
-+	if (dev->device == 0x15d3 &&
-+	    dev->devfn != 0x08 &&
-+	    dev->devfn != 0x20) {
-+		return;
-+	}
-+
-+	dev->external_facing = true;
-+}
-+
-+/*
-+ * We also need to relabel the root port as a consequence of changing
-+ * the JHL6540's PCIE hierarchy.
-+ */
-+static void carbon_X1_fixup_rootport_not_removable(struct pci_dev *dev)
-+{
-+	if (!dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon 7th") &&
-+	    !dmi_match(DMI_PRODUCT_FAMILY, "ThinkPad X1 Carbon Gen 8"))
-+		return;
-+
-+	dev->external_facing = false;
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d3, carbon_X1_fixup_relabel_alpine_ridge);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d2, carbon_X1_fixup_relabel_alpine_ridge);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d4, carbon_X1_fixup_relabel_alpine_ridge);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x02b4, carbon_X1_fixup_rootport_not_removable);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9db4, carbon_X1_fixup_rootport_not_removable);
-+
- /*
-  * Following are device-specific reset methods which can be used to
-  * reset a single function if other methods (e.g. FLR, PM D0->D3) are
-
----
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-change-id: 20231219-thunderbolt-pci-patch-4-ede71cb833c4
-
-Best regards,
--- 
-Esther Shimanovich <eshimanovich@chromium.org>
-
+, and then rename zswap_pool.acomp_ctx to zswap_pool.ctx?
 
