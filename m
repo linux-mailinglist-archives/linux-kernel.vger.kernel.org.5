@@ -1,87 +1,112 @@
-Return-Path: <linux-kernel+bounces-4616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5550817FF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:50:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DE47817FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 03:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850071F23F70
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:50:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83D51F23DF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C05E749F;
-	Tue, 19 Dec 2023 02:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1217E468F;
+	Tue, 19 Dec 2023 02:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AdBz5rUb"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CkbpSk0d"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16806FB4
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1702954211; bh=fx4Vq1IRsoxvEZorGn+e25uwOhwhE3vurKzrsuuY8xE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=AdBz5rUbq9xM0IhO7sJc5Po8qLSkPYx1sCtUwk3K3LPHeH+jjlGhhXW9QONPWqvE1
-	 GSONWVgqi1pNG7HmIbWGfpJx9dewCB8odYa8GqHrUj909gZmvW0Kc4HVUDLIEkls7J
-	 avR4quLD9OKzfAItEtabrqn4fSzmA7Nk+EJvmuNA=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id B08AA66F; Tue, 19 Dec 2023 10:44:08 +0800
-X-QQ-mid: xmsmtpt1702953848td32815ne
-Message-ID: <tencent_6AF1DDEC19024FA58DF5A59C8D8D1263DD07@qq.com>
-X-QQ-XMAILINFO: OQhZ3T0tjf0aO645nJ9CGVGCZ0peyCcOfUaHu+z1G2hkBfNYqSB4zFQ9uaT41o
-	 B4s03/R4AYmnwsEKje1NuFoJJG8jhBb19IL7bRP0qWh/lNZ4M3Y8+zU4je5rrUig0SoUK0HkZNIX
-	 L1fhIoaxrT5k8XUrneEZ8TAmwf/BWhOX71sguovwvk/ne2Aue5Xx6tDO9OT6rzB7gZXym7AY/vGy
-	 KJjINiVyU5uZix2ztbfoA/qY7IaVmS85CWkfg71GJfcKPCSUd7YDJg3/Ll7vpYquEYXIue+4lihg
-	 FSPC176NsC93z9uOrpJfw2KsClW8YA1R9XRofRz1c8QW0gU5yG7xBymZFaVJlFiMG73pQrdPMNRe
-	 YDheZfGZVLJ8rHRwJ9J8J+gNMnDgiFHZEh+sVv4Wf8F9RJyFCxbIAJECEW8ilIBkBddZovbR8N0L
-	 btC25yPyo2UFFRBbV/J6P23LJ51gVvDwHPMqCTNp9O2Ro7+RIwEmozNaBI55tQwl1K6DRxj4bJqw
-	 k9Jxpz00BuLda1ZspE1PY0vxvTpPg5PoS8D0k8vj/MX4MmTV/b5yZMsGZgrkDFCZrvsyhkmqJzg9
-	 xvYWCnvcPDGem5oUh5t9TGGj1At6t55I4Zq/oDDrE9WPeuJU+6/SGzf/8XZ00CEp4YyS3ir03MI5
-	 rzKDbQbm8+UonNchLUz5A2dgjtriC6AirnyIPGyQ7rCE2mo2Ea3DIAaio8XwlHj05be/YdAas+O8
-	 6RLOf2HqQxp029C1w/Kx7QteTTo8v0d4uEHA2mVboEpr2Smda3gjLC1KZUXbrbhTpx5p85Dx90zI
-	 DsSKoTNkEOHUOLzKnttksWkiz1fDO1+Wi2WSeZfmQpaZsBQlJssw5b9ArPuPp5TG5jh0rgyjeOMB
-	 GtJgVBPN/qanC+zyXMoQ3ItSqyddKjdWg9ZPaVEz2yDsL1jjCZuNw=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in getname_kernel (2)
-Date: Tue, 19 Dec 2023 10:44:09 +0800
-X-OQ-MSGID: <20231219024408.1603815-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <000000000000d1a1d1060cc9c5e7@google.com>
-References: <000000000000d1a1d1060cc9c5e7@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603734411
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-336437ae847so4192406f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 18:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702954034; x=1703558834; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bnwKqS75fmoBKZ6JUfdCyxecRAaSaUAJyW+9JW8x254=;
+        b=CkbpSk0dBithTV5/aI2vEc83UGFpw8ZDkOh01gNZ1a9mh5qzJFRQbtEUwrXC3mCtRI
+         0/yuEjxpIHcifcjItTAWS8kvO1L7CU+x1MpZqHuktTa/UDh5bnxV96kazNejv2yv9VcD
+         +WNLiRMm4r8D/lohiCz0YCJ8FZACN/G/gobJn3xJ6mGUYUrt1LxvFXRv7VokfvbljvKJ
+         NzZwBgnpXThs90BDoVm+oC2zHrPRqww514Rz/GHFTs8fIFSiyCQHaVkPPMJRWjBnzKEX
+         Ie4us8tnxAolZZWQw90enihgV5orD8gokgoh01Rw5J7pE5NODujPhmqv+sAff4VLhb1G
+         QX4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702954034; x=1703558834;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bnwKqS75fmoBKZ6JUfdCyxecRAaSaUAJyW+9JW8x254=;
+        b=nKCor33fOGwt9nADu6cwwHxvzeUgy6vO304xAQdiftR5wGRxxfmcuGC3GGgSbQyRU2
+         10pHdhqTeZFFWxSz/LnL4U4FmXYZ3pXGGkUNVOhMveToNa4XrViS7msu8yPfmQRDSVjv
+         s5GySrQ2vMXVsXTurNSm0IPlCAWtDJTSULnUt/zEnfMATbMwIhHYDaDg63XsteZphqei
+         +N1m6fz/jjrqMQ2W/xSeN0LQBMv6fOrpQap51RUvpC+upW2kWiaOSz+zcFdmmgPVRHWp
+         JXaJjEmugXM4ZWS/stpBn3ZjtyWgP0dUm9MPn7xBY0A7NhGTAKfTSckFHVAcoEWGknuH
+         xrRw==
+X-Gm-Message-State: AOJu0Yx/k0KeDeKH6VW9sI/LY4OslqTwSBLh1z1hEe+7ly/Pg6KB65f3
+	80Xd82goA3sDSGBbqmETtRIVNQ==
+X-Google-Smtp-Source: AGHT+IH1es16u7uh0bMTqgZjbsRgfKYgVlo+U8MgK2DplnFlSN3lmCiHelfm/k/tTubXGi9FelB20w==
+X-Received: by 2002:adf:ffc4:0:b0:336:6701:e80 with SMTP id x4-20020adfffc4000000b0033667010e80mr1869086wrs.94.1702954034493;
+        Mon, 18 Dec 2023 18:47:14 -0800 (PST)
+Received: from 1.. ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id e6-20020adf9bc6000000b003366cac55f4sm2717124wrc.107.2023.12.18.18.47.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Dec 2023 18:47:14 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: richard@nod.at,
+	jaimeliao@mxic.com.tw,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] mtd: spi-nor: mark the flash name as obsolete
+Date: Tue, 19 Dec 2023 04:47:11 +0200
+Message-Id: <170295399037.64561.10229495240556989288.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231215082138.16063-1-tudor.ambarus@linaro.org>
+References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=935; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=3k65lHxgY8sTNdZdKmSGqZ9DWwsAKEbwE62VkhhJp5g=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlgQQtyDhGCTtoQ/AWoWIAMvk3UvtDtHhhM2ESp wP9cH/Ae6uJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZYEELQAKCRBLVU9HpY0U 6dTQB/4qnGysk7VNTyLTeMGD+fDu+sYw8EkWK0XRsJFfPLTJCMi0jFz2qDDBr2ZnyzqS5UO8NYB eZoeWUXae8SnLa1X/55GFvJAbk9ws/oi3dA4I381Gss3HISPzJ7YvNse9891R4D00pbY3OqCAkd pHgvSDQLZj8OsNHqkoPAGlgbBQqozYZISYoEJkuXQqzYPuLevV/c7aDSX4Elwoy2UXoxkJjlaTR po/dWCQZ5nGc6oxByL55mnlWks2roaSZE/dlaYxJo1smhcTMb82+LjwxmFfCp2JBxMdnBvaoj5X yvAjDqvq/xEOSsyHMEEbBDIPTz88tO5evVJhTcqqtfWao9aI
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 Content-Transfer-Encoding: 8bit
 
-please test slab-out-of-bounds Read in getname_kernel
+On Fri, 15 Dec 2023 10:21:34 +0200, Tudor Ambarus wrote:
+> The flash name is unreliable as we saw flash ID collisions. Mark the
+> flash name as obsolete and print the manufacturer and device ID where
+> name was printed.
+> 
+> JaimeLiao (1):
+>   mtd: spi-nor: sysfs: hide the flash name if not set
+> 
+> [...]
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3bd7d7488169
+Dropped unused variables, fixed typos and
+applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
+spi-nor/next branch. Thanks!
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index f9544fda38e9..b7e8392d34dc 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -741,7 +741,8 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
- 	}
- 
- 	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
--	    args->start.tgtdev_name[0] == '\0')
-+	    args->start.tgtdev_name[0] == '\0' ||
-+	    args->start.tgtdev_name[0] == '')
- 		return -EINVAL;
- 
- 	ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
+[1/4] mtd: spi-nor: print flash ID instead of name
+      https://git.kernel.org/mtd/c/9fcb0999345e
+[2/4] mtd: spi-nor: mark the flash name as obsolete
+      https://git.kernel.org/mtd/c/15eb8303bb42
+[3/4] mtd: spi-nor: sysfs: hide the flash name if not set
+      https://git.kernel.org/mtd/c/62f92e62c1ef
+[4/4] mtd: spi-nor: drop superfluous debug prints
+      https://git.kernel.org/mtd/c/7bf018ea5cb6
 
+Cheers,
+-- 
+Tudor Ambarus <tudor.ambarus@linaro.org>
 
