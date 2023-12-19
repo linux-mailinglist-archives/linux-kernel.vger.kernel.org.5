@@ -1,144 +1,148 @@
-Return-Path: <linux-kernel+bounces-5939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 144F58191BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:52:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 339A98191C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 21:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FA611F24D48
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:52:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3E27285FD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 20:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875A139AF4;
-	Tue, 19 Dec 2023 20:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93F339FE0;
+	Tue, 19 Dec 2023 20:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gpemV9K0"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lQElauBz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974CF3C46F;
-	Tue, 19 Dec 2023 20:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42785ffba01so606681cf.1;
-        Tue, 19 Dec 2023 12:52:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807B739AEB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c60dfa5bfso59236035e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703019156; x=1703623956; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4lbJZ7B2KOssQv+6mBJ3nCOMWraLLQjAxsQoYSAdGR8=;
-        b=gpemV9K0wLvxhRIgOribgCLB4ChCpPk9kEuRMAv865lESeJ6/RmR2F3MtgAatccynt
-         yu/zMZmx9jhPHtm0AI3Zn1zRGf3UY7ssv+3vArf/gmm5v8qr9p1if6WvY88jYX9hQ4Ku
-         sxQ+UCtS718zREciY/wEszfQOJpC9uXZGZrlD9DQCPO0ErrmBB8YGBzuuuJ979o3mI/4
-         rVYGRaUPM9PErMZQ2bZEvEY0mbtiA8bKCEK5oppC0glIxDZwubE5K9yBJwGIEJrf83af
-         dQLFLdNkUYvpPid3sR3mtnzbyGHAThwyV1Vm1lCCL+L/HlgVqAzokwGDXBBnZlFZ70OR
-         QBHw==
+        d=linaro.org; s=google; t=1703019335; x=1703624135; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=80CU+yeod+Yt0peXksdOGK0+bUEHvW9EJ+C21wPANvY=;
+        b=lQElauBz522nDpUsXXZ1wByOmJkS3CqhNGcKfTiwPsdwcwHMEFfiDS8iE1JLiYZuRL
+         UzwNIh1jEWIDJSv8C/OBGG7p+/KatquGRoNv2Afk0BsQg0N2W2OxHBbvG/NiUTrxVYl7
+         Li9RuM8vL4fzUo5B+lchUu3B7d9iySSCOSGmR8a6tEh/RnneQdsIuLe5FgedkU2fnN/T
+         aKd+R0bkQhHm/FZmjS9+LUU2LpX4gvd4IQTty9+ZhEz8e7RJn1ghVV/0zJ04/2pMBMTG
+         afittzibSQxDVWkQWjoHwFwaYywmc9IrXctQ/H84Vq9yHZZcaqfPxVPd9SfZfAiDPhoq
+         OmCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703019156; x=1703623956;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4lbJZ7B2KOssQv+6mBJ3nCOMWraLLQjAxsQoYSAdGR8=;
-        b=RQcR51CiMWN8evPnV6TxSJrJugAYT02CV02VbRPQGlblkYzdhx1ENjBjCFkUBKuqzh
-         9MSCnCx4Mmm8me594OSWqaOXQKkeNJVFz6GDyggTkHMUXdZF/VuKZ0A6IZzV+RHXXkc5
-         G5BEwa41tmyyjZQTRj1gNaAgTbHGIiQMXRM8pfm9jCgzb8WF9RrJ1Ed3/gCE1eqtTBjL
-         VMNofkPpJug7kZryDsDsKfivlx1QyQIOGro2S0+ZYW2l3ViKzChiiMIM4OJVxqkef+2X
-         nsuAdsBpMg/HYZIgappyjvRs9FS6hBtxZPWDWOk6az04d6b1P8sp+0Y9L+orOELrNuud
-         2ucg==
-X-Gm-Message-State: AOJu0Yx2wXaGwJoc9ib3mAQJ4Fkqx2QCzzdS5TSGt6JGujkFwg82wwYi
-	knArwDsxSkwHKSORe5//ovk=
-X-Google-Smtp-Source: AGHT+IEFX1HJd43QY3I1AzWkzprjJSnjXhPiO6k9HivsXK23E9QiOmIY3kKuuGUyQmFEJr8sN+OM6A==
-X-Received: by 2002:a05:622a:40f:b0:425:4043:29fd with SMTP id n15-20020a05622a040f00b00425404329fdmr21635651qtx.120.1703019156331;
-        Tue, 19 Dec 2023 12:52:36 -0800 (PST)
-Received: from [192.168.159.133] ([37.175.73.215])
-        by smtp.gmail.com with ESMTPSA id f17-20020ac84651000000b0042545901450sm10524426qto.72.2023.12.19.12.52.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 12:52:35 -0800 (PST)
-Message-ID: <36cec5f9-50bf-4f61-bf95-bd46ecdc7898@gmail.com>
-Date: Tue, 19 Dec 2023 21:52:29 +0100
+        d=1e100.net; s=20230601; t=1703019335; x=1703624135;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=80CU+yeod+Yt0peXksdOGK0+bUEHvW9EJ+C21wPANvY=;
+        b=EJc3tDjMiP50VEGP2wdTLHLtMk8cz8pvlONkWLh8QprwFYLl7eXzY7bYYIbtfUl06I
+         a1bycM5q+OvNifpQy1kyVoy3Flravyi+9sXXOCEL7QXO3+w6UYWN/mtZnlSACPo20bUj
+         vIxRyUKj4N16D59Sw1T7LilyR/ZRd8oBZZRSV3KiHmkVMSV3IMFawxG4GOIUvqZzvHcf
+         IYLJppcYlJZC5/e52VBZLVUeBqySA7cv+jqi0r6ZFXjx6dc2cwA8HNOobB47LCiDVXlm
+         RUiDJtfzNc3OpNrFuJVNwDN5E9BixUK9e4yuq8iahIbOV/wnNXA6u5PUk4Dqm2CUFDE0
+         dj+g==
+X-Gm-Message-State: AOJu0Yy9WzURfyT0HN0CokXNGTsy9oBx26Gz2okt9RytnZdCetcx3VgZ
+	EqYI+3Avbw/5vUjRKI5EImTKTQ==
+X-Google-Smtp-Source: AGHT+IG2dugVLWFhvm2ao0v3lUBqXjvW4cAitD3xDK8EpHvuzvTUVzY5T1+Pd2cLf38ZID5QrW9HRw==
+X-Received: by 2002:a05:600c:4f8d:b0:40c:55c4:45f5 with SMTP id n13-20020a05600c4f8d00b0040c55c445f5mr6740557wmq.132.1703019334725;
+        Tue, 19 Dec 2023 12:55:34 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id v16-20020a05600c471000b0040c4886f254sm4460701wmo.13.2023.12.19.12.55.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 12:55:34 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 0/3] phy: qcom: edp: Add support for DT phy mode
+ configuration
+Date: Tue, 19 Dec 2023 22:55:21 +0200
+Message-Id: <20231219-x1e80100-phy-edp-compatible-refactor-v1-0-f9e77752953d@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 00/40] 5.4.265-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20231218135042.748715259@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
- xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
- X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
- AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
- ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
- SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
- nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
- qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz80nRmxvcmlhbiBG
- YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+wmYEExECACYCGyMGCwkIBwMCBBUCCAME
- FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
- 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSDOw00ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
- WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
- pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
- hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
- OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
- Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
- oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
- 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
- BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
- +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
- FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
- 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
- vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
- WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
- HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
- HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
- Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
- kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
- aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
- y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
- X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231218135042.748715259@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADkDgmUC/x2NQQqDMBAAvyJ77kI2OWj7ldLDdrPWBTUhkWIR/
+ 97gcRiYOaBqMa3w6A4o+rVqaW1Atw5k4vWjaLExeOcDebrjTjo4cg7z9EONGSUtmTd7z4pFR5Y
+ tFRz6EFS4F4kMLZWbsf3aPF/n+Qcm8na2dgAAAA==
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Johan Hovold <johan@kernel.org>
+Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1833; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=cxCsK5pPL1ouaTVUEaXGUdmvdaQ8uvQZc+vq2k9i0C8=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlggM7F52Lzw+szjnLXv9iiHPEH0//KIcZP3WF1
+ /Nqreh4KdyJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYIDOwAKCRAbX0TJAJUV
+ VqOPEAClwnP4muEViar7Pb7gz1K11YvF4s3wy1cyTi7Vldm+EETsNmIs1GVulZ4Lhds7FQ8sdZw
+ 63s7myZ/N7rSOXn/wKN7cTsS3OVW+xwAtUFwKjQXk38va8EsjFSZZC6ZrmHl2YCWLFG1giptxFT
+ 13xKGLZc7Exc8d01N055F0h4IqPvXVdHfapdzMnLCiqkgmBOb0pUMSb26Fi2lZn+KnUnE8298Dz
+ LbJPUM1Gbq5+x3v4qfe+na5x2UWs8JkXzCrmXsnchxW9cMIa/hnnGtGwcqtfzgdybb8kToId8Xl
+ 6t3ty5zu7SW2ror7cJJCza7k7aulPQCBdm1KJU472XlJOwnoJ0jGmpbkztHLYPGPAMEgaqHXq7x
+ 0Dxs3F2XHqnk5LJock2fOIUgfrNP5za9MGveBr8SP5EFoOlr1Fc9mMkU5X9yuPi2WVkzvYfaKNj
+ JlV8Mq2fCZwmQ8FzFUM8AFaayfWKwNyCFDd5gqgi1PKqVD/vVoH2ZmIXXmg3tYLqTO3E2ShLunP
+ xDnjtPTSCQ7dPxo23OKY4sqFUVoQ+KIED4p8cO7pfO5yc+h9q5BVUZ8JjTGRiyLSu2rIpW9HkKx
+ y0yLvKbohlZBvOIrrQDShsbEtzLZ11u3HgPYSSA+Eypizo+UE33ZMG4Xo662ePBSlui/f2+2qQL
+ j7a6+1L4F2LdrwA==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
+Until now, all platform that supported both eDP and DP had different
+compatibles for each mode. Using different compatibles for basically
+the same IP block but for a different configuration is bad way all
+around. There is a new compute platform from Qualcomm that supports
+both eDP and DP with the same PHY. So instead of following the old
+method, we should allow the mode to be configured from devicetree.
 
+There has been an off-list discussion on what would be the right way
+to pass on the PHY mode information to the driver and it has been
+concluded that phy-cells is the way to go. This means that basically
+the controller will pass another value (that is, the PHY type) to
+its 'phys' DT property.
 
-On 12/18/2023 2:51 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.265 release.
-> There are 40 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.265-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+For this, we need both the bindings value and the PHY mode value to be
+added as well.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+The controller part will follow shortly. But for now, lets see where
+this is going.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+There has been another attempt at this here:
+https://lore.kernel.org/all/20231122-phy-qualcomm-edp-x1e80100-v3-3-576fc4e9559d@linaro.org/
+
+Compared to that version, this one uses the phy-cells method and drops
+the X1E80100 support. The X1E80100 support will be a separate patchset.
+
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Abel Vesa (3):
+      dt-bindings: phy: Add PHY_TYPE_EDP definition
+      phy: Add PHY Embedded DisplayPort mode
+      phy: qcom: edp: Allow PHY mode configuration via devicetree
+
+ drivers/phy/qualcomm/phy-qcom-edp.c | 89 ++++++++++++++++++++++++++++---------
+ include/dt-bindings/phy/phy.h       |  1 +
+ include/linux/phy/phy.h             |  3 +-
+ 3 files changed, 70 insertions(+), 23 deletions(-)
+---
+base-commit: 0e182d9523f6c0af49357fcd812eaa702bd4b403
+change-id: 20231219-x1e80100-phy-edp-compatible-refactor-8733eca7ccda
+
+Best regards,
 -- 
-Florian
+Abel Vesa <abel.vesa@linaro.org>
+
 
