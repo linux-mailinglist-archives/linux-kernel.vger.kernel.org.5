@@ -1,201 +1,273 @@
-Return-Path: <linux-kernel+bounces-5091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CE0A81867F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:39:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3464818682
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 901C61F2408B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:39:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37AEAB2425C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CAC15E92;
-	Tue, 19 Dec 2023 11:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21F116423;
+	Tue, 19 Dec 2023 11:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YZ5wW2eq"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lM/G4drB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADAC18023;
-	Tue, 19 Dec 2023 11:38:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FEDCC43397;
-	Tue, 19 Dec 2023 11:38:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702985937;
-	bh=z/k+YLVG8n9w0gU6sDLuJgWPnnGVRssnALfrFYt48Kc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YZ5wW2eq3iLNVR0D3INYFDiHoOy9u7hHTIJmjfZrOmN9uEHlkSe2+p1LY8oA6Uqc6
-	 o5VzCD0CAEUBSZX5jaeRxTi5InLpxumraBNOcnXdpYcCmIgQhPonNmzT7snKzERGqd
-	 zXQcfBxETiC4pkV1PQZtn8g0yu7/g/wQxuvUn5kEjX/SZ57kCv2F9jYZTXCk3hJCF1
-	 ArW8C+v3dmdH8zKR2xalj8md0QUM4CNJ58TnTYVq9vpI6ZDXlVXiI9XFFYvVPkZRmO
-	 ySmRvSCKaphWrtDvYj4JXREjfOyKuw8GYmjokI38G2QdDaMQwV7V+r1gD6t2hGcj2/
-	 WB8ZmBIkPNq5g==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cc7b4709edso12475221fa.0;
-        Tue, 19 Dec 2023 03:38:57 -0800 (PST)
-X-Gm-Message-State: AOJu0YybCozzdw1vas2RZEgUc3jQQxA72MjecCrfqmbovMfxNWkvZiu3
-	2mvMT+9Cr8J5l1hmGIJ89djinZdKkNVJ5DSL/LQ=
-X-Google-Smtp-Source: AGHT+IGy+6E+Sn9s6ye17sM7ASYkS54eKGlyAxWBRLZL4jRxMOyZr0iV3s8QFFjT31FJTJwCyWvX4/ab2jc+J0WE6aE=
-X-Received: by 2002:a2e:8897:0:b0:2cc:7013:4b40 with SMTP id
- k23-20020a2e8897000000b002cc70134b40mr1369809lji.68.1702985935277; Tue, 19
- Dec 2023 03:38:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AA5156EC;
+	Tue, 19 Dec 2023 11:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJ4Stpj013179;
+	Tue, 19 Dec 2023 11:39:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=tTEM9+8aN4jdGDZVBn56jBJDwAVMgY9LUmvQoSoWN8o=; b=lM
+	/G4drBoOybYqO4v6ZQvs69e6nGZxeUXanKIW3yemms7/Axtf3JB8KcMLZJbaQIUQ
+	PGG2iXjsO3yRoLyN3/MutOt5WPXIrJDfrWHRMkCWn1vCeuRrW7uCkzOHtGh9vyz3
+	QtUoqoewC2aB2Xj9g0GV8HFGY6BG8xBiZq0Z0uOK9Pw3ldooyka/QBjxMzV8sf+j
+	+iLdtMaL6J/b5YfKC83Z1Xqjy7te7q2NO2xAWY6TDdg0l5CXxuLng/LV5vl4Xxe3
+	rMTKEfGLPM/s6GwVKcYhbcb+ZWKFvQRNrdE+XGhjCe2B80feg5umBQmC/xqtk0DD
+	cs1ZpCYfFmvrrLedfr/A==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v2yyxhec0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 11:39:23 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJBdMN6025950
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 11:39:22 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
+ 2023 03:39:16 -0800
+Message-ID: <fe091dba-142e-403c-b304-b79064718555@quicinc.com>
+Date: Tue, 19 Dec 2023 17:09:13 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215122614.5481-1-tzimmermann@suse.de> <20231215122614.5481-3-tzimmermann@suse.de>
-In-Reply-To: <20231215122614.5481-3-tzimmermann@suse.de>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Tue, 19 Dec 2023 12:38:44 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHrn-PxpMGnR4VoHv7kHvQYyf8SS9i1irm9Gi_uBseciw@mail.gmail.com>
-Message-ID: <CAMj1kXHrn-PxpMGnR4VoHv7kHvQYyf8SS9i1irm9Gi_uBseciw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] arch/x86: Add <asm/ima-efi.h> for arch_ima_efi_boot_mode
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com, 
-	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, javierm@redhat.com, linux-arch@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-
-Hi Thomas,
-
-On Fri, 15 Dec 2023 at 13:26, Thomas Zimmermann <tzimmermann@suse.de> wrote:
->
-> The header file <asm/efi.h> contains the macro arch_ima_efi_boot_mode,
-> which expands to use struct boot_params from <asm/bootparams.h>. Many
-> drivers include <linux/efi.h>, but do not use boot parameters. Changes
-> to bootparam.h or its included headers can easily trigger large,
-> unnessary rebuilds of the kernel.
->
-> Moving x86's arch_ima_efi_boot_mode to <asm/ima-efi.h> and including
-> <asm/setup.h> separates that dependency from the rest of the EFI
-> interfaces. The only user is in ima_efi.c. As the file already declares
-> a default value for arch_ima_efi_boot_mode, move this define into
-> asm-generic for all other architectures.
->
-> With arch_ima_efi_boot_mode removed from efi.h, <asm/bootparam.h> can
-> later be removed from further x86 header files.
->
-
-Apologies if I missed this in v1 but is the new asm-generic header
-really necessary? Could we instead turn arch_ima_efi_boot_mode into a
-function that is a static inline { return unset; } by default, but can
-be emitted out of line in one of the x86/platform/efi.c source files,
-where referring to boot_params is fine?
-
-
-
-
-
-> v2:
->         * remove extra declaration of boot_params (Ard)
->
-
-Please don't put the revision log here, but below the --- so that 'git
-am' will ignore it.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/5] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Robin Murphy
+	<robin.murphy@arm.com>, <will@kernel.org>,
+        <joro@8bytes.org>, <jsnitsel@redhat.com>, <quic_bjorande@quicinc.com>,
+        <mani@kernel.org>, <quic_eberman@quicinc.com>,
+        <robdclark@chromium.org>, <u.kleine-koenig@pengutronix.de>,
+        <robh@kernel.org>, <vladimir.oltean@nxp.com>,
+        <quic_pkondeti@quicinc.com>, <quic_molvera@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231215101827.30549-1-quic_bibekkum@quicinc.com>
+ <20231215101827.30549-4-quic_bibekkum@quicinc.com>
+ <CAA8EJppcsr1sbeD1fK0nZ+rASABNcetBK3yMvaP7OiA4JPwskw@mail.gmail.com>
+ <c9493c5f-ccf8-4e21-b00c-5fbc2a5f2edb@quicinc.com>
+ <b7f2bbf9-fb5a-430d-aa32-3a220b46c2f0@arm.com>
+ <1eee8bae-59f0-4066-9d04-8c3a5f750d3a@linaro.org>
+ <42d627af-164b-4b50-973e-fa71d86cb84c@linaro.org>
+ <aa8b2ccd-33da-404b-9a93-3d88cf63ec77@quicinc.com>
+ <8338db1e-0216-4fc5-b6ab-ddf43adf3648@linaro.org>
+ <a363c860-62be-43a7-930c-cab8a6f3fa6c@quicinc.com>
+ <CAA8EJpoMwrwQ9wBZE6AcobLLkCchFtN23SnHhw3enNOfX3CzTQ@mail.gmail.com>
+ <334bc814-07d2-4966-93e3-f2cfbabc15b2@quicinc.com>
+ <CAA8EJprL8pHQyWcdHiS+GReJsTMrddL=SCgkPhePR_7HvsQpsQ@mail.gmail.com>
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <CAA8EJprL8pHQyWcdHiS+GReJsTMrddL=SCgkPhePR_7HvsQpsQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: BfMrt3ZJkh0VCNRteAlKbLahPha3pp4d
+X-Proofpoint-GUID: BfMrt3ZJkh0VCNRteAlKbLahPha3pp4d
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 suspectscore=0 bulkscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312190086
 
 
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> ---
->  arch/x86/include/asm/efi.h       |  3 ---
->  arch/x86/include/asm/ima-efi.h   | 11 +++++++++++
->  include/asm-generic/Kbuild       |  1 +
->  include/asm-generic/ima-efi.h    | 16 ++++++++++++++++
->  security/integrity/ima/ima_efi.c |  5 +----
->  5 files changed, 29 insertions(+), 7 deletions(-)
->  create mode 100644 arch/x86/include/asm/ima-efi.h
->  create mode 100644 include/asm-generic/ima-efi.h
->
-> diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
-> index c4555b269a1b..99f31176c892 100644
-> --- a/arch/x86/include/asm/efi.h
-> +++ b/arch/x86/include/asm/efi.h
-> @@ -418,9 +418,6 @@ extern int __init efi_memmap_split_count(efi_memory_desc_t *md,
->  extern void __init efi_memmap_insert(struct efi_memory_map *old_memmap,
->                                      void *buf, struct efi_mem_range *mem);
->
-> -#define arch_ima_efi_boot_mode \
-> -       ({ extern struct boot_params boot_params; boot_params.secure_boot; })
-> -
->  #ifdef CONFIG_EFI_RUNTIME_MAP
->  int efi_get_runtime_map_size(void);
->  int efi_get_runtime_map_desc_size(void);
-> diff --git a/arch/x86/include/asm/ima-efi.h b/arch/x86/include/asm/ima-efi.h
-> new file mode 100644
-> index 000000000000..b4d904e66b39
-> --- /dev/null
-> +++ b/arch/x86/include/asm/ima-efi.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_IMA_EFI_H
-> +#define _ASM_X86_IMA_EFI_H
-> +
-> +#include <asm/setup.h>
-> +
-> +#define arch_ima_efi_boot_mode boot_params.secure_boot
-> +
-> +#include <asm-generic/ima-efi.h>
-> +
-> +#endif /* _ASM_X86_IMA_EFI_H */
-> diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
-> index def242528b1d..4fd16e71e8cd 100644
-> --- a/include/asm-generic/Kbuild
-> +++ b/include/asm-generic/Kbuild
-> @@ -26,6 +26,7 @@ mandatory-y += ftrace.h
->  mandatory-y += futex.h
->  mandatory-y += hardirq.h
->  mandatory-y += hw_irq.h
-> +mandatory-y += ima-efi.h
->  mandatory-y += io.h
->  mandatory-y += irq.h
->  mandatory-y += irq_regs.h
-> diff --git a/include/asm-generic/ima-efi.h b/include/asm-generic/ima-efi.h
-> new file mode 100644
-> index 000000000000..f87f5edef440
-> --- /dev/null
-> +++ b/include/asm-generic/ima-efi.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +
-> +#ifndef __ASM_GENERIC_IMA_EFI_H_
-> +#define __ASM_GENERIC_IMA_EFI_H_
-> +
-> +#include <linux/efi.h>
-> +
-> +/*
-> + * Only include this header file from your architecture's <asm/ima-efi.h>.
-> + */
-> +
-> +#ifndef arch_ima_efi_boot_mode
-> +#define arch_ima_efi_boot_mode efi_secureboot_mode_unset
-> +#endif
-> +
-> +#endif /* __ASM_GENERIC_FB_H_ */
-> diff --git a/security/integrity/ima/ima_efi.c b/security/integrity/ima/ima_efi.c
-> index 138029bfcce1..56bbee271cec 100644
-> --- a/security/integrity/ima/ima_efi.c
-> +++ b/security/integrity/ima/ima_efi.c
-> @@ -6,10 +6,7 @@
->  #include <linux/module.h>
->  #include <linux/ima.h>
->  #include <asm/efi.h>
-> -
-> -#ifndef arch_ima_efi_boot_mode
-> -#define arch_ima_efi_boot_mode efi_secureboot_mode_unset
-> -#endif
-> +#include <asm/ima-efi.h>
->
->  static enum efi_secureboot_mode get_sb_mode(void)
->  {
-> --
-> 2.43.0
->
->
+
+On 12/19/2023 4:14 PM, Dmitry Baryshkov wrote:
+> On Tue, 19 Dec 2023 at 12:37, Bibek Kumar Patro
+> <quic_bibekkum@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 12/19/2023 3:51 PM, Dmitry Baryshkov wrote:
+>>> On Tue, 19 Dec 2023 at 10:25, Bibek Kumar Patro
+>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 12/18/2023 7:51 PM, Dmitry Baryshkov wrote:
+>>>>> On 18/12/2023 13:23, Bibek Kumar Patro wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 12/16/2023 9:45 PM, Dmitry Baryshkov wrote:
+>>>>>>> On 16/12/2023 02:03, Konrad Dybcio wrote:
+>>>>>>>> On 15.12.2023 13:54, Robin Murphy wrote:
+>>>>>>>>> On 2023-12-15 12:20 pm, Bibek Kumar Patro wrote:
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> On 12/15/2023 4:14 PM, Dmitry Baryshkov wrote:
+>>>>>>>>>>> On Fri, 15 Dec 2023 at 12:19, Bibek Kumar Patro
+>>>>>>>>>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>> Add ACTLR data table for SM8550 along with support for
+>>>>>>>>>>>> same including SM8550 specific implementation operations.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>>>>>>>>>> ---
+>>>>>>>>>>>>      drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 89
+>>>>>>>>>>>> ++++++++++++++++++++++
+>>>>>>>>>>>>      1 file changed, 89 insertions(+)
+>>>>>>>>>>>>
+>>>>>>>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>>>>>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>>>>>>>> index cb49291f5233..d2006f610243 100644
+>>>>>>>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>>>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>>>>>>>> @@ -20,6 +20,85 @@ struct actlr_config {
+>>>>>>>>>>>>             u32 actlr;
+>>>>>>>>>>>>      };
+>>>>>>>>>>>>
+>>>>>>>>>>>> +/*
+>>>>>>>>>>>> + * SMMU-500 TRM defines BIT(0) as CMTLB (Enable context caching
+>>>>>>>>>>>> in the
+>>>>>>>>>>>> + * macro TLB) and BIT(1) as CPRE (Enable context caching in the
+>>>>>>>>>>>> prefetch
+>>>>>>>>>>>> + * buffer). The remaining bits are implementation defined and
+>>>>>>>>>>>> vary across
+>>>>>>>>>>>> + * SoCs.
+>>>>>>>>>>>> + */
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +#define PREFETCH_DEFAULT       0
+>>>>>>>>>>>> +#define PREFETCH_SHALLOW       BIT(8)
+>>>>>>>>>>>> +#define PREFETCH_MODERATE      BIT(9)
+>>>>>>>>>>>> +#define PREFETCH_DEEP          (BIT(9) | BIT(8))
+>>>>>>>>>>>
+>>>>>>>>>>> I thin the following might be more correct:
+>>>>>>>>>>>
+>>>>>>>>>>> #include <linux/bitfield.h>
+>>>>>>>>>>>
+>>>>>>>>>>> #define PREFETCH_MASK GENMASK(9, 8)
+>>>>>>>>>>> #define PREFETCH_DEFAULT FIELD_PREP(PREFETCH_MASK, 0)
+>>>>>>>>>>> #define PREFETCH_SHALLOW FIELD_PREP(PREFETCH_MASK, 1)
+>>>>>>>>>>> #define PREFETCH_MODERATE FIELD_PREP(PREFETCH_MASK, 2)
+>>>>>>>>>>> #define PREFETCH_DEEP FIELD_PREP(PREFETCH_MASK, 3)
+>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Ack, thanks for this suggestion. Let me try this out using
+>>>>>>>>>> GENMASK. Once tested, will take care of this in next version.
+>>>>>>>>>
+>>>>>>>>> FWIW the more typical usage would be to just define the named
+>>>>>>>>> macros for the raw field values, then put the FIELD_PREP() at the
+>>>>>>>>> point of use. However in this case that's liable to get pretty
+>>>>>>>>> verbose, so although I'm usually a fan of bitfield.h, the most
+>>>>>>>>> readable option here might actually be to stick with simpler
+>>>>>>>>> definitions of "(0 << 8)", "(1 << 8)", etc. However it's not really
+>>>>>>>>> a big deal either way, and I defer to whatever Dmitry and Konrad
+>>>>>>>>> prefer, since they're the ones looking after arm-smmu-qcom the most :)
+>>>>>>>> My 5 cents would be to just use the "common" style of doing this, so:
+>>>>>>>>
+>>>>>>>> #define ACTRL_PREFETCH    GENMASK(9, 8)
+>>>>>>>>     #define PREFETCH_DEFAULT 0
+>>>>>>>>     #define PREFETCH_SHALLOW 1
+>>>>>>>>     #define PREFETCH_MODERATE 2
+>>>>>>>>     #define PREFETCH_DEEP 3
+>>>>>>>>
+>>>>>>>> and then use
+>>>>>>>>
+>>>>>>>> | FIELD_PREP(ACTRL_PREFETCH, PREFETCH_x)
+>>>>>>>>
+>>>>>>>> it can get verbose, but.. arguably that's good, since you really want
+>>>>>>>> to make sure the right bits are set here
+>>>>>>>
+>>>>>>> Sounds good to me.
+>>>>>>>
+>>>>>>
+>>>>>> Konrad, Dimitry, just checked FIELD_PREP() implementation
+>>>>>>
+>>>>>> #define FIELD_FIT(_mask, _val)
+>>>>>> ({                                                              \
+>>>>>>                     __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");  \
+>>>>>>                     ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask); \
+>>>>>> })
+>>>>>>
+>>>>>> since it is defined as a block, it won't be possible to use FIELD_PREP
+>>>>>> in macro or as a structure value, and can only be used inside a
+>>>>>> block/function. Orelse would show compilation errors as following
+>>>>>>
+>>>>>> kernel/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c:94:20: note: in
+>>>>>> expansion of macro 'PREFETCH_SHALLOW'
+>>>>>>      { 0x1947, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>>>>>>                        ^
+>>>>>> kernel/include/linux/bitfield.h:113:2: error: braced-group within
+>>>>>> expression allowed only inside a function
+>>>>>>      ({        \
+>>>>>>      ^
+>>>>>>
+>>>>>> So as per my understanding I think, we might need to go ahead with the
+>>>>>> generic implementation only. Let me know if I missed something.
+>>>>>
+>>>>> Then anyway (foo << bar) is better compared to BIT(n) | BIT(m).
+>>>>>
+>>>>
+>>>> Sure Dmitry, (foo << bar) would be simpler as well as Robin mentioned
+>>>> earlier in his reply.
+>>>> I can implement the defines as:
+>>>>
+>>>> #define PREFETCH_DEFAULT       0
+>>>> #define PREFETCH_SHALLOW       (1 << 8)
+>>>> #define PREFETCH_MODERATE      (1 << 9)
+>>>
+>>> 2 << 8. Isn't that hard.
+>>>
+>>
+>> Ah, right. This is nice! .
+>> Will use 2 << 8 instead. Thanks for the suggestion.
+> 
+> It might still be useful to define the PREFETCH_SHIFT equal to 8.
+> 
+
+Sure, looks okay to me as well to define PREFETCH_SHIFT to 8
+as it's constant.
+
+Thanks,
+Bibek
+
+>>
+>> Thanks,
+>> Bibek
+>>
+>>>> #define PREFETCH_DEEP          (3 << 8)
+>>>>
+>>>> This should be okay I think ?
+>>>>
+>>>> Thanks,
+>>>> Bibek
+>>>>
+>>>
+>>>
+> 
+> 
+> 
 
