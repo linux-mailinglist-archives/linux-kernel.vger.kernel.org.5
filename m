@@ -1,139 +1,232 @@
-Return-Path: <linux-kernel+bounces-5165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0B681876F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:26:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0EF7818772
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E0161F21A2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:26:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B52E285A21
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7B817741;
-	Tue, 19 Dec 2023 12:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F851863E;
+	Tue, 19 Dec 2023 12:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OJWMzrCY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvgkqJtb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBE718628
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 12:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-552d39ac3ccso7978774a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 04:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702988792; x=1703593592; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wWS3yfczDktkvUpvixqZyQtOZBwe8LPlr5fHw/dxTh4=;
-        b=OJWMzrCYL4bLgoOBfpGnTVn063dDWKmUWhsnHy9rhYFpnIiGPPBulIMnh5BnLJCtWv
-         qH6+Vz/QvvUZm195FaxFxDrtxiwexCYWBcTqTgrMCNL5fSauC+sXJIOVTTA8EVhX5hU3
-         V1RQb+Gu696PW0uICglRjhDGJj/+INZoMcvA7IN9/WhWyE6XcVF4fkWivS7o25Vdxgd5
-         m6k4BS3X9pRHNIA7BPY3OY+OHoLoI7YbnAxDbylmTCzwpJ/F2Z8PdkVD1uL6QPNkMywn
-         4pUN0iivlHuhftgDSHUboA4Q5TQtvOb6hu/B7uDurKfT/PqYleAZerP4KeMIlCmGnyan
-         6YbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702988792; x=1703593592;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wWS3yfczDktkvUpvixqZyQtOZBwe8LPlr5fHw/dxTh4=;
-        b=rmzAkf1Lm3GiFOiGHhJvjYajjkFKPfCjNH/kOvHu3B2E0vI/FouMz0s11e+VxJk/sK
-         mjT7fRaLOxFqHdlmrUWGYyruInBvu0S8WZdy1vBbPXUAFKoPAesYfzV9XxJgqvO1Beys
-         CORPRW6kxCjanpCq7cBCgH/NuLROaplVHryGBfTIHXoEUGnjjd3fjiZzCzJIT4k/vegd
-         KSj1VmDXfgDxE5Ht8KS+KWiSsr/RCodxHbYhSoZ0PTPy5v7fmmEA3740ETK2e5CPh/pV
-         +zdRUph86tjVLR1aOYqBAD5Yg3xi3Ljhcy79jbSXob4l1XZoaf9FBBXEt3A48C58n8vB
-         b/hA==
-X-Gm-Message-State: AOJu0Yw0arHUk/xqGVMJLaC+uxl5aKEPT95woRdqEYjSYFBFuMVAkLVm
-	lDhpQymeZAxpZfZaWbDJuwfVxQ==
-X-Google-Smtp-Source: AGHT+IF3baFBbt57k/9IDal6KLp1YZfltZBezRPb8tmcI0Bu/yGnWA5AgvMArVDDUwsOc6TLJ/ErEA==
-X-Received: by 2002:a17:906:a38f:b0:a1d:4874:1ab7 with SMTP id k15-20020a170906a38f00b00a1d48741ab7mr1085884ejz.65.1702988792599;
-        Tue, 19 Dec 2023 04:26:32 -0800 (PST)
-Received: from [192.168.199.59] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
-        by smtp.gmail.com with ESMTPSA id tg3-20020a1709078dc300b00a22fdd1722asm8402732ejc.122.2023.12.19.04.26.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 04:26:32 -0800 (PST)
-Message-ID: <d550ba47-7d92-4f55-a498-8f652c806f30@linaro.org>
-Date: Tue, 19 Dec 2023 13:26:30 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867C118627;
+	Tue, 19 Dec 2023 12:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702988802; x=1734524802;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=NVUFPpae8F8jyThuVAWdOzVmRorZrFfAKHgtb/njqPI=;
+  b=FvgkqJtbjjiYzmPEYSjM8znr2cPrfi1XhwESuaz420FaEQUBTSBT4gW0
+   bx8KZoHxrZg+p49LnNKBQ7o1+713BnkGKCNIaLwlgFBkNrOnWZSinprD0
+   itDe6JgZ6/HESCFIaFC/lfM/6FpAmtUrhHZ0PFQIJq+c7Z4gUIB3DC4zf
+   yo5tmzrTZECNiMhddG8oymRyG3YnhycoeXF8oAARjqJmd0hrtAAl4GLHc
+   8Xqn5q+rPJsI/RNa9yK+1zpwrZmVuF9O/g2oZs9Tf17vQPTZqohwuEOp+
+   Wo1Hln9/3KK/bapSy+rEO140dcUm/EcsKvLc1Uu7BW09JPbSbXGO9rLr/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="399482441"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="399482441"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 04:26:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="899345154"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="899345154"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 19 Dec 2023 04:26:36 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 26EDA54B; Tue, 19 Dec 2023 14:26:34 +0200 (EET)
+Date: Tue, 19 Dec 2023 14:26:34 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Sanath S <sanaths2@amd.com>
+Cc: Sanath S <Sanath.S@amd.com>, mario.limonciello@amd.com,
+	andreas.noever@gmail.com, michael.jamet@intel.com,
+	YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset
+ downstream ports created by boot firmware
+Message-ID: <20231219122634.GJ1074920@black.fi.intel.com>
+References: <c7d174d3-028f-9ce4-7ef5-3e033c195159@amd.com>
+ <20231215140224.GX1074920@black.fi.intel.com>
+ <866cb714-b9a8-a7d4-4c59-6ba771ef325f@amd.com>
+ <20231218104234.GB1074920@black.fi.intel.com>
+ <c433f29b-597c-b6d6-aa48-2b84a26dc623@amd.com>
+ <20231218113151.GC1074920@black.fi.intel.com>
+ <20231218122312.GE1074920@black.fi.intel.com>
+ <997f2a94-66d9-fb95-8f75-46d61937f7e8@amd.com>
+ <20231218131840.GH1074920@black.fi.intel.com>
+ <0fd5c09f-1cf2-8813-a8f9-1bd856e3a298@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 34/34] media: iris: add power management for encoder
-Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, agross@kernel.org,
- andersson@kernel.org, mchehab@kernel.org, bryan.odonoghue@linaro.org
-Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com
-References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
- <1702899149-21321-35-git-send-email-quic_dikshita@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1702899149-21321-35-git-send-email-quic_dikshita@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0fd5c09f-1cf2-8813-a8f9-1bd856e3a298@amd.com>
 
-On 18.12.2023 12:32, Dikshita Agarwal wrote:
-> Hardware specific power sequence include programming specific
-> sequence of registers. Implements this sequence for iris3.
+On Tue, Dec 19, 2023 at 02:41:08PM +0530, Sanath S wrote:
 > 
-> Also, implement iris3 Encoder specific calculation for clock
-> and bus bandwidth which depends on hardware configuration,
-> codec format, resolution and frame rate.
+> On 12/18/2023 6:48 PM, Mika Westerberg wrote:
+> > On Mon, Dec 18, 2023 at 06:35:13PM +0530, Sanath S wrote:
+> > > On 12/18/2023 5:53 PM, Mika Westerberg wrote:
+> > > > On Mon, Dec 18, 2023 at 01:31:51PM +0200, Mika Westerberg wrote:
+> > > > > On Mon, Dec 18, 2023 at 04:49:13PM +0530, Sanath S wrote:
+> > > > > > > The discover part should not do anything (like write the hardware) so
+> > > > > > > perhaps it is just some timing thing (but that's weird too).
+> > > > > > > 
+> > > > > > > I think we should do something like this:
+> > > > > > > 
+> > > > > > > 1. Disable all enabled protocol adapters (reset them to defaults).
+> > > > > > > 2. Clear all protocol adapter paths.
+> > > > > > > 3. Issue DPR over all enabled USB4 ports.
+> > > > > > > 
+> > > > > > > BTW, what you mean "didn't work"?
+> > > > > > Path activation would go fine after DPR like below:
+> > > > > > 
+> > > > > > [   15.090905] thunderbolt 0000:c4:00.5: 0:5 <-> 2:9 (PCI): activating
+> > > > > > [   15.090932] thunderbolt 0000:c4:00.5: activating PCIe Down path from 0:5
+> > > > > > to 2:9
+> > > > > > [   15.091602] thunderbolt 0000:c4:00.5: activating PCIe Up path from 2:9 to
+> > > > > > 0:5
+> > > > > > 
+> > > > > > But, PCIE enumeration doesn't happen (pcie link up will not happen, will not
+> > > > > > see below logs)
+> > > > > > [   15.134223] pcieport 0000:00:03.1: pciehp: Slot(0-1): Card present
+> > > > > > [   15.134243] pcieport 0000:00:03.1: pciehp: Slot(0-1): Link Up
+> > > > > Okay, what if you like reset the PCIe adapter config spaces back to the
+> > > > > defaults? Just as an experiment.
+> > > > If this turns out to be really complex then I guess it is better to do
+> > > > it like you did originally using discovery but at least it would be nice
+> > > > to see what the end result of this experiment looks like :)
+> I feel it's better to go with discover and then reset for now (as v3).
+> I'll keep this experiment as "to do" and will send out when I crack it down.
+
+Fair enough.
+
+> > > Yes, I'll give a try.
+> > > As an experiment, I tried to compare the path deactivation that occurs at
+> > > two place.
+> > > 1. In tb_switch_reset where we are calling tb_path_deactivate_hop(port, i).
+> > > 2. While we get a unplug event after doing DPR.
+> > > 
+> > > I observed both have different hop_index and port numbers.
+> > > So, are we calling tb_path_deactivate_hop with wrong hop ids ?
+> > Wrong adapters possibly.
+> > 
+> > >  From deactivate tunnel (called while unplug) :
+> > > [    3.408268] thunderbolt 0000:c4:00.5: deactivating PCIe Down path from
+> > > 2:9 to 0:5
+> > > [    3.408282] deactivate hop port = 9 hop_index=8
+> > > [    3.408328] deactivate hop port = 2 hop_index=10
+> > Definitely should be port = 5 (that's PCIe down in your log) and
+> > hop_index = 8 (that's the one used with PCIe).
+> > 
+> > > Deactivate from tb_switch_reset() :
+> > > deactivate hop port = 5 hop_index=8
+> > Can you add some more logging and provide me the dmesg or
+> > alternativively investigate it yourself. You can use tb_port_dbg() to
+> > get the port numbers to the log.
+> I've sent you complete dmesg.
+
+Got it, thanks!
+
+> Here is the log w.r.t port numbers and path clean up.
 > 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> ---
-[...]
+> [    3.389038] thunderbolt 0000:c4:00.5: 0:3: Downstream port, setting DPR
+> [    3.389065] Calling usb4_port_reset
+> [    3.389068] thunderbolt 0000:c4:00.5: 0:4: Found USB3 DOWN
+> [    3.389193] thunderbolt 0000:c4:00.5: 0:4: In reset, cleaning up path,
+> port->port = 4 hopid = 8
+> [    3.389203] thunderbolt 0000:c4:00.5: 0:4: deactivating_hop port = 4
+> hop_index=8
+> [    3.389682] thunderbolt 0000:c4:00.5: 0:5: Found PCI Down
+> [    3.389811] thunderbolt 0000:c4:00.5: 0:5: In reset, cleaning up path,
+> port->port = 5 hopid = 8
+> [    3.389817] thunderbolt 0000:c4:00.5: 0:5: deactivating_hop port = 5
+> hop_index=8
+> [    3.390296] thunderbolt 0000:c4:00.5: 0:6: Found DP IN
+> [    3.390555] thunderbolt 0000:c4:00.5: 0:6: In reset, cleaning up path,
+> port->port = 6 hopid = 8
+> [    3.390558] thunderbolt 0000:c4:00.5: 0:6: deactivating_hop port = 6
+> hop_index=8
+> [    3.390686] thunderbolt 0000:c4:00.5: 0:6: In reset, cleaning up path,
+> port->port = 6 hopid = 9
+> [    3.390689] thunderbolt 0000:c4:00.5: 0:6: deactivating_hop port = 6
+> hop_index=9
+> [    3.390816] thunderbolt 0000:c4:00.5: 0:7: Found DP IN
+> [    3.391077] thunderbolt 0000:c4:00.5: 0:7: In reset, cleaning up path,
+> port->port = 7 hopid = 8
+> [    3.391080] thunderbolt 0000:c4:00.5: 0:7: deactivating_hop port = 7
+> hop_index=8
+> [    3.391213] thunderbolt 0000:c4:00.5: 0:7: In reset, cleaning up path,
+> port->port = 7 hopid = 9
+> [    3.391217] thunderbolt 0000:c4:00.5: 0:7: deactivating_hop port = 7
+> hop_index=9
+> [    3.391342] Reset success
+> [    3.391391] thunderbolt 0000:c4:00.5: 0:2: switch unplugged
+> [    3.391434] thunderbolt 0000:c4:00.5: 0:4 <-> 2:16 (USB3): deactivating
+> [    3.391471] thunderbolt 0000:c4:00.5: deactivating USB3 Down path from
+> 0:4 to 2:16
+> [    3.391477] thunderbolt 0000:c4:00.5: 0:4: deactivating_hop port = 4
+> hop_index=8
+> [    3.391641] thunderbolt 0000:c4:00.5: 2:1: deactivating_hop port = 1
+> hop_index=9
+> [    3.391651] thunderbolt 0000:c4:00.5: deactivating USB3 Up path from 2:16
+> to 0:4
+> [    3.391659] thunderbolt 0000:c4:00.5: 2:16: deactivating_hop port = 16
+> hop_index=8
+> [    3.391664] thunderbolt 0000:c4:00.5: 0:2: deactivating_hop port = 2
+> hop_index=9
+> [    3.391701] thunderbolt 0000:c4:00.6: total paths: 3
+> [    3.391720] thunderbolt 0000:c4:00.6: IOMMU DMA protection is disabled
+> [    3.392027] thunderbolt 0000:c4:00.5: 0:5 <-> 2:9 (PCI): deactivating
+> [    3.392154] thunderbolt 0000:c4:00.5: deactivating PCIe Down path from
+> 2:9 to 0:5
+> [    3.392163] thunderbolt 0000:c4:00.5: 2:9: deactivating_hop port = 9
+> hop_index=8
+> [    3.392170] thunderbolt 0000:c4:00.5: 0:2: deactivating_hop port = 2
+> hop_index=10
+> [    3.392534] thunderbolt 0000:c4:00.5: deactivating PCIe Up path from 0:5
+> to 2:9
+> [    3.392539] thunderbolt 0000:c4:00.5: 0:5: deactivating_hop port = 5
+> hop_index=8
+> [    3.392637] thunderbolt 0000:c4:00.5: 2:1: deactivating_hop port = 1
+> hop_index=10
+> [    3.392799] thunderbolt 0-2: device disconnected
+> 
+> But it seems like we are not cleaning up all the paths ?
 
-> +static const struct bw_info sm8550_bw_table_enc[] = {
-> +	{ 1944000, 1491000, 2693000 },	/* 3840x2160@60 */
-> +	{  972000,  765000, 1366000 },	/* 3840x2160@30 */
-> +	{  489600,  557000, 780000 },	/* 1920x1080@60 */
-> +	{  244800,  288000, 399000 },	/* 1920x1080@30 */
-> +};
-can this be calculated at runtime by chance?
+To me this looks correct and even your dmesg the PCIe tunnel that gets
+established after the "reset" seems to be working just fine. I also see
+that in your log you are doing the discovery before reset even though
+the original idea was to avoid it.
 
-Konrad
+In any case this was a good experiment. I will see if I can get this
+working on my side if I have some spare time during holidays.
+
+I guess we can to with the discovery but taking into account the
+"host_reset".
+
+One additional question though, say we have PCIe tunnel established by
+the BIOS CM and we do the "reset", that means there will be hot-remove
+on the PCIe side and then hotplug again, does this slow down the boot
+considerably? We have some delays there in the PCIe code that might hit
+us here although I agree that we definitely prefer working system rather
+than fast-booting non-working system but perhaps the delays are not
+noticeable by the end-user?
 
