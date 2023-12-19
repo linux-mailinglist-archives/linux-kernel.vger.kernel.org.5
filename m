@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-6053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A5018193A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 318798193A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:33:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 366C7285D97
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:32:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3BED285C07
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 22:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5053DB82;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF783FB39;
 	Tue, 19 Dec 2023 22:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kt1rNfuv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fbafFq1j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC21F3D0AB
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 22:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE023D0BC
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 22:31:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
@@ -29,10 +29,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KVsX1wYh/u3bsgXc0v6541Y+g0kgoewEBIuD2sVrVOE=;
-	b=Kt1rNfuvx7+wT5H8UNOgwHCeTbOEvaDygKRpZZi3u1FYmus+bD/11ubTVW79B+oIdiaNwz
-	JlwOYJnlQA+xJy+dqmZh3LmC25rgn5CNTohHAkyMco9Blc+/P3IIuddLLDTvM6CJy8A9+O
-	KeuWbai25yfJ/zAiqqyvZxcC5VTNrDs=
+	bh=ZKMuCi1Fs+yi8i1iMj8jEYKxpwLo+oL8GkzWTmOTGSI=;
+	b=fbafFq1jlKC1cw8l0es+kRgSLJMag+jZz1zaVwws6qJ/XwEE/QAU3b2QRQ4d4gY3ik5ERb
+	tj3mXVFI3saO1VRCl/G6F+6cQtebPvlWXWmXRbKaD42JplnE469NR+x6bSXKkfuSwR+j0Y
+	wmoNA/R34bjTYOY+bjg9F2pqKV9n4xU=
 From: andrey.konovalov@linux.dev
 To: Marco Elver <elver@google.com>,
 	Alexander Potapenko <glider@google.com>
@@ -47,9 +47,9 @@ Cc: Andrey Konovalov <andreyknvl@gmail.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH mm 13/21] mempool: skip slub_debug poisoning when KASAN is enabled
-Date: Tue, 19 Dec 2023 23:28:57 +0100
-Message-Id: <98a4b1617e8ceeb266ef9a46f5e8c7f67a563ad2.1703024586.git.andreyknvl@google.com>
+Subject: [PATCH mm 14/21] mempool: use new mempool KASAN hooks
+Date: Tue, 19 Dec 2023 23:28:58 +0100
+Message-Id: <d36fc4a6865bdbd297cadb46b67641d436849f4c.1703024586.git.andreyknvl@google.com>
 In-Reply-To: <cover.1703024586.git.andreyknvl@google.com>
 References: <cover.1703024586.git.andreyknvl@google.com>
 Precedence: bulk
@@ -63,49 +63,65 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-With the changes in the following patch, KASAN starts saving its metadata
-within freed mempool elements.
+Update the mempool code to use the new mempool KASAN hooks.
 
-Thus, skip slub_debug poisoning and checking of mempool elements when
-KASAN is enabled. Corruptions of freed mempool elements will be detected
-by KASAN anyway.
+Rely on the return value of kasan_mempool_poison_object and
+kasan_mempool_poison_pages to prevent double-free and invalid-free bugs.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
 ---
-
-Changes RFC->v1:
-- This is a new patch.
----
- mm/mempool.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ mm/mempool.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/mm/mempool.c b/mm/mempool.c
-index 7e1c729f292b..1fd39478c85e 100644
+index 1fd39478c85e..103dc4770cfb 100644
 --- a/mm/mempool.c
 +++ b/mm/mempool.c
-@@ -56,6 +56,10 @@ static void __check_element(mempool_t *pool, void *element, size_t size)
+@@ -112,32 +112,34 @@ static inline void poison_element(mempool_t *pool, void *element)
+ }
+ #endif /* CONFIG_DEBUG_SLAB || CONFIG_SLUB_DEBUG_ON */
  
- static void check_element(mempool_t *pool, void *element)
+-static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
++static __always_inline bool kasan_poison_element(mempool_t *pool, void *element)
  {
-+	/* Skip checking: KASAN might save its metadata in the element. */
-+	if (kasan_enabled())
-+		return;
-+
- 	/* Mempools backed by slab allocator */
- 	if (pool->free == mempool_kfree) {
- 		__check_element(pool, element, (size_t)pool->pool_data);
-@@ -81,6 +85,10 @@ static void __poison_element(void *element, size_t size)
+ 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+-		kasan_mempool_poison_object(element);
++		return kasan_mempool_poison_object(element);
+ 	else if (pool->alloc == mempool_alloc_pages)
+-		kasan_poison_pages(element, (unsigned long)pool->pool_data,
+-				   false);
++		return kasan_mempool_poison_pages(element,
++						(unsigned long)pool->pool_data);
++	return true;
+ }
  
- static void poison_element(mempool_t *pool, void *element)
+ static void kasan_unpoison_element(mempool_t *pool, void *element)
  {
-+	/* Skip poisoning: KASAN might save its metadata in the element. */
-+	if (kasan_enabled())
-+		return;
-+
- 	/* Mempools backed by slab allocator */
- 	if (pool->alloc == mempool_kmalloc) {
- 		__poison_element(element, (size_t)pool->pool_data);
+ 	if (pool->alloc == mempool_kmalloc)
+-		kasan_unpoison_range(element, (size_t)pool->pool_data);
++		kasan_mempool_unpoison_object(element, (size_t)pool->pool_data);
+ 	else if (pool->alloc == mempool_alloc_slab)
+-		kasan_unpoison_range(element, kmem_cache_size(pool->pool_data));
++		kasan_mempool_unpoison_object(element,
++					      kmem_cache_size(pool->pool_data));
+ 	else if (pool->alloc == mempool_alloc_pages)
+-		kasan_unpoison_pages(element, (unsigned long)pool->pool_data,
+-				     false);
++		kasan_mempool_unpoison_pages(element,
++					     (unsigned long)pool->pool_data);
+ }
+ 
+ static __always_inline void add_element(mempool_t *pool, void *element)
+ {
+ 	BUG_ON(pool->curr_nr >= pool->min_nr);
+ 	poison_element(pool, element);
+-	kasan_poison_element(pool, element);
+-	pool->elements[pool->curr_nr++] = element;
++	if (kasan_poison_element(pool, element))
++		pool->elements[pool->curr_nr++] = element;
+ }
+ 
+ static void *remove_element(mempool_t *pool)
 -- 
 2.25.1
 
