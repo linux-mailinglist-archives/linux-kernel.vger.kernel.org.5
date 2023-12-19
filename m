@@ -1,181 +1,284 @@
-Return-Path: <linux-kernel+bounces-5293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 646DD818912
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:55:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF51C818919
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:56:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AA851C23F65
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:55:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F3BA1C23E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E0F91A73C;
-	Tue, 19 Dec 2023 13:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4519A1B27A;
+	Tue, 19 Dec 2023 13:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V2oWBMIw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cwTcTN3D"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5131A5A0;
-	Tue, 19 Dec 2023 13:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702994123; x=1734530123;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+wx1Q/itu8M2fGNsNHzaGefWDFg1PjDsGBGv7TE6v74=;
-  b=V2oWBMIwV9ANnCjvC8jGaY8G11IJKNoxju+IygT290Dk20QHmUrFoSt8
-   ftgfBcbciKd8W0C/MvUGXcNvqTiIWnx4pFgcDXi67LdpZzMt/lAOAQwZz
-   JIfBB8187WvUXgU0qVoi2vPDlyzb4LXpsgf1WL8WhIFEXPxepfZthtNCX
-   fGpHmiR3uMSnXdGzjGhPmtpK/eUptsPJs+0vRNzsfeFLimXsmj03Uhblk
-   iq15WvSLABV1aqTAfg9iZ/7S7ppY0l5YaOtrJeT3OlrfLoUQvTCtdAr94
-   PvovRuNyaQa6evgZI74xOmKEXkePWAyd4F4pLwX9B2oJBto2oPkR+Bls5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="394537319"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="394537319"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 05:55:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="894297892"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="894297892"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga002.fm.intel.com with SMTP; 19 Dec 2023 05:55:18 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 19 Dec 2023 15:55:18 +0200
-Date: Tue, 19 Dec 2023 15:55:18 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: RD Babiera <rdbabiera@google.com>
-Cc: linux@roeck-us.net, gregkh@linuxfoundation.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	badhri@google.com, bryan.odonoghue@linaro.org, agross@kernel.org,
-	andersson@kernel.org, konrad.dybcio@linaro.org
-Subject: Re: [PATCH v2 03/12] usb: typec: tcpci: add cable_comm_capable
- attribute
-Message-ID: <ZYGgxs9eEBXPi984@kuha.fi.intel.com>
-References: <20231214230850.379863-14-rdbabiera@google.com>
- <20231214230850.379863-17-rdbabiera@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5B11A594
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-77f3790a187so294642785a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:56:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702994206; x=1703599006; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xf7vDZZkz6GwHHPc1HLYA9mBh21UgE7DpY4iGTWyAz0=;
+        b=cwTcTN3D6Y+IEM2OqV/TxVdImZpQMDK1Sn3yMYSwKY3+YQfSmYvqsc/3i7Je3Xlxpq
+         v7nS4TK03+jYJ7n3bD/1Q1v4eW3oNsJ1ESZTxtYmlp9TMyXnewTb/PlCAUYrL/47l0Jd
+         PL8CSqmGY22lg/Uf/A0x0ImRuh2MYU4vs+j0eu6YVNo27XFyNEyJ5RIW+YyN5wp61Jh4
+         nI9auUgV2IyAtJ+a6/TjWzYOIA2JuqB4amaeGFsppN4+KDnSQ3gl0UHcgzPAF1z7qcaW
+         veLp/JP7Y7osL4ukzpBJaD9STAwdLLXfHlhDUYM9bZNNcE2NbVKR/zEWsVXBlOy0hDSu
+         369w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702994206; x=1703599006;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xf7vDZZkz6GwHHPc1HLYA9mBh21UgE7DpY4iGTWyAz0=;
+        b=b7ByzVqDIWityDz/ALZepMThLAEdH7h8MB3x9fVS5LJt4ztdgMAHn4cZfWP3K6U49q
+         eJ1b+3JxcA6K0MwIepIUZT9a8UmGoHqFS5fBlHHAOKcTDLRXKjdxpSAJUIvjORiu3Nbi
+         eLD1k5doCzGUWaDndPNbcDqKEkRELhmkwWzVeyWCG2BU610/b3ChdgBxq1CvMht2IwD9
+         DoDA0qb/xXpV4USxmGc22l/PXT6+9IBzM8YCj7jiRW9PAwX1LyHvyKJ8Xj7TGCPnUvni
+         q2CfH81gKhFHPCIAusswnCg184k40ApQp2EEjvWs46FWeHUcGQM5xIE1to6wY/m8r6+p
+         BZlA==
+X-Gm-Message-State: AOJu0YwFWzlvLFvdJhLU+O8e61orJg/lb2tq3c/b1dhmRud8YrP+5jPK
+	IBNn8X7E4InGWS8mn2jxEBFYEGxLvaVIvulI2WtV3w==
+X-Google-Smtp-Source: AGHT+IFw6K+fSd7zNP5OAxlt5t49hDrYdU0WXtNNHDZXZBZ8B6avCWXoXQDOZ5AXqAPY1WKVaGYcD4jL72/J/7w57No=
+X-Received: by 2002:a05:6214:242e:b0:67f:28b7:a685 with SMTP id
+ gy14-20020a056214242e00b0067f28b7a685mr7666971qvb.7.1702994205632; Tue, 19
+ Dec 2023 05:56:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214230850.379863-17-rdbabiera@google.com>
+References: <000000000000f66a3005fa578223@google.com> <20231213104950.1587730-1-glider@google.com>
+ <ZXofF2lXuIUvKi/c@rh> <ZXopGGh/YqNIdtMJ@dread.disaster.area>
+ <CAG_fn=UukAf5sPrwqQtmL7-_dyUs3neBpa75JAaeACUzXsHwOA@mail.gmail.com>
+ <ZXt2BklghFSmDbhg@dread.disaster.area> <CAG_fn=VqSEyt+vwZ7viviiJtipPPYyzEhkuDjdnmRcW-UXZkYg@mail.gmail.com>
+ <ZXzMU9DQ7JqeYwvb@dread.disaster.area> <CANp29Y5XPoH3tdZ_ZEJK3oUZnFf5awQn1w3E95YJFJ-wPxQQ4g@mail.gmail.com>
+ <ZYGPZUerlEaCVRq8@dread.disaster.area>
+In-Reply-To: <ZYGPZUerlEaCVRq8@dread.disaster.area>
+From: Alexander Potapenko <glider@google.com>
+Date: Tue, 19 Dec 2023 14:56:04 +0100
+Message-ID: <CAG_fn=XaT0pt0j-=BoOKFU9nh+R7NY3qgwtk5sTS3afDunnmwA@mail.gmail.com>
+Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in __crc32c_le_base (3)
+To: Dave Chinner <david@fromorbit.com>
+Cc: Aleksandr Nogikh <nogikh@google.com>, Dave Chinner <dchinner@redhat.com>, 
+	syzbot+a6d6b8fffa294705dbd8@syzkaller.appspotmail.com, hch@lst.de, 
+	davem@davemloft.net, herbert@gondor.apana.org.au, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 11:08:47PM +0000, RD Babiera wrote:
-> Add cable_comm_capable to tcpci_data for tcpci drivers to indicate that
-> the port tcpc is capable of communicating to cables over SOP. A
-> corresponding tcpci callback tcpci_cable_comm_capable returns this value.
-> The tcpm will primarily use this in later patches to determine if the port
-> can transmit and receive SOP' messages.
-> 
-> Maxim based tcpci drivers are capable of SOP' communication, so the
-> cable_comm_capable flag is set to true.
-> 
-> Signed-off-by: RD Babiera <rdbabiera@google.com>
+On Tue, Dec 19, 2023 at 1:41=E2=80=AFPM Dave Chinner <david@fromorbit.com> =
+wrote:
+>
+> On Mon, Dec 18, 2023 at 11:22:40AM +0100, Aleksandr Nogikh wrote:
+> > Hi Dave,
+> >
+> > > KMSAN has been used for quite a long time with syzbot, however,
+> > > and it's supposed to find these problems, too. Yet it's only been
+> > > finding this for 6 months?
+> >
+> > As Alex already mentioned, there were big fs fuzzing improvements in
+> > 2022, and that's exactly when we started seeing "KMSAN: uninit-value
+> > in __crc32c_le_base" (I've just checked crash history). Before that
+> > moment the code was likely just not exercised on syzbot.
+>
+> Can you tell us what these "big fuzzing improvements" were? I mean,
+> you're trying to fuzz our code and we've been working on rejecting
+> fuzzing for the last 15 years, so if you're doing something novel it
+> would help us work out how to defeat it quickly and effciently.
+>
+> > On Fri, Dec 15, 2023 at 10:59=E2=80=AFPM 'Dave Chinner' via syzkaller-b=
+ugs
+> > <syzkaller-bugs@googlegroups.com> wrote:
+> > >
+> > > On Fri, Dec 15, 2023 at 03:41:49PM +0100, Alexander Potapenko wrote:
+> > > >
+> > > > You are right, syzbot used to mount XFS way before 2022.
+> > > > On the other hand, last fall there were some major changes to the w=
+ay
+> > > > syz_mount_image() works, so I am attributing the newly detected bug=
+s
+> > > > to those changes.
+> > >
+> > > Oh, so that's when syzbot first turned on XFS V5 format testing?
+> > >
+> > > Or was that done in April, when this issue was first reported?
+> > >
+> > > > Unfortunately we don't have much insight into reasons behind syzkal=
+ler
+> > > > being able to trigger one bug or another: once a bug is found for t=
+he
+> > > > first time, the likelihood to trigger it again increases, but findi=
+ng
+> > > > it initially might be tricky.
+> > > >
+> > > > I don't understand much how trivial is the repro at
+> > > > https://gist.github.com/xrivendell7/c7bb6ddde87a892818ed1ce206a429c=
+4,
+> > >
+> > > I just looked at it - all it does is create a new file. It's
+> > > effectively "mount; touch", which is exactly what I said earlier
+> > > in the thread should reproduce this issue every single time.
+> > >
+> > > > but overall we are not drilling deep enough into XFS.
+> > > > https://storage.googleapis.com/syzbot-assets/8547e3dd1cca/ci-upstre=
+am-kmsan-gce-c7402612.html
+> > > > (ouch, 230Mb!) shows very limited coverage.
+> > >
+> > > *sigh*
+> > >
+> > > Did you think to look at the coverage results to check why the
+> > > numbers for XFS, ext4 and btrfs are all at 1%?
+> >
+> > Hmmm, thanks for pointing it out!
+> >
+> > Our ci-upstream-kmsan-gce instance is configured in such a way that
+> > the fuzzer program is quite restricted in what it can do. Apparently,
+> > it also lacks capabilities to do mounts, so we get almost no coverage
+> > in fs/*/**. I'll check whether the lack of permissions to mount() was
+> > intended.
+> >
+> > On the other hand, the ci-upstream-kmsan-gce-386 instance does not
+> > have such restrictions at all and we do see fs/ coverage there:
+> > https://storage.googleapis.com/syzbot-assets/609dc759f08b/ci-upstream-k=
+msan-gce-386-0e389834.html
+> >
+> > It's still quite low for fs/xfs, which is explainable -- we almost
+> > immediately hit "KMSAN: uninit-value in __crc32c_le_base". For the
+> > same reason, it's also somewhat lower than could be elsewhere as well
+> > -- we spend too much time restarting VMs after crashes. Once the fix
+> > patch reaches the fuzzed kernel tree, ci-upstream-kmsan-gce-386 should
+> > be back to normal.
+> >
+> > If we want to see how deep syzbot can go into the fs/ code in general,
+> > it's better to look at the KASAN instance coverage:
+> > https://storage.googleapis.com/syzbot-assets/12b7d6ca74e6/ci-upstream-k=
+asan-gce-root-0e389834.html
+> >  (*)
+> >
+> > Here e.g. fs/ext4 is already 63% and fs/xfs is 16%.
+>
+> Actually, that XFS number is an excellent result. I don't think we
+> can do much better than that.
+>
+> I know, that's not the response you expected.
+>
+> Everyone knows that higher coverage numbers are better because it
+> means we've tested more code, right?
+>
+> Wrong.
+>
+> When it comes to fuzzing based attacks, the earlier the bad data is
+> detected and rejected the better the result. We should see lower
+> coverage of the code the better the detection and rejection
+> algorithms get.  i.e. The detection code should be extensively
+> covered, but the rest of the code should have very little coverage
+> because of how quickly the filesystem reacts to fatal object
+> corruption.
+>
+> And the evidence for this in the XFS coverage results?
+>
+> Take a look at fs/xfs/libxfs/xfs_inode_buf.c. Every single line of
+> the disk inode format verifiers has been covered (i.e. every
+> possible corruption case we can detect has been exercised).
+>
+> That's good.
+>
+> However, there is zero coverage of core formatting functions like
+> xfs_inode_to_disk() that indicate no inodes have been successfully
+> modified and written back to disk.
+>
+> That's *even better*.
+>
+> Think about that for a minute.
+>
+> The coverage data is telling us that we've read lots of corrupt
+> inodes and rejected them, but the testing has made almost no
+> successful inode modifications that have been written back to stable
+> storage. That's because of widespread corruption in the images
+> resulting in a fatal corruption being detected before modofications
+> are being made or are being aborted before they are pushed back to
+> the corrupt image.
+>
+> The same pattern appears for most other major on-disk subsystems.
+> They either have not been exercised at all (e.g. extent btree code) or
+> the only code in the subsystem that has significant coverage is the
+> object lookup code and the format verifiers the lookup code runs.
+>
+> This is an excellent result because it proves that XFS is detecting
+> the majority of corrupt structures in it's initial object
+> search iteration paths. Corruption is not getting past the
+> first read from disk and so no code other than the search/lookup
+> code and the verifiers is getting run.
+>
+> Put simply: we are not letting corrupt structures get into code
+> paths where they can be mis-interpretted and do damage.
+>
+> From my perspective as an experienced filesystem developer, this is
+> exactly the sort of coverage pattern I would like to see from -all
+> filesystems- when they are fed nothing but extensively corrupted
+> filesystems the way syzbot does.
+>
+> The basic truth is that if filesystems are good at corruption
+> detection and rejection, they should have very low code coverage
+> numbers from syzbot testing.
+>
+> -Dave.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+It is quite insightful that if we throw random garbage at a
+well-written API then low coverage indicates that the checks are doing
+their job.
 
-> ---
-> Changes since v1:
-> * Moved tcpm_pd_receive changes to separate patch
-> ---
->  drivers/usb/typec/tcpm/tcpci.c            | 8 ++++++++
->  drivers/usb/typec/tcpm/tcpci_maxim_core.c | 1 +
->  include/linux/usb/tcpci.h                 | 3 +++
->  include/linux/usb/tcpm.h                  | 4 ++++
->  4 files changed, 16 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index 0ee3e6e29bb1..1ededbcecc09 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.c
-> +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -584,6 +584,13 @@ static int tcpci_pd_transmit(struct tcpc_dev *tcpc, enum tcpm_transmit_type type
->  	return 0;
->  }
->  
-> +static bool tcpci_cable_comm_capable(struct tcpc_dev *tcpc)
-> +{
-> +	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-> +
-> +	return tcpci->data->cable_comm_capable;
-> +}
-> +
->  static int tcpci_init(struct tcpc_dev *tcpc)
->  {
->  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-> @@ -793,6 +800,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
->  	tcpci->tcpc.enable_frs = tcpci_enable_frs;
->  	tcpci->tcpc.frs_sourcing_vbus = tcpci_frs_sourcing_vbus;
->  	tcpci->tcpc.set_partner_usb_comm_capable = tcpci_set_partner_usb_comm_capable;
-> +	tcpci->tcpc.cable_comm_capable = tcpci_cable_comm_capable;
->  
->  	if (tcpci->data->check_contaminant)
->  		tcpci->tcpc.check_contaminant = tcpci_check_contaminant;
-> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim_core.c b/drivers/usb/typec/tcpm/tcpci_maxim_core.c
-> index 7fb966fd639b..7b2d4e6e52a2 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_maxim_core.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_maxim_core.c
-> @@ -478,6 +478,7 @@ static int max_tcpci_probe(struct i2c_client *client)
->  	chip->data.vbus_vsafe0v = true;
->  	chip->data.set_partner_usb_comm_capable = max_tcpci_set_partner_usb_comm_capable;
->  	chip->data.check_contaminant = max_tcpci_check_contaminant;
-> +	chip->data.cable_comm_capable = true;
->  
->  	max_tcpci_init_regs(chip);
->  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-> diff --git a/include/linux/usb/tcpci.h b/include/linux/usb/tcpci.h
-> index 467e8045e9f8..1d0b849defd0 100644
-> --- a/include/linux/usb/tcpci.h
-> +++ b/include/linux/usb/tcpci.h
-> @@ -198,12 +198,15 @@ struct tcpci;
->   *		Chip level drivers are expected to check for contaminant and call
->   *		tcpm_clean_port when the port is clean to put the port back into
->   *		toggling state.
-> + * @cable_comm_capable
-> + *		optional; Set when TCPC can communicate with cable plugs over SOP'
->   */
->  struct tcpci_data {
->  	struct regmap *regmap;
->  	unsigned char TX_BUF_BYTE_x_hidden:1;
->  	unsigned char auto_discharge_disconnect:1;
->  	unsigned char vbus_vsafe0v:1;
-> +	unsigned char cable_comm_capable:1;
->  
->  	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
->  	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
-> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> index 65fac5e1f317..430fa3ec69bb 100644
-> --- a/include/linux/usb/tcpm.h
-> +++ b/include/linux/usb/tcpm.h
-> @@ -119,6 +119,9 @@ enum tcpm_transmit_type {
->   *		at the end of the deboumce period or when the port is still
->   *		toggling. Chip level drivers are expected to check for contaminant
->   *		and call tcpm_clean_port when the port is clean.
-> + * @cable_comm_capable
-> + *		Optional; Returns whether cable communication over SOP' is supported
-> + *		by the tcpc
->   */
->  struct tcpc_dev {
->  	struct fwnode_handle *fwnode;
-> @@ -154,6 +157,7 @@ struct tcpc_dev {
->  	bool (*is_vbus_vsafe0v)(struct tcpc_dev *dev);
->  	void (*set_partner_usb_comm_capable)(struct tcpc_dev *dev, bool enable);
->  	void (*check_contaminant)(struct tcpc_dev *dev);
-> +	bool (*cable_comm_capable)(struct tcpc_dev *dev);
->  };
->  
->  struct tcpm_port;
-> -- 
-> 2.43.0.472.g3155946c3a-goog
+But this is not how syzkaller works.
+Our goal is to produce as many well-formed inputs as possible to
+exercise most of the code under test.
+Then, a small step sideways from every well-formed input might trigger
+a bug here or there.
+It might as well be rejected early by the elaborate input checks (in
+which case we won't be finding any new bugs), but anyway we should be
+covering bigger parts of the code by just running valid inputs.
 
--- 
-heikki
+For certain subsystems with very limited APIs it is fairly easy to
+generate all the possible valid inputs by simply combining syscalls.
+In most cases we are still limited by the combinatorial explosion of
+the search space though.
+But if there are implicit dependencies that the fuzzer cannot deduce
+from the descriptions, it will blindly flip bits in known inputs in
+the hope to produce a new valid input - mostly in vain.
+So seeing little coverage for a subsystem usually means that for some
+reason we are just barely scratching the API surface.
+
+Compare this with fuzzing a C compiler.
+Doing something like `head /dev/random > 1.c && gcc -c 1.c` in a loop
+may eventually trigger interesting bugs in the compiler backend, but
+most of the time the programs will be rejected by the lexer which is
+smart enough to not accept garbage.
+Is the lexer written correctly? Yes, as long as it does not crash on
+these random inputs.
+Does low coverage indicate that the whole compiler is written
+correctly? Not necessarily. Tools like csmith will easily get past the
+lexer checks by generating structurally valid programs that might be
+broken from the semantic point of view.
+
+For some parts of the kernel syzkaller acts like csmith, because its
+knowledge of the data layout is just enough to generate valid inputs.
+For file systems, however, we might be lagging behind.
+The last year changes in the fuzzer that we mentioned earlier improved
+the initial seeding of file system images and added some basic
+mutations, but there is still a lot to do.
+
+Hope this helps.
 
