@@ -1,107 +1,105 @@
-Return-Path: <linux-kernel+bounces-5799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1C0A818FA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:19:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8467818FA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:20:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8487A1F21CB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:19:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A60C1289372
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8DE3B2A8;
-	Tue, 19 Dec 2023 18:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D885137D08;
+	Tue, 19 Dec 2023 18:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gJdvYJgy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qYF1DQSO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A66405F2
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 18:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-336788cb261so31515f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:17:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703009834; x=1703614634; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U5+/YEXsrPbbkR396pSZpoZgLbak9X4jZQSn1ikhDZ0=;
-        b=gJdvYJgyzoF0mB5pAECEB+QJuZavOSpKucdwHc0Ty3pCCSHQ5KELOv6y+4Q4p2T5dc
-         j5Dz6ghIIzNQJ2j0UTZAkIpL+n/gQqkAUxPJEWSEgaYKB9Zg+LiHLJ+3/bF8FMXs8Dek
-         UAqGF+S3Eb4foCSUwnMwd9p1JBpbGARglj3PwmZQcOPZ8cjtD4P1pc54dNtZ+r5emU9d
-         cv5E4+j2uiywa+zPfmnZEKYYIVHWuzKDDsJoyYY16C6P5ZacNGP8PABYR5opW+QOaywV
-         I/CAbp82Vn4AYWTOejLDxv56NAHuLSeypea0IqNQXJhzWNUN+4FCV56jIRSbss/gp5qc
-         D3sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703009834; x=1703614634;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U5+/YEXsrPbbkR396pSZpoZgLbak9X4jZQSn1ikhDZ0=;
-        b=fBnyBxr+f9yT0B9GBu3FtEZtxxKM61sBrm12/t6ptr/pss2IJj51KQA+54pKdK8Qwp
-         LuuylCz3XUYw+rfOqY/aWRa+xRgUjsoTBqN/WGE11XIk2mEJ6NPrLFkBGj7o/TjgbfJX
-         thGQmxVwqJpDVirMuJvmJGujgNvlegr/ICEryVpffwzbFMzTz0Nf4GLN7H+yxYT67c12
-         Hew3wzZUKYU3jAOViBBA3GB0292tk9xjxhxjQrL+cmKesOonayUoqfFnAGMt8IXnAvVd
-         G3KgvY/TE0/qGIahDKCtUQN8uC18sOnYS+lNMX3xi+gKQazEz4cWOEWpiyG4QPthbM/h
-         vApg==
-X-Gm-Message-State: AOJu0YzyjB2dsFpeOzal5oaTEHUv6L1VjH2WMkrdW08dwF0uxIW6deVI
-	U6Nmn9+6XkT6Vbf/Bdlajk/GLdSyQILoJsba56Y=
-X-Google-Smtp-Source: AGHT+IFcNDfUU2vQH560I9HCoCIGOh5tkvBA6RjgmzVGKzkXpkzHXpd7F/sDbAYIuHYfyRGowRWdsA==
-X-Received: by 2002:a5d:6c67:0:b0:336:6dd3:bfcf with SMTP id r7-20020a5d6c67000000b003366dd3bfcfmr2158204wrz.121.1703009834114;
-        Tue, 19 Dec 2023 10:17:14 -0800 (PST)
-Received: from [192.168.10.46] ([37.170.14.102])
-        by smtp.googlemail.com with ESMTPSA id d13-20020a056000114d00b00336726bcc8dsm2260162wrx.7.2023.12.19.10.17.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 10:17:13 -0800 (PST)
-Message-ID: <dfed0e9b-f84c-4627-9540-a240d3724f21@linaro.org>
-Date: Tue, 19 Dec 2023 19:17:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23EF37D22;
+	Tue, 19 Dec 2023 18:20:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 177D0C433C8;
+	Tue, 19 Dec 2023 18:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703010003;
+	bh=aInprk0ngpVeNnqzMh3MIxqFI0iItoCxCcQKP9eY+0g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qYF1DQSOUwWbonEZuQnUedchL1AA/rl6qHM2alJs8EwfCOZZWCbd89Y/ZY94Bp+fF
+	 UFk0cuWkuNhE6dXiikjazDtGwu7SV+flwC63uGVnlX25OI9qRt2D62SSgqo71dILjx
+	 vby74RHSBwqsvMItLWyOZwvI9e0Pw23mG8W8hnGGYv4YvPtYh4cqycU9y/kLazRQZe
+	 KFzYAnIiO9sHI1Zht7+kBno+E9F4QNfGe12UW8RD6yvV4wKkcGTnZto9mqkM9Cc2YS
+	 XoDb2rPX0ZAC9+CoKmPcOvnFhiJmDEgSdR8dVen6l5iS6kIpNpwWDHORbXuPbecXt7
+	 L32q1BN8wU5WA==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: Ben Hutchings <ben@decadent.org.uk>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] kbuild: deb-pkg: do not query DEB_HOST_MULTIARCH
+Date: Wed, 20 Dec 2023 03:19:55 +0900
+Message-Id: <20231219181957.1449958-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/9] Improve Exynos thermal driver
-Content-Language: en-US
-To: Mateusz Majewski <m.majewski2@samsung.com>, linux-pm@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Amit Kucheria <amitk@kernel.org>,
- Zhang Rui <rui.zhang@intel.com>, Alim Akhtar <alim.akhtar@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Lukasz Luba <lukasz.luba@arm.com>, Dan Carpenter <dan.carpenter@linaro.org>
-References: <CGME20231201095637eucas1p25e14bd24e05ae61eb12dee18af2a1dc5@eucas1p2.samsung.com>
- <20231201095625.301884-1-m.majewski2@samsung.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20231201095625.301884-1-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 01/12/2023 10:56, Mateusz Majewski wrote:
-> This work improves Exynos thermal driver in various ways. This is
-> related to the discussion in
-> https://lore.kernel.org/all/97201878-3bb8-eac5-7fac-a690322ac43a@linaro.org/
-> 
-> The primary issue being fixed is a lockdep warning, which is fixed by
-> the thermal: exynos: use set_trips patch. We also simplify the code in
-> general.
-> 
+Since commit 491b146d4c13 ("kbuild: builddeb: Eliminate debian/arch
+use"), the direct execution of debian/rules fails with:
 
-Applied, thanks
+  dpkg-architecture: error: unknown option 'DEB_HOST_MULTIARCH'
 
+I am not sure how important to support such a use case, but at least
+the current code:
+
+  dpkg-architecture -a$DEB_HOST_ARCH -qDEB_HOST_MULTIARCH
+
+... looks weird because:
+
+ - For this code to work correctly, DEB_HOST_ARCH must be defined.
+   In this case, DEB_HOST_MULTIARCH is likely defined, so there is no
+   need to query DEB_HOST_MULTIARCH in the first place. This is likely
+   the case where the package build was initiated by dpkg-buildpackage.
+
+ - If DEB_HOST_MULTIARCH is undefined, DEB_HOST_ARCH is likely undefined.
+   So, you cannot query DEB_HOST_MULTIARCH in this way. This is mostly
+   the case where debian/rules is directly executed.
+
+If we want to run debian/rules directly, we can revert 491b146d4c13 or
+add code to remember DEB_HOST_MULTIARCH, but I chose to remove the
+useless code for now.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/package/builddeb | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index 2fe51e6919da..2eb4910f0ef3 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -171,9 +171,8 @@ install_libc_headers () {
+ 
+ 	# move asm headers to /usr/include/<libc-machine>/asm to match the structure
+ 	# used by Debian-based distros (to support multi-arch)
+-	host_arch=$(dpkg-architecture -a$DEB_HOST_ARCH -qDEB_HOST_MULTIARCH)
+-	mkdir $pdir/usr/include/$host_arch
+-	mv $pdir/usr/include/asm $pdir/usr/include/$host_arch/
++	mkdir "$pdir/usr/include/${DEB_HOST_MULTIARCH}"
++	mv "$pdir/usr/include/asm" "$pdir/usr/include/${DEB_HOST_MULTIARCH}"
+ }
+ 
+ rm -f debian/files
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+2.40.1
 
 
