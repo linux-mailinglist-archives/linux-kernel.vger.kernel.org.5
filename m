@@ -1,61 +1,104 @@
-Return-Path: <linux-kernel+bounces-4707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FAC58180E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:17:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A780D8180E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 06:17:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C79031F23B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:17:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36C7EB236E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 05:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79A711CB3;
-	Tue, 19 Dec 2023 05:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77733611F;
+	Tue, 19 Dec 2023 05:17:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="gXpkr7t5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA2211C96
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 812FD68AFE; Tue, 19 Dec 2023 06:16:48 +0100 (CET)
-Date: Tue, 19 Dec 2023 06:16:48 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Daniel Wagner <dwagner@suse.de>
-Cc: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	Keith Busch <kbusch@kernel.org>,
-	James Smart <james.smart@broadcom.com>,
-	Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3 08/16] nvmet-fc: untangle cross refcounting objects
-Message-ID: <20231219051648.GA32634@lst.de>
-References: <20231218153105.12717-1-dwagner@suse.de> <20231218153105.12717-9-dwagner@suse.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A489C12B8F
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id FSTZrpnVkgRU5FSTar0C39; Tue, 19 Dec 2023 06:17:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1702963026;
+	bh=QDDqKuTgraiQIw4koE+NaTIronTlA6Us494Q0sE/Agw=;
+	h=From:To:Cc:Subject:Date;
+	b=gXpkr7t5CfyXPM/SNEMlNBMsMOjtgoNDPKQKPa9f7Brvamv7+CQVTfMTkK1XR1lXw
+	 G5dXkpm55H7nuRmJQpZBF+dYWmrxVbVuO7f1ot/V8llN34yYei9qzzmV8pmlrEE0q8
+	 1QXoHKtvT2U6V8tnDqUZoBMqEdd/xslrkb3sdRxau9jtQHpyODcS+t4qdiJprOXAsE
+	 JHJ6ffV631b85Kd6A7mUlLuR/q4KqHZOBlj6knstnh7D5FPhKLUpl9OjA8StC3D9Bk
+	 P6aDXr8pz6qJTtuDF0qDpagDCvUJb2DLmVRa8DFat4LWZ/DYaYINVyks1jc9XB2Wha
+	 n7v+nVJHlIu2Q==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 19 Dec 2023 06:17:06 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH] vboxsf: Remove usage of the deprecated ida_simple_xx() API
+Date: Tue, 19 Dec 2023 06:17:04 +0100
+Message-Id: <2752888783edaed8576777e1763dc0489fd07000.1702963000.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153105.12717-9-dwagner@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 18, 2023 at 04:30:56PM +0100, Daniel Wagner wrote:
-> The live time of the queues are strictly bound to the lifetime of an
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-> +	struct nvmet_fc_tgt_queue	*_queues[NVMET_NR_QUEUES + 1];
->  	struct nvmet_fc_tgt_queue __rcu	*queues[NVMET_NR_QUEUES + 1];
+This is less verbose.
 
-For magic prefixes we use __, not _ in Linux.  But having two arrays
-of queues right next to each other, once with rcu annotation and one
-not rings a bit far warning bell to me.  Why do we have both?  When
-are we supposed to use either?  Why is FC different from rest?
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ fs/vboxsf/super.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I really don't have any good answers as I don't know the code in the
-FC transport very well, but I think this needs more work.
+diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
+index 1fb8f4df60cb..cd8486bc91bd 100644
+--- a/fs/vboxsf/super.c
++++ b/fs/vboxsf/super.c
+@@ -155,7 +155,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+ 		}
+ 	}
+ 
+-	sbi->bdi_id = ida_simple_get(&vboxsf_bdi_ida, 0, 0, GFP_KERNEL);
++	sbi->bdi_id = ida_alloc(&vboxsf_bdi_ida, GFP_KERNEL);
+ 	if (sbi->bdi_id < 0) {
+ 		err = sbi->bdi_id;
+ 		goto fail_free;
+@@ -221,7 +221,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	vboxsf_unmap_folder(sbi->root);
+ fail_free:
+ 	if (sbi->bdi_id >= 0)
+-		ida_simple_remove(&vboxsf_bdi_ida, sbi->bdi_id);
++		ida_free(&vboxsf_bdi_ida, sbi->bdi_id);
+ 	if (sbi->nls)
+ 		unload_nls(sbi->nls);
+ 	idr_destroy(&sbi->ino_idr);
+@@ -268,7 +268,7 @@ static void vboxsf_put_super(struct super_block *sb)
+ 
+ 	vboxsf_unmap_folder(sbi->root);
+ 	if (sbi->bdi_id >= 0)
+-		ida_simple_remove(&vboxsf_bdi_ida, sbi->bdi_id);
++		ida_free(&vboxsf_bdi_ida, sbi->bdi_id);
+ 	if (sbi->nls)
+ 		unload_nls(sbi->nls);
+ 
+-- 
+2.34.1
 
 
