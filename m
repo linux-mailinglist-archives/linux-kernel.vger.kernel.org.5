@@ -1,57 +1,84 @@
-Return-Path: <linux-kernel+bounces-5332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0C0818977
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:12:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584E7818961
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17635283B67
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:12:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C18F51F24F06
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F6734568;
-	Tue, 19 Dec 2023 14:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A8F1B29A;
+	Tue, 19 Dec 2023 14:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YrMddE/Y"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NfsifMQH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1061132C9A;
-	Tue, 19 Dec 2023 14:09:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C73E8C433C9;
-	Tue, 19 Dec 2023 14:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702994953;
-	bh=KHpyaaxmo3PSq0zjNwS6oE4RcAJ7YOJQkzkl6fO+m3A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YrMddE/YAi6sDMcpG5VCuPwcqrPqBKTxGOsGPPZpvig5V0sOge70yxoBTeaJrLA/y
-	 XTyhnvfx/j1Se0BXk9XypFOSf5t3amDX022BMXVeAM+SoAFYCQp9RMWdb9RZusS7LN
-	 yAY+uGZQhO72SOWPN/R0VQWA3xO+gUReHoPrhWSVDUBqMundLUusvjKqYw3Jqxk5f/
-	 Q27DOg6IasXVIPZ8vMH2GkCCrPGWWMBCJYHZzYWPbnG6jeFRYF4huoriPy9ESnzkDg
-	 2V6TdR9P8w4LxIPDdeSkrbVlIIvWke682qcXM1QkXx6HJz0gajub6qJ9xDU8+b8rUp
-	 zBhu1ECxUwPOQ==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	Hillf Danton <hdanton@sina.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: [PATCH 8/8] rcu/exp: Remove rcu_par_gp_wq
-Date: Tue, 19 Dec 2023 15:08:43 +0100
-Message-Id: <20231219140843.939329-9-frederic@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231219140843.939329-1-frederic@kernel.org>
-References: <20231219140843.939329-1-frederic@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C4C1CA8D;
+	Tue, 19 Dec 2023 14:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJDbmLX029429;
+	Tue, 19 Dec 2023 14:09:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=EYkyNfCrQ+NFELmVV6hFywFIc03TtXSogL33lUhiYOw=;
+ b=NfsifMQHFajf97dmVhyE/xY/tBPtd2naptlw/wA52aLXbCK3A8hbey1IQKBbDY5uhslZ
+ 4O/UFGxzq07/fHgnR8gxtadIW6LBSztwcSLG8deJQ7XY7/XVCssoExrj2QGPrpny2M/c
+ QHY9cCCELhdLdlYE1gN4zmjqJ02QLZ2hXyE4E+/KQcMZXzPKjhmKlJ7PDRqUVcFN/xPb
+ IeY33NhWKLSILG7v02V773gLw1SZgmerfg1YcRY/Q9tdUaI3aJ5xBFuhsEsA6CiN1PJD
+ gzA3ugd3Lv160jseL9trO9svVLBqKuV7IOhzv2fqJWAn3Q8fuTfk1hPUWupAgn7Xuxf7 ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3c7f8vym-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 14:09:00 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BJDdcGb002649;
+	Tue, 19 Dec 2023 14:08:59 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3c7f8vy4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 14:08:59 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJBsY0a012342;
+	Tue, 19 Dec 2023 14:08:58 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v1rx1qp1r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 14:08:58 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BJE8twB38273724
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Dec 2023 14:08:55 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6F9D32004E;
+	Tue, 19 Dec 2023 14:08:55 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3286C20040;
+	Tue, 19 Dec 2023 14:08:55 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Dec 2023 14:08:55 +0000 (GMT)
+From: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+To: Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Cc: kvm@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH v4 0/4] KVM: s390: Fix minor bugs in STFLE shadowing
+Date: Tue, 19 Dec 2023 15:08:49 +0100
+Message-Id: <20231219140854.1042599-1-nsg@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,315 +86,129 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: AdCxsKq7ewqOrFi4lIS7Nyif-tUwytpF
+X-Proofpoint-GUID: 8YHoHmHrkFungdw-Uv_hvGf-lEZJi4b8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-19_08,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ adultscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 impostorscore=0 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312190105
 
-TREE04 running on short iterations can produce writer stalls of the
-following kind:
+v3 -> v4:
+ * pick up tags (thanks {David, Janosch, Heiko})
+ * changes to commit messages
+ * flip lines and add comment (Janosch)
 
- ??? Writer stall state RTWS_EXP_SYNC(4) g3968 f0x0 ->state 0x2 cpu 0
- task:rcu_torture_wri state:D stack:14568 pid:83    ppid:2      flags:0x00004000
- Call Trace:
-  <TASK>
-  __schedule+0x2de/0x850
-  ? trace_event_raw_event_rcu_exp_funnel_lock+0x6d/0xb0
-  schedule+0x4f/0x90
-  synchronize_rcu_expedited+0x430/0x670
-  ? __pfx_autoremove_wake_function+0x10/0x10
-  ? __pfx_synchronize_rcu_expedited+0x10/0x10
-  do_rtws_sync.constprop.0+0xde/0x230
-  rcu_torture_writer+0x4b4/0xcd0
-  ? __pfx_rcu_torture_writer+0x10/0x10
-  kthread+0xc7/0xf0
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x2f/0x50
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork_asm+0x1b/0x30
-  </TASK>
+v2 -> v3:
+ * pick up tags (thanks Claudio)
+ * reverse Christmas tree
 
-Waiting for an expedited grace period and polling for an expedited
-grace period both are operations that internally rely on the same
-workqueue performing necessary asynchronous work.
+v1 -> v2:
+ * pick up tags (thanks {Claudio, David})
+ * drop Fixes tag on cleanup patch, change message (thanks David)
+ * drop Fixes tag on second patch since the length of the facility list
+   copied wasn't initially specified and only clarified in later
+   revisions
+ * use READ/WRITE_ONCE (thanks {David, Heiko})
 
-However, a dependency chain is involved between those two operations,
-as depicted below:
+Improve the STFLE vsie implementation.
+Firstly, fix a bug concerning the identification if the guest is
+intending to use interpretive execution for STFLE for its guest.
+Secondly, decrease the amount of guest memory accessed to the
+minimum.
+Also do some (optional) cleanups.
 
-       ====== CPU 0 =======                          ====== CPU 1 =======
+Nina Schoetterl-Glausch (4):
+  KVM: s390: vsie: Fix STFLE interpretive execution identification
+  KVM: s390: vsie: Fix length of facility list shadowed
+  KVM: s390: cpu model: Use proper define for facility mask size
+  KVM: s390: Minor refactor of base/ext facility lists
 
-                                                     synchronize_rcu_expedited()
-                                                         exp_funnel_lock()
-                                                             mutex_lock(&rcu_state.exp_mutex);
-    start_poll_synchronize_rcu_expedited
-        queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-                                                         synchronize_rcu_expedited_queue_work()
-                                                             queue_work(rcu_gp_wq, &rew->rew_work);
-                                                         wait_event() // A, wait for &rew->rew_work completion
-                                                         mutex_unlock() // B
-    //======> switch to kworker
+ arch/s390/include/asm/facility.h |  6 +++++
+ arch/s390/include/asm/kvm_host.h |  2 +-
+ arch/s390/kernel/Makefile        |  2 +-
+ arch/s390/kernel/facility.c      | 21 +++++++++++++++
+ arch/s390/kvm/kvm-s390.c         | 44 ++++++++++++++------------------
+ arch/s390/kvm/vsie.c             | 19 ++++++++++++--
+ 6 files changed, 65 insertions(+), 29 deletions(-)
+ create mode 100644 arch/s390/kernel/facility.c
 
-    sync_rcu_do_polled_gp() {
-        synchronize_rcu_expedited()
-            exp_funnel_lock()
-                mutex_lock(&rcu_state.exp_mutex); // C, wait B
-                ....
-    } // D
-
-Since workqueues are usually implemented on top of several kworkers
-handling the queue concurrently, the above situation wouldn't deadlock
-most of the time because A then doesn't depend on D. But in case of
-memory stress, a single kworker may end up handling alone all the works
-in a serialized way. In that case the above layout becomes a problem
-because A then waits for D, closing a circular dependency:
-
-	A -> D -> C -> B -> A
-
-This however only happens when CONFIG_RCU_EXP_KTHREAD=n. Indeed
-synchronize_rcu_expedited() is otherwise implemented on top of a kthread
-worker while polling still relies on rcu_gp_wq workqueue, breaking the
-above circular dependency chain.
-
-Fix this with making expedited grace period to always rely on kthread
-worker. The workqueue based implementation is essentially a duplicate
-anyway now that the per-node initialization is performed by per-node
-kthread workers.
-
-Meanwhile the CONFIG_RCU_EXP_KTHREAD switch is still kept around to
-manage the scheduler policy of these kthread workers.
-
-Reported-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Suggested-by: Joel Fernandes <joel@joelfernandes.org>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/rcu.h      |  4 ---
- kernel/rcu/tree.c     | 40 ++++---------------------
- kernel/rcu/tree.h     |  6 +---
- kernel/rcu/tree_exp.h | 70 +------------------------------------------
- 4 files changed, 8 insertions(+), 112 deletions(-)
-
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 4bc8cd6d461e..4e65a92e528e 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -623,11 +623,7 @@ int rcu_get_gp_kthreads_prio(void);
- void rcu_fwd_progress_check(unsigned long j);
- void rcu_force_quiescent_state(void);
- extern struct workqueue_struct *rcu_gp_wq;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- extern struct kthread_worker *rcu_exp_gp_kworker;
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--extern struct workqueue_struct *rcu_par_gp_wq;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- void rcu_gp_slow_register(atomic_t *rgssp);
- void rcu_gp_slow_unregister(atomic_t *rgssp);
- #endif /* #else #ifdef CONFIG_TINY_RCU */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 40bfc58f1821..c8980d76f402 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4403,7 +4403,6 @@ rcu_boot_init_percpu_data(int cpu)
- 	rcu_boot_init_nocb_percpu_data(rdp);
- }
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- struct kthread_worker *rcu_exp_gp_kworker;
- 
- static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
-@@ -4423,7 +4422,9 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
- 		return;
- 	}
- 	WRITE_ONCE(rnp->exp_kworker, kworker);
--	sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
-+
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
- }
- 
- static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
-@@ -4447,39 +4448,14 @@ static void __init rcu_start_exp_gp_kworker(void)
- 		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
--	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
--}
--
--static inline void rcu_alloc_par_gp_wq(void)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--struct workqueue_struct *rcu_par_gp_wq;
--
--static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
--{
--}
--
--static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
--{
--	return NULL;
--}
--
--static void __init rcu_start_exp_gp_kworker(void)
--{
--}
- 
--static inline void rcu_alloc_par_gp_wq(void)
--{
--	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
--	WARN_ON(!rcu_par_gp_wq);
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
- }
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- 
- static void rcu_spawn_rnp_kthreads(struct rcu_node *rnp)
- {
--	if ((IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) ||
--	     IS_ENABLED(CONFIG_RCU_BOOST)) && rcu_scheduler_fully_active) {
-+	if (rcu_scheduler_fully_active) {
- 		mutex_lock(&rnp->kthread_mutex);
- 		rcu_spawn_one_boost_kthread(rnp);
- 		rcu_spawn_exp_par_gp_kworker(rnp);
-@@ -4563,9 +4539,6 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
- 	struct rcu_node *rnp;
- 	struct task_struct *task_boost, *task_exp;
- 
--	if (!IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) && !IS_ENABLED(CONFIG_RCU_BOOST))
--		return;
--
- 	rdp = per_cpu_ptr(&rcu_data, cpu);
- 	rnp = rdp->mynode;
- 
-@@ -5255,7 +5228,6 @@ void __init rcu_init(void)
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
--	rcu_alloc_par_gp_wq();
- 
- 	/* Fill in default value for rcutree.qovld boot parameter. */
- 	/* -After- the rcu_node ->lock fields are initialized! */
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index aa580fd0c097..04c0c7a54291 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -21,14 +21,10 @@
- 
- #include "rcu_segcblist.h"
- 
--/* Communicate arguments to a workqueue handler. */
-+/* Communicate arguments to a kthread worker handler. */
- struct rcu_exp_work {
- 	unsigned long rew_s;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- 	struct kthread_work rew_work;
--#else
--	struct work_struct rew_work;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- };
- 
- /* RCU's kthread states for tracing. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index aa701ccdeda9..d35caa0bf0e8 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -418,7 +418,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 
- static void rcu_exp_sel_wait_wake(unsigned long s);
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
- {
- 	struct rcu_exp_work *rewp =
-@@ -470,69 +469,6 @@ static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew
- 	kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
- }
- 
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp =
--		container_of(wp, struct rcu_exp_work, rew_work);
--
--	__sync_rcu_exp_select_node_cpus(rewp);
--}
--
--static inline bool rcu_exp_worker_started(void)
--{
--	return !!READ_ONCE(rcu_gp_wq);
--}
--
--static inline bool rcu_exp_par_worker_started(struct rcu_node *rnp)
--{
--	return !!READ_ONCE(rcu_par_gp_wq);
--}
--
--static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
--{
--	int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
--
--	INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
--	/* If all offline, queue the work on an unbound CPU. */
--	if (unlikely(cpu > rnp->grphi - rnp->grplo))
--		cpu = WORK_CPU_UNBOUND;
--	else
--		cpu += rnp->grplo;
--	queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
--}
--
--static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
--{
--	flush_work(&rnp->rew.rew_work);
--}
--
--/*
-- * Work-queue handler to drive an expedited grace period forward.
-- */
--static void wait_rcu_exp_gp(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp;
--
--	rewp = container_of(wp, struct rcu_exp_work, rew_work);
--	rcu_exp_sel_wait_wake(rewp->rew_s);
--}
--
--static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
--{
--	INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
--	queue_work(rcu_gp_wq, &rew->rew_work);
--}
--
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--	destroy_work_on_stack(&rew->rew_work);
--}
--#endif /* CONFIG_RCU_EXP_KTHREAD */
--
- /*
-  * Select the nodes that the upcoming expedited grace period needs
-  * to wait for.
-@@ -976,8 +912,7 @@ void synchronize_rcu_expedited(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
--	can_queue = (rcu_scheduler_active != RCU_SCHEDULER_INIT) &&
--		    rcu_exp_worker_started();
-+	can_queue = (rcu_scheduler_active != RCU_SCHEDULER_INIT) && rcu_exp_worker_started();
- 
- 	/* Is the state is such that the call is a grace period? */
- 	if (rcu_blocking_is_gp()) {
-@@ -1025,9 +960,6 @@ void synchronize_rcu_expedited(void)
- 
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
--
--	if (likely(can_queue))
--		synchronize_rcu_expedited_destroy_work(&rew);
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
- 
+Range-diff against v3:
+1:  de77a2c36786 ! 1:  69599bb38487 KVM: s390: vsie: Fix STFLE interpretive execution identification
+    @@ arch/s390/kvm/vsie.c: static void retry_vsie_icpt(struct vsie_page *vsie_page)
+     +	__u32 fac = READ_ONCE(vsie_page->scb_o->fac);
+      
+      	if (fac && test_kvm_facility(vcpu->kvm, 7)) {
+    -+		fac = fac & 0x7ffffff8U;
+      		retry_vsie_icpt(vsie_page);
+    ++		/*
+    ++		 * The facility list origin (FLO) is in bits 1 - 28 of the FLD
+    ++		 * so we need to mask here before reading.
+    ++		 */
+    ++		fac = fac & 0x7ffffff8U;
+      		if (read_guest_real(vcpu, fac, &vsie_page->fac,
+      				    sizeof(vsie_page->fac)))
+    + 			return set_validity_icpt(scb_s, 0x1090U);
+2:  e4b44c4d2400 ! 2:  cba3c32a8db7 KVM: s390: vsie: Fix length of facility list shadowed
+    @@ Commit message
+     
+         The length of the facility list accessed when interpretively executing
+         STFLE is the same as the hosts facility list (in case of format-0)
+    -    When shadowing, copy only those bytes.
+    -    The memory following the facility list need not be accessible, in which
+    -    case we'd wrongly inject a validity intercept.
+    +    The memory following the facility list doesn't need to be accessible.
+    +    The current VSIE implementation accesses a fixed length that exceeds the
+    +    guest/host facility list length and can therefore wrongly inject a
+    +    validity intercept.
+    +    Instead, find out the host facility list length by running STFLE and
+    +    copy only as much as necessary when shadowing.
+     
+         Acked-by: David Hildenbrand <david@redhat.com>
+         Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+    +    Acked-by: Heiko Carstens <hca@linux.ibm.com>
+         Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+     
+      ## arch/s390/include/asm/facility.h ##
+    @@ arch/s390/include/asm/facility.h: static inline void stfle(u64 *stfle_fac_list,
+      #endif /* __ASM_FACILITY_H */
+     
+      ## arch/s390/kernel/Makefile ##
+    -@@ arch/s390/kernel/Makefile: obj-y	+= sysinfo.o lgr.o os_info.o
+    +@@ arch/s390/kernel/Makefile: obj-y	+= sysinfo.o lgr.o os_info.o ctlreg.o
+      obj-y	+= runtime_instr.o cache.o fpu.o dumpstack.o guarded_storage.o sthyi.o
+      obj-y	+= entry.o reipl.o kdebugfs.o alternative.o
+      obj-y	+= nospec-branch.o ipl_vmparm.o machine_kexec_reloc.o unwind_bc.o
+    @@ arch/s390/kvm/vsie.c: static int handle_stfle(struct kvm_vcpu *vcpu, struct vsie
+     +	 * -> format-0 flcb
+     +	 */
+      	if (fac && test_kvm_facility(vcpu->kvm, 7)) {
+    - 		fac = fac & 0x7ffffff8U;
+      		retry_vsie_icpt(vsie_page);
+    + 		/*
+    +@@ arch/s390/kvm/vsie.c: static int handle_stfle(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+    + 		 * so we need to mask here before reading.
+    + 		 */
+    + 		fac = fac & 0x7ffffff8U;
+     +		/*
+     +		 * format-0 -> size of nested guest's facility list == guest's size
+     +		 * guest's size == host's size, since STFLE is interpretatively executed
+3:  8b02ac33defb ! 3:  4b52e432d736 KVM: s390: cpu model: Use proper define for facility mask size
+    @@ Commit message
+         Note that both values are the same, there is no functional change.
+     
+         Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+    +    Reviewed-by: David Hildenbrand <david@redhat.com>
+    +    Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+         Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+     
+      ## arch/s390/include/asm/kvm_host.h ##
+4:  a592be823576 = 4:  9e551ba53b14 KVM: s390: Minor refactor of base/ext facility lists
 -- 
-2.34.1
+2.40.1
 
 
