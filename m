@@ -1,112 +1,189 @@
-Return-Path: <linux-kernel+bounces-5607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A69CF818D06
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5594818D0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C7E51F24947
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:55:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F0C11F25AA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3933A224EE;
-	Tue, 19 Dec 2023 16:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287A520B16;
+	Tue, 19 Dec 2023 16:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l4xd/pGN"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qmJ1UAFB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E79323778;
-	Tue, 19 Dec 2023 16:54:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F30B4C433C8;
-	Tue, 19 Dec 2023 16:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703004875;
-	bh=hMMTJJLnbJZI7eeaAsFFenoqHPm3dmFrvvkbbNL6DWg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=l4xd/pGNfaBEvLKT+79F5NQd9tEbwzcz0ewGVgKRdSHdwGZ5O1PQSaej6Si+HFsqU
-	 KKRvkWmKXWFs6ANpQ5FMt3sS4xIsYOgV6hU1Pg0QPIlz7X/bPvNwANTRLKIaOMG3Mz
-	 yg4w6V+WUgtHV6w+2Cns1GaBroyBlZQPv23qJzZfXW/8VSUDs8GQCgtNYC3ddfOhkj
-	 rlSOW8wKefUA1dLy/TVCd/XpelGq8fbRUT83KO2aWmj2rhZ9z6qdfIYSApaajecN2Y
-	 vt2n5KpcQ/b6r1Et4TODcsSNtPQMxgtLRRXNzKOorq6MxZh8jBiqEVMVrcVE62px3d
-	 5qaLCw6gOSt7g==
-Date: Tue, 19 Dec 2023 16:54:29 +0000
-From: Conor Dooley <conor@kernel.org>
-To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Jason-ch Chen <jason-ch.chen@mediatek.com>,
-	Johnson Wang <johnson.wang@mediatek.com>,
-	Singo Chang <singo.chang@mediatek.com>,
-	Nancy Lin <nancy.lin@mediatek.com>,
-	Shawn Sung <shawn.sung@mediatek.com>,
-	Project_Global_Chrome_Upstream_Group@mediatek.com,
-	Jason-jh Lin <jason-jh.lin@mediatek.corp-partner.google.com>
-Subject: Re: [PATCH 0/3] Add mediatek,gce-events definition to
- mediatek,gce-mailbox bindings
-Message-ID: <20231219-joyous-tarmac-aaf601623859@spud>
-References: <20231218083604.7327-1-jason-jh.lin@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BE320DD7
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33668163949so2681054f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:55:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703004933; x=1703609733; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pr1gwYwEAqV3CPDFt5tJeZc4Ej3mhik7sPY5D9i4L+4=;
+        b=qmJ1UAFBfZ4ahVGkaLyRsoMDVYtCQes7HeM62U+vzeFk3ZVVdgg1vfXb/WgqTdHYLG
+         RxZs5YIA2yusvw7zBQ4gmjr6CmTttUnjf8rxsY+ZycnbY7FWl+b19Uv/Gv7W00djvUTt
+         zzuihPgrjItSSdUGH7QVI+R5TdKp5KrojWRie0IIilVM8islbrnFg59q6lu982cXdzqN
+         3ZdLGf4GedeEmDHSBcNeveM72dmgK3lu2Wdg78d1wDk3CsIhpjbYLcLPVQ0UHQm+4Ntw
+         a3mQ/vR+iOh0MO6Byw87tI/ETdRaI9EQjY54KSD/fUooASgvnk4H8gEtKqAmi7jmc89D
+         pAvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703004933; x=1703609733;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pr1gwYwEAqV3CPDFt5tJeZc4Ej3mhik7sPY5D9i4L+4=;
+        b=J48Jug8QxWLwRV+XX00lgM68fZk9dwPnsEW3R+lXdCyQZ6f4PcEwrGMIFNZd7T3xQG
+         fa8QddP+E3FmATyk/BboPlq3/2Z0+HUi/IuNFguZJ9hCLCkFyR9Qmy8aiS3ezBJP12it
+         Cdg/CS4aAOrAz9LCoFdjOn4wFP9+PTcgnRO9CRzdQvhiSxoWSbVTc4TtRbjXFtwLXtDc
+         eZFdT+jZUHwqF3cXmchgt7ftpz6KLW4jVCRY+ksoi15X6eINssV4c+86Uq5C9nduw8N8
+         vGRKUZJJa1Si3VPkz9QEZx1HRFdLxyAeiDO842bFto4F5oTH43xxFMX6GX3HPom8f7SH
+         +zxA==
+X-Gm-Message-State: AOJu0Yyjf5R4jy8Rdl1Gql0RWJF1p+BzWktt3OIVe6EBTKllFoNNH1Vh
+	iAh3ZUpVlyXM3OfpDtBUauusfCEPGBt210wG7gh39Q==
+X-Google-Smtp-Source: AGHT+IHdJSnW1uoy3+KysPNVwLZ4H/jx1KVZ/uOvjz42emCllqfn1IhGJ3uQ5Ral4Y9max8Bshqiu+TgQgc/H/ReIBY=
+X-Received: by 2002:adf:e4c3:0:b0:336:60da:7530 with SMTP id
+ v3-20020adfe4c3000000b0033660da7530mr1849799wrm.158.1703004932880; Tue, 19
+ Dec 2023 08:55:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i+MCw2cELYYzOA1i"
-Content-Disposition: inline
-In-Reply-To: <20231218083604.7327-1-jason-jh.lin@mediatek.com>
-
-
---i+MCw2cELYYzOA1i
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20231215171020.687342-21-bigeasy@linutronix.de>
+ <202312161212.D5tju5i6-lkp@intel.com> <20231219000116.GA3956476@dev-arch.thelio-3990X>
+In-Reply-To: <20231219000116.GA3956476@dev-arch.thelio-3990X>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Tue, 19 Dec 2023 08:55:21 -0800
+Message-ID: <CAKwvOdkfjyKz6686RzAGjfKMVPriLM8XuNueYyWcd_Sj-WnJbg@mail.gmail.com>
+Subject: Re: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP redirect.
+To: Nathan Chancellor <nathan@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, 
+	Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Eric Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, bpf@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 04:36:01PM +0800, Jason-JH.Lin wrote:
-> From: Jason-jh Lin <jason-jh.lin@mediatek.corp-partner.google.com>
->=20
-> Since mediatek,gce-events property is a HW event signal from GCE,
-> it should be defined in mediatek,gce-mailbox.yaml.
->=20
-> Change the description of mediatek,gce-events property existed in
-> other bindings to reference mediatek,gce-mailbox.yaml.
+On Mon, Dec 18, 2023 at 4:01=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> On Sat, Dec 16, 2023 at 12:53:43PM +0800, kernel test robot wrote:
+> > Hi Sebastian,
+> >
+> > kernel test robot noticed the following build errors:
+> >
+> > [auto build test ERROR on net-next/main]
+> >
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrze=
+j-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/2023=
+1216-011911
+> > base:   net-next/main
+> > patch link:    https://lore.kernel.org/r/20231215171020.687342-21-bigea=
+sy%40linutronix.de
+> > patch subject: [PATCH net-next 20/24] net: intel: Use nested-BH locking=
+ for XDP redirect.
+> > config: arm-defconfig (https://download.01.org/0day-ci/archive/20231216=
+/202312161212.D5tju5i6-lkp@intel.com/config)
+> > compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.gi=
+t f28c006a5895fc0e329fe15fead81e37457cb1d1)
+> > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/arc=
+hive/20231216/202312161212.D5tju5i6-lkp@intel.com/reproduce)
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
+rsion of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202312161212.D5tju5i6-l=
+kp@intel.com/
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> > >> drivers/net/ethernet/intel/igb/igb_main.c:8620:3: error: cannot jump=
+ from this goto statement to its label
+> >                    goto xdp_out;
+> >                    ^
 
-I don't understand this series. I would understand it if the property
-should be related to the mailbox provider and it is moved there from the
-mailbox consumer, but this series does not do that. Instead the series
-now documents this property for both consumers and providers.
+^ The problematic goto should be replaced with an early return. (and
+perhaps a comment that you can't jump over __cleanup variable
+initialization).
 
-Secondly it removes the typedef from the consumers, which makes no sense
-if this is a valid property there.
+Otherwise the compiler cannot put the cleanup in the destination basic
+block; it would have to split the edges and have all the happy paths
+go to a synthesized basic block that runs the cleanup, then jumps to
+the original destination.
 
-Is your intention to document a property that should be common across
-all consumers in a single place? If that is your goal, then something
-like spi-peripheral-props.yaml is what you need here.
+> >    drivers/net/ethernet/intel/igb/igb_main.c:8624:2: note: jump bypasse=
+s initialization of variable with __attribute__((cleanup))
+> >            guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+> >            ^
+> >    include/linux/cleanup.h:142:15: note: expanded from macro 'guard'
+> >            CLASS(_name, __UNIQUE_ID(guard))
+> >                         ^
+> >    include/linux/compiler.h:180:29: note: expanded from macro '__UNIQUE=
+_ID'
+> >    #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), _=
+_COUNTER__)
+> >                                ^
+> >    include/linux/compiler_types.h:84:22: note: expanded from macro '__P=
+ASTE'
+> >    #define __PASTE(a,b) ___PASTE(a,b)
+> >                         ^
+> >    include/linux/compiler_types.h:83:23: note: expanded from macro '___=
+PASTE'
+> >    #define ___PASTE(a,b) a##b
+> >                          ^
+> >    <scratch space>:52:1: note: expanded from here
+> >    __UNIQUE_ID_guard753
+> >    ^
+> >    1 error generated.
+>
+> I initially thought that this may have been
+> https://github.com/ClangBuiltLinux/linux/issues/1886 but asm goto is not
+> involved here.
+>
+> This error occurs because jumping over the initialization of a variable
+> declared with __attribute__((__cleanup__(...))) does not prevent the
+> clean up function from running as one may expect it to, but could
+> instead result in the clean up function getting run on uninitialized
+> memory. A contrived example (see the bottom of the "Output" tabs for the
+> execution output):
+>
+> https://godbolt.org/z/9bvGboxvc
+>
+> While there is a warning from GCC in that example, I don't see one in
+> the kernel's case. I see there is an open GCC issue around this problem:
+>
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D91951
+>
+> While it is possible that there may not actually be a problem with how
+> the kernel uses __attribute__((__cleanup__(...))) and gotos, I think
+> clang's behavior is reasonable given the potential footguns that this
+> construct has.
+>
+> Cheers,
+> Nathan
+>
 
-Confused,
-Conor.
 
---i+MCw2cELYYzOA1i
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYHKxQAKCRB4tDGHoIJi
-0oiDAQCnS/e4ChdhTrIMgLXWQjCO4EzlP4LIjirHyIs1A+qTtAD/b4JZtsykUGPz
-pLSkPCj6WxQKyOcdkpUxoanC2mDwUAE=
-=MQP9
------END PGP SIGNATURE-----
-
---i+MCw2cELYYzOA1i--
+--=20
+Thanks,
+~Nick Desaulniers
 
