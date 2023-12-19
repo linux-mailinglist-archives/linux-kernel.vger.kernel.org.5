@@ -1,98 +1,96 @@
-Return-Path: <linux-kernel+bounces-5340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DA3181898E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:16:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511F581899C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:18:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4725DB24988
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:16:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8C21B236BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABD41B283;
-	Tue, 19 Dec 2023 14:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05BC01B29C;
+	Tue, 19 Dec 2023 14:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RrbHC6cv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122DF1A728;
-	Tue, 19 Dec 2023 14:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Svdx41fcWz1fydm;
-	Tue, 19 Dec 2023 22:14:32 +0800 (CST)
-Received: from dggpeml500010.china.huawei.com (unknown [7.185.36.155])
-	by mail.maildlp.com (Postfix) with ESMTPS id DF89A1800E3;
-	Tue, 19 Dec 2023 22:15:44 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
- (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Dec
- 2023 22:15:43 +0800
-From: Xin Liu <liuxin350@huawei.com>
-To: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-	<haoluo@google.com>, <jolsa@kernel.org>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <yanan@huawei.com>,
-	<wuchangye@huawei.com>, <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
-	<liuxin350@huawei.com>, <tianmuyang@huawei.com>, <zhangmingyi5@huawei.com>
-Subject: An invalid memory access was discovered by a fuzz test
-Date: Tue, 19 Dec 2023 22:15:44 +0800
-Message-ID: <20231219141544.128812-1-liuxin350@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256641A73C;
+	Tue, 19 Dec 2023 14:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d9f069e9b0so3656860a34.3;
+        Tue, 19 Dec 2023 06:17:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702995473; x=1703600273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ljrRBMnlh16OHGX7758wO6bL6cdZsS9ay9gaLHzUAb4=;
+        b=RrbHC6cvTsuCgONTCFv/aDoXxavfQX6QFCSqEqQq0h3GL3dMsfKp3zAowtrxniLCRF
+         tlMU+sRnc60F9Zqa9hdkSB8CFKdVy4ujtz593SqPN3jbjMMjZYvbxjsiDvraEGJO9A0z
+         8rdyJGAyqKjS5IxDUweKEBdR7YvHVY7RnxDIiI17O6dG3lbRSjXiZ1v/2dmLU3vEeFmP
+         ZUALfkaoUI5uKWbrZNGGyH4OdNg+AYQppOR1ThYXZPC2sBMes4jcFct2ty3hsFEBna0g
+         c+Oq2byy5DYf1YXSapbtFG0gYdyd+A0m2nNCp8ch/SyqTcsw07CzCJXJUhfg3XpTYNxb
+         lC2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702995473; x=1703600273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ljrRBMnlh16OHGX7758wO6bL6cdZsS9ay9gaLHzUAb4=;
+        b=LIzCiG0nCkJEhRYWuvAmyPDvvve1Sl092bMKZPzb3nR8jECKHn5Fo917OJDsMd+iOj
+         W5PEEQ7uQ02RG4qP/0eo60IyRFEm/Wt+gQ5h6PAT2T4hl/vSz3bGDR6KJVxhLqA3b00Y
+         Ybq9AQaH3qZeFdJ3Slri0RkPCXZR/7nNW45iMPkLyi71H97AqVOsnXt6RLda71ZEsUOQ
+         E1W1hBuQiet5TNPyZ2ubESszOu85AAwIo1YtjuZZx9dMc49W7Og64BWdZOWlcbSYB+jE
+         +LnG4EpxeRjSprVs1JYt5q+bEBbFOEt0wos1LcLoQleWGZW+NG4jSxPp8jP3gR0an8kU
+         7PJA==
+X-Gm-Message-State: AOJu0YwaLyZoecfKW9l561D5CqXKoETLVE1oA/9+UI5AZVLWYZiLV3Mu
+	DSziWMEm/PNScI4omGS5FWcIDJEnrR+kl22s/dQ=
+X-Google-Smtp-Source: AGHT+IE0rG9seHB58w6n7hrtXZhdhRpo5fgXrjXWSA1QE2ETljm/UhcFW6RCsor8X9EVQPUcQ4z5JqmktWX2RHbX5/s=
+X-Received: by 2002:a05:6358:339e:b0:172:8a22:9df5 with SMTP id
+ i30-20020a056358339e00b001728a229df5mr12315536rwd.24.1702995472972; Tue, 19
+ Dec 2023 06:17:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231219013751.20386-1-xiongxin@kylinos.cn> <7zdg5ujizncarxvdyahnusojiq44rzxx2zybqj4kzsonzr27gq@fm5wj7npqsk3>
+In-Reply-To: <7zdg5ujizncarxvdyahnusojiq44rzxx2zybqj4kzsonzr27gq@fm5wj7npqsk3>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 19 Dec 2023 16:17:16 +0200
+Message-ID: <CAHp75VceVAZYTNsJaYYRN+EMExFZSQARsJowd-CvDLRtuOPKSg@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: dwapb: mask/unmask IRQ when disable/enale it
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: xiongxin <xiongxin@kylinos.cn>, Andy Shevchenko <andy@kernel.org>, hoan@os.amperecomputing.com, 
+	linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@kernel.org, 
+	Riwen Lu <luriwen@kylinos.cn>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500010.china.huawei.com (7.185.36.155)
+Content-Transfer-Encoding: quoted-printable
 
-Hi all:
+On Tue, Dec 19, 2023 at 11:14=E2=80=AFAM Serge Semin <fancer.lancer@gmail.c=
+om> wrote:
+> On Tue, Dec 19, 2023 at 09:37:51AM +0800, xiongxin wrote:
 
-The issue occurred while reading an ELF file in libbpf.c during fuzzing
+...
 
-    Using host libthread_db library "/usr/lib64/libthread_db.so.1".
-    0.000243187s DEBUG total counters = 7816
-    0.000346533s DEBUG binary maps to 400000-155f280, len = 18215552
-    0.000765462s DEBUG init_fuzzer:run_seed: running initial seed path="crash-sigsegv-b905489aaeb39555ff1245117f1efd1677195b9ac1437bfb18b8d2d04099704b"
+> Also note all the tags you've already got must be preserved on the
+> next patch revisions. One more time:
 
-    Program received signal SIGSEGV, Segmentation fault.
-    0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-    4206 in libbpf.c
-    (gdb) bt
-    #0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-    #1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
-    #2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
-    #3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
-    #4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
-    #5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
-    #6 0x000000000087ad92 in tracing::span::Span::in_scope ()
-    #7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
-    #8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
-    #9 0x00000000005f2601 in main ()
-    (gdb)
+> Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-then, I checked the code and found that scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
+I recommend using `b4` for that.
 
-    if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
-    
-The scn_data is derived from the code above:
-    
-    scn = elf_sec_by_idx(obj, sec_idx);
-    scn_data = elf_sec_data(obj, scn);
-    
-    relo_sec_name = elf_sec_str(obj, shdr->sh_name);
-    sec_name = elf_sec_name(obj, scn);
-    if (!relo_sec_name || !sec_name)    // don't check whether scn_data is NULL
-    	return -EINVAL;
+it harvests tags from the email thread, so no need to care about
+possible misses.
 
-Do sec_data and sec_name always occur together? Is it possible that scn_data is NULL but sec_name
-is not NULL? libbpf uses sec_name to determine if it’s a null pointer, Maybe we should do some
-check here.
+--=20
+With Best Regards,
+Andy Shevchenko
 
