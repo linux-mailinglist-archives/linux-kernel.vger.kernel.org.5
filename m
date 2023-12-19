@@ -1,156 +1,142 @@
-Return-Path: <linux-kernel+bounces-5027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD139818585
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:47:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F8F3818590
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38F4AB21765
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:47:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F4651F23C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7073E15AC0;
-	Tue, 19 Dec 2023 10:46:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0519E14F79;
+	Tue, 19 Dec 2023 10:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VlOeb6q7"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UvSLgwQq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F560156EC;
-	Tue, 19 Dec 2023 10:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702982806; x=1734518806;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=huJKnFT1fUWL+Xrruc9EYHcavn2dIZ966k3dBgI5pJQ=;
-  b=VlOeb6q79L1faf18Txt5b1xHvYBV7xB62WlgDIUKSRzBdZHFIHH67SrE
-   PFI5IwpyjN9FxQiZpoVTx/4Iy5H+hzawQHyI3WgDemmjAPQkDWez0YsCB
-   hrjxJ2DzAUykTLYxeo8LQZL0nOj8+/IjOgwve5CELYyBRmkk6fBcmF3QY
-   /myxC/k3WD7y2xpdHnpejYL6hlLRwXMcPelxtqYHdmEKf6oVwZIq0sOZW
-   zeDHxLPs3UfnHdsde8zRKNE0AhNb1ujyigihAXhiC/4nvJb+eNJgfRY+D
-   D58gM0WJ1MpgXJY+rg4RHFlpHVCwb+yfxvwReJRyrmPxuQs90gn21+6gA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="386064409"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="386064409"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 02:46:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="725692427"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="725692427"
-Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.237.142.133])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 02:46:43 -0800
-Date: Tue, 19 Dec 2023 11:46:39 +0100
-From: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-To: Song Liu <song@kernel.org>
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, Paul E Luse <paul.e.luse@linux.intel.com>
-Subject: Re: [PATCH 0/3] md: Remove deprecated flavors
-Message-ID: <20231219114639.0000689d@linux.intel.com>
-In-Reply-To: <CAPhsuW7w7WbWePpQd4aqnvXHwbdEJzw9efEP_r6tJwpeg0_qLw@mail.gmail.com>
-References: <20231214222107.2016042-1-song@kernel.org>
-	<20231215125059.00006270@linux.intel.com>
-	<CAPhsuW6GZnufqFseLvgpMrrX6qRXodX1n89vEbbC-FqTjsWPDg@mail.gmail.com>
-	<20231218093201.000020dd@linux.intel.com>
-	<CAPhsuW7w7WbWePpQd4aqnvXHwbdEJzw9efEP_r6tJwpeg0_qLw@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D27515494;
+	Tue, 19 Dec 2023 10:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJAZSl6006295;
+	Tue, 19 Dec 2023 10:48:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=44MG7mg
+	jm5PkhVKpIcOLnozSZMVMijII2/FuLxCp5Yo=; b=UvSLgwQqMff8Cvlfq4q/Gc7
+	rq0uaYRGOSc47vHGlkjE3/m4m5bBWmqFqzJrY5pW0w8WgCpPhJL39gQnXvVOADwc
+	lkYJq+G7jUe18PAytO0pFSYCbPehOa0p0nHDZdD0Q3tnq4SxSeJ+ifqbes8dnw4v
+	Xw3yUK5DQHZjnpGl6ITJdI4aEp/IvDd/tIskvjC0Xw67bwTb9+iDyXbpXSJdETpl
+	z1HYBauq9LyCR22/05QhuFJ5eut+8lumPiFdj0vEZrVyuzZYsk55h35Ujdi0iNUG
+	zjfvcJBjdqdmhwa2RTubZRdN/DiR9yPrWKISYJhNHTBhrLtTiJXkaqUJx4KI61A=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37tr88ke-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 10:48:40 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJAmd8M005236
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 10:48:39 GMT
+Received: from hu-jsuraj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 19 Dec 2023 02:48:29 -0800
+From: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+To: <quic_jsuraj@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma
+	<bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S.
+ Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jakub
+ Kicinski" <kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "Jose
+ Abreu" <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Prasad Sodagudi
+	<psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
+	<robh@kernel.org>
+CC: <kernel@quicinc.com>
+Subject: [PATCH net-next v7 0/3] Ethernet DWMAC5 fault IRQ support
+Date: Tue, 19 Dec 2023 16:18:12 +0530
+Message-ID: <20231219104815.3443231-1-quic_jsuraj@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pojU8RgO8qSOT_rb-Sr5koYOAigS33C5
+X-Proofpoint-GUID: pojU8RgO8qSOT_rb-Sr5koYOAigS33C5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=967 adultscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ malwarescore=0 phishscore=0 impostorscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312190079
 
-On Mon, 18 Dec 2023 08:11:53 -0800
-Song Liu <song@kernel.org> wrote:
+Add support to listen Ethernet HW common safery IRQ for correctable and 
+uncorrectable fault. The safety IRQ will be triggered for ECC(error
+correction code), DPP(data path parity, FSM(finite state machine) error.
 
-> Hi Mariusz,
->=20
-> On Mon, Dec 18, 2023 at 12:32=E2=80=AFAM Mariusz Tkaczyk
-> <mariusz.tkaczyk@linux.intel.com> wrote:
-> > =20
-> [...]
-> > > >
-> > > > Please note that there are mdadm tests for those levels. I can appr=
-ove
-> > > > it only when mdadm clean-up is merged. Our tests must pass
-> > > > continuously. =20
-> > >
-> > > Is the continuous test result available publicly? =20
-> >
-> > We are working on public CI (Paul owns it). On my side I'm not executin=
-g all
-> > tests, IMSM only. In this case it is obvious that mdadm tests will stop
-> > passing, I don't need results to see that. We should keep both mdadm an=
-d md
-> > compatible. We are continuously adding new MD regression tests to mdadm=
- (at
-> > least Kuai is doing that) so we should also care about removing things.
-> > =20
-> > > =20
-> > > >
-> > > > It is a nice code complexity improvement so let me know if you would
-> > > > like to get my help with mdadm patches. =20
-> > >
-> > > On my local tests with mdadm, I need to make changes to the following
-> > > tests:
-> > >
-> > > 00linear...
-> > > 00names...
-> > > 00raid0...
-> > > 00readonly...
-> > > 02lineargrow...
-> > > 03r0assem...
-> > > 04r0update...
-> > > 04update-metadata...
-> > >
-> > > The changes are all straightforward (just remove things related to
-> > > linear/multipath/faulty).
-> > > =20
-> >
-> > Please do not forgot remove dead code from mdadm. For example simple fi=
-nd
-> > "multipath" (case insensitive) reefers me to multiple places with speci=
-al
-> > handling for this level. We need to remove it from code and documentati=
-on.
-> > Can you handle this too? =20
->=20
-> I think this is a bigger discussion: will mdadm stop supporting these
-> flavors on
-> older kernels? Say, mdadm-5.0+ (or a different number) will not support
-> multipath flavor on older kernels?
->=20
+Changes since v7:
+- Add support of common sfty irq on stmmac_request_irq_multi_msi.
+- Remove uncecessary blank line.
 
-Good point, I forgot that we are keeping backward compatibility with old
-kernels. Currently 3.10 is the lowest one supported so agree, we need to ke=
-ep
-this code. Thanks for clarifying!
+Changes since v6:
+- use name sfty_irq instead of safety_common_irq.
 
-> >
-> > Oh and last one, I can't find update for md man in your changes. Could =
-you
-> > please remove those levels from md man? =20
->=20
-> man side is easier. Once we know which major will have this set (6.8 or
-> later), we can update the man pages with the information.
+Changes since v5:
+- Add description of ECC, DPP, FSM
 
-Understood!
+Changes since v4:
+- Fix DT_CHECKER warning
+- use name safety for the IRQ.
 
-No further questions, please just remove tests and eventually add warning w=
-hen
-creating those levels in mdadm i.e "Linear/Multipath/Faulty are deprecated =
-and
-will be removed in next releases".
+Suraj Jaiswal (3):
+  dt-bindings: net: qcom,ethqos: add binding doc for safety IRQ for
+    sa8775p
+  arm64: dts: qcom: sa8775p: enable safety IRQ
+  net: stmmac: Add driver support for DWMAC5 common safety IRQ
 
-Thanks,
-Mariusz
+ .../devicetree/bindings/net/qcom,ethqos.yaml  |  9 +++--
+ .../devicetree/bindings/net/snps,dwmac.yaml   |  6 ++--
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi         | 10 +++---
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  2 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 35 +++++++++++++++++++
+ .../ethernet/stmicro/stmmac/stmmac_platform.c |  8 +++++
+ 7 files changed, 62 insertions(+), 9 deletions(-)
+
+-- 
+2.25.1
+
 
