@@ -1,31 +1,64 @@
-Return-Path: <linux-kernel+bounces-5294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A49C6818916
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:56:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9800381891C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDFA31C23F35
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:56:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1188A1F25654
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5D31A58F;
-	Tue, 19 Dec 2023 13:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245D51A594;
+	Tue, 19 Dec 2023 13:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pHRmqwBV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B121A58B;
-	Tue, 19 Dec 2023 13:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C01681FB;
-	Tue, 19 Dec 2023 05:57:14 -0800 (PST)
-Received: from [10.57.46.64] (unknown [10.57.46.64])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8CB33F5A1;
-	Tue, 19 Dec 2023 05:56:27 -0800 (PST)
-Message-ID: <df433a15-2698-4e1f-9d15-db52befb7541@arm.com>
-Date: Tue, 19 Dec 2023 13:56:26 +0000
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC451BDC4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 13:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a236d77dceeso188622966b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 05:57:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702994230; x=1703599030; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/jV7qciVEN9etHxFKKypbaAqxfYKJxHXL5kiTpWoiKo=;
+        b=pHRmqwBVMWt+VwvAO4XdxrB44TBHPmt0NrSRvM1LVfpoYTsROBCkvr8R8nInxn4Yl/
+         eoLD6FrYWDdWeRgwkhNa7JuuxC9d+8jefylA3z/5rft1sWHTkjbk0k6npSBfuXq1gyIU
+         Gzq6O6187WDHCAfUhpPsWZyvAZrO91AmNjw0wa9hlAstQyvBJG2ZrdJn8gyXzW4G3uXi
+         7ohXWyzYTRhCN3e9SXstYC6cvqoo8OVgsVer/FzTd459KMFVGlHtAUtXnoTEgtGz+4dk
+         Ac1p+AhIpvq9NfLvQJvrfF4JOd6raG68idRJ3PkqsZG9rid8z9MVxic00vKiOZKzLZhk
+         vYFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702994230; x=1703599030;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/jV7qciVEN9etHxFKKypbaAqxfYKJxHXL5kiTpWoiKo=;
+        b=JC3CXz9to0hEoXbUm/2Ps0Cn+pz5hf+kPU4W80cRb9pUhCysgEkeBUD4vVeNxeeqEy
+         wPoGVqZX/k6HjTnZrQSbTQdwou5dWn4AyHnBELaLRtDcgR1oc53uRME7DBVREizDK2oI
+         9cnW4UWkSCk1YM0O/b0pra7hLBPa9pakDndwk+sbE2KDQjFVHvUGMYYiMTMQTEzkQ9pL
+         lsH0scnnBDXU5DLCPUW0+jfRIdwIdUuofSo1FuSlEItaGkU0TxAq97smkaiIo05UuD6a
+         UsCB0hi+2VZNS0b2DqJhbVrywMIYkJa/6A+q5ezD2nGzW6fe9UvL2U5ZFsrPcylgU1fO
+         9UEg==
+X-Gm-Message-State: AOJu0YzpAaGBvfCgp/CiokmaWMPfD6VyvqxauXg0VQvaDE7YGL3qcPSE
+	KcwM2Vd0OwS899wjUdsfrF6UZQ==
+X-Google-Smtp-Source: AGHT+IHE1xuPPHdj6pLVi5fb7Un6iEuZPwZu9xJp+hbdtBIW/owAYSZPCvoC1M3pOxx0L4+Gc7Qkew==
+X-Received: by 2002:a17:906:2b5b:b0:a23:4576:377c with SMTP id b27-20020a1709062b5b00b00a234576377cmr1445190ejg.211.1702994229781;
+        Tue, 19 Dec 2023 05:57:09 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id ux4-20020a170907cf8400b00a230f3799a4sm6885154ejc.225.2023.12.19.05.57.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 05:57:09 -0800 (PST)
+Message-ID: <1fa5f658-fef1-49e0-b1ca-21359a74e409@linaro.org>
+Date: Tue, 19 Dec 2023 14:57:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,237 +66,172 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/8] coresight-tpdm: Add CMB dataset support
-Content-Language: en-GB
-To: Tao Zhang <quic_taozha@quicinc.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-4-git-send-email-quic_taozha@quicinc.com>
- <f4ed3577-f78b-4b78-b306-8284ccb96043@arm.com>
- <8dcafd9a-ff90-439a-9337-fb957d2fcad1@quicinc.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <8dcafd9a-ff90-439a-9337-fb957d2fcad1@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 1/2] dt-bindings: display: Add SSD133x OLED controllers
+Content-Language: en-US
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ Conor Dooley <conor@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+ Jocelyn Falempe <jfalempe@redhat.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Peter Robinson <pbrobinson@gmail.com>, Rob Herring <robh@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+References: <20231218132045.2066576-1-javierm@redhat.com>
+ <20231218132045.2066576-2-javierm@redhat.com>
+ <20231218-example-envision-b41ca8efa251@spud>
+ <87il4u5tgm.fsf@minerva.mail-host-address-is-not-set>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <87il4u5tgm.fsf@minerva.mail-host-address-is-not-set>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 19/12/2023 09:22, Tao Zhang wrote:
+On 19/12/2023 12:20, Javier Martinez Canillas wrote:
+> Conor Dooley <conor@kernel.org> writes:
 > 
-> On 12/18/2023 6:34 PM, Suzuki K Poulose wrote:
->> On 21/11/2023 02:24, Tao Zhang wrote:
->>> CMB (continuous multi-bit) is one of TPDM's dataset type. CMB subunit
->>> can be enabled for data collection by writing 1 to the first bit of
->>> CMB_CR register. This change is to add enable/disable function for
->>> CMB dataset by writing CMB_CR register.
->>>
->>> Reviewed-by: James Clark <james.clark@arm.com>
->>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
->>> ---
->>>   drivers/hwtracing/coresight/coresight-tpdm.c | 31 ++++++++++++++++++++
->>>   drivers/hwtracing/coresight/coresight-tpdm.h |  8 +++++
->>>   2 files changed, 39 insertions(+)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
->>> b/drivers/hwtracing/coresight/coresight-tpdm.c
->>> index 97654aa4b772..c8bb38822e08 100644
->>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
->>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
->>> @@ -131,6 +131,11 @@ static bool tpdm_has_dsb_dataset(struct 
->>> tpdm_drvdata *drvdata)
->>>       return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
->>>   }
->>>   +static bool tpdm_has_cmb_dataset(struct tpdm_drvdata *drvdata)
->>> +{
->>> +    return (drvdata->datasets & TPDM_PIDR0_DS_CMB);
->>> +}
->>> +
->>>   static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
->>>                      struct attribute *attr, int n)
->>>   {
->>> @@ -267,6 +272,17 @@ static void tpdm_enable_dsb(struct tpdm_drvdata 
->>> *drvdata)
->>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
->>>   }
->>>   +static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
->>> +{
->>> +    u32 val;
->>> +
->>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
->>> +    val |= TPDM_CMB_CR_ENA;
->>> +
->>> +    /* Set the enable bit of CMB control register to 1 */
->>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
->>> +}
->>> +
->>>   /*
->>>    * TPDM enable operations
->>>    * The TPDM or Monitor serves as data collection component for various
->>> @@ -281,6 +297,8 @@ static void __tpdm_enable(struct tpdm_drvdata 
->>> *drvdata)
->>>         if (tpdm_has_dsb_dataset(drvdata))
->>>           tpdm_enable_dsb(drvdata);
->>> +    if (tpdm_has_cmb_dataset(drvdata))
->>> +        tpdm_enable_cmb(drvdata);
->>
->> Don't we need to add this check in the "property read" section ?
->> Otherwise, we could generate warnings unnecessarily ?
->>
->> i.e, if (tpdm_has_cmb_..())
->>       rc |= fwnode_..read_property(cmb-elem-size...)
->>
->> Similarly for DSB.
+> Hello Conor,
 > 
-> TPDM and TPDA are two independent hardware. If you want to modify them 
-> in this way, the
+>> On Mon, Dec 18, 2023 at 02:20:35PM +0100, Javier Martinez Canillas wrote:
 > 
+> [...]
+> 
+>>> +allOf:
+>>> +  - $ref: solomon,ssd-common.yaml#
+>>> +
+>>> +  - properties:
+>>> +      width:
+>>> +        default: 96
+>>> +      height:
+>>> +        default: 64
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml b/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+>> index 8feee9eef0fd..ffc939c782eb 100644
+>> --- a/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+>> +++ b/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+>> @@ -9,24 +9,24 @@ title: Solomon SSD133x OLED Display Controllers
+>>  maintainers:
+>>    - Javier Martinez Canillas <javierm@redhat.com>
+>>  
+>> +allOf:
+>> +  - $ref: solomon,ssd-common.yaml#
+>> +
+> 
+> This part worked correctly...
+> 
+>>  properties:
+>>    compatible:
+>>      enum:
+>>        - solomon,ssd1331
+>>  
+>> +  width:
+>> +    default: 96
+>> +
+>> +  height:
+>> +    default: 64
 
-You don't have to, as long as the header files are included ?
+Which also looks wrong on its own. Where is the definition of these
+properties? IOW, where do they come from?
 
-Read my response in the other patch, where it applies.
+>> +
+> 
+> ...but when trying move the default for the "solomon,width" and
+> "solomon,height" to the properties section, make dt_binding_check
+> complains as follows:
 
-Suzuki
+Worked for me.
 
-> two independent drivers will be coupled to each other. At the same time, 
-> this configuration
-> 
-> is manually set in the devicetree by the users, and this check cannot 
-> avoid manual setting errors.
-> 
->   Even if the configuration is wrong, it will not cause the driver to 
-> stop working, it will only cause
-> 
-> the data to be lost from the TPDM.
-> 
->>
->>>       CS_LOCK(drvdata->base);
->>>   }
->>> @@ -314,6 +332,17 @@ static void tpdm_disable_dsb(struct tpdm_drvdata 
->>> *drvdata)
->>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
->>>   }
->>>   +static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
->>> +{
->>> +    u32 val;
->>> +
->>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
->>> +    val &= ~TPDM_CMB_CR_ENA;
->>> +
->>> +    /* Set the enable bit of CMB control register to 0 */
->>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
->>> +}
->>> +
->>>   /* TPDM disable operations */
->>>   static void __tpdm_disable(struct tpdm_drvdata *drvdata)
->>>   {
->>> @@ -321,6 +350,8 @@ static void __tpdm_disable(struct tpdm_drvdata 
->>> *drvdata)
->>>         if (tpdm_has_dsb_dataset(drvdata))
->>>           tpdm_disable_dsb(drvdata);
->>> +    if (tpdm_has_cmb_dataset(drvdata))
->>> +        tpdm_disable_cmb(drvdata);
->>
->> minor nit: Instead of having these :
->>
->>     if (tpdm_has_XY_()
->>         tpdm_{enable/disable}_XY_()
->> I prefer :
->>
->>     tpdm_{enable/disable}_XY_
->>
->> and the helper take care of returning early if the feature is
->> not present.
-> Does the following sample modification meet your expectation?
-> static void tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
-> {
->      u32 val;
-> 
->      if (tpdm_has_dsb_dataset(drvdata)) {
->          /* Set the enable bit of DSB control register to 0 */
->          val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
->          val &= ~TPDM_DSB_CR_ENA;
->          writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
->      }
-> }
-> 
-> static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
-> {
->      u32 val;
-> 
->      if (tpdm_has_cmb_dataset(drvdata)) {
->          val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
->          val &= ~TPDM_CMB_CR_ENA;
-> 
->          /* Set the enable bit of CMB control register to 0 */
->          writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
->      }
-> }
-> 
-> /* TPDM disable operations */
-> static void __tpdm_disable(struct tpdm_drvdata *drvdata)
-> {
->      CS_UNLOCK(drvdata->base);
-> 
->      tpdm_disable_dsb(drvdata);
->      tpdm_disable_cmb(drvdata);
-> 
+...
 
-Yes, thats exactly I was looking for.
+>   DTC_CHK Documentation/devicetree/bindings/display/solomon,ssd133x.example.dtb
+> 
+> The warning goes away if I follow the hints and add a type and description
+> to the properties, i.e:
 
->      CS_LOCK(drvdata->base);
+Hm, I wonder what's different in your case. I assume you run the latest
+dtschema.
+
 > 
-> }
+> diff --git a/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml b/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+> index 880c71fdec68..0f4d9ca7456b 100644
+> --- a/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+> +++ b/Documentation/devicetree/bindings/display/solomon,ssd133x.yaml
+> @@ -17,6 +17,20 @@ properties:
+>      enum:
+>        - solomon,ssd1331
+>  
+> +  solomon,width:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Width in pixel of the screen driven by the controller.
+> +      The default value is controller-dependent.
+> +    default: 96
+> +
+> +  solomon,height:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Height in pixel of the screen driven by the controller.
+> +      The default value is controller-dependent.
+> +    default: 64
+> +
+>  required:
+>    - compatible
+>    - reg
 > 
-> 
-> Best,
-> 
-> Tao
-> 
->>
->>
->> Suzuki
->>
->>
->>>         CS_LOCK(drvdata->base);
->>>   }
->>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
->>> b/drivers/hwtracing/coresight/coresight-tpdm.h
->>> index 4115b2a17b8d..0098c58dfdd6 100644
->>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
->>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
->>> @@ -9,6 +9,12 @@
->>>   /* The max number of the datasets that TPDM supports */
->>>   #define TPDM_DATASETS       7
->>>   +/* CMB Subunit Registers */
->>> +#define TPDM_CMB_CR        (0xA00)
->>> +
->>> +/* Enable bit for CMB subunit */
->>> +#define TPDM_CMB_CR_ENA        BIT(0)
->>> +
->>>   /* DSB Subunit Registers */
->>>   #define TPDM_DSB_CR        (0x780)
->>>   #define TPDM_DSB_TIER        (0x784)
->>> @@ -79,10 +85,12 @@
->>>    *
->>>    * PERIPHIDR0[0] : Fix to 1 if ImplDef subunit present, else 0
->>>    * PERIPHIDR0[1] : Fix to 1 if DSB subunit present, else 0
->>> + * PERIPHIDR0[2] : Fix to 1 if CMB subunit present, else 0
->>>    */
->>>     #define TPDM_PIDR0_DS_IMPDEF    BIT(0)
->>>   #define TPDM_PIDR0_DS_DSB    BIT(1)
->>> +#define TPDM_PIDR0_DS_CMB    BIT(2)
->>>     #define TPDM_DSB_MAX_LINES    256
->>>   /* MAX number of EDCR registers */
->>
+> But that would duplicate information that is already present in the
+> included solomon,ssd-common.yaml schema. Do you know what is the proper
+> way to do this?
+
+Works for me, so please paste somewhere proper diff so we can compare.
+
+Best regards,
+Krzysztof
 
 
