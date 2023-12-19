@@ -1,110 +1,91 @@
-Return-Path: <linux-kernel+bounces-4551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D608817F36
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:17:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69123817F3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 02:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D9491C22DE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:17:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E411D284DEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 01:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C438C17CF;
-	Tue, 19 Dec 2023 01:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C473F1FAA;
+	Tue, 19 Dec 2023 01:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QpjNzB1M"
+	dkim=pass (2048-bit key) header.d=pqrs.dk header.i=@pqrs.dk header.b="088xH3k1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752E115A0
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a22f59c6aeaso464030466b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:17:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702948642; x=1703553442; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2d8n5veSwDKrjujjZS9oHRQwKzoLqynkBXf88Dby3fc=;
-        b=QpjNzB1MBfLG3FKO8ypDwYjxVaYBBCwmmO7Anpbhn6y7S2A/8BU3twlYeJIjqTfEXw
-         YkwCarvyt4Q0dcYTG0sANiG7TFUPx76/D0bGVZ8HSmz+0f8zu7tLqtpwkpEVTWiLTZyc
-         FGbkiKguJbtjRZY4Izroc0ZEKkpvGp4ATrGYI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702948642; x=1703553442;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2d8n5veSwDKrjujjZS9oHRQwKzoLqynkBXf88Dby3fc=;
-        b=sLC3Bd0Xm7QrJQr1cWgQYAXXtVUswzFo7myV8tBYs8tFdez7I23a78u2jcAozNIzaM
-         11ukpxh8eUJobosnIruXNDNnIDAFHcJHnNaxMuuopnTSbNCR6nXG8M4rH5tAtpUJ/c9r
-         wKGqxQ5xyz7Zb24kCnV5pRouNa1XOVqEfEVdrc6+Fjlt1FCSxFgLDXDHH7dr+SKprsof
-         8EzPfpWIY+xU2/0ZIV7zmnYPuwTO/M6tCF5WYNQ4uzcNai3WRR2hXdlcF51HDbpz47uk
-         7oPuxQdOFzz5Lc2wYJoUEkRk3j79XtgeVOVhgOeWl6huw6t6EQ08ZG2s+ck/e62dRKcl
-         kOSA==
-X-Gm-Message-State: AOJu0Yzxm05jBfbyGkvje9cA3Y0sGAPi+IYO1glMD2KjJlqVab5pcpCB
-	KLccPRvI0DtCkELFQd1NokNG6/7FyONfvR7sO0DgiQ==
-X-Google-Smtp-Source: AGHT+IEr61ws5Mn68ebcLoxGUcnnjMx0G67+jSiWBKx4AESTkJ9A2i3tmT4Y88/nyaA5RbALfyBpjQ==
-X-Received: by 2002:a17:906:590a:b0:a23:5754:fb8e with SMTP id h10-20020a170906590a00b00a235754fb8emr1528632ejq.133.1702948642609;
-        Mon, 18 Dec 2023 17:17:22 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id hg20-20020a1709072cd400b00a235dfe6b4fsm1470337ejc.204.2023.12.18.17.17.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 17:17:22 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55322dbac2fso2481404a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 17:17:22 -0800 (PST)
-X-Received: by 2002:a17:907:7d8c:b0:a19:a19b:55ef with SMTP id
- oz12-20020a1709077d8c00b00a19a19b55efmr9119435ejc.127.1702948641815; Mon, 18
- Dec 2023 17:17:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D5A15A0
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 01:25:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pqrs.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pqrs.dk
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqrs.dk; s=key1;
+	t=1702949136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=axGj3enhg+YeIx3Crw8OdM616NaGhSm4kX8xiNtcf6E=;
+	b=088xH3k1u1oMAfJp6Qzyyme9hxtW4LAb6VgTYE6/DlYaPNA6ByIGXZzvjCQ6txJ+1s/6lg
+	bz6eotxsBMBBqT6L1KulzV+A65MEkmvo7AbR4iCroM1MjYfqRmMJUxgruvZjKpM91EV6mt
+	aCWQcvHYC2cDceqYwk6JXtRnUNT2OV39PSQKRdlozIFZGTA/I/MIl26kXKWwl3AIykmhhB
+	3cC4rjPjp+a4joHkuqxLzbIRXlY8wwdi9PXLN0gZXxr6OkgKV7R14W0LA0HCJEaEG/b5yc
+	T1Sc7QaDebf5l7mpJuVAN0skjHgKvZ0op6I17WOFQxR287KlcURCxGQ+n9xxHQ==
+From: =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Subject: [PATCH v3 0/2] get_maintainer: correctly parse UTF-8 encoded names
+ in files
+Date: Tue, 19 Dec 2023 02:25:13 +0100
+Message-Id: <20231219-get-maintainers-utf8-v3-0-f85a39e2265a@bang-olufsen.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219000520.34178-1-alexei.starovoitov@gmail.com> <20231218165513.24717ec1@kernel.org>
-In-Reply-To: <20231218165513.24717ec1@kernel.org>
-From: Linus Torvalds <torvalds@linuxfoundation.org>
-Date: Mon, 18 Dec 2023 17:17:05 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whBBWGaQy=rtS2Ma6QPqbQ+jEUKUWfF2zS7gDXpim11bA@mail.gmail.com>
-Message-ID: <CAHk-=whBBWGaQy=rtS2Ma6QPqbQ+jEUKUWfF2zS7gDXpim11bA@mail.gmail.com>
-Subject: Re: pull-request: bpf-next 2023-12-18
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, daniel@iogearbox.net, andrii@kernel.org, 
-	peterz@infradead.org, brauner@kernel.org, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, kernel-team@fb.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAPnwgGUC/4XOsQ7CIBAG4FcxzGLKgS06+R7GgcLREpUaoETT9
+ N2lXRyMcbjhv+T/7iYSMTiM5LiZSMDsoht8CXy7IbpXvkPqTMkEKuCsYoJ2mOhdOZ/KYIh0TFZ
+ SDrrea2FqKxUp1UdA654re76U3LuYhvBar2S2bP+AmVFGubJSNwpb4IdTW56hw220Ef3OXMnCZ
+ vhQ8JOCQrVMSqObSoAS39Q8z28FIQBrCQEAAA==
+To: Joe Perches <joe@perches.com>, 
+ Linus Torvalds <torvalds@linux-foundation.org>, 
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+ Konstantin Ryabitsev <konstantin@linuxfoundation.org>, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 18 Dec 2023 at 16:55, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> LGTM, but what do I know about file systems.. Adding LKML to the CC
-> list, if anyone has any late comments on the BPF token come forward
-> now, petty please?
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+---
+Changes in v3:
+- add more rationale for opening everything with UTF-8 encoding
+- fix a separate issue identified when introducing UTF-8 names, namely
+  that they would not get escaped with quotes as expected, due to Perl's
+  default behaviour being to match UTF-8 characters with \w
+- add a second patch to fix an unrelated issue mentioned by Joe whereby
+  a mailing list might get the display name '-'
+- Link to v2: https://lore.kernel.org/r/20231214-get-maintainers-utf8-v2-1-b188dc7042a4@bang-olufsen.dk
 
-See my crossed email reply.
+Changes in v2:
+- use '\p{L}' rather than '\p{Latin}', so that matching is even more
+  inclusive (i.e. match also Greek letters, CJK, etc.)
+- fix commit message to refer to tools mailing list, not b4 mailing list
+- Link to v1: https://lore.kernel.org/r/20231014-get-maintainers-utf8-v1-1-3af8c7aeb239@bang-olufsen.dk
 
-The file descriptor handling is FUNDAMENTALLY wrong. The first time
-that happened, we chalked it up to a mistake. Now it's something
-worse.
+---
+Alvin Šipraga (2):
+      get_maintainer: correctly parse UTF-8 encoded names in files
+      get_maintainer: remove stray punctuation when cleaning file emails
 
-Please don't pull until at least that part is fixed.
+ scripts/get_maintainer.pl | 48 +++++++++++++++++++++++++++--------------------
+ 1 file changed, 28 insertions(+), 20 deletions(-)
+---
+base-commit: 2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
+change-id: 20231014-get-maintainers-utf8-32c65c4d6f8a
 
-I tried to review the token patches, but honestly, I got to that part
-and I just gave up.
-
-We had this whole discussion more than 6 months ago:
-
-  https://lore.kernel.org/all/20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner/
-
-and I really thought the bpf people had *understood* they their
-special use of "fd == 0" was wrong.
-
-But it seems that they never did. Once is a mistake. Twice is a
-choice. And the bpf people have chosen insanity.
-
-               Linus
 
