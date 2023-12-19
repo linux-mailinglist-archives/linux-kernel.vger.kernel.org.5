@@ -1,85 +1,69 @@
-Return-Path: <linux-kernel+bounces-5066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B4A1818631
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:19:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F1BE818635
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E1021C23A30
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:18:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45B781F22E66
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D18154AF;
-	Tue, 19 Dec 2023 11:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4EA1640B;
+	Tue, 19 Dec 2023 11:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d2wg9Ks5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QH5d/8zH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C262D168C0;
-	Tue, 19 Dec 2023 11:18:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A667C433C7;
-	Tue, 19 Dec 2023 11:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A16B18634;
+	Tue, 19 Dec 2023 11:18:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C9B8C433C7;
+	Tue, 19 Dec 2023 11:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702984723;
-	bh=yl0m/eWPjphXiy8uk34FxNH5HtArYrpYKC04XRSsfqE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d2wg9Ks5Mj61RI6kz4yht9d22GwNbzvbWhFeg2ygHnARyRA7EabKyH5akS6wNnhAs
-	 g0pobqzaPHBU13lI3R6XM75d9Meovlblf+D7qENndRPUwWZzzproFO0+clSl60SPIf
-	 Yr4IoUMwZh19QrEJ/1Dt16OflTObeVwUpSmp4Wrd+p2QWDMa9OAX9mmvTnowd9lyxn
-	 EORZDy8LyhLZBnPo+/Ygdks/yaIBIYy7p4kw1zshx+sFzj9syZ7qD3a19SfGQfNVBU
-	 tYbvOqo1vUYvn506THzCoM8jDUr86MHfT4jGDHDP8JC1pOVGLRticHzKLiPJiIr2R0
-	 3c/qVFbtMiAMQ==
-From: Will Deacon <will@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>,
-	linux-efi@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Cc: catalin.marinas@arm.com,
-	kernel-team@android.com,
-	Will Deacon <will@kernel.org>,
-	linux-kbuild@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] efi/libstub: zboot: do not use $(shell ...) in cmd_copy_and_pad
-Date: Tue, 19 Dec 2023 11:18:31 +0000
-Message-Id: <170298016046.1509472.12688198177716250949.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231218080127.907460-1-masahiroy@kernel.org>
-References: <20231218080127.907460-1-masahiroy@kernel.org>
+	s=k20201202; t=1702984737;
+	bh=Qo03vyXdW7F4uUNSw3Fdacxi8RM9846AC7Ddh6naNlI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QH5d/8zH3zl+DcY3uXwrstlgJ95682qV32ULzGgcK1tIhO7HGokN3epDpO8f/38B9
+	 D16PTtMuSEBfneoKkQkGDAfvaNLUEgj85EScab+KU6p2URcaNKFeL7Oicerzx7vlqm
+	 eIoFdDksUsDFN7Kz/zIi6sVifFeFRwaEfZUdZQO9gZI2itAubKL/qTRVMyHZH6mZ/E
+	 Z3sHT3mQMEZ949bmwiGFgi728mRTjV3V+TERDx9+fUxt5x1T1eEd+gNGykrUgucVp6
+	 RocBFVrkh39cnHAGAK+gNIkVRfI6jVvsBBR6jbv58Eb5boFEvaFVbJh9PGzqj+ug1O
+	 5zPznOF0E05wA==
+Date: Tue, 19 Dec 2023 11:18:52 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jijie Shao <shaojijie@huawei.com>
+Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	shenjian15@huawei.com, wangjie125@huawei.com,
+	liuyonglong@huawei.com, lanhao@huawei.com, wangpeiyang1@huawei.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 net-next 3/4] net: hns3: dump more reg info based on
+ ras mod
+Message-ID: <20231219111852.GJ811967@kernel.org>
+References: <20231219013513.2589845-1-shaojijie@huawei.com>
+ <20231219013513.2589845-4-shaojijie@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219013513.2589845-4-shaojijie@huawei.com>
 
-On Mon, 18 Dec 2023 17:01:27 +0900, Masahiro Yamada wrote:
-> You do not need to use $(shell ...) in recipe lines, as they are already
-> executed in a shell. An alternative solution is $$(...), which is an
-> escaped sequence of the shell's command substituion, $(...).
+On Tue, Dec 19, 2023 at 09:35:12AM +0800, Jijie Shao wrote:
+> From: Peiyang Wang <wangpeiyang1@huawei.com>
 > 
-> For this case, there is a reason to avoid $(shell ...).
+> Dump more reg info base on ras mod before reset, which is useful to
+> analyze the ras error.
 > 
-> Kbuild detects command changes by using the if_changed macro, which
-> compares the previous command recorded in .*.cmd with the current
-> command from Makefile. If they differ, Kbuild re-runs the build rule.
-> 
-> [...]
+> Signed-off-by: Peiyang Wang <wangpeiyang1@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 
-Applied to arm64 (for-next/kbuild), thanks!
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-[1/1] efi/libstub: zboot: do not use $(shell ...) in cmd_copy_and_pad
-      https://git.kernel.org/arm64/c/97ba4416d6dd
-
-Cheers,
--- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
 
