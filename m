@@ -1,139 +1,110 @@
-Return-Path: <linux-kernel+bounces-5746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59877818F02
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:58:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D730A818F0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E9D11F29049
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:58:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65F60B22C50
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987CA38F84;
-	Tue, 19 Dec 2023 17:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EBE037870;
+	Tue, 19 Dec 2023 17:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PcnZ9NKY"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BLAM3rBf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF8B4B13D;
-	Tue, 19 Dec 2023 17:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3ac28ae81so24310195ad.0;
-        Tue, 19 Dec 2023 09:52:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CBD37D04
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 17:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c3ceded81so48495495e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 09:54:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703008351; x=1703613151; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GWs5/78iGYXOgAy2HmBDe2CVxDcBUmbJSBwHK3emws8=;
-        b=PcnZ9NKYFLcRS+G8/5U2RrQ4Vg/rxckSC3ugHwB3kJkaczrRj/Mj+e33+KNscS7cq9
-         kxrJHFJwRc+EhdqSiEL/x/Xo51N5lUQ6VvTj9tpooJyURwWIkXyrUeVO3rTCUIoHd1OC
-         Jy2N1Efnwo957VFrnt5ccJJau7RScOKk+Mo04RAFkqQdwUCJxkUEsbhlQSBfo3OaxFcG
-         AB7gSBi3LtYNRXbA4Kwx9iMg1pov3iq63gRQ04YoLnwpyolVhs1+iEY4R9It711YB9dJ
-         /aPL3I29zAdyMbUwUZWdxhPLlm19XhQFAxANTR1xYnguRRlYEVdR8/sz3ym2s1vZ+n9k
-         FIBg==
+        d=linaro.org; s=google; t=1703008468; x=1703613268; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QAZ0HvxFl1b1Uz1AqrWWlyqL8jpRTOfiKc+ri1uR42M=;
+        b=BLAM3rBfKRgKVk5jI3LwihubCf0v1G8tq9sXJ1W735Xx2BM/F5uAqetVjPL2MkyxyN
+         s3FpEDWGZdno04+oWbLD6ISaUo/iglwftlyCCK6W+a9lhcYUahuegHDAnAy08D45kVKh
+         Gf1yL1NqkZG3ygbcMhIrpf97gbm5dwEgui9Msc4G4ZBD+RprW9l9MbaMn4CQcUxVbPQv
+         SZVNE/ltFJkzsPaheXDV1rrknIV84vC0TT2WZ4snyAC2//999f93UvHvDxzEZs6tl52t
+         U1Yv/wmv9pZMD7lOZaGB/U9msbI9KrTnQgaSnJ8N+BJve+qqfAz2RuCHnPBpKdJp0x6w
+         IH8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703008351; x=1703613151;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GWs5/78iGYXOgAy2HmBDe2CVxDcBUmbJSBwHK3emws8=;
-        b=bOxjzz3jBM2cu02fc4dNIFwfeuz82qFWE8T7JOLJdPTg8ISr4z4hBMdB/wiqwEG4RX
-         x+mSVnBMsDZjVDDYppir0qvvclCl/88CosZw+q45PlKKFe8ksBTGkvLQMwnlIRi6YsxG
-         Bs50kRKve8k5R841K97eumVCd8ASI9RfY904Cr8TVCHWaLdKGNRJyZerCLxfjZw1ICVV
-         6F8X3h3BmyAw8fdIHcrTbRdj9JVFzsnK3WT9dRiUqk/mug1ywE4JhHU110ldckK6sCA6
-         ol48wKKRBCNS6ZQhVFC+FvsGmm0aFWjOjnZ137Mdc5WHoUmX125xgKUpWGIFX7EJtGAw
-         Xi8g==
-X-Gm-Message-State: AOJu0Yz6wVYDIa80KpnC0zNJjB4bc0vFgcLtwHeBwzuQpZYh8/L8izSS
-	geXpAl3eRfiYbLoAFIleclA=
-X-Google-Smtp-Source: AGHT+IHrWmanCY0G9LlI5KHOyhIrjYu37wOFzz3+pj1aAiO/1gzkIjpvml6BIlC6xl0SmPasWzOGKQ==
-X-Received: by 2002:a17:903:2cc:b0:1d3:488e:a4b7 with SMTP id s12-20020a17090302cc00b001d3488ea4b7mr17195075plk.128.1703008351003;
-        Tue, 19 Dec 2023 09:52:31 -0800 (PST)
-Received: from debian ([177.240.14.150])
-        by smtp.gmail.com with ESMTPSA id a17-20020a170902ee9100b001cfc1764fa7sm4277198pld.1.2023.12.19.09.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 09:52:30 -0800 (PST)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 19 Dec 2023 09:52:27 -0800
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Fan Ni <nifan.cxl@gmail.com>, Dave Jiang <dave.jiang@intel.com>,
-	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
-Subject: Re: [PATCH v2 2/2] cxl/cdat: Fix header sum value in CDAT checksum
-Message-ID: <ZYHYW-kaYLNPHXpj@debian>
-References: <20231117-fix-cdat-cs-v2-0-715399976d4d@intel.com>
- <20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
+        d=1e100.net; s=20230601; t=1703008468; x=1703613268;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QAZ0HvxFl1b1Uz1AqrWWlyqL8jpRTOfiKc+ri1uR42M=;
+        b=XsHNaLqypdOBi6UVFS9AXlv+GVtFoqwxvaQYfWKf54NVyKhMWv4O7+6hzjltEfWnlW
+         T0azUHaHxg95r5T7Ey+WC8NVUf+w7w6nPiRa5WIdjOMblm9s5biOKhXJKKW49Homkzvh
+         5H4YgB1UmyK2ruK1dJGGPhfW+OMpPknYQrN4x8mbp4zeonLp5VHYplVNa4W3erU+osqJ
+         XttkzpfCeNBcyQ2ThDgGj/xneLzhHjiLoLZ7qX/uXXuLzATuhLHNBjq7+jNxe+3L+Yoq
+         Tr3PlkTZbgAYEDXz3uoG9F/xRCT+OWVEywlBPOVlXsFPPBx5/NHst8Aa32tY769S+CVE
+         jU5Q==
+X-Gm-Message-State: AOJu0YyMpxsy6XzfUZzcQqqeKyw/2ADyXjdvXQug2xL960vgpSN4XZ+9
+	5ixGaLv/biKY2P8C8pTMNySA6A==
+X-Google-Smtp-Source: AGHT+IFm2bDzn5vBqEgH35Z4tRcu8mym1MPP/kL1m9Ae2ihUX/Qz9NB9j7ySTDRSbPCTnxYwN6/F5w==
+X-Received: by 2002:a7b:ca5a:0:b0:40b:5e21:ec3f with SMTP id m26-20020a7bca5a000000b0040b5e21ec3fmr9745933wml.113.1703008468047;
+        Tue, 19 Dec 2023 09:54:28 -0800 (PST)
+Received: from [192.168.10.46] ([37.170.14.102])
+        by smtp.googlemail.com with ESMTPSA id p41-20020a05600c1da900b0040b360cc65csm4026585wms.0.2023.12.19.09.54.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 09:54:27 -0800 (PST)
+Message-ID: <d1c97276-c538-4a6d-b7f4-e0e4b5e98c32@linaro.org>
+Date: Tue, 19 Dec 2023 18:54:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] dt-bindings: thermal: qcom-spmi-adc-tm5/hc: fix up
+ examples
+Content-Language: en-US
+To: Johan Hovold <johan@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231130174114.13122-1-johan+linaro@kernel.org>
+ <ZYG9yqyoul-gaEGs@hovoldconsulting.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <ZYG9yqyoul-gaEGs@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 29, 2023 at 05:33:04PM -0800, Ira Weiny wrote:
-> The addition of the DCD support for CXL type-3 devices extended the CDAT
-> table large enough that the checksum being returned was incorrect.[1]
+On 19/12/2023 16:59, Johan Hovold wrote:
+> Hi Daniel and Rafael,
 > 
-> This was because the checksum value was using the header length field
-> rather than each of the 4 bytes of the length field.  This was
-> previously not seen because the length of the CDAT data was less than
-> 256 thus resulting in an equivalent checksum value.
+> On Thu, Nov 30, 2023 at 06:41:12PM +0100, Johan Hovold wrote:
+>> When reviewing the various SPMI PMIC bindings, I noticed that several
+>> examples were incorrect and misleading and could also use some cleanup.
+>>
+>> This series addresses the thermal ones.
 > 
-> Properly calculate the checksum for the CDAT header.
+>> Johan Hovold (2):
+>>    dt-bindings: thermal: qcom-spmi-adc-tm5/hc: fix example node names
+>>    dt-bindings: thermal: qcom-spmi-adc-tm5/hc: clean up examples
 > 
-> [1] https://lore.kernel.org/all/20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com/
-> 
-> Fixes: aba578bdace5 ("hw/cxl/cdat: CXL CDAT Data Object Exchange implementation")
-> Cc: Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from V1:
-> [djiang: Remove do {} while (0);]
-> ---
->  hw/cxl/cxl-cdat.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/hw/cxl/cxl-cdat.c b/hw/cxl/cxl-cdat.c
-> index 24829cf2428d..67e44a4f992a 100644
-> --- a/hw/cxl/cxl-cdat.c
-> +++ b/hw/cxl/cxl-cdat.c
-> @@ -49,6 +49,7 @@ static void ct3_build_cdat(CDATObject *cdat, Error **errp)
->      g_autofree CDATTableHeader *cdat_header = NULL;
->      g_autofree CDATEntry *cdat_st = NULL;
->      uint8_t sum = 0;
-> +    uint8_t *buf;
->      int ent, i;
->  
->      /* Use default table if fopen == NULL */
-> @@ -95,8 +96,12 @@ static void ct3_build_cdat(CDATObject *cdat, Error **errp)
->      /* For now, no runtime updates */
->      cdat_header->sequence = 0;
->      cdat_header->length += sizeof(CDATTableHeader);
-> -    sum += cdat_header->revision + cdat_header->sequence +
-> -        cdat_header->length;
-> +
-> +    buf = (uint8_t *)cdat_header;
-> +    for (i = 0; i < sizeof(*cdat_header); i++) {
-> +        sum += buf[i];
-> +    }
-> +
->      /* Sum of all bytes including checksum must be 0 */
->      cdat_header->checksum = ~sum + 1;
->  
-> 
+> Can we get these merged for 6.8?
 
-Reviewed-by: Fan Ni <fan.ni@samsung.com>
+Applied, thanks
 
-> -- 
-> 2.42.0
-> 
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
