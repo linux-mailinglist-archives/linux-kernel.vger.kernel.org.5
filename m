@@ -1,165 +1,97 @@
-Return-Path: <linux-kernel+bounces-4838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0CFF8182BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:57:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E92EC8182DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 09:01:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 299E8B23FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:57:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06C351C23865
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5C917758;
-	Tue, 19 Dec 2023 07:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9F7125BD;
+	Tue, 19 Dec 2023 07:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QggziDrV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TrkGf0pj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99986168C5;
-	Tue, 19 Dec 2023 07:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702972620; x=1734508620;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=7QZAN2TgmiaT+CnQk4h1E8Xg1rL7yUVfPvqjbeyoFus=;
-  b=QggziDrVVQ+Z+U0j5+TPO8MY3DiBK+uA+QK2iOqbTQfo3GR0/fJL5aPC
-   Ebyn4OcRP8pDB5ITetf/9nWBYHCfwLBIVDtFai+hiDJbfbWnCFshDXOPJ
-   OWqTdml2m0O2ELCPCMsB6nMF7YD5ewp2XyOehdVzgLR2HMe6TQhd7Lcta
-   KMQVDq1PipPtRHADQ6LiDnPM2EH8rjpw15Z2rbF++SDILFonwqoJSqbhK
-   BYVitnb2XhSUhKXy8c/ajZOvbVXaLltnMf37jMHNWxOZT5GlPs2IZqD7r
-   UMcgru7EbZwY8atJzlGJnko1ySzNV4u14FZ/25qoYMhEi3iyJqpU6kCi2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="8994329"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="8994329"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 23:56:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="846252720"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695711600"; 
-   d="scan'208";a="846252720"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.8.39]) ([10.93.8.39])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 23:56:55 -0800
-Message-ID: <fbdfd2f6-9f45-49ca-aab4-c7fa9dd003f5@intel.com>
-Date: Tue, 19 Dec 2023 15:56:53 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1660914267;
+	Tue, 19 Dec 2023 07:59:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E728C433C9;
+	Tue, 19 Dec 2023 07:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702972761;
+	bh=1sgQFykm1ORiXK1WhY/sR6/eTfRFdg3rNtcOzsoHBKg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TrkGf0pjjy7OyTZ9ESNpdiicydh7kvjb45AK0FcNKSwyLiax1pQevFk86Pc2tNFgO
+	 R5qPdtNyGtT6wlHLV50hi9xgAsjX+IRbf0kvAe1WologqRjxbE7Zm9ujM7GV8aXoXm
+	 OoxxIDFcP5N0sWCFCELaoT3kaDI9RCkAoV70DXd8an3Bam6ohnAQ5oaxXGU4Rq90jK
+	 Jsfa0kuWeNbAQ1mftvb2jyk2guZSdYKvWLk3XtqyQYsdigllvbO/b8LOumrP84SGLB
+	 aRcnHcN8RZY7QYftzBi/vyvfmb4xWEj8TG4TSBmtqJQ4vf9WmgVF2OfDkpjqE1nhjF
+	 nj3d3vxHDSKyA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rFV0X-0006aU-2D;
+	Tue, 19 Dec 2023 08:59:18 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH] dt-bindings: regulator: qcom,usb-vbus-regulator: clean up example
+Date: Tue, 19 Dec 2023 08:57:49 +0100
+Message-ID: <20231219075749.25308-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency vm
- variable
-To: Jim Mattson <jmattson@google.com>,
- Isaku Yamahata <isaku.yamahata@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
- Maxim Levitsky <mlevitsk@redhat.com>, isaku.yamahata@intel.com,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
- Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
- Vishal Annapurve <vannapurve@google.com>
-References: <cover.1699936040.git.isaku.yamahata@intel.com>
- <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
- <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
- <ZXo54VNuIqbMsYv-@google.com>
- <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
- <ZXswR04H9Tl7xlyj@google.com>
- <20231219014045.GA2639779@ls.amr.corp.intel.com>
- <CALMp9eRgWct3bb5en0=geT0HmMemipkzXkjL9kmEAV+1yJg-pw@mail.gmail.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <CALMp9eRgWct3bb5en0=geT0HmMemipkzXkjL9kmEAV+1yJg-pw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 12/19/2023 11:53 AM, Jim Mattson wrote:
-> On Mon, Dec 18, 2023 at 5:40 PM Isaku Yamahata
-> <isaku.yamahata@linux.intel.com> wrote:
->>
->> On Thu, Dec 14, 2023 at 08:41:43AM -0800,
->> Sean Christopherson <seanjc@google.com> wrote:
->>
->>> On Thu, Dec 14, 2023, Maxim Levitsky wrote:
->>>> On Wed, 2023-12-13 at 15:10 -0800, Sean Christopherson wrote:
->>>>> Upstream KVM's non-TDX behavior is fine, because KVM doesn't advertise support
->>>>> for CPUID 0x15, i.e. doesn't announce to host userspace that it's safe to expose
->>>>> CPUID 0x15 to the guest.  Because TDX makes exposing CPUID 0x15 mandatory, KVM
->>>>> needs to be taught to correctly emulate the guest's APIC bus frequency, a.k.a.
->>>>> the TDX guest core crystal frequency of 25Mhz.
->>>>
->>>> I assume that TDX doesn't allow to change the CPUID 0x15 leaf.
->>>
->>> Correct.  I meant to call that out below, but left my sentence half-finished.  It
->>> was supposed to say:
->>>
->>>    I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
->>>    use 1Ghz as the base frequency or to allow configuring the base frequency
->>>    advertised to the guest.
->>>
->>>>> I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
->>>>> use 1Ghz as the base frequency (off list), but it definitely isn't a hill worth
->>>>> dying on since the KVM changes are relatively simple.
->>>>>
->>>>> https://lore.kernel.org/all/ZSnIKQ4bUavAtBz6@google.com
->>>>>
->>>>
->>>> Best regards,
->>>>      Maxim Levitsky
->>
->> The followings are the updated version of the commit message.
->>
->>
->> KVM: x86: Make the hardcoded APIC bus frequency VM variable
->>
->> The TDX architecture hard-codes the APIC bus frequency to 25MHz in the
->> CPUID leaf 0x15.  The
->> TDX mandates it to be exposed and doesn't allow the VMM to override
->> its value.  The KVM APIC timer emulation hard-codes the frequency to
->> 1GHz.  It doesn't unconditionally enumerate it to the guest unless the
->> user space VMM sets the CPUID leaf 0x15 by KVM_SET_CPUID.
->>
->> If the CPUID leaf 0x15 is enumerated, the guest kernel uses it as the
->> APIC bus frequency.  If not, the guest kernel measures the frequency
->> based on other known timers like the ACPI timer or the legacy PIT.
->> The TDX guest kernel gets timer interrupt more times by 1GHz / 25MHz.
->>
->> To ensure that the guest doesn't have a conflicting view of the APIC
->> bus frequency, allow the userspace to tell KVM to use the same
->> frequency that TDX mandates instead of the default 1Ghz.
->>
->> There are several options to address this.
->> 1. Make the KVM able to configure APIC bus frequency (This patch).
->>     Pros: It resembles the existing hardware.  The recent Intel CPUs
->>     adapts 25MHz.
->>     Cons: Require the VMM to emulate the APIC timer at 25MHz.
->> 2. Make the TDX architecture enumerate CPUID 0x15 to configurable
->>     frequency or not enumerate it.
->>     Pros: Any APIC bus frequency is allowed.
->>     Cons: Deviation from the real hardware.
->> 3. Make the TDX guest kernel use 1GHz when it's running on KVM.
->>     Cons: The kernel ignores CPUID leaf 0x15.
-> 
-> 4. Change CPUID.15H under TDX to report the crystal clock frequency as 1 GHz.
+Devicetree node names should be generic; fix up the
+qcom,usb-vbus-regulator binding example accordingly.
 
-This will have an impact on TSC frequency. Core crystal clock frequency 
-is also used to calculate TSC frequency.
+While at it, drop an unnecessary label and add a newline separator
+before the child node to improve readability.
 
-> Pro: This has been the virtual APIC frequency for KVM guests for 13 years.
-> Pro: This requires changing only one hard-coded constant in TDX.
-> 
-> I see no compelling reason to complicate KVM with support for
-> configurable APIC frequencies, and I see no advantages to doing so.
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ .../bindings/regulator/qcom,usb-vbus-regulator.yaml          | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I'm wondering what's the attitude of KVM community to provide support 
-CPUID leaf 0x15? Even KVM decides to never advertise CPUID 0x15 in 
-GET_SUPPORTED_CPUID, hard-coded APIC frequency puts additional 
-limitation when userspace want to emualte CPUID 0x15
-
+diff --git a/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml
+index 89c564dfa5db..534f87e98716 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml
+@@ -36,10 +36,11 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
+-     pm8150b {
++     pmic {
+         #address-cells = <1>;
+         #size-cells = <0>;
+-        pm8150b_vbus: usb-vbus-regulator@1100 {
++
++        usb-vbus-regulator@1100 {
+             compatible = "qcom,pm8150b-vbus-reg";
+             reg = <0x1100>;
+             regulator-min-microamp = <500000>;
+-- 
+2.41.0
 
 
