@@ -1,173 +1,151 @@
-Return-Path: <linux-kernel+bounces-5557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5B31818C32
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:28:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10DA0818C37
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 17:29:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 824F8287D62
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:28:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88E38B226BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E6DA1DA54;
-	Tue, 19 Dec 2023 16:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD801F94C;
+	Tue, 19 Dec 2023 16:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ieGaMAQD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uU7BX3KM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA22D1F605;
-	Tue, 19 Dec 2023 16:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a1915034144so552564266b.0;
-        Tue, 19 Dec 2023 08:28:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F75A1DDD4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d3e4637853so81285ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 08:29:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703003287; x=1703608087; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5A2uKEheZ7E6+Gx3ENGsEnMLTERDeCTHi0P6ZhpItmE=;
-        b=ieGaMAQDJx1NeeP/jxXXEkzaOEHYlc1vM32nIjahFGl9iEsb4T2tJUXbo72MhCwROh
-         gUa9eZeRzFIeZ1M7swzVKIWjasKw2rZofMZvD4arywStGuaDTcra5vNSmlsfmxEC2JgI
-         hvVyAxUj9bo4G4mQlfDgvaxsetNw0NIhy1Hp+NSaFbsvm8lAiskUhcCKlzt/FK1WQdBv
-         3thct9vpS5OWQ0ZveFu1LFBZMynp7Ljkn5BxP+6NGPsMfo7q+gaI8d8yFNuEXHQufV9L
-         /8b5dzWnWWN3TAByJqmljt3hwhJJaJ32UXqlgxOML+VgxOOPAYmzQ8pbvvo9qfzou/qQ
-         lnfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703003287; x=1703608087;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1703003372; x=1703608172; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5A2uKEheZ7E6+Gx3ENGsEnMLTERDeCTHi0P6ZhpItmE=;
-        b=j73uuqErGpUooxYn/bH+V/1LD4Fd4aiB1HAGe0Ge8OtD4Eyr1gS/C+fm/0TQycJrxS
-         3JnUH71gMmJmBnp35t38gmh9GurfKtnlplswi18ALJk1wmmic8Z6R9qJqP8oeCsduFoC
-         GJP1iSLJGRHVxdCW2ts+WgSRVcjmibpWwz72KBXC6G3gowYgr1UfQ5qddfptEMVdcj2g
-         q4uB9TIoqDR4cr0Ish51tNUxWooROqfYGDMCUSfoGAFVU0cakr5ChUAH7eZtOnfIZEX1
-         Ildkxf/4pIqJvp+WswOIyJSgFv4EXYYmfbytj/ddIRWiFE9OM+uQT3Hh3vvtymoF+hj7
-         OLmw==
-X-Gm-Message-State: AOJu0YwxLLxjlgXZ5Vw7qT4UKB0qepJma22ZkS1n7e4VA1kb+bjqOkCz
-	s704nXUO6vZluqxpOf+ryvs=
-X-Google-Smtp-Source: AGHT+IF8//j/NsDS1bDOy5SJbtYNxLhpqbC9NTYmHThfGbnA9oFEXqsg+VrfR1MhyrcvnvVmOT89Xw==
-X-Received: by 2002:a17:906:b299:b0:a26:85bb:6355 with SMTP id q25-20020a170906b29900b00a2685bb6355mr425523ejz.77.1703003286811;
-        Tue, 19 Dec 2023 08:28:06 -0800 (PST)
-Received: from skbuf ([188.27.185.68])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170906a41100b00a236eb66b2fsm1333363ejz.82.2023.12.19.08.28.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 08:28:06 -0800 (PST)
-Date: Tue, 19 Dec 2023 18:28:03 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	Tomer Maimon <tmaimon77@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	openbmc@lists.ozlabs.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS
- MDIO device
-Message-ID: <20231219162803.kmb3jb6aevef3kj3@skbuf>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-7-fancer.lancer@gmail.com>
- <20231205103559.9605-7-fancer.lancer@gmail.com>
- <20231205115234.7ntjvymurot5nnak@skbuf>
- <wnptneaxxe2tq2rf7ac6a72xtyluyggughvmtxbbg5qto64mpa@7gchl5e4qllu>
- <jlcyqvcw5hsjtmvf77sm7qni6tzihxudo6baoq7wi7zgqx3lvs@ykbsxgmjkvnf>
+        bh=Mixo7iUxV6o/jYjn2ndFmri3aSLyepPelmkXRCU4Bdk=;
+        b=uU7BX3KMzBmPMtiszDpOKOiY6y6T3k9MWpcvr5eeWL9GVxKE24s9xiCEOlWg9C3T2c
+         n29me1uU10d3jr6kcGPvkBRkRdSkuY1ckIDJLFFdXJ5QwpGPSNpbzoLk5UR48yQelGWw
+         H9JWFf4xLFbTaFZ2Eq/e8juN1RqQpNPjBp73Kry36rREtokSWvbo8Dv23c3oJev5EWH4
+         OgOnYLvEWllFzIfuVMvITwGBm9gZpxSN9bWDsscWEMgV7O0u6v2RS0WERk9aFdKap44W
+         hTeBbfDS9FDTTqncGeood+ZXa2+lZOPOTrv8jPRflzWxr1qUCtHVdCLjZnkqkFRwRn+M
+         /eyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703003372; x=1703608172;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mixo7iUxV6o/jYjn2ndFmri3aSLyepPelmkXRCU4Bdk=;
+        b=KXLjLJVsLWuT01iplxXROvyA3r0hsxEwpObWIfYG/a8gUjepGQyublMM3vJvgTCD2w
+         qvDvFyVudr0BRZofTCzkjkU0oQNZGWB8QfW1LW4vSp9g08Mu4orV5aXo/9LsgJBk41fn
+         62iF0Gp/Ee3baJNJxaEHZssrst+lD6LusvlLZCRzRa8XGKoVyMDLDyeV/O4a+YYLoGkF
+         DISiSIsCM7yVV15XnTVGXqeWyAqPE6Wib5PHz6FyWoSvw/Qm/T1CuQGwI+B6jTCDAJUi
+         osqH5neLL1FyPFZX7DCr9VFZNlmSZLS7QUflvwhdB6fssRmBtCJzfMRoZ5RTPPo5s1h/
+         aRHQ==
+X-Gm-Message-State: AOJu0YzU9+lOodXmp6jzobdY3gNvBsfwYde05Dv4VRIciowIodFGKT4B
+	Yif3NoYXigJs0kL7zE/xRUNwWZltUKYLgt+IxKuivAjB8bbw
+X-Google-Smtp-Source: AGHT+IHsUCKcb2E2CdUkTme7eOaB4IQH5pN/t3v8iJPHV1wyflbtqaQHKC/n6HfeqRwG5WgkpoxHQLlIZyM4Gm88XNg=
+X-Received: by 2002:a17:902:e5cc:b0:1d3:7db1:388b with SMTP id
+ u12-20020a170902e5cc00b001d37db1388bmr204446plf.11.1703003371391; Tue, 19 Dec
+ 2023 08:29:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jlcyqvcw5hsjtmvf77sm7qni6tzihxudo6baoq7wi7zgqx3lvs@ykbsxgmjkvnf>
+References: <20231219075538.414708-1-peterx@redhat.com> <20231219075538.414708-10-peterx@redhat.com>
+In-Reply-To: <20231219075538.414708-10-peterx@redhat.com>
+From: James Houghton <jthoughton@google.com>
+Date: Tue, 19 Dec 2023 11:28:54 -0500
+Message-ID: <CADrL8HVu8=-DdAwXN_pO91g1A1+F7bKfBRpm6jYfYMk1QZcRFA@mail.gmail.com>
+Subject: Re: [PATCH 09/13] mm/gup: Cache *pudp in follow_pud_mask()
+To: peterx@redhat.com
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Matthew Wilcox <willy@infradead.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, David Hildenbrand <david@redhat.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Mike Kravetz <mike.kravetz@oracle.com>, Mike Rapoport <rppt@kernel.org>, 
+	Christoph Hellwig <hch@infradead.org>, John Hubbard <jhubbard@nvidia.com>, 
+	Andrew Jones <andrew.jones@linux.dev>, linux-arm-kernel@lists.infradead.org, 
+	Michael Ellerman <mpe@ellerman.id.au>, "Kirill A . Shutemov" <kirill@shutemov.name>, linuxppc-dev@lists.ozlabs.org, 
+	Rik van Riel <riel@surriel.com>, linux-riscv@lists.infradead.org, 
+	Yang Shi <shy828301@gmail.com>, "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@nvidia.com>, 
+	Andrea Arcangeli <aarcange@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 06:48:09PM +0300, Serge Semin wrote:
-> > > Sorry, because the commit log lost me at the "context presentation" stage,
-> > > I failed to understand the "what"s and the "why"s.
-> > > 
-> > > Are you basically trying to add xpcs support on top of an mdio_device
-> > > where the mdio_device_create() call was made externally to the xpcs code,
-> > > through mdiobus_register_board_info() and mdiobus_setup_mdiodev_from_board_info()?
-> > 
-> > Basically yes, but there is more of it. The main idea is to convert
-> > the XPCS driver to using the already created non-PHY MDIO-devices
-> > instead of manually creating a 'dummy'/'redundant' one. From my point
-> > of view there are several reasons of doing so:
-> > 
-> > 1. mdiobus_register_board_info() provides a way to assign the device
-> > platform data to being registered afterwards device. Thus we can pass
-> > some custom data to the XPCS-device driver (whether it's just an
-> > xpcs_create_*() call or a fully functional MDIO-device driver
-> > registered by the mdio_driver_register() method). For instance it can
-> > be utilized to drop the fake PHYSIDs implementation from
-> > drivers/net/dsa/sja1105/sja1105_mdio.c .
+On Tue, Dec 19, 2023 at 2:57=E2=80=AFAM <peterx@redhat.com> wrote:
+>
+> From: Peter Xu <peterx@redhat.com>
+>
+> Introduce "pud_t pud" in the function, so the code won't dereference *pud=
+p
+> multiple time.  Not only because that looks less straightforward, but als=
+o
+> because if the dereference really happened, it's not clear whether there
+> can be race to see different *pudp values if it's being modified at the
+> same time.
+>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  mm/gup.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+>
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 6c0d82fa8cc7..97e87b7a15c3 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -753,26 +753,27 @@ static struct page *follow_pud_mask(struct vm_area_=
+struct *vma,
+>                                     unsigned int flags,
+>                                     struct follow_page_context *ctx)
+>  {
+> -       pud_t *pud;
+> +       pud_t *pudp, pud;
+>         spinlock_t *ptl;
+>         struct page *page;
+>         struct mm_struct *mm =3D vma->vm_mm;
+>
+> -       pud =3D pud_offset(p4dp, address);
+> -       if (pud_none(*pud))
+> +       pudp =3D pud_offset(p4dp, address);
+> +       pud =3D *pudp;
 
-Ok. Seeing an alternative to the NXP_SJA1110_XPCS_ID hack will be interesting.
+I think you might want a READ_ONCE() on this so that the compiler
+doesn't actually read the pud multiple times.
 
-FWIW, I'm looking at reworking the dsa_loop probing to use software nodes.
-Since dsa_loop is the only current user of mdiobus_register_board_info(),
-maybe that will lead to its deletion. It appears a matter of timing, but
-the mechanism looks promising.
+> +       if (pud_none(pud))
+>                 return no_page_table(vma, flags, address);
+> -       if (pud_devmap(*pud)) {
+> -               ptl =3D pud_lock(mm, pud);
+> -               page =3D follow_devmap_pud(vma, address, pud, flags, &ctx=
+->pgmap);
+> +       if (pud_devmap(pud)) {
+> +               ptl =3D pud_lock(mm, pudp);
+> +               page =3D follow_devmap_pud(vma, address, pudp, flags, &ct=
+x->pgmap);
+>                 spin_unlock(ptl);
+>                 if (page)
+>                         return page;
+>                 return no_page_table(vma, flags, address);
+>         }
+> -       if (unlikely(pud_bad(*pud)))
+> +       if (unlikely(pud_bad(pud)))
+>                 return no_page_table(vma, flags, address);
 
-Maybe we can also use it somehow to add compatibility with existing
-lynx-pcs device trees where there is no compatible string, so a struct
-phy_device gets created. Device tree breakage was the fundamental reason
-why Sean Anderson's patch set couldn't make forward progress.
-https://patchwork.kernel.org/project/netdevbpf/cover/20221103210650.2325784-1-sean.anderson@seco.com/
+Not your change, but reading this, it's not clear to me that
+`pud_present(*pudp)` (and non-leaf) would necessarily be true at this
+point -- like, I would prefer to see `!pud_present(pud)` instead of
+`pud_bad()`. Thank you for adding that in the next patch. :)
 
-> > 2. The MDIO-devices actually registered on the MDIO-bus will be
-> > visible in sysfs with for instance useful IO statistics provided by
-> > the MDIO-bus. Potentially (if it is required) at some point we'll be
-> > able to convert the DW XPCS driver to being true MDIO-device driver
-> > (bindable to the DW XPCS device) with less efforts.
+Feel free to add:
 
-Ok.
-
-> > 3. Having an MDIO-device registered that way would make the DW XPCS
-> > IO-device implementation unified after the fwnode-based XPCS
-> > descriptor creation support is added in one of the subsequent patches.
-
-Unified how? You mean that "XPCS will always operate as a driver bound
-to an mdio_device"?
-
-You're not planning to unify the mdio_device and MMIO register handling
-by using regmap, right?
-
-> > So based on the listed above I've got a question. Do you think all of
-> > that is worth to be implemented? Andrew, Russell?
-> > 
-> > I am asking because the patchset advance depends on your answers. If
-> > you do I'll need to fix the problem described in my first message,
-> > implement some new mdiobus_register_board_info()-like but
-> > MDIO-bus-specific interface function (so MDIO-device infos would be
-> > attached to the allocated MDIO-bus and then used to register the
-> > respective MDIO-devices on the MDIO-bus registration), then convert
-> > the sja1105 and wangxun txgbe drivers to using it. If you don't I'll
-> > get back the xpcs_create_mdiodev() implementation and just provide a
-> > fwnode-based version of one.
-> 
-> Folks, this is the only issue left to settle so I could move on with
-> the series fixing up. So the question is: taking my comment above into
-> account is it worth to convert the xpcs_create_mdiodev() method to
-> re-using the already registered MDIO-device instance instead of
-> always creating a stub-like MDIO-device?
-
-I can't exactly say "yes, this is worth it", because it also depends on
-what the phylib/phylink maintainers say. So I haven't said anything.
-But I also don't have any objection, as long as the conversion doesn't
-break existing setups (in new ways; see the "unbind MDIO bus driver"
-case which is already problematic).
+Acked-by: James Houghton <jthoughton@google.com>
 
