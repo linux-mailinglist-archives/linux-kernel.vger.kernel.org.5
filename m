@@ -1,215 +1,265 @@
-Return-Path: <linux-kernel+bounces-5078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A991881864F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1156818652
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00509286714
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:27:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B4072866E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183A915ACD;
-	Tue, 19 Dec 2023 11:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E14B156FA;
+	Tue, 19 Dec 2023 11:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kZO2/egZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XNm5nSbI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F1914ABA;
-	Tue, 19 Dec 2023 11:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702985222; x=1734521222;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=sEbtD7y8pr0JWcmsG5wxo7tMIztiFI9hZbPxiPPqQ+U=;
-  b=kZO2/egZDF73MIKVSIYG9NPc6ZgmKQZaJ/UpZntwKfXLaXeI7V90NxNR
-   WdW4vQvMkM2Wq3YJwZdRL3pB4M0tjM6PmZPu+bqF+hQAb8MEyBy1qrY7L
-   D5Ue/5L1CKcYeh3gmiUxFBq+QjjUJ3Ol4eH1dT596ku7GnpoQ/Wy9KxuA
-   hMteGDqEx0x9bgwnx2LS+0hXKGeEn8MLlpHFtbhK687xsbTcnFrgkgWIC
-   ChDuW7EJt1RdNWHbA76QSn6cUiHEwBgZlYLpoarFdjURlQwWjbfSKWN9L
-   yNiemsIk5oUB1x4aWXnTsnB4OaWWyH8o7JbUN9gOGUcXwyh3YjW3Y3yeB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="392816883"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="392816883"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 03:27:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="779452401"
-X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
-   d="scan'208";a="779452401"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Dec 2023 03:27:01 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 03:27:01 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 03:27:00 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 19 Dec 2023 03:27:00 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 19 Dec 2023 03:27:00 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lqe4E8AyqMf5MnbVVlHzeyC5JnF6fk+sHa2PKbMsgEvRJzYaHJO25RyTQKNRAhbe6SvXR/O/+5jvh/m3xBR0X22v2zjJjI3j3BxzEc9hmWI8IVwd7Fjw6nhs99VXOvcL31TzlTA2GFtg7t/SbR8NrGJoElWelisdOZBoNVcKABKff9fK4cOn1Lg3UEnIzResv39JZNATq9swUIfaqOCGzAfX3InN/aBFWaACQWItmW0RfpcT6CQq5rva8XYIq0IBiEQyZmWaGdxeaVlU/YTaaeYFem6EsPFCkJHITDsJJv2WAAG+uMe4bAMZhUwpC3AnEnvlT1HA4CML9d0kx7btbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xyiL0iHrZ+lguT6h73HdpxJdLXMJeOlgbIlAvNCmSuo=;
- b=mto0onqQf9o7o5qaawY2YCoam6tBnyST4cZs/HFeE27nC/kgW+CU1+bmYxok7CvwA75F/qIgSxWIVzbC17i7SVMIzMIx54TpAKvmcMY2lNkNEWwxQrfTAJzR8hVzbMDNU61uUrhZRrgWqpFiQEY0mWoxRsTztw8VCZVjEGiBQvZ+ryE6fs8F7JQ8o0y279pAjBgBw4mvSDqqg1gRZ4L2lCrOrYHeYfkhxMT3+u51dJ+xTGA7y4hTRdPDupMU0yInhmtDRB64RSvxUzhjvBrvp/NVf3bQ24Enrqs0WFQMkZq5EZWBVKONyE9d8+3KX4Toh9qA27rghIsQN/TCJ+ZdPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by SJ1PR11MB6084.namprd11.prod.outlook.com (2603:10b6:a03:489::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Tue, 19 Dec
- 2023 11:26:59 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::4b41:979d:5c37:aab9]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::4b41:979d:5c37:aab9%3]) with mapi id 15.20.7113.016; Tue, 19 Dec 2023
- 11:26:59 +0000
-Date: Tue, 19 Dec 2023 12:26:50 +0100
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: Vladimir Oltean <vladimir.oltean@nxp.com>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, "Tony
- Nguyen" <anthony.l.nguyen@intel.com>, =?iso-8859-1?Q?Bj=F6rn_T=F6pel?=
-	<bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, "Maciej
- Fijalkowski" <maciej.fijalkowski@intel.com>, Jonathan Lemon
-	<jonathan.lemon@gmail.com>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
- Fastabend" <john.fastabend@gmail.com>
-Subject: Re: [PATCH net-next] xsk: make struct xsk_cb_desc available outside
- CONFIG_XDP_SOCKETS
-Message-ID: <ZYF9+lhYT1i7dvDT@lzaremba-mobl.ger.corp.intel.com>
-References: <20231219110205.1289506-1-vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231219110205.1289506-1-vladimir.oltean@nxp.com>
-X-ClientProxiedBy: FR0P281CA0120.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a8::10) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF3F156D9
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 11:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702985368;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=GyPEyE0WEjjBo9Kf0C8VvnNmeq7SiNAcilBv+DXpUj8=;
+	b=XNm5nSbI3Rh+yyVO4yM9zgc5NUbVctsgJgPzva6TvVUdlN9IAx0P41GL4gkDn3S7Gq5sMW
+	EPmt3fMTGP0IIvqM4JqfjpqtYu3cZXHjsb5a073cwFqBV1XHVftM2s4ruIm6wVH3XV32sk
+	S9RYxnVdtdifJrS+GKUHrXoH8y/XlBA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-82-1HB8mucEPn687LfDFwLgbw-1; Tue, 19 Dec 2023 06:29:26 -0500
+X-MC-Unique: 1HB8mucEPn687LfDFwLgbw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c514f9243so29359305e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 03:29:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702985365; x=1703590165;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GyPEyE0WEjjBo9Kf0C8VvnNmeq7SiNAcilBv+DXpUj8=;
+        b=tgM105Xd8uHEcxKhC3sqff4Ahke2RI2DJ2UexPP9vMWSTDFhGdTSBPaaI1nkKV1Vbr
+         S1QuS3Z/6fPCgBPDR5Ln4P/yOTwH/A7TBSzd1Ezjo4OeaqXPcrqnHlRujsu2NzgoAN2Z
+         bs0WxnegQ0ZJjGVIzYEUlfP4mHUA4Gk3JKj3clCfvAQDxJ99D4J1Fg2ZZ77NIprxEdAo
+         4D+KFhiN6V6IOQ8ZdgFRK+dVBx1j/xh/Pe0HU1xSmyP7rpwCj3JuIW5bmRRzQTKyE9Qk
+         i59QDGpX7NSSw5pyaC77iMu2sfYkgHoE19WUjGN9sGS1/1Ig+VAEfPndRPGIQJU90CRe
+         /U+g==
+X-Gm-Message-State: AOJu0YwJtdY57LucybjdD4XfrqhAri1/F68YN2IbuusIC+DE9iK3XStQ
+	6xqDQAphynJqvXf4mS3mskqNP2HJVe7FzWANbSb3LCC2Wp52lRWXY7TzmvwpjbqDt/BuexYij7u
+	8Nu/xFRs4SbTulr+Kk4BLRFjp
+X-Received: by 2002:a1c:6a19:0:b0:40c:319b:6a72 with SMTP id f25-20020a1c6a19000000b0040c319b6a72mr10430467wmc.9.1702985365355;
+        Tue, 19 Dec 2023 03:29:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHnYzVetPAKaG3VKY68f41+X0PXHbjp7TWeq6p2VTlx0IX8KHgF5OtpBtipnZAhphOEpIFzHA==
+X-Received: by 2002:a1c:6a19:0:b0:40c:319b:6a72 with SMTP id f25-20020a1c6a19000000b0040c319b6a72mr10430436wmc.9.1702985364843;
+        Tue, 19 Dec 2023 03:29:24 -0800 (PST)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id s21-20020a05600c45d500b0040c3953cda5sm2417995wmo.45.2023.12.19.03.29.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 03:29:24 -0800 (PST)
+Message-ID: <9d473ac7-ef52-4fa4-bb54-900176d987c9@redhat.com>
+Date: Tue, 19 Dec 2023 12:29:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|SJ1PR11MB6084:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e684319-c093-4d13-6180-08dc00856a10
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ingCBJxeKzNdt6gvfNwDW0RH3qsIA8jDRtEBuuPZ1RkvkkCId0Z7MnP5mGVPTg5kN96zI0DxtwAMRnDarQgYuBKGlWfIvrymPiPrPM0t+uECXRBIGF16djyt80mbw/HQWBjWw1WIzH2troTEqTp2PjS/24wkRUl21NcqITyxLB/8Q5aEW8RFBpI/w+bPafG8FuZe2NhVdUPeLyf/Qnz3TD+1HlcovnwrLeeOPSHTUKFQDKa9gFFjK4PSmBYN4FbCEQagVWXwpk/2c5lL3/9pB2q14jyW6d0W2cqPgV6gwCTLYMGax2UXeesGjL2DVcxcRctHpkRpM01kup3k6Pt6cm/eTTjueLLB0/7F0hM+HIeSGkXi2EIQPqwkj24rIH39twLeLTJFhWf7d1+QKHA+SMj4U9daHaodJa8VCuJ36MR5QKVmlDTaKgDfXj4iYDrB8MRwAxOlTKw/DCyfWOBmojHPzI18nAXFJEHPD9hqsYpSAVU84ylHAkdDd9kYQSxv6rY9nGTRp7ZbbnuTNY/msK/mPXBRzhFbiacDv442l4sb6g9p3vnKTPw4XfifTbw19uEwUeg44M8RISvEXZla9IIGZJPapyhf91uxwxBPPnQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(376002)(366004)(396003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(6666004)(5660300002)(4326008)(6512007)(44832011)(2906002)(8936002)(8676002)(6916009)(316002)(66556008)(83380400001)(54906003)(66476007)(66946007)(7416002)(82960400001)(41300700001)(478600001)(6506007)(6486002)(26005)(38100700002)(966005)(86362001)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UdJ9kqPui9hFCSRSm8GVlf1BwuUB6OxsWGFuYX5maM7xzVr9DfwYXf3jFWKO?=
- =?us-ascii?Q?OhAjvcTJgC4IkX3ytgOlxn3qDCyK5r2mmbZ0govK6k/gCS2TD5WBQ0UbK58E?=
- =?us-ascii?Q?GvBJEIDDYvsC9etYERlYZhJTUUYwKqvX5tLkhSdEdr+Y82olKnzlRizkz2n9?=
- =?us-ascii?Q?SDsuA+7rsuIs/FWhTpxHXxqFcLAMtN+ftMZjqc7jglySU5VcG8NNjLedV+84?=
- =?us-ascii?Q?wJ362haOQaIq62UaFiQXm85aUMAEToQmeMlvaFAB/8W2bAt78vtDGjYkNWbe?=
- =?us-ascii?Q?uVEidJboBroStyjJ5hYq3S8bmjWy5doDrc/J4C58bsRK2zuO4BELirYw+CvD?=
- =?us-ascii?Q?LjcKZhGSLEeUdcCfkwSLmkDkqidV2yzN+Tb2vdX0SBXrfglZq57zyU19GACZ?=
- =?us-ascii?Q?07DGGZX98h2rKZ11eDFYDtDXpWyltLsML4HwhZ35DBSjGRSMLnd2hbJAKQ+L?=
- =?us-ascii?Q?y0tTtw8PbLI6tIqMkrKNmAm5m7IkMu9LM3jfOTmgKZh6cijciQFOThVFQP9G?=
- =?us-ascii?Q?mVLn1KhHO6d5k3iR/Pjc/mT3EeFdv2Uh53033AxeFvTuUAXT53XE2ljqBFbH?=
- =?us-ascii?Q?LUZlQoHOEhNJZgn60LtX9AEbUoE4s6wjApOHGBVG/pThVg7yNlWEm6Uxlfap?=
- =?us-ascii?Q?KMx8QiOerX+fti8afUzXZFFIBCkF8trZj9mNaAN17IjTX+/vIcOFatX1/dl/?=
- =?us-ascii?Q?m0seqPPaVc/2mQGjFumaY1MoM+Jp4TNZ6fKZoga1ww4B5anj2o5Mi5+pRZVy?=
- =?us-ascii?Q?evDQxm6tDlTIM+ubxFNl4xbfxejtAz1+Om9hKOXhKbczP5ta6hWyY0fpiKOd?=
- =?us-ascii?Q?i+eQqQ4ORq7ltPqL9vp6hl9N1GeFTzKVKo8wb+eGHh6PsNSwIBQBGxC5v827?=
- =?us-ascii?Q?n1/O3e7eU4jf4Tso67fFXfNlmVY3FOSu/IbDLCu5PNSEPDzuqprieJmNqxh6?=
- =?us-ascii?Q?NP+6KwlzWOoMm1BTDASFjHB40NKgKLSnQNgsxE9yfAaakOHfZzkKdPOV7aqm?=
- =?us-ascii?Q?xFa+X+TefvO8DwZUakf/YNLYQUg1ofln7Xw6AtU4/ph7shCcvo7tGC0PTzmA?=
- =?us-ascii?Q?ZBoC9fWKBcpLHOfMg9x6MBLcMWDobUmMkcQe8Qd7DEXuHxCA/xxLzrQFN8Gy?=
- =?us-ascii?Q?QjaXiD3s7XeE3hbJhntv1p4iRuncTg2pPXCP5//Nz2Hg1S/srXiPt1cm2OiX?=
- =?us-ascii?Q?feabsvPsrIdwwVhNa2iGBMGg9AS9PoyzSPgx5tX+sIHhHNJwZ0ioP5IgOZwv?=
- =?us-ascii?Q?Jw40OKKPmE74e6h/prSYk4uxZTpryD4uaGX77G3w19DYV7c2X3lrBhDp4mwO?=
- =?us-ascii?Q?mgyODxJw8AWG8/TFK4AJB9+Odyz8+I/qPZ2k5LVVdWzcSveD2RB703ubrNm3?=
- =?us-ascii?Q?mJ/1cJKDLZ8zICwzD4bSHseLjuwmqpFJBauRfoE9vQLhuxKRWAE0g1k9QMnz?=
- =?us-ascii?Q?JNoRAU3biOZck/7OYJKYsgL0nk1WsqB3Jv5ZU9ebfnDF6bpe8u7MK0UMAHCe?=
- =?us-ascii?Q?HgHsfft8EUm41hO944jFY+DbWP38DPjSWhMvZGEt8Oh+tb6mtxhRkOutR3Zi?=
- =?us-ascii?Q?Bn+qQRpfnvPOrQLhLNOlm5tDGz8F92sunBbqIxbEc6AXZk2zLQG2vQH9WtSw?=
- =?us-ascii?Q?Ow=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e684319-c093-4d13-6180-08dc00856a10
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2023 11:26:59.1039
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q0l2Qoak5/p+UUThtiVlJ0IVRqR/jdD6Q2KX/6BqfKGQ5V2GfemeHO7lwi8r0DbRAKLs+qt9nwnpSwqdpdWGOis8WyJgrpBAAlTvzj1Pl0k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6084
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
+ Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
+ <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
+ Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
+ Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231218105100.172635-1-ryan.roberts@arm.com>
+ <20231218105100.172635-3-ryan.roberts@arm.com>
+ <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
+ <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 19, 2023 at 01:02:05PM +0200, Vladimir Oltean wrote:
-> The ice driver fails to build when CONFIG_XDP_SOCKETS is disabled.
+On 19.12.23 09:30, Ryan Roberts wrote:
+> On 18/12/2023 17:47, David Hildenbrand wrote:
+>> On 18.12.23 11:50, Ryan Roberts wrote:
+>>> Convert copy_pte_range() to copy a batch of ptes in one go. A given
+>>> batch is determined by the architecture with the new helper,
+>>> pte_batch_remaining(), and maps a physically contiguous block of memory,
+>>> all belonging to the same folio. A pte batch is then write-protected in
+>>> one go in the parent using the new helper, ptep_set_wrprotects() and is
+>>> set in one go in the child using the new helper, set_ptes_full().
+>>>
+>>> The primary motivation for this change is to reduce the number of tlb
+>>> maintenance operations that the arm64 backend has to perform during
+>>> fork, as it is about to add transparent support for the "contiguous bit"
+>>> in its ptes. By write-protecting the parent using the new
+>>> ptep_set_wrprotects() (note the 's' at the end) function, the backend
+>>> can avoid having to unfold contig ranges of PTEs, which is expensive,
+>>> when all ptes in the range are being write-protected. Similarly, by
+>>> using set_ptes_full() rather than set_pte_at() to set up ptes in the
+>>> child, the backend does not need to fold a contiguous range once they
+>>> are all populated - they can be initially populated as a contiguous
+>>> range in the first place.
+>>>
+>>> This code is very performance sensitive, and a significant amount of
+>>> effort has been put into not regressing performance for the order-0
+>>> folio case. By default, pte_batch_remaining() is compile constant 1,
+>>> which enables the compiler to simplify the extra loops that are added
+>>> for batching and produce code that is equivalent (and equally
+>>> performant) as the previous implementation.
+>>>
+>>> This change addresses the core-mm refactoring only and a separate change
+>>> will implement pte_batch_remaining(), ptep_set_wrprotects() and
+>>> set_ptes_full() in the arm64 backend to realize the performance
+>>> improvement as part of the work to enable contpte mappings.
+>>>
+>>> To ensure the arm64 is performant once implemented, this change is very
+>>> careful to only call ptep_get() once per pte batch.
+>>>
+>>> The following microbenchmark results demonstate that there is no
+>>> significant performance change after this patch. Fork is called in a
+>>> tight loop in a process with 1G of populated memory and the time for the
+>>> function to execute is measured. 100 iterations per run, 8 runs
+>>> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
+>>> performed for case where 1G memory is comprised of order-0 folios and
+>>> case where comprised of pte-mapped order-9 folios. Negative is faster,
+>>> positive is slower, compared to baseline upon which the series is based:
+>>>
+>>> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
+>>> | fork          |-------------------|-------------------|
+>>> | microbench    |    mean |   stdev |    mean |   stdev |
+>>> |---------------|---------|---------|---------|---------|
+>>> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
+>>> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
+>>>
+>>> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
+>>> | fork          |-------------------|-------------------|
+>>> | microbench    |    mean |   stdev |    mean |   stdev |
+>>> |---------------|---------|---------|---------|---------|
+>>> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
+>>> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
+>>>
+>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+>>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>    include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
+>>>    mm/memory.c             | 92 ++++++++++++++++++++++++++---------------
+>>>    2 files changed, 139 insertions(+), 33 deletions(-)
+>>>
+>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>> index af7639c3b0a3..db93fb81465a 100644
+>>> --- a/include/linux/pgtable.h
+>>> +++ b/include/linux/pgtable.h
+>>> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
+>>>    #define arch_flush_lazy_mmu_mode()    do {} while (0)
+>>>    #endif
+>>>    +#ifndef pte_batch_remaining
+>>> +/**
+>>> + * pte_batch_remaining - Number of pages from addr to next batch boundary.
+>>> + * @pte: Page table entry for the first page.
+>>> + * @addr: Address of the first page.
+>>> + * @end: Batch ceiling (e.g. end of vma).
+>>> + *
+>>> + * Some architectures (arm64) can efficiently modify a contiguous batch of ptes.
+>>> + * In such cases, this function returns the remaining number of pages to the end
+>>> + * of the current batch, as defined by addr. This can be useful when iterating
+>>> + * over ptes.
+>>> + *
+>>> + * May be overridden by the architecture, else batch size is always 1.
+>>> + */
+>>> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long addr,
+>>> +                        unsigned long end)
+>>> +{
+>>> +    return 1;
+>>> +}
+>>> +#endif
+>>
+>> It's a shame we now lose the optimization for all other archtiectures.
+>>
+>> Was there no way to have some basic batching mechanism that doesn't require arch
+>> specifics?
 > 
-> drivers/net/ethernet/intel/ice/ice_base.c:533:21: error:
-> variable has incomplete type 'struct xsk_cb_desc'
->         struct xsk_cb_desc desc = {};
->                            ^
-> include/net/xsk_buff_pool.h:15:8: note:
-> forward declaration of 'struct xsk_cb_desc'
-> struct xsk_cb_desc;
->        ^
-> 
-> Fixes: d68d707dcbbf ("ice: Support XDP hints in AF_XDP ZC mode")
-> Closes: https://lore.kernel.org/netdev/8b76dad3-8847-475b-aa17-613c9c978f7a@infradead.org/
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> I tried a bunch of things but ultimately the way I've done it was the only way
+> to reduce the order-0 fork regression to 0.
 
-This probably should go through bpf-next. Other than that, fix looks fine:
+Let me give it a churn today. I think we should really focus on having 
+only a single folio_test_large() check on the fast path for order-0. And 
+not even try doing batching for anything that works on bare PFNs.
 
-Acked-by: Larysa Zaremba <larysa.zaremba@intel.com>
+Off to prototyping ... :)
 
-> ---
-> Posting to net-next since this tree is broken at this stage, not only
-> bpf-next.
-> 
->  include/net/xdp_sock_drv.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-> index b62bb8525a5f..526c1e7f505e 100644
-> --- a/include/net/xdp_sock_drv.h
-> +++ b/include/net/xdp_sock_drv.h
-> @@ -12,14 +12,14 @@
->  #define XDP_UMEM_MIN_CHUNK_SHIFT 11
->  #define XDP_UMEM_MIN_CHUNK_SIZE (1 << XDP_UMEM_MIN_CHUNK_SHIFT)
->  
-> -#ifdef CONFIG_XDP_SOCKETS
-> -
->  struct xsk_cb_desc {
->  	void *src;
->  	u8 off;
->  	u8 bytes;
->  };
->  
-> +#ifdef CONFIG_XDP_SOCKETS
-> +
->  void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries);
->  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc);
->  u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max);
-> -- 
-> 2.34.1
-> 
+-- 
+Cheers,
+
+David / dhildenb
+
 
