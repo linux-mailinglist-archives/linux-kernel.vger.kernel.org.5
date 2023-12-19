@@ -1,101 +1,119 @@
-Return-Path: <linux-kernel+bounces-5160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FFF81875D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:23:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B869818763
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:23:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23B3F2853E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:23:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AA9A1C23BC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 12:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0CBB18651;
-	Tue, 19 Dec 2023 12:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D456F18627;
+	Tue, 19 Dec 2023 12:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmR0JBNF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A311D18E16;
-	Tue, 19 Dec 2023 12:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0Vyqx4q8_1702988557;
-Received: from 30.221.130.243(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vyqx4q8_1702988557)
-          by smtp.aliyun-inc.com;
-          Tue, 19 Dec 2023 20:22:38 +0800
-Message-ID: <b7ae6ca1-efb4-0f35-8f83-ecd28ab16632@linux.alibaba.com>
-Date: Tue, 19 Dec 2023 20:22:34 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9711B270;
+	Tue, 19 Dec 2023 12:23:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E20C433C8;
+	Tue, 19 Dec 2023 12:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702988586;
+	bh=0ZPp7C6xPL+E7Gl2PQUcf+FzC1fInLNKOXnsyZEshH4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ZmR0JBNFAiBZb0p1MEKAxT1zSWlnme9VmUwU98gE5BqXfMiJcEHOIbHnMcovCvBGj
+	 rKYQda3cxg0fGzsxtly79HledAn2RilUONenAjv2Cuut4HI0v5+D7a6UEOjpEg7nDD
+	 9RLlCXmF5Hki3UqANsMRELjG68+v1E8H/c0Uh4wV+5ubBzA60X/QqPcBWSyVzMC6bQ
+	 XOHOt7ABZcNrTcFZG/0+IC5te7gUnNK9jLMytl96jOMB2cq0kA7CqcbYCEUA6fpzb3
+	 NH98ZI377USSjEZwvNrTLZ+nFEI4l6O6cOT8g05HG1vH5zRhs5C/RTA0NsNXyHzGB2
+	 BXLPNWBqoT6jA==
+Received: (nullmailer pid 1608322 invoked by uid 1000);
+	Tue, 19 Dec 2023 12:23:03 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v7 07/10] net/smc: compatible with 128-bits
- extended GID of virtual ISM device
-To: Simon Horman <horms@kernel.org>
-Cc: wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- kgraul@linux.ibm.com, jaka@linux.ibm.com, borntraeger@linux.ibm.com,
- svens@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- raspl@linux.ibm.com, schnelle@linux.ibm.com,
- guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231219084536.8158-1-guwen@linux.alibaba.com>
- <20231219084536.8158-8-guwen@linux.alibaba.com>
- <20231219115952.GL811967@kernel.org>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <20231219115952.GL811967@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc: Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-gpio@vger.kernel.org, Mike Looijmans <mike.looijmans@topic.nl>, Jonathan Cameron <jic23@kernel.org>, ChiaEn Wu <chiaen_wu@richtek.com>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Hugo Villeneuve <hvilleneuve@dimonoff.com>, Arnd Bergmann <arnd@arndb.de>, andy@kernel.org, Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>, brgl@bgdev.pl, Ceclan Dumitru <dumitru.ceclan@analog.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Haibo Chen <haibo.chen@nxp.com>, Conor Dooley <conor+dt@kernel.org>, linus.walleij@linaro.org, =?utf-8?q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>
+In-Reply-To: <20231219104631.28256-1-mitrutzceclan@gmail.com>
+References: <20231219104631.28256-1-mitrutzceclan@gmail.com>
+Message-Id: <170298858334.1608301.13113864256271673228.robh@kernel.org>
+Subject: Re: [PATCH v10 1/2] dt-bindings: adc: add AD7173
+Date: Tue, 19 Dec 2023 06:23:03 -0600
 
 
+On Tue, 19 Dec 2023 12:46:12 +0200, Dumitru Ceclan wrote:
+> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+> which can be used in high precision, low noise single channel applications
+> or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+> primarily for measurement of signals close to DC but also delivers
+> outstanding performance with input bandwidths out to ~10kHz.
+> 
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+> ---
+> 
+> V9->V10
+>  - Fix dt_binding_check type warning from adi,reference-select
+> V8->v9
+>  - Add gpio-controller and "#gpio-cells" properties
+>  - Add missing avdd2 and iovdd supplies
+>  - Add string type to reference-select
+> V7->V8
+>  - include missing fix from V6
+> V6->V7 <no changes>
+> V5->V6
+>  - Moved global required property to proper placement
+> V4 -> V5
+>  - Use string enum instead of integers for "adi,reference-select"
+>  - Fix conditional checking in regards to compatible
+> V3 -> V4
+>  - include supply attributes
+>  - add channel attribute for selecting conversion reference
+> V2 -> V3
+>  - remove redundant descriptions
+>  - use referenced 'bipolar' property
+>  - remove newlines from example
+> V1 -> V2 <no changes>
+> 
+>  .../bindings/iio/adc/adi,ad7173.yaml          | 184 ++++++++++++++++++
+>  1 file changed, 184 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+> 
 
-On 2023/12/19 19:59, Simon Horman wrote:
-> On Tue, Dec 19, 2023 at 04:45:33PM +0800, Wen Gu wrote:
->> According to virtual ISM support feature defined by SMCv2.1, GIDs of
->> virtual ISM device are UUIDs defined by RFC4122, which are 128-bits
->> long. So some adaptation work is required. And note that the GIDs of
->> existing platform firmware ISM devices still remain 64-bits long.
->>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
-> 
-> ...
-> 
->> @@ -1023,9 +1041,12 @@ smcd_clc_prep_confirm_accept(struct smc_connection *conn,
->>   	if (version == SMC_V1) {
->>   		clc->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
->>   	} else {
->> -		clc->d1.chid = htons(smc_ism_get_chid(smcd));
->> +		chid = smc_ism_get_chid(smcd);
->> +		clc->d1.chid = htons(chid);
->>   		if (eid && eid[0])
->>   			memcpy(clc->d1.eid, eid, SMC_MAX_EID_LEN);
->> +		if (__smc_ism_is_virtual(chid))
->> +			clc->d1.gid_ext = htonll(smcd_gid.gid_ext);
-> 
-> Hi Wen Gu,
-> 
-> The type of clc->d1.gid_ext is u64 (host byte-order)
-> but here it is being assigned a big endian value.
-> This does not seem correct.
-> 
-> Flagged by Smatch.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Oh, thank you Simon! That's a regression. I mistakenly changed the type
-to u64 instead of __be64 in previous versions when fixing conflicts.
-Thank you very much for the catch.
+yamllint warnings/errors:
 
-> 
->>   		len = SMCD_CLC_ACCEPT_CONFIRM_LEN_V2;
->>   		if (first_contact) {
->>   			*fce_len = smc_clc_fill_fce_v2x(fce_v2x, ini);
-> 
-> ...
-> 
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/adi,ad7173.example.dtb: adc@0: '#gpio-cells' is a dependency of 'gpio-controller'
+	from schema $id: http://devicetree.org/schemas/gpio/gpio.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231219104631.28256-1-mitrutzceclan@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
