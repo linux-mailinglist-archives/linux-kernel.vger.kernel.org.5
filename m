@@ -1,123 +1,83 @@
-Return-Path: <linux-kernel+bounces-6090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F69C819486
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7213F819487
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:24:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2A221C24698
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:23:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F29E1C24A06
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430B63DB99;
-	Tue, 19 Dec 2023 23:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CEE1405FA;
+	Tue, 19 Dec 2023 23:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lgIdbIZ7"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TUOCQhZa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0F33D0CA;
-	Tue, 19 Dec 2023 23:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703028212; x=1734564212;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vS5AE7N9nQ3SlnVS08m4qPs43i9JpvyT0LdsYgBIZjI=;
-  b=lgIdbIZ7ew6czjd6kxX4fknJ0sYdBUk5SZu5eacEcjDShbkQd8L5aYGJ
-   k+LHxwz2cHuZZU3GbyRzPcyeNs/1XZ9/Ny/mdQzC06gOqbwPH7qEpMFHK
-   KG7hn9ntEsGbYtXqQ6R5mF3Eqi5a06E1CbBe474Vza+H42fzHVDkH8RCn
-   x3AyWVG1DgMAIRnsuW7yTBfbQ3jdMHji/uPrhTb/70Dc85QEoOQQUgFrC
-   yAcU+F+EKknS2khAsjqzB4xNdhKTA9JFhPEsXUJQ4m04ra3IeIw2s7Wwh
-   oujEbJYCY20N19eqjj3fjWntqAvC51FECYT9zGJbArHjglRY3keCfXaEh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="9196787"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="9196787"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 15:23:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="10561229"
-Received: from lveltman-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.33.252])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 15:23:26 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id 1DC2210A43B; Wed, 20 Dec 2023 02:23:23 +0300 (+03)
-Date: Wed, 20 Dec 2023 02:23:23 +0300
-From: kirill.shutemov@linux.intel.com
-To: Alexey Makhalov <alexey.makhalov@broadcom.com>
-Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
-	mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
-	netdev@vger.kernel.org, richardcochran@gmail.com,
-	linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-	zackr@vmware.com, linux-graphics-maintainer@vmware.com,
-	pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
-	akaher@vmware.com, jsipek@vmware.com,
-	dri-devel@lists.freedesktop.org, daniel@ffwll.ch, airlied@gmail.com,
-	tzimmermann@suse.de, mripard@kernel.org,
-	maarten.lankhorst@linux.intel.com, horms@kernel.org
-Subject: Re: [PATCH v3 6/6] x86/vmware: Add TDX hypercall support
-Message-ID: <20231219232323.euweerulgsgbodx5@box.shutemov.name>
-References: <20231219215751.9445-1-alexey.makhalov@broadcom.com>
- <20231219215751.9445-7-alexey.makhalov@broadcom.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE452405D0
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=MDH/v7RIAoJOaCo5XP5ceyIizo5rb419HqEyQWHity4=; b=TUOCQhZabfkqc+H17CMAeuXpYW
+	Ts3oLJl7Uopu3BV26uxD7iRUl1vtqg4I+2QuAEDVybDwdaWo+95q2OAdHjn1su6rKSHwidmXeB3gn
+	QIJLPEKS37vCn2TSB3bL9gYDxJuSr8i+0uI4bkJsxHWlZhxIa9fvhJbuZwOPMLUYXVLy8ZcyFG4Ds
+	uVjrArG9DGp9aoS/bdL7tw8rJTrkkTwrw9nWyK5HzWZbI1bQyibixxhaJD9t1d/p506RWjv5ht/Yk
+	fUkcAvEeFvxqIoyQ/apwJjc7lojQR2lhmfxglUmF+8DaXWVnSW4lE9bqJp+dKD/Q8uMNjOa9jp1/D
+	7D10efww==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFjRE-00FfoS-0b;
+	Tue, 19 Dec 2023 23:23:48 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] LoongArch: signal.c: add header file to fix build error
+Date: Tue, 19 Dec 2023 15:23:47 -0800
+Message-ID: <20231219232347.19479-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219215751.9445-7-alexey.makhalov@broadcom.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 19, 2023 at 01:57:51PM -0800, Alexey Makhalov wrote:
-> diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
-> index 3aa1adaed18f..ef07ab7a07e1 100644
-> --- a/arch/x86/kernel/cpu/vmware.c
-> +++ b/arch/x86/kernel/cpu/vmware.c
-> @@ -428,6 +428,30 @@ static bool __init vmware_legacy_x2apic_available(void)
->  		(eax & BIT(VCPU_LEGACY_X2APIC));
->  }
->  
-> +#ifdef CONFIG_INTEL_TDX_GUEST
-> +unsigned long vmware_tdx_hypercall(unsigned long cmd,
-> +				   struct tdx_module_args *args)
-> +{
-> +	if (!hypervisor_is_type(X86_HYPER_VMWARE))
-> +		return 0;
-> +
-> +	if (cmd & ~VMWARE_CMD_MASK) {
-> +		pr_warn("Out of range command %x\n", cmd);
-> +		return 0;
+loongarch's signal.c uses rseq_signal_deliver() so it should
+pull in the appropriate header to prevent a build error:
 
-Is zero success? Shouldn't it be an error?
+../arch/loongarch/kernel/signal.c: In function 'handle_signal':
+../arch/loongarch/kernel/signal.c:1034:9: error: implicit declaration of function 'rseq_signal_deliver' [-Werror=implicit-function-declaration]
+ 1034 |         rseq_signal_deliver(ksig, regs);
+      |         ^~~~~~~~~~~~~~~~~~~
 
-> +	}
-> +
-> +	args->r10 = VMWARE_TDX_VENDOR_LEAF;
-> +	args->r11 = VMWARE_TDX_HCALL_FUNC;
-> +	args->r12 = VMWARE_HYPERVISOR_MAGIC;
-> +	args->r13 = cmd;
-> +
-> +	__tdx_hypercall(args);
-> +
-> +	return args->r12;
-> +}
-> +EXPORT_SYMBOL_GPL(vmware_tdx_hypercall);
-> +#endif
-> +
->  #ifdef CONFIG_AMD_MEM_ENCRYPT
->  static void vmware_sev_es_hcall_prepare(struct ghcb *ghcb,
->  					struct pt_regs *regs)
-> -- 
-> 2.39.0
-> 
+Fixes: b74baf4ad05b ("LoongArch: Add signal handling support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+M:	Huacai Chen <chenhuacai@kernel.org>
+R:	WANG Xuerui <kernel@xen0n.name>
+L:	loongarch@lists.linux.dev
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+---
+ arch/loongarch/kernel/signal.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff -- a/arch/loongarch/kernel/signal.c b/arch/loongarch/kernel/signal.c
+--- a/arch/loongarch/kernel/signal.c
++++ b/arch/loongarch/kernel/signal.c
+@@ -15,6 +15,7 @@
+ #include <linux/context_tracking.h>
+ #include <linux/entry-common.h>
+ #include <linux/irqflags.h>
++#include <linux/rseq.h>
+ #include <linux/sched.h>
+ #include <linux/mm.h>
+ #include <linux/personality.h>
 
