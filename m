@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-4995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC908184F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:04:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D1B48184FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 11:06:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 061A5B23746
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:04:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 321AC1C23550
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 10:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C38E14271;
-	Tue, 19 Dec 2023 10:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71A014271;
+	Tue, 19 Dec 2023 10:06:15 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [5.144.164.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A272314265
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35f9c70248bso33965385ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 02:04:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702980245; x=1703585045;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D/GMZdKeyiRmKy8aTbykUFUsBWvVE3dT4rhCchLiO+8=;
-        b=GJmhI0Q1NxkDmgNB5bD6cph+MxDucCiDhwd+OjbIKcLtcTyNekJffyxJwqStiLzmJM
-         DeHCACbSJZFOY9eqGRn74S9qlbd5RNFTJ8FKGL2JJOHzerXHDJ6b4v5Q9KpGlf+9fVMD
-         yO41t/uDaVu1Z0bWq7t/HBr3fMp+zXrj0o63AXVikdzrsL+LUzxxXXMlZvSzxdczfAFq
-         GOR5BFSntXagYOpsFtFx3mrg12lxh1JrmGqo47bZEwGdBDOAeTJjj9yh1MGsMfCm69gj
-         kEmqHHY3wVoy1Jw2IftB80Oa5Atkp1I67swJl5qKlQxgLioKgwpigjGHYoczK+ScQX81
-         /gPA==
-X-Gm-Message-State: AOJu0YxhKbJNgWnu5SNXfdfzkOYHAKHV5CfONhYLW2iVeX1Hm8IORftk
-	PtD78PbJe8wfKym2QIaugU9qHzE5cYmg9kZwokFdySEExuoi
-X-Google-Smtp-Source: AGHT+IHRXxJHrDUIT3WRaezRj/DuzwAFunjMI9v3rv+So1+NmrOtalK4f0UUvAthnq/GcJMZrszg/g97CKegU269CpL0i27BF05z
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4301D14267
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 10:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
+Received: from SoMainline.org (82-72-63-87.cable.dynamic.v4.ziggo.nl [82.72.63.87])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6D30420091;
+	Tue, 19 Dec 2023 11:06:10 +0100 (CET)
+Date: Tue, 19 Dec 2023 11:06:08 +0100
+From: Marijn Suijten <marijn.suijten@somainline.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Lee Jones <lee@kernel.org>, phone-devel@vger.kernel.org, 
+	Pavel Machek <pavel@ucw.cz>, Bjorn Andersson <bjorn.andersson@linaro.org>, 
+	~postmarketos/upstreaming@lists.sr.ht, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, Konrad Dybcio <konrad.dybcio@somainline.org>, 
+	Martin Botka <martin.botka@somainline.org>, Jami Kettunen <jami.kettunen@somainline.org>, 
+	linux-arm-msm@vger.kernel.org, linux-leds@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>, 
+	Satya Priya <quic_c_skakit@quicinc.com>
+Subject: Re: [PATCH v4 2/2] leds: qcom-lpg: Add PM660L configuration and
+ compatible
+Message-ID: <xkmmbgbg2japfunuure2kktbxdkotteawwgzsjq6giafmwuosz@3no7qov5nzei>
+References: <20220719211848.1653920-1-marijn.suijten@somainline.org>
+ <20220719211848.1653920-2-marijn.suijten@somainline.org>
+ <ZYFS04cznE5bhOeV@hovoldconsulting.com>
+ <3lsapoxlqijes5m4nqcbhdfhhs4chq3mcq3jaty7v2zihsqnwu@nn67a4h6425k>
+ <ZYFjZefdJej_vgwD@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1528:b0:35f:b16a:d0d3 with SMTP id
- i8-20020a056e02152800b0035fb16ad0d3mr513920ilu.2.1702980245794; Tue, 19 Dec
- 2023 02:04:05 -0800 (PST)
-Date: Tue, 19 Dec 2023 02:04:05 -0800
-In-Reply-To: <tencent_B6953CE9AEEEFACC2C788A6D302F656DD80A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009c38af060cd9fcc1@google.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in
- getname_kernel (2)
-From: syzbot <syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYFjZefdJej_vgwD@hovoldconsulting.com>
 
-Hello,
+On 2023-12-19 10:33:25, Johan Hovold wrote:
+> On Tue, Dec 19, 2023 at 10:17:16AM +0100, Marijn Suijten wrote:
+> 
+> > Note that I have one more unmerged leds patch around, that hasn't been looked
+> > at either.  Would it help to send this once again, perhaps with more reviewers/
+> > testing (Johan, would you mind taking a look too)?
+> > 
+> > https://lore.kernel.org/linux-leds/20220719213034.1664056-1-marijn.suijten@somainline.org/
+> 
+> Yes, I suggest you resend that one too so that it ends up in Lee's
+> inbox.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+I will rebase, test and resend it too.  Just asking if you notice any glaring
+issues with this patch, as it won't be the first time it has been resent after
+not being looked at for some time.
 
-Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         3bd7d748 Merge tag 'io_uring-6.7-2023-12-15' of git://..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1013149ee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
-dashboard link: https://syzkaller.appspot.com/bug?extid=33f23b49ac24f986c9e8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=109c16d6e80000
-
-Note: testing is done by a robot and is best-effort only.
+- Marijn
 
