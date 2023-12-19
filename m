@@ -1,95 +1,116 @@
-Return-Path: <linux-kernel+bounces-5412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 399C2818A6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E87818A6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:49:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4CC1F2DAAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:48:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FCE81F2DD2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BA41C691;
-	Tue, 19 Dec 2023 14:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gLOfTDHz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206A01BDFD;
+	Tue, 19 Dec 2023 14:49:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5625C1C28A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 14:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702997316;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UWtsZhR3mqpEo9xJldP9MDyJRchqzHme83vu4hlTHKQ=;
-	b=gLOfTDHzkbvZKLWmaYhvL7LCZ/Hi3FMjL2uY/NaGhuS6b/6c/I46RGVQiY8W6aghI+8t7E
-	syRIi8HyUX+UIBvb/rCUr4w+wq3TD9QMW7worhly2AGlP+/7GaUIqpkqvEKbVnS0O/+/Hg
-	fMn3C6sVxwoSuExEX3LFV2cMZ3Iowoc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-215-Vp4WzdsaO4ChcYxqYCX88g-1; Tue,
- 19 Dec 2023 09:48:32 -0500
-X-MC-Unique: Vp4WzdsaO4ChcYxqYCX88g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5FC511C0513E;
-	Tue, 19 Dec 2023 14:48:31 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 936FD1121306;
-	Tue, 19 Dec 2023 14:48:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <488867.1702996927@warthog.procyon.org.uk>
-References: <488867.1702996927@warthog.procyon.org.uk> <6f8c3f22f77e9e0154f4131260559c39d6740678.camel@kernel.org> <20231213152350.431591-1-dhowells@redhat.com> <20231213152350.431591-19-dhowells@redhat.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: dhowells@redhat.com, Steve French <smfrench@gmail.com>,
-    Matthew Wilcox <willy@infradead.org>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>,
-    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
-    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 18/39] netfs: Export netfs_put_subrequest() and some tracepoints
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B62D1C284;
+	Tue, 19 Dec 2023 14:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="460009654"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="460009654"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 06:49:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="866655630"
+X-IronPort-AV: E=Sophos;i="6.04,288,1695711600"; 
+   d="scan'208";a="866655630"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 06:49:21 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rFbPK-00000007Hww-3Wxb;
+	Tue, 19 Dec 2023 16:49:18 +0200
+Date: Tue, 19 Dec 2023 16:49:18 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: xiongxin <xiongxin@kylinos.cn>
+Cc: fancer.lancer@gmail.com, hoan@os.amperecomputing.com,
+	linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@kernel.org,
+	Riwen Lu <luriwen@kylinos.cn>
+Subject: Re: [PATCH v4] gpio: dwapb: mask/unmask IRQ when disable/enale it
+Message-ID: <ZYGtbgmQS0x43l3k@smile.fi.intel.com>
+References: <20231219101620.4617-1-xiongxin@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <489636.1702997307.1@warthog.procyon.org.uk>
-Date: Tue, 19 Dec 2023 14:48:27 +0000
-Message-ID: <489637.1702997307@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231219101620.4617-1-xiongxin@kylinos.cn>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-David Howells <dhowells@redhat.com> wrote:
+On Tue, Dec 19, 2023 at 06:16:20PM +0800, xiongxin wrote:
 
-> Jeff Layton <jlayton@kernel.org> wrote:
+Code wise it's fine, but while answering to Serge's email I realized that
+the Subject has a typo and additionally you or Bart (if he is fine with that)
+can amend:
+
+> In the hardware implementation of the i2c hid driver based on dwapb gpio
+
+I²C HID (alternatively: I2C HID)
+
+here and everywhere else in the commit message unless it's the file or
+function name.
+
+> irq,
+
+DesignWare GPIO IRQ chip
+
+> when the user continues to use the i2c hid device in the suspend
+> process, the i2c hid interrupt will be masked after the resume process
+> is finished.
 > 
-> > Erm...why? Are these called directly from module code in a later patch?
+> This is because the disable_irq()/enable_irq() of the dwapb gpio driver
+
+DesignWare GPIO
+
+> does not synchronize the irq mask register state. In normal use of the
+
+IRQ
+
+> i2c hid procedure, the gpio irq irq_mask()/irq_unmask() functions are
+> called in pairs. In case of an exception, i2c_hid_core_suspend() calls
+> disable_irq() to disable the gpio irq. With low probability, this causes
+
+GPIO IRQ
+
+> irq_unmask() to not be called, which causes the gpio irq to be masked
+
+GPIO IRQ
+
+> and not unmasked in enable_irq(), raising an exception.
 > 
-> Yes.  I'll expand the commit message.
+> Add synchronization to the masked register state in the
+> dwapb_irq_enable()/dwapb_irq_disable() function. mask the gpio irq
 
-That said, only trace_netfs_sreq() is required.  The other two can be dropped.
+GPIO IRQ
 
-David
+> before disabling it. After enabling the gpio irq, unmask the irq.
+
+GPIO IRQ
+IRQ
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
