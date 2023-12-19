@@ -1,133 +1,107 @@
-Return-Path: <linux-kernel+bounces-5457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8014E818ADD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:10:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C80A8818ADB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:09:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 208971F234E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:10:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D96F21C21601
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B281D54A;
-	Tue, 19 Dec 2023 15:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ytz86OmW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064151CAAE;
+	Tue, 19 Dec 2023 15:09:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6811D529;
-	Tue, 19 Dec 2023 15:10:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EE83C433C7;
-	Tue, 19 Dec 2023 15:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1702998604;
-	bh=YG1opOXiv2eFAz9+JFxAGHHuQKweCGIP9rMOp7rwHcg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ytz86OmWaegIRsBA2unUSBkc6kLq8StD0r0jhGgzWrF62fM313/boELTJtKvyhIEw
-	 lUM+8Ys08phuamymX4VWV80dLjSxAcdwzA9pmiN8tt06HZKjCZ2PtmcYk+f7w2PAuA
-	 tYvdTOUZzBkoFpLy8HQaQukWkxcwslTBMJO5119s=
-Date: Tue, 19 Dec 2023 16:10:02 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Marco Pagani <marpagan@redhat.com>
-Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-	linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/2] fpga: set owner of fpga_manager_ops for
- existing low-level modules
-Message-ID: <2023121924-extent-defender-fb06@gregkh>
-References: <20231218202809.84253-1-marpagan@redhat.com>
- <20231218202809.84253-3-marpagan@redhat.com>
- <2023121829-zealous-prissy-99cc@gregkh>
- <9296941c-a3c8-4d55-9e52-f1277f1c3fc7@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9333C1CA98;
+	Tue, 19 Dec 2023 15:09:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C73CC433C8;
+	Tue, 19 Dec 2023 15:09:29 +0000 (UTC)
+Date: Tue, 19 Dec 2023 10:10:27 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] ring-buffer: Fix slowpath of interrupted event
+Message-ID: <20231219101027.349b7d19@gandalf.local.home>
+In-Reply-To: <20231219233710.21b48850676e65da2a37fe22@kernel.org>
+References: <20231218230712.3a76b081@gandalf.local.home>
+	<20231219233710.21b48850676e65da2a37fe22@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9296941c-a3c8-4d55-9e52-f1277f1c3fc7@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 19, 2023 at 03:54:25PM +0100, Marco Pagani wrote:
+On Tue, 19 Dec 2023 23:37:10 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+
+> Yeah the above works, but my question is, do we really need this
+> really slow path? I mean;
 > 
+> > 	if (w == write - event length) {
+> > 		/* Nothing interrupted between A and C */
+> >  /*E*/		write_stamp = ts;
+> > 		delta = ts - after  
 > 
-> On 2023-12-18 21:33, Greg Kroah-Hartman wrote:
-> > On Mon, Dec 18, 2023 at 09:28:09PM +0100, Marco Pagani wrote:
-> >> This patch tentatively set the owner field of fpga_manager_ops to
-> >> THIS_MODULE for existing fpga manager low-level control modules.
-> >>
-> >> Signed-off-by: Marco Pagani <marpagan@redhat.com>
-> >> ---
-> >>  drivers/fpga/altera-cvp.c             | 1 +
-> >>  drivers/fpga/altera-pr-ip-core.c      | 1 +
-> >>  drivers/fpga/altera-ps-spi.c          | 1 +
-> >>  drivers/fpga/dfl-fme-mgr.c            | 1 +
-> >>  drivers/fpga/ice40-spi.c              | 1 +
-> >>  drivers/fpga/lattice-sysconfig.c      | 1 +
-> >>  drivers/fpga/machxo2-spi.c            | 1 +
-> >>  drivers/fpga/microchip-spi.c          | 1 +
-> >>  drivers/fpga/socfpga-a10.c            | 1 +
-> >>  drivers/fpga/socfpga.c                | 1 +
-> >>  drivers/fpga/stratix10-soc.c          | 1 +
-> >>  drivers/fpga/tests/fpga-mgr-test.c    | 1 +
-> >>  drivers/fpga/tests/fpga-region-test.c | 1 +
-> >>  drivers/fpga/ts73xx-fpga.c            | 1 +
-> >>  drivers/fpga/versal-fpga.c            | 1 +
-> >>  drivers/fpga/xilinx-spi.c             | 1 +
-> >>  drivers/fpga/zynq-fpga.c              | 1 +
-> >>  drivers/fpga/zynqmp-fpga.c            | 1 +
-> >>  18 files changed, 18 insertions(+)
-> >>
-> >> diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
-> >> index 4ffb9da537d8..aeb913547dd8 100644
-> >> --- a/drivers/fpga/altera-cvp.c
-> >> +++ b/drivers/fpga/altera-cvp.c
-> >> @@ -520,6 +520,7 @@ static const struct fpga_manager_ops altera_cvp_ops = {
-> >>  	.write_init	= altera_cvp_write_init,
-> >>  	.write		= altera_cvp_write,
-> >>  	.write_complete	= altera_cvp_write_complete,
-> >> +	.owner		= THIS_MODULE,
-> > 
-> > Note, this is not how to do this, force the compiler to set this for you
-> > automatically, otherwise everyone will always forget to do it.  Look at
-> > how functions like usb_register_driver() works.
-> > 
-> > Also, are you _sure_ that you need a module owner in this structure?  I
-> > still don't know why...
-> >
+> 	} else {
+> 		/*
+> 		  Something interrupted between A and C, which should record
+> 		  a new entry before this reserved entry with newer timestamp.
+> 		  we reuse it.
+> 		 */
+> 	 	ts = after = write_stamp;
+> 		delta = 0;
+> 	}
 > 
-> Do you mean moving the module owner field to the manager context and setting
-> it during registration with a helper macro?
+> Isn't this enough?
 
-I mean set it during registration with a helper macro.
+I really like to avoid: delta = 0 when possible. It's basically what I do
+when I have no other options. Why?
 
-> Something like:
-> 
-> struct fpga_manager {
-> 	...
-> 	struct module *owner;
-> };
-> 
-> #define fpga_mgr_register(parent, ...) \
-> 	__fpga_mgr_register(parent,..., THIS_MODULE)
-> 
-> struct fpga_manager *
-> __fpga_mgr_register(struct device *parent, ..., struct module *owner)
-> {
-> 	...
-> 	mgr->owner = owner;
-> }
+Because let's just say you are looking at the time of interrupt events. If
+you just trace the entry of the interrupt, and that interrupt interrupted
+an event being written to, we have this:
 
-Yes.
+Time starts at ts 1000, and we are able to calculate the delta of the
+interrupted event. And the trace will have:
 
-But again, is a module owner even needed?  I don't think you all have
-proven that yet...
+ 1000 - interrupt event
+ 2000 - normal context event
+ 2100 - next normal context event
 
-thanks,
+Where we see the delta between the interrupt event and the normal context
+event was 1000. But if we just had it be delta = 0, it would be:
 
-greg k-h
+ 1000 - interrupt event
+ 1000 - normal context event
+ 2100 - next normal context event
+
+It will look like the time between the interrupt event and the normal
+context event was instant, and the time between the normal context event
+and the next normal context event was 1100 when in reality it was just 100.
+
+The above scenario is rather common. Perhaps it happens 1% of the time. The
+case where we currently have delta = 0 only happens when the same event
+gets interrupted twice. That is, two separate interrupts came in, one
+before it allocated its space on the buffer, and one after it allocated.
+That's a much more race occurrence (0.01% possibly, or less). In fact my
+traces seldom even show it. Most of the time, even when doing function
+tracing, I have a hard time seeing this rare race.
+
+So, if we can have delta=0 only 0.01% or less of the time, I rather do that
+then have it be delta=0 1% of the time.
+
+Thanks for the review!
+
+-- Steve
 
