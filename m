@@ -1,156 +1,178 @@
-Return-Path: <linux-kernel+bounces-6074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5680C819440
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:00:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E9C4819443
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 889D71C240C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:00:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A39B4B23211
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 23:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B2B3D0D8;
-	Tue, 19 Dec 2023 23:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7FC3D0AE;
+	Tue, 19 Dec 2023 23:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nI3bK0KZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0Abku/Gk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79FA33D0CB
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4313D0A4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40c3fe6c1b5so55767285e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:00:44 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-552eaf800abso5610a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:01:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703026842; x=1703631642; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1703026899; x=1703631699; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fZwm6JZ4sNLkRRVAKkvheMbMEQKEA6/K7E70Hl7Hv90=;
-        b=nI3bK0KZHuuYrQYjZ4Ui3o7Qn6H1AvP7cyIHFSj7XWv1ykGLB6EWaFvRFywRG5r087
-         5+rnc6ZhxbmXjRGm6n0zZYJUCiyWVX4kfySvWKhHZw2gBFsyZqSEnGu0PcnH/ytz64Lq
-         1oERebigTAx5qYhL+HvF7zVURd8nGIqJ2nf6Hdu9EfPyZ0T19EHnQ1T8Zc7q8sGCKWU3
-         S9Aaay9CncZVMYht/J2+m/l85y90XcFXLp0OCgisokaim7k+yZOxXVrQWcQY9yw0MvzG
-         JnFxPl1saIALU8Sky/zNKC2G+sZnJgs/bvM8p1s4ex7RQD2cyCk99tXY3klTui6R3Pg/
-         CF4A==
+        bh=tJBKIVMxwZw2B/0wRnInm6AhoZ+wrkkWV1uAdEbTnzk=;
+        b=0Abku/GkVyr5XL2raqIIZ1Dxk+/90pFJFIsjfG0yYdzENMDN0GaflT2vFbhqEH7m9B
+         CbE8S5mrjt8IeKGj4sBmWP3InbOHuFxxahg/fT8lrW0sEm/cq4WzLNBDs6GvuCOEU8BE
+         Z0saMzk51JOlWsT5clszgm8oUorw0+z9F/KEY0pCISiYFIe6IyHiSB2/PIDgCOiJWQ6s
+         Pp69r5lTILwT3Gv8LZhzNOPDAEVTxI5mPW8+dTvR5j/txoRaFYEfLXj0rdl2uxhX2EAN
+         27+W4GLlSwRjce4Y+hrT9psYsfWyhN8kwN6xvv2MVrvfRA2ZciIiT0uQLs9l1aAxagtN
+         btFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703026842; x=1703631642;
+        d=1e100.net; s=20230601; t=1703026899; x=1703631699;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fZwm6JZ4sNLkRRVAKkvheMbMEQKEA6/K7E70Hl7Hv90=;
-        b=kwTTI2nYwOlxznT3s7av58qabW1Dbi9wy9Eif9gBhaAWaC7iIe8mw6Eac9kHYXrzUd
-         Afy0J2iQBg/e+83u8RKnr/BrgtjNzJTkk7JYWRrs0UKPwBbWm9qhR+BnLueRTsanHoiX
-         8luZG006b3aFd1A4RJbfwQhQdUUtAbrDtDW20svTbgGEIavLwg1+Uek4pnb9Vn4vrfKD
-         UcipOlOJRZBmz0SMEQLt2Pb5Y4bXFPrafbrSEDEgxE8Of5Vbt/EgYsWgKjsw1tXa+uDz
-         aL3gO4J7MGrWqmvmjdvCegS3HKQGeOEbW3GzAfaDLkGkcuoBIdRTO5LXLHYKHFv9Wa5Z
-         ZV0A==
-X-Gm-Message-State: AOJu0YzjOfRuS5UinLeJrvmwBUbElScqLL1DktsKUS41aHu6vJTpCu6I
-	3/8lBQz/yEClobR6yOMiZianVmuW8u/i27huj0nh9Q==
-X-Google-Smtp-Source: AGHT+IFDk+YH98DmlhP5rDwghASFHtsZ/cHCbLg8dD2/9C72D6slrbK8ZNqM/SwdSooilIR08O9ljo3i9+rmU7rlaP4=
-X-Received: by 2002:a05:600c:5486:b0:40c:6e0b:69e4 with SMTP id
- iv6-20020a05600c548600b0040c6e0b69e4mr4366526wmb.18.1703026842524; Tue, 19
- Dec 2023 15:00:42 -0800 (PST)
+        bh=tJBKIVMxwZw2B/0wRnInm6AhoZ+wrkkWV1uAdEbTnzk=;
+        b=VELVAz/BKAZZcJ384eFYvBBk5ddQ34l1QRZRMONQ6K8L8Rcz5XiSKSOTLu4/FDecUa
+         AA7YEwqzW1N8J+rmKGKWQo6XcD4k0poQ3MzOCseIRqOcJNpBj9qD5uAcKea5yhq64eTS
+         cWX5MddCbZ5Bb3wlFwg0cYsDJQtOtXYiLr/XZyO6dbS2bxk/0ObwgiiBk6DvRaiTVkjt
+         YQQsZn0pEtB87jr6+GRB1N9h5LeXSbIfVDOL50C2rfRHP/hTE7LzdFgjG0wN9VTTZ9Rp
+         Bw43Z69tLrHea96Ch7W47RxSUQPt4nzMfhhd5I8Fo+XUnkD26VsWC2wjLGZEUnMQrBar
+         Gm8g==
+X-Gm-Message-State: AOJu0YwJaJyI4cv/ORTOaGA1JZ+Tp31MpWlyMeQwo9sVVrjQ7471fDI8
+	IXr6+w+kivpax3Nzogzg6+0r7aNHcrMtnllBCPzib4rapKkL
+X-Google-Smtp-Source: AGHT+IEnD16yDeBoH8vHeGXt/po5r40RhLX0x2wLWPJ3Qs9KkumHHID3+syMZCqvIBy1lxwwX9jr69q2YeA2+74v3Og=
+X-Received: by 2002:a50:c11a:0:b0:553:6de7:43d7 with SMTP id
+ l26-20020a50c11a000000b005536de743d7mr41886edf.6.1703026899366; Tue, 19 Dec
+ 2023 15:01:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219-libstringheader-v4-0-aaeb26495d2f@google.com>
- <20231219-libstringheader-v4-1-aaeb26495d2f@google.com> <2023121938-stargazer-purse-0dc1@gregkh>
- <CAE-cH4p-TzH3zyJfmSg3r=fw78j8y-0t0dp-NvaLyVYAMULw1w@mail.gmail.com> <2023121928-propose-florist-5898@gregkh>
-In-Reply-To: <2023121928-propose-florist-5898@gregkh>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Tue, 19 Dec 2023 15:00:22 -0800
-Message-ID: <CAKwvOdnW_vZyiO3BE=Vce4OrcX4+pb6QrEFbmeya0Z+w_5d=zw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] kernel.h: removed REPEAT_BYTE from kernel.h
-To: Greg KH <gregkh@linuxfoundation.org>, Tanzir Hasan <tanzirh@google.com>, 
-	Ingo Molnar <mingo@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, Andy Shevchenko <andy@kernel.org>, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20231218161044.215640-1-rf@opensource.cirrus.com>
+In-Reply-To: <20231218161044.215640-1-rf@opensource.cirrus.com>
+From: Rae Moar <rmoar@google.com>
+Date: Tue, 19 Dec 2023 18:01:27 -0500
+Message-ID: <CA+GJov4nSo0Zh7p7CA63Jame-+Y88zRyFqRy_=ezW2wYykjXeg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kunit: Allow passing function pointer to kunit_activate_static_stub()
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: brendan.higgins@linux.dev, davidgow@google.com, 
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 11:10=E2=80=AFAM Greg KH <gregkh@linuxfoundation.or=
-g> wrote:
+On Mon, Dec 18, 2023 at 11:10=E2=80=AFAM Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
 >
-> > > Legal note, this file is NOT copyright Google as no Google employe
-> > > actually wrote the logcal contents of it.
-> > >
-> > > Please be VERY careful when doing stuff like this, it has potentially
-> > > big repercussions, and you don't want to have to talk to lots of
-> > > lawyers a few years from now and explain how you messed it all up :(
-> > >
-> > > Nick, odds are there's a Google copyright class that Tanzir should ta=
-ke
-> > > here, if not, I recommend the free LF one that anyone can take online
-> > > that explains the issues here:
-> > >         https://training.linuxfoundation.org/training/open-source-lic=
-ensing-basics-for-software-developers/
+> Swap the arguments to typecheck_fn() in kunit_activate_static_stub()
+> so that real_fn_addr can be either the function itself or a pointer
+> to that function.
 >
-> Please take the time to either learn what the Google-specific rules are,
-> or take the above training, before submitting a new version of the
-> patch.
+> This is useful to simplify redirecting static functions in a module.
+> Having to pass the actual function meant that it must be exported
+> from the module. Either making the 'static' and EXPORT_SYMBOL*()
+> conditional (which makes the code messy), or change it to always
+> exported (which increases the export namespace and prevents the
+> compiler inlining a trivial stub function in non-test builds).
+>
+> With the original definition of kunit_activate_static_stub() the
+> address of real_fn_addr was passed to typecheck_fn() as the type to
+> be passed. This meant that if real_fn_addr was a pointer-to-function
+> it would resolve to a ** instead of a *, giving an error like this:
+>
+>    error: initialization of =E2=80=98int (**)(int)=E2=80=99 from incompat=
+ible pointer
+>    type =E2=80=98int (*)(int)=E2=80=99 [-Werror=3Dincompatible-pointer-ty=
+pes]
+>    kunit_activate_static_stub(test, add_one_fn_ptr, subtract_one);
+>       |                             ^~~~~~~~~~~~
+>    ./include/linux/typecheck.h:21:25: note: in definition of macro
+>    =E2=80=98typecheck_fn=E2=80=99
+>    21 | ({ typeof(type) __tmp =3D function; \
+>
+> Swapping the arguments to typecheck_fn makes it take the type of a
+> pointer to the replacement function. Either a function or a pointer
+> to function can be assigned to that. For example:
+>
+> static int some_function(int x)
+> {
+>     /* whatever */
+> }
+>
+> int (* some_function_ptr)(int) =3D some_function;
+>
+> static int replacement(int x)
+> {
+>     /* whatever */
+> }
+>
+> Then:
+>   kunit_activate_static_stub(test, some_function, replacement);
+> yields:
+>   typecheck_fn(typeof(&replacement), some_function);
+>
+> and:
+>   kunit_activate_static_stub(test, some_function_ptr, replacement);
+> yields:
+>   typecheck_fn(typeof(&replacement), some_function_ptr);
+>
+> The two typecheck_fn() then resolve to:
+>
+>   int (*__tmp)(int) =3D some_function;
+> and
+>   int (*__tmp)(int) =3D some_function_ptr;
+>
+> Both of these are valid. In the first case the compiler inserts
+> an implicit '&' to take the address of the supplied function, and
+> in the second case the RHS is already a pointer to the same type.
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-It was my mistake to suggest to Tanzir to add his copyright to this
-newly created header. I'm sorry; we do have such resources available
-and I should have reviewed them.
+Hello!
 
-I've:
-1. reviewed our internal training materials on copyright assignment
-  - go/gti-os-self-study
-  - go/patching#license-headers-and-copyright-notices
-2. reviewed kernel docs:
-  - Documentation/process/1.Intro.rst
-  - Documentation/process/kernel-enforcement-statement.rst
-3. asked Tanzir to do the same
-4. discovered who to ask internally for further questions
-<opensource-licensing@google.com>
+This seems fine to me. I have tested it and the reasoning behind this
+seems sensible. However, let's see what David thinks when he returns
+to office as he is the expert on static stubbing.
 
-Is there further due diligence you would like to see?
+Reviewed-by: Rae Moar <rmoar@google.com>
 
----
+-Rae
 
-For Google specific guidance, I'll quote what they have:
-
-> License Headers and Copyright Notices
-> Googlers should add Google's copyright notice (or a "The Project Authors"=
- style copyright notice) to new files being added to the library if permitt=
-ed by the project maintainers.
-
-Then the relevant section of 1.Intro.rst:
-
-> Copyright assignments are not required (or requested) for code contribute=
-d
-> to the kernel.
-
-Shall I interpret those together to mean that the "project
-maintainers" don't permit copyright assignments for "new files being
-added," and thus Tanzir SHOULD NOT be adding a copyright assignment to
-the newly created header?
-
-Or shall I leave the interpretation up to an explicit discussion with
-opensource-licensing@google.com?
-
----
-
-While I think we have the answer for Tanzir's patch, I don't think we
-do for if we intend to split other header files in the future if those
-have explicit copyright assignments.  I wonder if this question has
-come up in Ingo's header refactoring work, and if so, what the
-guidance is there?
-
-For example, consider include/linux/sysfs.h.  It's 600+ lines long and
-contains 4 copyright assignments explicitly in sources. If we split
-that header file in half, which copyright assignments do we transfer
-to the new half, if any?
---=20
-Thanks,
-~Nick Desaulniers
+> ---
+>  include/kunit/static_stub.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/kunit/static_stub.h b/include/kunit/static_stub.h
+> index 85315c80b303..bf940322dfc0 100644
+> --- a/include/kunit/static_stub.h
+> +++ b/include/kunit/static_stub.h
+> @@ -93,7 +93,7 @@ void __kunit_activate_static_stub(struct kunit *test,
+>   * The redirection can be disabled again with kunit_deactivate_static_st=
+ub().
+>   */
+>  #define kunit_activate_static_stub(test, real_fn_addr, replacement_addr)=
+ do {  \
+> -       typecheck_fn(typeof(&real_fn_addr), replacement_addr);           =
+       \
+> +       typecheck_fn(typeof(&replacement_addr), real_fn_addr);           =
+       \
+>         __kunit_activate_static_stub(test, real_fn_addr, replacement_addr=
+);     \
+>  } while (0)
+>
+> --
+> 2.30.2
+>
 
