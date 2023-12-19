@@ -1,190 +1,232 @@
-Return-Path: <linux-kernel+bounces-5809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21130818FC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:25:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03C72818FC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 19:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 360C7B241B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:25:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7198F1F279E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 18:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F94738DFA;
-	Tue, 19 Dec 2023 18:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E295137D3B;
+	Tue, 19 Dec 2023 18:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nloN4sZN"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yJkIpqLj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ND3r4peh";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yJkIpqLj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ND3r4peh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF6538DE9;
-	Tue, 19 Dec 2023 18:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BJDDEZu004213;
-	Tue, 19 Dec 2023 18:25:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=l2mjR068uBgssSL2NBDdgKbwryFxHPTPbyLcDtsZecg=; b=nl
-	oN4sZNm5DLgsslfyIKB/BhmU7XsbhLUGV+HLerlrU4qV6pivcYxoO0Xfz6gBr7oa
-	OOSHlgD/U5NtPDp5qcqC551Qf9lQo2kBgn46aDH8CL8deAhVLd86PPrEtoJlLF+2
-	0ahlY1oXDUwyMW9yw2Vo+ydfimWdiGdyL4SNoZzLV8BbRMY5BwhBSb4ugas+xiCz
-	JagIiNHLjKQ2rdFlnDuIrbl/OMy654LMaqnX8KpYHf81WN91X3Y0rVuabut24r0+
-	P2gDk5OTlaCJFFgS/2+2c+pxjOJuj1bBuoRnUq8X7o6u4lrbawN18NkA7mRrEhgS
-	0OY+1MlNMM+ez+spbGFQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v330kt453-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 18:25:04 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BJIP3aq012087
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Dec 2023 18:25:03 GMT
-Received: from [10.110.67.222] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
- 2023 10:24:58 -0800
-Message-ID: <35eaac60-5617-4b42-bf1e-55d4f4dbbd2f@quicinc.com>
-Date: Tue, 19 Dec 2023 10:24:57 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4830E37D17;
+	Tue, 19 Dec 2023 18:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4485E22168;
+	Tue, 19 Dec 2023 18:27:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703010432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
+	b=yJkIpqLjMNi3Dj3rOmN1hIIVyNJGeRo9IEl/0PXk6uIc8ickQFNyOdAXckJE/lFFWzei68
+	jiA+UhucvHxP77vqPKCX8yefHPJHw8ectoRREJB55q4/rsRoJ8ke/SsTvNCmV35SBskjk5
+	rXzGAyu9OpT1jPMTJtGplFMM4NaUK4g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703010432;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
+	b=ND3r4peh60mJqstnuduW+WeCtT/aPlEPjUdS5JlHdaX3N5OAzE8MHokT63Kk2/8lyRIO1q
+	5Ct13LGe8WOshGCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703010432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
+	b=yJkIpqLjMNi3Dj3rOmN1hIIVyNJGeRo9IEl/0PXk6uIc8ickQFNyOdAXckJE/lFFWzei68
+	jiA+UhucvHxP77vqPKCX8yefHPJHw8ectoRREJB55q4/rsRoJ8ke/SsTvNCmV35SBskjk5
+	rXzGAyu9OpT1jPMTJtGplFMM4NaUK4g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703010432;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8wwwn4EPAgSsB+knSVTXoG3tIQt4g4UOJHmQAEbH/lw=;
+	b=ND3r4peh60mJqstnuduW+WeCtT/aPlEPjUdS5JlHdaX3N5OAzE8MHokT63Kk2/8lyRIO1q
+	5Ct13LGe8WOshGCw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3207A13BF1;
+	Tue, 19 Dec 2023 18:27:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id byzsC4DggWVLLgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 19 Dec 2023 18:27:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 790E5A07E0; Tue, 19 Dec 2023 19:27:11 +0100 (CET)
+Date: Tue, 19 Dec 2023 19:27:11 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/17] writeback: rework the loop termination condition
+ in write_cache_pages
+Message-ID: <20231219182711.oskwl65vdctbpsxe@quack3>
+References: <20231218153553.807799-1-hch@lst.de>
+ <20231218153553.807799-4-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/13] arm64: qcom: add and enable SHM Bridge support
-Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh
-	<quic_gurus@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        "Maximilian
- Luz" <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        "Srini
- Kandagatla" <srinivas.kandagatla@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kernel@quicinc.com>,
-        "Bartosz
- Golaszewski" <bartosz.golaszewski@linaro.org>
-References: <20231127141600.20929-1-brgl@bgdev.pl>
-From: Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <20231127141600.20929-1-brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _aK5AV8CyCUucdYhkxl0iI19k8lsA1ME
-X-Proofpoint-GUID: _aK5AV8CyCUucdYhkxl0iI19k8lsA1ME
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999 clxscore=1011
- priorityscore=1501 malwarescore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312190137
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218153553.807799-4-hch@lst.de>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
+On Mon 18-12-23 16:35:39, Christoph Hellwig wrote:
+> Rework we deal with the cleanup after the writepage call.  First handle
+        ^^ the way
 
+> the magic AOP_WRITEPAGE_ACTIVATE separately from real error returns to
+> get it out of the way of the actual error handling.  Then merge the
+> code to set ret for integrity vs non-integrity writeback.  For
+> non-integrity writeback the loop is terminated on the first error, so
+> ret will never be non-zero.  Then use a single block to check for
+> non-integrity writewack to consolidate the cases where it returns for
+> either an error or running off the end of nr_to_write.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-On 11/27/2023 6:15 AM, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Otherwise looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  mm/page-writeback.c | 62 +++++++++++++++++++++------------------------
+>  1 file changed, 29 insertions(+), 33 deletions(-)
 > 
-> This is pretty much another full rewrite of the SHM Bridge support
-> series. After more on- and off-list discussions I think this time it
-> will be close to the final thing though.
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index 8e312d73475646..7ed6c2bc8dd51c 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2474,43 +2474,39 @@ int write_cache_pages(struct address_space *mapping,
+>  			error = writepage(folio, wbc, data);
+>  			nr = folio_nr_pages(folio);
+>  			wbc->nr_to_write -= nr;
+> -			if (unlikely(error)) {
+> -				/*
+> -				 * Handle errors according to the type of
+> -				 * writeback. There's no need to continue for
+> -				 * background writeback. Just push done_index
+> -				 * past this page so media errors won't choke
+> -				 * writeout for the entire file. For integrity
+> -				 * writeback, we must process the entire dirty
+> -				 * set regardless of errors because the fs may
+> -				 * still have state to clear for each page. In
+> -				 * that case we continue processing and return
+> -				 * the first error.
+> -				 */
+> -				if (error == AOP_WRITEPAGE_ACTIVATE) {
+> -					folio_unlock(folio);
+> -					error = 0;
+> -				} else if (wbc->sync_mode != WB_SYNC_ALL) {
+> -					ret = error;
+> -					done_index = folio->index + nr;
+> -					done = 1;
+> -					break;
+> -				}
+> -				if (!ret)
+> -					ret = error;
+> +
+> +			/*
+> +			 * Handle the legacy AOP_WRITEPAGE_ACTIVATE magic return
+> +			 * value.  Eventually all instances should just unlock
+> +			 * the folio themselves and return 0;
+> +			 */
+> +			if (error == AOP_WRITEPAGE_ACTIVATE) {
+> +				folio_unlock(folio);
+> +				error = 0;
+>  			}
+>  
+>  			/*
+> -			 * We stop writing back only if we are not doing
+> -			 * integrity sync. In case of integrity sync we have to
+> -			 * keep going until we have written all the pages
+> -			 * we tagged for writeback prior to entering this loop.
+> +			 * For integrity sync  we have to keep going until we
+> +			 * have written all the folios we tagged for writeback
+> +			 * prior to entering this loop, even if we run past
+> +			 * wbc->nr_to_write or encounter errors.  This is
+> +			 * because the file system may still have state to clear
+> +			 * for each folio.   We'll eventually return the first
+> +			 * error encountered.
+> +			 *
+> +			 * For background writeback just push done_index past
+> +			 * this folio so that we can just restart where we left
+> +			 * off and media errors won't choke writeout for the
+> +			 * entire file.
+>  			 */
+> -			done_index = folio->index + nr;
+> -			if (wbc->nr_to_write <= 0 &&
+> -			    wbc->sync_mode == WB_SYNC_NONE) {
+> -				done = 1;
+> -				break;
+> +			if (error && !ret)
+> +				ret = error;
+> +			if (wbc->sync_mode == WB_SYNC_NONE) {
+> +				if (ret || wbc->nr_to_write <= 0) {
+> +					done_index = folio->index + nr;
+> +					done = 1;
+> +					break;
+> +				}
+>  			}
+>  		}
+>  		folio_batch_release(&fbatch);
+> -- 
+> 2.39.2
 > 
-> We've established the need for using separate pools for SCM and QSEECOM
-> as well as the upcoming scminvoke driver.
-> 
-> It's also become clear that in order to be future-proof, the new
-> allocator must be an abstraction layer of a higher level as the SHM
-> Bridge will not be the only memory protection mechanism that we'll see
-> upstream. Hence the rename to TrustZone Memory rather than SCM Memory
-> allocator.
-> 
-> Also to that end: the new allocator is its own module now and provides a
-> Kconfig choice menu for selecting the mode of operation (currently
-> default and SHM Bridge).
-> 
-> Due to a high divergence from v2, I dropped all tags except for
-> patch 1/15 which didn't change.
-> 
-> Tested on sm8550 and sa8775p with the Inline Crypto Engine and
-> remoteproc.
-> 
-> v5 -> v6:
-> Fixed two issues reported by autobuilders:
-> - add a fix for memory leaks in the qseecom driver as the first patch for
->   easier backporting to the v6.6.y branch
-> - explicitly cast the bus address stored in a variable of type dma_addr_t
->   to phys_addr_t expected by the genpool API
-> 
-> v4 -> v5:
-> - fix the return value from qcom_tzmem_init() if SHM Bridge is not supported
-> - remove a comment that's no longer useful
-> - collect tags
-> 
-> v3 -> v4:
-> - include linux/sizes.h for SZ_X macros
-> - use dedicated RCU APIs to dereference radix tree slots
-> - fix kerneldocs
-> - fix the comment in patch 14/15: it's the hypervisor, not the TrustZone
->   that creates the SHM bridge
-> 
-> v2 -> v3:
-> - restore pool management and use separate pools for different users
-> - don't use the new allocator in qcom_scm_pas_init_image() as the
->   TrustZone will create an SHM bridge for us here
-> - rewrite the entire series again for most part
-> 
-> v1 -> v2:
-> - too many changes to list, it's a complete rewrite as explained above
-> 
-> Bartosz Golaszewski (13):
->   firmware: qcom: qseecom: fix memory leaks in error paths
->   firmware: qcom: add a dedicated TrustZone buffer allocator
->   firmware: qcom: scm: enable the TZ mem allocator
->   firmware: qcom: scm: smc: switch to using the SCM allocator
->   firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ
->     allocator
->   firmware: qcom: qseecom: convert to using the TZ allocator
->   firmware: qcom: scm: add support for SHM bridge operations
->   firmware: qcom: tzmem: enable SHM Bridge support
->   firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
->   arm64: defconfig: enable SHM Bridge support for the TZ memory
->     allocator
-> 
->  arch/arm64/configs/defconfig                  |   1 +
->  drivers/firmware/qcom/Kconfig                 |  30 ++
->  drivers/firmware/qcom/Makefile                |   1 +
->  .../firmware/qcom/qcom_qseecom_uefisecapp.c   | 261 +++++--------
->  drivers/firmware/qcom/qcom_scm-smc.c          |  30 +-
->  drivers/firmware/qcom/qcom_scm.c              | 179 +++++----
->  drivers/firmware/qcom/qcom_scm.h              |   6 +
->  drivers/firmware/qcom/qcom_tzmem.c            | 365 ++++++++++++++++++
->  drivers/firmware/qcom/qcom_tzmem.h            |  13 +
->  include/linux/firmware/qcom/qcom_qseecom.h    |   4 +-
->  include/linux/firmware/qcom/qcom_scm.h        |   6 +
->  include/linux/firmware/qcom/qcom_tzmem.h      |  28 ++
->  12 files changed, 669 insertions(+), 255 deletions(-)
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
->  create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
-> 
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
