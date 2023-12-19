@@ -1,177 +1,119 @@
-Return-Path: <linux-kernel+bounces-5481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91710818B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:25:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06B9B818B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 16:25:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F68B286D50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:25:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9B8B1F2403C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 15:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36BB1CAA3;
-	Tue, 19 Dec 2023 15:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2AF61C69D;
+	Tue, 19 Dec 2023 15:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dY5mpPxm"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Bzg5gOKN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002071CA85
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 15:24:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF64BC433C9;
-	Tue, 19 Dec 2023 15:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702999497;
-	bh=qK6fcLZbrwOVOezRdvRUvaswX/bcYxsDd54Ws22dFDg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dY5mpPxmRg45jRMaYdDIidCd6Fb7OGS4flgm6YP1PcIMveLiNUy+Z59wp75S2pcV4
-	 xGN8dNfhQkPoF0feRcftrPkxNKlKedfOa0XEMjgtlzk4El9yZhNETtz0sx94b7LLYf
-	 pn1ROSw/kdLZb0fmJ9yJh3rzeH94t/6wnefurHmgBT+UtuZ449onyPmeWQz+jOimZt
-	 CNWrZsjuAhJcjXgGYmafD/pzVGWudme61nfYj8MBxJSej5G5/Cui1nJSu8YHUzp9Rs
-	 qdLrBK+XTiYIhJF/ntnakiUJjmoITaVSZuZLZksEP22dtfa0dkMlDVswaIptXhbxIu
-	 ShzlptRjMAGnw==
-Message-ID: <cac5bf07-9091-40b7-8fb2-01f7a032d2ef@kernel.org>
-Date: Tue, 19 Dec 2023 23:24:52 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933AE1CA88;
+	Tue, 19 Dec 2023 15:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJDWS5G001797;
+	Tue, 19 Dec 2023 15:25:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=RcKcDrB1hs/i3VF5GVWi4TmC2CSiOkBqWt3RLoIoTsQ=;
+ b=Bzg5gOKNqitFmy7vfJ9RMsDlNFHDs+sOw2lWCNy2FGcMo2HCfmB0dYJu5jaOoN4L8Buc
+ 49FgbCgCif0/gyBfoiXCKWZIQ6lkq6PTYw2/3DLnU0ZuRuwNWOe1M8o3RWt4H1jPGq1n
+ Eyny9A4I94TE8esL2d6XHJVMY+5NyWtCdvT+8Y190Fno2x/fGuUhZ7F7L/YzQvOpwozL
+ tj6fyzczZ8esw2IZpqE2zIG7uCYCprLTk8zSGRNH78n4/uW4BTK2XL3FaUmQXZiMnLGI
+ 7NfPVOCtIpka3qJVrrjjoqnHw4uOI7dxcVWXcSyH0DdoC+6jJgpYCbFjoQBCfJnmaFm6 zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3c52u689-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 15:25:19 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BJErslP014769;
+	Tue, 19 Dec 2023 15:25:19 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3c52u678-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 15:25:19 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BJD0r36010870;
+	Tue, 19 Dec 2023 15:25:17 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1q7ngjvh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Dec 2023 15:25:17 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BJFPEv013894268
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Dec 2023 15:25:14 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 82E9F20043;
+	Tue, 19 Dec 2023 15:25:14 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C5C0F20040;
+	Tue, 19 Dec 2023 15:25:13 +0000 (GMT)
+Received: from [9.179.0.97] (unknown [9.179.0.97])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Dec 2023 15:25:13 +0000 (GMT)
+Message-ID: <8ab61ee331b8087b8a26a2a38b3ae0c72cc31bb0.camel@linux.ibm.com>
+Subject: Re: [PATCH] icuv: make iucv_bus const
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, wintera@linux.ibm.com,
+        wenjia@linux.ibm.com
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo
+ Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org
+Date: Tue, 19 Dec 2023 16:25:13 +0100
+In-Reply-To: <2023121950-prankster-stomp-a1aa@gregkh>
+References: <2023121950-prankster-stomp-a1aa@gregkh>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4] f2fs: show more discard status by sysfs
-Content-Language: en-US
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- ke.wang@unisoc.com
-References: <1702952464-22050-1-git-send-email-zhiguo.niu@unisoc.com>
- <6c553a75-4842-4b28-9725-ba5e297ff793@kernel.org>
- <CAHJ8P3LgQB9Q_TQj0nmjKXLsk95uVA2xvPXdvpK8Gjsonz-fHg@mail.gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAHJ8P3LgQB9Q_TQj0nmjKXLsk95uVA2xvPXdvpK8Gjsonz-fHg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: posuTIFkQp8GRJgX1Bndj_RLuxyNur2h
+X-Proofpoint-ORIG-GUID: C9vaImxA8fX9KFkH9iUT5YeLqQ4ESDQi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-19_08,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 suspectscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 spamscore=0 mlxlogscore=696 phishscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312190115
 
-On 2023/12/19 12:09, Zhiguo Niu wrote:
-> On Tue, Dec 19, 2023 at 12:00 PM Chao Yu <chao@kernel.org> wrote:
->>
->> On 2023/12/19 10:21, Zhiguo Niu wrote:
->>> The current pending_discard attr just only shows the discard_cmd_cnt
->>> information. More discard status can be shown so that we can check
->>> them through sysfs when needed.
->>>
->>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
->>> ---
->>> changes of v2: Improve the patch according to Chao's suggestions.
->>> changes of v3: Add a blank line for easy reading.
->>> changes of v4: Split to three entries
->>> ---
->>> ---
->>>    Documentation/ABI/testing/sysfs-fs-f2fs | 15 +++++++++++++++
->>>    fs/f2fs/sysfs.c                         | 33 +++++++++++++++++++++++++++++++++
->>>    2 files changed, 48 insertions(+)
->>>
->>> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
->>> index 4f1d4e6..606a298 100644
->>> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
->>> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
->>> @@ -159,6 +159,21 @@ Date:            November 2021
->>>    Contact:    "Jaegeuk Kim" <jaegeuk@kernel.org>
->>>    Description:        Shows the number of pending discard commands in the queue.
->>>
->>> +What:           /sys/fs/f2fs/<disk>/issued_discard
->>
->> Add them to /sys/fs/f2fs/<disk>/stat/?
-> I just want to keep them consistent with the entry "pending_discard"
+On Tue, 2023-12-19 at 16:07 +0100, Greg Kroah-Hartman wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the iucv_bus variable to be a constant structure as well, placing
+> it into read-only memory which can not be modified at runtime.
+>=20
+> Cc: Alexandra Winter <wintera@linux.ibm.com>
+> Cc: Wenjia Zhang <wenjia@linux.ibm.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: linux-s390@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
 
-There are too many entries in root directory of f2fs sysfs entry, so I
-created the 'stat' sub-directory for later all read-only stat-related
-entry. I think it's fine to create new discard stat entries there.
-
-Thanks,
-
-> if they are split to 3 entries.
-> they are all discard related infos.
-> Thanks
->>
->> Thanks,
->>
->>> +Date:           December 2023
->>> +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
->>> +Description:    Shows the number of issued discard.
->>> +
->>> +What:           /sys/fs/f2fs/<disk>/queued_discard
->>> +Date:           December 2023
->>> +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
->>> +Description:    Shows the number of queued discard.
->>> +
->>> +What:           /sys/fs/f2fs/<disk>/undiscard_blks
->>> +Date:           December 2023
->>> +Contact:        "Zhiguo Niu" <zhiguo.niu@unisoc.com>
->>> +Description:    Shows the total number of undiscard blocks.
->>> +
->>>    What:               /sys/fs/f2fs/<disk>/max_victim_search
->>>    Date:               January 2014
->>>    Contact:    "Jaegeuk Kim" <jaegeuk.kim@samsung.com>
->>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
->>> index 7099ffa..666efdd 100644
->>> --- a/fs/f2fs/sysfs.c
->>> +++ b/fs/f2fs/sysfs.c
->>> @@ -143,6 +143,33 @@ static ssize_t pending_discard_show(struct f2fs_attr *a,
->>>                                &SM_I(sbi)->dcc_info->discard_cmd_cnt));
->>>    }
->>>
->>> +static ssize_t issued_discard_show(struct f2fs_attr *a,
->>> +             struct f2fs_sb_info *sbi, char *buf)
->>> +{
->>> +     if (!SM_I(sbi)->dcc_info)
->>> +             return -EINVAL;
->>> +     return sysfs_emit(buf, "%llu\n", (unsigned long long)atomic_read(
->>> +                             &SM_I(sbi)->dcc_info->issued_discard));
->>> +}
->>> +
->>> +static ssize_t queued_discard_show(struct f2fs_attr *a,
->>> +             struct f2fs_sb_info *sbi, char *buf)
->>> +{
->>> +     if (!SM_I(sbi)->dcc_info)
->>> +             return -EINVAL;
->>> +     return sysfs_emit(buf, "%llu\n", (unsigned long long)atomic_read(
->>> +                             &SM_I(sbi)->dcc_info->queued_discard));
->>> +}
->>> +
->>> +static ssize_t undiscard_blks_show(struct f2fs_attr *a,
->>> +             struct f2fs_sb_info *sbi, char *buf)
->>> +{
->>> +     if (!SM_I(sbi)->dcc_info)
->>> +             return -EINVAL;
->>> +     return sysfs_emit(buf, "%u\n",
->>> +                             SM_I(sbi)->dcc_info->undiscard_blks);
->>> +}
->>> +
->>>    static ssize_t gc_mode_show(struct f2fs_attr *a,
->>>                struct f2fs_sb_info *sbi, char *buf)
->>>    {
->>> @@ -1025,6 +1052,9 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
->>>    F2FS_GENERAL_RO_ATTR(mounted_time_sec);
->>>    F2FS_GENERAL_RO_ATTR(main_blkaddr);
->>>    F2FS_GENERAL_RO_ATTR(pending_discard);
->>> +F2FS_GENERAL_RO_ATTR(issued_discard);
->>> +F2FS_GENERAL_RO_ATTR(queued_discard);
->>> +F2FS_GENERAL_RO_ATTR(undiscard_blks);
->>>    F2FS_GENERAL_RO_ATTR(gc_mode);
->>>    #ifdef CONFIG_F2FS_STAT_FS
->>>    F2FS_GENERAL_RO_ATTR(moved_blocks_background);
->>> @@ -1084,6 +1114,9 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
->>>        ATTR_LIST(max_ordered_discard),
->>>        ATTR_LIST(discard_io_aware),
->>>        ATTR_LIST(pending_discard),
->>> +     ATTR_LIST(issued_discard),
->>> +     ATTR_LIST(queued_discard),
->>> +     ATTR_LIST(undiscard_blks),
->>>        ATTR_LIST(gc_mode),
->>>        ATTR_LIST(ipu_policy),
->>>        ATTR_LIST(min_ipu_util),
+Nit: There seems to be a typo in the subject line s/icuv/iucv/
 
