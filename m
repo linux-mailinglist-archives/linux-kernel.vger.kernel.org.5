@@ -1,116 +1,105 @@
-Return-Path: <linux-kernel+bounces-5246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 859A9818879
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:18:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67119818882
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 14:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3507028322B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:18:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D1481C21CFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 13:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF92218EA1;
-	Tue, 19 Dec 2023 13:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A273A18E3C;
+	Tue, 19 Dec 2023 13:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="erPv+WI/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2438C18E1D;
-	Tue, 19 Dec 2023 13:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9109B1FB;
-	Tue, 19 Dec 2023 05:19:11 -0800 (PST)
-Received: from [10.57.85.227] (unknown [10.57.85.227])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08D163F5A1;
-	Tue, 19 Dec 2023 05:18:24 -0800 (PST)
-Message-ID: <00f6f550-0f60-4f62-a301-2af94c68b7f8@arm.com>
-Date: Tue, 19 Dec 2023 13:19:30 +0000
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1153D18E1C;
+	Tue, 19 Dec 2023 13:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=/n2XJ
+	IfcbrULIis+G3+HtQ6D4FhSo/cN2GijjyoaIW4=; b=erPv+WI/kNMr9h89V3TyF
+	udkUWO1/NK5CPRRU9i292Aw3Ru/uZTCW80fcgjVcr09j9DMvmhLXSDF1AkYARwz6
+	QJ1KYn7nnac3Xqyh7eOerqfQHFY4Xi2qcobC7uOOZOnQsEME2ODDyVPm7iZo4Be5
+	ZqyBNuECX0HM1ZcQwlldLU=
+Received: from ubuntu22.localdomain (unknown [117.176.219.50])
+	by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wDHz15qmIFlPM9qGA--.1378S2;
+	Tue, 19 Dec 2023 21:19:39 +0800 (CST)
+From: chenguanxi11234@163.com
+To: rafael@kernel.org
+Cc: len.brown@intel.com,
+	pavel@ucw.cz,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Haonan <chen.haonan2@zte.com.cn>
+Subject: [PATCH linux-next v2] kernel/power: Use kmap_local_page() in snapshot.c
+Date: Tue, 19 Dec 2023 21:19:36 +0800
+Message-Id: <19e305896a2357d305f955fa14cc379e40e512bd.1702977429.git.chen.haonan2@zte.com.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 07/23] PM: EM: Refactor how the EM table is allocated
- and populated
-Content-Language: en-US
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: rui.zhang@intel.com, amit.kucheria@verdurent.com,
- linux-kernel@vger.kernel.org, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
- linux-pm@vger.kernel.org, rafael@kernel.org
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
- <20231129110853.94344-8-lukasz.luba@arm.com>
- <fbee5e3b-4c32-443a-b756-943762ae07b8@arm.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <fbee5e3b-4c32-443a-b756-943762ae07b8@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDHz15qmIFlPM9qGA--.1378S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ur1fKFWkZF18tF1fCr43GFg_yoW8WFy8pF
+	4UAFyDG3yYva48t34IqF1vkry3WwnxA3yrJFW3A3WfZrnIgwnFvr1Iqa18t3W3trWxJFWr
+	ArZrtayvkFs5KwUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jCxRDUUUUU=
+X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/1tbiQA9L+mVOAjNiVQAAsT
 
+From: Chen Haonan <chen.haonan2@zte.com.cn>
 
+kmap_atomic() has been deprecated in favor of kmap_local_page().
 
-On 12/12/23 18:50, Dietmar Eggemann wrote:
-> On 29/11/2023 12:08, Lukasz Luba wrote:
->> Split the process of allocation and data initialization for the EM table.
->> The upcoming changes for modifiable EM will use it.
->>
->> This change is not expected to alter the general functionality.
-> 
-> NIT: IMHO, I guess you wanted to say: "No functional changes
-> introduced"? I.e. all not only general functionality ...
-> 
+kmap_atomic() disables page-faults and preemption (the latter 
+only for !PREEMPT_RT kernels).The code between the mapping and 
+un-mapping in this patch does not depend on the above-mentioned 
+side effects.So simply replaced kmap_atomic() with kmap_local_page().
 
-Yes 'no functional changes'. Rafael gave me that sense once - and I use
-in such cases.
+Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
+---
+ kernel/power/snapshot.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+index e3e8f1c6e75f..5c96ff067c64 100644
+--- a/kernel/power/snapshot.c
++++ b/kernel/power/snapshot.c
+@@ -1487,11 +1487,11 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
+ 	s_page = pfn_to_page(src_pfn);
+ 	d_page = pfn_to_page(dst_pfn);
+ 	if (PageHighMem(s_page)) {
+-		src = kmap_atomic(s_page);
+-		dst = kmap_atomic(d_page);
++		src = kmap_local_page(s_page);
++		dst = kmap_local_page(d_page);
+ 		zeros_only = do_copy_page(dst, src);
+-		kunmap_atomic(dst);
+-		kunmap_atomic(src);
++		kunmap_local(dst);
++		kunmap_local(src);
+ 	} else {
+ 		if (PageHighMem(d_page)) {
+ 			/*
+@@ -1499,9 +1499,9 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
+ 			 * data modified by kmap_atomic()
+ 			 */
+ 			zeros_only = safe_copy_page(buffer, s_page);
+-			dst = kmap_atomic(d_page);
++			dst = kmap_local_page(d_page);
+ 			copy_page(dst, buffer);
+-			kunmap_atomic(dst);
++			kunmap_local(dst);
+ 		} else {
+ 			zeros_only = safe_copy_page(page_address(d_page), s_page);
+ 		}
+-- 
+2.25.1
 
-> [...]
-> 
->>   static int em_create_pd(struct device *dev, int nr_states,
->> @@ -234,11 +234,15 @@ static int em_create_pd(struct device *dev, int nr_states,
->>   			return -ENOMEM;
->>   	}
->>   
->> -	ret = em_create_perf_table(dev, pd, nr_states, cb, flags);
->> -	if (ret) {
->> -		kfree(pd);
->> -		return ret;
->> -	}
->> +	pd->nr_perf_states = nr_states;
-> 
-> Why does `pd->nr_perf_states = nr_states;` have to move from
-> em_create_perf_table() to em_create_pd()?
-
-Because I have split the old code which did allocation and
-initialization w/ data the in em_create_perf_table().
-
-Now we are going to have separate:
-1. allocation of a new table (which can be re-used later)
-2. initialization of the data (power, freq, etc) in registration
-    code path
-
-It will allow to also allow to introduce update data function,
-and simply use the same allocation function for both cases:
-- EM registration code path
-- update EM code path
-
-> 
->> +
->> +	ret = em_allocate_perf_table(pd, nr_states);
->> +	if (ret)
->> +		goto free_pd;
->> +
->> +	ret = em_create_perf_table(dev, pd, pd->table, nr_states, cb, flags);
-> 
-> If you set it in em_create_pd() then you can use 'pd->nr_perf_states' in
-> em_create_perf_table() and doesn't have to pass `nr_states`.
-> 
-> [...]
-
-That's true. I could further refactor that function and remove that
-'nr_states' argument.
-
-I'll do this in v6. Thanks!
 
